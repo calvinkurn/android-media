@@ -1,5 +1,6 @@
 package com.tokopedia.topads.auto.view.fragment
 
+import android.app.Activity
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
@@ -156,6 +157,9 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
                 activity!!.finish()
             }
         }
+        if(resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_CONFIRMATION){
+            activatedAds()
+        }
     }
 
     fun activatedAds() {
@@ -197,6 +201,7 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
     }
 
     companion object {
+        val REQUEST_CODE_CONFIRMATION = 8903
         val KEY_DAILY_BUDGET = "BUDGET"
         val REQUEST_CODE_AD_OPTION = 3
         val SELECTED_OPTION = "selected_option"

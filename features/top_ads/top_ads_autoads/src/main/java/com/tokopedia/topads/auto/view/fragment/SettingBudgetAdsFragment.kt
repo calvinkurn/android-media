@@ -1,5 +1,6 @@
 package com.tokopedia.topads.auto.view.fragment
 
+import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.widget.ImageView
 import android.widget.Switch
 
 import com.tokopedia.topads.auto.R
+import com.tokopedia.topads.auto.view.activity.ConfirmationDialogActivity
 import com.tokopedia.topads.auto.view.activity.DailyBudgetActivity
 import com.tokopedia.topads.auto.view.widget.SettingAutoAdsConfirmationSheet
 import com.tokopedia.topads.auto.view.widget.SettingAutoAdsInfoSheet
@@ -42,7 +44,7 @@ class SettingBudgetAdsFragment : DailyBudgetFragment() {
         }
         saveBtn.setOnClickListener {
             if (switchBudget.isChecked) {
-                activatedAds()
+                startActivityForResult(Intent(activity!!, ConfirmationDialogActivity::class.java), REQUEST_CODE_CONFIRMATION)
             } else {
                 var settingConfirmationSheet =  SettingAutoAdsConfirmationSheet.newInstance(context!!)
                 settingConfirmationSheet.setActionListener(object: SettingAutoAdsConfirmationSheet.ActionListener{

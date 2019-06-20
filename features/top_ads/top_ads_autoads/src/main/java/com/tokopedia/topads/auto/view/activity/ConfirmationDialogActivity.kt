@@ -1,5 +1,6 @@
 package com.tokopedia.topads.auto.view.activity
 
+import android.app.Activity
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
@@ -18,7 +19,7 @@ class ConfirmationDialogActivity : AppCompatActivity() {
             finish()
         }
         findViewById<View>(R.id.positive_button).setOnClickListener {
-            finish()
+            finishActivity(Activity.RESULT_OK)
         }
     }
 }

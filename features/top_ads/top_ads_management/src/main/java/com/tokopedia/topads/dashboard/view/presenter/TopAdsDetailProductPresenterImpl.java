@@ -87,15 +87,20 @@ public class TopAdsDetailProductPresenterImpl<T extends Ad> extends TopAdsDetail
 
             @Override
             public void onNext(TopAdsAutoAdsData topAdsAutoAdsData) {
-                if (topAdsAutoAdsData.getStatus() == TopAdsWidgetStatus.STATUS_ACTIVE
-                        || topAdsAutoAdsData.getStatus() == TopAdsWidgetStatus.STATUS_IN_PROGRESS_ACTIVE
-                        || topAdsAutoAdsData.getStatus() == TopAdsWidgetStatus.STATUS_IN_PROGRESS_AUTOMANAGE
-                        || topAdsAutoAdsData.getStatus() == TopAdsWidgetStatus.STATUS_IN_PROGRESS_INACTIVE) {
+                if (autoAdsIsActive(topAdsAutoAdsData)) {
                     topAdsDetailListener.onAutoAdsActive();
                 } else {
                     topAdsDetailListener.onAutoAdsInactive();
                 }
             }
         });
+    }
+
+    private boolean autoAdsIsActive(TopAdsAutoAdsData topAdsAutoAdsData) {
+        return topAdsAutoAdsData.getStatus() == TopAdsWidgetStatus.STATUS_ACTIVE
+                || topAdsAutoAdsData.getStatus() == TopAdsWidgetStatus.STATUS_IN_PROGRESS_ACTIVE
+                || topAdsAutoAdsData.getStatus() == TopAdsWidgetStatus.STATUS_IN_PROGRESS_AUTOMANAGE
+                || topAdsAutoAdsData.getStatus() == TopAdsWidgetStatus.STATUS_IN_PROGRESS_INACTIVE
+                || topAdsAutoAdsData.getStatus() == TopAdsWidgetStatus.STATUS_NOT_DELIVERED;
     }
 }

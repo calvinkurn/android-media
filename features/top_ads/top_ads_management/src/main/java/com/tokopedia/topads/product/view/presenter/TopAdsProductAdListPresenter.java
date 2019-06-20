@@ -130,7 +130,8 @@ public class TopAdsProductAdListPresenter extends TopAdsBaseListPresenter<TopAds
         return (status == TopAdsWidgetStatus.STATUS_ACTIVE
                 || status == TopAdsWidgetStatus.STATUS_IN_PROGRESS_ACTIVE
                 || status == TopAdsWidgetStatus.STATUS_IN_PROGRESS_AUTOMANAGE
-                || status == TopAdsWidgetStatus.STATUS_IN_PROGRESS_INACTIVE);
+                || status == TopAdsWidgetStatus.STATUS_IN_PROGRESS_INACTIVE
+                || status == TopAdsWidgetStatus.STATUS_NOT_DELIVERED);
     }
 
     public void searchAd(Date startDate, Date endDate, String keyword, int status, long groupId,
