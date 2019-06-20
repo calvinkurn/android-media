@@ -102,13 +102,13 @@ class AutoAdsWidgetView : CardView {
 
     fun setStatusAds(status: Int, budget: Int) {
         when (status) {
-            TopAdsWidgetStatus.STATUS_ACTIVE -> setActive(budget)
-            TopAdsWidgetStatus.STATUS_INACTIVE -> setInActive(budget)
+            TopAdsWidgetStatus.STATUS_ACTIVE -> setActive(status, budget)
+            TopAdsWidgetStatus.STATUS_INACTIVE -> setInActive(status, budget)
             TopAdsWidgetStatus.STATUS_IN_PROGRESS_ACTIVE -> setInProgress()
             TopAdsWidgetStatus.STATUS_IN_PROGRESS_AUTOMANAGE -> setInProgress()
             TopAdsWidgetStatus.STATUS_IN_PROGRESS_INACTIVE -> setInProgress()
-            TopAdsWidgetStatus.STATUS_NOT_DELIVERED -> setNotDelivered(budget)
-            else -> setInActive(budget)
+            TopAdsWidgetStatus.STATUS_NOT_DELIVERED -> setNotDelivered(status, budget)
+            else -> setInActive(status, budget)
         }
     }
 
