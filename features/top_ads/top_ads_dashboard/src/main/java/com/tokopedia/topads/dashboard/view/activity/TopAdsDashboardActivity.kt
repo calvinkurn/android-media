@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.Toolbar
+import android.widget.Toast
 
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -17,6 +18,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.showcase.ShowCaseContentPosition
 import com.tokopedia.showcase.ShowCaseDialog
 import com.tokopedia.showcase.ShowCaseObject
+import com.tokopedia.topads.auto.view.widget.AutoAdsWidgetView
 import com.tokopedia.topads.common.data.util.ApplinkUtil
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.TopAdsDashboardRouter
@@ -193,5 +195,8 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == AutoAdsWidgetView.REQUEST_KEY_AUTOADS_WIDGET) {
+            Toast.makeText(this, "Iklan Otomatis berhasil dinonaktifkan", Toast.LENGTH_SHORT).show()
+        }
     }
 }

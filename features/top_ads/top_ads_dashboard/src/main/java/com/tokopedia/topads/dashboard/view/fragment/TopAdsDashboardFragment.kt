@@ -476,8 +476,6 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
                     .loadRawString(resources, R.raw.gql_query_get_status_auto_topup))
             if (data?.getBooleanExtra("no_redirect", false) != true)
                 goToCreditHistory(true)
-        } else if (requestCode == AutoAdsWidgetView.REQUEST_KEY_AUTOADS_WIDGET) {
-            Toast.makeText(context, "Iklan Otomatis berhasil dinonaktifkan", Toast.LENGTH_SHORT).show()
         }
     }
 
