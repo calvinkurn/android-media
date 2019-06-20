@@ -201,8 +201,19 @@ class GridProductItem2019ViewHolder(
     private fun initShopBadge(productItem: ProductItemViewModel) {
         if(itemView.shopBadgesContainer != null) {
             itemView.shopBadgesContainer.removeAllViews()
-            loopBadgesListToLoadShopBadgeIcon(productItem.badgesList)
+
+            if(hasAnyBadgesShown(productItem)) {
+                itemView.shopBadgesContainer.visibility = View.VISIBLE
+                loopBadgesListToLoadShopBadgeIcon(productItem.badgesList)
+            }
+            else {
+                itemView.shopBadgesContainer.visibility = View.GONE
+            }
         }
+    }
+
+    private fun hasAnyBadgesShown(productItem: ProductItemViewModel): Boolean {
+        return productItem.badgesList.any { badge -> badge.isShown }
     }
 
     private fun loopBadgesListToLoadShopBadgeIcon(badgesList: List<BadgeItemViewModel>) {
@@ -269,10 +280,6 @@ class GridProductItem2019ViewHolder(
                 itemView.locationTextView.paddingBottom
             )
         }
-    }
-
-    private fun hasAnyBadgesShown(productItem: ProductItemViewModel): Boolean {
-        return productItem.badgesList.any { badge -> badge.isShown }
     }
 
     private fun initCredibilitySection(productItem: ProductItemViewModel) {
