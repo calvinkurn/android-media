@@ -1831,6 +1831,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
+    public void onSuccessCheckPromoMerchantFirstStep(@NotNull ResponseGetPromoStackUiModel promoData) {
+        onSuccessCheckPromoFirstStep(promoData);
+    }
+
+    @Override
     public void onSuccessCheckPromoFirstStep(@NonNull ResponseGetPromoStackUiModel responseGetPromoStackUiModel) {
         // Update global promo state
         if (responseGetPromoStackUiModel.getData().getCodes().size() > 0) {

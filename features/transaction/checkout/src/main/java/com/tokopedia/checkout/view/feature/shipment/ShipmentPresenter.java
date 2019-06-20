@@ -407,17 +407,20 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void triggerSendEnhancedEcommerceCheckoutAnalytics(String step) {
+    public void triggerSendEnhancedEcommerceCheckoutAnalytics(String step, String eventAction, String eventLabel) {
         List<DataCheckoutRequest> dataCheckoutRequests = dataCheckoutRequestList;
         if (dataCheckoutRequests == null) {
             dataCheckoutRequests = getView().generateNewCheckoutRequest(getShipmentCartItemModelList(), true);
         }
 
-        triggerSendEnhancedEcommerceCheckoutAnalytics(dataCheckoutRequests, step);
+        triggerSendEnhancedEcommerceCheckoutAnalytics(dataCheckoutRequests, step, eventAction, eventLabel);
     }
 
     @Override
-    public void triggerSendEnhancedEcommerceCheckoutAnalytics(List<DataCheckoutRequest> dataCheckoutRequests, String step) {
+    public void triggerSendEnhancedEcommerceCheckoutAnalytics(List<DataCheckoutRequest> dataCheckoutRequests,
+                                                              String step,
+                                                              String eventAction,
+                                                              String eventLabel) {
         CheckPromoParam checkPromoParam = new CheckPromoParam();
         checkPromoParam.setPromo(getView().generateCheckPromoFirstStepParam());
         CheckoutRequest checkoutRequest = generateCheckoutRequest(dataCheckoutRequests, checkPromoParam,
@@ -428,7 +431,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (checkoutData != null) {
             transactionId = checkoutData.getTransactionId();
         }
-        analyticsActionListener.sendEnhancedEcommerceAnalyticsCheckout(eeDataLayer, transactionId);
+        analyticsActionListener.sendEnhancedEcommerceAnalyticsCheckout(eeDataLayer, transactionId, eventAction, eventLabel);
     }
 
     @Override
@@ -958,7 +961,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 getView().hideLoading();
                 if (!checkoutData.isError()) {
                     analyticsActionListener.sendAnalyticsChoosePaymentMethodSuccess();
-                    triggerSendEnhancedEcommerceCheckoutAnalytics(EnhancedECommerceActionField.STEP_4);
+                    triggerSendEnhancedEcommerceCheckoutAnalytics(
+                            EnhancedECommerceActionField.STEP_4,
+                            ConstantTransactionAnalytics.EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
+                            ConstantTransactionAnalytics.EventLabel.SUCCESS);
                     if (isPurchaseProtectionPage) {
                         mTrackerPurchaseProtection.eventClickOnBuy(
                                 checkoutRequest.isHavingPurchaseProtectionEnabled() ?
@@ -1535,7 +1541,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
-                getView().triggerSendEnhancedEcommerceCheckoutAnalyticAfterPromoChange();
+                getView().triggerSendEnhancedEcommerceCheckoutAnalyticAfterPromoChange(
+                        ConstantTransactionAnalytics.EventAction.CLICK_HAPUS_PROMO_X_ON_TICKER, promoCode
+                );
             }
         });
     }

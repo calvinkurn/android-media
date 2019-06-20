@@ -149,7 +149,7 @@ public interface ShipmentContract {
 
         void clearTotalBenefitPromoStacking();
 
-        void triggerSendEnhancedEcommerceCheckoutAnalyticAfterPromoChange();
+        void triggerSendEnhancedEcommerceCheckoutAnalyticAfterPromoChange(String eventAction, String eventLabel);
     }
 
     interface AnalyticsActionListener {
@@ -160,7 +160,10 @@ public interface ShipmentContract {
         @Deprecated
         void sendAnalyticsChoosePaymentMethodCourierNotComplete();
 
-        void sendEnhancedEcommerceAnalyticsCheckout(Map<String, Object> stringObjectMap, String transactionId);
+        void sendEnhancedEcommerceAnalyticsCheckout(Map<String, Object> stringObjectMap,
+                                                    String transactionId,
+                                                    String eventAction,
+                                                    String eventLabel);
 
         void sendAnalyticsOnClickChooseOtherAddressShipment();
 
@@ -350,9 +353,9 @@ public interface ShipmentContract {
 
         boolean isShowOnboarding();
 
-        void triggerSendEnhancedEcommerceCheckoutAnalytics(String step);
+        void triggerSendEnhancedEcommerceCheckoutAnalytics(String step, String eventAction, String eventLabel);
 
-        void triggerSendEnhancedEcommerceCheckoutAnalytics(List<DataCheckoutRequest> dataCheckoutRequests, String step);
+        void triggerSendEnhancedEcommerceCheckoutAnalytics(List<DataCheckoutRequest> dataCheckoutRequests, String step, String eventAction, String eventLabel);
 
         void updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(String cartString, String shippingDuration, String shippingPrice, String courierName);
 

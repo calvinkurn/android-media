@@ -78,7 +78,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
 
     interface ActionListener {
         fun onClashCheckPromo(clashingInfoDetailUiModel: ClashingInfoDetailUiModel, type: String)
-        fun onSuccessCheckPromoFirstStep(promoData: ResponseGetPromoStackUiModel)
+        fun onSuccessCheckPromoMerchantFirstStep(promoData: ResponseGetPromoStackUiModel)
     }
 
     companion object {

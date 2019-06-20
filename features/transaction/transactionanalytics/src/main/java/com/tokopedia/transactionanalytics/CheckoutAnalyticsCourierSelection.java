@@ -307,7 +307,11 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
     }
 
 
-    public void sendEnhancedECommerceCheckout(Map<String, Object> cartMap, String transactionId, boolean isTradeIn) {
+    public void sendEnhancedECommerceCheckout(Map<String, Object> cartMap,
+                                              String transactionId,
+                                              boolean isTradeIn,
+                                              String eventAction,
+                                              String eventLabel) {
         String eventCategory = EventCategory.COURIER_SELECTION;
         if (isTradeIn) {
             eventCategory = EventCategory.COURIER_SELECTION_TRADE_IN;
@@ -315,8 +319,8 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         Map<String, Object> dataLayer = DataLayer.mapOf(
                 ConstantTransactionAnalytics.Key.EVENT, EventName.CHECKOUT,
                 ConstantTransactionAnalytics.Key.EVENT_CATEGORY, eventCategory,
-                ConstantTransactionAnalytics.Key.EVENT_ACTION, EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
-                ConstantTransactionAnalytics.Key.EVENT_LABEL, EventLabel.SUCCESS,
+                ConstantTransactionAnalytics.Key.EVENT_ACTION, eventAction,
+                ConstantTransactionAnalytics.Key.EVENT_LABEL, eventLabel,
                 ConstantTransactionAnalytics.Key.PAYMENT_ID, transactionId,
                 ConstantTransactionAnalytics.Key.E_COMMERCE, cartMap,
                 ConstantTransactionAnalytics.Key.CURRENT_SITE, ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
