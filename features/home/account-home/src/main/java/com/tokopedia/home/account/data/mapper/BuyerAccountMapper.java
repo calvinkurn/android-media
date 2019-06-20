@@ -70,7 +70,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
             tokopediaPayViewModel.setLinked(accountModel.getWallet().isLinked());
             tokopediaPayViewModel.setWalletType(accountModel.getWallet().getWalletType());
             if (accountModel.getWallet().getWalletType().equals(OVO)) {
-                tokopediaPayViewModel.setIconUrlLeft(AccountConstants.ImageUrl.OVO_IMG);
+                tokopediaPayViewModel.setIconUrlLeft(cdnUrl + AccountHomeUrl.ImageUrl.OVO_IMG);
                 if (!accountModel.getWallet().isLinked()) {
                     if (accountModel.getWallet().getAmountPendingCashback() > 0) {
                         tokopediaPayViewModel.setLabelLeft("(+" + accountModel.getWallet().getPendingCashback() + ")");
