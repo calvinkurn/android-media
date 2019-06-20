@@ -30,14 +30,14 @@ class DigitalSearchNumberActivity : BaseSimpleActivity(), DigitalSearchNumberFra
         extras?.let {
             this.clientNumber = extras.getParcelable(EXTRA_CLIENT_NUMBER)
             this.number = extras.getString(EXTRA_NUMBER)
-
+            this.numberList = extras.getParcelableArrayList(EXTRA_NUMBER_LIST)
         }
         super.onCreate(savedInstanceState)
     }
 
     override fun getNewFragment(): android.support.v4.app.Fragment {
         return DigitalSearchNumberFragment
-                .newInstance(clientNumber, number)
+                .newInstance(clientNumber, number, numberList)
     }
 
     override fun onClientNumberClicked(orderClientNumber: TelcoFavNumber) {

@@ -2,6 +2,7 @@ package com.tokopedia.topupbills.telco.view.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Parcelable
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -192,11 +193,13 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnCl
         private val ARG_PARAM_EXTRA_NUMBER = "ARG_PARAM_EXTRA_NUMBER"
         private val ARG_PARAM_EXTRA_CLIENT_NUMBER = "ARG_PARAM_EXTRA_CLIENT_NUMBER"
 
-        fun newInstance(clientNumber: DigitalFavNumber, number: String): Fragment {
+        fun newInstance(clientNumber: DigitalFavNumber, number: String,
+                        numberList: List<TelcoFavNumber>): Fragment {
             val fragment = DigitalSearchNumberFragment()
             val bundle = Bundle()
             bundle.putParcelable(ARG_PARAM_EXTRA_CLIENT_NUMBER, clientNumber)
             bundle.putString(ARG_PARAM_EXTRA_NUMBER, number)
+            bundle.putParcelableArrayList(ARG_PARAM_EXTRA_NUMBER_LIST, numberList as ArrayList<out Parcelable>)
             fragment.arguments = bundle
             return fragment
         }
