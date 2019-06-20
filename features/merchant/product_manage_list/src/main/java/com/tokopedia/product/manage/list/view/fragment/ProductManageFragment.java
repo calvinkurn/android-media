@@ -165,7 +165,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(false);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setContentView(R.layout.dialog_product_add);
 
         btnSubmit = dialog.findViewById(R.id.btn_submit);
