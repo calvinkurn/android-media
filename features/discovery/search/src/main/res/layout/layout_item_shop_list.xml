@@ -161,7 +161,6 @@
                 <TextView
                     android:id="@+id/tv_unavailable_label"
                     android:layout_marginTop="@dimen/dp_2"
-                    android:drawableLeft="@drawable/ic_minus"
                     android:drawablePadding="@dimen/dp_5"
                     android:textStyle="bold"
                     android:layout_marginLeft="@dimen/dp_5"

@@ -39,6 +39,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnFocusChange;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class ReviewTicketActivity extends EventBaseActivity implements
         EventReviewTicketsContractor.EventReviewTicketsView {
@@ -121,6 +122,8 @@ public class ReviewTicketActivity extends EventBaseActivity implements
     TextView seatNumbers;
     @BindView(R2.id.goto_promo)
     View gotoPromo;
+    @BindView(R2.id.goto_promo_tv)
+    TextView gotoPromoTv;
     @BindView(R2.id.rl_section_discount)
     View sectionDiscount;
     @BindView(R2.id.tv_discount)
@@ -172,6 +175,8 @@ public class ReviewTicketActivity extends EventBaseActivity implements
 
     @Override
     public void renderFromPackageVM(PackageViewModel packageViewModel, SelectedSeatViewModel selectedSeats) {
+        gotoPromoTv.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                (context, R.drawable.promo_code), null, null , null);
         toolbar.setTitle(packageViewModel.getTitle());
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black);
         String timerange = packageViewModel.getTimeRange();
