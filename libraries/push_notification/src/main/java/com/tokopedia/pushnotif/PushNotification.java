@@ -1,7 +1,10 @@
 package com.tokopedia.pushnotif;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
@@ -52,7 +55,9 @@ public class PushNotification {
             } else {
                 notifyGeneral(context, applinkNotificationModel, notificationId, notificationManagerCompat);
             }
-            trackDeliveredNotification(context, applinkNotificationModel);
+            if (isNotificationChannelEnabled(context)) {
+                trackDeliveredNotification(context, applinkNotificationModel);
+            }
         }
     }
 
@@ -62,7 +67,7 @@ public class PushNotification {
         RequestParams requestParams = useCase.createRequestParam(applinkNotificationModel);
 
         useCase.createObservable(requestParams)
-//                .take(1)
+                .take(1)
                 .subscribe(new Subscriber<TrackPushNotificationEntity>() {
                     @Override
                     public void onCompleted() {
@@ -150,5 +155,16 @@ public class PushNotification {
                 .createNotification(applinkNotificationModel, notificationType, notificationType);
 
         notificationManagerCompat.notify(notificationType, notifChat);
+    }
+
+    private static boolean isNotificationChannelEnabled(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationChannel channel = manager.getNotificationChannel(Constant.NotificationChannel.GENERAL);
+            return channel.getImportance() != NotificationManager.IMPORTANCE_NONE;
+        } else {
+            return NotificationManagerCompat.from(context).areNotificationsEnabled();
+        }
+
     }
 }
