@@ -110,13 +110,13 @@ class RecommendationPageTracking {
                     DataLayer.mapOf(
                             FIELD_PRODUCT_NAME, item.name,
                             FIELD_PRODUCT_ID, item.productId,
-                            FIELD_PRODUCT_PRICE, item.priceInt,
+                            FIELD_PRODUCT_PRICE, item.getPriceIntFromString(),
                             FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
                             FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
                             FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
                             FIELD_PRODUCT_POSITION, position
                     )
-                )
+            )
             )
         }
 
@@ -144,14 +144,14 @@ class RecommendationPageTracking {
             ),
                     FIELD_PRODUCTS, DataLayer.listOf(
                     DataLayer.mapOf(
-                        FIELD_PRODUCT_NAME, item.name,
-                        FIELD_PRODUCT_ID, item.productId,
-                        FIELD_PRODUCT_PRICE, item.priceInt,
-                        FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
-                        FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
-                        FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
-                        FIELD_PRODUCT_LIST, list,
-                        FIELD_PRODUCT_POSITION, position
+                            FIELD_PRODUCT_NAME, item.name,
+                            FIELD_PRODUCT_ID, item.productId,
+                            FIELD_PRODUCT_PRICE, item.priceInt,
+                            FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
+                            FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
+                            FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
+                            FIELD_PRODUCT_LIST, list,
+                            FIELD_PRODUCT_POSITION, position
                     )
             )
             )
@@ -165,13 +165,13 @@ class RecommendationPageTracking {
             ),
                     FIELD_PRODUCTS, DataLayer.listOf(
                     DataLayer.mapOf(
-                        FIELD_PRODUCT_NAME, item.name,
-                        FIELD_PRODUCT_ID, item.productId,
-                        FIELD_PRODUCT_PRICE, item.priceInt,
-                        FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
-                        FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
-                        FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
-                        FIELD_PRODUCT_LIST, list
+                            FIELD_PRODUCT_NAME, item.name,
+                            FIELD_PRODUCT_ID, item.productId,
+                            FIELD_PRODUCT_PRICE, item.priceInt,
+                            FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
+                            FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
+                            FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
+                            FIELD_PRODUCT_LIST, list
                     )
             )
             )
@@ -186,17 +186,17 @@ class RecommendationPageTracking {
             ),
                     FIELD_PRODUCTS, DataLayer.listOf(
                     DataLayer.mapOf(
-                        FIELD_PRODUCT_NAME, item.name,
-                        FIELD_PRODUCT_ID, item.productId,
-                        FIELD_PRODUCT_PRICE, item.priceInt,
-                        FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
-                        FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
-                        FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
-                        FIELD_SHOP_ID, VALUE_EMPTY,
-                        FIELD_SHOP_TYPE, VALUE_EMPTY,
-                        FIELD_SHOP_NAME, VALUE_EMPTY,
-                        FIELD_CATEGORY_ID, VALUE_EMPTY,
-                        FIELD_DIMENSION_42, VALUE_EMPTY
+                            FIELD_PRODUCT_NAME, item.name,
+                            FIELD_PRODUCT_ID, item.productId,
+                            FIELD_PRODUCT_PRICE, item.priceInt,
+                            FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
+                            FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
+                            FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
+                            FIELD_SHOP_ID, VALUE_EMPTY,
+                            FIELD_SHOP_TYPE, VALUE_EMPTY,
+                            FIELD_SHOP_NAME, VALUE_EMPTY,
+                            FIELD_CATEGORY_ID, VALUE_EMPTY,
+                            FIELD_DIMENSION_42, VALUE_EMPTY
                     )
             )
             )
@@ -351,17 +351,17 @@ class RecommendationPageTracking {
                     EVENT_ACTION, EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION_NON_LOGIN,
                     EVENT_LABEL, VALUE_EMPTY,
                     ECOMMERCE, DataLayer.mapOf(
-                        ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
-                        ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
-                            convertRecommendationItemToDataImpressionObject(
-                                recommendationItem,
-                                String.format(
-                                        VALUE_LIST_TOPADS_PRODUCT_RECOMMENDATION_NON_LOGIN,
-                                        recommendationItem.recommendationType
-                                ),
-                                position)
-                        )
-                    )
+                    ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
+                    ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
+                    convertRecommendationItemToDataImpressionObject(
+                            recommendationItem,
+                            String.format(
+                                    VALUE_LIST_TOPADS_PRODUCT_RECOMMENDATION_NON_LOGIN,
+                                    recommendationItem.recommendationType
+                            ),
+                            position)
+            )
+            )
             )
 
             trackingQueue.putEETracking(data as HashMap<String, Any>)
@@ -489,12 +489,10 @@ class RecommendationPageTracking {
                     EVENT_ACTION, EVENT_ACTION_CLICK_PRIMARY_PRODUCT,
                     EVENT_LABEL, VALUE_EMPTY,
                     ECOMMERCE, DataLayer.mapOf(
-                    ECOMMERCE_CLICK, DataLayer.mapOf(
-                    convertPrimaryProductToDataClickObject(
-                            recommendationItem,
-                            VALUE_LIST_PRIMARY_PRODUCT_RECOMMENDATION,
-                            position
-                    )
+                    ECOMMERCE_CLICK, convertPrimaryProductToDataClickObject(
+                    recommendationItem,
+                    VALUE_LIST_PRIMARY_PRODUCT_RECOMMENDATION,
+                    position
             )
             )
             )
@@ -670,15 +668,15 @@ class RecommendationPageTracking {
                     EVENT_ACTION, String.format(EVENT_ACTION_IMPRESSION_PRODUCT_ON_HEADER, headerName),
                     EVENT_LABEL, VALUE_EMPTY,
                     ECOMMERCE, DataLayer.mapOf(
-                        ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
-                        ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
-                        convertRecommendationItemToDataImpressionObject(recommendationItem,
-                                String.format(
-                                        if(recommendationItem.isTopAds) VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_TOP_ADS_NON_LOGIN else VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_NON_LOGIN,
-                                        headerName, recommendationItem.recommendationType
-                                ), position)
-                        )
-                    )
+                    ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
+                    ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
+                    convertRecommendationItemToDataImpressionObject(recommendationItem,
+                            String.format(
+                                    if(recommendationItem.isTopAds) VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_TOP_ADS_NON_LOGIN else VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_NON_LOGIN,
+                                    headerName, recommendationItem.recommendationType
+                            ), position)
+            )
+            )
             )
             trackingQueue.putEETracking(data as HashMap<String, Any>)
         }
