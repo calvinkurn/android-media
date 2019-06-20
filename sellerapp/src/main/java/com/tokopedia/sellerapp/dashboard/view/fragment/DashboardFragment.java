@@ -510,20 +510,16 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                 tvShopMembershipStatus.setText(getString(R.string.bracket_format, getString(R.string.inactive_label)));
             }
             buttonActivatePowerMerchant.setVisibility(View.GONE);
-            if (shopStatusModel.isTransitionPeriod()) {
-                tickerContainer.setVisibility(View.GONE);
-            } else {
-                tickerContainer.setVisibility(View.VISIBLE);
-                TextView tvTicker = tickerContainer.findViewById(R.id.tv_ticker);
-                View.OnClickListener onClickListener = new View.OnClickListener(){
-                    @Override
-                    public void onClick(View v) {
-                        RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW, URL_GAINS_SCORE_POINT);
-                    }
-                };
-                setTextViewClickSpan(tvTicker, MethodChecker.fromHtml(getString(R.string.power_merchant_ticker_with_tip)),
-                        getString(R.string.tip_increase_score), onClickListener);
-            }
+            tickerContainer.setVisibility(View.VISIBLE);
+            TextView tvTicker = tickerContainer.findViewById(R.id.tv_ticker);
+            View.OnClickListener onClickListener = new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW, URL_GAINS_SCORE_POINT);
+                }
+            };
+            setTextViewClickSpan(tvTicker, MethodChecker.fromHtml(getString(R.string.power_merchant_ticker_with_tip)),
+                    getString(R.string.tip_increase_score), onClickListener);
         }
         if (!TextUtils.isEmpty(shopModel.info.shopAvatar)) {
             ImageHandler.LoadImage(shopIconImageView, shopModel.info.shopAvatar);
