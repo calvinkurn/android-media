@@ -99,6 +99,9 @@ public class SearchProductModel {
         @SerializedName("additional_params")
         @Expose
         private String additionalParams;
+        @SerializedName("isQuerySafe")
+        @Expose
+        private boolean isQuerySafe;
         @SerializedName("suggestion")
         @Expose
         private Suggestion suggestion = new Suggestion();
@@ -398,6 +401,9 @@ public class SearchProductModel {
         @SerializedName("labels")
         @Expose
         private List<Label> labels = null;
+        @SerializedName("label_groups")
+        @Expose
+        private List<ProductLabelGroup> labelGroups = new ArrayList<>();
         @SerializedName("badges")
         @Expose
         private List<Badge> badges = null;
@@ -505,6 +511,10 @@ public class SearchProductModel {
             return labels;
         }
 
+        public List<ProductLabelGroup> getLabelGroups() {
+            return labelGroups;
+        }
+
         public List<Badge> getBadges() {
             return badges;
         }
@@ -571,6 +581,32 @@ public class SearchProductModel {
 
         public Shop getShop() {
             return shop;
+        }
+    }
+
+    public static class ProductLabelGroup {
+        @SerializedName("position")
+        @Expose
+        private String position;
+
+        public String getPosition() {
+            return position;
+        }
+
+        @SerializedName("type")
+        @Expose
+        private String type;
+
+        public String getType() {
+            return type;
+        }
+
+        @SerializedName("title")
+        @Expose
+        private String title;
+
+        public String getTitle() {
+            return title;
         }
     }
 
@@ -693,6 +729,9 @@ public class SearchProductModel {
         @SerializedName("is_official")
         @Expose
         private boolean official;
+        @SerializedName("is_power_badge")
+        @Expose
+        private boolean isPowerBadge;
 
         public String getId() {
             return id;
@@ -728,6 +767,10 @@ public class SearchProductModel {
 
         public boolean isOfficial() {
             return official;
+        }
+
+        public boolean isPowerBadge() {
+            return isPowerBadge;
         }
     }
 

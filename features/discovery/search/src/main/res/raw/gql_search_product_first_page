@@ -11,6 +11,7 @@ query SearchProduct(
         count
         count_text
         additional_params
+        #isQuerySafe
         suggestion {
             currentKeyword
             suggestion
@@ -56,6 +57,11 @@ query SearchProduct(
                 title
                 color
             }
+          	#label_groups {
+            #  position
+            #  type
+            #  title
+            #}
             badges {
                 title
                 image_url
@@ -77,6 +83,7 @@ query SearchProduct(
                 name
                 url
                 is_gold_shop
+              	#is_power_badge
                 location
                 city
                 reputation
