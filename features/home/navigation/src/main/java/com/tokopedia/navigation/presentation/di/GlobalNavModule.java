@@ -2,7 +2,6 @@ package com.tokopedia.navigation.presentation.di;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -11,9 +10,9 @@ import com.tokopedia.navigation.data.mapper.NotificationMapper;
 import com.tokopedia.navigation.domain.GetBottomNavNotificationUseCase;
 import com.tokopedia.navigation.domain.GetDrawerNotificationUseCase;
 import com.tokopedia.navigation.domain.GetNewFeedCheckerUseCase;
-import com.tokopedia.navigation.domain.GetRecomendationUseCase;
 import com.tokopedia.navigation.listener.CartListener;
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
+import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -51,10 +50,10 @@ public class GlobalNavModule {
     }
 
     @Provides
-    GetRecomendationUseCase provideGetRecomendationUseCase(@ApplicationContext Context context,
-                                                           GraphqlUseCase graphqlUseCase,
-                                                           UserSessionInterface userSession){
-        return new GetRecomendationUseCase(context, graphqlUseCase, userSession);
+    GetRecommendationUseCase provideGetRecomendationUseCase(@ApplicationContext Context context,
+                                                            GraphqlUseCase graphqlUseCase,
+                                                            UserSessionInterface userSession){
+        return new GetRecommendationUseCase(context, graphqlUseCase, userSession);
     }
 
     @Provides

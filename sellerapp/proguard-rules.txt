@@ -338,6 +338,8 @@
 -keep class com.tokopedia.core.network.exception.model.** { *; }
 -keep class com.tokopedia.events.data.entity.response.** { *; }
 
+#tradein
+-keep class viewmodel.** { *; }
 
 #Sendbird
 -dontwarn com.sendbird.android.shadow.**
@@ -353,8 +355,8 @@
     volatile <fields>;
 }
 
--keepnames class kotlinx.coroutines.experimental.internal.MainDispatcherFactory {}
--keepnames class kotlinx.coroutines.experimental.CoroutineExceptionHandler {}
+-keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
+-keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
 
 -keep class com.tokopedia.track.** { *; }
 -keep class com.tokopedia.track.interfaces.** { *; }

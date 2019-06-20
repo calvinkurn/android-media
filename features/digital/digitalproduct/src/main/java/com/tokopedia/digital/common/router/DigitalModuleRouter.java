@@ -29,8 +29,6 @@ public interface DigitalModuleRouter {
 
     String getTrackingClientId();
 
-    CacheManager getGlobalCacheManager();
-
     Intent getDealDetailIntent(Activity activity,
                                String slug,
                                boolean enableBuy,

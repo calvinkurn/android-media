@@ -14,6 +14,7 @@ import com.facebook.react.ReactInstanceManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.nps.presentation.view.dialog.AdvancedAppRatingDialog;
@@ -137,9 +138,7 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
     }
 
     private void resetWalletCache() {
-        if (getApplicationContext() != null && getApplicationContext() instanceof AbstractionRouter) {
-            ((AbstractionRouter) getApplicationContext()).getGlobalCacheManager().delete(CacheUtil.KEY_TOKOCASH_BALANCE_CACHE);
-        }
+        PersistentCacheManager.instance.delete(CacheUtil.KEY_TOKOCASH_BALANCE_CACHE);
     }
 
     private void closeThankyouPage() {

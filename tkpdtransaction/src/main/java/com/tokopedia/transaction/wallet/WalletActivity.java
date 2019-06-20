@@ -11,6 +11,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
 
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.util.TkpdWebView;
@@ -90,8 +91,7 @@ public class WalletActivity extends TActivity implements BaseWebViewClient.WebVi
     }
 
     private void clearTokoCashData() {
-        GlobalCacheManager cacheManager = new GlobalCacheManager();
-        cacheManager.delete(TkpdCache.Key.KEY_TOKOCASH_BALANCE_CACHE);
+        PersistentCacheManager.instance.delete(TkpdCache.Key.KEY_TOKOCASH_BALANCE_CACHE);
     }
 
     @Override

@@ -21,8 +21,8 @@ public class CartShipmentAddressFormData implements Parcelable {
     private boolean hasError;
     private boolean isError;
     private String errorMessage;
-
     private int errorCode;
+    private boolean isShowOnboarding;
     private boolean isMultiple;
     private List<GroupAddress> groupAddress = new ArrayList<>();
     private String keroToken;
@@ -31,6 +31,7 @@ public class CartShipmentAddressFormData implements Parcelable {
     private Donation donation;
     private CodModel cod;
     private boolean useCourierRecommendation;
+    private boolean isHidingCourier;
     private boolean isBlackbox;
     private CartPromoSuggestion cartPromoSuggestion;
     private AutoApplyData autoApplyData;
@@ -182,6 +183,22 @@ public class CartShipmentAddressFormData implements Parcelable {
         this.egoldAttributes = egoldAttributes;
     }
 
+    public boolean isHidingCourier() {
+        return isHidingCourier;
+    }
+
+    public void setHidingCourier(boolean hidingCourier) {
+        isHidingCourier = hidingCourier;
+    }
+
+    public boolean isShowOnboarding() {
+        return isShowOnboarding;
+    }
+
+    public void setShowOnboarding(boolean showOnboarding) {
+        isShowOnboarding = showOnboarding;
+    }
+
     public CartShipmentAddressFormData() {
     }
 
@@ -190,6 +207,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         isError = in.readByte() != 0;
         errorMessage = in.readString();
         errorCode = in.readInt();
+        isShowOnboarding = in.readByte() != 0;
         isMultiple = in.readByte() != 0;
         groupAddress = in.createTypedArrayList(GroupAddress.CREATOR);
         keroToken = in.readString();
@@ -197,6 +215,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         keroUnixTime = in.readInt();
         donation = in.readParcelable(Donation.class.getClassLoader());
         useCourierRecommendation = in.readByte() != 0;
+        isHidingCourier = in.readByte() != 0;
         cartPromoSuggestion = in.readParcelable(CartPromoSuggestion.class.getClassLoader());
         autoApplyData = in.readParcelable(AutoApplyData.class.getClassLoader());
         egoldAttributes = in.readParcelable(EgoldAttributeModel.class.getClassLoader());
@@ -209,6 +228,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         dest.writeByte((byte) (isError ? 1 : 0));
         dest.writeString(errorMessage);
         dest.writeInt(errorCode);
+        dest.writeByte((byte) (isShowOnboarding ? 1 : 0));
         dest.writeByte((byte) (isMultiple ? 1 : 0));
         dest.writeTypedList(groupAddress);
         dest.writeString(keroToken);
@@ -216,6 +236,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         dest.writeInt(keroUnixTime);
         dest.writeParcelable(donation, flags);
         dest.writeByte((byte) (useCourierRecommendation ? 1 : 0));
+        dest.writeByte((byte) (isHidingCourier ? 1 : 0));
         dest.writeParcelable(cartPromoSuggestion, flags);
         dest.writeParcelable(autoApplyData, flags);
         dest.writeParcelable(egoldAttributes, flags);

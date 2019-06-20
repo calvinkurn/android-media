@@ -20,7 +20,7 @@ yang ditemukan</string>
     <string name="delete_confirmation">Apakah anda yakin menghapus %1$d pesan?</string>
     <string name="delete_choose">"Pilih chat yang dihapus"</string>
     <string name="connected_websocket">"Terhubung!"</string>
-    <string name="is_typing">"sedang mengetik"</string>
+    <string name="is_typing">"sedang mengetik..."</string>
     <string name="just_now">"baru saja"</string>
     <string name="delete_error">"Gagal mengirim pesan."</string>
     <string name="delete_chat">"Hapus chat?"</string>
@@ -79,6 +79,7 @@ yang ditemukan</string>
     <string name="view_profile_container_string">Lihat Profil %s</string>
     <string name="delete_conversation">Hapus Percakapan</string>
     <string name="chat_incoming_settings">Atur Penerimaan Chat</string>
+    <string name="chat_report_user">Laporkan Pengguna</string>
     <string name="delete_chat_question">Hapus chat?</string>
     <string name="delete_chat_warning_message">Chat akan terhapus selamanya</string>
 
@@ -111,6 +112,4 @@ yang ditemukan</string>
 
     <string name="title_understand">Mengerti</string>
     <string name="title_save">Simpan</string>
-
-
 </resources>

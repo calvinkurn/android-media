@@ -5,9 +5,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
+import com.tokopedia.applink.DeeplinkMapper;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.SessionApplinkModule;
 import com.tokopedia.applink.SessionApplinkModuleLoader;
 import com.tokopedia.chatbot.applink.ChatbotApplinkModule;
@@ -17,7 +20,6 @@ import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModuleL
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModuleLoader;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
 import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
@@ -32,8 +34,6 @@ import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModule;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModuleLoader;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModule;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModuleLoader;
-import com.tokopedia.product.manage.item.utils.ProductAddDeeplinkModule;
-import com.tokopedia.product.manage.item.utils.ProductAddDeeplinkModuleLoader;
 import com.tokopedia.profile.applink.ProfileApplinkModule;
 import com.tokopedia.profile.applink.ProfileApplinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
@@ -82,7 +82,6 @@ import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleL
         ShopAppLinkModule.class,
         ProfileApplinkModule.class,
         TrackingAppLinkModule.class,
-        ProductAddDeeplinkModule.class,
         TopChatAppLinkModule.class,
         CoreDeeplinkModule.class,
         CustomerCareApplinkModule.class,
@@ -114,7 +113,6 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new ShopAppLinkModuleLoader(),
                 new ProfileApplinkModuleLoader(),
                 new TrackingAppLinkModuleLoader(),
-                new ProductAddDeeplinkModuleLoader(),
                 new TopChatAppLinkModuleLoader(),
                 new CoreDeeplinkModuleLoader(),
                 new CustomerCareApplinkModuleLoader(),
@@ -153,18 +151,39 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
     }
 
     private void processApplink(DeepLinkDelegate deepLinkDelegate, DeepLinkAnalyticsImpl presenter) {
-        Intent intent = getIntent();
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        Uri applink = intent.getData();
+        Uri applink = getIntent().getData();
         presenter.processUTM(this, applink);
-        if (deepLinkDelegate.supportsUri(applink.toString())) {
-            deepLinkDelegate.dispatchFrom(this, intent);
+
+        if (applink == null) {
+            return;
+        }
+
+        String applinkString = applink.toString();
+
+        //map applink to internal if any
+        String mappedDeeplink = DeeplinkMapper.getRegisteredNavigation(this, applinkString);
+        if (!TextUtils.isEmpty(mappedDeeplink)) {
+            routeToApplink(deepLinkDelegate, mappedDeeplink);
+        } else {
+            routeToApplink(deepLinkDelegate, applinkString);
+        }
+    }
+
+    private void routeToApplink(DeepLinkDelegate deepLinkDelegate, String applinkString) {
+        if (deepLinkDelegate.supportsUri(applinkString)) {
+            getIntent().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            deepLinkDelegate.dispatchFrom(this, getIntent());
             if (getIntent().getExtras() != null) {
                 Bundle bundle = getIntent().getExtras();
                 eventPersonalizedClicked(bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
             }
+        } else {
+            Intent intent = RouteManager.getIntent(this, applinkString);
+            startActivity(intent);
+            this.finish();
         }
     }
+
 
     public void eventPersonalizedClicked(String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(

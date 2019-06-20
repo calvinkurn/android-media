@@ -49,8 +49,14 @@ public class CartVoucherPromoViewHolder extends RecyclerView.ViewHolder {
             actionListener.onCartPromoGlobalTrackingImpression(data, position);
         }
         tickerPromoStackingCheckoutView.setState(data.getState());
-        tickerPromoStackingCheckoutView.setTitle(data.getTitle());
-        tickerPromoStackingCheckoutView.setCounterCoupons(data.getCounterLabel());
+
+        if (data.getState() == TickerPromoStackingCheckoutView.State.EMPTY) {
+            tickerPromoStackingCheckoutView.setTitle(data.getTitleDefault());
+            tickerPromoStackingCheckoutView.setCounterCoupons(data.getCounterLabelDefault());
+        } else {
+            tickerPromoStackingCheckoutView.setTitle(data.getTitle());
+        }
+
         tickerPromoStackingCheckoutView.setDesc(data.getDescription());
         tickerPromoStackingCheckoutView.setVisibility(View.VISIBLE);
     }

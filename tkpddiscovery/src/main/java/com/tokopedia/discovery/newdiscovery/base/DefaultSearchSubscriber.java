@@ -24,13 +24,11 @@ public class DefaultSearchSubscriber<D2 extends BaseDiscoveryContract.View>
 
     private final SearchParameter searchParameter;
 
-    public boolean forceSearch;
     public D2 discoveryView;
     public boolean imageSearch;
 
-    public DefaultSearchSubscriber(SearchParameter searchParameter, boolean forceSearch, D2 discoveryView, boolean imageSearch) {
+    public DefaultSearchSubscriber(SearchParameter searchParameter, D2 discoveryView, boolean imageSearch) {
         this.searchParameter = searchParameter;
-        this.forceSearch = forceSearch;
         this.discoveryView = discoveryView;
         this.imageSearch = imageSearch;
     }
@@ -87,7 +85,6 @@ public class DefaultSearchSubscriber<D2 extends BaseDiscoveryContract.View>
     protected void onHandleSearch(SearchResultModel searchResult) {
         ProductViewModel model = ProductViewModelHelper.convertToProductViewModelFirstPage(searchResult);
         model.setSearchParameter(searchParameter);
-        model.setForceSearch(forceSearch);
         model.setImageSearch(imageSearch);
         discoveryView.onHandleResponseSearch(model);
     }

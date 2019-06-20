@@ -31,6 +31,7 @@ public class AnalyticsUtil {
         String CLK_BTLKN_STP4 = "click batalkan step 4";
         String CLK_CBLG_STLGGL = "click coba lagi setelah gagal";
         String CLK_KMBL_TKPD = "click kembali ke tokopedia";
+        String CLK_BATALKAN_TKPD = "click batalkan";
         String CLK_PHN = "click phone";
         String CLK_EML = "click email";
         String CLK_LNJKTN = "click lanjuktan";

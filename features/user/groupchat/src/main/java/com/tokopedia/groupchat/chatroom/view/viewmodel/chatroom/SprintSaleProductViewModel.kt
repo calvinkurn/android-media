@@ -7,7 +7,7 @@ import android.os.Parcelable
  * @author by nisie on 3/22/18.
  */
 
-class SprintSaleProductViewModel : Parcelable {
+class SprintSaleProductViewModel() : Parcelable {
 
     var sprintSaleCampaignId: String? = null
         private set
@@ -35,7 +35,7 @@ class SprintSaleProductViewModel : Parcelable {
                 productImage: String?,
                 discountLabel: String?,
                 productPrice: String?, productPriceBeforeDiscount: String?,
-                stockPercentage: Double, stockText: String?, productUrl: String?) {
+                stockPercentage: Double, stockText: String?, productUrl: String?): this() {
         this.sprintSaleCampaignId = sprintSaleCampaignId
         this.productId = productId
         this.productName = productName
@@ -48,7 +48,7 @@ class SprintSaleProductViewModel : Parcelable {
         this.productUrl = productUrl
     }
 
-    protected constructor(`in`: Parcel) {
+    protected constructor(`in`: Parcel): this() {
         sprintSaleCampaignId = `in`.readString()
         productId = `in`.readString()
         productName = `in`.readString()

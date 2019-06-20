@@ -48,12 +48,12 @@ public class AddNamePresenter
     }
 
     @Override
-    public void registerPhoneNumberAndName(String name) {
+    public void registerPhoneNumberAndName(String name, String uuid, String phoneNumber) {
         if (isValidate(name)) {
             getView().showLoading();
             loginRegisterPhoneNumberUseCase.execute(
                     RegisterPhoneNumberUseCase.getParamsWithName(
-                            getView().getPhoneNumber(), name),
+                            phoneNumber, name, uuid),
                     new AddNameSubscriber(getView()));
         }
     }

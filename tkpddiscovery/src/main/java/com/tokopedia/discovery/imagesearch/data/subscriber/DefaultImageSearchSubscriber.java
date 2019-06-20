@@ -32,7 +32,7 @@ public class DefaultImageSearchSubscriber<D2 extends BaseDiscoveryContract.View>
     List<String> productIDList = new ArrayList<>();
 
     public DefaultImageSearchSubscriber(D2 discoveryView) {
-        super(null, false, discoveryView, true);
+        super(null, discoveryView, true);
     }
 
     @Override
@@ -55,8 +55,8 @@ public class DefaultImageSearchSubscriber<D2 extends BaseDiscoveryContract.View>
             discoveryView.showErrorNetwork(e.getMessage());
         } else if (e instanceof ServerErrorRequestDeniedException) {
             ServerErrorHandler.sendForceLogoutAnalytics(
-                    ((ServerErrorRequestDeniedException) e).getUrl()
-            );
+                    ((ServerErrorRequestDeniedException) e).getUrl(),
+                    false, true);
             ServerErrorHandler.showForceLogoutDialog();
         } else if (e instanceof ServerErrorMaintenanceException) {
             ServerErrorHandler.showMaintenancePage();
@@ -78,7 +78,6 @@ public class DefaultImageSearchSubscriber<D2 extends BaseDiscoveryContract.View>
         imageSearchProductParameter.set(SearchApiConst.SOURCE, "imagesearch");
 
         model.setSearchParameter(imageSearchProductParameter);
-        model.setForceSearch(forceSearch);
         model.setImageSearch(imageSearch);
 
         if (model.getProductList() == null || model.getProductList().size() == 0) {

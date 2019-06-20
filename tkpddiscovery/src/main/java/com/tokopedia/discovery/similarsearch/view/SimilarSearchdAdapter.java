@@ -25,7 +25,7 @@ import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.similarsearch.analytics.SimilarSearchTracking;
 import com.tokopedia.discovery.similarsearch.model.Badges;
 import com.tokopedia.discovery.similarsearch.model.ProductsItem;
-import com.tokopedia.tkpdpdp.customview.RatingView;
+import com.tokopedia.discovery.view.RatingView;
 
 import java.util.ArrayList;
 import java.util.List;

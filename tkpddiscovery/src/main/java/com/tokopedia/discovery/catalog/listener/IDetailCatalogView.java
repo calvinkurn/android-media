@@ -1,5 +1,7 @@
 package com.tokopedia.discovery.catalog.listener;
 
+import android.content.Context;
+
 import com.tokopedia.discovery.catalog.model.CatalogImage;
 import com.tokopedia.discovery.catalog.model.CatalogInfo;
 import com.tokopedia.discovery.catalog.model.CatalogReview;
@@ -99,4 +101,6 @@ public interface IDetailCatalogView extends ViewListener {
      * hide semua holder view
      */
     void cleanAllContent();
+
+    Context getContext();
 }

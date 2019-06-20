@@ -44,14 +44,15 @@ public class CartMultipleAddressDataListResponse {
     @SerializedName("cart_list")
     @Expose
     private List<CartList> cartList = new ArrayList<>();
-
     @SerializedName("autoapply_v2")
     @Expose
     private AutoapplyV2 autoapplyV2;
-
     @SerializedName("autoapply_stack")
     @Expose
     private AutoapplyStack autoapplyStack;
+    @SerializedName("is_show_onboarding")
+    @Expose
+    private boolean isShowOnboarding;
 
     public AutoapplyStack getAutoapplyStack() {
         return autoapplyStack;
@@ -103,5 +104,9 @@ public class CartMultipleAddressDataListResponse {
 
     public Donation getDonation() {
         return donation;
+    }
+
+    public boolean isShowOnboarding() {
+        return isShowOnboarding;
     }
 }

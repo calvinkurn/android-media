@@ -7,23 +7,26 @@ import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.text.TextUtils
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.product.manage.item.R
 import com.tokopedia.product.manage.item.catalog.view.activity.ProductEditCatalogPickerActivity
+import com.tokopedia.product.manage.item.catalog.view.listener.ProductEditCategoryView
 import com.tokopedia.product.manage.item.catalog.view.model.ProductCatalog
+import com.tokopedia.product.manage.item.category.view.adapter.ProductCategoryRecommendationAdapter
 import com.tokopedia.product.manage.item.category.view.model.ProductCategory
+import com.tokopedia.product.manage.item.category.view.model.categoryrecomm.ProductCategoryPredictionViewModel
+import com.tokopedia.product.manage.item.category.view.presenter.ProductEditCategoryPresenter
+import com.tokopedia.product.manage.item.main.base.data.source.cloud.model.catalogdata.Catalog
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_CATALOG
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_CATEGORY
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_CATEGORY_LOCKED
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_NAME
-import com.tokopedia.product.manage.item.catalog.view.listener.ProductEditCategoryView
-import com.tokopedia.product.manage.item.category.view.adapter.ProductCategoryRecommendationAdapter
-import com.tokopedia.product.manage.item.category.view.model.categoryrecomm.ProductCategoryPredictionViewModel
-import com.tokopedia.product.manage.item.category.view.presenter.ProductEditCategoryPresenter
-import com.tokopedia.product.manage.item.main.base.data.source.cloud.model.catalogdata.Catalog
-import com.tokopedia.product.manage.item.utils.ProductEditModuleRouter
 import com.tokopedia.product.manage.item.utils.constant.ProductExtraConstant
 import kotlinx.android.synthetic.main.fragment_product_edit_category.*
 import javax.inject.Inject
@@ -142,10 +145,11 @@ abstract class BaseProductEditCategoryFragment : BaseDaggerFragment(),
             }
 
         } else {
-            if (appRouter != null && appRouter is ProductEditModuleRouter){
-                startActivityForResult((appRouter as ProductEditModuleRouter)
-                        .getCategoryPickerIntent(activity, productCategory.categoryId)
-                        , REQUEST_CODE_GET_CATEGORY)
+            activity?.let {
+                val intent = RouteManager.getIntent(it,
+                        ApplinkConstInternalMarketplace.PRODUCT_CATEGORY_PICKER,
+                        productCategory.categoryId.toString())
+                intent?.run { startActivityForResult(this, REQUEST_CODE_GET_CATEGORY) }
             }
         }
     }

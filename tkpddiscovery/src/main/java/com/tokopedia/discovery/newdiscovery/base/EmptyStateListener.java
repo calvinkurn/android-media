@@ -2,7 +2,7 @@ package com.tokopedia.discovery.newdiscovery.base;
 
 import android.support.annotation.Nullable;
 
-import com.tokopedia.core.discovery.model.Option;
+import com.tokopedia.discovery.common.data.Option;
 
 import java.util.List;
 
