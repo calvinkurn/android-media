@@ -151,7 +151,7 @@ public class DashboardActivity extends DrawerPresenterActivity
     @Override
     public void onSuccessGetShopInfo(ShopStatusModel shopStatusModel) {
         SellerDrawerAdapter sellerDrawerAdapter = ((SellerDrawerAdapter) drawerHelper.getAdapter());
-        boolean isGoldMerchant = !shopStatusModel.isRegularMerchantOrPending();
+        boolean isGoldMerchant = shopStatusModel.isPowerMerchantActive();
         sellerDrawerAdapter.setGoldMerchant(isGoldMerchant);
         sessionHandler.setGoldMerchant(isGoldMerchant);
     }
