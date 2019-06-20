@@ -6,4 +6,9 @@
         If the link is Ended with {id}, must end with "/"
         Otherwise, do not put "/"
     -->
+
+    <string name="host_hotel" translatable="false">hotel</string>
+
+    <string name="path_hotel_dashboard" translatable="false">/dashboard</string>
+
 </resources>

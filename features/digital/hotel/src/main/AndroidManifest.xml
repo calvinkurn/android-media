@@ -12,7 +12,20 @@
             android:name=".homepage.presentation.activity.HotelHomepageActivity"
             android:label="@string/hotel_app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.White">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="@string/tokopedia_scheme"
+                    android:host="@string/host_hotel"
+                    android:path="@string/path_hotel_dashboard" />
+            </intent-filter>
+
+        </activity>
 
         <activity
             android:name=".destination.view.activity.HotelDestinationActivity"
