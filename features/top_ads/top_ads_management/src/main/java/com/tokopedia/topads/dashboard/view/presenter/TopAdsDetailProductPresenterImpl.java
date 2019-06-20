@@ -58,7 +58,7 @@ public class TopAdsDetailProductPresenterImpl<T extends Ad> extends TopAdsDetail
             @Override
             public void onSuccess(PageDataResponse<List<ProductAd>> pageDataResponse) {
                 List<ProductAd> productAds = pageDataResponse.getData();
-                if (productAds== null || productAds.size() == 0) {
+                if (productAds == null || productAds.size() == 0) {
                     topAdsDetailListener.onAdEmpty();
                 } else {
                     topAdsDetailListener.onAdLoaded((T) productAds.get(0));
@@ -87,7 +87,10 @@ public class TopAdsDetailProductPresenterImpl<T extends Ad> extends TopAdsDetail
 
             @Override
             public void onNext(TopAdsAutoAdsData topAdsAutoAdsData) {
-                if(topAdsAutoAdsData.getStatus() == TopAdsWidgetStatus.STATUS_ACTIVE){
+                if (topAdsAutoAdsData.getStatus() == TopAdsWidgetStatus.STATUS_ACTIVE
+                        || topAdsAutoAdsData.getStatus() == TopAdsWidgetStatus.STATUS_IN_PROGRESS_ACTIVE
+                        || topAdsAutoAdsData.getStatus() == TopAdsWidgetStatus.STATUS_IN_PROGRESS_AUTOMANAGE
+                        || topAdsAutoAdsData.getStatus() == TopAdsWidgetStatus.STATUS_IN_PROGRESS_INACTIVE) {
                     topAdsDetailListener.onAutoAdsActive();
                 } else {
                     topAdsDetailListener.onAutoAdsInactive();

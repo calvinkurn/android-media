@@ -126,6 +126,13 @@ public class TopAdsProductAdListPresenter extends TopAdsBaseListPresenter<TopAds
         autoAdsUseCase.unsubscribe();
     }
 
+    private boolean autoAdsIsActive(int status){
+        return (status == TopAdsWidgetStatus.STATUS_ACTIVE
+                || status == TopAdsWidgetStatus.STATUS_IN_PROGRESS_ACTIVE
+                || status == TopAdsWidgetStatus.STATUS_IN_PROGRESS_AUTOMANAGE
+                || status == TopAdsWidgetStatus.STATUS_IN_PROGRESS_INACTIVE);
+    }
+
     public void searchAd(Date startDate, Date endDate, String keyword, int status, long groupId,
                          final int page, @SortTopAdsOption String sortId) {
         SearchAdRequest searchAdRequest = new SearchAdRequest();
@@ -146,9 +153,9 @@ public class TopAdsProductAdListPresenter extends TopAdsBaseListPresenter<TopAds
                     public PageDataResponse<List<ProductAd>> call(PageDataResponse<List<ProductAd>> listPageDataResponse,
                                                                   TopAdsAutoAdsData topAdsAutoAdsData) {
                         for (ProductAd ads : listPageDataResponse.getData()) {
-                            ads.setAutoAds(topAdsAutoAdsData.getStatus() == TopAdsWidgetStatus.STATUS_ACTIVE);
+                            ads.setAutoAds(autoAdsIsActive(topAdsAutoAdsData.getStatus()));
                         }
-                        listPageDataResponse.setAutoAds(topAdsAutoAdsData.getStatus() == TopAdsWidgetStatus.STATUS_ACTIVE);
+                        listPageDataResponse.setAutoAds(autoAdsIsActive(topAdsAutoAdsData.getStatus()));
                         return listPageDataResponse;
                     }
                 })

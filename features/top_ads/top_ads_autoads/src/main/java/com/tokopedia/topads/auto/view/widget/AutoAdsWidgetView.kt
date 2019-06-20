@@ -136,7 +136,8 @@ class AutoAdsWidgetView : CardView {
         startAdsBtn.visibility = View.GONE
         progressAdsContainer.visibility = View.GONE
         btnArrow.visibility = View.GONE
-        activeListener?.onInActive()
+        statusAdsContainer.setOnClickListener(null)
+        activeListener?.onActive()
     }
 
     private fun setInActive(budget: Int) {
