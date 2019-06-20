@@ -105,10 +105,11 @@ class SettingBudgetAdsFragment : DailyBudgetFragment() {
 
     companion object {
 
-        fun newInstance(budget: Int): SettingBudgetAdsFragment {
+        fun newInstance(status: Int, budget: Int): SettingBudgetAdsFragment {
 
             val args = Bundle()
             args.putInt(KEY_DAILY_BUDGET, budget)
+            args.putInt(KEY_AUTOADS_STATUS, status)
             val fragment = SettingBudgetAdsFragment()
             fragment.arguments = args
             return fragment

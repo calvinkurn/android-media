@@ -112,7 +112,7 @@ class AutoAdsWidgetView : CardView {
         }
     }
 
-    private fun setNotDelivered(budget: Int) {
+    private fun setNotDelivered(status: Int, budget: Int) {
         activeStatus.setBackgroundResource(R.drawable.bg_autoads_deactive)
         activeStatus.setTextColor(ContextCompat.getColor(context, R.color.grey))
         activeStatus.setText(R.string.ads_not_delivered)
@@ -124,6 +124,7 @@ class AutoAdsWidgetView : CardView {
         statusAdsContainer.setOnClickListener {
             val intent = Intent(context, SettingBudgetAdsActivity::class.java)
             intent.putExtra(DailyBudgetFragment.KEY_DAILY_BUDGET, budget)
+            intent.putExtra(DailyBudgetFragment.KEY_AUTOADS_STATUS, status)
             context.startActivity(intent)
         }
     }
@@ -140,7 +141,7 @@ class AutoAdsWidgetView : CardView {
         activeListener?.onActive()
     }
 
-    private fun setInActive(budget: Int) {
+    private fun setInActive(status: Int, budget: Int) {
         activeStatus.setBackgroundResource(R.drawable.bg_autoads_deactive)
         activeStatus.setTextColor(ContextCompat.getColor(context, R.color.grey))
         activeStatus.setText(R.string.ads_deactive)
@@ -153,11 +154,12 @@ class AutoAdsWidgetView : CardView {
         startAdsBtn.setOnClickListener {
             val intent = Intent(context, DailyBudgetActivity::class.java)
             intent.putExtra(DailyBudgetFragment.KEY_DAILY_BUDGET, budget)
+            intent.putExtra(DailyBudgetFragment.KEY_AUTOADS_STATUS, status)
             context.startActivity(intent)
         }
     }
 
-    private fun setActive(budget: Int) {
+    private fun setActive(status: Int, budget: Int) {
         activeStatus.setBackgroundResource(R.drawable.bg_autoads_active)
         activeStatus.setTextColor(ContextCompat.getColor(context, R.color.true_green))
         activeStatus.setText(R.string.ads_active)
@@ -169,6 +171,7 @@ class AutoAdsWidgetView : CardView {
         statusAdsContainer.setOnClickListener {
             val intent = Intent(context, SettingBudgetAdsActivity::class.java)
             intent.putExtra(DailyBudgetFragment.KEY_DAILY_BUDGET, budget)
+            intent.putExtra(DailyBudgetFragment.KEY_AUTOADS_STATUS, status)
             context.startActivity(intent)
         }
     }
