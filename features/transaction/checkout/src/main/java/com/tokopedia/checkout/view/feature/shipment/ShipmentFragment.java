@@ -3,10 +3,8 @@ package com.tokopedia.checkout.view.feature.shipment;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -1837,7 +1835,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                           RecipientAddressModel recipientAddressModel,
                                           int cartItemPosition, int selectedServiceId,
                                           String selectedServiceName, boolean flagNeedToSetPinpoint,
-                                          boolean hasCourierPromo, boolean isClearPromo) {
+                                          boolean isDurationClick, boolean isClearPromo) {
         if (isTradeIn()) {
             checkoutAnalyticsCourierSelection.eventClickKurirTradeIn(selectedServiceName);
         }
@@ -1889,7 +1887,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentAdapter.setSelectedCourier(cartItemPosition, recommendedCourier);
                 shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
                 shipmentAdapter.setShippingCourierViewModels(shippingCourierViewModels, recommendedCourier, cartItemPosition);
-                if (!TextUtils.isEmpty(recommendedCourier.getPromoCode())) {
+                if (!TextUtils.isEmpty(recommendedCourier.getPromoCode()) && isDurationClick) {
                     checkCourierPromo(recommendedCourier, cartItemPosition);
                 }
             }
