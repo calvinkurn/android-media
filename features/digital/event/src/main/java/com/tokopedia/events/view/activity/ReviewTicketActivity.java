@@ -176,7 +176,7 @@ public class ReviewTicketActivity extends EventBaseActivity implements
     @Override
     public void renderFromPackageVM(PackageViewModel packageViewModel, SelectedSeatViewModel selectedSeats) {
         gotoPromoTv.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                (context, R.drawable.promo_code), null, null , null);
+                (this, R.drawable.promo_code), null, null , null);
         toolbar.setTitle(packageViewModel.getTitle());
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black);
         String timerange = packageViewModel.getTimeRange();
