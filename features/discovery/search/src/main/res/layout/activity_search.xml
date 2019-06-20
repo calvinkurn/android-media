@@ -86,7 +86,7 @@
             android:id="@+id/icon_sort"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_sort"
+            app:srcCompat="@drawable/search_ic_sort"
             />
 
         <TextView
@@ -109,7 +109,7 @@
             android:id="@+id/icon_filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_filter"
+            app:srcCompat="@drawable/search_ic_filter"
             />
 
         <TextView
