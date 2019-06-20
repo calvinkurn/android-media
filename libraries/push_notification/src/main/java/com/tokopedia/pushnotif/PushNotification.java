@@ -4,15 +4,22 @@ import android.app.Notification;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.NotificationManagerCompat;
+import android.util.Log;
 
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.PushNotificationGeneratedDatabaseHolder;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.pushnotif.domain.pojo.TrackPushNotificationEntity;
+import com.tokopedia.pushnotif.domain.usecase.TrackPushNotificationUseCase;
 import com.tokopedia.pushnotif.factory.ChatNotificationFactory;
 import com.tokopedia.pushnotif.factory.GeneralNotificationFactory;
 import com.tokopedia.pushnotif.factory.SummaryNotificationFactory;
 import com.tokopedia.pushnotif.factory.TalkNotificationFactory;
 import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
+import com.tokopedia.usecase.RequestParams;
+
+import rx.Subscriber;
 
 /**
  * @author ricoharisin .
@@ -45,7 +52,33 @@ public class PushNotification {
             } else {
                 notifyGeneral(context, applinkNotificationModel, notificationId, notificationManagerCompat);
             }
+            trackDeliveredNotification(context, applinkNotificationModel);
         }
+    }
+
+    private static void trackDeliveredNotification(Context context, ApplinkNotificationModel applinkNotificationModel) {
+        GraphqlUseCase gqlUseCase = new GraphqlUseCase();
+        TrackPushNotificationUseCase useCase = new TrackPushNotificationUseCase(context, gqlUseCase);
+        RequestParams requestParams = useCase.createRequestParam(applinkNotificationModel);
+
+        useCase.createObservable(requestParams)
+                .take(1)
+                .subscribe(new Subscriber<TrackPushNotificationEntity>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.d("TEST_TRACK", "tracked");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d("TEST_TRACK", "tracked");
+                    }
+
+                    @Override
+                    public void onNext(TrackPushNotificationEntity trackPushNotificationEntity) {
+                        Log.d("TEST_TRACK", "tracked");
+                    }
+                });
     }
 
     private static void notifyTalk(Context context, ApplinkNotificationModel applinkNotificationModel,
