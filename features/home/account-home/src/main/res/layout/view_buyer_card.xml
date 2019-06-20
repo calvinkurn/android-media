@@ -144,7 +144,7 @@
                 android:layout_height="24dp"
                 android:layout_marginBottom="8dp"
                 android:layout_marginTop="8dp"
-                android:src="@drawable/ic_tokopoint"
+                android:src="@drawable/ic_byme_card"
                 app:layout_constraintBottom_toBottomOf="@+id/text_tokopoint_amount"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/label_tokopoint" />
