@@ -983,7 +983,17 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             Map<String, Object> checkoutMapData = new HashMap<>();
             EnhancedECommerceActionField enhancedECommerceActionField = new EnhancedECommerceActionField();
             enhancedECommerceActionField.setStep(step);
-            enhancedECommerceActionField.setOption(EnhancedECommerceActionField.OPTION_CLICK_PAYMENT_OPTION_BUTTON);
+            String option = "";
+            if (step.equalsIgnoreCase(EnhancedECommerceActionField.STEP_1)) {
+                option = EnhancedECommerceActionField.STEP_1_OPTION_CART_PAGE_LOADED;
+            } else if (step.equalsIgnoreCase(EnhancedECommerceActionField.STEP_2)) {
+                option = EnhancedECommerceActionField.STEP_2_OPTION_CHECKOUT_PAGE_LOADED;
+            } else if (step.equalsIgnoreCase(EnhancedECommerceActionField.STEP_3)) {
+                option = EnhancedECommerceActionField.STEP_3_OPTION_DATA_VALIDATION;
+            } else if (step.equalsIgnoreCase(EnhancedECommerceActionField.STEP_4)) {
+                option = EnhancedECommerceActionField.STEP_4_OPTION_CLICK_PAYMENT_OPTION_BUTTON;
+            }
+            enhancedECommerceActionField.setOption(option);
 
             EnhancedECommerceCheckout enhancedECommerceCheckout = new EnhancedECommerceCheckout();
             for (DataCheckoutRequest dataCheckoutRequest : checkoutRequest.data) {

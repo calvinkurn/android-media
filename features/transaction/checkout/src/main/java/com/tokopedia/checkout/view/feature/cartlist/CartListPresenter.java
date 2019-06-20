@@ -1348,7 +1348,7 @@ public class CartListPresenter implements ICartListPresenter {
         Map<String, Object> checkoutMapData = new HashMap<>();
         EnhancedECommerceActionField enhancedECommerceActionField = new EnhancedECommerceActionField();
         enhancedECommerceActionField.setStep(EnhancedECommerceActionField.STEP_1);
-        enhancedECommerceActionField.setOption(EnhancedECommerceActionField.OPTION_CART_PAGE_LOADED);
+        enhancedECommerceActionField.setOption(EnhancedECommerceActionField.STEP_1_OPTION_CART_PAGE_LOADED);
 
         EnhancedECommerceCheckout enhancedECommerceCheckout = new EnhancedECommerceCheckout();
         for (CartItemData cartItemData : cartItemDataList) {
