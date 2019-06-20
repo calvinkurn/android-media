@@ -179,8 +179,12 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
     private void setUpVariables(View view) {
         shimmerLayout = view.findViewById(R.id.shimmer_layout);
+        ((TextView)shimmerLayout.findViewById(R.id.location_arrow_down_tv)).setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable
+                (getActivity(), R.drawable.location_arrow_down), null);
         toolbar = view.findViewById(R.id.deals_toolbar);
         toolbarTitle = view.findViewById(R.id.toolbar_title);
+        toolbarTitle.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable
+                (getActivity(), R.drawable.location_arrow_down), null);
         backArrow = view.findViewById(R.id.backArraw);
         overFlowIcon = view.findViewById(R.id.overFlow_icon);
         catItems = view.findViewById(R.id.category_items);

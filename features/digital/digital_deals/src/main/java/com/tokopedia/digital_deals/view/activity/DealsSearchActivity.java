@@ -115,6 +115,8 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         noContent = findViewById(R.id.no_content);
         brandLayout = findViewById(R.id.brand_layout);
         tvCityName = findViewById(R.id.tv_location);
+        tvCityName.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable
+                (this, R.drawable.location_arrow_down), null);
         clLocation = findViewById(R.id.cl_location);
         back.setOnClickListener(this);
         tvCityName.setOnClickListener(this);
