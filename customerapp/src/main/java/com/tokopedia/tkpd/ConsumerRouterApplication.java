@@ -429,7 +429,6 @@ import javax.inject.Inject;
 import io.hansel.hanselsdk.Hansel;
 import okhttp3.Interceptor;
 import okhttp3.Response;
-import permissions.dispatcher.PermissionRequest;
 import retrofit2.Converter;
 import rx.Observable;
 import rx.functions.Func1;
