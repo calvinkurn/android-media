@@ -140,6 +140,10 @@ public class SearchProductModel {
             return additionalParams;
         }
 
+        public boolean isQuerySafe() {
+            return isQuerySafe;
+        }
+
         public Suggestion getSuggestion() {
             return suggestion;
         }
@@ -403,7 +407,7 @@ public class SearchProductModel {
         private List<Label> labels = null;
         @SerializedName("label_groups")
         @Expose
-        private List<ProductLabelGroup> labelGroups = new ArrayList<>();
+        private List<LabelGroup> labelGroups = new ArrayList<>();
         @SerializedName("badges")
         @Expose
         private List<Badge> badges = null;
@@ -511,7 +515,7 @@ public class SearchProductModel {
             return labels;
         }
 
-        public List<ProductLabelGroup> getLabelGroups() {
+        public List<LabelGroup> getLabelGroupList() {
             return labelGroups;
         }
 
@@ -584,7 +588,7 @@ public class SearchProductModel {
         }
     }
 
-    public static class ProductLabelGroup {
+    public static class LabelGroup {
         @SerializedName("position")
         @Expose
         private String position;

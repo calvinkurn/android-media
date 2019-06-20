@@ -387,7 +387,7 @@ final class ProductListPresenter
         return list;
     }
 
-    private static int convertCountReviewFormatToInt(String countReviewFormat) {
+    private int convertCountReviewFormatToInt(String countReviewFormat) {
         String countReviewString = countReviewFormat.replaceAll("[^\\d]", "");
 
         try {
@@ -399,7 +399,7 @@ final class ProductListPresenter
         }
     }
 
-    private static List<BadgeItemViewModel> mapBadges(List<Badge> badges) {
+    private List<BadgeItemViewModel> mapBadges(List<Badge> badges) {
         List<BadgeItemViewModel> items = new ArrayList<>();
         for (Badge b:badges) {
             items.add(new BadgeItemViewModel(b.getImageUrl(), b.getTitle(), b.isShow()));

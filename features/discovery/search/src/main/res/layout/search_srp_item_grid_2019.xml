@@ -121,6 +121,7 @@
                 android:id="@+id/slashPriceLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                app:labelDesign="@string/product_card_light_red"
                 tools:text="20%" />
 
             <com.tokopedia.unifyprinciples.Typography

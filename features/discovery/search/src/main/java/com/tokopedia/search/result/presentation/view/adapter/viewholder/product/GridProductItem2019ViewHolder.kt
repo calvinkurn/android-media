@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.Paint
 import android.graphics.drawable.Drawable
 import android.support.annotation.LayoutRes
+import android.support.annotation.Nullable
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -15,9 +16,14 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel
+import com.tokopedia.search.result.presentation.model.LabelGroupViewModel
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import kotlinx.android.synthetic.main.search_srp_item_grid_2019.view.*
+
+private const val LABEL_GROUP_POSITION_PROMO = "promo"
+private const val LABEL_GROUP_POSITION_CREDIBILITY = "credibility"
+private const val LABEL_GROUP_POSITION_OFFERS = "offers"
 
 class GridProductItem2019ViewHolder(
     itemView: View,
@@ -91,11 +97,29 @@ class GridProductItem2019ViewHolder(
         }
     }
 
-    // TODO:: Dummy method, set Label from productItem instead
     private fun initPromoLabel(productItem: ProductItemViewModel) {
-        itemView.promoLabel?.setLabelDesign(context.resources.getString(R.string.product_card_light_green))
-        itemView.promoLabel?.visibility = View.VISIBLE
-        itemView.promoLabel?.text = "Cashback 100%"
+        val promoLabelViewModel : LabelGroupViewModel? = getFirstLabelGroupOfPosition(productItem, LABEL_GROUP_POSITION_PROMO)
+
+        if(promoLabelViewModel != null) {
+            itemView.promoLabel?.setLabelDesign(promoLabelViewModel.type)
+            itemView.promoLabel?.visibility = View.VISIBLE
+            itemView.promoLabel?.text = promoLabelViewModel.title
+        }
+        else {
+            itemView.promoLabel?.visibility = View.GONE
+        }
+    }
+
+    @Nullable
+    private fun getFirstLabelGroupOfPosition(productItem: ProductItemViewModel, position: String): LabelGroupViewModel? {
+        val labelGroupOfPosition = getLabelGroupOfPosition(productItem, position)
+
+        return if(labelGroupOfPosition != null && labelGroupOfPosition.isNotEmpty()) labelGroupOfPosition[0] else null
+    }
+
+    @Nullable
+    private fun getLabelGroupOfPosition(productItem: ProductItemViewModel, position: String): List<LabelGroupViewModel>? {
+        return productItem.labelGroupList.filter { labelGroup -> labelGroup.position == position }
     }
 
     private fun initShopName(productItem: ProductItemViewModel) {
@@ -160,7 +184,6 @@ class GridProductItem2019ViewHolder(
     private fun initSlashPrice(productItem: ProductItemViewModel) {
         itemView.slashPriceContainer?.visibility = View.VISIBLE
         itemView.slashPriceLabel?.text = "20%"
-        itemView.slashPriceLabel?.setLabelDesign(context.resources.getString(R.string.product_card_light_red))
         itemView.slashPriceTextView?.text = "Rp 10.000.000"
         itemView.slashPriceTextView?.paintFlags = itemView.slashPriceTextView.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
     }
@@ -346,24 +369,24 @@ class GridProductItem2019ViewHolder(
         return isRatingViewVisible(productItem) || isReviewCountVisible(productItem)
     }
 
-    // TODO:: Dummy method, set Label from productItem instead
     private fun initCredibilityLabel(productItem: ProductItemViewModel) {
         if (!isRatingAndReviewContainerVisible(productItem)) {
-            if (isCredibilityLabelVisible(productItem)) {
-                itemView.credibilityLabel?.setLabelDesign(context.resources.getString(R.string.product_card_light_blue))
-                itemView.credibilityLabel?.visibility = View.VISIBLE
-                itemView.credibilityLabel?.text = "Terbaroe"
-            } else {
-                itemView.credibilityLabel?.visibility = View.GONE
-            }
+            setCredibilityLabelVisibleIfExists(productItem)
         } else {
             itemView.credibilityLabel?.visibility = View.GONE
         }
     }
 
-    // TODO:: Dummy method, set Label from productItem instead
-    private fun isCredibilityLabelVisible(productItem: ProductItemViewModel): Boolean {
-        return true
+    private fun setCredibilityLabelVisibleIfExists(productItem: ProductItemViewModel) {
+        val credibilityLabelViewModel : LabelGroupViewModel? = getFirstLabelGroupOfPosition(productItem, LABEL_GROUP_POSITION_CREDIBILITY)
+
+        if (credibilityLabelViewModel != null) {
+            itemView.credibilityLabel?.setLabelDesign(credibilityLabelViewModel.type)
+            itemView.credibilityLabel?.visibility = View.VISIBLE
+            itemView.credibilityLabel?.text = credibilityLabelViewModel.title
+        } else {
+            itemView.credibilityLabel?.visibility = View.GONE
+        }
     }
 
     private fun initCredibilitySectionContainer(productItem: ProductItemViewModel) {
@@ -376,14 +399,20 @@ class GridProductItem2019ViewHolder(
     }
 
     private fun isCredibilitySectionContainerVisible(productItem: ProductItemViewModel): Boolean {
-        return isRatingAndReviewContainerVisible(productItem) || isCredibilityLabelVisible(productItem)
+        return isRatingAndReviewContainerVisible(productItem) || getFirstLabelGroupOfPosition(productItem, LABEL_GROUP_POSITION_CREDIBILITY) != null
     }
 
-    // TODO:: Dummy method, set Label from productItem instead
     private fun initOffersLabel(productItem: ProductItemViewModel) {
-        itemView.offersLabel?.setLabelDesign(context.resources.getString(R.string.product_card_dark_grey))
-        itemView.offersLabel?.visibility = View.VISIBLE
-        itemView.offersLabel?.text = "Tukar tambah"
+        val offersLabelViewModel = getFirstLabelGroupOfPosition(productItem, LABEL_GROUP_POSITION_OFFERS)
+
+        if(offersLabelViewModel != null) {
+            itemView.offersLabel?.setLabelDesign(offersLabelViewModel.type)
+            itemView.offersLabel?.visibility = View.VISIBLE
+            itemView.offersLabel?.text = offersLabelViewModel.title
+        }
+        else {
+            itemView.offersLabel?.visibility = View.GONE
+        }
     }
 
     private fun initTopAdsIcon(productItem: ProductItemViewModel) {

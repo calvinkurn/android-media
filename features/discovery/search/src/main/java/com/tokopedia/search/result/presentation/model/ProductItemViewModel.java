@@ -10,6 +10,7 @@ import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 import com.tokopedia.topads.sdk.domain.model.ImpressHolder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductItemViewModel extends ImpressHolder implements Parcelable, Visitable<ProductListTypeFactory> {
@@ -49,6 +50,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     private String topadsClickUrl;
     private String topadsWishlistUrl;
     private boolean isNew;
+    private List<LabelGroupViewModel> labelGroupList = new ArrayList<>();
 
     public boolean isTopAds() {
         return isTopAds;
@@ -302,6 +304,22 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         this.categoryBreadcrumb = categoryBreadcrumb;
     }
 
+    public void setLabelGroupList(List<LabelGroupViewModel> productLabelGroupList) {
+        this.labelGroupList = productLabelGroupList;
+    }
+
+    public List<LabelGroupViewModel> getLabelGroupList() {
+        return this.labelGroupList;
+    }
+
+    public void setProductWishlistUrl(String productWishlistUrl) {
+        this.productWishlistUrl = productWishlistUrl;
+    }
+
+    public String getProductWishlistUrl() {
+        return productWishlistUrl;
+    }
+
     public ProductItemViewModel() {
     }
 
@@ -339,14 +357,6 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
                 "position", Integer.toString(getPosition()),
                 "userId", userId
         );
-    }
-
-    public void setProductWishlistUrl(String productWishlistUrl) {
-        this.productWishlistUrl = productWishlistUrl;
-    }
-
-    public String getProductWishlistUrl() {
-        return productWishlistUrl;
     }
 
     @Override
@@ -388,6 +398,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         dest.writeString(this.topadsImpressionUrl);
         dest.writeString(this.topadsClickUrl);
         dest.writeString(this.topadsWishlistUrl);
+        dest.writeTypedList(this.labelGroupList);
     }
 
     protected ProductItemViewModel(Parcel in) {
@@ -423,6 +434,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         this.topadsImpressionUrl = in.readString();
         this.topadsClickUrl = in.readString();
         this.topadsWishlistUrl = in.readString();
+        this.labelGroupList = in.createTypedArrayList(LabelGroupViewModel.CREATOR);
     }
 
     public static final Creator<ProductItemViewModel> CREATOR = new Creator<ProductItemViewModel>() {
