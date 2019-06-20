@@ -6,4 +6,5 @@
     <color name="pm_end_gradient">#ebffef</color>
     <color name="pm_green_link">#03ac0e</color>
     <color name="pm_line_color">#f3f4f5</color>
+    <color name="pm_cb_color">#bfbfbf</color>
 </resources>

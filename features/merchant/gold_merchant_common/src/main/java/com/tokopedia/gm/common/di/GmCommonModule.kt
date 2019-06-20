@@ -2,7 +2,6 @@ package com.tokopedia.gm.common.di
 
 import android.content.Context
 import com.readystatesoftware.chuck.ChuckInterceptor
-import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
@@ -32,9 +31,8 @@ class GmCommonModule {
     }
 
     @Provides
-    fun providePowerMerchantSubscribeInterceptor(@ApplicationContext context: Context,
-                                                 @GmCommonQualifier userSessionInterface: UserSessionInterface): PowerMerchantSubscribeInterceptor {
-        return PowerMerchantSubscribeInterceptor(context, userSessionInterface)
+    fun providePowerMerchantSubscribeInterceptor(@GmCommonQualifier userSessionInterface: UserSessionInterface): PowerMerchantSubscribeInterceptor {
+        return PowerMerchantSubscribeInterceptor(userSessionInterface)
     }
 
     @GmCommonQualifier

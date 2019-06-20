@@ -77,4 +77,6 @@
     <string name="pm_label_learn_more_benefit">Optimalkan penjualan dengan Flash Sale, Modal Toko dan fitur eksklusif lainnya. Pelajari Selengkapnya</string>
     <string name="pm_label_bs_cancel_desc_2">Toko dengan Power Merchant terbukti dapat tingkatkan penjualan dan lebih dipercaya calon pembeli.</string>
     <string name="pm_label_benefit_feature_header">Fitur Khusus Power Merchant</string>
+    <string name="pm_label_cost_desc">Biaya layanan Power Merchant hanya 1%, dibayarkan setiap produk terjual.</string>
+    <string name="pm_label_cost_header">Biaya Layanan Hanya 1%</string>
 </resources>

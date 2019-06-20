@@ -407,7 +407,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
                 shopStatusModel.powerMerchant.expiredTime)
         val spanText = SpannableString(getString(R.string.expired_label, shopCloseUntilString))
         spanText.setSpan(StyleSpan(Typeface.BOLD),
-                78, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                86, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         txt_ticker_yellow.text = spanText
     }
 

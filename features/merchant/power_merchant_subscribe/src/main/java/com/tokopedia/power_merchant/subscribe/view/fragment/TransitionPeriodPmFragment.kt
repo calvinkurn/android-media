@@ -27,6 +27,7 @@ import kotlinx.android.synthetic.main.fragment_transition_period.*
 class TransitionPeriodPmFragment : BaseDaggerFragment() {
 
     companion object {
+        const val LABEL_MORE_POSITION = 24
         fun newInstance() = TransitionPeriodPmFragment()
     }
 
@@ -62,11 +63,11 @@ class TransitionPeriodPmFragment : BaseDaggerFragment() {
                 super.updateDrawState(ds)
                 ds.isUnderlineText = false
             }
-        }, 24, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }, LABEL_MORE_POSITION, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         spanText.setSpan(StyleSpan(Typeface.BOLD),
-                24, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                LABEL_MORE_POSITION, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         spanText.setSpan(ForegroundColorSpan(ContextCompat.getColor(context!!, R.color.pm_green_link)),
-                24, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                LABEL_MORE_POSITION, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         txt_learnmore_transition_page.movementMethod = LinkMovementMethod.getInstance();
         txt_learnmore_transition_page.text = spanText
     }
