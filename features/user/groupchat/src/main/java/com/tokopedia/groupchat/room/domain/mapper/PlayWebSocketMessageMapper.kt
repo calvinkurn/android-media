@@ -18,6 +18,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.InteractiveButton
+import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel
 import com.tokopedia.groupchat.vote.view.model.VoteViewModel
@@ -85,8 +86,21 @@ class PlayWebSocketMessageMapper @Inject constructor() {
             BackgroundViewModel.TYPE -> mapToBackground(data)
             StickyComponentViewModel.TYPE -> mapToStickyComponent(data)
             StickyComponentViewModel.TYPE_CLOSE -> StickyComponentViewModel()
+            VideoStreamViewModel.TYPE -> mapToVideoStream(data)
             else -> null
         }
+    }
+
+    private fun mapToVideoStream(data: JsonObject?): Visitable<*>? {
+        val pojo = gson.fromJson(data, VideoStreamPojo::class.java)
+        return VideoStreamViewModel(
+                pojo.isActive,
+                pojo.orientation,
+                pojo.streamRtmp,
+                pojo.streamHlsOriginal,
+                pojo.streamHlsStandard,
+                pojo.streamHlsHigh
+        )
     }
 
     private fun mapToStickyComponent(data: JsonObject?): Visitable<*>? {

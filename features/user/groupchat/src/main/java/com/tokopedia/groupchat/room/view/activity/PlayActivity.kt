@@ -26,13 +26,17 @@ import com.tokopedia.groupchat.room.di.DaggerPlayComponent
 import com.tokopedia.groupchat.room.view.adapter.FragmentPagerAdapter
 import com.tokopedia.groupchat.room.view.fragment.BlankFragment
 import com.tokopedia.groupchat.room.view.fragment.PlayFragment
+import com.tokopedia.groupchat.room.view.listener.PlayActivityContract
+import com.tokopedia.groupchat.room.view.presenter.PlayActivityPresenter
+import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
  * @author : Steven 11/02/19
  */
-open class PlayActivity : BaseSimpleActivity() {
+open class PlayActivity : BaseSimpleActivity()
+        , PlayActivityContract.View {
 
     lateinit var rootView: View
     lateinit var viewPager: NonSwipeableViewPager
@@ -40,6 +44,11 @@ open class PlayActivity : BaseSimpleActivity() {
 
     @Inject
     lateinit var analytics: GroupChatAnalytics
+
+    @Inject
+    lateinit var presenter: PlayActivityPresenter
+
+    var channelId: String? = null
 
     override fun getNewFragment(): Fragment? {
         return null
@@ -65,6 +74,10 @@ open class PlayActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        channelId = intent?.extras?.getString(ApplinkConstant.PARAM_CHANNEL_ID)
+        if(channelId == null) {
+            channelId = intent?.extras?.getString(EXTRA_CHANNEL_UUID)
+        }
         initInjector()
         initView()
     }
@@ -79,11 +92,13 @@ open class PlayActivity : BaseSimpleActivity() {
                 .build()
 
         playComponent.inject(this)
+        presenter.attachView(this)
     }
 
     private fun initView() {
         setupToolbar()
         setFragment()
+        presenter.getVideoStream(channelId, onSuccessGetVideoStream(), onErrorGetVideoStream())
     }
 
     private fun setFragment() {
@@ -93,10 +108,6 @@ open class PlayActivity : BaseSimpleActivity() {
         val fragmentList = ArrayList<Fragment>()
 
         val bundle = Bundle()
-        var channelId = intent?.extras?.getString(ApplinkConstant.PARAM_CHANNEL_ID)
-        if(channelId == null) {
-            channelId = intent?.extras?.getString(EXTRA_CHANNEL_UUID)
-        }
         val useGCP = intent?.extras?.getString(EXTRA_USE_GCP, "false")
         useGCP?.run{
             bundle.putBoolean(EXTRA_USE_GCP, this.toBoolean())
@@ -111,6 +122,8 @@ open class PlayActivity : BaseSimpleActivity() {
         viewPager.currentItem = 1
 
         viewPager.swipeable = false
+
+
     }
 
     private fun setupToolbar() {
@@ -208,6 +221,17 @@ open class PlayActivity : BaseSimpleActivity() {
     fun setSwipeable(swipeable: Boolean) {
         if (!swipeable) {
         } else {
+        }
+    }
+
+    private fun onSuccessGetVideoStream(): (VideoStreamViewModel) -> Unit {
+        return {
+        }
+    }
+
+    private fun onErrorGetVideoStream(): (String) -> Unit {
+        return {
+
         }
     }
 
