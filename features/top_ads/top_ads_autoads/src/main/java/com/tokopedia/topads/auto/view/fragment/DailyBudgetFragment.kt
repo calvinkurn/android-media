@@ -85,10 +85,10 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
         budgetViewModel.getBudgetInfo(userSession.shopId.toInt(), requestType, source)
         budgetViewModel.budgetInfoData.observe(this@DailyBudgetFragment, Observer {
             val data = it!!.get(0)
-            var budget = arguments!!.getInt(KEY_DAILY_BUDGET, 0)
+            var budget = 0
             val status = arguments!!.getInt(KEY_AUTOADS_STATUS, 0)
-            if (status == TopAdsWidgetStatus.STATUS_INACTIVE){
-                budget = 0
+            if (status == TopAdsWidgetStatus.STATUS_ACTIVE) {
+                budget = arguments!!.getInt(KEY_DAILY_BUDGET, 0)
             }
             estimateImpression(data, budget)
             seekBar.range = Range(data.minDailyBudget, data.maxDailyBudget, 1000)
@@ -162,7 +162,7 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
                 activity!!.finish()
             }
         }
-        if(resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_CONFIRMATION){
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_CONFIRMATION) {
             activatedAds()
         }
     }
