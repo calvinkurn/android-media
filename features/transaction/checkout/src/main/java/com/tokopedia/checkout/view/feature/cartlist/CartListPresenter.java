@@ -1335,12 +1335,8 @@ public class CartListPresenter implements ICartListPresenter {
             }
             promoDetails.append(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getMessageData().getState());
         }
-        if (!TextUtils.isEmpty(promoCodes)) {
-            enhancedECommerceProductCartMapData.setPromoCode(promoCodes.toString());
-        }
-        if (!TextUtils.isEmpty(promoDetails)) {
-            enhancedECommerceProductCartMapData.setPromoDetails(promoDetails.toString());
-        }
+        enhancedECommerceProductCartMapData.setPromoCode(promoCodes.toString());
+        enhancedECommerceProductCartMapData.setPromoDetails(promoDetails.toString());
         return enhancedECommerceProductCartMapData;
     }
 

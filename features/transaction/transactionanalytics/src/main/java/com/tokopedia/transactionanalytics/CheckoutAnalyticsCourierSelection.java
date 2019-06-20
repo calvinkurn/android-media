@@ -1,5 +1,7 @@
 package com.tokopedia.transactionanalytics;
 
+import android.text.TextUtils;
+
 import com.google.android.gms.tagmanager.DataLayer;
 
 import java.util.Map;
@@ -321,10 +323,12 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 ConstantTransactionAnalytics.Key.EVENT_CATEGORY, eventCategory,
                 ConstantTransactionAnalytics.Key.EVENT_ACTION, eventAction,
                 ConstantTransactionAnalytics.Key.EVENT_LABEL, eventLabel,
-                ConstantTransactionAnalytics.Key.PAYMENT_ID, transactionId,
                 ConstantTransactionAnalytics.Key.E_COMMERCE, cartMap,
                 ConstantTransactionAnalytics.Key.CURRENT_SITE, ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
         );
+        if (!TextUtils.isEmpty(transactionId)) {
+            dataLayer.put(ConstantTransactionAnalytics.Key.PAYMENT_ID, transactionId);
+        }
         sendEnhancedEcommerce(dataLayer);
     }
 
