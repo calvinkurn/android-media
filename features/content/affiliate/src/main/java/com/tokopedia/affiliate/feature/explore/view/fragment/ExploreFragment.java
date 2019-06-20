@@ -598,6 +598,9 @@ public class ExploreFragment
         if (autoCompleteLayout.getVisibility() == View.VISIBLE) {
             autoCompleteLayout.setVisibility(View.GONE);
         }
+        if (adapter.getFilterList().isEmpty()) {
+            bottomActionView.hideBav2();
+        }
     }
 
     private void populateFilter(List<FilterViewModel> currentFilter) {
@@ -1013,8 +1016,8 @@ public class ExploreFragment
         ArrayList<ShowCaseObject> showcases = new ArrayList<>();
         showcases.add(new ShowCaseObject(
                 layoutProfile,
-                getString(R.string.title_showcase),
-                getString(R.string.desc_showcase),
+                getString(R.string.aff_title_showcase),
+                getString(R.string.aff_desc_showcase),
                 ShowCaseContentPosition.UNDEFINED));
 
         showCaseDialog.show(getActivity(), TAG_SHOWCASE, showcases);

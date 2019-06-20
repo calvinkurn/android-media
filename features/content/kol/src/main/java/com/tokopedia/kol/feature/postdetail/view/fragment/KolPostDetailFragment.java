@@ -48,7 +48,7 @@ import com.tokopedia.feedcomponent.view.widget.CardTitleView;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.analytics.KolEventTracking;
-import com.tokopedia.kol.analytics.PostTagAnalytics;
+import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics;
 import com.tokopedia.kol.common.util.PostMenuListener;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
@@ -261,6 +261,8 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                             i,
                             dynamicPostViewModel.getTrackingPostModel());
                 }
+
+                onAffiliateTrackClicked(dynamicPostViewModel.getTracking(), false);
             }
         }
     }
@@ -833,9 +835,13 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onAffiliateTrackClicked(@NotNull List<TrackingViewModel> trackList) {
+    public void onAffiliateTrackClicked(@NotNull List<TrackingViewModel> trackList, boolean isClick) {
         for (TrackingViewModel track : trackList) {
-            presenter.trackAffiliate(track.getClickURL());
+            if (isClick) {
+                presenter.trackAffiliate(track.getClickURL());
+            } else {
+                presenter.trackAffiliate(track.getViewURL());
+            }
         }
     }
 
@@ -870,7 +876,8 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGridItemClick(int positionInFeed, int contentPosition, @NotNull String redirectLink) {
+    public void onGridItemClick(int positionInFeed, int contentPosition, int productPosition,
+                                @NotNull String redirectLink) {
         onGoToLink(redirectLink);
     }
 

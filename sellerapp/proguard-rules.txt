@@ -338,6 +338,8 @@
 -keep class com.tokopedia.core.network.exception.model.** { *; }
 -keep class com.tokopedia.events.data.entity.response.** { *; }
 
+#tradein
+-keep class viewmodel.** { *; }
 
 #Sendbird
 -dontwarn com.sendbird.android.shadow.**

@@ -1,6 +1,8 @@
 package com.tokopedia.topads.dashboard.view.presenter;
 
+import com.tokopedia.topads.dashboard.data.model.request.DataSuggestions;
 import com.tokopedia.topads.dashboard.data.model.request.GetSuggestionBody;
+import com.tokopedia.topads.dashboard.data.model.request.MinimumBidRequest;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailEditView;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailProductViewModel;
 
@@ -13,5 +15,5 @@ public interface TopAdsDetailEditProductPresenter<T extends TopAdsDetailEditView
 
     void saveAd(TopAdsDetailProductViewModel topAdsDetailProductViewModel);
 
-    void getSuggestionBid(List<String> ids, String source);
+    void getBidInfo(String requestType, List<DataSuggestions> dataSuggestions, String source);
 }

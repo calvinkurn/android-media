@@ -5,7 +5,9 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.navigation.data.mapper.GetNotificationUpdateFilterMapper
 import com.tokopedia.navigation.data.mapper.GetNotificationUpdateMapper
 import com.tokopedia.navigation.domain.*
+import com.tokopedia.navigation.domain.pojo.NotificationUpdateTotalUnread
 import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateContract
+import com.tokopedia.navigation.presentation.view.subscriber.GetNotificationTotalUnreadSubscriber
 import com.tokopedia.navigation.presentation.view.subscriber.GetNotificationUpdateFilterSubscriber
 import com.tokopedia.navigation.presentation.view.subscriber.GetNotificationUpdateSubscriber
 import com.tokopedia.navigation.presentation.view.subscriber.NotificationUpdateActionSubscriber
@@ -15,6 +17,7 @@ import javax.inject.Inject
 
 class NotificationUpdatePresenter @Inject constructor(
         private var getNotificationUpdateUseCase: GetNotificationUpdateUseCase,
+        private var getNotificationTotalUnreadUseCase: GetNotificationTotalUnreadUseCase,
         private var getNotificationUpdateFilterUseCase: GetNotificationUpdateFilterUseCase,
         private var clearCounterNotificationUpdateUseCase: ClearCounterNotificationUpdateUseCase,
         private var markReadNotificationUpdateItemUseCase: MarkReadNotificationUpdateItemUseCase,
@@ -64,5 +67,9 @@ class NotificationUpdatePresenter @Inject constructor(
     override fun markAllReadNotificationUpdate(onSuccessMarkAllReadNotificationUpdate: () -> Unit) {
         markAllReadNotificationUpdateUseCase.execute(
                 NotificationUpdateActionSubscriber(onSuccessMarkAllReadNotificationUpdate))
+    }
+
+    override fun getTotalUnreadCounter(onSuccessGetTotalUnreadCounter: (NotificationUpdateTotalUnread) -> Unit) {
+        getNotificationTotalUnreadUseCase.execute(GetNotificationTotalUnreadSubscriber(onSuccessGetTotalUnreadCounter))
     }
 }

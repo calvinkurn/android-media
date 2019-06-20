@@ -1,6 +1,5 @@
 package com.tokopedia.useridentification.view.fragment;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -26,27 +25,21 @@ import com.otaliastudios.cameraview.Size;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.useridentification.R;
 import com.tokopedia.useridentification.analytics.UserIdentificationAnalytics;
 import com.tokopedia.useridentification.view.activity.UserIdentificationFormActivity;
 
-import java.io.File;
+import org.jetbrains.annotations.NotNull;
 
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.RuntimePermissions;
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
+import java.io.File;
 
 import static com.tokopedia.user_identification_common.KYCConstant.EXTRA_STRING_IMAGE_RESULT;
 
 /**
  * @author by alvinatin on 12/11/18.
  */
-@RuntimePermissions
 public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
 
     public static final String ARG_VIEW_MODE = "view_mode";
@@ -72,6 +65,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
     private String imagePath;
     private Size mCaptureNativeSize;
     private UserIdentificationAnalytics analytics;
+    private PermissionCheckerHelper permissionCheckerHelper;
 
     private int viewMode;
 
@@ -107,6 +101,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        permissionCheckerHelper = new PermissionCheckerHelper();
         if (getArguments() != null) {
             viewMode = getArguments().getInt(ARG_VIEW_MODE, 1);
         }
@@ -149,7 +144,25 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
             @Override
             public void onClick(View v) {
                 sendAnalyticClickShutter();
-                capturePictureWithCheck();
+                Fragment fragment = UserIdentificationCameraFragment.this;
+                permissionCheckerHelper.checkPermission(fragment,
+                        PermissionCheckerHelper.Companion.PERMISSION_CAMERA, new PermissionCheckerHelper.PermissionCheckListener() {
+                            @Override
+                            public void onPermissionDenied(@NotNull String permissionText) {
+
+                            }
+
+                            @Override
+                            public void onNeverAskAgain(@NotNull String permissionText) {
+
+                            }
+
+                            @Override
+                            public void onPermissionGranted() {
+                                hideCameraButtonAndShowLoading();
+                                cameraView.capturePicture();
+                            }
+                        }, "");
             }
         });
 
@@ -182,7 +195,25 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
 
             @Override
             public void onPictureTaken(byte[] imageByte) {
-                saveToFileWithCheck(imageByte);
+                Fragment fragment = UserIdentificationCameraFragment.this;
+                permissionCheckerHelper.checkPermission(fragment,
+                        PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
+                        new PermissionCheckerHelper.PermissionCheckListener() {
+                            @Override
+                            public void onPermissionDenied(@NotNull String permissionText) {
+
+                            }
+
+                            @Override
+                            public void onNeverAskAgain(@NotNull String permissionText) {
+
+                            }
+
+                            @Override
+                            public void onPermissionGranted() {
+                                saveToFile(imageByte);
+                            }
+                        }, "");
             }
         };
 
@@ -362,17 +393,6 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
         }
     }
 
-    @NeedsPermission(Manifest.permission.CAMERA)
-    public void capturePicture() {
-        hideCameraButtonAndShowLoading();
-        cameraView.capturePicture();
-    }
-
-    private void capturePictureWithCheck() {
-        UserIdentificationCameraFragmentPermissionsDispatcher.capturePictureWithCheck(this);
-    }
-
-    @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     public void saveToFile(byte[] imageByte) {
         mCaptureNativeSize = cameraView.getPictureSize();
         try {
@@ -391,10 +411,6 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
                     .DIRECTORY_TOKOPEDIA_CACHE_CAMERA, imageByte, false);
             onSuccessImageTakenFromCamera(cameraResultFile);
         }
-    }
-
-    private void saveToFileWithCheck(byte[] imageByte) {
-        UserIdentificationCameraFragmentPermissionsDispatcher.saveToFileWithCheck(this, imageByte);
     }
 
     private void onSuccessImageTakenFromCamera(File cameraResultFile) {
@@ -473,5 +489,14 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
     public boolean isCameraVisible() {
         return (cameraView != null &&
                 cameraView.getVisibility() == View.VISIBLE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (getContext() != null) {
+            permissionCheckerHelper.onRequestPermissionsResult(getContext(), requestCode, permissions,
+                    grantResults);
+        }
     }
 }

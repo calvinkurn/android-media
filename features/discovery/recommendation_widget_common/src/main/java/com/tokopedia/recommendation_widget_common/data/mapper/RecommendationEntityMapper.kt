@@ -61,7 +61,10 @@ class RecommendationEntityMapper : Func1<RecomendationEntity.RecomendationData, 
                     data.countReview,
                     data.stock,
                     data.recommendationType ?: "",
-                    data.isIsTopads
+                    data.isIsTopads,
+                    data.slashedPrice?:"",
+                    data.slashedPriceInt,
+                    data.discountPercentage
             )
 
         }

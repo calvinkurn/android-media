@@ -1,0 +1,214 @@
+apply plugin: 'com.android.application'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'com.google.gms.google-services'
+
+kapt {
+    correctErrorTypes = true
+    generateStubs = false
+}
+
+def getDpiId(String density) {
+    def DPI_ID = ['null': 0, 'mdpi': 1, 'hdpi': 2, 'xhdpi': 3, 'xxhdpi': 4]
+    if (density != null)
+        return DPI_ID.get(density);
+    return 0;
+}
+def getAbiId(String abi) {
+    def ABI_ID = ['null': 0, 'armeabi-v7a': 10, 'x86': 20]
+    if (abi != null)
+        return ABI_ID.get(abi);
+    return 0;
+}
+def generateBuildId(String density, String abi) {
+    return getAbiId(abi) + getDpiId(density);
+}
+def getAPKArchiveFolder(variant) {
+    return "/Android/launching-android/" + "V" + variant.mergedFlavor.versionCode;
+}
+def allowSplit() {
+    return gradle.startParameter.taskNames.contains("assembleLiveRelease") &&
+            (project.hasProperty('tkpdBuildType') && tkpdBuildType == "production");
+}
+def allowDistribution() {
+    if (project.hasProperty('tkpdBuildType') && tkpdBuildType == "hockeyapp") {
+        return "true";
+    }
+    return "false";
+}
+def allowProguard() {
+    return project.hasProperty('tkpdBuildType')
+}
+def getTkpdVersionCode() {
+    return project.hasProperty('versionCode') ? Integer.parseInt(versionCode) : project.defaultVersionCode;
+}
+def getTkpdVersionName() {
+    return project.hasProperty('versionName') ? versionName : project.defaultVersionName;
+}
+def renameAPKFile(variant, density, versionCode) {
+    def fileName = variant.name.toUpperCase()
+    fileName += "-" + variant.mergedFlavor.versionName;
+    fileName += "-V" + versionCode;
+    fileName += "-" + density;
+    fileName += ".apk";
+    return fileName;
+}
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+        maven { url "https://maven.google.com" }
+        mavenCentral()
+        jcenter()
+    }
+    dependencies{
+        classpath rootProject.ext.gradlePlugin.crashlytics
+        classpath rootProject.ext.gradlePlugin.googleServices
+    }
+}
+android {
+    project.ext {
+        defaultVersionCode = 221001101;
+        defaultVersionName = "2.21";
+        react = [
+                nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"]
+        ]
+    }
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    useLibrary 'org.apache.http.legacy'
+    sourceSets {
+        main {
+            java.srcDirs = ['src/main/java']
+            resources.srcDirs = ['src/main/java']
+            aidl.srcDirs = ['src/main/java']
+            renderscript.srcDirs = ['src/main/java']
+            res.srcDirs = ['src/main/res']
+            assets.srcDirs = ['assets', 'src/main/assets', 'src/main/assets/']
+        }
+        String sharedTestDir = 'src/sharedTest/java'
+        test {
+            java.srcDir sharedTestDir
+        }
+        androidTest {
+            java.srcDir sharedTestDir
+        }
+        debug.setRoot('build-types/debug')
+        release.setRoot('build-types/release')
+    }
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+    signingConfigs {
+        debug {
+            storeFile file("debug.keystore")
+        }
+    }
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+            minifyEnabled false
+            zipAlignEnabled false
+            testCoverageEnabled false
+            buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
+        }
+        release {
+            signingConfig signingConfigs.debug
+        }
+    }
+    splits {
+        density {
+            enable allowSplit()
+            reset()
+            include "mdpi", "hdpi", "xhdpi", "xxhdpi"
+            compatibleScreens 'small', 'normal', 'large', 'xlarge'
+        }
+        abi {
+            enable allowSplit()
+            reset()
+            include "armeabi-v7a", "x86"
+            universalApk false
+        }
+    }
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        multiDexEnabled = true
+        applicationId "com.tokopedia.tkpd"
+        versionCode getTkpdVersionCode()
+        versionName getTkpdVersionName()
+        vectorDrawables.useSupportLibrary = true
+        ndk {
+            abiFilters "armeabi-v7a", "x86"
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+    implementation rootProject.ext.miscDependencies.multiDex
+
+    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.applink)
+
+    implementation rootProject.ext.supportLibDependencies.recyclerViewV7
+
+    implementation rootProject.ext.supportLibDependencies.supportV4
+    implementation rootProject.ext.supportLibDependencies.appCompactV7
+
+    implementation (project(rootProject.ext.features.sessioncommon))
+
+    implementation (project(rootProject.ext.libraries.remoteConfig))
+
+    annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
+    implementation rootProject.ext.dbDependencies.dbFlowCore
+    implementation rootProject.ext.dbDependencies.dbFlow
+
+    implementation rootProject.ext.networkDependencies.okHttp
+    implementation rootProject.ext.networkDependencies.loggingInterceptor
+
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+    implementation project(rootProject.ext.libraries.track)
+
+    implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
+    kapt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+    compileOnly rootProject.ext.miscDependencies.javaxAnnotation
+    implementation rootProject.ext.miscDependencies.dagger
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+
+    implementation rootProject.ext.networkDependencies.retrofit
+    implementation rootProject.ext.networkDependencies.converterGson
+    implementation rootProject.ext.networkDependencies.adapterRxJava
+    implementation rootProject.ext.networkDependencies.okHttp
+    implementation rootProject.ext.networkDependencies.loggingInterceptor
+
+    implementation project(rootProject.ext.libraries.commonNetwork)
+    implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.network)
+    implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.libraries.cpm)
+    implementation project(rootProject.ext.libraries.config)
+    implementation project(rootProject.ext.libraries.cacheApi)
+
+    implementation rootProject.ext.playServicesDependencies.base
+
+    implementation rootProject.ext.firebase.core
+
+    // TO BE ADDED AS FEATURE REQUIREMENT
+    implementation project(rootProject.ext.features.shopSettings)
+}
+
+repositories {
+    mavenCentral()
+}
+
+//apply plugin: 'com.google.gms.google-services'

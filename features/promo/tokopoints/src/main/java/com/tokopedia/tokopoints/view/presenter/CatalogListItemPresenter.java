@@ -73,59 +73,7 @@ public class CatalogListItemPresenter extends BaseDaggerPresenter<CatalogListIte
 
     @Override
     public void getCatalog(int categoryId, int subCategoryId, boolean showLoader) {
-        mGetHomePageData.clearRequest();
-        if(showLoader)
-        getView().showLoader();
-
-        //Adding request for main query
-        Map<String, Object> variablesMain = new HashMap<>();
-        variablesMain.put(CommonConstant.GraphqlVariableKeys.PAGE, getPageSize());  //Default page size always will be 1
-        variablesMain.put(CommonConstant.GraphqlVariableKeys.PAGE_SIZE, CommonConstant.PAGE_SIZE);
-        variablesMain.put(CommonConstant.GraphqlVariableKeys.SORT_ID, getSortId()); //Default page sort id
-        variablesMain.put(CommonConstant.GraphqlVariableKeys.CATEGORY_ID, categoryId);
-        variablesMain.put(CommonConstant.GraphqlVariableKeys.SUB_CATEGORY_ID, subCategoryId);
-        variablesMain.put(CommonConstant.GraphqlVariableKeys.POINTS_RANGE, getPointsRange()); //Point range will be zero for all catalog
-
-        GraphqlRequest graphqlRequestMain = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.tp_gql_catalog_listing),
-                CatalogListingOuter.class,
-                variablesMain, false);
-        mGetHomePageData.addRequest(graphqlRequestMain);
-
-
-        mGetHomePageData.execute(new Subscriber<GraphqlResponse>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                getView().showError();
-            }
-
-            @Override
-            public void onNext(GraphqlResponse graphqlResponse) {
-                //handling the catalog listing and tabs
-                CatalogListingOuter catalogListingOuter = graphqlResponse.getData(CatalogListingOuter.class);
-                if (catalogListingOuter != null) {
-                    getView().populateCatalog(catalogListingOuter.getCatalog().getCatalogs());
-                } else {
-                    getView().showError();
-                }
-            }
-        });
-    }
-
-    private int getPointsRange() {
-        return pointRange;
-    }
-
-    private int getSortId() {
-        return 1;
-    }
-
-    private int getPageSize() {
-        return 1;  //default page size
+        getView().populateCatalog(categoryId, subCategoryId, pointRange, showLoader);
     }
 
     @Override

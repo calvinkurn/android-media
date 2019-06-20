@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/quick_filter_item_background_neutral"
+    android:paddingTop="@dimen/empty_state_selected_filter_padding_vertical"
+    android:paddingBottom="@dimen/empty_state_selected_filter_padding_vertical"
+    android:paddingLeft="@dimen/empty_state_selected_filter_padding_left"
+    android:paddingRight="@dimen/empty_state_selected_filter_padding_right"
+    android:gravity="center_vertical">
+
+    <TextView
+        android:id="@+id/filter_text"
+        style="@style/TextView.Small.BlackSecondary"
+        tools:text="superstar"/>
+
+    <ImageView
+        android:id="@+id/delete_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_custom_close_button"
+        android:layout_marginLeft="6dp"/>
+
+</LinearLayout>

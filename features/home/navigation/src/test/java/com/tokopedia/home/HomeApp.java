@@ -234,7 +234,7 @@ public class HomeApp extends BaseMainApplication implements AccountHomeRouter, G
     }
 
     @Override
-    public void sendForceLogoutAnalytics(Response response) {
+    public void sendForceLogoutAnalytics(Response response, boolean unauthorized, Boolean needGcmUpdate) {
 
     }
 
