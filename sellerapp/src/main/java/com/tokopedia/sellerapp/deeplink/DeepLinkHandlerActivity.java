@@ -67,6 +67,8 @@ import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModul
 import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModuleLoader;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModule;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleLoader;
+import com.tokopedia.power_merchant.subscribe.applink.PowerMerchantSubscribeDeeplinkModule;
+import com.tokopedia.power_merchant.subscribe.applink.PowerMerchantSubscribeDeeplinkModuleLoader;
 
 /**
  * @author rizkyfadillah on 26/07/17.
@@ -96,7 +98,8 @@ import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleL
         PhoneVerificationApplinkModule.class,
         ChangePasswordDeeplinkModule.class,
         UserIdentificationApplinkModule.class,
-        ChatbotApplinkModule.class
+        ChatbotApplinkModule.class,
+        PowerMerchantSubscribeDeeplinkModule.class
 })
 
 public class DeepLinkHandlerActivity extends AppCompatActivity {
@@ -128,7 +131,8 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new PhoneVerificationApplinkModuleLoader(),
                 new ChangePasswordDeeplinkModuleLoader(),
                 new UserIdentificationApplinkModuleLoader(),
-                new ChatbotApplinkModuleLoader()
+                new ChatbotApplinkModuleLoader(),
+                new PowerMerchantSubscribeDeeplinkModuleLoader()
         );
     }
 

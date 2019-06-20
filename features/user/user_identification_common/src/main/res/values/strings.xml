@@ -13,8 +13,7 @@
     Verifikasi ulang</string>
     <string name="alert_failed_verification_highlight_text">Verifikasi ulang</string>
 
-    <string name="ticker_unverified"><![CDATA[Lakukan proses verifikasi untuk mendapatkan lebih
-        banyak keuntungan. <font color=\'#42b549\'><a href="https://m.tokopedia.com/terms/merchantkyc">Lihat keuntungan</a></font>
-]]></string>
+    <string name="ticker_unverified"><![CDATA[Tingkatkan kepercayaan calon pembeli dengan upload KTP.
+     <font color=\'#42b549\'><a href="https://m.tokopedia.com/terms/merchantkyc">Pelajari Selengkapnya</a></font>]]></string>
 
 </resources>

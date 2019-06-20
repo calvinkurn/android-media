@@ -154,8 +154,11 @@ ext {
             appsflyer  : "com.appsflyer:af-android-sdk:4.8.11@aar",
             installRef : "com.android.installreferrer:installreferrer:1.0",
             moengage   : "com.moengage:moe-android-sdk:9.3.00",
-            moengageFirebase   : "com.moengage:moe-push-firebase:3.1.00",
-            moengageMSG: "com.moengage:addon-messaging:2.0.03",
+            moengageFirebase    : "com.moengage:moe-push-firebase:3.1.00",
+            moengageSdk         : "com.moengage:moengagesdk:3.3.00",
+            moengagePushbase    : "com.moengage:pushbase:3.2.00",
+            moengageInapp   : "com.moengage:inapp:3.2.02",
+            moengageMSG: "com.moengage:addon-messaging:3.2.01",
             branch     : "io.branch.sdk.android:library:3.0.4+",
             logentries : "com.github.LogentriesCommunity:le_android:logentries-android-4.4.1"
     ]

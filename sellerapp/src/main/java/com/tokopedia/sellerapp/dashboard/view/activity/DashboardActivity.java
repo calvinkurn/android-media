@@ -9,22 +9,31 @@ import android.support.annotation.Nullable;
 import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.app.DrawerPresenterActivity;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.sellerapp.R;
+import com.tokopedia.sellerapp.dashboard.di.SellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.view.fragment.DashboardFragment;
 import com.tokopedia.sellerapp.dashboard.view.presenter.SellerDashboardDrawerPresenter;
 import com.tokopedia.sellerapp.drawer.SellerDrawerAdapter;
 import com.tokopedia.sellerapp.fcm.appupdate.FirebaseRemoteAppUpdate;
+
+import com.tokopedia.sellerapp.dashboard.di.DaggerSellerDashboardComponent;
+
+import javax.inject.Inject;
 
 /**
  * Created by nathan on 9/5/17.
@@ -34,7 +43,9 @@ public class DashboardActivity extends DrawerPresenterActivity
         implements GCMHandlerListener, SellerDashboardDrawerPresenter.SellerDashboardView {
 
     public static final String TAG = DashboardActivity.class.getSimpleName();
-    private SellerDashboardDrawerPresenter presenter;
+
+    @Inject
+    public SellerDashboardDrawerPresenter presenter;
 
     public static Intent createInstance(Context context) {
         return new Intent(context, DashboardActivity.class);
@@ -43,13 +54,13 @@ public class DashboardActivity extends DrawerPresenterActivity
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        GraphqlClient.init(this);
-        GetShopInfoUseCase getShopInfoUseCase = null;
-        if (getApplicationContext() instanceof SellerModuleRouter) {
-            SellerModuleRouter sellerModuleRouter = (SellerModuleRouter) getApplicationContext();
-            getShopInfoUseCase = sellerModuleRouter.getShopInfo();
-        }
-        presenter = new SellerDashboardDrawerPresenter(this, getShopInfoUseCase);
+        SellerDashboardComponent sellerDashboardComponent =
+                DaggerSellerDashboardComponent.builder().appComponent(
+                        ((MainApplication)getActivity().getApplication()).getApplicationComponent()).build();
+        sellerDashboardComponent.inject(this);
+
+        presenter.attachView(this);
+
         inflateView(R.layout.activity_simple_fragment);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
@@ -97,6 +108,7 @@ public class DashboardActivity extends DrawerPresenterActivity
 
     @Override
     protected void onResume() {
+        presenter.attachView(this);
         super.onResume();
         FCMCacheManager.checkAndSyncFcmId(getApplicationContext());
         NotificationModHandler.showDialogNotificationIfNotShowing(this,
@@ -111,7 +123,7 @@ public class DashboardActivity extends DrawerPresenterActivity
             setDataDrawer();
 
             getDrawerSellerAttrUseCase(sessionHandler);
-            presenter.getFlashsaleSellerStatus(sessionHandler.getShopID());
+            presenter.getFlashsaleSellerStatus();
             presenter.isGoldMerchantAsync();
         }
     }
@@ -137,17 +149,11 @@ public class DashboardActivity extends DrawerPresenterActivity
     }
 
     @Override
-    public void onSuccessGetShopInfo(ShopModel shopModel) {
+    public void onSuccessGetShopInfo(ShopStatusModel shopStatusModel) {
         SellerDrawerAdapter sellerDrawerAdapter = ((SellerDrawerAdapter) drawerHelper.getAdapter());
-        if (sellerDrawerAdapter.isGoldMerchant()!= shopModel.info.isGoldMerchant()) {
-            sellerDrawerAdapter.setGoldMerchant(shopModel.info.isGoldMerchant());
-            drawerHelper.getRecyclerView().post(new Runnable() {
-                @Override
-                public void run() {
-                    sellerDrawerAdapter.renderGMDrawer();
-                }
-            });
-        }
+        boolean isGoldMerchant = !shopStatusModel.isRegularMerchantOrPending();
+        sellerDrawerAdapter.setGoldMerchant(isGoldMerchant);
+        sessionHandler.setGoldMerchant(isGoldMerchant);
     }
 
     @Override
