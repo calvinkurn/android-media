@@ -151,8 +151,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                     intent.hasExtra(TkpdState.ProductService.STATUS_FLAG) &&
                     intent.getIntExtra(TkpdState.ProductService.STATUS_FLAG, 0) == TkpdState.ProductService.STATUS_DONE) {
                 getActivity().runOnUiThread(() -> {
-                    String productId = intent.hasExtra(TkpdState.ProductService.PRODUCT_ID) ?
-                            intent.getStringExtra(TkpdState.ProductService.PRODUCT_ID) : null;
+                    String productId = intent.getExtras().getString(TkpdState.ProductService.PRODUCT_ID);
                     productManagePresenter.getPopupsInfo(productId);
                     resetPageAndRefresh();
                 });
@@ -176,7 +175,10 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             getActivity().finish();
         });
 
-        btnGoToPdp.setOnClickListener(v -> goToPDP(productId));
+        btnGoToPdp.setOnClickListener(v -> {
+            goToPDP(productId);
+            dialog.dismiss();
+        });
         int backgroundColor = ContextCompat.getColor(getContext(), R.color.tkpd_main_green);
 
         SpannableString spanText = new SpannableString(getString(R.string.popup_tips_trick_clickable));
