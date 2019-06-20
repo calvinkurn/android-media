@@ -21,14 +21,19 @@ import android.widget.TextView
 import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.text.TextDrawable
+import com.tokopedia.linker.LinkerConstants
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.model.UserData
 import com.tokopedia.loginphone.R
 import com.tokopedia.loginphone.choosetokocashaccount.data.AccountList
 import com.tokopedia.loginphone.choosetokocashaccount.data.ChooseTokoCashAccountViewModel
@@ -37,11 +42,8 @@ import com.tokopedia.loginphone.choosetokocashaccount.di.DaggerChooseAccountComp
 import com.tokopedia.loginphone.choosetokocashaccount.view.adapter.TokocashAccountAdapter
 import com.tokopedia.loginphone.choosetokocashaccount.view.listener.ChooseTokocashAccountContract
 import com.tokopedia.loginphone.choosetokocashaccount.view.presenter.ChooseTokocashAccountPresenter
-import com.tokopedia.loginphone.common.LoginPhoneNumberRouter
 import com.tokopedia.loginphone.common.analytics.LoginPhoneNumberAnalytics
 import com.tokopedia.loginphone.common.di.DaggerLoginRegisterPhoneComponent
-import com.tokopedia.loginphone.common.di.LoginRegisterPhoneComponent
-import com.tokopedia.otp.common.network.ErrorMessageException
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity
 import com.tokopedia.sessioncommon.ErrorHandlerSession
@@ -51,6 +53,7 @@ import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.view.LoginSuccessRouter
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
+import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 
 import java.util.ArrayList
@@ -192,13 +195,39 @@ class ChooseTokocashAccountFragment : BaseDaggerFragment(), ChooseTokocashAccoun
     }
 
     override fun onSuccessLogin(userId: String) {
-        activity?.let{
+        activity?.let {
             analytics.eventSuccessLoginPhoneNumber()
-            (it.applicationContext as LoginPhoneNumberRouter).setTrackingUserId(userId,
-                    it.applicationContext)
+            setTrackingUserId(userId)
             it.setResult(Activity.RESULT_OK)
             it.finish()
         }
+    }
+
+    private fun setTrackingUserId(userId: String) {
+        TkpdAppsFlyerMapper.getInstance(context).mapAnalytics()
+        TrackApp.getInstance().gtm
+                .pushUserId(userId)
+        if (!GlobalConfig.DEBUG && Crashlytics.getInstance() != null)
+            Crashlytics.setUserIdentifier(userId)
+
+        if (userSessionInterface.isLoggedIn) {
+            val userData = UserData()
+            userData.setUserId(userSessionInterface.userId)
+            userData.setEmail(userSessionInterface.email)
+            userData.setPhoneNumber(userSessionInterface.phoneNumber)
+
+            //Identity Event
+            LinkerManager.getInstance().sendEvent(
+                    LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY, userData))
+
+            //Login Event
+            LinkerManager.getInstance().sendEvent(
+                    LinkerUtils.createGenericRequest(LinkerConstants.EVENT_LOGIN_VAL, userData))
+        }
+        //TODO SET IRIS
+//
+//        mIris.setUserId(userId)
+//        mIris.setDeviceId(userSession.deviceId)
     }
 
     override fun onSuccessLoginToken(): (LoginTokenPojo) -> Unit {
@@ -208,14 +237,14 @@ class ChooseTokocashAccountFragment : BaseDaggerFragment(), ChooseTokocashAccoun
     }
 
     override fun onErrorLoginToken(): (Throwable) -> Unit {
-       return {
-           loginRouter.onErrorLogin(ErrorHandlerSession.getErrorMessage(it, context, true))
-           loginRouter.logUnknownError(Throwable("Login Phone Number Login Token is not success"))
-       }
+        return {
+            loginRouter.onErrorLogin(ErrorHandlerSession.getErrorMessage(it, context, true))
+            loginRouter.logUnknownError(Throwable("Login Phone Number Login Token is not success"))
+        }
     }
 
     override fun onSuccessGetUserInfo(): (ProfilePojo) -> Unit {
-        return{
+        return {
             onSuccessLogin(it.profileInfo.userId)
         }
     }
@@ -320,7 +349,7 @@ class ChooseTokocashAccountFragment : BaseDaggerFragment(), ChooseTokocashAccoun
             }
 
             override fun onGoToSecurityQuestion(email: String, phone: String) {
-                activity?.run{
+                activity?.run {
                     val intent = VerificationActivity.getShowChooseVerificationMethodIntent(
                             activity,
                             RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION,

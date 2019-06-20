@@ -33,9 +33,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.design.utils.StripedUnderlineUtil;
-import com.tokopedia.loginregister.LoginRegisterRouter;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.activation.view.activity.ActivationActivity;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
@@ -653,10 +654,8 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         view.setText(spannable, TextView.BufferType.SPANNABLE);
         view.setOnClickListener(view1 -> {
             if (getActivity() != null) {
-                Intent intent = ((LoginRegisterRouter) getActivity().getApplicationContext())
-                        .getForgotPasswordIntent(
-                                getActivity(), emailString
-                        );
+                Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.FORGOT_PASSWORD);
+                intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, emailString);
                 startActivity(intent);
             }
         });

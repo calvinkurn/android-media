@@ -47,8 +47,6 @@ public interface LoginContract {
 
         void onErrorLogin(String errorMessage);
 
-        void setAutoCompleteAdapter(ArrayList<String> listId);
-
         void showLoadingDiscover();
 
         void dismissLoadingDiscover();
@@ -62,10 +60,6 @@ public interface LoginContract {
         void onSuccessLoginSosmed(String loginMethod);
 
         Context getContext();
-
-        void disableArrow();
-
-        void enableArrow();
 
         void onGoToAddName();
 
@@ -136,12 +130,6 @@ public interface LoginContract {
     interface Presenter extends CustomerPresenter<View> {
 
         void loginEmail(String email, String password);
-
-        void saveLoginEmail(String email);
-
-        ArrayList<String> getLoginIdList();
-
-        void discoverLogin();
 
         void loginWebview(Intent data);
 

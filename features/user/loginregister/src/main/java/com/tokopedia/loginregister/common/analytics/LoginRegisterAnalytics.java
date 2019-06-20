@@ -7,7 +7,10 @@ import com.crashlytics.android.Crashlytics;
 import com.tokopedia.analytics.TrackAnalytics;
 import com.tokopedia.analytics.firebase.FirebaseEvent;
 import com.tokopedia.analytics.firebase.FirebaseParams;
-import com.tokopedia.loginregister.LoginRegisterRouter;
+import com.tokopedia.linker.LinkerConstants;
+import com.tokopedia.linker.LinkerManager;
+import com.tokopedia.linker.LinkerUtils;
+import com.tokopedia.linker.model.UserData;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -543,8 +546,16 @@ public class LoginRegisterAnalytics {
 
         TrackApp.getInstance().getAppsFlyer().sendAppsflyerRegisterEvent(String.valueOf(userId), "Email");
         TrackApp.getInstance().getMoEngage().sendMoengageRegisterEvent(name, phone);
-        ((LoginRegisterRouter) applicationContext).sendBranchRegisterEvent(email, phone);
+        sendBranchRegisterEvent(email, phone);
 
+    }
+
+    private void sendBranchRegisterEvent(String email, String phone) {
+        UserData userData = new UserData();
+        userData.setEmail(email);
+        userData.setPhoneNumber(phone);
+        LinkerManager.getInstance().sendEvent(
+                LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_REGISTRATION_VAL, userData));
     }
 
     public void eventSuccessRegisterSosmed(String methodName) {

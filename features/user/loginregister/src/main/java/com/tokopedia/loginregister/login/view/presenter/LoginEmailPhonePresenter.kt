@@ -47,14 +47,14 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
                                                    private val getProfileUseCase: GetProfileUseCase,
                                                    @Named(SESSION_MODULE)
                                                    private val userSession: UserSessionInterface)
-    : BaseDaggerPresenter<LoginContract.View>(),
+    : BaseDaggerPresenter<LoginEmailPhoneContract.View>(),
         LoginEmailPhoneContract.Presenter {
 
     private lateinit var viewEmailPhone: LoginEmailPhoneContract.View
     private val PHONE_TYPE = "phone"
     private val EMAIL_TYPE = "email"
 
-    fun attachView(view: LoginContract.View, viewEmailPhone: LoginEmailPhoneContract.View) {
+    fun attachView(view: LoginEmailPhoneContract.View, viewEmailPhone: LoginEmailPhoneContract.View) {
         super.attachView(view)
         this.viewEmailPhone = viewEmailPhone
     }
@@ -139,7 +139,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
         getFacebookCredentialUseCase.execute(GetFacebookCredentialUseCase.getParam(
                 fragment,
                 callbackManager),
-                GetFacebookCredentialSubscriber(view.facebookCredentialListener))
+                GetFacebookCredentialSubscriber(view.getFacebookCredentialListener()))
     }
 
     /**
@@ -173,7 +173,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
      * Step 5 : If name contains blocked word, go to add name
      * Step 6 : Proceed to home
      */
-    override fun loginGoogle(accessToken: String, email: String?) {
+    override fun loginGoogle(accessToken: String, email: String) {
         view.showLoadingLogin()
         loginTokenUseCase.executeLoginSocialMedia(LoginTokenUseCase.generateParamSocialMedia(
                 accessToken, LoginTokenUseCase.SOCIAL_TYPE_GOOGLE),
@@ -185,39 +185,39 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
     }
 
 
-    override fun loginWebview(data: Intent?) {
-        val BUNDLE = "bundle"
-        val ERROR = "error"
-        val CODE = "code"
-        val MESSAGE = "message"
-        val SERVER = "server"
-        val PATH = "path"
-        val HTTPS = "https://"
-        val ACTIVATION_SOCIAL = "activation-social"
-
-        if (!(data?.getBundleExtra(BUNDLE) == null
-                        || data.getBundleExtra(BUNDLE).getString(PATH) == null)) {
-            val bundle = data.getBundleExtra(BUNDLE)
-            if (bundle.getString(PATH, "").contains(ERROR)) {
-                view.onErrorLoginSosmed(LoginRegisterAnalytics.WEBVIEW,
-                        bundle.getString(MESSAGE, "")
-                                + view.context.getString(R.string.code_error) + " " +
-                                ErrorHandlerSession.ErrorCode.WS_ERROR)
-            } else if (bundle.getString(PATH, "").contains(CODE)) {
-                view.showLoadingLogin()
-                loginWebviewUseCase.execute(LoginWebviewUseCase.getParamWebview(bundle.getString(CODE, ""), (HTTPS + bundle.getString(SERVER) + bundle.getString(PATH))),
-                        LoginThirdPartySubscriber(view.context,
-                                "", view, LoginRegisterAnalytics.WEBVIEW))
-            } else if (bundle.getString(PATH, "").contains(ACTIVATION_SOCIAL)) {
-                view.onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(
-                        ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW,
-                        view.context))
-            }
-        } else {
-            view.onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(
-                    ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW,
-                    view.context))
-        }
+    override fun loginWebview(data: Intent) {
+//        val BUNDLE = "bundle"
+//        val ERROR = "error"
+//        val CODE = "code"
+//        val MESSAGE = "message"
+//        val SERVER = "server"
+//        val PATH = "path"
+//        val HTTPS = "https://"
+//        val ACTIVATION_SOCIAL = "activation-social"
+//
+//        if (!(data?.getBundleExtra(BUNDLE) == null
+//                        || data.getBundleExtra(BUNDLE).getString(PATH) == null)) {
+//            val bundle = data.getBundleExtra(BUNDLE)
+//            if (bundle.getString(PATH, "").contains(ERROR)) {
+//                view.onErrorLoginSosmed(LoginRegisterAnalytics.WEBVIEW,
+//                        bundle.getString(MESSAGE, "")
+//                                + view.context.getString(R.string.code_error) + " " +
+//                                ErrorHandlerSession.ErrorCode.WS_ERROR)
+//            } else if (bundle.getString(PATH, "").contains(CODE)) {
+//                view.showLoadingLogin()
+//                loginWebviewUseCase.execute(LoginWebviewUseCase.getParamWebview(bundle.getString(CODE, ""), (HTTPS + bundle.getString(SERVER) + bundle.getString(PATH))),
+//                        LoginThirdPartySubscriber(view.context,
+//                                "", view, LoginRegisterAnalytics.WEBVIEW))
+//            } else if (bundle.getString(PATH, "").contains(ACTIVATION_SOCIAL)) {
+//                view.onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(
+//                        ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW,
+//                        view.context))
+//            }
+//        } else {
+//            view.onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(
+//                    ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW,
+//                    view.context))
+//        }
     }
 
     /**
@@ -233,7 +233,6 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
         view.resetError()
         if (isValid(email, password)) {
             view.showLoadingLogin()
-            view.disableArrow()
             loginTokenUseCase.executeLoginEmailWithPassword(LoginTokenUseCase.generateParamLoginEmail(
                     email, password), LoginTokenSubscriber(userSession,
                     view.onSuccessLoginToken(email),
@@ -292,23 +291,6 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
         loginTokenUseCase.unsubscribe()
         getProfileUseCase.unsubscribe()
 
-    }
-
-    override fun discoverLogin() {
-        //use the other method
-    }
-
-    override fun loginFacebook(accessToken: AccessToken?, email: String?) {
-        //use the other method
-    }
-
-    override fun saveLoginEmail(email: String?) {
-        //NOT USED
-    }
-
-    override fun getLoginIdList(): ArrayList<String> {
-        //NOT USED
-        return ArrayList()
     }
 
 }

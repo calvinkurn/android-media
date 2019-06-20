@@ -94,8 +94,6 @@ public interface TkpdCoreRouter {
 
     boolean isInMyShop(Context context, String shopId);
 
-    Intent getForgotPasswordIntent(Context context, String email);
-
     void invalidateCategoryMenuData();
 
     ApplinkUnsupported getApplinkUnsupported(Activity activity);
