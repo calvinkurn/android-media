@@ -141,6 +141,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
         }
     }
+    private var isAppBarCollapse = false
 
     private lateinit var layoutManager: LinearLayoutManager
 
@@ -938,6 +939,17 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
+            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (dy < 0) { // going up
+                    if (adapter.dataSize > 0 && isAppBarCollapse && !isOwner && !footerOthers.isVisible) {
+                       showFooterOthers()
+                    }
+                } else if (dy > 0) { // going down
+                    if (isAppBarCollapse && !isOwner && footerOthers.isVisible) hideFootersOthers()
+                }
+            }
+
             override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 try {
@@ -1025,9 +1037,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 toolbar.let {
                     if (Math.abs(verticalOffset) >= appBarLayout.totalScrollRange) {
                         it.visibility = View.VISIBLE
-                        if (!isOwner && !footerOthers.isVisible) showFooterOthers()
+                        isAppBarCollapse = true
                     } else {
                         it.visibility = View.GONE
+                        isAppBarCollapse = false
                         if (!isOwner && footerOthers.isVisible) hideFootersOthers()
                     }
                 }
