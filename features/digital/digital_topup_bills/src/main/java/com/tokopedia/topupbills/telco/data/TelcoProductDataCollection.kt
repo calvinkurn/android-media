@@ -23,8 +23,7 @@ class TelcoProductDataCollection(
     constructor(parcel: Parcel) : this(
             parcel.readString(),
             parcel.readString(),
-            parcel.readParcelable(TelcoProduct::class.java.classLoader)) {
-    }
+            parcel.readParcelable(TelcoProduct::class.java.classLoader))
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(key)

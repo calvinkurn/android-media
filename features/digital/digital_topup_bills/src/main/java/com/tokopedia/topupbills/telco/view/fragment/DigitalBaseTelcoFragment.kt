@@ -78,6 +78,8 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
 
     protected abstract fun getMapCatalogMenuDetail(): Map<String, kotlin.Any>
 
+    protected abstract fun getMapFavNumbers(): Map<String, kotlin.Any>
+
     fun handleFocusClientNumber() {
         mainContainer.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS)
         mainContainer.setFillViewport(true)
@@ -98,8 +100,8 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
                 R.raw.query_telco_catalog_menu_detail), getMapCatalogMenuDetail(),
                 this::onLoadingMenuDetail, this::onSuccessCatalogMenuDetail, this::onErrorCatalogMenuDetail)
         catalogMenuDetailViewModel.getFavNumbers(GraphqlHelper.loadRawString(resources,
-                R.raw.temp_query_fav_number_digital),
-                this::onLoadingMenuDetail, this::onSuccessFavNumbers, this::onErrorFavNumbers)
+                R.raw.temp_query_fav_number_digital), getMapFavNumbers(),
+                this::onSuccessFavNumbers, this::onErrorFavNumbers)
     }
 
     fun onSuccessCatalogMenuDetail(catalogMenuDetailData: TelcoCatalogMenuDetailData) {

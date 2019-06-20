@@ -223,6 +223,12 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         Toast.makeText(activity, telcoRecommendation.clientNumber, Toast.LENGTH_SHORT).show()
     }
 
+    override fun getMapFavNumbers(): Map<String, Any> {
+        var mapParam = HashMap<String, kotlin.Any>()
+        mapParam.put("categoryID", TelcoComponentType.FAV_NUMBER_PREPAID)
+        return mapParam
+    }
+
     override fun setFavNumbers(data: TelcoRechargeFavNumberData) {
         this.favNumberList = data.favNumber.favNumberList
     }

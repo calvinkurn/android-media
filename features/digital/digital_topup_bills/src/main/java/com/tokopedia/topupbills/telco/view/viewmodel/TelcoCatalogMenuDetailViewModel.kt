@@ -43,25 +43,21 @@ class TelcoCatalogMenuDetailViewModel @Inject constructor(private val graphqlRep
         }
     }
 
-    fun getFavNumbers(rawQuery: String,
-                      onLoading: (Boolean) -> Unit,
+    fun getFavNumbers(rawQuery: String, mapParam: Map<String, kotlin.Any>,
                       onSuccess: (TelcoRechargeFavNumberData) -> Unit,
                       onError: (Throwable) -> Unit) {
-//        onLoading(true)
         launchCatchError(block = {
             val data = withContext(Dispatchers.Default) {
-                val graphqlRequest = GraphqlRequest(rawQuery, TelcoRechargeFavNumberData::class.java)
+                val graphqlRequest = GraphqlRequest(rawQuery, TelcoRechargeFavNumberData::class.java, mapParam)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<TelcoRechargeFavNumberData>()
 
-//            onLoading(false)
             if (data.favNumber.favNumberList.isNotEmpty()) {
                 onSuccess(data)
             } else {
                 onError(ResponseErrorException())
             }
         }) {
-//            onLoading(false)
             onError(it)
         }
     }

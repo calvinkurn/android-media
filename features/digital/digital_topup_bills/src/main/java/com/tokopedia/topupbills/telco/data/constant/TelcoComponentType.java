@@ -23,4 +23,6 @@ public @interface TelcoComponentType {
     int PRODUCT_PULSA = 6;
     int PRODUCT_ROAMING = 7;
     int PRODUCT_PAKET_DATA = 8;
+    int FAV_NUMBER_PREPAID = 1;
+    int FAV_NUMBER_POSTPAID = 9;
 }
