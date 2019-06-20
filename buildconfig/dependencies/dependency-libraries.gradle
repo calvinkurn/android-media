@@ -83,7 +83,6 @@ ext {
             core_legacy       : ":libraries:core_legacy",
             abstraction       : ":tkpdabstraction",
             design            : ":tkpddesign",
-            sharecontent      : ":libraries:sharecontent",
             track             : ":libraries:track",
             graphView         :":libraries:graph_view",
             iris              : ":libraries:iris",
