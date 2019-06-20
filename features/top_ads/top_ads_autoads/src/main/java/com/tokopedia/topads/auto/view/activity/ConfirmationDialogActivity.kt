@@ -16,10 +16,12 @@ class ConfirmationDialogActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_dialog_autoads_confirmation)
         findViewById<View>(R.id.negative_button).setOnClickListener {
+            setResult(Activity.RESULT_CANCELED)
             finish()
         }
         findViewById<View>(R.id.positive_button).setOnClickListener {
-            finishActivity(Activity.RESULT_OK)
+            setResult(Activity.RESULT_OK)
+            finish()
         }
     }
 }
