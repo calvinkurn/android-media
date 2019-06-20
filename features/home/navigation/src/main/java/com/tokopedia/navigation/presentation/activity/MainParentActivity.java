@@ -340,9 +340,6 @@ public class MainParentActivity extends BaseActivity implements
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        startActivity(HotelHomepageActivity.Companion.getCallingIntent(this));
-        return false;
-/*
         int position = getPositionFragmentByMenu(item);
         if (!isFirstNavigationImpression) {
             globalNavAnalytics.eventBottomNavigation(item.getTitle().toString()); // push analytics
@@ -350,7 +347,7 @@ public class MainParentActivity extends BaseActivity implements
         isFirstNavigationImpression = false;
 
         if (position == OS_MENU && !isNewOfficialStoreEnabled()) {
-            startActivity(((GlobalNavRouter) getApplication()).getOldOfficialStore(this));
+            startActivity(HotelHomepageActivity.Companion.getCallingIntent(this));
             return false;
         }
 
@@ -366,7 +363,7 @@ public class MainParentActivity extends BaseActivity implements
             this.currentFragment = fragment;
             selectFragment(fragment);
         }
-        return true;*/
+        return true;
     }
 
     private void hideStatusBar() {
