@@ -26,7 +26,8 @@ import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsGqlUseCase;
-import com.tokopedia.transactiondata.usecase.GetInsuranceCartUseCase;
+import com.tokopedia.transactiondata.insurance.usecase.DeleteInsuranceProductUsecase;
+import com.tokopedia.transactiondata.insurance.usecase.GetInsuranceCartUseCase;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -46,12 +47,15 @@ public class CartListModule {
 
     private final ICartListView cartListView;
     private final CartAdapter.ActionListener cartActionListener;
+    private final CartAdapter.InsuranceItemActionlistener insuranceItemActionlistener;
     private final CartItemAdapter.ActionListener cartItemActionListener;
 
     public CartListModule(CartFragment cartFragment) {
         this.cartListView = cartFragment;
         this.cartActionListener = cartFragment;
         this.cartItemActionListener = cartFragment;
+        this.insuranceItemActionlistener = cartFragment;
+
     }
 
     @Provides
@@ -92,6 +96,12 @@ public class CartListModule {
 
     @Provides
     @CartListScope
+    DeleteInsuranceProductUsecase getDeleteInsuranceProductUsecase(@ApplicationContext Context context) {
+        return new DeleteInsuranceProductUsecase(context);
+    }
+
+    @Provides
+    @CartListScope
     CheckPromoStackingCodeUseCase provideCheckPromoStackingCodeUseCase(@ApplicationContext Context context){
         return new CheckPromoStackingCodeUseCase(context.getResources());
     }
@@ -115,13 +125,14 @@ public class CartListModule {
                                                  UserSessionInterface userSessionInterface,
                                                  TopAdsGqlUseCase topAdsGqlUseCase,
                                                  ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase,
-                                                 GetInsuranceCartUseCase getInsuranceCartUseCase) {
+                                                 GetInsuranceCartUseCase getInsuranceCartUseCase,
+                                                 DeleteInsuranceProductUsecase deleteInsuranceProductUsecase) {
         return new CartListPresenter(getCartListUseCase, deleteCartUseCase, deleteCartGetCartListUseCase,
                 updateCartUseCase, resetCartGetCartListUseCase, checkPromoStackingCodeUseCase,
                 checkPromoStackingCodeMapper, checkPromoCodeCartListUseCase, compositeSubscription,
                 cartApiRequestParamGenerator, cancelAutoApplyCouponUseCase, addWishListUseCase,
                 removeWishListUseCase, updateAndReloadCartUseCase, userSessionInterface, topAdsGqlUseCase,
-                clearCacheAutoApplyStackUseCase, getInsuranceCartUseCase);
+                clearCacheAutoApplyStackUseCase, getInsuranceCartUseCase, deleteInsuranceProductUsecase);
     }
 
     @Provides
@@ -133,7 +144,7 @@ public class CartListModule {
     @Provides
     @CartListScope
     CartAdapter provideCartListAdapter() {
-        return new CartAdapter(cartActionListener, cartItemActionListener);
+        return new CartAdapter(cartActionListener, cartItemActionListener, insuranceItemActionlistener);
     }
 
     @Provides

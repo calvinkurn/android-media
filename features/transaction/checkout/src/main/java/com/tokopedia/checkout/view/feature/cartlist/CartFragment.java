@@ -94,6 +94,8 @@ import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
+import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartGqlResponse;
+import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShops;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
@@ -111,7 +113,7 @@ import javax.inject.Inject;
  * @author anggaprasetiyo on 18/01/18.
  */
 
-public class CartFragment extends BaseCheckoutFragment implements CartAdapter.ActionListener,
+public class CartFragment extends BaseCheckoutFragment implements CartAdapter.ActionListener, CartAdapter.InsuranceItemActionlistener,
         CartItemAdapter.ActionListener, ICartListView, TopAdsItemClickListener,
         RefreshHandler.OnRefreshHandlerListener, ICartListAnalyticsListener, WishListActionListener,
         ToolbarRemoveView.OnToolbarRemoveAllCartListener, MerchantVoucherListBottomSheetFragment.ActionListener,
@@ -617,6 +619,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void onShopItemCheckChanged(int itemPosition, boolean checked) {
+
+        // TODO: 18/6/19 make sure to de-select (only) any insurance product mapped with this shop id and product id
+
         dPresenter.setCheckedCartItemState(cartAdapter.getAllCartItemHolderData());
         dPresenter.setHasPerformChecklistChange();
         cartAdapter.setShopSelected(itemPosition, checked);
@@ -939,13 +944,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             }
             this.cartListData = cartListData;
             cartAdapter.resetData();
-
-            // TODO: 17/6/19 get insurance products
-
-            // TODO: 18/6/19 check if cartdata list is not empty and accordingly get insurance cart
-
-            dPresenter.getInsuranceTechCart();
-
             boolean flagAutoApplyStack = false;
             PromoStackingData.Builder builderGlobal = new PromoStackingData.Builder();
             if (cartListData.getAutoApplyStackData() != null && cartListData.getAutoApplyStackData().isSuccess()
@@ -1007,7 +1005,15 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
             cartAdapter.setCheckedItemState(dPresenter.getCheckedCartItemState());
             cartAdapter.addDataList(cartListData.getShopGroupDataList());
-            if (cartListData.getAdsModel() != null) {
+
+            // TODO: 17/6/19 get insurance recommendation products
+            // TODO: 18/6/19 check if cartdata list is not empty and accordingly get insurance cart
+
+            if (cartListData.getShopGroupDataList() != null && !cartListData.getShopGroupDataList().isEmpty()) {
+                dPresenter.getInsuranceTechCart();
+            }
+
+            /*if (cartListData.getAdsModel() != null) {
                 cartAdapter.mappingTopAdsModel(cartListData.getAdsModel());
             }
             dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
@@ -1026,7 +1032,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 }
             }
 
-            cartPageAnalytics.eventViewCartListFinishRender();
+            cartPageAnalytics.eventViewCartListFinishRender();*/
         }
     }
 
@@ -1841,6 +1847,46 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
+    public void renderInsuranceCartData(InsuranceCartGqlResponse insuranceCartGqlResponse) {
+
+        // TODO: 18/6/19 render insurance cart data on ui, both micro and macro, if is_product_level == true,
+        // then insurance product is of type micro insurance and shoudl be tagged at product level
+
+        // TODO: 19/6/19 for micro insurance product add insurance data in shopGroup list
+
+
+        if (insuranceCartGqlResponse != null &&
+                !insuranceCartGqlResponse.getData().getCartShopsList().isEmpty()) {
+            for (InsuranceCartShops insuranceCartShops : insuranceCartGqlResponse.getData().getCartShopsList()) {
+                if (!insuranceCartShops.getShopIemsList().isEmpty()) {
+                    cartAdapter.addInsuranceDataList(insuranceCartShops);
+                }
+            }
+        }
+
+        if (cartListData.getAdsModel() != null) {
+            cartAdapter.mappingTopAdsModel(cartListData.getAdsModel());
+        }
+        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
+        if (cbSelectAll != null) {
+            cbSelectAll.setChecked(cartListData.isAllSelected());
+        }
+
+        cartAdapter.checkForShipmentForm();
+
+        if (toolbar != null) {
+            setVisibilityRemoveButton(true);
+        } else {
+            if (getActivity() != null && !mIsMenuVisible && !cartListData.getShopGroupDataList().isEmpty()) {
+                mIsMenuVisible = true;
+                getActivity().invalidateOptionsMenu();
+            }
+        }
+        cartPageAnalytics.eventViewCartListFinishRender();
+
+    }
+
+    @Override
     public void onSuccessCheckPromoFirstStep(@NonNull ResponseGetPromoStackUiModel responseGetPromoStackUiModel) {
         // Update global promo state
         if (responseGetPromoStackUiModel.getData().getCodes().size() > 0) {
@@ -1957,5 +2003,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             return getArguments().getString(CartActivity.EXTRA_CART_ID);
         }
         return "0";
+    }
+
+    @Override
+    public void deleteInsurance(InsuranceCartShops insuranceCartShops) {
+
+        dPresenter.processDeleteCartInsurance(insuranceCartShops);
     }
 }

@@ -56,7 +56,9 @@ import com.tokopedia.transactiondata.apiservice.CartResponseErrorException;
 import com.tokopedia.transactiondata.entity.request.RemoveCartRequest;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
 import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartGqlResponse;
-import com.tokopedia.transactiondata.usecase.GetInsuranceCartUseCase;
+import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShops;
+import com.tokopedia.transactiondata.insurance.usecase.DeleteInsuranceProductUsecase;
+import com.tokopedia.transactiondata.insurance.usecase.GetInsuranceCartUseCase;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -122,6 +124,7 @@ public class CartListPresenter implements ICartListPresenter {
     private final TopAdsGqlUseCase topAdsUseCase;
     private final ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase;
     private final GetInsuranceCartUseCase getInsuranceCartUseCase;
+    private final DeleteInsuranceProductUsecase deleteInsuranceProductUsecase;
     private final UserSessionInterface userSessionInterface;
     private CartListData cartListData;
     private boolean hasPerformChecklistChange;
@@ -145,7 +148,8 @@ public class CartListPresenter implements ICartListPresenter {
                              UserSessionInterface userSessionInterface,
                              TopAdsGqlUseCase topAdsUseCase,
                              ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase,
-                             GetInsuranceCartUseCase getInsuranceCartUseCase) {
+                             GetInsuranceCartUseCase getInsuranceCartUseCase,
+                             DeleteInsuranceProductUsecase deleteInsuranceProductUsecase) {
         this.getCartListUseCase = getCartListUseCase;
         this.compositeSubscription = compositeSubscription;
         this.deleteCartUseCase = deleteCartUseCase;
@@ -164,6 +168,7 @@ public class CartListPresenter implements ICartListPresenter {
         this.topAdsUseCase = topAdsUseCase;
         this.clearCacheAutoApplyStackUseCase = clearCacheAutoApplyStackUseCase;
         this.getInsuranceCartUseCase = getInsuranceCartUseCase;
+        this.deleteInsuranceProductUsecase = deleteInsuranceProductUsecase;
     }
 
     @Override
@@ -290,6 +295,11 @@ public class CartListPresenter implements ICartListPresenter {
     @Override
     public void getInsuranceTechCart() {
         getInsuranceCartUseCase.execute(getSubscriberInsuranceCart());
+    }
+
+    @Override
+    public void processDeleteCartInsurance(InsuranceCartShops insuranceCartShops) {
+        // TODO: 19/6/19 delete insurance
     }
 
     @Override
@@ -586,6 +596,8 @@ public class CartListPresenter implements ICartListPresenter {
         int totalItemQty = 0;
         int errorProductCount = 0;
 
+        // TODO: 18/6/19 add insurance product price
+
         // Collect all Cart Item, if has no error and selected
         List<CartItemHolderData> allCartItemDataList = new ArrayList<>();
         for (CartShopHolderData cartShopHolderData : dataList) {
@@ -847,19 +859,19 @@ public class CartListPresenter implements ICartListPresenter {
 
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
-
+                InsuranceCartGqlResponse insuranceCartGqlResponse = null;
                 if (graphqlResponse != null &&
                         graphqlResponse.getData(InsuranceCartGqlResponse.class) != null) {
-
-                    InsuranceCartGqlResponse insuranceCartGqlResponse =
+                    insuranceCartGqlResponse =
                             graphqlResponse.getData(InsuranceCartGqlResponse.class);
-
-                    view.showToastMessageGreen("Cart Success");
-
+//                    view.renderInsuranceCartData(insuranceCartGqlResponse);
                 } else {
-
+                    /*
+                      Do Nothing is insureTech cart service fails
+                     */
                     view.showToastMessageRed("Cart Fail");
                 }
+                view.renderInsuranceCartData(insuranceCartGqlResponse);
             }
         };
     }

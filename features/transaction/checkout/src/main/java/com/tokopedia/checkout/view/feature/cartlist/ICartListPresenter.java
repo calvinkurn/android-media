@@ -7,6 +7,7 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
+import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShops;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.ArrayList;
@@ -71,4 +72,6 @@ public interface ICartListPresenter {
     Map<Integer, Boolean> getCheckedCartItemState();
 
     void getInsuranceTechCart();
+
+    void processDeleteCartInsurance(InsuranceCartShops insuranceCartShops);
 }

@@ -291,5 +291,6 @@
     <string name="gratis_ongkir_promo_kurir">Gratis Ongkir (Promo Kurir)</string>
     <string name="checkout_module_label_promo_no_item_checked">Silakan pilih item terlebih dahulu</string>
     <string name="logistic_promo_err_msg">Promo pengiriman sedang bermasalah. Silakan ubah pengiriman anda</string>
+    <string name="insurance_cart_label">Produk Asuransi</string>
 
 </resources>

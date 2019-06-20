@@ -24,6 +24,8 @@ public class CartItemData implements Parcelable {
     private String errorMessageDescription;
     private boolean isDisableAllProducts;
 
+    // TODO: 19/6/19 add micro insurance data, if available
+
     public boolean isFulfillment() {
         return isFulfillment;
     }

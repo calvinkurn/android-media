@@ -32,9 +32,12 @@ query GetInsureTechCart($data: TransactionalUserInfo) {
               value
               values {
                 id
+                value
               }
               validations {
                 id
+                type
+                value
               }
             }
           }

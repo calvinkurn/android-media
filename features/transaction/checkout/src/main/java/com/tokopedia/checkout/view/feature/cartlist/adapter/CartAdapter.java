@@ -11,7 +11,6 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartTickerErrorData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
-import com.tokopedia.checkout.domain.datamodel.promostacking.VoucherOrdersItemData;
 import com.tokopedia.checkout.view.common.adapter.CartAdapterActionListener;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemTickerErrorHolderData;
 import com.tokopedia.checkout.view.common.viewholder.CartPromoSuggestionViewHolder;
@@ -20,6 +19,7 @@ import com.tokopedia.checkout.view.common.viewholder.ShipmentSellerCashbackViewH
 import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartShopViewHolder;
 import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartTickerErrorViewHolder;
 import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartTopAdsViewHolder;
+import com.tokopedia.checkout.view.feature.cartlist.viewholder.InsuranceCartShopViewHolder;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentSellerCashbackModel;
@@ -30,6 +30,7 @@ import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
+import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShops;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +46,7 @@ import rx.subscriptions.CompositeSubscription;
 
 public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final CartAdapter.ActionListener cartActionListener;
+    private final CartAdapter.InsuranceItemActionlistener insuranceItemActionlistener;
     private final CartItemAdapter.ActionListener cartItemActionListener;
     private List<Object> cartDataList;
     private ShipmentSellerCashbackModel shipmentSellerCashbackModel;
@@ -54,10 +56,12 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Inject
     public CartAdapter(CartAdapter.ActionListener cartActionListener,
-                       CartItemAdapter.ActionListener cartItemActionListener) {
+                       CartItemAdapter.ActionListener cartItemActionListener,
+                       CartAdapter.InsuranceItemActionlistener insuranceItemActionlistener) {
         this.cartDataList = new ArrayList<>();
         this.cartActionListener = cartActionListener;
         this.cartItemActionListener = cartItemActionListener;
+        this.insuranceItemActionlistener = insuranceItemActionlistener;
         compositeSubscription = new CompositeSubscription();
         viewPool = new RecyclerView.RecycledViewPool();
     }
@@ -80,6 +84,8 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             return ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK;
         } else if (cartDataList.get(position) instanceof TopAdsModel) {
             return CartTopAdsViewHolder.TYPE_VIEW_CART_TOPADS;
+        } else if (cartDataList.get(position) instanceof InsuranceCartShops) {
+            return InsuranceCartShopViewHolder.TYPE_VIEW_INSURANCE_CART_SHOP;
         } else {
             return super.getItemViewType(position);
         }
@@ -112,7 +118,12 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(CartTopAdsViewHolder.TYPE_VIEW_CART_TOPADS, parent, false);
             return new CartTopAdsViewHolder(view, cartActionListener);
+        } else if (viewType == InsuranceCartShopViewHolder.TYPE_VIEW_INSURANCE_CART_SHOP) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(InsuranceCartShopViewHolder.TYPE_VIEW_INSURANCE_CART_SHOP, parent, false);
+            return new InsuranceCartShopViewHolder(view, insuranceItemActionlistener);
         }
+
         throw new RuntimeException("No view holder type found");
     }
 
@@ -142,6 +153,10 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             final CartTopAdsViewHolder holderView = (CartTopAdsViewHolder) holder;
             final TopAdsModel data = (TopAdsModel) cartDataList.get(position);
             holderView.renderTopAds(data);
+        } else if (getItemViewType(position) == InsuranceCartShopViewHolder.TYPE_VIEW_INSURANCE_CART_SHOP) {
+            final InsuranceCartShopViewHolder insuranceCartShopViewHolder = (InsuranceCartShopViewHolder) holder;
+            final InsuranceCartShops insuranceCartShops = (InsuranceCartShops) cartDataList.get(position);
+            insuranceCartShopViewHolder.bindData(insuranceCartShops, position);
         }
     }
 
@@ -379,6 +394,12 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         checkForShipmentForm();
     }
 
+    public void addInsuranceDataList(InsuranceCartShops shopIemsList) {
+        cartDataList.add(shopIemsList);
+        notifyDataSetChanged();
+        // TODO: 19/6/19 check if need to call checkForShipmentForm()
+    }
+
     public void resetData() {
         cartDataList.clear();
         notifyDataSetChanged();
@@ -589,6 +610,14 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void mappingTopAdsModel(TopAdsModel adsModel) {
         cartDataList.add(adsModel);
     }
+
+
+    public interface InsuranceItemActionlistener extends CartAdapterActionListener{
+        void deleteInsurance(InsuranceCartShops insuranceCartShops);
+
+        // TODO: 19/6/19 add methods according to insurance items usecase ex: opening bottom sheet for application details
+    }
+
 
     public interface ActionListener extends CartAdapterActionListener {
 
