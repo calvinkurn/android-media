@@ -12,18 +12,15 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -31,7 +28,6 @@ import com.tokopedia.library.baseadapter.AdapterCallback;
 import com.tokopedia.library.baseadapter.BaseAdapter;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.activity.CouponDetailActivity;
-import com.tokopedia.tokopoints.view.fragment.CouponInStackBottomSheet;
 import com.tokopedia.tokopoints.view.model.CouponValueEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity;
 import com.tokopedia.tokopoints.view.presenter.CouponListingStackedPresenter;
@@ -43,7 +39,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import rx.Subscriber;
 
@@ -305,6 +300,7 @@ public class CouponListStackedBaseAdapter extends BaseAdapter<CouponValueEntity>
         if (holder.timer != null) {
             holder.timer.cancel();
         }
+        enableOrDisableImages(holder, item);
 
         if (item.getUsage() != null) {
             if (item.getUsage().getActiveCountDown() < 1) {
@@ -342,15 +338,6 @@ public class CouponListStackedBaseAdapter extends BaseAdapter<CouponValueEntity>
                 holder.progressTimer.setVisibility(View.GONE);
                 holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), R.color.black_70));
             }
-
-            if (item.getUsage().getActiveCountDown() > 0) {
-                holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.imgLabel.getContext(), R.color.tp_coupon_enable), android.graphics.PorterDuff.Mode.SRC_IN);
-                holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.ivMinTxn.getContext(), R.color.tp_coupon_enable), android.graphics.PorterDuff.Mode.SRC_IN);
-            } else {
-                holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.imgLabel.getContext(), R.color.medium_green), android.graphics.PorterDuff.Mode.SRC_IN);
-                holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.ivMinTxn.getContext(), R.color.medium_green), android.graphics.PorterDuff.Mode.SRC_IN);
-            }
-
             if (holder.itemView != null) {
                 holder.itemView.setOnClickListener(v -> {
                     if (item.isStacked()) {
@@ -364,6 +351,29 @@ public class CouponListStackedBaseAdapter extends BaseAdapter<CouponValueEntity>
                 });
             }
         }
+    }
+
+    private void enableOrDisableImages(ViewHolder holder, CouponValueEntity item) {
+        if(item.getUsage()!=null) {
+            if (item.getUsage().getActiveCountDown() > 0
+                    || item.getUsage().getExpiredCountDown() <= 0) {
+                disableImages(holder);
+            } else {
+                enableImages(holder);
+            }
+        }else{
+            disableImages(holder);
+        }
+    }
+
+    private void disableImages(ViewHolder holder) {
+        holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.imgLabel.getContext(), R.color.tp_coupon_disable), android.graphics.PorterDuff.Mode.SRC_IN);
+        holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.ivMinTxn.getContext(), R.color.tp_coupon_disable), android.graphics.PorterDuff.Mode.SRC_IN);
+    }
+
+    private void enableImages(ViewHolder holder) {
+        holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.imgLabel.getContext(), R.color.medium_green), android.graphics.PorterDuff.Mode.SRC_IN);
+        holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.ivMinTxn.getContext(), R.color.medium_green), android.graphics.PorterDuff.Mode.SRC_IN);
     }
 
     private GradientDrawable getShape(String hex, Context context) {
