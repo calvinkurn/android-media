@@ -523,7 +523,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             @Override
             public void onError(Throwable e) {
                 viewListener.finishLoading();
-                Intent intent = BaseDownloadAppLinkActivity.newIntent(context, uriData.toString(),true,"[pdf]");
+                Intent intent = BaseDownloadAppLinkActivity.newIntent(context, uriData.toString(),true);
                 context.startActivity(intent);
                 context.finish();
             }
@@ -539,7 +539,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                         Crashlytics.logException(new ShopNotFoundException(linkSegment.get(0)));
                         Crashlytics.logException(new ProductNotFoundException(linkSegment.get(0) + "/" + linkSegment.get(1)));
                     }
-                    Intent intent = BaseDownloadAppLinkActivity.newIntent(context, uriData.toString(),true,"[pdf]");
+                    Intent intent = BaseDownloadAppLinkActivity.newIntent(context, uriData.toString(),true);
                     context.startActivity(intent);
                 }
                 context.finish();

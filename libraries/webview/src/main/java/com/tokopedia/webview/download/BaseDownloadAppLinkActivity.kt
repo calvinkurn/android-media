@@ -23,8 +23,9 @@ open class BaseDownloadAppLinkActivity : BaseSimpleWebViewActivity() {
         const val KEY_EXT = "EXT"
 
         @JvmStatic
+        @JvmOverloads
         fun newIntent(context: Context, url: String, showToolbar: Boolean,
-                      extensions: String): Intent {
+                      extensions: String = "[pdf]"): Intent {
             return Intent(context, BaseDownloadAppLinkActivity::class.java)
                     .putExtra(ARGS_URL, url)
                     .putExtra(KEY_SHOW_TOOLBAR, showToolbar)
