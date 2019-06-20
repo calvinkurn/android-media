@@ -62,7 +62,7 @@ public class PushNotification {
         RequestParams requestParams = useCase.createRequestParam(applinkNotificationModel);
 
         useCase.createObservable(requestParams)
-                .take(1)
+//                .take(1)
                 .subscribe(new Subscriber<TrackPushNotificationEntity>() {
                     @Override
                     public void onCompleted() {
