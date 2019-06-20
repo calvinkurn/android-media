@@ -44,11 +44,14 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
 
     private boolean isEnoughDeposit;
     private boolean isDismissToTopUp;
+    private boolean isAutoAds;
 
     public interface TopAdsDetailProductFragmentListener {
         void goToProductActivity(String productUrl);
 
         void startShowCase();
+
+        void startShowCaseAutoAds();
     }
 
     private LabelView promoGroupLabelView;
@@ -208,7 +211,11 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
                         return;
 
                     if (listener != null) {
-                        listener.startShowCase();
+                        if(isAutoAds){
+                            listener.startShowCaseAutoAds();
+                        } else {
+                            listener.startShowCase();
+                        }
                     }
                 }
             });
@@ -223,14 +230,19 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
     @Override
     public void onAutoAdsActive() {
         super.onAutoAdsActive();
+        isAutoAds = true;
         status.setVisibility(View.GONE);
         promoGroupLabelView.setVisibility(View.GONE);
         priceAndSchedule.setVisibility(View.GONE);
+        if (listener != null) {
+            listener.startShowCaseAutoAds();
+        }
     }
 
     @Override
     public void onAutoAdsInactive() {
         super.onAutoAdsInactive();
+        isAutoAds = false;
         status.setVisibility(View.VISIBLE);
         promoGroupLabelView.setVisibility(View.VISIBLE);
         priceAndSchedule.setVisibility(View.VISIBLE);
@@ -327,6 +339,10 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
     // for show case
     public View getStatusView() {
         return getView().findViewById(R.id.status);
+    }
+
+    public View getStatisticView() {
+        return getView().findViewById(R.id.title_statistic_review);
     }
 
     @Override
