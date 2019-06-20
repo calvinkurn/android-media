@@ -219,7 +219,7 @@ public class InboxDetailPresenterImpl
 
             @Override
             public void onNext(ChipGetInboxDetail chipGetInboxDetail) {
-                if (chipGetInboxDetail != null && chipGetInboxDetail.getData()  != null && chipGetInboxDetail.getData().getTickets() != null) {
+                if (chipGetInboxDetail != null && chipGetInboxDetail.getData()  != null && chipGetInboxDetail.getData().getTickets() != null && chipGetInboxDetail.getData().getIsSuccess()==1) {
                     mTicketDetail = chipGetInboxDetail.getData().getTickets();
                     CommentsItem topItem = new CommentsItem();
                     topItem.setAttachment(mTicketDetail.getAttachment());
@@ -260,6 +260,9 @@ public class InboxDetailPresenterImpl
                     }
                     mView.renderMessageList(mTicketDetail);
                     mView.hideProgressBar();
+                }
+                else if(chipGetInboxDetail.getData().getIsSuccess()==0){
+                    mView.showNoTicketView(chipGetInboxDetail.getMessageError());
                 }
             }
         });

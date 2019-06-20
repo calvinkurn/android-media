@@ -92,6 +92,9 @@ public class InboxDetailActivity extends InboxBaseActivity
     TextView currentRes;
     @BindView(R2.id.tv_priority_label)
     TextView tvPriorityLabel;
+    private View noTicketFound;
+    private TextView tvNoTicket;
+    private TextView tvOkButton;
 
 
     private ImageUploadAdapter imageUploadAdapter;
@@ -260,6 +263,9 @@ public class InboxDetailActivity extends InboxBaseActivity
         rvSelectedImages.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         rvSelectedImages.setAdapter(imageUploadAdapter);
         edMessage.addTextChangedListener(((InboxDetailContract.InboxDetailPresenter) mPresenter).watcher());
+        noTicketFound = findViewById(R.id.no_ticket_found);
+        tvNoTicket = findViewById(R.id.tv_no_ticket);
+        tvOkButton = findViewById(R.id.tv_ok_button);
     }
 
 
@@ -333,6 +339,17 @@ public class InboxDetailActivity extends InboxBaseActivity
         return rateCommentID;
     }
 
+    @Override
+    public void showNoTicketView(List<String> messageError) {
+        noTicketFound.setVisibility(View.VISIBLE);
+        tvNoTicket.setText(messageError.get(0));
+        tvOkButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+    }
 
     @OnClick(R2.id.iv_send_button)
     void sendMessage() {
