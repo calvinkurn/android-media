@@ -174,7 +174,7 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
                 "topchat",
                 budget,
                 userSession.shopId.toInt(),
-                "one-click-promo"
+                "one_click_promo"
         )))
     }
 
@@ -185,7 +185,7 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
                 "topchat",
                 budget,
                 userSession.shopId.toInt(),
-                "one-click-promo"
+                "one_click_promo"
         )))
     }
 

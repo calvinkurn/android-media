@@ -18,6 +18,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ScrollView
+import android.widget.Toast
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GlobalConfig
@@ -475,6 +476,8 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
                     .loadRawString(resources, R.raw.gql_query_get_status_auto_topup))
             if (data?.getBooleanExtra("no_redirect", false) != true)
                 goToCreditHistory(true)
+        } else if (requestCode == AutoAdsWidgetView.REQUEST_KEY_AUTOADS_WIDGET) {
+            Toast.makeText(context, "Iklan Otomatis berhasil dinonaktifkan", Toast.LENGTH_SHORT).show()
         }
     }
 

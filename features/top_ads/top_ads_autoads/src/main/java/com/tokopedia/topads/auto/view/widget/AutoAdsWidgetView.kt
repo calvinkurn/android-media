@@ -1,5 +1,6 @@
 package com.tokopedia.topads.auto.view.widget
 
+import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
@@ -125,7 +126,7 @@ class AutoAdsWidgetView : CardView {
             val intent = Intent(context, SettingBudgetAdsActivity::class.java)
             intent.putExtra(DailyBudgetFragment.KEY_DAILY_BUDGET, budget)
             intent.putExtra(DailyBudgetFragment.KEY_AUTOADS_STATUS, status)
-            context.startActivity(intent)
+            (context as Activity).startActivityForResult(intent, REQUEST_KEY_AUTOADS_WIDGET)
         }
     }
 
@@ -172,7 +173,7 @@ class AutoAdsWidgetView : CardView {
             val intent = Intent(context, SettingBudgetAdsActivity::class.java)
             intent.putExtra(DailyBudgetFragment.KEY_DAILY_BUDGET, budget)
             intent.putExtra(DailyBudgetFragment.KEY_AUTOADS_STATUS, status)
-            context.startActivity(intent)
+            (context as Activity).startActivityForResult(intent, REQUEST_KEY_AUTOADS_WIDGET)
         }
     }
 
@@ -183,5 +184,9 @@ class AutoAdsWidgetView : CardView {
     interface ActiveListener {
         fun onActive()
         fun onInActive()
+    }
+
+    companion object{
+        var REQUEST_KEY_AUTOADS_WIDGET = 3490
     }
 }
