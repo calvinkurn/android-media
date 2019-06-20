@@ -75,6 +75,7 @@ public class ChangeAwbFragment extends TkpdFragment {
         changeRefConfirmButton
                 .setOnClickListener(onChangeAwbButtonClicked(refNumberField, textInputLayout));
         scanBarcodeButton.setOnClickListener(onBarcodeScannerClickedListener());
+        permissionCheckerHelper = new PermissionCheckerHelper();
         return view;
     }
 
