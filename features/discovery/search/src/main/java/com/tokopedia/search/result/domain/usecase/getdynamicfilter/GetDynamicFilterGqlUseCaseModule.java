@@ -21,13 +21,11 @@ import dagger.Module;
 import dagger.Provides;
 import rx.functions.Func1;
 
-@SearchScope
 @Module(includes = DynamicFilterGqlMapperModule.class)
 public class GetDynamicFilterGqlUseCaseModule {
 
-    @SearchScope
     @Provides
-    @Named(SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_GQL_USE_CASE)
+    @Named(SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_USE_CASE)
     UseCase<DynamicFilterModel> provideGetDynamicFilterGqlUseCase(
             @ApplicationContext Context context,
             Func1<GraphqlResponse, DynamicFilterModel> dynamicFilterModelMapper

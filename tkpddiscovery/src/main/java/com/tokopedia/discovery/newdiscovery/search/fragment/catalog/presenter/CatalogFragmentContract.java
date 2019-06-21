@@ -2,8 +2,8 @@ package com.tokopedia.discovery.newdiscovery.search.fragment.catalog.presenter;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenter;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentView;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragmentPresenter;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragmentView;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface CatalogFragmentContract {
 
-    interface View extends SearchSectionFragmentView {
+    interface View extends BrowseSectionFragmentView {
 
         String getQueryKey();
 
@@ -59,7 +59,7 @@ public interface CatalogFragmentContract {
         SearchParameter getSearchParameter();
     }
 
-    interface Presenter extends SearchSectionFragmentPresenter<View> {
+    interface Presenter extends BrowseSectionFragmentPresenter<View> {
 
         void requestCatalogList();
 

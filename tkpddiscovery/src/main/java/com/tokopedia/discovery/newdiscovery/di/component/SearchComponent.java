@@ -9,7 +9,6 @@ import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductL
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryCatalogFragment;
 import com.tokopedia.discovery.newdiscovery.di.module.SearchModule;
 import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
-import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.CatalogFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.presenter.CatalogPresenter;
 
 import dagger.Component;
@@ -29,8 +28,6 @@ public interface SearchComponent {
     void inject(ImageSearchProductListFragment imageProductListFragment);
 
     void inject(ImageProductListPresenterImpl imageProductListPresenter);
-
-    void inject(CatalogFragment catalogFragment);
 
     void inject(CategoryCatalogFragment catalogFragment);
 

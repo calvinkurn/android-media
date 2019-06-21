@@ -16,7 +16,7 @@ import com.tokopedia.discovery.newdiscovery.hotlist.view.subscriber.GetHotlistIn
 import com.tokopedia.discovery.newdiscovery.hotlist.view.subscriber.GetHotlistLoadMoreSubscriber;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.subscriber.RefreshHotlistSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.GetDynamicFilterSubscriber;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenterImpl;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragmentPresenterImpl;
 import com.tokopedia.discovery.newdiscovery.util.HotlistParameter;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
@@ -29,7 +29,7 @@ import javax.inject.Inject;
  * Created by hangnadi on 10/6/17.
  */
 
-public class HotlistFragmentPresenter extends SearchSectionFragmentPresenterImpl<HotlistFragmentContract.View>
+public class HotlistFragmentPresenter extends BrowseSectionFragmentPresenterImpl<HotlistFragmentContract.View>
         implements HotlistFragmentContract.Presenter, WishListActionListener {
 
     @Inject

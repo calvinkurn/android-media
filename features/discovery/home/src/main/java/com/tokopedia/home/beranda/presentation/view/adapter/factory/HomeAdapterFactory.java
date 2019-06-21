@@ -211,7 +211,6 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
             viewHolder = new InspirationHeaderViewHolder(view);
         else if (type == HomeRecommendationFeedViewHolder.LAYOUT) {
             viewHolder = new HomeRecommendationFeedViewHolder(view, listener);
-            viewHolder.setIsRecyclable(false);
         }
         else viewHolder = super.createViewHolder(view, type);
 

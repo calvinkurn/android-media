@@ -18,6 +18,11 @@ public interface BrowseApi {
             @QueryMap Map<String, Object> requestParams
     );
 
+    @GET(SearchConstant.Ace.PATH_BROWSE_CATALOG)
+    Observable<Response<String>> browseCatalogs(
+            @QueryMap Map<String, Object> requestParams
+    );
+
     @GET(SearchConstant.Ace.PATH_GET_DYNAMIC_ATTRIBUTE)
     Observable<Response<String>> getDynamicAttribute(
             @QueryMap Map<String, Object> requestParams

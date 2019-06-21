@@ -12,6 +12,7 @@ import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 
 import dagger.Module;
 import dagger.Provides;
@@ -22,7 +23,6 @@ import dagger.Provides;
 
 @SearchScope
 @Module(includes = {
-        GuidedSearchModule.class,
         ProductModule.class,
         ImageSearchModule.class,
         BannerModule.class,
@@ -50,4 +50,11 @@ public class SearchModule {
                                          UserSessionInterface userSessionInterface) {
         return new SearchTracking(context, userSessionInterface);
     }
+
+    @SearchScope
+    @Provides
+    PermissionCheckerHelper providePermissionCheckerHelper() {
+        return new PermissionCheckerHelper();
+    }
+
 }

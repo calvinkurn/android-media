@@ -12,11 +12,9 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 
-@SearchScope
 @Module(includes = DynamicFilterRepositoryModule.class)
 public class GetDynamicFilterUseCaseModule {
 
-    @SearchScope
     @Provides
     @Named(SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_USE_CASE)
     UseCase<DynamicFilterModel> provideGetDynamicFilterUseCase(
@@ -24,7 +22,6 @@ public class GetDynamicFilterUseCaseModule {
         return new GetDynamicFilterUseCase(repository);
     }
 
-    @SearchScope
     @Provides
     @Named(SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_V4_USE_CASE)
     UseCase<DynamicFilterModel> provideGetDynamicFilterV4UseCase(

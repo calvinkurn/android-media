@@ -8,20 +8,20 @@
     <string name="ovo_tnc_text"><![CDATA[Proses ini dilakukan sepenuhnya oleh OVO. <b><font color="#06b3ba">Lihat Syarat &amp; Ketentuan OVO</font></b>]]></string>
     <string name="ovo_confirm_tnc_text"><![CDATA[Saya setuju dengan <b><font color="#06b3ba">Syarat dan Ketentuan</font></b> yang berlaku.]]></string>
     <string name="upgrade_failure">Yuk, kama bisa mengulang proses peningkatan level akun OVO degan mengeklik tombol di bawah ini.</string>
-    <string name="inprc_ttl">APLIKASI DALAM PROSES</string>
+    <string name="inprc_ttl">Selamat!\nPengajuanmu dalam Proses!</string>
     <string name="inprc_desc">Aplikasi Anda sedang kami proses. Kami akan memberikan notifikasi dalam waktu 24 jam. Untuk bantuan &amp; pertanyaan, silahkan hubungi:</string>
     <string name="inprc_ttl1">Call Center OVO</string>
     <string name="ovo_ccno">1500 696</string>
     <string name="ovo_cctiming">(Senin - Minggu, Pukul 07.00 - 23.00 WIB)</string>
-    <string name="bck_toko">Kembali ke Tokopedia</string>
+    <string name="bck_toko">Kembali ke Halaman Utama</string>
     <string name="try_agn">COBA LAGI</string>
-    <string name="nt_sucsfl">Tidak Berhasil</string>
+    <string name="nt_sucsfl">Oops! Terjadi Kendala Teknis</string>
     <string name="oke">OKE</string>
     <string name="upld_fail_retry">Gagal mengupload foto. Silahkan ulangi kembali</string>
     <string name="atn">Perhatian</string>
-    <string name="ovo_lvl_upgrd_fail">Level Akun OVO-mu Tidak Berhasil Ditingkatkan</string>
+    <string name="ovo_lvl_upgrd_fail">Upgrade OVO Premier Anda gagal diproses</string>
     <string name="dnt_wry">Jangan khawatir, kamu bisa mengulang proses peningkatan level akun OVO dengan mengeklik tombol di bawah ini</string>
-    <string name="upgrd_now">Upgrade OVO Sekarang</string>
+    <string name="upgrd_now">Upgrade Sekarang</string>
     <string name="rtrn_mnpg">Kembali Ke Halama Utama</string>
     <string name="ulng_fto">ULANGI FOTO</string>
     <string name="ulng">Ulangi</string>
@@ -45,8 +45,8 @@
     <string name="aplikasi_ovo">Aplikasi OVO Premier kamu sedang diproses</string>
     <string name="liht_sel">Lihat Selengkapnya</string>
     <string name="gnkn">GUNAKAN</string>
-    <string name="hore_kamu">Hore! Kamu Bergabung ke OVO Premier</string>
-    <string name="satny_nkmt">Saatnya nikmati keuntungan dari OVO Premier:</string>
+    <string name="hore_kamu">Selamat!\nUpgrade ke OVO Premier Berhasil</string>
+    <string name="satny_nkmt">Saatnya nikmati keuntungan dari <b>OVO Premier:</b></string>
     <string name="bts_sld">Batas saldo OVO Cash Rp10.000.000</string>
     <string name="tnsfr_k_antr">Transfer ke antar pengguna OVO Cash</string>
     <string name="bbs_bia">Bebas biaya transfer ke rekening bank</string>
