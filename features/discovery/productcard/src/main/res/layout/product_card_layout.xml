@@ -98,15 +98,6 @@
             app:typographyWeight="bold"
             tools:text="Harga" />
 
-        <View
-            android:id="@+id/dummyViewForLeftPadding"
-            android:layout_width="@dimen/dp_0"
-            android:layout_height="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginStart="@dimen/dp_8"
-            app:layout_constraintTop_toBottomOf="@id/textPrice"
-            app:layout_constraintStart_toStartOf="@id/image" />
-
         <LinearLayout
             android:id="@+id/shopBadgesContainer"
             android:layout_width="wrap_content"
@@ -114,11 +105,9 @@
             android:layout_marginTop="@dimen/dp_4"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_4"
-            android:layout_marginEnd="@dimen/dp_4"
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/textPrice"
-            app:layout_constraintStart_toEndOf="@id/dummyViewForLeftPadding"
+            app:layout_constraintStart_toEndOf="@id/image"
             android:orientation="horizontal" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -128,6 +117,8 @@
             android:layout_toRightOf="@id/shopBadgesContainer"
             android:layout_toEndOf="@id/shopBadgesContainer"
             android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:layout_marginStart="@dimen/dp_4"
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
             android:ellipsize="end"
@@ -140,10 +131,10 @@
             tools:text="Town Location" />
 
         <ImageView
+            android:id="@+id/rating"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_4"
-            android:id="@+id/rating"
             android:layout_width="@dimen/dp_52"
             android:layout_height="@dimen/dp_10"
             app:layout_constraintStart_toStartOf="@+id/image"

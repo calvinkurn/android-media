@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -232,16 +233,25 @@ public class ProductCardView extends BaseCustomView {
         textLocation.setText(MethodChecker.fromHtml(location));
     }
 
-    private void setMarginsToView(View view, int leftPixel, int topPixel, int rightPixel, int bottomPixel) {
-        if(view.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
-            ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) textLocation.getLayoutParams();
+    public void setTextLocationMarginsWithNegativeDefaultValue(int leftPixel, int topPixel, int rightPixel, int bottomPixel) {
+        setMarginsToView(textLocation, leftPixel, topPixel, rightPixel, bottomPixel);
+    }
 
-            layoutParams.setMargins(
-                    leftPixel < 0 ? layoutParams.leftMargin : leftPixel,
-                    topPixel < 0 ? layoutParams.topMargin : topPixel,
-                    rightPixel < 0 ? layoutParams.rightMargin : rightPixel,
-                    bottomPixel < 0 ? layoutParams.bottomMargin : bottomPixel
-            );
+    private void setMarginsToView(View view, int leftPixel, int topPixel, int rightPixel, int bottomPixel) {
+        if(view.getLayoutParams() instanceof ConstraintLayout.LayoutParams) {
+            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) textLocation.getLayoutParams();
+
+//            layoutParams.setMargins(
+//                    leftPixel < 0 ? layoutParams.leftMargin : leftPixel,
+//                    topPixel < 0 ? layoutParams.topMargin : topPixel,
+//                    rightPixel < 0 ? layoutParams.rightMargin : rightPixel,
+//                    bottomPixel < 0 ? layoutParams.bottomMargin : bottomPixel
+//            );
+
+            layoutParams.leftMargin = leftPixel < 0 ? layoutParams.leftMargin : leftPixel;
+            layoutParams.topMargin = topPixel < 0 ? layoutParams.topMargin : topPixel;
+            layoutParams.rightMargin = rightPixel < 0 ? layoutParams.rightMargin : rightPixel;
+            layoutParams.bottomMargin = bottomPixel < 0 ? layoutParams.bottomMargin : bottomPixel;
 
             view.setLayoutParams(layoutParams);
         }
