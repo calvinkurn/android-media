@@ -8,11 +8,11 @@ import android.graphics.Paint
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.text.TextUtils
+import android.view.*
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -55,6 +55,8 @@ class ProductInfoFragment : BaseDaggerFragment() {
 
     private val recommendationItem: RecommendationItem by lazy { mapToRecommendationItem() }
 
+    private var menu: Menu? = null
+
     override fun getScreenName(): String {
         return ""
     }
@@ -70,6 +72,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
 
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
         private const val WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition"
+        private const val SHARE_PRODUCT_TITLE = "Bagikan Produk Ini"
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -141,6 +144,26 @@ class ProductInfoFragment : BaseDaggerFragment() {
                 RecommendationPageTracking.eventAddWishlistOnProductRecommendationNonLogin()
                 RouteManager.route(activity, ApplinkConst.LOGIN)
             }
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        inflater?.inflate(R.menu.menu_product_detail_dark, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+        this.menu = menu
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        return when(item?.itemId){
+            android.R.id.home -> {
+                RecommendationPageTracking.eventUserClickBack()
+                RouteManager.route(activity, ApplinkConst.HOME)
+                true
+            }
+            R.id.action_share -> {
+                shareProduct(); true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
@@ -295,6 +318,49 @@ class ProductInfoFragment : BaseDaggerFragment() {
         }else{
             RecommendationPageTracking.eventClickOnOrganicProductRecommendationForNonLoginUser(item, item.position.toString())
         }
+    }
+
+    private fun shareProduct(){
+        LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
+                productDataToLinkerDataMapper(), object : ShareCallback {
+            override fun urlCreated(linkerShareData: LinkerShareResult) {
+                openIntentShare(productDataModel.productDetailData.name, context!!.getString(R.string.home_recommendation), linkerShareData.url)
+            }
+
+            override fun onError(linkerError: LinkerError) {
+                openIntentShare(productDataModel.productDetailData.name, context!!.getString(R.string.home_recommendation), "https://tokopedia.com/rekomendasi/${productDataModel.productDetailData.id.toString()}")
+            }
+        }))
+    }
+
+    private fun productDataToLinkerDataMapper(): LinkerShareData{
+        var linkerData = LinkerData()
+        linkerData.id = productDataModel.productDetailData.id
+        linkerData.name = productDataModel.productDetailData.name
+        linkerData.description = productDataModel.productDetailData.name
+        linkerData.imgUri = productDataModel.productDetailData.imageUrl
+        linkerData.ogUrl = null
+        linkerData.type = LinkerData.PRODUCT_TYPE
+        linkerData.uri =  productDataModel.productDetailData.url
+        var linkerShareData = LinkerShareData()
+        linkerShareData.linkerData = linkerData
+        return linkerShareData
+    }
+
+    private fun openIntentShare(title: String, shareContent: String, shareUri: String){
+
+        val shareIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            type = "text/plain"
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            putExtra(Intent.EXTRA_REFERRER, shareUri)
+            putExtra(Intent.EXTRA_HTML_TEXT, shareContent)
+            putExtra(Intent.EXTRA_TITLE, title)
+            putExtra(Intent.EXTRA_TEXT, shareContent)
+            putExtra(Intent.EXTRA_SUBJECT, title)
+        }
+
+        activity?.startActivity(Intent.createChooser(shareIntent, SHARE_PRODUCT_TITLE))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -42,13 +42,4 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
     override fun getComponent(): HomeRecommendationComponent = DaggerHomeRecommendationComponent.builder()
             .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        item?.let {
-            if (item.itemId == android.R.id.home) {
-                RecommendationPageTracking.eventUserClickBack()
-                RouteManager.route(this, ApplinkConst.HOME)
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
 }
