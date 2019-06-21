@@ -269,7 +269,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
             putExtra(Intent.EXTRA_REFERRER, shareUri)
             putExtra(Intent.EXTRA_HTML_TEXT, "$shareContent $shareUri")
             putExtra(Intent.EXTRA_TITLE, title)
-            putExtra(Intent.EXTRA_TEXT, shareContent)
+            putExtra(Intent.EXTRA_TEXT, "$shareContent $shareUri")
             putExtra(Intent.EXTRA_SUBJECT, title)
         }
 
