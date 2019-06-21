@@ -293,7 +293,7 @@
                 android:id="@+id/actionBtnLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginTop="@dimen/dp_6"
                 android:paddingTop="@dimen/dp_10"
                 android:paddingBottom="@dimen/dp_10"
                 android:background="@color/white"
