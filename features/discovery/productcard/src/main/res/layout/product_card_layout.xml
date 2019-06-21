@@ -13,15 +13,15 @@
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/dp_8">
         <com.tokopedia.topads.sdk.view.ImpressedImageView
-            android:id="@+id/image"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            app:corner_radius="0dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:layout_height="100dp" />
+                android:id="@+id/image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                app:corner_radius="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_height="100dp"/>
 
         <TextView
             android:id="@+id/textName"
@@ -87,17 +87,17 @@
             tools:text="Harga" />
 
         <ImageView
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginTop="@dimen/dp_4"
-            android:id="@+id/rating"
-            android:layout_width="@dimen/dp_52"
-            android:layout_height="@dimen/dp_10"
-            app:layout_constraintStart_toStartOf="@+id/image"
-            app:layout_constraintTop_toBottomOf="@+id/textPrice"
-            app:layout_constraintBottom_toBottomOf="parent"
-            tools:background="@color/red_150"
-            tools:layout_height="20dp" />
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_4"
+                android:id="@+id/rating"
+                android:layout_width="@dimen/dp_52"
+                android:layout_height="@dimen/dp_10"
+                app:layout_constraintStart_toStartOf="@+id/image"
+                app:layout_constraintTop_toBottomOf="@+id/textPrice"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:background="@color/red_150"
+                tools:layout_height="20dp" android:layout_marginBottom="8dp"/>
 
         <TextView
             android:id="@+id/review_count"
