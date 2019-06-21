@@ -158,6 +158,26 @@ public class ProductCardView extends BaseCustomView {
         }
     }
 
+    public void setRatingVisible(boolean isVisible) {
+        ratingView.setVisibility(isVisible ? View.VISIBLE : (fixedHeight ? View.INVISIBLE : View.GONE));
+    }
+
+    public void setReviewVisible(boolean isVisible) {
+        reviewCountView.setVisibility(isVisible ? View.VISIBLE : (fixedHeight ? View.INVISIBLE : View.GONE));
+    }
+
+    public void setRating(int rating) {
+        ratingView.setImageResource(getRatingDrawable(rating));
+    }
+
+    public void setReviewCount(int reviewCount) {
+        reviewCountView.setText(getReviewCountFormattedAsText(reviewCount));
+    }
+
+    public String getReviewCountFormattedAsText(int reviewCount) {
+        return "(" + reviewCount + ")";
+    }
+
     public ImpressedImageView getImageView() {
         return imageView;
     }

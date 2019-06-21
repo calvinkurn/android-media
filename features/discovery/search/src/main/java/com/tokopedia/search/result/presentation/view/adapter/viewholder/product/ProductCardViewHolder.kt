@@ -43,7 +43,7 @@ open class ProductCardViewHolder(
         initPriceTextView(productItem)
         initShopBadge(productItem)
         initLocationTextView(productItem)
-//        initCredibilitySection(productItem)
+        initCredibilitySection(productItem)
 //        initOffersLabel(productItem)
         initTopAdsIcon(productItem)
     }
@@ -138,7 +138,7 @@ open class ProductCardViewHolder(
     }
 
     private fun initTitleTextView(productItem: ProductItemViewModel) {
-        setTitleMarginTop(productItem)
+        //setTitleMarginTop(productItem)
 
         itemView.productCardView?.setTitle(productItem.productName)
     }
@@ -233,7 +233,7 @@ open class ProductCardViewHolder(
     }
 
     private fun initLocationTextView(productItem: ProductItemViewModel) {
-        setLocationTextViewMargin(productItem)
+//        setLocationTextViewMargin(productItem)
 
         if(!TextUtils.isEmpty(productItem.shopCity)) {
             itemView.productCardView?.setTextLocation(productItem.shopCity)
@@ -250,66 +250,54 @@ open class ProductCardViewHolder(
 
         itemView.productCardView?.setTextLocationMarginsWithNegativeDefaultValue(marginLeftPixel, -1, -1, -1)
     }
-//
-//    private fun initCredibilitySection(productItem: ProductItemViewModel) {
-//        initRatingAndReview(productItem)
+
+    private fun initCredibilitySection(productItem: ProductItemViewModel) {
+        initRatingAndReview(productItem)
 //        initCredibilityLabel(productItem)
 //        initCredibilitySectionContainer(productItem)
-//    }
-//
-//    private fun initRatingAndReview(productItem: ProductItemViewModel) {
-//        initRatingView(productItem)
-//        initReviewCount(productItem)
+    }
+
+    private fun initRatingAndReview(productItem: ProductItemViewModel) {
+        initRatingView(productItem)
+        initReviewCount(productItem)
 //        initRatingAndReviewContainer(productItem)
-//    }
-//
-//    private fun initRatingView(productItem: ProductItemViewModel) {
-//        if (isRatingViewVisible(productItem)) {
-//            itemView.ratingImage?.visibility = View.VISIBLE
-//            itemView.ratingImage?.setImageResource(getRatingDrawable(getStarCount(productItem)))
-//        } else {
-//            itemView.ratingImage?.visibility = View.GONE
-//        }
-//    }
-//
-//    private fun isRatingViewVisible(productItem: ProductItemViewModel): Boolean {
-//        return productItem.rating != 0
-//    }
-//
-//    private fun getRatingDrawable(param: Int): Int {
-//        return when (param) {
-//            0 -> R.drawable.search_ic_star_none
-//            1 -> R.drawable.search_ic_star_one
-//            2 -> R.drawable.search_ic_star_two
-//            3 -> R.drawable.search_ic_star_three
-//            4 -> R.drawable.search_ic_star_four
-//            5 -> R.drawable.search_ic_star_five
-//            else -> R.drawable.search_ic_star_none
-//        }
-//    }
-//
-//    private fun getStarCount(productItem: ProductItemViewModel): Int {
-//        return if (productItem.isTopAds)
-//            Math.round(productItem.rating / 20f)
-//        else
-//            Math.round(productItem.rating.toFloat())
-//    }
-//
-//    private fun initReviewCount(productItem: ProductItemViewModel) {
-//        if (isReviewCountVisible(productItem)) {
-//            setReviewCountPadding(productItem)
-//
-//            itemView.reviewCountTextView?.visibility = View.VISIBLE
-//            itemView.reviewCountTextView?.text = getReviewCountFormattedAsText(productItem.countReview)
-//        } else {
-//            itemView.reviewCountTextView?.visibility = View.GONE
-//        }
-//    }
-//
-//    private fun isReviewCountVisible(productItem: ProductItemViewModel): Boolean {
-//        return productItem.countReview != 0
-//    }
-//
+    }
+
+    private fun initRatingView(productItem: ProductItemViewModel) {
+        val isRatingViewVisible = isRatingViewVisible(productItem)
+
+        itemView.productCardView?.setRatingVisible(isRatingViewVisible(productItem))
+
+        if(isRatingViewVisible) {
+            itemView.productCardView?.setRating(getStarCount(productItem))
+        }
+    }
+
+    private fun isRatingViewVisible(productItem: ProductItemViewModel): Boolean {
+        return productItem.rating != 0
+    }
+
+    private fun getStarCount(productItem: ProductItemViewModel): Int {
+        return if (productItem.isTopAds)
+            Math.round(productItem.rating / 20f)
+        else
+            Math.round(productItem.rating.toFloat())
+    }
+
+    private fun initReviewCount(productItem: ProductItemViewModel) {
+        val isReviewCountVisible = isReviewCountVisible(productItem)
+
+        itemView.productCardView?.setReviewVisible(isReviewCountVisible)
+
+        if(isReviewCountVisible) {
+            itemView.productCardView?.setReviewCount(productItem.countReview)
+        }
+    }
+
+    private fun isReviewCountVisible(productItem: ProductItemViewModel): Boolean {
+        return productItem.countReview != 0
+    }
+
 //    private fun setReviewCountPadding(productItem: ProductItemViewModel) {
 //        if(itemView.reviewCountTextView != null) {
 //            val paddingLeftDp = if (isRatingViewVisible(productItem)) 4 else 0
@@ -321,16 +309,6 @@ open class ProductCardViewHolder(
 //                itemView.reviewCountTextView.paddingBottom
 //            )
 //        }
-//    }
-//
-//    private fun getReviewCountFormattedAsText(countReview: Int): String {
-//        val reviewCountStringBuilder = StringBuilder()
-//
-//        reviewCountStringBuilder.append("(")
-//        reviewCountStringBuilder.append(countReview)
-//        reviewCountStringBuilder.append(")")
-//
-//        return reviewCountStringBuilder.toString()
 //    }
 //
 //    private fun initRatingAndReviewContainer(productItem: ProductItemViewModel) {
