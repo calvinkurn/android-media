@@ -1005,7 +1005,7 @@ public class ProductListFragment
         if (recyclerView.getAdapter().getItemCount() >= PRODUCT_POSITION) {
             recyclerView.stopScroll();
             recyclerView.getLayoutManager().scrollToPosition(PRODUCT_POSITION + PRODUCT_POSITION);
-            return ((GridLayoutManager) recyclerView.getLayoutManager()).findViewByPosition(PRODUCT_POSITION);
+            return recyclerView.getLayoutManager().findViewByPosition(PRODUCT_POSITION);
         }
         return null;
     }
