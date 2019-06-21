@@ -7,6 +7,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.URLUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -152,7 +153,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
                     intent.putExtra(IS_CHAT_BOT, true)
                     startActivity(intent)
                 }
-                RouteManager.isSupportApplink(activity, url) -> RouteManager.route(activity, url)
+                RouteManager.isSupportApplink(activity, url) && !URLUtil.isNetworkUrl(url) -> RouteManager.route(activity, url)
                 isBranchIOLink(url) -> handleBranchIOLinkClick(url)
                 else -> {
                     val applinkRouter = activity!!.applicationContext as ApplinkRouter
