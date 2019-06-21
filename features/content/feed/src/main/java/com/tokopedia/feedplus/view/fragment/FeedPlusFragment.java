@@ -22,7 +22,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -186,7 +185,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private int loginIdInt;
     private boolean isLoadedOnce;
     private boolean afterPost;
-    public boolean isFABExpanded = false;
+    public boolean isFabExpanded = false;
 
     @Inject
     FeedPlusPresenter presenter;
@@ -265,7 +264,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent != null && intent.getAction() != null && intent.getAction().equals(BROADCAST_FEED)) {
-                    hideAllFAB(false);
+                    hideAllFab(false);
                     boolean isHaveNewFeed = intent.getBooleanExtra(PARAM_BROADCAST_NEW_FEED, false);
                     if (isHaveNewFeed) {
                         onShowNewFeed("");
@@ -329,7 +328,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     }
 
-    private void hideAllFAB(boolean isInitial) {
+    private void hideAllFab(boolean isInitial) {
         if (fabFeed != null) {
             if (isInitial) {
                 fabFeed.hide();
@@ -341,12 +340,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
             fabTextByme.setVisibility(View.GONE);
             fabTextShop.setVisibility(View.GONE);
             greyBackground.setVisibility(View.GONE);
-            isFABExpanded = false;
+            isFabExpanded = false;
         }
     }
 
     private void prepareView() {
-        hideAllFAB(true);
+        hideAllFab(true);
         if (!userSession.isLoggedIn()) {
             fabFeed.setVisibility(View.VISIBLE);
             fabFeed.setOnClickListener(v -> {
@@ -474,7 +473,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         adapter.notifyDataSetChanged();
         triggerClearNewFeedNotification();
         if (userSession.isLoggedIn() && whitelistViewModel != null && !whitelistViewModel.getWhitelist().getAuthors().isEmpty()) {
-            showFeedFAB(whitelistViewModel);
+            showFeedFab(whitelistViewModel);
         }
     }
 
@@ -739,7 +738,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onPause() {
         super.onPause();
         unRegisterNewFeedReceiver();
-        hideAllFAB(false);
+        hideAllFab(false);
     }
 
     private void registerNewFeedReceiver() {
@@ -761,10 +760,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
-    private void showFeedFAB(WhitelistViewModel whitelistViewModel) {
+    private void showFeedFab(WhitelistViewModel whitelistViewModel) {
         fabFeed.show();
-        isFABExpanded = false;
-        if (whitelistViewModel.getWhitelist().getAuthors().size() != 1) {
+        isFabExpanded = false;
+        if (!whitelistViewModel.getWhitelist().getAuthors().isEmpty() &&
+                whitelistViewModel.getWhitelist().getAuthors().size() != 1) {
             fabFeed.setOnClickListener(fabClickListener(whitelistViewModel));
         } else {
             Author author = whitelistViewModel.getWhitelist().getAuthors().get(0);
@@ -773,30 +773,27 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private View.OnClickListener fabClickListener(WhitelistViewModel whitelistViewModel) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isFABExpanded) {
-                    hideAllFAB(false);
-                } else {
-                    fabFeed.setAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_forward));
-                    greyBackground.setVisibility(View.VISIBLE);
-                    for (Author author : whitelistViewModel.getWhitelist().getAuthors()) {
-                        if (author.getTitle().equalsIgnoreCase("post toko")) {
-                            fabShop.show();
-                            fabTextShop.setVisibility(View.VISIBLE);
-                            fabShop.setOnClickListener(v1 -> onGoToLink(author.getLink()));
-                        } else {
-                            fabByme.show();
-                            fabTextByme.setVisibility(View.VISIBLE);
-                            fabByme.setOnClickListener(v12 -> onGoToLink(author.getLink()));
-                        }
+        return v -> {
+            if (isFabExpanded) {
+                hideAllFab(false);
+            } else {
+                fabFeed.setAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_forward));
+                greyBackground.setVisibility(View.VISIBLE);
+                for (Author author : whitelistViewModel.getWhitelist().getAuthors()) {
+                    if (author.getTitle().equalsIgnoreCase(Author.KEY_POST_TOKO)) {
+                        fabShop.show();
+                        fabTextShop.setVisibility(View.VISIBLE);
+                        fabShop.setOnClickListener(v1 -> onGoToLink(author.getLink()));
+                    } else {
+                        fabByme.show();
+                        fabTextByme.setVisibility(View.VISIBLE);
+                        fabByme.setOnClickListener(v12 -> onGoToLink(author.getLink()));
                     }
-                    greyBackground.setOnClickListener(v3 -> {
-                        hideAllFAB(false);
-                    });
-                    isFABExpanded = true;
                 }
+                greyBackground.setOnClickListener(v3 -> {
+                    hideAllFab(false);
+                });
+                isFabExpanded = true;
             }
         };
     }
@@ -827,7 +824,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         super.setUserVisibleHint(isVisibleToUser);
         loadData(isVisibleToUser);
         if (!isVisibleToUser) {
-            hideAllFAB(false);
+            hideAllFab(false);
         }
 
     }
