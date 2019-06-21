@@ -90,6 +90,10 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
         loadData()
     }
 
+    override fun hasInitialSwipeRefresh(): Boolean {
+        return true
+    }
+
     private fun loadData(){
         recommendationWidgetViewModel.getPrimaryProduct(productId, activity!!)
 
