@@ -138,7 +138,7 @@ open class ProductCardViewHolder(
     }
 
     private fun initTitleTextView(productItem: ProductItemViewModel) {
-        setTitleMarginTop(productItem)
+//        setTitleMarginTop(productItem)
 
         itemView.productCardView?.setTitle(productItem.productName)
     }

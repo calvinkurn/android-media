@@ -127,7 +127,6 @@ public class ProductCardView extends BaseCustomView {
     }
 
     public void setWishlistButtonVisible(boolean isVisible) {
-        //wishlist not implemented yet, don't delete this.
         wishlistButton.setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
 
