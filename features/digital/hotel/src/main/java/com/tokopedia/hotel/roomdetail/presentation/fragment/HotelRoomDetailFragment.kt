@@ -14,7 +14,6 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager

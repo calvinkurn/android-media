@@ -359,12 +359,12 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     }
 
     override fun onClickBookListener(room: HotelRoom) {
+        trackingHotelUtil.hotelChooseRoom(
+                hotelRoomListPageModel.propertyId,
+                room.roomId,
+                room.roomPrice.priceAmount.toInt(),
+                mapToHotelPromoProduct(roomList))
         if (userSessionInterface.isLoggedIn) {
-            trackingHotelUtil.hotelChooseRoom(
-                    hotelRoomListPageModel.propertyId,
-                    room.roomId,
-                    room.roomPrice.priceAmount.toInt(),
-                    mapToHotelPromoProduct(roomList))
             roomListViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart),
                     mapToAddCartParam(hotelRoomListPageModel, room))
         } else {
@@ -409,7 +409,6 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
 
         val TAG_CALENDAR_CHECK_IN = "calendarHotelCheckIn"
         val TAG_CALENDAR_CHECK_OUT = "calendarHotelCheckOut"
-        val ONE_DAY: Long = TimeUnit.DAYS.toMillis(1)
         val MAX_SELECTION_DATE = 30
         val DEFAULT_LAST_HOUR_IN_DAY = 23
         val DEFAULT_LAST_MIN_SEC_IN_DAY = 59
