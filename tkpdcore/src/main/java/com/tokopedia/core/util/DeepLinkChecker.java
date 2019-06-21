@@ -28,7 +28,10 @@ import java.util.List;
 /**
  * Created by Nisie on 28/10/15.
  * Modified by Alifa
+ *
+ * use DeepLinkChecker from library applink instead.
  */
+@Deprecated
 public class DeepLinkChecker {
 
     public static final int OTHER = -1;
@@ -166,7 +169,7 @@ public class DeepLinkChecker {
         return linkSegment.size() > 0 && linkSegment.get(0).equalsIgnoreCase(FLIGHT_SEGMENT);
     }
 
-    public static List<String> getLinkSegment(String url) {
+    private static List<String> getLinkSegment(String url) {
         return Uri.parse(url).getPathSegments();
     }
 
@@ -342,17 +345,26 @@ public class DeepLinkChecker {
         String source = BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT;
 
         bundle.putBoolean(IS_DEEP_LINK_SEARCH, true);
-        bundle.putString(BrowseProductRouter.DEPARTMENT_ID, departmentId);
-        bundle.putString(BrowseProductRouter.EXTRAS_SEARCH_TERM, searchQuery);
 
         Intent intent;
         if (TextUtils.isEmpty(departmentId)) {
-            intent = BrowseProductRouter.getSearchProductIntent(context);
+            intent = RouteManager.getIntent(context, constructSearchApplink(searchQuery, departmentId));
             intent.putExtras(bundle);
         } else {
             intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL, departmentId);
         }
         context.startActivity(intent);
+    }
+
+    private static String constructSearchApplink(String query, String departmentId) {
+        String applink = TextUtils.isEmpty(query) ?
+                ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE :
+                ApplinkConst.DISCOVERY_SEARCH;
+
+        return applink
+                + "?"
+                + "q=" + query
+                + "&sc=" + departmentId;
     }
 
     private static boolean isHotBrowse(String url) {

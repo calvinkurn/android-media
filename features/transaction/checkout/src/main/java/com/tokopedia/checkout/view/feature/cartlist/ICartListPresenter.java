@@ -22,7 +22,7 @@ public interface ICartListPresenter {
 
     void detachView();
 
-    void processInitialGetCartData(boolean initialLoad);
+    void processInitialGetCartData(String cartId, boolean initialLoad);
 
     void processDeleteCart(CartItemData cartItemData, boolean addWishList);
 

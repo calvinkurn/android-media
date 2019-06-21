@@ -1,12 +1,16 @@
 package com.tokopedia.topads.dashboard.view.presenter;
 
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
+import com.tokopedia.topads.dashboard.data.model.request.DataSuggestions;
 import com.tokopedia.topads.dashboard.data.model.request.GetSuggestionBody;
+import com.tokopedia.topads.dashboard.data.model.request.MinimumBidRequest;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetDetailProductUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetSuggestionUseCase;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsMinimumBidUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsProductListUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsSaveDetailProductUseCase;
+import com.tokopedia.topads.dashboard.domain.model.MinimumBidDomain;
 import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailProductDomainModel;
 import com.tokopedia.topads.dashboard.utils.ViewUtils;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailEditView;
@@ -15,6 +19,7 @@ import com.tokopedia.topads.dashboard.view.mapper.TopAdDetailProductMapper;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailProductViewModel;
 import com.tokopedia.topads.sourcetagging.data.TopAdsSourceTaggingModel;
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsGetSourceTaggingUseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,13 +36,18 @@ public class TopAdsDetailEditProductPresenterImpl<T extends TopAdsDetailEditView
     private TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase;
     protected TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase;
     private TopAdsEditPromoFragmentListener listener;
+    private UserSessionInterface sessionInterface;
+    private TopAdsMinimumBidUseCase minimumBidUseCase;
 
     public TopAdsDetailEditProductPresenterImpl(TopAdsGetDetailProductUseCase topAdsGetDetailProductUseCase,
                                                 TopAdsSaveDetailProductUseCase topAdsSaveDetailProductUseCase,
                                                 TopAdsProductListUseCase topAdsProductListUseCase,
                                                 TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase,
-                                                TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase) {
+                                                TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase,
+                                                TopAdsMinimumBidUseCase minimumBidUseCase, UserSessionInterface sessionInterface) {
         super(topAdsProductListUseCase);
+        this.sessionInterface = sessionInterface;
+        this.minimumBidUseCase = minimumBidUseCase;
         this.topAdsGetSuggestionUseCase = topAdsGetSuggestionUseCase;
         this.topAdsGetDetailProductUseCase = topAdsGetDetailProductUseCase;
         this.topAdsSaveDetailProductUseCase = topAdsSaveDetailProductUseCase;
@@ -118,37 +128,33 @@ public class TopAdsDetailEditProductPresenterImpl<T extends TopAdsDetailEditView
     }
 
     @Override
-    public void getSuggestionBid(List<String> ids, String source) {
-        GetSuggestionBody getSuggestionBody = new GetSuggestionBody();
-        getSuggestionBody.setRounding(true);
-        getSuggestionBody.setSource(source);
-        getSuggestionBody.setDataType(TopAdsNetworkConstant.SUGGESTION_DATA_TYPE_SUMMARY);
-        getSuggestionBody.setSuggestionType(TopAdsNetworkConstant.SUGGESTION_TYPE_DEPARTMENT_ID);
-        List<Long> ids_ = new ArrayList<>();
-        for (String id : ids) {
-            ids_.add(Long.valueOf(id));
-        }
-        getSuggestionBody.setIds(ids_);
+    public void getBidInfo(String requestType, List<DataSuggestions> dataSuggestions, String source) {
+        MinimumBidRequest request = new MinimumBidRequest();
+        request.setSource(source);
+        request.setShopId(Integer.parseInt(sessionInterface.getShopId()));
+        request.setRequestType(requestType);
+        request.setDataSuggestions(dataSuggestions);
+        minimumBidUseCase.execute(minimumBidUseCase.getBidParams(request),
+                new Subscriber<MinimumBidDomain.TopadsBidInfo>() {
+                    @Override
+                    public void onCompleted() {
 
-        topAdsGetSuggestionUseCase.execute(TopAdsGetSuggestionUseCase.createRequestParams(getSuggestionBody), new Subscriber<GetSuggestionResponse>() {
-            @Override
-            public void onCompleted() {
+                    }
 
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        if(isViewAttached()) {
+                            getView().onBidInfoError(e);
+                        }
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-                if(isViewAttached()) {
-                    getView().onSuggestionError(e);
-                }
-            }
+                    @Override
+                    public void onNext(MinimumBidDomain.TopadsBidInfo topadsBidInfo) {
+                        if(isViewAttached()) {
+                            getView().onBidInfoSuccess(topadsBidInfo);
+                        }
+                    }
+                });
 
-            @Override
-            public void onNext(GetSuggestionResponse s) {
-                if(isViewAttached()) {
-                    getView().onSuggestionSuccess(s);
-                }
-            }
-        });
     }
 }

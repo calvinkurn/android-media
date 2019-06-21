@@ -85,28 +85,13 @@
                     android:host="tokopedia.me"
                     android:pathPattern="/.*"
                     android:scheme="http" />
-                <data
-                    android:host="staging.tokopedia.me"
-                    android:pathPattern="/.*"
-                    android:scheme="https" />
-                <data
-                    android:host="staging.tokopedia.me"
-                    android:pathPattern="/.*"
-                    android:scheme="http" />
+
                 <data
                     android:host="tokopedia.by"
                     android:pathPattern="/.*"
                     android:scheme="https" />
                 <data
                     android:host="tokopedia.by"
-                    android:pathPattern="/.*"
-                    android:scheme="http" />
-                <data
-                    android:host="staging.tokopedia.by"
-                    android:pathPattern="/.*"
-                    android:scheme="https" />
-                <data
-                    android:host="staging.tokopedia.by"
                     android:pathPattern="/.*"
                     android:scheme="http" />
             </intent-filter>

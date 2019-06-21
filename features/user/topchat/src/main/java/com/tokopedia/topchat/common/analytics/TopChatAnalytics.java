@@ -3,6 +3,7 @@ package com.tokopedia.topchat.common.analytics;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.attachproduct.analytics.AttachProductAnalytics;
+import com.tokopedia.chat_common.data.ProductAttachmentViewModel;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 
@@ -56,6 +57,7 @@ public class TopChatAnalytics {
         String EVENT_NAME_CLICK_INBOXCHAT = "clickInboxChat";
         String EVENT_NAME_PRODUCT_CLICK = "productClick";
         String EVENT_NAME_ATC = "addToCart";
+        String EVENT_NAME_PRODUCT_PREVIEW = "productView";
 
     }
 
@@ -72,6 +74,7 @@ public class TopChatAnalytics {
         public static final String TEMPLATE_CHAT_CLICK = "click on template chat";
         public static final String UPDATE_TEMPLATE = "click on tambah template";
         public static final String CLICK_PRODUCT_IMAGE = "click on product image";
+        public static final String VIEW_PRODUCT_PREVIEW = "view on product thumbnail";
         public static final String CLICK_THUMBNAIL = "click on thumbnail";
         public static final String CLICK_COPY_VOUCHER_THUMBNAIL = "click copy on shop voucher thumbnail";
         public static final String CLICK_VOUCHER_THUMBNAIL = "click shop voucher thumbnail";
@@ -251,6 +254,27 @@ public class TopChatAnalytics {
                                                 "position", 0
                                         )
                                 )
+                        )
+                )
+        ));
+    }
+
+    public void eventSeenProductAttachment(@NotNull ProductAttachmentViewModel product) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                EVENT_NAME, Name.EVENT_NAME_PRODUCT_PREVIEW,
+                EVENT_CATEGORY, Category.CHAT_DETAIL,
+                EVENT_ACTION, Action.VIEW_PRODUCT_PREVIEW,
+                EVENT_LABEL, String.format("chat - %s", String.valueOf(product.getBlastId())),
+                ECOMMERCE, DataLayer.mapOf("currencyCode", "IDR",
+                        "impressions", DataLayer.mapOf(
+                                "name", product.getProductName(),
+                                "id", product.getProductId(),
+                                "price", product.getProductPrice(),
+                                "brand", "none",
+                                "category", product.getCategory(),
+                                "variant", product.getVariant(),
+                                "list", getField(String.valueOf(product.getBlastId())),
+                                "position", 0
                         )
                 )
         ));

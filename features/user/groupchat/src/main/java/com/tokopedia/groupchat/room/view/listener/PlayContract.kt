@@ -8,6 +8,7 @@ import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.SettingGroupChat
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
+import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -33,8 +34,7 @@ interface PlayContract {
         fun showOverlayDialog(it: OverlayViewModel)
         fun closeOverlayDialog()
         fun addIncomingMessage(it: Visitable<*>)
-        fun onDynamicIconClicked(it: DynamicButtonsViewModel.Button)
-        fun onFloatingIconClicked(it: DynamicButtonsViewModel.Button, applink: String)
+        fun onFloatingIconClicked(it: DynamicButton, applink: String)
         fun updateDynamicButton(it: DynamicButtonsViewModel)
         fun onBackgroundUpdated(it: BackgroundViewModel)
         fun openRedirectUrl(generateLink: String)

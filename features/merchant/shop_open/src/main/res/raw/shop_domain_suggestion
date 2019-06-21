@@ -1,0 +1,10 @@
+query shopDomainSuggestion($shopName:String!){
+   shopDomainSuggestion(input:{shopName :$shopName}){
+   result{
+    shopDomain
+  }
+  	error{
+      message
+    }
+  }
+}

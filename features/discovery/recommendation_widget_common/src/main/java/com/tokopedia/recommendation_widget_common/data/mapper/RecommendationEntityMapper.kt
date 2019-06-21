@@ -81,6 +81,9 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
                     data.stock,
                     data.recommendationType ?: "",
                     data.isIsTopads,
+                    data.slashedPrice?:"",
+                    data.slashedPriceInt,
+                    data.discountPercentage,
                     position
             )
 

@@ -707,14 +707,6 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
             }
         });
-
-        if (coupons.isEmpty()) {
-            mPresenter.setPagerSelectedItem(TAB_CATALOG);
-        } else {
-            mPresenter.setPagerSelectedItem(TAB_COUPON);
-        }
-
-        mPagerPromos.setCurrentItem(mPresenter.getPagerSelectedItem());
     }
 
     private void decorateDialog(AlertDialog dialog) {

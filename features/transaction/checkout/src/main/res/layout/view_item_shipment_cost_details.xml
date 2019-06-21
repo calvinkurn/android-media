@@ -134,7 +134,7 @@
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
-        tools:text="Proteksi Gadget (3 Barang)" />
+        tools:text="Proteksi Produk (3 Barang)" />
 
     <TextView
         android:id="@+id/tv_purchase_protection_fee"
@@ -260,11 +260,39 @@
         android:gravity="end"
         tools:text="Rp100.000" />
 
+    <TextView
+        android:id="@+id/tv_order_prioritas_label"
+        style="@style/TextSmallNormalBlack70"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_below="@+id/tv_emas_label"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:text="@string/order_prioritas_label"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/tv_order_prioritas_price"
+        style="@style/TextSmallMediumBlack70"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_below="@id/tv_emas_price"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:gravity="end"
+        tools:text="Rp100.000" />
+
     <RelativeLayout
         android:id="@+id/rl_total_promo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_emas_label">
+        android:layout_below="@+id/tv_order_prioritas_label">
 
         <View
             android:id="@+id/item_shipment_divider"

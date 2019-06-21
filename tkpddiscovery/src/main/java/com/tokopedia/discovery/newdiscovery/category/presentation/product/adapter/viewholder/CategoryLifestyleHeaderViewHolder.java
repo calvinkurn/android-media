@@ -15,10 +15,19 @@ import android.widget.TextView;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
+import com.tokopedia.design.quickfilter.QuickFilterItem;
+import com.tokopedia.design.quickfilter.QuickSingleFilterView;
+import com.tokopedia.design.quickfilter.custom.CustomMultipleFilterView;
+import com.tokopedia.design.quickfilter.custom.CustomViewRoundedQuickFilterItem;
+import com.tokopedia.design.quickfilter.custom.CustomViewRounderCornerFilterView;
+import com.tokopedia.design.quickfilter.custom.multiple.view.QuickMultipleFilterView;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.ChildCategoryLifestyleAdapter;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.RevampCategoryAdapter;
@@ -36,6 +45,7 @@ import com.tokopedia.track.TrackApp;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -43,7 +53,7 @@ import java.util.Locale;
  * Created by nakama on 1/4/18.
  */
 
-public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<CategoryHeaderModel> {
+public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<CategoryHeaderModel> implements QuickSingleFilterView.ActionListener {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_category_header_lifestyle;
@@ -58,6 +68,7 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
     private final RevampCategoryAdapter.CategoryListener categoryListener;
     private final TextView titleHeader;
     private final TextView totalProduct;
+    private CustomMultipleFilterView quickMultipleFilterView;
     private final TopAdsBannerView topAdsBannerView;
     private final SubCategoryLifestyleItemDecoration itemDecoration;
     private boolean isInit;
@@ -69,12 +80,14 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
         this.imageHeader = (ImageView) itemView.findViewById(R.id.image_header);
         this.titleHeader = (TextView) itemView.findViewById(R.id.title_header);
         this.totalProduct = (TextView) itemView.findViewById(R.id.total_product);
+        this.quickMultipleFilterView = (CustomMultipleFilterView) itemView.findViewById(R.id.quickFilterView);
         this.imageHeaderContainer = (RelativeLayout) itemView.findViewById(R.id.image_header_container);
         this.layoutChildCategory = itemView.findViewById(R.id.view_child_category);
         this.listChildCategory = itemView.findViewById(R.id.recyclerview_child_category);
         this.topAdsBannerView = (TopAdsBannerView) itemView.findViewById(R.id.topAdsBannerView);
         this.itemDecoration = new SubCategoryLifestyleItemDecoration(itemView.getResources().getDimensionPixelSize(R.dimen.dp_8));
         this.categoryListener = listener;
+        this.quickMultipleFilterView.setListener(this);
     }
 
     private void initTopAds(String depId, String categoryName) {
@@ -120,6 +133,7 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
         renderBannerCategory(model);
         renderChildCategory(model);
         renderTotalProduct(model);
+        renderQuickFilterView(model.getOptionList());
     }
 
     private void trackImpression(CategoryHeaderModel model) {
@@ -239,11 +253,26 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
         }
     }
 
+    protected void renderQuickFilterView(List<QuickFilterItem> quickFilterItems) {
+
+        if(quickFilterItems == null || quickFilterItems.isEmpty()){
+            return;
+        } else {
+            quickMultipleFilterView.renderFilter(quickFilterItems);
+        }
+    }
+
     protected void renderSingleBanner(String headerImage, String categoryName) {
         ImageHandler.LoadImage(imageHeader, headerImage);
         titleHeader.setText(categoryName);
         titleHeader.setShadowLayer(24, 0, 0, R.color.checkbox_text);
 
         imageHeaderContainer.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void selectFilter(String typeFilter) {
+        String[] str = typeFilter.split("=");
+        categoryListener.onQuickFilterSelected(str[0], str[1]);
     }
 }

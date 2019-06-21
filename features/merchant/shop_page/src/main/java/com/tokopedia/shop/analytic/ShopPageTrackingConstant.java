@@ -13,10 +13,13 @@ public class ShopPageTrackingConstant {
     public static final String VIEW_SHOP_PAGE = "viewShopPage";
     public static final String PROMO_VIEW = "promoView";
     public static final String PROMO_CLICK = "promoClick";
+    public static final String CLICK_SHOP_MANAGE = "clickManageShop";
+    public static final String CLICK_SHOP_MESSAGE = "clickMessageShop";
 
     //category
     public static final String SHOP_PAGE_SELLER = "shop page - seller";
     public static final String SHOP_PAGE_BUYER = "shop page - buyer";
+    public static final String SHOP_PAGE = "shop page";
 
     //ACTION
     public static final String TOP_SECTION = "top section";
@@ -32,6 +35,7 @@ public class ShopPageTrackingConstant {
     public static final String SEARCH_BAR = "search bar";
     public static final String PRODUCT_NAVIGATION = "product navigation";
     public static final String IMPRESSION = "impression";
+    public static final String CLICK_SEND_CHAT = "click on kirim pesan";
 
     //label
     public static final String CLICK_TAB = "click tab";
@@ -68,6 +72,7 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_REVIEW = "click review";
     public static final String CLICK_DISCUSSION = "click discussion";
     public static final String CLICK_MANAGE_SHOP = "click manage shop";
+    public static final String SHOP_INFO = "Shop Info";
 
     //key
     public static final String EVENT = "event";

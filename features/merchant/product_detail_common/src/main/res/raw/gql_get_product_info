@@ -21,6 +21,7 @@ query getPDPInfo($productID:Int, $shopDomain: String, $productKey: String){
             isKreasiLokal
             isMustInsurance
             isEligibleCOD
+            needPrescription
             catalogID
         }
         brand {

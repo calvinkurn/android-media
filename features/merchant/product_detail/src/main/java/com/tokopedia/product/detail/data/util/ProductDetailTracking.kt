@@ -7,7 +7,7 @@ import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
-import com.tokopedia.product.detail.data.model.shop.ShopInfo
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.track.TrackApp
 import java.util.*
@@ -201,7 +201,7 @@ class ProductDetailTracking() {
 
     fun eventRecommendationClick(product: Product, position: Int, recommendationType: String, isTopAds: Boolean) {
         var listValue = LIST_DEFAULT.plus(recommendationType)
-        if (isTopAds) listValue = "$listValue - product top ads"
+        if (isTopAds) listValue = "$listValue - product topads"
 
         TrackApp.getInstance()?.gtm?.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(KEY_EVENT, ProductTrackingConstant.Action.PRODUCT_CLICK,
@@ -224,7 +224,7 @@ class ProductDetailTracking() {
 
     fun eventRecommendationImpression(position: Int, product: Product, recommendationType: String, isTopAds: Boolean) {
         var listValue = LIST_DEFAULT.plus(recommendationType)
-        if (isTopAds) listValue = "$listValue - product top ads"
+        if (isTopAds) listValue = "$listValue - product topads"
 
         TrackApp.getInstance()?.gtm?.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(KEY_EVENT, "productView",

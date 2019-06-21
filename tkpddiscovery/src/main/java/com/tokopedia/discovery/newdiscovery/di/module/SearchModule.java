@@ -11,11 +11,8 @@ import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductL
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListPresenter;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListPresenterImpl;
-import com.tokopedia.discovery.newdiscovery.search.fragment.shop.ShopListPresenter;
-import com.tokopedia.discovery.newdiscovery.search.fragment.shop.ShopListPresenterImpl;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 
 import dagger.Module;
 import dagger.Provides;
@@ -26,33 +23,19 @@ import dagger.Provides;
 
 @SearchScope
 @Module(includes = {
-        GuidedSearchModule.class,
         ProductModule.class,
         ImageSearchModule.class,
         BannerModule.class,
         ApiModule.class,
         CatalogModule.class,
-        ShopModule.class,
         AttributeModule.class
 })
 public class SearchModule {
 
     @SearchScope
     @Provides
-    ProductListPresenter provideProductListPresenter(@ApplicationContext Context context) {
-        return new ProductListPresenterImpl(context);
-    }
-
-    @SearchScope
-    @Provides
     ImageProductListPresenter provideImageProductListPresenter(@ApplicationContext Context context) {
         return new ImageProductListPresenterImpl(context);
-    }
-
-    @SearchScope
-    @Provides
-    ShopListPresenter provideShopListPresenter(@ApplicationContext Context context) {
-        return new ShopListPresenterImpl(context);
     }
 
     @SearchScope
@@ -67,4 +50,11 @@ public class SearchModule {
                                          UserSessionInterface userSessionInterface) {
         return new SearchTracking(context, userSessionInterface);
     }
+
+    @SearchScope
+    @Provides
+    PermissionCheckerHelper providePermissionCheckerHelper() {
+        return new PermissionCheckerHelper();
+    }
+
 }

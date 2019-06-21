@@ -403,6 +403,7 @@ dependencies {
     implementation project(rootProject.ext.features.gallery)
     implementation project(rootProject.ext.features.categoryCommon)
     implementation project(rootProject.ext.features.officialStore)
+    implementation project(rootProject.ext.features.onboarding)
 
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.userSession)
@@ -413,7 +414,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.omsApi)
-    implementation project(rootProject.ext.libraries.useCase)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.fingerprint)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.imageuploader)
@@ -432,14 +433,12 @@ dependencies {
     implementation project(rootProject.ext.libraries.locationmanager)
     implementation project(rootProject.ext.libraries.permissionchecker)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.libraries.collapsingTabLayout)
 
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
 
     implementation rootProject.ext.miscDependencies.lottie
-    implementation rootProject.ext.viewDependencies.appIntro
 
     implementation project(rootProject.ext.features.transactioncommon)
     implementation project(rootProject.ext.features.shopCommon)
@@ -500,9 +499,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.multiDex
-
-    implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    annotationProcessor rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
@@ -567,7 +563,7 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.referral)
-    implementation project(rootProject.ext.libraries.cacheManager)
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation project(rootProject.ext.features.kyc)
 }
 

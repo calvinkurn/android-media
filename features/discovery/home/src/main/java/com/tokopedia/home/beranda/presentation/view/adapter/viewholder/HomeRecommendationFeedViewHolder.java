@@ -71,6 +71,7 @@ implements HomeTabFeedListener {
 
         if (homeFeedPagerAdapter == null || homeRecommendationFeedViewModel.isNewData()) {
             initViewPagerAndTablayout();
+            homeRecommendationFeedViewModel.setNewData(false);
         }
     }
 

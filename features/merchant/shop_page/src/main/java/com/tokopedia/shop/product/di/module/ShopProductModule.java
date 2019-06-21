@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.gm.common.constant.GMCommonUrl;
 import com.tokopedia.gm.common.data.interceptor.GMAuthInterceptor;
@@ -15,8 +16,11 @@ import com.tokopedia.gm.common.data.source.cloud.GMCommonCloudDataSource;
 import com.tokopedia.gm.common.data.source.cloud.api.GMCommonApi;
 import com.tokopedia.gm.common.domain.interactor.GetFeatureProductListUseCase;
 import com.tokopedia.gm.common.domain.repository.GMCommonRepository;
+import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
+import com.tokopedia.shop.R;
 import com.tokopedia.shop.common.constant.ShopUrl;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopWSApi;
+import com.tokopedia.shop.product.data.GQLQueryConstant;
 import com.tokopedia.shop.product.data.repository.ShopProductRepositoryImpl;
 import com.tokopedia.shop.product.data.source.cloud.ShopProductCloudDataSource;
 import com.tokopedia.shop.product.data.source.cloud.api.ShopOfficialStoreApi;
@@ -28,6 +32,8 @@ import com.tokopedia.shop.product.di.scope.ShopProductScope;
 import com.tokopedia.shop.product.domain.interactor.DeleteShopProductAceUseCase;
 import com.tokopedia.shop.product.domain.interactor.DeleteShopProductTomeUseCase;
 import com.tokopedia.shop.product.domain.interactor.GetProductCampaignsUseCase;
+import com.tokopedia.shop.product.domain.interactor.GetShopFeaturedProductUseCase;
+import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase;
 import com.tokopedia.shop.product.domain.repository.ShopProductRepository;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -43,6 +49,8 @@ import com.tokopedia.wishlist.common.domain.repository.WishListCommonRepository;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
+import javax.inject.Named;
+
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
@@ -50,8 +58,38 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
 @ShopProductScope
-@Module
+@Module(includes = ShopProductViewModelModule.class)
 public class ShopProductModule {
+
+    @ShopProductScope
+    @Provides
+    @Named(GQLQueryConstant.SHOP_FEATURED_PRODUCT)
+    public String getShopFeaturedProductQuery(@ApplicationContext Context context){
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_get_shop_featured_product);
+    }
+
+    @ShopProductScope
+    @Provides
+    @Named(GQLQueryConstant.SHOP_PRODUCT)
+    public String getShopProductQuery(@ApplicationContext Context context){
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_get_shop_product);
+    }
+
+    @ShopProductScope
+    @Provides
+    public GetShopFeaturedProductUseCase getShopFeaturedProductUseCase(@Named(GQLQueryConstant.SHOP_FEATURED_PRODUCT)
+                                                                       String gqlQuery,
+                                                                       MultiRequestGraphqlUseCase gqlUseCase){
+        return new GetShopFeaturedProductUseCase(gqlQuery, gqlUseCase);
+    }
+
+    @ShopProductScope
+    @Provides
+    public GqlGetShopProductUseCase getShopProductUseCase(@Named(GQLQueryConstant.SHOP_PRODUCT)
+                                                                               String gqlQuery,
+                                                                  MultiRequestGraphqlUseCase gqlUseCase){
+        return new GqlGetShopProductUseCase(gqlQuery, gqlUseCase);
+    }
 
     @Provides
     public GMAuthInterceptor provideGMAuthInterceptor(@ApplicationContext Context context,
@@ -228,14 +266,14 @@ public class ShopProductModule {
 
     @ShopProductScope
     @Provides
-    public DeleteShopProductTomeUseCase provideDeleteShopProductTomeUseCase() {
-        return new DeleteShopProductTomeUseCase();
+    public DeleteShopProductTomeUseCase provideDeleteShopProductTomeUseCase(@ApplicationContext Context context) {
+        return new DeleteShopProductTomeUseCase(context);
     }
 
     @ShopProductScope
     @Provides
-    public DeleteShopProductAceUseCase provideDeleteShopProductAceUseCase() {
-        return new DeleteShopProductAceUseCase();
+    public DeleteShopProductAceUseCase provideDeleteShopProductAceUseCase(@ApplicationContext Context context) {
+        return new DeleteShopProductAceUseCase(context);
     }
 
     @ShopProductScope

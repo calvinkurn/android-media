@@ -71,7 +71,6 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewState = BaseChatViewStateImpl(view, (activity as BaseChatToolbarActivity).getToolbar(), this)
-        viewState.initView()
 
         setupViewData(arguments, savedInstanceState)
         prepareView(view)
@@ -244,4 +243,5 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         this.shopId = it.headerModel.shopId
     }
 
+    override fun trackSeenProduct(element: ProductAttachmentViewModel) {}
 }

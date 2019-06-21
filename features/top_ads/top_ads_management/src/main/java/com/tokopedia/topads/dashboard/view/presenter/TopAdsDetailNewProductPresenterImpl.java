@@ -1,6 +1,7 @@
 package com.tokopedia.topads.dashboard.view.presenter;
 
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsMinimumBidUseCase;
 import com.tokopedia.topads.sourcetagging.data.TopAdsSourceTaggingModel;
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsGetSourceTaggingUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetDetailProductUseCase;
@@ -15,6 +16,7 @@ import com.tokopedia.topads.dashboard.view.mapper.TopAdDetailProductMapper;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailProductViewModel;
 import com.tokopedia.topads.dashboard.view.model.TopAdsProductViewModel;
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsRemoveSourceTaggingUseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 
@@ -30,9 +32,14 @@ public class TopAdsDetailNewProductPresenterImpl extends TopAdsDetailEditProduct
     public TopAdsDetailNewProductPresenterImpl(TopAdsGetDetailProductUseCase topAdsGetDetailProductUseCase,
                                                TopAdsSaveDetailProductUseCase topAdsSaveDetailProductUseCase,
                                                TopAdsCreateDetailProductListUseCase topAdsCreateDetailProductListUseCase,
-                                               TopAdsProductListUseCase topAdsProductListUseCase, TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase,
-                                               TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase) {
-        super(topAdsGetDetailProductUseCase, topAdsSaveDetailProductUseCase, topAdsProductListUseCase, topAdsGetSuggestionUseCase, topAdsGetSourceTaggingUseCase);
+                                               TopAdsProductListUseCase topAdsProductListUseCase,
+                                               TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase,
+                                               TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase,
+                                               TopAdsMinimumBidUseCase minimumBidUseCase,
+                                               UserSessionInterface sessionInterface) {
+        super(topAdsGetDetailProductUseCase, topAdsSaveDetailProductUseCase, topAdsProductListUseCase,
+                topAdsGetSuggestionUseCase, topAdsGetSourceTaggingUseCase,
+                minimumBidUseCase, sessionInterface);
         this.topAdsSaveDetailProductListUseCase = topAdsCreateDetailProductListUseCase;
     }
 
