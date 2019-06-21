@@ -132,6 +132,9 @@ class VerifyDOBActivity : BaseARActivity<VerifyDOBViewModel>() {
 
     private var clickListenerCalender = View.OnClickListener {
 
+        showProgressBar()
+        ed_edit_dob.isClickable = false
+        iv_arrow_down.isClickable = false
         if (travelCalenderSheet == null) {
             travelCalenderSheet = TravelCalendarBottomSheet.Builder()
                     .setTitle(getString(R.string.ar_text_select_dob))
@@ -143,6 +146,9 @@ class VerifyDOBActivity : BaseARActivity<VerifyDOBViewModel>() {
                 override fun onClickDate(dateSelected: Date) {
                     ed_edit_dob.text = SimpleDateFormat("dd MMMM YYYY").format(dateSelected)
                     selectedDate = dateSelected
+                    hideProgressBar()
+                    ed_edit_dob.isClickable = true
+                    iv_arrow_down.isClickable = true
                 }
             })
         }
