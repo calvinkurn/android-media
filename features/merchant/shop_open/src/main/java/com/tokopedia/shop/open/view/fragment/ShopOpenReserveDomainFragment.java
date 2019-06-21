@@ -75,7 +75,6 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     public static final int MIN_SHOP_DOMAIN_LENGTH = 3;
     public static final int REQUEST_CODE__EDIT_ADDRESS = 1235;
     public static final int REQUEST_CODE_POSTAL_CODE = 1515;
-    public static final int REQUEST_PHONE_VERIFICATION = 123;
     public static final String VALIDATE_DOMAIN_NAME_SHOP = "validate_domain_name_shop";
     public static final String VALIDATE_DOMAIN_SUGGESTION_SHOP = "shop_domain_suggestion";
     public static final String URL_TNC = "https://www.tokopedia.com/terms.pl";
@@ -299,12 +298,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
             buttonSubmit.setEnabled(false);
             return;
         }
-
-        if (userSession.isMsisdnVerified()){
-            submitCreatingShop();
-        } else {
-            startActivityForResult(RouteManager.getIntent(getContext(), ApplinkConst.PHONE_VERIFICATION), REQUEST_PHONE_VERIFICATION);
-        }
+        submitCreatingShop();
     }
 
     @Override
@@ -501,11 +495,6 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
                         );
                         openShopAddressViewHolder.updatePostalCodeView("");
                     }
-                } break;
-            case REQUEST_PHONE_VERIFICATION:
-                if (resultCode == Activity.RESULT_OK){
-                    userSession.setIsMSISDNVerified(true);
-                    submitCreatingShop();
                 } break;
         }
     }

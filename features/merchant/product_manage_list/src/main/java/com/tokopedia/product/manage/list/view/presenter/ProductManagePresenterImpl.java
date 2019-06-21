@@ -54,7 +54,6 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
     private final PopupManagerAddProductUseCase popupManagerAddProductUseCase;
     public static final String GQL_POPUP_NAME = "gql_popup";
 
-
     public ProductManagePresenterImpl(GetShopInfoUseCase getShopInfoUseCase,
                                       GetProductListSellingUseCase getProductListSellingUseCase,
                                       EditPriceProductUseCase editPriceProductUseCase,
@@ -219,13 +218,13 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
     }
 
     @Override
-    public void getPopupsInfo() {
+    public void getPopupsInfo(String productId) {
         int shopId = getShopIdInteger();
         popupManagerAddProductUseCase.execute(PopupManagerAddProductUseCase.createRequestParams(shopId),
-                getPopupsInfoSubscriber());
+                getPopupsInfoSubscriber(productId));
     }
 
-    private Subscriber<Boolean> getPopupsInfoSubscriber() {
+    private Subscriber<Boolean> getPopupsInfoSubscriber(String productId) {
         return new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
@@ -242,7 +241,7 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
 
             @Override
             public void onNext(Boolean aBoolean) {
-                getView().onSuccessGetPopUp(aBoolean);
+                getView().onSuccessGetPopUp(aBoolean, productId);
             }
         };
     }
