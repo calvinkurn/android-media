@@ -61,6 +61,15 @@ class ReportInputDetailFragment : BaseDaggerFragment() {
         }
     }
 
+    fun sendInputResult() {
+        if (input.text.toString().length >= maxChar){
+            val intent = Intent().putExtra(INPUT_VALUE, input.text.toString())
+            activity?.run {
+                setResult(Activity.RESULT_OK, intent)
+            }
+        }
+    }
+
     companion object{
         private const val ARG_MIN_CHAR = "arg_min_char"
         private const val ARG_MAX_CHAR = "arg_max_char"

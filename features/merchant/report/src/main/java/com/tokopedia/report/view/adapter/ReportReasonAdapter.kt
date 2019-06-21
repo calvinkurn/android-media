@@ -61,12 +61,13 @@ class ReportReasonAdapter(private val listener: OnReasonClick,
         }
     }
 
-    override fun getItemCount(): Int = filteredReasons.size + 2
+    override fun getItemCount(): Int = filteredReasons.size + (if (filteredId.isEmpty()) 2 else 1)
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val lastIndexItem = if (filteredId.isEmpty()) itemCount - 1 else itemCount
         if (position == 0){
             (holder as HeaderViewHolder).setTitle(title)
-        } else if (position < itemCount - 1){
+        } else if (position < lastIndexItem){
             (holder as ItemViewHolder).bind(filteredReasons[position - 1])
         }
     }
@@ -74,7 +75,7 @@ class ReportReasonAdapter(private val listener: OnReasonClick,
     override fun getItemViewType(position: Int): Int {
         return when(position){
             0 -> HEADER_TYPE
-            itemCount-1 -> FOOTER_TYPE
+            itemCount-1 -> if (filteredId.isEmpty()) FOOTER_TYPE else ITEM_TYPE
             else -> ITEM_TYPE
         }
     }

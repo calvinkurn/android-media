@@ -77,7 +77,7 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
                     setTitle(popupField.value)
                     setDesc(popupField.detail)
                     setBtnOk(getString(R.string.label_report))
-                    setBtnCancel(getString(R.string.cancel))
+                    setBtnCancel(getString(R.string.report_cancel))
                     setOnCancelClickListener {
                         tracking.eventReportCancelDisclaimer(reasonItem.value.toLowerCase())
                         dismiss()

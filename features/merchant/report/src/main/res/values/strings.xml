@@ -5,7 +5,7 @@
     <string name="product_report_see_all_types"><![CDATA[<a href="#">Pelajari lebih lanjut </a>
         tipe-tipe pelanggaran produk di Tokopedia]]></string>
     <string name="label_lapor">Lapor</string>
-    <string name="product_hint_product_report">Jelaskan min. %1$s karakter</string>
+    <string name="product_hint_product_report">Isi min. %1$s karakter</string>
     <string name="product_label_product_report">Detail Laporan (Wajib Diisi)</string>
     <string name="product_report_upload_title">%1$s (%2$d/%3$d)</string>
     <string name="product_report_upload_foto">Tambah Foto</string>
@@ -15,4 +15,5 @@
     <string name="required_error">Field harus diisi</string>
     <string name="label_report">Lapor</string>
     <string name="fail_to_report">Maaf, laporan gagal dikirim. Mohon coba lagi</string>
+    <string name="report_cancel">Batal</string>
 </resources>

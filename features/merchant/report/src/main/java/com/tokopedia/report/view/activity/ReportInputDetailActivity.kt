@@ -10,9 +10,13 @@ import com.tokopedia.report.R
 import com.tokopedia.report.view.fragment.ReportInputDetailFragment
 
 class ReportInputDetailActivity : BaseSimpleActivity() {
+    private var fragment = ReportInputDetailFragment()
 
-    override fun getNewFragment(): Fragment = ReportInputDetailFragment.createInstance(intent.getIntExtra(ARG_MIN_CHAR, -1),
-            intent.getIntExtra(ARG_MAX_CHAR, -1), intent.getStringExtra(ARG_VALUE) ?: "")
+    override fun getNewFragment(): Fragment {
+        fragment = ReportInputDetailFragment.createInstance(intent.getIntExtra(ARG_MIN_CHAR, -1),
+                intent.getIntExtra(ARG_MAX_CHAR, -1), intent.getStringExtra(ARG_VALUE) ?: "")
+        return fragment
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,5 +31,11 @@ class ReportInputDetailActivity : BaseSimpleActivity() {
         fun createIntent(context: Context, value: String, minChar: Int, maxChar: Int): Intent =
                 Intent(context, ReportInputDetailActivity::class.java)
                         .putExtra(ARG_MIN_CHAR, minChar).putExtra(ARG_MAX_CHAR, maxChar).putExtra(ARG_VALUE, value)
+    }
+
+    override fun onBackPressed() {
+        fragment.sendInputResult()
+        super.onBackPressed()
+
     }
 }

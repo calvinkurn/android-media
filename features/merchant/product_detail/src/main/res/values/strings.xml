@@ -114,5 +114,5 @@
     <string name="product_is_at_status_x">Product berada dalam status %1$s</string>
     <string name="service_by_tokopedia">Dilayani oleh Tokopedia</string>
     <string name="multiorigin_desc">Barang dikirim dari lokasi penyimpanan terdekat.</string>
-    <string name="success_to_report">Laporanmu sudah tercatat dan akan segera diproses</string>
+    <string name="success_to_report">Laporanmu sudah tercatat dan akan segera diproses.</string>
 </resources>
