@@ -31,16 +31,14 @@ import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_homepage.*
-import kotlinx.android.synthetic.main.item_network_error_view.*
-import java.lang.Exception
 import java.util.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
  * @author by furqan on 28/03/19
  */
-class HotelHomepageFragment : HotelBaseFragment(), HotelRoomAndGuestBottomSheets.HotelGuestListener {
+class HotelHomepageFragment : HotelBaseFragment(),
+        HotelRoomAndGuestBottomSheets.HotelGuestListener, HotelPromoAdapter.PromoClickListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -52,6 +50,7 @@ class HotelHomepageFragment : HotelBaseFragment(), HotelRoomAndGuestBottomSheets
     private var hotelHomepageModel: HotelHomepageModel = HotelHomepageModel()
 
     private lateinit var promoAdapter: HotelPromoAdapter
+    private var promoDataList: List<HotelPromoEntity> = listOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,7 +83,8 @@ class HotelHomepageFragment : HotelBaseFragment(), HotelRoomAndGuestBottomSheets
             when (it) {
                 is Success -> {
                     if (it.data.size > 0) {
-                        renderHotelPromo(it.data)
+                        promoDataList = it.data
+                        renderHotelPromo(promoDataList)
                     } else {
                         hidePromoContainer()
                     }
@@ -326,10 +326,13 @@ class HotelHomepageFragment : HotelBaseFragment(), HotelRoomAndGuestBottomSheets
     }
 
     private fun renderHotelPromo(promoDataList: List<HotelPromoEntity>) {
+        trackingHotelUtil.hotelBannerImpression("hotel", mapToHotelPromotionsView(promoDataList))
+
         showPromoContainer()
         if (!::promoAdapter.isInitialized) {
             promoAdapter = HotelPromoAdapter(promoDataList)
         }
+        promoAdapter.promoClickListener = this
 
         val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         rv_hotel_homepage_promo.layoutManager = layoutManager
@@ -344,6 +347,32 @@ class HotelHomepageFragment : HotelBaseFragment(), HotelRoomAndGuestBottomSheets
 
     private fun hidePromoContainer() {
         hotel_container_promo.visibility = View.GONE
+    }
+
+    private fun mapToHotelPromotionsView(data: List<HotelPromoEntity>): List<TrackingHotelUtil.HotelPromotionsView> {
+        return data.mapIndexed { index, it ->
+            TrackingHotelUtil.HotelPromotionsView(
+                    bannerId = it.promoId,
+                    position = index,
+                    bannerName = it.attributes.description
+            )
+        }
+    }
+
+    override fun onPromoClicked(promo: HotelPromoEntity) {
+        trackingHotelUtil.hotelClickBanner(promo.attributes.description, mapToHotelPromotionsClick(promoDataList))
+    }
+
+    private fun mapToHotelPromotionsClick(data: List<HotelPromoEntity>): List<TrackingHotelUtil.HotelPromotionsClick> {
+        return data.mapIndexed { index, it ->
+            TrackingHotelUtil.HotelPromotionsClick(
+                    bannerId = it.promoId,
+                    position = index,
+                    bannerName = it.attributes.description,
+                    promoId = it.promoId,
+                    promoCode = it.attributes.promoCode
+            )
+        }
     }
 
     companion object {

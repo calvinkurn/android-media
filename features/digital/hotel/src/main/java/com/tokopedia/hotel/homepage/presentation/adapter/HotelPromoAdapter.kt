@@ -11,6 +11,7 @@ import com.tokopedia.hotel.homepage.presentation.adapter.viewholder.HotelPromoVi
  */
 class HotelPromoAdapter(private var viewModels: List<HotelPromoEntity>) : RecyclerView.Adapter<HotelPromoViewHolder>() {
 
+    var promoClickListener: PromoClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HotelPromoViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(HotelPromoViewHolder.LAYOUT, parent, false)
@@ -20,7 +21,11 @@ class HotelPromoAdapter(private var viewModels: List<HotelPromoEntity>) : Recycl
     override fun getItemCount(): Int = viewModels.size
 
     override fun onBindViewHolder(holder: HotelPromoViewHolder, position: Int) {
-        holder.bind(viewModels[position])
+        holder.bind(viewModels[position], promoClickListener)
+    }
+
+    interface PromoClickListener {
+        fun onPromoClicked(promo: HotelPromoEntity)
     }
 
 }
