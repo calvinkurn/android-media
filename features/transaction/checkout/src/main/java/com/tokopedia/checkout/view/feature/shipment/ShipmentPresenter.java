@@ -407,16 +407,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void triggerSendEnhancedEcommerceCheckoutAnalytics(String step, String eventAction, String eventLabel) {
-        List<DataCheckoutRequest> dataCheckoutRequests = dataCheckoutRequestList;
-        if (dataCheckoutRequests == null) {
-            dataCheckoutRequests = getView().generateNewCheckoutRequest(getShipmentCartItemModelList(), true);
-        }
-
-        triggerSendEnhancedEcommerceCheckoutAnalytics(dataCheckoutRequests, step, eventAction, eventLabel);
-    }
-
-    @Override
     public void triggerSendEnhancedEcommerceCheckoutAnalytics(List<DataCheckoutRequest> dataCheckoutRequests,
                                                               String step,
                                                               String eventAction,
@@ -1184,6 +1174,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                             String message = responseGetPromoStack.getData().getMessage().getText();
                                             getView().renderErrorCheckPromoShipmentData(message);
                                         } else {
+                                            responseGetPromoStack.getData().setLogisticPotencyPromo(true);
                                             getView().renderCheckPromoStackCodeFromCourierSuccess(responseGetPromoStack, itemPosition, noToast);
                                         }
                                     }

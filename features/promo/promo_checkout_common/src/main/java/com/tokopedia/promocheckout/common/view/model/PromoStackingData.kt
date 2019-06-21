@@ -13,7 +13,9 @@ data class PromoStackingData(var typePromo: Int = 0,
                              var state: TickerPromoStackingCheckoutView.State = TickerPromoStackingCheckoutView.State.EMPTY,
                              var variant: TickerPromoStackingCheckoutView.Variant = TickerPromoStackingCheckoutView.Variant.GLOBAL,
                              var titleDefault: String = "",
-                             var counterLabelDefault: String = "") : Parcelable {
+                             var counterLabelDefault: String = "",
+                             var logisticPotencyPromo: Boolean = false // flag added for analytic purpose. Not exist on API response.
+) : Parcelable {
 
     fun getPromoCodeSafe(): String {
         if (state != TickerPromoStackingCheckoutView.State.EMPTY) {
@@ -33,7 +35,8 @@ data class PromoStackingData(var typePromo: Int = 0,
             parcel.readParcelable(TickerPromoStackingCheckoutView.State::class.java.classLoader),
             parcel.readParcelable(TickerPromoStackingCheckoutView.Variant::class.java.classLoader),
             parcel.readString(),
-            parcel.readString())
+            parcel.readString(),
+            parcel.readByte() != 0.toByte())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(typePromo)
@@ -46,6 +49,7 @@ data class PromoStackingData(var typePromo: Int = 0,
         parcel.writeParcelable(variant, flags)
         parcel.writeString(titleDefault)
         parcel.writeString(counterLabelDefault)
+        parcel.writeByte(if (logisticPotencyPromo) 1 else 0)
     }
 
     override fun describeContents(): Int {
@@ -83,7 +87,7 @@ data class PromoStackingData(var typePromo: Int = 0,
         fun promoCode(promoCode: String) = apply { this.promoCode = promoCode }
         fun description(description: String) = apply { this.description = description }
         fun title(title: String) = apply { this.title = title }
-        fun counterLabel(counterLabel: String) = apply {this.counterLabel = counterLabel}
+        fun counterLabel(counterLabel: String) = apply { this.counterLabel = counterLabel }
         fun amount(amount: Int) = apply { this.amount = amount }
         fun state(state: TickerPromoStackingCheckoutView.State) = apply { this.state = state }
         fun variant(variant: TickerPromoStackingCheckoutView.Variant) = apply { this.variant = variant }

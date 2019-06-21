@@ -2015,12 +2015,17 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         dataCheckoutRequests,
                         EnhancedECommerceActionField.STEP_3,
                         ConstantTransactionAnalytics.EventAction.CLICK_CHECKLIST_PILIH_DURASI_PENGIRIMAN,
-                        shipmentCartItemModel.getVoucherLogisticItemUiModel() != null ?
-                                ConstantTransactionAnalytics.EventLabel.PROMO : ConstantTransactionAnalytics.EventLabel.NON_PROMO +
-                                " - " + recommendedCourier.getEstimatedTimeDelivery()
+                        isApplyPromoLogistic(shipmentCartItemModel) ? ConstantTransactionAnalytics.EventLabel.PROMO :
+                                ConstantTransactionAnalytics.EventLabel.NON_PROMO + " - " + recommendedCourier.getEstimatedTimeDelivery()
                 );
             }
         }
+    }
+
+    boolean isApplyPromoLogistic(ShipmentCartItemModel shipmentCartItemModel) {
+        return shipmentCartItemModel.getVoucherLogisticItemUiModel() != null || (
+                shipmentAdapter.getPromoGlobalStackData() != null && shipmentAdapter.getPromoGlobalStackData().getLogisticPotencyPromo()
+        );
     }
 
     private void checkCourierPromo(CourierItemData courierItemData, int itemPosition) {
@@ -2097,7 +2102,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     dataCheckoutRequests,
                     EnhancedECommerceActionField.STEP_3,
                     ConstantTransactionAnalytics.EventAction.CLICK_CHECKLIST_PILIH_DURASI_PENGIRIMAN,
-                    shipmentCartItemModel.getVoucherLogisticItemUiModel() != null ? ConstantTransactionAnalytics.EventLabel.PROMO :
+                    isApplyPromoLogistic(shipmentCartItemModel) ? ConstantTransactionAnalytics.EventLabel.PROMO :
                             ConstantTransactionAnalytics.EventLabel.NON_PROMO + " - " + courierItemData.getShipperProductId()
             );
         }
@@ -2519,6 +2524,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             promoStackingGlobalData.setAmount(promoData.getData().getCashbackWalletAmount());
             promoStackingGlobalData.setState(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(promoData.getData().getMessage().getState()));
             promoStackingGlobalData.setVariant(TickerPromoStackingCheckoutView.Variant.GLOBAL);
+            promoStackingGlobalData.setLogisticPotencyPromo(promoData.getData().getLogisticPotencyPromo());
         }
 
         // Update merchant voucher state
