@@ -449,16 +449,12 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                 intent = AddAddressActivity.createInstanceEditAddressFromCheckoutMultipleAddressForm(
                         getActivity(), mapper.transform(model), token
                 );
-                // intent = new Intent(getActivity(), PinpointMapActivity.class);
             } else {
                 intent = AddAddressActivity.createInstanceEditAddressFromCheckoutSingleAddressForm(
                         getActivity(), mapper.transform(model), token
                 );
             }
             startActivityForResult(intent, LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT);
-
-            /*Intent intent = new Intent(getActivity(), PinpointMapActivity.class);
-            startActivity(intent);*/
         }
     }
 
@@ -525,23 +521,9 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                         AddAddressActivity.createInstanceAddAddressFromCheckoutMultipleAddressForm(
                                 getActivity(), token
                         ), LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);
-                // startActivity(new Intent(getActivity(), PinpointMapActivity.class));
             } else {
                 checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickTambahAlamatBaruFromGantiAlamat();
                 checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickTambahFromAlamatPengiriman();
-                /*startActivityForResult(
-                        AddAddressActivity.createInstanceAddAddressFromCheckoutSingleAddressForm(
-                                getActivity(), token
-                        ), LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE
-                );*/
-
-                /*startActivityForResult(
-                        PinpointMapActivity.createInstanceFromCheckoutSingleAddressForm(
-                                getActivity(), token
-                        ), LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE
-                );*/
-
-                // startActivity(new Intent(getActivity(), PinpointMapActivity.class));
 
                 Intent intent = new Intent(getActivity(), PinpointMapActivity.class);
                 intent.putExtra(AddressConstants.KERO_TOKEN, token);

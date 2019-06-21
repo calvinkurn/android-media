@@ -16,7 +16,7 @@
         android:text="@string/add_new_address_address_label" />
 
     <com.tokopedia.design.text.TkpdHintTextInputLayout
-        android:id="@+id/et_label_address_layout"
+        android:id="@+id/et_label_address_wrapper"
         style="@style/HintTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
         android:text="@string/add_new_address_name_label"/>
 
     <com.tokopedia.design.text.TkpdHintTextInputLayout
-        android:id="@+id/et_receiver_name_layout"
+        android:id="@+id/et_receiver_name_wrapper"
         style="@style/HintTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -66,7 +66,7 @@
         android:text="@string/add_new_address_phone_label"/>
 
     <com.tokopedia.design.text.TkpdHintTextInputLayout
-        android:id="@+id/et_phone_layout"
+        android:id="@+id/et_phone_wrapper"
         style="@style/HintTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

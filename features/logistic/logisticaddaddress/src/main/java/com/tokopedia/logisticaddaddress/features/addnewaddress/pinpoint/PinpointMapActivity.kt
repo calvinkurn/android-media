@@ -1,5 +1,7 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint
 
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.Window
 import android.view.WindowManager
@@ -9,6 +11,7 @@ import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.logisticaddaddress.AddressConstants.*
 import com.tokopedia.logisticaddaddress.R
+import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 
 /**
  * Created by fwidjaja on 2019-05-07.
@@ -55,5 +58,23 @@ class PinpointMapActivity: BaseSimpleActivity() {
     override fun onDestroy() {
         setResult(FINISH_FLAG)
         super.onDestroy()
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        var isAllowed = false
+        for (i in permissions.indices) {
+            if (grantResults.isNotEmpty() && grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                isAllowed = true
+            }
+        }
+
+        if (isAllowed) {
+            AddNewAddressAnalytics.eventClickButtonOkOnAllowLocation()
+        } else {
+            AddNewAddressAnalytics.eventClickButtonDoNotAllowOnAllowLocation()
+        }
+
     }
 }

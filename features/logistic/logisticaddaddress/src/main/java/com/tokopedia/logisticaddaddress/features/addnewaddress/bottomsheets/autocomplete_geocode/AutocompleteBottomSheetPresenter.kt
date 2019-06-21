@@ -27,8 +27,6 @@ class AutocompleteBottomSheetPresenter @Inject constructor(private val autocompl
                                                            private val autoCompleteMapper: AutocompleteMapper)
     : BaseDaggerPresenter<AutocompleteBottomSheetListener>() {
 
-    private lateinit var permissionCheckerHelper: PermissionCheckerHelper
-
     fun getAutocompleteGeocode(lat: Double?, long: Double?) {
         autocompleteGeocodeUseCase.setParams(lat, long)
         autocompleteGeocodeUseCase.execute(RequestParams.create(), AutocompleteGeocodeSubscriber(view, autoCompleteGeocodeMapper))
@@ -53,9 +51,7 @@ class AutocompleteBottomSheetPresenter @Inject constructor(private val autocompl
         autocompleteUseCase.clearCache()
     }
 
-
-
-    fun requestLocation(activity: Activity) {
+    /*fun requestLocation(activity: Activity) {
         val locationDetectorHelper = activity.let {
             LocationDetectorHelper(
                     permissionCheckerHelper,
@@ -71,13 +67,15 @@ class AutocompleteBottomSheetPresenter @Inject constructor(private val autocompl
 
     private fun onGetLocation(): (DeviceLocation) -> Unit {
         return {
-            clearCacheAutocompleteGeocode()
-            getAutocompleteGeocode(it.latitude, it.longitude)
-            view.setCurrentLatLong(it.latitude, it.longitude)
+            if (it.latitude != 0.0 && it.longitude != 0.0) {
+                clearCacheAutocompleteGeocode()
+                getAutocompleteGeocode(it.latitude, it.longitude)
+                view.setCurrentLatLong(it.latitude, it.longitude)
+            }
         }
     }
 
     fun setPermissionChecker(permissionCheckerHelper: PermissionCheckerHelper) {
         this.permissionCheckerHelper = permissionCheckerHelper
-    }
+    }*/
 }

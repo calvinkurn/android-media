@@ -34,12 +34,20 @@ class PopularCityRecommendationBottomSheetAdapter(context: Context?, private var
     @Suppress("DEPRECATION")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val res = holder.itemView.context.resources
-        holder.itemView.tv_city_chips_item.text = cityList[position]
+        holder.itemView.tv_city_chips_item.apply {
+            text = cityList[position]
+            setOnClickListener {
+                background = drawablePressed
+                setTextColor(res.getColor(R.color.tkpd_green))
+                actionListener.onCityChipClicked(cityList[position])
+            }
+        }
+        /*holder.itemView.tv_city_chips_item.text = cityList[position]
         holder.itemView.tv_city_chips_item.setOnClickListener {
             holder.itemView.tv_city_chips_item.background = drawablePressed
             holder.itemView.tv_city_chips_item.setTextColor(res.getColor(R.color.tkpd_green))
             actionListener.onCityChipClicked(cityList[position])
-        }
+        }*/
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)

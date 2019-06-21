@@ -1,6 +1,7 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode
 
 import android.app.Activity
+import android.app.Dialog
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -18,10 +19,10 @@ import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
 import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
+import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
+import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.location_info.LocationInfoBottomSheetFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AutocompleteDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete_geocode.AutocompleteGeocodeDataUiModel
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
-import kotlinx.android.synthetic.main.bottomsheet_autocomplete.*
 import javax.inject.Inject
 
 
@@ -40,7 +41,6 @@ class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetLi
     private lateinit var etSearch: EditText
     private lateinit var adapter: AutocompleteBottomSheetAdapter
     private lateinit var actionListener: ActionListener
-    private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     val handler = Handler()
 
     @Inject
@@ -73,7 +73,6 @@ class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetLi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        permissionCheckerHelper = PermissionCheckerHelper()
         if (arguments != null) {
             currentLat = arguments?.getDouble("CURRENT_LAT")
             currentLong = arguments?.getDouble("CURRENT_LONG")
@@ -89,113 +88,45 @@ class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetLi
     }
 
     override fun initView(view: View) {
+        prepareLayout(view)
+        if (activity != null) {
+            initInjector()
+        }
+        setViewListener()
+    }
+
+    private fun prepareLayout(view: View) {
         bottomSheetView = view
         rlCurrentLocation = view.findViewById(R.id.rl_current_location)
         rvPoiList = view.findViewById(R.id.rv_poi_list)
         llPoi = view.findViewById(R.id.ll_poi)
         etSearch = view.findViewById(R.id.et_search)
         adapter = AutocompleteBottomSheetAdapter(this)
-
-        // set presenter
-        if (activity != null) {
-            initInjector()
-        }
-        presenter.setPermissionChecker(permissionCheckerHelper)
-        activity?.let { presenter.requestLocation(it) }
+        hideListPointOfInterest()
 
         val linearLayoutManager = LinearLayoutManager(
                 context, LinearLayoutManager.VERTICAL, false)
         rvPoiList.layoutManager = linearLayoutManager
         rvPoiList.adapter = adapter
+    }
 
-        rlCurrentLocation.setOnClickListener {
-            actionListener.useCurrentLocation(currentLat, currentLong)
-            dismiss()
-        }
-
-        /*if (currentLat != 0.0 && currentLong != 0.0) {
-            presenter.clearCacheAutocompleteGeocode()
+    private fun setViewListener() {
+        if (currentLat != 0.0 && currentLong != 0.0) {
             presenter.getAutocompleteGeocode(currentLat, currentLong)
             rlCurrentLocation.setOnClickListener {
                 actionListener.useCurrentLocation(currentLat, currentLong)
                 dismiss()
             }
         } else {
-            hideListPointOfInterest()
             rlCurrentLocation.setOnClickListener {
-                // show undetected bottomsheet
-            }
-        }*/
-
-        onAddressTyped()
-    }
-
-    override fun configView(parentView: View?) {
-        super.configView(parentView)
-        parentView?.findViewById<View>(R.id.layout_title)?.setOnClickListener(null)
-        parentView?.findViewById<View>(R.id.btn_close)?.setOnClickListener{ onCloseButtonClick() }
-    }
-
-    fun initInjector() {
-        activity?.run {
-            DaggerAddNewAddressComponent.builder()
-                    .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                    .addNewAddressModule(AddNewAddressModule())
-                    .build()
-                    .inject(this@AutocompleteBottomSheetFragment)
-            presenter.attachView(this@AutocompleteBottomSheetFragment)
-        }
-    }
-
-    fun setActionListener(actionListener: ActionListener) {
-        this.actionListener = actionListener
-    }
-
-    override fun hideListPointOfInterest() {
-        llPoi.visibility = View.GONE
-        // rvPoiList.visibility = View.GONE
-    }
-
-    private fun loadAutocomplete(input: String) {
-        presenter.clearCacheAutocomplete()
-        presenter.getAutocomplete(input)
-    }
-
-    override fun onSuccessGetAutocompleteGeocode(responseAutocompleteGeocodeDataUiModel: AutocompleteGeocodeDataUiModel) {
-        if (responseAutocompleteGeocodeDataUiModel.results.isNotEmpty()){
-            adapter.isAutocompleteGeocode = true
-            adapter.dataAutocompleteGeocode = responseAutocompleteGeocodeDataUiModel.results.toMutableList()
-            adapter.notifyDataSetChanged()
-            updateHeight()
-        }
-    }
-
-    override fun onSuccessGetAutocomplete(dataUiModel: AutocompleteDataUiModel) {
-        if (dataUiModel.listPredictions.isNotEmpty()){
-            llPoi.visibility = View.VISIBLE
-            // rvPoiList.visibility = View.VISIBLE
-            adapter.isAutocompleteGeocode = false
-            adapter.dataAutocomplete = dataUiModel.listPredictions.toMutableList()
-            adapter.notifyDataSetChanged()
-            updateHeight()
-        }
-    }
-
-    override fun onPoiListClicked(placeId: String) {
-        // dismiss this then show bottomsheet detail
-        context?.let {
-            placeId.run {
-                /*val getDistrictBottomSheetFragment =
-                        GetDistrictBottomSheetFragment.newInstance(placeId, "", "")
-                getDistrictBottomSheetFragment.isCancelable = false
-                getDistrictBottomSheetFragment.show(fragmentManager, "")*/
-                actionListener.onGetPlaceId(placeId)
-                dismiss()
+                showLocationInfoBottomSheet()
             }
         }
-    }
 
-    private fun onAddressTyped() {
+        etSearch.setOnClickListener {
+            AddNewAddressAnalytics.eventClickFieldCariLokasi()
+        }
+
         etSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int,
                                            after: Int) {
@@ -216,24 +147,74 @@ class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetLi
         })
     }
 
-    /*override fun onTouchEvent(rv: RecyclerView?, e: MotionEvent?) {
+    override fun configView(parentView: View?) {
+        super.configView(parentView)
+        parentView?.findViewById<View>(R.id.layout_title)?.setOnClickListener(null)
+        parentView?.findViewById<View>(R.id.btn_close)?.setOnClickListener{
+            AddNewAddressAnalytics.eventClickBackArrowOnInputAddress()
+            onCloseButtonClick() }
     }
 
-    override fun onInterceptTouchEvent(rv: RecyclerView?, e: MotionEvent?): Boolean {
-        println("## onInterceptTouchEvent")
-        return false
+    fun initInjector() {
+        activity?.run {
+            DaggerAddNewAddressComponent.builder()
+                    .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                    .addNewAddressModule(AddNewAddressModule())
+                    .build()
+                    .inject(this@AutocompleteBottomSheetFragment)
+            presenter.attachView(this@AutocompleteBottomSheetFragment)
+        }
     }
 
-    override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
-        println("## onRequestDisallowInterceptTouchEvent")
-    }*/
+    fun setActionListener(actionListener: ActionListener) {
+        this.actionListener = actionListener
+    }
+
+    override fun hideListPointOfInterest() {
+        llPoi.visibility = View.GONE
+    }
+
+    private fun loadAutocomplete(input: String) {
+        presenter.clearCacheAutocomplete()
+        presenter.getAutocomplete(input)
+    }
+
+    override fun onSuccessGetAutocompleteGeocode(responseAutocompleteGeocodeDataUiModel: AutocompleteGeocodeDataUiModel) {
+        if (responseAutocompleteGeocodeDataUiModel.results.isNotEmpty()){
+            llPoi.visibility = View.VISIBLE
+            adapter.isAutocompleteGeocode = true
+            adapter.dataAutocompleteGeocode = responseAutocompleteGeocodeDataUiModel.results.toMutableList()
+            adapter.notifyDataSetChanged()
+            updateHeight()
+        }
+    }
+
+    override fun onSuccessGetAutocomplete(dataUiModel: AutocompleteDataUiModel) {
+        if (dataUiModel.listPredictions.isNotEmpty()){
+            llPoi.visibility = View.VISIBLE
+            adapter.isAutocompleteGeocode = false
+            adapter.dataAutocomplete = dataUiModel.listPredictions.toMutableList()
+            adapter.notifyDataSetChanged()
+            updateHeight()
+        }
+    }
+
+    override fun onPoiListClicked(placeId: String) {
+        context?.let {
+            placeId.run {
+                actionListener.onGetPlaceId(placeId)
+                dismiss()
+            }
+        }
+        AddNewAddressAnalytics.eventClickAddressSuggestionFromSuggestionList()
+    }
 
     private fun hideKeyboard() {
         val inputMethodManager = context?.getSystemService(Activity.INPUT_METHOD_SERVICE);
         (inputMethodManager as InputMethodManager).hideSoftInputFromWindow(view?.windowToken, 0);
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    /*override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -243,10 +224,34 @@ class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetLi
                         grantResults)
             }
         }
-    }
+    }*/
 
-    override fun setCurrentLatLong(lat: Double, long: Double) {
+    /*override fun setCurrentLatLong(lat: Double, long: Double) {
         currentLat = lat
         currentLong = long
+        setOnClickCurrentLocation()
+    }*/
+
+    /*private fun setOnClickCurrentLocation() {
+        if (currentLat != 0.0 && currentLong != 0.0) {
+            rlCurrentLocation.setOnClickListener {
+                actionListener.useCurrentLocation(currentLat, currentLong)
+                dismiss()
+            }
+        } else {
+            rlCurrentLocation.setOnClickListener {
+                showLocationInfoBottomSheet()
+            }
+        }
+    }*/
+
+    private fun showLocationInfoBottomSheet() {
+        val locationInfoBottomSheetFragment = LocationInfoBottomSheetFragment.newInstance()
+        locationInfoBottomSheetFragment.show(fragmentManager, "")
+        dismiss()
+    }
+
+    override fun onResume() {
+        super.onResume()
     }
 }

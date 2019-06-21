@@ -17,6 +17,7 @@ import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
 import com.tokopedia.logisticaddaddress.domain.usecase.AutofillUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.DistrictBoundaryUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
+import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.AutofillSubscriber
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.GetDistrictSubscriber
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.AutofillDataUiModel
@@ -31,36 +32,17 @@ import javax.inject.Inject
  */
 
 @AddNewAddressScope
-class PinpointMapPresenter @Inject constructor(private val context: Context,
-                                               private val getDistrictUseCase: GetDistrictUseCase,
+class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: GetDistrictUseCase,
                                                private val getDistrictMapper: GetDistrictMapper,
                                                private val autofillUseCase: AutofillUseCase,
                                                private val autofillMapper: AutofillMapper,
                                                private val districtBoundaryUseCase: DistrictBoundaryUseCase,
                                                private val districtBoundaryMapper: DistrictBoundaryMapper): BaseDaggerPresenter<PinpointMapListener>() {
-    // var googleApiClient: GoogleApiClient? = null
 
     private val defaultLat: Double by lazy { -6.175794 }
     private val defaultLong: Double by lazy { 106.826457 }
     private var saveAddressDataModel = SaveAddressDataModel()
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
-
-    /*fun connectGoogleApi(mapFragment: PinpointMapFragment) {
-        this.googleApiClient = GoogleApiClient.Builder(context)
-                .addApi(LocationServices.API)
-                .addApi(Places.GEO_DATA_API)
-                .addConnectionCallbacks(mapFragment)
-                .addOnConnectionFailedListener(mapFragment)
-                .build()
-
-        this.googleApiClient?.connect()
-    }
-
-    fun disconnectGoogleApi() {
-        if (googleApiClient?.isConnected!!) {
-            googleApiClient?.disconnect()
-        }
-    }*/
 
     fun getDistrict(placeId: String) {
         getDistrictUseCase.setParams(placeId)
@@ -89,8 +71,14 @@ class PinpointMapPresenter @Inject constructor(private val context: Context,
     fun loadAddEdit(isMismatchSolved: Boolean?) {
         if (saveAddressDataModel.districtId == 0 && saveAddressDataModel.postalCode.isEmpty()) {
             view.showFailedDialog()
+
+            AddNewAddressAnalytics.eventClickButtonPilihLokasiIniNotSuccess()
+            AddNewAddressAnalytics.eventClickButtonTandaiLokasiChangeAddressNegativeFailed()
         } else {
             isMismatchSolved?.let { view.goToAddEditActivity(false, it) }
+
+            AddNewAddressAnalytics.eventClickButtonPilihLokasiIniSuccess()
+            AddNewAddressAnalytics.eventClickButtonTandaiLokasiChangeAddressNegativeSuccess()
         }
     }
 
@@ -139,7 +127,7 @@ class PinpointMapPresenter @Inject constructor(private val context: Context,
         districtBoundaryUseCase.execute(RequestParams.create(), DistrictBoundarySubscriber(view, districtBoundaryMapper))
     }
 
-    /*fun requestLocation(activity: Activity) {
+    fun requestLocation(activity: Activity) {
         val locationDetectorHelper = activity.let {
             LocationDetectorHelper(
                     permissionCheckerHelper,
@@ -155,11 +143,11 @@ class PinpointMapPresenter @Inject constructor(private val context: Context,
 
     private fun onGetLocation(): (DeviceLocation) -> Unit {
         return {
-            view.loadPoiList(it.latitude, it.longitude)
+            view.showAutoComplete(it.latitude, it.longitude)
         }
     }
 
     fun setPermissionChecker(permissionCheckerHelper: PermissionCheckerHelper) {
         this.permissionCheckerHelper = permissionCheckerHelper
-    }*/
+    }
 }

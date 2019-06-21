@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout
-    android:id="@+id/bottomsheet_location_info"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottomsheet_location_info"
     android:background="@color/white"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:behavior_hideable="true"
-    app:behavior_peekHeight="500dp"
-    app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,29 +22,32 @@
             android:layout_height="@dimen/dp_140"
             android:layout_marginTop="@dimen/dp_24"
             android:src="@drawable/ic_invalid_location"
-            android:contentDescription="@string/invalid_description"/>
+            android:contentDescription="@string/invalid_description"
+            android:layout_gravity="center_horizontal"/>
         
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_50"
-            android:layout_marginStart="@dimen/dp_50"
-            android:layout_marginEnd="@dimen/dp_50"
-            android:layout_marginRight="@dimen/dp_50"
+            android:layout_marginLeft="@dimen/dp_25"
+            android:layout_marginStart="@dimen/dp_25"
+            android:layout_marginEnd="@dimen/dp_25"
+            android:layout_marginRight="@dimen/dp_25"
             android:layout_marginTop="@dimen/dp_16"
-            android:text="@string/undetected_location_desc"/>
+            android:text="@string/undetected_location_desc"
+            android:layout_gravity="center_horizontal"/>
 
         <com.tokopedia.design.component.ButtonCompat
             android:id="@+id/btn_activate_location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_24"
-            android:layout_marginBottom="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/dp_60"
             android:foreground="?selectableItemBackground"
             android:text="@string/activate_location_service"
             android:textAllCaps="false"
             app:buttonCompatSize="big"
-            app:buttonCompatType="primary" />
+            app:buttonCompatType="primary"
+            android:layout_gravity="center_horizontal"/>
 
     </LinearLayout>
 

@@ -33,11 +33,13 @@ class ZipCodeChipsAdapter(context: Context?, private var actionListener: ActionL
     @Suppress("DEPRECATION")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val res = holder.itemView.context.resources
-        holder.itemView.tv_city_chips_item.text = zipCodes[position]
-        holder.itemView.tv_city_chips_item.setOnClickListener {
-            holder.itemView.tv_city_chips_item.background = drawablePressed
-            holder.itemView.tv_city_chips_item.setTextColor(res.getColor(R.color.tkpd_green))
-            actionListener.onZipCodeClicked(zipCodes[position])
+        holder.itemView.tv_city_chips_item.apply {
+            text = zipCodes[position]
+            setOnClickListener {
+                holder.itemView.tv_city_chips_item.background = drawablePressed
+                holder.itemView.tv_city_chips_item.setTextColor(res.getColor(R.color.tkpd_green))
+                actionListener.onZipCodeClicked(zipCodes[position])
+            }
         }
     }
 

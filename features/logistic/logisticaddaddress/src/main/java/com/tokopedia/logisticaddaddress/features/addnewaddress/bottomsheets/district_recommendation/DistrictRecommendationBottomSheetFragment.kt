@@ -19,6 +19,7 @@ import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
 import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
 import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.AddEditAddressFragment
+import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_recommendation.DistrictRecommendationItemUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_recommendation.DistrictRecommendationResponseUiModel
 import javax.inject.Inject
@@ -66,6 +67,16 @@ class DistrictRecommendationBottomSheetFragment: BottomSheets(),
     }
 
     override fun initView(view: View) {
+        prepareLayout(view)
+        if (activity != null) {
+            initInjector()
+        }
+
+        val staticDimen8dp = view.context?.resources?.getDimensionPixelOffset(R.dimen.dp_8)
+        setViewListener(staticDimen8dp)
+    }
+
+    private fun prepareLayout(view: View) {
         bottomSheetView = view
         rvChips = view.findViewById(R.id.rv_chips)
         etSearch = view.findViewById(R.id.et_search_district_recommendation)
@@ -81,48 +92,21 @@ class DistrictRecommendationBottomSheetFragment: BottomSheets(),
                 .setOrientation(ChipsLayoutManager.HORIZONTAL)
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                 .build()
-        val staticDimen8dp = view.context?.resources?.getDimensionPixelOffset(R.dimen.dp_8)
+
         ViewCompat.setLayoutDirection(rvChips, ViewCompat.LAYOUT_DIRECTION_LTR)
         popularCityAdapter = PopularCityRecommendationBottomSheetAdapter(context, this)
         popularCityAdapter.cityList = cityList.toMutableList()
 
         rvChips.apply {
-            addItemDecoration(staticDimen8dp?.let { ChipsItemDecoration(staticDimen8dp) })
             layoutManager = chipsLayoutManager
             adapter = popularCityAdapter
         }
 
-        var visibleItemCount: Int
-        var totalItemCount: Int
-        var pastVisibleItem: Int
         listDistrictAdapter = DistrictRecommendationBottomSheetAdapter(this)
         rvListDistrict.apply {
             layoutManager = linearLayoutManager
             adapter = listDistrictAdapter
-            addOnScrollListener(object: RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-
-                    visibleItemCount = linearLayoutManager.childCount
-                    totalItemCount = linearLayoutManager.itemCount
-                    pastVisibleItem = linearLayoutManager.findFirstVisibleItemPosition()
-                    if ((visibleItemCount + pastVisibleItem) >= totalItemCount && !isLoading) {
-                        isLoading = true
-                        numPage += 1
-                        presenter.clearCacheDistrictRecommendation()
-                        presenter.getDistrictRecommendation(input, numPage.toString())
-                    }
-                }
-            })
         }
-
-        if (activity != null) {
-            initInjector()
-        }
-
-        setOnCityTypedListener()
-        setOnClearBtnClicked()
-        updateHeight()
     }
 
     fun setActionListener(actionListener: AddEditAddressFragment) {
@@ -147,14 +131,17 @@ class DistrictRecommendationBottomSheetFragment: BottomSheets(),
     override fun configView(parentView: View?) {
         super.configView(parentView)
         parentView?.findViewById<View>(R.id.layout_title)?.setOnClickListener(null)
-        parentView?.findViewById<View>(R.id.btn_close)?.setOnClickListener{ onCloseButtonClick() }
+        parentView?.findViewById<View>(R.id.btn_close)?.setOnClickListener{
+            onCloseButtonClick()
+            AddNewAddressAnalytics.eventClickBackArrowOnNegativePage()}
     }
 
     override fun onCityChipClicked(city: String) {
         etSearch.setText(city)
+        AddNewAddressAnalytics.eventClickChipsKotaKecamatanChangeAddressNegative()
     }
 
-    private fun setOnCityTypedListener() {
+    private fun setViewListener(staticDimen8dp: Int?) {
         etSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int,
                                            after: Int) {
@@ -172,9 +159,34 @@ class DistrictRecommendationBottomSheetFragment: BottomSheets(),
             }
 
             override fun afterTextChanged(s: Editable) {
-                /*handler.postDelayed({
-                    println("## afterTextChanged - s = $s")
-                }, 1000)*/
+            }
+        })
+
+        icCloseBtn.setOnClickListener {
+            etSearch.setText("")
+            llListDistrict.visibility = View.GONE
+            llPopularCity.visibility = View.VISIBLE
+            popularCityAdapter.notifyDataSetChanged()
+        }
+
+        rvChips.addItemDecoration(staticDimen8dp?.let { ChipsItemDecoration(staticDimen8dp) })
+
+        var visibleItemCount: Int
+        var totalItemCount: Int
+        var pastVisibleItem: Int
+        rvListDistrict.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                visibleItemCount = linearLayoutManager.childCount
+                totalItemCount = linearLayoutManager.itemCount
+                pastVisibleItem = linearLayoutManager.findFirstVisibleItemPosition()
+                if ((visibleItemCount + pastVisibleItem) >= totalItemCount && !isLoading) {
+                    isLoading = true
+                    numPage += 1
+                    presenter.clearCacheDistrictRecommendation()
+                    presenter.getDistrictRecommendation(input, numPage.toString())
+                }
             }
         })
     }
@@ -194,19 +206,11 @@ class DistrictRecommendationBottomSheetFragment: BottomSheets(),
         }
     }
 
-    private fun setOnClearBtnClicked() {
-        icCloseBtn.setOnClickListener {
-            etSearch.setText("")
-            llListDistrict.visibility = View.GONE
-            llPopularCity.visibility = View.VISIBLE
-            popularCityAdapter.notifyDataSetChanged()
-        }
-    }
-
     override fun onDistrictItemClicked(districtRecommendationItemUiModel: DistrictRecommendationItemUiModel) {
         context?.let {
             districtRecommendationItemUiModel.run {
                 actionListener.onGetDistrict(districtRecommendationItemUiModel)
+                AddNewAddressAnalytics.eventClickSuggestionKotaKecamatanChangeAddressNegative()
                 dismiss()
             }
         }

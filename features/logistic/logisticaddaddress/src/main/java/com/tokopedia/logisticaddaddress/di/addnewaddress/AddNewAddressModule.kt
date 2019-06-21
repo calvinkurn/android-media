@@ -21,15 +21,14 @@ class AddNewAddressModule {
 
     @Provides
     @AddNewAddressScope
-    fun providePintpointMapPresenter(
-            @ApplicationContext context: Context,
+    fun providePinpointMapPresenter(
             getDistrictUseCase: GetDistrictUseCase,
             getDistrictMapper: GetDistrictMapper,
             autofillUseCase: AutofillUseCase,
             autofillMapper: AutofillMapper,
             districtBoundaryUseCase: DistrictBoundaryUseCase,
             districtBoundaryMapper: DistrictBoundaryMapper): PinpointMapPresenter {
-        return PinpointMapPresenter(context, getDistrictUseCase, getDistrictMapper,
+        return PinpointMapPresenter(getDistrictUseCase, getDistrictMapper,
                                     autofillUseCase, autofillMapper,
                                     districtBoundaryUseCase, districtBoundaryMapper)
     }
@@ -54,4 +53,6 @@ class AddNewAddressModule {
             districtRecommendationMapper: DistrictRecommendationMapper): DistrictRecommendationBottomSheetPresenter {
         return DistrictRecommendationBottomSheetPresenter(districtRecommendationUseCase, districtRecommendationMapper)
     }
+
+
 }

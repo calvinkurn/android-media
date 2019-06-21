@@ -35,7 +35,7 @@
         android:text="@string/detail_alamat"/>
 
     <com.tokopedia.design.text.TkpdHintTextInputLayout
-        android:id="@+id/et_detail_address_layout"
+        android:id="@+id/et_detail_address_wrapper"
         style="@style/HintTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

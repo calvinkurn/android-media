@@ -41,4 +41,12 @@ class AddEditAddressActivity: BaseSimpleActivity() {
         setResult(FINISH_FLAG)
         super.onDestroy()
     }
+
+    override fun onBackPressed() {
+        val fragment =
+                this.supportFragmentManager.findFragmentById(R.id.parent_view)
+        (fragment as? IOnBackPressed)?.onBackPressed()?.not()?.let {
+            super.onBackPressed()
+        }
+    }
 }

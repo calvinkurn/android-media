@@ -102,6 +102,14 @@
     <string name="undetected_location">Lokasi tidak terdeteksi</string>
     <string name="undetected_location_desc">Kami tidak dapat mengakses lokasi Anda. Untuk menggunakan fitur ini silakan aktifkan layanan lokasi Anda.</string>
     <string name="activate_location_service">Aktifkan Layanan Lokasi</string>
+    <string name="validate_label_alamat">Label Alamat harus diisi</string>
+    <string name="validate_nama_penerima">Nama Penerima harus diisi</string>
+    <string name="validate_no_ponsel">No. Ponsel harus diisi</string>
+    <string name="validate_detail_alamat">Detail Alamat harus diisi</string>
+    <string name="validate_kota_kecamatan">Kota Kecamatan harus diisi</string>
+    <string name="validate_kode_pos">Kode Pos harus diisi</string>
+    <string name="validate_kode_pos_length">Kode Pos minimal 5 karakter</string>
+    <string name="validate_alamat">Alamat harus diisi</string>
 
     <string-array name="cityList">
         <item>Jakarta</item>

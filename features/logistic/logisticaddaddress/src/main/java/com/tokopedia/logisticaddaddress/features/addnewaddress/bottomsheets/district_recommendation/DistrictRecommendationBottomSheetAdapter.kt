@@ -35,9 +35,11 @@ class DistrictRecommendationBottomSheetAdapter(private var actionListener: Actio
         val cityName = listDistrictRecommendation[position].cityName
         val districtName = listDistrictRecommendation[position].districtName
         val districtSelected = "$provinceName, $cityName, $districtName"
-        holder.itemView.tv_district_name.text = districtSelected
-        holder.itemView.tv_district_name.setOnClickListener {
-            actionListener.onDistrictItemClicked(listDistrictRecommendation[position])
+        holder.itemView.tv_district_name.apply {
+            text = districtSelected
+            setOnClickListener {
+                actionListener.onDistrictItemClicked(listDistrictRecommendation[position])
+            }
         }
     }
 
