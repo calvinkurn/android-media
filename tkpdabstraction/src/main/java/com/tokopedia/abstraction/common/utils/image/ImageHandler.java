@@ -574,6 +574,22 @@ public class ImageHandler {
         };
     }
 
+    public static String encodeToBase64(String imagePath) {
+        Bitmap bm = BitmapFactory.decodeFile(imagePath);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] b = baos.toByteArray();
+        return Base64.encodeToString(b, Base64.DEFAULT);
+    }
+
+    public static String encodeToBase64(String imagePath, Bitmap.CompressFormat compressFormat) {
+        Bitmap bm = BitmapFactory.decodeFile(imagePath);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bm.compress(compressFormat, 100, baos);
+        byte[] b = baos.toByteArray();
+        return Base64.encodeToString(b, Base64.DEFAULT);
+    }
+
     public static BitmapImageViewTarget getRoundedCornerWithBorderViewTarget(ImageView imageView,
                                                                              Context context,
                                                                              int cornerRadius,
