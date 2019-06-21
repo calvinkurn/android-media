@@ -3,26 +3,32 @@ package com.tokopedia.home_recom.view.fragment
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.analytics.RecommendationPageTracking
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.model.datamodel.*
+import com.tokopedia.home_recom.model.entity.ProductDetailData
 import com.tokopedia.home_recom.view.adapter.HomeRecommendationAdapter
 import com.tokopedia.home_recom.view.adapter.HomeRecommendationTypeFactoryImpl
-import com.tokopedia.recommendation_widget_common.TYPE_CAROUSEL
+import com.tokopedia.home_recom.viewmodel.RecommendationPageViewModel
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.interfaces.ShareCallback
+import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.linker.model.LinkerError
+import com.tokopedia.linker.model.LinkerShareData
+import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.recommendation_widget_common.TYPE_SCROLL
 import com.tokopedia.recommendation_widget_common.presentation.RecommendationCardView
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.home_recom.viewmodel.RecommendationPageViewModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -43,9 +49,11 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     private val adapterFactory by lazy { HomeRecommendationTypeFactoryImpl() }
     private val adapter by lazy { HomeRecommendationAdapter(adapterTypeFactory) }
     private val recommendationWidgetViewModel by lazy { viewModelProvider.get(RecommendationPageViewModel::class.java) }
+    private var menu: Menu? = null
 
     companion object{
         private const val SPAN_COUNT = 2
+        private const val SHARE_PRODUCT_TITLE = "Bagikan Produk Ini"
 
         fun newInstance(productId: String) = RecommendationFragment().apply {
             this.productId = productId
@@ -64,6 +72,12 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
             it?.let {
                 primaryProduct ->
                 displayProductInfo(primaryProduct)
+
+                menu?.findItem(R.id.action_share)?.isVisible = true
+                menu?.findItem(R.id.action_share)?.setOnMenuItemClickListener {
+                    shareProduct(primaryProduct.productDetailData)
+                    true
+                }
             }
         })
 
@@ -105,7 +119,6 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
 
     override fun getScreenName(): String = ""
 
-
     override fun initInjector() {
         getComponent(HomeRecommendationComponent::class.java).inject(this)
     }
@@ -120,6 +133,12 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     override fun disableLoadMore() {
         super.disableLoadMore()
         getRecyclerView(view).isNestedScrollingEnabled = false
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        inflater?.inflate(R.menu.recommendation_page_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+        this.menu = menu
     }
 
     private fun displayProductInfo(dataModel: ProductInfoDataModel){
@@ -208,4 +227,48 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
         }
         return header
     }
+
+    private fun shareProduct(productDetailData: ProductDetailData){
+        LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
+                productDataToLinkerDataMapper(productDetailData), object : ShareCallback {
+            override fun urlCreated(linkerShareData: LinkerShareResult) {
+                openIntentShare(productDetailData.name, context!!.getString(R.string.home_recommendation), linkerShareData.url)
+            }
+
+            override fun onError(linkerError: LinkerError) {
+                openIntentShare(productDetailData.name, context!!.getString(R.string.home_recommendation), "https://tokopedia.com/rekomendasi/${productDetailData.id}")
+            }
+        }))
+    }
+
+    private fun productDataToLinkerDataMapper(productDetailData: ProductDetailData): LinkerShareData {
+        val linkerData = LinkerData()
+        linkerData.id = productDetailData.id.toString()
+        linkerData.name = productDetailData.name
+        linkerData.description = productDetailData.name
+        linkerData.imgUri = productDetailData.imageUrl
+        linkerData.ogUrl = null
+        linkerData.type = LinkerData.PRODUCT_TYPE
+        linkerData.uri =  "https://tokopedia.com/rekomendasi/${productDetailData.id}"
+        val linkerShareData = LinkerShareData()
+        linkerShareData.linkerData = linkerData
+        return linkerShareData
+    }
+
+    private fun openIntentShare(title: String, shareContent: String, shareUri: String){
+
+        val shareIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            type = "text/plain"
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            putExtra(Intent.EXTRA_REFERRER, shareUri)
+            putExtra(Intent.EXTRA_HTML_TEXT, shareContent)
+            putExtra(Intent.EXTRA_TITLE, title)
+            putExtra(Intent.EXTRA_TEXT, shareContent)
+            putExtra(Intent.EXTRA_SUBJECT, title)
+        }
+
+        activity?.startActivity(Intent.createChooser(shareIntent, SHARE_PRODUCT_TITLE))
+    }
+
 }

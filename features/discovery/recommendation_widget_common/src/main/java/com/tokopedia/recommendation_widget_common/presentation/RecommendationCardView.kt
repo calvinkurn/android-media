@@ -7,6 +7,7 @@ package com.tokopedia.recommendation_widget_common.presentation
 import android.content.Context
 import android.text.TextUtils
 import android.util.AttributeSet
+import android.view.View
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
@@ -31,8 +32,7 @@ class RecommendationCardView : ProductCardView {
         setWishlistButtonVisible(false)
 //        setWishlistButtonVisible(TextUtils.isEmpty(item.wishlistUrl))
         setRatingReviewCount(item.rating, item.countReview)
-        ratingView.setPadding(ratingView.paddingLeft, ratingView.paddingTop, ratingView.paddingRight, resources.getDimension(R.dimen.dp_8).toInt())
-        reviewCountView.setPadding(reviewCountView.paddingLeft, reviewCountView.paddingTop, reviewCountView.paddingRight, resources.getDimension(R.dimen.dp_8).toInt())
+        (ratingView.parent as View).setPadding(ratingView.paddingLeft, ratingView.paddingTop, ratingView.paddingRight, resources.getDimension(R.dimen.dp_10).toInt())
         imageView.addOnImpressionListener(item,
                 object: ViewHintListener {
                     override fun onViewHint() {
