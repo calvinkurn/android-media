@@ -2,13 +2,10 @@ package com.tokopedia.hotel.hoteldetail.presentation.activity
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.hotel.HotelComponentInstance
-import com.tokopedia.hotel.common.applink.ApplinkConstant
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.hotel.hoteldetail.di.DaggerHotelDetailComponent
 import com.tokopedia.hotel.hoteldetail.di.HotelDetailComponent
@@ -65,7 +62,9 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
 
     }
 }
+/*
 
+*/
 /**
  * eg : tokopedia://hotel/detail/{id}?check_in={checkin_date}&check_out={checkout_date}&room={#}&adult={#}&enable_book={0/1}
  *
@@ -74,7 +73,8 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
  * room = number of room
  * adult = number of adult
  * enable_book = enable book 1 (true) user can see room list etc. enable book 0 (false) user can't see room list and button book room will not shown
- */
+ *//*
+
 @DeepLink(ApplinkConstant.HOTEL_DETAIL)
 fun getCallingIntent(context: Context, extras: Bundle): Intent {
     val uri: Uri.Builder = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
@@ -85,4 +85,4 @@ fun getCallingIntent(context: Context, extras: Bundle): Intent {
             extras.getInt("room", 1),
             extras.getInt("adult", 1),extras.getInt("enable_book") == 1)
             .setData(uri.build())
-}
+}*/

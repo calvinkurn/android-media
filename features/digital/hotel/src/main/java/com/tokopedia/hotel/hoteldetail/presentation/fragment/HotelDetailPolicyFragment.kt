@@ -57,6 +57,10 @@ class HotelDetailPolicyFragment : BaseListFragment<PropertyPolicyData, HotelDeta
         }
     }
 
+    override fun showEmpty() {
+        // show nothing
+    }
+
     interface Connector {
         fun getPolicyData(): HotelDetailPolicyModel
     }

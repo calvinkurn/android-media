@@ -94,7 +94,7 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
         const val PARAM_HOTEL_INFO_PROPERTY = "data"
 
         const val DEFAULT_PAGE_REVIEW = 0
-        const val DEFAULT_ROW_REVIEW = 11
+        const val DEFAULT_ROW_REVIEW = 5
         const val DEFAULT_SORT_BY_REVIEW = "score"
         const val DEFAULT_SORT_ORDER = "desc"
 

@@ -21,6 +21,7 @@ import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.homepage.data.cloud.entity.HotelPromoEntity
 import com.tokopedia.hotel.homepage.di.HotelHomepageComponent
+import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity.Companion.TYPE_PROPERTY
 import com.tokopedia.hotel.homepage.presentation.adapter.HotelPromoAdapter
 import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
 import com.tokopedia.hotel.homepage.presentation.model.viewmodel.HotelHomepageViewModel
@@ -59,6 +60,14 @@ class HotelHomepageFragment : HotelBaseFragment(),
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             homepageViewModel = viewModelProvider.get(HotelHomepageViewModel::class.java)
         }
+
+        if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_HOTEL_MODEL)) {
+            hotelHomepageModel = savedInstanceState.getParcelable(EXTRA_HOTEL_MODEL)!!
+        } else if (arguments != null && arguments!!.containsKey(EXTRA_PARAM_TYPE)) {
+            hotelHomepageModel.locId = arguments!!.getInt(EXTRA_PARAM_ID)
+            hotelHomepageModel.locName = arguments!!.getString(EXTRA_PARAM_NAME)
+            hotelHomepageModel.locType = arguments!!.getString(EXTRA_PARAM_TYPE)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -66,10 +75,6 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_HOTEL_MODEL)) {
-            hotelHomepageModel = savedInstanceState.getParcelable(EXTRA_HOTEL_MODEL)!!
-        }
 
         initView()
         hidePromoContainer()
@@ -386,12 +391,23 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
         const val EXTRA_HOTEL_MODEL = "EXTRA_HOTEL_MODEL"
 
+        const val EXTRA_PARAM_ID = "param_id"
+        const val EXTRA_PARAM_NAME = "param_name"
+        const val EXTRA_PARAM_TYPE = "param_type"
+
         const val TAG_CALENDAR_CHECK_IN = "calendarHotelCheckIn"
         const val TAG_CALENDAR_CHECK_OUT = "calendarHotelCheckOut"
         const val TAG_GUEST_INFO = "guestHotelInfo"
 
-        const val TYPE_PROPERTY = "property"
-
         fun getInstance(): HotelHomepageFragment = HotelHomepageFragment()
+
+        fun getInstance(id: Int, name: String, type: String): HotelHomepageFragment =
+                HotelHomepageFragment().also {
+                    it.arguments = Bundle().apply {
+                        putInt(EXTRA_PARAM_ID, id)
+                        putString(EXTRA_PARAM_NAME, name)
+                        putString(EXTRA_PARAM_TYPE, type)
+                    }
+                }
     }
 }

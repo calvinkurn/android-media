@@ -23,7 +23,6 @@ class HotelDetailReviewViewHolder(val view: View): RecyclerView.ViewHolder(view)
         }
     }
 
-
     companion object {
         val LAYOUT = R.layout.item_hotel_detail_review
     }
