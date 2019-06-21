@@ -99,7 +99,7 @@ import com.tokopedia.tokocash.network.api.WalletUrl;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.train.common.constant.TrainUrl;
-import com.tokopedia.transaction.network.TransactionUrl;
+import com.tokopedia.seller.purchase.network.TransactionUrl;
 import com.tokopedia.transactiondata.constant.TransactionDataApiUrl;
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneURL;
 import com.tokopedia.user_identification_common.KycCommonUrl;
