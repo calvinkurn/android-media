@@ -225,7 +225,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
         context?.let {
             if (wishlisted) {
                 fab_detail.isActivated = true
-                fab_detail.setImageDrawable(ContextCompat.getDrawable(it, com.tokopedia.unifyicon.R.drawable.ic_product_action_wishlist_added_28))
+                fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_product_action_wishlist_added_28))
             } else {
                 fab_detail.isActivated = false
                 fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_product_action_wishlist_gray_28))
