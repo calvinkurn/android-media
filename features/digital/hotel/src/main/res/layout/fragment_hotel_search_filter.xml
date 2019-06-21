@@ -37,13 +37,14 @@
                     app:textViewTheme="lightPrimary"
                     app:weight="medium" />
 
-                <android.support.v7.widget.SwitchCompat
+                <Switch
                     android:id="@+id/switch_pay_at_hotel"
-                    style="@style/Switch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true" />
+                    android:layout_centerVertical="true"
+                    android:thumb="@drawable/bg_hotel_switch_thumb"
+                    android:track="@drawable/bg_switch_track_selector" />
             </RelativeLayout>
 
             <View
