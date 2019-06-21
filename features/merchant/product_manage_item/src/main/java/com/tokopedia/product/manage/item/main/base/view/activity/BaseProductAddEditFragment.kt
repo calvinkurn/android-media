@@ -302,45 +302,6 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
 
     }
 
-//    private fun showDialogSuccessAddProduct(): Dialog {
-//         activity?.let { activity ->
-//            val dialog = Dialog(activity)
-//            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-//            dialog.setCancelable(false)
-//            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-//            dialog.setContentView(R.layout.dialog_product_add)
-//            dialog.btn_submit.setOnClickListener {
-//                RouteManager.route(context, ApplinkConst.SELLER_SHIPPING_EDITOR)
-//                activity.finish()
-//            }
-//            dialog.btn_product_list.setOnClickListener {
-//                RouteManager.route(context, ApplinkConst.PRODUCT_MANAGE)
-//                activity.finish()
-//            }
-//            val spanText = android.text.SpannableString(getString(R.string.popup_tips_trick_clickable))
-//            spanText.setSpan(StyleSpan(Typeface.BOLD),
-//                    5, spanText.length - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-//            spanText.setSpan(ForegroundColorSpan(resources.getColor(R.color.tkpd_main_green)),
-//                    5, spanText.length - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-//
-//            spanText.setSpan(object : ClickableSpan() {
-//                override fun onClick(widget: View) {
-//                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_TIPS_TRICK))
-//                    activity.finish()
-//                }
-//
-//                override fun updateDrawState(ds: TextPaint) {
-//                    super.updateDrawState(ds)
-//                    ds.isUnderlineText = false
-//                }
-//            }, 5, spanText.length - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-//            dialog.txt_tips_trick.movementMethod = LinkMovementMethod.getInstance()
-//            dialog.txt_tips_trick.text = spanText
-//
-//             return dialog
-//        }
-//    }
-
     override fun onSuccessStoreProductToDraft(productId: Long, isUploading: Boolean) {
         if (isUploading) {
             CommonUtils.UniversalToast(activity, getString(R.string.upload_product_waiting))

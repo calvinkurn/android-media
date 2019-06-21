@@ -220,7 +220,7 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
 
     @Override
     public void getPopupsInfo() {
-        int shopId = convertStringToInterger();
+        int shopId = getShopIdInteger();
         popupManagerAddProductUseCase.execute(PopupManagerAddProductUseCase.createRequestParams(shopId),
                 getPopupsInfoSubscriber());
     }
@@ -247,7 +247,7 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
         };
     }
 
-    private int convertStringToInterger() {
+    private int getShopIdInteger() {
         try {
             return Integer.parseInt(userSession.getShopId());
         } catch (NumberFormatException e) {
