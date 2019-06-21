@@ -17,6 +17,7 @@
         android:layout_marginLeft="@dimen/dp_12"
         android:layout_marginEnd="@dimen/dp_12"
         android:layout_marginRight="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_8"
         tools:src="@drawable/ic_big_notif_customerapp"
         android:layout_alignParentTop="true"
@@ -29,7 +30,7 @@
         android:maxLines="2"
         android:lines="2"
         android:maxWidth="@dimen/dp_64"
-        android:gravity="center"
+        android:gravity="top|center_horizontal"
         android:layout_below="@id/image_icon"
         android:layout_centerHorizontal="true"
         style="@style/TextView.Micro" />
