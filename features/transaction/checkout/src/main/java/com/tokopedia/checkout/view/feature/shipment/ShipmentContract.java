@@ -150,6 +150,8 @@ public interface ShipmentContract {
         void clearTotalBenefitPromoStacking();
 
         void triggerSendEnhancedEcommerceCheckoutAnalyticAfterPromoChange(String eventAction, String eventLabel);
+
+        void triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess();
     }
 
     interface AnalyticsActionListener {

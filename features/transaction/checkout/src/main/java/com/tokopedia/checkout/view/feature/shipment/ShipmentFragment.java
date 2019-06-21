@@ -480,11 +480,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
 
         if (countHasSaveState == 0) {
+            List<DataCheckoutRequest> dataCheckoutRequests = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentAdapter.getPromoGlobalStackData(), shipmentAdapter.getShipmentCartItemModelList());
             shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
+                    dataCheckoutRequests,
                     EnhancedECommerceActionField.STEP_2,
                     ConstantTransactionAnalytics.EventAction.VIEW_CHECKOUT_PAGE,
                     ConstantTransactionAnalytics.EventLabel.SUCCESS);
             shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
+                    dataCheckoutRequests,
                     EnhancedECommerceActionField.STEP_3,
                     ConstantTransactionAnalytics.EventAction.CLICK_CHECKLIST_PILIH_DURASI_PENGIRIMAN, "");
         }
@@ -1012,7 +1015,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }
             }
 
+            List<DataCheckoutRequest> dataCheckoutRequestsStep2 = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentAdapter.getPromoGlobalStackData(), shipmentAdapter.getShipmentCartItemModelList());
             shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
+                    dataCheckoutRequestsStep2,
                     EnhancedECommerceActionField.STEP_2,
                     ConstantTransactionAnalytics.EventAction.VIEW_CHECKOUT_PAGE,
                     ConstantTransactionAnalytics.EventLabel.SUCCESS);
@@ -1026,7 +1031,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 );
             }
 
+            List<DataCheckoutRequest> dataCheckoutRequestsStep3 = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentAdapter.getPromoGlobalStackData(), shipmentAdapter.getShipmentCartItemModelList());
             shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
+                    dataCheckoutRequestsStep3,
                     EnhancedECommerceActionField.STEP_3,
                     ConstantTransactionAnalytics.EventAction.CLICK_CHECKLIST_PILIH_DURASI_PENGIRIMAN, "");
         }
@@ -2003,12 +2010,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         String.valueOf(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperPrice()),
                         shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getName()
                 );
+                List<DataCheckoutRequest> dataCheckoutRequests = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentAdapter.getPromoGlobalStackData(), shipmentAdapter.getShipmentCartItemModelList());
                 shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
+                        dataCheckoutRequests,
                         EnhancedECommerceActionField.STEP_3,
                         ConstantTransactionAnalytics.EventAction.CLICK_CHECKLIST_PILIH_DURASI_PENGIRIMAN,
                         shipmentCartItemModel.getVoucherLogisticItemUiModel() != null ?
                                 ConstantTransactionAnalytics.EventLabel.PROMO : ConstantTransactionAnalytics.EventLabel.NON_PROMO +
-                                " -" + recommendedCourier.getEstimatedTimeDelivery()
+                                " - " + recommendedCourier.getEstimatedTimeDelivery()
                 );
             }
         }
@@ -2083,11 +2092,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     String.valueOf(courierItemData.getShipperPrice()),
                     courierItemData.getName()
             );
+            List<DataCheckoutRequest> dataCheckoutRequests = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentAdapter.getPromoGlobalStackData(), shipmentAdapter.getShipmentCartItemModelList());
             shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
+                    dataCheckoutRequests,
                     EnhancedECommerceActionField.STEP_3,
                     ConstantTransactionAnalytics.EventAction.CLICK_CHECKLIST_PILIH_DURASI_PENGIRIMAN,
                     shipmentCartItemModel.getVoucherLogisticItemUiModel() != null ? ConstantTransactionAnalytics.EventLabel.PROMO :
-                            ConstantTransactionAnalytics.EventLabel.NON_PROMO + " -" + courierItemData.getShipperProductId()
+                            ConstantTransactionAnalytics.EventLabel.NON_PROMO + " - " + courierItemData.getShipperProductId()
             );
         }
     }
@@ -2445,6 +2456,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void triggerSendEnhancedEcommerceCheckoutAnalyticAfterPromoChange(String eventAction, String eventLabel) {
         List<DataCheckoutRequest> dataCheckoutRequests = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentAdapter.getPromoGlobalStackData(), shipmentAdapter.getShipmentCartItemModelList());
         shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(dataCheckoutRequests, EnhancedECommerceActionField.STEP_3, eventAction, eventLabel);
+    }
+
+    @Override
+    public void triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess() {
+        List<DataCheckoutRequest> dataCheckoutRequests = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentAdapter.getPromoGlobalStackData(), shipmentAdapter.getShipmentCartItemModelList());
+        shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
+                dataCheckoutRequests,
+                EnhancedECommerceActionField.STEP_4,
+                ConstantTransactionAnalytics.EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
+                ConstantTransactionAnalytics.EventLabel.SUCCESS);
     }
 
     @Override

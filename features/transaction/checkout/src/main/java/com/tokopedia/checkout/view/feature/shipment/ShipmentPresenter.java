@@ -961,10 +961,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 getView().hideLoading();
                 if (!checkoutData.isError()) {
                     analyticsActionListener.sendAnalyticsChoosePaymentMethodSuccess();
-                    triggerSendEnhancedEcommerceCheckoutAnalytics(
-                            EnhancedECommerceActionField.STEP_4,
-                            ConstantTransactionAnalytics.EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
-                            ConstantTransactionAnalytics.EventLabel.SUCCESS);
+                    getView().triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess();
                     if (isPurchaseProtectionPage) {
                         mTrackerPurchaseProtection.eventClickOnBuy(
                                 checkoutRequest.isHavingPurchaseProtectionEnabled() ?
