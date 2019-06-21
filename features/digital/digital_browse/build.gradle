@@ -40,6 +40,9 @@ dependencies {
     kapt rootProject.ext.miscDependencies.daggerCompiler
     kapt rootProject.ext.miscDependencies.guava
 
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+
     implementation(rootProject.ext.miscDependencies.loaderviewlibrary) {
         exclude group: 'com.android.support'
     }
@@ -51,7 +54,6 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.supportV4
 
-    implementation "android.arch.lifecycle:extensions:1.1.1"
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockitorCore
     implementation rootProject.ext.supportLibDependencies.constraintLayout
