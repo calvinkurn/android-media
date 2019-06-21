@@ -17,7 +17,7 @@ public interface ShippingDurationBottomsheetListener {
                                    CourierItemData courierItemData,
                                    RecipientAddressModel recipientAddressModel,
                                    int cartPosition, int selectedServiceId,
-                                   String selectedServiceName, boolean flagNeedToSetPinpoint,
+                                   ServiceData serviceData, boolean flagNeedToSetPinpoint,
                                    boolean isDurationClick, boolean isClearPromo);
 
     void onLogisticPromoChosen(List<ShippingCourierViewModel> shippingCourierViewModels,

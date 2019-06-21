@@ -306,12 +306,13 @@ public class ShippingDurationBottomsheet extends BottomSheets
         if (shippingDurationBottomsheetListener != null) {
             shippingDurationBottomsheetListener.onShippingDurationChoosen(
                     shippingCourierViewModels, presenter.getCourierItemData(shippingCourierViewModels),
-                    presenter.getRecipientAddressModel(), cartPosition, selectedServiceId, serviceData.getServiceName(),
+                    presenter.getRecipientAddressModel(), cartPosition, selectedServiceId, serviceData,
                     flagNeedToSetPinpoint, true, true);
-        try {
-            dismiss();
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
+            try {
+                dismiss();
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            }
         }
     }
 

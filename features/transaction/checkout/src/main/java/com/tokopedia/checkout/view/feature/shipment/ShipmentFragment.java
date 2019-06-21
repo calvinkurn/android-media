@@ -1862,7 +1862,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                           CourierItemData recommendedCourier,
                                           RecipientAddressModel recipientAddressModel,
                                           int cartItemPosition, int selectedServiceId,
-                                          String selectedServiceName, boolean flagNeedToSetPinpoint,
+                                          ServiceData serviceData, boolean flagNeedToSetPinpoint,
                                           boolean isDurationClick, boolean isClearPromo) {
         if (isTradeIn()) {
             checkoutAnalyticsCourierSelection.eventClickKurirTradeIn(serviceData.getServiceName());
