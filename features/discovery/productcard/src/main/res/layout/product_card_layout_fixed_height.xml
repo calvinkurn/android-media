@@ -163,7 +163,7 @@
             android:layout_marginRight="@dimen/dp_8"/>
 
         <ImageView
-            android:id="@+id/btn_wishlist"
+            android:id="@+id/btnWishlist"
             android:layout_width="@dimen/dp_32"
             android:layout_height="@dimen/dp_32"
             app:srcCompat="@drawable/ic_wishlist_product_card"

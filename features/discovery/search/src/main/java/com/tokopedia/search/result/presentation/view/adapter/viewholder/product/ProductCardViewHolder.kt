@@ -40,7 +40,7 @@ open class ProductCardViewHolder(
 //        initShopName(productItem)
 //        initShopImage(productItem)
         initTitleTextView(productItem)
-//        initSlashPrice(productItem)
+        initSlashPrice(productItem)
         initPriceTextView(productItem)
         initShopBadge(productItem)
         initLocationTextView(productItem)
@@ -139,7 +139,7 @@ open class ProductCardViewHolder(
     }
 
     private fun initTitleTextView(productItem: ProductItemViewModel) {
-//        setTitleMarginTop(productItem)
+        setTitleMarginTop(productItem)
 
         itemView.productCardView?.setTitle(productItem.productName)
     }
@@ -158,14 +158,11 @@ open class ProductCardViewHolder(
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpValue, context.resources.displayMetrics).toInt()
     }
 
-//    // TODO:: Dummy method, set Slash Price from productItem instead
-//    private fun initSlashPrice(productItem: ProductItemViewModel) {
-//        itemView.slashPriceContainer?.visibility = View.VISIBLE
-//        itemView.slashPriceLabel?.text = "20%"
-//        itemView.slashPriceTextView?.text = "Rp 10.000.000"
-//        itemView.slashPriceTextView?.paintFlags = itemView.slashPriceTextView.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-//    }
-//
+    private fun initSlashPrice(productItem: ProductItemViewModel) {
+        itemView.productCardView?.setDiscount(productItem.discountPercentage)
+        itemView.productCardView?.setSlashedPrice(productItem.originalPrice)
+    }
+
     private fun initPriceTextView(productItem: ProductItemViewModel) {
         itemView.productCardView?.setPrice(getPriceText(productItem))
     }
@@ -178,12 +175,11 @@ open class ProductCardViewHolder(
     private fun initShopBadge(productItem: ProductItemViewModel) {
         itemView.productCardView?.clearShopBadgesContainer()
 
-        if(hasAnyBadgesShown(productItem)) {
-            itemView.productCardView?.setShopBadgesVisible(true)
+        val hasAnyBadgesShown = hasAnyBadgesShown(productItem)
+        itemView.productCardView?.setShopBadgesVisible(hasAnyBadgesShown)
+
+        if(hasAnyBadgesShown) {
             loopBadgesListToLoadShopBadgeIcon(productItem.badgesList)
-        }
-        else {
-            itemView.productCardView?.setShopBadgesVisible(false)
         }
     }
 
