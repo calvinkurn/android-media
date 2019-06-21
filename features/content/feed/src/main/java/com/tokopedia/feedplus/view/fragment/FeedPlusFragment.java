@@ -186,6 +186,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private int loginIdInt;
     private boolean isLoadedOnce;
     private boolean afterPost;
+    public boolean isFABExpanded = false;
 
     @Inject
     FeedPlusPresenter presenter;
@@ -338,10 +339,17 @@ public class FeedPlusFragment extends BaseDaggerFragment
         fabTextByme.setVisibility(View.GONE);
         fabTextShop.setVisibility(View.GONE);
         greyBackground.setVisibility(View.GONE);
+        isFABExpanded = false;
     }
 
     private void prepareView() {
         hideAllFAB(true);
+        if (!userSession.isLoggedIn()) {
+            fabFeed.setVisibility(View.VISIBLE);
+            fabFeed.setOnClickListener(v -> {
+                onGoToLogin();
+            });
+        }
         adapter.setItemTreshold(2);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
@@ -728,6 +736,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onPause() {
         super.onPause();
         unRegisterNewFeedReceiver();
+        hideAllFAB(false);
     }
 
     private void registerNewFeedReceiver() {
@@ -751,30 +760,42 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     private void showFeedFAB(WhitelistViewModel whitelistViewModel) {
         fabFeed.show();
+        isFABExpanded = false;
         if (whitelistViewModel.getWhitelist().getAuthors().size() != 1) {
-            fabFeed.setOnClickListener(v -> {
-                fabFeed.setAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_forward));
-                greyBackground.setVisibility(View.VISIBLE);
-                for (Author author : whitelistViewModel.getWhitelist().getAuthors()) {
-                    if (author.getTitle().equalsIgnoreCase("post toko")) {
-                        fabShop.show();
-                        fabTextShop.setVisibility(View.VISIBLE);
-                        fabShop.setOnClickListener(v1 -> onGoToLink(author.getLink()));
-                    } else {
-                        fabByme.show();
-                        fabTextByme.setVisibility(View.VISIBLE);
-                        fabByme.setOnClickListener(v12 -> onGoToLink(author.getLink()));
-                    }
-                }
-                greyBackground.setOnClickListener(v3 -> {
-                    hideAllFAB(false);
-                });
-            });
-
+            fabFeed.setOnClickListener(fabClickListener(whitelistViewModel));
         } else {
             Author author = whitelistViewModel.getWhitelist().getAuthors().get(0);
             fabFeed.setOnClickListener(v -> onGoToLink(author.getLink()));
         }
+    }
+
+    private View.OnClickListener fabClickListener(WhitelistViewModel whitelistViewModel) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isFABExpanded) {
+                    hideAllFAB(false);
+                } else {
+                    fabFeed.setAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_forward));
+                    greyBackground.setVisibility(View.VISIBLE);
+                    for (Author author : whitelistViewModel.getWhitelist().getAuthors()) {
+                        if (author.getTitle().equalsIgnoreCase("post toko")) {
+                            fabShop.show();
+                            fabTextShop.setVisibility(View.VISIBLE);
+                            fabShop.setOnClickListener(v1 -> onGoToLink(author.getLink()));
+                        } else {
+                            fabByme.show();
+                            fabTextByme.setVisibility(View.VISIBLE);
+                            fabByme.setOnClickListener(v12 -> onGoToLink(author.getLink()));
+                        }
+                    }
+                    greyBackground.setOnClickListener(v3 -> {
+                        hideAllFAB(false);
+                    });
+                    isFABExpanded = true;
+                }
+            }
+        };
     }
 
     private void loadData(boolean isVisibleToUser) {
