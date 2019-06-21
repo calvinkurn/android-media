@@ -479,7 +479,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         adapter.setList(listFeed);
         adapter.notifyDataSetChanged();
         triggerClearNewFeedNotification();
-        if (whitelistViewModel != null && !whitelistViewModel.getWhitelist().getAuthors().isEmpty()) {
+        if (userSession.isLoggedIn() && whitelistViewModel != null && !whitelistViewModel.getWhitelist().getAuthors().isEmpty()) {
             showFeedFAB(whitelistViewModel);
         }
     }
