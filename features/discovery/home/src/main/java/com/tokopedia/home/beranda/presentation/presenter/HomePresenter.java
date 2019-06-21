@@ -396,11 +396,6 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         @Override
         public void onNext(List<TrackedVisitable> visitables) {
             if (homePresenter != null && homePresenter.isViewAttached()) {
-//                if(visitables.get(visitables.size() - 1) instanceof SearchPlaceholderViewModel){
-//                    homePresenter.getView().setHint(((SearchPlaceholderViewModel) visitables.get(visitables.size() - 1)).getSearchPlaceholder());
-//                    visitables.remove(visitables.size() - 1);
-//                }
-
                 if (homePresenter.getHeaderViewModel() != null && visitables.size() > 1) {
                     if (visitables.get(1) instanceof TickerViewModel) {
                         visitables.add(2, homePresenter.getHeaderViewModel());
