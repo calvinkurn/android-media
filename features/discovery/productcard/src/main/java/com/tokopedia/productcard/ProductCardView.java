@@ -21,7 +21,7 @@ import com.tokopedia.unifyprinciples.Typography;
 
 public class ProductCardView extends BaseCustomView {
 
-    protected Typography textName;
+    protected TextView textName;
     protected Typography textPrice;
     protected TextView textDiscount;
     protected Typography textSlashedPrice;

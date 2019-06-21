@@ -25,22 +25,40 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:layout_height="100dp" />
 
-        <com.tokopedia.unifyprinciples.Typography
+        <!--<com.tokopedia.unifyprinciples.Typography-->
+            <!--android:id="@+id/textName"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginStart="@dimen/dp_8"-->
+            <!--android:layout_marginLeft="@dimen/dp_8"-->
+            <!--android:layout_marginTop="@dimen/dp_8"-->
+            <!--android:layout_marginEnd="@dimen/dp_8"-->
+            <!--android:layout_marginRight="@dimen/dp_8"-->
+            <!--android:ellipsize="end"-->
+            <!--android:maxLines="2"-->
+            <!--android:textColor="@color/charcoal_grey_88"-->
+            <!--app:layout_constraintEnd_toEndOf="parent"-->
+            <!--app:layout_constraintStart_toStartOf="@+id/image"-->
+            <!--app:layout_constraintTop_toBottomOf="@+id/image"-->
+            <!--app:typographyType="heading_5"-->
+            <!--tools:text="Nama" />-->
+
+        <TextView
             android:id="@+id/textName"
+            style="@style/TextView.Small"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
             android:ellipsize="end"
             android:maxLines="2"
             android:textColor="@color/charcoal_grey_88"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/image"
             app:layout_constraintTop_toBottomOf="@+id/image"
-            app:typographyType="heading_5"
             tools:text="Nama" />
 
         <!--TODO:: Change this to Unify Label -->
