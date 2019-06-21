@@ -210,8 +210,8 @@ import com.tokopedia.transaction.common.sharedata.AddToCartResult;
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
-import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
-import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
+import com.tokopedia.seller.purchase.detail.activity.OrderDetailActivity;
+import com.tokopedia.seller.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.updateinactivephone.activity.ChangeInactiveFormRequestActivity;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.withdraw.WithdrawRouter;
@@ -1324,11 +1324,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getIntentOtpPageVerifCreditCard(Context context, String phoneNumber) {
         return VerificationActivity.getCallingIntent(context, phoneNumber, RequestOtpUseCase.OTP_TYPE_VERIFY_AUTH_CREDIT_CARD,
                 false, RequestOtpUseCase.MODE_SMS);
-    }
-
-    @Override
-    public void instabugCaptureUserStep(Activity activity, MotionEvent me) {
-        InstabugInitalize.dispatchTouchEvent(activity, me);
     }
 
     @Override
