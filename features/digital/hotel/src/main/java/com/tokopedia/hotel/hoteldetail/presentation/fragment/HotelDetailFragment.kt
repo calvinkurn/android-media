@@ -11,7 +11,6 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.design.component.ButtonCompat
@@ -399,10 +398,17 @@ class HotelDetailFragment : HotelBaseFragment() {
             roomPrice = data[0].roomPrice.roomPrice
             trackingHotelUtil.hotelChooseViewRoom(hotelId, roomPrice)
             tv_hotel_price.text = roomPrice
-            btn_see_room.setOnClickListener {
-                startActivityForResult(HotelRoomListActivity.createInstance(context!!, hotelHomepageModel.locId, hotelName,
-                        hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate, hotelHomepageModel.adultCount, 0,
-                        hotelHomepageModel.roomCount), RESULT_ROOM_LIST)
+
+            if (data[0].additionalPropertyInfo.isDirectPayment) {
+                btn_see_room.text = getString(R.string.hotel_detail_coming_soon_text)
+                btn_see_room.isEnabled = false
+                btn_see_room.buttonCompatType = ButtonCompat.DISABLE
+            } else {
+                btn_see_room.setOnClickListener {
+                    startActivityForResult(HotelRoomListActivity.createInstance(context!!, hotelHomepageModel.locId, hotelName,
+                            hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate, hotelHomepageModel.adultCount, 0,
+                            hotelHomepageModel.roomCount), RESULT_ROOM_LIST)
+                }
             }
         } else {
             tv_hotel_price_subtitle.visibility = View.GONE

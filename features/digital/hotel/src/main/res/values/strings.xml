@@ -148,6 +148,7 @@
 
     <string name="hotel_detail_room_full_text">Kamar Penuh</string>
     <string name="hotel_detail_change_search_text">Ganti Pencarian</string>
+    <string name="hotel_detail_coming_soon_text">Segera Hadir</string>
 
     <string name="hotel_booking_title">Pembayaran</string>
     <string name="hotel_room_night_count">%1$d Malam</string>
