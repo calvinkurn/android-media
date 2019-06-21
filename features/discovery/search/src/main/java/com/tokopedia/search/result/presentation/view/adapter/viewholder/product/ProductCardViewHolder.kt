@@ -197,7 +197,7 @@ open class ProductCardViewHolder(
 
     private fun loadShopBadgesIcon(url: String) {
         if(!TextUtils.isEmpty(url)) {
-            val view = LayoutInflater.from(context).inflate(R.layout.badge_layout, null)
+            val view = LayoutInflater.from(context).inflate(R.layout.search_product_card_badge_layout, null)
 
             ImageHandler.loadImageBitmap2(context, url, object : SimpleTarget<Bitmap>() {
                 override fun onResourceReady(bitmap: Bitmap, glideAnimation: GlideAnimation<in Bitmap>) {

@@ -229,7 +229,7 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItemVie
 
     public static void loadLuckyShopImage(Context context, String url, final LinearLayout container) {
         if (url != null && !url.equals("")) {
-            final View view = LayoutInflater.from(context).inflate(R.layout.badge_layout, null);
+            final View view = LayoutInflater.from(context).inflate(R.layout.search_product_card_badge_layout, null);
 
             ImageHandler.loadImageBitmap2(context, url, new SimpleTarget<Bitmap>() {
                 @Override
