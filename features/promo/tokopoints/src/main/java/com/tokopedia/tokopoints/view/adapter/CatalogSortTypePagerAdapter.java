@@ -15,11 +15,12 @@ import java.util.List;
 
 public class CatalogSortTypePagerAdapter extends FragmentStatePagerAdapter {
 
+    private final int categoryId;
     private boolean isPointsAvailable;
     private List<CatalogSubCategory> mItems;
     private SparseArray<Fragment> mrRegisteredFragments = new SparseArray<>();
 
-    public CatalogSortTypePagerAdapter(FragmentManager fm, List<CatalogSubCategory> items) {
+    public CatalogSortTypePagerAdapter(FragmentManager fm, int categoryId, List<CatalogSubCategory> items) {
         super(fm);
         if (items == null || items.isEmpty()) {
             this.mItems = new ArrayList<>();
@@ -27,6 +28,7 @@ public class CatalogSortTypePagerAdapter extends FragmentStatePagerAdapter {
         } else {
             this.mItems = items;
         }
+        this.categoryId=categoryId;
     }
 
     public void setPointsAvailable(boolean isPointsAvailable){
@@ -35,7 +37,7 @@ public class CatalogSortTypePagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return CatalogListItemFragment.newInstance(mItems.get(position).getParentID(),
+        return CatalogListItemFragment.newInstance(categoryId,
                 mItems.get(position).getId(), isPointsAvailable);
     }
 

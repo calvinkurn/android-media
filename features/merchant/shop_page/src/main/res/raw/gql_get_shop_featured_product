@@ -1,0 +1,28 @@
+query getShopFeaturedProduct($shopId: Int!){
+    shop_featured_product(shopID: $shopId){
+        data{
+            parent_id
+            product_id
+            name
+            uri
+            image_uri
+            price
+            preorder
+            returnable
+            wholesale
+            cashback
+            isWishlist
+            is_rated
+            original_price
+            percentage_amount
+            cashback_detail{
+                cashback_status
+                cashback_percent
+                is_cashback_expired
+                cashback_value
+            }
+            total_review
+            rating
+        }
+    }
+}

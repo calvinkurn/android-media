@@ -43,6 +43,11 @@ public class OrderCourierPresenterImpl implements OrderCourierPresenter {
     }
 
     @Override
+    public void detachView() {
+        this.view = null;
+    }
+
+    @Override
     public void onGetCourierList(Context context, OrderDetailData data) {
         view.showLoading();
         interactor.onGetCourierList(
@@ -56,14 +61,18 @@ public class OrderCourierPresenterImpl implements OrderCourierPresenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        view.hideLoading();
-                        view.onShowError(e.getMessage());
+                        if (view != null) {
+                            view.hideLoading();
+                            view.onShowError(e.getMessage());
+                        }
                     }
 
                     @Override
                     public void onNext(ListCourierViewModel courierViewModel) {
-                        view.hideLoading();
-                        view.receiveShipmentData(courierViewModel);
+                        if (view != null) {
+                            view.hideLoading();
+                            view.receiveShipmentData(courierViewModel);
+                        }
                     }
                 });
     }
@@ -118,14 +127,18 @@ public class OrderCourierPresenterImpl implements OrderCourierPresenter {
 
             @Override
             public void onError(Throwable e) {
-                view.hideLoading();
-                view.onShowErrorConfirmShipping(e.getMessage());
+                if (view != null) {
+                    view.hideLoading();
+                    view.onShowErrorConfirmShipping(e.getMessage());
+                }
             }
 
             @Override
             public void onNext(String s) {
-                view.hideLoading();
-                view.onSuccessConfirm(s);
+                if (view != null) {
+                    view.hideLoading();
+                    view.onSuccessConfirm(s);
+                }
             }
         };
     }

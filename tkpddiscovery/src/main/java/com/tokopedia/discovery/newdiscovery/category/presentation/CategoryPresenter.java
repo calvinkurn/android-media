@@ -66,7 +66,7 @@ public class CategoryPresenter extends DiscoveryPresenter<CategoryContract.View,
             SearchParameter searchParameter = generateSearchParameter(categoryHeaderModel.getDepartementId());
 
             getProductUseCase.execute(
-                    GetProductUseCase.createInitializeSearchParam(searchParameter, false),
+                    GetProductUseCase.createInitializeSearchParam(searchParameter),
                     new CategoryProductSubscriber(categoryHeaderModel)
             );
         }
@@ -117,7 +117,7 @@ public class CategoryPresenter extends DiscoveryPresenter<CategoryContract.View,
             if (isViewAttached()) {
                 SearchParameter searchParameter = generateSearchParameter(categoryHeaderModel.getDepartementId());
 
-                RequestParams requestParams = GetProductUseCase.createInitializeSearchParam(searchParameter, false);
+                RequestParams requestParams = GetProductUseCase.createInitializeSearchParam(searchParameter);
                 if (filterParam != null && filterParam.size() > 0) {
                     requestParams.putAll(filterParam);
                 }

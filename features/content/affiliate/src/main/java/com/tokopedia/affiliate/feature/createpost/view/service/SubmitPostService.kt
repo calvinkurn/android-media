@@ -21,7 +21,7 @@ import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.SubmitPostData
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.cachemanager.PersistentCacheManager
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import java.util.*
@@ -58,7 +58,7 @@ class SubmitPostService : JobIntentService() {
 
     override fun onHandleWork(intent: Intent) {
         val id: String = intent.getStringExtra(DRAFT_ID) ?: return
-        val cacheManager = PersistentCacheManager(baseContext, id)
+        val cacheManager = SaveInstanceCacheManager(baseContext, id)
         val viewModel: CreatePostViewModel = cacheManager.get(
                 CreatePostViewModel.TAG,
                 CreatePostViewModel::class.java

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.inbox.R;
@@ -78,8 +79,13 @@ public class ResoInboxActivity extends BasePresenterActivity implements HasCompo
 
     private static Intent getApplinkIntent(Context context, String url) {
         if (context.getApplicationContext() instanceof ResolutionRouter) {
-            return ((ResolutionRouter)context.getApplicationContext()).getApplinkIntent(context,
-                    ResolutionUrl.RESO_APPLINK + url);
+            if (GlobalConfig.isSellerApp()) {
+                return ((ResolutionRouter)context.getApplicationContext()).getSellerWebViewIntent(context,
+                        url);
+            } else {
+                return ((ResolutionRouter) context.getApplicationContext()).getApplinkIntent(context,
+                        ResolutionUrl.RESO_APPLINK + url);
+            }
         }
         return null;
     }

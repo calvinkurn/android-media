@@ -13,5 +13,6 @@ buildscript {
 dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
+    implementation rootProject.ext.libraries.unifyPrinciples
     implementation rootProject.ext.supportLibDependencies.cardViewV7
 }

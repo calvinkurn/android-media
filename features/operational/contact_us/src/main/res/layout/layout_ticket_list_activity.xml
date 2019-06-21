@@ -85,8 +85,7 @@
             android:layout_marginTop="@dimen/dp_24"
             android:gravity="center_horizontal"
             android:lineSpacingExtra="6sp"
-            android:text="Seluruh kendala yang Anda laporakan akan
-ditampilkan disini"
+            android:text="@string/display_a_problem_report_here"
             android:visibility="gone"
             android:textColor="@color/black_38"
             android:textSize="@dimen/sp_14"

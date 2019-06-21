@@ -28,9 +28,12 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.text.TextDrawable;
 import com.tokopedia.loginphone.R;
-import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel;
+import com.tokopedia.loginphone.choosetokocashaccount.data.AccountList;
+import com.tokopedia.loginphone.choosetokocashaccount.data.ChooseTokoCashAccountViewModel;
+import com.tokopedia.loginphone.choosetokocashaccount.data.UserDetail;
 import com.tokopedia.loginphone.choosetokocashaccount.di.DaggerChooseAccountComponent;
 import com.tokopedia.loginphone.choosetokocashaccount.view.adapter.TokocashAccountAdapter;
 import com.tokopedia.loginphone.choosetokocashaccount.view.listener.ChooseTokocashAccountContract;
@@ -39,15 +42,17 @@ import com.tokopedia.loginphone.common.LoginPhoneNumberRouter;
 import com.tokopedia.loginphone.common.analytics.LoginPhoneNumberAnalytics;
 import com.tokopedia.loginphone.common.di.DaggerLoginRegisterPhoneComponent;
 import com.tokopedia.loginphone.common.di.LoginRegisterPhoneComponent;
-import com.tokopedia.sessioncommon.data.loginphone.UserDetail;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
+import com.tokopedia.sessioncommon.ErrorHandlerSession;
 import com.tokopedia.sessioncommon.data.model.GetUserInfoData;
 import com.tokopedia.sessioncommon.data.model.SecurityPojo;
 import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.sessioncommon.view.LoginSuccessRouter;
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity;
 import com.tokopedia.user.session.UserSessionInterface;
+
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -121,9 +126,13 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
-            viewModel = savedInstanceState.getParcelable(ChooseTokoCashAccountViewModel.ARGS_DATA);
+            viewModel = new ChooseTokoCashAccountViewModel(
+                    savedInstanceState.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, ""),
+                    savedInstanceState.getString(ApplinkConstInternalGlobal.PARAM_UUID, ""));
         } else if (getArguments() != null) {
-            viewModel = getArguments().getParcelable(ChooseTokoCashAccountViewModel.ARGS_DATA);
+            viewModel = new ChooseTokoCashAccountViewModel(
+                    getArguments().getString(ApplinkConstInternalGlobal.PARAM_MSISDN, ""),
+                    getArguments().getString(ApplinkConstInternalGlobal.PARAM_UUID, ""));
         } else if (getActivity() != null) {
             getActivity().finish();
         }
@@ -181,7 +190,8 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
     }
 
     private void prepareView() {
-        adapter = TokocashAccountAdapter.createInstance(this, viewModel.getListAccount());
+        adapter = TokocashAccountAdapter.createInstance(this, new ArrayList<>());
+
         listAccount.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager
                 .VERTICAL, false));
         listAccount.setAdapter(adapter);
@@ -190,8 +200,10 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
 
     @Override
     public void onSelectedTokocashAccount(UserDetail accountTokocash) {
-        presenter.loginWithTokocash(viewModel.getKey(),
-                accountTokocash);
+        presenter.loginWithTokocash(
+                viewModel.getAccountList().getAccountListPojo().getKey(),
+                accountTokocash,
+                viewModel.getPhoneNumber());
     }
 
     @Override
@@ -215,6 +227,35 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
     public void dismissLoadingProgress() {
         mainView.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onSuccessGetAccountList(AccountList accountList) {
+        if (getActivity() != null) {
+            dismissLoadingProgress();
+            this.viewModel.setAccountList(accountList);
+            getActivity().setResult(Activity.RESULT_OK);
+
+            if (accountList.getAccountListPojo().getUserDetails().size() == 1) {
+                UserDetail userDetail = accountList.getAccountListPojo().getUserDetails().get(0);
+                presenter.loginWithTokocash(viewModel.getAccountList().getAccountListPojo().getKey(),
+                        userDetail,
+                        viewModel.getPhoneNumber());
+            } else {
+                adapter.setList(accountList.getAccountListPojo().getUserDetails());
+                message.setText(getPromptText());
+            }
+        }
+    }
+
+    @Override
+    public void onErrorGetAccountList(Throwable e) {
+        dismissLoadingProgress();
+        String errorMessage = ErrorHandlerSession.getErrorMessage(e, getContext(), true);
+        NetworkErrorHelper.showEmptyState(getContext(), getView(), errorMessage, () -> {
+            showLoadingProgress();
+            presenter.getAccountList(viewModel.getAccessToken(), viewModel.getPhoneNumber());
+        });
     }
 
     @Override
@@ -274,12 +315,13 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        message.setText(getPromptText());
+        showLoadingProgress();
+        presenter.getAccountList(viewModel.getAccessToken(), viewModel.getPhoneNumber());
     }
 
     private Spanned getPromptText() {
         return MethodChecker.fromHtml(getString(R.string.prompt_choose_tokocash_account,
-                viewModel.getListAccount().size(),
+                viewModel.getAccountList().getAccountListPojo().getUserDetails().size(),
                 viewModel.getPhoneNumber()));
     }
 
@@ -295,8 +337,8 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(ChooseTokoCashAccountViewModel.ARGS_DATA, viewModel);
-
+        outState.putString(ApplinkConstInternalGlobal.PARAM_UUID, viewModel.getAccessToken());
+        outState.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, viewModel.getPhoneNumber());
     }
 
     @Override

@@ -33,6 +33,11 @@ public interface AbstractionRouter {
 
     void unregisterShake();
 
+    /**
+     * Use PersistentCacheManager library
+     * @return
+     */
+    @Deprecated
     CacheManager getGlobalCacheManager();
 
     void logInvalidGrant(Response response);

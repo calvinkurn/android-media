@@ -146,7 +146,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
         } else {
             originalPriceTextView.setVisibility(View.GONE);
         }
-        if (!TextUtils.isEmpty(shopProductViewModel.getDiscountPercentage())) {
+        if (!TextUtils.isEmpty(shopProductViewModel.getDiscountPercentage()) && Integer.parseInt(shopProductViewModel.getDiscountPercentage()) > 0) {
             discountPercentageTextView.setVisibility(View.VISIBLE);
             discountPercentageTextView.setText(discountPercentageTextView.getContext().
                     getString(R.string.shop_product_discount_percentage_format, shopProductViewModel.getDiscountPercentage()));

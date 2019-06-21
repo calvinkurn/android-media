@@ -10,8 +10,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core2.R;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core2.R;
 
 /**
  * Created by Tkpd_Eka on 10/13/2015.
@@ -79,7 +82,7 @@ public class ExtrasDelegate {
                     @Override
                     public void onClick(View v) {
                         if(parent.getContext() != null && parent.getContext() instanceof Activity){
-                            ((TkpdCoreRouter)context).goToAddProduct(((Activity) parent.getContext()));
+                            RouteManager.route((Activity) parent.getContext(), ApplinkConst.PRODUCT_ADD);
                         }
                     }
                 });
@@ -92,7 +95,7 @@ public class ExtrasDelegate {
                 public void onClick(View v) {
                     if(context != null && context instanceof TkpdCoreRouter){
                         if(parent.getContext() != null && parent.getContext() instanceof Activity){
-                            ((TkpdCoreRouter)context).goToAddProduct(((Activity) parent.getContext()));
+                            RouteManager.route((Activity) parent.getContext(), ApplinkConst.PRODUCT_ADD);
                         }
                     }
                 }

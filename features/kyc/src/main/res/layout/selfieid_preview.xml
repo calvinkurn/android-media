@@ -33,8 +33,7 @@
                         android:layout_width="@dimen/dp_200"
                         android:layout_height="@dimen/dp_260"
                         android:layout_gravity="center"
-                        android:scaleType="center"
-                        android:src="@drawable/ovo_premier_verifikasi_gagal"/>
+                        android:scaleType="centerCrop" />
                 </FrameLayout>
 
                 <Button

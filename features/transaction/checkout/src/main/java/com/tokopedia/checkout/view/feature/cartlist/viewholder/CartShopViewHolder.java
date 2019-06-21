@@ -172,15 +172,23 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
                         cartShopHolderData.getShopGroupData().setVoucherOrdersItemData(null);
                     }
                 } else {
+                    boolean isApplied = false;
                     tickerPromoStackingCheckoutView.enableView();
                     if (disabledItem > 0) {
-                        if (cartShopHolderData.getShopGroupData().getVoucherOrdersItemData() != null) {
+                        if (cartShopHolderData.getShopGroupData().getVoucherOrdersItemData() != null &&
+                            cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getIsAutoapply()) {
                             actionListener.onCancelVoucherMerchantClicked(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getCode(), getAdapterPosition(), true);
+                            tickerPromoStackingCheckoutView.setState(TickerPromoStackingCheckoutView.State.EMPTY);
+                            tickerPromoStackingCheckoutView.setVariant(TickerPromoStackingCheckoutView.Variant.MERCHANT);
+                            tickerPromoStackingCheckoutView.setVisibility(View.VISIBLE);
+                        } else {
+                            isApplied = true;
                         }
-                        tickerPromoStackingCheckoutView.setState(TickerPromoStackingCheckoutView.State.EMPTY);
-                        tickerPromoStackingCheckoutView.setVariant(TickerPromoStackingCheckoutView.Variant.MERCHANT);
-                        tickerPromoStackingCheckoutView.setVisibility(View.VISIBLE);
                     } else {
+                        isApplied = true;
+                    }
+
+                    if (isApplied) {
                         if (cartShopHolderData.getShopGroupData().getVoucherOrdersItemData() != null) {
                             tickerPromoStackingCheckoutView.setVariant(TickerPromoStackingCheckoutView.Variant.MERCHANT);
                             VoucherOrdersItemData voucherOrdersItemData = cartShopHolderData.getShopGroupData().getVoucherOrdersItemData();
@@ -199,28 +207,29 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
                             tickerPromoStackingCheckoutView.setVariant(TickerPromoStackingCheckoutView.Variant.MERCHANT);
                             tickerPromoStackingCheckoutView.setVisibility(View.VISIBLE);
                         }
-                        tickerPromoStackingCheckoutView.setActionListener(new TickerPromoStackingCheckoutView.ActionListener() {
-                            @Override
-                            public void onClickUsePromo() {
-                                actionListener.onVoucherMerchantPromoClicked(cartShopHolderData.getShopGroupData());
-                            }
-
-                            @Override
-                            public void onResetPromoDiscount() {
-                                actionListener.onCancelVoucherMerchantClicked(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getCode(), getAdapterPosition(), false);
-                            }
-
-                            @Override
-                            public void onClickDetailPromo() {
-
-                            }
-
-                            @Override
-                            public void onDisablePromoDiscount() {
-                                actionListener.onCancelVoucherMerchantClicked(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getCode(), getAdapterPosition(), true);
-                            }
-                        });
                     }
+
+                    tickerPromoStackingCheckoutView.setActionListener(new TickerPromoStackingCheckoutView.ActionListener() {
+                        @Override
+                        public void onClickUsePromo() {
+                            actionListener.onVoucherMerchantPromoClicked(cartShopHolderData.getShopGroupData());
+                        }
+
+                        @Override
+                        public void onResetPromoDiscount() {
+                            actionListener.onCancelVoucherMerchantClicked(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getCode(), getAdapterPosition(), false);
+                        }
+
+                        @Override
+                        public void onClickDetailPromo() {
+
+                        }
+
+                        @Override
+                        public void onDisablePromoDiscount() {
+                            actionListener.onCancelVoucherMerchantClicked(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getCode(), getAdapterPosition(), true);
+                        }
+                    });
                 }
             }
         } else {

@@ -8,11 +8,12 @@ import com.tokopedia.settingbank.choosebank.view.viewmodel.BankListViewModel
 import com.tokopedia.settingbank.choosebank.view.viewmodel.BankViewModel
 import retrofit2.Response
 import rx.functions.Func1
+import javax.inject.Inject
 
 /**
  * @author by nisie on 7/2/18.
  */
-class GetBankListWSMapper : Func1<Response<DataResponse<BankListPojo>>,
+class GetBankListWSMapper @Inject constructor() : Func1<Response<DataResponse<BankListPojo>>,
         BankListViewModel> {
 
     override fun call(response: Response<DataResponse<BankListPojo>>): BankListViewModel {

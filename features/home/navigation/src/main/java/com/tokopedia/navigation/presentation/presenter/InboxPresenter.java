@@ -7,13 +7,14 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.GlobalNavConstant;
-import com.tokopedia.navigation.data.entity.RecomendationEntity;
 import com.tokopedia.navigation.domain.GetDrawerNotificationUseCase;
-import com.tokopedia.navigation.domain.GetRecomendationUseCase;
 import com.tokopedia.navigation.domain.model.RecomTitle;
 import com.tokopedia.navigation.domain.model.Recomendation;
 import com.tokopedia.navigation.domain.subscriber.InboxSubscriber;
 import com.tokopedia.navigation.presentation.view.InboxView;
+import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationModel;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
@@ -31,12 +32,15 @@ public class InboxPresenter extends BaseDaggerPresenter {
     private InboxView inboxView;
 
     private final GetDrawerNotificationUseCase getNotificationUseCase;
-    private final GetRecomendationUseCase getRecomendationUseCase;
+    private final GetRecommendationUseCase getRecommendationUseCase;
+
+    public static final String X_SOURCE_RECOM_WIDGET = "recom_widget";
+    public static final String INBOX_PAGE = "inbox";
 
     @Inject
-    InboxPresenter(GetDrawerNotificationUseCase getNotificationUseCase, GetRecomendationUseCase recomendationUseCase) {
+    InboxPresenter(GetDrawerNotificationUseCase getNotificationUseCase, GetRecommendationUseCase recommendationUseCase) {
         this.getNotificationUseCase = getNotificationUseCase;
-        this.getRecomendationUseCase = recomendationUseCase;
+        this.getRecommendationUseCase = recommendationUseCase;
     }
 
     public void setView(InboxView inboxView) {
@@ -58,8 +62,10 @@ public class InboxPresenter extends BaseDaggerPresenter {
     public void getFirstRecomData(){
         if (this.inboxView == null)
             return;
-        getRecomendationUseCase.execute(getRecomendationUseCase.getRecomParams(0),
-                new Subscriber<RecomendationEntity.RecomendationData>() {
+        getRecommendationUseCase.execute(getRecommendationUseCase.getRecomParams(0,
+                X_SOURCE_RECOM_WIDGET,
+                INBOX_PAGE),
+                new Subscriber<RecommendationModel>() {
                     @Override
                     public void onStart() {
                         inboxView.showLoadMoreLoading();
@@ -75,10 +81,10 @@ public class InboxPresenter extends BaseDaggerPresenter {
                     }
 
                     @Override
-                    public void onNext(RecomendationEntity.RecomendationData recomendationData) {
+                    public void onNext(RecommendationModel recommendationModel) {
                         List<Visitable> visitables = new ArrayList<>();
-                        visitables.add(new RecomTitle(recomendationData.getTitle()));
-                        visitables.addAll(getRecomendations(recomendationData));
+                        visitables.add(new RecomTitle(recommendationModel.getTitle()));
+                        visitables.addAll(getRecommendationVisitables(recommendationModel));
                         inboxView.hideLoadMoreLoading();
                         inboxView.onRenderRecomInbox(visitables);
                     }
@@ -88,8 +94,10 @@ public class InboxPresenter extends BaseDaggerPresenter {
     public void getRecomData(int page) {
         if (this.inboxView == null)
             return;
-        getRecomendationUseCase.execute(getRecomendationUseCase.getRecomParams(page),
-                new Subscriber<RecomendationEntity.RecomendationData>() {
+        getRecommendationUseCase.execute(getRecommendationUseCase.getRecomParams(page,
+                X_SOURCE_RECOM_WIDGET,
+                INBOX_PAGE),
+                new Subscriber<RecommendationModel>() {
                     @Override
                     public void onStart() {
                         inboxView.showLoadMoreLoading();
@@ -106,30 +114,18 @@ public class InboxPresenter extends BaseDaggerPresenter {
                     }
 
                     @Override
-                    public void onNext(RecomendationEntity.RecomendationData recomendationData) {
+                    public void onNext(RecommendationModel recommendationModel) {
                         inboxView.hideLoadMoreLoading();
-                        inboxView.onRenderRecomInbox(getRecomendations(recomendationData));
+                        inboxView.onRenderRecomInbox(getRecommendationVisitables(recommendationModel));
                     }
                 });
     }
 
     @NonNull
-    private List<Visitable> getRecomendations(RecomendationEntity.RecomendationData recomendationData) {
+    private List<Visitable> getRecommendationVisitables(RecommendationModel recommendationModel) {
         List<Visitable> recomendationList = new ArrayList<>();
-        for (RecomendationEntity.Recommendation r : recomendationData.getRecommendation()) {
-            Recomendation recomendation = new Recomendation();
-            recomendation.setImageUrl(r.getImageUrl());
-            recomendation.setCategoryBreadcrumbs(r.getCategoryBreadcrumbs());
-            recomendation.setClickUrl(r.getClickUrl());
-            recomendation.setPrice(r.getPrice());
-            recomendation.setPriceNumber(r.getPriceInt());
-            recomendation.setProductId(r.getId());
-            recomendation.setDepartementId(r.getDepartmentId());
-            recomendation.setProductName(r.getName());
-            recomendation.setRecommendationType(r.getRecommendationType());
-            recomendation.setTopAds(r.isIsTopads());
-            recomendation.setTrackerImageUrl(r.getTrackerImageUrl());
-            recomendationList.add(recomendation);
+        for (RecommendationItem item : recommendationModel.getRecommendationItemList()) {
+            recomendationList.add(new Recomendation(item));
         }
         return recomendationList;
     }
@@ -139,7 +135,7 @@ public class InboxPresenter extends BaseDaggerPresenter {
     }
 
     public void onDestroy() {
-        this.getRecomendationUseCase.unsubscribe();
+        this.getRecommendationUseCase.unsubscribe();
         this.getNotificationUseCase.unsubscribe();
         this.inboxView = null;
     }

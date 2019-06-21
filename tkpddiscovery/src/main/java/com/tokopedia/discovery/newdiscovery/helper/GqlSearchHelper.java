@@ -8,7 +8,7 @@ import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryPresenter;
-import com.tokopedia.discovery.newdiscovery.domain.gql.InitiateSearchGqlResponse;
+import com.tokopedia.discovery.newdiscovery.domain.model.InitiateSearchModel;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.domain.gql.SearchFilterProductGqlResponse;
 import com.tokopedia.discovery.newdiscovery.domain.gql.SearchProductGqlResponse;
@@ -36,7 +36,6 @@ public class GqlSearchHelper {
         Map<String, Object> variables = new HashMap<>();
         variables.put(KEY_QUERY, requestParams.getString(BrowseApi.Q, ""));
         variables.put(KEY_PARAMS, UrlParamHelper.generateUrlParamString(requestParams.getParamsAllValueInString()));
-        variables.put(KEY_SOURCE, BrowseApi.DEFAULT_VALUE_SOURCE_PRODUCT);
 
         TKPDMapParam<String, String> headlineParams = requestParams.getParamsAllValueInString();
         headlineParams.put(TopAdsParams.KEY_EP, DiscoveryPresenter.HEADLINE);
@@ -89,17 +88,15 @@ public class GqlSearchHelper {
         graphqlUseCase.execute(subscriber);
     }
 
-    public static void initiateSearch(Context context,
-                                         RequestParams requestParams,
-                                         GraphqlUseCase graphqlUseCase,
-                                         Subscriber<GraphqlResponse> subscriber) {
+    public static void initiateSearch(String query,
+                                      com.tokopedia.usecase.RequestParams requestParams,
+                                      GraphqlUseCase graphqlUseCase,
+                                      Subscriber<GraphqlResponse> subscriber) {
 
         Map<String, Object> variables = new HashMap<>();
         variables.put(KEY_PARAMS, UrlParamHelper.generateUrlParamString(requestParams.getParamsAllValueInString()));
 
-        GraphqlRequest graphqlRequest = new
-                GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
-                R.raw.gql_initiate_search), InitiateSearchGqlResponse.class, variables);
+        GraphqlRequest graphqlRequest = new GraphqlRequest(query, InitiateSearchModel.class, variables);
 
         graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(graphqlRequest);

@@ -16,7 +16,6 @@ import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.ProductDraftGeneratedDatabaseHolder;
-import com.raizlabs.android.dbflow.config.TkpdCacheApiGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.constant.AbstractionBaseURL;
 import com.tokopedia.attachproduct.data.source.url.AttachProductUrl;
@@ -47,8 +46,8 @@ import com.tokopedia.otp.cotp.data.SQLoginUrl;
 import com.tokopedia.payment.fingerprint.util.PaymentFingerprintConstant;
 import com.tokopedia.payment.setting.util.PaymentSettingUrlKt;
 import com.tokopedia.product.manage.item.imagepicker.util.CatalogConstant;
-import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
+import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.utils.CacheApiWhiteList;
@@ -138,6 +137,9 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         com.tokopedia.config.GlobalConfig.PACKAGE_APPLICATION = GlobalConfig.PACKAGE_SELLER_APP;
         com.tokopedia.config.GlobalConfig.DEBUG = BuildConfig.DEBUG;
         com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
+        com.tokopedia.config.GlobalConfig.HOME_ACTIVITY_CLASS_NAME = DashboardActivity.class.getName();
+        com.tokopedia.config.GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME = DeepLinkHandlerActivity.class.getName();
+        com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME = DeepLinkActivity.class.getName();
         setVersionCode();
         try {
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -255,8 +257,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
             FlowManager.init(new FlowConfig.Builder(getApplicationContext()).build());
         }
         FlowManager.initModule(ProductDraftGeneratedDatabaseHolder.class);
-        FlowManager.initModule(TkpdCacheApiGeneratedDatabaseHolder.class);
-        PushNotification.initDatabase(getApplicationContext());
         CategoryDbFlow.initDatabase(getApplicationContext());
     }
 

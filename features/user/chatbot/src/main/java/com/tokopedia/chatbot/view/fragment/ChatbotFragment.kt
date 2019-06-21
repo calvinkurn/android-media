@@ -66,6 +66,9 @@ import javax.inject.Inject
 class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         AttachedInvoiceSelectionListener, QuickReplyListener,
         ChatActionListBubbleListener, ChatRatingListener, TypingListener {
+    override fun clearChatText() {
+        replyEditText.setText("")
+    }
 
     val TOKOPEDIA_ATTACH_INVOICE_REQ_CODE = 114
     val REQUEST_CODE_CHAT_IMAGE = 115

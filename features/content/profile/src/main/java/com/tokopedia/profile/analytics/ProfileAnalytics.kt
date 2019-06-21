@@ -2,11 +2,10 @@ package com.tokopedia.profile.analytics
 
 import android.app.Activity
 import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.HashMap
-import com.tokopedia.track.TrackApp;
 
 /**
  * @author by milhamj on 10/10/18.
@@ -171,7 +170,7 @@ class ProfileAnalytics @Inject constructor(private val userSessionInterface: Use
         )
     }
 
-    fun eventClickShareProfileIni(isOwner: Boolean, profileId: String) {
+    fun eventClickFollowFooter(isOwner: Boolean, profileId: String) {
         val screen = if (isOwner) Screen.MY_PROFILE else Screen.PROFILE
         val category = if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
@@ -179,13 +178,13 @@ class ProfileAnalytics @Inject constructor(private val userSessionInterface: Use
                         screen,
                         Event.EVENT_CLICK_SOCIAL_COMMERCE,
                         category,
-                        Action.CLICK_SHARE_THIS_PROFILE,
+                        "click follow - sticky bottom bar",
                         profileId
                 )
         )
     }
 
-    fun eventClickSharePostIni(isOwner: Boolean, profileId: String) {
+    fun eventClickUnfollowFooter(isOwner: Boolean, profileId: String) {
         val screen = if (isOwner) Screen.MY_PROFILE else Screen.PROFILE
         val category = if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
@@ -193,7 +192,35 @@ class ProfileAnalytics @Inject constructor(private val userSessionInterface: Use
                         screen,
                         Event.EVENT_CLICK_SOCIAL_COMMERCE,
                         category,
-                        Action.CLICK_SHARE_THIS_POST,
+                        "click unfollow - sticky bottom bar",
+                        profileId
+                )
+        )
+    }
+
+    fun eventClickShareProfileIni(isOwner: Boolean, profileId: String, source: String) {
+        val screen = if (isOwner) Screen.MY_PROFILE else Screen.PROFILE
+        val category = if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                getDefaultData(
+                        screen,
+                        Event.EVENT_CLICK_SOCIAL_COMMERCE,
+                        category,
+                        Action.CLICK_SHARE_THIS_PROFILE + " - " + source,
+                        profileId
+                )
+        )
+    }
+
+    fun eventClickSharePostIni(isOwner: Boolean, profileId: String, source: String) {
+        val screen = if (isOwner) Screen.MY_PROFILE else Screen.PROFILE
+        val category = if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                getDefaultData(
+                        screen,
+                        Event.EVENT_CLICK_SOCIAL_COMMERCE,
+                        category,
+                        Action.CLICK_SHARE_THIS_POST + " - " + source,
                         profileId
                 )
         )

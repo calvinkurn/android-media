@@ -12,7 +12,7 @@ import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel
  * @author by nisie on 2/22/18.
  */
 
-class ChannelInfoViewModel : Parcelable {
+class ChannelInfoViewModel() : Parcelable {
     var channelId: String = ""
         private set
     var title: String = ""
@@ -68,10 +68,6 @@ class ChannelInfoViewModel : Parcelable {
 
     var quickRepliesViewModel: List<GroupChatQuickReplyItemViewModel> = arrayListOf()
 
-    constructor(){
-
-    }
-
     constructor(channelId: String, title: String, channelUrl: String, bannerUrl: String,
                 blurredBannerUrl: String,
                 adsImageUrl: String, adsLink: String, adsName: String, adsId: String,
@@ -84,7 +80,7 @@ class ChannelInfoViewModel : Parcelable {
                 pinnedMessageViewModel: PinnedMessageViewModel,
                 exitMessage: ExitMessage,
                 quickRepliesViewModel: List<GroupChatQuickReplyItemViewModel>,
-                videoId: String, settingGroupChat: SettingGroupChat, overlayViewModel: OverlayViewModel) {
+                videoId: String, settingGroupChat: SettingGroupChat, overlayViewModel: OverlayViewModel): this() {
         this.channelId = channelId
         this.title = title
         this.channelUrl = channelUrl
@@ -151,7 +147,7 @@ class ChannelInfoViewModel : Parcelable {
         dest.writeTypedList(this.quickRepliesViewModel)
     }
 
-    protected constructor(`in`: Parcel) {
+    protected constructor(`in`: Parcel): this() {
         this.channelId = `in`.readString()
         this.title = `in`.readString()
         this.channelUrl = `in`.readString()

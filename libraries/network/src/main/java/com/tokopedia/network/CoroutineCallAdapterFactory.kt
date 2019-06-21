@@ -1,7 +1,7 @@
 package com.tokopedia.network
 
-import kotlinx.coroutines.experimental.CompletableDeferred
-import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Deferred
 import retrofit2.*
 import retrofit2.adapter.rxjava.HttpException
 import java.lang.reflect.ParameterizedType

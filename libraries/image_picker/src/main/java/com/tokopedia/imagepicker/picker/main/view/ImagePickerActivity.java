@@ -191,17 +191,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
 
             @Override
             public void onPageSelected(int position) {
-                if (selectedTab != position) {
-                    Fragment previousFragment = imagePickerViewPagerAdapter.getRegisteredFragment(selectedTab);
-                    if (previousFragment != null && previousFragment instanceof ImagePickerCameraFragment) {
-                        ((ImagePickerCameraFragment) previousFragment).onInvisible();
-                    }
-                    Fragment fragment = imagePickerViewPagerAdapter.getRegisteredFragment(position);
-                    if (fragment != null && fragment instanceof ImagePickerCameraFragment) {
-                        ((ImagePickerCameraFragment) fragment).onVisible();
-                    }
-                }
-                selectedTab = position;
+                imagePickerViewPagerOnPageSelected(position);
             }
 
             @Override
@@ -215,6 +205,20 @@ public class ImagePickerActivity extends BaseSimpleActivity
     @NonNull
     protected ImagePickerViewPagerAdapter getImagePickerViewPagerAdapter() {
         return new ImagePickerViewPagerAdapter(this, getSupportFragmentManager(), imagePickerBuilder);
+    }
+
+    protected void imagePickerViewPagerOnPageSelected(int position) {
+        if (selectedTab != position) {
+            Fragment previousFragment = imagePickerViewPagerAdapter.getRegisteredFragment(selectedTab);
+            if (previousFragment != null && previousFragment instanceof ImagePickerCameraFragment) {
+                ((ImagePickerCameraFragment) previousFragment).onInvisible();
+            }
+            Fragment fragment = imagePickerViewPagerAdapter.getRegisteredFragment(position);
+            if (fragment != null && fragment instanceof ImagePickerCameraFragment) {
+                ((ImagePickerCameraFragment) fragment).onVisible();
+            }
+        }
+        selectedTab = position;
     }
 
     private void setupTabLayout() {
@@ -552,7 +556,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
         }
     }
 
-    private void onFinishWithMultipleFinalImage(ArrayList<String> imageUrlOrPathList,
+    protected void onFinishWithMultipleFinalImage(ArrayList<String> imageUrlOrPathList,
                                                 ArrayList<String> originalImageList,
                                                 ArrayList<String> imageDescriptionList,
                                                 ArrayList<Boolean> isEdittedList) {

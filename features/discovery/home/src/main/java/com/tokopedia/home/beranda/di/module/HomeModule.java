@@ -33,8 +33,8 @@ import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
-import kotlinx.coroutines.experimental.CoroutineDispatcher;
-import kotlinx.coroutines.experimental.Dispatchers;
+import kotlinx.coroutines.CoroutineDispatcher;
+import kotlinx.coroutines.Dispatchers;
 
 /**
  * @author by errysuprayogi on 11/28/17.
