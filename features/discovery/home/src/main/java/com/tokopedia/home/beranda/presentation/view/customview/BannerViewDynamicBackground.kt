@@ -45,9 +45,9 @@ class BannerViewDynamicBackground : BannerView {
 
     override fun init() {
         val view = View.inflate(context, R.layout.layout_card_banner_dynamic_background, this)
-        view.findViewById(R.id.overlay_round)
+        view.findViewById<View>(R.id.overlay_round)
                 .setBackground(MethodChecker.getDrawable(
-                        imageView.getContext(), R.drawable.background_banner_image_mask));
+                        view.getContext(), R.drawable.background_banner_image_mask));
         bannerRecyclerView = view.findViewById(R.id.banner_recyclerview)
         bannerIndicator = view.findViewById(R.id.banner_indicator_container)
         bannerSeeAll = view.findViewById(R.id.banner_see_all)

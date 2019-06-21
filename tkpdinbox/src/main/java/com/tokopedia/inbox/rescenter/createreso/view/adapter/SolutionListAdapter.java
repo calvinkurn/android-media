@@ -15,6 +15,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.Solution
 
 import java.util.ArrayList;
 import java.util.List;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * Created by yoasfs on 25/08/17.

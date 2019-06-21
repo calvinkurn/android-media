@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 
 public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements SubmissionAdapterContract.View {
 
