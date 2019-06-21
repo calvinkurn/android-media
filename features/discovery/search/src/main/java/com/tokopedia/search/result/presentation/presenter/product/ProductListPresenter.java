@@ -2,7 +2,6 @@ package com.tokopedia.search.result.presentation.presenter.product;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.discovery.common.constants.SearchConstant;
-import com.tokopedia.discovery.common.data.DynamicFilterModel;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -14,8 +13,6 @@ import com.tokopedia.search.result.presentation.model.HeaderViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductViewModel;
 import com.tokopedia.search.result.presentation.presenter.abstraction.SearchSectionPresenter;
-import com.tokopedia.search.result.presentation.presenter.subscriber.RequestDynamicFilterSubscriber;
-import com.tokopedia.search.result.presentation.view.listener.RequestDynamicFilterListener;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Badge;
 import com.tokopedia.topads.sdk.domain.model.Data;
@@ -51,9 +48,6 @@ final class ProductListPresenter
     @Named(SearchConstant.Wishlist.PRODUCT_WISHLIST_URL_USE_CASE)
     UseCase<Boolean> productWishlistUrlUseCase;
     @Inject
-    @Named(SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_GQL_USE_CASE)
-    UseCase<DynamicFilterModel> dynamicFilterModelGqlUseCase;
-    @Inject
     AddWishListUseCase addWishlistActionUseCase;
     @Inject
     RemoveWishListUseCase removeWishlistActionUseCase;
@@ -82,10 +76,9 @@ final class ProductListPresenter
     }
 
     @Override
-    public void requestDynamicFilter() {
+    public void requestDynamicFilter(Map<String, Object> searchParameterMap) {
         requestDynamicFilterCheckForNulls();
 
-        Map<String, Object> searchParameterMap = getView().getSearchParameterMap();
         Map<String, String> additionalParamsMap = getView().getAdditionalParamsMap();
 
         if(searchParameterMap == null) return;
@@ -97,12 +90,11 @@ final class ProductListPresenter
             enrichWithAdditionalParams(params, additionalParamsMap);
         }
 
-        dynamicFilterModelGqlUseCase.execute(params, new RequestDynamicFilterSubscriber(requestDynamicFilterListener));
+        getDynamicFilterUseCase.execute(params, getDynamicFilterSubscriber(false));
     }
 
     private void requestDynamicFilterCheckForNulls() {
-        if(requestDynamicFilterListener == null) throw new RuntimeException("UseCase<DynamicFilterModeL> is not injected.");
-        if(dynamicFilterModelGqlUseCase == null) throw new RuntimeException("RequestDynamicFilterListener is not set.");
+        if(getDynamicFilterUseCase == null) throw new RuntimeException("UseCase<DynamicFilterModeL> is not injected.");
     }
 
     @Override
@@ -167,7 +159,6 @@ final class ProductListPresenter
         if(searchParameter == null || additionalParams == null) return;
 
         RequestParams requestParams = createInitializeSearchParam(searchParameter);
-        enrichWithFilterAndSortParams(requestParams);
         enrichWithRelatedSearchParam(requestParams);
         enrichWithAdditionalParams(requestParams, additionalParams);
 
@@ -284,7 +275,6 @@ final class ProductListPresenter
         return text == null || text.length() == 0;
     }
 
-    // TODO:: Create a new class that extends Subscriber<SearchProductModel> for easier unit testing. See InitiateSearchSubscriber for reference.
     private Subscriber<SearchProductModel> getLoadMoreDataSubscriber(final Map<String, Object> searchParameter) {
         return new Subscriber<SearchProductModel>() {
             @Override
@@ -446,15 +436,14 @@ final class ProductListPresenter
         // Unsubscribe first in case user has slow connection, and the previous loadDataUseCase has not finished yet.
         searchProductFirstPageUseCase.unsubscribe();
 
-        searchProductFirstPageUseCase.execute(requestParams, getLoadDataSubscriber(isFirstTimeLoad));
+        searchProductFirstPageUseCase.execute(requestParams, getLoadDataSubscriber(searchParameter, isFirstTimeLoad));
     }
 
     private boolean checkShouldEnrichWithAdditionalParams(Map<String, String> additionalParams) {
         return getView().isAnyFilterActive() && additionalParams != null;
     }
 
-    // TODO:: Create a new class that extends Subscriber<SearchProductModel> for easier unit testing. See InitiateSearchSubscriber for reference.
-    private Subscriber<SearchProductModel> getLoadDataSubscriber(final boolean isFirstTimeLoad) {
+    private Subscriber<SearchProductModel> getLoadDataSubscriber(final Map<String, Object> searchParameter, final boolean isFirstTimeLoad) {
         return new Subscriber<SearchProductModel>() {
             @Override
             public void onStart() {
@@ -463,7 +452,7 @@ final class ProductListPresenter
 
             @Override
             public void onCompleted() {
-                loadDataSubscriberOnCompleteIfViewAttached();
+                loadDataSubscriberOnCompleteIfViewAttached(searchParameter);
             }
 
             @Override
@@ -485,10 +474,10 @@ final class ProductListPresenter
         }
     }
 
-    private void loadDataSubscriberOnCompleteIfViewAttached() {
+    private void loadDataSubscriberOnCompleteIfViewAttached(Map<String, Object> searchParameter) {
         if (isViewAttached()) {
             getView().hideRefreshLayout();
-            getView().getDynamicFilter();
+            requestDynamicFilter(searchParameter);
         }
     }
 
@@ -537,6 +526,7 @@ final class ProductListPresenter
         headerViewModel.setSuggestionViewModel(productViewModel.getSuggestionModel());
         if (productViewModel.getGuidedSearchViewModel() != null) {
             headerViewModel.setGuidedSearch(productViewModel.getGuidedSearchViewModel());
+            getView().sendImpressionGuidedSearch();
         }
         if (productViewModel.getQuickFilterModel() != null
                 && productViewModel.getQuickFilterModel().getFilter() != null) {

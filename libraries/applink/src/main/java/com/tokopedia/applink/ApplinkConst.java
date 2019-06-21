@@ -221,8 +221,10 @@ public interface ApplinkConst {
     String CONSUMER_SPLASH_SCREEN = "tokopedia://splashscreen/consumer";
     String IMAGE_PREVIEW = "tokopedia://imagepreview";
 
-    String HOME_CREDIT_KTP = "tokopedia://fintech/home-credit/ktp/";
-    String HOME_CREDIT_SELFIE = "tokopedia://fintech/home-credit/selfie/";
+    String HOME_CREDIT_KTP_WITHOUT_TYPE = "tokopedia://fintech/home-credit/ktp";
+    String HOME_CREDIT_KTP_WITH_TYPE = "tokopedia://fintech/home-credit/ktp/{type}";
+    String HOME_CREDIT_SELFIE_WITHOUT_TYPE = "tokopedia://fintech/home-credit/selfie";
+    String HOME_CREDIT_SELFIE_WITH_TYPE = "tokopedia://fintech/home-credit/selfie/{type}";
     String INBOX = "tokopedia://inbox";
 
     String PLAY_WEBVIEW = "tokopedia://play/webview?url={url}&titlebar={has_titlebar}";

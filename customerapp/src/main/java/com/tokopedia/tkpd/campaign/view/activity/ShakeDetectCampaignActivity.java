@@ -172,8 +172,8 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
     }
 
     @Override
-    public void showErrorGetInfo(String message) {
-        shakeShakeErrorMsg.setText(message);
+    public void showErrorGetInfo() {
+        shakeShakeErrorMsg.setText(getString(R.string.shake_default_error));
         layoutshakeShakeErrorMsg.setVisibility(View.VISIBLE);
         cancelButton.setVisibility(View.GONE);
     }
