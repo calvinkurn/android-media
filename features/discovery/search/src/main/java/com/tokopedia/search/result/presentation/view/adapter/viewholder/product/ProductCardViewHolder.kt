@@ -112,7 +112,7 @@ open class ProductCardViewHolder(
 //            itemView.shopNameTextView?.visibility = View.GONE
 //        }
 //    }
-//
+
     // TODO:: Dummy method, set Shop Name from productItem instead
     private fun isShopNameShown(productItem: ProductItemViewModel): Boolean {
 //        return !TextUtils.isEmpty(productItem.shopName)
@@ -131,7 +131,7 @@ open class ProductCardViewHolder(
 //            itemView.shopImage?.visibility = View.GONE
 //        }
 //    }
-//
+
     // TODO:: Dummy method, set Shop Name from productItem instead
     private fun isShopImageShown(productItem: ProductItemViewModel): Boolean {
 //        return adapterPosition % 2 == 0
@@ -231,13 +231,16 @@ open class ProductCardViewHolder(
     private fun initLocationTextView(productItem: ProductItemViewModel) {
         setLocationTextViewMargin(productItem)
 
-        if(!TextUtils.isEmpty(productItem.shopCity)) {
+        val isShopCityShown = isShopCityShown(productItem)
+        itemView.productCardView?.setTextLocationVisible(isShopCityShown)
+
+        if(isShopCityShown) {
             itemView.productCardView?.setTextLocation(productItem.shopCity)
-            itemView.productCardView?.setTextLocationVisible(true)
         }
-        else {
-            itemView.productCardView?.setTextLocationVisible(false)
-        }
+    }
+
+    private fun isShopCityShown(productItem: ProductItemViewModel) : Boolean {
+        return !TextUtils.isEmpty(productItem.shopCity)
     }
 
     private fun setLocationTextViewMargin(productItem: ProductItemViewModel) {
@@ -256,7 +259,6 @@ open class ProductCardViewHolder(
     private fun initRatingAndReview(productItem: ProductItemViewModel) {
         initRatingView(productItem)
         initReviewCount(productItem)
-//        initRatingAndReviewContainer(productItem)
     }
 
     private fun initRatingView(productItem: ProductItemViewModel) {
@@ -281,8 +283,9 @@ open class ProductCardViewHolder(
     }
 
     private fun initReviewCount(productItem: ProductItemViewModel) {
-        val isReviewCountVisible = isReviewCountVisible(productItem)
+        setReviewCountPadding(productItem)
 
+        val isReviewCountVisible = isReviewCountVisible(productItem)
         itemView.productCardView?.setReviewVisible(isReviewCountVisible)
 
         if(isReviewCountVisible) {
@@ -294,28 +297,13 @@ open class ProductCardViewHolder(
         return productItem.countReview != 0
     }
 
-//    private fun setReviewCountPadding(productItem: ProductItemViewModel) {
-//        if(itemView.reviewCountTextView != null) {
-//            val paddingLeftDp = if (isRatingViewVisible(productItem)) 4 else 0
-//
-//            itemView.reviewCountTextView?.setPadding(
-//                paddingLeftDp,
-//                itemView.reviewCountTextView.paddingTop,
-//                itemView.reviewCountTextView.paddingRight,
-//                itemView.reviewCountTextView.paddingBottom
-//            )
-//        }
-//    }
-//
-//    private fun initRatingAndReviewContainer(productItem: ProductItemViewModel) {
-//        if(isRatingAndReviewContainerVisible(productItem)) {
-//            itemView.ratingReviewContainer?.visibility = View.VISIBLE
-//        }
-//        else {
-//            itemView.ratingReviewContainer?.visibility = View.GONE
-//        }
-//    }
-//
+    private fun setReviewCountPadding(productItem: ProductItemViewModel) {
+        val marginLeftDp = if (isRatingViewVisible(productItem)) 4f else 8f
+        val marginLeftPixel = convertDpToPixel(marginLeftDp)
+
+        itemView.productCardView?.setReviewCountMarginsWithNegativeDefaultValue(marginLeftPixel, -1, -1, -1)
+
+    }
 //    private fun isRatingAndReviewContainerVisible(productItem: ProductItemViewModel): Boolean {
 //        return isRatingViewVisible(productItem) || isReviewCountVisible(productItem)
 //    }

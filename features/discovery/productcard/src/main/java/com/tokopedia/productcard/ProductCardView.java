@@ -78,7 +78,7 @@ public class ProductCardView extends BaseCustomView {
         topAdsIcon = view.findViewById(R.id.topAdsIcon);
         wishlistButton = view.findViewById(R.id.btnWishlist);
         ratingView = view.findViewById(R.id.rating);
-        reviewCountView = view.findViewById(R.id.review_count);
+        reviewCountView = view.findViewById(R.id.reviewCount);
         shopBadgesContainer = view.findViewById(R.id.shopBadgesContainer);
         textLocation = view.findViewById(R.id.textLocation);
     }
@@ -237,16 +237,13 @@ public class ProductCardView extends BaseCustomView {
         setMarginsToView(textLocation, leftPixel, topPixel, rightPixel, bottomPixel);
     }
 
+    public void setReviewCountMarginsWithNegativeDefaultValue(int leftPixel, int topPixel, int rightPixel, int bottomPixel) {
+        setMarginsToView(reviewCountView, leftPixel, topPixel, rightPixel, bottomPixel);
+    }
+
     private void setMarginsToView(View view, int leftPixel, int topPixel, int rightPixel, int bottomPixel) {
         if(view.getLayoutParams() instanceof ConstraintLayout.LayoutParams) {
             ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) textLocation.getLayoutParams();
-
-//            layoutParams.setMargins(
-//                    leftPixel < 0 ? layoutParams.leftMargin : leftPixel,
-//                    topPixel < 0 ? layoutParams.topMargin : topPixel,
-//                    rightPixel < 0 ? layoutParams.rightMargin : rightPixel,
-//                    bottomPixel < 0 ? layoutParams.bottomMargin : bottomPixel
-//            );
 
             layoutParams.leftMargin = leftPixel < 0 ? layoutParams.leftMargin : leftPixel;
             layoutParams.topMargin = topPixel < 0 ? layoutParams.topMargin : topPixel;
