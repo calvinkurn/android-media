@@ -3,7 +3,7 @@ package com.tokopedia.topads.product.view.presenter;
 import com.tokopedia.abstraction.common.data.model.request.DataRequest;
 import com.tokopedia.topads.auto.data.AutoAdsUseCase;
 import com.tokopedia.topads.auto.data.entity.TopAdsAutoAdsData;
-import com.tokopedia.topads.auto.internal.TopAdsWidgetStatus;
+import com.tokopedia.topads.auto.internal.AutoAdsStatus;
 import com.tokopedia.topads.common.domain.interactor.TopAdsDatePickerInteractor;
 import com.tokopedia.topads.common.view.presenter.TopAdsBaseListPresenter;
 import com.tokopedia.topads.dashboard.constant.SortTopAdsOption;
@@ -36,7 +36,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by hadi.putra on 04/05/18.
@@ -126,6 +125,14 @@ public class TopAdsProductAdListPresenter extends TopAdsBaseListPresenter<TopAds
         autoAdsUseCase.unsubscribe();
     }
 
+    private boolean autoAdsIsActive(int status){
+        return (status == AutoAdsStatus.STATUS_ACTIVE
+                || status == AutoAdsStatus.STATUS_IN_PROGRESS_ACTIVE
+                || status == AutoAdsStatus.STATUS_IN_PROGRESS_AUTOMANAGE
+                || status == AutoAdsStatus.STATUS_IN_PROGRESS_INACTIVE
+                || status == AutoAdsStatus.STATUS_NOT_DELIVERED);
+    }
+
     public void searchAd(Date startDate, Date endDate, String keyword, int status, long groupId,
                          final int page, @SortTopAdsOption String sortId) {
         SearchAdRequest searchAdRequest = new SearchAdRequest();
@@ -146,9 +153,9 @@ public class TopAdsProductAdListPresenter extends TopAdsBaseListPresenter<TopAds
                     public PageDataResponse<List<ProductAd>> call(PageDataResponse<List<ProductAd>> listPageDataResponse,
                                                                   TopAdsAutoAdsData topAdsAutoAdsData) {
                         for (ProductAd ads : listPageDataResponse.getData()) {
-                            ads.setAutoAds(topAdsAutoAdsData.getStatus() == TopAdsWidgetStatus.STATUS_ACTIVE);
+                            ads.setAutoAds(autoAdsIsActive(topAdsAutoAdsData.getStatus()));
                         }
-                        listPageDataResponse.setAutoAds(topAdsAutoAdsData.getStatus() == TopAdsWidgetStatus.STATUS_ACTIVE);
+                        listPageDataResponse.setAutoAds(autoAdsIsActive(topAdsAutoAdsData.getStatus()));
                         return listPageDataResponse;
                     }
                 })

@@ -18,6 +18,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ScrollView
+import android.widget.Toast
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GlobalConfig
@@ -632,8 +633,10 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
     }
 
     override fun onSuccessGetTicker(message: List<String>) {
-        ticker_view.addAllMessage(message)
-        ticker_view.visibility = View.VISIBLE
+        if(message.isNotEmpty()) {
+            ticker_view.addAllMessage(message)
+            ticker_view.visibility = View.VISIBLE
+        }
     }
 
     override fun onErrorGetTicker(e: Throwable) {}

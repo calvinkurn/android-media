@@ -9,10 +9,10 @@ import android.widget.ImageView
 import android.widget.Switch
 
 import com.tokopedia.topads.auto.R
-import com.tokopedia.topads.auto.view.activity.DailyBudgetActivity
+import com.tokopedia.topads.auto.internal.AutoAdsStatus
+import com.tokopedia.topads.auto.view.activity.ConfirmationDialogActivity
 import com.tokopedia.topads.auto.view.widget.SettingAutoAdsConfirmationSheet
 import com.tokopedia.topads.auto.view.widget.SettingAutoAdsInfoSheet
-import com.tokopedia.topads.common.constant.TopAdsReasonOption
 
 /**
  * Author errysuprayogi on 09,May,2019
@@ -42,7 +42,7 @@ class SettingBudgetAdsFragment : DailyBudgetFragment() {
         }
         saveBtn.setOnClickListener {
             if (switchBudget.isChecked) {
-                activatedAds()
+                startActivityForResult(Intent(activity!!, ConfirmationDialogActivity::class.java), REQUEST_CODE_CONFIRMATION)
             } else {
                 var settingConfirmationSheet =  SettingAutoAdsConfirmationSheet.newInstance(context!!)
                 settingConfirmationSheet.setActionListener(object: SettingAutoAdsConfirmationSheet.ActionListener{
@@ -58,11 +58,9 @@ class SettingBudgetAdsFragment : DailyBudgetFragment() {
                 settingConfirmationSheet.show()
             }
             budgetViewModel.autoAdsData.observe(this, Observer {
-                when(it!!.adsInfo.reason){
-                    TopAdsReasonOption.INSUFFICIENT_CREDIT -> insufficientCredit(it!!.adsInfo.message)
-                    TopAdsReasonOption.ELIGIBLE -> eligible()
-                    TopAdsReasonOption.NOT_ELIGIBLE -> notEligible()
-                    else -> activity!!.finish()
+                when(it!!.status){
+                    AutoAdsStatus.STATUS_IN_PROGRESS_ACTIVE -> inProgressActive(it!!.adsInfo)
+                    AutoAdsStatus.STATUS_IN_PROGRESS_INACTIVE -> inProgressInactive()
                 }
             })
         }
@@ -103,10 +101,11 @@ class SettingBudgetAdsFragment : DailyBudgetFragment() {
 
     companion object {
 
-        fun newInstance(budget: Int): SettingBudgetAdsFragment {
+        fun newInstance(status: Int, budget: Int): SettingBudgetAdsFragment {
 
             val args = Bundle()
             args.putInt(KEY_DAILY_BUDGET, budget)
+            args.putInt(KEY_AUTOADS_STATUS, status)
             val fragment = SettingBudgetAdsFragment()
             fragment.arguments = args
             return fragment

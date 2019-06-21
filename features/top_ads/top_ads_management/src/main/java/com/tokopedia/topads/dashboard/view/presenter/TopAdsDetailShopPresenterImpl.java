@@ -5,14 +5,13 @@ import android.content.Context;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.topads.auto.data.AutoAdsUseCase;
 import com.tokopedia.topads.auto.data.entity.TopAdsAutoAdsData;
-import com.tokopedia.topads.auto.internal.TopAdsWidgetStatus;
+import com.tokopedia.topads.auto.internal.AutoAdsStatus;
 import com.tokopedia.topads.dashboard.data.model.data.ShopAd;
 import com.tokopedia.topads.dashboard.data.model.request.SearchAdRequest;
 import com.tokopedia.topads.dashboard.data.model.request.ShopRequest;
 import com.tokopedia.topads.dashboard.domain.interactor.ListenerInteractor;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsShopAdInteractor;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailListener;
-import com.tokopedia.topads.dashboard.view.model.Ad;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.Date;
@@ -69,7 +68,7 @@ public class TopAdsDetailShopPresenterImpl extends TopAdsDetailPresenterImpl<Sho
 
             @Override
             public void onNext(TopAdsAutoAdsData topAdsAutoAdsData) {
-                if(topAdsAutoAdsData.getStatus() == TopAdsWidgetStatus.STATUS_ACTIVE){
+                if(topAdsAutoAdsData.getStatus() == AutoAdsStatus.STATUS_ACTIVE){
                     topAdsDetailListener.onAutoAdsActive();
                 } else {
                     topAdsDetailListener.onAutoAdsInactive();

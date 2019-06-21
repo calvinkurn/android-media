@@ -41,7 +41,6 @@
             android:theme="@style/Theme.White" />
         <activity
             android:name=".view.activity.ConfirmationDialogActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar.ActivityDialog" />
     </application>
 

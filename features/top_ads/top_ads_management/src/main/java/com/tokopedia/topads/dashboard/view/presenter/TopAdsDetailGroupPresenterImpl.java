@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.topads.auto.data.AutoAdsUseCase;
 import com.tokopedia.topads.auto.data.entity.TopAdsAutoAdsData;
-import com.tokopedia.topads.auto.internal.TopAdsWidgetStatus;
+import com.tokopedia.topads.auto.internal.AutoAdsStatus;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.data.model.request.GetSuggestionBody;
@@ -19,8 +19,6 @@ import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGetSuggestionUseCa
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGroupAdInteractor;
 import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailGroupDomainModel;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailListener;
-import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
-import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
@@ -96,7 +94,7 @@ public class TopAdsDetailGroupPresenterImpl extends TopAdsDetailPresenterImpl<Gr
 
             @Override
             public void onNext(TopAdsAutoAdsData topAdsAutoAdsData) {
-                if(topAdsAutoAdsData.getStatus() == TopAdsWidgetStatus.STATUS_ACTIVE){
+                if(topAdsAutoAdsData.getStatus() == AutoAdsStatus.STATUS_ACTIVE){
                     topAdsDetailListener.onAutoAdsActive();
                 } else {
                     topAdsDetailListener.onAutoAdsInactive();

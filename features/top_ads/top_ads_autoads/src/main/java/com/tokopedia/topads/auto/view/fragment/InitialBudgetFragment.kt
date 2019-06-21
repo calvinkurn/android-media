@@ -3,18 +3,15 @@ package com.tokopedia.topads.auto.view.fragment
 import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
-import android.widget.Toast
 
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.router.TopAdsAutoRouter
-import com.tokopedia.topads.auto.view.activity.AutoAdsActivatedActivity
-import com.tokopedia.topads.auto.view.activity.InsufficientBalanceActivity
+import com.tokopedia.topads.auto.view.activity.ConfirmationDialogActivity
 import com.tokopedia.topads.auto.view.widget.InfoAutoAdsSheet
 import com.tokopedia.topads.auto.view.widget.ManualAdsConfirmationSheet
 import com.tokopedia.topads.common.constant.TopAdsReasonOption
@@ -62,7 +59,7 @@ class InitialBudgetFragment : DailyBudgetFragment(), View.OnClickListener, Manua
         if (id == R.id.start_manual_ads_btn) {
             adsConfirmationSheet.show()
         } else if (id == R.id.post_btn) {
-            activatedAds()
+            startActivityForResult(Intent(activity!!, ConfirmationDialogActivity::class.java), REQUEST_CODE_CONFIRMATION)
         }
     }
 
@@ -110,10 +107,10 @@ class InitialBudgetFragment : DailyBudgetFragment(), View.OnClickListener, Manua
 
     companion object {
 
-        fun newInstance(budget: Int): InitialBudgetFragment {
-
+        fun newInstance(status: Int, budget: Int): InitialBudgetFragment {
             val args = Bundle()
             args.putInt(KEY_DAILY_BUDGET, budget)
+            args.putInt(KEY_AUTOADS_STATUS, status)
             val fragment = InitialBudgetFragment()
             fragment.arguments = args
             return fragment

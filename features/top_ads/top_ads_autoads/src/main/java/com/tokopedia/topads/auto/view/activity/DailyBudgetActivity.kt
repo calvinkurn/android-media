@@ -14,7 +14,9 @@ import com.tokopedia.topads.auto.view.fragment.InitialBudgetFragment
 class DailyBudgetActivity : AutoAdsBaseActivity() {
 
     override fun getNewFragment(): Fragment {
-        return InitialBudgetFragment.newInstance(intent.getIntExtra(DailyBudgetFragment.KEY_DAILY_BUDGET, 0))
+        val budget = intent.getIntExtra(DailyBudgetFragment.KEY_DAILY_BUDGET, 0)
+        val status = intent.getIntExtra(DailyBudgetFragment.KEY_AUTOADS_STATUS, 0)
+        return InitialBudgetFragment.newInstance(status, budget)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

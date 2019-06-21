@@ -1,5 +1,6 @@
 package com.tokopedia.topads.dashboard.view.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -17,6 +18,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.showcase.ShowCaseContentPosition
 import com.tokopedia.showcase.ShowCaseDialog
 import com.tokopedia.showcase.ShowCaseObject
+import com.tokopedia.topads.auto.view.widget.AutoAdsWidgetView
+import com.tokopedia.topads.auto.view.widget.ToasterAutoAds
 import com.tokopedia.topads.common.data.util.ApplinkUtil
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.TopAdsDashboardRouter
@@ -188,6 +191,13 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
             } else {
                 return ApplinkUtil.getSellerAppApplinkIntent(context, extras)
             }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == AutoAdsWidgetView.REQUEST_KEY_AUTOADS_WIDGET && resultCode == Activity.RESULT_OK) {
+            ToasterAutoAds.showClose(this, getString(R.string.toaster_inactive_success))
         }
     }
 }

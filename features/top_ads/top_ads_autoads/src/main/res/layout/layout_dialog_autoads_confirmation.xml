@@ -42,7 +42,7 @@
 
 
             <Button
-                android:id="@+id/negative_button"
+                android:id="@+id/positive_button"
                 style="@style/Button.Submit.Green.Full"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
                 android:text="@string/ya_saya_mau" />
 
             <Button
-                android:id="@+id/positive_button"
+                android:id="@+id/negative_button"
                 style="@style/Button.Submit.White"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

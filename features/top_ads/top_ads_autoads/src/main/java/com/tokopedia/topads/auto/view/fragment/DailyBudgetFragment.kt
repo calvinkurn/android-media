@@ -1,6 +1,6 @@
 package com.tokopedia.topads.auto.view.fragment
 
-import android.arch.lifecycle.MutableLiveData
+import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
@@ -23,9 +23,10 @@ import com.tokopedia.seller.common.widget.PrefixEditText
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.base.AutoAdsBaseActivity
 import com.tokopedia.topads.auto.data.entity.BidInfoData
+import com.tokopedia.topads.auto.data.entity.TopAdsAutoAdsInfo
 import com.tokopedia.topads.auto.data.network.param.AutoAdsParam
 import com.tokopedia.topads.auto.di.AutoAdsComponent
-import com.tokopedia.topads.auto.internal.Preferences
+import com.tokopedia.topads.auto.internal.AutoAdsStatus
 import com.tokopedia.topads.auto.view.activity.AutoAdsActivatedActivity
 import com.tokopedia.topads.auto.view.activity.InsufficientBalanceActivity
 import com.tokopedia.topads.auto.view.factory.DailyBudgetViewModelFactory
@@ -33,6 +34,7 @@ import com.tokopedia.topads.auto.view.viewmodel.DailyBudgetViewModel
 import com.tokopedia.topads.auto.view.widget.Range
 import com.tokopedia.topads.auto.view.widget.RangeSeekBar
 import com.tokopedia.topads.common.constant.TopAdsAddingOption
+import com.tokopedia.topads.common.constant.TopAdsReasonOption
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -83,7 +85,11 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
         budgetViewModel.getBudgetInfo(userSession.shopId.toInt(), requestType, source)
         budgetViewModel.budgetInfoData.observe(this@DailyBudgetFragment, Observer {
             val data = it!!.get(0)
-            val budget = arguments!!.getInt(KEY_DAILY_BUDGET, 0)
+            var budget = data.minDailyBudget
+            val status = arguments!!.getInt(KEY_AUTOADS_STATUS, 0)
+            if (status == AutoAdsStatus.STATUS_ACTIVE) {
+                budget = arguments!!.getInt(KEY_DAILY_BUDGET, 0)
+            }
             estimateImpression(data, budget)
             seekBar.range = Range(data.minDailyBudget, data.maxDailyBudget, 1000)
             seekBar.value = budget
@@ -156,27 +162,30 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
                 activity!!.finish()
             }
         }
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_CONFIRMATION) {
+            activatedAds()
+        }
     }
 
     fun activatedAds() {
         val budget = priceEditText.textWithoutPrefix.replace(",", "").toInt()
-        budgetViewModel.postAutoAdsStatus(AutoAdsParam(AutoAdsParam.Input(
+        budgetViewModel.postAutoAds(AutoAdsParam(AutoAdsParam.Input(
                 "toggle_on",
                 "topchat",
                 budget,
                 userSession.shopId.toInt(),
-                "one-click-promo"
+                "one_click_promo"
         )))
     }
 
     fun deactivedAds() {
         val budget = priceEditText.textWithoutPrefix.replace(",", "").toInt()
-        budgetViewModel.postAutoAdsStatus(AutoAdsParam(AutoAdsParam.Input(
+        budgetViewModel.postAutoAds(AutoAdsParam(AutoAdsParam.Input(
                 "toggle_off",
                 "topchat",
                 budget,
                 userSession.shopId.toInt(),
-                "one-click-promo"
+                "one_click_promo"
         )))
     }
 
@@ -196,8 +205,24 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
         startActivity(intent)
     }
 
+    fun inProgressActive(adsInfo: TopAdsAutoAdsInfo) {
+        when(adsInfo.reason){
+            TopAdsReasonOption.INSUFFICIENT_CREDIT -> insufficientCredit(adsInfo.message)
+            TopAdsReasonOption.ELIGIBLE -> eligible()
+            TopAdsReasonOption.NOT_ELIGIBLE -> notEligible()
+            else -> activity!!.finish()
+        }
+    }
+
+    fun inProgressInactive() {
+        activity!!.setResult(Activity.RESULT_OK)
+        activity!!.finish()
+    }
+
     companion object {
+        val REQUEST_CODE_CONFIRMATION = 8903
         val KEY_DAILY_BUDGET = "BUDGET"
+        val KEY_AUTOADS_STATUS = "AUTOADS_STATUS"
         val REQUEST_CODE_AD_OPTION = 3
         val SELECTED_OPTION = "selected_option"
     }
