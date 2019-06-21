@@ -38,6 +38,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.config)
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.cmnotification)
+    implementation rootProject.ext.libraries.unifyComponents
 
     api (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true

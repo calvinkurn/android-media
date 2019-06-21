@@ -201,15 +201,10 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
             }
 
             override fun onSuccessGetFacebookCredential(accessToken: AccessToken, email: String) {
-                var onRegisterFacebookSuccess = true
                 try {
                     presenter.registerFacebook(accessToken, email)
                 } catch (e: Exception) {
-                    onRegisterFacebookSuccess = false
                     e.message?.let { onErrorRegister(it) }
-                } finally {
-                    if (onRegisterFacebookSuccess)
-                        registerAnalytics.trackSuccessClickRegisterFacebookButton()
                 }
             }
         }
@@ -461,9 +456,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
                 dismissProgressBar()
                 it.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
-                registerAnalytics.trackSuccessClickYesButtonPhoneDialog()
-                startActivityForResult(WelcomePageActivity.newInstance(activity),
-                        REQUEST_WELCOME_PAGE)
+                onSuccessRegister()
             } else if (requestCode == REQUEST_WELCOME_PAGE) {
                 if (resultCode == Activity.RESULT_OK) {
                     goToProfileCompletionPage()
@@ -483,8 +476,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
                 it.setResult(Activity.RESULT_OK)
                 it.finish()
             } else if (requestCode == REQUEST_ADD_NAME && resultCode == Activity.RESULT_OK) {
-                startActivityForResult(WelcomePageActivity.newInstance(activity),
-                        REQUEST_WELCOME_PAGE)
+               onSuccessRegister()
             } else if (requestCode == REQUEST_ADD_NAME && resultCode == Activity.RESULT_CANCELED) {
                 userSession.logoutSession()
                 dismissProgressBar()
@@ -502,7 +494,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
      */
     private fun handleGoogleSignInResult(completedTask: Task<GoogleSignInAccount>) {
         if (getContext() != null) {
-            var onRegisterGoogleSuccess = true
             try {
                 val account = completedTask.getResult(ApiException::class.java)
                 val accessToken = account?.idToken ?: ""
@@ -512,16 +503,10 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
                 onErrorRegister( ErrorHandlerSession.getDefaultErrorCodeMessage(
                         ErrorHandlerSession.ErrorCode.GOOGLE_FAILED_ACCESS_TOKEN,
                         context))
-                onRegisterGoogleSuccess = false
             } catch (e: ApiException) {
                 onErrorRegister( String.format(getString(R.string.loginregister_failed_login_google),
                         e.statusCode.toString()))
-                onRegisterGoogleSuccess = false
-            } finally {
-                if (onRegisterGoogleSuccess)
-                    registerAnalytics.trackSuccessClickRegisterGoogleButton()
             }
-
         }
     }
 
@@ -725,7 +710,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
             val intent = VerificationActivity.getShowChooseVerificationMethodIntent(it,
                     RequestOtpUseCase.OTP_TYPE_LOGIN_PHONE_NUMBER, phoneNumber, "")
             startActivityForResult(intent, REQUEST_VERIFY_PHONE_TOKOCASH)
-            registerAnalytics.trackSuccessClickYesButtonRegisteredPhoneDialog()
         }
     }
 
@@ -780,16 +764,14 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
     override fun onErrorLoginFacebook(email: String): (e: Throwable) -> Unit {
         return {
             val errorMessage = ErrorHandlerSession.getErrorMessage(context, it)
-            NetworkErrorHelper.showSnackbar(activity, errorMessage)
-            registerAnalytics.trackFailedClickRegisterFacebookButton(errorMessage)
+            onErrorRegister(errorMessage)
         }
     }
 
     override fun onErrorLoginGoogle(email: String): (e: Throwable) -> Unit {
         return {
             val errorMessage = ErrorHandlerSession.getErrorMessage(context, it)
-            NetworkErrorHelper.showSnackbar(activity, errorMessage)
-            registerAnalytics.trackFailedClickRegisterGoogleButton(errorMessage)
+            onErrorRegister(errorMessage)
         }
     }
 

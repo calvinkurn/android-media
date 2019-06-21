@@ -534,8 +534,6 @@ class LoginRegisterAnalytics @Inject constructor() {
 
         trackLoginPhoneNumberSuccess()
 
-        registerAnalytics.trackSuccessClickYesButtonRegisteredPhoneDialog()
-
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
@@ -580,8 +578,6 @@ class LoginRegisterAnalytics @Inject constructor() {
                 ACTION_LOGIN_SUCCESS,
                 LABEL_EMAIL
         ))
-
-        registerAnalytics.trackSuccessClickYesButtonRegisteredEmailDialog()
 
     }
 
