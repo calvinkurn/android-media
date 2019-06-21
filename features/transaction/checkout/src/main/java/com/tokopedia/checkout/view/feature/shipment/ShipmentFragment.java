@@ -2015,17 +2015,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         dataCheckoutRequests,
                         EnhancedECommerceActionField.STEP_3,
                         ConstantTransactionAnalytics.EventAction.CLICK_CHECKLIST_PILIH_DURASI_PENGIRIMAN,
-                        isApplyPromoLogistic(shipmentCartItemModel) ? ConstantTransactionAnalytics.EventLabel.PROMO :
+                        !TextUtils.isEmpty(recommendedCourier.getPromoCode()) ? ConstantTransactionAnalytics.EventLabel.PROMO :
                                 ConstantTransactionAnalytics.EventLabel.NON_PROMO + " - " + recommendedCourier.getEstimatedTimeDelivery()
                 );
             }
         }
-    }
-
-    boolean isApplyPromoLogistic(ShipmentCartItemModel shipmentCartItemModel) {
-        return shipmentCartItemModel.getVoucherLogisticItemUiModel() != null || (
-                shipmentAdapter.getPromoGlobalStackData() != null && shipmentAdapter.getPromoGlobalStackData().getLogisticPotencyPromo()
-        );
     }
 
     private void checkCourierPromo(CourierItemData courierItemData, int itemPosition) {
@@ -2102,7 +2096,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     dataCheckoutRequests,
                     EnhancedECommerceActionField.STEP_3,
                     ConstantTransactionAnalytics.EventAction.CLICK_CHECKLIST_PILIH_DURASI_PENGIRIMAN,
-                    isApplyPromoLogistic(shipmentCartItemModel) ? ConstantTransactionAnalytics.EventLabel.PROMO :
+                    isPromoCourier ? ConstantTransactionAnalytics.EventLabel.PROMO :
                             ConstantTransactionAnalytics.EventLabel.NON_PROMO + " - " + courierItemData.getShipperProductId()
             );
         }
@@ -2524,7 +2518,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             promoStackingGlobalData.setAmount(promoData.getData().getCashbackWalletAmount());
             promoStackingGlobalData.setState(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(promoData.getData().getMessage().getState()));
             promoStackingGlobalData.setVariant(TickerPromoStackingCheckoutView.Variant.GLOBAL);
-            promoStackingGlobalData.setLogisticPotencyPromo(promoData.getData().getLogisticPotencyPromo());
         }
 
         // Update merchant voucher state

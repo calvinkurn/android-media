@@ -20,8 +20,7 @@ data class DataUiModel(
 		var couponDescription: String = "",
 		var benefit: BenefitSummaryInfoUiModel = BenefitSummaryInfoUiModel(),
 		var clashings: ClashingInfoDetailUiModel = ClashingInfoDetailUiModel(),
-		var voucherOrders: List<VoucherOrdersItemUiModel> = emptyList(),
-		var logisticPotencyPromo: Boolean = false // flag added for analytic purpose. Not exist on API response.
+		var voucherOrders: List<VoucherOrdersItemUiModel> = emptyList()
 ) : Parcelable {
 	constructor(parcel: Parcel) : this(
 			parcel.readByte() != 0.toByte(),
@@ -40,8 +39,7 @@ data class DataUiModel(
 			parcel.readString(),
 			parcel.readParcelable(BenefitSummaryInfoUiModel::class.java.classLoader),
 			parcel.readParcelable(ClashingInfoDetailUiModel::class.java.classLoader),
-			parcel.createTypedArrayList(VoucherOrdersItemUiModel),
-			parcel.readByte() != 0.toByte())
+			parcel.createTypedArrayList(VoucherOrdersItemUiModel))
 
 	override fun writeToParcel(parcel: Parcel, flags: Int) {
 		parcel.writeByte(if (globalSuccess) 1 else 0)
@@ -61,7 +59,6 @@ data class DataUiModel(
 		parcel.writeParcelable(benefit, flags)
 		parcel.writeParcelable(clashings, flags)
 		parcel.writeTypedList(voucherOrders)
-		parcel.writeByte(if (logisticPotencyPromo) 1 else 0)
 	}
 
 	override fun describeContents(): Int {

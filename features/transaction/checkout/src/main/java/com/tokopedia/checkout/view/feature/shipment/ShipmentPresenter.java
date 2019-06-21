@@ -1174,7 +1174,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                             String message = responseGetPromoStack.getData().getMessage().getText();
                                             getView().renderErrorCheckPromoShipmentData(message);
                                         } else {
-                                            responseGetPromoStack.getData().setLogisticPotencyPromo(true);
                                             getView().renderCheckPromoStackCodeFromCourierSuccess(responseGetPromoStack, itemPosition, noToast);
                                         }
                                     }

@@ -13,8 +13,7 @@ data class PromoStackingData(var typePromo: Int = 0,
                              var state: TickerPromoStackingCheckoutView.State = TickerPromoStackingCheckoutView.State.EMPTY,
                              var variant: TickerPromoStackingCheckoutView.Variant = TickerPromoStackingCheckoutView.Variant.GLOBAL,
                              var titleDefault: String = "",
-                             var counterLabelDefault: String = "",
-                             var logisticPotencyPromo: Boolean = false // flag added for analytic purpose. Not exist on API response.
+                             var counterLabelDefault: String = ""
 ) : Parcelable {
 
     fun getPromoCodeSafe(): String {
@@ -35,8 +34,7 @@ data class PromoStackingData(var typePromo: Int = 0,
             parcel.readParcelable(TickerPromoStackingCheckoutView.State::class.java.classLoader),
             parcel.readParcelable(TickerPromoStackingCheckoutView.Variant::class.java.classLoader),
             parcel.readString(),
-            parcel.readString(),
-            parcel.readByte() != 0.toByte())
+            parcel.readString())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(typePromo)
@@ -49,7 +47,6 @@ data class PromoStackingData(var typePromo: Int = 0,
         parcel.writeParcelable(variant, flags)
         parcel.writeString(titleDefault)
         parcel.writeString(counterLabelDefault)
-        parcel.writeByte(if (logisticPotencyPromo) 1 else 0)
     }
 
     override fun describeContents(): Int {
