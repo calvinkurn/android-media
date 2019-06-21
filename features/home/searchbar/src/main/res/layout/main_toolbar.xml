@@ -65,6 +65,8 @@
                 android:enabled="true"
                 android:textSize="@dimen/sp_16"
                 android:maxLines="1"
+                android:singleLine="true"
+                android:ellipsize="end"
                 android:textColorHint="@android:color/darker_gray"
                 android:background="@null"/>
 

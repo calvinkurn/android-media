@@ -903,6 +903,7 @@ public class MainParentActivity extends BaseActivity implements
                     }
 
                     shortcutManager.addDynamicShortcuts(shortcutInfos);
+
                 }
             } catch (SecurityException e) {
                 e.printStackTrace();
