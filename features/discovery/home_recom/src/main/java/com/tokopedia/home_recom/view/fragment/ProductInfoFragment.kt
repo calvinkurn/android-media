@@ -24,6 +24,13 @@ import com.tokopedia.home_recom.util.RecommendationPageErrorHandler
 import com.tokopedia.home_recom.viewmodel.PrimaryProductViewModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.interfaces.ShareCallback
+import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.linker.model.LinkerError
+import com.tokopedia.linker.model.LinkerShareData
+import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -148,7 +155,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.menu_product_detail_dark, menu)
+        inflater?.inflate(R.menu.recommendation_page_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
         this.menu = menu
     }
@@ -328,20 +335,20 @@ class ProductInfoFragment : BaseDaggerFragment() {
             }
 
             override fun onError(linkerError: LinkerError) {
-                openIntentShare(productDataModel.productDetailData.name, context!!.getString(R.string.home_recommendation), "https://tokopedia.com/rekomendasi/${productDataModel.productDetailData.id.toString()}")
+                openIntentShare(productDataModel.productDetailData.name, context!!.getString(R.string.home_recommendation), "https://tokopedia.com/rekomendasi/${productDataModel.productDetailData.id}")
             }
         }))
     }
 
     private fun productDataToLinkerDataMapper(): LinkerShareData{
         var linkerData = LinkerData()
-        linkerData.id = productDataModel.productDetailData.id
+        linkerData.id = productDataModel.productDetailData.id.toString()
         linkerData.name = productDataModel.productDetailData.name
         linkerData.description = productDataModel.productDetailData.name
         linkerData.imgUri = productDataModel.productDetailData.imageUrl
         linkerData.ogUrl = null
         linkerData.type = LinkerData.PRODUCT_TYPE
-        linkerData.uri =  productDataModel.productDetailData.url
+        linkerData.uri =  "https://tokopedia.com/rekomendasi/${productDataModel.productDetailData.id}"
         var linkerShareData = LinkerShareData()
         linkerShareData.linkerData = linkerData
         return linkerShareData
