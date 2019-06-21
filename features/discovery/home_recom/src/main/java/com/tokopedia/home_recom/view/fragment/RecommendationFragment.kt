@@ -264,7 +264,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
 
         val shareIntent = Intent().apply {
             action = Intent.ACTION_SEND
-            type = "text/plain"
+            type = "image/*"
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             putExtra(Intent.EXTRA_REFERRER, shareUri)
             putExtra(Intent.EXTRA_HTML_TEXT, shareContent)

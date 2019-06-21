@@ -32,7 +32,6 @@ class RecommendationCardView : ProductCardView {
         setWishlistButtonVisible(false)
 //        setWishlistButtonVisible(TextUtils.isEmpty(item.wishlistUrl))
         setRatingReviewCount(item.rating, item.countReview)
-        (ratingView.parent as View).setPadding(ratingView.paddingLeft, ratingView.paddingTop, ratingView.paddingRight, resources.getDimension(R.dimen.dp_10).toInt())
         imageView.addOnImpressionListener(item,
                 object: ViewHintListener {
                     override fun onViewHint() {
