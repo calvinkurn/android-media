@@ -123,4 +123,11 @@
         <item>Malang</item>
         <item>Bogor</item>
     </string-array>
+
+    <string-array name="labelAlamatList">
+        <item>Rumah</item>
+        <item>Kantor</item>
+        <item>Apartemen</item>
+        <item>Kos</item>
+    </string-array>
 </resources>

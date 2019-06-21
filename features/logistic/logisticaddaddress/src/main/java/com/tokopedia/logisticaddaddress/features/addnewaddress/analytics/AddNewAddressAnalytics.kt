@@ -131,6 +131,10 @@ object AddNewAddressAnalytics {
         sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_POSITIVE, CLICK_FIELD_LABEL_ALAMAT)
     }
 
+    fun eventClickChipsLabelAlamatChangeAddressPositive() {
+        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_POSITIVE, CLICK_CHIPS_LABEL_ALAMAT)
+    }
+
     fun eventClickFieldNamaPenerimaChangeAddressPositive() {
         sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_POSITIVE, CLICK_FIELD_NAMA_PENERIMA)
     }

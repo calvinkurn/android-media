@@ -517,13 +517,29 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         if (getActivity() != null) {
             if (originDirectionType == ORIGIN_DIRECTION_TYPE_FROM_MULTIPLE_ADDRESS_FORM) {
                 checkoutAnalyticsMultipleAddress.eventClickAddressCartMultipleAddressClickPlusFromMultiple();
-                startActivityForResult(
+                /*startActivityForResult(
                         AddAddressActivity.createInstanceAddAddressFromCheckoutMultipleAddressForm(
                                 getActivity(), token
-                        ), LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);
+                        ), LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);*/
+
+                Intent intent = new Intent(getActivity(), PinpointMapActivity.class);
+                intent.putExtra(AddressConstants.KERO_TOKEN, token);
+                intent.putExtra(AddressConstants.EXTRA_LAT, AddressConstants.MONAS_LAT);
+                intent.putExtra(AddressConstants.EXTRA_LONG, AddressConstants.MONAS_LONG);
+                intent.putExtra(AddressConstants.EXTRA_SHOW_AUTOCOMPLETE, true);
+                intent.putExtra(AddressConstants.EXTRA_IS_POLYGON, false);
+                intent.putExtra(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, false);
+                startActivityForResult(intent, ADD_NEW_ADDRESS_CREATED);
+
             } else {
                 checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickTambahAlamatBaruFromGantiAlamat();
                 checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickTambahFromAlamatPengiriman();
+
+                /*startActivityForResult(
+                        AddAddressActivity.createInstanceAddAddressFromCheckoutSingleAddressForm(
+                                getActivity(), token
+                        ), LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE
+                );*/
 
                 Intent intent = new Intent(getActivity(), PinpointMapActivity.class);
                 intent.putExtra(AddressConstants.KERO_TOKEN, token);

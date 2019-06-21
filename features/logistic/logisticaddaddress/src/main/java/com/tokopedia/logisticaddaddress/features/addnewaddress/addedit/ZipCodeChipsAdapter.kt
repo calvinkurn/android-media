@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.logisticaddaddress.R
-import kotlinx.android.synthetic.main.popular_city_chips_item.view.*
+import kotlinx.android.synthetic.main.chips_item.view.*
 import android.support.v4.content.ContextCompat
 
 
@@ -23,7 +23,7 @@ class ZipCodeChipsAdapter(context: Context?, private var actionListener: ActionL
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.popular_city_chips_item, parent, false))
+        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.chips_item, parent, false))
     }
 
     override fun getItemCount(): Int {
@@ -33,11 +33,11 @@ class ZipCodeChipsAdapter(context: Context?, private var actionListener: ActionL
     @Suppress("DEPRECATION")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val res = holder.itemView.context.resources
-        holder.itemView.tv_city_chips_item.apply {
+        holder.itemView.tv_chips_item.apply {
             text = zipCodes[position]
             setOnClickListener {
-                holder.itemView.tv_city_chips_item.background = drawablePressed
-                holder.itemView.tv_city_chips_item.setTextColor(res.getColor(R.color.tkpd_green))
+                holder.itemView.tv_chips_item.background = drawablePressed
+                holder.itemView.tv_chips_item.setTextColor(res.getColor(R.color.tkpd_green))
                 actionListener.onZipCodeClicked(zipCodes[position])
             }
         }

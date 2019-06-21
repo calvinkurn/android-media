@@ -32,7 +32,7 @@
                 android:layout_marginStart="19dp"
                 android:layout_width="18dp"
                 android:layout_height="18dp"
-                android:src="@drawable/ic_search_btn"
+                android:src="@drawable/ic_search"
                 android:tint="@color/ic_grey_color"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"

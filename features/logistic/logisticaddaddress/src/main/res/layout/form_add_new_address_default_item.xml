@@ -33,6 +33,13 @@
 
     </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_label_alamat_chips"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"
+        android:visibility="gone"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

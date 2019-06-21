@@ -3,6 +3,7 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress.addedit
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.content.res.Resources
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
@@ -39,6 +40,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.auto
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.district_recommendation.DistrictRecommendationBottomSheetFragment
+import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.district_recommendation.PopularCityRecommendationBottomSheetAdapter
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapListener
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapPresenter
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapUtils
@@ -68,7 +70,8 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
                               DistrictRecommendationBottomSheetFragment.ActionListener,
                               AutocompleteBottomSheetListener,
                               PinpointMapListener,
-                              ZipCodeChipsAdapter.ActionListener, IOnBackPressed{
+                              ZipCodeChipsAdapter.ActionListener, IOnBackPressed,
+                              LabelAlamatChipsAdapter.ActionListener{
 
     private var googleMap: GoogleMap? = null
     private var saveAddressDataModel: SaveAddressDataModel? = null
@@ -83,7 +86,9 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
     private val EXTRA_DETAIL_ADDRESS_LATEST = "EXTRA_DETAIL_ADDRESS_LATEST"
     private lateinit var zipCodeChipsAdapter: ZipCodeChipsAdapter
     private lateinit var chipsLayoutManager: ChipsLayoutManager
+    private lateinit var labelAlamatLayoutManager: ChipsLayoutManager
     private var staticDimen8dp: Int? = 0
+    private lateinit var labelAlamatChipsAdapter: LabelAlamatChipsAdapter
 
     @Inject
     lateinit var presenter: AddEditAddressPresenter
@@ -131,7 +136,7 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         prepareMap(savedInstanceState)
-        prepareLayout(savedInstanceState)
+        prepareLayout(savedInstanceState, view)
         setViewListener()
     }
 
@@ -141,13 +146,18 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
         map_view_detail.getMapAsync(this)
     }
 
-    private fun prepareLayout(savedInstanceState: Bundle?) {
+    private fun prepareLayout(savedInstanceState: Bundle?, view: View) {
         zipCodeChipsAdapter = ZipCodeChipsAdapter(context, this)
-        chipsLayoutManager = ChipsLayoutManager.newBuilder(view?.context)
+        labelAlamatChipsAdapter = LabelAlamatChipsAdapter(context, this)
+        chipsLayoutManager = ChipsLayoutManager.newBuilder(view.context)
                 .setOrientation(ChipsLayoutManager.HORIZONTAL)
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                 .build()
-        staticDimen8dp = view?.context?.resources?.getDimensionPixelOffset(R.dimen.dp_8)
+        labelAlamatLayoutManager = ChipsLayoutManager.newBuilder(view.context)
+                .setOrientation(ChipsLayoutManager.HORIZONTAL)
+                .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
+                .build()
+        staticDimen8dp = context?.resources?.getDimensionPixelOffset(R.dimen.dp_8)
 
         arrangeLayout(isMismatch, isMismatchSolved, savedInstanceState)
 
@@ -187,6 +197,7 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
                 setOnClickListener { AddNewAddressAnalytics.eventClickFieldDetailAlamatChangeAddressPositive() }
             }
             et_label_address.setOnClickListener {
+                // setOnClickLabelAlamat()
                 AddNewAddressAnalytics.eventClickFieldLabelAlamatChangeAddressPositive()
             }
             et_receiver_name.setOnClickListener {
@@ -230,6 +241,7 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
             }
 
             et_label_address.setOnClickListener {
+                // setOnClickLabelAlamat()
                 AddNewAddressAnalytics.eventClickFieldLabelAlamatChangeAddressNegative()
             }
 
@@ -423,6 +435,7 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
                 setMismatchSolvedForm()
             }
             setupRvKodePosChips()
+            // setupRvLabelAlamatChips()
 
             /*if (et_kode_pos_mismatch.text.isEmpty()) {
                 et_kode_pos_mismatch.setOnClickListener {
@@ -436,6 +449,12 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
         et_kode_pos_mismatch.setOnClickListener {
             showZipCodes()
             AddNewAddressAnalytics.eventClickFieldKodePosChangeAddressNegative()
+        }
+    }
+
+    private fun setOnClickLabelAlamat() {
+        et_label_address.setOnClickListener {
+            showLabelAlamatList()
         }
     }
 
@@ -470,6 +489,14 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
             override fun afterTextChanged(s: Editable) {
             }
         })
+    }
+
+    private fun setupRvLabelAlamatChips() {
+        rv_label_alamat_chips.apply {
+            addItemDecoration(staticDimen8dp?.let { ChipsItemDecoration(it) })
+            layoutManager = labelAlamatLayoutManager
+            adapter = labelAlamatChipsAdapter
+        }
     }
 
     private fun setNormalMapHeader() {
@@ -555,6 +582,20 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
         zipCodeChipsAdapter.zipCodes = saveAddressDataModel?.zipCodes!!.toMutableList()
 
         rv_kodepos_chips_mismatch.visibility = View.VISIBLE
+    }
+
+    private fun showLabelAlamatList() {
+        val res: Resources = resources
+        val labelAlamatList = res.getStringArray(R.array.labelAlamatList)
+
+        ViewCompat.setLayoutDirection(rv_label_alamat_chips, ViewCompat.LAYOUT_DIRECTION_LTR)
+        labelAlamatChipsAdapter.labelAlamatList = labelAlamatList.toMutableList()
+
+        rv_label_alamat_chips.apply {
+            layoutManager = chipsLayoutManager
+            adapter = labelAlamatChipsAdapter
+            visibility = View.VISIBLE
+        }
     }
 
     private fun setSaveAddressModel() {
@@ -756,5 +797,15 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
             })
         }
         return false
+    }
+
+    override fun onLabelAlamatChipClicked(labelAlamat: String) {
+        rv_label_alamat_chips.visibility = View.GONE
+        et_label_address.setText(labelAlamat)
+        if (!isMismatch && !isMismatchSolved) {
+            AddNewAddressAnalytics.eventClickChipsLabelAlamatChangeAddressPositive()
+        } else {
+            AddNewAddressAnalytics.eventClickChipsLabelAlamatChangeAddressNegative()
+        }
     }
 }
