@@ -11,12 +11,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.events.R;
-import com.tokopedia.events.R2;
-import com.tokopedia.events.di.EventComponent;
 import com.tokopedia.events.view.adapter.TopEventsSuggestionsAdapter;
 import com.tokopedia.events.view.contractor.EventSearchContract;
 import com.tokopedia.events.view.customview.SearchInputView;
@@ -28,9 +27,7 @@ import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 
 import java.util.List;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -38,30 +35,21 @@ import butterknife.Unbinder;
  */
 
 public class EventSearchActivity extends EventBaseActivity implements
-        EventSearchContract.EventSearchView, SearchInputView.Listener {
+        EventSearchContract.EventSearchView, SearchInputView.Listener, View.OnClickListener {
 
     public EventSearchPresenter eventSearchPresenter;
 
-    @BindView(R2.id.main_content)
     FrameLayout mainContent;
 
-    @BindView(R2.id.progress_bar_layout)
     View progressBarLayout;
-    @BindView(R2.id.prog_bar)
     ProgressBar progBar;
-    @BindView(R2.id.search_input_view)
     SearchInputView searchInputView;
-    @BindView(R2.id.no_search_results)
     View noResults;
-
-    @BindView(R2.id.rv_search_results)
     RecyclerView rvSearchResults;
-    @BindView(R2.id.rv_top_events_suggestions)
     RecyclerView rvTopEventSuggestions;
-    @BindView(R2.id.tv_topevents)
     TextView tvTopevents;
-    @BindView(R2.id.btn_filter)
     View filterBtn;
+    ImageView ivFinish;
 
     LinearLayoutManager layoutManager;
 
@@ -92,7 +80,23 @@ public class EventSearchActivity extends EventBaseActivity implements
         searchInputView.setListener(this);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         eventsAnalytics = new EventsAnalytics();
+    }
 
+    @Override
+    void setupVariables() {
+        mainContent = findViewById(R.id.main_content);
+        progressBarLayout = findViewById(R.id.progress_bar_layout);
+        progBar = findViewById(R.id.prog_bar);
+        searchInputView = findViewById(R.id.search_input_view);
+        noResults = findViewById(R.id.no_search_results);
+        rvSearchResults = findViewById(R.id.rv_search_results);
+        rvTopEventSuggestions = findViewById(R.id.rv_top_events_suggestions);
+        tvTopevents = findViewById(R.id.tv_topevents);
+        filterBtn = findViewById(R.id.btn_filter);
+        ivFinish = findViewById(R.id.iv_finish);
+
+        ivFinish.setOnClickListener(this);
+        filterBtn.setOnClickListener(this);
     }
 
     public static Intent getCallingIntent(Activity activity) {
@@ -232,22 +236,12 @@ public class EventSearchActivity extends EventBaseActivity implements
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        eventsAnalytics.eventDigitalEventTracking( EventsGAConst.EVENT_CLICK_BACK, getScreenName());
+        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
     }
 
     @Override
     public String getScreenName() {
         return eventSearchPresenter.getSCREEN_NAME();
-    }
-
-    @OnClick(R2.id.iv_finish)
-    void clickFinish() {
-        finish();
-    }
-
-    @OnClick(R2.id.btn_filter)
-    void onClickFilter() {
-        eventSearchPresenter.openFilters();
     }
 
     @Override
@@ -259,5 +253,14 @@ public class EventSearchActivity extends EventBaseActivity implements
     @Override
     protected Fragment getNewFragment() {
         return null;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.iv_finish) {
+            finish();
+        } else if (v.getId() == R.id.btn_filter) {
+            eventSearchPresenter.openFilters();
+        }
     }
 }

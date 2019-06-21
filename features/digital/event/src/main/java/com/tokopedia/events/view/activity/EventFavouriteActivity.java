@@ -9,9 +9,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
+
 import com.tokopedia.events.R;
-import com.tokopedia.events.R2;
-import com.tokopedia.events.di.EventComponent;
 import com.tokopedia.events.view.adapter.EventCategoryAdapterRevamp;
 import com.tokopedia.events.view.contractor.EventFavouriteContract;
 import com.tokopedia.events.view.presenter.EventFavouritePresenter;
@@ -21,27 +20,19 @@ import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.OnClick;
-
 /**
  * Created by pranaymohapatra on 16/05/18.
  */
 
-public class EventFavouriteActivity extends EventBaseActivity implements EventFavouriteContract.EventFavouriteView {
+public class EventFavouriteActivity extends EventBaseActivity implements EventFavouriteContract.EventFavouriteView, View.OnClickListener {
 
     public EventFavouritePresenter eventFavouritePresenter;
     private EventsAnalytics eventsAnalytics;
 
-    @BindView(R2.id.rv_fav_view)
     RecyclerView favRecyclerView;
-    @BindView(R2.id.iv_no_fav)
     View ivNoFav;
-    @BindView(R2.id.tv_no_fav)
     View tvNoFav;
-    @BindView(R2.id.tv_find_events)
     View tvFindEvents;
-    @BindView(R2.id.tv_favorite_saya)
     View title;
 
     @Override
@@ -61,6 +52,16 @@ public class EventFavouriteActivity extends EventBaseActivity implements EventFa
         super.onCreate(savedInstanceState);
         eventsAnalytics = new EventsAnalytics();
         setLightToolbarStyle();
+    }
+
+    @Override
+    void setupVariables() {
+        favRecyclerView = findViewById(R.id.rv_fav_view);
+        ivNoFav = findViewById(R.id.iv_no_fav);
+        tvNoFav = findViewById(R.id.tv_no_fav);
+        tvFindEvents = findViewById(R.id.tv_find_events);
+        title = findViewById(R.id.tv_favorite_saya);
+        tvFindEvents.setOnClickListener(this);
     }
 
 
@@ -122,11 +123,6 @@ public class EventFavouriteActivity extends EventBaseActivity implements EventFa
         }
     }
 
-    @OnClick(R2.id.tv_find_events)
-    void goToHome() {
-        finish();
-    }
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -147,5 +143,12 @@ public class EventFavouriteActivity extends EventBaseActivity implements EventFa
     public boolean onOptionsItemSelected(MenuItem item) {
         eventFavouritePresenter.onClickOptionMenu(item.getItemId());
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.tv_find_events) {
+            finish();
+        }
     }
 }

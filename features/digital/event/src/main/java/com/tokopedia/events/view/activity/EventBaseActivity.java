@@ -35,9 +35,12 @@ public abstract class EventBaseActivity extends BaseSimpleActivity implements Ev
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initPresenter();
+        setupVariables();
         bindViews();
         mPresenter.attachView(this);
     }
+
+    abstract void setupVariables();
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
