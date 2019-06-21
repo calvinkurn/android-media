@@ -254,7 +254,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
         linkerData.imgUri = productDetailData.imageUrl
         linkerData.ogUrl = null
         linkerData.type = LinkerData.PRODUCT_TYPE
-        linkerData.uri =  "https://tokopedia.com/rekomendasi/${productDetailData.id}"
+        linkerData.uri =  "https://m.tokopedia.com/rekomendasi/${productDetailData.id}"
         val linkerShareData = LinkerShareData()
         linkerShareData.linkerData = linkerData
         return linkerShareData
