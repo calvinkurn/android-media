@@ -5,21 +5,19 @@ import android.content.Context;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.topads.auto.data.AutoAdsUseCase;
 import com.tokopedia.topads.auto.data.entity.TopAdsAutoAdsData;
-import com.tokopedia.topads.auto.internal.TopAdsWidgetStatus;
+import com.tokopedia.topads.auto.internal.AutoAdsStatus;
 import com.tokopedia.topads.dashboard.data.model.data.ProductAd;
 import com.tokopedia.topads.dashboard.data.model.request.SearchAdRequest;
 import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
 import com.tokopedia.topads.dashboard.domain.interactor.ListenerInteractor;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsProductAdInteractor;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailListener;
-import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailViewListener;
 import com.tokopedia.topads.dashboard.view.model.Ad;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.Date;
 import java.util.List;
 
-import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 
@@ -97,10 +95,10 @@ public class TopAdsDetailProductPresenterImpl<T extends Ad> extends TopAdsDetail
     }
 
     private boolean autoAdsIsActive(TopAdsAutoAdsData topAdsAutoAdsData) {
-        return topAdsAutoAdsData.getStatus() == TopAdsWidgetStatus.STATUS_ACTIVE
-                || topAdsAutoAdsData.getStatus() == TopAdsWidgetStatus.STATUS_IN_PROGRESS_ACTIVE
-                || topAdsAutoAdsData.getStatus() == TopAdsWidgetStatus.STATUS_IN_PROGRESS_AUTOMANAGE
-                || topAdsAutoAdsData.getStatus() == TopAdsWidgetStatus.STATUS_IN_PROGRESS_INACTIVE
-                || topAdsAutoAdsData.getStatus() == TopAdsWidgetStatus.STATUS_NOT_DELIVERED;
+        return topAdsAutoAdsData.getStatus() == AutoAdsStatus.STATUS_ACTIVE
+                || topAdsAutoAdsData.getStatus() == AutoAdsStatus.STATUS_IN_PROGRESS_ACTIVE
+                || topAdsAutoAdsData.getStatus() == AutoAdsStatus.STATUS_IN_PROGRESS_AUTOMANAGE
+                || topAdsAutoAdsData.getStatus() == AutoAdsStatus.STATUS_IN_PROGRESS_INACTIVE
+                || topAdsAutoAdsData.getStatus() == AutoAdsStatus.STATUS_NOT_DELIVERED;
     }
 }

@@ -1,22 +1,17 @@
 package com.tokopedia.topads.auto.view.fragment
 
-import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
-import android.widget.Toast
 
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.router.TopAdsAutoRouter
-import com.tokopedia.topads.auto.view.activity.AutoAdsActivatedActivity
 import com.tokopedia.topads.auto.view.activity.ConfirmationDialogActivity
-import com.tokopedia.topads.auto.view.activity.InsufficientBalanceActivity
 import com.tokopedia.topads.auto.view.widget.InfoAutoAdsSheet
 import com.tokopedia.topads.auto.view.widget.ManualAdsConfirmationSheet
 import com.tokopedia.topads.common.constant.TopAdsReasonOption

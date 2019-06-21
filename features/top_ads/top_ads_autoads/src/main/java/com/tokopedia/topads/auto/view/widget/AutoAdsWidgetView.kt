@@ -9,7 +9,6 @@ import android.support.v4.app.FragmentActivity
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.CardView
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ProgressBar
@@ -19,7 +18,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.di.AutoAdsComponent
-import com.tokopedia.topads.auto.internal.TopAdsWidgetStatus
+import com.tokopedia.topads.auto.internal.AutoAdsStatus
 import com.tokopedia.topads.auto.view.activity.SettingBudgetAdsActivity
 import com.tokopedia.topads.auto.di.DaggerAutoAdsComponent
 import com.tokopedia.topads.auto.view.activity.DailyBudgetActivity
@@ -103,12 +102,12 @@ class AutoAdsWidgetView : CardView {
 
     fun setStatusAds(status: Int, budget: Int) {
         when (status) {
-            TopAdsWidgetStatus.STATUS_ACTIVE -> setActive(status, budget)
-            TopAdsWidgetStatus.STATUS_INACTIVE -> setInActive(status, budget)
-            TopAdsWidgetStatus.STATUS_IN_PROGRESS_ACTIVE -> setInProgress()
-            TopAdsWidgetStatus.STATUS_IN_PROGRESS_AUTOMANAGE -> setInProgress()
-            TopAdsWidgetStatus.STATUS_IN_PROGRESS_INACTIVE -> setInProgress()
-            TopAdsWidgetStatus.STATUS_NOT_DELIVERED -> setNotDelivered(status, budget)
+            AutoAdsStatus.STATUS_ACTIVE -> setActive(status, budget)
+            AutoAdsStatus.STATUS_INACTIVE -> setInActive(status, budget)
+            AutoAdsStatus.STATUS_IN_PROGRESS_ACTIVE -> setInProgress()
+            AutoAdsStatus.STATUS_IN_PROGRESS_AUTOMANAGE -> setInProgress()
+            AutoAdsStatus.STATUS_IN_PROGRESS_INACTIVE -> setInProgress()
+            AutoAdsStatus.STATUS_NOT_DELIVERED -> setNotDelivered(status, budget)
             else -> setInActive(status, budget)
         }
     }

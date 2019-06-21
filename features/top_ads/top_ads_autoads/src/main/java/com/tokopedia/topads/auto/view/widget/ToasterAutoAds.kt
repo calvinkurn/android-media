@@ -29,7 +29,7 @@ class ToasterAutoAds : BaseToaster() {
             if (activity == null) {
                 return
             }
-            ToasterNormal.make(activity.findViewById(android.R.id.content),
+            ToasterAutoAds.make(activity.findViewById(android.R.id.content),
                     snackbarText, BaseToaster.LENGTH_LONG)
                     .setAction(activity.getString(com.tokopedia.design.R.string.close)) { v ->
                         // no-op

@@ -1,6 +1,5 @@
 package com.tokopedia.topads.auto.view.fragment
 
-import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.os.Bundle
@@ -10,11 +9,10 @@ import android.widget.ImageView
 import android.widget.Switch
 
 import com.tokopedia.topads.auto.R
+import com.tokopedia.topads.auto.internal.AutoAdsStatus
 import com.tokopedia.topads.auto.view.activity.ConfirmationDialogActivity
-import com.tokopedia.topads.auto.view.activity.DailyBudgetActivity
 import com.tokopedia.topads.auto.view.widget.SettingAutoAdsConfirmationSheet
 import com.tokopedia.topads.auto.view.widget.SettingAutoAdsInfoSheet
-import com.tokopedia.topads.common.constant.TopAdsReasonOption
 
 /**
  * Author errysuprayogi on 09,May,2019
@@ -60,11 +58,9 @@ class SettingBudgetAdsFragment : DailyBudgetFragment() {
                 settingConfirmationSheet.show()
             }
             budgetViewModel.autoAdsData.observe(this, Observer {
-                when(it!!.adsInfo.reason){
-                    TopAdsReasonOption.INSUFFICIENT_CREDIT -> insufficientCredit(it!!.adsInfo.message)
-                    TopAdsReasonOption.ELIGIBLE -> eligible()
-                    TopAdsReasonOption.NOT_ELIGIBLE -> notEligible()
-                    else -> activity!!.finish()
+                when(it!!.status){
+                    AutoAdsStatus.STATUS_IN_PROGRESS_ACTIVE -> inProgressActive(it!!.adsInfo)
+                    AutoAdsStatus.STATUS_IN_PROGRESS_INACTIVE -> inProgressInactive()
                 }
             })
         }
