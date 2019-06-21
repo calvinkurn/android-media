@@ -12,7 +12,6 @@ public interface ApplinkConst {
     String HOME_FEED = "tokopedia://home/feed";
     String HOME_ACCOUNT = "tokopedia://home/account";
     String HOME_RECOMMENDATION = "tokopedia://home/recommendation";
-    String HOME_RECOMMENDATION_PAGE = "tokopedia://home-recommendation";
     String FEED = "tokopedia://feed";
     String FEED_DETAILS = "tokopedia://feedcommunicationdetail/{extra_detail_id}";
     String HOME_CATEGORY = "tokopedia://home/category";
@@ -33,6 +32,7 @@ public interface ApplinkConst {
     String PRODUCT_INFO = "tokopedia://product/{product_id}";
     String PRODUCT_IMAGE_REVIEW = "tokopedia://product/{product_id}/imagereview";
     String PRODUCT_ADD = "tokopedia://product/add";
+    String RECOMMENDATION_PAGE = "tokopedia://rekomendasi/{product_id}";
     String CREDIT_CARD_AUTH_SETTING = "tokopedia://payment/credit-card";
     String ADD_CREDIT_CARD = "tokopedia://payment/credit-card/add";
     String CART = "tokopedia://cart";
