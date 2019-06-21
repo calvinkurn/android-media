@@ -214,7 +214,7 @@
                                 android:layout_height="@dimen/dp_20"
                                 android:layout_marginEnd="@dimen/dp_4"
                                 android:layout_marginRight="@dimen/dp_4"
-                                app:srcCompat="@drawable/status_no_result" />
+                                android:src="@drawable/ic_booking_logo" />
 
                             <com.tokopedia.design.component.TextViewCompat
                                 android:id="@+id/tv_hotel_rating_number"
