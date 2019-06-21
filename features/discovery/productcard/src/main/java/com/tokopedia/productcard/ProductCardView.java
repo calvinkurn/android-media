@@ -228,7 +228,7 @@ public class ProductCardView extends BaseCustomView {
                     bottomPixel < 0 ? layoutParams.bottomMargin : bottomPixel
             );
 
-            view.requestLayout();
+            view.setLayoutParams(layoutParams);
         }
     }
 }
