@@ -44,11 +44,11 @@ data class Filter(
     data class FilterPrice(
             @SerializedName("minPrice")
             @Expose
-            val minPrice: Float = 0f,
+            val minPrice: Int = 0,
 
             @SerializedName("maxPrice")
             @Expose
-            val maxPrice: Float = 0f
+            val maxPrice: Int = 0
     )
 
     data class FilterAccomodation(

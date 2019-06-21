@@ -76,8 +76,8 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
             starAdapter.clearSelection()
             propertyTypeAdapter.clearSelection()
             switch_pay_at_hotel.isChecked = false
-            price_range_input_view.setData(filter.price.minPrice.toInt(), filter.price.maxPrice.toInt(),
-                    filter.price.minPrice.toInt(), filter.price.maxPrice.toInt())
+            price_range_input_view.setData(filter.price.minPrice, filter.price.maxPrice,
+                    filter.price.minPrice, filter.price.maxPrice)
             rating_seekbar.progress = rating_seekbar.max
         }
     }
@@ -111,12 +111,12 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
         price_range_input_view.setPower(1.0)
 
         val filteredMinPrice = if (selectedFilter.minPrice < price.minPrice) price.minPrice else selectedFilter.minPrice
-        val filteredMaxPrice = if (selectedFilter.maxPrice == 0f || selectedFilter.maxPrice > price.maxPrice) price.maxPrice else selectedFilter.maxPrice
+        val filteredMaxPrice = if (selectedFilter.maxPrice == 0 || selectedFilter.maxPrice > price.maxPrice) price.maxPrice else selectedFilter.maxPrice
 
-        price_range_input_view.setData(price.minPrice.toInt(), price.maxPrice.toInt(), filteredMinPrice.toInt(), filteredMaxPrice.toInt())
+        price_range_input_view.setData(price.minPrice, price.maxPrice, filteredMinPrice, filteredMaxPrice)
         price_range_input_view.setOnValueChangedListener { minValue, maxValue, minBound, maxBound ->
-            selectedFilter.minPrice = minValue.toFloat()
-            selectedFilter.maxPrice = maxValue.toFloat()
+            selectedFilter.minPrice = minValue
+            selectedFilter.maxPrice = maxValue
         }
     }
 

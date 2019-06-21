@@ -6,11 +6,11 @@ import com.google.gson.annotations.SerializedName
 data class ParamFilter(
         @SerializedName("maxPrice")
         @Expose
-        var maxPrice: Float = 0f,
+        var maxPrice: Int = 0,
 
         @SerializedName("minPrice")
         @Expose
-        var minPrice: Float = 0f,
+        var minPrice: Int = 0,
 
         @SerializedName("star")
         @Expose
