@@ -5,6 +5,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.TopAdsViewHolder;
@@ -45,7 +46,8 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
 
             outRect.top = isTopProductItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : spacing / 2;
             outRect.left = isFirstInRow(relativePos, totalSpanCount) ? spacing : spacing / 2;
-            if (parent.getLayoutManager() instanceof GridLayoutManager) {
+            if (parent.getLayoutManager() instanceof GridLayoutManager
+                || parent.getLayoutManager() instanceof StaggeredGridLayoutManager) {
                 outRect.right = isLastInRow(relativePos, totalSpanCount) ? spacing : spacing / 2;
             } else {
                 outRect.right = 0;
@@ -74,6 +76,8 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
         final RecyclerView.LayoutManager layoutManager = parent.getLayoutManager();
         return layoutManager instanceof GridLayoutManager
                 ? ((GridLayoutManager) layoutManager).getSpanCount()
+                : layoutManager instanceof StaggeredGridLayoutManager
+                ? ((StaggeredGridLayoutManager) layoutManager).getSpanCount()
                 : 1;
     }
 
