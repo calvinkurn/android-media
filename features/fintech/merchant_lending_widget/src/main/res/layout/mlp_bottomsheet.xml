@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_width="320dp"
+    android:layout_height="205dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -24,8 +24,8 @@
         android:textSize="18sp"
         android:textColor="#f531353b"
         android:lineSpacingExtra="6sp"
-        android:layout_marginLeft="4dp"
-        tools:text="Menunggu Proses Verifikasi"
+        android:layout_marginLeft="12dp"
+        android:text="Menunggu Proses Verifikasi"
         app:layout_constraintStart_toEndOf="@id/iv_cancel"
         app:layout_constraintTop_toTopOf="@id/iv_cancel"
         app:layout_constraintBottom_toBottomOf="@id/iv_cancel"
@@ -40,7 +40,7 @@
         app:layout_constraintTop_toBottomOf="@id/iv_cancel"
         app:layout_constraintStart_toStartOf="@id/iv_cancel"
         android:layout_marginTop="21dp"
-        tools:text="Pengajuan sedang kami proses. Lama proses verifikasi maksimum 1x24 jam sejak dokumen dikirim"
+        android:text="Pengajuan sedang kami proses. Lama proses verifikasi maksimum 1x24 jam sejak dokumen dikirim"
         />
 
         <Button
@@ -48,7 +48,7 @@
             android:layout_marginTop="@dimen/dp_24"
             android:layout_width="288dp"
             android:layout_height="40dp"
-            tools:text="Saya Yakin"
+            android:text="Saya Yakin"
             android:layout_weight="1"
             android:padding="@dimen/dp_11"
             app:layout_constraintEnd_toEndOf="parent"
@@ -57,7 +57,7 @@
             android:background="@drawable/bg_button_green"
             android:layout_marginRight="@dimen/dp_16"
             android:textColor="@color/white"
-
+            android:layout_marginBottom="28dp"
             />
 
 

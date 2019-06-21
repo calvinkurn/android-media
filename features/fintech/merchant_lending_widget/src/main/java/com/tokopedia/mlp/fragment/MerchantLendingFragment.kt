@@ -67,9 +67,6 @@ class MerchantLendingFragment : BaseDaggerFragment() {
         val boxAdapter = MLPWidgetAdapter(widgetList, this.context!!)
         widget_container.layoutManager = linearLayoutmanager
         widget_container.adapter = boxAdapter
-        val dividerItemDecoration = DividerItemDecoration(widget_container.getContext(),
-                linearLayoutmanager.getOrientation())
-        widget_container.addItemDecoration(dividerItemDecoration)
     }
 
     fun initViewModel() {

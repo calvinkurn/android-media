@@ -14,7 +14,10 @@ import android.widget.*
 import com.example.merchant_lending_widget.R
 import com.tokopedia.abstraction.common.utils.HexValidator
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.mlp.contractModel.*
 import kotlinx.android.synthetic.main.fragment_merchant_lending.view.*
@@ -49,7 +52,7 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
             widgetsItem.header?.let {
                 itemView.text_title.setTextAndCheckShow(it.title)
 
-                if(it.logo!=null) {
+                if (it.logo != null) {
                     itemView.header_logo.visibility = View.VISIBLE
                     ImageHandler.loadImage(context, itemView.header_logo, it.logo, R.color.grey_100)
                 }
@@ -59,11 +62,11 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
                     itemView.text_badge.background.setColorFilter(Color.parseColor(it.tag?.color), PorterDuff.Mode.SRC_ATOP)
                 }
 
-                if (it.sideToggle != null && it.sideText != null) {
+                if (it.sideToggle?.showToggle!! && it.sideText?.text?.length!! > 0) {
                     renderSideTextHeader(it, position)
-                } else if (it.sideToggle != null && it.sideText == null) {
-                    renderSideToggleHeader(it)
-                } else if (it.sideText != null && it.sideToggle == null)
+                } else if (it.sideToggle.showToggle && it.sideText?.text?.isEmpty()!!) {
+                    renderSideToggleHeader(it, position)
+                } else if (it.sideText?.text?.isNotEmpty()!! && it.sideToggle.showToggle == false)
                     renderSideTextHeader(it, position)
 
             }
@@ -72,6 +75,8 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
                 renderBodyInfo(it.info)
                 renderBodyBox(it.boxes)
                 redirectUrl(it.urlbody, position)
+
+
             }
 
             /*    widgetsItem.body?.let {
@@ -83,47 +88,59 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
         private fun redirectUrl(urlbody: String?, position: Int) {
 
             if (urlbody != null) {
-                itemView.box_container.setOnClickListener {
-                    if (URLUtil.isValidUrl(urlbody)) {
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(urlbody))
-                        context.startActivity(intent)
-                    } else {
-                        checkBottomSheetID(position, 1)
+
+
+                if (itemView.box_container.isVisible) {
+                    itemView.box_container.setOnClickListener {
+                        if (URLUtil.isValidUrl(urlbody)) {
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(urlbody))
+                            context.startActivity(intent)
+                        } else {
+                            checkBottomSheetID(position, 1)
+                        }
+                    }
+                } else if (itemView.info_container.isVisible) {
+
+                    itemView.info_container.setOnClickListener {
+                        if (URLUtil.isValidUrl(urlbody)) {
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(urlbody))
+                            context.startActivity(intent)
+                        } else {
+                            checkBottomSheetID(position, 1)
+                        }
                     }
                 }
             }
-
 
         }
 
         private fun renderBottomSheet(bottomSheetItem: List<BottomSheetItem?>?, res: Int) {
 
-
             var bottomsheetitem: BottomSheetItem = bottomSheetItem?.get(res)!!
 
             var closeableBottomSheetDialog: CloseableBottomSheetDialog = CloseableBottomSheetDialog.createInstanceRounded(context)
             var view: View = View.inflate(context, R.layout.mlp_bottomsheet, null)
-            view.findViewById<TextView>(R.id.tv_title_bottom).text = bottomsheetitem?.title
-            view.findViewById<TextView>(R.id.tv_detail_bottom).text = bottomsheetitem?.text
+            view.findViewById<TextView>(R.id.tv_title_bottom).text = bottomsheetitem.title
+            view.findViewById<TextView>(R.id.tv_detail_bottom).text = bottomsheetitem.text
 
             var buttonText: String? = null
 
-            buttonText = bottomsheetitem?.buttonCta
+            buttonText = bottomsheetitem.buttonCta
 
-            view.findViewById<TextView>(R.id.button_bottomsheet).text = buttonText
+            val button: Button = view.findViewById<Button>(R.id.button_bottomsheet)
+            button.text = buttonText
 
-            itemView.button_bottomsheet.setOnClickListener {
-                if (URLUtil.isValidUrl(bottomsheetitem?.url)) {
+            val imageView: ImageView = view.findViewById<ImageView>(R.id.iv_cancel)
+            imageView.setOnClickListener {
+                closeableBottomSheetDialog.dismiss()
 
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(bottomsheetitem?.url))
-                    context.startActivity(intent)
-                }
             }
+            button.setOnClickListener {
 
+            }
             closeableBottomSheetDialog.setContentView(view)
             closeableBottomSheetDialog.show()
             closeableBottomSheetDialog.setCanceledOnTouchOutside(true)
-
 
         }
 
@@ -147,14 +164,14 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
                         boxTitle = it.get(item)?.title
                         boxContent = it.get(item)?.text
                         boxColor = it.get(item)?.boxColor
-                        itemView.box_container.visibility=View.VISIBLE
+                        itemView.box_container.visibility = View.VISIBLE
 
                         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                         val myView = inflater.inflate(R.layout.mlp_box_layout, null)
 
                         myView.text_body_title.setTextAndCheckShow(boxTitle)
                         myView.text_body_content.setTextAndCheckShow(boxContent)
-                        myView.viewbody_background.visibility=View.VISIBLE
+                        myView.viewbody_background.visibility = View.VISIBLE
 
                         if (boxColor != null && boxColor.isNotEmpty()) {
                             myView.viewbody_background.background.setColorFilter(Color.parseColor(boxColor), PorterDuff.Mode.SRC_ATOP)
@@ -198,7 +215,7 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
 
         }
 
-        private fun renderSideToggleHeader(headerContent: Header) {
+        private fun renderSideToggleHeader(headerContent: Header, position: Int) {
 
 
             itemView.flip_switch.visibility = View.VISIBLE
@@ -216,14 +233,30 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
                     statusToggle = headerContent.sideToggle.toggleStatus
 
                     itemView.switch_enable.visibility = View.VISIBLE
-                    if (statusToggle == false) {
-                        itemView.switch_enable.toggle()
-                    } else
-                        itemView.switch_enable.isChecked = false
+
+                    itemView.switch_enable.setOnCheckedChangeListener { _, isChecked ->
+                        run {
+
+                            if (isChecked) {
+                                if (URLUtil.isValidUrl(headerContent.sideText?.url)) {
+                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(headerContent.sideToggle.url))
+                                    context.startActivity(intent)
+                                } else {
+                                    var res: Int = checkBottomSheetID(position, 2)
+                                    if (res >= 0) {
+                                        Toast.makeText(context, "Clicked", Toast.LENGTH_SHORT).show()
+                                        renderBottomSheet(boxList[position].bottomSheet, res)
+                                    }
+                                }
+                            }
+
+                        }
+
+                    }
 
                 }
-            }
 
+            }
         }
 
         private fun renderSideTextHeader(headerContent: Header, position: Int) {
@@ -236,21 +269,22 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
 
             itemView.text_side.setOnClickListener {
                 if (URLUtil.isValidUrl(headerContent.sideText?.url)) {
+
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(headerContent.sideText?.url))
                     context.startActivity(intent)
-
 
                 } else {
                     itemView.text_side.tag = position
                     val position = it.tag as Int
                     var res: Int = checkBottomSheetID(position, 0)
-                    if (res > 0) {
+                    if (res >= 0) {
                         Toast.makeText(context, "Clicked", Toast.LENGTH_SHORT).show()
                         renderBottomSheet(boxList[position].bottomSheet, res)
                     }
 
 
                 }
+
             }
         }
 
@@ -277,6 +311,17 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
                 for (bottomItem in 0..bottomsheetLength1 - 1) {
                     index1++
                     if (boxList[position].body?.urlbody.equals(boxList[position].bottomSheet!![bottomItem]?.id)) {
+                        return index1
+                    }
+
+                }
+            } else if (type == 2) {
+
+                var index1: Int = -1
+                var bottomsheetLength1: Int = boxList[position].bottomSheet?.size!!
+                for (bottomItem in 0..bottomsheetLength1 - 1) {
+                    index1++
+                    if (boxList[position].header?.sideToggle?.url.equals(boxList[position].bottomSheet!![bottomItem]?.id)) {
                         return index1
                     }
 

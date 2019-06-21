@@ -1,114 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardview_widgetmlp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="@dimen/dp_4"
     android:background="@color/white"
-    android:padding="8dp">
+    app:cardCornerRadius="@dimen/dp_4"
+    app:cardElevation="@dimen/dp_4">
 
-
-
-    <ImageView
-        android:layout_marginLeft="@dimen/dp_10"
-        android:id="@+id/header_logo"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:visibility="gone"
-        />
-
-    <TextView
-        android:id="@+id/text_title"
-        android:layout_width="wrap_content"
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/container_mlp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_5"
-        android:drawablePadding="12dp"
-        android:gravity="center_vertical"
-        android:textSize="@dimen/sp_12"
-        android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/header_logo"
-        app:layout_constraintTop_toTopOf="@+id/header_logo"
-        app:layout_constraintBottom_toBottomOf="@+id/header_logo"
-        tools:text="Modal Toko"
-        android:visibility="gone"
-        />
+        android:background="@color/white"
+        android:padding="8dp">
 
-    <TextView
-        android:id="@+id/text_badge"
-        android:padding="2dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="9.5dp"
-        android:background="@drawable/bg_textbadge"
-        android:textSize="10sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/text_title"
-        app:layout_constraintStart_toEndOf="@+id/text_title"
-        app:layout_constraintTop_toTopOf="@+id/text_title"
-        tools:text="New"
-        android:visibility="gone"
-        />
-
-    <ViewFlipper
-        android:id="@+id/flip_switch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/dp_10"
-        android:measureAllChildren="true"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/text_title"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/text_title">
-
-        <android.support.v7.widget.SwitchCompat
-            android:id="@+id/switch_enable"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:thumbTint="#FFFFFF"
-            app:trackTint="#42b549"
-            android:visibility="gone"
-
-            />
+        <ImageView
+            android:id="@+id/header_logo"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_marginLeft="@dimen/dp_10"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/text_side"
-            android:visibility="gone"
+            android:id="@+id/text_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:fontFamily="sans-serif-medium"
-            android:textColor="@color/medium_green"
-            android:textSize="12sp"
-            tools:text="Side Text" />
+            android:layout_marginLeft="@dimen/dp_5"
+            android:drawablePadding="12dp"
+            android:gravity="center_vertical"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/header_logo"
+            app:layout_constraintStart_toEndOf="@+id/header_logo"
+            app:layout_constraintTop_toTopOf="@+id/header_logo"
+            tools:text="Modal Toko" />
+
+        <TextView
+            android:id="@+id/text_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="9.5dp"
+            android:background="@drawable/bg_textbadge"
+            android:padding="2dp"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/text_title"
+            app:layout_constraintStart_toEndOf="@id/text_title"
+            app:layout_constraintTop_toTopOf="@id/text_title"
+            tools:text="New" />
+
+        <ViewFlipper
+            android:id="@+id/flip_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/dp_10"
+            android:measureAllChildren="true"
+            app:layout_constraintBottom_toBottomOf="@+id/text_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/text_title">
+
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/switch_enable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:thumbTint="#FFFFFF"
+                app:trackTint="#42b549"
+
+                />
+
+            <TextView
+                android:id="@+id/text_side"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:fontFamily="sans-serif-medium"
+                android:textColor="@color/medium_green"
+                android:textSize="12sp"
+                android:visibility="gone"
+                tools:text="Side Text" />
 
 
-    </ViewFlipper>
+        </ViewFlipper>
 
 
-    <LinearLayout
-        android:id="@+id/info_container"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_12"
-        android:layout_marginBottom="@dimen/dp_5"
-        android:orientation="vertical"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_title">
-    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/info_container"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/dp_5"
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_title">
 
-    <LinearLayout
-        android:id="@+id/box_container"
-        android:layout_marginTop="10dp"
-        android:layout_width="match_parent"
-        android:visibility="gone"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/info_container"
-        android:orientation="vertical">
-    </LinearLayout>
+        </LinearLayout>
 
-</android.support.constraint.ConstraintLayout>
+        <LinearLayout
+            android:id="@+id/box_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/info_container">
+
+        </LinearLayout>
+
+    </android.support.constraint.ConstraintLayout>
+</android.support.v7.widget.CardView>
