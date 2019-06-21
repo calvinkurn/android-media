@@ -149,7 +149,7 @@ public class OrderListActivity extends BaseSimpleActivity
             if (orderCategory.equals(orderLabelList.get(i).getOrderCategory())) {
                 position = i;
             }
-            tabLayout.addTab(tabLayout.newTab().setText(orderLabelList.get(i).getLabelBhasa()));
+            tabLayout.addTab(tabLayout.newTab().setText(orderLabelList.get(i).getOrderCategory()));
         }
         adapter = new OrderTabAdapter(getSupportFragmentManager(), this, orderLabelList);
         viewPager.setAdapter(adapter);

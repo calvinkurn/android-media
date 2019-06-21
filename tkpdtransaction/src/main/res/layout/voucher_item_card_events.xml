@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"
@@ -100,7 +99,6 @@
                 android:layout_marginRight="@dimen/dp_8"
                 android:layout_toRightOf="@+id/imageView"
                 android:fontFamily="sans-serif"
-                android:text="Test Brand"
                 android:textColor="@color/clr_ae31353b"
                 android:textSize="@dimen/sp_12"
                 android:textStyle="normal" />
@@ -203,7 +201,7 @@
                     android:visibility="visible" />
 
                 <LinearLayout
-                    android:id="@+id/tapAction"
+                    android:id="@+id/tapAction_events"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_8"
@@ -220,7 +218,7 @@
                     android:layout_marginRight="@dimen/dp_8"
                     android:background="@color/white"
                     android:orientation="vertical"
-                    android:visibility="visible"/>
+                    android:visibility="visible" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -235,54 +233,53 @@
         android:id="@+id/tanggal_events_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/tanggal_events"
-        android:textColor="@color/clr_ae31353b"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_8"
-        android:textSize="@dimen/sp_12"/>
+        android:text="@string/tanggal_events"
+        android:textColor="@color/clr_ae31353b"
+        android:textSize="@dimen/sp_12" />
 
     <TextView
         android:id="@+id/tanggal_events"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/clr_f531353b"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_8"
-        tools:text="13 Jul 2019, 15:00"
+        android:textColor="@color/clr_f531353b"
+        android:textSize="@dimen/sp_12"
         android:textStyle="bold"
-        android:textSize="@dimen/sp_12"/>
+        tools:text="13 Jul 2019, 15:00" />
 
     <TextView
         android:id="@+id/events_location_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/location_events"
-        android:textColor="@color/clr_ae31353b"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
-        android:textSize="@dimen/sp_12"/>
+        android:text="@string/location_events"
+        android:textColor="@color/clr_ae31353b"
+        android:textSize="@dimen/sp_12" />
 
     <TextView
         android:id="@+id/city_event"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/clr_f531353b"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_8"
-        tools:text="IFI Thamrin - Venue level"
+        android:textColor="@color/clr_f531353b"
+        android:textSize="@dimen/sp_12"
         android:textStyle="bold"
-        android:textSize="@dimen/sp_12"/>
+        tools:text="IFI Thamrin - Venue level" />
 
     <TextView
         android:id="@+id/address_event"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/clr_f531353b"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_8"
-        tools:text=" Jl. M.H. Thamrin, No.20, RT.9 RW.4, Gondang (This is street level with Max 2 lines)…"
-        android:textSize="@dimen/sp_12"/>
-
+        android:textColor="@color/clr_f531353b"
+        android:textSize="@dimen/sp_12"
+        tools:text=" Jl. M.H. Thamrin, No.20, RT.9 RW.4, Gondang (This is street level with Max 2 lines)…" />
 
 
 </LinearLayout>

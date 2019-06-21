@@ -82,6 +82,9 @@ import static com.tokopedia.transaction.orders.orderdetails.view.fragment.OrderL
 
 public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDetailContract.View, ItemsAdapter.SetEventDetails {
 
+    public static final String KEY_BUTTON = "button";
+    public static final String KEY_TEXT = "text";
+    public static final String KEY_REDIRECT = "redirect";
     public static final String KEY_ORDER_ID = "OrderId";
     public static final String KEY_ORDER_CATEGORY = "OrderCategory";
     private static final String KEY_FROM_PAYMENT = "from_payment";
@@ -457,7 +460,11 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         actionButtonLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RouteManager.route(getContext(), actionButtons.get(0).getBody().getAppURL());
+                if (actionButtons.get(0).getControl().equalsIgnoreCase(KEY_BUTTON)) {
+                    presenter.setActionButton(actionButtons, null, 0, false);
+                } else if (actionButtons.get(0).getControl().equalsIgnoreCase(KEY_REDIRECT)){
+                    RouteManager.route(getContext(), actionButtons.get(0).getBody().getAppURL());
+                }
             }
         });
     }
@@ -528,12 +535,25 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     }
 
     @Override
-    public void setEventDetails(Items item) {
+    public void setEventDetails(ActionButton actionButton, Items item) {
         if (item.getActionButtons() == null || item.getActionButtons().size() == 0) {
             actionButtonLayout.setVisibility(View.GONE);
             dividerActionBtn.setVisibility(View.GONE);
         } else {
-            presenter.setActionButton(item.getActionButtons(), null, 0, false);
+            dividerActionBtn.setVisibility(View.VISIBLE);
+            actionButtonLayout.setVisibility(View.VISIBLE);
+            actionButtonText.setText(actionButton.getLabel());
+            actionButtonLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
+                        presenter.setActionButton(item.getActionButtons(), null, 0, false);
+                    } else if (actionButton.getControl().equalsIgnoreCase(KEY_REDIRECT)){
+                        RouteManager.route(getContext(), actionButton.getBody().getAppURL());
+                    }
+                }
+            });
+
         }
 
         MetaDataInfo metaDataInfo = new Gson().fromJson(item.getMetaData(), MetaDataInfo.class);

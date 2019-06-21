@@ -335,5 +335,7 @@ Anda di sini.</string>
     <string name="user_label">Data Pemegang E-tiket</string>
     <string name="booking_code_title">Kode Booking:</string>
     <string name="btn_redeem_ticket">Tutup</string>
-    <string name="voucher_code_title">1 x Kode E-voucher:</string>
+    <string name="voucher_code_title">Kode voucher:</string>
+    <string name="voucher_code_title_deals">Voucher Deals</string>
+    <string name="redeem_deals_btn">Redeem</string>
 </resources>
