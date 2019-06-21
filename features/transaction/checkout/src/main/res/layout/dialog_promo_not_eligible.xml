@@ -8,15 +8,6 @@
     android:padding="@dimen/dp_16">
 
     <TextView
-        android:id="@+id/tv_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_8"
-        android:gravity="center"
-        android:text="@string/label_continue_to_payment"
-        android:textSize="@dimen/sp_20" />
-
-    <TextView
         android:id="@+id/tv_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -40,13 +31,5 @@
         android:text="@string/label_button_continue"
         app:buttonCompatSize="medium"
         app:buttonCompatType="primary" />
-
-    <com.tokopedia.design.component.ButtonCompat
-        android:id="@+id/btn_cancel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/label_button_cancel"
-        app:buttonCompatSize="medium"
-        app:buttonCompatType="secondary" />
 
 </LinearLayout>

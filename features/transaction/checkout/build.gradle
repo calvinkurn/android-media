@@ -41,6 +41,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation rootProject.ext.libraries.unifyPrinciples
 
     implementation project(rootProject.ext.features.transactioncommon)
     implementation project(rootProject.ext.features.logisticCommon)

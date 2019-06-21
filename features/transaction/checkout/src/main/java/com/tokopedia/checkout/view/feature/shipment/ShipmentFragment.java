@@ -173,7 +173,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private PerformanceMonitoring shipmentTracePerformance;
     private boolean isShipmentTraceStopped;
     private String cornerId;
-    private PromoNotEligibleDialog promoNotEligibleDialog;
+    private PromoNotEligibleBottomsheet promoNotEligibleBottomsheet;
 
     @Inject
     ShipmentAdapter shipmentAdapter;
@@ -2463,9 +2463,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private void showPromoNotEligibleDialog() {
-        if (getActivity() != null && promoNotEligibleDialog == null) {
-            promoNotEligibleDialog = new PromoNotEligibleDialog(getActivity());
-            promoNotEligibleDialog.show();
+        if (getActivity() != null && promoNotEligibleBottomsheet == null) {
+            promoNotEligibleBottomsheet = new PromoNotEligibleBottomsheet(getActivity());
+            promoNotEligibleBottomsheet.show();
         }
     }
 }
