@@ -265,6 +265,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent != null && intent.getAction() != null && intent.getAction().equals(BROADCAST_FEED)) {
+                    hideAllFAB(false);
                     boolean isHaveNewFeed = intent.getBooleanExtra(PARAM_BROADCAST_NEW_FEED, false);
                     if (isHaveNewFeed) {
                         onShowNewFeed("");
@@ -329,17 +330,19 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void hideAllFAB(boolean isInitial) {
-        if (isInitial) {
-            fabFeed.hide();
-        } else {
-            fabFeed.setAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_backward));
+        if (fabFeed != null) {
+            if (isInitial) {
+                fabFeed.hide();
+            } else {
+                fabFeed.setAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_backward));
+            }
+            fabShop.hide();
+            fabByme.hide();
+            fabTextByme.setVisibility(View.GONE);
+            fabTextShop.setVisibility(View.GONE);
+            greyBackground.setVisibility(View.GONE);
+            isFABExpanded = false;
         }
-        fabShop.hide();
-        fabByme.hide();
-        fabTextByme.setVisibility(View.GONE);
-        fabTextShop.setVisibility(View.GONE);
-        greyBackground.setVisibility(View.GONE);
-        isFABExpanded = false;
     }
 
     private void prepareView() {
@@ -398,6 +401,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private boolean itemIsFullScreen() {
         return layoutManager.findLastVisibleItemPosition() -
                 layoutManager.findFirstVisibleItemPosition() == 0;
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        hideAllFAB(false);
     }
 
     @Override
@@ -823,6 +832,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         loadData(isVisibleToUser);
+        if (!isVisibleToUser) {
+            hideAllFAB(false);
+        }
 
     }
 
@@ -1884,4 +1896,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
             return 0;
         }
     }
+
+    @Override
+    public boolean getUserVisibleHint() {
+        return super.getUserVisibleHint();
+    }
+
 }
