@@ -11,8 +11,8 @@
 
     <ImageView
         android:id="@+id/image_icon"
-        android:layout_width="@dimen/dp_56"
-        android:layout_height="@dimen/dp_56"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="@dimen/dp_40"
         android:layout_marginStart="@dimen/dp_12"
         android:layout_marginLeft="@dimen/dp_12"
         android:layout_marginEnd="@dimen/dp_12"
