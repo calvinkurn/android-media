@@ -22,16 +22,16 @@ import com.tokopedia.unifyprinciples.Typography;
 public class ProductCardView extends BaseCustomView {
 
     protected TextView textName;
-    protected Typography textPrice;
+    protected TextView textPrice;
     protected TextView textDiscount;
-    protected Typography textSlashedPrice;
+    protected TextView textSlashedPrice;
     protected ImpressedImageView imageView;
     protected ImageView topAdsIcon;
     protected ImageView wishlistButton;
     protected ImageView ratingView;
-    protected Typography reviewCountView;
+    protected TextView reviewCountView;
     protected LinearLayout shopBadgesContainer;
-    protected Typography textLocation;
+    protected TextView textLocation;
     protected int layout;
     protected boolean fixedHeight = false;
 
@@ -75,7 +75,7 @@ public class ProductCardView extends BaseCustomView {
         textSlashedPrice = view.findViewById(R.id.textSlashedPrice);
         imageView = view.findViewById(R.id.image);
         topAdsIcon = view.findViewById(R.id.topAdsIcon);
-        wishlistButton = view.findViewById(R.id.btn_wishlist);
+        wishlistButton = view.findViewById(R.id.btnWishlist);
         ratingView = view.findViewById(R.id.rating);
         reviewCountView = view.findViewById(R.id.review_count);
         shopBadgesContainer = view.findViewById(R.id.shopBadgesContainer);

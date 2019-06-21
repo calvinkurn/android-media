@@ -138,7 +138,7 @@ open class ProductCardViewHolder(
     }
 
     private fun initTitleTextView(productItem: ProductItemViewModel) {
-        //setTitleMarginTop(productItem)
+        setTitleMarginTop(productItem)
 
         itemView.productCardView?.setTitle(productItem.productName)
     }
@@ -233,7 +233,7 @@ open class ProductCardViewHolder(
     }
 
     private fun initLocationTextView(productItem: ProductItemViewModel) {
-//        setLocationTextViewMargin(productItem)
+        setLocationTextViewMargin(productItem)
 
         if(!TextUtils.isEmpty(productItem.shopCity)) {
             itemView.productCardView?.setTextLocation(productItem.shopCity)

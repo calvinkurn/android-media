@@ -25,24 +25,6 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:layout_height="100dp" />
 
-        <!--<com.tokopedia.unifyprinciples.Typography-->
-            <!--android:id="@+id/textName"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginStart="@dimen/dp_8"-->
-            <!--android:layout_marginLeft="@dimen/dp_8"-->
-            <!--android:layout_marginTop="@dimen/dp_8"-->
-            <!--android:layout_marginEnd="@dimen/dp_8"-->
-            <!--android:layout_marginRight="@dimen/dp_8"-->
-            <!--android:ellipsize="end"-->
-            <!--android:maxLines="2"-->
-            <!--android:textColor="@color/charcoal_grey_88"-->
-            <!--app:layout_constraintEnd_toEndOf="parent"-->
-            <!--app:layout_constraintStart_toStartOf="@+id/image"-->
-            <!--app:layout_constraintTop_toBottomOf="@+id/image"-->
-            <!--app:typographyType="heading_5"-->
-            <!--tools:text="Nama" />-->
-
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textName"
             style="@style/TextView.Small"
@@ -59,6 +41,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/image"
             app:layout_constraintTop_toBottomOf="@+id/image"
+            app:typographyType="heading_5"
             tools:text="Nama" />
 
         <!--TODO:: Change this to Unify Label -->
@@ -189,9 +172,9 @@
             tools:visibility="visible" />
 
         <ImageView
-            android:id="@+id/btn_wishlist"
-            android:layout_width="@dimen/dp_32"
-            android:layout_height="@dimen/dp_32"
+            android:id="@+id/btnWishlist"
+            android:layout_width="@dimen/dp_28"
+            android:layout_height="@dimen/dp_28"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
@@ -199,7 +182,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:background="@drawable/wishlist_icon_product_card_background"
-            android:padding="@dimen/dp_6"
+            android:padding="@dimen/dp_4"
             android:scaleType="fitXY"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"

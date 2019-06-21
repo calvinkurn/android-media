@@ -138,7 +138,7 @@
                     android:layout_width="@dimen/dp_52"
                     android:layout_height="@dimen/dp_10" />
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/review_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
