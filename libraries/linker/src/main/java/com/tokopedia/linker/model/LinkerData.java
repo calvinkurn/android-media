@@ -46,7 +46,15 @@ public class LinkerData implements Parcelable {
     private String ogImageUrl;
     private String desktopUrl;
     private String deepLink;
+    private String custmMsg;
 
+    public String getCustmMsg() {
+        return custmMsg;
+    }
+
+    public void setCustmMsg(String custmMsg) {
+        this.custmMsg = custmMsg;
+    }
 
     public LinkerData() {
     }
@@ -229,6 +237,10 @@ public class LinkerData implements Parcelable {
         return campaign;
     }
 
+    public String getOriginalTextContent() {
+        return textContent;
+    }
+
     public String getTextContent() {
         if (getType() != null) {
             return (this.textContent != null) ? (this.textContent + "\n" + renderShareUri()) : renderShareUri();
@@ -326,6 +338,7 @@ public class LinkerData implements Parcelable {
         private String ogImageUrl;
         private String desktopUrl;
         private String deepLink;
+        private String custmMsg;
 
         private Builder() {
         }
@@ -423,6 +436,11 @@ public class LinkerData implements Parcelable {
             return this;
         }
 
+        public Builder setCustMsg(String custmMsg){
+            this.custmMsg = custmMsg;
+            return this;
+        }
+
         public Builder but() {
             return getLinkerBuilder().setName(name).setPrice(price).setUri(uri).setDescription(description).setImgUri(imgUri).setShareUrl(shareUrl);
         }
@@ -443,6 +461,7 @@ public class LinkerData implements Parcelable {
             linkerData.setOgUrl(ogUrl);
             linkerData.setOgTitle(ogTitle);
             linkerData.setOgDescription(ogDescription);
+            linkerData.setCustmMsg(custmMsg);
             linkerData.setOgImageUrl(ogImageUrl);
             linkerData.setDesktopUrl(desktopUrl);
             linkerData.setDeepLink(deepLink);

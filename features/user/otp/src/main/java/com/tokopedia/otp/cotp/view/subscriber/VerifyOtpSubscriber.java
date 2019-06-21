@@ -43,7 +43,7 @@ public class VerifyOtpSubscriber extends Subscriber<ValidateOtpDomain> {
     public void onNext(ValidateOtpDomain validateOtpDomain) {
         view.dismissLoadingProgress();
         if (validateOtpDomain.isSuccess())
-            view.onSuccessVerifyOTP();
+            view.onSuccessVerifyOTP(validateOtpDomain.getUuid(), validateOtpDomain.getMsisdn());
         else {
             view.onErrorVerifyOtpCode(OtpErrorHandler.getDefaultErrorCodeMessage(OtpErrorCode
                     .UNSUPPORTED_FLOW, view.getContext()));

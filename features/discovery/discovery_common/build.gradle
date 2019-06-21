@@ -8,4 +8,7 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.gson
     implementation project(rootProject.ext.libraries.abstraction)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation project(rootProject.ext.libraries.graphql)
+    implementation rootProject.ext.miscDependencies.dagger
 }

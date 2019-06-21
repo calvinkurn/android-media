@@ -67,7 +67,7 @@ abstract class AuthHmacInterceptor implements Interceptor {
             showMaintenancePage();
         } else if (isRequestDenied(bodyResponse)) {
             showForceLogoutDialog();
-            sendForceLogoutAnalytics(response);
+            sendForceLogoutAnalytics(response , true);
         } else if (isServerError(response.code()) && !isHasErrorMessage(bodyResponse)) {
             showServerErrorSnackbar();
             sendErrorNetworkAnalytics(response);
@@ -228,12 +228,12 @@ abstract class AuthHmacInterceptor implements Interceptor {
         LocalBroadcastManager.getInstance(CoreNetworkApplication.getAppContext()).sendBroadcast(intent);
     }
 
-    private void sendForceLogoutAnalytics(Response response) {
+    private void sendForceLogoutAnalytics(Response response, boolean isRequestDenied) {
         Context appContext = CoreNetworkApplication.getAppContext();
         AnalyticsLog.logForceLogout(appContext,
                 CoreNetworkApplication.getCoreNetworkRouter().legacyGCMHandler(),
                 CoreNetworkApplication.getCoreNetworkRouter().legacySessionHandler(),
-                response.request().url().toString());
+                response.request().url().toString(), false, isRequestDenied);
     }
 
     private void showServerErrorSnackbar() {

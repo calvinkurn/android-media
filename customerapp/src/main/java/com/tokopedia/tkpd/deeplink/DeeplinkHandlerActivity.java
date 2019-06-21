@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd.deeplink;
 
-import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -8,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
@@ -16,6 +16,8 @@ import com.tokopedia.affiliate.applink.AffiliateApplinkModule;
 import com.tokopedia.affiliate.applink.AffiliateApplinkModuleLoader;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.applink.DeeplinkMapper;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.SessionApplinkModule;
 import com.tokopedia.applink.SessionApplinkModuleLoader;
 import com.tokopedia.applink.TkpdApplinkDelegate;
@@ -33,8 +35,6 @@ import com.tokopedia.checkout.applink.CheckoutAppLinkModuleLoader;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModuleLoader;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
 import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
@@ -295,18 +295,16 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
 
         DeepLinkAnalyticsImpl presenter = new DeepLinkAnalyticsImpl();
         if (getIntent() != null) {
-            Intent intent = getIntent();
-            Uri applink = Uri.parse(intent.getData().toString().replaceAll("%", "%25"));
+            String applinkString = getIntent().getData().toString().replaceAll("%", "%25");
+            Uri applink = Uri.parse(applinkString);
             presenter.processUTM(this, applink);
-            if (deepLinkDelegate.supportsUri(applink.toString())) {
-                routeFromApplink(applink);
+
+            //map applink to internal if any
+            String mappedDeeplink = DeeplinkMapper.getRegisteredNavigation(this, applinkString);
+            if (!TextUtils.isEmpty(mappedDeeplink)) {
+                routeApplink(deepLinkDelegate, mappedDeeplink);
             } else {
-                Intent homeIntent = HomeRouter.getHomeActivityInterfaceRouter(this);
-                homeIntent.putExtra(HomeRouter.EXTRA_APPLINK_UNSUPPORTED, true);
-                if (getIntent() != null && getIntent().getExtras() != null)
-                    homeIntent.putExtras(getIntent().getExtras());
-                homeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(homeIntent);
+                routeApplink(deepLinkDelegate, applinkString);
             }
 
             if (getIntent().getExtras() != null) {
@@ -337,6 +335,24 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
             }
         }
         finish();
+    }
+
+    private void routeApplink(ApplinkDelegate deepLinkDelegate, String applinkString) {
+        if (deepLinkDelegate.supportsUri(applinkString)) {
+            routeFromApplink(Uri.parse(applinkString));
+        } else {
+            Intent intent = RouteManager.getIntent(this, applinkString);
+            startActivity(intent);
+        }
+    }
+
+    private void goToHome() {
+        Intent homeIntent = HomeRouter.getHomeActivityInterfaceRouter(this);
+        homeIntent.putExtra(HomeRouter.EXTRA_APPLINK_UNSUPPORTED, true);
+        if (getIntent() != null && getIntent().getExtras() != null)
+            homeIntent.putExtras(getIntent().getExtras());
+        homeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(homeIntent);
     }
 
     public void eventPersonalizedClicked(String label) {

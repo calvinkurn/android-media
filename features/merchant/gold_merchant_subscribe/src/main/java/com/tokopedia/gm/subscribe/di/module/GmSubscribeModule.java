@@ -77,8 +77,8 @@ public class GmSubscribeModule {
 
     @GmSubscribeScope
     @Provides
-    DeleteShopInfoCacheUseCase provideDeleteShopInfoUseCase() {
-        return new DeleteShopInfoCacheUseCase();
+    DeleteShopInfoCacheUseCase provideDeleteShopInfoUseCase(@ApplicationContext Context context) {
+        return new DeleteShopInfoCacheUseCase(context);
     }
 
 }
