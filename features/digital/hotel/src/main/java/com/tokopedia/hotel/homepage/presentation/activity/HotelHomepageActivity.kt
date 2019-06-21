@@ -18,8 +18,6 @@ class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageCom
     private var type: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        toolbar.contentInsetStartWithNavigation = 0
-
         val uri = intent.data
         if (uri != null) {
             if (!uri.getQueryParameter(PARAM_HOTEL_ID).isNullOrEmpty()) {
@@ -42,6 +40,7 @@ class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageCom
         }
 
         super.onCreate(savedInstanceState)
+        toolbar.contentInsetStartWithNavigation = 0
     }
 
     override fun getComponent(): HotelHomepageComponent =
