@@ -27,7 +27,6 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textName"
-            style="@style/TextView.Small"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_8"
@@ -71,7 +70,6 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textSlashedPrice"
-            style="@style/TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_4"

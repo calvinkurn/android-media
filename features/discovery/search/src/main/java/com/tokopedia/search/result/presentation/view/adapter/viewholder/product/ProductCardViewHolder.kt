@@ -68,8 +68,13 @@ open class ProductCardViewHolder(
     }
 
     private fun initWishlistButton(productItem: ProductItemViewModel) {
-        itemView.productCardView?.setWishlistButtonVisible(true)
+        itemView.productCardView?.setWishlistButtonVisible(productItem.isWishlistButtonEnabled)
         itemView.productCardView?.setWishlistButtonImage(productItem.isWishlisted)
+        itemView.productCardView?.setWishlistButtonOnClickListener {
+            if (productItem.isWishlistButtonEnabled) {
+                productListener.onWishlistButtonClicked(productItem)
+            }
+        }
     }
 
 //    private fun initPromoLabel(productItem: ProductItemViewModel) {

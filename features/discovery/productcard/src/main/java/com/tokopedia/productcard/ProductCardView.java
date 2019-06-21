@@ -145,6 +145,10 @@ public class ProductCardView extends BaseCustomView {
         }
     }
 
+    public void setWishlistButtonOnClickListener(View.OnClickListener onClickListener) {
+        wishlistButton.setOnClickListener(onClickListener);
+    }
+
     public void setRatingReviewCount(int rating, int reviewCount) {
         if (rating > 0 && rating <= 5) {
             ratingView.setImageResource(getRatingDrawable(rating));
