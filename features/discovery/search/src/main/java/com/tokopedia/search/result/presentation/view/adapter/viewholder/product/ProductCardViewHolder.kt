@@ -233,8 +233,6 @@ open class ProductCardViewHolder(
     }
 
     private fun initLocationTextView(productItem: ProductItemViewModel) {
-        setLocationTextViewMargin(productItem)
-
         if(!TextUtils.isEmpty(productItem.shopCity)) {
             itemView.productCardView?.setTextLocation(productItem.shopCity)
             itemView.productCardView?.setTextLocationVisible(true)
@@ -242,13 +240,6 @@ open class ProductCardViewHolder(
         else {
             itemView.productCardView?.setTextLocationVisible(false)
         }
-    }
-
-    private fun setLocationTextViewMargin(productItem: ProductItemViewModel) {
-        val marginLeftDp = if (hasAnyBadgesShown(productItem)) 4 else 8
-        val marginLeftPixel = convertDpToPixel(marginLeftDp)
-
-        itemView.productCardView?.setTextLocationMarginsWithNegativeDefaultValue(marginLeftPixel, -1, -1, -1)
     }
 
     private fun initCredibilitySection(productItem: ProductItemViewModel) {

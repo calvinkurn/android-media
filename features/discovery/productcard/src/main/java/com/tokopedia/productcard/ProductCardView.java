@@ -232,10 +232,6 @@ public class ProductCardView extends BaseCustomView {
         textLocation.setText(MethodChecker.fromHtml(location));
     }
 
-    public void setTextLocationMarginsWithNegativeDefaultValue(int leftPixel, int topPixel, int rightPixel, int bottomPixel) {
-        setMarginsToView(textLocation, leftPixel, topPixel, rightPixel, bottomPixel);
-    }
-
     private void setMarginsToView(View view, int leftPixel, int topPixel, int rightPixel, int bottomPixel) {
         if(view.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
             ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) textLocation.getLayoutParams();

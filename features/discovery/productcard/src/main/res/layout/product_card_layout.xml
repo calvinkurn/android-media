@@ -98,6 +98,15 @@
             app:typographyWeight="bold"
             tools:text="Harga" />
 
+        <View
+            android:id="@+id/dummyViewForLeftPadding"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
+            app:layout_constraintTop_toBottomOf="@id/textPrice"
+            app:layout_constraintStart_toStartOf="@id/image" />
+
         <LinearLayout
             android:id="@+id/shopBadgesContainer"
             android:layout_width="wrap_content"
@@ -105,9 +114,11 @@
             android:layout_marginTop="@dimen/dp_4"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_4"
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/textPrice"
-            app:layout_constraintStart_toStartOf="@id/image"
+            app:layout_constraintStart_toEndOf="@id/dummyViewForLeftPadding"
             android:orientation="horizontal" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -117,8 +128,6 @@
             android:layout_toRightOf="@id/shopBadgesContainer"
             android:layout_toEndOf="@id/shopBadgesContainer"
             android:layout_marginTop="@dimen/dp_4"
-            android:layout_marginLeft="@dimen/dp_4"
-            android:layout_marginStart="@dimen/dp_4"
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
             android:ellipsize="end"
@@ -126,7 +135,7 @@
             android:textColor="@color/product_card_location_text_color"
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/textPrice"
-            app:layout_constraintLeft_toRightOf="@id/shopBadgesContainer"
+            app:layout_constraintStart_toEndOf="@id/shopBadgesContainer"
             app:typographyType="body_3"
             tools:text="Town Location" />
 
