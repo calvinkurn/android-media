@@ -2,14 +2,11 @@ package com.tokopedia.hotel.orderdetail.presentation.activity
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.R
-import com.tokopedia.hotel.common.applink.ApplinkConstant
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.hotel.orderdetail.di.DaggerHotelOrderDetailComponent
 import com.tokopedia.hotel.orderdetail.di.HotelOrderDetailComponent
@@ -53,10 +50,11 @@ class HotelOrderDetailActivity : HotelBaseActivity(), HasComponent<HotelOrderDet
     }
 }
 
+/*
 @DeepLink(ApplinkConstant.HOTEL_ORDER_DETAIL)
 fun getCallingIntent(context: Context, extras: Bundle): Intent {
     val uri: Uri.Builder = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
     return HotelOrderDetailActivity.getCallingIntent(context,
             extras.getString("order_id"))
             .setData(uri.build())
-}
+}*/
