@@ -153,8 +153,8 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
                     intent.putExtra(IS_CHAT_BOT, true)
                     startActivity(intent)
                 }
-                RouteManager.isSupportApplink(activity, url) && !URLUtil.isNetworkUrl(url) -> RouteManager.route(activity, url)
                 isBranchIOLink(url) -> handleBranchIOLinkClick(url)
+                RouteManager.isSupportApplink(activity, url) && !URLUtil.isNetworkUrl(url) -> RouteManager.route(activity, url)
                 else -> {
                     val applinkRouter = activity!!.applicationContext as ApplinkRouter
                     applinkRouter.goToApplinkActivity(activity,
