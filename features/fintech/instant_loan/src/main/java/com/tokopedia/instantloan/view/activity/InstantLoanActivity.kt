@@ -563,7 +563,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
         val PINJAMAN_ONLINE_TAB_POSITION = 0
         val DANA_INSTAN_TAB_POSITION = 1
         private val TAB_INSTAN = "instan"
-        private val TAB_TANPA_AGUNAN = "tanpaagunan"
+        private val TAB_TANPA_AGUNAN = "pinjamanonline"
 
         fun createIntent(context: Context): Intent {
             return Intent(context, InstantLoanActivity::class.java)
