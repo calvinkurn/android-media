@@ -429,7 +429,6 @@ import javax.inject.Inject;
 import io.hansel.hanselsdk.Hansel;
 import okhttp3.Interceptor;
 import okhttp3.Response;
-import permissions.dispatcher.PermissionRequest;
 import retrofit2.Converter;
 import rx.Observable;
 import rx.functions.Func1;
@@ -1047,7 +1046,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void onLogout(AppComponent appComponent) {
         PersistentCacheManager.instance.delete(DigitalCache.NEW_DIGITAL_CATEGORY_AND_FAV);
-        new CacheApiClearAllUseCase().executeSync();
+        new CacheApiClearAllUseCase(this).executeSync();
         TkpdSellerLogout.onLogOut(appComponent);
     }
 
@@ -2019,6 +2018,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .setType(LinkerData.SHOP_TYPE)
                 .setName(getString(R.string.message_share_shop))
                 .setTextContent(shareLabel)
+                .setCustMsg(shareLabel)
                 .setUri(shopUrl)
                 .setId(shopId)
                 .build();
@@ -2752,19 +2752,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return FlightOrderListFragment.createInstance();
     }
 
-    public void onShowRationale(Context context, PermissionRequest request, String permission) {
-        RequestPermissionUtil.onShowRationale(context, request, permission);
-    }
-
-    public void onPermissionDenied(Context context, String permission) {
-        RequestPermissionUtil.onPermissionDenied(context, permission);
-    }
-
-    public void onNeverAskAgain(Context context, String permission) {
-        RequestPermissionUtil.onNeverAskAgain(context, permission);
-    }
-
-
     @Override
     public void logoutToHome(Activity activity) {
         //From DialogLogoutFragment
@@ -3180,4 +3167,5 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         }
         return baseDaggerFragment;
     }
+
 }

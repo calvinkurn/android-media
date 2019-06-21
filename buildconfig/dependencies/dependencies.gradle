@@ -198,6 +198,7 @@ ext {
             viewModel             : "android.arch.lifecycle:viewmodel:$lifeCycleVersion",
             exoPlayerCore         : "com.google.android.exoplayer:exoplayer-core:$exoPlayerVersion",
             exoPlayerUi           : "com.google.android.exoplayer:exoplayer-ui:$exoPlayerVersion",
+            exoPlayerRtmp         : "com.google.android.exoplayer:extension-rtmp:$exoPlayerVersion",
             lifeCycleExtentions   : "android.arch.lifecycle:extensions:$lifeCycleVersion",
             lifeCycleRuntime      : "android.arch.lifecycle:compiler:$lifeCycleVersion",
             laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.1.11@aar",
@@ -255,5 +256,13 @@ ext {
 
     instabugDependencies = [
             instabug: "com.instabug.library:instabug:8.0.3"
+    ]
+    
+    unify = [
+        icon: 'com.tokopedia.unify:icon:0.0.1@aar',
+        principles: 'com.tokopedia.unify:principles:0.0.1@aar',
+        components: 'com.tokopedia.unify:components:0.0.1@aar',
+        coach_mark: 'com.tokopedia.unify.compositions:coach_mark:1.0.0@aar',
+        calendar: 'com.tokopedia.unify.compositions:calendar:0.0.1@aar'
     ]
 }
