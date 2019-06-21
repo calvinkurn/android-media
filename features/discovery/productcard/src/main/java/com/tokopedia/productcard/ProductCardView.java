@@ -15,18 +15,20 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.topads.sdk.view.ImpressedImageView;
+import com.tokopedia.unifycomponents.Label;
+import com.tokopedia.unifyprinciples.Typography;
 
 public class ProductCardView extends BaseCustomView {
 
-    protected TextView textName;
-    protected TextView textPrice;
+    protected Typography textName;
+    protected Typography textPrice;
     protected TextView textDiscount;
-    protected TextView textSlashedPrice;
+    protected Typography textSlashedPrice;
     protected ImpressedImageView imageView;
     protected View topAdsIcon;
     protected View wishlistButton;
     protected ImageView ratingView;
-    protected TextView reviewCountView;
+    protected Typography reviewCountView;
     protected int layout;
     protected boolean fixedHeight = false;
 

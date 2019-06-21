@@ -18,7 +18,7 @@ import com.tokopedia.search.result.presentation.model.HeaderViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.RelatedSearchViewModel;
 import com.tokopedia.search.result.presentation.model.TopAdsViewModel;
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.GridProductItem2019ViewHolder;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ProductCardViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.TopAdsViewHolder;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 import com.tokopedia.search.result.presentation.view.typefactory.SearchSectionTypeFactory;
@@ -82,7 +82,7 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
     }
 
     private boolean isStaggeredGridFullSpan(int position) {
-        return getItemViewType(position) != GridProductItem2019ViewHolder.Companion.getLAYOUT();
+        return getItemViewType(position) != ProductCardViewHolder.Companion.getLAYOUT();
     }
 
     @Override

@@ -16,4 +16,6 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.cardViewV7
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.libraries.unifyComponents
+    implementation rootProject.ext.libraries.unifyPrinciples
 }
