@@ -312,16 +312,16 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     int notificationId = bundle.getInt(Constant.EXTRA_NOTIFICATION_ID, 0);
 
                     if (notificationId == 0) {
-                        HistoryNotification.clearAllHistoryNotification(notificationType);
+                        HistoryNotification.clearAllHistoryNotification(this, notificationType);
                     } else {
-                        HistoryNotification.clearHistoryNotification(notificationType, notificationId);
+                        HistoryNotification.clearHistoryNotification(this, notificationType, notificationId);
                     }
 
                     NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
                     notificationManagerCompat.cancel(notificationId);
 
                     //clear summary notification if group notification only have 1 left
-                    if (notificationId != 0 && HistoryNotification.isSingleNotification(notificationType)) {
+                    if (notificationId != 0 && HistoryNotification.isSingleNotification(this, notificationType)) {
                         notificationManagerCompat.cancel(notificationType);
                     }
 

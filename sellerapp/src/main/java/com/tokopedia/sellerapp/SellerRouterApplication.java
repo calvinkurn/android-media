@@ -1327,11 +1327,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void instabugCaptureUserStep(Activity activity, MotionEvent me) {
-        InstabugInitalize.dispatchTouchEvent(activity, me);
-    }
-
-    @Override
     public Intent getInboxTalkCallingIntent(@NonNull Context context) {
         return InboxTalkActivity.Companion.createIntent(context);
     }
