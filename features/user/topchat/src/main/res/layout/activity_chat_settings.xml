@@ -34,7 +34,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginStart="@dimen/dp_16"
-                    android:src="@drawable/chat_personal_img"
+                    app:srcCompat="@drawable/chat_personal_img"
                     app:layout_constraintLeft_toLeftOf="parent" />
 
                 <TextView
@@ -96,7 +96,7 @@
                         android:layout_width="@dimen/dp_36"
                         android:layout_height="@dimen/dp_36"
                         android:layout_marginLeft="@dimen/dp_16"
-                        android:src="@drawable/ic_chat_info"
+                        app:srcCompat="@drawable/ic_chat_info"
                         android:elevation="@dimen/dp_4"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
@@ -147,7 +147,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginStart="@dimen/dp_16"
-                    android:src="@drawable/chat_promo_img"
+                    app:srcCompat="@drawable/chat_promo_img"
                     app:layout_constraintLeft_toLeftOf="parent" />
 
                 <TextView
@@ -207,7 +207,7 @@
                         android:layout_width="@dimen/dp_36"
                         android:layout_height="@dimen/dp_36"
                         android:layout_marginLeft="@dimen/dp_16"
-                        android:src="@drawable/ic_chat_info"
+                        app:srcCompat="@drawable/ic_chat_info"
                         android:elevation="@dimen/dp_4"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
