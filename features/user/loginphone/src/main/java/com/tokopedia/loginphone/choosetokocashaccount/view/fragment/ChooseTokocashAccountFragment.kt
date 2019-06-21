@@ -30,6 +30,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.text.TextDrawable
+import com.tokopedia.iris.Iris
+import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -83,6 +85,8 @@ class ChooseTokocashAccountFragment : BaseDaggerFragment(), ChooseTokocashAccoun
     @Inject
     lateinit var analytics: LoginPhoneNumberAnalytics
 
+    lateinit var mIris: Iris
+
     @Named(SessionModule.SESSION_MODULE)
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
@@ -130,6 +134,11 @@ class ChooseTokocashAccountFragment : BaseDaggerFragment(), ChooseTokocashAccoun
                     arguments!!.getString(ApplinkConstInternalGlobal.PARAM_UUID, ""))
             activity != null -> activity!!.finish()
         }
+
+        //TODO UNCOMMENT
+//        context?.run{
+//            mIris = IrisAnalytics.getInstance(this)
+//        }
 
     }
 
@@ -224,10 +233,11 @@ class ChooseTokocashAccountFragment : BaseDaggerFragment(), ChooseTokocashAccoun
             LinkerManager.getInstance().sendEvent(
                     LinkerUtils.createGenericRequest(LinkerConstants.EVENT_LOGIN_VAL, userData))
         }
-        //TODO SET IRIS
-//
-//        mIris.setUserId(userId)
-//        mIris.setDeviceId(userSession.deviceId)
+
+        if(::mIris.isInitialized) {
+            mIris.setUserId(userId)
+            mIris.setDeviceId(userSessionInterface.deviceId)
+        }
     }
 
     override fun onSuccessLoginToken(): (LoginTokenPojo) -> Unit {

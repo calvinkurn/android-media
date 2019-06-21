@@ -16,7 +16,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
@@ -37,7 +36,6 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
@@ -53,7 +51,6 @@ import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
-import com.tokopedia.loginregister.loginthirdparty.webview.WebViewLoginFragment
 import com.tokopedia.loginregister.registeremail.view.activity.RegisterEmailActivity
 import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.view.customview.PartialRegisterInputView
@@ -63,10 +60,8 @@ import com.tokopedia.loginregister.welcomepage.WelcomePageActivity
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity
 import com.tokopedia.sessioncommon.ErrorHandlerSession
-import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel
 import com.tokopedia.sessioncommon.data.model.GetUserInfoData
-import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.view.LoginSuccessRouter
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
@@ -91,17 +86,14 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
         private val ID_ACTION_LOGIN = 112
 
-        private val REQUEST_REGISTER_WEBVIEW = 100
         private val REQUEST_REGISTER_EMAIL = 101
         private val REQUEST_CREATE_PASSWORD = 102
         private val REQUEST_SECURITY_QUESTION = 103
-        private val REQUEST_REGISTER_PHONE_NUMBER = 104
         private val REQUEST_VERIFY_PHONE_REGISTER_PHONE = 105
         private val REQUEST_WELCOME_PAGE = 106
         private val REQUEST_ADD_NAME_REGISTER_PHONE = 107
         private val REQUEST_VERIFY_PHONE_TOKOCASH = 108
         private val REQUEST_CHOOSE_ACCOUNT = 109
-        private val REQUEST_NO_TOKOCASH_ACCOUNT = 110
         private val REQUEST_ADD_NAME = 111
         private val REQUEST_LOGIN_GOOGLE = 112
 
@@ -204,8 +196,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
             override fun onErrorGetFacebookCredential(e: Exception) {
                 if (isAdded && activity != null) {
-                    NetworkErrorHelper.showSnackbar(activity, ErrorHandler.getErrorMessage(getContext(), e))
-                    e.message?.let { onErrorRegisterSosmed(LoginRegisterAnalytics.FACEBOOK, it) }
+                    e.message?.let { onErrorRegister(ErrorHandler.getErrorMessage(context, e)) }
                 }
             }
 
@@ -215,7 +206,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
                     presenter.registerFacebook(accessToken, email)
                 } catch (e: Exception) {
                     onRegisterFacebookSuccess = false
-                    e.message?.let { onErrorRegisterSosmed(LoginRegisterAnalytics.FACEBOOK, it) }
+                    e.message?.let { onErrorRegister(it) }
                 } finally {
                     if (onRegisterFacebookSuccess)
                         registerAnalytics.trackSuccessClickRegisterFacebookButton()
@@ -226,7 +217,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
     override fun onStart() {
         super.onStart()
-        analytics.trackScreen(activity, screenName)
+        activity?.run{
+            analytics.trackScreen(this, screenName)
+        }
     }
 
     override fun initInjector() {
@@ -404,6 +397,8 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
     }
 
     override fun goToRegisterEmailPageWithEmail(email: String) {
+        userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL
+
         activity?.let {
             registerAnalytics.trackClickEmailSignUpButton()
             showProgressBar()
@@ -413,6 +408,8 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
     }
 
     private fun goToVerificationPhoneRegister(phone: String) {
+        userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
+
         val intent = VerificationActivity.getShowChooseVerificationMethodIntent(
                 activity,
                 RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER,
@@ -427,16 +424,13 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         callbackManager.onActivityResult(requestCode, resultCode, data)
 
         activity?.let {
-            if (requestCode == REQUEST_REGISTER_WEBVIEW) {
-                handleRegisterWebview(resultCode, data)
-            } else if (requestCode == REQUEST_LOGIN_GOOGLE && data != null) {
+            if (requestCode == REQUEST_LOGIN_GOOGLE && data != null) {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(data)
                 if (task != null) {
                     handleGoogleSignInResult(task)
                 }
             } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity.RESULT_OK) {
-                it.setResult(Activity.RESULT_OK)
-                it.finish()
+                onSuccessRegister()
             } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity
                             .RESULT_CANCELED) {
                 dismissProgressBar()
@@ -515,15 +509,13 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
                 val email = account?.email ?: ""
                 presenter.registerGoogle(accessToken, email)
             } catch (e: NullPointerException) {
-                onErrorRegisterSosmed(LoginRegisterAnalytics.GOOGLE,
-                        ErrorHandlerSession.getDefaultErrorCodeMessage(
-                                ErrorHandlerSession.ErrorCode.GOOGLE_FAILED_ACCESS_TOKEN,
-                                context))
+                onErrorRegister( ErrorHandlerSession.getDefaultErrorCodeMessage(
+                        ErrorHandlerSession.ErrorCode.GOOGLE_FAILED_ACCESS_TOKEN,
+                        context))
                 onRegisterGoogleSuccess = false
             } catch (e: ApiException) {
-                onErrorRegisterSosmed(LoginRegisterAnalytics.GOOGLE,
-                        String.format(getString(R.string.loginregister_failed_login_google),
-                                e.statusCode.toString()))
+                onErrorRegister( String.format(getString(R.string.loginregister_failed_login_google),
+                        e.statusCode.toString()))
                 onRegisterGoogleSuccess = false
             } finally {
                 if (onRegisterGoogleSuccess)
@@ -541,16 +533,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, phoneNumber)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, uuid)
             startActivityForResult(intent, REQUEST_ADD_NAME_REGISTER_PHONE)
-        }
-    }
-
-    private fun handleRegisterWebview(resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_CANCELED) {
-            KeyboardHandler.DropKeyboard(activity, view)
-        } else {
-            data?.let {
-                presenter.registerWebview(it)
-            }
         }
     }
 
@@ -624,7 +606,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         when (discoverItemViewModel.id.toLowerCase()) {
             FACEBOOK -> loginTextView.setOnClickListener { v -> onRegisterFacebookClick() }
             GPLUS -> loginTextView.setOnClickListener { v -> onRegisterGooglelick() }
-            else -> loginTextView.setOnClickListener { v -> onRegisterWebviewClick(discoverItemViewModel) }
         }
     }
 
@@ -646,23 +627,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         }
 
     }
-
-    private fun onRegisterWebviewClick(discoverItemViewModel: DiscoverItemViewModel) {
-        activity?.let {
-            fragmentManager?.let { fm ->
-                analytics.eventClickRegisterWebview(it.applicationContext, discoverItemViewModel.name)
-                TrackApp.getInstance().moEngage.sendRegistrationStartEvent(LoginRegisterAnalytics.LABEL_WEBVIEW)
-                val webViewLoginFragment = WebViewLoginFragment.createInstance(
-                        discoverItemViewModel.url, discoverItemViewModel.name)
-                webViewLoginFragment.setTargetFragment(this@RegisterInitialFragment, REQUEST_REGISTER_WEBVIEW)
-                val fragmentTransaction = fm.beginTransaction()
-                webViewLoginFragment.show(fragmentTransaction, WebViewLoginFragment::class.java.simpleName)
-                it.window.setSoftInputMode(
-                        WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
-            }
-        }
-    }
-
 
     override fun dismissLoadingDiscover() {
         val lastPos = registerContainer.childCount - 1
@@ -687,24 +651,17 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         loginButton.visibility = View.VISIBLE
     }
 
-    override fun onErrorRegisterSosmed(methodName: String, errorMessage: String) {
+   fun onErrorRegister(errorMessage : String){
         NetworkErrorHelper.showSnackbar(activity, errorMessage)
-        when (methodName) {
-            LoginRegisterAnalytics.GOOGLE -> {
-                registerAnalytics.trackFailedClickRegisterGoogleButton(errorMessage)
-            }
-            LoginRegisterAnalytics.FACEBOOK -> {
-                registerAnalytics.trackFailedClickRegisterFacebookButton(errorMessage)
-            }
-        }
+        registerAnalytics.trackErrorRegister(errorMessage, userSession.loginMethod)
     }
 
-    override fun onSuccessRegisterSosmed(methodName: String) {
-
-        analytics.eventSuccessRegisterSosmed(methodName)
-        startActivityForResult(WelcomePageActivity.newInstance(activity),
-                REQUEST_WELCOME_PAGE)
-    }
+//    override fun onSuccessRegisterSosmed(methodName: String) {
+//
+//        analytics.eventSuccessRegisterSosmed(methodName)
+//        startActivityForResult(WelcomePageActivity.newInstance(activity),
+//                REQUEST_WELCOME_PAGE)
+//    }
 
     override fun onGoToAddName() {
         activity?.let {
@@ -762,6 +719,8 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
     }
 
     private fun goToVerifyAccountPage(phoneNumber: String?) {
+        userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
+
         activity?.let {
             val intent = VerificationActivity.getShowChooseVerificationMethodIntent(it,
                     RequestOtpUseCase.OTP_TYPE_LOGIN_PHONE_NUMBER, phoneNumber, "")
@@ -818,23 +777,11 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         this.phoneNumber = partialRegisterInputView.textValue
     }
 
-    override fun onSuccessLoginFacebook(email: String): (LoginTokenPojo) -> Unit {
-        return {
-            presenter.getUserInfo()
-        }
-    }
-
     override fun onErrorLoginFacebook(email: String): (e: Throwable) -> Unit {
         return {
             val errorMessage = ErrorHandlerSession.getErrorMessage(context, it)
             NetworkErrorHelper.showSnackbar(activity, errorMessage)
             registerAnalytics.trackFailedClickRegisterFacebookButton(errorMessage)
-        }
-    }
-
-    override fun onSuccessLoginGoogle(email: String): (pojo: LoginTokenPojo) -> Unit {
-        return {
-            presenter.getUserInfo()
         }
     }
 
@@ -869,12 +816,15 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
             if (it.profileInfo.fullName.contains(CHARACTER_NOT_ALLOWED)) {
                 onGoToChangeName()
             } else {
-                //TODO
-//                analytics.eventSuccessRegisterSosmed(methodName)
-                startActivityForResult(WelcomePageActivity.newInstance(activity),
-                        REQUEST_WELCOME_PAGE)
+                onSuccessRegister()
             }
         }
+    }
+
+    private fun onSuccessRegister() {
+        registerAnalytics.trackSuccessRegister(userSession.loginMethod)
+        startActivityForResult(WelcomePageActivity.newInstance(activity),
+                REQUEST_WELCOME_PAGE)
     }
 
     override fun onGoToChangeName() {
@@ -891,9 +841,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
     override fun onErrorGetUserInfo(): (e: Throwable) -> Unit {
         return {
             val errorMessage = ErrorHandlerSession.getErrorMessage(context, it)
-            NetworkErrorHelper.showSnackbar(activity, errorMessage)
-            //TODO TRACK ERROR
-//           registerAnalytics.trackFailedClickRegisterGoogleButton(errorMessage)
+            onErrorRegister(errorMessage)
         }
     }
 

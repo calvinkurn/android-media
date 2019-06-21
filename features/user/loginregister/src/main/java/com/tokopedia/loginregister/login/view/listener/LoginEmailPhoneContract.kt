@@ -42,33 +42,17 @@ interface LoginEmailPhoneContract {
 
         fun getFacebookCredentialListener(): GetFacebookCredentialSubscriber.GetFacebookCredentialListener
 
-        fun onGoToAddName()
-
         fun isFromRegister(): Boolean
 
         fun setSmartLock()
 
-        fun onErrorLoginSosmed(loginMethodName: String, errorCodeMessage: String)
-
-        fun onSuccessLoginEmail()
-
         fun stopTrace()
-
-        fun trackErrorLoginEmail()
-
-        fun onSuccessLoginToken(email: String): Function1<LoginTokenPojo, Unit>
 
         fun onErrorLoginEmail(email: String): Function1<Throwable, Unit>
 
-        fun onSuccessReloginAfterSQ(): Function1<LoginTokenPojo, Unit>
-
         fun onErrorReloginAfterSQ(validateToken: String): Function1<Throwable, Unit>
 
-        fun onSuccessLoginFacebook(email: String): Function1<LoginTokenPojo, Unit>
-
         fun onErrorLoginFacebook(email: String): Function1<Throwable, Unit>
-
-        fun onSuccessLoginGoogle(email: String?): Function1<LoginTokenPojo, Unit>
 
         fun onErrorLoginGoogle(email: String?): Function1<Throwable, Unit>
 
@@ -109,8 +93,6 @@ interface LoginEmailPhoneContract {
 
     interface Presenter : CustomerPresenter<View> {
         fun loginEmail(email: String, password: String)
-
-        fun loginWebview(data: Intent)
 
         fun loginGoogle(accessToken: String, email: String)
 

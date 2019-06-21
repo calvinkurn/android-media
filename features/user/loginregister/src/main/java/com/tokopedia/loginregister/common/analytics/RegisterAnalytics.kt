@@ -1,0 +1,533 @@
+package com.tokopedia.loginregister.common.analytics
+
+import android.content.Context
+
+import com.tokopedia.analytics.TrackAnalytics
+import com.tokopedia.analytics.firebase.FirebaseEvent
+import com.tokopedia.analytics.firebase.FirebaseParams
+import com.tokopedia.track.TrackApp
+import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.user.session.UserSessionInterface
+
+import java.util.HashMap
+
+import javax.inject.Inject
+
+/**
+ * @author by ade on 12/04/18
+ * https://docs.google.com/spreadsheets/d/1CBXovkdWu7NMkxrHIOJihMyfuRWNZvxgJd36KxLS25I/edit#gid=471355800
+ */
+class RegisterAnalytics @Inject constructor() {
+
+    companion object {
+
+        val SCREEN_REGISTER_INITIAL = "Register page"
+
+        private val EVENT_CLICK_LOGIN = "clickLogin"
+        private val EVENT_CLICK_REGISTER = "clickRegister"
+
+        private val CATEGORY_LOGIN_PAGE = "login page"
+        private val CATEGORY_REGISTER_PAGE = "register page"
+        private val CATEGORY_REGISTER_WITH_EMAIL_PAGE = "register with email page"
+        private val CATEGORY_REGISTER_WITH_PHONE_NUMBER_OTP = "register with phone number otp"
+
+        private val ACTION_CLICK_DAFTAR_TOP = "click daftar top"
+        private val ACTION_CLICK_DAFTAR_BOTTOM = "click daftar bottom"
+        private val ACTION_CLICK_ON_BUTTON_BACK = "click on button back"
+        private val ACTION_CLICK_MASUK_TOP = "click masuk top"
+        private val ACTION_CLICK_MASUK_BOTTOM = "click masuk bottom"
+        private val ACTION_CLICK_ON_BUTTON_DAFTAR = "click on button daftar"
+        private val ACTION_CLICK_ON_BUTTON_DAFTAR_EMAIL = "click on button daftar - email"
+        private val ACTION_CLICK_ON_BUTTON_DAFTAR_PHONE_NUMBER = "click on button daftar - phone number"
+        private val ACTION_CLICK_ON_BUTTON_GOOGLE = "click on button google"
+        private val ACTION_CLICK_ON_BUTTON_FACEBOOK = "click on button facebook"
+        private val ACTION_CLICK_YA_MASUK_TERDAFTAR_EMAIL = "click ya, masuk terdaftar - email"
+        private val ACTION_CLICK_UBAH_TERDAFTAR_EMAIL = "click ubah terdaftar - email"
+        private val ACTION_CLICK_UBAH_EMAIL = "click ubah - email"
+        private val ACTION_CLICK_YA_BENAR_EMAIL = "click ya, benar - email"
+        private val ACTION_CLICK_YA_BENAR_PHONE = "click ya, benar - phone number"
+        private val ACTION_CLICK_UBAH_BENAR_PHONE = "click ubah, benar - phone number"
+        private val ACTION_CLICK_YA_MASUK_TERDAFTAR_PHONE = "click ya, masuk terdaftar - phone number"
+        private val ACTION_CLICK_UBAH_TERDAFTAR_PHONE = "click ubah terdaftar - phone number"
+        private val ACTION_CLICK_ON_BUTTON_BACK_PHONE = "click ubah terdaftar - phone number"
+
+        private val LABEL_EMPTY = ""
+        private val LABEL_CLICK = "click"
+        private val LABEL_SUCCESS = "success"
+        private val LABEL_FAILED = "failed - "
+        private val LABEL_LOGIN_SUCCESS = "login success"
+        private val LABEL_LOGIN_FAILED = "login failed - "
+        private val LABEL_REGISTER_SUCCESS = "register success"
+        private val LABEL_REGISTER_FAILED = "register failed - "
+        val LABEL_EMAIL_EXIST = "email exist"
+        val LABEL_PHONE_EXIST = "phone number exist"
+
+        val GOOGLE = "google"
+        val FACEBOOK = "facebook"
+    }
+
+    //#R1
+    fun trackClickTopSignUpButton() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                ACTION_CLICK_DAFTAR_TOP,
+                LABEL_EMPTY
+        ))
+    }
+
+    //#R2
+    fun trackClickBottomSignUpButton() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                ACTION_CLICK_DAFTAR_BOTTOM,
+                LABEL_EMPTY
+        ))
+    }
+
+    //#R3
+    fun trackClickOnBackButtonRegister() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_BACK,
+                LABEL_EMPTY
+        ))
+    }
+
+    //#R4
+    fun trackClickTopSignInButton() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_MASUK_TOP,
+                LABEL_EMPTY
+        ))
+    }
+
+    //#R5
+    fun trackClickSignUpButton() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_DAFTAR,
+                LABEL_CLICK
+        ))
+    }
+
+    //#R5
+    fun trackFailedClickSignUpButton(failedMessage: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_DAFTAR,
+                LABEL_FAILED + failedMessage
+        ))
+    }
+
+    //#R5
+    fun trackClickEmailSignUpButton() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_DAFTAR_EMAIL,
+                LABEL_CLICK
+        ))
+    }
+
+    //#R5
+    fun trackSuccessClickEmailSignUpButton() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_DAFTAR_EMAIL,
+                LABEL_SUCCESS
+        ))
+    }
+
+    //#R5
+    fun trackFailedClickEmailSignUpButton(failedMessage: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_DAFTAR_EMAIL,
+                LABEL_FAILED + failedMessage
+        ))
+    }
+
+    //#R5
+    fun trackClickPhoneSignUpButton() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_DAFTAR_PHONE_NUMBER,
+                LABEL_CLICK
+        ))
+    }
+
+    //#R5
+    fun trackFailedClickPhoneSignUpButton(failedMessage: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_DAFTAR_PHONE_NUMBER,
+                LABEL_FAILED + failedMessage
+        ))
+    }
+
+    //#R6
+    fun trackClickGoogleButton(applicationContext: Context) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_GOOGLE,
+                LABEL_CLICK
+        ))
+
+        val map = HashMap<String, Any>()
+        map[FirebaseParams.Home.LANDING_SCREEN_NAME] = "GoogleSignInActivity"
+        TrackAnalytics.sendEvent(FirebaseEvent.Home.LOGIN_PAGE_CLICK_LOGIN_GOOGLE,
+                map, applicationContext)
+    }
+
+    //#R6
+    fun trackSuccessClickLoginGoogleButton() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_GOOGLE,
+                LABEL_LOGIN_SUCCESS
+        ))
+    }
+
+    //#R6
+    fun trackFailedClickLoginGoogleButton(loginFailedMessage: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_GOOGLE,
+                LABEL_LOGIN_FAILED + loginFailedMessage
+        ))
+    }
+
+    //#R6
+    fun trackSuccessClickRegisterGoogleButton() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_GOOGLE,
+                LABEL_REGISTER_SUCCESS
+        ))
+    }
+
+    //#R6
+    fun trackFailedClickRegisterGoogleButton(registerFailedMessage: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_GOOGLE,
+                LABEL_REGISTER_FAILED + registerFailedMessage
+        ))
+    }
+
+    //#R7
+    fun trackClickFacebookButton(applicationContext: Context) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_FACEBOOK,
+                LABEL_CLICK
+        ))
+
+        val map = HashMap<String, Any>()
+        map[FirebaseParams.Home.LANDING_SCREEN_NAME] = "Facebook"
+        TrackAnalytics.sendEvent(FirebaseEvent.Home.LOGIN_PAGE_CLICK_LOGIN_FACEBOOK,
+                map, applicationContext)
+    }
+
+    //#R7
+    fun trackSuccessClickLoginFacebookButton() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_FACEBOOK,
+                LABEL_LOGIN_SUCCESS
+        ))
+    }
+
+    //#R7
+    fun trackFailedClickLoginFacebookButton(loginFailedMessage: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_FACEBOOK,
+                LABEL_LOGIN_FAILED + loginFailedMessage
+        ))
+    }
+
+    //#R7
+    fun trackSuccessClickRegisterFacebookButton() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_FACEBOOK,
+                LABEL_REGISTER_SUCCESS
+        ))
+    }
+
+    //#R7
+    fun trackFailedClickRegisterFacebookButton(registerFailedMessage: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_FACEBOOK,
+                LABEL_REGISTER_FAILED + registerFailedMessage
+        ))
+    }
+
+    //#R8
+    fun trackClickBottomSignInButton() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_MASUK_BOTTOM,
+                LABEL_EMPTY
+        ))
+    }
+
+    //#R9
+    fun trackClickYesButtonRegisteredEmailDialog() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_YA_MASUK_TERDAFTAR_EMAIL,
+                LABEL_CLICK
+        ))
+    }
+
+    //#R9
+    fun trackSuccessClickYesButtonRegisteredEmailDialog() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_YA_MASUK_TERDAFTAR_EMAIL,
+                LABEL_SUCCESS
+        ))
+    }
+
+    //#R9
+    fun trackFailedClickYesButtonRegisteredEmailDialog(failedMessage: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_YA_MASUK_TERDAFTAR_EMAIL,
+                LABEL_FAILED + failedMessage
+        ))
+    }
+
+    //#R10
+    fun trackClickChangeButtonRegisteredEmailDialog() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_UBAH_TERDAFTAR_EMAIL,
+                LABEL_EMPTY
+        ))
+    }
+
+    //#R11
+    fun trackClickYesButtonEmailDialog() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_YA_BENAR_EMAIL,
+                LABEL_CLICK
+        ))
+    }
+
+    //#R11
+    fun trackSuccessClickYesButtonEmailDialog() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_YA_BENAR_EMAIL,
+                LABEL_SUCCESS
+        ))
+    }
+
+    //#R11
+    fun trackFailedClickYesButtonEmailDialog(failedMessage: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_YA_BENAR_EMAIL,
+                LABEL_FAILED + failedMessage
+        ))
+    }
+
+    //#R12
+    fun trackClickChangeButtonEmailDialog() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_UBAH_EMAIL,
+                LABEL_EMPTY
+        ))
+    }
+
+    //#R13
+    fun trackClickOnBackButtonRegisterEmail() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_WITH_EMAIL_PAGE,
+                ACTION_CLICK_ON_BUTTON_BACK,
+                LABEL_EMPTY
+        ))
+    }
+
+    //#R14
+    fun trackClickYesButtonPhoneDialog() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_YA_BENAR_PHONE,
+                LABEL_CLICK
+        ))
+    }
+
+    //#R14
+    fun trackSuccessClickYesButtonPhoneDialog() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_YA_BENAR_PHONE,
+                LABEL_SUCCESS
+        ))
+    }
+
+    //#R14
+    fun trackFailedClickYesButtonPhoneDialog(failedMessage: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_YA_BENAR_PHONE,
+                LABEL_FAILED + failedMessage
+        ))
+    }
+
+    //#R15
+    fun trackClickChangeButtonPhoneDialog() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_UBAH_BENAR_PHONE,
+                LABEL_EMPTY
+        ))
+    }
+
+    //#R16
+    fun trackClickYesButtonRegisteredPhoneDialog() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_YA_MASUK_TERDAFTAR_PHONE,
+                LABEL_CLICK
+        ))
+    }
+
+    //#R16
+    fun trackSuccessClickYesButtonRegisteredPhoneDialog() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_YA_MASUK_TERDAFTAR_PHONE,
+                LABEL_SUCCESS
+        ))
+    }
+
+    //#R16
+    fun trackFailedClickYesButtonRegisteredPhoneDialog(failedMessage: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_YA_MASUK_TERDAFTAR_PHONE,
+                LABEL_FAILED + failedMessage
+        ))
+    }
+
+    //#R16
+    fun trackClickChangeButtonRegisteredPhoneDialog() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_UBAH_TERDAFTAR_PHONE,
+                LABEL_EMPTY
+        ))
+    }
+
+    fun trackErrorRegister(errorMessage: String, loginMethod: String) {
+        when(loginMethod){
+            UserSessionInterface.LOGIN_METHOD_EMAIL -> onErrorRegisterEmail()
+            UserSessionInterface.LOGIN_METHOD_PHONE -> onErrorRegisterPhone()
+            UserSessionInterface.LOGIN_METHOD_GOOGLE -> onErrorRegisterGoogle(errorMessage)
+            UserSessionInterface.LOGIN_METHOD_FACEBOOK -> onErrorRegisterFacebook(errorMessage)
+        }
+    }
+
+    private fun onErrorRegisterFacebook(errorMessage: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_FACEBOOK,
+                LABEL_REGISTER_FAILED + errorMessage
+        ))
+    }
+
+    private fun onErrorRegisterGoogle(errorMessage: String) {
+
+    }
+
+    private fun onErrorRegisterPhone() {
+
+    }
+
+    private fun onErrorRegisterEmail() {
+
+    }
+
+    fun trackSuccessRegister(loginMethod: String) {
+        when(loginMethod){
+            UserSessionInterface.LOGIN_METHOD_EMAIL -> onSuccessRegisterEmail()
+            UserSessionInterface.LOGIN_METHOD_PHONE -> onSuccessRegisterPhone()
+            UserSessionInterface.LOGIN_METHOD_GOOGLE -> onSuccessRegisterGoogle()
+            UserSessionInterface.LOGIN_METHOD_FACEBOOK -> onSuccessRegisterFacebook()
+        }
+    }
+
+    private fun onSuccessRegisterFacebook() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                LoginRegisterAnalytics.EVENT_REGISTER_SUCCESS,
+                LoginRegisterAnalytics.CATEGORY_REGISTER,
+                LoginRegisterAnalytics.ACTION_REGISTER_SUCCESS,
+                LoginRegisterAnalytics.FACEBOOK
+        ))
+    }
+
+    private fun onSuccessRegisterGoogle() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                LoginRegisterAnalytics.EVENT_REGISTER_SUCCESS,
+                LoginRegisterAnalytics.CATEGORY_REGISTER,
+                LoginRegisterAnalytics.ACTION_REGISTER_SUCCESS,
+                LoginRegisterAnalytics.GOOGLE
+        ))
+    }
+
+    private fun onSuccessRegisterPhone() {
+
+    }
+
+    private fun onSuccessRegisterEmail() {
+
+    }
+}

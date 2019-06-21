@@ -101,23 +101,19 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
     private void handleOtpSecurityQuestion(VerificationViewModel viewModel) {
         switch (viewModel.getType()) {
             case RequestOtpUseCase.MODE_EMAIL:
-                if (!TextUtils.isEmpty(viewModel.getEmail())) {
                     requestOtpUseCase.execute(RequestOtpUseCase.getParamEmail(
                             viewModel.getEmail(),
                             viewModel.getOtpType(),
                             userSession.getTemporaryUserId()
                     ), new RequestOtpSubscriber(getView()));
-                }
                 break;
             default:
-                if (!TextUtils.isEmpty(viewModel.getPhoneNumber())) {
                     requestOtpUseCase.execute(RequestOtpUseCase.getParam(
                             viewModel.getType(),
                             viewModel.getPhoneNumber(),
                             viewModel.getOtpType(),
                             userSession.getTemporaryUserId()
                     ), new RequestOtpSubscriber(getView()));
-                }
                 break;
         }
     }

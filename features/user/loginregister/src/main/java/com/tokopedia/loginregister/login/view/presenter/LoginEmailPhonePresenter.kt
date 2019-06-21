@@ -17,7 +17,6 @@ import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
 import com.tokopedia.loginregister.loginthirdparty.domain.LoginWebviewUseCase
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
-import com.tokopedia.loginregister.loginthirdparty.subscriber.LoginThirdPartySubscriber
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterValidationPojo
 import com.tokopedia.loginregister.registerinitial.domain.usecase.RegisterValidationUseCase
 import com.tokopedia.sessioncommon.ErrorHandlerSession
@@ -136,6 +135,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
     }
 
     override fun getFacebookCredential(fragment: Fragment, callbackManager: CallbackManager) {
+        userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_FACEBOOK
         getFacebookCredentialUseCase.execute(GetFacebookCredentialUseCase.getParam(
                 fragment,
                 callbackManager),
@@ -153,11 +153,12 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
      * Step 6 : Proceed to home
      */
     override fun loginFacebook(context: Context, accessToken: AccessToken, email: String) {
+        userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_FACEBOOK
         view.showLoadingLogin()
         loginTokenUseCase.executeLoginSocialMedia(LoginTokenUseCase.generateParamSocialMedia(
                 accessToken.token, LoginTokenUseCase.SOCIAL_TYPE_FACEBOOK),
                 LoginTokenSubscriber(userSession,
-                        view.onSuccessLoginFacebook(email),
+                        { getUserInfo() },
                         view.onErrorLoginFacebook(email),
                         view.onGoToActivationPage(email),
                         view.onGoToSecurityQuestion(email)))
@@ -174,50 +175,16 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
      * Step 6 : Proceed to home
      */
     override fun loginGoogle(accessToken: String, email: String) {
+        userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_GOOGLE
+
         view.showLoadingLogin()
         loginTokenUseCase.executeLoginSocialMedia(LoginTokenUseCase.generateParamSocialMedia(
                 accessToken, LoginTokenUseCase.SOCIAL_TYPE_GOOGLE),
                 LoginTokenSubscriber(userSession,
-                        view.onSuccessLoginGoogle(email),
+                        { getUserInfo() },
                         view.onErrorLoginGoogle(email),
                         view.onGoToActivationPage(email),
                         view.onGoToSecurityQuestion(email)))
-    }
-
-
-    override fun loginWebview(data: Intent) {
-//        val BUNDLE = "bundle"
-//        val ERROR = "error"
-//        val CODE = "code"
-//        val MESSAGE = "message"
-//        val SERVER = "server"
-//        val PATH = "path"
-//        val HTTPS = "https://"
-//        val ACTIVATION_SOCIAL = "activation-social"
-//
-//        if (!(data?.getBundleExtra(BUNDLE) == null
-//                        || data.getBundleExtra(BUNDLE).getString(PATH) == null)) {
-//            val bundle = data.getBundleExtra(BUNDLE)
-//            if (bundle.getString(PATH, "").contains(ERROR)) {
-//                view.onErrorLoginSosmed(LoginRegisterAnalytics.WEBVIEW,
-//                        bundle.getString(MESSAGE, "")
-//                                + view.context.getString(R.string.code_error) + " " +
-//                                ErrorHandlerSession.ErrorCode.WS_ERROR)
-//            } else if (bundle.getString(PATH, "").contains(CODE)) {
-//                view.showLoadingLogin()
-//                loginWebviewUseCase.execute(LoginWebviewUseCase.getParamWebview(bundle.getString(CODE, ""), (HTTPS + bundle.getString(SERVER) + bundle.getString(PATH))),
-//                        LoginThirdPartySubscriber(view.context,
-//                                "", view, LoginRegisterAnalytics.WEBVIEW))
-//            } else if (bundle.getString(PATH, "").contains(ACTIVATION_SOCIAL)) {
-//                view.onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(
-//                        ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW,
-//                        view.context))
-//            }
-//        } else {
-//            view.onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(
-//                    ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW,
-//                    view.context))
-//        }
     }
 
     /**
@@ -230,12 +197,16 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
      * Step 5 : Proceed to home
      */
     override fun loginEmail(email: String, password: String) {
+        userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL
         view.resetError()
         if (isValid(email, password)) {
             view.showLoadingLogin()
             loginTokenUseCase.executeLoginEmailWithPassword(LoginTokenUseCase.generateParamLoginEmail(
                     email, password), LoginTokenSubscriber(userSession,
-                    view.onSuccessLoginToken(email),
+                    {
+                        view.setSmartLock()
+                        getUserInfo()
+                    },
                     view.onErrorLoginEmail(email),
                     view.onGoToActivationPage(email),
                     view.onGoToSecurityQuestion(email)))
@@ -247,7 +218,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
     override fun reloginAfterSQ(validateToken: String) {
         loginTokenUseCase.executeLoginAfterSQ(LoginTokenUseCase.generateParamLoginAfterSQ(
                 userSession, validateToken), LoginTokenSubscriber(userSession,
-                view.onSuccessReloginAfterSQ(),
+                { getUserInfo() },
                 view.onErrorReloginAfterSQ(validateToken),
                 view.onGoToActivationPageAfterRelogin(),
                 view.onGoToSecurityQuestionAfterRelogin()))

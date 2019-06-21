@@ -39,8 +39,6 @@ interface RegisterInitialContract {
 
         fun dismissProgressBar()
 
-        fun onErrorRegisterSosmed(methodName: String, errorMessage: String)
-
         fun showRegisteredEmailDialog(email: String)
 
         fun showRegisteredPhoneDialog(phone: String)
@@ -57,15 +55,9 @@ interface RegisterInitialContract {
 
         fun onGoToAddName()
 
-        fun onSuccessRegisterSosmed(methodName: String)
-
         fun onBackPressed()
 
-        fun onSuccessLoginFacebook(email: String): Function1<LoginTokenPojo, Unit>
-
         fun onErrorLoginFacebook(email: String): (e: Throwable) -> Unit
-
-        fun onSuccessLoginGoogle(email: String): (pojo: LoginTokenPojo) -> Unit
 
         fun onErrorLoginGoogle(email: String): (e: Throwable) -> Unit
 
@@ -90,8 +82,6 @@ interface RegisterInitialContract {
     interface Presenter : CustomerPresenter<View> {
 
         fun getProvider()
-
-        fun registerWebview(data: Intent)
 
         fun getFacebookCredential(fragment: Fragment, callbackManager: CallbackManager)
 

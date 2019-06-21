@@ -97,7 +97,7 @@ public class ActivationFragment extends BaseDaggerFragment
 
     @Override
     protected String getScreenName() {
-        return LoginRegisterAnalytics.SCREEN_ACCOUNT_ACTIVATION;
+        return LoginRegisterAnalytics.Companion.getSCREEN_ACCOUNT_ACTIVATION();
     }
 
     @Override

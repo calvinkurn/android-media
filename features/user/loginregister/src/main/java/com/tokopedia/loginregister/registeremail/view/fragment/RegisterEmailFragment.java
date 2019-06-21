@@ -133,7 +133,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
     @Override
     protected String getScreenName() {
-        return LoginRegisterAnalytics.SCREEN_REGISTER_EMAIL;
+        return LoginRegisterAnalytics.Companion.getSCREEN_REGISTER_EMAIL();
     }
 
 

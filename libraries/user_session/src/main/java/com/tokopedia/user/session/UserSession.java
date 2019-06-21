@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -51,8 +52,9 @@ public class UserSession implements UserSessionInterface {
     private static final String HAS_PASSWORD = "HAS_PASSWORD";
     private static final String HAS_SHOWN_SALDO_WARNING = "HAS_SHOWN_SALDO_WARNING";
     private static final String HAS_SHOWN_SALDO_INTRO_PAGE = "HAS_SHOWN_SALDO_INTRO_PAGE";
-
     private static final String AUTOFILL_USER_DATA = "AUTOFILL_USER_DATA";
+    private static final String LOGIN_METHOD = "LOGIN_METHOD";
+
 
     private Context context;
 
@@ -225,6 +227,12 @@ public class UserSession implements UserSessionInterface {
     public String getAutofillUserData(){
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         return sharedPrefs.getString(AUTOFILL_USER_DATA, "");
+    }
+
+    @Override
+    public String getLoginMethod() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(LOGIN_METHOD, "");
     }
 
     /**
@@ -473,6 +481,14 @@ public class UserSession implements UserSessionInterface {
         editor.apply();
     }
 
+    @Override
+    public void setLoginMethod(@NotNull String loginMethod) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(LOGIN_METHOD, loginMethod);
+        editor.apply();
+    }
+
     public void logoutSession() {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
@@ -491,6 +507,7 @@ public class UserSession implements UserSessionInterface {
         editor.putString(PROFILE_PICTURE, null);
         editor.putString(GC_TOKEN, "");
         editor.putString(SHOP_AVATAR, "");
+        editor.putString(LOGIN_METHOD,"");
         editor.apply();
     }
 }
