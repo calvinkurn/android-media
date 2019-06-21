@@ -52,7 +52,7 @@ public class TrackPushNotificationUseCase extends UseCase<TrackPushNotificationE
     public RequestParams createRequestParam(ApplinkNotificationModel model) {
         RequestParams params = RequestParams.create();
 
-        params.putString(PARAM_TRANSACTION_ID, model.getGId());
+        params.putString(PARAM_TRANSACTION_ID, model.getTransactionId());
         params.putString(PARAM_RECIPIENT_ID, model.getToUserId());
         params.putString(PARAM_STATUS, STATUS_DELIVERED);
 

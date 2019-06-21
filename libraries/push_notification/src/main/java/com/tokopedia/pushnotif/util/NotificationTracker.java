@@ -39,19 +39,13 @@ public class NotificationTracker {
                 .take(1)
                 .subscribe(new Subscriber<TrackPushNotificationEntity>() {
                     @Override
-                    public void onCompleted() {
-                        Log.d("TEST_TRACK", "tracked");
-                    }
+                    public void onCompleted() { }
 
                     @Override
-                    public void onError(Throwable e) {
-                        Log.d("TEST_TRACK", "tracked");
-                    }
+                    public void onError(Throwable e) { }
 
                     @Override
-                    public void onNext(TrackPushNotificationEntity trackPushNotificationEntity) {
-                        Log.d("TEST_TRACK", "tracked");
-                    }
+                    public void onNext(TrackPushNotificationEntity trackPushNotificationEntity) { }
                 });
     }
 }
