@@ -35,11 +35,11 @@ import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.CategoryPageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
@@ -50,11 +50,9 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.entity.intermediary.CategoryHadesModel;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
 import com.tokopedia.core.util.NonScrollLinearLayoutManager;
-import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
@@ -74,10 +72,10 @@ import com.tokopedia.discovery.intermediary.view.adapter.CurationAdapter;
 import com.tokopedia.discovery.intermediary.view.adapter.HotListItemAdapter;
 import com.tokopedia.discovery.intermediary.view.adapter.IntermediaryBrandsAdapter;
 import com.tokopedia.discovery.intermediary.view.adapter.IntermediaryCategoryAdapter;
+import com.tokopedia.discovery.intermediary.view.customview.YoutubeWebViewThumbnail;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
 import com.tokopedia.discovery.view.CategoryHeaderTransformation;
-import com.tokopedia.tkpdpdp.customview.YoutubeWebViewThumbnail;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
@@ -93,6 +91,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
 import com.tokopedia.topads.sdk.widget.TopAdsView;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
@@ -382,7 +381,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
             expandLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    UnifyTracking.eventExpandCategoryIntermediary(getActivity(), departmentId);
+                    eventExpandCategoryIntermediary(departmentId);
                     categoryAdapter.addDataChild(childCategoryModelList
                             .subList(9, childCategoryModelList.size()));
                     expandLayout.setVisibility(View.GONE);
@@ -405,6 +404,15 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
                 });
             }
         }
+    }
+
+    private void eventExpandCategoryIntermediary(String parentCategory){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
+                AppEventTracking.Event.INTERMEDIARY_PAGE,
+                AppEventTracking.Category.INTERMEDIARY_PAGE + "-" + parentCategory,
+                AppEventTracking.Action.NAVIGATION_CLICK,
+                AppEventTracking.EventLabel.EXPAND_SUB_CATEGORY
+        ).getEvent());
     }
 
     @Override
@@ -687,8 +695,17 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         bundle.putString("tracker_list_name", productModel.getTrackerListName());
         intent.putExtras(bundle);
         getActivity().startActivity(intent);
-        UnifyTracking.eventCuratedIntermediary(getActivity(), departmentId,
+        eventCuratedIntermediary(departmentId,
                 curatedName, productModel.getName());
+    }
+
+    public void eventCuratedIntermediary(String parentCat, String curatedProductName,
+                                                String productName) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.INTERMEDIARY_PAGE,
+                AppEventTracking.Category.INTERMEDIARY_PAGE + "-" + parentCat,
+                AppEventTracking.Action.CURATED + " " + curatedProductName,
+                productName);
     }
 
     private Map<String, Object> createClickProductDataLayer(ProductModel product) {
@@ -771,7 +788,15 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
                         )
 
                 )));
-        UnifyTracking.eventLevelCategoryIntermediary(getActivity(), departmentId, child.getCategoryId());
+        eventLevelCategoryIntermediary(departmentId, child.getCategoryId());
+    }
+
+    public void eventLevelCategoryIntermediary(String parentCat, String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.INTERMEDIARY_PAGE,
+                AppEventTracking.Category.INTERMEDIARY_PAGE + "-" + parentCat,
+                AppEventTracking.Action.CATEGORY_LEVEL,
+                label);
     }
 
     @Override
@@ -859,7 +884,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @Override
     public void onBrandClick(BrandModel brandModel, int position) {
-        UnifyTracking.eventOfficialStoreIntermediary(getActivity(), departmentId, brandModel.getBrandName());
+        eventOfficialStoreIntermediary(departmentId, brandModel.getBrandName());
         Intent intent = ((DiscoveryRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), brandModel.getId());
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getActivity().startActivity(intent);
@@ -881,6 +906,14 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
                         )
 
                 )));
+    }
+
+    private void eventOfficialStoreIntermediary(String parentCat, String brandName){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.INTERMEDIARY_PAGE,
+                AppEventTracking.Category.INTERMEDIARY_PAGE + "-" + parentCat,
+                AppEventTracking.Action.OFFICIAL_STORE_CLICK,
+                brandName);
     }
 
     @Override
@@ -981,7 +1014,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @Override
     public void sendHotlistClickEvent(HotListModel hotListModel, int pos) {
-        UnifyTracking.eventHotlistIntermediary(getContext(), departmentId, hotListModel.getTitle());
+        eventHotlistIntermediary(departmentId, hotListModel.getTitle());
         String url = hotListModel.getUrl();
         URLParser urlParser = new URLParser(url);
         switch (urlParser.getType()) {
@@ -1008,7 +1041,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
                 bundle.putString(BrowseProductRouter.DEPARTMENT_ID, departmentId);
                 bundle.putString(BrowseProductRouter.EXTRAS_SEARCH_TERM, searchQuery);
 
-                Intent intent = BrowseProductRouter.getSearchProductIntent(getContext());
+                Intent intent = RouteManager.getIntent(getContext(), constructSearchApplink(searchQuery, departmentId));
                 intent.putExtras(bundle);
 
                 startActivity(intent);
@@ -1041,10 +1074,29 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     }
 
+    private static String constructSearchApplink(String query, String departmentId) {
+        String applink = TextUtils.isEmpty(query) ?
+                ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE :
+                ApplinkConst.DISCOVERY_SEARCH;
+
+        return applink
+                + "?"
+                + "q=" + query
+                + "&sc=" + departmentId;
+    }
+
+    public void eventHotlistIntermediary(String parentCat, String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.INTERMEDIARY_PAGE,
+                AppEventTracking.Category.INTERMEDIARY_PAGE + "-" + parentCat,
+                AppEventTracking.Action.HOTLIST,
+                label);
+    }
+
     private class SeeAllOfficialOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
-            IntermediaryAnalytics.eventClickSeeAllOfficialStores(getActivity());
+            IntermediaryAnalytics.eventClickSeeAllOfficialStores();
             viewAllOfficialStores();
         }
     }

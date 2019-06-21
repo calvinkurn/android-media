@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * @author by alifa on 11/28/17.
  */
-
+@Deprecated
 public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.BannerViewHolder> {
 
     private static final String TAG = BannerPagerAdapter.class.getSimpleName();
@@ -80,7 +80,6 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
                     .diskCacheStrategy(DiskCacheStrategy.RESULT)
                     .placeholder(R.drawable.ic_loading_image)
                     .error(R.drawable.ic_loading_image)
-                    .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                     .centerCrop()
                     .into(holder.bannerImage);
         } catch (Exception e) {

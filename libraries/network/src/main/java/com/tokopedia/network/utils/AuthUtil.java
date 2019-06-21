@@ -58,6 +58,7 @@ public class AuthUtil {
     private static final String HEADER_OS_TYPE = "os-type";
     public static final String HEADER_SESSION_ID = "Tkpd-SessionId";
     public static final String HEADER_OS_VERSION = "os_version";
+    public static final String HEADER_USER_AGENT="User-Agent";
 
     private static final String KEY_FINGERPRINT_DATA = "Fingerprint-Data";
     private static final String KEY_FINGERPRINT_HASH = "Fingerprint-Hash";
@@ -135,6 +136,7 @@ public class AuthUtil {
         headerMap.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
         headerMap.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
         headerMap.put(HEADER_OS_VERSION, String.valueOf(Build.VERSION.SDK_INT));
+        headerMap.put(HEADER_USER_AGENT, getUserAgent());
 
         headerMap.put(HEADER_USER_ID, userId);
         headerMap.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
@@ -212,6 +214,7 @@ public class AuthUtil {
         headerMap.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
         headerMap.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
         headerMap.put(HEADER_OS_VERSION, String.valueOf(Build.VERSION.SDK_INT));
+        headerMap.put(HEADER_USER_AGENT, getUserAgent());
 
         headerMap.put(HEADER_USER_ID, userId);
         headerMap.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
@@ -273,6 +276,12 @@ public class AuthUtil {
             e.printStackTrace();
             return "";
         }
+    }
+
+    private static final String userAgentFormat = "TkpdConsumer/%s (%s;)";
+
+    public static String getUserAgent(){
+        return String.format(userAgentFormat, GlobalConfig.VERSION_NAME, "Android "+ Build.VERSION.RELEASE);
     }
 
     public static String getHeaderRequestReactNative(Context context) {

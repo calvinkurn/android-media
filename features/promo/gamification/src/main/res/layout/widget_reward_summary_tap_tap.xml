@@ -32,7 +32,7 @@
                 android:shadowColor="#80000000"
                 android:shadowDy="2"
                 android:shadowRadius="4"
-                android:text="REWARDS"
+                android:text="@string/rewards_text_summary"
                 android:textColor="#ffffff"
                 android:textSize="24sp" />
 
@@ -101,8 +101,7 @@
             android:id="@+id/image_sinar"
             android:layout_width="@dimen/dp_160"
             android:layout_height="@dimen/dp_160"
-            android:layout_gravity="center_horizontal"
-            android:src="@drawable/sinar_rewards_3_x" />
+            android:layout_gravity="center_horizontal" />
 
 
         <FrameLayout
@@ -115,10 +114,10 @@
 
             <ImageView
                 android:id="@+id/image_star"
-                android:layout_width="@dimen/dp_30"
-                android:layout_height="@dimen/dp_30"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_star_summary_page" />
+                android:layout_width="@dimen/dp_50"
+                android:layout_height="@dimen/dp_50"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dp_13" />
         </FrameLayout>
 
 

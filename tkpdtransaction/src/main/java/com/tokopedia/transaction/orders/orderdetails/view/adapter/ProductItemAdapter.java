@@ -103,6 +103,8 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
             if (!TextUtils.isEmpty(items.getDescription())) {
                 productDescription.setText(items.getDescription());
+            }else {
+                productDescription.setVisibility(View.GONE);
             }
             if (!TextUtils.isEmpty(items.getTotalPrice())) {
                 totalPrice.setText(items.getTotalPrice());

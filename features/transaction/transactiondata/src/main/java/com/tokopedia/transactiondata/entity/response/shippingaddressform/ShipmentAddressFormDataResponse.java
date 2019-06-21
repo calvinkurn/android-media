@@ -3,8 +3,10 @@ package com.tokopedia.transactiondata.entity.response.shippingaddressform;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.transactiondata.entity.response.cartlist.AutoApply;
+import com.tokopedia.transactiondata.entity.response.cartlist.AutoapplyStack;
 import com.tokopedia.transactiondata.entity.response.cartlist.AutoapplyV2;
 import com.tokopedia.transactiondata.entity.response.cartlist.EgoldAttributes;
+import com.tokopedia.transactiondata.entity.response.cartlist.GlobalCouponAttr;
 import com.tokopedia.transactiondata.entity.response.cartlist.PromoSuggestion;
 
 import java.util.ArrayList;
@@ -48,6 +50,9 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("is_robinhood")
     @Expose
     private int isRobinhood;
+    @SerializedName("is_hide_courier_name")
+    @Expose
+    private boolean isHidingCourier;
     @SerializedName("is_blackbox")
     @Expose
     private int isBlackbox;
@@ -63,6 +68,15 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("egold_attributes")
     @Expose
     private EgoldAttributes egoldAttributes;
+    @SerializedName("autoapply_stack")
+    @Expose
+    private AutoapplyStack autoapplyStack;
+    @SerializedName("global_coupon_attr")
+    @Expose
+    private GlobalCouponAttr globalCouponAttr;
+    @SerializedName("is_show_onboarding")
+    @Expose
+    private boolean isShowOnboarding;
 
     public AutoapplyV2 getAutoapplyV2() {
         return autoapplyV2;
@@ -112,6 +126,10 @@ public class ShipmentAddressFormDataResponse {
         return isRobinhood;
     }
 
+    public boolean getHideCourier() {
+        return isHidingCourier;
+    }
+
     public int getIsBlackbox() {
         return isBlackbox;
     }
@@ -120,9 +138,7 @@ public class ShipmentAddressFormDataResponse {
         return promoSuggestion;
     }
 
-    public AutoApply getAutoApply() {
-        return autoApply;
-    }
+    public AutoApply getAutoApply() { return autoApply; }
 
     public EgoldAttributes getEgoldAttributes() {
         return egoldAttributes;
@@ -130,5 +146,12 @@ public class ShipmentAddressFormDataResponse {
 
     public void setEgoldAttributes(EgoldAttributes egoldAttributes) {
         this.egoldAttributes = egoldAttributes;
+    }
+    public AutoapplyStack getAutoapplyStack() { return autoapplyStack; }
+
+    public GlobalCouponAttr getGlobalCouponAttr() { return globalCouponAttr; }
+
+    public boolean isShowOnboarding() {
+        return isShowOnboarding;
     }
 }

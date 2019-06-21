@@ -31,6 +31,8 @@ import com.tkpd.library.utils.ListViewHelper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -65,6 +67,7 @@ import com.tokopedia.seller.selling.orderReject.model.ModelRejectOrder;
 import com.tokopedia.seller.selling.presenter.listener.SellingView;
 import com.tokopedia.seller.selling.view.activity.SellingDetailActivity;
 import com.tokopedia.seller.util.NewOrderDialogBuilder;
+import com.tokopedia.track.TrackApp;
 
 import org.parceler.Parcels;
 
@@ -290,7 +293,8 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         } catch (NullPointerException e) {
             e.printStackTrace();
             Toast.makeText(activity, activity.getString(R.string.title_verification_timeout) + "\n" + activity.getString(R.string.message_verification_timeout), Toast.LENGTH_LONG).show();
-            if(!GlobalConfig.DEBUG) Crashlytics.log(0, "NullPointerException FragmentShopNewOrderDetailV2.java", e.toString());
+            if (!GlobalConfig.DEBUG)
+                Crashlytics.log(0, "NullPointerException FragmentShopNewOrderDetailV2.java", e.toString());
             activity.finish();
         }
     }
@@ -404,13 +408,13 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
             holder.viewPickupLocationCourier.setVisibility(View.GONE);
         }
 
-        if(payment != null){
+        if (payment != null) {
             if (payment.getPaymentProcessDayLeft() != null && payment.getPaymentProcessDayLeft() > 0 && orderDetail.getDetailPartialOrder().equals("1"))
                 holder.PartialButton.setVisibility(View.VISIBLE);
             else if (payment.getPaymentProcessDayLeft() < 0)
                 holder.AcceptButton.setVisibility(View.GONE);
             holder.Deadline.setText(payment.getPaymentProcessDueDate());
-        }else{
+        } else {
             holder.Deadline.setText(orderDetail.getDetailPayDueDate());
         }
 
@@ -441,9 +445,9 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
 
     }
 
-    private Intent getProductIntent(String productId){
+    private Intent getProductIntent(String productId) {
         if (getContext() != null) {
-            return RouteManager.getIntent(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+            return RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
         } else {
             return null;
         }
@@ -509,9 +513,17 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
             @Override
             public void onClick(View v) {
                 createAcceptDialog();
-                UnifyTracking.eventAcceptOrder(v.getContext());
+                eventAcceptOrder();
             }
         };
+    }
+
+    public void eventAcceptOrder() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.NEW_ORDER,
+                AppEventTracking.Category.NEW_ORDER,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.ACCEPT_ORDER);
     }
 
     private View.OnClickListener onRejectListener() {
@@ -519,9 +531,17 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
             @Override
             public void onClick(View v) {
                 createRejectDialog();
-                UnifyTracking.eventRejectOrder(v.getContext());
+                eventRejectOrder();
             }
         };
+    }
+
+    public void eventRejectOrder() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.NEW_ORDER,
+                AppEventTracking.Category.NEW_ORDER,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.REJECT_ORDER);
     }
 
     private View.OnClickListener onPartialListener() {

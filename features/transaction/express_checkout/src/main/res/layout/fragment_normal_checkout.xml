@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <FrameLayout
@@ -17,14 +18,30 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <View
-            android:id="@+id/v_shadow_top"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_8"
-            android:layout_gravity="bottom"
-            android:background="@drawable/bottom_sheet_shadow" />
-
     </FrameLayout>
+
+    <TextView
+        android:id="@+id/prescription_ticker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_16"
+        android:background="@drawable/bg_yellow_ticker"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_8"
+        android:text="@string/prescription_warning"
+        android:textColor="@color/black_54"
+        android:textSize="@dimen/sp_12"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <View
+        android:id="@+id/v_shadow_top"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_8"
+        android:layout_gravity="bottom"
+        android:background="@drawable/bottom_sheet_shadow" />
 
     <view.customview.TradeInTextView
         android:id="@+id/tv_trade_in"
@@ -35,7 +52,7 @@
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_8"
         android:tag="@string/noclick"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/button_buy_full"

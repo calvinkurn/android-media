@@ -11,6 +11,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHold
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer;
@@ -55,7 +57,7 @@ public class ShopFavouriteListFragment extends BaseListFragment<ShopFavouriteVie
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        shopPageTracking = new ShopPageTrackingBuyer((AbstractionRouter) getContext().getApplicationContext(),
+        shopPageTracking = new ShopPageTrackingBuyer(
                 new TrackingQueue(getContext()));
         shopId = getArguments().getString(ShopParamConstant.EXTRA_SHOP_ID);
         shopFavouriteListPresenter.attachView(this);
@@ -77,7 +79,10 @@ public class ShopFavouriteListFragment extends BaseListFragment<ShopFavouriteVie
 
     @Override
     public void onItemClicked(ShopFavouriteViewModel shopFavouriteViewModel) {
-        ((ShopModuleRouter) getActivity().getApplication()).goToProfileShop(getActivity(), shopFavouriteViewModel.getId());
+        Intent shopProfileIntent = RouteManager.getIntent(getActivity(), ApplinkConst.PROFILE, shopFavouriteViewModel.getId());
+        if (shopProfileIntent != null){
+            startActivity(shopProfileIntent);
+        }
     }
 
     @Override
@@ -99,7 +104,7 @@ public class ShopFavouriteListFragment extends BaseListFragment<ShopFavouriteVie
     @Override
     public void onErrorToggleFavourite(Throwable throwable) {
         if (!shopFavouriteListPresenter.isLoggedIn()) {
-            Intent intent = ((ShopModuleRouter) getActivity().getApplication()).getLoginIntent(getContext());
+            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN);
             startActivityForResult(intent, REQUEST_CODE_USER_LOGIN);
             return;
         }

@@ -74,7 +74,7 @@ public class FilterFragment extends BaseDaggerFragment {
     }
 
     private void initView() {
-        adapter = new FilterAdapter(getFilterClickListener(), R.layout.item_explore_filter_detail);
+        adapter = new FilterAdapter(getFilterClickListener(), R.layout.item_explore_filter_detail, FilterAdapter.PAGE_FILTER);
         rvFilter.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         rvFilter.setAdapter(adapter);
         rvFilter.addItemDecoration(new RecyclerView.ItemDecoration() {

@@ -34,7 +34,7 @@ import kotlinx.android.synthetic.main.partial_header_rate_estimation.*
 
 import javax.inject.Inject
 
-class RatesEstimationDetailFragment : BaseDaggerFragment(){
+class RatesEstimationDetailFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -47,6 +47,7 @@ class RatesEstimationDetailFragment : BaseDaggerFragment(){
     private var productWeightUnit: String = LABEL_GRAM
     private var productWeight: Float = 0f
     private var origin: String? = null
+    private var forDeliveryInfo: Boolean = false
 
     private val adapter = RatesEstimationServiceAdapter()
 
@@ -67,7 +68,7 @@ class RatesEstimationDetailFragment : BaseDaggerFragment(){
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel.rateEstResp.observe(this, Observer {
-            when(it){
+            when (it) {
                 is Success -> onSuccesLoadRateEstimaion(it.data)
                 is Fail -> onErrorLoadRateEstimaion(it.throwable)
             }
@@ -86,6 +87,7 @@ class RatesEstimationDetailFragment : BaseDaggerFragment(){
             productWeight = it.getFloat(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT, 0f)
             productWeight
             origin = it.getString(RatesEstimationConstant.PARAM_ORIGIN)
+            forDeliveryInfo = it.getBoolean(RatesEstimationConstant.PARAM_FOR_DELIVERY_INFO)
         }
 
         recycler_view.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -100,7 +102,7 @@ class RatesEstimationDetailFragment : BaseDaggerFragment(){
 
     private fun getCostEstimation() {
         setViewState(VIEW_LOADING)
-        val weightInKg: Float = if (productWeightUnit.toLowerCase() == KG) productWeight else (productWeight/1000)
+        val weightInKg: Float = if (productWeightUnit.toLowerCase() == KG) productWeight else (productWeight / 1000)
         viewModel.getCostEstimation(weightInKg, shopDomain, origin)
     }
 
@@ -133,17 +135,17 @@ class RatesEstimationDetailFragment : BaseDaggerFragment(){
         val ratesEstimation = ratesEstimationModel.rates
         val shop = ratesEstimationModel.shop
 
-        shipping_destination.text = shop.districtName
+        shipping_destination.text = shop.cityName
         val title = userSession.name
         val spannableString = SpannableString(title)
         spannableString.setSpan(StyleSpan(Typeface.BOLD), 0, userSession.name.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
         shipping_receiver_name.text = spannableString
-        if(address.phone.isNotEmpty()) {
+        if (address.phone.isNotEmpty()) {
             shipping_receiver_phone.visibility = View.VISIBLE
             shipping_receiver_phone.text = address.phone
         }
         shipping_receiver_address.text = MethodChecker.fromHtml("${address.address}, ${address.districtName}, ${address.provinceName}")
-        if (ratesEstimationModel.isBlackbox){
+        if (ratesEstimationModel.isBlackbox || forDeliveryInfo) {
             (activity as? BaseSimpleActivity)?.updateTitle(getString(R.string.product_detail_courier))
             if (recycler_view.itemDecorationCount > 0)
                 recycler_view.removeItemDecorationAt(recycler_view.itemDecorationCount - 1)
@@ -154,19 +156,23 @@ class RatesEstimationDetailFragment : BaseDaggerFragment(){
         adapter.isBlackbox = ratesEstimationModel.isBlackbox
         adapter.updateShippingServices(ratesEstimation.services)
         setViewState(VIEW_CONTENT)
+        if (forDeliveryInfo) {
+            app_bar_layout.visibility = View.GONE
+        }
     }
 
     companion object {
         private const val VIEW_CONTENT = 1
         private const val VIEW_LOADING = 2
 
-        fun createInstance(shopDomain: String, productWeight: Float, productWeightUnit: String, origin: String? = null) =
+        fun createInstance(shopDomain: String, productWeight: Float, productWeightUnit: String, origin: String? = null, forDeliveryInfo: Boolean) =
                 RatesEstimationDetailFragment().apply {
                     arguments = Bundle().apply {
                         putString(RatesEstimationConstant.PARAM_SHOP_DOMAIN, shopDomain)
                         putFloat(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT, productWeight)
                         putString(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT_UNIT, productWeightUnit)
                         putString(RatesEstimationConstant.PARAM_ORIGIN, origin)
+                        putBoolean(RatesEstimationConstant.PARAM_FOR_DELIVERY_INFO, forDeliveryInfo)
                     }
                 }
     }

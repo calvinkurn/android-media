@@ -123,7 +123,7 @@ public class SeatSelectionActivity extends EventBaseActivity implements
         seatNumberMap = new HashMap<>();
         selectedSeatViewModel = new SelectedSeatViewModel();
         seatLayoutViewModel = new SeatLayoutViewModel();
-        eventsAnalytics = new EventsAnalytics(getApplicationContext());
+        eventsAnalytics = new EventsAnalytics();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(EventModuleRouter.ACTION_CLOSE_ACTIVITY);
         LocalBroadcastManager.getInstance(this).registerReceiver(finishReceiver, intentFilter);

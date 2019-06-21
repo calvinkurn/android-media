@@ -17,21 +17,19 @@ public class DashboardItemViewModel implements Visitable<DashboardItemTypeFactor
     private String value;
     private String itemClicked;
     private String itemSold;
+    private String productCommission;
     private boolean isActive;
 
-    public DashboardItemViewModel(String id,
-                                  String imageUrl,
-                                  String title,
-                                  String value,
-                                  String itemClicked,
-                                  String itemSold,
-                                  boolean isActive) {
+    public DashboardItemViewModel(String id, String imageUrl, String title, String value,
+                                  String itemClicked, String itemSold,
+                                  String productCommission, boolean isActive) {
         this.id = id;
         this.imageUrl = imageUrl;
         this.title = title;
         this.value = value;
         this.itemClicked = itemClicked;
         this.itemSold = itemSold;
+        this.productCommission = productCommission;
         this.isActive = isActive;
     }
 
@@ -83,6 +81,14 @@ public class DashboardItemViewModel implements Visitable<DashboardItemTypeFactor
         this.itemSold = itemSold;
     }
 
+    public String getProductCommission() {
+        return productCommission;
+    }
+
+    public void setProductCommission(String productCommission) {
+        this.productCommission = productCommission;
+    }
+
     @Override
     public int type(DashboardItemTypeFactory typeFactory) {
         return typeFactory.type(this);
@@ -101,6 +107,7 @@ public class DashboardItemViewModel implements Visitable<DashboardItemTypeFactor
         dest.writeString(this.value);
         dest.writeString(this.itemClicked);
         dest.writeString(this.itemSold);
+        dest.writeString(this.productCommission);
         dest.writeByte(this.isActive ? (byte) 1 : (byte) 0);
     }
 
@@ -111,6 +118,7 @@ public class DashboardItemViewModel implements Visitable<DashboardItemTypeFactor
         this.value = in.readString();
         this.itemClicked = in.readString();
         this.itemSold = in.readString();
+        this.productCommission = in.readString();
         this.isActive = in.readByte() != 0;
     }
 

@@ -23,4 +23,7 @@
     <color name="tkpd_survey_icon_gray">#979797</color>
     <color name="tradein_blue_bom">#ccebff</color>
     <color name="tradein_blue_text_bom">#009bff</color>
+
+    <color name="black_70_new">#b3000000</color>
+
 </resources>

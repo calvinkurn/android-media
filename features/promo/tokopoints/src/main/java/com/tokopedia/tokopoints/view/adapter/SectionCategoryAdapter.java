@@ -24,14 +24,14 @@ public class SectionCategoryAdapter extends RecyclerView.Adapter<SectionCategory
     private final List<CategoryTokopointsList> mCategories;
     private Context context;
 
-    public SectionCategoryAdapter(List<CategoryTokopointsList> categories) {
+    public SectionCategoryAdapter(Context context, List<CategoryTokopointsList> categories) {
+        this.context = context;
         this.mCategories = categories;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        context = parent.getContext();
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.tp_item_section_category, parent, false);
         return new ViewHolder(view);
     }
@@ -47,6 +47,7 @@ public class SectionCategoryAdapter extends RecyclerView.Adapter<SectionCategory
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        private View viewCategoryNew;
         private TextView tvTitle;
         private ImageView ivBg;
         public boolean isVisited = false;
@@ -55,11 +56,18 @@ public class SectionCategoryAdapter extends RecyclerView.Adapter<SectionCategory
             super(itemView);
             ivBg = itemView.findViewById(R.id.iv_bg);
             tvTitle = itemView.findViewById(R.id.text_title);
+            viewCategoryNew = itemView.findViewById(R.id.view_category_new);
         }
 
         public void bindData(CategoryTokopointsList category) {
             if (category == null) {
                 return;
+            }
+
+            if (category.getIsNewCategory()) {
+                viewCategoryNew.setVisibility(View.VISIBLE);
+            } else {
+                viewCategoryNew.setVisibility(View.GONE);
             }
 
             if (URLUtil.isValidUrl(category.getIconImageURL())) {
@@ -81,9 +89,9 @@ public class SectionCategoryAdapter extends RecyclerView.Adapter<SectionCategory
                 }
 
                 AnalyticsTrackerUtil.sendEvent(itemView.getContext(),
-                        AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_TOKOPOINT,
+                        AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                         AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                        AnalyticsTrackerUtil.ActionKeys.CLICK_DYNAMIC_CAT,
+                        AnalyticsTrackerUtil.ActionKeys.CLICK_DYNAMIC_ICON,
                         category.getText()
                 );
             });

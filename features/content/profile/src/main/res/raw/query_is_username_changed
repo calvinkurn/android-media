@@ -1,0 +1,5 @@
+query BymeIsUsernameChanged($userID: Int!) {
+  bymeIsUsernameChanged(userID: $userID) {
+    state
+  }
+}

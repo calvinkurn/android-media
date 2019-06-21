@@ -1,6 +1,6 @@
 query CouponListingStack($categoryID: Int, $page: Int, $limit: Int, $serviceID: String, $categoryIDCoupon: Int, $includeExtraInfo: Int) {
-  tokopointsCouponListStack(input: {serviceID: $serviceID, categoryID: $categoryID, categoryIDCoupon: $categoryIDCoupon, page: $page, limit: $limit, includeExtraInfo: $includeExtraInfo}) {
-    coupons : tokopointsCouponDataStack {
+  coupons: tokopointsCouponListStack(input: {serviceID: $serviceID, categoryID: $categoryID, categoryIDCoupon: $categoryIDCoupon, page: $page, limit: $limit, includeExtraInfo: $includeExtraInfo}) {
+    coupons: tokopointsCouponDataStack {
       id
       promoID
       code
@@ -8,6 +8,11 @@ query CouponListingStack($categoryID: Int, $page: Int, $limit: Int, $serviceID: 
       imageURLMobile
       redirectURL
       redirectAppLink
+      minimumUsage
+      minimumUsageLabel
+      isNewCoupon
+      isStacked
+      stackID
       usage {
         activeCountdown
         expiredCountdown
@@ -20,11 +25,6 @@ query CouponListingStack($categoryID: Int, $page: Int, $limit: Int, $serviceID: 
           type
         }
       }
-      minimumUsage
-      minimumUsageLabel
-      isNewCoupon
-      isStacked
-      stackID
       upperLeftSection {
         textAttributes {
           text

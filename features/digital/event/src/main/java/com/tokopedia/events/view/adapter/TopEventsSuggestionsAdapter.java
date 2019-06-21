@@ -67,7 +67,7 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
                 parent.getContext());
         RecyclerView.ViewHolder holder;
         this.mContext = parent.getContext();
-        eventsAnalytics = new EventsAnalytics(mContext.getApplicationContext());
+        eventsAnalytics = new EventsAnalytics();
         View v;
         switch (viewType) {
             case ITEM:

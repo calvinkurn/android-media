@@ -23,9 +23,9 @@ class ExploreFirstPageUseCase @Inject constructor(
             : Observable<ExploreFirstPageViewModel> {
         exploreUseCase.exploreParams = exploreParams
         return Observable.zip(
-                exploreSectionUseCase.createObservable(requestParams).observeOn(Schedulers.io()),
-                exploreUseCase.createObservable(requestParams).observeOn(Schedulers.io()),
-                exploreSortUseCase.createObservable(requestParams).observeOn(Schedulers.io()))
+                exploreSectionUseCase.createObservable(requestParams).subscribeOn(Schedulers.io()),
+                exploreUseCase.createObservable(requestParams).subscribeOn(Schedulers.io()),
+                exploreSortUseCase.createObservable(requestParams).subscribeOn(Schedulers.io()))
         { sections, exploreViewModel, sorts ->
             ExploreFirstPageViewModel(
                     sections,

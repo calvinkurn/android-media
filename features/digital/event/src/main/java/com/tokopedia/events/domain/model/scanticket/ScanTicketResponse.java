@@ -22,6 +22,9 @@ public class ScanTicketResponse implements Parcelable {
     @SerializedName("action")
     @Expose
     private List<Action> action = null;
+    @SerializedName("quantity")
+    @Expose
+    private String quantity;
 
     protected ScanTicketResponse(Parcel in) {
         action = in.createTypedArrayList(Action.CREATOR);
@@ -71,6 +74,13 @@ public class ScanTicketResponse implements Parcelable {
         this.action = action;
     }
 
+    public String getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(String quantity) {
+        this.quantity = quantity;
+    }
 
     @Override
     public int describeContents() {

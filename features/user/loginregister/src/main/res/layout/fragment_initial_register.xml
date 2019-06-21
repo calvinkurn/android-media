@@ -51,19 +51,6 @@
                 android:paddingRight="@dimen/dp_24"/>
 
             <com.tokopedia.loginregister.common.view.LoginTextView
-                android:id="@+id/register_phone_number"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_10"
-                android:layout_marginLeft="@dimen/dp_24"
-                android:layout_marginRight="@dimen/dp_24"
-                app:backgroundColor="@color/black"
-                app:cornerSize="5"
-                app:customText="@string/register_with_phone_number_button"
-                app:iconButton="@drawable/bg_transparent"
-                app:textColor="@color/black_70"/>
-
-            <com.tokopedia.loginregister.common.view.LoginTextView
                 android:id="@+id/register"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

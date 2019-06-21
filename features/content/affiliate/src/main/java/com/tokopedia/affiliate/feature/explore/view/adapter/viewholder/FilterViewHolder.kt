@@ -16,7 +16,7 @@ class FilterViewHolder(itemView: View,
     : AbstractViewHolder<FilterListViewModel>(itemView) {
 
     private val filterAdapter: FilterAdapter by lazy {
-        FilterAdapter(filterListener, R.layout.item_explore_filter_child)
+        FilterAdapter(filterListener, R.layout.item_explore_filter_child, FilterAdapter.PAGE_EXPLORE)
     }
 
     companion object {

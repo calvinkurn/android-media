@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 
 import android.support.annotation.LayoutRes;
 import android.view.View;
+
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.presentation.presenter.HomeFeedContract;
@@ -32,6 +33,7 @@ public class HomeFeedViewHolder extends AbstractViewHolder<HomeFeedViewModel> {
         productCardView.setWishlistButtonVisible(false);
         productCardView.setSlashedPrice(element.getSlashedPrice());
         productCardView.setDiscount(element.getDiscountPercentage());
+        productCardView.setRatingReviewCount(element.getRating(), element.getCountReview());
         productCardView.getImageView().setViewHintListener(element, new ImpressedImageView.ViewHintListener() {
             @Override
             public void onViewHint() {

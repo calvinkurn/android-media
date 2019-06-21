@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.RadioGroup;
 
-import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.profilecompletion.domain.EditUserProfileUseCase;
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionContract;
@@ -18,10 +17,6 @@ import com.tokopedia.session.R;
 
 import java.text.DateFormatSymbols;
 import java.util.Locale;
-
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-
 
 /**
  * Created by stevenfredian on 7/3/17.
@@ -37,7 +32,6 @@ public class ProfileCompletionGenderFragment extends BaseDaggerFragment {
     private View avaMan;
     private View skip;
     private View progress;
-    private Unbinder unbinder;
     private ProfileCompletionContract.Presenter presenter;
 
 
@@ -51,7 +45,6 @@ public class ProfileCompletionGenderFragment extends BaseDaggerFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.fragment_profile_completion_gender, container, false);
-        unbinder = ButterKnife.bind(this, parentView);
         initView(parentView);
         setViewListener();
         initialVar();
@@ -61,7 +54,6 @@ public class ProfileCompletionGenderFragment extends BaseDaggerFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
     }
 
     protected int getFragmentLayout() {

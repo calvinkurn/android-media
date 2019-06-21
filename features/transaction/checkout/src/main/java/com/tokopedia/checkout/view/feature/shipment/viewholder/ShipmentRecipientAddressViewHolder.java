@@ -3,7 +3,6 @@ package com.tokopedia.checkout.view.feature.shipment.viewholder;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -20,6 +19,7 @@ import android.widget.TextView;
 
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentAdapterActionListener;
+import com.tokopedia.checkout.view.feature.shipment.util.Utils;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseObject;
@@ -34,7 +34,6 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
 
     public static final int ITEM_VIEW_RECIPIENT_ADDRESS = R.layout.view_item_shipment_recipient_address;
 
-    private CardView cardAddress;
     private RelativeLayout rlRecipientAddressLayout;
     private TextView tvAddressStatus;
     private TextView tvAddressName;
@@ -53,7 +52,6 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
 
         this.shipmentAdapterActionListener = shipmentAdapterActionListener;
 
-        cardAddress = itemView.findViewById(R.id.card_address);
         rlRecipientAddressLayout = itemView.findViewById(R.id.rl_shipment_recipient_address_layout);
         tvAddressStatus = itemView.findViewById(R.id.tv_address_status);
         tvAddressName = itemView.findViewById(R.id.tv_address_name);
@@ -81,9 +79,9 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         } else {
             tvAddressStatus.setVisibility(View.GONE);
         }
-        tvAddressName.setText(recipientAddress.getAddressName());
-        tvRecipientName.setText(recipientAddress.getRecipientName());
-        tvRecipientAddress.setText(getFullAddress(recipientAddress));
+        tvAddressName.setText(Utils.getHtmlFormat(recipientAddress.getAddressName()));
+        tvRecipientName.setText(Utils.getHtmlFormat(recipientAddress.getRecipientName()));
+        tvRecipientAddress.setText(Utils.getHtmlFormat(getFullAddress(recipientAddress)));
         tvRecipientPhone.setVisibility(View.GONE);
 
         tvRecipientChangeAddress.setOnClickListener(v -> shipmentAdapterActionListener.onChangeAddress());

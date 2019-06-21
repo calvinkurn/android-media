@@ -1,14 +1,9 @@
 package com.tokopedia.challenges.view.analytics;
 
 import android.app.Activity;
-import android.content.Context;
 
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
 
 import javax.inject.Inject;
 
@@ -53,25 +48,17 @@ public class ChallengesGaAnalyticsTracker {
     public static String EVENT_BUZZ_POINT = "How to generate buzz point";
     public static String EVENT_SUBMIT = "submit";
     public static String EVENT_CANCEL = "cancel";
-    private AnalyticTracker tracker;
 
     @Inject
-    public ChallengesGaAnalyticsTracker(@ApplicationContext Context context) {
-        if (context != null && context.getApplicationContext() instanceof AbstractionRouter) {
-            tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        }
+    public ChallengesGaAnalyticsTracker() {
     }
 
     public void sendEventChallenges(String event, String category, String action, String label) {
-        if (tracker == null)
-            return;
-        tracker.sendEventTracking(event, category, action, label);
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(event, category, action, label));
     }
 
     public void sendScreenEvent(Activity activity, String screen) {
-        if (tracker == null)
-            return;
-        tracker.sendScreen(activity, screen);
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated(screen);
     }
 
 }

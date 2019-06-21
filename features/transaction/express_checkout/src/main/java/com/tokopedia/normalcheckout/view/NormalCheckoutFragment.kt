@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.utils.CurrencyFormatUtil
@@ -33,10 +34,8 @@ import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
 import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapterTypeFactory
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
 import com.tokopedia.imagepreview.ImagePreviewActivity
-import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.showErrorToaster
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.normalcheckout.adapter.NormalCheckoutAdapterTypeFactory
 import com.tokopedia.normalcheckout.constant.ATC_AND_BUY
 import com.tokopedia.normalcheckout.constant.ATC_ONLY
@@ -52,6 +51,7 @@ import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.variant.Child
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
+import com.tokopedia.track.TrackApp
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest
 import com.tokopedia.transaction.common.sharedata.AddToCartResult
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest
@@ -90,6 +90,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     var quantity: Int = 0
     var tempQuantity = quantity
     var isTradeIn = 0
+    var isOcs = true
     var selectedVariantId: String? = null
     var placeholderProductImage: String? = null
     @ProductAction
@@ -114,7 +115,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         const val EXTRA_PRODUCT_IMAGE = "product_image"
         const val EXTRA_SHOP_TYPE = "shop_type"
         const val EXTRA_SHOP_NAME = "shop_name"
+        const val EXTRA_OCS = "ocs"
         const val EXTRA_TRADE_IN_PARAMS = "trade_in_params"
+        const val EXTRA_CART_ID = "cart_id"
         private const val TRACKER_ATTRIBUTION = "tracker_attribution"
         private const val TRACKER_LIST_NAME = "tracker_list_name"
 
@@ -124,6 +127,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         const val RESULT_ATC_SUCCESS_MESSAGE = "atc_success_message"
 
         const val REQUEST_CODE_LOGIN = 561
+        const val REQUEST_CODE_LOGIN_THEN_ATC = 562
+        const val REQUEST_CODE_LOGIN_THEN_BUY = 563
+        const val REQUEST_CODE_LOGIN_THEN_TRADE_IN = 564
 
         fun createInstance(shopId: String?, productId: String?,
                            notes: String? = "", quantity: Int? = 0,
@@ -134,6 +140,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                            trackerListName: String? = "",
                            shopType: String? = "",
                            shopName: String? = "",
+                           isOneClickShipment: Boolean,
                            tradeInParams: TradeInParams?): NormalCheckoutFragment {
             val fragment = NormalCheckoutFragment().apply {
                 arguments = Bundle().apply {
@@ -148,6 +155,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     putString(TRACKER_LIST_NAME, trackerListName ?: "")
                     putString(EXTRA_SHOP_TYPE, shopType ?: "")
                     putString(EXTRA_SHOP_NAME, shopName ?: "")
+                    putBoolean(EXTRA_OCS, isOneClickShipment)
                     putParcelable(EXTRA_TRADE_IN_PARAMS, tradeInParams)
                 }
             }
@@ -181,9 +189,23 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             tv_trade_in.gone()
         } else {
             if (tradeInParams != null && tradeInParams!!.isEligible == 1) {
+                tv_trade_in.visible()
                 tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams, false)
-                if (tradeInParams!!.usedPrice > 0)
-                    tv_trade_in.setOnClickListener { goToHargaFinal() }
+                if (tradeInParams!!.usedPrice > 0) {
+                    tv_trade_in.setOnClickListener {
+                        goToHargaFinal()
+                        trackClickTradeIn()
+                    }
+                } else {
+                    if (!viewModel.isUserSessionActive()) {
+                        tv_trade_in.setOnClickListener {
+                            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                                    REQUEST_CODE_LOGIN_THEN_TRADE_IN)
+                        }
+                    } else {
+                        tv_trade_in.setOnClickListener(null)
+                    }
+                }
             }
         }
         originalProduct = productInfoAndVariant
@@ -193,6 +215,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         originalProduct?.run {
             onProductChange(this, selectedVariantId)
         }
+        prescription_ticker.showWithCondition(productInfoAndVariant.productInfo.basic.needPrescription)
     }
 
     private fun goToHargaFinal() {
@@ -221,18 +244,50 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         startActivityForResult(intent, TradeInHomeActivity.TRADEIN_HOME_REQUEST)
     }
 
+    fun trackClickTradeIn() {
+        val whichbutton: String
+        if (action == ATC_ONLY)
+            whichbutton = "tambah keranjang"
+        else
+            whichbutton = "beli"
+        tradeInParams?.let {
+            val label: String
+            if (tradeInParams!!.usedPrice > 0)
+                label = "after diagnostic"
+            else
+                label = "before diagnostic"
+
+            sendGeneralEvent("clickPDP",
+                    "product detail page",
+                    "click trade in widget on variants page - "
+                            + whichbutton,
+                    label)
+
+        }
+    }
+
+    private fun sendGeneralEvent(event:String, category:String, action:String, label : String){
+        TrackApp.getInstance()?.gtm?.sendGeneralEvent(event,
+                category,
+                action,
+                label)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == FinalPriceActivity.FINAL_PRICE_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-                if (data != null)
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                FinalPriceActivity.FINAL_PRICE_REQUEST_CODE -> if (data != null)
                     onGotoTradeinShipment(data.getStringExtra(TradeInParams.PARAM_DEVICE_ID))
-            }
-        } else if (requestCode == TradeInHomeActivity.TRADEIN_HOME_REQUEST) {
-            if (resultCode == Activity.RESULT_OK) {
-                if (data != null)
+                TradeInHomeActivity.TRADEIN_HOME_REQUEST -> if (data != null)
                     onGotoTradeinShipment(data.getStringExtra(TradeInParams.PARAM_DEVICE_ID))
+                REQUEST_CODE_LOGIN_THEN_BUY -> doCheckoutAction(ATC_AND_BUY)
+                REQUEST_CODE_LOGIN_THEN_ATC -> doCheckoutAction(ATC_ONLY)
+                REQUEST_CODE_LOGIN_THEN_TRADE_IN -> {
+                    tv_trade_in.setOnClickListener(null)
+                    doCheckoutAction(TRADEIN_BUY)
+                }
             }
         }
     }
@@ -345,7 +400,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         // if it has campaign, use campaign price
         var totalString = ""
         if (productInfo.campaign.activeAndHasId) {
-            val discountedPrice = if (selectedwarehouse != null && selectedwarehouse.warehouseInfo.id.isNotBlank()){
+            val discountedPrice = if (selectedwarehouse != null && selectedwarehouse.warehouseInfo.id.isNotBlank()) {
                 selectedwarehouse.price.toFloat()
             } else productInfo.campaign.discountedPrice
 
@@ -401,12 +456,18 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     private fun showToastError(throwable: Throwable?, onRetry: ((v: View) -> Unit)?) {
-        val snackbar = ToasterError.make(activity!!.findViewById(android.R.id.content),
-            ErrorHandler.getErrorMessage(context, throwable))
-        if (onRetry != null) {
-            snackbar.setAction(R.string.retry_label) { onRetry.invoke(it) }
+        val message = if (throwable is MessageErrorException && throwable.message?.isNotEmpty() == true) {
+            throwable.message
+        } else {
+            ErrorHandler.getErrorMessage(context, throwable)
         }
-        snackbar.show()
+        activity?.run {
+            val snackbar = ToasterError.make(findViewById(android.R.id.content), message)
+            if (onRetry != null) {
+                snackbar.setAction(R.string.retry_label) { onRetry.invoke(it) }
+            }
+            snackbar.show()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -423,6 +484,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             shopType = argument.getString(EXTRA_SHOP_TYPE)
             shopName = argument.getString(EXTRA_SHOP_NAME)
             tradeInParams = argument.getParcelable(EXTRA_TRADE_IN_PARAMS)
+            isOcs = argument.getBoolean(EXTRA_OCS)
         }
         if (savedInstanceState == null) {
             if (argument != null) {
@@ -455,27 +517,22 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     //do tracking
                     if (action == ATC_ONLY) {
                         normalCheckoutTracking.eventClickAtcInVariantNotLogin(productId)
-                    } else {
+                        startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                                REQUEST_CODE_LOGIN_THEN_ATC)
+                    } else if(action == ATC_AND_BUY) {
                         normalCheckoutTracking.eventClickBuyInVariantNotLogin(productId)
+                        startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                                REQUEST_CODE_LOGIN_THEN_BUY)
+                    } else {
+                        startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                                REQUEST_CODE_LOGIN_THEN_TRADE_IN)
                     }
-                    startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                        REQUEST_CODE_LOGIN)
                 }
                 return@setOnClickListener
             }
-            if (action == ATC_ONLY) {
-                addToCart()
-            } else if (action == TRADEIN_BUY) {
-                if (tradeInParams != null) {
-                    if (tradeInParams!!.usedPrice > 0)
-                        goToHargaFinal()
-                    else
-                        tv_trade_in.performClick()
-                }
-            } else {
-                doBuyOrPreorder()
-            }
+            doCheckoutAction(action)
         }
+        tv_trade_in.setTrackListener { trackClickTradeIn() }
         button_cart.setOnClickListener {
             if (hasError()) {
                 return@setOnClickListener
@@ -485,10 +542,36 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                 normalCheckoutTracking.eventClickAtcInVariantNotLogin(productId)
                 //do login
                 startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                    REQUEST_CODE_LOGIN)
+                    REQUEST_CODE_LOGIN_THEN_ATC)
             } else {
                 addToCart()
             }
+        }
+    }
+
+    private fun doCheckoutAction(action: Int) {
+        when (action) {
+            ATC_ONLY -> addToCart()
+            TRADEIN_BUY -> doTradeIn()
+            else -> doBuyOrPreorder(isOcs)
+        }
+    }
+
+    private fun doTradeIn() {
+        if (tradeInParams != null) {
+            val label: String
+            if (tradeInParams!!.usedPrice > 0) {
+                goToHargaFinal()
+                label = "after diagnostic"
+            } else {
+                tv_trade_in.setTrackListener(null)
+                tv_trade_in.performClick()
+                label = "before diagnostic"
+            }
+            sendGeneralEvent("clickPDP",
+                    "product detail page",
+                    "click trade in button on variants page",
+                    label)
         }
     }
 
@@ -523,7 +606,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     /**
      * called when on Success Add to Cart
      */
-    fun onFinishAddToCart(atcSuccessMessage: String?) {
+    fun onFinishAddToCart(atcSuccessMessage: String? = null) {
         activity?.run {
             setResult(Activity.RESULT_OK, Intent().apply {
                 putExtra(EXTRA_SELECTED_VARIANT_ID, selectedVariantId)
@@ -541,31 +624,43 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     }
                 putExtra(EXTRA_QUANTITY, quantity)
                 putExtra(EXTRA_NOTES, notes)
-                putExtra(RESULT_ATC_SUCCESS_MESSAGE, atcSuccessMessage)
+                atcSuccessMessage?.let {
+                    putExtra(RESULT_ATC_SUCCESS_MESSAGE, atcSuccessMessage)
+                }
             })
             finish()
         }
     }
 
-    private fun doBuyOrPreorder() {
+    private fun doBuyOrPreorder(isOcs:Boolean) {
         tempQuantity = quantity
         isTradeIn = 0
-        addToCart(true, onFinish = { message: String?, cartId: String? ->
-            onFinishAddToCart(message)
+        addToCart(isOcs, onFinish = { message: String?, cartId: String? ->
+            onFinishAddToCart()
             selectedProductInfo?.run {
                 normalCheckoutTracking.eventClickBuyInVariant(
                     originalProduct,
                     selectedVariantId ?: "",
                     this, quantity,
                     shopId, shopType, shopName, cartId,
-                    trackerAttribution, trackerListName)
+                    trackerAttribution, trackerListName,
+                        viewModel.selectedwarehouse?.warehouseInfo?.isFulfillment?: false)
             }
             activity?.run {
-                val intent = router.getCheckoutIntent(this, ShipmentFormRequest.BundleBuilder().build())
-                startActivity(intent)
+                if (isOcs) {
+                    val intent = router.getCheckoutIntent(this, ShipmentFormRequest.BundleBuilder().build())
+                    startActivity(intent)
+                } else {
+                    val cartUriString = ApplinkConstInternalMarketplace.CART
+                    val intent = RouteManager.getIntent(this, cartUriString)
+                    intent?.run {
+                        putExtra(EXTRA_CART_ID, cartId)
+                        startActivity(intent)
+                    }
+                }
             }
         }, onRetryWhenError = {
-            doBuyOrPreorder()
+            doBuyOrPreorder(isOcs)
         })
     }
 
@@ -573,9 +668,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         tempQuantity = 1
         isTradeIn = 1
         addToCart(true, onFinish = { message: String?, cartId: String? ->
-            onFinishAddToCart(message)
+            onFinishAddToCart()
             selectedProductInfo?.run {
-                normalCheckoutTracking.eventClickBuyInVariant(
+                normalCheckoutTracking.eventClickBuyTradeIn(
                         originalProduct,
                         selectedVariantId ?: "",
                         this, quantity,
@@ -602,7 +697,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     selectedVariantId ?: "",
                     this, quantity,
                     shopId, shopType, shopName, cartId,
-                    trackerAttribution, trackerListName)
+                    trackerAttribution, trackerListName,
+                        viewModel.selectedwarehouse?.warehouseInfo?.isFulfillment?: false)
             }
         }, onRetryWhenError = {
             addToCart()
@@ -694,7 +790,11 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         context?.run {
-            router = applicationContext as NormalCheckoutRouter
+            if (applicationContext is NormalCheckoutRouter) {
+                router = applicationContext as NormalCheckoutRouter
+            } else {
+                activity?.finish()
+            }
         }
     }
 
@@ -764,7 +864,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
     private fun onProductChange(originalProduct: ProductInfoAndVariant, inputSelectedVariantId: String?) {
         inputSelectedVariantId?.let {
-            if (viewModel.warehouses.isNotEmpty()){
+            if (viewModel.warehouses.isNotEmpty()) {
                 viewModel.selectedwarehouse = viewModel.warehouses[it]
             }
         }
@@ -772,7 +872,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         selectedProductInfo = getSelectedProductInfo(originalProduct, selectedVariantId)
         selectedProductInfo?.let {
             val viewModels = ModelMapper.convertVariantToModels(it, viewModel.selectedwarehouse,
-                    originalProduct.productVariant, notes, quantity)
+                originalProduct.productVariant, notes, quantity)
             fragmentViewModel.viewModels = viewModels
             quantity = fragmentViewModel.getQuantityViewModel()?.orderQuantity
                 ?: 0

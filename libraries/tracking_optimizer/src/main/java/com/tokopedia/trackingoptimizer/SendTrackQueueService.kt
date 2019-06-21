@@ -10,9 +10,9 @@ import android.os.Build
 import android.os.IBinder
 import android.os.PersistableBundle
 import com.tokopedia.trackingoptimizer.repository.TrackingRepository
-import kotlinx.coroutines.experimental.CoroutineExceptionHandler
-import kotlinx.coroutines.experimental.CoroutineScope
-import kotlin.coroutines.experimental.CoroutineContext
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by hendry on 27/12/18.
@@ -21,10 +21,6 @@ class SendTrackQueueService : Service(), CoroutineScope {
 
     private val trackingRepository: TrackingRepository by lazy {
         TrackingRepository(this)
-    }
-
-    private val trackingOptimizerRouter: TrackingOptimizerRouter? by lazy {
-        this.application as? TrackingOptimizerRouter
     }
 
     val handler: CoroutineExceptionHandler by lazy {
@@ -65,7 +61,7 @@ class SendTrackQueueService : Service(), CoroutineScope {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        sendTrack(this, trackingRepository, trackingOptimizerRouter) {
+        sendTrack(this, trackingRepository) {
             stopSelf()
         }
         return Service.START_NOT_STICKY

@@ -2,12 +2,16 @@ package com.tokopedia.core.share;
 
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.text.TextUtils;
 
+import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.util.DataMapper;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
@@ -17,6 +21,7 @@ import com.tokopedia.linker.model.LinkerError;
 import com.tokopedia.linker.model.LinkerShareData;
 import com.tokopedia.linker.model.LinkerShareResult;
 import com.tokopedia.linker.model.UserData;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 
 /**
@@ -27,6 +32,7 @@ public class DefaultShare implements ShareCallback {
     private static final String TYPE = "text/plain";
     public static final String KEY_OTHER = "lainnya";
     public static final String TITLE_OTHER = "Lainnya";
+    public static final String PLACEHOLDER_LINK = "{{branchlink}}";
 
     private LinkerData shareData;
     private Activity activity;
@@ -41,13 +47,17 @@ public class DefaultShare implements ShareCallback {
                 DataMapper.getLinkerShareData(shareData), this));
     }
 
-    private Intent getIntent(String contains) {
+    private Intent getIntent(String contains, String url) {
         final Intent mIntent = new Intent(Intent.ACTION_SEND);
         mIntent.setType(TYPE);
 
         String title = "";
         if (shareData != null) {
             title = shareData.getName();
+        }
+
+        if(!TextUtils.isEmpty(shareData.getCustmMsg()) && shareData.getCustmMsg().contains(PLACEHOLDER_LINK)) {
+            contains = FindAndReplaceHelper.findAndReplacePlaceHolders(shareData.getCustmMsg(), PLACEHOLDER_LINK, url);
         }
 
         mIntent.putExtra(Intent.EXTRA_TITLE, title);
@@ -67,8 +77,16 @@ public class DefaultShare implements ShareCallback {
     private void shareCategory(LinkerData data) {
         String[] shareParam = data.getSplittedDescription(",");
         if (shareParam.length == 2) {
-            UnifyTracking.eventShareCategory(activity, shareParam[0], shareParam[1] + "-" + KEY_OTHER);
+            eventShareCategory(shareParam[0], shareParam[1] + "-" + KEY_OTHER);
         }
+    }
+
+    public static void eventShareCategory(String parentCat, String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.CATEGORY_PAGE,
+                AppEventTracking.Category.CATEGORY_PAGE + "-" + parentCat,
+                AppEventTracking.Action.CATEGORY_SHARE,
+                label);
     }
 
     private void sendAnalyticsToGtm(String type) {
@@ -89,7 +107,7 @@ public class DefaultShare implements ShareCallback {
 
     @Override
     public void urlCreated(LinkerShareResult linkerShareData) {
-        Intent intent = getIntent(linkerShareData.getShareContents());
+        Intent intent = getIntent(linkerShareData.getShareContents(), linkerShareData.getUrl());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
             Intent receiver = new Intent(activity, ShareBroadcastReceiver.class);
             receiver.putExtra(ShareBroadcastReceiver.KEY_TYPE, shareData.getType());

@@ -7,6 +7,6 @@ class ProductPurchaseProtectionInfo{
 
     @SerializedName("ppGetItemDetailPage")
     @Expose
-    var ppItemDetailPage: PPItemDetailPage? = null
+    var ppItemDetailPage: PPItemDetailPage? = PPItemDetailPage(false,"","","","")
 
 }

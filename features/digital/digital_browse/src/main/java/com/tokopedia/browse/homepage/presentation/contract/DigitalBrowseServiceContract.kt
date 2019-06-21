@@ -36,7 +36,7 @@ interface DigitalBrowseServiceContract {
 
         fun onInit()
 
-        fun getDigitalCategoryCloud()
+        fun getDigitalCategory()
 
         fun processTabData(titleMap: Map<String, IndexPositionModel>, viewModel: DigitalBrowseServiceViewModel, categoryId: Int)
 

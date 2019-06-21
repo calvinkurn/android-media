@@ -29,17 +29,20 @@ constructor(private val digitalBrowseServiceCacheSource: DigitalBrowseServiceCac
         addRequest(GraphqlRequest(queryCategory,
                 DigitalBrowseMarketplaceData::class.java, variablesCategory, CATEGORY_OPERTAION_NAME))
 
-        return getExecuteObservable(RequestParams.EMPTY)
-                .flatMap { graphqlResponse ->
-                    var digitalBrowseMarketplaceData = DigitalBrowseMarketplaceData()
+        return getCategoryDataFromCache()
+                .onErrorResumeNext { it ->
+                    getExecuteObservable(RequestParams.EMPTY)
+                            .flatMap { graphqlResponse ->
+                                var digitalBrowseMarketplaceData = DigitalBrowseMarketplaceData()
 
-                    if (graphqlResponse != null) {
-                        digitalBrowseMarketplaceData = graphqlResponse.getData(DigitalBrowseMarketplaceData::class.java)
-                    }
+                                if (graphqlResponse != null) {
+                                    digitalBrowseMarketplaceData = graphqlResponse.getData(DigitalBrowseMarketplaceData::class.java)
+                                }
 
-                    digitalBrowseServiceCacheSource.saveCache(digitalBrowseMarketplaceData)
+                                digitalBrowseServiceCacheSource.saveCache(digitalBrowseMarketplaceData)
 
-                    Observable.just(serviceViewModelMapper.transform(digitalBrowseMarketplaceData))
+                                Observable.just(serviceViewModelMapper.transform(digitalBrowseMarketplaceData))
+                            }
                 }
     }
 

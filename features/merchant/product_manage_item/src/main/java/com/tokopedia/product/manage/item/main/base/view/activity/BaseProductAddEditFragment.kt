@@ -16,6 +16,9 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.core.analytics.AppEventTracking
 import com.tokopedia.core.analytics.UnifyTracking
@@ -55,6 +58,8 @@ import com.tokopedia.product.manage.item.utils.*
 import com.tokopedia.product.manage.item.utils.constant.ProductExtraConstant
 import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.ProductVariantViewModel
+import com.tokopedia.track.TrackApp
+import com.tokopedia.track.TrackAppUtils
 import kotlinx.android.synthetic.main.fragment_base_product_edit.*
 import javax.inject.Inject
 
@@ -178,13 +183,12 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     }
 
     private fun startProductEtalaseActivity() {
-        if (appRouter != null && appRouter is ProductEditModuleRouter) {
-            activity?.run {
-                this@BaseProductAddEditFragment.startActivityForResult((appRouter as ProductEditModuleRouter).createIntentProductEtalase(activity, currentProductAddViewModel?.etalaseId
-                        ?: -1),
-                        REQUEST_CODE_GET_ETALASE)
+        activity?.let {
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_ETALASE_PICKER,
+                    (currentProductAddViewModel?.etalaseId ?: -1).toString())
+            intent?.run {
+                startActivityForResult(this, REQUEST_CODE_GET_ETALASE)
             }
-
         }
     }
 
@@ -235,7 +239,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
                     val isMoveToGm: Boolean = data.getBooleanExtra(EXTRA_IS_MOVE_TO_GM, false)
                     if (isMoveToGm) {
                         saveDraft(false)
-                        UnifyTracking.eventClickYesGoldMerchantAddProduct(activity)
+                        eventClickYesGoldMerchantAddProduct()
                         goToGoldMerchantPage()
                         activity?.finish()
                     }
@@ -275,6 +279,14 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         super.onActivityResult(requestCode, resultCode, data)
     }
 
+    private fun eventClickYesGoldMerchantAddProduct() {
+        TrackApp.getInstance()!!.gtm.sendGeneralEvent(
+            AppEventTracking.Event.CLICK_GOLD_MERCHANT,
+            AppEventTracking.Category.GOLD_MERCHANT,
+            AppEventTracking.Action.CLICK,
+            AppEventTracking.EventLabel.BUY_GM_ADD_PRODUCT)
+    }
+
     private fun onCategoryChanged(productCategory: ProductCategory) {
         if (currentProductAddViewModel?.productCategory?.categoryId != productCategory.categoryId) {
             currentProductAddViewModel?.productVariantViewModel = null
@@ -284,9 +296,9 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     }
 
     private fun goToGoldMerchantPage() {
-        if (appRouter != null && appRouter is ProductEditModuleRouter) {
-            (appRouter as ProductEditModuleRouter).goToGMSubscribe(activity)
-        }
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.GOLD_MERCHANT_SUBSCRIBE_DASHBOARD)
+        intent?.run { startActivity(this) }
+
     }
 
     override fun onSuccessStoreProductToDraft(productId: Long, isUploading: Boolean) {
@@ -295,6 +307,10 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
             startUploadProduct(productId)
         } else {
             CommonUtils.UniversalToast(activity, getString(R.string.product_draft_product_has_been_saved_as_draft))
+        }
+        val intent = RouteManager.getIntent(context, ApplinkConst.PRODUCT_MANAGE)
+        intent?.run {
+            startActivity(this)
             activity?.finish()
         }
     }
@@ -321,7 +337,6 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
 
     private fun startUploadProduct(productId: Long) {
         startUploadProductService(productId)
-        activity?.finish()
     }
 
     override fun getProductDraftId() = 0L
@@ -463,9 +478,9 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         context?.let {
             val app = it.applicationContext
             if (app is AbstractionRouter){
-                app.analyticTracker.sendEventTracking(ProductVariantConstant.TRACKING_EVENT,
+                TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(ProductVariantConstant.TRACKING_EVENT,
                         ProductVariantConstant.TRACKING_EVENT_CATEGORY,
-                        ProductVariantConstant.TRACKING_EVENT_ACTION, null)
+                        ProductVariantConstant.TRACKING_EVENT_ACTION, null))
             }
         }
         currentProductAddViewModel?.run {
@@ -478,17 +493,23 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
             }
 
             val hasWholesale = productPrice?.wholesalePrice?.let { it.size > 0 } == true
-            if (appRouter is ProductEditModuleRouter) {
-                val intent = (appRouter as ProductEditModuleRouter).createIntentProductVariant(activity,
-                        productVariantByCatModelList, productVariantViewModel,
-                        productPrice?.currencyType ?: CurrencyTypeDef.TYPE_IDR,
-                        productPrice?.price ?: 0.0,
-                        getStatusStockViewVariant(productStock ?: ProductStock()),
-                        officialStore, productStock?.sku, isEdittingDraft(),
-                        productSizeChart, hasOriginalVariantLevel1 == true,
-                        hasOriginalVariantLevel2 == true,
-                        hasWholesale)
-                startActivityForResult(intent, REQUEST_CODE_VARIANT)
+            activity?.let {
+                val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_EDIT_VARIANT_DASHBOARD)
+                intent?.run {
+                    putExtra(ProductExtraConstant.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST, productVariantByCatModelList)
+                    putExtra(ProductExtraConstant.EXTRA_PRODUCT_VARIANT_SELECTION, productVariantViewModel)
+                    putExtra(ProductExtraConstant.EXTRA_CURRENCY_TYPE, productPrice?.currencyType ?: CurrencyTypeDef.TYPE_IDR)
+                    putExtra(ProductExtraConstant.EXTRA_DEFAULT_PRICE, productPrice?.price ?: 0.0)
+                    putExtra(ProductExtraConstant.EXTRA_STOCK_TYPE, getStatusStockViewVariant(productStock ?: ProductStock()))
+                    putExtra(EXTRA_IS_OFFICIAL_STORE, officialStore)
+                    putExtra(ProductExtraConstant.EXTRA_DEFAULT_SKU, productStock?.sku)
+                    putExtra(ProductExtraConstant.EXTRA_NEED_RETAIN_IMAGE, isEdittingDraft())
+                    putExtra(ProductExtraConstant.EXTRA_PRODUCT_SIZECHART, productSizeChart)
+                    putExtra(ProductExtraConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV1, hasOriginalVariantLevel1)
+                    putExtra(ProductExtraConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV2, hasOriginalVariantLevel2)
+                    putExtra(ProductExtraConstant.EXTRA_HAS_WHOLESALE, hasWholesale)
+                    startActivityForResult(this, REQUEST_CODE_VARIANT)
+                }
             }
         }
     }
@@ -509,11 +530,27 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         )
         for (labelAnalytics in listLabelAnalytics) {
             if (isAddStatus()) {
-                UnifyTracking.eventAddProductAdd(activity, labelAnalytics)
+                eventAddProductAdd(labelAnalytics)
             } else if (isEditStatus()) {
-                UnifyTracking.eventAddProductEdit(activity, labelAnalytics)
+                eventAddProductEdit(labelAnalytics)
             }
         }
+    }
+
+    private fun eventAddProductAdd(label: String) {
+        TrackApp.getInstance()!!.gtm.sendGeneralEvent(
+            AppEventTracking.AddProduct.EVENT_CLICK_ADD_PRODUCT,
+            AppEventTracking.AddProduct.CATEGORY_ADD_PRODUCT,
+            AppEventTracking.AddProduct.EVENT_ACTION_ADD,
+            label)
+    }
+
+    private fun eventAddProductEdit(label: String) {
+        TrackApp.getInstance()!!.gtm.sendGeneralEvent(
+            AppEventTracking.AddProduct.EVENT_CLICK_ADD_PRODUCT,
+            AppEventTracking.AddProduct.CATEGORY_EDIT_PRODUCT,
+            AppEventTracking.AddProduct.EVENT_ACTION_EDIT,
+            label)
     }
 
     private fun isEdittingDraft() = isEditStatus() && productDraftId > 0

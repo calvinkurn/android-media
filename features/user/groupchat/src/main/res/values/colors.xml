@@ -42,6 +42,8 @@
     <color name="play_transparent_hint_reply">#aeffffff</color>
     <color name="play_new_chat">#f531353b</color>
     <color name="play_send">#4fd15a</color>
+    <color name="play_toggle_video">#d6ffde</color>
+    <color name="play_toggle_video_text">#03ac0e</color>
 
     <color name="quiz_start">#4fd15a</color>
     <color name="quiz_end">#ff8b00</color>

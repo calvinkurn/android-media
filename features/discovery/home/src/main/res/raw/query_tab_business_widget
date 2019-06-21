@@ -1,0 +1,8 @@
+query HomeWidget() {
+  home_widget {
+    widget_tab {
+      id
+      name
+    }
+  }
+}

@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.util.Log;
 
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.apiservices.product.ProductActService;
@@ -15,6 +17,7 @@ import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.product.model.report.ReportProductPass;
+import com.tokopedia.track.TrackApp;
 
 import org.json.JSONObject;
 
@@ -193,6 +196,14 @@ public class ProductInfoIntentService extends IntentService {
     }
 
     private void sendGTMSuccessReport(){
-        UnifyTracking.eventSuccessReport(getApplicationContext());
+        eventSuccessReport();
+    }
+
+    public void eventSuccessReport() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.REPORT_SUCCESS,
+                AppEventTracking.Category.PRODUCT_DETAIL,
+                AppEventTracking.Action.REPORT_SUCCESS,
+                AppEventTracking.EventLabel.REPORT_SUCCESS);
     }
 }

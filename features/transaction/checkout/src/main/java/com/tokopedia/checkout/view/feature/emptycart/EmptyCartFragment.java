@@ -1,10 +1,10 @@
 package com.tokopedia.checkout.view.feature.emptycart;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -25,11 +25,10 @@ import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
+import com.tokopedia.checkout.domain.datamodel.promostacking.AutoApplyStackData;
 import com.tokopedia.checkout.domain.datamodel.recentview.RecentView;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutFragment;
@@ -45,7 +44,7 @@ import com.tokopedia.checkout.view.feature.emptycart.di.EmptyCartModule;
 import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.navigation_common.listener.EmptyCartListener;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
-import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
+import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
@@ -88,12 +87,12 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     public static final String ARG_AUTO_APPLY_MESSAGE = "ARG_AUTO_APPLY_MESSAGE";
     private static final String ARG_AUTO_APPLY_STATE = "ARG_AUTO_APPLY_STATE";
     private static final String ARG_AUTO_APPLY_TITLE = "ARG_AUTO_APPLY_TITLE";
+    private static final String ARG_AUTO_APPLY_PROMO_CODE = "ARG_AUTO_APPLY_PROMO_CODE";
 
     private View toolbar;
-    private AppBarLayout appBarLayout;
     private SwipeRefreshLayout swipeRefreshLayout;
     private NestedScrollView nestedScrollView;
-    private TickerCheckoutView tickerCheckoutView;
+    private TickerPromoStackingCheckoutView tickerPromoStackingCheckoutView;
     private TextView btnContinueShoppingEmptyCart;
     private CardView cvRecommendation;
     private TopAdsView topAdsView;
@@ -107,6 +106,8 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     private RelativeLayout rlLastSeen;
     private TextView tvLastSeenSeeAll;
     private RecyclerView rvLastSeen;
+
+    private ProgressDialog progressDialog;
 
     private boolean isToolbarWithBackButton = true;
     private WishlistAdapter wishlistAdapter;
@@ -126,13 +127,14 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     @Inject
     CheckoutAnalyticsCart cartPageAnalytics;
 
-    public static EmptyCartFragment newInstance(String autoApplyMessage, String args, String state, String titleDesc) {
+    public static EmptyCartFragment newInstance(String autoApplyMessage, String args, String state, String titleDesc, String promoCode) {
         EmptyCartFragment emptyCartFragment = new EmptyCartFragment();
         Bundle bundle = new Bundle();
         bundle.putString(EmptyCartFragment.class.getSimpleName(), args);
         bundle.putString(ARG_AUTO_APPLY_MESSAGE, autoApplyMessage);
         bundle.putString(ARG_AUTO_APPLY_STATE, state);
         bundle.putString(ARG_AUTO_APPLY_TITLE, titleDesc);
+        bundle.putString(ARG_AUTO_APPLY_PROMO_CODE, promoCode);
         emptyCartFragment.setArguments(bundle);
 
         return emptyCartFragment;
@@ -215,9 +217,13 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     protected void initView(View view) {
         setupToolbar(view);
         presenter.attachView(this);
+
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage(getString(R.string.title_loading));
+
         nestedScrollView = view.findViewById(R.id.nested_scroll_view);
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
-        tickerCheckoutView = view.findViewById(R.id.ticker_checkout_view);
+        tickerPromoStackingCheckoutView = view.findViewById(R.id.ticker_promostacking_checkout_view);
         btnContinueShoppingEmptyCart = view.findViewById(R.id.btn_shopping_now);
         cvRecommendation = view.findViewById(R.id.cv_recommendation);
         topAdsView = view.findViewById(R.id.topads);
@@ -275,25 +281,31 @@ public class EmptyCartFragment extends BaseCheckoutFragment
             navigateToHome();
         });
 
-        AutoApplyData autoApplyData = new AutoApplyData();
+        AutoApplyStackData autoApplyStackData = new AutoApplyStackData();
         if (getArguments() != null && !TextUtils.isEmpty(getArguments().getString(ARG_AUTO_APPLY_MESSAGE))) {
-            autoApplyData.setMessageSuccess(getArguments().getString(ARG_AUTO_APPLY_MESSAGE));
-            autoApplyData.setState(getArguments().getString(ARG_AUTO_APPLY_STATE));
-            autoApplyData.setTitleDescription(getArguments().getString(ARG_AUTO_APPLY_TITLE));
+            autoApplyStackData.setMessageSuccess(getArguments().getString(ARG_AUTO_APPLY_MESSAGE));
+            autoApplyStackData.setState(getArguments().getString(ARG_AUTO_APPLY_STATE));
+            autoApplyStackData.setTitleDescription(getArguments().getString(ARG_AUTO_APPLY_TITLE));
+            autoApplyStackData.setCode(getArguments().getString(ARG_AUTO_APPLY_PROMO_CODE));
         }
-        renderEmptyCart(autoApplyData);
+        renderEmptyCart(autoApplyStackData);
         stopCartTrace();
     }
 
     @Override
-    public void renderEmptyCart(AutoApplyData autoApplyData) {
+    public void renderEmptyCart(AutoApplyStackData autoApplyStackData) {
         double itemWidth = getItemWidth();
 
-        renderAutoApplyPromo(autoApplyData);
+        renderAutoApplyPromoStacking(autoApplyStackData);
         renderTopAds();
         renderWishList((int) itemWidth);
         renderRecentView((int) itemWidth);
         cartPageAnalytics.sendScreenName(getActivity(), getScreenName());
+
+        btnContinueShoppingEmptyCart.setOnClickListener(v -> {
+            cartPageAnalytics.eventClickAtcCartClickBelanjaSekarangOnEmptyCart();
+            navigateToHome();
+        });
     }
 
     @Override
@@ -381,30 +393,35 @@ public class EmptyCartFragment extends BaseCheckoutFragment
         cvLastSeen.setVisibility(View.GONE);
     }
 
-    private void renderAutoApplyPromo(AutoApplyData autoApplyData) {
-        if (autoApplyData!= null && TickerCheckoutUtilKt.mapToStatePromoCheckout(autoApplyData.getState()) != TickerCheckoutView.State.EMPTY) {
-            tickerCheckoutView.setVisibility(View.VISIBLE);
-            tickerCheckoutView.setState(TickerCheckoutUtilKt.mapToStatePromoCheckout(autoApplyData.getState()));
-            tickerCheckoutView.setTitle(autoApplyData.getTitleDescription());
-            tickerCheckoutView.setDesc(autoApplyData.getMessageSuccess());
-            tickerCheckoutView.setActionListener(new TickerCheckoutView.ActionListener() {
+    private void renderAutoApplyPromoStacking(AutoApplyStackData autoApplyStackData) {
+        if (autoApplyStackData != null && TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(autoApplyStackData.getState()) != TickerPromoStackingCheckoutView.State.EMPTY) {
+            tickerPromoStackingCheckoutView.setState(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(autoApplyStackData.getState()));
+            tickerPromoStackingCheckoutView.setTitle(autoApplyStackData.getTitleDescription());
+            tickerPromoStackingCheckoutView.setDesc(autoApplyStackData.getMessageSuccess());
+            tickerPromoStackingCheckoutView.setActionListener(new TickerPromoStackingCheckoutView.ActionListener() {
                 @Override
                 public void onClickUsePromo() {
                     //do nothing
                 }
 
                 @Override
-                public void onDisablePromoDiscount() {
-                    presenter.processCancelAutoApply();
+                public void onResetPromoDiscount() {
+                    presenter.processCancelAutoApply(autoApplyStackData.getCode());
                 }
 
                 @Override
                 public void onClickDetailPromo() {
                     //do nothing
                 }
+
+                @Override
+                public void onDisablePromoDiscount() {
+
+                }
             });
+            tickerPromoStackingCheckoutView.setVisibility(View.VISIBLE);
         } else {
-            tickerCheckoutView.setVisibility(View.GONE);
+            tickerPromoStackingCheckoutView.setVisibility(View.GONE);
         }
         btnContinueShoppingEmptyCart.setOnClickListener(v -> {
             cartPageAnalytics.eventClickAtcCartClickBelanjaSekarangOnEmptyCart();
@@ -476,8 +493,18 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     }
 
     @Override
+    public void showLoadingDialog() {
+        progressDialog.show();
+    }
+
+    @Override
+    public void hideLoadingDialog() {
+        progressDialog.hide();
+    }
+
+    @Override
     public void showErrorToast(String message) {
-        if (TextUtils.isEmpty(message)) {
+        if (getActivity() != null && TextUtils.isEmpty(message)) {
             message = getActivity().getString(R.string.default_request_error_unknown);
         }
         NetworkErrorHelper.showRedSnackbar(getActivity(), message);
@@ -501,7 +528,7 @@ public class EmptyCartFragment extends BaseCheckoutFragment
 
     @Override
     public void renderCancelAutoApplyCouponSuccess() {
-        tickerCheckoutView.setVisibility(View.GONE);
+        tickerPromoStackingCheckoutView.setVisibility(View.GONE);
     }
 
     @Override
@@ -530,17 +557,20 @@ public class EmptyCartFragment extends BaseCheckoutFragment
 
     private void setupToolbar(View view) {
         Toolbar appbar = view.findViewById(R.id.toolbar);
-        appBarLayout = view.findViewById(R.id.app_bar_layout);
+        View statusBarBackground = view.findViewById(R.id.status_bar_bg);
+        statusBarBackground.getLayoutParams().height =
+                DisplayMetricUtils.getStatusBarHeight(getActivity());
         if (isToolbarWithBackButton) {
             toolbar = toolbarRemoveWithBackView();
+            statusBarBackground.setVisibility(View.GONE);
         } else {
             toolbar = toolbarRemoveView();
-            if (getContext() != null) {
-                view.setPadding(0, DisplayMetricUtils.getStatusBarHeight(getContext()), 0, 0);
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                statusBarBackground.setVisibility(View.INVISIBLE);
+            } else if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                statusBarBackground.setVisibility(View.VISIBLE);
             } else {
-                // add padding programmatically
-                int padding = (int) (24*getResources().getDisplayMetrics().density + 0.5f);
-                view.setPadding(0,padding,0,0);
+                statusBarBackground.setVisibility(View.GONE);
             }
         }
         appbar.addView(toolbar);

@@ -15,6 +15,7 @@ public interface DigitalEventTracking {
         String CLICK_CHECKOUT = "clickCheckout";
         String LONG_CLICK = "longClick";
         String EVENT_CLICK_USER_PROFILE = "clickUserProfile";
+        String CLICK_COUPON = "clickCoupon";
     }
 
     interface Category {
@@ -55,6 +56,9 @@ public interface DigitalEventTracking {
         String SELECT_NUMBER_ON_USER_PROFILE = "select number on user profile";
         String CHECK_INSTANT_SALDO = "Check Instant Saldo";
         String UNCHECK_INSTANT_SALDO = "Uncheck Instant Saldo";
+        String CLICK_USE_COUPON = "click gunakan kode promo atau kupon";
+        String CLICK_BTN_USE_PROMO_CODE = "click gunakan kode";
+        String CLICK_CANCEL_APPLY_COUPON = "click x on ticker";
     }
 
     interface Label {

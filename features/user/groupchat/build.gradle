@@ -33,13 +33,14 @@ project.ext {
 }
 
 dependencies {
-
+    
+    implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.vote)
 
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.useCase)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.network)
@@ -76,6 +77,8 @@ dependencies {
         exclude group: 'com.squareup.okio'
         exclude group: 'com.android.support'
     }
+
+    implementation rootProject.ext.miscDependencies.lottie
 }
 
 apply from: '../../../publish_local.gradle'

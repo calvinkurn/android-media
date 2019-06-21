@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/header_rounded"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/header_bottom_sheet_rounded_white"
+            android:gravity="center"
+            android:padding="@dimen/dp_10">
+
+            <View
+                android:id="@+id/tray_close"
+                android:layout_width="@dimen/dp_28"
+                android:layout_height="@dimen/dp_4"
+                android:layout_gravity="center"
+                android:background="@drawable/close_button_bottom_sheet" />
+
+        </FrameLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/mainView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/header_rounded"
+            android:background="@color/white"
+            android:padding="@dimen/dp_16">
+
+            <View
+                android:id="@+id/spaceTop"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_8"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/avatar"
+                android:layout_width="@dimen/dp_90"
+                android:layout_height="@dimen/dp_90"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/spaceTop"
+                tools:src="@tools:sample/avatars" />
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_24"
+                android:fontFamily="sans-serif"
+                android:lineSpacingExtra="9sp"
+                android:text="@string/af_make_by_me_profile"
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/sp_16"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/avatar" />
+
+            <com.tokopedia.design.text.TkpdHintTextInputLayout
+                android:id="@+id/usernameWrapper"
+                style="@style/HintTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="-4dp"
+                android:layout_marginLeft="-4dp"
+                android:layout_marginTop="@dimen/dp_16"
+                android:hint="@string/af_type_username"
+                android:textColorHint="@color/black_56"
+                app:layout_constraintTop_toBottomOf="@+id/title">
+
+                <com.tokopedia.affiliate.feature.onboarding.view.widget.PrefixEditText
+                    android:id="@+id/usernameInput"
+                    style="@style/EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:digits="abcdefghijklmnopqrstuvwxyz1234567890"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textSize="@dimen/sp_16"
+                    app:prefix="@string/af_by_me_domain"
+                    app:prefixTextColor="@color/black_70" />
+            </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/suggestionCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_2"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_2"
+                android:visibility="gone"
+                app:cardElevation="@dimen/dp_2"
+                app:layout_constraintTop_toBottomOf="@+id/usernameWrapper"
+                tools:visibility="visible">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/suggestionRv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/dp_8"
+                    app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                    app:reverseLayout="false"
+                    tools:itemCount="3"
+                    tools:listitem="@layout/item_af_username" />
+            </android.support.v7.widget.CardView>
+
+            <View
+                android:id="@+id/spaceButton"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_128"
+                app:layout_constraintBottom_toTopOf="@+id/saveBtn"
+                app:layout_constraintTop_toBottomOf="@+id/usernameWrapper"
+                app:layout_constraintVertical_chainStyle="spread_inside" />
+
+            <com.tokopedia.design.component.ButtonCompat
+                android:id="@+id/saveBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:text="@string/af_save"
+                android:textAllCaps="false"
+                app:buttonCompatSize="big"
+                app:buttonCompatType="primary"
+                app:layout_constraintBottom_toTopOf="@+id/agreeTerms"
+                app:layout_constraintTop_toBottomOf="@+id/spaceButton"
+                app:layout_constraintVertical_bias="1" />
+
+            <TextView
+                android:id="@+id/agreeTerms"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:gravity="center_horizontal"
+                android:lineSpacingExtra="4sp"
+                android:text="@string/af_agree_terms"
+                android:textColor="@color/black_54"
+                android:textSize="@dimen/sp_12"
+                android:textStyle="normal"
+                app:layout_constraintBottom_toTopOf="@+id/termsAndCondition" />
+
+            <TextView
+                android:id="@+id/termsAndCondition"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:gravity="center_horizontal"
+                android:lineSpacingExtra="4sp"
+                android:text="@string/af_terms_and_condition"
+                android:textColor="#399c3f"
+                android:textSize="@dimen/sp_12"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent" />
+        </android.support.constraint.ConstraintLayout>
+    </RelativeLayout>
+</android.support.v4.widget.NestedScrollView>

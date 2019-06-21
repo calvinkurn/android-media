@@ -3,10 +3,12 @@ package com.tokopedia.core.analytics.container;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.appsflyer.AFInAppEventType;
 import com.appsflyer.AppsFlyerConversionListener;
 import com.appsflyer.AppsFlyerLib;
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
@@ -18,11 +20,19 @@ import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.utils.RouterUtils;
+import com.tokopedia.track.interfaces.AFAdsIDCallback;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
+import static com.appsflyer.AFInAppEventParameterName.CUSTOMER_USER_ID;
+import static com.appsflyer.AFInAppEventParameterName.REGSITRATION_METHOD;
 
 public class AppsflyerAnalytics extends ContextAnalytics {
     private static final String TAG = AppsflyerAnalytics.class.getSimpleName();
@@ -32,6 +42,9 @@ public class AppsflyerAnalytics extends ContextAnalytics {
     public static final String GCM_PROJECT_NUMBER = "692092518182";
 
     private static String deferredDeeplinkPath = "";
+
+    public static final String ADVERTISINGID = "ADVERTISINGID";
+    public static final String KEY_ADVERTISINGID = "KEY_ADVERTISINGID";
 
     public AppsflyerAnalytics(Context context) {
         super(context);
@@ -104,6 +117,20 @@ public class AppsflyerAnalytics extends ContextAnalytics {
     }
 
     @Override
+    public void sendAppsflyerRegisterEvent(String userId, String method) {
+        Map<String, Object> eventVal = new HashMap<>();
+        eventVal.put("custom_prop1", "registration");
+        eventVal.put("os", "Android");
+        eventVal.put(CUSTOMER_USER_ID, userId);
+        eventVal.put(REGSITRATION_METHOD, method);
+        sendTrackEvent(AFInAppEventType.COMPLETE_REGISTRATION, eventVal);
+    }
+
+    public void updateFCMToken(String fcmToken) {
+        AppsFlyerLib.getInstance().updateServerUninstallToken(context, fcmToken);
+    }
+
+    @Override
     public void sendGeneralEvent(Map<String, Object> value) {
         // no op, only for GTM
     }
@@ -114,7 +141,7 @@ public class AppsflyerAnalytics extends ContextAnalytics {
     }
 
     @Override
-    public void sendEnhanceECommerceEvent(Map<String, Object> value) {
+    public void sendEnhanceEcommerceEvent(Map<String, Object> value) {
         // no op, only for GTM
     }
 
@@ -150,21 +177,57 @@ public class AppsflyerAnalytics extends ContextAnalytics {
         AppsFlyerLib.getInstance().trackEvent(getContext(), eventName, eventValue);
     }
 
+    //aliasing
+    @Override
+    public void sendTrackEvent(Map<String, Object> data, String eventName) {
+        sendTrackEvent(eventName, data);
+    }
+
+    @Override
+    public void sendTrackEvent(String eventName, Map<String, Object> eventValue) {
+        AppsFlyerLib.getInstance().trackEvent(getContext(), eventName, eventValue);
+    }
+
     public void sendDeeplinkData(Activity activity) {
         AppsFlyerLib.getInstance().sendDeepLinkData(activity);
     }
 
-    public void getAdsID(final AppsflyerContainer.AFAdsIDCallback callback) {
-            AdvertisingIdClient.Info adInfo = null;
-            try {
-                adInfo = AdvertisingIdClient.getAdvertisingIdInfo(getContext());
-                callback.onGetAFAdsID(adInfo.getId());
-                CommonUtils.dumper(TAG + " appsflyer succeded init ads ID " + adInfo.getId() + " " + adInfo.isLimitAdTrackingEnabled());
-            } catch (IOException | GooglePlayServicesNotAvailableException | GooglePlayServicesRepairableException e) {
-                e.printStackTrace();
-                callback.onErrorAFAdsID();
-            }
+    public void getAdsID(final AFAdsIDCallback callback) {
+        String adId = getGoogleAdId();
+        if (!TextUtils.isEmpty(adId)) {
+            callback.onGetAFAdsID(adId);
+        } else {
+            callback.onErrorAFAdsID();
+        }
     }
+
+    @Override
+    public String getGoogleAdId() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(ADVERTISINGID, Context.MODE_PRIVATE);
+
+        String adsId = sharedPrefs.getString(KEY_ADVERTISINGID, "");
+        if (adsId != null && !"".equalsIgnoreCase(adsId.trim())) {
+            return adsId;
+        }
+
+        return (Observable.just("").subscribeOn(Schedulers.newThread())
+                .map(string -> {
+                    AdvertisingIdClient.Info adInfo = null;
+                    try {
+                        adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context);
+                    } catch (IOException | GooglePlayServicesNotAvailableException | GooglePlayServicesRepairableException e) {
+                        e.printStackTrace();
+                    }
+                    return adInfo.getId();
+                }).onErrorReturn(throwable -> "")
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(adID -> {
+                    if (!TextUtils.isEmpty(adID)) {
+                        sharedPrefs.edit().putString(KEY_ADVERTISINGID, adID).apply();
+                    }
+                })).toBlocking().single();
+    }
+
 
     public String getAdsIdDirect() {
 

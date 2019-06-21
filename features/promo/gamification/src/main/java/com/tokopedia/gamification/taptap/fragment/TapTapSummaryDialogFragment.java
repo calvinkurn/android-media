@@ -4,29 +4,21 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.gamification.GamificationRouter;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.gamification.R;
+import com.tokopedia.gamification.applink.ApplinkUtil;
 import com.tokopedia.gamification.data.entity.CrackResultEntity;
+import com.tokopedia.gamification.taptap.activity.TapTapTokenActivity;
 import com.tokopedia.gamification.taptap.compoundview.WidgetSummaryTapTap;
-import com.tokopedia.gamification.taptap.data.entiity.ActionButton;
-import com.tokopedia.gamification.taptap.data.entiity.BackButton;
 import com.tokopedia.gamification.taptap.data.entiity.RewardButton;
 import com.tokopedia.gamification.taptap.database.GamificationDatabaseWrapper;
 import com.tokopedia.gamification.taptap.database.GamificationDbCallback;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 public class TapTapSummaryDialogFragment extends DialogFragment implements GamificationDbCallback, WidgetSummaryTapTap.SummaryPageActionListener {
 
@@ -113,5 +105,19 @@ public class TapTapSummaryDialogFragment extends DialogFragment implements Gamif
     @Override
     public void dismissDialog() {
         dismiss();
+    }
+
+    @Override
+    public void navigateToActivity(String applink, String url) {
+        ApplinkUtil.navigateToAssociatedPage(getActivity(), applink,
+                url,
+                TapTapTokenActivity.class);
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (widgetSummaryTapTap != null)
+            widgetSummaryTapTap.onDestroView();
+        super.onDestroyView();
     }
 }

@@ -90,8 +90,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
                     .EXTRA_KYC_STEPPER_MODEL);
         }
         if (getActivity() != null) {
-            analytics = UserIdentificationAnalytics.createInstance(getActivity()
-                    .getApplicationContext());
+            analytics = UserIdentificationAnalytics.createInstance(getActivity().getIntent().getIntExtra(UserIdentificationFormActivity.PARAM_PROJECTID_TRADEIN, 1));
         }
     }
 
@@ -143,6 +142,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
                 analytics.eventClickChangeKtpFinalFormPage();
                 Intent intent = UserIdentificationCameraActivity.createIntent(getContext(),
                         PARAM_VIEW_MODE_KTP);
+                intent.putExtra(UserIdentificationFormActivity.PARAM_PROJECTID_TRADEIN, projectId);
                 startActivityForResult(intent, REQUEST_CODE_CAMERA_KTP);
             }
         });
@@ -153,6 +153,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
                 analytics.eventClickChangeSelfieFinalFormPage();
                 Intent intent = UserIdentificationCameraActivity.createIntent(getContext(),
                         PARAM_VIEW_MODE_FACE);
+                intent.putExtra(UserIdentificationFormActivity.PARAM_PROJECTID_TRADEIN, projectId);
                 startActivityForResult(intent, REQUEST_CODE_CAMERA_FACE);
             }
         });
@@ -260,6 +261,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
     public void onSuccessUpload() {
         hideLoading();
         getActivity().setResult(Activity.RESULT_OK);
+        analytics.eventClickUploadPhotosTradeIn("success");
         stepperListener.finishPage();
     }
 
@@ -268,6 +270,7 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
         hideLoading();
         if (getActivity() instanceof UserIdentificationFormActivity) {
             ((UserIdentificationFormActivity) getActivity()).showError(error, this::uploadImage);
+            analytics.eventClickUploadPhotosTradeIn("failed");
         }
     }
 

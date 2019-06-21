@@ -18,6 +18,8 @@ import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel;
  */
 public class WhitelistViewHolder extends AbstractViewHolder<WhitelistViewModel> {
 
+    private static final String FORMAT_NAME = "{{name}}";
+
     private FeedPlus.View mainView;
 
     private ImageView ivAvatar;
@@ -38,14 +40,13 @@ public class WhitelistViewHolder extends AbstractViewHolder<WhitelistViewModel> 
     @Override
     public void bind(WhitelistViewModel element) {
         initView(element);
-        initViewListener();
+        initViewListener(element);
     }
 
     private void initView(WhitelistViewModel model) {
-        tvCaption.setText(MethodChecker.fromHtml(String.format("<b>%s,</b> %s",
-                mainView.getUserSession().hasShop()? mainView.getUserSession().getShopName() :
-                        mainView.getUserSession().getName(),
-                model.getWhitelist().getDesc())));
+        tvCaption.setText(
+                MethodChecker.fromHtml( formatWhiteListTitle(
+                        model.getWhitelist().getTitle())));
 
         ImageHandler.loadImageCircle2(
                 ivAvatar.getContext(),
@@ -54,9 +55,21 @@ public class WhitelistViewHolder extends AbstractViewHolder<WhitelistViewModel> 
         );
     }
 
-    private void initViewListener() {
+    private String formatWhiteListTitle(String title) {
+        return title
+                .replace(FORMAT_NAME, bold(FORMAT_NAME))
+                .replace(FORMAT_NAME, mainView.getUserSession().hasShop() ?
+                        mainView.getUserSession().getShopName() :
+                        mainView.getUserSession().getName());
+    }
+
+    private String bold(String text) {
+        return String.format("<b>%s</b>", text);
+    }
+
+    private void initViewListener(WhitelistViewModel element) {
         btnCreatePost.setOnClickListener(view ->
-                mainView.onWhitelistClicked()
+                mainView.onWhitelistClicked(element)
         );
     }
 }

@@ -411,7 +411,7 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
     }
 
     @Override
-    public void trackingSuccessVoucher(String voucherName) {
+    public void trackingSuccessVoucher(String title, String voucherName) {
         trainAnalytics.eventVoucherSuccess(voucherName);
     }
 

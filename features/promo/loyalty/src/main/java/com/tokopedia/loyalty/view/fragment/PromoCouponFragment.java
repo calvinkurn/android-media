@@ -26,6 +26,7 @@ import com.tokopedia.loyalty.di.component.DaggerPromoCouponComponent;
 import com.tokopedia.loyalty.di.component.PromoCouponComponent;
 import com.tokopedia.loyalty.di.module.PromoCouponViewModule;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
+import com.tokopedia.loyalty.view.LoyaltyTracking;
 import com.tokopedia.loyalty.view.adapter.CouponListAdapter;
 import com.tokopedia.loyalty.view.data.CouponData;
 import com.tokopedia.loyalty.view.data.CouponViewModel;
@@ -74,6 +75,8 @@ public class PromoCouponFragment extends BaseDaggerFragment
     private static final String ADDITIONAL_DATA_KEY = "ADDITIONAL_DATA_KEY";
 
     private static final String DIGITAL_CATEGORY_ID = "DIGI_CATEGORY_ID";
+
+    private static final String DIGITAL_CATEGORY_NAME = "DIGI_CATEGORY_NAME";
 
     private static final String DIGITAL_PRODUCT_ID = "DIGI_PRODUCT_ID";
 
@@ -163,6 +166,7 @@ public class PromoCouponFragment extends BaseDaggerFragment
         loyaltyModuleRouter.sendEventDigitalEventTracking(context, text, failmsg);
     }
 
+
     @Override
     public void renderErrorNoConnectionGetCouponList(String message) {
         refreshHandler.finishRefresh();
@@ -239,6 +243,16 @@ public class PromoCouponFragment extends BaseDaggerFragment
                 couponViewModel.getTitle(),
                 couponViewModel.getRawDiscount(),
                 couponViewModel.getRawCashback());
+    }
+
+    @Override
+    public void sendTrackingOnCheckDigitalVoucherError(String errorMessage) {
+        LoyaltyTracking.eventclickBtnFailedUseCoupon(getArguments().getString(DIGITAL_CATEGORY_NAME), errorMessage);
+    }
+
+    @Override
+    public void sendTrackingOnCheckDigitalVoucherSuccess(String voucherCode) {
+        LoyaltyTracking.eventclickBtnSuccessUseCoupon(getArguments().getString(DIGITAL_CATEGORY_NAME), voucherCode);
     }
 
     @Override
@@ -369,7 +383,7 @@ public class PromoCouponFragment extends BaseDaggerFragment
     public static PromoCouponFragment newInstance(
             String platformString, String platformPageString, String additionalDataString,
             String categoryKey, String cartIdString,
-            int categoryId, int productId) {
+            int categoryId, String categoryName, int productId) {
         PromoCouponFragment fragment = new PromoCouponFragment();
         Bundle bundle = new Bundle();
         bundle.putString(PLATFORM_KEY, platformString);
@@ -377,6 +391,7 @@ public class PromoCouponFragment extends BaseDaggerFragment
         bundle.putString(CATEGORY_KEY, categoryKey);
         bundle.putString(CART_ID_KEY, cartIdString);
         bundle.putInt(DIGITAL_CATEGORY_ID, categoryId);
+        bundle.putString(DIGITAL_CATEGORY_NAME, categoryName);
         bundle.putInt(DIGITAL_PRODUCT_ID, productId);
         bundle.putString(ADDITIONAL_DATA_KEY, additionalDataString);
         fragment.setArguments(bundle);

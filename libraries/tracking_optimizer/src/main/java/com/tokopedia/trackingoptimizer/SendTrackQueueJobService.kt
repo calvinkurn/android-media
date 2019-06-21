@@ -5,19 +5,15 @@ import android.app.job.JobParameters
 import android.app.job.JobService
 import android.os.Build
 import com.tokopedia.trackingoptimizer.repository.TrackingRepository
-import kotlinx.coroutines.experimental.CoroutineExceptionHandler
-import kotlinx.coroutines.experimental.CoroutineScope
-import kotlin.coroutines.experimental.CoroutineContext
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlin.coroutines.CoroutineContext
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 class SendTrackQueueJobService : JobService(), CoroutineScope {
 
     val trackingRepository: TrackingRepository by lazy {
         TrackingRepository(this)
-    }
-
-    val trackingOptimizerRouter: TrackingOptimizerRouter? by lazy {
-        this.application as? TrackingOptimizerRouter
     }
 
     val handler: CoroutineExceptionHandler by lazy {
@@ -32,7 +28,7 @@ class SendTrackQueueJobService : JobService(), CoroutineScope {
     }
 
     override fun onStartJob(jobParameters: JobParameters): Boolean {
-        sendTrack(this, trackingRepository, trackingOptimizerRouter) {
+        sendTrack(this, trackingRepository) {
             jobFinished(jobParameters, false)
         }
         return true

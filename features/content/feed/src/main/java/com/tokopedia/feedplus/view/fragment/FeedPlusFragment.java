@@ -19,38 +19,35 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.design.component.Menus;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
+import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Comment;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Like;
-import com.tokopedia.feedcomponent.data.pojo.track.Tracking;
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder;
@@ -60,6 +57,8 @@ import com.tokopedia.feedcomponent.view.viewmodel.banner.TrackingBannerModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel;
+import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridItemViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentOptionViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel;
@@ -70,40 +69,35 @@ import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel;
 import com.tokopedia.feedcomponent.view.widget.CardTitleView;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.R;
-import com.tokopedia.feedplus.data.api.FeedUrl;
-import com.tokopedia.feedplus.view.activity.FeedPlusDetailActivity;
 import com.tokopedia.feedplus.view.activity.TransparentVideoActivity;
+import com.tokopedia.feedplus.view.adapter.EntryPointAdapter;
 import com.tokopedia.feedplus.view.adapter.FeedPlusAdapter;
 import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory;
 import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactoryImpl;
-import com.tokopedia.feedplus.view.adapter.viewholder.productcard.AddFeedViewHolder;
 import com.tokopedia.feedplus.view.analytics.FeedAnalytics;
 import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking;
 import com.tokopedia.feedplus.view.analytics.FeedTrackingEventLabel;
+import com.tokopedia.feedplus.view.analytics.ProductEcommerce;
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.feedplus.view.di.FeedPlusComponent;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager;
 import com.tokopedia.feedplus.view.viewmodel.RetryModel;
-import com.tokopedia.feedplus.view.viewmodel.inspiration.InspirationViewModel;
-import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
-import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
-import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
-import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
-import com.tokopedia.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
+import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.common.util.PostMenuListener;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
-import com.tokopedia.kol.feature.createpost.view.activity.CreatePostImagePickerActivity;
 import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity;
+import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity;
 import com.tokopedia.profile.view.activity.ProfileActivity;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
@@ -120,8 +114,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.feedplus.view.FeedPlusConstant.KEY_FEED;
-import static com.tokopedia.feedplus.view.FeedPlusConstant.KEY_FEED_FIRSTPAGE_LAST_CURSOR;
+import static com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED;
+import static com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED_FIRSTPAGE_LAST_CURSOR;
 import static com.tokopedia.kol.common.util.PostMenuUtilKt.createBottomMenu;
 import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.IS_LIKE_TRUE;
 import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_IS_LIKED;
@@ -147,12 +141,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
         ImagePostViewHolder.ImagePostListener,
         YoutubeViewHolder.YoutubePostListener,
         PollAdapter.PollOptionListener,
-        GridPostAdapter.GridItemListener {
+        GridPostAdapter.GridItemListener,
+        VideoViewHolder.VideoViewListener {
 
     private static final int OPEN_DETAIL = 54;
     private static final int OPEN_KOL_COMMENT = 101;
     private static final int OPEN_KOL_PROFILE = 13;
-    private static final int OPEN_KOL_PROFILE_FROM_RECOMMENDATION = 83;
     private static final int OPEN_CONTENT_REPORT = 1310;
     private static final int CREATE_POST = 888;
     private static final int DEFAULT_VALUE = -1;
@@ -160,12 +154,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     private static final String TAG = FeedPlusFragment.class.getSimpleName();
     private static final String ARGS_ROW_NUMBER = "row_number";
-    private static final String ARGS_ITEM_ROW_NUMBER = "item_row_number";
-    private static final String FIRST_CURSOR = "FIRST_CURSOR";
     private static final String YOUTUBE_URL = "{youtube_url}";
     private static final String FEED_TRACE = "mp_feed";
     private static final String AFTER_POST = "after_post";
     private static final String TRUE = "true";
+    private static final String FEED_DETAIL = "feedcommunicationdetail";
     public static final String BROADCAST_FEED = "BROADCAST_FEED";
     public static final String PARAM_BROADCAST_NEW_FEED = "PARAM_BROADCAST_NEW_FEED";
     public static final String PARAM_BROADCAST_NEW_FEED_CLICKED = "PARAM_BROADCAST_NEW_FEED_CLICKED";
@@ -174,7 +167,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private SwipeToRefresh swipeToRefresh;
     private View mainContent;
     private View newFeed;
-    private AbstractionRouter abstractionRouter;
     private FeedModuleRouter feedModuleRouter;
     private BroadcastReceiver newFeedReceiver;
 
@@ -192,6 +184,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Inject
     FeedAnalytics analytics;
+
+    @Inject
+    PostTagAnalytics postTagAnalytics;
 
     @Inject
     UserSessionInterface userSession;
@@ -234,29 +229,18 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void initVar() {
-        FeedPlusTypeFactory typeFactory = new FeedPlusTypeFactoryImpl(this, analytics);
+        FeedPlusTypeFactory typeFactory = new FeedPlusTypeFactoryImpl(this, analytics, userSession);
         adapter = new FeedPlusAdapter(typeFactory);
         adapter.setOnLoadListener(totalCount -> {
             int size = adapter.getlist().size();
             int lastIndex = size - 1;
             if (!(adapter.getlist().get(0) instanceof EmptyModel)
-                    && !(adapter.getlist().get(lastIndex) instanceof RetryModel)
-                    && !(adapter.getlist().get(lastIndex) instanceof AddFeedViewHolder)
-                    )
+                    && !(adapter.getlist().get(lastIndex) instanceof RetryModel))
                 presenter.fetchNextPage();
         });
         layoutManager = new NpaLinearLayoutManager(getActivity(),
                 LinearLayoutManager.VERTICAL,
                 false);
-
-        if (getActivity() != null
-                && getActivity().getApplicationContext() != null
-                && getActivity().getApplicationContext() instanceof AbstractionRouter) {
-            abstractionRouter = (AbstractionRouter) getActivity().getApplicationContext();
-        } else {
-            throw new IllegalStateException("Application must implement " +
-                    AbstractionRouter.class.getSimpleName());
-        }
 
         if (getActivity().getApplication() instanceof FeedModuleRouter) {
             feedModuleRouter = (FeedModuleRouter) getActivity().getApplication();
@@ -360,10 +344,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
                         item = adapter.getlist().get(position);
 
-                        if (position != 0 && item != null && !isTopads(item)) {
-                            trackImpression(item);
-                        }
-
                         if (item instanceof DynamicPostViewModel) {
                             if (!TextUtils.isEmpty(((DynamicPostViewModel) item).getFooter().getButtonCta().getAppLink())) {
                                 adapter.notifyItemChanged(position, DynamicPostViewHolder.PAYLOAD_ANIMATE_FOOTER);
@@ -377,20 +357,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
             }
 
         });
-    }
-
-    private void trackImpression(Visitable item) {
-        if (isInspirationItem(item)) {
-            analytics.trackImpressionFeedRecommendation();
-        }
-    }
-
-    private boolean isInspirationItem(Visitable item) {
-        return item instanceof InspirationViewModel;
-    }
-
-    private boolean isTopads(Visitable item) {
-        return item instanceof FeedTopAdsViewModel;
     }
 
     private boolean itemIsFullScreen() {
@@ -430,116 +396,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
-    private void goToProductDetail(String productId, String imageSourceSingle, String name,
-                                   String price) {
-        getActivity().startActivity(getProductIntent(productId));
-    }
-
-    private Intent getProductIntent(String productId){
-        if (getContext() != null) {
-            return RouteManager.getIntent(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
-        } else {
-            return null;
-        }
-    }
-    @Override
-    public void onGoToProductDetail(int rowNumber, int page, String productId, String
-            imageSourceSingle, String name, String price) {
-        goToProductDetail(productId, imageSourceSingle, name, price);
-        analytics.eventFeedViewProduct(
-                getScreenName(),
-                productId,
-                getFeedAnalyticsHeader(page, rowNumber) + FeedTrackingEventLabel.View.FEED_PDP);
-    }
-
-    @Override
-    public void onGoToProductDetailFromProductUpload(int rowNumber,
-                                                     int positionFeedCard,
-                                                     int page,
-                                                     int itemPosition,
-                                                     String productId,
-                                                     String imageSourceSingle,
-                                                     String name,
-                                                     String price,
-                                                     String priceInt,
-                                                     String productUrl,
-                                                     String eventLabel) {
-
-        analytics.trackEventClickProductUploadEnhanced(
-                name,
-                productId,
-                priceInt,
-                productUrl,
-                positionFeedCard,
-                itemPosition,
-                getUserSession().getUserId(),
-                eventLabel
-        );
-        goToProductDetail(productId, imageSourceSingle, name, price);
-    }
-
-    @Override
-    public void onGoToProductDetailFromRecentView(String productId, String imgUri,
-                                                  String name, String price) {
-        goToProductDetail(productId, imgUri, name, price);
-        analytics.eventFeedViewProduct(getScreenName(),
-                productId,
-                FeedTrackingEventLabel.View.VIEW_RECENT,
-                FeedTrackingEventLabel.View.FEED_PDP);
-    }
-
-    @Override
-    public void onGoToProductDetailFromInspiration(int page,
-                                                   int rowNumber,
-                                                   String productId,
-                                                   String imageSource,
-                                                   String name,
-                                                   String price,
-                                                   String priceInt,
-                                                   String productUrl,
-                                                   String source,
-                                                   int positionFeedCard,
-                                                   int itemPosition,
-                                                   String eventLabel) {
-        analytics.trackEventClickInspirationEnhanced(
-                name,
-                productId,
-                priceInt,
-                productUrl,
-                positionFeedCard,
-                itemPosition,
-                source,
-                getUserSession().getUserId(),
-                eventLabel
-        );
-
-        goToProductDetail(productId, imageSource, name, price);
-        analytics.eventR3Product(productId, getFeedAnalyticsHeader(page, rowNumber)
-                + FeedTrackingEventLabel.Click.FEED_RECOMMENDATION_PDP);
-    }
-
-    @Override
-    public void onGoToFeedDetail(int page, int rowNumber, String feedId) {
-        Intent intent = FeedPlusDetailActivity.getIntent(
-                getActivity(),
-                feedId,
-                getFeedAnalyticsHeader(page, rowNumber));
-        startActivityForResult(intent, OPEN_DETAIL);
-        analytics.eventFeedView(
-                getFeedAnalyticsHeader(page, rowNumber) + FeedTrackingEventLabel.View
-                        .FEED_PRODUCT_LIST);
-
-    }
-
-    @Override
-    public void onGoToShopDetail(int page, int rowNumber, Integer shopId, String url) {
-        Intent intent = feedModuleRouter.getShopPageIntent(getActivity(), String.valueOf(shopId));
-        startActivity(intent);
-        analytics.eventFeedViewShop(getScreenName(),
-                String.valueOf(shopId),
-                getFeedAnalyticsHeader(page, rowNumber) + FeedTrackingEventLabel.View.FEED_SHOP);
-    }
-
     @Override
     public void onOpenVideo(String videoUrl, String subtitle) {
         Intent intent = TransparentVideoActivity.getIntent(getActivity(), videoUrl, subtitle);
@@ -551,11 +407,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         infoBottomSheet.show();
     }
 
-    @Override
-    public void onFavoritedClicked(int adapterPosition) {
-        adapter.getItemViewType(adapterPosition);
-    }
-
     @SuppressLint("Range")
     @Override
     public void showSnackbar(String s) {
@@ -564,23 +415,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void updateFavorite(int adapterPosition) {
-        if (adapter.getlist().get(adapterPosition) instanceof FeedTopAdsViewModel
-                && ((FeedTopAdsViewModel) adapter.getlist().get(adapterPosition)).getList().size()
-                > 0) {
 
-            Data data = ((FeedTopAdsViewModel) adapter.getlist().get(adapterPosition))
-                    .getList()
-                    .get(0);
-            boolean currentStatus = data.isFavorit();
-            data.setFavorit(!currentStatus);
-            adapter.notifyItemChanged(adapterPosition);
-        }
-
-        if (adapter.getlist().get(adapterPosition) instanceof TopadsShopViewModel) {
-            Data data = ((FeedTopAdsViewModel) adapter.getlist().get(adapterPosition))
-                    .getList()
-                    .get(0);
-        }
     }
 
     @Override
@@ -659,11 +494,13 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onSearchShopButtonClicked() {
-        int INIT_STATE_FRAGMENT_FAVORITE = 2;
-        String EXTRA_INIT_FRAGMENT = "EXTRA_INIT_FRAGMENT";
-        Intent intent = feedModuleRouter.getHomeIntent(getContext());
-        intent.putExtra(EXTRA_INIT_FRAGMENT, INIT_STATE_FRAGMENT_FAVORITE);
-        startActivity(intent);
+        if (getContext() != null) {
+            int INIT_STATE_FRAGMENT_FAVORITE = 2;
+            String EXTRA_INIT_FRAGMENT = "EXTRA_INIT_FRAGMENT";
+            Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.HOME);
+            intent.putExtra(EXTRA_INIT_FRAGMENT, INIT_STATE_FRAGMENT_FAVORITE);
+            startActivity(intent);
+        }
     }
 
     @Override
@@ -758,16 +595,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 break;
             case CREATE_POST:
                 break;
-            case OPEN_KOL_PROFILE_FROM_RECOMMENDATION:
-                if (resultCode == Activity.RESULT_OK) {
-                    onSuccessFollowUnfollowFromProfileRecommendation(
-                            data.getIntExtra(ARGS_ROW_NUMBER, DEFAULT_VALUE),
-                            data.getIntExtra(ARGS_ITEM_ROW_NUMBER, DEFAULT_VALUE),
-                            data.getIntExtra(ProfileActivity.PARAM_IS_FOLLOWING,
-                                    DEFAULT_VALUE)
-                    );
-                }
-                break;
             case OPEN_CONTENT_REPORT:
                 if (resultCode == Activity.RESULT_OK) {
                     if (data.getBooleanExtra(ContentReportActivity.RESULT_SUCCESS, false)) {
@@ -786,11 +613,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onProductItemClicked(int position, Product product) {
-        goToProductDetail(product.getId(),
-                product.getImage().getS_ecs(),
-                product.getName(),
-                product.getPriceFormat()
-        );
+        goToProductDetail(product.getId());
 
         analytics.eventFeedClickProduct(getScreenName(),
                 product.getId(),
@@ -816,8 +639,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onShopItemClicked(int position, Shop shop) {
-        Intent intent = feedModuleRouter.getShopPageIntent(getActivity(), shop.getId());
-        startActivity(intent);
+        goToShopPage(shop.getId());
         analytics.eventFeedClickShop(getScreenName(),
                 shop.getId(),
                 FeedTrackingEventLabel.Click.TOP_ADS_SHOP);
@@ -908,7 +730,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 afterPost = false;
             }
 
-            analytics.trackScreen(getActivity(), getScreenName());
+            analytics.trackScreen(getScreenName());
         }
     }
 
@@ -930,95 +752,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 && !adapter.getlist().isEmpty()
                 && adapter.getlist().size() > 1
                 && !(adapter.getlist().get(0) instanceof EmptyModel);
-    }
-
-    @Override
-    public void onBrandClicked(int page, int rowNumber, OfficialStoreViewModel
-            officialStoreViewModel) {
-        analytics.eventFeedClickShop(
-                getScreenName(),
-                String.valueOf(officialStoreViewModel.getShopId()),
-                getFeedAnalyticsHeader(page, rowNumber)
-                        + FeedTrackingEventLabel.Click.OFFICIAL_STORE_BRAND
-                        + officialStoreViewModel.getShopName()
-        );
-
-        Intent intent = feedModuleRouter.getShopPageIntent(getActivity(), String.valueOf
-                (officialStoreViewModel.getShopId()));
-        startActivity(intent);
-    }
-
-    private String getFeedAnalyticsHeader(int page, int rowNumber) {
-        return page + "." + rowNumber + " ";
-    }
-
-    @Override
-    public void onSeeAllOfficialStoresFromCampaign(int page, int rowNumber, String redirectUrl) {
-        analytics.eventFeedClick(
-                getFeedAnalyticsHeader(page, rowNumber) +
-                        FeedTrackingEventLabel.Click.OFFICIAL_STORE_CAMPAIGN_SEE_ALL);
-        feedModuleRouter.actionAppLink(getActivity(), redirectUrl);
-    }
-
-    @Override
-    public void onGoToCampaign(int page, int rowNumber, String redirectUrl, String title) {
-        analytics.eventFeedClick(
-                getFeedAnalyticsHeader(page, rowNumber)
-                        + FeedTrackingEventLabel.Click.OFFICIAL_STORE_CAMPAIGN + title);
-        feedModuleRouter.actionAppLink(getActivity(), redirectUrl);
-
-    }
-
-    @Override
-    public void onSeeAllOfficialStoresFromBrands(int page, int rowNumber) {
-        analytics.eventOfficialStoreBrandSeeAll(
-                getFeedAnalyticsHeader(page, rowNumber));
-        openWebViewBrandsURL(FeedUrl.URL_WEBVIEW_OS);
-    }
-
-    @Override
-    public void onGoToProductDetailFromCampaign(int page, int rowNumber, String productId, String
-            imageSourceSingle, String name, String price) {
-        analytics.eventFeedClickProduct(
-                getScreenName(),
-                productId,
-                getFeedAnalyticsHeader(page, rowNumber) + FeedTrackingEventLabel.Click
-                        .OFFICIAL_STORE_CAMPAIGN_PDP);
-        goToProductDetail(productId, imageSourceSingle, name, price);
-
-    }
-
-    @Override
-    public void onGoToShopDetailFromCampaign(int page, int rowNumber, String shopUrl) {
-        analytics.eventFeedClick(
-                getFeedAnalyticsHeader(page, rowNumber) + FeedTrackingEventLabel.Click
-                        .OFFICIAL_STORE_CAMPAIGN_SHOP);
-        feedModuleRouter.actionAppLink(getActivity(), shopUrl);
-
-    }
-
-    private void openWebViewBrandsURL(String url) {
-        if (!url.trim().equals("")) {
-            startActivity(feedModuleRouter.getBrandsWebViewIntent(getActivity(), url));
-        }
-    }
-
-    @Override
-    public void onContentProductLinkClicked(String url) {
-        if (!TextUtils.isEmpty(url)) {
-            feedModuleRouter.openRedirectUrl(getActivity(), url);
-        }
-    }
-
-    @Override
-    public void onGoToKolProfileFromRecommendation(int position, int itemPosition, String userId) {
-        if (getContext() != null) {
-            Intent profileIntent = ProfileActivity.Companion.createIntent(getContext(), userId)
-                    .putExtra(ARGS_ROW_NUMBER, position)
-                    .putExtra(ARGS_ITEM_ROW_NUMBER, itemPosition);
-
-            startActivityForResult(profileIntent, OPEN_KOL_PROFILE_FROM_RECOMMENDATION);
-        }
     }
 
     @Override
@@ -1058,7 +791,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         if (getUserSession() != null && getUserSession().isLoggedIn()) {
             presenter.followKol(id, rowNumber, this);
         } else {
-            startActivity(feedModuleRouter.getLoginIntent(getActivity()));
+            onGoToLogin();
         }
     }
 
@@ -1067,7 +800,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         if (getUserSession() != null && getUserSession().isLoggedIn()) {
             presenter.unfollowKol(id, rowNumber, this);
         } else {
-            startActivity(feedModuleRouter.getLoginIntent(getActivity()));
+            onGoToLogin();
         }
 
     }
@@ -1077,8 +810,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
                                  String activityType) {
         if (getUserSession() != null && getUserSession().isLoggedIn()) {
             presenter.likeKol(id, rowNumber, this);
+            trackCardPostElementClick(rowNumber, FeedAnalytics.Element.LIKE);
         } else {
-            startActivity(feedModuleRouter.getLoginIntent(getActivity()));
+            onGoToLogin();
         }
     }
 
@@ -1087,8 +821,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
                                    String activityType) {
         if (getUserSession() != null && getUserSession().isLoggedIn()) {
             presenter.unlikeKol(id, rowNumber, this);
+            trackCardPostElementClick(rowNumber, FeedAnalytics.Element.UNLIKE);
         } else {
-            startActivity(feedModuleRouter.getLoginIntent(getActivity()));
+            onGoToLogin();
         }
     }
 
@@ -1097,6 +832,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                                  String activityType) {
         Intent intent = KolCommentActivity.getCallingIntentFromFeed(getContext(), id, rowNumber);
         startActivityForResult(intent, OPEN_KOL_COMMENT);
+        trackCardPostElementClick(rowNumber, FeedAnalytics.Element.COMMENT);
     }
 
     @Override
@@ -1154,44 +890,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void trackEEPoll(PollOptionViewModel element, String trackingPromoCode, int rowNumber,
-                            PollViewModel pollViewModel) {
-        UserSessionInterface userSession = getUserSession();
-        int loginId = Integer.valueOf(
-                !TextUtils.isEmpty(userSession.getUserId()) ? userSession.getUserId() : "0"
-        );
-
-        List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();
-        list.add(new FeedEnhancedTracking.Promotion(
-                Integer.valueOf(element.getOptionId()),
-                FeedEnhancedTracking.Promotion.createContentNameVote(),
-                element.getOption(),
-                rowNumber,
-                pollViewModel.getReview(),
-                Integer.valueOf(pollViewModel.getPollId()),
-                trackingPromoCode
-        ));
-
-        analytics.eventTrackingEnhancedEcommerce(
-                FeedEnhancedTracking.getClickTracking(
-                        list,
-                        loginId
-                )
-        );
-    }
-
-    @Override
     public void onVoteOptionClicked(int rowNumber, String pollId, String optionId) {
         presenter.sendVote(rowNumber, pollId, optionId);
-    }
-
-    @Override
-    public void onGoToListKolRecommendation(int page, int rowNumber, String url) {
-        if (getParentFragment() instanceof FeedPlusContainerFragment) {
-            ((FeedPlusContainerFragment) getParentFragment()).goToExplore(true);
-        } else {
-            feedModuleRouter.openRedirectUrl(getActivity(), url);
-        }
     }
 
     @Override
@@ -1354,27 +1054,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
-    private void onSuccessFollowUnfollowFromProfileRecommendation(int rowNumber,
-                                                                  int itemRowNumber,
-                                                                  int isFollowing) {
-        if (rowNumber != DEFAULT_VALUE
-                && itemRowNumber != DEFAULT_VALUE
-                && adapter.getlist().size() > rowNumber
-                && adapter.getlist().get(rowNumber) instanceof KolRecommendationViewModel) {
-            KolRecommendationViewModel recommendationViewModel =
-                    (KolRecommendationViewModel) adapter.getlist().get(rowNumber);
-
-            if (isFollowing != DEFAULT_VALUE) {
-                recommendationViewModel.getListRecommend()
-                        .get(itemRowNumber)
-                        .setFollowed(isFollowing
-                                == ProfileActivity.IS_FOLLOWING_TRUE);
-            }
-
-            adapter.notifyItemChanged(rowNumber);
-        }
-    }
-
     private void onSuccessReportContent() {
         ToasterNormal
                 .make(getView(),
@@ -1394,17 +1073,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onUserNotLogin() {
-        finishLoading();
-        adapter.clearData();
-        adapter.unsetEndlessScrollListener();
-        adapter.showUserNotLogin();
-    }
-
-    @Override
     public void onGoToLogin() {
         if (getActivity() != null) {
-            Intent intent = feedModuleRouter.getLoginIntent(getActivity());
+            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN);
             getActivity().startActivityForResult(intent, REQUEST_LOGIN);
         }
     }
@@ -1412,27 +1083,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onSuccessSendVote(int rowNumber, String optionId,
                                   VoteStatisticDomainModel voteStatisticDomainModel) {
-        if (adapter.getlist().size() > rowNumber
-                && adapter.getlist().get(rowNumber) instanceof PollViewModel) {
-            PollViewModel pollViewModel = (PollViewModel) adapter.getlist().get(rowNumber);
-            pollViewModel.setVoted(true);
-            pollViewModel.setTotalVoter(voteStatisticDomainModel.getTotalParticipants());
-
-            for (int i = 0; i < pollViewModel.getOptionViewModels().size(); i++) {
-                PollOptionViewModel pollOptionViewModel
-                        = pollViewModel.getOptionViewModels().get(i);
-
-                pollOptionViewModel.setSelected(optionId.equals(pollOptionViewModel.getOptionId()) ?
-                        PollOptionViewModel.SELECTED : PollOptionViewModel.UNSELECTED);
-
-                String newPercentage
-                        = voteStatisticDomainModel.getListOptions().get(i).getPercentage();
-                pollOptionViewModel.setPercentage(newPercentage);
-            }
-
-            adapter.notifyItemChanged(rowNumber);
-        }
-
         if (adapter.getlist().size() > rowNumber
                 && adapter.getlist().get(rowNumber) instanceof DynamicPostViewModel) {
             DynamicPostViewModel model = (DynamicPostViewModel) adapter.getlist().get(rowNumber);
@@ -1454,7 +1104,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
                                 = pollContentViewModel.getOptionList().get(i);
 
                         optionViewModel.setSelected(optionId.equals(optionViewModel.getOptionId()) ?
-                                PollOptionViewModel.SELECTED : PollOptionViewModel.UNSELECTED);
+                                PollContentOptionViewModel.SELECTED
+                                : PollContentOptionViewModel.UNSELECTED);
 
                         int newPercentage = 0;
                         try {
@@ -1480,19 +1131,13 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public int getAdapterListSize() {
-        return adapter.getItemCount();
-    }
-
-    @Override
-    public void onWhitelistClicked() {
+    public void onWhitelistClicked(WhitelistViewModel element) {
         analytics.trackClickCreatePost(userSession.getUserId());
-        showBottomSheetCreatePost();
+        showBottomSheetCreatePost(element);
     }
 
-    private void showBottomSheetCreatePost() {
+    private void showBottomSheetCreatePost(WhitelistViewModel element) {
         if (getActivity() != null) {
-
             if (createPostBottomSheet == null) {
                 createPostBottomSheet = CloseableBottomSheetDialog.createInstance(getContext(),
                         () -> {
@@ -1500,7 +1145,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
                         }, () -> {
 
                         });
-                View customView = createCustomCreatePostBottomSheetView(getActivity().getLayoutInflater());
+                View customView =
+                        createCustomCreatePostBottomSheetView(getActivity().getLayoutInflater(), element);
                 createPostBottomSheet.setCustomContentView(customView,
                         getString(R.string.create_post_as), true);
             }
@@ -1508,78 +1154,26 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
-    private View createCustomCreatePostBottomSheetView(@NonNull LayoutInflater layoutInflater) {
-        View view = layoutInflater.inflate(R.layout.layout_create_post_bottom_sheet
-                , null);
-        View separator = view.findViewById(R.id.separator);
-        View shopLayout = view.findViewById(R.id.layout_shop);
-        View userLayout = view.findViewById(R.id.layout_user);
+    private View createCustomCreatePostBottomSheetView(@NonNull LayoutInflater layoutInflater, WhitelistViewModel element) {
+        View view = layoutInflater.inflate(R.layout.layout_create_post_bottom_sheet, null);
 
-        if (userSession.hasShop()) {
-            separator.setVisibility(View.VISIBLE);
-            shopLayout.setVisibility(View.VISIBLE);
-            setupCreatePostAsShopLayout(shopLayout);
-        } else {
-            shopLayout.setVisibility(View.GONE);
-            separator.setVisibility(View.GONE);
+        if (getActivity() != null) {
+            RecyclerView entryPointRecyclerView = view.findViewById(R.id.entry_point_list);
+            EntryPointAdapter adapter = new EntryPointAdapter(getActivity(),
+                    element.getWhitelist().getAuthors(), applink -> {
+                        analytics.trackClickCreatePostAs(applink, userSession.getUserId(),
+                                userSession.getShopId());
+                        startActivityForResult(
+                                RouteManager.getIntent(getContext(), applink),
+                                CREATE_POST
+                        );
+                        createPostBottomSheet.dismiss();
+                    });
+            entryPointRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
+                    LinearLayoutManager.VERTICAL, false));
+            entryPointRecyclerView.setAdapter(adapter);
         }
-
-        setupCreatePostAsUserLayout(userLayout);
-
         return view;
-    }
-
-    private void setupCreatePostAsUserLayout(View userLayout) {
-        TextView userName = userLayout.findViewById(R.id.tvNameUser);
-        userName.setText(MethodChecker.fromHtml(userSession.getName()));
-
-        ImageView userAvatar = userLayout.findViewById(R.id.ivAvatarUser);
-        ImageHandler.loadImageCircle2(
-                userAvatar.getContext(),
-                userAvatar,
-                userSession.getProfilePicture()
-        );
-
-        userLayout.setOnClickListener(v -> {
-            if (getContext() != null) {
-                analytics.trackClickCreatePostAsUser(userSession.getUserId());
-                startActivityForResult(
-                        RouteManager.getIntent(getContext(), ApplinkConst.AFFILIATE_EXPLORE),
-                        CREATE_POST
-                );
-                createPostBottomSheet.dismiss();
-            }
-        });
-    }
-
-    private void setupCreatePostAsShopLayout(View shopLayout) {
-        TextView shopName = shopLayout.findViewById(R.id.tvNameShop);
-        shopName.setText(MethodChecker.fromHtml(userSession.getShopName()));
-
-        ImageView badge = shopLayout.findViewById(R.id.ivBadge);
-        if (userSession.isGoldMerchant()) {
-            badge.setVisibility(View.VISIBLE);
-            ImageHandler.loadImageWithId(badge, R.drawable.ic_shop_gold);
-        }
-
-        ImageView shopAvatar = shopLayout.findViewById(R.id.ivAvatarShop);
-        ImageHandler.loadImageCircle2(
-                shopAvatar.getContext(),
-                shopAvatar,
-                userSession.getShopAvatar()
-        );
-
-        shopLayout.setOnClickListener(v -> {
-            if (getContext() != null) {
-                analytics.trackClickCreatePostAsShop(userSession.getShopId());
-
-                startActivityForResult(
-                        RouteManager.getIntent(getContext(), ApplinkConst.CONTENT_CREATE_POST),
-                        CREATE_POST
-                );
-                createPostBottomSheet.dismiss();
-            }
-        });
     }
 
     @Override
@@ -1627,30 +1221,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void eventTrackingEEGoToProduct(Integer shopIdInt, String feedId, int totalProduct, int
-            positionInFeed, String category) {
-        String SHOP_ID_BRACKETS = "{shop_id}";
-
-        String loginIdString = getUserSession().getUserId();
-        int loginIdInt = loginIdString.isEmpty() ? 0 : Integer.valueOf(loginIdString);
-
-        String shopId = String.valueOf(shopIdInt);
-        List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();
-        list.add(new FeedEnhancedTracking.Promotion(
-                Integer.valueOf(feedId),
-                FeedEnhancedTracking.Promotion.createContentNameProductUpload(totalProduct),
-                String.valueOf(totalProduct),
-                positionInFeed,
-                category,
-                shopIdInt,
-                ApplinkConst.SHOP.replace(SHOP_ID_BRACKETS, shopId)
-        ));
-
-        analytics.eventTrackingEnhancedEcommerce(
-                FeedEnhancedTracking.getClickTracking(list, loginIdInt));
-    }
-
-    @Override
     public void sendMoEngageOpenFeedEvent() {
         feedModuleRouter.sendMoEngageOpenFeedEvent(!hasFeed());
     }
@@ -1664,11 +1234,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public AbstractionRouter getAbstractionRouter() {
-        return abstractionRouter;
-    }
-
-    @Override
     public void onBannerItemClick(int positionInFeed, int adapterPosition,
                                   @NotNull String redirectUrl) {
         onGoToLink(redirectUrl);
@@ -1676,10 +1241,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
         if (adapter.getlist().get(positionInFeed) instanceof BannerViewModel) {
             BannerViewModel model = (BannerViewModel) adapter.getlist().get(positionInFeed);
             trackBannerClick(
-                    positionInFeed,
                     adapterPosition,
-                    model.getItemViewModels().get(adapterPosition).getTrackingBannerModel(),
-                    FeedAnalytics.Element.IMAGE
+                    model.getItemViewModels().get(adapterPosition).getTrackingBannerModel()
             );
         }
     }
@@ -1690,14 +1253,18 @@ public class FeedPlusFragment extends BaseDaggerFragment
         onGoToLink(redirectLink);
 
         if (adapter.getlist().get(positionInFeed) instanceof FeedRecommendationViewModel) {
-
             FeedRecommendationViewModel model
                     = (FeedRecommendationViewModel) adapter.getlist().get(positionInFeed);
-            trackRecommendationClick(
-                    positionInFeed,
-                    adapterPosition,
-                    model.getCards().get(adapterPosition).getTrackingRecommendationModel(),
-                    FeedAnalytics.Element.AVATAR
+            TrackingRecommendationModel tracking
+                    = model.getCards().get(adapterPosition).getTrackingRecommendationModel();
+            analytics.eventRecommendationClick(
+                    tracking.getTemplateType(),
+                    tracking.getActivityName(),
+                    tracking.getAuthorName(),
+                    tracking.getAuthorType(),
+                    tracking.getAuthorId(),
+                    tracking.getCardPosition(),
+                    getUserIdInt()
             );
         }
     }
@@ -1707,11 +1274,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                                             @NonNull String id, @NonNull String type,
                                             boolean isFollow) {
         if (type.equals(FollowCta.AUTHOR_USER)) {
-            int userIdInt = 0;
-            try {
-                userIdInt = Integer.valueOf(id);
-            } catch (NumberFormatException ignored) {
-            }
+            int userIdInt = getUserIdInt();
 
             if (isFollow) {
                 onUnfollowKolFromRecommendationClicked(positionInFeed, userIdInt, adapterPosition);
@@ -1727,30 +1290,27 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
             FeedRecommendationViewModel model
                     = (FeedRecommendationViewModel) adapter.getlist().get(positionInFeed);
-            trackRecommendationClick(
-                    positionInFeed,
-                    adapterPosition,
+            trackRecommendationFollowClick(
                     model.getCards().get(adapterPosition).getTrackingRecommendationModel(),
-                    FeedAnalytics.Element.FOLLOW
+                    isFollow ? FeedAnalytics.Element.UNFOLLOW : FeedAnalytics.Element.FOLLOW
             );
         }
     }
 
     @Override
     public void onShopItemClicked(int positionInFeed, int adapterPosition, @NotNull Shop shop) {
-        Intent intent = feedModuleRouter.getShopPageIntent(getActivity(), shop.getId());
-        startActivity(intent);
+        goToShopPage(shop.getId());
 
         if (adapter.getlist().get(positionInFeed) instanceof TopadsShopViewModel) {
             TopadsShopViewModel model = (TopadsShopViewModel) adapter.getlist().get(positionInFeed);
-
             for (TrackingRecommendationModel tracking : model.getTrackingList()) {
                 if (TextUtils.equals(tracking.getAuthorName(), shop.getName())) {
-                    trackRecommendationClick(
-                            positionInFeed,
-                            adapterPosition,
-                            tracking,
-                            FeedAnalytics.Element.FOLLOW
+                    analytics.eventTopadsRecommendationClick(
+                            tracking.getTemplateType(),
+                            tracking.getAdId(),
+                            tracking.getAuthorId(),
+                            tracking.getCardPosition(),
+                            getUserIdInt()
                     );
                     break;
                 }
@@ -1767,9 +1327,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
             for (TrackingRecommendationModel tracking : model.getTrackingList()) {
                 if (TextUtils.equals(tracking.getAuthorName(), data.getShop().getName())) {
-                    trackRecommendationClick(
-                            positionInFeed,
-                            adapterPosition,
+                    trackRecommendationFollowClick(
                             tracking,
                             FeedAnalytics.Element.FOLLOW
                     );
@@ -1798,47 +1356,38 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onAvatarClick(int positionInFeed, @NotNull String redirectUrl) {
         onGoToLink(redirectUrl);
 
-        if (adapter.getlist().get(positionInFeed) instanceof DynamicPostViewModel) {
-            DynamicPostViewModel model
-                    = (DynamicPostViewModel) adapter.getlist().get(positionInFeed);
-            trackCardPostClick(
-                    positionInFeed,
-                    model.getTrackingPostModel(),
-                    FeedAnalytics.Element.AVATAR,
-                    redirectUrl
-            );
-        }
+        trackCardPostElementClick(positionInFeed, FeedAnalytics.Element.AVATAR);
     }
 
     @Override
     public void onHeaderActionClick(int positionInFeed, @NotNull String id, @NotNull String type,
                                     boolean isFollow) {
-        if (type.equals(FollowCta.AUTHOR_USER)) {
-            int userIdInt = 0;
-            try {
-                userIdInt = Integer.valueOf(id);
-            } catch (NumberFormatException ignored) {
+        if (userSession.isLoggedIn()) {
+            if (type.equals(FollowCta.AUTHOR_USER)) {
+                int userIdInt = getUserIdInt();
+
+                if (isFollow) {
+                    onUnfollowKolClicked(positionInFeed, userIdInt);
+                } else {
+                    onFollowKolClicked(positionInFeed, userIdInt);
+                }
+
+            } else if (type.equals(FollowCta.AUTHOR_SHOP)) {
+                presenter.toggleFavoriteShop(positionInFeed, id);
             }
 
-            if (isFollow) {
-                onUnfollowKolClicked(positionInFeed, userIdInt);
-            } else {
-                onFollowKolClicked(positionInFeed, userIdInt);
+            if (adapter.getlist().get(positionInFeed) instanceof DynamicPostViewModel) {
+                DynamicPostViewModel model
+                        = (DynamicPostViewModel) adapter.getlist().get(positionInFeed);
+                analytics.eventFollowCardPost(
+                        isFollow ? FeedAnalytics.Element.UNFOLLOW : FeedAnalytics.Element.FOLLOW,
+                        model.getTrackingPostModel().getActivityName(),
+                        String.valueOf(model.getTrackingPostModel().getPostId()),
+                        model.getTrackingPostModel().getMediaType()
+                );
             }
-
-        } else if (type.equals(FollowCta.AUTHOR_SHOP)) {
-            presenter.toggleFavoriteShop(positionInFeed, id);
-        }
-
-        if (adapter.getlist().get(positionInFeed) instanceof DynamicPostViewModel) {
-            DynamicPostViewModel model
-                    = (DynamicPostViewModel) adapter.getlist().get(positionInFeed);
-            trackCardPostClick(
-                    positionInFeed,
-                    model.getTrackingPostModel(),
-                    FeedAnalytics.Element.FOLLOW,
-                    ""
-            );
+        } else {
+            onGoToLogin();
         }
     }
 
@@ -1854,7 +1403,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
                 @Override
                 public void onReportClick() {
-                    goToContentReport(postId);
+                    if (userSession.isLoggedIn()) {
+                        goToContentReport(postId);
+                    } else {
+                        onGoToLogin();
+                    }
                 }
 
                 @Override
@@ -1890,47 +1443,31 @@ public class FeedPlusFragment extends BaseDaggerFragment
                              @NotNull String description, @NotNull String url,
                              @NotNull String imageUrl) {
         if (getActivity() != null) {
-            feedModuleRouter.shareFeed(
-                    getActivity(),
-                    String.valueOf(id),
-                    url,
-                    title,
-                    imageUrl,
-                    description
-            );
+            doShare(String.format("%s %s", description, url), title);
         }
 
-        if (adapter.getlist().get(positionInFeed) instanceof DynamicPostViewModel) {
-            DynamicPostViewModel model
-                    = (DynamicPostViewModel) adapter.getlist().get(positionInFeed);
-            trackCardPostClick(
-                    positionInFeed,
-                    model.getTrackingPostModel(),
-                    FeedAnalytics.Element.SHARE,
-                    url
-            );
-        }
+        trackCardPostElementClick(positionInFeed, FeedAnalytics.Element.SHARE);
     }
 
     @Override
     public void onFooterActionClick(int positionInFeed, @NonNull String redirectUrl) {
         onGoToLink(redirectUrl);
-
-        if (adapter.getlist().get(positionInFeed) instanceof DynamicPostViewModel) {
-            DynamicPostViewModel model
-                    = (DynamicPostViewModel) adapter.getlist().get(positionInFeed);
-            trackCardPostClick(
-                    positionInFeed,
-                    model.getTrackingPostModel(),
-                    FeedAnalytics.Element.TAG,
-                    redirectUrl
-            );
-        }
+        trackCardPostElementClick(positionInFeed, FeedAnalytics.Element.TAG);
     }
 
     @Override
-    public void onPostTagItemClick(int positionInFeed, @NotNull String redirectUrl) {
+    public void onPostTagItemClick(int positionInFeed, @NotNull String redirectUrl, @NotNull PostTagItem postTagItem, int itemPosition) {
         onGoToLink(redirectUrl);
+        if (adapter.getlist().get(positionInFeed) instanceof DynamicPostViewModel) {
+            DynamicPostViewModel model
+                    = (DynamicPostViewModel) adapter.getlist().get(positionInFeed);
+            postTagAnalytics.trackClickPostTagFeed(
+                    model.getId(),
+                    postTagItem,
+                    itemPosition,
+                    model.getTrackingPostModel()
+            );
+        }
     }
 
     @Override
@@ -1941,22 +1478,21 @@ public class FeedPlusFragment extends BaseDaggerFragment
         if (adapter.getlist().get(positionInFeed) instanceof DynamicPostViewModel) {
             DynamicPostViewModel model
                     = (DynamicPostViewModel) adapter.getlist().get(positionInFeed);
-            trackCardPostClick(
-                    positionInFeed,
-                    contentPosition,
-                    model.getTrackingPostModel(),
-                    FeedAnalytics.Element.IMAGE,
-                    redirectLink
-            );
+            trackCardPostClick(positionInFeed, model.getTrackingPostModel());
         }
     }
 
     @Override
-    public void onAffiliateTrackClicked(@NotNull List<TrackingViewModel> trackList) {
+    public void onAffiliateTrackClicked(@NotNull List<TrackingViewModel> trackList, boolean isClick) {
         for (TrackingViewModel track : trackList) {
-            presenter.trackAffiliate(track.getClickURL());
+            if (isClick) {
+                presenter.trackAffiliate(track.getClickURL());
+            } else  {
+                presenter.trackAffiliate(track.getViewURL());
+            }
         }
     }
+
 
     @Override
     public void onYoutubeThumbnailClick(int positionInFeed, int contentPosition,
@@ -1964,22 +1500,13 @@ public class FeedPlusFragment extends BaseDaggerFragment
         String redirectUrl = ApplinkConst.KOL_YOUTUBE.replace(YOUTUBE_URL, youtubeId);
 
         if (getContext() != null) {
-            RouteManager.route(
-                    getContext(),
-                    redirectUrl
-            );
+            RouteManager.route(getContext(), redirectUrl);
         }
 
         if (adapter.getlist().get(positionInFeed) instanceof DynamicPostViewModel) {
             DynamicPostViewModel model
                     = (DynamicPostViewModel) adapter.getlist().get(positionInFeed);
-            trackCardPostClick(
-                    positionInFeed,
-                    contentPosition,
-                    model.getTrackingPostModel(),
-                    FeedAnalytics.Element.VIDEO,
-                    redirectUrl
-            );
+            trackCardPostClick(positionInFeed, model.getTrackingPostModel());
         }
     }
 
@@ -1996,32 +1523,75 @@ public class FeedPlusFragment extends BaseDaggerFragment
         if (adapter.getlist().get(positionInFeed) instanceof DynamicPostViewModel) {
             DynamicPostViewModel model
                     = (DynamicPostViewModel) adapter.getlist().get(positionInFeed);
-            trackCardPostClick(
-                    positionInFeed,
-                    contentPosition,
-                    model.getTrackingPostModel(),
-                    FeedAnalytics.Element.OPTION + option,
-                    redirectLink
-            );
+            if (model.getContentList().get(contentPosition) instanceof PollContentViewModel) {
+                PollContentViewModel poll
+                        = (PollContentViewModel) model.getContentList().get(contentPosition);
+                PollContentOptionViewModel optionViewModel = poll.getOptionList().get(option);
+                analytics.eventVoteClick(
+                        model.getTrackingPostModel().getActivityName(),
+                        model.getTrackingPostModel().getMediaType(),
+                        pollId,
+                        optionId,
+                        optionViewModel.getOption(),
+                        optionViewModel.getImageUrl(),
+                        model.getTrackingPostModel().getPostId(),
+                        getUserIdInt()
+                );
+            }
         }
     }
 
     @Override
-    public void onGridItemClick(int positionInFeed, int contentPosition,
+    public void onGridItemClick(int positionInFeed, int contentPosition, int productPosition,
                                 @NotNull String redirectLink) {
         onGoToLink(redirectLink);
 
         if (adapter.getlist().get(positionInFeed) instanceof DynamicPostViewModel) {
             DynamicPostViewModel model
                     = (DynamicPostViewModel) adapter.getlist().get(positionInFeed);
-            trackCardPostClick(
-                    positionInFeed,
-                    contentPosition,
-                    model.getTrackingPostModel(),
-                    FeedAnalytics.Element.PRODUCT,
-                    redirectLink
-            );
+            if (redirectLink.contains(FEED_DETAIL)) {
+                analytics.eventGoToFeedDetail(model.getTrackingPostModel().getPostId());
+            } else if (model.getContentList().get(contentPosition) instanceof GridPostViewModel) {
+                GridPostViewModel grid
+                        = (GridPostViewModel) model.getContentList().get(contentPosition);
+                GridItemViewModel item = grid.getItemList().get(productPosition);
+                analytics.eventProductGridClick(
+                        new ProductEcommerce(item.getId(),
+                               item.getText(),
+                               item.getPrice(),
+                               productPosition),
+                        model.getTrackingPostModel().getActivityName(),
+                        model.getTrackingPostModel().getPostId(),
+                        getUserIdInt()
+                );
+            }
         }
+    }
+
+    @Override
+    public void onVideoPlayerClicked(int positionInFeed,
+                                     int contentPosition,
+                                     @NotNull String postId) {
+        if (getActivity() != null) {
+            startActivity(VideoDetailActivity.Companion.getInstance(
+                    getActivity(),
+                    postId));
+        }
+
+        if (adapter.getlist().get(positionInFeed) instanceof DynamicPostViewModel) {
+            DynamicPostViewModel model
+                    = (DynamicPostViewModel) adapter.getlist().get(positionInFeed);
+            trackCardPostClick(positionInFeed, model.getTrackingPostModel());
+        }
+    }
+
+    private void doShare(String body, String title) {
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, body);
+        startActivity(
+                Intent.createChooser(sharingIntent, title)
+        );
     }
 
     private void goToContentReport(int contentId) {
@@ -2034,170 +1604,191 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
+    private void goToProductDetail(String productId) {
+        if (getActivity() != null) {
+            getActivity().startActivity(getProductIntent(productId));
+        }
+    }
+
+    private Intent getProductIntent(String productId) {
+        if (getContext() != null) {
+            return RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+        } else {
+            return null;
+        }
+    }
+
+    private void goToShopPage(String shopId) {
+        if (getActivity() != null) {
+            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.SHOP, shopId);
+            getActivity().startActivity(intent);
+        }
+    }
+
     private void trackFeedImpression(ArrayList<Visitable> listFeed) {
         for (int i = 0; i < listFeed.size(); i++) {
             Visitable visitable = listFeed.get(i);
             int feedPosition = adapter.getlist().size() + i;
-            int userId = 0;
-            try {
-                userId = Integer.valueOf(getUserSession().getUserId());
-            } catch (NumberFormatException ignored) {
-            }
+            int userId = getUserIdInt();
 
             if (visitable instanceof DynamicPostViewModel) {
                 DynamicPostViewModel postViewModel = (DynamicPostViewModel) visitable;
                 TrackingPostModel trackingPostModel = postViewModel.getTrackingPostModel();
 
-                analytics.eventCardPostImpression(
-                        trackingPostModel.getTemplateType(),
-                        trackingPostModel.getActivityName(),
-                        trackingPostModel.getTrackingType(),
-                        trackingPostModel.getMediaType(),
-                        trackingPostModel.getTagsType(),
-                        trackingPostModel.getRedirectUrl(),
-                        trackingPostModel.getTotalContent(),
-                        trackingPostModel.getPostId(),
-                        feedPosition,
-                        userId
-                );
-            } else if (visitable instanceof BannerViewModel) {
-                BannerViewModel bannerViewModel = (BannerViewModel) visitable;
-
-                for (BannerItemViewModel item : bannerViewModel.getItemViewModels()) {
-                    TrackingBannerModel trackingBannerModel = item.getTrackingBannerModel();
-                    analytics.eventBannerImpression(
-                            trackingBannerModel.getTemplateType(),
-                            trackingBannerModel.getActivityName(),
-                            trackingBannerModel.getTrackingType(),
-                            trackingBannerModel.getMediaType(),
-                            trackingBannerModel.getBannerUrl(),
-                            trackingBannerModel.getTotalBanner(),
-                            trackingBannerModel.getPostId(),
-                            feedPosition,
-                            trackingBannerModel.getBannerPosition(),
-                            userId
+                if (postViewModel.getContentList().size() > 0) {
+                    trackPostContentImpression(
+                            postViewModel,
+                            trackingPostModel,
+                            userId,
+                            feedPosition
                     );
                 }
+
+                if (postViewModel.getPostTag().getTotalItems() != 0
+                        && postViewModel.getPostTag().getItems().size() != 0) {
+                    for (int j = 0; j< postViewModel.getPostTag().getTotalItems(); j++) {
+                        postTagAnalytics.trackViewPostTagFeed(
+                                postViewModel.getId(),
+                                postViewModel.getPostTag().getItems().get(j),
+                                j,
+                                trackingPostModel);
+                    }
+                }
+                onAffiliateTrackClicked(postViewModel.getTracking(), false);
+
+            } else if (visitable instanceof BannerViewModel) {
+                BannerViewModel bannerViewModel = (BannerViewModel) visitable;
+                ArrayList<TrackingBannerModel> trackingBannerModels = new ArrayList<>();
+                for (BannerItemViewModel banner : bannerViewModel.getItemViewModels()) {
+                    trackingBannerModels.add(banner.getTrackingBannerModel());
+                    onAffiliateTrackClicked(banner.getTracking(), false);
+                }
+                analytics.eventBannerImpression(trackingBannerModels, userId);
             } else if (visitable instanceof FeedRecommendationViewModel) {
                 FeedRecommendationViewModel recommendationViewModel
                         = (FeedRecommendationViewModel) visitable;
-
+                ArrayList<TrackingRecommendationModel> trackingList = new ArrayList<>();
                 for (RecommendationCardViewModel card : recommendationViewModel.getCards()) {
-
-                    TrackingRecommendationModel trackingRecommendationModel
-                            = card.getTrackingRecommendationModel();
-                    analytics.eventRecommendationImpression(
-                            trackingRecommendationModel.getTemplateType(),
-                            trackingRecommendationModel.getActivityName(),
-                            trackingRecommendationModel.getTrackingType(),
-                            trackingRecommendationModel.getMediaType(),
-                            trackingRecommendationModel.getAuthorName(),
-                            trackingRecommendationModel.getAuthorType(),
-                            trackingRecommendationModel.getAuthorId(),
-                            feedPosition,
-                            trackingRecommendationModel.getCardPosition(),
-                            userId
-                    );
+                    trackingList.add(card.getTrackingRecommendationModel());
+                    onAffiliateTrackClicked(card.getTracking(), false);
                 }
+                analytics.eventRecommendationImpression(
+                        trackingList,
+                        userId
+                );
             } else if (visitable instanceof TopadsShopViewModel) {
                 TopadsShopViewModel topadsShopViewModel = (TopadsShopViewModel) visitable;
-
-                for (TrackingRecommendationModel trackingRecommendationModel
-                        : topadsShopViewModel.getTrackingList()) {
-
-                    analytics.eventRecommendationImpression(
-                            trackingRecommendationModel.getTemplateType(),
-                            trackingRecommendationModel.getActivityName(),
-                            trackingRecommendationModel.getTrackingType(),
-                            trackingRecommendationModel.getMediaType(),
-                            trackingRecommendationModel.getAuthorName(),
-                            trackingRecommendationModel.getAuthorType(),
-                            trackingRecommendationModel.getAuthorId(),
-                            feedPosition,
-                            trackingRecommendationModel.getCardPosition(),
-                            userId
-                    );
-                }
+                analytics.eventTopadsRecommendationImpression(
+                        topadsShopViewModel.getTrackingList(),
+                        userId
+                );
+                onAffiliateTrackClicked(topadsShopViewModel.getTracking(), false);
             }
         }
     }
 
-    private void trackCardPostClick(int positionInFeed, TrackingPostModel trackingPostModel,
-                                    String element, String redirectUrl) {
-        trackCardPostClick(positionInFeed, -1, trackingPostModel, element, redirectUrl);
-    }
-
-    private void trackCardPostClick(int positionInFeed, int contentPosition,
-                                    TrackingPostModel trackingPostModel, String element,
-                                    String redirectUrl) {
-        int userId = 0;
-        try {
-            userId = Integer.valueOf(getUserSession().getUserId());
-        } catch (NumberFormatException ignored) {
+    private void trackPostContentImpression(DynamicPostViewModel postViewModel,
+                                            TrackingPostModel trackingPostModel,
+                                            int userId, int feedPosition) {
+        if (postViewModel.getContentList().isEmpty()) {
+            return;
         }
 
+        if (postViewModel.getContentList().get(0) instanceof GridPostViewModel) {
+            GridPostViewModel model = (GridPostViewModel) postViewModel.getContentList().get(0);
+            ArrayList<ProductEcommerce> productList = new ArrayList<>();
+            for (int position = 0; position < model.getItemList().size(); position++) {
+                GridItemViewModel item = model.getItemList().get(position);
+                    productList.add(new ProductEcommerce(
+                            String.valueOf(item.getId()),
+                            item.getText(),
+                            item.getPrice(),
+                            position
+                    ));
+            }
+            analytics.eventProductGridImpression(
+                    productList,
+                    trackingPostModel.getActivityName(),
+                    trackingPostModel.getPostId(),
+                    getUserIdInt()
+            );
+        } else if (postViewModel.getContentList().get(0) instanceof PollContentViewModel) {
+            PollContentViewModel model = (PollContentViewModel) postViewModel.getContentList().get(0);
+            analytics.eventVoteImpression(
+                    trackingPostModel.getActivityName(),
+                    trackingPostModel.getMediaType(),
+                    model.getPollId(),
+                    trackingPostModel.getPostId(),
+                    userId
+            );
+        } else {
+            analytics.eventCardPostImpression(
+                    trackingPostModel.getTemplateType(),
+                    trackingPostModel.getActivityName(),
+                    trackingPostModel.getMediaType(),
+                    trackingPostModel.getRedirectUrl(),
+                    trackingPostModel.getMediaUrl(),
+                    trackingPostModel.getAuthorId(),
+                    trackingPostModel.getTotalContent(),
+                    trackingPostModel.getPostId(),
+                    userId,
+                    feedPosition
+            );
+        }
+    }
+
+    private void trackCardPostClick(int positionInFeed, TrackingPostModel trackingPostModel) {
         analytics.eventCardPostClick(
                 trackingPostModel.getTemplateType(),
                 trackingPostModel.getActivityName(),
-                trackingPostModel.getTrackingType(),
                 trackingPostModel.getMediaType(),
-                trackingPostModel.getTagsType(),
-                redirectUrl,
-                element,
+                trackingPostModel.getRedirectUrl(),
+                trackingPostModel.getMediaUrl(),
+                trackingPostModel.getAuthorId(),
                 trackingPostModel.getTotalContent(),
                 trackingPostModel.getPostId(),
-                positionInFeed,
-                contentPosition != -1 ? String.valueOf(contentPosition) : "",
-                userId
+                getUserIdInt(),
+                positionInFeed
         );
     }
 
-    private void trackRecommendationClick(int positionInFeed, int cardPosition,
-                                          TrackingRecommendationModel trackingRecommendationModel,
-                                          String element) {
-        int userId = 0;
-        try {
-            userId = Integer.valueOf(getUserSession().getUserId());
-        } catch (NumberFormatException ignored) {
-        }
-
-        analytics.eventRecommendationClick(
-                trackingRecommendationModel.getTemplateType(),
-                trackingRecommendationModel.getActivityName(),
-                trackingRecommendationModel.getTrackingType(),
-                trackingRecommendationModel.getMediaType(),
-                trackingRecommendationModel.getAuthorName(),
+    private void trackRecommendationFollowClick(TrackingRecommendationModel trackingRecommendationModel,
+                                                String action) {
+        analytics.eventFollowRecommendation(
+                action,
                 trackingRecommendationModel.getAuthorType(),
-                element,
-                trackingRecommendationModel.getAuthorId(),
-                positionInFeed,
-                cardPosition,
-                userId
+                String.valueOf(trackingRecommendationModel.getAuthorId())
         );
     }
 
-    private void trackBannerClick(int positionInFeed, int adapterPosition,
-                                  TrackingBannerModel trackingBannerModel,
-                                  String element) {
-        int userId = 0;
-        try {
-            userId = Integer.valueOf(getUserSession().getUserId());
-        } catch (NumberFormatException ignored) {
-        }
-
+    private void trackBannerClick(int adapterPosition,
+                                  TrackingBannerModel trackingBannerModel) {
         analytics.eventBannerClick(
                 trackingBannerModel.getTemplateType(),
                 trackingBannerModel.getActivityName(),
-                trackingBannerModel.getTrackingType(),
                 trackingBannerModel.getMediaType(),
                 trackingBannerModel.getBannerUrl(),
-                element,
+                trackingBannerModel.getApplink(),
                 trackingBannerModel.getTotalBanner(),
                 trackingBannerModel.getPostId(),
-                positionInFeed,
                 adapterPosition,
-                userId
+                getUserIdInt()
         );
+    }
+
+    private void trackCardPostElementClick(int positionInFeed, String element) {
+        if (adapter.getlist().size() > positionInFeed
+                && adapter.getlist().get(positionInFeed) instanceof DynamicPostViewModel) {
+            TrackingPostModel trackingPostModel = ((DynamicPostViewModel)
+                    adapter.getlist().get(positionInFeed)).getTrackingPostModel();
+
+            analytics.eventCardPostElementClick(
+                    element,
+                    trackingPostModel.getActivityName(),
+                    trackingPostModel.getMediaType(),
+                    String.valueOf(trackingPostModel.getPostId())
+            );
+        }
     }
 
     private void showAfterPostToaster() {
@@ -2206,4 +1797,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
+    private int getUserIdInt() {
+        try {
+            return Integer.valueOf(getUserSession().getUserId());
+        } catch (NumberFormatException ignored) {
+            return 0;
+        }
+    }
 }

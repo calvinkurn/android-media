@@ -2,8 +2,7 @@ package com.tokopedia.kyc.util;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.track.TrackApp;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +31,7 @@ public class AnalyticsUtil {
         String CLK_BTLKN_STP4 = "click batalkan step 4";
         String CLK_CBLG_STLGGL = "click coba lagi setelah gagal";
         String CLK_KMBL_TKPD = "click kembali ke tokopedia";
+        String CLK_BATALKAN_TKPD = "click batalkan";
         String CLK_PHN = "click phone";
         String CLK_EML = "click email";
         String CLK_LNJKTN = "click lanjuktan";
@@ -48,21 +48,12 @@ public class AnalyticsUtil {
 
     public static void sendEvent(Context context, String event, String category,
                                  String label, String userId, String action) {
-        if (context == null) {
-            return;
-        }
-
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-
-        if (tracker == null) {
-            return;
-        }
         Map<String, Object> eventMap = new HashMap<>();
         eventMap.put(Keys.USR_ID, userId);
         eventMap.put(Keys.ENT, event);
         eventMap.put(Keys.ENT_ACT, action);
         eventMap.put(Keys.ENT_CAT, category);
         eventMap.put(Keys.ENT_LBL, label);
-        tracker.sendEventTracking(eventMap);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(eventMap);
     }
 }

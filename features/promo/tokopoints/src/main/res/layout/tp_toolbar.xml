@@ -7,23 +7,23 @@
     android:layout_height="?actionBarSize"
     app:contentInsetEnd="0dp"
     app:contentInsetStart="0dp"
-    app:contentInsetStartWithNavigation="0dp"
-    tools:layout_height="100dp">
+    app:contentInsetStartWithNavigation="0dp">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:orientation="horizontal"
         android:padding="@dimen/dp_8"
-        tools:layout_height="100dp">
+        tools:background="@color/black">
 
 
         <TextView
             android:id="@+id/tv_tpToolbar_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:textColor="@color/white"
             android:textSize="@dimen/tp_text_size_regular"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -32,44 +32,47 @@
             tools:text="TokoPoint" />
 
         <ImageView
-            android:id="@+id/tv_tpToolbar_leaderboard"
-            android:layout_width="38dp"
-            android:layout_height="38dp"
-            android:layout_marginTop="8dp"
+            android:id="@+id/iv_tpToolbar_leaderboard"
+            android:layout_width="@dimen/tp_toolbar_icon_wh"
+            android:layout_height="@dimen/tp_toolbar_icon_wh"
+            android:layout_marginTop="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_12"
             android:layout_marginRight="@dimen/dp_12"
-            android:layout_marginBottom="8dp"
-            app:srcCompat="@drawable/ic_leaderboard"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:padding="@dimen/dp_5"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/iv_tpToolbar_coupon"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/iv_tpToolbar_coupon"
-            android:layout_width="38dp"
-            android:layout_height="38dp"
-            android:layout_marginTop="8dp"
+            android:layout_width="@dimen/tp_toolbar_icon_wh"
+            android:layout_height="@dimen/tp_toolbar_icon_wh"
+            android:layout_marginTop="@dimen/dp_12"
             android:layout_marginEnd="@dimen/dp_18"
             android:layout_marginRight="@dimen/dp_18"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:padding="@dimen/dp_5"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@tools:sample/avatars" />
+            tools:srcCompat="@drawable/ic_my_coupon_white" />
 
         <TextView
             android:id="@+id/tv_tpToolbar_couponCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="20dp"
-            android:background="@drawable/bg_tp_cr_red_outline"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_18"
+            android:layout_marginTop="@dimen/dp_2"
+            android:background="@drawable/bg_tp_cr_red"
             android:textColor="@color/white"
-            android:textSize="@dimen/tp_text_size_small"
+            android:textSize="@dimen/tp_text_size_xxsmall"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@+id/iv_tpToolbar_coupon"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/iv_tpToolbar_coupon"
             tools:text="999" />
 
     </android.support.constraint.ConstraintLayout>

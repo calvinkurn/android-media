@@ -15,6 +15,7 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 import rx.subscriptions.CompositeSubscription;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 
 /**
  * Created by nabillasabbaha on 24/09/18.
@@ -26,16 +27,14 @@ public class IntroOvoPresenter extends BaseDaggerPresenter<IntroOvoContract.View
     private GetBalanceTokoCashUseCase getBalanceTokoCashUseCase;
     private WalletProvider walletProvider;
     private CompositeSubscription compositeSubscription;
-    private CacheManager cacheManager;
 
     @Inject
     public IntroOvoPresenter(CheckNumberOvoUseCase checkNumberOvoUseCase,
                              GetBalanceTokoCashUseCase getBalanceTokoCashUseCase,
-                             WalletProvider walletProvider, CacheManager cacheManager) {
+                             WalletProvider walletProvider) {
         this.checkNumberOvoUseCase = checkNumberOvoUseCase;
         this.walletProvider = walletProvider;
         this.getBalanceTokoCashUseCase = getBalanceTokoCashUseCase;
-        this.cacheManager = cacheManager;
         this.compositeSubscription = new CompositeSubscription();
     }
 
@@ -65,7 +64,7 @@ public class IntroOvoPresenter extends BaseDaggerPresenter<IntroOvoContract.View
                             @Override
                             public void onNext(CheckPhoneOvoModel checkPhoneOvoModel) {
                                 getView().hideProgressBar();
-                                cacheManager.delete(CacheUtil.KEY_TOKOCASH_BALANCE_CACHE);
+                                PersistentCacheManager.instance.delete(CacheUtil.KEY_TOKOCASH_BALANCE_CACHE);
 
                                 if (!checkPhoneOvoModel.isAllow()) {
                                     if (!TextUtils.isEmpty(checkPhoneOvoModel.getErrorModel().getMessage())) {

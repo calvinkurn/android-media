@@ -42,10 +42,8 @@ public class ContactUsAuthInterceptor extends TkpdAuthInterceptor {
             if (!response.isSuccessful()) {
                 throwChainProcessCauseHttpError(response);
             }
+            checkResponse(response);
 
-            String bodyResponse = response.body().string();
-            checkResponse(bodyResponse, response);
-
-            return createNewResponse(response, bodyResponse);
+            return response;
     }
 }

@@ -30,13 +30,12 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.gamification.GamificationConstants;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.cracktoken.customview.MaskedHeightImageView;
-import com.tokopedia.gamification.cracktoken.util.TokenMarginUtil;
 import com.tokopedia.gamification.data.entity.CrackResultEntity;
 import com.tokopedia.gamification.taptap.data.entiity.TokenAsset;
 import com.tokopedia.gamification.taptap.data.entiity.TokensUser;
 import com.tokopedia.gamification.taptap.utils.TapTapConstants;
 import com.tokopedia.gamification.taptap.utils.TokenMarginUtilTapTap;
-import com.tokopedia.gamification.util.TapTapAnalyticsTrackerUtil;
+import com.tokopedia.gamification.taptap.utils.TapTapAnalyticsTrackerUtil;
 
 import java.util.List;
 import java.util.Random;
@@ -68,6 +67,15 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
     private static final int MIN_TAP_COUNT = 1;
     private static final int MAX_TAP_COUNT = 5;
     private static final float TAP_BACKGROUND_IMAGE_HEIGHT_SCALE = 1.10909f;
+    private static final long ROTATE_EGGS_DURATION = 150;
+    private static final float ROTATE_LEFT_FROM_ANGLE = -3;
+    private static final float ROTATE_LEFT_TO_ANGLE = -50;
+    private static final float ROTATE_RIGHT_FROM_ANGLE = 3;
+    private static final float ROTATE_RIGHT_TO_ANGLE = 50;
+    private static final float ROTATE_LEFT_BACK_FROM_ANGLE = 50;
+    private static final float ROTATE_LEFT_BACK_TO_ANGLE = 0;
+    private static final float ROTATE_RIGHT_BACK_FROM_ANGLE = -50;
+    private static final float ROTATE_RIGHT_BACK_TO_ANGLE = 0;
 
     private volatile ImageView imageViewFull;
     private volatile MaskedHeightImageView imageViewCracked;
@@ -321,7 +329,6 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
     }
 
 
-
     public void hide() {
         this.setVisibility(View.INVISIBLE);
         imageViewFull.setEnabled(false);
@@ -361,7 +368,8 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
             imageFullWhiteEgg.clearAnimation();
             imageSemiWhiteEgg.clearAnimation();
             imageViewFull.setEnabled(true);
-            listener.reShowFromLobby();
+            if (listener != null)
+                listener.reShowFromLobby();
         }
 
         @Override
@@ -460,6 +468,12 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
             crackMediaPlayer.prepareAsync();
         } catch (Exception e) {
             // not play sound.
+        }
+    }
+
+    public void stopMediaPlayer() {
+        if (crackMediaPlayer != null && crackMediaPlayer.isPlaying()) {
+            crackMediaPlayer.stop();
         }
     }
 
@@ -607,13 +621,36 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
     private void initRotateAnimation() {
         if (animatorSetRotateEggs == null) {
             animatorSetRotateEggs = new AnimatorSet();
-            AnimatorSet rotateLeft = (AnimatorSet) AnimatorInflater.loadAnimator(getContext(), R.animator.rotate_left);
-            AnimatorSet rotateRight = (AnimatorSet) AnimatorInflater.loadAnimator(getContext(), R.animator.rotate_right);
-            rotateLeft.setTarget(imageViewLeft);
-            rotateRight.setTarget(imageViewRight);
-            animatorSetRotateEggs.playTogether(rotateLeft, rotateRight);
+            initRotateAnimatorSet();
         }
         animatorSetRotateEggs.addListener(rotateEggListener);
+    }
+
+    private void initRotateAnimatorSet() {
+        //rotate Left
+        AnimatorSet rotateLeft = new AnimatorSet();
+        final PropertyValuesHolder pvhRotateLeft =
+                PropertyValuesHolder.ofFloat(View.ROTATION, ROTATE_LEFT_FROM_ANGLE, ROTATE_LEFT_TO_ANGLE);
+        final PropertyValuesHolder pvhRotateLeftTranslateY =
+                PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, 0, getResources().getInteger(R.integer.translate_egg_to_y_delta));
+        ObjectAnimator rotateLeftAnimator = ObjectAnimator.ofPropertyValuesHolder(imageViewLeft, pvhRotateLeft);
+        ObjectAnimator rotateLeftTranslateY = ObjectAnimator.ofPropertyValuesHolder(imageViewLeft, pvhRotateLeftTranslateY);
+        rotateLeft.playTogether(rotateLeftAnimator, rotateLeftTranslateY);
+        rotateLeft.setDuration(ROTATE_EGGS_DURATION);
+
+        //rotate Right
+        AnimatorSet rotateRight = new AnimatorSet();
+        final PropertyValuesHolder pvhRotateRight =
+                PropertyValuesHolder.ofFloat(View.ROTATION, ROTATE_RIGHT_FROM_ANGLE, ROTATE_RIGHT_TO_ANGLE);
+        final PropertyValuesHolder pvhRotateRightTranslateY =
+                PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, 0, getResources().getInteger(R.integer.translate_egg_to_y_delta));
+
+
+        ObjectAnimator rotateRightAnimator = ObjectAnimator.ofPropertyValuesHolder(imageViewRight, pvhRotateRight);
+        ObjectAnimator rotateRightTranslateY = ObjectAnimator.ofPropertyValuesHolder(imageViewRight, pvhRotateRightTranslateY);
+        rotateRight.playTogether(rotateRightAnimator, rotateRightTranslateY);
+        rotateRight.setDuration(ROTATE_EGGS_DURATION);
+        animatorSetRotateEggs.playTogether(rotateLeft, rotateRight);
     }
 
     public void startRotateBackAnimation() {
@@ -623,15 +660,42 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
         imageViewRight.setPivotY(imageViewRight.getHeight());
         if (animatorSetRotateBackEggs == null) {
             animatorSetRotateBackEggs = new AnimatorSet();
-            AnimatorSet rotateLeftBack = (AnimatorSet) AnimatorInflater.loadAnimator(getContext(), R.animator.rotate_left_back);
-            AnimatorSet rotateRightBack = (AnimatorSet) AnimatorInflater.loadAnimator(getContext(), R.animator.rotate_right_back);
-            rotateLeftBack.setTarget(imageViewRight);
-            rotateRightBack.setTarget(imageViewLeft);
-            animatorSetRotateBackEggs.playTogether(rotateLeftBack, rotateRightBack);
+            initRotateBackAnimatorSet();
+
         }
         animatorSetRotateBackEggs.addListener(rotateBackListener);
         animatorSetRotateBackEggs.start();
         playReverseEggSound();
+
+    }
+
+    private void initRotateBackAnimatorSet() {
+
+        AnimatorSet rotateLeftBack = new AnimatorSet();
+        final PropertyValuesHolder pvhRotateLeftBack =
+                PropertyValuesHolder.ofFloat(View.ROTATION, ROTATE_LEFT_BACK_FROM_ANGLE, ROTATE_LEFT_BACK_TO_ANGLE);
+        final PropertyValuesHolder pvhRotateLeftTranslateYBack =
+                PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, getResources().getInteger(R.integer.translate_egg_to_y_delta), 0);
+
+
+        ObjectAnimator rotateLeftAnimatorBack = ObjectAnimator.ofPropertyValuesHolder(imageViewRight, pvhRotateLeftBack);
+        ObjectAnimator rotateLeftTranslateYBack = ObjectAnimator.ofPropertyValuesHolder(imageViewRight, pvhRotateLeftTranslateYBack);
+        rotateLeftBack.playTogether(rotateLeftAnimatorBack, rotateLeftTranslateYBack);
+        rotateLeftBack.setDuration(ROTATE_EGGS_DURATION);
+
+
+        AnimatorSet rotateRightBack = new AnimatorSet();
+        final PropertyValuesHolder pvhRotateRightBack =
+                PropertyValuesHolder.ofFloat(View.ROTATION, ROTATE_RIGHT_BACK_FROM_ANGLE, ROTATE_RIGHT_BACK_TO_ANGLE);
+        final PropertyValuesHolder pvhRotateRightTranslateYBack =
+                PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, getResources().getInteger(R.integer.translate_egg_to_y_delta), 0);
+
+
+        ObjectAnimator rotateRightAnimatorBack = ObjectAnimator.ofPropertyValuesHolder(imageViewLeft, pvhRotateRightBack);
+        ObjectAnimator rotateRightTranslateYBack = ObjectAnimator.ofPropertyValuesHolder(imageViewLeft, pvhRotateRightTranslateYBack);
+        rotateRightBack.playTogether(rotateRightAnimatorBack, rotateRightTranslateYBack);
+        rotateRightBack.setDuration(ROTATE_EGGS_DURATION);
+        animatorSetRotateBackEggs.playTogether(rotateLeftBack, rotateRightBack);
 
     }
 
@@ -643,7 +707,8 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
 
         @Override
         public void onAnimationEnd(Animator animation) {
-            listener.showCrackResult(crackResult);
+            if (listener != null)
+                listener.showCrackResult(crackResult);
         }
 
         @Override
@@ -687,7 +752,8 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
                 public void onAnimationEnd(Animator animation) {
                     imageFullWhiteEgg.setVisibility(View.INVISIBLE);
                     imageFullWhiteEgg.clearAnimation();
-                    listener.reShowEgg();
+                    if (listener != null)
+                        listener.reShowEgg();
 
                 }
 
@@ -737,6 +803,7 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
         imageSemiWhiteEgg.setVisibility(View.INVISIBLE);
 
         imageViewFull.setVisibility(View.VISIBLE);
+        imageViewCracked.setVisibility(View.INVISIBLE);
         imageViewCracked.reset();
 
         widgetTapCounter.setVisibility(View.INVISIBLE);
@@ -787,10 +854,27 @@ public class WidgetTokenViewTapTap extends FrameLayout implements TapCounterView
         }
     }
 
+    public void releaseMediaPlayer() {
+        if (crackMediaPlayer != null) {
+            crackMediaPlayer.release();
+        }
+    }
+
+
+    /**
+     * This is method is clearing all Animation and releasing media player
+     *  called from onDestroyView of Fragment
+     * */
+    public void releaseResourcesOnDestroy() {
+        clearTokenAnimation();
+        releaseMediaPlayer();
+    }
+
     public void clearTokenAnimationAndCrack() {
         clearTokenAnimation();
         shakeHardAndCrackAnimation();
-        listener.onClick();
+        if (listener != null)
+            listener.onClick();
     }
 
 }

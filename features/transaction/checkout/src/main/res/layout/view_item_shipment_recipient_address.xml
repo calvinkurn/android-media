@@ -1,30 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/card_address"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_shipment_recipient_address_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/dp_16"
-    android:layout_marginRight="@dimen/dp_16"
-    app:cardCornerRadius="@dimen/dp_4"
-    app:cardElevation="@dimen/dp_2">
-
-    <RelativeLayout
-        android:id="@+id/rl_shipment_recipient_address_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    android:background="@color/white">
 
         <TextView
             android:id="@+id/tv_shipment_address"
             style="@style/TextSmallMediumBlack70"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_16"
-            android:text="@string/checkout_module_title_shipping_dest" />
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
+            android:text="@string/checkout_module_title_shipping_dest"
+            android:textStyle="bold" />
 
         <View
             android:id="@+id/separator"
@@ -139,5 +130,3 @@
         </LinearLayout>
 
     </RelativeLayout>
-
-</android.support.v7.widget.CardView>

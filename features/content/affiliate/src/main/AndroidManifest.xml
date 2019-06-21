@@ -13,22 +13,10 @@
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name=".feature.onboarding.view.activity.UsernameInputActivity"
-            android:label="@string/title_af_username"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-        <activity
-            android:name=".feature.onboarding.view.activity.RecommendProductActivity"
-            android:label="@string/title_af_tokopedia_byme"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity
             android:name=".feature.explore.view.activity.ExploreActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden" />
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
         <activity
             android:name=".feature.explore.view.activity.FilterActivity"
             android:label="@string/text_title_filter"
@@ -50,6 +38,7 @@
         <activity
             android:name=".feature.createpost.view.activity.CreatePostActivity"
             android:label="@string/title_af_create_post"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden" />
@@ -62,6 +51,12 @@
         <activity
             android:name=".feature.createpost.view.activity.CreatePostImagePickerActivity"
             android:label="@string/title_af_image_picker"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".feature.createpost.view.activity.CreatePostVideoPickerActivity"
+            android:label="@string/title_af_image_video"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden" />
@@ -90,12 +85,13 @@
                     android:host="tokopedia.me"
                     android:pathPattern="/.*"
                     android:scheme="http" />
+
                 <data
-                    android:host="staging.tokopedia.me"
+                    android:host="tokopedia.by"
                     android:pathPattern="/.*"
                     android:scheme="https" />
                 <data
-                    android:host="staging.tokopedia.me"
+                    android:host="tokopedia.by"
                     android:pathPattern="/.*"
                     android:scheme="http" />
             </intent-filter>

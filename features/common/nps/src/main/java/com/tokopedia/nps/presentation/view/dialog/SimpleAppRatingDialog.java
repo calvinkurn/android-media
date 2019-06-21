@@ -2,8 +2,10 @@ package com.tokopedia.nps.presentation.view.dialog;
 
 import android.app.Activity;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.nps.R;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 
@@ -19,7 +21,7 @@ import static com.tokopedia.nps.NpsConstant.Key.*;
 public class SimpleAppRatingDialog extends AppRatingDialog {
     private static final String HIDE_SIMPLE_APP_RATING = "HideSimpleAppRating";
     private static final String DEFAULT_VALUE = "1";
-    private static final long EXPIRED_TIME = TimeUnit.DAYS.toSeconds(7);
+    private static final long EXPIRED_TIME = TimeUnit.DAYS.toMillis(7);
 
 
     public static void show(Activity activity) {
@@ -64,7 +66,7 @@ public class SimpleAppRatingDialog extends AppRatingDialog {
     @Override
     protected boolean isDialogNeedToBeShown() {
         if(remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_SHOW_SIMPLE_APP_RATING, false)
-                && globalCacheManager.isExpired(HIDE_SIMPLE_APP_RATING)) {
+                && PersistentCacheManager.instance.isExpired(HIDE_SIMPLE_APP_RATING)) {
             Integer appRatingVersion = cacheHandler.getInt(KEY_APP_RATING_VERSION);
             return appRatingVersion == null || appRatingVersion == -1;
         }
@@ -78,7 +80,7 @@ public class SimpleAppRatingDialog extends AppRatingDialog {
     }
 
     private void hideDialog() {
-        globalCacheManager.save(HIDE_SIMPLE_APP_RATING, DEFAULT_VALUE, EXPIRED_TIME);
+        PersistentCacheManager.instance.put(HIDE_SIMPLE_APP_RATING, DEFAULT_VALUE, EXPIRED_TIME);
     }
 
     /**

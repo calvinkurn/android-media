@@ -19,6 +19,7 @@ import com.tokopedia.mitratoppers.preapprove.data.model.response.preapprove.Resp
 import com.tokopedia.mitratoppers.preapprove.view.activity.MitraToppersPreApproveWebViewActivity;
 import com.tokopedia.mitratoppers.preapprove.view.listener.MitraToppersPreApproveView;
 import com.tokopedia.mitratoppers.preapprove.view.presenter.MitraToppersPreApprovePresenter;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -32,6 +33,9 @@ import static com.tokopedia.mitratoppers.common.constant.MitraToppersTrackingCon
 
 public class MitraToppersPreApproveLabelFragment extends BaseDaggerFragment implements MitraToppersPreApproveView {
 
+    public static final String GOLD_MERCHANT = "gold_merchant";
+    public static final String OFFICIAL_STORE = "official_store";
+    public static final String REGULAR = "regular";
     @Inject
     public MitraToppersPreApprovePresenter mitraToppersPreApprovePresenter;
 
@@ -114,18 +118,22 @@ public class MitraToppersPreApproveLabelFragment extends BaseDaggerFragment impl
             labelView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ((MitraToppersRouter) getActivity().getApplication()).sendEventTrackingWithShopInfo(EVENT_FINTECH,
+                    TrackApp.getInstance().getGTM().sendGTMGeneralEvent(EVENT_FINTECH,
                             CATEGORY_PREAPPROVED, ACTION_PREAPPROVED_CLICK, LABEL_CLICK + " - " + amountIntegerString,
-                            userSession.getShopId(), isGoldMerchant, isOfficialStore);
+                            userSession.getShopId(),
+                            isGoldMerchant? GOLD_MERCHANT : isOfficialStore? OFFICIAL_STORE : REGULAR,
+                            userSession.getUserId(),null);
                     Intent intent = MitraToppersPreApproveWebViewActivity.getIntent(getContext(),
                             preApproveUrl);
                     startActivity(intent);
                 }
             });
         }
-        ((MitraToppersRouter) getActivity().getApplication()).sendEventTrackingWithShopInfo(EVENT_FINTECH,
-                CATEGORY_PREAPPROVED, ACTION_PREAPPROVED, amountIntegerString,
-                userSession.getShopId(), isGoldMerchant, isOfficialStore);
+        TrackApp.getInstance().getGTM().sendGTMGeneralEvent(EVENT_FINTECH,
+                        CATEGORY_PREAPPROVED, ACTION_PREAPPROVED, amountIntegerString,
+                        userSession.getShopId(),
+                        isGoldMerchant? GOLD_MERCHANT : isOfficialStore? OFFICIAL_STORE : REGULAR,
+                        userSession.getUserId(),null);
         rootView.setVisibility(View.VISIBLE);
     }
 

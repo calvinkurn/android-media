@@ -30,6 +30,8 @@ import com.tokopedia.flight.dashboard.view.validator.FlightSelectPassengerValida
 import com.tokopedia.flight.search.domain.usecase.FlightDeleteAllFlightSearchDataUseCase;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -56,8 +58,10 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     private static final int INDEX_DEPARTURE_TRIP = 0;
     private static final int INDEX_RETURN_TRIP = 1;
     private static final int INDEX_ID_AIRPORT_DEPARTURE_TRIP = 0;
-    private static final int INDEX_ID_AIRPORT_ARRIVAL_TRIP = 1;
-    private static final int INDEX_DATE_TRIP = 2;
+    private static final int INDEX_NAME_CITY_DEPARTURE_TRIP = 1;
+    private static final int INDEX_ID_AIRPORT_ARRIVAL_TRIP = 2;
+    private static final int INDEX_NAME_CITY_ARRIVAL_TRIP = 3;
+    private static final int INDEX_DATE_TRIP = 4;
     private static final int DEFAULT_ADULT_PASSENGER = 1;
     private static final int DEFAULT_CHILD_PASSENGER = 0;
     private static final int DEFAULT_INFANT_PASSENGER = 0;
@@ -389,7 +393,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         flightDashboardViewModel.setDepartureAirportFmt(code);
         getView().setDashBoardViewModel(flightDashboardViewModel);
         if (departureAirport.getCityAirports() != null && departureAirport.getCityAirports().size() > 0) {
-            flightDashboardCache.putDepartureAirport(departureAirport.getCityCode());
+            flightDashboardCache.putDepartureAirport(getAirportListString(departureAirport.getCityAirports()));
         } else {
             flightDashboardCache.putDepartureAirport(departureAirport.getAirportCode());
         }
@@ -420,7 +424,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         flightDashboardViewModel.setArrivalAirportFmt(arrivalAirport.getCityName() + " (" + code + ")");
         getView().setDashBoardViewModel(flightDashboardViewModel);
         if (arrivalAirport.getCityAirports() != null && arrivalAirport.getCityAirports().size() > 0) {
-            flightDashboardCache.putArrivalAirport(arrivalAirport.getCityCode());
+            flightDashboardCache.putArrivalAirport(getAirportListString(arrivalAirport.getCityAirports()));
         } else {
             flightDashboardCache.putArrivalAirport(arrivalAirport.getAirportCode());
         }
@@ -484,11 +488,13 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
             String[] extrasTripDeparture = tempExtras[INDEX_DEPARTURE_TRIP].split("_");
 
             /**
-             * tokopedia://flight/search?dest=CGK_DPS_2018-04-01,CGK_DPS_2018-05-01&a=1&c=1&i=1&s=1
+             * tokopedia://pesawat/search?dest=CGK_Jakarta_DPS_Denpasar_2018-04-01,CGK_Jakarta_DPS_Denpasar_2018-05-01&a=1&c=1&i=1&s=1
              */
 
             flightDashboardPassDataViewModel.setDepartureAirportId(extrasTripDeparture[INDEX_ID_AIRPORT_DEPARTURE_TRIP]);
+            flightDashboardPassDataViewModel.setDepartureCityName(extrasTripDeparture[INDEX_NAME_CITY_DEPARTURE_TRIP]);
             flightDashboardPassDataViewModel.setArrivalAirportId(extrasTripDeparture[INDEX_ID_AIRPORT_ARRIVAL_TRIP]);
+            flightDashboardPassDataViewModel.setArrivalCityName(extrasTripDeparture[INDEX_NAME_CITY_ARRIVAL_TRIP]);
             flightDashboardPassDataViewModel.setRoundTrip(false);
             flightDashboardPassDataViewModel.setDepartureDate(extrasTripDeparture[INDEX_DATE_TRIP]);
             flightDashboardPassDataViewModel.setReturnDate("");
@@ -584,19 +590,23 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                         return wrapper;
                     }
                 });
-        if (flightDashboardPassDataViewModel.getDepartureAirportId() != null && flightDashboardPassDataViewModel.getDepartureAirportId().length() > 0
-                && flightDashboardPassDataViewModel.getArrivalAirportId() != null && flightDashboardPassDataViewModel.getArrivalAirportId().length() > 0) {
+        List<String> airportsDeparture = getAirportList(flightDashboardPassDataViewModel.getDepartureAirportId());
+        List<String> airportsArrival = getAirportList(flightDashboardPassDataViewModel.getArrivalAirportId());
+        if (flightDashboardPassDataViewModel.getDepartureAirportId() != null
+                && flightDashboardPassDataViewModel.getArrivalAirportId() != null) {
             cacheObservable = cacheObservable.map(airportAndClassWrapper -> {
                 FlightAirportViewModel departure = new FlightAirportViewModel();
-                departure.setAirportCode(flightDashboardPassDataViewModel.getDepartureAirportId());
+                departure.setAirportCode(airportsDeparture.size() > 0 ? "" : flightDashboardPassDataViewModel.getDepartureAirportId());
                 departure.setCityCode(flightDashboardPassDataViewModel.getDepartureCityCode());
                 departure.setCityName(flightDashboardPassDataViewModel.getDepartureCityName());
+                departure.setCityAirports(airportsDeparture);
                 airportAndClassWrapper.setDepartureAirport(departure);
 
                 FlightAirportViewModel arrival = new FlightAirportViewModel();
-                arrival.setAirportCode(flightDashboardPassDataViewModel.getArrivalAirportId());
+                arrival.setAirportCode(airportsArrival.size() > 0 ? "" : flightDashboardPassDataViewModel.getArrivalAirportId());
                 arrival.setCityCode(flightDashboardPassDataViewModel.getArrivalCityCode());
                 arrival.setCityName(flightDashboardPassDataViewModel.getArrivalCityName());
+                arrival.setCityAirports(airportsArrival);
                 airportAndClassWrapper.setArrivalAirport(arrival);
                 return airportAndClassWrapper;
             });
@@ -641,16 +651,12 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                                     } else {
                                         isAvailableToSearch = false;
                                     }
-                                    if (flightDashboardAirportAndClassWrapper.getFlightClassEntity() != null
-                                            && getView().getCurrentDashboardViewModel().getFlightClass() == null) {
-                                        onFlightClassesChange(
-                                                flightClassViewModelMapper.transform(flightDashboardAirportAndClassWrapper.getFlightClassEntity())
-                                        );
-                                    } else {
+                                    if (getView().getCurrentDashboardViewModel().getFlightClass() == null) {
                                         isAvailableToSearch = false;
                                     }
                                     if (isSearchImmediately && isAvailableToSearch) {
-                                        onSearchTicketButtonClicked();
+                                        //TODO : search immediately is not work
+//                                        onSearchTicketButtonClicked();
                                     }
                                 }
 
@@ -761,5 +767,25 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                         }
                     }
                 });
+    }
+
+    private String getAirportListString(List<String> airports) {
+        String airportsString = "";
+        for (int i=0;i<airports.size();i++) {
+            airportsString += airports.get(i);
+            if (i < airports.size() - 1) {
+                airportsString += ",";
+            }
+        }
+        return airportsString;
+    }
+
+    private List<String> getAirportList(String airportsString) {
+        List<String> airports = new ArrayList<>();
+        if (airportsString.contains(",")) {
+            String[] airportArray = airportsString.split(",");
+            airports = Arrays.asList(airportArray);
+        }
+        return airports;
     }
 }

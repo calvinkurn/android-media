@@ -6,7 +6,6 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
@@ -75,12 +74,6 @@ public class InboxChatModule {
     private static final int NET_WRITE_TIMEOUT = 60;
     private static final int NET_CONNECT_TIMEOUT = 60;
     private static final int NET_RETRY = 1;
-
-    @InboxChatScope
-    @Provides
-    AnalyticTracker provideAnalyticTracker(@ApplicationContext Context context) {
-        return ((AbstractionRouter) context).getAnalyticTracker();
-    }
 
     @InboxChatScope
     @Provides
@@ -214,7 +207,7 @@ public class InboxChatModule {
                                      XUserIdInterceptor xUserIdInterceptor) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .addInterceptor(new FingerprintInterceptor(networkRouter, userSessionInterface))
-                .addInterceptor(new CacheApiInterceptor())
+                .addInterceptor(new CacheApiInterceptor(context))
                 .addInterceptor(xUserIdInterceptor)
                 .addInterceptor(errorResponseInterceptor)
                 .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS)

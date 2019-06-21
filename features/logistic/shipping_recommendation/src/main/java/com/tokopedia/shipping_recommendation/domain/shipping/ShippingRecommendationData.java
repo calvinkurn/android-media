@@ -12,44 +12,13 @@ import java.util.List;
 public class ShippingRecommendationData implements Parcelable {
 
     private List<ShippingDurationViewModel> shippingDurationViewModels;
+    private LogisticPromoViewModel logisticPromo;
     private String errorMessage;
     private String errorId;
     private String blackboxInfo;
 
     public ShippingRecommendationData() {
     }
-
-    protected ShippingRecommendationData(Parcel in) {
-        shippingDurationViewModels = in.createTypedArrayList(ShippingDurationViewModel.CREATOR);
-        errorMessage = in.readString();
-        errorId = in.readString();
-        blackboxInfo = in.readString();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeTypedList(shippingDurationViewModels);
-        dest.writeString(errorMessage);
-        dest.writeString(errorId);
-        dest.writeString(blackboxInfo);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<ShippingRecommendationData> CREATOR = new Creator<ShippingRecommendationData>() {
-        @Override
-        public ShippingRecommendationData createFromParcel(Parcel in) {
-            return new ShippingRecommendationData(in);
-        }
-
-        @Override
-        public ShippingRecommendationData[] newArray(int size) {
-            return new ShippingRecommendationData[size];
-        }
-    };
 
     public List<ShippingDurationViewModel> getShippingDurationViewModels() {
         return shippingDurationViewModels;
@@ -75,7 +44,50 @@ public class ShippingRecommendationData implements Parcelable {
         this.errorId = errorId;
     }
 
+    public LogisticPromoViewModel getLogisticPromo() {
+        return logisticPromo;
+    }
+
+    public void setLogisticPromo(LogisticPromoViewModel logisticPromo) {
+        this.logisticPromo = logisticPromo;
+    }
+
     public String getBlackboxInfo() { return blackboxInfo; }
 
     public void setBlackboxInfo(String blackboxInfo) { this.blackboxInfo = blackboxInfo; }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeTypedList(this.shippingDurationViewModels);
+        dest.writeParcelable(this.logisticPromo, flags);
+        dest.writeString(this.errorMessage);
+        dest.writeString(this.errorId);
+        dest.writeString(this.blackboxInfo);
+    }
+
+    protected ShippingRecommendationData(Parcel in) {
+        this.shippingDurationViewModels = in.createTypedArrayList(ShippingDurationViewModel.CREATOR);
+        this.logisticPromo = in.readParcelable(LogisticPromoViewModel.class.getClassLoader());
+        this.errorMessage = in.readString();
+        this.errorId = in.readString();
+        this.blackboxInfo = in.readString();
+    }
+
+    public static final Creator<ShippingRecommendationData> CREATOR = new Creator<ShippingRecommendationData>() {
+        @Override
+        public ShippingRecommendationData createFromParcel(Parcel source) {
+            return new ShippingRecommendationData(source);
+        }
+
+        @Override
+        public ShippingRecommendationData[] newArray(int size) {
+            return new ShippingRecommendationData[size];
+        }
+    };
+
 }

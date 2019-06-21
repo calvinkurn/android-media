@@ -14,6 +14,7 @@ public interface IRouterConstant {
             String EXTRA_PLATFORM = "EXTRA_PLATFORM";
             String EXTRA_PLATFORM_PAGE = "EXTRA_PLATFORM_PAGE";
             String EXTRA_CATEGORY = "EXTRA_CATEGORY";
+            String EXTRA_CATEGORY_NAME = "EXTRA_CATEGORY_NAME";
             String EXTRA_ADDITIONAL_STRING_DATA = "EXTRA_ADDITIONAL_STRING_DATA";
             String EXTRA_SELECTED_TAB = "EXTRA_SELECTED_TAB";
             String EXTRA_CART_ID = "EXTRA_CART_ID";

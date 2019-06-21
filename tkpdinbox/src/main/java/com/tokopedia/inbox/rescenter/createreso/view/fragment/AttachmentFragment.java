@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -42,6 +43,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.presenter.AttachmentFragmen
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.attachment.Attachment;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.attachment.AttachmentViewModel;
+import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -282,9 +284,17 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
             @Override
             public void onClick(View view) {
                 presenter.btnContinueClicked();
-                UnifyTracking.eventCreateResoStep3Continue(getActivity());
+                eventCreateResoStep3Continue();
             }
         });
+    }
+
+    private void eventCreateResoStep3Continue(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                "clickResolution",
+                "resolution center",
+                "click bukti & keterangan",
+                "solution - continue");
     }
 
     @Override

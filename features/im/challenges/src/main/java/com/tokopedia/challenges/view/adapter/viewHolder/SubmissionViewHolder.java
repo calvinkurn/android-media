@@ -58,7 +58,7 @@ public class SubmissionViewHolder extends RecyclerView.ViewHolder
         tvWinnerNumber = itemView.findViewById(R.id.tv_winner_number);
         tvPostDescription = itemView.findViewById(R.id.tv_submission_description);
         itemView.findViewById(R.id.cl_participant).setVisibility(View.VISIBLE);
-        analytics = new ChallengesGaAnalyticsTracker(context);
+        analytics = new ChallengesGaAnalyticsTracker();
     }
 
     public void bindData(final SubmissionResult submissionResult, SubmissionViewHolderListener listener) {

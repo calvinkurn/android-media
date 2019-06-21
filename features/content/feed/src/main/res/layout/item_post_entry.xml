@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_100"
+    android:layout_height="wrap_content"
     android:background="@drawable/card_shadow_bottom"
     android:elevation="@dimen/dp_4"
-    android:padding="@dimen/dp_16"
-    >
+    android:paddingStart="@dimen/dp_16"
+    android:paddingTop="@dimen/dp_10"
+    android:paddingEnd="@dimen/dp_16"
+    android:paddingBottom="@dimen/dp_32"
+    tools:ignore="UnusedAttribute">
 
     <ImageView
         android:id="@+id/ivAvatar"
@@ -32,11 +34,12 @@
         android:maxLines="2"
         android:textColor="@color/black_70"
         android:textSize="@dimen/sp_12"
+        android:layout_marginRight="@dimen/dp_8"
         android:textStyle="normal"
         app:layout_constraintLeft_toRightOf="@id/ivAvatar"
         app:layout_constraintRight_toLeftOf="@+id/btnCreatePost"
         app:layout_constraintTop_toTopOf="@id/ivAvatar"
-        tools:text="Post sesuatu untuk tokomu, yuk! coba kalo panjang gimana ya? "/>
+        tools:text="Post sesuatu untuk tokomu, yuk! coba kalo00 panjang gimana ya? "/>
 
     <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/btnCreatePost"

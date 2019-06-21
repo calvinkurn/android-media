@@ -14,6 +14,7 @@ import com.tokopedia.inbox.rescenter.shipping.presenter.InputShippingImpl;
 import com.tokopedia.inbox.rescenter.shipping.presenter.InputShippingPresenter;
 import com.tokopedia.inbox.rescenter.shipping.view.InputShippingView;
 import com.tokopedia.inbox.util.analytics.InboxAnalytics;
+import com.tokopedia.track.TrackApp;
 
 /**
  * Created by hangnadi on 12/13/16.
@@ -132,11 +133,11 @@ public class InputShippingActivity extends BasePresenterActivity<InputShippingPr
         presenter = new InputShippingImpl(this);
         if (getParamsModel().isFromChat()) {
             if (getParamsModel().isEdit())
-                UnifyTracking.eventTracking(
-                        this,InboxAnalytics.eventResoChatImpressionSaveEditAWB(getParamsModel().getResolutionID()));
+                TrackApp.getInstance().getGTM().sendGeneralEvent(
+                        InboxAnalytics.eventResoChatImpressionSaveEditAWB(getParamsModel().getResolutionID()).getEvent());
             else
-                UnifyTracking.eventTracking(
-                        this,InboxAnalytics.eventResoChatImpressionSaveInputAWB(getParamsModel().getResolutionID()));
+                TrackApp.getInstance().getGTM().sendGeneralEvent(
+                        InboxAnalytics.eventResoChatImpressionSaveInputAWB(getParamsModel().getResolutionID()).getEvent());
         }
     }
 
@@ -205,11 +206,11 @@ public class InputShippingActivity extends BasePresenterActivity<InputShippingPr
         super.onBackPressed();
         if (getParamsModel().isFromChat()) {
             if (getParamsModel().isEdit())
-                UnifyTracking.eventTracking(
-                        this,InboxAnalytics.eventResoChatClickCancelEditAWB(getParamsModel().getResolutionID()));
+                TrackApp.getInstance().getGTM().sendGeneralEvent(
+                        InboxAnalytics.eventResoChatClickCancelEditAWB(getParamsModel().getResolutionID()).getEvent());
             else
-                UnifyTracking.eventTracking(
-                        this,InboxAnalytics.eventResoChatClickCancelInputAWB(getParamsModel().getResolutionID()));
+                TrackApp.getInstance().getGTM().sendGeneralEvent(
+                        InboxAnalytics.eventResoChatClickCancelInputAWB(getParamsModel().getResolutionID()).getEvent());
         }
         getBottomBackSheetActivityTransition();
     }

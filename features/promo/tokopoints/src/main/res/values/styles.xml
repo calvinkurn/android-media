@@ -28,4 +28,12 @@
         <item name="android:maxLines">5</item>
     </style>
 
+    <style name="TPProgressBar" parent="ThemeOverlay.AppCompat.Light">
+        <item name="colorAccent">@color/medium_green</item>
+    </style>
+
+    <style name="TokoPointTransparentStatus" parent="Theme.Tokopedia3">
+
+    </style>
+
 </resources>

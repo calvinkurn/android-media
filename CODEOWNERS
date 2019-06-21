@@ -10,7 +10,6 @@
 /feature/discovery/home/                @tokopedia/minion-dave
 /feature/discovery/recentview/          @tokopedia/minion-dave
 /feature/discovery/wishlist_common/     @tokopedia/minion-dave
-/tkpdpdp/           @tokopedia/minion-dave
 /tkpddesign/        @tokopedia/core-team
 /sellerapp/         @tokopedia/minion-stuart
 /tkpdseller/        @tokopedia/minion-stuart
@@ -51,7 +50,6 @@
 /features/digital/digital_browse/         @tokopedia/minion-mark
 /features/digital/digitalproduct        @tokopedia/minion-mark
 /featires/digital/common_travel         @tokopedia/minion-mark
-/features/fintech/tokocash              @tokopedia/minion-mark
 /libraries/travel_calendar              @tokopedia/minion-mark
 
 /features/payment/payment/                      @tokopedia/minion-bob
@@ -95,15 +93,15 @@
 /features/user/user_identification_common/      @tokopedia/minion-kevin
 /features/user/user_identification_no_op/       @tokopedia/minion-kevin
 
-/features/content/affiliate/            @tokopedia/minion-kevin
-/features/content/affiliate_common/     @tokopedia/minion-kevin
-/features/content/explore/              @tokopedia/minion-kevin
-/features/content/feed/                 @tokopedia/minion-kevin
-/features/content/feed_component/       @tokopedia/minion-kevin
-/features/content/interest_pick/        @tokopedia/minion-kevin
-/features/content/kol/                  @tokopedia/minion-kevin
-/features/content/kol_common/           @tokopedia/minion-kevin
-/features/content/profile/              @tokopedia/minion-kevin
+/features/content/affiliate/            @tokopedia/minion-stuart
+/features/content/affiliate_common/     @tokopedia/minion-stuart
+/features/content/explore/              @tokopedia/minion-stuart
+/features/content/feed/                 @tokopedia/minion-stuart
+/features/content/feed_component/       @tokopedia/minion-stuart
+/features/content/interest_pick/        @tokopedia/minion-stuart
+/features/content/kol/                  @tokopedia/minion-stuart
+/features/content/kol_common/           @tokopedia/minion-stuart
+/features/content/profile/              @tokopedia/minion-stuart
 
 
 /libraries/applink/                     @tokopedia/core-team
@@ -120,7 +118,7 @@
 /libraries/applink/                     @tokopedia/core-team
 /libraries/push_notification/           @tokopedia/core-team
 /libraries/user_session/                @tokopedia/minion-kevin
-/libraries/youtubeutils/                @tokopedia/minion-kevin
+/libraries/youtubeutils/                @tokopedia/minion-stuart
 
 /features/user/updateinactivephone      @tokopedia/india-android-team
 /libraries/common_network/              @tokopedia/core-team
@@ -138,7 +136,8 @@
 /features/promo/tokopoints_notification @tokopedia/minion-solo
 /features/promo/gamification            @tokopedia/minion-solo
 /features/payment/withdraw/             @tokopedia/minion-solo
-/features/kyc                           @tokopedia/minion-solo
+/features/fintech/tokocash              @tokopedia/minion-solo
+/features/kyc                           @tokopedia/minion-yoda
 
 /features/im/challenges                 @tokopedia/minion-yoda
 /features/im/referral                   @tokopedia/minion-yoda
@@ -150,3 +149,11 @@
 /kelontongapp                           @tokopedia/core-team
 
 /libraries/graph_view/                  @tokopedia/minion-solo
+/libraries/iris                         @tokopedia/core-team
+/libraries/remote_config                @tokopedia/core-team
+
+/libraries/unify/unify_components                @tokopedia/core-team
+/libraries/unify/unify_compositions/banner       @tokopedia/core-team
+/libraries/unify/unify_compositions/coach_mark   @tokopedia/core-team
+/libraries/unify/unify_principles                @tokopedia/core-team
+/libraries/unify/unify_icon                      @tokopedia/core-team

@@ -33,10 +33,10 @@ import com.bumptech.glide.load.Transformation;
 import com.bumptech.glide.load.engine.Resource;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapResource;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.gamification.util.HexValidator;
 import com.tokopedia.home.IHomeRouter;
@@ -108,10 +108,7 @@ public class HeaderHomeView extends BaseCustomView {
         if (listener == null)
             return;
 
-        if (getContext().getApplicationContext() instanceof IHomeRouter) {
-            AnalyticTracker analyticTracker = ((IHomeRouter) getContext().getApplicationContext()).getAnalyticTracker();
-            walletAnalytics = new WalletAnalytics(analyticTracker);
-        }
+        walletAnalytics = new WalletAnalytics();
 
         if (headerViewModel.isUserLogin()) {
             render();
@@ -171,8 +168,7 @@ public class HeaderHomeView extends BaseCustomView {
     private OnClickListener onScanListener() {
         return v -> {
             HomePageTracking.eventQrCode(getContext());
-            getContext().startActivity(((IHomeRouter) getContext().getApplicationContext())
-                    .gotoQrScannerPage(false));
+            RouteManager.route(getContext(), ApplinkConstInternalMarketplace.QR_SCANNEER);
         };
     }
 
@@ -273,10 +269,10 @@ public class HeaderHomeView extends BaseCustomView {
                         GradientDrawable shapeDrawable = (GradientDrawable) drawable;
                         shapeDrawable.setColorFilter(Color.parseColor(sectionContentItem.getTagAttributes().getBackgroundColour()), PorterDuff.Mode.SRC_ATOP);
                         tokopointsTextView.setBackground(shapeDrawable);
-                        int horizontalPadding = getContext().getResources().getDimensionPixelSize(R.dimen.dp_3);
-                        int verticalPadding = getContext().getResources().getDimensionPixelSize(R.dimen.dp_2);
+                        int horizontalPadding = getContext().getResources().getDimensionPixelSize(R.dimen.dp_2);
                         tokopointsTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getContext().getResources().getDimension(R.dimen.sp_8));
                         tokopointsTextView.setTypeface(null, Typeface.NORMAL);
+                        tokopointsTextView.setPadding(horizontalPadding, 0, horizontalPadding, 0);
                     }
                     tokopointsTextView.setTextColor(getResources().getColor(R.color.white));
                 } else {

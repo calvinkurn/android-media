@@ -5,7 +5,6 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
@@ -73,13 +72,6 @@ public class TemplateChatModule {
 
     @TemplateChatScope
     @Provides
-    AnalyticTracker provideAnalyticTracker(
-            @ApplicationContext Context context) {
-        return ((AbstractionRouter) context).getAnalyticTracker();
-    }
-
-    @TemplateChatScope
-    @Provides
     ChuckInterceptor provideChuckInterceptor(
             @ApplicationContext Context context) {
         return new ChuckInterceptor(context);
@@ -108,7 +100,8 @@ public class TemplateChatModule {
 
     @TemplateChatScope
     @Provides
-    OkHttpClient provideOkHttpClient(@InboxQualifier OkHttpRetryPolicy retryPolicy,
+    OkHttpClient provideOkHttpClient(@ApplicationContext Context context,
+                                     @InboxQualifier OkHttpRetryPolicy retryPolicy,
                                      ErrorResponseInterceptor errorResponseInterceptor,
                                      ChuckInterceptor chuckInterceptor,
                                      HttpLoggingInterceptor httpLoggingInterceptor,
@@ -119,7 +112,7 @@ public class TemplateChatModule {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .addInterceptor(new FingerprintInterceptor(networkRouter, userSessionInterface))
                 .addInterceptor(tkpdAuthInterceptor)
-                .addInterceptor(new CacheApiInterceptor())
+                .addInterceptor(new CacheApiInterceptor(context))
                 .addInterceptor(errorResponseInterceptor)
                 .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS)
                 .readTimeout(retryPolicy.readTimeout, TimeUnit.SECONDS)

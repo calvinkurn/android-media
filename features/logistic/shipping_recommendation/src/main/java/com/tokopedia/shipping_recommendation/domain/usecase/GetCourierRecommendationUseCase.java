@@ -35,8 +35,6 @@ import rx.schedulers.Schedulers;
 
 public class GetCourierRecommendationUseCase extends GraphqlUseCase {
 
-    private static final int KILOGRAM_DIVIDER = 1000;
-
     private final ShippingDurationConverter shippingDurationConverter;
 
     @Inject
@@ -88,6 +86,7 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
                                 // Check if has info
                                 String blackboxInfo = "";
                                 if (data.getRatesData().getRatesDetailData().getInfo() != null &&
+                                        data.getRatesData().getRatesDetailData().getInfo().getBlackboxInfo() != null &&
                                         !TextUtils.isEmpty(data.getRatesData().getRatesDetailData().getInfo().getBlackboxInfo().getTextInfo())) {
                                     blackboxInfo = data.getRatesData().getRatesDetailData().getInfo().getBlackboxInfo().getTextInfo();
                                 }
@@ -98,6 +97,9 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
                                         shippingDurationConverter.convertToViewModel(
                                                 data.getRatesData().getRatesDetailData().getServices(),
                                                 shopShipments, selectedSpId, ratesId, selectedServiceId, blackboxInfo));
+                                shippingRecommendationData.setLogisticPromo(
+                                        shippingDurationConverter.convertToPromoModel(
+                                                data.getRatesData().getRatesDetailData().getPromoStacking()));
                             }
                         }
                         return shippingRecommendationData;

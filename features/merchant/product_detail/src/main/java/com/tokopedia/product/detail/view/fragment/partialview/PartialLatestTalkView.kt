@@ -26,7 +26,8 @@ class PartialLatestTalkView  private constructor(private val view: View) {
 
                 if (talk.commentList.isNotEmpty()){
                     val resp = talk.commentList[0]
-                    ImageHandler.loadImageRounded2(context, iv_resp_user_ava, resp.userName)
+                    ImageHandler.loadImageRounded2(context, iv_resp_user_ava,
+                            if (resp.shopId.toInt() == productShopId) resp.shopImage else resp.userImage)
                     txt_resp_user_name.text = MethodChecker.fromHtml(resp.userName)
                     txt_resp_date.text = resp.createTimeFmt
                     txt_resp_message.text = MethodChecker.fromHtml(resp.message)

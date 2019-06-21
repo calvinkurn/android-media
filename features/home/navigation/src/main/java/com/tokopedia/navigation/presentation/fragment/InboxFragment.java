@@ -1,6 +1,5 @@
 package com.tokopedia.navigation.presentation.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,20 +8,17 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.analytics.InboxGtmTracker;
 import com.tokopedia.navigation.domain.model.Inbox;
-import com.tokopedia.navigation.domain.model.Recomendation;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapter;
 import com.tokopedia.navigation.presentation.view.InboxAdapterListener;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapterTypeFactory;
@@ -42,6 +38,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 
 /**
  * Created by meta on 19/06/18.
@@ -68,6 +68,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     private GridLayoutManager layoutManager;
     protected EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
     private TrackingQueue trackingQueue;
+    private List<Visitable> visitables;
 
     public static InboxFragment newInstance() {
         return new InboxFragment();
@@ -154,20 +155,6 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
             Inbox inbox = (Inbox) item;
             globalNavAnalytics.eventInboxPage(getString(inbox.getTitle()).toLowerCase());
             getCallingIntent(position);
-        } else if (item instanceof Recomendation) {
-            Recomendation r = (Recomendation) item;
-            getActivity().startActivity(getProductIntent(String.valueOf(r.getProductId())));
-            if(!r.isTopAds()){
-                InboxGtmTracker.getInstance().eventInboxProductClick(trackingQueue, r, position);
-            }
-        }
-    }
-
-    private Intent getProductIntent(String productId) {
-        if (getContext() != null) {
-            return RouteManager.getIntent(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
-        } else {
-            return null;
         }
     }
 
@@ -196,13 +183,10 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
             case DISCUSSION_MENU:
                 if (getActivity() != null
                         && getActivity().getApplicationContext() != null) {
-                    if (getActivity().getApplicationContext() instanceof AbstractionRouter) {
-                        ((AbstractionRouter) getActivity().getApplicationContext()).getAnalyticTracker().
-                                sendEventTracking("clickInboxChat",
+                    TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData("clickInboxChat",
                                         "inbox - talk",
                                         "click on diskusi product",
-                                        "");
-                    }
+                                        ""));
 
                     if (getActivity().getApplication() instanceof GlobalNavRouter) {
                         startActivity(((GlobalNavRouter) getActivity().getApplication())
@@ -282,6 +266,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
     @Override
     public void onRenderRecomInbox(List<Visitable> list) {
+        this.visitables = list;
         adapter.addElement(list);
     }
 
@@ -303,5 +288,11 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
     @Override
     public void setPresenter(GlobalNavComponent presenter) {
+    }
+
+    @Override
+    public int getStartProductPosition() {
+        //product start after inbox data (like chat, diskusi, etc) + 1 recom title
+        return (getData().size()-1)+1;
     }
 }

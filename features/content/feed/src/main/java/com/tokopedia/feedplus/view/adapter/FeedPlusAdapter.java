@@ -15,7 +15,6 @@ import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory;
 import com.tokopedia.feedplus.view.util.EndlessScrollRecycleListener;
 import com.tokopedia.feedplus.view.viewmodel.EmptyFeedBeforeLoginModel;
 import com.tokopedia.feedplus.view.viewmodel.RetryModel;
-import com.tokopedia.feedplus.view.viewmodel.product.AddFeedModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +32,6 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     private LoadingMoreModel loadingMoreModel;
     private RetryModel retryModel;
     private boolean unsetListener;
-    private AddFeedModel addFeedModel;
     private OnLoadListener loadListener;
     private RecyclerView recyclerView;
     private int itemTreshold = 5;
@@ -62,7 +60,6 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         this.emptyModel = new EmptyModel();
         this.loadingMoreModel = new LoadingMoreModel();
         this.retryModel = new RetryModel();
-        this.addFeedModel = new AddFeedModel();
         this.emptyFeedBeforeLoginModel = new EmptyFeedBeforeLoginModel();
     }
 
@@ -150,6 +147,8 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     }
 
     public void showLoading() {
+        int removePosition = this.list.indexOf(loadingMoreModel);
+        if (removePosition != -1) remove(loadingMoreModel);
         add(loadingMoreModel);
     }
 
@@ -163,14 +162,6 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     public List<Visitable> getlist() {
         return list;
-    }
-
-    public void showAddFeed() {
-        add(addFeedModel);
-    }
-
-    public void removeAddFeed(){
-        remove(addFeedModel);
     }
 
     public void addItem(Visitable item) {

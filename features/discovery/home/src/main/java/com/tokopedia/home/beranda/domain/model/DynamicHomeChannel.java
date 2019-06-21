@@ -36,8 +36,10 @@ public class DynamicHomeChannel {
         public static final String LAYOUT_LEGO_3_IMAGE = "lego_3_image";
         public static final String LAYOUT_SPRINT_CAROUSEL = "sprint_carousel";
         public static final String LAYOUT_DIGITAL_WIDGET = "digital_widget";
+        public static final String LAYOUT_BU_WIDGET = "bu_widget";
         public static final String LAYOUT_TOPADS = "topads";
         public static final String LAYOUT_SPOTLIGHT = "spotlight";
+        public static final String LAYOUT_HOME_WIDGET = "home_widget";
 
         @Expose
         @SerializedName("id")
@@ -70,6 +72,8 @@ public class DynamicHomeChannel {
         private String promoName;
         @SerializedName("homeAttribution")
         private String homeAttribution;
+
+        private int position;
 
         public String getId() {
             return id;
@@ -127,7 +131,11 @@ public class DynamicHomeChannel {
             this.hero = hero;
         }
 
-        public Map<String, Object> getEnhanceImpressionSprintSaleHomePage(int position) {
+        public void setPosition(int position) {
+            this.position = position;
+        }
+
+        public Map<String, Object> getEnhanceImpressionSprintSaleHomePage() {
             List<Object> list = convertProductEnhanceSprintSaleDataLayer(getGrids());
             return DataLayer.mapOf(
                     "event", "productView",
@@ -391,7 +399,7 @@ public class DynamicHomeChannel {
             );
         }
 
-        public Map<String, Object> getEnhanceImpressionDynamicSprintLegoHomePage(int position) {
+        public Map<String, Object> getEnhanceImpressionDynamicSprintLegoHomePage() {
             List<Object> list = convertPromoEnhanceDynamicSprintLegoDataLayer(getGrids());
             return DataLayer.mapOf(
                     "event", "productView",

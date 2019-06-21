@@ -1,5 +1,5 @@
-query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: String, $sourceID: String) {
-  feedv2(limit: $limit, cursor: $cursor, userID: $userID, source: $source, sourceID: $sourceID, limitDetail: $limit) {
+query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: String, $sourceID: String, $detailID: String) {
+  feedv2(limit: $limit, cursor: $cursor, userID: $userID, source: $source, sourceID: $sourceID, limitDetail: $limit, detailID: $detailID) {
     data {
       id
       createTime
@@ -48,6 +48,12 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
               thumbnail
               thumbnailLarge
             }
+            tracking {
+              clickURL
+              viewURL
+              type
+              source
+            }
           }
         }
         cardbanner {
@@ -75,6 +81,12 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
               webLink
               thumbnail
               thumbnailLarge
+              tracking {
+                clickURL
+                viewURL
+                type
+                source
+              }
             }
           }
         }

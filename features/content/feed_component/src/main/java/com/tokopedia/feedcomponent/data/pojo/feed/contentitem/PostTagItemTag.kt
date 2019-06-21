@@ -16,8 +16,8 @@ data class PostTagItemTag(
         val text:String = "",
         @SerializedName("textColor")
         @Expose
-        val textColor:ColorPojo = ColorPojo(),
+        var textColor:ColorPojo = ColorPojo(),
         @SerializedName("bgColor")
         @Expose
-        val bgColor:ColorPojo = ColorPojo()
+        var bgColor:ColorPojo = ColorPojo()
 ) {}

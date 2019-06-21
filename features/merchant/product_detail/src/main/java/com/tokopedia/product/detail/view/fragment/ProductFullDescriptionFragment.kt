@@ -88,7 +88,8 @@ class ProductFullDescriptionFragment: BaseDaggerFragment() {
             }
 
             val descr = it.getString(PARAM_PRODUCT_DESCR, "")
-            val descFormatted = MethodChecker.fromHtml(if (descr.isNotBlank()) descr else NO_DESCRIPTION)
+            val descFormatted = MethodChecker.fromHtml(if (descr.isNotBlank())
+                descr.replace("(\r\n|\n)".toRegex(), "<br />") else NO_DESCRIPTION)
 
             txt_product_descr.text =  descFormatted
 
@@ -104,7 +105,7 @@ class ProductFullDescriptionFragment: BaseDaggerFragment() {
                 startActivity(ProductYoutubePlayerActivity.createIntent(it, vids.map { it.url }, index))
             } else {
                 startActivity(Intent(Intent.ACTION_VIEW,
-                        Uri.parse("http://www.youtube.com/watch?v=" + vids[index].url)));
+                        Uri.parse("https://www.youtube.com/watch?v=" + vids[index].url)));
             }
         }
     }

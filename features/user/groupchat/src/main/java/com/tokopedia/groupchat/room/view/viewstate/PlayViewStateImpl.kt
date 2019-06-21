@@ -22,6 +22,7 @@ import android.view.View.VISIBLE
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import com.airbnb.lottie.LottieAnimationView
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -35,9 +36,10 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.BackEditText
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity
-import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.DynamicButtonAdapter
+import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.DynamicButtonsAdapter
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.GroupChatAdapter
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.QuickReplyAdapter
+import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.DynamicButtonTypeFactoryImpl
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactoryImpl
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.QuickReplyTypeFactoryImpl
 import com.tokopedia.groupchat.chatroom.view.fragment.GroupChatVideoFragment
@@ -54,15 +56,20 @@ import com.tokopedia.groupchat.room.view.customview.StickyComponentHelper
 import com.tokopedia.groupchat.room.view.fragment.PlayFragment
 import com.tokopedia.groupchat.room.view.fragment.PlayWebviewDialogFragment
 import com.tokopedia.groupchat.room.view.listener.PlayContract
+import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
+import com.tokopedia.groupchat.room.view.viewmodel.InteractiveButton
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
 
 /**
  * @author : Steven 13/02/19
@@ -78,7 +85,9 @@ open class PlayViewStateImpl(
         voteAnnouncementListener: ChatroomContract.ChatItem.VoteAnnouncementViewHolderListener,
         sprintSaleViewHolderListener: ChatroomContract.ChatItem.SprintSaleViewHolderListener,
         groupChatPointsViewHolderListener: ChatroomContract.ChatItem.GroupChatPointsViewHolderListener,
-        sendMessage: (viewModel: PendingChatViewModel) -> Unit
+        sendMessage: (viewModel: PendingChatViewModel) -> Unit,
+        dynamicButtonClickListener: ChatroomContract.DynamicButtonItem.DynamicButtonListener,
+        interactiveButtonClickListener: ChatroomContract.DynamicButtonItem.InteractiveButtonListener
 
 ) : PlayViewState {
 
@@ -88,7 +97,7 @@ open class PlayViewStateImpl(
     private var listMessage: ArrayList<Visitable<*>> = arrayListOf()
 
     private var quickReplyAdapter: QuickReplyAdapter
-    private var dynamicButtonAdapter: DynamicButtonAdapter
+    private var dynamicButtonAdapter: DynamicButtonsAdapter
     private var adapter: GroupChatAdapter
 
     private var toolbar: Toolbar = view.findViewById(R.id.toolbar)
@@ -111,6 +120,10 @@ open class PlayViewStateImpl(
     private val webviewIcon = view.findViewById<ImageView>(R.id.webview_icon)
     private var errorView: View = view.findViewById(R.id.card_retry)
     private var loadingView: View = view.findViewById(R.id.loading_view)
+    private var hideVideoToggle: View = view.findViewById(R.id.hide_video_toggle)
+    private var showVideoToggle: View = view.findViewById(R.id.show_video_toggle)
+    private var spaceChatVideo: View = view.findViewById(R.id.top_space_guideline)
+    private var interactionGuideline = view.findViewById<FrameLayout>(R.id.interaction_button_guideline)
 
     private lateinit var overlayDialog: CloseableBottomSheetDialog
     private lateinit var pinnedMessageDialog: CloseableBottomSheetDialog
@@ -135,6 +148,8 @@ open class PlayViewStateImpl(
 
     private var defaultType = arrayListOf(
             "default", "default1", "default2", "default3")
+
+    private var interactionAnimationHelper: InteractionAnimationHelper
 
     init {
         val groupChatTypeFactory = GroupChatTypeFactoryImpl(
@@ -184,10 +199,13 @@ open class PlayViewStateImpl(
                 .resources.getDimension(R.dimen.dp_16).toInt())
         quickReplyRecyclerView.addItemDecoration(quickReplyItemDecoration)
 
+        var dynamicButtonTypeFactory = DynamicButtonTypeFactoryImpl(
+                dynamicButtonClickListener, interactiveButtonClickListener, interactionGuideline)
+
         dynamicButtonRecyclerView.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
         var buttonSpace = SpaceItemDecoration(activity.getResources()
                 .getDimension(R.dimen.dp_8).toInt(), 2)
-        dynamicButtonAdapter = DynamicButtonAdapter(activity, listener)
+        dynamicButtonAdapter = DynamicButtonsAdapter(dynamicButtonTypeFactory)
         dynamicButtonRecyclerView.adapter = dynamicButtonAdapter
         dynamicButtonRecyclerView.addItemDecoration(buttonSpace)
 
@@ -227,7 +245,28 @@ open class PlayViewStateImpl(
                 sendMessage(pendingChatViewModel)
             }
         }
+        hideVideoToggle.setOnClickListener {
+            it.hide()
+            showVideoToggle.show()
+            youTubePlayer?.pause()
+            videoContainer.visibility = View.GONE
+            setChatListHasSpaceOnTop(true)
+            analytics.eventClickHideVideoToggle(viewModel?.channelId)
+        }
+        showVideoToggle.setOnClickListener {
+            it.hide()
+            hideVideoToggle.show()
+            videoContainer.visibility = View.VISIBLE
+            setChatListHasSpaceOnTop(false)
+            analytics.eventClickShowVideoToggle(viewModel?.channelId)
+        }
+        errorView.setOnClickListener {  }
+
+        interactionAnimationHelper = InteractionAnimationHelper(interactionGuideline)
+
+        errorView.setOnClickListener {  }
     }
+
 
     override fun onDynamicButtonUpdated(it: DynamicButtonsViewModel) {
         viewModel?.let { viewModel ->
@@ -240,18 +279,31 @@ open class PlayViewStateImpl(
                 }
             }
 
+            dynamicButtonAdapter.clearList()
             dynamicButtonRecyclerView.hide()
             if (!it.listDynamicButton.isEmpty()) {
                 analytics.eventViewDynamicButtons(viewModel, it.listDynamicButton)
-                dynamicButtonAdapter.setList(it.listDynamicButton)
+                dynamicButtonAdapter.addList(it.listDynamicButton)
                 dynamicButtonRecyclerView.show()
             }
-        }
 
+            if(it.interactiveButton.isEnabled) {
+                dynamicButtonAdapter.addList(it.interactiveButton)
+                interactionAnimationHelper.updateInteractionIcon(it.interactiveButton.balloonList)
+                dynamicButtonRecyclerView.show()
+            } else {
+                interactionAnimationHelper.destroy()
+            }
+        }
+    }
+
+    override fun onInteractiveButtonViewed(anchorView: LottieAnimationView) {
+        analytics.eventViewInteractionButton(viewModel?.channelId)
+        interactionAnimationHelper.fakeShot(anchorView)
     }
 
     override fun onErrorGetDynamicButtons() {
-        dynamicButtonAdapter.setList(ArrayList())
+        dynamicButtonAdapter.addList(ArrayList())
     }
 
     override fun onStickyComponentUpdated(stickyComponentViewModel: StickyComponentViewModel) {
@@ -270,7 +322,7 @@ open class PlayViewStateImpl(
     private fun showStickComponent(item: StickyComponentViewModel?) {
         stickyComponent.hide()
         item?.run {
-            if(title.isNullOrEmpty() || !userSession.isLoggedIn) return
+            if (title.isNullOrEmpty() || !userSession.isLoggedIn) return
             StickyComponentHelper.setView(stickyComponent, item)
             stickyComponent.setOnClickListener {
                 viewModel?.let {
@@ -323,7 +375,7 @@ open class PlayViewStateImpl(
 
     }
 
-    override fun setBottomView() {
+    final override fun setBottomView() {
         showLoginButton(!userSession.isLoggedIn)
         if (userSession.isLoggedIn) {
             onKeyboardHidden()
@@ -393,7 +445,7 @@ open class PlayViewStateImpl(
         lateinit var url: String
         it.let {
             var index = defaultType.indexOf(it.default)
-            background = defaultBackground[Math.max(0, index-1)]
+            background = defaultBackground[Math.max(0, index - 1)]
             url = it.url
 
             if (url.isBlank()) {
@@ -466,7 +518,6 @@ open class PlayViewStateImpl(
             }
             initVideoFragment(childFragmentManager, it.videoId, it.videoLive)
         }
-
     }
 
     override fun onChannelFrozen(channelId: String) {
@@ -481,6 +532,7 @@ open class PlayViewStateImpl(
                 loadingView.hide()
                 errorView.show()
                 setToolbarWhite()
+                showLoginButton(false)
             }
         }
 
@@ -505,6 +557,7 @@ open class PlayViewStateImpl(
             }
         }
     }
+
 
     private fun getStringResource(id: Int): String {
         return view.context.resources.getString(id)
@@ -777,23 +830,28 @@ open class PlayViewStateImpl(
         return GroupChatAnalytics.generateTrackerAttribution(attributeName, viewModel?.channelUrl, viewModel?.title)
     }
 
-    fun autoPlayVideo() {
-        youtubeRunnable.postDelayed({ youTubePlayer?.play() }, PlayFragment.YOUTUBE_DELAY.toLong())
+    override fun autoPlayVideo() {
+        try {
+            youtubeRunnable?.postDelayed({ youTubePlayer?.play() }, PlayFragment.YOUTUBE_DELAY.toLong())
+        } catch(e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     fun initVideoFragment(fragmentManager: FragmentManager, videoId: String, isVideoLive: Boolean) {
         videoContainer.hide()
         liveIndicator.hide()
+        hideVideoToggle.hide()
+        showVideoToggle.hide()
         setChatListHasSpaceOnTop(true)
         videoId.let {
             if (it.isEmpty()) return
-
             val videoFragment = fragmentManager.findFragmentById(R.id.video_container) as GroupChatVideoFragment
             videoFragment.run {
                 videoContainer.show()
                 sponsorLayout.hide()
                 setChatListHasSpaceOnTop(false)
-                liveIndicator.shouldShowWithAction(isVideoLive) {}
+                liveIndicator.showWithCondition(isVideoLive)
                 youTubePlayer?.let {
                     it.cueVideo(videoId)
                     autoPlayVideo()
@@ -821,9 +879,14 @@ open class PlayViewStateImpl(
                                                         onPlayTime = System.currentTimeMillis() / 1000L
                                                     }
                                                     analytics.eventClickAutoPlayVideo(viewModel?.channelId)
+                                                    hideVideoToggle.hide()
                                                 }
 
                                                 override fun onPaused() {
+                                                    if (!showVideoToggle.isShown) {
+                                                        hideVideoToggle.show()
+                                                    }
+                                                    analytics.eventClickPauseVideo(viewModel?.channelId)
                                                     onPauseTime = System.currentTimeMillis() / 1000L
                                                 }
 
@@ -915,7 +978,7 @@ open class PlayViewStateImpl(
     }
 
 
-    private fun setFloatingIcon(floatingButton: DynamicButtonsViewModel.Button) {
+    private fun setFloatingIcon(floatingButton: DynamicButton) {
         webviewIcon.hide()
         if (floatingButton.imageUrl.isBlank()
                 || floatingButton.contentLinkUrl.isBlank()) {
@@ -937,7 +1000,7 @@ open class PlayViewStateImpl(
             viewModel?.let {
                 analytics.eventClickProminentButton(it, floatingButton)
 
-                if(!userSession.isLoggedIn) {
+                if (!userSession.isLoggedIn) {
                     listener.onLoginClicked(it.channelId)
                 } else {
                     val applink = RouteManager.routeWithAttribution(view.context, floatingButton.contentLinkUrl, GroupChatAnalytics.generateTrackerAttribution(
@@ -963,7 +1026,7 @@ open class PlayViewStateImpl(
             webviewDialog.setUrl(url)
         }
 
-        if(!webviewDialog.isAdded)
+        if (!webviewDialog.isAdded)
             webviewDialog.show(activity.supportFragmentManager, "Webview Bottom Sheet")
 
     }
@@ -995,8 +1058,9 @@ open class PlayViewStateImpl(
     }
 
     override fun onErrorGetInfo(it: String) {
-        setEmptyState(R.drawable.ic_play_overload, it,
-                getStringResource(R.string.try_again_later),
+        setEmptyState(R.drawable.ic_play_overload,
+                getStringResource(R.string.error_overload_play),
+                it.replace("channelName", viewModel?.title ?: "", false),
                 getStringResource(R.string.title_try_again),
                 listener::onRetryGetInfo)
         loadingView.hide()
@@ -1004,6 +1068,16 @@ open class PlayViewStateImpl(
         setToolbarWhite()
     }
 
+    override fun onNoInternetConnection() {
+        setEmptyState(R.drawable.ic_play_no_connection,
+                getStringResource(R.string.no_connection_play),
+                getStringResource(R.string.try_connection_play),
+                getStringResource(R.string.title_try_again),
+                listener::onRetryGetInfo)
+        loadingView.hide()
+        errorView.show()
+        setToolbarWhite()
+    }
 
     override fun onChannelDeleted() {
         setEmptyState(R.drawable.ic_group_chat,
@@ -1166,7 +1240,7 @@ open class PlayViewStateImpl(
     private fun createPinnedMessageView(channelInfoViewModel: ChannelInfoViewModel): View {
         val view = activity.layoutInflater.inflate(R.layout
                 .layout_pinned_message_expanded, null)
-        (view.findViewById(R.id.nickname) as TextView).text = getStringResource(R.string.from) + " "+ channelInfoViewModel.adminName
+        (view.findViewById(R.id.nickname) as TextView).text = getStringResource(R.string.from) + " " + channelInfoViewModel.adminName
         channelInfoViewModel.pinnedMessageViewModel?.let {
             (view.findViewById(R.id.message) as TextView).text = it.message
             ImageHandler.loadImage(activity, view.findViewById(R.id.thumbnail), it.thumbnail, R
@@ -1200,20 +1274,16 @@ open class PlayViewStateImpl(
     }
 
     private fun setChatListHasSpaceOnTop(hasSpace: Boolean) {
-        var space = when {
+        val space = when {
             hasSpace -> view.context.resources.getDimensionPixelSize(R.dimen.dp_24)
             else -> view.context.resources.getDimensionPixelSize(R.dimen.dp_8)
         }
-        var padding = when {
-            hasSpace -> view.context.resources.getDimensionPixelSize(R.dimen.dp_24)
-            else -> view.context.resources.getDimensionPixelSize(R.dimen.dp_8)
-        }
-        chatRecyclerView.setMargin(0, padding, 0,0)
+        spaceChatVideo.showWithCondition(hasSpace)
         chatRecyclerView.setFadingEdgeLength(space)
         chatRecyclerView.invalidate()
     }
 
-    override fun onShowOverlayCTAFromDynamicButton(button: DynamicButtonsViewModel.Button) {
+    override fun onShowOverlayCTAFromDynamicButton(button: DynamicButton) {
         viewModel?.let {
 
             analytics.eventClickOverlayCTAButton(it.channelId, button.contentButtonText)
@@ -1255,13 +1325,14 @@ open class PlayViewStateImpl(
         showWebviewBottomSheet(voteUrl)
     }
 
-    override fun onShowOverlayWebviewFromDynamicButton(it: DynamicButtonsViewModel.Button) {
+    override fun onShowOverlayWebviewFromDynamicButton(it: DynamicButton) {
         showWebviewBottomSheet(it.contentLinkUrl)
     }
 
     override fun destroy() {
         youTubePlayer?.release()
         youtubeRunnable.removeCallbacksAndMessages(null)
+        interactionAnimationHelper.destroy()
     }
 
     override fun autoAddSprintSale() {
@@ -1316,6 +1387,11 @@ open class PlayViewStateImpl(
                 && sprintSaleViewModel.getStartDate() != 0L
                 && sprintSaleViewModel.getEndDate() != 0L
                 && sprintSaleViewModel.getEndDate() > getCurrentTime())
+    }
+
+    override fun onInteractiveButtonClicked(anchorView: LottieAnimationView) {
+        analytics.eventClickInteractionButton(viewModel?.channelId)
+        interactionAnimationHelper.shootInteractionButton(anchorView, 1)
     }
 
 

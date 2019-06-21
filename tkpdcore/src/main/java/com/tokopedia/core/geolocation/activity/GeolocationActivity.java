@@ -10,7 +10,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.geolocation.fragment.GoogleMapFragment;
@@ -20,21 +19,17 @@ import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.geolocation.presenter.GeolocationPresenter;
 import com.tokopedia.core.geolocation.presenter.GeolocationPresenterImpl;
 import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.core2.R;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 
-import java.util.HashMap;
+import org.jetbrains.annotations.NotNull;
 
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
+import java.util.HashMap;
 
 /**
  * Created by hangnadi on 1/29/16.
  */
-@RuntimePermissions
 public class GeolocationActivity extends BasePresenterActivity<GeolocationPresenter>
         implements GeolocationView, ITransactionAnalyticsGeoLocationPinPoint {
 
@@ -45,6 +40,7 @@ public class GeolocationActivity extends BasePresenterActivity<GeolocationPresen
     private Bundle bundleData;
     private Uri uriData;
     private CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
+    private PermissionCheckerHelper permissionCheck;
 
     // Address -> Router
     public static Intent createInstanceFromAddress(@NonNull Context context,
@@ -95,7 +91,36 @@ public class GeolocationActivity extends BasePresenterActivity<GeolocationPresen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gojek);
-        GeolocationActivityPermissionsDispatcher.initFragmentWithCheck(this);
+        permissionCheck = new PermissionCheckerHelper();
+        permissionCheck.checkPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                new PermissionCheckerHelper.PermissionCheckListener() {
+                    @Override
+                    public void onPermissionDenied(@NotNull String permissionText) {
+                        RequestPermissionUtil.onPermissionDenied(
+                                GeolocationActivity.this,
+                                Manifest.permission.ACCESS_FINE_LOCATION
+                        );
+                        finish();
+                    }
+
+                    @Override
+                    public void onNeverAskAgain(@NotNull String permissionText) {
+                        RequestPermissionUtil.onNeverAskAgain(
+                                GeolocationActivity.this,
+                                Manifest.permission.ACCESS_FINE_LOCATION
+                        );
+                        finish();
+                    }
+
+                    @Override
+                    public void onPermissionGranted() {
+                        presenter.initFragment(GeolocationActivity.this, uriData, bundleData);
+                    }
+                },
+                ""
+        );
     }
 
     @Override
@@ -103,11 +128,6 @@ public class GeolocationActivity extends BasePresenterActivity<GeolocationPresen
         sendAnalyticsOnBackPressClicked();
         super.onBackPressed();
 
-    }
-
-    @NeedsPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-    public void initFragment() {
-        presenter.initFragment(this, uriData, bundleData);
     }
 
     @Override
@@ -142,9 +162,7 @@ public class GeolocationActivity extends BasePresenterActivity<GeolocationPresen
     protected void initVar() {
         if (getApplication() instanceof AbstractionRouter) {
             checkoutAnalyticsChangeAddress =
-                    new CheckoutAnalyticsChangeAddress(
-                            ((AbstractionRouter) getApplication()).getAnalyticTracker()
-                    );
+                    new CheckoutAnalyticsChangeAddress();
         }
     }
 
@@ -167,27 +185,10 @@ public class GeolocationActivity extends BasePresenterActivity<GeolocationPresen
         //presenter.replaceFragment(this, bundleData);
     }
 
-    @OnShowRationale(Manifest.permission.ACCESS_FINE_LOCATION)
-    void showRationaleForGPS(final PermissionRequest request) {
-        RequestPermissionUtil.onShowRationale(this, request, Manifest.permission.ACCESS_FINE_LOCATION);
-    }
-
-    @OnPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION)
-    void showDeniedForGPS() {
-        RequestPermissionUtil.onPermissionDenied(this, Manifest.permission.ACCESS_FINE_LOCATION);
-        finish();
-    }
-
-    @OnNeverAskAgain(Manifest.permission.ACCESS_FINE_LOCATION)
-    void showNeverAskForGPS() {
-        RequestPermissionUtil.onNeverAskAgain(this, Manifest.permission.ACCESS_FINE_LOCATION);
-        finish();
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        GeolocationActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+        permissionCheck.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
     }
 
     @Override

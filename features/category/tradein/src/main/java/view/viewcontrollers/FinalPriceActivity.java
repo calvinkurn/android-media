@@ -5,7 +5,6 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModel;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.SpannableString;
@@ -39,7 +38,7 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
      */
     private TextView mTvValidTill;
     private TextView mTvModelName;
-    private TextView mTvPriceTotal;
+    private TextView mTvSellingPrice;
     private TextView mTvDeviceReview;
     private TextView mTvModelNew;
     private TextView mTvPriceNew;
@@ -64,8 +63,8 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
         viewArrayList.add(mTvValidTill);
         mTvModelName = findViewById(R.id.tv_model_name);
         viewArrayList.add(mTvModelName);
-        mTvPriceTotal = findViewById(R.id.tv_price_total);
-        viewArrayList.add(mTvPriceTotal);
+        mTvSellingPrice = findViewById(R.id.tv_selling_price);
+        viewArrayList.add(mTvSellingPrice);
         mTvDeviceReview = findViewById(R.id.tv_device_review);
         viewArrayList.add(mTvDeviceReview);
         mTvModelNew = findViewById(R.id.tv_model_new);
@@ -84,6 +83,7 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
         viewArrayList.add(findViewById(R.id.tv_model));
         viewArrayList.add(findViewById(R.id.tv_exchange));
         viewArrayList.add(findViewById(R.id.tv_final_price));
+        viewArrayList.add(findViewById(R.id.tv_price));
         viewArrayList.add(findViewById(R.id.tv_title));
         viewArrayList.add(findViewById(R.id.divider1));
         viewArrayList.add(findViewById(R.id.divider2));
@@ -144,7 +144,7 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
         }
         mTvModelName.setText(deviceDataResponse.getDeviceAttr().getModel());
         mTvPriceExchange.setText(String.valueOf(deviceDataResponse.getOldPrice()));
-        mTvPriceTotal.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(deviceDataResponse.getRemainingPrice(), true));
+        mTvSellingPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(deviceDataResponse.getOldPrice(), true));
         mTvValidTill.setText(String.format(getString(R.string.price_valid_until), deviceDataResponse.getExpiryTimeFmt()));
         List<String> deviceReview = deviceDataResponse.getDeviceReview();
         StringBuilder stringBuilder = new StringBuilder();
@@ -152,7 +152,7 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
             stringBuilder.append("•").append(review).append("\n");
         }
         mTvDeviceReview.setText(stringBuilder.toString());
-        mTvPriceExchange.setText(String.format("- %1$s",CurrencyFormatUtil.convertPriceValueToIdrFormat(deviceDataResponse.getOldPrice(), true)));
+        mTvPriceExchange.setText(String.format("- %1$s", CurrencyFormatUtil.convertPriceValueToIdrFormat(deviceDataResponse.getOldPrice(), true)));
         mTvFinalAmount.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(deviceDataResponse.getRemainingPrice(), true));
 
         if (tradeInData != null) {
@@ -163,7 +163,11 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
                 if (kycDetails.getDetail().getIsSuccess() != 1) {
                     setButtonKyc();
                 } else {
-                    setbuttonCheckout();
+                    if (kycDetails.getDetail().getStatus() == 1 || kycDetails.getDetail().getStatus() == 0)
+                        setbuttonCheckout();
+                    else
+                        setButtonKyc();
+
                 }
             }
         }
@@ -206,20 +210,22 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                showTnC(R.string.tradein_tnc);
-                setVisibilityGroup(View.INVISIBLE);
+                showtnc();
+
             }
         };
         int greenColor = getResources().getColor(R.color.green_nob);
         ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(greenColor);
-        spannableString.setSpan(clickableSpan, 40, 58, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-        spannableString.setSpan(foregroundColorSpan, 40, 58, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        spannableString.setSpan(clickableSpan, 43, 61, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        spannableString.setSpan(foregroundColorSpan, 43, 61, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         mTvTnc.setText(spannableString);
         mTvTnc.setClickable(true);
         mTvTnc.setMovementMethod(LinkMovementMethod.getInstance());
         mTvButtonPayOrKtp.setBackgroundResource(R.drawable.bg_tradein_button_orange);
         mTvButtonPayOrKtp.setText(R.string.buy_now);
-        mTvButtonPayOrKtp.setOnClickListener(v -> goToCheckout());
+        mTvButtonPayOrKtp.setOnClickListener(v -> {
+            goToCheckout();
+        });
     }
 
     private void setButtonKyc() {
@@ -228,8 +234,8 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                showTnC(R.string.tradein_tnc);
-                setVisibilityGroup(View.INVISIBLE);
+                showtnc();
+
             }
         };
         int greenColor = getResources().getColor(R.color.green_nob);
@@ -241,7 +247,14 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
         mTvTnc.setMovementMethod(LinkMovementMethod.getInstance());
         mTvButtonPayOrKtp.setBackgroundResource(R.drawable.bg_tradein_button_green);
         mTvButtonPayOrKtp.setText(R.string.do_ktp);
-        mTvButtonPayOrKtp.setOnClickListener(v -> goToKycActivity());
+        mTvButtonPayOrKtp.setOnClickListener(v -> {
+            goToKycActivity();
+            sendGeneralEvent("clickTradeIn",
+                    "harga final trade in",
+                    "click lanjut foto ktp",
+                    "");
+
+        });
     }
 
     @Override
@@ -260,5 +273,14 @@ public class FinalPriceActivity extends BaseTradeInActivity<FinalPriceViewModel>
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showtnc() {
+        showTnC(R.string.tradein_tnc);
+        setVisibilityGroup(View.INVISIBLE);
+        sendGeneralEvent("clickTradeIn",
+                "harga final trade in",
+                "click syarat dan ketentuan",
+                "");
     }
 }

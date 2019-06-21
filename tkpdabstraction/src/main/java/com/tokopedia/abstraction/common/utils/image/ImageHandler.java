@@ -2,6 +2,7 @@ package com.tokopedia.abstraction.common.utils.image;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
@@ -13,24 +14,24 @@ import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
-import android.media.Image;
 import android.os.Build;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
-import android.support.transition.Transition;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.content.res.AppCompatResources;
 import android.text.TextUtils;
-import android.util.TypedValue;
 import android.util.Base64;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.Window;
+import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -38,6 +39,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -53,6 +55,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 
 public class ImageHandler {
@@ -784,15 +787,13 @@ public class ImageHandler {
                     .asBitmap()
                     .centerCrop()
                     .into(simpleTarget);
-        }
-
-        if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+        } else if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             Glide.with(context)
                     .load(imageUrl)
                     .asBitmap()
                     .dontAnimate()
-                    .transform(blurTransformation(context))
-                    .centerCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .transform(new CenterCrop(context), blurTransformation(context))
                     .into(simpleTarget);
         }
     }
@@ -811,6 +812,31 @@ public class ImageHandler {
         };
     }
 
+    private static RenderScript rs;
+    private static ScriptIntrinsicBlur theIntrinsic;
+    private static RenderScript getRs(Context context){
+        if (rs == null) {
+            synchronized (RenderScript.class) {
+                if (rs == null) {
+                    rs = RenderScript.create(context);
+                }
+            }
+        }
+        return rs;
+    }
+
+    private static ScriptIntrinsicBlur getIntrinsic(Context context){
+        if (theIntrinsic == null) {
+            synchronized (ScriptIntrinsicBlur.class) {
+                if (theIntrinsic == null) {
+                    theIntrinsic = ScriptIntrinsicBlur.create(getRs(context),
+                            Element.U8_4(getRs(context)));
+                }
+            }
+        }
+        return theIntrinsic;
+    }
+
     public static Bitmap blurStrong(Context context, Bitmap image) {
         final float BITMAP_SCALE = 0.04f;
         final float BLUR_RADIUS = 7.5f;
@@ -821,13 +847,11 @@ public class ImageHandler {
         Bitmap inputBitmap = Bitmap.createScaledBitmap(image, width, height, false);
         Bitmap outputBitmap = Bitmap.createBitmap(inputBitmap);
 
-        RenderScript rs = RenderScript.create(context);
-        ScriptIntrinsicBlur theIntrinsic = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
-        Allocation tmpIn = Allocation.createFromBitmap(rs, inputBitmap);
-        Allocation tmpOut = Allocation.createFromBitmap(rs, outputBitmap);
-        theIntrinsic.setRadius(BLUR_RADIUS);
-        theIntrinsic.setInput(tmpIn);
-        theIntrinsic.forEach(tmpOut);
+        Allocation tmpIn = Allocation.createFromBitmap(getRs(context), inputBitmap);
+        Allocation tmpOut = Allocation.createFromBitmap(getRs(context), outputBitmap);
+        getIntrinsic(context).setRadius(BLUR_RADIUS);
+        getIntrinsic(context).setInput(tmpIn);
+        getIntrinsic(context).forEach(tmpOut);
         tmpOut.copyTo(outputBitmap);
 
         return outputBitmap;
@@ -887,7 +911,7 @@ public class ImageHandler {
     public static String encodeToBase64(String imagePath) {
         Bitmap bm = BitmapFactory.decodeFile(imagePath);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bm.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        bm.compress(Bitmap.CompressFormat.JPEG, 60, baos);
         byte[] b = baos.toByteArray();
         return Base64.encodeToString(b, Base64.DEFAULT);
     }
@@ -895,7 +919,7 @@ public class ImageHandler {
     public static String encodeToBase64(String imagePath, Bitmap.CompressFormat compressFormat) {
         Bitmap bm = BitmapFactory.decodeFile(imagePath);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bm.compress(compressFormat, 100, baos);
+        bm.compress(compressFormat, 60, baos);
         byte[] b = baos.toByteArray();
         return Base64.encodeToString(b, Base64.DEFAULT);
     }
@@ -923,5 +947,38 @@ public class ImageHandler {
                 }
             });
         }
+    }
+
+    public static void loadBackgroundImage(View view, String url) {
+        if (view == null || !URLUtil.isValidUrl(url)) {
+            return;
+        }
+
+        Glide.with(view.getContext())
+                .load(url)
+                .asBitmap()
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        if (resource.getWidth() > 1) {
+                            view.setBackground(new BitmapDrawable(view.getResources(), resource));
+                        }
+                    }
+                });
+    }
+
+
+    public static void cacheFromUrl(@NotNull Context context, @NotNull String url, @NotNull ArrayList<Drawable> cacheImageList) {
+        int size = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 21, Resources.getSystem().getDisplayMetrics());
+        Glide.with(context)
+                .load(url)
+                .override(size, size)
+                .into(new SimpleTarget<GlideDrawable>() {
+                    @Override
+                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                        cacheImageList.add(resource);
+                    }
+                });
+
     }
 }

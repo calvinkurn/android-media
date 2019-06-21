@@ -86,7 +86,7 @@ class FlashSaleProductListFragment : BaseSearchListFragment<FlashSaleProductItem
         if (savedInstanceState != null) {
             filterIndex = savedInstanceState.getInt(SAVED_FILTER_INDEX)
         }
-        flashSaleTracking = FlashSaleTracking(activity?.application as AbstractionRouter)
+        flashSaleTracking = FlashSaleTracking()
         super.onCreate(savedInstanceState)
         flashSaleSubmitLabelAdapter = FlashSaleSubmitLabelAdapter(filterIndex, 0, this)
         context?.let {

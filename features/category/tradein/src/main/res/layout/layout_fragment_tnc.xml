@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/sp_16"
+        android:paddingBottom="@dimen/dp_16"
         android:lineHeight="@dimen/dp_20"
         android:text="@string/tradein_tnc"
         android:textColor="@color/black_70"

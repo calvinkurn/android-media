@@ -24,8 +24,10 @@ import java.util.List;
 
 /**
  * @author by alifa on 11/28/17.
+ *
+ * this class is deprecated please use com.tokopedia.banner.Banner
  */
-
+@Deprecated
 public class BannerView extends BaseCustomView {
 
     private static final long SLIDE_DELAY = 5000;
@@ -341,10 +343,6 @@ public class BannerView extends BaseCustomView {
 
     protected int getIndicator() {
         return R.drawable.indicator;
-    }
-
-    protected BannerPagerAdapter getBannerPagerAdapter() {
-        return new BannerPagerAdapter(promoImageUrls, onPromoClickListener);
     }
 }
 

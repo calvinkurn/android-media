@@ -1,0 +1,19 @@
+query get_accounts_list($validate_token: String!, $phone: String!) {
+  accountsGetAccountsList(validate_token: $validate_token, phone: $phone) {
+    key
+    msisdn_view
+    msisdn
+    users_details {
+      user_id
+      fullname
+      email
+      msisdn_verified
+      image
+    }
+    users_count
+    errors {
+      name
+      message
+    }
+  }
+}

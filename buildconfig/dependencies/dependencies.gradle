@@ -6,14 +6,14 @@ ext {
     buildToolsVersion = "27.0.3"
 
     jacocoVersion = "0.7.9"
-    kotlinVersion = "1.2.71"
+    kotlinVersion = "1.3.0"
 
     lifeCycleVersion = "1.1.1"
 
     supportLibraryVersion = '27.1.1'
     playServiceVersion = '11.0.4'
-    butterKnifeVersion = '9.0.0-SNAPSHOT'
-    coroutineVersion = '0.30.2'
+    butterKnifeVersion = '9.0.0'
+    coroutineVersion = '1.0.0'
     dbFlowVersion = '3.0.1'
     retrofitVersion = '2.1.0'
     okHttpVersion = '3.8.1'
@@ -30,7 +30,9 @@ ext {
     alibabaCoreLibVersion = '3.2.8'
     powerMockVersion = '1.6.2'
     roomVersion = '1.1.1'
-    
+
+    exoPlayerVersion = '2.9.6'
+
     playServiceFirebaseConfig = '16.1.3'
     playServiceBaseVersion = '16.0.1'
     playServiceFirebaseIidVersion = '17.0.4'
@@ -122,6 +124,7 @@ ext {
             messaging   : "com.google.firebase:firebase-messaging:${playServiceFirebaseMessaging}",
             config      : "com.google.firebase:firebase-config:${playServiceFirebaseRemoteConfig}",
             performance : "com.google.firebase:firebase-perf:${playServiceFirebasePerfMon}",
+            fireStore   : "com.google.firebase:firebase-firestore:17.1.2"
     ]
 
     butterKnifeDependencies = [
@@ -152,7 +155,7 @@ ext {
             installRef : "com.android.installreferrer:installreferrer:1.0",
             moengage   : "com.moengage:moe-android-sdk:9.3.02",
             moengageFirebase   : "com.moengage:moe-push-firebase:3.1.00",
-            moengageMSG: "com.moengage:addon-messaging:2.0.03",
+            moengageMSG: "com.moengage:addon-messaging:3.2.01",
             branch     : "io.branch.sdk.android:library:3.0.4+",
             logentries : "com.github.LogentriesCommunity:le_android:logentries-android-4.4.1"
     ]
@@ -176,7 +179,6 @@ ext {
             javaxAnnotation       : "javax.annotation:jsr250-api:1.0",
             dagger                : "com.google.dagger:dagger:2.5",
             daggerCompiler        : "com.google.dagger:dagger-compiler:2.5",
-            bcaOneClick           : "com.bca.widget:oneclick:1.0@aar",
             chips                 : 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar',
             roundCornerProgressBar: 'com.akexorcist:RoundCornerProgressBar:2.0.3',
             slidinguppanel        : "com.sothree.slidinguppanel:library:3.3.1",
@@ -186,7 +188,7 @@ ext {
             imagecropper          : "com.theartofdev.edmodo:android-image-cropper:2.5.1",
             reactNative           : "com.facebook.react:react-native:$reactNativeVersion",
             codePushReactNative   : "com.microsoft.codepush:rn-codepush:5.1.3",
-            hansel                : "io.hansel.preprocessor:preprocessor:7.0.8",
+            hansel                : "io.hansel.preprocessor:preprocessor:7.1.1",
             apacheLang            : "org.apache.commons:commons-lang3:3.0",
             ucrop                 : "com.github.yalantis:ucrop:2.2.2",
             flexBoxLayout         : "com.google.android:flexbox:0.3.2",
@@ -194,8 +196,12 @@ ext {
             coroutineAndroid      : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion",
             guava                 : "com.google.guava:guava:21.0",
             viewModel             : "android.arch.lifecycle:viewmodel:$lifeCycleVersion",
+            exoPlayerCore         : "com.google.android.exoplayer:exoplayer-core:$exoPlayerVersion",
+            exoPlayerUi           : "com.google.android.exoplayer:exoplayer-ui:$exoPlayerVersion",
+            exoPlayerRtmp         : "com.google.android.exoplayer:extension-rtmp:$exoPlayerVersion",
             lifeCycleExtentions   : "android.arch.lifecycle:extensions:$lifeCycleVersion",
-            lifeCycleRuntime      : "android.arch.lifecycle:compiler:$lifeCycleVersion"
+            lifeCycleRuntime      : "android.arch.lifecycle:compiler:$lifeCycleVersion",
+            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.1.11@aar",
     ]
 
     testDependencies = [
@@ -250,5 +256,13 @@ ext {
 
     instabugDependencies = [
             instabug: "com.instabug.library:instabug:8.0.3"
+    ]
+    
+    unify = [
+        icon: 'com.tokopedia.unify:icon:0.0.1@aar',
+        principles: 'com.tokopedia.unify:principles:0.0.1@aar',
+        components: 'com.tokopedia.unify:components:0.0.1@aar',
+        coach_mark: 'com.tokopedia.unify.compositions:coach_mark:1.0.0@aar',
+        calendar: 'com.tokopedia.unify.compositions:calendar:0.0.1@aar'
     ]
 }

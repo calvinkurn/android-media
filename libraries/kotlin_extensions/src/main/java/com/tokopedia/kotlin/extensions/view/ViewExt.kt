@@ -16,11 +16,14 @@ import android.app.ProgressDialog
 import android.view.ViewGroup
 import android.widget.TextView
 import android.view.*
+import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.kotlin.model.ImpressHolder
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 
 /**
  * @author by milhamj on 30/11/18.
@@ -75,9 +78,9 @@ fun ViewGroup.inflateLayout(layoutId: Int, isAttached: Boolean = false): View {
     return LayoutInflater.from(context).inflate(layoutId, this, isAttached)
 }
 
-fun Activity.createDefaultProgressDialog(loadingMessage:String?,
-                                         cancelable:Boolean = true,
-                                         onCancelClicked: (() -> Unit)?) : ProgressDialog{
+fun Activity.createDefaultProgressDialog(loadingMessage: String?,
+                                         cancelable: Boolean = true,
+                                         onCancelClicked: (() -> Unit)?): ProgressDialog {
     return ProgressDialog(this).apply {
         setMessage(loadingMessage)
         setCancelable(cancelable)
@@ -195,19 +198,50 @@ fun View.getDimens(@DimenRes id: Int): Int {
     return this.context.resources.getDimension(id).toInt()
 }
 
-fun View.addOnImpressionListener(holder: ImpressHolder?, listener: ViewHintListener) {
-    if (!holder!!.isInvoke) {
+fun ImageView.addOnImpressionListener(holder: ImpressHolder, listener: ViewHintListener) {
+    if (!holder.isInvoke) {
         viewTreeObserver.addOnScrollChangedListener(
                 object : ViewTreeObserver.OnScrollChangedListener {
                     override fun onScrollChanged() {
-                        if (!holder.isInvoke && listener != null) {
+                        if (!holder.isInvoke && viewIsVisible(this@addOnImpressionListener)) {
                             listener.onViewHint()
                             holder.invoke()
+                            viewTreeObserver.removeOnScrollChangedListener(this)
                         }
-                        viewTreeObserver.removeOnScrollChangedListener(this)
                     }
                 })
     }
+}
+
+
+private fun viewIsVisible(view: View?): Boolean {
+    if (view == null) {
+        return false
+    }
+    if (!view.isShown) {
+        return false
+    }
+    val screen = Rect(0, 0, getScreenWidth(), getScreenHeight())
+    val offset = 100
+    val location = IntArray(2)
+    view.getLocationOnScreen(location)
+    val X = location[0] + offset
+    val Y = location[1] + offset
+    return if (screen.top <= Y && screen.bottom >= Y &&
+            screen.left <= X && screen.right >= X) {
+        true
+    } else {
+        false
+    }
+}
+
+
+private fun getScreenWidth(): Int {
+    return Resources.getSystem().displayMetrics.widthPixels
+}
+
+private fun getScreenHeight(): Int {
+    return Resources.getSystem().displayMetrics.heightPixels
 }
 
 interface ViewHintListener {

@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.view.presenter;
 import android.util.Log;
 
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsMinimumBidUseCase;
 import com.tokopedia.topads.sourcetagging.data.TopAdsSourceTaggingModel;
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsGetSourceTaggingUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsCreateDetailProductListUseCase;
@@ -20,6 +21,7 @@ import com.tokopedia.topads.dashboard.view.model.TopAdsDetailGroupViewModel;
 import com.tokopedia.topads.dashboard.view.model.TopAdsProductViewModel;
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsRemoveSourceTaggingUseCase;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.List;
 
@@ -40,10 +42,11 @@ public class TopAdsDetailNewGroupPresenterImpl<T extends TopAdsDetailNewGroupVie
                                              TopAdsSaveDetailGroupUseCase topAdsSaveDetailGroupUseCase,
                                              TopAdsCreateDetailProductListUseCase topAdsCreateDetailProductListUseCase,
                                              TopAdsProductListUseCase topAdsProductListUseCase,
-                                             TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase,
-                                             TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase) {
+                                             TopAdsMinimumBidUseCase minimumBidUseCase,
+                                             TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase,
+                                             UserSessionInterface sessionInterface) {
         super(topAdsGetDetailGroupUseCase, topAdsSaveDetailGroupUseCase, topAdsProductListUseCase,
-                topAdsGetSuggestionUseCase, topAdsGetSourceTaggingUseCase);
+                minimumBidUseCase, topAdsGetSourceTaggingUseCase, sessionInterface);
         this.topAdsCreateNewGroupUseCase = topAdsCreateNewGroupUseCase;
         this.topAdsCreateDetailProductListUseCase = topAdsCreateDetailProductListUseCase;
     }

@@ -16,13 +16,13 @@ import android.view.View;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.R;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.receiver.ErrorNetworkReceiver;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.DialogForceLogout;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
+import com.tokopedia.track.TrackApp;
 
 
 /**
@@ -100,10 +100,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     }
 
     protected void sendScreenAnalytics() {
-        if (getApplication() instanceof AbstractionRouter) {
-            AnalyticTracker analyticTracker = ((AbstractionRouter) getApplication()).getAnalyticTracker();
-            analyticTracker.sendScreen(this, getScreenName());
-        }
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated( getScreenName());
     }
 
     @Override
@@ -175,7 +172,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     }
 
     public void showForceLogoutDialog() {
-        DialogForceLogout.createShow(this,
+        DialogForceLogout.createShow(this, getScreenName(),
                 new DialogForceLogout.ActionListener() {
                     @Override
                     public void onDialogClicked() {

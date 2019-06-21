@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <color name="total_benefit">#04AC0F</color>
+    <color name="separator_color">#e0e0e0</color>
+    <color name="clash_title">#FA591C</color>
+    <color name="clash_potential_title">#393D42</color>
+    <color name="clash_potential_desc">#BCBDBF</color>
+    <color name="clash_warning_border">#FFE38F</color>
+    <color name="clash_warning_background">#FFFAE6</color>
+    <color name="checkout_module_color_background">#f3f4f5</color>
+    <color name="grey_shadow">#20ededed</color>
+    <color name="button_change_courier">#42b549</color>
+    <color name="button_change_courier_disabled">#7031353b</color>
 </resources>
+

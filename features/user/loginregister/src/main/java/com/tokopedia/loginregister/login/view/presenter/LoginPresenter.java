@@ -10,17 +10,17 @@ import com.facebook.CallbackManager;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.loginregister.R;
-import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
+import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase;
 import com.tokopedia.loginregister.login.di.LoginModule;
 import com.tokopedia.loginregister.login.view.listener.LoginContract;
 import com.tokopedia.loginregister.login.view.model.DiscoverViewModel;
 import com.tokopedia.loginregister.login.view.subscriber.LoginSubscriber;
-import com.tokopedia.loginregister.loginthirdparty.subscriber.LoginThirdPartySubscriber;
 import com.tokopedia.loginregister.loginthirdparty.domain.LoginWebviewUseCase;
 import com.tokopedia.loginregister.loginthirdparty.domain.LoginWithSosmedUseCase;
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber;
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase;
+import com.tokopedia.loginregister.loginthirdparty.subscriber.LoginThirdPartySubscriber;
 import com.tokopedia.sessioncommon.ErrorHandlerSession;
 import com.tokopedia.sessioncommon.domain.usecase.LoginEmailUseCase;
 import com.tokopedia.usecase.RequestParams;
@@ -179,8 +179,8 @@ public class LoginPresenter extends BaseDaggerPresenter<LoginContract.View>
             if (bundle.getString(PATH, "").contains(ERROR)) {
                 getView().onErrorLoginSosmed(LoginRegisterAnalytics.WEBVIEW,
                         bundle.getString(MESSAGE, "")
-                        + getView().getContext().getString(R.string.code_error) + " " +
-                        ErrorHandlerSession.ErrorCode.WS_ERROR);
+                                + getView().getContext().getString(R.string.code_error) + " " +
+                                ErrorHandlerSession.ErrorCode.WS_ERROR);
             } else if (bundle.getString(PATH, "").contains(CODE)) {
                 getView().showLoadingLogin();
                 loginWebviewUseCase.execute(LoginWebviewUseCase.getParamWebview(bundle.getString
@@ -222,6 +222,6 @@ public class LoginPresenter extends BaseDaggerPresenter<LoginContract.View>
         getView().showLoadingLogin();
         loginWithSosmedUseCase.execute(LoginWithSosmedUseCase.getParamFacebook(accessToken),
                 new LoginThirdPartySubscriber(getView().getContext(), getView().getLoginRouter(),
-                        LoginRegisterAnalytics.FACEBOOK, getView(), email));
+                        email, getView(), LoginRegisterAnalytics.FACEBOOK));
     }
 }

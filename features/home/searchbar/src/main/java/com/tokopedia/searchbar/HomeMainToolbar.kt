@@ -8,7 +8,6 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
 import android.os.Build
-import android.support.graphics.drawable.VectorDrawableCompat
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.View
@@ -24,6 +23,12 @@ class HomeMainToolbar : MainToolbar {
     var toolbarType: Int = 0
 
     var shadowApplied: Boolean = false
+
+    private lateinit var wishlistCrossfader: TransitionDrawable
+
+    private lateinit var notifCrossfader: TransitionDrawable
+
+    private lateinit var inboxCrossfader: TransitionDrawable
 
     lateinit var wishlistBitmapWhite: BitmapDrawable
 
@@ -55,35 +60,15 @@ class HomeMainToolbar : MainToolbar {
         initToolbarIcon()
 
         switchToLightToolbar()
-
-        btnInbox.setOnClickListener { v ->
-            if (userSession.isLoggedIn) {
-                searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.INBOX, screenName)
-                getContext().startActivity((this.context.applicationContext as SearchBarRouter)
-                        .gotoInboxMainPage(getContext()))
-            } else {
-                RouteManager.route(context, ApplinkConst.LOGIN)
-            }
-        }
     }
-
-    private lateinit var toolbarShadowBitmap: BitmapDrawable
-
-    private lateinit var toolbarWhiteBitmap: BitmapDrawable
-
-    private lateinit var wishlistCrossfader: TransitionDrawable
-
-    private lateinit var notifCrossfader: TransitionDrawable
-
-    private lateinit var inboxCrossfader: TransitionDrawable
 
     private fun initToolbarIcon() {
         wishlistBitmapWhite = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_wishlist_white)
-        notifBitmapWhite = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_notif_white)
+        notifBitmapWhite = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_system_action_notification_pressed_24)
         inboxBitmapWhite = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_inbox_white)
 
         wishlistBitmapGrey = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_wishlist_grey)
-        notifBitmapGrey = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_notif_grey)
+        notifBitmapGrey = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_system_action_notification_normal_24)
         inboxBitmapGrey = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_inbox_grey)
 
         wishlistCrossfader = TransitionDrawable(arrayOf<Drawable>(wishlistBitmapGrey, wishlistBitmapWhite))
@@ -103,7 +88,10 @@ class HomeMainToolbar : MainToolbar {
         if(isShadowApplied()){
             shadowApplied = false
             val pL = toolbar.paddingLeft
-            var pT = ViewHelper.getStatusBarHeight(context)
+            var pT = 0
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                pT = ViewHelper.getStatusBarHeight(context)
+            }
             val pR = toolbar.paddingRight
             val pB = 0
             toolbar!!.background = ColorDrawable(ContextCompat.getColor(context, R.color.white))
@@ -115,13 +103,14 @@ class HomeMainToolbar : MainToolbar {
         if(!isShadowApplied()){
             shadowApplied = true
             val pL = toolbar.paddingLeft
-            var pT = ViewHelper.getStatusBarHeight(context)
+            var pT = 0
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                pT = ViewHelper.getStatusBarHeight(context)
+            }
             val pR = toolbar.paddingRight
             val pB = resources.getDimensionPixelSize(R.dimen.dp_8)
 
             toolbar!!.background = ContextCompat.getDrawable(context, R.drawable.searchbar_bg_shadow_bottom)
-//            toolbar!!.background = ColorDrawable(ContextCompat.getColor(context, R.color.white))
-
             toolbar!!.setPadding(pL, pT, pR, pB)
         }
     }

@@ -66,7 +66,7 @@ class FlashSaleInfoFragment: BaseListFragment<CampaignInfoViewModel, CampaignInf
             sellerStatus = it.getParcelable(EXTRA_PARAM_SELLER_STATUS) ?: SellerStatus()
         }
         super.onCreate(savedInstanceState)
-        flashSaleTracking = FlashSaleTracking(activity?.application as AbstractionRouter)
+        flashSaleTracking = FlashSaleTracking()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

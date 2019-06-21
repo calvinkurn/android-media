@@ -16,7 +16,12 @@ import java.util.*
  * @author by yfsx on 07/01/19.
  */
 class FilterAdapter(private val filterClickedListener: OnFilterClickedListener,
-                    private val layout: Int) : RecyclerView.Adapter<FilterAdapter.Holder>() {
+                    private val layout: Int,
+                    private val page: String) : RecyclerView.Adapter<FilterAdapter.Holder>() {
+    companion object {
+        const val PAGE_EXPLORE = "PAGE_EXPLORE"
+        const val PAGE_FILTER = "PAGE_FILTER"
+    }
 
     private var allFilterList: List<FilterViewModel> = ArrayList()
 
@@ -56,6 +61,9 @@ class FilterAdapter(private val filterClickedListener: OnFilterClickedListener,
     }
 
     override fun getItemCount(): Int {
+        if (page.equals(PAGE_EXPLORE) && allFilterList.size > 5) {
+            return 5
+        }
         return allFilterList.size
     }
 

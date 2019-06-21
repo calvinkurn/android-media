@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -34,6 +35,7 @@ import com.tokopedia.linker.interfaces.ShareCallback;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.linker.model.LinkerError;
 import com.tokopedia.linker.model.LinkerShareResult;
+import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -354,8 +356,16 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
     private void shareCategory(LinkerData data, String media) {
         String[] shareParam = data.getSplittedDescription(",");
         if (shareParam.length == 2) {
-            UnifyTracking.eventShareCategory(getContext(), shareParam[0], shareParam[1] + "-" + media);
+            eventShareCategory(shareParam[0], shareParam[1] + "-" + media);
         }
+    }
+
+    public static void eventShareCategory(String parentCat, String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.CATEGORY_PAGE,
+                AppEventTracking.Category.CATEGORY_PAGE + "-" + parentCat,
+                AppEventTracking.Action.CATEGORY_SHARE,
+                label);
     }
 
     private void sendAnalyticsToGtm(String type, String channel) {

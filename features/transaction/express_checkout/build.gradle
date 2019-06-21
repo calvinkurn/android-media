@@ -15,7 +15,9 @@ buildscript {
     }
 }
 dependencies {
-    implementation project(rootProject.ext.libraries.useCase)
+    
+    implementation project(rootProject.ext.libraries.track)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.graphql)
@@ -25,9 +27,10 @@ dependencies {
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.imagePreview)
-    implementation project(rootProject.ext.libraries.cacheManager)
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.libraries.trackinterface)
+    implementation rootProject.ext.libraries.unifyPrinciples
+    
     implementation project(rootProject.ext.features.tradeIn)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.playServicesDependencies.analytics

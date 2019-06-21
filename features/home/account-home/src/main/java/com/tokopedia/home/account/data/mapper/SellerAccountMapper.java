@@ -47,10 +47,12 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.PENJUAL;
 public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewModel> {
 
     private Context context;
+    private RemoteConfig remoteConfig;
 
     @Inject
     public SellerAccountMapper(@ApplicationContext Context context) {
         this.context = context;
+        this.remoteConfig = new FirebaseRemoteConfigImpl(context);
     }
 
     @Override
@@ -82,10 +84,7 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         SellerViewModel sellerViewModel = new SellerViewModel();
         List<ParcelableViewModel> items = new ArrayList<>();
 
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-
-        boolean showPinjamanModalOnTop = remoteConfig
-                .getBoolean(RemoteConfigKey.PINJAMAN_MODAL_AKUN_PAGE_POSITION_TOP, false);
+        boolean showPinjamanModalOnTop = remoteConfig.getBoolean(RemoteConfigKey.PINJAMAN_MODAL_AKUN_PAGE_POSITION_TOP, false);
 
         String mitraTopperMaxLoan = "";
         String mitraTopperUrl = "";
@@ -232,6 +231,11 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
                 && accountModel.getKycStatusPojo().getKycStatusDetailPojo()
                 .getStatus() == KYCConstant.STATUS_NOT_VERIFIED) {
             sellerTickerModel.getListMessage().add(context.getString(R.string.ticker_unverified));
+        } else if (!accountModel.getShopInfo().getOwner().getGoldMerchant()) {
+            String tickerMessage = remoteConfig.getString(RemoteConfigKey.SELLER_ACCOUNT_TICKER_MSG);
+            if (!TextUtils.isEmpty(tickerMessage)) {
+                sellerTickerModel.getListMessage().add(tickerMessage);
+            }
         }
 
         return sellerTickerModel;

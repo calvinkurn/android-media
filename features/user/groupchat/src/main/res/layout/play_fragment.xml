@@ -12,9 +12,7 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
-
+        android:layout_height="match_parent">
 
         <View
             android:id="@+id/top_guideline"
@@ -170,7 +168,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sponsor_layout"
             tools:ignore="MergeRootFrame"
-            tools:visibility="gone">
+            tools:visibility="visible">
 
             <fragment xmlns:android="http://schemas.android.com/apk/res/android"
                       xmlns:tools="http://schemas.android.com/tools"
@@ -181,6 +179,112 @@
                       tools:layout="@layout/fragment_groupchat_video"/>
 
         </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_video_toggle"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:elevation="@dimen/cardview_default_elevation"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@id/video_horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:translationZ="-2dp"
+            tools:visibility="visible">
+
+            <LinearLayout
+                android:id="@+id/hide_video_toggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_hide_video"
+                android:paddingLeft="@dimen/space_med"
+                android:paddingTop="@dimen/space_small"
+                android:paddingRight="@dimen/space_med"
+                android:paddingBottom="@dimen/space_small"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_8"
+                android:visibility="gone">
+                <ImageView
+                    android:layout_width="@dimen/arrow_size"
+                    android:layout_height="@dimen/arrow_size"
+                    android:layout_gravity="center_vertical"
+                    app:srcCompat="@drawable/ic_video"/>
+
+                <Space
+                    android:layout_width="@dimen/dp_4"
+                    android:layout_height="@dimen/dp_14"/>
+
+                <TextView
+                    android:id="@+id/video_toggle_title_hide"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@string/hide_video"
+                    android:includeFontPadding="false"
+                    android:textColor="@color/play_toggle_video_text"
+                    android:textSize="@dimen/sp_12"
+                    android:textStyle="normal"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/show_video_toggle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label_show_video"
+                android:paddingLeft="@dimen/space_med"
+                android:paddingTop="@dimen/space_small"
+                android:paddingRight="@dimen/space_med"
+                android:paddingBottom="@dimen/space_small"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:gravity="center"
+                android:visibility="gone">
+                <ImageView
+                    android:layout_width="@dimen/arrow_size"
+                    android:layout_height="@dimen/arrow_size"
+                    android:layout_gravity="center_vertical"
+                    app:srcCompat="@drawable/ic_video"/>
+
+                <Space
+                    android:layout_width="@dimen/dp_4"
+                    android:layout_height="@dimen/dp_14"/>
+
+                <TextView
+                    android:id="@+id/video_toggle_title_show"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@string/show_video"
+                    android:includeFontPadding="false"
+                    android:textColor="@color/play_toggle_video_text"
+                    android:textSize="@dimen/sp_12"
+                    android:textStyle="normal"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <android.widget.Space
+            android:id="@+id/top_space_guideline"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_48"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/video_horizontal" />
+
+        <FrameLayout
+            android:id="@+id/interaction_button_guideline"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/video_horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
 
         <android.support.v7.widget.RecyclerView
             xmlns:android="http://schemas.android.com/apk/res/android"
@@ -198,18 +302,19 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/video_horizontal"
+            app:layout_constraintTop_toBottomOf="@id/top_space_guideline"
             app:layout_constraintVertical_weight="0.5"
+            android:translationZ="-3dp"
             tools:ignore="MergeRootFrame"/>
 
         <ImageView
             android:id="@+id/webview_icon"
             android:layout_width="@dimen/dp_60"
             android:layout_height="@dimen/dp_60"
-            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_14"
             android:layout_marginRight="@dimen/dp_16"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/video_horizontal"
+            app:layout_constraintTop_toBottomOf="@+id/top_space_guideline"
             />
 
         <include
@@ -221,7 +326,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintVertical_weight="1.0"
-            tools:visibility="gone"/>
+            tools:visibility="visible"/>
 
         <TextView
             android:id="@+id/login"
@@ -242,7 +347,7 @@
             android:textStyle="normal"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
-            tools:visibility="visible"/>
+            tools:visibility="gone"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/quick_reply"
@@ -352,6 +457,7 @@
             android:orientation="vertical"
             app:layout_constraintEnd_toStartOf="@id/webview_icon"
             app:layout_constraintGuide_percent="0.85"/>
+
         <RelativeLayout
             android:id="@+id/card_retry"
             android:layout_width="match_parent"

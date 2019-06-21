@@ -252,7 +252,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
                 || filters.getCategories() == null
                 || filters.getCategories().isEmpty()) {
             //To ensure get data loaded for very first time for first fragment(Providing a small to ensure fragment get displayed).
-            mViewPagerAdapter = new CatalogSortTypePagerAdapter(getChildFragmentManager(), null);
+            mViewPagerAdapter = new CatalogSortTypePagerAdapter(getChildFragmentManager(), filters.getCategories().get(0).getId(), null);
             mViewPagerAdapter.setPointsAvailable(isPointsAvailable);
             //TODO please replace with
             mPresenter.setCurrentCategoryId(0);
@@ -261,7 +261,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
             mTabSortType.setVisibility(View.GONE);
         } else if (filters.getCategories().get(0) != null
                 && (filters.getCategories().get(0).isHideSubCategory() || filters.getCategories().get(0).getSubCategory() == null || filters.getCategories().get(0).getSubCategory().isEmpty())) {
-            mViewPagerAdapter = new CatalogSortTypePagerAdapter(getChildFragmentManager(), null);
+            mViewPagerAdapter = new CatalogSortTypePagerAdapter(getChildFragmentManager(), filters.getCategories().get(0).getId(), null);
             mViewPagerAdapter.setPointsAvailable(isPointsAvailable);
             mPagerSortType.setAdapter(mViewPagerAdapter);
             mTabSortType.setupWithViewPager(mPagerSortType);
@@ -278,7 +278,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
                 && filters.getCategories().get(0).getSubCategory() != null) {
             mTabSortType.setVisibility(View.VISIBLE);
             updateToolbarTitle(filters.getCategories().get(0).getName());
-            mViewPagerAdapter = new CatalogSortTypePagerAdapter(getChildFragmentManager(), filters.getCategories().get(0).getSubCategory());
+            mViewPagerAdapter = new CatalogSortTypePagerAdapter(getChildFragmentManager(), filters.getCategories().get(0).getId(), filters.getCategories().get(0).getSubCategory());
             mViewPagerAdapter.setPointsAvailable(isPointsAvailable);
             mPagerSortType.setAdapter(mViewPagerAdapter);
             mTabSortType.setupWithViewPager(mPagerSortType);
@@ -465,9 +465,9 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         bottomViewMembership = view.findViewById(R.id.bottom_view_membership);
         mContainerPointDetail = view.findViewById(R.id.container_point_detail);
         containerEgg = view.findViewById(R.id.container_fab_egg_token);
-        mTextMembershipValueBottom = view.findViewById(R.id.text_membership_value_bottom);
+        mTextMembershipValueBottom = view.findViewById(R.id.text_loyalty_value_bottom);
         mTextPointsBottom = view.findViewById(R.id.text_my_points_value_bottom);
-        mImgEggBottom = view.findViewById(R.id.img_egg_bottom);
+        mImgEggBottom = view.findViewById(R.id.img_loyalty_stack_bottom);
         mAppBarHeader = view.findViewById(R.id.app_bar_header);
         if (getArguments() != null && getArguments().getInt(CommonConstant.EXTRA_COUPON_COUNT) <= 0) {
             view.findViewById(R.id.text_my_coupon).setVisibility(View.GONE);

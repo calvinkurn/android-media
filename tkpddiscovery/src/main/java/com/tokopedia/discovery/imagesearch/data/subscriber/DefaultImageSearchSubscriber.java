@@ -10,10 +10,11 @@ import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.discovery.imagesearch.search.exception.ImageNotSupportedException;
 import com.tokopedia.discovery.newdiscovery.base.BaseDiscoveryContract;
 import com.tokopedia.discovery.newdiscovery.base.DefaultSearchSubscriber;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.ProductViewModelHelper;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
-import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -31,7 +32,7 @@ public class DefaultImageSearchSubscriber<D2 extends BaseDiscoveryContract.View>
     List<String> productIDList = new ArrayList<>();
 
     public DefaultImageSearchSubscriber(D2 discoveryView) {
-        super(null, false, discoveryView, true);
+        super(null, discoveryView, true);
     }
 
     @Override
@@ -54,8 +55,8 @@ public class DefaultImageSearchSubscriber<D2 extends BaseDiscoveryContract.View>
             discoveryView.showErrorNetwork(e.getMessage());
         } else if (e instanceof ServerErrorRequestDeniedException) {
             ServerErrorHandler.sendForceLogoutAnalytics(
-                    ((ServerErrorRequestDeniedException) e).getUrl()
-            );
+                    ((ServerErrorRequestDeniedException) e).getUrl(),
+                    false, true);
             ServerErrorHandler.showForceLogoutDialog();
         } else if (e instanceof ServerErrorMaintenanceException) {
             ServerErrorHandler.showMaintenancePage();
@@ -72,11 +73,11 @@ public class DefaultImageSearchSubscriber<D2 extends BaseDiscoveryContract.View>
     protected void onHandleSearch(SearchResultModel searchResult) {
         ProductViewModel model = ProductViewModelHelper.convertToProductViewModelFirstPage(searchResult);
         SearchParameter imageSearchProductParameter = new SearchParameter();
-        imageSearchProductParameter.setStartRow(searchResult.getProductList().size());
-        imageSearchProductParameter.setQueryKey(searchResult.getQuery());
-        imageSearchProductParameter.setSource("imagesearch");
+        imageSearchProductParameter.set(SearchApiConst.START, String.valueOf(searchResult.getProductList().size()));
+        imageSearchProductParameter.setSearchQuery(searchResult.getQuery());
+        imageSearchProductParameter.set(SearchApiConst.SOURCE, "imagesearch");
+
         model.setSearchParameter(imageSearchProductParameter);
-        model.setForceSearch(forceSearch);
         model.setImageSearch(imageSearch);
 
         if (model.getProductList() == null || model.getProductList().size() == 0) {

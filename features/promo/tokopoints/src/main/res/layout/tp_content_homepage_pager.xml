@@ -11,9 +11,10 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:tabBackground="@color/white"
+        app:tabGravity="fill"
         app:tabIndicatorColor="@color/tkpd_main_green"
         app:tabMode="fixed"
-        app:tabGravity="fill"
         app:tabSelectedTextColor="@color/tkpd_main_green"
         app:tabTextAppearance="@style/TokoPointsTabs"
         app:tabTextColor="@color/black_38">

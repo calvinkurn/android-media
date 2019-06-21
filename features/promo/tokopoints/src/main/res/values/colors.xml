@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="tp_ticker_indicator_default_color">#3D9FA6B0</color>
+    <color name="tp_ticker_close_icon">#9FA6B0</color>
+    <color name="tp_ticker_indicator_selected_color">#84C6C9</color>
+    <color name="tp_ticker_background_color">#EBF6F6</color>
+    <color name="tp_coupon_enable">#A1A7AB</color>
+    <color name="tp_coupon_disable">#DBDEE2</color>
+</resources>

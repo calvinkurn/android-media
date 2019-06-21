@@ -115,8 +115,7 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        analytics = PhoneVerificationAnalytics.createInstance(getActivity().getApplicationContext
-                ());
+        analytics = PhoneVerificationAnalytics.createInstance();
         if (getArguments() != null) {
             if (getArguments().containsKey(PhoneVerificationActivationActivity.EXTRA_IS_MANDATORY)) {
                 isMandatory = getArguments().getBoolean(PhoneVerificationActivationActivity.EXTRA_IS_MANDATORY);

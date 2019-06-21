@@ -59,6 +59,7 @@ public class CartMapperData implements ICartMapperData {
             checkoutDigitalData.setStringQuery(
                     responseCheckoutData.getAttributes().getQueryString()
             );
+            checkoutDigitalData.setThanksUrl(responseCheckoutData.getAttributes().getThanksUrl());
             checkoutDigitalData.setTransactionId(
                     responseCheckoutData.getAttributes().getParameter().getTransactionId()
             );

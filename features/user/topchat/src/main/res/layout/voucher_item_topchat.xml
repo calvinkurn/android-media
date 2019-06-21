@@ -24,9 +24,13 @@
         android:layout_height="wrap_content"
         android:maxWidth="270dp"
         android:paddingBottom="@dimen/dp_8"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_8" />
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingLeft="@dimen/dp_3"
+        android:paddingRight="@dimen/dp_3" />
 
     <RelativeLayout
         android:layout_width="wrap_content"

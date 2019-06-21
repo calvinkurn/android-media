@@ -1,0 +1,41 @@
+query get_notification_update($page: Int!, $typeId: Int!, $tagId: Int!, $lastNotifId: String){
+  notifcenter_detail(page: $page, type_id: $typeId, tag_id: $tagId, last_notif_id: $lastNotifId) {
+    paging {
+      has_next
+      has_prev
+    }
+    list {
+      notif_id
+      user_id
+      shop_id
+      section_id
+      section_key
+      section_icon
+      subsection_key
+      template_key
+      title
+      short_description
+      content
+      type_of_user
+      create_time
+      create_time_unix
+      update_time
+      update_time_unix
+      status
+      read_status
+      data_notification {
+        app_link
+        desktop_link
+        info_thumbnail_url
+        mobile_link
+      }
+    }
+    user_info {
+      user_id
+      shop_id
+      email
+      fullname
+    }
+  }
+
+}

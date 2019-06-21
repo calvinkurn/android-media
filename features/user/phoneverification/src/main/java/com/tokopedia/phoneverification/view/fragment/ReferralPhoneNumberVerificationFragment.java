@@ -87,8 +87,7 @@ public class ReferralPhoneNumberVerificationFragment extends BaseDaggerFragment 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        analytics = PhoneVerificationAnalytics.createInstance(getActivity().
-                getApplicationContext());
+        analytics = PhoneVerificationAnalytics.createInstance();
     }
 
     public ReferralPhoneNumberVerificationFragmentListener getListener() {

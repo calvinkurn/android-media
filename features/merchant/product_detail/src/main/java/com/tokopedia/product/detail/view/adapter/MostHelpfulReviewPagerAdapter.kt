@@ -51,8 +51,7 @@ class MostHelpfulReviewPagerAdapter(private val reviews: List<Review>, var onRev
                 text_review.maxLines = 4
                 rv_review_attachment.gone()
             } else {
-                rv_review_attachment.layoutManager = GridLayoutManager(container.context,
-                        if (review.imageAttachments.size > MAX_IMAGE) MAX_IMAGE else review.imageAttachments.size)
+                rv_review_attachment.layoutManager = GridLayoutManager(container.context, MAX_IMAGE)
                 rv_review_attachment.adapter = ImageReviewAdapter(
                         review.imageAttachments
                                 .map { ImageReviewItem(review.reviewId.toString(), review.reviewCreateTime,

@@ -49,6 +49,19 @@
             text_notes
             text_service_desc
         }
+        order_priority {
+            is_now
+            inactive_message
+            price
+            formatted_price
+            static_messages {
+                        duration_message
+                        checkbox_message
+                        warningbox_message
+                        fee_message
+                        pdp_message
+                      }
+        }
         error {
             error_id
             error_message
@@ -102,6 +115,22 @@
                 formatted_price
             }
         }
+    }
+    promo_stacking {
+      is_promo
+      promo_code
+      title
+      shipper_id
+      shipper_product_id
+      shipper_name
+      shipper_desc
+      promo_detail
+      benefit_desc
+      point_change
+      user_point
+      promo_tnc_html
+      shipper_disable_text
+      service_id
     }
     info {
       blackbox_info {

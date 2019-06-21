@@ -7,8 +7,8 @@
     <string name="message_address_not_found">Kami tidak dapat menemukan alamat yang Anda cari.</string>
     <string name="label_button_change_search">Ganti Pencarian</string>
     <string name="label_seller">Penjual:</string>
-    <string name="label_note_for_seller">Catatan untuk penjual (Opsional)</string>
-    <string name="label_button_add_note">Tulis Catatan untuk Penjual</string>
+    <string name="label_note_for_seller">Catatan untuk toko (Opsional)</string>
+    <string name="label_button_add_note">Tulis Catatan untuk Toko</string>
     <string name="label_delivery_hour">\u0020jam perjalanan</string>
     <string name="label_delivery_day">\u0020hari kerja</string>
     <string name="label_delivery_day_with_asterisk">\u0020hari kerja*</string>
@@ -20,7 +20,6 @@
     <string name="label_sent_by">Dikirim oleh :</string>
     <string name="label_courier">Kurir Pengiriman</string>
     <string name="label_subtotal">Subtotal</string>
-    <string name="label_promo">Promo</string>
     <string name="label_coupon">Kupon</string>
     <string name="label_payment_total">Total Tagihan</string>
     <string name="label_button_choose_payment_method">Pilih Metode Pembayaran</string>
@@ -44,7 +43,7 @@
     <string name="label_shipment_counter">Pengiriman #</string>
     <string name="label_item_count">Jumlah</string>
     <string name="label_item_count_summary_with_format">Total Harga (%d Barang)</string>
-    <string name="label_item_count_purchase_protection">Proteksi Gadget (%d Barang)</string>
+    <string name="label_item_count_purchase_protection">Proteksi Produk (%d Barang)</string>
     <string name="label_item_count_with_format">Harga (%d Barang)</string>
     <string name="label_item_count_without_format">Jumlah Barang</string>
     <string name="label_error_choose_address">Pilih alamat pengiriman</string>
@@ -62,6 +61,8 @@
     <string name="label_shipment_fee">Total Ongkos Kirim</string>
     <string name="label_order_shipping_address_new">Alamat Pengiriman</string>
     <string name="label_shipment_insurance">Asuransi Pengiriman</string>
+    <string name="label_order_prioritas">Order Prioritas</string>
+    <string name="label_hardcoded_order_prioritas_info">Pesanan diproses dalam 1 jam</string>
     <string name="image_desc_button_insurance_info">Button insurance info</string>
     <string name="image_desc_button_dropshipper_info">Button dropshipper info</string>
     <string name="image_desc_button_partial_order_info">Button partial order info</string>
@@ -103,6 +104,7 @@
     <string name="label_delivery_price">Total Ongkos Kirim</string>
     <string name="label_additional_cost">Biaya Tambahan</string>
     <string name="label_seller_additional_cost">Biaya Tambahan Penjual</string>
+    <string name="label_order_priority_cost">Biaya Order Prioritas</string>
     <string name="label_dialog_title_cancel_pickup">Batalkan Pengiriman ke Gerai Pengambilan</string>
     <string name="label_dialog_message_cancel_pickup_booth">Apakah Anda yakin ingin membatalkan pengiriman ke Gerai Pengambilan</string>
     <string name="alert_payment_canceled_or_failed_transaction_module">Pembayaran tidak berhasil atau dibatalkan</string>
@@ -128,8 +130,9 @@
     <string name="checkout_module_label_po">PO</string>
     <string name="checkout_module_label_ubah">Ubah</string>
     <string name="checkout_module_title_activity_cart">Keranjang</string>
-    <string name="checkout_module_title_activity_checkout">Checkout</string>
+    <string name="checkout_module_title_activity_checkout">Pengiriman</string>
     <string name="checkout_module_title_shipping_dest">Tujuan Pengiriman</string>
+    <string name="checkout_module_title_shipping_dest_new">Alamat Pengiriman</string>
     <string name="checkout_module_title_send_to_multiple_address">Kirim ke Banyak Alamat</string>
     <string name="checkout_module_title_shipping_dest_multiple_address">Alamat Pengiriman</string>
     <string name="checkout_module_title_activity_people_tx_details">Detil Transaksi</string>
@@ -139,14 +142,14 @@
     <string name="weight_unit_gram">gr</string>
     <string name="weight_unit_kilogram">Kg</string>
     <string name="label_shipping_price_format" formatted="false">Ongkos Kirim (%s %s)</string>
-    <string name="label_hide_other_item">Sembunyikan</string>
+    <string name="label_hide_other_item">Sembunyikan produk lainnya</string>
     <string name="label_other_item_count_format" formatted="false">+%s Produk Lainnya</string>
     <string name="label_pay">Bayar</string>
     <string name="label_pay_cod">Bayar di Tempat</string>
     <string name="label_choose_payment">Pilih Pembayaran</string>
     <string name="iotem_count_and_weight_format" formatted="false">%s barang (%s)</string>
     <string name="cart_item_count_format" formatted="false">Harga (%s Barang)</string>
-    <string name="cart_item_button_checkout_count_format" formatted="false">Checkout (%s)</string>
+    <string name="cart_item_button_checkout_count_format" formatted="false">Beli (%s)</string>
     <string name="label_weight_format" formatted="false">%s %s</string>
     <string name="label_change_address_failed">Gagal mengubah alamat</string>
     <string name="label_change_address_success">Berhasil mengubah alamat</string>
@@ -170,6 +173,7 @@
     <string name="label_showcase_multiple_address_message">Klik tombol untuk mengirim barang yang sama ke beda alamat.</string>
     <string name="label_delete_cart_item">Hapus</string>
     <string name="label_hardcoded_courier_ticker">Pembelian dengan Instan dan Same Day diatas pk 14:00 berpotensi dikirim hari berikutnya.</string>
+    <string name="label_hardcoded_prioritas_ticker">Hanya berlaku untuk pembelian pada pukul 09.00 – 21.00 WIB.</string>
     <string name="label_hardcoded_courier_blackbox_ticker">Pembelian diatas pk 14:00 berpotensi dikirim hari berikutnya.</string>
     <string name="cart_error_message" formatted="false">Terdapat %d Produk Bermasalah</string>
     <string name="cart_error_message_no_count" formatted="false">Terdapat Produk Bermasalah</string>
@@ -186,6 +190,7 @@
     <string name="label_selller_cashback">Potensi Cashback Penjual</string>
     <string name="label_donation">Donasi</string>
     <string name="label_emas">Pembulatan Emas</string>
+    <string name="order_prioritas_label">Biaya Order Prioritas</string>
     <string name="label_button_change_address">Pilih Alamat Lain</string>
     <string name="label_button_change_address_new">Ganti Alamat</string>
     <string name="label_button_send_to_multiple_address">Kirim ke Banyak Alamat</string>
@@ -231,9 +236,9 @@
     <string name="text_tos_agreement">syarat dan ketentuan asuransi</string>
     <string name="title_activity_cart">Keranjang</string>
     <string name="ppp_more">Pelajari</string>
-    <string name="error_dropshipper">Fitur dropshipper tidak dapat digunakan ketika menggunakan Proteksi Gadget</string>
-    <string name="checkout_ppp_label">Proteksi Gadget (3 Barang)</string>
-    <string name="title_activity_checkout_webview">Proteksi Gadget</string>
+    <string name="error_dropshipper">Fitur dropshipper tidak dapat digunakan ketika menggunakan Proteksi Produk</string>
+    <string name="checkout_ppp_label">Proteksi Produk (3 Barang)</string>
+    <string name="title_activity_checkout_webview">Proteksi Produk</string>
     <string name="title_activity_checkout_tnc_webview">Syarat dan Ketentuan</string>
     <string name="recomendasi_untuk_anda" tools:ignore="ExtraTranslation">Rekomendasi untuk Anda</string>
     <string name="label_cod">Bayar di Tempat</string>
@@ -246,7 +251,45 @@
     <string name="technical_problem_text">Ada masalah teknis, coba lagi</string>
     <string name="corner_error_stub">Penjual tidak melayani pengiriman dengan SiCepat</string>
     <string name="emas_checkout_title">Bulatkan Tagihan dengan Nabung Emas</string>
-    <string name="emas_checkout_desc">Pembulatan Emas sebesar Rp %s</string>
+    <string name="emas_checkout_desc" formatted="false"><![CDATA[%s <b>%s</b>]]></string>
     <string name="checkout_shipment_label_tradein" formatted="false">Kurir akan menelfon %s untuk tukar HP di tujuan pengiriman. Ganti nomor</string>
+    <string name="label_promo">Promo</string>
+    <string name="label_total_nilai_promo">Total Nilai Promo</string>
+
+    <string name="clash_bottomsheet_title">Oops.. terjadi konflik promo</string>
+    <string name="clash_bottomsheet_subtitle">Pilih Voucher yang akan digunakan</string>
+    <string name="clash_bottomsheet_subtitle_new">Pilih promo yang akan digunakan</string>
+    <string name="clash_bottomsheet_latest_voucher">Voucher Baru Dipilih</string>
+    <string name="clash_bottomsheet_latest_potential_promo">Nilai Potensi Promo Rp 75.000</string>
+    <string name="clash_bottomsheet_latest_potential_promo_desc">Cashback Tokped Hingga Rp 75.000</string>
+    <string name="clash_bottomsheet_previous_voucher">Voucher Sebelumnya</string>
+    <string name="clash_bottomsheet_previous_potential_promo">Nilai Potensi Promo Rp 150.000</string>
+    <string name="clash_bottomsheet_previous_potential_promo_origin1">Dari toko Jakarta</string>
+    <string name="clash_bottomsheet_previous_potential_promo_desc1">Cashback Tokped Hingga Rp 75.000</string>
+    <string name="clash_bottomsheet_previous_potential_promo_origin2">Dari toko Bandung</string>
+    <string name="clash_bottomsheet_previous_potential_promo_desc2">Cashback Tokped Hingga Rp 75.000</string>
+    <string name="clash_bottomsheet_info_warning_new">Promo yang barusan kamu pilih nggak bisa dipakai bareng promo lain.</string>
+    <string name="clash_bottomsheet_submit">Gunakan Promo</string>
+
+    <string name="totalbenefit_bottomsheet_title">Total Nilai Promo</string>
+    <string name="totalbenefit_bottomsheet_title1">Total Potongan Ongkos Kirim</string>
+    <string name="totalbenefit_bottomsheet_title2">Total Diskon</string>
+    <string name="totalbenefit_bottomsheet_title3">Total Potensi Cashback</string>
+    <string name="totalbenefit_bottomsheet_amount1">Rp 15.000</string>
+    <string name="totalbenefit_bottomsheet_amount2">Rp 10.000</string>
+    <string name="totalbenefit_bottomsheet_amount3">Rp 30.000</string>
+    <string name="totalbenefit_bottomsheet_all_title">Total Nilai Promo</string>
+    <string name="totalbenefit_bottomsheet_all_amount">Rp 55.000</string>
+    <string name="totalbenefit_bottomsheet_info">Cashback akan ditambahkan ke OVO Points setelah kamu terima barang</string>
+
+    <string name="variant_merchant_voucher">merchant_voucher</string>
+    <string name="checkout_module_promo_clashing_promo_potential">Promo yang bisa didapat %s</string>
+    <string name="checkout_module_title_promo_clashing_newly_selected">Promo baru dipilih</string>
+    <string name="checkout_module_title_promo_clashing_previously_selected">Promo awal</string>
+    <string name="checkout_module_label_clasing_benefit_shop_name">Toko %s</string>
+    <string name="checkout_module_label_clasing_benefit_global">Tokopedia</string>
+    <string name="gratis_ongkir_promo_kurir">Gratis Ongkir (Promo Kurir)</string>
+    <string name="checkout_module_label_promo_no_item_checked">Silakan pilih item terlebih dahulu</string>
+    <string name="logistic_promo_err_msg">Promo pengiriman sedang bermasalah. Silakan ubah pengiriman anda</string>
 
 </resources>

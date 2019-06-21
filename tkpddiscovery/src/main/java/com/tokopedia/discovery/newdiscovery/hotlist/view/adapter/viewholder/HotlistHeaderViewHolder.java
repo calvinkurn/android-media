@@ -9,11 +9,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.core.analytics.HotlistPageTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.design.quickfilter.QuickFilterItem;
+import com.tokopedia.design.quickfilter.QuickSingleFilterView;
+import com.tokopedia.design.quickfilter.custom.CustomMultipleFilterView;
+import com.tokopedia.design.quickfilter.custom.CustomViewRoundedQuickFilterItem;
+import com.tokopedia.design.quickfilter.custom.CustomViewRounderCornerFilterView;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.HotlistListener;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.customview.HotlistPromoView;
@@ -29,16 +36,18 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
+import com.tokopedia.track.TrackApp;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
  * Created by hangnadi on 10/8/17.
  */
 
-public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderViewModel> {
+public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderViewModel> implements QuickSingleFilterView.ActionListener {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.recyclerview_hotlist_banner;
@@ -54,6 +63,7 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
     private final TextView productCount;
     private final HotlistPromoView hotlistPromoView;
     private final TopAdsBannerView topAdsBannerView;
+    private final CustomMultipleFilterView customViewRounderCornerFilterView;
     private final String searchQuery;
     private final String hotlistAlias;
 
@@ -68,10 +78,12 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
         this.topAdsBannerView = (TopAdsBannerView) parent.findViewById(R.id.topAdsBannerView);
         this.hastagList = parent.findViewById(R.id.hastag_list);
         this.productCount = parent.findViewById(R.id.product_counter);
+        this.customViewRounderCornerFilterView = parent.findViewById(R.id.quickFilterView);
         hasTagAdapter = new HasTagAdapter(context, mHotlistListener);
         hastagList.setNestedScrollingEnabled(false);
         hastagList.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         hastagList.setAdapter(hasTagAdapter);
+        customViewRounderCornerFilterView.setListener(this);
         initTopAds();
     }
 
@@ -92,7 +104,7 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
             @Override
             public void onBannerAdsClicked(int position, String applink, CpmData data) {
                 mHotlistListener.onBannerAdsClicked(applink);
-                if(applink.contains(SHOP)) {
+                if (applink.contains(SHOP)) {
                     TopAdsGtmTracker.eventHotlistShopPromoClick(context, searchQuery, hotlistAlias, data, position);
                 } else {
                     TopAdsGtmTracker.eventHotlistProductPromoClick(context, searchQuery, hotlistAlias, data, position);
@@ -125,21 +137,39 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
         } else {
             hotlistPromoView.setVisibility(View.GONE);
         }
+        renderQuickFilter(element.getOptionList());
+    }
+
+    protected void renderQuickFilter(List<QuickFilterItem> filterList) {
+        if (filterList == null || filterList.isEmpty()) {
+            this.hastagList.setVisibility(View.VISIBLE);
+            return;
+        } else {
+            this.hastagList.setVisibility(View.GONE);
+            customViewRounderCornerFilterView.renderFilter(filterList);
+        }
     }
 
     private void renderPromoView(final String hotlistTitle, HotlistPromo hotlistPromo) {
         hotlistPromoView.renderData(hotlistPromo, new HotlistPromoView.CallbackListener() {
             @Override
             public void onTncButtonClick(String titlePromo, String voucherCode) {
-                TrackingUtils.clickTnCButtonHotlistPromo(hotlistPromoView.getContext(),hotlistTitle, titlePromo, voucherCode);
+                HotlistPageTracking.clickTnCButtonHotlistPromo(hotlistTitle, titlePromo, voucherCode);
             }
 
             @Override
             public void onCopyButtonClick(String titlePromo, String voucherCode) {
-                TrackingUtils.clickCopyButtonHotlistPromo(hotlistPromoView.getContext(),hotlistTitle, titlePromo, voucherCode);
+                HotlistPageTracking.clickCopyButtonHotlistPromo(hotlistTitle, titlePromo, voucherCode);
             }
         });
         HotlistPageTracking.eventHotlistPromoImpression(hotlistPromoView.getContext(), hotlistTitle, hotlistPromo.getTitle(), hotlistPromo.getVoucherCode());
+    }
+
+    @Override
+    public void selectFilter(String typeFilter) {
+        String[] str = typeFilter.split("=");
+        mHotlistListener.onQuickFilterSelected(str[0], str[1]);
+
     }
 
     private static class HasTagAdapter extends RecyclerView.Adapter<HasTagAdapter.ItemViewHolder> {

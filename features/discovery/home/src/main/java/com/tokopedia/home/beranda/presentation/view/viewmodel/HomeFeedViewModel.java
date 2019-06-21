@@ -27,6 +27,8 @@ public class HomeFeedViewModel extends ImpressHolder implements Visitable<HomeFe
     private String price;
     private String slashedPrice;
     private int discountPercentage;
+    private final int rating;
+    private final int countReview;
     private String clickUrl;
     private String trackerImageUrl;
     private int priceNumber;
@@ -38,6 +40,8 @@ public class HomeFeedViewModel extends ImpressHolder implements Visitable<HomeFe
                              String recommendationType,
                              String imageUrl,
                              String price,
+                             int rating,
+                             int countReview,
                              String clickUrl,
                              String trackerImageUrl,
                              String slashedPrice,
@@ -51,6 +55,8 @@ public class HomeFeedViewModel extends ImpressHolder implements Visitable<HomeFe
         this.recommendationType = recommendationType;
         this.imageUrl = imageUrl;
         this.price = price;
+        this.rating = rating;
+        this.countReview = countReview;
         this.clickUrl = clickUrl;
         this.trackerImageUrl = trackerImageUrl;
         this.slashedPrice = slashedPrice;
@@ -124,6 +130,14 @@ public class HomeFeedViewModel extends ImpressHolder implements Visitable<HomeFe
         return discountPercentage;
     }
 
+    public int getRating() {
+        return rating;
+    }
+
+    public int getCountReview() {
+        return countReview;
+    }
+
     @Override
     public int type(HomeFeedTypeFactory typeFactory) {
         return typeFactory.type(this);
@@ -144,7 +158,7 @@ public class HomeFeedViewModel extends ImpressHolder implements Visitable<HomeFe
                         tabName,
                         getRecommendationType()
                 ),
-                DATA_POSITION, getPosition());
+                DATA_POSITION, String.valueOf(getPosition()));
     }
 
     public Object convertFeedTabModelToImpressionDataForNonLoginUser(
@@ -162,7 +176,7 @@ public class HomeFeedViewModel extends ImpressHolder implements Visitable<HomeFe
                         tabName,
                         getRecommendationType()
                 ),
-                DATA_POSITION, getPosition());
+                DATA_POSITION, String.valueOf(getPosition()));
     }
 
     public Object convertFeedTabModelToClickData() {
@@ -173,6 +187,6 @@ public class HomeFeedViewModel extends ImpressHolder implements Visitable<HomeFe
                 DATA_BRAND, DATA_NONE_OTHER,
                 DATA_VARIANT, DATA_NONE_OTHER,
                 DATA_CATEGORY, getCategoryBreadcrumbs(),
-                DATA_POSITION, getPosition());
+                DATA_POSITION, String.valueOf(getPosition()));
     }
 }

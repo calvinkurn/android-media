@@ -1,6 +1,7 @@
 package com.tokopedia.core.analytics.fingerprint;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.PermissionChecker;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -115,18 +117,31 @@ public class LocationUtils implements LocationListener, GoogleApiClient.Connecti
         }
     }
 
+    @SuppressLint("MissingPermission")
     private void requestLocationUpdates() {
         if (googleApiClient.isConnected()) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
-                        ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                        ) {
-                    LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
-                }
-            } else {
+            // follow the same logic in here: https://github.com/mapbox/mapbox-events-android/pull/184/files
+            // fix fabric bug: https://fabric.io/pt-tokopedia/android/apps/com.tokopedia.tkpd/issues/5c305bc7f8b88c29633eef60?time=last-seven-days
+            if (locationPermissionCheck()) {
                 LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
             }
+        }
+    }
 
+    private boolean locationPermissionCheck() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED;
+        } else {
+            int coarsePermission = PermissionChecker.checkSelfPermission(context.getApplicationContext(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION);
+            int finePermission = PermissionChecker.checkSelfPermission(context.getApplicationContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION);
+
+            return coarsePermission == PackageManager.PERMISSION_GRANTED
+                    || finePermission == PackageManager.PERMISSION_GRANTED;
         }
     }
 

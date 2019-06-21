@@ -76,7 +76,7 @@ class InstantCheckoutActivity : BaseSimpleActivity() {
         return R.layout.activity_digital_instant_checkout
     }
 
-    override fun setupLayout(savedInstanceState: Bundle) {
+    override fun setupLayout(savedInstanceState: Bundle?) {
         super.setupLayout(savedInstanceState)
 
         webView = findViewById(R.id.webview)
@@ -92,7 +92,9 @@ class InstantCheckoutActivity : BaseSimpleActivity() {
         webView.webChromeClient = InstantCheckoutWebViewChromeClient()
         webView.setOnKeyListener(webViewOnKeyListener)
 
-        webView.loadUrl(instantCheckoutData!!.redirectUrl)
+        var url = instantCheckoutData!!.thanksUrl
+        if (url!!.isEmpty()) url = instantCheckoutData!!.redirectUrl
+        webView.loadUrl(url)
     }
 
 
@@ -129,7 +131,7 @@ class InstantCheckoutActivity : BaseSimpleActivity() {
                 return true
             } else {
                 if (digitalRouter != null
-                        && digitalRouter!!.isSupportApplink(url)
+                              && digitalRouter!!.isSupportApplink(url)
                         && digitalRouter!!.intentDeepLinkHandlerActivity != null) {
                     val intent = digitalRouter!!.intentDeepLinkHandlerActivity
                     intent.data = Uri.parse(url)
@@ -170,7 +172,7 @@ class InstantCheckoutActivity : BaseSimpleActivity() {
             super.onReceivedError(view, request, error)
         }
 
-        override fun onPageStarted(view: WebView, url: String, favicon: Bitmap) {
+        override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {
             //    Log.d(TAG, "start url instant instantCheckout = " + url);
             Thread(Runnable {
                 try {

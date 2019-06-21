@@ -1,7 +1,6 @@
 package com.tokopedia.shipping_recommendation.shippingduration.view;
 
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
@@ -9,6 +8,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
 import com.tokopedia.shipping_recommendation.R;
 import com.tokopedia.shipping_recommendation.domain.ShippingParam;
+import com.tokopedia.shipping_recommendation.domain.shipping.LogisticPromoViewModel;
 import com.tokopedia.shipping_recommendation.domain.usecase.GetCourierRecommendationUseCase;
 import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.shipping_recommendation.domain.shipping.CourierItemData;
@@ -35,18 +35,13 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
         implements ShippingDurationContract.Presenter {
 
     private final GetCourierRecommendationUseCase getCourierRecommendationUseCase;
-    private final ShippingDurationConverter shippingDurationConverter;
     private final ShippingCourierConverter shippingCourierConverter;
-
-    private List<ShippingDurationViewModel> shippingDurationViewModelList;
     private RecipientAddressModel recipientAddressModel;
 
     @Inject
     public ShippingDurationPresenter(GetCourierRecommendationUseCase getCourierRecommendationUseCase,
-                                     ShippingDurationConverter shippingDurationConverter,
                                      ShippingCourierConverter shippingCourierConverter) {
         this.getCourierRecommendationUseCase = getCourierRecommendationUseCase;
-        this.shippingDurationConverter = shippingDurationConverter;
         this.shippingCourierConverter = shippingCourierConverter;
     }
 
@@ -87,9 +82,7 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
         if (getView() != null) {
             getView().showLoading();
             String query = GraphqlHelper.loadRawString(getView().getActivity().getResources(), R.raw.rates_v3_query);
-
             ShippingParam shippingParam = getShippingParam(shipmentDetailData);
-
             int selectedSpId = 0;
             if (shipmentDetailData.getSelectedCourier() != null) {
                 selectedSpId = shipmentDetailData.getSelectedCourier().getShipperProductId();
@@ -133,9 +126,7 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
                                         }
                                     }
                                 }
-
-                                shippingDurationViewModelList.addAll(shippingRecommendationData.getShippingDurationViewModels());
-                                getView().showData(shippingDurationViewModelList);
+                                getView().showData(shippingRecommendationData.getShippingDurationViewModels(), shippingRecommendationData.getLogisticPromo());
                                 getView().stopTrace();
                             } else {
                                 getView().showNoCourierAvailable(getView().getActivity().getString(R.string.label_no_courier_bottomsheet_message));
@@ -173,11 +164,14 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
     }
 
     @Override
-    public List<ShippingDurationViewModel> getShippingDurationViewModels() {
-        if (shippingDurationViewModelList == null) {
-            shippingDurationViewModelList = new ArrayList<>();
-        }
-        return shippingDurationViewModelList;
+    public CourierItemData convertToCourierModel(LogisticPromoViewModel promoModel) {
+        CourierItemData result = new CourierItemData();
+        result.setShipperId(promoModel.getShipperId());
+        result.setShipperProductId(promoModel.getShipperProductId());
+        result.setServiceName(promoModel.getShipperDesc());
+        result.setName(promoModel.getShipperName());
+        result.setLogPromoCode(promoModel.getPromoCode());
+        return result;
     }
 
     @Override
@@ -187,7 +181,16 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
                 return shippingCourierConverter.convertToCourierItemData(shippingCourierViewModel);
             }
         }
+        return null;
+    }
 
+    @Override
+    public CourierItemData getCourierItemDataById(int spId, List<ShippingCourierViewModel> shippingCourierViewModels) {
+        for (ShippingCourierViewModel shippingCourierViewModel : shippingCourierViewModels) {
+            if (shippingCourierViewModel.getProductData().getShipperProductId() == spId) {
+                return shippingCourierConverter.convertToCourierItemData(shippingCourierViewModel);
+            }
+        }
         return null;
     }
 }

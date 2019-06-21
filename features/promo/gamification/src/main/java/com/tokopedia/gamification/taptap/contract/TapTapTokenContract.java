@@ -42,15 +42,19 @@ public interface TapTapTokenContract {
 
         void showErrorSnackBar();
 
+        void showErrorSnackBarOnSummaryPage();
+
+        void showErrorSnackBarOnSummaryPage(String errorMessage);
+
+        void showErrorSnackBarOnCrackError(String errorMessage, boolean resetEggForUnknownErrorCodes);
+
         android.view.View getRootView();
 
         void navigateToHomePage();
 
-        void showErrorSnackBarOnSummaryPage();
-
-        void showErrorSnackBarOnSummaryPage(String join);
-
         void dismissSummaryPage();
+
+        void clearViewAndAnimations();
     }
 
     interface Presenter extends CustomerPresenter<View> {

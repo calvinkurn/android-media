@@ -11,7 +11,7 @@ public interface CommonConstant {
     String ARGS_SLUG_SUB_CATEGORY = "slug_sub_category";
     String ARGS_SORT_TYPE = "sort_type";
     int DEVICE_ID_BANNER = 256;
-    int PAGE_SIZE = 100;
+    int PAGE_SIZE = 10;
     int HOMEPAGE_PAGE_SIZE = 10;
     int TAB_SETUP_DELAY_MS = 150;
     int HOMEPAGE_TAB_COUNT = 2;
@@ -68,6 +68,7 @@ public interface CommonConstant {
         String GIFT_EMAIL = "gift_email";
         String NOTES = "notes";
         String PIN = "pin";
+        String STACK_ID = "stackID";
     }
 
     interface TickerMapKeys {
@@ -90,6 +91,7 @@ public interface CommonConstant {
         String MEMBERSHIP = WEB_DOMAIN_MOBILE + "tokopoints/mobile/membership";
         String HISTORY = WEB_DOMAIN_MOBILE + "tokopoints/mobile/history";
         String INFO = WEB_DOMAIN_MOBILE + "tokopoints/info";
+        String LEADERBOARD = WEB_DOMAIN_MOBILE + "tokopoints/leaderboard";
     }
 
     interface SectionLayoutType {

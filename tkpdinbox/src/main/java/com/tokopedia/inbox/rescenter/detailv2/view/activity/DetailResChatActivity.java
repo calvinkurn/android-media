@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
@@ -29,6 +30,7 @@ import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 import com.tokopedia.inbox.util.analytics.InboxAnalytics;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.track.TrackApp;
 
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_WEBVIEW_RESO_ENABLED_TOGGLE;
 
@@ -92,29 +94,61 @@ public class DetailResChatActivity
 
     private static Intent getApplinkIntent(Context context, String resolutionId) {
         if (context.getApplicationContext() instanceof ResolutionRouter) {
+            if (GlobalConfig.isSellerApp()) {
+            return ((ResolutionRouter)context.getApplicationContext()).getSellerWebViewIntent(context,
+                    String.format(ResolutionUrl.RESO_DETAIL, resolutionId));
+            } else {
+                return ((ResolutionRouter)context.getApplicationContext()).getApplinkIntent(context,
+                        String.format(ResolutionUrl.RESO_APPLINK + ResolutionUrl.HOSTNAME + ResolutionUrl.RESO_DETAIL, resolutionId));
+            }
+        }
+        return null;
+    }
+
+    private static Intent getApplinkIntentCenter(Context context, String resolutionId) {
+        if (context.getApplicationContext() instanceof ResolutionRouter) {
             return ((ResolutionRouter)context.getApplicationContext()).getApplinkIntent(context,
-                    String.format(ResolutionUrl.RESO_APPLINK + ResolutionUrl.RESO_DETAIL, resolutionId));
+                    String.format(ResolutionUrl.RESO_APPLINK + ResolutionUrl.HOSTNAME + ResolutionUrl.RESO_DETAIL_NEW, resolutionId));
         }
         return null;
     }
 
     @DeepLink(Constants.Applinks.RESCENTER)
     public static TaskStackBuilder getCallingIntent(Context context, Bundle bundle) {
+        return taskStackBuilderGenerator(context, bundle, Constants.Applinks.RESCENTER);
+    }
+
+
+    @DeepLink(Constants.Applinks.RESCENTER_CENTER)
+    public static TaskStackBuilder getResCenterCallingIntent(Context context, Bundle bundle) {
+        return taskStackBuilderGenerator(context, bundle, Constants.Applinks.RESCENTER_CENTER);
+    }
+
+    private static TaskStackBuilder taskStackBuilderGenerator(Context context, Bundle bundle, String rescenter_type) {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         Intent parentIntent;
         Intent destinationIntent = null;
         String resoId = bundle.getString(PARAM_RESOLUTION_ID, "");
         if (isToggleResoEnabled(context)) {
-            destinationIntent = getApplinkIntent(context, resoId);
+            switch (rescenter_type) {
+                case Constants.Applinks.RESCENTER_CENTER:
+                    destinationIntent = getApplinkIntentCenter(context, resoId);
+                    break;
+                case Constants.Applinks.RESCENTER:
+                    destinationIntent = getApplinkIntent(context, resoId);
+                    break;
+                default:
+                    break;
+            }
         }
         if (destinationIntent == null) {
             destinationIntent = new Intent(context, DetailResChatActivity.class);
         }
         destinationIntent.putExtra(PARAM_RESOLUTION_ID, resoId);
-        String userName = MethodChecker.fromHtml(bundle.getString(PARAM_APPLINK_BUYER,"")).toString();
-        String shopName = MethodChecker.fromHtml(bundle.getString(PARAM_APPLINK_SELLER,"")).toString();
-        String userNameSpanned = userName.replaceAll("%20"," ");
-        String shopNameSpanned = shopName.replaceAll("%20"," ");
+        String userName = MethodChecker.fromHtml(bundle.getString(PARAM_APPLINK_BUYER, "")).toString();
+        String shopName = MethodChecker.fromHtml(bundle.getString(PARAM_APPLINK_SELLER, "")).toString();
+        String userNameSpanned = userName.replaceAll("%20", " ");
+        String shopNameSpanned = shopName.replaceAll("%20", " ");
         if (TextUtils.isEmpty(shopName)) {
             parentIntent = ResoInboxActivity.newSellerInstance(context);
             destinationIntent.putExtra(PARAM_USER_NAME, userNameSpanned);
@@ -123,11 +157,11 @@ public class DetailResChatActivity
         } else {
             parentIntent = ResoInboxActivity.newBuyerInstance(context);
             destinationIntent.putExtra(PARAM_SHOP_NAME, shopNameSpanned);
-            destinationIntent.putExtra(PARAM_IS_SELLER,false);
+            destinationIntent.putExtra(PARAM_IS_SELLER, false);
             bundle.putString(PARAM_SHOP_NAME, shopNameSpanned);
         }
         destinationIntent.putExtras(bundle);
-        if (context.getApplicationContext() instanceof TkpdInboxRouter){
+        if (context.getApplicationContext() instanceof TkpdInboxRouter) {
             Intent intent = ((TkpdInboxRouter) context.getApplicationContext()).getHomeIntent(context);
             taskStackBuilder.addNextIntent(intent);
         }
@@ -135,7 +169,6 @@ public class DetailResChatActivity
         taskStackBuilder.addNextIntent(destinationIntent);
         return taskStackBuilder;
     }
-
     @Override
     public void inflateFragment(Fragment fragment, String TAG, boolean isReload) {
         if (getFragmentManager().findFragmentByTag(TAG) != null && !isReload) {
@@ -228,7 +261,7 @@ public class DetailResChatActivity
                 intent = DetailResCenterActivity.newBuyerInstance(DetailResChatActivity.this, resolutionId, shopName);
             }
             startActivityForResult(intent, REQUEST_GO_DETAIL);
-            UnifyTracking.eventTracking(this,InboxAnalytics.eventResoChatClickDetail(resolutionId));
+            TrackApp.getInstance().getGTM().sendGeneralEvent(InboxAnalytics.eventResoChatClickDetail(resolutionId).getEvent());
             return true;
         } else
             return super.onOptionsItemSelected(item);

@@ -276,6 +276,7 @@ public class PromoCodePresenter implements IPromoCodePresenter {
             @Override
             public void onError(Throwable e) {
                 view.hideProgressLoading();
+                view.sendTrackingOnCheckDigitalVoucherError(e.getMessage());
                 if (e instanceof TokoPointResponseErrorException || e instanceof ResponseErrorException) {
                     view.onPromoCodeError(e.getMessage());
                 } else view.onGetGeneralError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
@@ -284,6 +285,7 @@ public class PromoCodePresenter implements IPromoCodePresenter {
             @Override
             public void onNext(VoucherViewModel voucherViewModel) {
                 view.hideProgressLoading();
+                view.sendTrackingOnCheckDigitalVoucherSuccess(voucherViewModel.getCode());
                 view.checkDigitalVoucherSucessful(voucherViewModel);
             }
         };

@@ -1,6 +1,7 @@
 package com.tokopedia.gamification.taptap.compoundview;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.design.widget.Snackbar;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -37,14 +38,14 @@ public class NetworkErrorHelper {
             imageError.setImageResource(errorImage);
             TextView textError = retryLoad.findViewById(R.id.text_error);
             textError.setText(errorText);
-            if(showHomeButton){
+            if (showHomeButton) {
                 homeButton.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 homeButton.setVisibility(View.GONE);
             }
-            if(showRetryButton){
+            if (showRetryButton) {
                 retryButon.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 retryButon.setVisibility(View.GONE);
             }
             if (listener != null) {
@@ -71,20 +72,15 @@ public class NetworkErrorHelper {
     }
 
 
-
     public static void showErrorSnackBar(String text, Context context, View coordinatorLayout, boolean homeToast) {
         final Snackbar snackbar = Snackbar.make(coordinatorLayout, text, Snackbar.LENGTH_LONG);
+        snackbar.getView().setBackgroundColor(Color.TRANSPARENT);
         Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
-
         TextView textView = layout.findViewById(android.support.design.R.id.snackbar_text);
         textView.setVisibility(View.INVISIBLE);
-
         LayoutInflater inflater = LayoutInflater.from(context);
         View snackView = inflater.inflate(R.layout.gf_tap_tap_custom_snackbar, null);
         TextView tvmsg = snackView.findViewById(R.id.tv_msg);
-        if (homeToast) {
-            snackView.findViewById(R.id.main_content).setBackgroundColor(context.getResources().getColor(R.color.red_toast_bg_color));
-        }
         tvmsg.setText(text);
 
         TextView okbtn = snackView.findViewById(R.id.snack_ok);

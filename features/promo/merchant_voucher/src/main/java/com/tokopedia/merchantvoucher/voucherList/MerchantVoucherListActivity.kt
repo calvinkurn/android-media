@@ -46,7 +46,7 @@ class MerchantVoucherListActivity : BaseSimpleActivity(),
         shopName = intent.getStringExtra(SHOP_NAME)
         GraphqlClient.init(this)
         super.onCreate(savedInstanceState)
-        merchantVoucherTracking = MerchantVoucherTracking(application as AbstractionRouter)
+        merchantVoucherTracking = MerchantVoucherTracking()
         if (!shopName.isNullOrEmpty()) {
             supportActionBar?.title = getString(R.string.merchant_voucher_x, shopName)
         }

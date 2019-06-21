@@ -10,7 +10,4 @@ import android.content.Intent;
 public interface MitraToppersRouter {
 
     Intent getMitraToppersActivityIntent(Context context);
-
-    void sendEventTrackingWithShopInfo(String event, String category, String action, String label,
-                           String shopId, boolean isGoldMerchant, boolean isOfficialStore);
 }

@@ -207,5 +207,5 @@ public protected *;
     volatile <fields>;
 }
 
--keepnames class kotlinx.coroutines.experimental.internal.MainDispatcherFactory {}
--keepnames class kotlinx.coroutines.experimental.CoroutineExceptionHandler {}
+-keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
+-keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}

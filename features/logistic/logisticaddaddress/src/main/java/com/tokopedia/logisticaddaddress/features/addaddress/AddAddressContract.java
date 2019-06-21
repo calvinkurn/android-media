@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.tokopedia.logisticdata.data.entity.address.Destination;
 
+import rx.subscriptions.CompositeSubscription;
+
 /**
  * Created by fajarnuha on 03/12/18.
  */
@@ -36,6 +38,8 @@ public interface AddAddressContract {
         void setPinpointAddress(String address);
 
         void stopPerformaceMonitoring();
+
+        CompositeSubscription getCompositeSubscription();
     }
 
     interface Presenter {

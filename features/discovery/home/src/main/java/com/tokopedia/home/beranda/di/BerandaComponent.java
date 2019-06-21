@@ -2,8 +2,11 @@ package com.tokopedia.home.beranda.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.home.beranda.di.module.ShopModule;
+import com.tokopedia.home.beranda.di.module.ViewModelModule;
 import com.tokopedia.home.beranda.presentation.presenter.HomeFeedPresenter;
+import com.tokopedia.home.beranda.presentation.view.fragment.BusinessUnitItemFragment;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFeedFragment;
+import com.tokopedia.home.beranda.presentation.view.fragment.TabBusinessFragment;
 import com.tokopedia.home.common.ApiModule;
 import com.tokopedia.home.beranda.di.module.HomeModule;
 import com.tokopedia.home.beranda.presentation.presenter.HomePresenter;
@@ -16,7 +19,12 @@ import dagger.Component;
  */
 
 @HomeScope
-@Component(modules = {ApiModule.class, HomeModule.class, ShopModule.class}, dependencies = BaseAppComponent.class)
+@Component(modules = {
+        ApiModule.class,
+        HomeModule.class,
+        ShopModule.class,
+        ViewModelModule.class
+}, dependencies = BaseAppComponent.class)
 public interface BerandaComponent {
 
     void inject(HomeFragment homeFragment);
@@ -27,4 +35,7 @@ public interface BerandaComponent {
 
     void inject(HomeFeedPresenter homeFeedPresenter);
 
+    void inject(TabBusinessFragment fragment);
+
+    void inject(BusinessUnitItemFragment fragment);
 }

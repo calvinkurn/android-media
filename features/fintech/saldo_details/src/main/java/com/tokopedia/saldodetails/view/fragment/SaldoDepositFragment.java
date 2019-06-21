@@ -103,6 +103,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     private boolean expandMerchantDetailLayout = true;
     private View merchantCreditFrameLayout;
     private LinearLayout merchantStatusLL;
+    private long CHECK_VISIBILITY_DELAY = 700;
 
     public SaldoDepositFragment() {
     }
@@ -427,8 +428,6 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     @Override
     public void hideUserFinancialStatusLayout() {
         merchantStatusLL.setVisibility(View.GONE);
-        hideSaldoPrioritasFragment();
-        hideMerchantCreditLineFragment();
     }
 
     private void showBottomSheetInfoDialog(boolean isSellerClicked) {
@@ -546,11 +545,27 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     @Override
     public void hideSaldoPrioritasFragment() {
         saldoFrameLayout.setVisibility(View.GONE);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (merchantCreditFrameLayout.getVisibility() != View.VISIBLE) {
+                    hideUserFinancialStatusLayout();
+                }
+            }
+        }, CHECK_VISIBILITY_DELAY);
     }
 
     @Override
     public void hideMerchantCreditLineFragment() {
         merchantCreditFrameLayout.setVisibility(View.GONE);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (saldoFrameLayout.getVisibility() != View.VISIBLE) {
+                    hideUserFinancialStatusLayout();
+                }
+            }
+        }, CHECK_VISIBILITY_DELAY);
     }
 
     @Override

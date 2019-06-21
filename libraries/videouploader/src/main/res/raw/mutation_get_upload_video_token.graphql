@@ -1,0 +1,6 @@
+mutation get_upload_video_token(){
+  vodVideoToken{
+    token
+    uploadUrl
+  }
+}

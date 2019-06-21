@@ -6,6 +6,10 @@ import com.google.gson.annotations.SerializedName;
 
 public class SectionContent {
 
+
+    @SerializedName("backgroundImgURLMobile")
+    private String backgroundImgURLMobile;
+
     @SerializedName("layoutType")
     @Expose
     private String layoutType;
@@ -36,6 +40,14 @@ public class SectionContent {
     @SerializedName("layoutTickerAttr")
     @Expose
     private LayoutTickerAttr layoutTickerAttr;
+
+    public String getBackgroundImgURLMobile() {
+        return backgroundImgURLMobile;
+    }
+
+    public void setBackgroundImgURLMobile(String backgroundImgURLMobile) {
+        this.backgroundImgURLMobile = backgroundImgURLMobile;
+    }
 
     public String getLayoutType() {
         return layoutType;

@@ -1,6 +1,7 @@
 package com.tokopedia.sellerapp.drawer;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.view.GravityCompat;
@@ -14,8 +15,11 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseWebViewActivity;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
@@ -57,6 +61,7 @@ import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.tracking.view.SimpleWebViewActivity;
 import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
 
@@ -141,10 +146,6 @@ public class DrawerSellerHelper extends DrawerHelper
         data.add(new DrawerItem(context.getString(R.string.title_activity_contact_us),
                 R.drawable.ic_contactus,
                 TkpdState.DrawerPosition.CONTACT_US,
-                true));
-        data.add(new DrawerItem(context.getString(R.string.drawer_title_help),
-                R.drawable.ic_help,
-                TkpdState.DrawerPosition.HELP,
                 true));
         data.add(new DrawerItem(context.getString(R.string.drawer_title_logout),
                 R.drawable.ic_menu_logout,
@@ -312,15 +313,14 @@ public class DrawerSellerHelper extends DrawerHelper
             boolean isNeedToCloseActivity = true;
             switch (item.getId()) {
                 case TkpdState.DrawerPosition.INDEX_HOME:
-                    UnifyTracking.eventDrawerSellerHome(context);
+                    eventDrawerClick(AppEventTracking.EventLabel.SELLER_HOME);
                     context.startActivity(DashboardActivity.createInstance(context));
                     break;
                 case TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND:
                     if (context.getApplication() instanceof AbstractionRouter) {
-                        new GMTracking((AbstractionRouter) context.getApplication())
-                                .sendClickHamburgerMenuEvent(item.label);
+                        new GMTracking().sendClickHamburgerMenuEvent(item.label);
                     }
-                    UnifyTracking.eventClickGoldMerchantViaDrawer(context);
+                    eventClickGoldMerchantViaDrawer();
                     context.startActivity(GMSubscribeInternalRouter.getGMSubscribeHomeIntent(context));
                     break;
                 case TkpdState.DrawerPosition.SHOP_NEW_ORDER:
@@ -361,26 +361,25 @@ public class DrawerSellerHelper extends DrawerHelper
                     break;
                 case TkpdState.DrawerPosition.MANAGE_PAYMENT_AND_TOPUP:
                     context.startActivity(SimpleWebViewActivity.createIntent(context, TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN + DIGITAL_PATH_MITRA));
-                    UnifyTracking.eventClickPaymentAndTopupOnDrawer(context);
+                    eventClickPaymentAndTopupOnDrawer();
                     break;
                 case TkpdState.DrawerPosition.MANAGE_TRANSACTION_DIGITAL:
                     context.startActivity(SimpleWebViewActivity.createIntent(context, TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN + DIGITAL_PATH_MITRA));
-                    UnifyTracking.eventClickDigitalTransactionListOnDrawer(context);
+                    eventClickDigitalTransactionListOnDrawer();
                     break;
                 case TkpdState.DrawerPosition.DRAFT_PRODUCT:
-                    UnifyTracking.eventDrawerClick(context, AppEventTracking.EventLabel.DRAFT_PRODUCT);
+                    eventDrawerClick(AppEventTracking.EventLabel.DRAFT_PRODUCT);
                     context.startActivity(new Intent(context, ProductDraftListActivity.class));
                     break;
                 case TkpdState.DrawerPosition.MANAGE_ETALASE:
-                    if (context.getApplication() instanceof TkpdCoreRouter) {
-                        ((TkpdCoreRouter) context.getApplication()).goToEtalaseList(context);
-                    }
+                    RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_ETALASE);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.PRODUCT_DISPLAY);
                     break;
                 case TkpdState.DrawerPosition.SELLER_GM_STAT:
                     intent = new Intent(context, GMStatisticDashboardActivity.class);
                     context.startActivity(intent);
-                    UnifyTracking.eventClickGMStat(context);
+                    eventClickGMStat(AppEventTracking.Category.HAMBURGER,
+                            AppEventTracking.EventLabel.STATISTIC);
                     break;
                 case TkpdState.DrawerPosition.SELLER_MITRA_TOPPERS:
                     Intent mitraToppersIntent = ((MitraToppersRouter) context.getApplication())
@@ -388,7 +387,7 @@ public class DrawerSellerHelper extends DrawerHelper
                     context.startActivity(mitraToppersIntent);
                     break;
                 case TkpdState.DrawerPosition.SELLER_TOP_ADS:
-                    UnifyTracking.eventDrawerTopads(context);
+                    eventDrawerClick(AppEventTracking.EventLabel.TOPADS);
                     intent = new Intent(context, TopAdsDashboardActivity.class);
                     context.startActivity(intent);
                     break;
@@ -400,7 +399,7 @@ public class DrawerSellerHelper extends DrawerHelper
                     break;
                 case TkpdState.DrawerPosition.FEATURED_PRODUCT:
                     if (adapter instanceof SellerDrawerAdapter && ((SellerDrawerAdapter) adapter).isGoldMerchant()) {
-                        UnifyTracking.eventClickMenuFeaturedProduct(context);
+                        eventFeaturedProduct(AppEventTracking.EventLabel.FEATURED_PRODUCT);
                         intent = new Intent(context, GMFeaturedProductActivity.class);
                         context.startActivity(intent);
                     } else {
@@ -409,7 +408,7 @@ public class DrawerSellerHelper extends DrawerHelper
                     }
                     break;
                 case TkpdState.DrawerPosition.SELLER_INFO:
-                    UnifyTracking.eventClickMenuSellerInfo(context);
+                    eventSellerInfo(AppEventTracking.Action.CLICK_HAMBURGER_ICON, AppEventTracking.EventLabel.SELLER_INFO);
                     intent = new Intent(context, SellerInfoActivity.class);
                     context.startActivity(intent);
                     break;
@@ -430,6 +429,62 @@ public class DrawerSellerHelper extends DrawerHelper
             }
             closeDrawer();
         }
+    }
+
+    public void eventSellerInfo(String eventAction, String eventLabel) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.SELLER_INFO,
+                AppEventTracking.Category.SELLER_INFO_HOMEPAGE,
+                eventAction,
+                eventLabel);
+    }
+
+    public void eventClickGoldMerchantViaDrawer() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.CLICK_NAVIGATION_DRAWER,
+                AppEventTracking.Category.HAMBURGER,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.BUY_GM);
+    }
+
+    public void eventFeaturedProduct(String eventLabel) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.SHOP_MANAGE,
+                AppEventTracking.Category.FEATURED_PRODUCT,
+                AppEventTracking.Action.CLICK,
+                eventLabel);
+    }
+
+    public void eventDrawerClick(String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.NAVIGATION_DRAWER,
+                AppEventTracking.Category.HAMBURGER,
+                AppEventTracking.Action.CLICK,
+                label);
+    }
+
+    public void eventClickPaymentAndTopupOnDrawer() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.HAMBURGER,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.PAYMENT_AND_TOPUP);
+    }
+
+    public static void eventClickDigitalTransactionListOnDrawer() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
+                AppEventTracking.Category.HAMBURGER,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.DIGITAL_TRANSACTION_LIST);
+    }
+
+    private void eventClickGMStat(String eventCategory, String eventLabel) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.CLICK_GM_STAT,
+                eventCategory,
+                AppEventTracking.Action.CLICK,
+                eventLabel);
     }
 
     private void showDialogActionGoToGMSubscribe() {
@@ -462,7 +517,7 @@ public class DrawerSellerHelper extends DrawerHelper
 
     private void sendGMAnalyticDialogEvent(boolean isSubscribing) {
         if (context.getApplication() instanceof AbstractionRouter){
-            new GMTracking((AbstractionRouter) context.getApplication()).sendClickManageProductDialogEvent(isSubscribing);
+            new GMTracking().sendClickManageProductDialogEvent(isSubscribing);
         }
     }
 

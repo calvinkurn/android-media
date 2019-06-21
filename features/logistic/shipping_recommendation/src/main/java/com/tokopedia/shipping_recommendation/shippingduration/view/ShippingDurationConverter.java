@@ -3,6 +3,8 @@ package com.tokopedia.shipping_recommendation.shippingduration.view;
 import android.text.TextUtils;
 
 
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.PromoStacking;
+import com.tokopedia.shipping_recommendation.domain.shipping.LogisticPromoViewModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipProd;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel;
@@ -27,6 +29,14 @@ public class ShippingDurationConverter {
 
     @Inject
     public ShippingDurationConverter() {
+    }
+
+    public LogisticPromoViewModel convertToPromoModel(PromoStacking promo) {
+        if (promo == null || promo.getIsPromo() != 1) return null;
+        return new LogisticPromoViewModel(
+                promo.getPromoCode(), promo.getTitle(), promo.getBenefitDesc(),
+                promo.getShipperName(), promo.getServiceId(), promo.getShipperId(), promo.getShipperProductId(),
+                promo.getShipperDesc(), promo.getShipperDisableText(), promo.getPromoTncHtml());
     }
 
     public List<ShippingDurationViewModel> convertToViewModel(List<ServiceData> serviceDataList,

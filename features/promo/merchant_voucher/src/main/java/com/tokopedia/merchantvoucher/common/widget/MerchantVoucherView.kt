@@ -65,6 +65,8 @@ class MerchantVoucherView : CustomVoucherView {
         //btnUseVoucher.text = context.getString(R.string.use_voucher)
         //TOGGLE_MVC_OFF
         btnUseVoucher.text = context.getString(R.string.copy_to_clipboard)
+        btnUseVoucher.setTextColor(ContextCompat.getColor(this.context, R.color.font_black_secondary_54))
+        btnUseVoucher.setBackgroundResource(R.drawable.bg_button_white_border)
 
         btnUseVoucher.setOnClickListener {
             merchantVoucherViewModel?.run {

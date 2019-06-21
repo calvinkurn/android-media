@@ -1,6 +1,6 @@
 <resources>
     <string name="toko_points_title">Crack the Egg</string>
-    <string name="tap_tap_title">Tap the Egg</string>
+    <string name="tap_tap_title">Tap Tap</string>
     <string name="title_activity_gamification">GamificationActivity</string>
     <string name="countdown_format" formatted="false">%02d:%02d:%02d</string>
     <string name="egg_crack_x_token_left">%1$s %2$s %3$s</string>
@@ -31,9 +31,11 @@
     <string name="error_server_full">Wah, antusiasme Toppers sedang tinggi sekali. Yuk coba akses Tap Tap lagi.</string>
     <string name="server_error_occured">Maaf, terjadi kesalahan teknis</string>
     <string name="internet_not_connected_error_occured">Oops! Sepertinya ada masalah dengan koneksi internet kamu. Coba cek dulu ya.</string>
-    <string name="share_branch_link_body">Ayo main Tap Tap Mantap bareng %s &amp; raih hadiah menariknya! https://tokopedia.link/tap-tap-egg</string>
+    <string name="share_branch_link_body">Ayo main Tap Tap bareng %s &amp; raih hadiah menariknya! https://tokopedia.link/tap-tap</string>
     <string name="share_branch_link_msg_title">Main Tap Tap &amp; Raih Berbagai Hadiah Menarik</string>
     <string name="share_via_label">Share via</string>
     <string name="error_campaign_expired">Maaf Toppers, sesi bermain kamu telah habis. Silakan datang lagi lain waktu ya.</string>
+    <string name="rewards_text_summary">Hadiah</string>
+    <string name="gf_server_error_crack_token_tap_tap">Wah, antusiasme Toppers sedang tinggi sekali. Yuk coba akses Tap Tap lagi.</string>
 
 </resources>

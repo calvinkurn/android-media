@@ -116,13 +116,28 @@ public class ShipmentDataRequestConverter {
                             )
                             .checksum(courierItemData.getChecksum())
                             .ut(courierItemData.getUt())
+                            .analyticsDataShippingCourierPrice(String.valueOf(courierItemData.getShipperPrice()))
                             .build())
                     .fcancelPartial(shipmentDetailData.getUsePartialOrder() ? 1 : 0)
                     .finsurance((shipmentDetailData.getUseInsurance() != null && shipmentDetailData.getUseInsurance()) ? 1 : 0)
+                    .isOrderPriority((shipmentDetailData.isOrderPriority() != null && shipmentDetailData.isOrderPriority() ? 1 :0))
                     .isPreorder(shipmentCartItemModel.isProductIsPreorder() ? 1 : 0)
                     .shopId(shipmentCartItemModel.getShopId())
                     .warehouseId(shipmentCartItemModel.getFulfillmentId())
                     .productData(convertToProductDataCheckout(shipmentCartItemModel.getCartItemModels()));
+
+            ArrayList<String> promoCodes = new ArrayList<>();
+            if (shipmentCartItemModel.getVoucherOrdersItemUiModel() != null) {
+                promoCodes.add(shipmentCartItemModel.getVoucherOrdersItemUiModel().getCode());
+            }
+
+            if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
+                promoCodes.add(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
+            }
+
+            if (promoCodes.size() > 0) {
+                shopProductCheckoutBuilder.promoCodes(promoCodes);
+            }
 
             if (shipmentDetailData.getUseDropshipper() != null && shipmentDetailData.getUseDropshipper()) {
                 shopProductCheckoutBuilder.isDropship(1)

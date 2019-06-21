@@ -29,12 +29,11 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.gamification.R;
-import com.tokopedia.gamification.cracktoken.model.GeneralErrorCrackResult;
 import com.tokopedia.gamification.data.entity.CrackBenefitEntity;
 import com.tokopedia.gamification.data.entity.CrackResultEntity;
 import com.tokopedia.gamification.taptap.utils.TokenMarginUtilTapTap;
 import com.tokopedia.gamification.util.HexValidator;
-import com.tokopedia.gamification.util.TapTapAnalyticsTrackerUtil;
+import com.tokopedia.gamification.taptap.utils.TapTapAnalyticsTrackerUtil;
 
 import java.util.List;
 
@@ -245,11 +244,7 @@ public class WidgetCrackResultTapTap extends RelativeLayout {
             textView.setText(rewardText.getText());
             textView.setMaxWidth((int) (getScreenWidth() / 2.3f));
             textView.setLayoutParams(layoutParams);
-            if (HexValidator.validate(rewardText.getColor())) {
-                textView.setTextColor(Color.parseColor(rewardText.getColor()));
-            } else {
-                textView.setTextColor(getContext().getResources().getColor(R.color.default_text_reward_color));
-            }
+            textView.setTextColor(getContext().getResources().getColor(R.color.default_text_reward_color));
             textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getContext().getResources().getDimension(R.dimen.sp_16));
             listCrackResultText.addView(textView);
         }

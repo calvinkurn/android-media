@@ -19,15 +19,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.gamification.GamificationRouter;
 import com.tokopedia.gamification.R;
-import com.tokopedia.gamification.applink.ApplinkUtil;
 import com.tokopedia.gamification.data.entity.CrackBenefitEntity;
 import com.tokopedia.gamification.data.entity.CrackResultEntity;
-import com.tokopedia.gamification.taptap.activity.TapTapTokenActivity;
 import com.tokopedia.gamification.taptap.data.entiity.RewardButton;
+import com.tokopedia.gamification.taptap.utils.TapTapAnalyticsTrackerUtil;
 import com.tokopedia.gamification.taptap.utils.TapTapConstants;
-import com.tokopedia.gamification.util.TapTapAnalyticsTrackerUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,15 +37,17 @@ public class WidgetSummaryTapTap extends FrameLayout {
     private RecyclerView rvRewards;
     private RewardsAdapter rewardsAdapter;
     private SummaryPageActionListener interactionListener;
-    private View errorView;
-    private TextView tvErrorMessage;
-    private TextView tvBtnErrorOk;
+    private ImageView ivImageStar;
+    private View parentView;
+    private Animation rotateAnimationCrackResult;
 
     public interface SummaryPageActionListener {
 
         void playWithPoints();
 
         void dismissDialog();
+
+        void navigateToActivity(String applink, String url);
     }
 
     public WidgetSummaryTapTap(@NonNull Context context) {
@@ -67,31 +66,24 @@ public class WidgetSummaryTapTap extends FrameLayout {
     }
 
     private void init() {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.widget_reward_summary_tap_tap, this, true);
-        imageSinar = view.findViewById(R.id.image_sinar);
-        rvRewards = view.findViewById(R.id.rv_rewards);
-        btnTop = view.findViewById(R.id.btn_top);
-        btnBottomLeft = view.findViewById(R.id.btn_bottom_left);
-        btnBottomRight = view.findViewById(R.id.btn_bottom_right);
-        errorView = view.findViewById(R.id.error_view);
-        tvErrorMessage = view.findViewById(R.id.tv_msg);
-        tvBtnErrorOk = view.findViewById(R.id.snack_ok);
+        parentView = LayoutInflater.from(getContext()).inflate(R.layout.widget_reward_summary_tap_tap, this, true);
+        imageSinar = parentView.findViewById(R.id.image_sinar);
+        rvRewards = parentView.findViewById(R.id.rv_rewards);
+        btnTop = parentView.findViewById(R.id.btn_top);
+        btnBottomLeft = parentView.findViewById(R.id.btn_bottom_left);
+        btnBottomRight = parentView.findViewById(R.id.btn_bottom_right);
+        ivImageStar = parentView.findViewById(R.id.image_star);
         rewardsAdapter = new RewardsAdapter(null);
+        ImageHandler.loadImageWithId(ivImageStar, R.drawable.ic_star_summary);
+        ImageHandler.loadImageWithId(imageSinar, R.drawable.sinar_rewards_3_x);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), R.drawable.item_divider_summary_page);
         dividerItemDecoration.setHorizontalMargin(getResources().getDimensionPixelOffset(R.dimen.dp_8));
         rvRewards.addItemDecoration(dividerItemDecoration);
         initListBound(getScreenHeight(), 0);
-        tvBtnErrorOk.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                errorView.setVisibility(GONE);
-            }
-        });
     }
 
     public void showErrorSnackBar(String errorMessage) {
-        errorView.setVisibility(VISIBLE);
-        tvErrorMessage.setText(errorMessage);
+        NetworkErrorHelper.showErrorSnackBar(errorMessage, getContext(), parentView, false);
         TapTapAnalyticsTrackerUtil.sendEvent(getContext(),
                 TapTapAnalyticsTrackerUtil.EventKeys.VIEW_GAME,
                 TapTapAnalyticsTrackerUtil.CategoryKeys.CATEGORY_TAP_TAP,
@@ -114,7 +106,7 @@ public class WidgetSummaryTapTap extends FrameLayout {
     public void inflateReward(List<CrackResultEntity> rewards) {
         rewardsAdapter.updateList(rewards);
         runLayoutAnimation();
-        Animation rotateAnimationCrackResult = AnimationUtils.loadAnimation(getContext(), R.anim.animation_rotate_bg_crack_result);
+        rotateAnimationCrackResult = AnimationUtils.loadAnimation(getContext(), R.anim.animation_rotate_bg_crack_result);
         rotateAnimationCrackResult.setDuration(15000);
         imageSinar.startAnimation(rotateAnimationCrackResult);
 
@@ -160,16 +152,14 @@ public class WidgetSummaryTapTap extends FrameLayout {
 
     private void onRewardButtonClick(RewardButton rewardButton) {
         if (TapTapConstants.ButtonType.PLAY_WITH_POINTS.equalsIgnoreCase(rewardButton.getType())) {
-            interactionListener.playWithPoints();
+            if (interactionListener != null)
+                interactionListener.playWithPoints();
         } else {
-            interactionListener.dismissDialog();
-            if (rewardButton.getApplink().contains("tokopedia://tokopoints")) {
-                getContext().startActivity(((GamificationRouter) getContext().getApplicationContext()).getTokoPointsIntent(getContext()));
-            } else {
-                ApplinkUtil.navigateToAssociatedPage(getContext(), rewardButton.getApplink(),
-                        rewardButton.getUrl(),
-                        TapTapTokenActivity.class);
+            if(interactionListener!= null) {
+                interactionListener.dismissDialog();
+                interactionListener.navigateToActivity(rewardButton.getApplink(), rewardButton.getUrl());
             }
+
 
         }
         TapTapAnalyticsTrackerUtil.sendEvent(getContext(),
@@ -237,6 +227,13 @@ public class WidgetSummaryTapTap extends FrameLayout {
                 }
             }
         }
+    }
+
+
+    public void onDestroView() {
+        if (rotateAnimationCrackResult != null)
+            rotateAnimationCrackResult.cancel();
+        imageSinar.clearAnimation();
     }
 
 

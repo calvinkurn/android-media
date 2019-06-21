@@ -44,6 +44,12 @@ public class GroupShop {
     @SerializedName("warehouse")
     @Expose
     private Warehouse warehouse;
+    @SerializedName("cart_string")
+    @Expose
+    private String cartString;
+    @SerializedName("has_promo_list")
+    @Expose
+    private boolean hasPromoList;
 
     public List<String> getErrors() {
         return errors;
@@ -88,4 +94,8 @@ public class GroupShop {
     public Warehouse getWarehouse() {
         return warehouse;
     }
+
+    public String getCartString() { return cartString; }
+
+    public boolean isHasPromoList() { return hasPromoList; }
 }

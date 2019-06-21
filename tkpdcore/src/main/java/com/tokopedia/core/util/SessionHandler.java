@@ -14,6 +14,7 @@ import android.webkit.WebViewClient;
 
 import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
@@ -41,6 +42,10 @@ import com.tokopedia.linker.LinkerUtils;
 import com.tokopedia.linker.model.UserData;
 import com.tokopedia.linker.requests.LinkerGenericRequest;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 
 @Deprecated
 /**
@@ -120,7 +125,8 @@ public class SessionHandler {
         editor.putString(LOGIN_ID, user_id + "");
         editor.putBoolean(IS_LOGIN, isLogin);
         editor.apply();
-        TrackingUtils.eventPushUserID(context, getGTMLoginID(context));
+        TrackApp.getInstance().getGTM()
+                .pushUserId(getGTMLoginID(context));
     }
 
     public static void clearUserData(Context context) {
@@ -202,8 +208,7 @@ public class SessionHandler {
     }
 
     private static void deleteCacheBalanceTokoCash() {
-        GlobalCacheManager cacheBalanceTokoCash = new GlobalCacheManager();
-        cacheBalanceTokoCash.delete(TkpdCache.Key.KEY_TOKOCASH_BALANCE_CACHE);
+        PersistentCacheManager.instance.delete(TkpdCache.Key.KEY_TOKOCASH_BALANCE_CACHE);
     }
 
     private static void logoutInstagram(Context context) {
@@ -580,7 +585,8 @@ public class SessionHandler {
         editor.putString(SHOP_NAME, shopName);
         editor.putBoolean(IS_MSISDN_VERIFIED, isMsisdnVerified);
         editor.apply();
-        TrackingUtils.eventPushUserID(context, getGTMLoginID(context));
+        TrackApp.getInstance().getGTM()
+                .pushUserId(getGTMLoginID(context));
         if (!GlobalConfig.DEBUG) Crashlytics.setUserIdentifier(u_id);
 
         UserData userData = new UserData();
@@ -615,7 +621,7 @@ public class SessionHandler {
     public void forceLogout() {
         if(context != null) {
             PasswordGenerator.clearTokenStorage(context);
-            TrackingUtils.eventMoEngageLogoutUser(context);
+            TrackApp.getInstance().getMoEngage().logoutEvent();
         }
         clearUserData();
     }

@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.TrackedVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
@@ -34,7 +35,7 @@ public interface HomeContract {
 
         void hideLoading();
 
-        void setItems(List<Visitable> items);
+        void setItems(List<Visitable> items, int repositoryFlag);
 
         void updateHeaderItem(HeaderViewModel headerViewModel);
 
@@ -55,6 +56,8 @@ public interface HomeContract {
         Activity getActivity();
 
         void updateListOnResume(List<Visitable> visitables);
+
+        void addImpressionToTrackingQueue(List<TrackedVisitable> visitables);
 
         void showRecomendationButton();
 

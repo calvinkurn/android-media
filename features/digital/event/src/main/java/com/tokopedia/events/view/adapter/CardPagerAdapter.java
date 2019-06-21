@@ -84,7 +84,7 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter, Event
         bind(mData.get(position), view);
         CardView cardView = view.findViewById(R.id.event_category_cardview);
 
-        eventsAnalytics = new EventsAnalytics(context.getApplicationContext());
+        eventsAnalytics = new EventsAnalytics();
         if (mBaseElevation == 0) {
             mBaseElevation = cardView.getCardElevation();
         }

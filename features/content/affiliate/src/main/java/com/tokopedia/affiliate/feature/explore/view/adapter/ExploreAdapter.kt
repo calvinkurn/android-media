@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.affiliate.feature.explore.view.adapter.typefactory.ExploreTypeFactory
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreEmptySearchViewModel
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreProductViewModel
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.FilterListViewModel
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.FilterViewModel
@@ -28,13 +29,20 @@ class ExploreAdapter(adapterTypeFactory: ExploreTypeFactory, visitables: List<Vi
         notifyDataSetChanged()
     }
 
+    fun removeEmptySearch() {
+        visitables.removeAll {
+            it is ExploreEmptySearchViewModel
+        }
+        notifyDataSetChanged()
+    }
+
     fun getFilterList(): List<FilterViewModel> {
-        return (visitables.first { it is FilterListViewModel } as? FilterListViewModel)?.filters
+        return (visitables.firstOrNull { it is FilterListViewModel } as? FilterListViewModel)?.filters
                 ?: arrayListOf()
     }
 
     fun setFilterList(filterList: List<FilterViewModel>) {
-        (visitables.first { it is FilterListViewModel } as? FilterListViewModel)?.filters =
+        (visitables.firstOrNull { it is FilterListViewModel } as? FilterListViewModel)?.filters =
                 filterList.toMutableList()
         notifyDataSetChanged()
     }
