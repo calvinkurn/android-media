@@ -95,6 +95,7 @@
             android:layout_height="@dimen/dp_10"
             app:layout_constraintStart_toStartOf="@+id/image"
             app:layout_constraintTop_toBottomOf="@+id/textPrice"
+            app:layout_constraintBottom_toBottomOf="parent"
             tools:background="@color/red_150"
             tools:layout_height="20dp" />
 
