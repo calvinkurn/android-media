@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.Button
 
 import com.tokopedia.topads.auto.R
+import com.tokopedia.topads.auto.internal.TopAdsUserStatusInfo
 import com.tokopedia.topads.auto.router.TopAdsAutoRouter
 import com.tokopedia.topads.auto.view.activity.ConfirmationDialogActivity
 import com.tokopedia.topads.auto.view.widget.InfoAutoAdsSheet
@@ -59,7 +60,11 @@ class InitialBudgetFragment : DailyBudgetFragment(), View.OnClickListener, Manua
         if (id == R.id.start_manual_ads_btn) {
             adsConfirmationSheet.show()
         } else if (id == R.id.post_btn) {
-            startActivityForResult(Intent(activity!!, ConfirmationDialogActivity::class.java), REQUEST_CODE_CONFIRMATION)
+            if(shopStatus == TopAdsUserStatusInfo.MANUAL_USER){
+                startActivityForResult(Intent(activity!!, ConfirmationDialogActivity::class.java), REQUEST_CODE_CONFIRMATION)
+            } else{
+                activatedAds()
+            }
         }
     }
 

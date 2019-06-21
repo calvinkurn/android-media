@@ -1,5 +1,6 @@
 package com.tokopedia.topads.auto.data.entity
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -32,6 +33,8 @@ data class BidInfoData (
     @SerializedName("max_daily_budget_fmt")
     val maxDailyBudgetFmt: String = "",
     @SerializedName("estimation")
-    val estimation: BidInfoEstimationData = BidInfoEstimationData()
+    val estimation: BidInfoEstimationData = BidInfoEstimationData(),
+    @Expose(serialize = false, deserialize = false)
+    var shopStatus: Int = 0
 
 )

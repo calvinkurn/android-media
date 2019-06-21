@@ -52,6 +52,7 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
 
     val requestType = "auto_ads"
     val source = "update_auto_ads"
+    var shopStatus = 0
 
     @Inject
     lateinit var factory: DailyBudgetViewModelFactory
@@ -91,6 +92,7 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
                 budget = arguments!!.getInt(KEY_DAILY_BUDGET, 0)
             }
             estimateImpression(data, budget)
+            shopStatus = data.shopStatus
             seekBar.range = Range(data.minDailyBudget, data.maxDailyBudget, 1000)
             seekBar.value = budget
             seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {

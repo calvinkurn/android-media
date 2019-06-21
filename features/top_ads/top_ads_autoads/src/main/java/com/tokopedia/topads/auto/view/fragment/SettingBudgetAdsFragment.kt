@@ -10,6 +10,7 @@ import android.widget.Switch
 
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.internal.AutoAdsStatus
+import com.tokopedia.topads.auto.internal.TopAdsUserStatusInfo
 import com.tokopedia.topads.auto.view.activity.ConfirmationDialogActivity
 import com.tokopedia.topads.auto.view.widget.SettingAutoAdsConfirmationSheet
 import com.tokopedia.topads.auto.view.widget.SettingAutoAdsInfoSheet
@@ -42,7 +43,11 @@ class SettingBudgetAdsFragment : DailyBudgetFragment() {
         }
         saveBtn.setOnClickListener {
             if (switchBudget.isChecked) {
-                startActivityForResult(Intent(activity!!, ConfirmationDialogActivity::class.java), REQUEST_CODE_CONFIRMATION)
+                if(shopStatus == TopAdsUserStatusInfo.MANUAL_USER){
+                    startActivityForResult(Intent(activity!!, ConfirmationDialogActivity::class.java), REQUEST_CODE_CONFIRMATION)
+                } else{
+                    activatedAds()
+                }
             } else {
                 var settingConfirmationSheet =  SettingAutoAdsConfirmationSheet.newInstance(context!!)
                 settingConfirmationSheet.setActionListener(object: SettingAutoAdsConfirmationSheet.ActionListener{

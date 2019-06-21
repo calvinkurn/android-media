@@ -13,14 +13,18 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.data.entity.BidInfoData
 import com.tokopedia.topads.auto.data.entity.TopAdsAutoAdsData
+import com.tokopedia.topads.auto.data.entity.TopAdsShopInfoData
 import com.tokopedia.topads.auto.data.network.param.AutoAdsParam
 import com.tokopedia.topads.auto.data.network.response.TopAdsAutoAds
+import com.tokopedia.topads.auto.data.network.response.TopAdsShopInfo
 import com.tokopedia.topads.auto.data.network.response.TopadsBidInfo
 import com.tokopedia.topads.auto.internal.RawQueryKeyObject
 import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.Fail
 import kotlinx.coroutines.experimental.CoroutineDispatcher
 import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.withContext
 import org.json.JSONException
 import javax.inject.Inject
@@ -37,20 +41,43 @@ class DailyBudgetViewModel @Inject constructor(
 
     val budgetInfoData = MutableLiveData<List<BidInfoData>>()
     val autoAdsData = MutableLiveData<TopAdsAutoAdsData>()
+    val shopInfoData = MutableLiveData<TopAdsShopInfoData>()
 
     fun getBudgetInfo(shopId: Int, requestType: String, source: String) {
         launchCatchError(block = {
+            val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
             val data = withContext(Dispatchers.IO){
                 val request = GraphqlRequest(rawQueries[RawQueryKeyObject.QUERY_ADS_BID_INFO],
                         TopadsBidInfo.Response::class.java,
                         mapOf("shopId" to shopId, "requestType" to requestType, "source" to source))
-                val cacheStrategy = GraphqlCacheStrategy
-                        .Builder(CacheType.ALWAYS_CLOUD).build()
                 repository.getReseponse(listOf(request), cacheStrategy)
             }
+
+            val request = GraphqlRequest(rawQueries[RawQueryKeyObject.QUERY_ADS_SHOP_INFO],
+                    TopAdsShopInfo.Response::class.java, mapOf("shopId" to shopId))
+            val shopInfo = repository.getReseponse(listOf(request), cacheStrategy)
+                    .getSuccessData<TopAdsShopInfo.Response>().shopInfo
+
             data.getSuccessData<TopadsBidInfo.Response>().bidInfo.data.let {
+                it.forEach {it.shopStatus = shopInfo.data.category }
                 budgetInfoData.postValue(it)
             }
+//            val shopInfoJob = async {
+//                try {
+//                    val request = GraphqlRequest(rawQueries[RawQueryKeyObject.QUERY_ADS_SHOP_INFO],
+//                            TopAdsShopInfo.Response::class.java, mapOf("shopId" to shopId))
+//                    repository.getReseponse(listOf(request), cacheStrategy).getSuccessData<TopAdsShopInfo.Response>()
+//                } catch (t: Throwable) {
+//                    t
+//                }
+//            }
+//            try {
+//                val result = shopInfoJob.await()
+//                if (result is Throwable) throw  result
+//                shopInfoData.postValue((result as TopAdsShopInfo.Response).shopInfo.data)
+//            } catch (e: Exception) {
+//                e.printStackTrace()
+//            }
         }) {
             it.printStackTrace()
         }

@@ -13,4 +13,5 @@ interface TopAdsAutoRouter {
     fun openTopAdsDashboardApplink(context: Context)
     fun getTopAdsGroupAdListIntent(context: Context): Intent
     fun getTopAdsKeywordNewChooseGroupIntent(context: Context, isPositive: Boolean, groupId: String?): Intent
+    fun getTopAdsAddCreditIntent(context: Context): Intent
 }

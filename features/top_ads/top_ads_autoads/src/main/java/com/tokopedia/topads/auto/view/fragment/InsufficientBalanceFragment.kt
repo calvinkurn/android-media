@@ -18,7 +18,7 @@ class InsufficientBalanceFragment : BaseDaggerFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.layout_autoads_insufficient_budget, container, false)
         view.findViewById<View>(R.id.add_fund).setOnClickListener {
-            var intent = (activity!!.application as TopAdsAutoRouter).getSellerWebViewIntent(activity!!, arguments!!.getString(KEY_URL))
+            var intent = (activity!!.application as TopAdsAutoRouter).getTopAdsAddCreditIntent(activity!!)
             startActivity(intent)
             activity!!.finish()
         }
