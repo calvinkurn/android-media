@@ -1,13 +1,11 @@
 package com.tokopedia.search.result.presentation;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.discovery.common.data.DataValue;
 import com.tokopedia.discovery.common.data.Filter;
 import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
-import com.tokopedia.search.result.presentation.view.listener.RequestDynamicFilterListener;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import org.json.JSONArray;
@@ -20,10 +18,6 @@ import java.util.Map;
 public interface ProductListSectionContract {
 
     interface View extends SearchSectionContract.View {
-        void logDebug(String tag, String message);
-
-        void launchLoginActivity(String productId);
-
         boolean isUserHasLogin();
 
         String getUserId();
@@ -84,8 +78,6 @@ public interface ProductListSectionContract {
 
         void sendImpressionGlobalNav(GlobalNavViewModel globalNavViewModel);
 
-        BaseAppComponent getBaseAppComponent();
-
         void clearLastProductItemPositionFromCache();
 
         void saveLastProductItemPositionToCache(int lastProductItemPositionToCache);
@@ -97,12 +89,14 @@ public interface ProductListSectionContract {
         boolean isAnyFilterActive();
 
         Map<String, String> getAdditionalParamsMap();
+
+        void launchLoginActivity(String productId);
+
+        void sendImpressionGuidedSearch();
     }
 
     interface Presenter extends SearchSectionContract.Presenter<View> {
         void setWishlistActionListener(WishListActionListener wishlistActionListener);
-
-        void setRequestDynamicFilterListener(RequestDynamicFilterListener requestDynamicFilterListener);
 
         void loadMoreData(Map<String, Object> searchParameter, Map<String, String> additionalParams);
 

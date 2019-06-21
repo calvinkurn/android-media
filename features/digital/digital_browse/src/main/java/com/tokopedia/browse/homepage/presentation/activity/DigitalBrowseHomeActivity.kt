@@ -81,7 +81,7 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        getMenuInflater().inflate(R.menu.menu_search, menu)
+        getMenuInflater().inflate(R.menu.menu_digital_browse_search, menu)
         return true
     }
 

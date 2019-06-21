@@ -301,5 +301,8 @@
     <entry>
         <key>app_category_browse_v1</key>
         <value>true</value>
+
+        <key>android_seller_account_ticker_msg</key>
+        <value>Perkuat bisnismu dengan Power Merchant versi baru.</value>
     </entry>
 </defaultsMap>

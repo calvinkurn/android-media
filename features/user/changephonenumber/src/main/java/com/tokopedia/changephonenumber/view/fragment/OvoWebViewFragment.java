@@ -1,6 +1,7 @@
 package com.tokopedia.changephonenumber.view.fragment;
 
 import android.os.Bundle;
+import android.webkit.URLUtil;
 import android.webkit.WebView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseSessionWebViewFragment;
@@ -23,6 +24,7 @@ public class OvoWebViewFragment extends BaseSessionWebViewFragment{
     protected boolean shouldOverrideUrlLoading(WebView webView, String url) {
         if (getContext() != null
                 && getContext().getApplicationContext() != null
+                && !URLUtil.isNetworkUrl(url)
                 && RouteManager.isSupportApplink(getContext(), url)) {
             RouteManager.route(getContext(), url);
             return true;

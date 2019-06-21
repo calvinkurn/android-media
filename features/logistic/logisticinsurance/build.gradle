@@ -26,7 +26,7 @@ project.ext {
 dependencies {
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.libraries.useCase)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.libraries.userSession)
 

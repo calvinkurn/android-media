@@ -40,7 +40,8 @@ public class ValidateOtpLoginSubscriber extends Subscriber<ValidateOtpLoginDomai
             if (!validateOTPLoginDomain.getMakeLoginDomain().isMsisdnVerified()) {
                 view.onGoToPhoneVerification();
             } else {
-                view.onSuccessVerifyOTP();
+                view.onSuccessVerifyOTP(validateOTPLoginDomain.getValidateOtpDomain().getUuid(),
+                        validateOTPLoginDomain.getValidateOtpDomain().getMsisdn());
             }
         } else {
             view.onErrorVerifyLogin(OtpErrorHandler.getDefaultErrorCodeMessage(OtpErrorCode

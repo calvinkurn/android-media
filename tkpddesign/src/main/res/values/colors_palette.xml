@@ -94,4 +94,7 @@
     <color name="divider_color">#ededed</color>
     <color name="ic_back_color">#26000000</color>
 
+    <color name="grey_button_compat">#ae31353b</color>
+
+
 </resources>

@@ -24,6 +24,7 @@ import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.LinearHorizontalSpacingDecoration;
 import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.model.EmptySearchViewModel;
+import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
@@ -56,6 +57,7 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchViewMod
     private TextView emptyContentTextView;
     private Button emptyButtonItemButton;
     private final EmptyStateListener emptyStateListener;
+    private final BannerAdsListener bannerAdsListener;
     private TopAdsBannerView topAdsBannerView;
     private RecyclerView selectedFilterRecyclerView;
     private SelectedFilterAdapter selectedFilterAdapter;
@@ -64,13 +66,15 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchViewMod
     @LayoutRes
     public static final int LAYOUT = R.layout.list_empty_search_product;
 
-    public EmptySearchViewHolder(View view, EmptyStateListener emptyStateListener, Config topAdsConfig) {
+    public EmptySearchViewHolder(View view, EmptyStateListener emptyStateListener,
+                                 BannerAdsListener bannerAdsListener, Config topAdsConfig) {
         super(view);
         noResultImage = (ImageView) view.findViewById(R.id.no_result_image);
         emptyTitleTextView = (TextView) view.findViewById(R.id.text_view_empty_title_text);
         emptyContentTextView = (TextView) view.findViewById(R.id.text_view_empty_content_text);
         emptyButtonItemButton = (Button) view.findViewById(R.id.button_add_promo);
         this.emptyStateListener = emptyStateListener;
+        this.bannerAdsListener = bannerAdsListener;
         context = itemView.getContext();
         topAdsView = (TopAdsView) itemView.findViewById(R.id.topads);
         topAdsBannerView = (TopAdsBannerView) itemView.findViewById(R.id.banner_ads);
@@ -117,7 +121,7 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchViewMod
                 .setEndpoint(Endpoint.CPM)
                 .build();
         topAdsBannerView.setConfig(bannerAdsConfig);
-        topAdsBannerView.setTopAdsBannerClickListener((position, appLink, data) -> emptyStateListener.onBannerAdsClicked(appLink));
+        topAdsBannerView.setTopAdsBannerClickListener((position, appLink, data) -> bannerAdsListener.onBannerAdsClicked(appLink));
         topAdsBannerView.setAdsListener(new TopAdsListener() {
             @Override
             public void onTopAdsLoaded(List<Item> list) {

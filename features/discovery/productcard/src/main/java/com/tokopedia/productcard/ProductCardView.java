@@ -25,7 +25,6 @@ public class ProductCardView extends BaseCustomView {
     protected ImpressedImageView imageView;
     protected View topAdsIcon;
     protected View wishlistButton;
-    protected View ratingReviewContainer;
     protected ImageView ratingView;
     protected TextView reviewCountView;
     protected int layout;
@@ -124,12 +123,14 @@ public class ProductCardView extends BaseCustomView {
     public void setRatingReviewCount(int rating, int reviewCount) {
         if (rating > 0 && rating <= 5) {
             ratingView.setImageResource(getRatingDrawable(rating));
-            reviewCountView.setText("(" + Integer.toString(reviewCount) + ")");
         } else {
             if(fixedHeight) {
-                ratingReviewContainer.setVisibility(View.INVISIBLE);
+                ratingView.setVisibility(View.INVISIBLE);
+                reviewCountView.setVisibility(View.INVISIBLE);
             } else {
-            //    ratingReviewContainer.setVisibility(View.GONE);
+
+                ratingView.setVisibility(View.GONE);
+                reviewCountView.setVisibility(View.GONE);
             }
         }
     }
