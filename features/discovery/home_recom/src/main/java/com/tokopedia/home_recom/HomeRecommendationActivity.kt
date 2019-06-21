@@ -32,18 +32,21 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
             putExtras(bundle)
         }
 
-        @DeepLink(ApplinkConst.RECOMMENDATION_PAGE)
         @JvmStatic
+        fun newInstance(context: Context, productId: String) = Intent(context, HomeRecommendationActivity::class.java).apply {
+            putExtra(PRODUCT_ID, productId)
+        }
+    }
+
+    object DeeplinkIntents{
+
+        @JvmStatic
+        @DeepLink(ApplinkConst.RECOMMENDATION_PAGE)
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
             val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
             return RouteManager.getIntent(context,
                     ApplinkConstInternalMarketplace.HOME_RECOMMENDATION_WITH_ID,
                     uri.lastPathSegment) ?: Intent()
-        }
-
-        @JvmStatic
-        fun newInstance(context: Context, productId: String) = Intent(context, HomeRecommendationActivity::class.java).apply {
-            putExtra(PRODUCT_ID, productId)
         }
     }
 
