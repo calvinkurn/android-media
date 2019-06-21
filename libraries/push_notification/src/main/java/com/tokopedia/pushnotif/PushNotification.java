@@ -49,7 +49,7 @@ public class PushNotification {
             } else {
                 notifyGeneral(context, applinkNotificationModel, notificationId, notificationManagerCompat);
             }
-            if (isNotificationChannelEnabled(context)) {
+            if (isNotificationEnabled(context)) {
                 NotificationTracker.getInstance(context).trackDeliveredNotification(applinkNotificationModel);
             }
         }
@@ -126,13 +126,14 @@ public class PushNotification {
         notificationManagerCompat.notify(notificationType, notifChat);
     }
 
-    private static boolean isNotificationChannelEnabled(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+    private static boolean isNotificationEnabled(Context context) {
+        boolean isAllNotificationEnabled = NotificationManagerCompat.from(context).areNotificationsEnabled();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && isAllNotificationEnabled) {
             NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             NotificationChannel channel = manager.getNotificationChannel(Constant.NotificationChannel.GENERAL);
             return channel.getImportance() != NotificationManager.IMPORTANCE_NONE;
         } else {
-            return NotificationManagerCompat.from(context).areNotificationsEnabled();
+            return isAllNotificationEnabled;
         }
 
     }
