@@ -326,7 +326,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun renderHotelPromo(promoDataList: List<HotelPromoEntity>) {
-        trackingHotelUtil.hotelBannerImpression("hotel", mapToHotelPromotionsView(promoDataList))
+//        trackingHotelUtil.hotelBannerImpression("hotel", mapToHotelPromotionsView(promoDataList))
 
         showPromoContainer()
         if (!::promoAdapter.isInitialized) {
@@ -349,31 +349,31 @@ class HotelHomepageFragment : HotelBaseFragment(),
         hotel_container_promo.visibility = View.GONE
     }
 
-    private fun mapToHotelPromotionsView(data: List<HotelPromoEntity>): List<TrackingHotelUtil.HotelPromotionsView> {
-        return data.mapIndexed { index, it ->
-            TrackingHotelUtil.HotelPromotionsView(
-                    bannerId = it.promoId,
-                    position = index,
-                    bannerName = it.attributes.description
-            )
-        }
-    }
-
+//    private fun mapToHotelPromotionsView(data: List<HotelPromoEntity>): List<TrackingHotelUtil.HotelPromotionsView> {
+//        return data.mapIndexed { index, it ->
+//            TrackingHotelUtil.HotelPromotionsView(
+//                    bannerId = it.promoId,
+//                    position = index,
+//                    bannerName = it.attributes.description
+//            )
+//        }
+//    }
+//
     override fun onPromoClicked(promo: HotelPromoEntity) {
-        trackingHotelUtil.hotelClickBanner(promo.attributes.description, mapToHotelPromotionsClick(promoDataList))
+//        trackingHotelUtil.hotelClickBanner(promo.attributes.description, mapToHotelPromotionsClick(promoDataList))
     }
-
-    private fun mapToHotelPromotionsClick(data: List<HotelPromoEntity>): List<TrackingHotelUtil.HotelPromotionsClick> {
-        return data.mapIndexed { index, it ->
-            TrackingHotelUtil.HotelPromotionsClick(
-                    bannerId = it.promoId,
-                    position = index,
-                    bannerName = it.attributes.description,
-                    promoId = it.promoId,
-                    promoCode = it.attributes.promoCode
-            )
-        }
-    }
+//
+//    private fun mapToHotelPromotionsClick(data: List<HotelPromoEntity>): List<TrackingHotelUtil.HotelPromotionsClick> {
+//        return data.mapIndexed { index, it ->
+//            TrackingHotelUtil.HotelPromotionsClick(
+//                    bannerId = it.promoId,
+//                    position = index,
+//                    bannerName = it.attributes.description,
+//                    promoId = it.promoId,
+//                    promoCode = it.attributes.promoCode
+//            )
+//        }
+//    }
 
     companion object {
         const val MAX_SELECTION_DATE = 30
