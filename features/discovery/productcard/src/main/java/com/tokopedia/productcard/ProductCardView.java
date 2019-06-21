@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -16,7 +17,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.topads.sdk.view.ImpressedImageView;
-import com.tokopedia.unifycomponents.Label;
 import com.tokopedia.unifyprinciples.Typography;
 
 public class ProductCardView extends BaseCustomView {
@@ -86,13 +86,8 @@ public class ProductCardView extends BaseCustomView {
         textName.setText(MethodChecker.fromHtml(title));
     }
 
-    public void setTitlePaddingWithNegativeDefaultValue(int leftPixel, int topPixel, int rightPixel, int bottomPixel) {
-        textName.setPadding(
-                leftPixel < 0 ? textName.getPaddingLeft() : leftPixel,
-                topPixel < 0 ? textName.getPaddingTop() : topPixel,
-                rightPixel < 0 ? textName.getPaddingRight() : rightPixel,
-                bottomPixel < 0 ? textName.getPaddingBottom() : bottomPixel
-        );
+    public void setTitleMarginsWithNegativeDefaultValue(int leftPixel, int topPixel, int rightPixel, int bottomPixel) {
+        setMarginsToView(textName, leftPixel, topPixel, rightPixel, bottomPixel);
     }
 
     public void setDiscount(int discount) {
@@ -218,12 +213,22 @@ public class ProductCardView extends BaseCustomView {
         textLocation.setText(MethodChecker.fromHtml(location));
     }
 
-    public void setTextLocationPaddingWithNegativeDefaultValue(int leftPixel, int topPixel, int rightPixel, int bottomPixel) {
-        textLocation.setPadding(
-            leftPixel < 0 ? textLocation.getPaddingLeft() : leftPixel,
-            topPixel < 0 ? textLocation.getPaddingTop() : topPixel,
-            rightPixel < 0 ? textLocation.getPaddingRight() : rightPixel,
-            bottomPixel < 0 ? textLocation.getPaddingBottom() : bottomPixel
-        );
+    public void setTextLocationMarginsWithNegativeDefaultValue(int leftPixel, int topPixel, int rightPixel, int bottomPixel) {
+        setMarginsToView(textLocation, leftPixel, topPixel, rightPixel, bottomPixel);
+    }
+
+    private void setMarginsToView(View view, int leftPixel, int topPixel, int rightPixel, int bottomPixel) {
+        if(view.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) textLocation.getLayoutParams();
+
+            layoutParams.setMargins(
+                    leftPixel < 0 ? layoutParams.leftMargin : leftPixel,
+                    topPixel < 0 ? layoutParams.topMargin : topPixel,
+                    rightPixel < 0 ? layoutParams.rightMargin : rightPixel,
+                    bottomPixel < 0 ? layoutParams.bottomMargin : bottomPixel
+            );
+
+            view.requestLayout();
+        }
     }
 }

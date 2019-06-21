@@ -138,19 +138,19 @@ open class ProductCardViewHolder(
     }
 
     private fun initTitleTextView(productItem: ProductItemViewModel) {
-        setTitlePaddingTop(productItem)
+        setTitleMarginTop(productItem)
 
         itemView.productCardView?.setTitle(productItem.productName)
     }
 
-    private fun setTitlePaddingTop(productItem: ProductItemViewModel) {
+    private fun setTitleMarginTop(productItem: ProductItemViewModel) {
         var paddingTopPixel = 0
 
         if(!isShopNameShown(productItem)) {
             paddingTopPixel = convertDpToPixel(8)
         }
 
-        itemView.productCardView?.setTitlePaddingWithNegativeDefaultValue(-1, paddingTopPixel, -1, -1)
+        itemView.productCardView?.setTitleMarginsWithNegativeDefaultValue(-1, paddingTopPixel, -1, -1)
     }
 
     private fun convertDpToPixel(dpValue: Int): Int {
@@ -233,7 +233,7 @@ open class ProductCardViewHolder(
     }
 
     private fun initLocationTextView(productItem: ProductItemViewModel) {
-        setLocationTextViewPadding(productItem)
+        setLocationTextViewMargin(productItem)
 
         if(!TextUtils.isEmpty(productItem.shopCity)) {
             itemView.productCardView?.setTextLocation(productItem.shopCity)
@@ -244,11 +244,11 @@ open class ProductCardViewHolder(
         }
     }
 
-    private fun setLocationTextViewPadding(productItem: ProductItemViewModel) {
-        val paddingLeftDp = if (hasAnyBadgesShown(productItem)) 4 else 8
-        val paddingLeftPixel = convertDpToPixel(paddingLeftDp)
+    private fun setLocationTextViewMargin(productItem: ProductItemViewModel) {
+        val marginLeftDp = if (hasAnyBadgesShown(productItem)) 4 else 8
+        val marginLeftPixel = convertDpToPixel(marginLeftDp)
 
-        itemView.productCardView?.setTextLocationPaddingWithNegativeDefaultValue(paddingLeftPixel, -1, -1, -1)
+        itemView.productCardView?.setTextLocationMarginsWithNegativeDefaultValue(marginLeftPixel, -1, -1, -1)
     }
 //
 //    private fun initCredibilitySection(productItem: ProductItemViewModel) {
