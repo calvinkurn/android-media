@@ -183,6 +183,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         viewModel.allowImage = feedContentForm.media.allowImage
         viewModel.allowVideo = feedContentForm.media.allowVideo
         viewModel.maxProduct = feedContentForm.maxTag
+        viewModel.defaultPlaceholder = feedContentForm.defaultPlaceholder
 
         if (feedContentForm.media.media.isNotEmpty() && viewModel.fileImageList.isEmpty()) {
             viewModel.urlImageList.clear()
@@ -378,10 +379,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             }
             false
         }
-        caption.hint = getString(if (isTypeAffiliate())
-            R.string.af_caption_hint_affiliate else
-            R.string.af_caption_hint
-        )
+        caption.hint = viewModel.defaultPlaceholder
         caption.setText(viewModel.caption)
         updateMaxCharacter()
         updateThumbnail()
