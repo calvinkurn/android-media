@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -25,10 +26,12 @@ public class ProductCardView extends BaseCustomView {
     protected TextView textDiscount;
     protected Typography textSlashedPrice;
     protected ImpressedImageView imageView;
-    protected View topAdsIcon;
-    protected View wishlistButton;
+    protected ImageView topAdsIcon;
+    protected ImageView wishlistButton;
     protected ImageView ratingView;
     protected Typography reviewCountView;
+    protected LinearLayout shopBadgesContainer;
+    protected Typography textLocation;
     protected int layout;
     protected boolean fixedHeight = false;
 
@@ -75,10 +78,21 @@ public class ProductCardView extends BaseCustomView {
         wishlistButton = view.findViewById(R.id.btn_wishlist);
         ratingView = view.findViewById(R.id.rating);
         reviewCountView = view.findViewById(R.id.review_count);
+        shopBadgesContainer = view.findViewById(R.id.shopBadgesContainer);
+        textLocation = view.findViewById(R.id.textLocation);
     }
 
     public void setTitle(String title) {
         textName.setText(MethodChecker.fromHtml(title));
+    }
+
+    public void setTitlePaddingWithNegativeDefaultValue(int leftPixel, int topPixel, int rightPixel, int bottomPixel) {
+        textName.setPadding(
+                leftPixel < 0 ? textName.getPaddingLeft() : leftPixel,
+                topPixel < 0 ? textName.getPaddingTop() : topPixel,
+                rightPixel < 0 ? textName.getPaddingRight() : rightPixel,
+                bottomPixel < 0 ? textName.getPaddingBottom() : bottomPixel
+        );
     }
 
     public void setDiscount(int discount) {
@@ -119,7 +133,16 @@ public class ProductCardView extends BaseCustomView {
 
     public void setWishlistButtonVisible(boolean isVisible) {
         //wishlist not implemented yet, don't delete this.
-//        wishlistButton.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        wishlistButton.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+    }
+
+    public void setWishlistButtonImage(boolean isWishlisted) {
+        if(isWishlisted) {
+            wishlistButton.setImageResource(R.drawable.ic_wishlist_red_product_card);
+        }
+        else {
+            wishlistButton.setImageResource(R.drawable.ic_wishlist_product_card);
+        }
     }
 
     public void setRatingReviewCount(int rating, int reviewCount) {
@@ -169,5 +192,34 @@ public class ProductCardView extends BaseCustomView {
 
     public void setLayout(int layout) {
         this.layout = layout;
+    }
+
+    public void setShopBadgesVisible(boolean isVisible) {
+        shopBadgesContainer.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+    }
+
+    public void clearShopBadgesContainer() {
+        shopBadgesContainer.removeAllViews();
+    }
+
+    public void addShopBadge(View view) {
+        shopBadgesContainer.addView(view);
+    }
+
+    public void setTextLocationVisible(boolean isVisible) {
+        textLocation.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+    }
+
+    public void setTextLocation(String location) {
+        textLocation.setText(MethodChecker.fromHtml(location));
+    }
+
+    public void setTextLocationPaddingWithNegativeDefaultValue(int leftPixel, int topPixel, int rightPixel, int bottomPixel) {
+        textLocation.setPadding(
+            leftPixel < 0 ? textLocation.getPaddingLeft() : leftPixel,
+            topPixel < 0 ? textLocation.getPaddingTop() : topPixel,
+            rightPixel < 0 ? textLocation.getPaddingRight() : rightPixel,
+            bottomPixel < 0 ? textLocation.getPaddingBottom() : bottomPixel
+        );
     }
 }

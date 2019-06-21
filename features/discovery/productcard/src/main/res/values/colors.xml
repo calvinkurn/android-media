@@ -5,4 +5,5 @@
     <color name="icon_product_card_background_color">#f3f4f5</color>
     <color name="product_card_price_text_color">#fa591d</color>
     <color name="discountTextColor">#ef144a</color>
+    <color name="product_card_location_text_color">#ae31353b</color>
 </resources>

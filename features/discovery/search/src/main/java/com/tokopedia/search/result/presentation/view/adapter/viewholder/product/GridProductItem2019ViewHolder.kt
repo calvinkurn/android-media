@@ -90,10 +90,10 @@ class GridProductItem2019ViewHolder(
 
     private fun initWishlistButton(productItem: ProductItemViewModel) {
         if(productItem.isWishlisted) {
-            itemView.wishlistButton?.setBackgroundResource(R.drawable.search_ic_wishlist_red)
+            itemView.wishlistButton?.setBackgroundResource(R.drawable.ic_wishlist_red_product_card)
         }
         else {
-            itemView.wishlistButton?.setBackgroundResource(R.drawable.search_ic_wishlist)
+            itemView.wishlistButton?.setBackgroundResource(R.drawable.ic_wishlist_product_card)
         }
     }
 

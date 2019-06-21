@@ -1,10 +1,8 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
 import android.graphics.Bitmap
-import android.graphics.Paint
 import android.graphics.drawable.Drawable
 import android.support.annotation.LayoutRes
-import android.support.annotation.Nullable
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -13,10 +11,8 @@ import com.bumptech.glide.request.animation.GlideAnimation
 import com.bumptech.glide.request.target.SimpleTarget
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel
-import com.tokopedia.search.result.presentation.model.LabelGroupViewModel
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import kotlinx.android.synthetic.main.search_product_card.view.*
@@ -31,24 +27,25 @@ open class ProductCardViewHolder(
         val LAYOUT = R.layout.search_product_card
     }
 
+    private val context = itemView.context!!
+
     override fun bind(productItem: ProductItemViewModel?) {
         if (productItem == null) return
 
         initProductCardContainer(productItem)
         initProductImage(productItem)
-//        initWishlistButtonContainer(productItem)
-//        initWishlistButton(productItem)
+        initWishlistButton(productItem)
 //        initPromoLabel(productItem)
 //        initShopName(productItem)
 //        initShopImage(productItem)
         initTitleTextView(productItem)
 //        initSlashPrice(productItem)
         initPriceTextView(productItem)
-//        initShopBadge(productItem)
-//        initLocationTextView(productItem)
+        initShopBadge(productItem)
+        initLocationTextView(productItem)
 //        initCredibilitySection(productItem)
 //        initOffersLabel(productItem)
-//        initTopAdsIcon(productItem)
+        initTopAdsIcon(productItem)
     }
 
     private fun initProductCardContainer(productItem: ProductItemViewModel) {
@@ -64,31 +61,16 @@ open class ProductCardViewHolder(
 
     private fun initProductImage(productItem: ProductItemViewModel) {
         itemView.productCardView?.setImageUrl(productItem.imageUrl)
+
         itemView.productCardView?.imageView?.setViewHintListener(productItem){
             productListener.onProductImpressed(productItem, adapterPosition)
         }
     }
 
-    // TODO:: Add wishlist to product card module
-//    private fun initWishlistButtonContainer(productItem: ProductItemViewModel) {
-//        itemView.wishlistButtonContainer?.isEnabled = productItem.isWishlistButtonEnabled
-//
-//        itemView.wishlistButtonContainer?.setOnClickListener {
-//            if(productItem.isWishlistButtonEnabled) {
-//                productListener.onWishlistButtonClicked(productItem)
-//            }
-//        }
-//    }
-
-    // TODO:: Add wishlist to product card module
-//    private fun initWishlistButton(productItem: ProductItemViewModel) {
-//        if(productItem.isWishlisted) {
-//            itemView.wishlistButton?.setBackgroundResource(R.drawable.search_ic_wishlist_red)
-//        }
-//        else {
-//            itemView.wishlistButton?.setBackgroundResource(R.drawable.search_ic_wishlist)
-//        }
-//    }
+    private fun initWishlistButton(productItem: ProductItemViewModel) {
+        itemView.productCardView?.setWishlistButtonVisible(true)
+        itemView.productCardView?.setWishlistButtonImage(productItem.isWishlisted)
+    }
 
 //    private fun initPromoLabel(productItem: ProductItemViewModel) {
 //        val promoLabelViewModel : LabelGroupViewModel? = getFirstLabelGroupOfPosition(productItem, LABEL_GROUP_POSITION_PROMO)
@@ -125,11 +107,12 @@ open class ProductCardViewHolder(
 //        }
 //    }
 //
-//    // TODO:: Dummy method, set Shop Name from productItem instead
-//    private fun isShopNameShown(productItem: ProductItemViewModel): Boolean {
+    // TODO:: Dummy method, set Shop Name from productItem instead
+    private fun isShopNameShown(productItem: ProductItemViewModel): Boolean {
 //        return !TextUtils.isEmpty(productItem.shopName)
-//    }
-//
+        return false
+    }
+
 //    private fun initShopImage(productItem: ProductItemViewModel) {
 //        if(isShopImageShown(productItem)) {
 //            itemView.shopImage?.visibility = View.VISIBLE
@@ -143,37 +126,33 @@ open class ProductCardViewHolder(
 //        }
 //    }
 //
-//    // TODO:: Dummy method, set Shop Name from productItem instead
-//    private fun isShopImageShown(productItem: ProductItemViewModel): Boolean {
+    // TODO:: Dummy method, set Shop Name from productItem instead
+    private fun isShopImageShown(productItem: ProductItemViewModel): Boolean {
 //        return adapterPosition % 2 == 0
-//    }
-//
+        return false
+    }
+
     private fun initTitleTextView(productItem: ProductItemViewModel) {
-//        setTitlePaddingTop(productItem)
+        setTitlePaddingTop(productItem)
 
         itemView.productCardView?.setTitle(productItem.productName)
     }
-//
-//    private fun setTitlePaddingTop(productItem: ProductItemViewModel) {
-//        var paddingTopPixel = 0
-//
-//        if(!isShopNameShown(productItem)) {
-//            paddingTopPixel = convertDpToPixel(8)
-//        }
-//
-//        itemView.titleTextView?.setPadding(
-//            itemView.titleTextView.paddingLeft,
-//            paddingTopPixel,
-//            itemView.titleTextView.paddingRight,
-//            itemView.titleTextView.paddingBottom
-//        )
-//    }
-//
-//    private fun convertDpToPixel(dpValue: Int): Int {
-//        val scale = context.resources.displayMetrics.density
-//        return (dpValue * scale + 0.5f).toInt()
-//    }
-//
+
+    private fun setTitlePaddingTop(productItem: ProductItemViewModel) {
+        var paddingTopPixel = 0
+
+        if(!isShopNameShown(productItem)) {
+            paddingTopPixel = convertDpToPixel(8)
+        }
+
+        itemView.productCardView?.setTitlePaddingWithNegativeDefaultValue(-1, paddingTopPixel, -1, -1)
+    }
+
+    private fun convertDpToPixel(dpValue: Int): Int {
+        val scale = context.resources.displayMetrics.density
+        return (dpValue * scale + 0.5f).toInt()
+    }
+
 //    // TODO:: Dummy method, set Slash Price from productItem instead
 //    private fun initSlashPrice(productItem: ProductItemViewModel) {
 //        itemView.slashPriceContainer?.visibility = View.VISIBLE
@@ -190,90 +169,82 @@ open class ProductCardViewHolder(
         return if(!TextUtils.isEmpty(productItem.priceRange)) productItem.priceRange
         else productItem.price
     }
-//
-//    private fun initShopBadge(productItem: ProductItemViewModel) {
-//        if(itemView.shopBadgesContainer != null) {
-//            itemView.shopBadgesContainer.removeAllViews()
-//
-//            if(hasAnyBadgesShown(productItem)) {
-//                itemView.shopBadgesContainer.visibility = View.VISIBLE
-//                loopBadgesListToLoadShopBadgeIcon(productItem.badgesList)
-//            }
-//            else {
-//                itemView.shopBadgesContainer.visibility = View.GONE
-//            }
-//        }
-//    }
-//
-//    private fun hasAnyBadgesShown(productItem: ProductItemViewModel): Boolean {
-//        return productItem.badgesList.any { badge -> badge.isShown }
-//    }
-//
-//    private fun loopBadgesListToLoadShopBadgeIcon(badgesList: List<BadgeItemViewModel>) {
-//        for (badgeItem in badgesList) {
-//            if (badgeItem.isShown) {
-//                loadShopBadgesIcon(badgeItem.imageUrl ?: "")
-//            }
-//        }
-//    }
-//
-//    private fun loadShopBadgesIcon(url: String) {
-//        if(!TextUtils.isEmpty(url)) {
-//            val view = LayoutInflater.from(context).inflate(R.layout.badge_layout, null)
-//
-//            ImageHandler.loadImageBitmap2(context, url, object : SimpleTarget<Bitmap>() {
-//                override fun onResourceReady(bitmap: Bitmap, glideAnimation: GlideAnimation<in Bitmap>) {
-//                    loadShopBadgeSuccess(view, bitmap)
-//                }
-//
-//                override fun onLoadFailed(e: Exception?, errorDrawable: Drawable?) {
-//                    super.onLoadFailed(e, errorDrawable)
-//                    loadShopBadgeFailed(view)
-//                }
-//            })
-//        }
-//    }
-//
-//    private fun loadShopBadgeSuccess(view: View, bitmap: Bitmap) {
-//        val image = view.findViewById<ImageView>(R.id.badge)
-//
-//        if (bitmap.height <= 1 && bitmap.width <= 1) {
-//            view.visibility = View.GONE
-//        } else {
-//            image.setImageBitmap(bitmap)
-//            view.visibility = View.VISIBLE
-//            itemView.shopBadgesContainer?.addView(view)
-//        }
-//    }
-//
-//    private fun loadShopBadgeFailed(view: View) {
-//        view.visibility = View.GONE
-//    }
-//
-//    private fun initLocationTextView(productItem: ProductItemViewModel) {
-//        setLocationTextViewPadding(productItem)
-//
-//        if(!TextUtils.isEmpty(productItem.shopCity)) {
-//            itemView.locationTextView?.text = MethodChecker.fromHtml(productItem.shopCity)
-//            itemView.locationTextView?.visibility = View.VISIBLE
-//        }
-//        else {
-//            itemView.locationTextView?.visibility = View.GONE
-//        }
-//    }
-//
-//    private fun setLocationTextViewPadding(productItem: ProductItemViewModel) {
-//        if(itemView.locationTextView != null) {
-//            val paddingLeftDp = if (hasAnyBadgesShown(productItem)) 4 else 8
-//
-//            itemView.locationTextView?.setPadding(
-//                paddingLeftDp,
-//                itemView.locationTextView.paddingTop,
-//                itemView.locationTextView.paddingRight,
-//                itemView.locationTextView.paddingBottom
-//            )
-//        }
-//    }
+
+    private fun initShopBadge(productItem: ProductItemViewModel) {
+        itemView.productCardView?.clearShopBadgesContainer()
+
+        if(hasAnyBadgesShown(productItem)) {
+            itemView.productCardView?.setShopBadgesVisible(true)
+            loopBadgesListToLoadShopBadgeIcon(productItem.badgesList)
+        }
+        else {
+            itemView.productCardView?.setShopBadgesVisible(false)
+        }
+    }
+
+    private fun hasAnyBadgesShown(productItem: ProductItemViewModel): Boolean {
+        return productItem.badgesList.any { badge -> badge.isShown }
+    }
+
+    private fun loopBadgesListToLoadShopBadgeIcon(badgesList: List<BadgeItemViewModel>) {
+        for (badgeItem in badgesList) {
+            if (badgeItem.isShown) {
+                loadShopBadgesIcon(badgeItem.imageUrl ?: "")
+            }
+        }
+    }
+
+    private fun loadShopBadgesIcon(url: String) {
+        if(!TextUtils.isEmpty(url)) {
+            val view = LayoutInflater.from(context).inflate(R.layout.badge_layout, null)
+
+            ImageHandler.loadImageBitmap2(context, url, object : SimpleTarget<Bitmap>() {
+                override fun onResourceReady(bitmap: Bitmap, glideAnimation: GlideAnimation<in Bitmap>) {
+                    loadShopBadgeSuccess(view, bitmap)
+                }
+
+                override fun onLoadFailed(e: Exception?, errorDrawable: Drawable?) {
+                    super.onLoadFailed(e, errorDrawable)
+                    loadShopBadgeFailed(view)
+                }
+            })
+        }
+    }
+
+    private fun loadShopBadgeSuccess(view: View, bitmap: Bitmap) {
+        val image = view.findViewById<ImageView>(R.id.badge)
+
+        if (bitmap.height <= 1 && bitmap.width <= 1) {
+            view.visibility = View.GONE
+        } else {
+            image.setImageBitmap(bitmap)
+            view.visibility = View.VISIBLE
+            itemView.productCardView?.addShopBadge(view)
+        }
+    }
+
+    private fun loadShopBadgeFailed(view: View) {
+        view.visibility = View.GONE
+    }
+
+    private fun initLocationTextView(productItem: ProductItemViewModel) {
+        setLocationTextViewPadding(productItem)
+
+        if(!TextUtils.isEmpty(productItem.shopCity)) {
+            itemView.productCardView?.setTextLocation(productItem.shopCity)
+            itemView.productCardView?.setTextLocationVisible(true)
+        }
+        else {
+            itemView.productCardView?.setTextLocationVisible(false)
+        }
+    }
+
+    private fun setLocationTextViewPadding(productItem: ProductItemViewModel) {
+        val paddingLeftDp = if (hasAnyBadgesShown(productItem)) 4 else 8
+        val paddingLeftPixel = convertDpToPixel(paddingLeftDp)
+
+        itemView.productCardView?.setTextLocationPaddingWithNegativeDefaultValue(paddingLeftPixel, -1, -1, -1)
+    }
 //
 //    private fun initCredibilitySection(productItem: ProductItemViewModel) {
 //        initRatingAndReview(productItem)
@@ -415,13 +386,8 @@ open class ProductCardViewHolder(
 //            itemView.offersLabel?.visibility = View.GONE
 //        }
 //    }
-//
-//    private fun initTopAdsIcon(productItem: ProductItemViewModel) {
-//        if(productItem.isTopAds) {
-//            itemView.topAdsIconContainer?.visibility = View.VISIBLE
-//        }
-//        else {
-//            itemView.topAdsIconContainer?.visibility = View.GONE
-//        }
-//    }
+
+    private fun initTopAdsIcon(productItem: ProductItemViewModel) {
+        itemView.productCardView?.setTopAdsVisible(productItem.isTopAds)
+    }
 }
