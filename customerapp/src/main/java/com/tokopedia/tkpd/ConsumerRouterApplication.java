@@ -2882,10 +2882,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TkpdAppsFlyerMapper.getInstance(this).mapAnalytics();
     }
 
-    public void instabugCaptureUserStep(Activity activity, MotionEvent me) {
-        InstabugInitalize.dispatchTouchEvent(activity, me);
-    }
-
     @Override
     public boolean isAllowLogOnChuckInterceptorNotification() {
         LocalCacheHandler cache = new LocalCacheHandler(this, DeveloperOptions.CHUCK_ENABLED);
