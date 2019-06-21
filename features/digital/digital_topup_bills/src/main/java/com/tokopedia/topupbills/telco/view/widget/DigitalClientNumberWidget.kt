@@ -12,7 +12,6 @@ import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.telco.view.model.DigitalFavNumber
 import org.jetbrains.annotations.NotNull
 
 /**
@@ -51,6 +50,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
             override fun onClick(v: View?) {
                 autoCompleteInputNumber.setText("")
                 listener.onClearAutoComplete()
+                errorInputNumber.visibility = View.GONE
             }
         })
 
@@ -68,9 +68,16 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
                     listener.onClearAutoComplete()
                     imgOperator.visibility = View.GONE
                 }
-                if (count >= 4) {
+                if (count in 1..9) {
+                    errorInputNumber.text = context.getString(R.string.digital_telco_error_min_phone_number)
+                    errorInputNumber.visibility = View.VISIBLE
+                } else if (count in 10..14) {
                     listener.onRenderOperator()
                     imgOperator.visibility = View.VISIBLE
+                    errorInputNumber.visibility = View.GONE
+                } else if (count >14) {
+                    errorInputNumber.text = context.getString(R.string.digital_telco_error_max_phone_number)
+                    errorInputNumber.visibility = View.VISIBLE
                 }
             }
         })

@@ -54,7 +54,7 @@ class DigitalProductAdapter(val productList: List<TelcoProductDataCollection>, v
     }
 
     override fun getItemCount(): Int {
-        return productList.size;
+        return productList.size
     }
 
     inner open abstract class BaseProductViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -92,6 +92,7 @@ class DigitalProductAdapter(val productList: List<TelcoProductDataCollection>, v
 
         protected fun setItemSelected(viewGrup: ViewGroup) {
             if (productItem.product.attributes.selected) {
+                listener.onClickItemProduct(productItem)
                 viewGrup.setBackgroundResource(R.drawable.digital_bg_green_light_rounded)
             } else {
                 viewGrup.setBackgroundResource(R.drawable.digital_bg_transparent_round)

@@ -37,6 +37,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
     private lateinit var productViewModel: DigitalTelcoProductViewModel
 
     private var titleProduct: String = ""
+    private var selectedProductId: String = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -95,6 +96,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
             val productType = it.getInt(PRODUCT_TYPE)
             val operatorId = it.getString(OPERATOR_ID)
             val componentId = it.getInt(COMPONENT_TYPE)
+            selectedProductId = it.getString(SELECTED_PRODUCT_ID)
 
             var mapParam = HashMap<String, kotlin.Any>()
             mapParam.put(KEY_COMPONENT_ID, componentId)
@@ -114,6 +116,13 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
     fun onSuccessProductList(productData: TelcoProductComponentData) {
         emptyStateProductView.visibility = View.GONE
         telcoTelcoProductView.visibility = View.VISIBLE
+        if (selectedProductId.isNotEmpty()) {
+            for (i in 0 until productData.rechargeProductData.productDataCollections.size) {
+                if (productData.rechargeProductData.productDataCollections[i].product.id == selectedProductId) {
+                    productData.rechargeProductData.productDataCollections[i].product.attributes.selected = true
+                }
+            }
+        }
         telcoTelcoProductView.renderGridProductList(productData.productType, productData.rechargeProductData.productDataCollections)
     }
 
@@ -140,17 +149,20 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         val COMPONENT_TYPE = "component_type"
         val COMPONENT_NAME = "component_name"
         val OPERATOR_ID = "operator_Id"
+        val SELECTED_PRODUCT_ID = "selected_product_id"
 
         val KEY_COMPONENT_ID = "componentID"
         val KEY_OPERATOR_ID = "operatorID"
 
-        fun newInstance(componentType: Int, componentName: String, operatorId: String, productType: Int): Fragment {
+        fun newInstance(componentType: Int, componentName: String, operatorId: String, productType: Int,
+                        selectedProductId: String): Fragment {
             val fragment = DigitalTelcoProductFragment()
             val bundle = Bundle()
             bundle.putInt(PRODUCT_TYPE, productType)
             bundle.putInt(COMPONENT_TYPE, componentType)
             bundle.putString(OPERATOR_ID, operatorId)
             bundle.putString(COMPONENT_NAME, componentName)
+            bundle.putString(SELECTED_PRODUCT_ID, selectedProductId)
             fragment.arguments = bundle
             return fragment
         }

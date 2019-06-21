@@ -7,6 +7,7 @@ query catalogMenuDetail($menuID: Int!){
       appLink
       webLink
       type
+      categoryId
       productId
       isATC
       operatorID

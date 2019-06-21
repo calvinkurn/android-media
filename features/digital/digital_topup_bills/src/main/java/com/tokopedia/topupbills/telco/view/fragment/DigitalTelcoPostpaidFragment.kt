@@ -32,8 +32,8 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var enquiryViewModel: DigitalTelcoEnquiryViewModel
     private lateinit var layoutProgressBar: RelativeLayout
     private lateinit var operatorSelected: TelcoCustomDataCollection
-    private lateinit var favNumberList: List<TelcoFavNumber>
 
+    private val favNumberList = mutableListOf<TelcoFavNumber>()
     private var operatorData: TelcoCustomComponentData =
             TelcoCustomComponentData(TelcoCustomData(mutableListOf()))
 
@@ -110,10 +110,8 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
             }
 
             override fun onClientNumberHasFocus(clientNumber: String) {
-                if (::favNumberList.isInitialized) {
-                    startActivityForResult(activity?.let { DigitalSearchNumberActivity.newInstance(it, DigitalFavNumber(), "", favNumberList) },
-                            REQUEST_CODE_DIGITAL_SEARCH_NUMBER)
-                }
+                startActivityForResult(activity?.let { DigitalSearchNumberActivity.newInstance(it, DigitalFavNumber(), "", favNumberList) },
+                        REQUEST_CODE_DIGITAL_SEARCH_NUMBER)
             }
         })
         postpaidClientNumberWidget.setPostpaidListener(object : ClientNumberPostpaidListener {
@@ -211,17 +209,22 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         postpaidClientNumberWidget.clearFocus()
     }
 
-    override fun onClickRecentNumber(telcoRecommendation: TelcoRecommendation) {
-        Toast.makeText(activity, telcoRecommendation.clientNumber, Toast.LENGTH_SHORT).show()
+    override fun onClickItemRecentNumber(telcoRecommendation: TelcoRecommendation) {
+        postpaidClientNumberWidget.setInputNumber(telcoRecommendation.clientNumber)
     }
 
     override fun setFavNumbers(data: TelcoRechargeFavNumberData) {
-        this.favNumberList = data.favNumber.favNumberList
+        favNumberList.addAll(data.favNumber.favNumberList)
     }
 
     override fun onDestroy() {
         enquiryViewModel.clear()
         super.onDestroy()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        postpaidClientNumberWidget.clearFocus()
     }
 
     companion object {

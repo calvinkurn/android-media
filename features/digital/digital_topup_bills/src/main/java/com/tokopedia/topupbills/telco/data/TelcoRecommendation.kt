@@ -25,6 +25,9 @@ class TelcoRecommendation(
         @SerializedName("type")
         @Expose
         val type: String,
+        @SerializedName("categoryId")
+        @Expose
+        val categoryId: Int,
         @SerializedName("productId")
         @Expose
         val productId: Int,

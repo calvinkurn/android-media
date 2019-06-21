@@ -40,7 +40,7 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
             }
 
             override fun onClickSeeMoreProduct(itemProduct: TelcoProductDataCollection) {
-
+                //TODO make bottom sheet here
             }
         })
         recyclerView.adapter = adapter

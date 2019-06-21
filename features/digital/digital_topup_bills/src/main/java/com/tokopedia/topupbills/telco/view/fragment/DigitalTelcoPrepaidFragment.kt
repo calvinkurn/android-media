@@ -14,6 +14,7 @@ import android.widget.Toast
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.data.*
+import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
@@ -37,9 +38,12 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var buyWidget: DigitalTelcoBuyWidget
     private lateinit var sharedModel: SharedProductTelcoViewModel
     private lateinit var layoutProgressBar: RelativeLayout
-    private lateinit var favNumberList: List<TelcoFavNumber>
+
+    private val favNumberList = mutableListOf<TelcoFavNumber>()
     private var operatorData: TelcoCustomComponentData =
             TelcoCustomComponentData(TelcoCustomData(mutableListOf()))
+    private var selectedProductId = ""
+    private var selectedCategoryId = 0
 
     override fun onStart() {
         context?.let {
@@ -173,13 +177,12 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 tabLayout.visibility = View.GONE
                 viewPager.visibility = View.GONE
                 sharedModel.setShowTotalPrice(false)
+                selectedProductId = ""
             }
 
             override fun onClientNumberHasFocus(clientNumber: String) {
-                if (::favNumberList.isInitialized) {
-                    startActivityForResult(activity?.let { DigitalSearchNumberActivity.newInstance(it, DigitalFavNumber(), "", favNumberList) },
-                            REQUEST_CODE_DIGITAL_SEARCH_NUMBER)
-                }
+                startActivityForResult(activity?.let { DigitalSearchNumberActivity.newInstance(it, DigitalFavNumber(), clientNumber, favNumberList) },
+                        REQUEST_CODE_DIGITAL_SEARCH_NUMBER)
             }
         })
     }
@@ -191,17 +194,32 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     fun renderViewPager(operatorId: String) {
         val listProductTab = mutableListOf<DigitalTabTelcoItem>()
         listProductTab.add(DigitalTabTelcoItem(DigitalTelcoProductFragment.newInstance(
-                TelcoComponentType.PRODUCT_PULSA, TelcoComponentName.PRODUCT_PULSA, operatorId, TelcoProductType.PRODUCT_GRID),
+                TelcoComponentType.PRODUCT_PULSA, TelcoComponentName.PRODUCT_PULSA, operatorId, TelcoProductType.PRODUCT_GRID, selectedProductId),
                 TelcoComponentName.PRODUCT_PULSA))
         listProductTab.add(DigitalTabTelcoItem(DigitalTelcoProductFragment.newInstance(
-                TelcoComponentType.PRODUCT_PAKET_DATA, TelcoComponentName.PRODUCT_PAKET_DATA, operatorId, TelcoProductType.PRODUCT_LIST),
+                TelcoComponentType.PRODUCT_PAKET_DATA, TelcoComponentName.PRODUCT_PAKET_DATA, operatorId, TelcoProductType.PRODUCT_LIST, selectedProductId),
                 TelcoComponentName.PRODUCT_PAKET_DATA))
         listProductTab.add(DigitalTabTelcoItem(DigitalTelcoProductFragment.newInstance(
-                TelcoComponentType.PRODUCT_ROAMING, TelcoComponentName.PRODUCT_ROAMING, operatorId, TelcoProductType.PRODUCT_LIST),
+                TelcoComponentType.PRODUCT_ROAMING, TelcoComponentName.PRODUCT_ROAMING, operatorId, TelcoProductType.PRODUCT_LIST, selectedProductId),
                 TelcoComponentName.PRODUCT_ROAMING))
         val pagerAdapter = DigitalTelcoProductTabAdapter(listProductTab, childFragmentManager)
         viewPager.adapter = pagerAdapter
         tabLayout.setupWithViewPager(viewPager)
+        setTabFromProductSelected()
+    }
+
+    fun setTabFromProductSelected() {
+        var itemId = 0
+        if (selectedProductId.isNotEmpty()) {
+            if (selectedCategoryId == TelcoCategoryType.CATEGORY_PULSA) {
+                itemId = 0
+            } else if (selectedCategoryId == TelcoCategoryType.CATEGORY_PAKET_DATA) {
+                itemId = 1
+            } else if (selectedCategoryId == TelcoCategoryType.CATEGORY_ROAMING) {
+                itemId = 2
+            }
+        }
+        viewPager.setCurrentItem(itemId, true)
     }
 
     override fun getMapCatalogMenuDetail(): Map<String, Any> {
@@ -211,6 +229,10 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     override fun handleCallbackSearchNumber(orderClientNumber: TelcoFavNumber) {
+        if (orderClientNumber.productId.isNotEmpty() && orderClientNumber.categoryId.isNotEmpty()) {
+            selectedProductId = orderClientNumber.productId
+            selectedCategoryId = Integer.valueOf(orderClientNumber.categoryId)
+        }
         telcoClientNumberWidget.setInputNumber(orderClientNumber.clientNumber)
         telcoClientNumberWidget.clearFocus()
     }
@@ -219,23 +241,30 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         telcoClientNumberWidget.clearFocus()
     }
 
-    override fun onClickRecentNumber(telcoRecommendation: TelcoRecommendation) {
-        Toast.makeText(activity, telcoRecommendation.clientNumber, Toast.LENGTH_SHORT).show()
+    override fun onClickItemRecentNumber(telcoRecommendation: TelcoRecommendation) {
+        selectedProductId = telcoRecommendation.productId.toString()
+        selectedCategoryId = telcoRecommendation.categoryId
+        telcoClientNumberWidget.setInputNumber(telcoRecommendation.clientNumber)
     }
 
     override fun getMapFavNumbers(): Map<String, Any> {
-        var mapParam = HashMap<String, kotlin.Any>()
+        var mapParam = HashMap<String, Any>()
         mapParam.put("categoryID", TelcoComponentType.FAV_NUMBER_PREPAID)
         return mapParam
     }
 
     override fun setFavNumbers(data: TelcoRechargeFavNumberData) {
-        this.favNumberList = data.favNumber.favNumberList
+        favNumberList.addAll(data.favNumber.favNumberList)
     }
 
     override fun onDestroy() {
         sharedModel.clear()
         super.onDestroy()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        telcoClientNumberWidget.clearFocus()
     }
 
     companion object {

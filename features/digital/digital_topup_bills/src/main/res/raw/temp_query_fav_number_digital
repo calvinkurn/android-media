@@ -1,5 +1,5 @@
-mutation favouriteNumber($categoryId : Int!){
-  recharge_favorite_number(categoryID: $categoryId) {
+mutation favouriteNumber($categoryID : Int!){
+  recharge_favorite_number(categoryID: $categoryID) {
     list {
       client_number
       label

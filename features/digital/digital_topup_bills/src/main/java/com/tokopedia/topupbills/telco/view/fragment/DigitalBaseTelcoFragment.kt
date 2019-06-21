@@ -210,7 +210,7 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
         if (recentNumbers.isNotEmpty()) {
             recentNumbersView.setListener(object : DigitalRecentTransactionWidget.ActionListener {
                 override fun onClickRecentNumber(telcoRecommendation: TelcoRecommendation) {
-                    onClickRecentNumber(telcoRecommendation)
+                    onClickItemRecentNumber(telcoRecommendation)
                 }
             })
             recentNumbersView.setRecentNumbers(recentNumbers)
@@ -220,7 +220,7 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
         }
     }
 
-    protected abstract fun onClickRecentNumber(telcoRecommendation: TelcoRecommendation)
+    protected abstract fun onClickItemRecentNumber(telcoRecommendation: TelcoRecommendation)
 
     fun renderPromoList(promos: List<TelcoPromo>) {
         if (promos.isNotEmpty()) {
