@@ -230,6 +230,8 @@ public interface ApplinkConst {
     String CATEGORY_BELANJA = "tokopedia://category_belanja/{category_name}";
     String CATEGORY_BELANJA_DEFAULT = "tokopedia://category_belanja/";
 
+    String CATEGORY = "tokopedia://category";
+
     interface WebViewUrl {
         String SALDO_DETAIL = "https://m.tokopedia.com/deposit";
     }

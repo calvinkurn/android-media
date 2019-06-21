@@ -19,6 +19,8 @@ import com.tokopedia.browse.categoryNavigation.analytics.CategoryAnalytics
 import com.tokopedia.browse.categoryNavigation.fragments.CategoryLevelTwoFragment
 import com.tokopedia.browse.categoryNavigation.fragments.CategorylevelOneFragment
 import com.tokopedia.browse.categoryNavigation.fragments.Listener
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey.APP_CATEGORY_BROWSE_V1
 import kotlinx.android.synthetic.main.activity_category_browse.*
 import kotlinx.android.synthetic.main.activity_category_browse.empty_view
 import kotlinx.android.synthetic.main.empty_category_view.*
@@ -38,8 +40,14 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
 
 
     companion object {
+        @JvmStatic
         fun newIntent(context: Context): Intent {
             return Intent(context, BaseCategoryBrowseActivity::class.java)
+        }
+
+        fun isNewCategoryEnabled(context: Context): Boolean {
+            val remoteConfig = FirebaseRemoteConfigImpl(context)
+            return remoteConfig.getBoolean(APP_CATEGORY_BROWSE_V1, true)
         }
     }
 

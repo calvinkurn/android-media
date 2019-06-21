@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 
 
 class CategoryBrowseActivity : BaseCategoryBrowseActivity() {
@@ -22,7 +23,11 @@ class CategoryBrowseActivity : BaseCategoryBrowseActivity() {
         @DeepLink(ApplinkConst.CATEGORY_BELANJA_DEFAULT)
         @JvmStatic
         fun getCategoryBrowseDefaultIntent(context: Context, extras: Bundle): Intent {
-            return Intent(context, CategoryBrowseActivity::class.java)
+            return if(isNewCategoryEnabled(context)) {
+                Intent(context, CategoryBrowseActivity::class.java)
+            }else {
+                RouteManager.getIntent(context,ApplinkConst.CATEGORY)
+            }
         }
     }
 }
