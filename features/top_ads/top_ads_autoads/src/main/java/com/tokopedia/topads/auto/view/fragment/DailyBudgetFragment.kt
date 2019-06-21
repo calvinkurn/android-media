@@ -85,7 +85,7 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
         budgetViewModel.getBudgetInfo(userSession.shopId.toInt(), requestType, source)
         budgetViewModel.budgetInfoData.observe(this@DailyBudgetFragment, Observer {
             val data = it!!.get(0)
-            var budget = 0
+            var budget = data.minDailyBudget
             val status = arguments!!.getInt(KEY_AUTOADS_STATUS, 0)
             if (status == AutoAdsStatus.STATUS_ACTIVE) {
                 budget = arguments!!.getInt(KEY_DAILY_BUDGET, 0)
