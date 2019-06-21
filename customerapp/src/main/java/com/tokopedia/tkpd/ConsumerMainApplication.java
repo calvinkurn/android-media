@@ -80,7 +80,6 @@ import com.tokopedia.payment.setting.util.PaymentSettingUrlKt;
 import com.tokopedia.phoneverification.PhoneVerificationConst;
 import com.tokopedia.product.detail.data.util.ProductDetailConstant;
 import com.tokopedia.product.manage.item.imagepicker.util.CatalogConstant;
-import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.recentview.data.api.RecentViewUrl;
 import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
 import com.tokopedia.sessioncommon.data.SessionCommonUrl;
@@ -383,7 +382,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         FlowManager.init(new FlowConfig.Builder(this)
                 .addDatabaseHolder(ProductDraftGeneratedDatabaseHolder.class)
                 .build());
-        PushNotification.initDatabase(getApplicationContext());
         CategoryDbFlow.initDatabase(getApplicationContext());
     }
 
