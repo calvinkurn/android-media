@@ -93,7 +93,6 @@ import javax.inject.Inject;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -394,7 +393,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 }
 
                 if (presenter != null) {
-                    presenter.getSearhHint();
+                    presenter.getSearchHint();
                     presenter.getHomeData();
                     presenter.getHeaderData(true);
                 }
@@ -688,7 +687,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         resetFeedState();
         removeNetworkError();
         if (presenter != null) {
-            presenter.getSearhHint();
+            presenter.getSearchHint();
             presenter.getHomeData();
             presenter.getHeaderData(false);
         }

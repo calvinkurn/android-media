@@ -5,23 +5,34 @@ import android.support.annotation.NonNull;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.home.beranda.data.model.KeywordSearchData;
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData;
-import com.tokopedia.home.beranda.domain.interactor.*;
-import com.tokopedia.home.beranda.domain.model.HomeData;
+import com.tokopedia.home.beranda.domain.interactor.GetLocalHomeDataUseCase;
+import com.tokopedia.home.beranda.domain.interactor.GetHomeTokopointsDataUseCase;
+import com.tokopedia.home.beranda.domain.interactor.GetKeywordSearchUseCase;
+import com.tokopedia.home.beranda.domain.interactor.GetFeedTabUseCase;
+import com.tokopedia.home.beranda.domain.interactor.GetHomeDataUseCase;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.presentation.view.HomeContract;
 import com.tokopedia.home.beranda.presentation.view.adapter.TrackedVisitable;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.*;
-import com.tokopedia.home.beranda.presentation.view.subscriber.*;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeRecommendationFeedViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
+import com.tokopedia.home.beranda.presentation.view.subscriber.KeywordSearchHomeSubscriber;
+import com.tokopedia.home.beranda.presentation.view.subscriber.GetFeedTabsSubscriber;
+import com.tokopedia.home.beranda.presentation.view.subscriber.PendingCashbackHomeSubscriber;
+import com.tokopedia.home.beranda.presentation.view.subscriber.TokocashHomeSubscriber;
+import com.tokopedia.home.beranda.presentation.view.subscriber.TokopointHomeSubscriber;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
 import com.tokopedia.topads.sdk.listener.ImpressionListener;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
-import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -35,7 +46,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import rx.subscriptions.Subscriptions;
@@ -115,7 +125,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         }
         getTokocashBalance();
         getTokopoint();
-        getSearhHint();
+        getSearchHint();
     }
 
     @Override
@@ -486,7 +496,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         }
     }
 
-    public void getSearhHint(){
+    public void getSearchHint(){
         Observable<GraphqlResponse> graphqlResponseObservable = getKeywordSearchObservable();
         if (graphqlResponseObservable != null) {
             compositeSubscription.add(graphqlResponseObservable.subscribeOn(Schedulers.newThread())
