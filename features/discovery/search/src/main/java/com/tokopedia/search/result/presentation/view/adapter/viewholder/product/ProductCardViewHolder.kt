@@ -283,7 +283,7 @@ open class ProductCardViewHolder(
     }
 
     private fun initReviewCount(productItem: ProductItemViewModel) {
-        setReviewCountPadding(productItem)
+//        setReviewCountMargin(productItem)
 
         val isReviewCountVisible = isReviewCountVisible(productItem)
         itemView.productCardView?.setReviewVisible(isReviewCountVisible)
@@ -297,7 +297,7 @@ open class ProductCardViewHolder(
         return productItem.countReview != 0
     }
 
-    private fun setReviewCountPadding(productItem: ProductItemViewModel) {
+    private fun setReviewCountMargin(productItem: ProductItemViewModel) {
         val marginLeftDp = if (isRatingViewVisible(productItem)) 4f else 8f
         val marginLeftPixel = convertDpToPixel(marginLeftDp)
 
