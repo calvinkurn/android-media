@@ -41,7 +41,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/image"
             app:layout_constraintTop_toBottomOf="@+id/image"
-            app:typographyType="heading_5"
             tools:text="Nama" />
 
         <!--TODO:: Change this to Unify Label -->
