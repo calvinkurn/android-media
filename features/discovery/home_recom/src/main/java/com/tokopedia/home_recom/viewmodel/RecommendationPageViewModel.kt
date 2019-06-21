@@ -32,7 +32,7 @@ class RecommendationPageViewModel @Inject constructor(private val graphqlReposit
     val productInfoDataModel = MutableLiveData<ProductInfoDataModel>()
 
     val xSource = "recom_landing_page"
-    val pageName = "recom_1"
+    val pageName = "recom_1,recom_2,recom_3"
 
     fun getPrimaryProduct(productId: String,
                           context: Context) {

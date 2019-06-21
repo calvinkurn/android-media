@@ -162,7 +162,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
                         list.add(RecommendationItemDataModel(it, this))
                     }
                 }
-//                TYPE_CAROUSEL -> list.add(RecommendationCarouselDataModel(recommendationWidget.title, recommendationWidget.recommendationItemList, this))
+                TYPE_CAROUSEL -> list.add(RecommendationCarouselDataModel(recommendationWidget.title, recommendationWidget.recommendationItemList, this))
             }
         }
         return list
@@ -253,7 +253,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
         linkerData.description = productDetailData.name
         linkerData.imgUri = productDetailData.imageUrl
         linkerData.ogUrl = null
-        linkerData.type = LinkerData.PRODUCT_TYPE
+        linkerData.type = "Recommendation"
         linkerData.uri =  "https://m.tokopedia.com/rekomendasi/${productDetailData.id}"
         val linkerShareData = LinkerShareData()
         linkerShareData.linkerData = linkerData
