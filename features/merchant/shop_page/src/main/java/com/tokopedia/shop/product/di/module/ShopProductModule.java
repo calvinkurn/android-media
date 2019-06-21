@@ -266,14 +266,14 @@ public class ShopProductModule {
 
     @ShopProductScope
     @Provides
-    public DeleteShopProductTomeUseCase provideDeleteShopProductTomeUseCase() {
-        return new DeleteShopProductTomeUseCase();
+    public DeleteShopProductTomeUseCase provideDeleteShopProductTomeUseCase(@ApplicationContext Context context) {
+        return new DeleteShopProductTomeUseCase(context);
     }
 
     @ShopProductScope
     @Provides
-    public DeleteShopProductAceUseCase provideDeleteShopProductAceUseCase() {
-        return new DeleteShopProductAceUseCase();
+    public DeleteShopProductAceUseCase provideDeleteShopProductAceUseCase(@ApplicationContext Context context) {
+        return new DeleteShopProductAceUseCase(context);
     }
 
     @ShopProductScope

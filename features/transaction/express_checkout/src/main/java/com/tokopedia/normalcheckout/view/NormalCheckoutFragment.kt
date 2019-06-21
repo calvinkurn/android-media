@@ -34,10 +34,7 @@ import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapter
 import com.tokopedia.expresscheckout.view.variant.adapter.CheckoutVariantAdapterTypeFactory
 import com.tokopedia.expresscheckout.view.variant.viewmodel.*
 import com.tokopedia.imagepreview.ImagePreviewActivity
-import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.showErrorToaster
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.normalcheckout.adapter.NormalCheckoutAdapterTypeFactory
 import com.tokopedia.normalcheckout.constant.ATC_AND_BUY
@@ -218,6 +215,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         originalProduct?.run {
             onProductChange(this, selectedVariantId)
         }
+        prescription_ticker.showWithCondition(productInfoAndVariant.productInfo.basic.needPrescription)
     }
 
     private fun goToHargaFinal() {

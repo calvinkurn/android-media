@@ -134,7 +134,7 @@
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
-        tools:text="Proteksi Gadget (3 Barang)" />
+        tools:text="Proteksi Produk (3 Barang)" />
 
     <TextView
         android:id="@+id/tv_purchase_protection_fee"
