@@ -473,9 +473,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         for (ShipmentCartItemModel shipmentCartItemModel : shipmentAdapter.getShipmentCartItemModelList()) {
             if (shipmentCartItemModel.isSaveStateFlag()) {
                 countHasSaveState++;
-                shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
+                List<DataCheckoutRequest> dataCheckoutRequests = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
                         shipmentCartItemModel.getCartString(), "", "", ""
                 );
+                shipmentPresenter.setDataCheckoutRequestList(dataCheckoutRequests);
             }
         }
 
@@ -1003,16 +1004,18 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             String firstInvoiceEventLabel = "";
             for (ShipmentCartItemModel shipmentCartItemModel : shipmentAdapter.getShipmentCartItemModelList()) {
                 if (shipmentCartItemModel.isSaveStateFlag()) {
-                    shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
+                    List<DataCheckoutRequest> dataCheckoutRequestList = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
                             shipmentCartItemModel.getCartString(), "", "", ""
                     );
+                    shipmentPresenter.setDataCheckoutRequestList(dataCheckoutRequestList);
                 } else {
-                    shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
+                    List<DataCheckoutRequest> dataCheckoutRequestList = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
                             shipmentCartItemModel.getCartString(),
                             shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getEstimatedTimeDelivery(),
                             String.valueOf(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperPrice()),
                             shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getName()
                     );
+                    shipmentPresenter.setDataCheckoutRequestList(dataCheckoutRequestList);
                 }
                 if (TextUtils.isEmpty(firstInvoiceEventLabel) && shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
                     boolean isPromo = !TextUtils.isEmpty(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getPromoCode());
@@ -1030,12 +1033,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     ConstantTransactionAnalytics.EventLabel.SUCCESS);
 
             for (ShipmentCartItemModel shipmentCartItemModel : shipmentAdapter.getShipmentCartItemModelList()) {
-                shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
+                List<DataCheckoutRequest> dataCheckoutRequestList = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
                         shipmentCartItemModel.getCartString(),
                         shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getEstimatedTimeDelivery(),
                         String.valueOf(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperPrice()),
                         shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getName()
                 );
+                shipmentPresenter.setDataCheckoutRequestList(dataCheckoutRequestList);
             }
 
             List<DataCheckoutRequest> dataCheckoutRequestsStep3 = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentAdapter.getPromoGlobalStackData(), shipmentAdapter.getShipmentCartItemModelList());
@@ -2011,15 +2015,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 if (!TextUtils.isEmpty(recommendedCourier.getPromoCode())) {
                     checkCourierPromo(recommendedCourier, cartItemPosition);
                 }
-                shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
+                List<DataCheckoutRequest> dataCheckoutRequestsShipping = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
                         shipmentCartItemModel.getCartString(),
                         shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getEstimatedTimeDelivery(),
                         String.valueOf(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperPrice()),
                         shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getName()
                 );
-                List<DataCheckoutRequest> dataCheckoutRequests = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentAdapter.getPromoGlobalStackData(), shipmentAdapter.getShipmentCartItemModelList());
+                shipmentPresenter.setDataCheckoutRequestList(dataCheckoutRequestsShipping);
+                List<DataCheckoutRequest> dataCheckoutRequestsPromo = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentAdapter.getPromoGlobalStackData(), shipmentAdapter.getShipmentCartItemModelList());
                 shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
-                        dataCheckoutRequests,
+                        dataCheckoutRequestsPromo,
                         EnhancedECommerceActionField.STEP_3,
                         ConstantTransactionAnalytics.EventAction.CLICK_CHECKLIST_PILIH_DURASI_PENGIRIMAN,
                         !TextUtils.isEmpty(recommendedCourier.getPromoCode()) ? ConstantTransactionAnalytics.EventLabel.PROMO :
@@ -2092,15 +2097,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.setSelectedCourier(cartItemPosition, courierItemData);
             shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
             checkCourierPromo(courierItemData, cartItemPosition);
-            shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
+            List<DataCheckoutRequest> dataCheckoutRequestsShipping = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
                     shipmentCartItemModel.getCartString(),
                     courierItemData.getEstimatedTimeDelivery(),
                     String.valueOf(courierItemData.getShipperPrice()),
                     courierItemData.getName()
             );
-            List<DataCheckoutRequest> dataCheckoutRequests = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentAdapter.getPromoGlobalStackData(), shipmentAdapter.getShipmentCartItemModelList());
+            shipmentPresenter.setDataCheckoutRequestList(dataCheckoutRequestsShipping);
+            List<DataCheckoutRequest> dataCheckoutRequestsPromo = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentAdapter.getPromoGlobalStackData(), shipmentAdapter.getShipmentCartItemModelList());
             shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
-                    dataCheckoutRequests,
+                    dataCheckoutRequestsPromo,
                     EnhancedECommerceActionField.STEP_3,
                     ConstantTransactionAnalytics.EventAction.CLICK_CHECKLIST_PILIH_DURASI_PENGIRIMAN,
                     isPromoCourier ? ConstantTransactionAnalytics.EventLabel.PROMO :
