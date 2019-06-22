@@ -39,6 +39,7 @@
                 android:textColor="@color/charcoal_grey_88"
                 android:maxLines="2"
                 android:ellipsize="end"
+                app:typographyType="heading_5"
                 tools:text="Nama"/>
 
             <LinearLayout

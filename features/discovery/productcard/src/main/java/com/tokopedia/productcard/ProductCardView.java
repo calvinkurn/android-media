@@ -81,6 +81,8 @@ public class ProductCardView extends BaseCustomView {
         reviewCountView = view.findViewById(R.id.reviewCount);
         shopBadgesContainer = view.findViewById(R.id.shopBadgesContainer);
         textLocation = view.findViewById(R.id.textLocation);
+
+        textName.setLineSpacing(0f, 1f);
     }
 
     public void setTitle(String title) {
