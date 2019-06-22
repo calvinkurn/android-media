@@ -50,19 +50,10 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <TextView
+                <com.tokopedia.unifycomponents.Label
                     android:id="@+id/textDiscount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    style="@style/TextView"
-                    android:textStyle="bold"
-                    android:textColor="@color/discountTextColor"
-                    android:textSize="@dimen/sp_10"
-                    android:background="@drawable/discount_text_background"
-                    android:paddingLeft="@dimen/dp_4"
-                    android:paddingRight="@dimen/dp_4"
-                    android:paddingTop="@dimen/dp_2"
-                    android:paddingBottom="@dimen/dp_2"
                     android:visibility="invisible"
                     />
 

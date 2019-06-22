@@ -42,26 +42,15 @@
             app:layout_constraintTop_toBottomOf="@+id/image"
             tools:text="Nama" />
 
-        <!--TODO:: Change this to Unify Label -->
-        <TextView
+        <com.tokopedia.unifycomponents.Label
             android:id="@+id/textDiscount"
-            android:paddingBottom="@dimen/dp_2"
-            android:paddingTop="@dimen/dp_2"
-            android:paddingRight="@dimen/dp_4"
-            android:paddingLeft="@dimen/dp_4"
-            android:paddingStart="@dimen/dp_4"
-            android:paddingEnd="@dimen/dp_4"
-            style="@style/TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/discount_text_background"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_6"
-            android:textColor="@color/discountTextColor"
-            android:textSize="@dimen/sp_10"
-            android:textStyle="bold"
             android:visibility="gone"
+            app:labelType="general_light_red"
             app:layout_constraintStart_toStartOf="@+id/image"
             app:layout_constraintTop_toBottomOf="@+id/textName"
             tools:text="100%"
