@@ -287,13 +287,6 @@ android {
     }
 }
 
-afterEvaluate {
-    dependencies {
-        liveDevImplementation rootProject.ext.instabugDependencies.instabug
-        stagingDevImplementation rootProject.ext.instabugDependencies.instabug
-    }
-}
-
 dependencies {
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
@@ -498,9 +491,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.multiDex
-
-    implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    annotationProcessor rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
