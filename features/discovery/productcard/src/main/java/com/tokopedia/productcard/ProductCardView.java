@@ -243,7 +243,7 @@ public class ProductCardView extends BaseCustomView {
 
     private void setMarginsToView(View view, int leftPixel, int topPixel, int rightPixel, int bottomPixel) {
         if(view.getLayoutParams() instanceof ConstraintLayout.LayoutParams) {
-            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) textLocation.getLayoutParams();
+            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) view.getLayoutParams();
 
             layoutParams.leftMargin = leftPixel < 0 ? layoutParams.leftMargin : leftPixel;
             layoutParams.topMargin = topPixel < 0 ? layoutParams.topMargin : topPixel;

@@ -283,7 +283,7 @@ open class ProductCardViewHolder(
     }
 
     private fun initReviewCount(productItem: ProductItemViewModel) {
-//        setReviewCountMargin(productItem)
+        setReviewCountMargin(productItem)
 
         val isReviewCountVisible = isReviewCountVisible(productItem)
         itemView.productCardView?.setReviewVisible(isReviewCountVisible)
