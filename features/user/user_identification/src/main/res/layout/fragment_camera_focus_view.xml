@@ -7,7 +7,7 @@
     android:layout_centerInParent="true"
     android:background="@color/white">
 
-    <com.otaliastudios.cameraview.CameraView
+    <com.tokopedia.cameraview.CameraView
         android:id="@+id/full_camera_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
