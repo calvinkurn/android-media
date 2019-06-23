@@ -39,7 +39,8 @@ class HelperTextInputLayout @JvmOverloads constructor(
     var helperTextColor: ColorStateList? = null
         set(value) {
             field = value
-            helperTextView.setTextColor(value)
+            if (value != null)
+                helperTextView.setTextColor(value)
         }
     var helperTextAppearance =  R.style.HelperTextAppearance
         set(value) {
