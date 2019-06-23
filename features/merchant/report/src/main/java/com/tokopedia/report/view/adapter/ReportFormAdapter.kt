@@ -110,7 +110,7 @@ class ReportFormAdapter(private val item: ProductReportReason,
     fun toggleActiveSubmit(inputValid: Boolean) {
         if (getItemViewType(itemCount - 1) == TYPE_SUBMIT && inputValid != isSubmitEnable){
             isSubmitEnable = inputValid
-            notifyItemChanged(itemCount - 1)
+            notifyDataSetChanged()
         }
     }
 
