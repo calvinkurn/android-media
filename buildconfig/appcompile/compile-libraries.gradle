@@ -42,7 +42,6 @@ include "libraries:websocket"
 include "libraries:williamchart"
 include "libraries:YouTubeAndroidPlayerApi"
 include "libraries:youtubeutil"
-include "libraries:sharecontent"
 include "libraries:track"
 include "libraries:trackinterface"
 include "libraries:graph_view"
@@ -54,9 +53,5 @@ include "libraries:collapsing_tab_layout"
 
 include "libraries:videouploader"
 
-include "libraries:unify:unify_icon"
-include "libraries:unify:unify_principles"
-include "libraries:unify:unify_components"
-include "libraries:unify:unify_compositions:coach_mark"
 include "libraries:unify:unify_compositions:banner"
 

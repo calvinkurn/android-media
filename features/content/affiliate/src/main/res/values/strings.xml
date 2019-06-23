@@ -23,7 +23,7 @@
     <string name="text_empty_have_recommendation_formatted">Kamu masih memiliki %1$s jatah kurasi yang bisa diambil.</string>
 
     <!--EXPLORE-->
-    <string name="text_search_hint">Cari Barang Postmu</string>
+    <string name="text_search_hint">Cari Rekomendasimu</string>
     <string name="text_empty_search_title">Duh, kami gak nemu yang kamu cari.</string>
     <string name="text_empty_search_desc">Bisa coba pakai kata kunci lain, ya.</string>
     <string name="text_empty_product_title">Barang yang kamu cari belum ada.</string>
@@ -39,8 +39,8 @@
     <string name="text_button_apply">Terapkan</string>
     <string name="text_title_filter">Filter</string>
     <string name="text_button_sort">Sort</string>
-    <string name="title_showcase">Cek dan Bagikan Hasil Postmu</string>
-    <string name="desc_showcase">Semua kurasi akan disimpan di profilmu</string>
+    <string name="aff_title_showcase">Cek dan Bagikan Hasil Postmu</string>
+    <string name="aff_desc_showcase">Semua kurasi akan disimpan di profilmu</string>
     <string name="af_product_title">Barang lainnya</string>
     <string name="af_product_desc">Semua ada loh. Lihat yuk!</string>
     <string name="af_get_commission">Raih Komisi</string>

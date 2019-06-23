@@ -8,12 +8,16 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresPermission;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.tokopedia.cameraview.Facing;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.homecredit.R;
+import com.tokopedia.homecredit.applink.Constants;
 
 import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.homecredit.view.activity.HomeCreditRegisterActivity.HCI_KTP_IMAGE_PATH;
@@ -51,6 +55,8 @@ public class HomeCreditSelfieFragment extends HomeCreditBaseCameraFragment {
         cameraLayout = view.findViewById(R.id.hc_camera_layout);
         cameraView.setFacing(Facing.FRONT);
         cameraView.setZoom(0f);
+        cameraOverlayImage = view.findViewById(R.id.selfieid_cutout);
+        setCameraOverlayImage(cameraOverlayImage);
     }
 
 
@@ -63,5 +69,16 @@ public class HomeCreditSelfieFragment extends HomeCreditBaseCameraFragment {
                 getActivity().finish();
             }
         });
+    }
+
+    private void setCameraOverlayImage(ImageView cameraOverlayImg){
+        String cameraType = getActivity().getIntent().getStringExtra(Constants.CAMERA_TYPE);
+        String cutOutImgUrl = getActivity().getIntent().getStringExtra(Constants.CUST_OVERLAY_URL);
+        if(Constants.SLFE_NO_OVERLAY.equalsIgnoreCase(cameraType)){
+            cameraOverlayImg.setVisibility(View.GONE);
+        }
+        else if(!TextUtils.isEmpty(cutOutImgUrl)){
+            ImageHandler.loadImageAndCache(cameraOverlayImg, cutOutImgUrl);
+        }
     }
 }
