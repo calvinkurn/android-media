@@ -45,7 +45,7 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
             val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
             return RouteManager.getIntent(context,
-                    ApplinkConstInternalMarketplace.HOME_RECOMMENDATION_WITH_ID,
+                    ApplinkConstInternalMarketplace.HOME_RECOMMENDATION,
                     uri.lastPathSegment) ?: Intent()
         }
     }
