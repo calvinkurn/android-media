@@ -12,7 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.otaliastudios.cameraview.Facing;
+import com.tokopedia.cameraview.Facing;
 import com.tokopedia.homecredit.R;
 import com.tokopedia.homecredit.view.Utils;
 
