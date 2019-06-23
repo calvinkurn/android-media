@@ -203,6 +203,7 @@ class ReportFormAdapter(private val item: ProductReportReason,
 
                 val input = inputs[field.key]?.toString() ?: ""
                 textInputLayoutReport.hint = field.value
+                textInputLayoutReport.counterMaxLength = field.max
                 textInputLayoutReport.helperText = context.getString(R.string.product_helper_product_report,
                         field.min.toString())
                 edit_text_report.filters = arrayOf(InputFilter.LengthFilter(field.max))

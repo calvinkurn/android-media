@@ -77,7 +77,7 @@ class UploadPhotoAdapter (var type: String,
     inner class PlaceHolder(view: View):RecyclerView.ViewHolder(view){
         init {
             itemView.setOnClickListener {
-                addPhotoListener.invoke(type, maxTotal - itemCount)
+                addPhotoListener.invoke(type, maxTotal+1 - itemCount)
             }
         }
     }

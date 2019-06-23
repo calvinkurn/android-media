@@ -10,11 +10,13 @@
     android:paddingEnd="@dimen/dp_16"
     style="@style/HintTextInputLayout"
     android:hint="@string/product_label_product_report"
-    app:helperText="@string/product_helper_product_report">
+    app:helperText="@string/product_helper_product_report"
+    app:hintTextAppearance="@style/TextInputLayout.HintText">
 
     <EditText
         android:id="@+id/edit_text_report"
         style="@style/EditText"
+        android:layout_width="match_parent"
         android:inputType="text"
         android:maxLength="@integer/product_max_character_report"
         android:focusable="false"/>

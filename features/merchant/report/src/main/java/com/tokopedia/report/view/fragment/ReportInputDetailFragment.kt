@@ -40,7 +40,7 @@ class ReportInputDetailFragment : BaseDaggerFragment() {
             btn_cont.isEnabled = true
         } else {
             input.filters = arrayOf(InputFilter.LengthFilter(maxChar))
-            btn_cont.isEnabled = !value.isNotBlank()
+            btn_cont.isEnabled = value.isNotBlank()
             input.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(p0: Editable?) {}
 
@@ -62,7 +62,7 @@ class ReportInputDetailFragment : BaseDaggerFragment() {
     }
 
     fun sendInputResult() {
-        if (input.text.toString().length >= maxChar){
+        if (input.text.toString().length >= minChar){
             val intent = Intent().putExtra(INPUT_VALUE, input.text.toString())
             activity?.run {
                 setResult(Activity.RESULT_OK, intent)
