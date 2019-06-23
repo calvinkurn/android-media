@@ -6,6 +6,6 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_
 /**
  * Created by fwidjaja on 2019-05-31.
  */
-interface DistrictRecommendationBottomSheetListener: CustomerView {
+interface DistrictRecommendationBottomSheetListener : CustomerView {
     fun onSuccessGetDistrictRecommendation(getDistrictRecommendationResponseUiModel: DistrictRecommendationResponseUiModel, numPage: String)
 }

@@ -6,8 +6,8 @@
     <TextView
         android:id="@+id/tv_chips_item"
         style="@style/TextView.Small.BlackSecondary"
-        android:paddingTop="@dimen/dp_12"
-        android:paddingBottom="@dimen/dp_12"
+        android:paddingTop="@dimen/dp_10"
+        android:paddingBottom="@dimen/dp_10"
         android:paddingLeft="@dimen/dp_12"
         android:paddingRight="@dimen/dp_12"
         android:background="@drawable/bg_chips_item_layout" />

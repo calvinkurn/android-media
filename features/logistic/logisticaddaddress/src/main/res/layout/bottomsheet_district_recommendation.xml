@@ -58,14 +58,12 @@
 
             <ImageView
                 android:id="@+id/ic_close"
-                android:layout_marginLeft="14dp"
-                android:layout_marginStart="14dp"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_marginStart="@dimen/dp_10"
                 android:layout_width="18dp"
                 android:layout_height="18dp"
                 android:src="@drawable/ic_close_btn"
                 android:contentDescription="@string/kota_kecamatan"
-                android:layout_toRightOf="@id/et_search_district_recommendation"
-                android:layout_toEndOf="@id/et_search_district_recommendation"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginRight="19dp"

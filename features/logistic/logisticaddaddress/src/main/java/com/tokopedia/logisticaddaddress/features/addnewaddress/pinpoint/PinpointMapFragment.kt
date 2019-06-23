@@ -43,6 +43,7 @@ import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressComponent
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
 import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
+import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.AddEditAddressActivity
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetFragment
@@ -61,7 +62,7 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 2019-05-08.
  */
-class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, OnMapReadyCallback,
+class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapReadyCallback,
         AutocompleteBottomSheetFragment.ActionListener, HasComponent<AddNewAddressComponent> {
 
     private var googleMap: GoogleMap? = null
@@ -82,9 +83,10 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, OnMapReady
     private var districtId: Int? = null
     private val GREEN_ARGB = 0x40388E3C
     private var isMismatchSolved: Boolean? = null
-    private var zipCodes : MutableList<String>? = null
+    private var zipCodes: MutableList<String>? = null
     private var saveAddressDataModel: SaveAddressDataModel? = null
     protected var addNewAddressComponent: AddNewAddressComponent? = null
+    private var isChangesRequested: Boolean? = null
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     private val SCREEN_NAME = "/user/address/create/cart/pinpoint1"
 
@@ -121,6 +123,7 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, OnMapReady
                     putInt(AddressConstants.EXTRA_DISTRICT_ID, extra.getInt(AddressConstants.EXTRA_DISTRICT_ID))
                     putBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, extra.getBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED))
                     putParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL, extra.getParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL))
+                    putBoolean(AddressConstants.EXTRA_IS_CHANGES_REQUESTED, extra.getBoolean(AddressConstants.EXTRA_IS_CHANGES_REQUESTED))
                 }
                 permissionCheckerHelper = PermissionCheckerHelper()
             }
@@ -140,6 +143,7 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, OnMapReady
             isMismatchSolved = arguments?.getBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED)
             saveAddressDataModel = arguments?.getParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL)
             zipCodes = saveAddressDataModel?.zipCodes?.toMutableList()
+            isChangesRequested = arguments?.getBoolean(AddressConstants.EXTRA_IS_CHANGES_REQUESTED)
         }
     }
 
@@ -149,19 +153,33 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, OnMapReady
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        prepareMap(savedInstanceState)
+        prepareLayout()
+        setViewListener()
+    }
+
+    private fun prepareMap(savedInstanceState: Bundle?) {
         map_view?.onCreate(savedInstanceState)
         map_view?.getMapAsync(this)
+    }
 
-        bottomSheetBehavior = BottomSheetBehavior.from<CoordinatorLayout>(bottomsheet_getdistrict)
+    private fun prepareLayout() {
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomsheet_getdistrict)
         getdistrict_container.visibility = View.GONE
         invalid_container.visibility = View.GONE
         whole_loading_container.visibility = View.VISIBLE
-        et_detail_address.setText(saveAddressDataModel?.editDetailAddress)
+        // et_detail_address.setText(saveAddressDataModel?.editDetailAddress)
+    }
 
+    private fun setViewListener() {
         back_button.setOnClickListener {
             map_view?.onPause()
             AddNewAddressAnalytics.eventClickBackArrowOnPinPoint()
             activity?.finish()
+        }
+
+        ic_search_btn.setOnClickListener {
+            currentLat?.let { it1 -> currentLong?.let { it2 -> showAutocompleteGeocodeBottomSheet(it1, it2) } }
         }
     }
 
@@ -170,7 +188,7 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, OnMapReady
         this.googleMap?.uiSettings?.isMapToolbarEnabled = false
         this.googleMap?.uiSettings?.isMyLocationButtonEnabled = true
         MapsInitializer.initialize(activity!!)
-        moveMap(PinpointMapUtils.generateLatLng(currentLat, currentLong))
+        moveMap(AddNewAddressUtils.generateLatLng(currentLat, currentLong))
 
         this.isPolygon?.let {
             if (this.isPolygon as Boolean) {
@@ -236,8 +254,8 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, OnMapReady
     }
 
     override fun onStop() {
+        map_view?.onStop()
         super.onStop()
-        // presenter.disconnectGoogleApi()
     }
 
     override fun onDestroy() {
@@ -270,32 +288,40 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, OnMapReady
         currentLat = getDistrictDataUiModel.latitude.toDouble()
         currentLong = getDistrictDataUiModel.longitude.toDouble()
         isGetDistrict = true
-        moveMap(PinpointMapUtils.generateLatLng(currentLat, currentLong))
+        moveMap(AddNewAddressUtils.generateLatLng(currentLat, currentLong))
 
-        if (!isShowingAutocomplete!!) {
-            whole_loading_container.visibility = View.GONE
-            getdistrict_container.visibility = View.VISIBLE
-            updateGetDistrictBottomSheet(presenter.convertGetDistrictToSaveAddressDataUiModel(getDistrictDataUiModel, zipCodes))
-        }
+        // if (!isShowingAutocomplete!!) {
+        whole_loading_container.visibility = View.GONE
+        getdistrict_container.visibility = View.VISIBLE
+        updateGetDistrictBottomSheet(presenter.convertGetDistrictToSaveAddressDataUiModel(getDistrictDataUiModel, zipCodes))
+        // }
     }
 
     override fun onSuccessAutofill(autofillDataUiModel: AutofillDataUiModel) {
-        if (!isShowingAutocomplete!!) {
-            invalid_container.visibility = View.GONE
-            whole_loading_container.visibility = View.GONE
-            getdistrict_container.visibility = View.VISIBLE
+        if (isShowingAutocomplete!!) {
+            handler.postDelayed({
+                updateAfterOnSuccessAutofill(autofillDataUiModel)
+            }, 2000)
+        } else {
+            updateAfterOnSuccessAutofill(autofillDataUiModel)
+        }
+    }
 
-            this.isPolygon?.let {
-                if (this.isPolygon as Boolean) {
-                    if (autofillDataUiModel.districtId != districtId) {
-                        showToastError(getString(R.string.invalid_district))
-                        AddNewAddressAnalytics.eventViewToasterAlamatTidakSesuaiDenganPeta()
-                    } else {
-                        updateGetDistrictBottomSheet(presenter.convertAutofillToSaveAddressDataUiModel(autofillDataUiModel, zipCodes))
-                    }
+    private fun updateAfterOnSuccessAutofill(autofillDataUiModel: AutofillDataUiModel) {
+        invalid_container.visibility = View.GONE
+        whole_loading_container.visibility = View.GONE
+        getdistrict_container.visibility = View.VISIBLE
+
+        this.isPolygon?.let {
+            if (this.isPolygon as Boolean) {
+                if (autofillDataUiModel.districtId != districtId) {
+                    showToastError(getString(R.string.invalid_district))
+                    AddNewAddressAnalytics.eventViewToasterAlamatTidakSesuaiDenganPeta()
                 } else {
                     updateGetDistrictBottomSheet(presenter.convertAutofillToSaveAddressDataUiModel(autofillDataUiModel, zipCodes))
                 }
+            } else {
+                updateGetDistrictBottomSheet(presenter.convertAutofillToSaveAddressDataUiModel(autofillDataUiModel, zipCodes))
             }
         }
     }
@@ -311,23 +337,24 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, OnMapReady
             AddNewAddressAnalytics.eventViewErrorAlamatTidakValid()
 
         } else {
-            if (!isShowingAutocomplete!!) {
-                invalid_container.visibility = View.GONE
-                whole_loading_container.visibility = View.GONE
-                getdistrict_container.visibility = View.VISIBLE
+            // if (!isShowingAutocomplete!!) {
+            invalid_container.visibility = View.GONE
+            whole_loading_container.visibility = View.GONE
+            getdistrict_container.visibility = View.VISIBLE
 
-                ic_research.setOnClickListener {
-                    AddNewAddressAnalytics.eventClickFieldCariLokasi()
-                }
-
-                et_detail_address.setOnClickListener {
-                    AddNewAddressAnalytics.eventClickFieldDetailAlamat()
-                }
+            ic_search_btn.setOnClickListener {
+                currentLat?.let { it1 -> currentLong?.let { it2 -> showAutocompleteGeocodeBottomSheet(it1, it2) } }
+                AddNewAddressAnalytics.eventClickFieldCariLokasi()
             }
+
+            et_detail_address.setOnClickListener {
+                AddNewAddressAnalytics.eventClickFieldDetailAlamat()
+            }
+            // }
 
             tv_title_getdistrict.text = saveAddressDataModel.title
             tv_address_getdistrict.text = saveAddressDataModel.formattedAddress
-            btn_choose_location.setOnClickListener{
+            btn_choose_location.setOnClickListener {
                 if (validateDetailAlamat()) {
                     saveAddressDataModel.editDetailAddress = et_detail_address.text.toString()
                     this.isPolygon?.let {
@@ -335,7 +362,8 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, OnMapReady
                             isMismatchSolved = true
                         }
                     }
-                    presenter.loadAddEdit(isMismatchSolved)
+
+                    presenter.loadAddEdit( isMismatchSolved, isChangesRequested)
                 }
                 AddNewAddressAnalytics.eventClickButtonPilihLokasi()
             }
@@ -376,8 +404,8 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, OnMapReady
         tkpdDialog.setDesc(getString(R.string.mismatch_desc))
         tkpdDialog.setBtnOk(getString(R.string.mismatch_btn_title))
         tkpdDialog.setOnOkClickListener {
-            goToAddEditActivity(true, false)
             tkpdDialog.dismiss()
+            goToAddEditActivity(true, false)
         }
         tkpdDialog.show()
         AddNewAddressAnalytics.eventViewFailedPinPointNotification()
@@ -393,8 +421,20 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, OnMapReady
         }
     }
 
+    override fun finishBackToAddEdit(isMismatch: Boolean, isMismatchSolved: Boolean) {
+        activity?.run {
+            setResult(Activity.RESULT_OK, Intent().apply {
+                putExtra(AddressConstants.EXTRA_IS_MISMATCH, isMismatch)
+                putExtra(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL, presenter.getSaveAddressDataModel())
+                putExtra(AddressConstants.KERO_TOKEN, token)
+                putExtra(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, isMismatchSolved)
+            })
+            finish()
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(requestCode == FINISH_FLAG && resultCode == Activity.RESULT_OK){
+        if (requestCode == FINISH_FLAG && resultCode == Activity.RESULT_OK) {
             if (data != null) {
                 if (data.hasExtra(EXTRA_ADDRESS_NEW)) {
                     val newAddress = data.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_NEW)
@@ -443,7 +483,7 @@ class PinpointMapFragment: BaseDaggerFragment(), PinpointMapListener, OnMapReady
     override fun useCurrentLocation(lat: Double?, long: Double?) {
         currentLat = lat
         currentLong = long
-        val latLng = PinpointMapUtils.generateLatLng(currentLat, currentLong)
+        val latLng = AddNewAddressUtils.generateLatLng(currentLat, currentLong)
         moveMap(latLng)
         presenter.clearCacheAutofill()
         presenter.autofill(latLng.toString())

@@ -1,5 +1,7 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint
 
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -9,20 +11,38 @@ import com.google.android.gms.location.LocationServices
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
+import com.tokopedia.logisticaddaddress.AddressConstants
 import com.tokopedia.logisticaddaddress.AddressConstants.*
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
+import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_address.SaveAddressDataModel
+import com.tokopedia.logisticdata.data.entity.address.Token
 
 /**
  * Created by fwidjaja on 2019-05-07.
  */
-class PinpointMapActivity: BaseSimpleActivity() {
+class PinpointMapActivity : BaseSimpleActivity() {
     private val FINISH_FLAG = 1212
     var SCREEN_NAME = "PinpointMapActivity"
 
     companion object {
         val defaultLat: Double by lazy { -6.175794 }
         val defaultLong: Double by lazy { 106.826457 }
+
+        fun newInstance(context: Context, lat: Double?, long: Double?, token: Token?, isPolygon: Boolean, districtId: Int?,
+                        isMismatchSolved: Boolean, saveAddressDataModel: SaveAddressDataModel?, isChangesRequested: Boolean): Intent =
+                Intent(context, PinpointMapActivity::class.java).apply {
+                    putExtra(KERO_TOKEN, token)
+                    putExtra(EXTRA_LAT, lat)
+                    putExtra(EXTRA_LONG, long)
+                    putExtra(EXTRA_SHOW_AUTOCOMPLETE, false)
+                    putExtra(EXTRA_IS_POLYGON, isPolygon)
+                    putExtra(EXTRA_DISTRICT_ID, districtId)
+                    putExtra(EXTRA_IS_MISMATCH_SOLVED, isMismatchSolved)
+                    putExtra(EXTRA_SAVE_DATA_UI_MODEL, saveAddressDataModel)
+                    putExtra(EXTRA_IS_CHANGES_REQUESTED, isChangesRequested)
+                }
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,6 +56,7 @@ class PinpointMapActivity: BaseSimpleActivity() {
     override fun getScreenName(): String {
         return SCREEN_NAME
     }
+
     override fun getLayoutRes(): Int = R.layout.activity_pinpoint_map
 
     override fun getNewFragment(): PinpointMapFragment? {

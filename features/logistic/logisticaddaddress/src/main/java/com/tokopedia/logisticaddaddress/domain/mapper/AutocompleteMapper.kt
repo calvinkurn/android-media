@@ -28,13 +28,10 @@ class AutocompleteMapper @Inject constructor() {
     }
 
     private fun mapData(data: Data): AutocompleteDataUiModel {
-        val listPredictions = ArrayList<AutocompletePredictionUiModel>()
-        data.predictions?.forEach {
-            listPredictions.add(it?.let { it1 -> mapPrediction(it1) }!!)
-        }
-        return AutocompleteDataUiModel(
-               listPredictions = listPredictions
-        )
+        val listPredictions = data.predictions.map {
+            mapPrediction(it) }
+
+        return AutocompleteDataUiModel(listPredictions)
     }
 
     private fun mapPrediction(predictionsItem: PredictionsItem) : AutocompletePredictionUiModel {

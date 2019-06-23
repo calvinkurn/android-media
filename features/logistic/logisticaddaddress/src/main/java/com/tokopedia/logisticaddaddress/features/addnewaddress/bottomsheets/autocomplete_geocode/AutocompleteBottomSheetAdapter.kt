@@ -27,13 +27,11 @@ class AutocompleteBottomSheetAdapter(private var actionListener: ActionListener)
     }
 
     override fun getItemCount(): Int {
-        var count: Int
-        if (isAutocompleteGeocode) {
-            count = dataAutocompleteGeocode.size
+        return if (isAutocompleteGeocode) {
+            dataAutocompleteGeocode.size
         } else {
-            count = dataAutocomplete.size
+            dataAutocomplete.size
         }
-        return count
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -54,7 +52,8 @@ class AutocompleteBottomSheetAdapter(private var actionListener: ActionListener)
         holder.itemView.place_address.text = placeAddress
         holder.itemView.rl_autocomplete_item.setOnClickListener {
             println("## MASUK ONCLICK - placeID : $placeId")
-            actionListener.onPoiListClicked(placeId)}
+            actionListener.onPoiListClicked(placeId)
+        }
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)

@@ -7,7 +7,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocompl
 /**
  * Created by fwidjaja on 2019-05-14.
  */
-interface AutocompleteBottomSheetListener: CustomerView {
+interface AutocompleteBottomSheetListener : CustomerView {
     fun hideListPointOfInterest()
     fun onSuccessGetAutocompleteGeocode(dataUiModel: AutocompleteGeocodeDataUiModel)
     fun onSuccessGetAutocomplete(dataUiModel: AutocompleteDataUiModel)

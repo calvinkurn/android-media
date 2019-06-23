@@ -14,27 +14,22 @@ import javax.inject.Inject
  */
 open class AutocompleteGeocodeMapper @Inject constructor() {
     private val STATUS_OK = "OK"
-    private val STATUS_ERROR = "ERROR"
 
-    fun map(response: GraphqlResponse?) : AutocompleteGeocodeResponseUiModel {
+    fun map(response: GraphqlResponse?): AutocompleteGeocodeResponseUiModel {
         var status = ""
         var dataUiModel = AutocompleteGeocodeDataUiModel()
         val responseAutoComplete: AutocompleteGeocodeResponse? = response?.getData(AutocompleteGeocodeResponse::class.java)
-        responseAutoComplete.let { responseAutoComplete ->
-            responseAutoComplete?.keroAutocompleteGeocode.let {
-                status = it?.status ?: STATUS_ERROR
-                when (it?.status) {
-                    STATUS_OK -> {
-                        dataUiModel = mapData(it.data)
-                    }
-                }
+        responseAutoComplete?.let { it ->
+            status = it.keroAutocompleteGeocode.status
+            when (status) {
+                STATUS_OK -> dataUiModel = mapData(it.keroAutocompleteGeocode.data)
             }
         }
 
         return AutocompleteGeocodeResponseUiModel(status, dataUiModel)
     }
 
-    private fun mapData(data: Data) : AutocompleteGeocodeDataUiModel {
+    private fun mapData(data: Data): AutocompleteGeocodeDataUiModel {
         return AutocompleteGeocodeDataUiModel(
                 results = data.results.map {
                     mapResult(it)
@@ -42,7 +37,7 @@ open class AutocompleteGeocodeMapper @Inject constructor() {
         )
     }
 
-    private fun mapResult(result: ResultsItem) : AutocompleteGeocodeResultUiModel {
+    private fun mapResult(result: ResultsItem): AutocompleteGeocodeResultUiModel {
         return AutocompleteGeocodeResultUiModel(
                 name = result.name,
                 placeId = result.placeId,

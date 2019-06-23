@@ -76,7 +76,7 @@
     <string name="invalid_title">Alamat tidak valid, silahkan geser Pinpoint Anda</string>
     <string name="research_description">ic_research</string>
     <string name="invalid_description">ic_invalid</string>
-    <string name="change_pinpoint">Ubah Pin Point</string>
+    <string name="change_pinpoint">Ubah Pinpoint</string>
     <string name="address_based_on_pinpoint">Alamat (Berdasarkan pinpoint)</string>
     <string name="add_new_address_address_label">Label Alamat</string>
     <string name="add_new_address_name_label">Nama Penerima</string>
@@ -91,6 +91,7 @@
     <string name="et_kode_pos_hint">5 Digit Kode Pos</string>
     <string name="alamat_label">Alamat</string>
     <string name="min_20_char">Minimal 20 karakter</string>
+    <string name="min_5_char">Minimal 5 karakter</string>
     <string name="et_alamat_hint">Tulis nama jalan/perumahan komplek</string>
     <string name="define_pinpoint">Tentukan Lokasi Pinpoint Anda</string>
     <string name="kota_kecamatan">Kota atau Kecamatan</string>

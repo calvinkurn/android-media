@@ -11,7 +11,7 @@ import rx.Subscriber
  */
 class DistrictRecommendationSubscriber(val view: DistrictRecommendationBottomSheetListener,
                                        val mapper: DistrictRecommendationMapper,
-                                       val numPage: String): Subscriber<GraphqlResponse>() {
+                                       val numPage: String) : Subscriber<GraphqlResponse>() {
 
     override fun onNext(t: GraphqlResponse?) {
         val districtRecommendationResponseUiModel = mapper.map(t)

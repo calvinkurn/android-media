@@ -10,36 +10,45 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <include layout="@layout/header_add_new_address_data_item" />
-
         <ScrollView
             android:id="@+id/scroll_view_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:isScrollContainer="false"
+            android:windowSoftInputMode="adjustPan"
             android:background="@color/white">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/dp_16"
                 android:orientation="vertical">
 
-                <include
-                    android:id="@+id/ll_normal"
-                    layout="@layout/form_add_new_address_data_item"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                <include layout="@layout/header_add_new_address_data_item" />
 
-                <include
-                    android:id="@+id/ll_mismatch"
-                    layout="@layout/form_add_new_address_mismatch_data_item"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginStart="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginEnd="@dimen/dp_16"
+                    android:orientation="vertical">
 
-                <include layout="@layout/form_add_new_address_default_item" />
+                    <include
+                        android:id="@+id/ll_normal"
+                        layout="@layout/form_add_new_address_data_item"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <include
+                        android:id="@+id/ll_mismatch"
+                        layout="@layout/form_add_new_address_mismatch_data_item"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <include layout="@layout/form_add_new_address_default_item" />
+
+                </LinearLayout>
 
             </LinearLayout>
 

@@ -29,7 +29,7 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 2019-05-13.
  */
-class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetListener, AutocompleteBottomSheetAdapter.ActionListener{
+class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetListener, AutocompleteBottomSheetAdapter.ActionListener {
     private var bottomSheetView: View? = null
     private var currentLat: Double? = 0.0
     private var currentLong: Double? = 0.0
@@ -85,6 +85,10 @@ class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetLi
 
     override fun title(): String {
         return getString(R.string.title_bottomsheet_search_location)
+    }
+
+    override fun state(): BottomSheetsState {
+        return BottomSheetsState.FULL
     }
 
     override fun initView(view: View) {
@@ -150,9 +154,10 @@ class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetLi
     override fun configView(parentView: View?) {
         super.configView(parentView)
         parentView?.findViewById<View>(R.id.layout_title)?.setOnClickListener(null)
-        parentView?.findViewById<View>(R.id.btn_close)?.setOnClickListener{
+        parentView?.findViewById<View>(R.id.btn_close)?.setOnClickListener {
             AddNewAddressAnalytics.eventClickBackArrowOnInputAddress()
-            onCloseButtonClick() }
+            onCloseButtonClick()
+        }
     }
 
     fun initInjector() {
@@ -180,22 +185,20 @@ class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetLi
     }
 
     override fun onSuccessGetAutocompleteGeocode(responseAutocompleteGeocodeDataUiModel: AutocompleteGeocodeDataUiModel) {
-        if (responseAutocompleteGeocodeDataUiModel.results.isNotEmpty()){
+        if (responseAutocompleteGeocodeDataUiModel.results.isNotEmpty()) {
             llPoi.visibility = View.VISIBLE
             adapter.isAutocompleteGeocode = true
             adapter.dataAutocompleteGeocode = responseAutocompleteGeocodeDataUiModel.results.toMutableList()
             adapter.notifyDataSetChanged()
-            updateHeight()
         }
     }
 
     override fun onSuccessGetAutocomplete(dataUiModel: AutocompleteDataUiModel) {
-        if (dataUiModel.listPredictions.isNotEmpty()){
+        if (dataUiModel.listPredictions.isNotEmpty()) {
             llPoi.visibility = View.VISIBLE
             adapter.isAutocompleteGeocode = false
             adapter.dataAutocomplete = dataUiModel.listPredictions.toMutableList()
             adapter.notifyDataSetChanged()
-            updateHeight()
         }
     }
 
@@ -214,44 +217,9 @@ class AutocompleteBottomSheetFragment: BottomSheets(), AutocompleteBottomSheetLi
         (inputMethodManager as InputMethodManager).hideSoftInputFromWindow(view?.windowToken, 0);
     }
 
-    /*override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            context?.let {
-                permissionCheckerHelper.onRequestPermissionsResult(it,
-                        requestCode, permissions,
-                        grantResults)
-            }
-        }
-    }*/
-
-    /*override fun setCurrentLatLong(lat: Double, long: Double) {
-        currentLat = lat
-        currentLong = long
-        setOnClickCurrentLocation()
-    }*/
-
-    /*private fun setOnClickCurrentLocation() {
-        if (currentLat != 0.0 && currentLong != 0.0) {
-            rlCurrentLocation.setOnClickListener {
-                actionListener.useCurrentLocation(currentLat, currentLong)
-                dismiss()
-            }
-        } else {
-            rlCurrentLocation.setOnClickListener {
-                showLocationInfoBottomSheet()
-            }
-        }
-    }*/
-
     private fun showLocationInfoBottomSheet() {
         val locationInfoBottomSheetFragment = LocationInfoBottomSheetFragment.newInstance()
         locationInfoBottomSheetFragment.show(fragmentManager, "")
         dismiss()
-    }
-
-    override fun onResume() {
-        super.onResume()
     }
 }

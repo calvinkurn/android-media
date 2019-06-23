@@ -50,32 +50,4 @@ class AutocompleteBottomSheetPresenter @Inject constructor(private val autocompl
     fun clearCacheAutocomplete() {
         autocompleteUseCase.clearCache()
     }
-
-    /*fun requestLocation(activity: Activity) {
-        val locationDetectorHelper = activity.let {
-            LocationDetectorHelper(
-                    permissionCheckerHelper,
-                    LocationServices.getFusedLocationProviderClient(it),
-                    it) }
-
-        this.let {
-            locationDetectorHelper.getLocation(onGetLocation(), activity,
-                    LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
-                    activity.getString(R.string.rationale_need_location))
-        }
-    }
-
-    private fun onGetLocation(): (DeviceLocation) -> Unit {
-        return {
-            if (it.latitude != 0.0 && it.longitude != 0.0) {
-                clearCacheAutocompleteGeocode()
-                getAutocompleteGeocode(it.latitude, it.longitude)
-                view.setCurrentLatLong(it.latitude, it.longitude)
-            }
-        }
-    }
-
-    fun setPermissionChecker(permissionCheckerHelper: PermissionCheckerHelper) {
-        this.permissionCheckerHelper = permissionCheckerHelper
-    }*/
 }

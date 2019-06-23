@@ -82,13 +82,12 @@
                 tools:text="Jalan Taman Siswa"/>
 
             <ImageView
-                android:id="@+id/ic_research"
-                android:layout_width="@dimen/dp_12"
-                android:layout_height="@dimen/dp_12"
-                android:layout_toRightOf="@id/tv_title_getdistrict"
-                android:layout_toEndOf="@id/tv_title_getdistrict"
+                android:id="@+id/ic_search_btn"
+                android:layout_width="@dimen/dp_15"
+                android:layout_height="@dimen/dp_15"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
+                android:layout_margin="@dimen/dp_10"
                 android:contentDescription="@string/research_description"
                 android:visibility="visible"
                 android:src="@drawable/ic_search" />
@@ -143,7 +142,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_24"
-            android:layout_marginBottom="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/dp_24"
             android:foreground="?selectableItemBackground"
             android:text="@string/choose_this_location"
             android:textAllCaps="false"

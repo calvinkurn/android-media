@@ -8,7 +8,7 @@ import rx.Subscriber
  * Created by fwidjaja on 2019-05-14.
  */
 class AutocompleteGeocodeSubscriber(val view: AutocompleteBottomSheetListener,
-                                    val mapper: AutocompleteGeocodeMapper): Subscriber<GraphqlResponse>() {
+                                    val mapper: AutocompleteGeocodeMapper) : Subscriber<GraphqlResponse>() {
     private val statusOK = "OK"
 
     override fun onNext(t: GraphqlResponse?) {

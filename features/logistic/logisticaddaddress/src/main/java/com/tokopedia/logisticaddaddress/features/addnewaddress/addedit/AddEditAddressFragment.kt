@@ -35,15 +35,15 @@ import com.tokopedia.logisticaddaddress.AddressConstants
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
 import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
+import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetListener
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetPresenter
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.district_recommendation.DistrictRecommendationBottomSheetFragment
-import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.district_recommendation.PopularCityRecommendationBottomSheetAdapter
+import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapListener
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapPresenter
-import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.add_address.AddAddressDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AutocompleteDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete_geocode.AutocompleteGeocodeDataUiModel
@@ -64,14 +64,14 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 2019-05-22.
  */
-class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCallbacks,
-                              GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback,
-                              ResultCallback<LocationSettingsResult>, AddEditAddressListener,
-                              DistrictRecommendationBottomSheetFragment.ActionListener,
-                              AutocompleteBottomSheetListener,
-                              PinpointMapListener,
-                              ZipCodeChipsAdapter.ActionListener, IOnBackPressed,
-                              LabelAlamatChipsAdapter.ActionListener{
+class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback,
+        ResultCallback<LocationSettingsResult>, AddEditAddressListener,
+        DistrictRecommendationBottomSheetFragment.ActionListener,
+        AutocompleteBottomSheetListener,
+        PinpointMapListener,
+        ZipCodeChipsAdapter.ActionListener, IOnBackPressed,
+        LabelAlamatChipsAdapter.ActionListener {
 
     private var googleMap: GoogleMap? = null
     private var saveAddressDataModel: SaveAddressDataModel? = null
@@ -89,6 +89,10 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
     private lateinit var labelAlamatLayoutManager: ChipsLayoutManager
     private var staticDimen8dp: Int? = 0
     private lateinit var labelAlamatChipsAdapter: LabelAlamatChipsAdapter
+    private val FINISH_PINPOINT_FLAG = 8888
+    private var getView: View? = null
+    private var getSavedInstanceState: Bundle? = null
+
 
     @Inject
     lateinit var presenter: AddEditAddressPresenter
@@ -135,31 +139,39 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
 
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        prepareMap(savedInstanceState)
-        prepareLayout(savedInstanceState, view)
+        getView = view
+        savedInstanceState?.let {
+            getSavedInstanceState = savedInstanceState
+        }
+        createFragment()
+    }
+
+    private fun createFragment() {
+        prepareMap()
+        prepareLayout()
         setViewListener()
     }
 
-    private fun prepareMap(savedInstanceState: Bundle?) {
+    private fun prepareMap() {
         presenter.connectGoogleApi(this)
-        map_view_detail.onCreate(savedInstanceState)
+        map_view_detail.onCreate(getSavedInstanceState)
         map_view_detail.getMapAsync(this)
     }
 
-    private fun prepareLayout(savedInstanceState: Bundle?, view: View) {
+    private fun prepareLayout() {
         zipCodeChipsAdapter = ZipCodeChipsAdapter(context, this)
         labelAlamatChipsAdapter = LabelAlamatChipsAdapter(context, this)
-        chipsLayoutManager = ChipsLayoutManager.newBuilder(view.context)
+        chipsLayoutManager = ChipsLayoutManager.newBuilder(getView?.context)
                 .setOrientation(ChipsLayoutManager.HORIZONTAL)
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                 .build()
-        labelAlamatLayoutManager = ChipsLayoutManager.newBuilder(view.context)
+        labelAlamatLayoutManager = ChipsLayoutManager.newBuilder(getView?.context)
                 .setOrientation(ChipsLayoutManager.HORIZONTAL)
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                 .build()
         staticDimen8dp = context?.resources?.getDimensionPixelOffset(R.dimen.dp_8)
 
-        arrangeLayout(isMismatch, isMismatchSolved, savedInstanceState)
+        arrangeLayout(isMismatch, isMismatchSolved)
 
         et_label_address.setText(labelRumah)
         et_receiver_name.setText(userSession.name)
@@ -207,37 +219,71 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
                 AddNewAddressAnalytics.eventClickFieldNoPonselChangeAddressPositive()
             }
             btn_map.setOnClickListener {
-                presenter.changePinpoint(currentLat, currentLong, token, false, districtId,
+                goToPinpointActivity(currentLat, currentLong, token, false, districtId,
                         isMismatchSolved, saveAddressDataModel)
                 AddNewAddressAnalytics.eventClickButtonUbahPinPointChangeAddressPositive()
-                activity?.finish()
             }
 
         } else {
             if (isMismatch) {
-                et_alamat_mismatch.addTextChangedListener(setWrapperWatcher(et_alamat_mismatch_wrapper))
                 et_detail_alamat_mismatch.addTextChangedListener(setWrapperWatcher(et_detail_alamat_mismatch_wrapper))
 
                 et_kota_kecamatan_mismatch.apply {
                     addTextChangedListener(setWrapperWatcher(et_kota_kecamatan_mismatch_wrapper))
                     setOnClickListener {
                         showDistrictRecommendationBottomSheet()
-                        AddNewAddressAnalytics.eventClickFieldKotaKecamatanChangeAddressNegative() }
-                }
-
-                et_kode_pos_mismatch.apply {
-                    addTextChangedListener(setWrapperWatcher(et_kode_pos_mismatch_wrapper))
-                    if (text.isEmpty()) {
-                        setOnClickZipCodes()
+                        AddNewAddressAnalytics.eventClickFieldKotaKecamatanChangeAddressNegative()
                     }
                 }
-
-            } else {
-                setOnClickZipCodes()
             }
 
-            et_alamat_mismatch.setOnClickListener {
+            et_alamat_mismatch.apply {
+                addTextChangedListener(setWrapperWatcher(et_alamat_mismatch_wrapper))
+                addTextChangedListener(setAlamatWatcher())
+                setOnFocusChangeListener { _, hasFocus ->
+                    if (hasFocus) {
+                        AddNewAddressUtils.scrollUpLayout(scroll_view_layout)
+                    }
+                }
                 AddNewAddressAnalytics.eventClickFieldAlamatChangeAddressNegative()
+            }
+
+            et_kode_pos_mismatch.apply {
+                setOnFocusChangeListener { _, hasFocus ->
+                    if (hasFocus) {
+                        // scrollUpLayout()
+                        AddNewAddressUtils.scrollUpLayout(scroll_view_layout)
+                        eventShowZipCodes()
+                    }
+                }
+                setOnClickListener {
+                    eventShowZipCodes()
+                }
+                addTextChangedListener(object : TextWatcher {
+                    override fun beforeTextChanged(s: CharSequence, start: Int, count: Int,
+                                                   after: Int) {
+                    }
+
+                    override fun onTextChanged(s: CharSequence, start: Int, before: Int,
+                                               count: Int) {
+                        if (s.isNotEmpty()) {
+                            val input = "$s"
+                            val zipCodesDisplay = mutableListOf<String>()
+
+                            saveAddressDataModel?.zipCodes?.forEach {
+                                if (it.contains(input, ignoreCase = true)) {
+                                    zipCodesDisplay.add(it)
+                                }
+                            }
+                            zipCodeChipsAdapter.zipCodes = zipCodesDisplay
+                            zipCodeChipsAdapter.notifyDataSetChanged()
+                        }
+                    }
+
+                    override fun afterTextChanged(s: Editable) {
+                    }
+                })
+                //addTextChangedListener(setWrapperWatcher(et_kode_pos_mismatch_wrapper))
             }
 
             et_label_address.setOnClickListener {
@@ -313,13 +359,19 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
                 if (!isErrorFieldEmpty(field)) field += ", "
                 field += "alamat"
             }
-            et_detail_alamat_mismatch.text.isEmpty() -> {
-                validated = false
-                setWrapperError(et_detail_alamat_mismatch_wrapper, getString(R.string.validate_detail_alamat))
-                if (!isErrorFieldEmpty(field)) field += ", "
-                field += "detail alamat"
+        }
+
+        if (isMismatchSolved) {
+            when {
+                et_detail_alamat_mismatch.text.isEmpty() -> {
+                    validated = false
+                    setWrapperError(et_detail_alamat_mismatch_wrapper, getString(R.string.validate_detail_alamat))
+                    if (!isErrorFieldEmpty(field)) field += ", "
+                    field += "detail alamat"
+                }
             }
         }
+
 
         if (!validateFormDefault(errorField)) validated = false
         return validated
@@ -413,8 +465,39 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
         }
     }
 
-    @SuppressLint("SetTextI18n")
-    private fun arrangeLayout(isMismatch: Boolean, isMismatchSolved: Boolean, savedInstanceState: Bundle?) {
+    private fun setAlamatWatcher(): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if (s.isNotEmpty()) {
+                    var countCharLeft = 0
+                    var info = ""
+                    println("## start = $start, before = $before, count = $count")
+                    when {
+                        count < 5 -> {
+                            countCharLeft = 5 - count
+                            info = "$countCharLeft karakter lagi diperlukan"
+                        }
+                        count > 4 -> {
+                            countCharLeft = 175 - count
+                            info = "$countCharLeft karakter tersisa"
+
+                        }
+                        count == 175 -> info = ""
+                    }
+                    tv_alamat_info_mismatch.text = info
+                }
+            }
+
+            override fun afterTextChanged(text: Editable) {
+            }
+        }
+    }
+
+    private fun arrangeLayout(isMismatch: Boolean, isMismatchSolved: Boolean) {
         if (!isMismatch && !isMismatchSolved) {
             ll_mismatch.visibility = View.GONE
             ll_normal.visibility = View.VISIBLE
@@ -445,11 +528,9 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
         }
     }
 
-    private fun setOnClickZipCodes() {
-        et_kode_pos_mismatch.setOnClickListener {
-            showZipCodes()
-            AddNewAddressAnalytics.eventClickFieldKodePosChangeAddressNegative()
-        }
+    private fun eventShowZipCodes() {
+        showZipCodes()
+        AddNewAddressAnalytics.eventClickFieldKodePosChangeAddressNegative()
     }
 
     private fun setOnClickLabelAlamat() {
@@ -464,31 +545,6 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
             layoutManager = chipsLayoutManager
             adapter = zipCodeChipsAdapter
         }
-
-        et_kode_pos_mismatch.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int,
-                                           after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int,
-                                       count: Int) {
-                if (s.isNotEmpty()) {
-                    val input = "$s"
-                    val zipCodesDisplay = mutableListOf<String>()
-
-                    saveAddressDataModel?.zipCodes?.forEach {
-                        if (it.contains(input, ignoreCase = true)) {
-                            zipCodesDisplay.add(it)
-                        }
-                    }
-                    zipCodeChipsAdapter.zipCodes = zipCodesDisplay
-                    zipCodeChipsAdapter.notifyDataSetChanged()
-                }
-            }
-
-            override fun afterTextChanged(s: Editable) {
-            }
-        })
     }
 
     private fun setupRvLabelAlamatChips() {
@@ -526,10 +582,9 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
                     showToastError(getString(R.string.choose_district_first))
                     AddNewAddressAnalytics.eventViewToasterPilihKotaDanKodePosTerlebihDahulu()
                 } else {
-                    presenter.changePinpoint(currentLat, currentLong, token, true, districtId,
+                    goToPinpointActivity(currentLat, currentLong, token, false, districtId,
                             isMismatchSolved, saveAddressDataModel)
                     AddNewAddressAnalytics.eventClickButtonPilihLokasiIni()
-                    activity?.finish()
                 }
             }
         }
@@ -546,9 +601,8 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
             btn_map.layoutParams = params
             setOnClickListener {
                 saveAddressDataModel?.editDetailAddress = et_detail_alamat_mismatch.text.toString()
-                presenter.changePinpoint(currentLat, currentLong, token, false, districtId,
+                goToPinpointActivity(currentLat, currentLong, token, false, districtId,
                         isMismatchSolved, saveAddressDataModel)
-                activity?.finish()
             }
         }
     }
@@ -632,7 +686,7 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
         this.googleMap?.uiSettings?.isMapToolbarEnabled = false
         this.googleMap?.uiSettings?.isMyLocationButtonEnabled = true
         MapsInitializer.initialize(activity!!)
-        moveMap(PinpointMapUtils.generateLatLng(currentLat, currentLong))
+        moveMap(AddNewAddressUtils.generateLatLng(currentLat, currentLong))
     }
 
     private fun moveMap(latLng: LatLng) {
@@ -739,7 +793,7 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
     override fun onSuccessPlaceGetDistrict(getDistrictDataUiModel: GetDistrictDataUiModel) {
         currentLat = getDistrictDataUiModel.latitude.toDouble()
         currentLong = getDistrictDataUiModel.longitude.toDouble()
-        moveMap(PinpointMapUtils.generateLatLng(currentLat, currentLong))
+        moveMap(AddNewAddressUtils.generateLatLng(currentLat, currentLong))
     }
 
     override fun onSuccessAutofill(autofillDataUiModel: AutofillDataUiModel) {
@@ -807,5 +861,35 @@ class AddEditAddressFragment: BaseDaggerFragment(), GoogleApiClient.ConnectionCa
         } else {
             AddNewAddressAnalytics.eventClickChipsLabelAlamatChangeAddressNegative()
         }
+    }
+
+    private fun goToPinpointActivity(lat: Double?, long: Double?, token: Token?, isPolygon: Boolean, districtId: Int?,
+                                     isMismatchSolved: Boolean, saveAddressDataModel: SaveAddressDataModel?) {
+        startActivityForResult(context?.let {
+            PinpointMapActivity.newInstance(it, lat, long, token, isPolygon,
+                    districtId, isMismatchSolved, saveAddressDataModel, true)
+        }, FINISH_PINPOINT_FLAG)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == FINISH_PINPOINT_FLAG && resultCode == Activity.RESULT_OK) {
+            if (data != null) {
+                if (data.hasExtra(AddressConstants.EXTRA_IS_MISMATCH)) {
+                    isMismatch = data.getBooleanExtra(AddressConstants.EXTRA_IS_MISMATCH, true)
+                }
+
+                if (data.hasExtra(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL)) {
+                    saveAddressDataModel = data.getParcelableExtra<SaveAddressDataModel>(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL)
+                }
+
+                if (data.hasExtra(AddressConstants.EXTRA_IS_MISMATCH_SOLVED)) {
+                    isMismatchSolved = data.getBooleanExtra(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, true)
+                }
+                createFragment()
+            }
+        }
+    }
+
+    override fun finishBackToAddEdit(isMismatch: Boolean, isMismatchSolved: Boolean) {
     }
 }

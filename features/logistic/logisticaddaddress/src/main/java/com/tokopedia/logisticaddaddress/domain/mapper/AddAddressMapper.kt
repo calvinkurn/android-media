@@ -12,16 +12,16 @@ import javax.inject.Inject
  */
 class AddAddressMapper @Inject constructor() {
     private val STATUS_OK = "OK"
-    private val STATUS_ERROR = "ERROR"
 
+    @Suppress("NAME_SHADOWING")
     fun map(response: GraphqlResponse?) : AddAddressResponseUiModel {
         var status = ""
         var dataUiModel = AddAddressDataUiModel()
         val responseAddAddress: AddAddressResponse? = response?.getData(AddAddressResponse::class.java)
         responseAddAddress.let { response ->
-            response?.keroAddAddress.let {
-                status = it?.status ?: STATUS_ERROR
-                when (it?.status) {
+            response?.keroAddAddress?.let {
+                status = it.status
+                when (status) {
                     STATUS_OK -> {
                         dataUiModel = mapData(it.data)
                     }

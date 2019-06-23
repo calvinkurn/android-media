@@ -1,5 +1,6 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.addedit
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import com.google.android.gms.common.api.GoogleApiClient
@@ -20,6 +21,7 @@ import com.tokopedia.network.utils.AuthUtil
 import com.tokopedia.network.utils.TKPDMapParam
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.bottomsheet_getdistrict.*
 import java.util.ArrayList
 import javax.inject.Inject
 
@@ -28,7 +30,7 @@ import javax.inject.Inject
  */
 class AddEditAddressPresenter @Inject constructor(private val context: Context,
                                                   private val addAddressUseCase: AddAddressUseCase,
-                                                  private val addAddressMapper: AddAddressMapper): BaseDaggerPresenter<AddEditAddressListener>() {
+                                                  private val addAddressMapper: AddAddressMapper) : BaseDaggerPresenter<AddEditAddressListener>() {
     var googleApiClient: GoogleApiClient? = null
 
     private val defaultLat: Double by lazy { -6.175794 }
@@ -46,23 +48,11 @@ class AddEditAddressPresenter @Inject constructor(private val context: Context,
     }
 
     fun disconnectGoogleApi() {
-        if (googleApiClient?.isConnected!!) {
-            googleApiClient?.disconnect()
+        googleApiClient?.let {
+            if (it.isConnected) {
+                it.disconnect()
+            }
         }
-    }
-
-    fun changePinpoint(lat: Double?, long: Double?, token: Token?, isPolygon: Boolean, districtId: Int?,
-                       isMismatchSolved: Boolean, saveAddressDataModel: SaveAddressDataModel?) {
-        val intent = Intent(context, PinpointMapActivity::class.java)
-        intent.putExtra(AddressConstants.KERO_TOKEN, token)
-        intent.putExtra(AddressConstants.EXTRA_LAT, lat)
-        intent.putExtra(AddressConstants.EXTRA_LONG, long)
-        intent.putExtra(AddressConstants.EXTRA_SHOW_AUTOCOMPLETE, false)
-        intent.putExtra(AddressConstants.EXTRA_IS_POLYGON, isPolygon)
-        intent.putExtra(AddressConstants.EXTRA_DISTRICT_ID, districtId)
-        intent.putExtra(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, isMismatchSolved)
-        intent.putExtra(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL, saveAddressDataModel)
-        context.startActivity(intent)
     }
 
     fun saveAddress(saveAddressDataModel: SaveAddressDataModel?) {

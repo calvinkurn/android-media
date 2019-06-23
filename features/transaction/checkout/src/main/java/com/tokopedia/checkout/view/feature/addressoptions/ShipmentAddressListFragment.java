@@ -66,7 +66,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     public static final String ARGUMENT_ORIGIN_DIRECTION_TYPE = "ARGUMENT_ORIGIN_DIRECTION_TYPE";
     public static final int ORIGIN_DIRECTION_TYPE_FROM_MULTIPLE_ADDRESS_FORM = 1;
     public static final int ORIGIN_DIRECTION_TYPE_DEFAULT = 0;
-    public static final int ADD_NEW_ADDRESS_CREATED = 1212;
+    public static final int ADD_NEW_ADDRESS_CREATED = 3333;
     public static final String EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW";
 
     private RecyclerView mRvRecipientAddressList;
@@ -529,6 +529,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                 intent.putExtra(AddressConstants.EXTRA_SHOW_AUTOCOMPLETE, true);
                 intent.putExtra(AddressConstants.EXTRA_IS_POLYGON, false);
                 intent.putExtra(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, false);
+                intent.putExtra(AddressConstants.EXTRA_IS_CHANGES_REQUESTED, false);
                 startActivityForResult(intent, ADD_NEW_ADDRESS_CREATED);
 
             } else {
@@ -548,6 +549,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                 intent.putExtra(AddressConstants.EXTRA_SHOW_AUTOCOMPLETE, true);
                 intent.putExtra(AddressConstants.EXTRA_IS_POLYGON, false);
                 intent.putExtra(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, false);
+                intent.putExtra(AddressConstants.EXTRA_IS_CHANGES_REQUESTED, false);
                 startActivityForResult(intent, ADD_NEW_ADDRESS_CREATED);
             }
 

@@ -11,7 +11,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewA
 /**
  * Created by fwidjaja on 2019-06-18.
  */
-class LocationInfoBottomSheetFragment: BottomSheets() {
+class LocationInfoBottomSheetFragment : BottomSheets() {
     private var bottomSheetView: View? = null
     private lateinit var btnActivateLocation: ButtonCompat
 
@@ -43,8 +43,9 @@ class LocationInfoBottomSheetFragment: BottomSheets() {
     override fun configView(parentView: View?) {
         super.configView(parentView)
         parentView?.findViewById<View>(R.id.layout_title)?.setOnClickListener(null)
-        parentView?.findViewById<View>(R.id.btn_close)?.setOnClickListener{
+        parentView?.findViewById<View>(R.id.btn_close)?.setOnClickListener {
             AddNewAddressAnalytics.eventClickButtonXOnBlockGps()
-            onCloseButtonClick() }
+            onCloseButtonClick()
+        }
     }
 }

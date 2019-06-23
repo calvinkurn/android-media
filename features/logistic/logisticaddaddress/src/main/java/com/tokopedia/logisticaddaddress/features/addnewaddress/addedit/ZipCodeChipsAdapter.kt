@@ -15,8 +15,8 @@ import android.support.v4.content.ContextCompat
  */
 class ZipCodeChipsAdapter(context: Context?, private var actionListener: ActionListener) : RecyclerView.Adapter<ZipCodeChipsAdapter.ViewHolder>() {
     var zipCodes = mutableListOf<String>()
+
     private var drawablePressed = context?.let { ContextCompat.getDrawable(it, R.drawable.bg_chips_pressed) }
-    private var drawableDefault = context?.let { ContextCompat.getDrawable(it, R.drawable.bg_chips) }
 
     interface ActionListener {
         fun onZipCodeClicked(zipCode: String)

@@ -4,7 +4,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.logisticaddaddress.domain.model.district_boundary.DistrictBoundaryResponse
 import com.tokopedia.logisticaddaddress.domain.model.district_boundary.Geometry
-import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapUtils
+import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryGeometryUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryResponseUiModel
 import javax.inject.Inject
@@ -31,7 +31,7 @@ class DistrictBoundaryMapper @Inject constructor() {
         geo?.coordinates?.forEach { it ->
             it.forEach {
                 it.forEach {
-                    listCoordinates.add(PinpointMapUtils.generateLatLng(it[1], it[0]))
+                    listCoordinates.add(AddNewAddressUtils.generateLatLng(it[1], it[0]))
                 }
             }
         }

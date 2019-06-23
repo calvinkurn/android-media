@@ -27,10 +27,10 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 2019-05-29.
  */
-class DistrictRecommendationBottomSheetFragment: BottomSheets(),
-                                            PopularCityRecommendationBottomSheetAdapter.ActionListener,
-                                            DistrictRecommendationBottomSheetListener,
-                                            DistrictRecommendationBottomSheetAdapter.ActionListener{
+class DistrictRecommendationBottomSheetFragment : BottomSheets(),
+        PopularCityRecommendationBottomSheetAdapter.ActionListener,
+        DistrictRecommendationBottomSheetListener,
+        DistrictRecommendationBottomSheetAdapter.ActionListener {
 
     private var bottomSheetView: View? = null
     private lateinit var popularCityAdapter: PopularCityRecommendationBottomSheetAdapter
@@ -128,12 +128,17 @@ class DistrictRecommendationBottomSheetFragment: BottomSheets(),
         return getString(R.string.kota_kecamatan)
     }
 
+    override fun state(): BottomSheetsState {
+        return BottomSheetsState.FULL
+    }
+
     override fun configView(parentView: View?) {
         super.configView(parentView)
         parentView?.findViewById<View>(R.id.layout_title)?.setOnClickListener(null)
-        parentView?.findViewById<View>(R.id.btn_close)?.setOnClickListener{
+        parentView?.findViewById<View>(R.id.btn_close)?.setOnClickListener {
             onCloseButtonClick()
-            AddNewAddressAnalytics.eventClickBackArrowOnNegativePage()}
+            AddNewAddressAnalytics.eventClickBackArrowOnNegativePage()
+        }
     }
 
     override fun onCityChipClicked(city: String) {
@@ -174,7 +179,7 @@ class DistrictRecommendationBottomSheetFragment: BottomSheets(),
         var visibleItemCount: Int
         var totalItemCount: Int
         var pastVisibleItem: Int
-        rvListDistrict.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+        rvListDistrict.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
 
