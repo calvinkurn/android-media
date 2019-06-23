@@ -317,13 +317,11 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         var validated = true
 
         var field = errorField
-        when {
-            et_detail_address.text.isEmpty() -> {
-                validated = false
-                setWrapperError(et_label_address_wrapper, getString(R.string.validate_detail_alamat))
-                if (!isErrorFieldEmpty(field)) field += ", "
-                field += "detail alamat"
-            }
+        if (et_detail_address.text.isEmpty()) {
+            validated = false
+            setWrapperError(et_label_address_wrapper, getString(R.string.validate_detail_alamat))
+            if (!isErrorFieldEmpty(field)) field += ", "
+            field += "detail alamat"
         }
 
         if (!validateFormDefault(errorField)) validated = false
@@ -334,41 +332,37 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         var validated = true
 
         var field = errorField
-        when {
-            et_kota_kecamatan_mismatch.text.isEmpty() -> {
-                validated = false
-                setWrapperError(et_kota_kecamatan_mismatch_wrapper, getString(R.string.validate_kota_kecamatan))
-                if (!isErrorFieldEmpty(field)) field += ", "
-                field += "kota kecamatan"
-            }
-            et_kode_pos_mismatch.text.isEmpty() -> {
-                validated = false
-                setWrapperError(et_kode_pos_mismatch_wrapper, getString(R.string.validate_kode_pos))
-                if (!isErrorFieldEmpty(field)) field += ", "
-                field += "kode pos"
-            }
-            et_kode_pos_mismatch.text.length < 5 -> {
-                validated = false
-                setWrapperError(et_kode_pos_mismatch_wrapper, getString(R.string.validate_kode_pos_length))
-                if (!isErrorFieldEmpty(field)) field += ", "
-                field += "kode pos"
-            }
-            et_alamat_mismatch.text.isEmpty() -> {
-                validated = false
-                setWrapperError(et_alamat_mismatch_wrapper, getString(R.string.validate_alamat))
-                if (!isErrorFieldEmpty(field)) field += ", "
-                field += "alamat"
-            }
+        if (et_kota_kecamatan_mismatch.text.isEmpty()) {
+            validated = false
+            setWrapperError(et_kota_kecamatan_mismatch_wrapper, getString(R.string.validate_kota_kecamatan))
+            if (!isErrorFieldEmpty(field)) field += ", "
+            field += "kota kecamatan"
+        }
+        if (et_kode_pos_mismatch.text.isEmpty()) {
+            validated = false
+            setWrapperError(et_kode_pos_mismatch_wrapper, getString(R.string.validate_kode_pos))
+            if (!isErrorFieldEmpty(field)) field += ", "
+            field += "kode pos"
+        }
+        if (et_kode_pos_mismatch.text.length < 5) {
+            validated = false
+            setWrapperError(et_kode_pos_mismatch_wrapper, getString(R.string.validate_kode_pos_length))
+            if (!isErrorFieldEmpty(field)) field += ", "
+            field += "kode pos"
+        }
+        if (et_alamat_mismatch.text.isEmpty()) {
+            validated = false
+            setWrapperError(et_alamat_mismatch_wrapper, getString(R.string.validate_alamat))
+            if (!isErrorFieldEmpty(field)) field += ", "
+            field += "alamat"
         }
 
         if (isMismatchSolved) {
-            when {
-                et_detail_alamat_mismatch.text.isEmpty() -> {
-                    validated = false
-                    setWrapperError(et_detail_alamat_mismatch_wrapper, getString(R.string.validate_detail_alamat))
-                    if (!isErrorFieldEmpty(field)) field += ", "
-                    field += "detail alamat"
-                }
+            if (et_detail_alamat_mismatch.text.isEmpty()) {
+                validated = false
+                setWrapperError(et_detail_alamat_mismatch_wrapper, getString(R.string.validate_detail_alamat))
+                if (!isErrorFieldEmpty(field)) field += ", "
+                field += "detail alamat"
             }
         }
 
@@ -381,27 +375,25 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         var validated = true
 
         var field = errorField
-        when {
-            et_label_address.text.isEmpty() -> {
-                validated = false
-                setWrapperError(et_label_address_wrapper, getString(R.string.validate_label_alamat))
-                if (!isErrorFieldEmpty(field)) field += ", "
-                field += "label alamat"
+        if (et_label_address.text.isEmpty()) {
+            validated = false
+            setWrapperError(et_label_address_wrapper, getString(R.string.validate_label_alamat))
+            if (!isErrorFieldEmpty(field)) field += ", "
+            field += "label alamat"
 
-            }
-            et_receiver_name.text.isEmpty() -> {
-                validated = false
-                setWrapperError(et_receiver_name_wrapper, getString(R.string.validate_nama_penerima))
-                if (!isErrorFieldEmpty(field)) field += ", "
-                field += "nama penerima"
+        }
+        if (et_receiver_name.text.isEmpty()) {
+            validated = false
+            setWrapperError(et_receiver_name_wrapper, getString(R.string.validate_nama_penerima))
+            if (!isErrorFieldEmpty(field)) field += ", "
+            field += "nama penerima"
 
-            }
-            et_phone.text.isEmpty() -> {
-                validated = false
-                setWrapperError(et_phone_wrapper, getString(R.string.validate_no_ponsel))
-                if (!isErrorFieldEmpty(field)) field += ", "
-                field += "no ponsel"
-            }
+        }
+        if (et_phone.text.isEmpty()) {
+            validated = false
+            setWrapperError(et_phone_wrapper, getString(R.string.validate_no_ponsel))
+            if (!isErrorFieldEmpty(field)) field += ", "
+            field += "no ponsel"
         }
 
         if (!validated) {
@@ -579,7 +571,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             setOnClickListener {
                 if (et_kota_kecamatan_mismatch.text.isEmpty()) {
                     hideKeyboard()
-                    showToastError(getString(R.string.choose_district_first))
+                    view?.let { it1 -> activity?.let { it2 -> AddNewAddressUtils.showToastError(getString(R.string.choose_district_first), it1, it2) } }
                     AddNewAddressAnalytics.eventViewToasterPilihKotaDanKodePosTerlebihDahulu()
                 } else {
                     goToPinpointActivity(currentLat, currentLong, token, false, districtId,
@@ -685,7 +677,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         this.googleMap = googleMap
         this.googleMap?.uiSettings?.isMapToolbarEnabled = false
         this.googleMap?.uiSettings?.isMyLocationButtonEnabled = true
-        MapsInitializer.initialize(activity!!)
+        activity?.let { MapsInitializer.initialize(activity) }
         moveMap(AddNewAddressUtils.generateLatLng(currentLat, currentLong))
     }
 
@@ -803,24 +795,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     }
 
     override fun goToAddEditActivity(isMismatch: Boolean, isMismatchSolved: Boolean) {
-    }
-
-
-    private fun showToastError(message: String) {
-        var msg = message
-        if (view != null && activity != null) {
-            if (message.isEmpty()) {
-                msg = getString(R.string.default_request_error_unknown)
-            }
-            val snackbar = Snackbar.make(view!!, msg, BaseToaster.LENGTH_SHORT)
-            val snackbarTextView = snackbar.view.findViewById<TextView>(android.support.design.R.id.snackbar_text)
-            val snackbarActionButton = snackbar.view.findViewById<Button>(android.support.design.R.id.snackbar_action)
-            snackbar.view.background = ContextCompat.getDrawable(view!!.context, com.tokopedia.design.R.drawable.bg_snackbar_error)
-            snackbarTextView.setTextColor(ContextCompat.getColor(view!!.context, R.color.font_black_secondary_54))
-            snackbarActionButton.setTextColor(ContextCompat.getColor(view!!.context, R.color.font_black_primary_70))
-            snackbarTextView.maxLines = 5
-            snackbar.setAction(getString(R.string.label_action_snackbar_close)) { }.show()
-        }
     }
 
     override fun onSuccessGetDistrictBoundary(districtBoundaryGeometryUiModel: DistrictBoundaryGeometryUiModel) {

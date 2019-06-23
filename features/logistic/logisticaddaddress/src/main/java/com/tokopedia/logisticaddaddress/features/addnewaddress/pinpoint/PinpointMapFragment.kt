@@ -187,7 +187,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         this.googleMap = googleMap
         this.googleMap?.uiSettings?.isMapToolbarEnabled = false
         this.googleMap?.uiSettings?.isMyLocationButtonEnabled = true
-        MapsInitializer.initialize(activity!!)
+        activity?.let { MapsInitializer.initialize(activity) }
         moveMap(AddNewAddressUtils.generateLatLng(currentLat, currentLong))
 
         this.isPolygon?.let {
@@ -244,7 +244,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
 
     override fun onResume() {
         map_view?.onResume()
-        presenter.requestLocation(activity!!)
+        presenter.requestLocation(requireActivity())
         super.onResume()
     }
 
@@ -290,20 +290,20 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         isGetDistrict = true
         moveMap(AddNewAddressUtils.generateLatLng(currentLat, currentLong))
 
-        // if (!isShowingAutocomplete!!) {
         whole_loading_container.visibility = View.GONE
         getdistrict_container.visibility = View.VISIBLE
         updateGetDistrictBottomSheet(presenter.convertGetDistrictToSaveAddressDataUiModel(getDistrictDataUiModel, zipCodes))
-        // }
     }
 
     override fun onSuccessAutofill(autofillDataUiModel: AutofillDataUiModel) {
-        if (isShowingAutocomplete!!) {
-            handler.postDelayed({
+        isShowingAutocomplete?.let {
+            if (it) {
+                handler.postDelayed({
+                    updateAfterOnSuccessAutofill(autofillDataUiModel)
+                }, 2000)
+            } else {
                 updateAfterOnSuccessAutofill(autofillDataUiModel)
-            }, 2000)
-        } else {
-            updateAfterOnSuccessAutofill(autofillDataUiModel)
+            }
         }
     }
 
@@ -315,7 +315,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         this.isPolygon?.let {
             if (this.isPolygon as Boolean) {
                 if (autofillDataUiModel.districtId != districtId) {
-                    showToastError(getString(R.string.invalid_district))
+                    view?.let { it1 -> activity?.let { it2 -> AddNewAddressUtils.showToastError(getString(R.string.invalid_district), it1, it2) } }
                     AddNewAddressAnalytics.eventViewToasterAlamatTidakSesuaiDenganPeta()
                 } else {
                     updateGetDistrictBottomSheet(presenter.convertAutofillToSaveAddressDataUiModel(autofillDataUiModel, zipCodes))
@@ -337,7 +337,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             AddNewAddressAnalytics.eventViewErrorAlamatTidakValid()
 
         } else {
-            // if (!isShowingAutocomplete!!) {
             invalid_container.visibility = View.GONE
             whole_loading_container.visibility = View.GONE
             getdistrict_container.visibility = View.VISIBLE
@@ -350,7 +349,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             et_detail_address.setOnClickListener {
                 AddNewAddressAnalytics.eventClickFieldDetailAlamat()
             }
-            // }
 
             tv_title_getdistrict.text = saveAddressDataModel.title
             tv_address_getdistrict.text = saveAddressDataModel.formattedAddress
@@ -375,27 +373,10 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
 
         if (et_detail_address.text.isEmpty()) {
             validate = false
-            showToastError(getString(R.string.validate_detail_alamat))
+            view?.let { activity?.let { it1 -> AddNewAddressUtils.showToastError(getString(R.string.validate_detail_alamat), it, it1) } }
         }
 
         return validate
-    }
-
-    private fun showToastError(message: String) {
-        var msg = message
-        if (view != null && activity != null) {
-            if (message.isEmpty()) {
-                msg = getString(R.string.default_request_error_unknown)
-            }
-            val snackbar = Snackbar.make(view!!, msg, BaseToaster.LENGTH_SHORT)
-            val snackbarTextView = snackbar.view.findViewById<TextView>(android.support.design.R.id.snackbar_text)
-            val snackbarActionButton = snackbar.view.findViewById<Button>(android.support.design.R.id.snackbar_action)
-            snackbar.view.background = ContextCompat.getDrawable(view!!.context, com.tokopedia.design.R.drawable.bg_snackbar_error)
-            snackbarTextView.setTextColor(ContextCompat.getColor(view!!.context, R.color.font_black_secondary_54))
-            snackbarActionButton.setTextColor(ContextCompat.getColor(view!!.context, R.color.font_black_primary_70))
-            snackbarTextView.maxLines = 5
-            snackbar.setAction(getString(R.string.label_action_snackbar_close)) { }.show()
-        }
     }
 
     override fun showFailedDialog() {

@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.logisticaddaddress.AddressConstants;
 import com.tokopedia.logisticaddaddress.adapter.AddressTypeFactory;
 import com.tokopedia.logisticaddaddress.adapter.AddressViewHolder;
 import com.tokopedia.logisticaddaddress.adapter.AddressViewModel;
@@ -29,6 +30,7 @@ import com.tokopedia.logisticaddaddress.di.ManageAddressModule;
 import com.tokopedia.logisticaddaddress.domain.mapper.AddressViewModelMapper;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressFragment;
+import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity;
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 
@@ -196,16 +198,26 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
     public void openFormAddressView(AddressModel data) {
         Token token = mPresenter.getToken();
         if (data == null) {
-            startActivityForResult(
+            /*startActivityForResult(
                     AddAddressActivity.createInstanceAddAddressFromManageAddressWhenDefaultAddressIsEmpty(
                             getActivity(), token
-                    ), REQUEST_CODE_PARAM_CREATE);
+                    ), REQUEST_CODE_PARAM_CREATE);*/
+
+            startActivityForResult(PinpointMapActivity.Companion.newInstance(getActivity(),
+                    AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, token,
+                    false, 0, false, null,
+                    false), REQUEST_CODE_PARAM_CREATE);
 
         } else {
-            startActivityForResult(
+            /*startActivityForResult(
                     AddAddressActivity.createInstanceEditAddressFromManageAddress(
                             getActivity(), data, token
-                    ), REQUEST_CODE_PARAM_EDIT);
+                    ), REQUEST_CODE_PARAM_EDIT);*/
+
+            startActivityForResult(PinpointMapActivity.Companion.newInstance(getActivity(),
+                    AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, token,
+                    false, 0, false, null,
+                    false), REQUEST_CODE_PARAM_EDIT);
         }
     }
 

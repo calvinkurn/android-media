@@ -522,7 +522,12 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                                 getActivity(), token
                         ), LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);*/
 
-                Intent intent = new Intent(getActivity(), PinpointMapActivity.class);
+                startActivityForResult(PinpointMapActivity.Companion.newInstance(getActivity(),
+                        AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, token,
+                        false, 0, false, null,
+                        false), ADD_NEW_ADDRESS_CREATED);
+
+                /*Intent intent = new Intent(getActivity(), PinpointMapActivity.class);
                 intent.putExtra(AddressConstants.KERO_TOKEN, token);
                 intent.putExtra(AddressConstants.EXTRA_LAT, AddressConstants.MONAS_LAT);
                 intent.putExtra(AddressConstants.EXTRA_LONG, AddressConstants.MONAS_LONG);
@@ -530,7 +535,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                 intent.putExtra(AddressConstants.EXTRA_IS_POLYGON, false);
                 intent.putExtra(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, false);
                 intent.putExtra(AddressConstants.EXTRA_IS_CHANGES_REQUESTED, false);
-                startActivityForResult(intent, ADD_NEW_ADDRESS_CREATED);
+                startActivityForResult(intent, ADD_NEW_ADDRESS_CREATED);*/
 
             } else {
                 checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickTambahAlamatBaruFromGantiAlamat();
