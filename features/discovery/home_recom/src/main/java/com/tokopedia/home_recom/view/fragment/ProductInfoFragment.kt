@@ -172,7 +172,6 @@ class ProductInfoFragment : BaseDaggerFragment() {
     private fun onSuccessAddWishlist(productId: String?) {
         showToastSuccess(getString(R.string.msg_success_add_wishlist))
         updateWishlist(true)
-        //TODO clear cache
         sendIntentResusltWishlistChange(productId ?: "", true)
     }
 
