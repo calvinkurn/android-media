@@ -456,10 +456,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public List<DataCheckoutRequest> updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(PromoStackingData promoStackingGlobalData, List<ShipmentCartItemModel> shipmentCartItemModels) {
-        List<DataCheckoutRequest> dataCheckoutRequests = dataCheckoutRequestList;
-        if (dataCheckoutRequests == null) {
-            dataCheckoutRequests = getView().generateNewCheckoutRequest(getShipmentCartItemModelList(), true);
-        }
+        List<DataCheckoutRequest> dataCheckoutRequests = getView().generateNewCheckoutRequest(getShipmentCartItemModelList(), true);
 
         StringBuilder promoCodes = new StringBuilder();
         StringBuilder promoDetails = new StringBuilder();
