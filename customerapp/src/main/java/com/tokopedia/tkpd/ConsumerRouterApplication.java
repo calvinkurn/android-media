@@ -2854,7 +2854,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 CLICK_PDP,
                 PRODUCT_DETAIL_PAGE,
                 String.format(
-                        "click - filter rating by %s",
+                        "click - filter review by %s",
                         filterName.toLowerCase()
                 ),
                 productId
@@ -2868,7 +2868,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 CLICK_PDP,
                 PRODUCT_DETAIL_PAGE,
-                "click - rating gallery on rating list",
+                "click - review gallery on rating list",
                 String.format(
                         "product_id: %s - review_id : %s",
                         productId,

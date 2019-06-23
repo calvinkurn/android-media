@@ -192,7 +192,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     break;
                 case DeepLinkChecker.RECOMMENDATION:
                     openHomeRecommendation(linkSegment, uriData);
-                    screenName = AppScreen.SCREEN_SHOP_INFO;
+                    screenName = AppScreen.SCREEN_RECOMMENDATION;
                     break;
                 case DeepLinkChecker.OTHER:
                     prepareOpenWebView(uriData);

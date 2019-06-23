@@ -51,11 +51,10 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     private val adapter by lazy { HomeRecommendationAdapter(adapterTypeFactory) }
     private val recommendationWidgetViewModel by lazy { viewModelProvider.get(RecommendationPageViewModel::class.java) }
     private var menu: Menu? = null
+    private val SPAN_COUNT = 2
+    private val SHARE_PRODUCT_TITLE = "Bagikan Produk Ini"
 
     companion object{
-        private const val SPAN_COUNT = 2
-        private const val SHARE_PRODUCT_TITLE = "Bagikan Produk Ini"
-
         fun newInstance(productId: String) = RecommendationFragment().apply {
             this.productId = productId
         }
