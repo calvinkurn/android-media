@@ -235,6 +235,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     }
 
     private fun shareProduct(productDetailData: ProductDetailData){
+        RecommendationPageTracking.eventClickIconShare()
         LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
                 productDataToLinkerDataMapper(productDetailData), object : ShareCallback {
             override fun urlCreated(linkerShareData: LinkerShareResult) {
