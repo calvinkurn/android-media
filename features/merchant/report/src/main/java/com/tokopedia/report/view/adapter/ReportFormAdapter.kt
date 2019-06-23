@@ -32,11 +32,13 @@ import kotlinx.android.synthetic.main.item_textarea_form.view.*
 class ReportFormAdapter(private val item: ProductReportReason,
                         private val tracking: MerchantReportTracking,
                         private val inputDetailListener:((String, String, Int, Int) -> Unit),
-                        private val addPhotoListener: ((String) -> Unit),
+                        private val addPhotoListener: ((String, Int) -> Unit),
                         private val submitForm: (()-> Unit)) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     val trackingReasonLabel: String
         get() = item.value.toLowerCase()
+
+    private var isSubmitEnable = false
 
     private val items = mutableListOf<Pair<String, Any>>()
     val inputs = mutableMapOf<String, Any>()
@@ -93,9 +95,9 @@ class ReportFormAdapter(private val item: ProductReportReason,
         }
     }
 
-    fun updatePhotoForType(type: String, photoUri: String) {
+    fun updatePhotoForType(type: String, photoUri: List<String>) {
         val imgUriList: MutableList<String> = inputs[type] as? MutableList<String> ?: mutableListOf()
-        imgUriList.add(photoUri)
+        imgUriList.addAll(photoUri)
         inputs[type] = imgUriList
         notifyDataSetChanged()
     }
@@ -103,6 +105,13 @@ class ReportFormAdapter(private val item: ProductReportReason,
     fun updateTextInput(key: String, input: String?) {
         inputs[key] = input ?: ""
         notifyDataSetChanged()
+    }
+
+    fun toggleActiveSubmit(inputValid: Boolean) {
+        if (getItemViewType(itemCount - 1) == TYPE_SUBMIT && inputValid != isSubmitEnable){
+            isSubmitEnable = inputValid
+            notifyItemChanged(itemCount - 1)
+        }
     }
 
     inner class HeaderViewHolder(view: View): RecyclerView.ViewHolder(view){
@@ -145,6 +154,7 @@ class ReportFormAdapter(private val item: ProductReportReason,
                     spannable.setSpan(StyleSpan(Typeface.BOLD), start, end, 0)
                 }
                 footer.text = spannable
+                btn_lapor.isEnabled = isSubmitEnable
                 if (item.additionalFields.isEmpty()){
                     btn_lapor.gone()
                 } else {
@@ -176,13 +186,13 @@ class ReportFormAdapter(private val item: ProductReportReason,
         private var maxChar = -1
 
         override fun validate(): Boolean {
-            if (minChar == -1 && maxChar == -1) return true
+            return if (minChar == -1 && maxChar == -1) true
             else {
                 val input = itemView.edit_text_report.text.toString()
                 itemView.textInputLayoutReport.error = if (input.length < minChar){
                     itemView.context.getString(R.string.product_hint_product_report, minChar.toString())
                 } else null
-                return input.isNotBlank() && input.length in minChar..maxChar
+                input.isNotBlank() && input.length in minChar..maxChar
             }
         }
 
@@ -193,10 +203,9 @@ class ReportFormAdapter(private val item: ProductReportReason,
 
                 val input = inputs[field.key]?.toString() ?: ""
                 textInputLayoutReport.hint = field.value
-                //textInputLayoutReport.counterMaxLength = field.max
+                textInputLayoutReport.helperText = context.getString(R.string.product_helper_product_report,
+                        field.min.toString())
                 edit_text_report.filters = arrayOf(InputFilter.LengthFilter(field.max))
-                /*edit_text_report.hint = context.getString(R.string.product_hint_product_report,
-                        field.min.toString())*/
                 edit_text_report.setText(input)
             }
         }

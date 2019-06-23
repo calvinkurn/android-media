@@ -27,6 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
         android:text="@string/label_lapor"
+        android:enabled="false"
         app:buttonCompatType="primary"
         app:buttonCompatSize="big"
         app:buttonCompatTextAllCaps="false"/>

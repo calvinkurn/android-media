@@ -10,7 +10,7 @@ import com.tokopedia.report.data.util.MerchantReportTracking
 import kotlinx.android.synthetic.main.item_filled_photo.view.*
 
 class UploadPhotoAdapter (var type: String,
-                          private val addPhotoListener: ((String) -> Unit),
+                          private val addPhotoListener: ((String, Int) -> Unit),
                           private val updateRemoveListener: ((String, List<String>) -> Unit),
                           private var maxTotal: Int = 1): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -77,7 +77,7 @@ class UploadPhotoAdapter (var type: String,
     inner class PlaceHolder(view: View):RecyclerView.ViewHolder(view){
         init {
             itemView.setOnClickListener {
-                addPhotoListener.invoke(type)
+                addPhotoListener.invoke(type, maxTotal - itemCount)
             }
         }
     }

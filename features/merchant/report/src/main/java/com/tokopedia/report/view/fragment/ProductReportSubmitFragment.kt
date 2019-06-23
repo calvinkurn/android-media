@@ -129,17 +129,22 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
     }
 
     private fun onSubmitClicked(){
-        val total = adapter.itemCount - 1
-        var valid = true
-        for (i in 1..total){
-            val holder = recycler_view.findViewHolderForAdapterPosition(i-1)
-            if ( holder is ReportFormAdapter.ValidateViewHolder)
-                valid = valid and holder.validate()
-        }
-        if (valid){
+        if (isInputValid){
             dialogSubmit?.show()
         }
     }
+
+    private val isInputValid: Boolean
+        get() {
+            val total = adapter.itemCount - 1
+            var valid = true
+            for (i in 1..total){
+                val holder = recycler_view.findViewHolderForAdapterPosition(i-1)
+                if ( holder is ReportFormAdapter.ValidateViewHolder)
+                    valid = valid and holder.validate()
+            }
+            return valid
+        }
 
     private fun openInputDetail(key: String, value: String, minChar: Int, maxChar: Int){
         photoTypeSelected = key
@@ -148,17 +153,20 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun openPhotoPicker(photoType: String){
+    private fun openPhotoPicker(photoType: String, maxPick: Int){
         this.photoTypeSelected = photoType
         context?.let {
             val builder = ImagePickerBuilder(getString(R.string.report_choose_picture),
-                    intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_INSTAGRAM),
+                    intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA),
                     GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                     ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, true,
                     ImagePickerEditorBuilder(
                             intArrayOf(ImageEditActionTypeDef.ACTION_BRIGHTNESS, ImageEditActionTypeDef.ACTION_CONTRAST,
                                     ImageEditActionTypeDef.ACTION_CROP, ImageEditActionTypeDef.ACTION_ROTATE),
-                            false, null), null)
+                            false, null),
+                    ImagePickerMultipleSelectionBuilder(
+                            arrayListOf(), null, -1, maxPick
+                    ))
 
             val intent = ImagePickerActivity.getIntent(it, builder)
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
@@ -172,7 +180,7 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
                 val imageUrlOrPathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
                 if (imageUrlOrPathList != null && imageUrlOrPathList.size > 0) {
                     photoTypeSelected?.let {
-                        adapter.updatePhotoForType(it, imageUrlOrPathList[0])
+                        adapter.updatePhotoForType(it, imageUrlOrPathList)
                     }
                     photoTypeSelected = null
                 }
@@ -184,6 +192,7 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
                 photoTypeSelected?.let {
                     val input = data.getStringExtra(ReportInputDetailFragment.INPUT_VALUE)
                     adapter.updateTextInput(it, input)
+                    adapter.toggleActiveSubmit(isInputValid)
                 }
             }
         } else {
