@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.home_recom.analytics.RecommendationPageTracking
 import com.tokopedia.home_recom.di.DaggerHomeRecommendationComponent
@@ -19,7 +20,7 @@ import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.view.fragment.RecommendationFragment
 
 class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecommendationComponent>{
-
+    private lateinit var productId: String
     companion object{
         const val PRODUCT_ID = "PRODUCT_ID"
         private const val DEEP_LINK_URI = "deep_link_uri"
@@ -52,6 +53,30 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
 
     override fun getNewFragment(): Fragment {
         return RecommendationFragment.newInstance(intent.getStringExtra(PRODUCT_ID))
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val uri = intent.data
+        val bundle = intent.extras
+        if (uri != null) {
+            if (uri.scheme == DeeplinkConstant.SCHEME_INTERNAL) {
+
+//                if (segmentUri.size == 2) {
+//                } else {
+//                    shopDomain = segmentUri[segmentUri.size - 2]
+//                    productKey = segmentUri[segmentUri.size - 1]
+//                }
+//            }
+//                val segmentUri = uri.pathSegments
+//                if (segmentUri.size > 1) {
+//                    shopDomain = segmentUri[segmentUri.size - 2]
+//                    productKey = segmentUri[segmentUri.size - 1]
+//                }
+            } else { // affiliate
+                productId = uri.lastPathSegment
+            }
+        }
     }
 
     override fun getComponent(): HomeRecommendationComponent = DaggerHomeRecommendationComponent.builder()
