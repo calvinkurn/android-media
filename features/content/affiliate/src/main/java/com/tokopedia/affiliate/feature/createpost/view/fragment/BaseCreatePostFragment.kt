@@ -211,6 +211,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         updateThumbnail()
         updateAddTagText()
         updateButton()
+        updateCaption()
         updateHeader(feedContentForm.authors)
     }
 
@@ -548,6 +549,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 && viewModel.relatedProducts.isNotEmpty()
                 && (viewModel.adIdList.isNotEmpty() || viewModel.productIdList.isNotEmpty())
         doneBtn.isEnabled = isButtonEnabled
+    }
+
+    private fun updateCaption() {
+        caption.hint = viewModel.defaultPlaceholder
     }
 
     private fun updateRelatedProduct() {
