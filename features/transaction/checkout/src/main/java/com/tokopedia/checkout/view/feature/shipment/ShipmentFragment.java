@@ -471,16 +471,21 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         int countHasSaveState = 0;
         for (ShipmentCartItemModel shipmentCartItemModel : shipmentAdapter.getShipmentCartItemModelList()) {
-            if (shipmentCartItemModel.isSaveStateFlag()) {
+            if (shipmentCartItemModel.getSpId() != 0 && shipmentCartItemModel.getShippingId() != 0) {
                 countHasSaveState++;
-                List<DataCheckoutRequest> dataCheckoutRequests = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
-                        shipmentCartItemModel.getCartString(), "", "", ""
-                );
-                shipmentPresenter.setDataCheckoutRequestList(dataCheckoutRequests);
             }
         }
 
         if (countHasSaveState == 0) {
+            for (ShipmentCartItemModel shipmentCartItemModel : shipmentAdapter.getShipmentCartItemModelList()) {
+                if (shipmentCartItemModel.isSaveStateFlag()) {
+                    List<DataCheckoutRequest> dataCheckoutRequests = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
+                            shipmentCartItemModel.getCartString(), "", "", ""
+                    );
+                    shipmentPresenter.setDataCheckoutRequestList(dataCheckoutRequests);
+                }
+            }
+
             List<DataCheckoutRequest> dataCheckoutRequests = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentAdapter.getPromoGlobalStackData(), shipmentAdapter.getShipmentCartItemModelList());
             shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
                     dataCheckoutRequests,
