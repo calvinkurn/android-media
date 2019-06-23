@@ -8,9 +8,9 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.recommendation_widget_common.presentation.RecommendationCardView
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationModel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 
-class RecommendationProductAdapter(private var product: RecommendationModel,
+class RecommendationProductAdapter(private var product: RecommendationWidget,
                                    private val userActiveListener: UserActiveListener) : RecyclerView.Adapter<RecommendationProductAdapter.RecommendationProductViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecommendationProductViewHolder {
