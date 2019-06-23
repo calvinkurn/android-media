@@ -40,7 +40,6 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
     }
 
     object DeeplinkIntents{
-
         @JvmStatic
         @DeepLink(ApplinkConst.RECOMMENDATION_PAGE)
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
@@ -52,31 +51,10 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
     }
 
     override fun getNewFragment(): Fragment {
-        return RecommendationFragment.newInstance(intent.getStringExtra(PRODUCT_ID))
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val uri = intent.data
-        val bundle = intent.extras
-        if (uri != null) {
-            if (uri.scheme == DeeplinkConstant.SCHEME_INTERNAL) {
-
-//                if (segmentUri.size == 2) {
-//                } else {
-//                    shopDomain = segmentUri[segmentUri.size - 2]
-//                    productKey = segmentUri[segmentUri.size - 1]
-//                }
-//            }
-//                val segmentUri = uri.pathSegments
-//                if (segmentUri.size > 1) {
-//                    shopDomain = segmentUri[segmentUri.size - 2]
-//                    productKey = segmentUri[segmentUri.size - 1]
-//                }
-            } else { // affiliate
-                productId = uri.lastPathSegment
-            }
+        if(intent.data != null && intent.data.pathSegments.size > 1 ){
+            return RecommendationFragment.newInstance(intent.data.lastPathSegment)
         }
+        return RecommendationFragment.newInstance(intent.getStringExtra(PRODUCT_ID))
     }
 
     override fun getComponent(): HomeRecommendationComponent = DaggerHomeRecommendationComponent.builder()
