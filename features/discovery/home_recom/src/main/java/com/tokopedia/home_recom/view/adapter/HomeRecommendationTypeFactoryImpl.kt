@@ -41,7 +41,6 @@ class HomeRecommendationTypeFactoryImpl : BaseAdapterTypeFactory(), HomeRecommen
             ProductInfoDataModel.LAYOUT -> ProductInfoViewHolder(view)
             RecommendationCarouselDataModel.LAYOUT -> RecommendationCarouselViewHolder(view)
             TitleDataModel.LAYOUT -> TitleViewHolder(view)
-            RecommendationItemDataModel.LAYOUT -> RecommendationCarouselItemViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }
