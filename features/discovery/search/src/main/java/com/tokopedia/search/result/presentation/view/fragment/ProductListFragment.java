@@ -458,7 +458,7 @@ public class ProductListFragment
             } else if (resultCode == 980) {
                 //User DOb verfied succesfully
                 String message = data.getStringExtra("VERIFICATION_SUCCESS");
-                Toaster.Companion.showNormalWithAction(this,
+                Toaster.Companion.showNormalWithAction(getActivity(),
                         message,
                         Snackbar.LENGTH_INDEFINITE,
                         getString(R.string.general_label_ok), (v) -> {
