@@ -52,7 +52,6 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     private List<LabelGroupViewModel> labelGroupList = new ArrayList<>();
     private boolean isShopPowerBadge;
     private boolean isShopOfficialStore;
-    private String shopImageUrl;
 
     public boolean isTopAds() {
         return isTopAds;
@@ -330,14 +329,6 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         return isShopOfficialStore;
     }
 
-    public void setShopImageUrl(String shopImageUrl) {
-        this.shopImageUrl = shopImageUrl;
-    }
-
-    public String getShopImageUrl() {
-        return shopImageUrl;
-    }
-
     public ProductItemViewModel() {
     }
 
@@ -418,7 +409,6 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         dest.writeTypedList(this.labelGroupList);
         dest.writeByte(this.isShopPowerBadge ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isShopOfficialStore ? (byte) 1 : (byte) 0);
-        dest.writeString(this.shopImageUrl);
     }
 
     protected ProductItemViewModel(Parcel in) {
@@ -456,7 +446,6 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         this.labelGroupList = in.createTypedArrayList(LabelGroupViewModel.CREATOR);
         this.isShopPowerBadge = in.readByte() != 0;
         this.isShopOfficialStore = in.readByte() != 0;
-        this.shopImageUrl = in.readString();
     }
 
     public static final Creator<ProductItemViewModel> CREATOR = new Creator<ProductItemViewModel>() {

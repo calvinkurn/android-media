@@ -3,6 +3,7 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.support.annotation.LayoutRes
+import android.support.annotation.Nullable
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -14,9 +15,14 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel
+import com.tokopedia.search.result.presentation.model.LabelGroupViewModel
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import kotlinx.android.synthetic.main.search_product_card.view.*
+
+private const val LABEL_GROUP_POSITION_PROMO = "promo"
+private const val LABEL_GROUP_POSITION_CREDIBILITY = "credibility"
+private const val LABEL_GROUP_POSITION_OFFERS = "offers"
 
 open class ProductCardViewHolder(
     itemView: View,
@@ -36,16 +42,15 @@ open class ProductCardViewHolder(
         initProductCardContainer(productItem)
         initProductImage(productItem)
         initWishlistButton(productItem)
-//        initPromoLabel(productItem)
+        initPromoLabel(productItem)
         initShopName(productItem)
-        initShopImage(productItem)
         initTitleTextView(productItem)
         initSlashPrice(productItem)
         initPriceTextView(productItem)
         initShopBadge(productItem)
         initLocationTextView(productItem)
         initCredibilitySection(productItem)
-//        initOffersLabel(productItem)
+        initOffersLabel(productItem)
         initTopAdsIcon(productItem)
     }
 
@@ -78,30 +83,30 @@ open class ProductCardViewHolder(
         }
     }
 
-//    private fun initPromoLabel(productItem: ProductItemViewModel) {
-//        val promoLabelViewModel : LabelGroupViewModel? = getFirstLabelGroupOfPosition(productItem, LABEL_GROUP_POSITION_PROMO)
-//
-//        if(promoLabelViewModel != null) {
-//            itemView.promoLabel?.setLabelDesign(promoLabelViewModel.type)
-//            itemView.promoLabel?.visibility = View.VISIBLE
-//            itemView.promoLabel?.text = promoLabelViewModel.title
-//        }
-//        else {
-//            itemView.promoLabel?.visibility = View.GONE
-//        }
-//    }
-//
-//    @Nullable
-//    private fun getFirstLabelGroupOfPosition(productItem: ProductItemViewModel, position: String): LabelGroupViewModel? {
-//        val labelGroupOfPosition = getLabelGroupOfPosition(productItem, position)
-//
-//        return if(labelGroupOfPosition != null && labelGroupOfPosition.isNotEmpty()) labelGroupOfPosition[0] else null
-//    }
-//
-//    @Nullable
-//    private fun getLabelGroupOfPosition(productItem: ProductItemViewModel, position: String): List<LabelGroupViewModel>? {
-//        return productItem.labelGroupList.filter { labelGroup -> labelGroup.position == position }
-//    }
+    private fun initPromoLabel(productItem: ProductItemViewModel) {
+        val promoLabelViewModel : LabelGroupViewModel? = getFirstLabelGroupOfPosition(productItem, LABEL_GROUP_POSITION_PROMO)
+
+        if(promoLabelViewModel != null) {
+            itemView.productCardView?.setPromoLabelVisible(true)
+            itemView.productCardView?.setPromoLabelType(promoLabelViewModel.type)
+            itemView.productCardView?.setPromoLabelText(promoLabelViewModel.title)
+        }
+        else {
+            itemView.productCardView?.setPromoLabelVisible(false)
+        }
+    }
+
+    @Nullable
+    private fun getFirstLabelGroupOfPosition(productItem: ProductItemViewModel, position: String): LabelGroupViewModel? {
+        val labelGroupOfPosition = getLabelGroupOfPosition(productItem, position)
+
+        return if(labelGroupOfPosition != null && labelGroupOfPosition.isNotEmpty()) labelGroupOfPosition[0] else null
+    }
+
+    @Nullable
+    private fun getLabelGroupOfPosition(productItem: ProductItemViewModel, position: String): List<LabelGroupViewModel>? {
+        return productItem.labelGroupList.filter { labelGroup -> labelGroup.position == position }
+    }
 
     private fun initShopName(productItem: ProductItemViewModel) {
         val isShopNameShown = isShopNameShown(productItem)
@@ -113,19 +118,6 @@ open class ProductCardViewHolder(
     }
 
     private fun isShopNameShown(productItem: ProductItemViewModel): Boolean {
-        return productItem.isShopPowerBadge || productItem.isShopOfficialStore
-    }
-
-    private fun initShopImage(productItem: ProductItemViewModel) {
-        val isShopImageShown = isShopImageShown(productItem)
-        itemView.productCardView?.setShopImageVisible(isShopImageShown)
-
-        if(isShopImageShown) {
-            itemView.productCardView?.setShopImageUrl(productItem.imageUrl700)
-        }
-    }
-
-    private fun isShopImageShown(productItem: ProductItemViewModel): Boolean {
         return productItem.isShopOfficialStore
     }
 
@@ -243,7 +235,7 @@ open class ProductCardViewHolder(
 
     private fun initCredibilitySection(productItem: ProductItemViewModel) {
         initRatingAndReview(productItem)
-//        initCredibilityLabel(productItem)
+        initCredibilityLabel(productItem)
 //        initCredibilitySectionContainer(productItem)
     }
 
@@ -295,55 +287,68 @@ open class ProductCardViewHolder(
         itemView.productCardView?.setReviewCountMarginsWithNegativeDefaultValue(marginLeftPixel, -1, -1, -1)
 
     }
-//    private fun isRatingAndReviewContainerVisible(productItem: ProductItemViewModel): Boolean {
-//        return isRatingViewVisible(productItem) || isReviewCountVisible(productItem)
-//    }
-//
-//    private fun initCredibilityLabel(productItem: ProductItemViewModel) {
-//        if (!isRatingAndReviewContainerVisible(productItem)) {
-//            setCredibilityLabelVisibleIfExists(productItem)
-//        } else {
-//            itemView.credibilityLabel?.visibility = View.GONE
-//        }
-//    }
-//
-//    private fun setCredibilityLabelVisibleIfExists(productItem: ProductItemViewModel) {
-//        val credibilityLabelViewModel : LabelGroupViewModel? = getFirstLabelGroupOfPosition(productItem, LABEL_GROUP_POSITION_CREDIBILITY)
-//
-//        if (credibilityLabelViewModel != null) {
-//            itemView.credibilityLabel?.setLabelDesign(credibilityLabelViewModel.type)
-//            itemView.credibilityLabel?.visibility = View.VISIBLE
-//            itemView.credibilityLabel?.text = credibilityLabelViewModel.title
-//        } else {
-//            itemView.credibilityLabel?.visibility = View.GONE
-//        }
-//    }
-//
-//    private fun initCredibilitySectionContainer(productItem: ProductItemViewModel) {
-//        if(isCredibilitySectionContainerVisible(productItem)) {
-//            itemView.credibilitySectionContainer?.visibility = View.VISIBLE
-//        }
-//        else {
-//            itemView.credibilitySectionContainer?.visibility = View.GONE
-//        }
-//    }
-//
-//    private fun isCredibilitySectionContainerVisible(productItem: ProductItemViewModel): Boolean {
-//        return isRatingAndReviewContainerVisible(productItem) || getFirstLabelGroupOfPosition(productItem, LABEL_GROUP_POSITION_CREDIBILITY) != null
-//    }
-//
-//    private fun initOffersLabel(productItem: ProductItemViewModel) {
-//        val offersLabelViewModel = getFirstLabelGroupOfPosition(productItem, LABEL_GROUP_POSITION_OFFERS)
-//
-//        if(offersLabelViewModel != null) {
-//            itemView.offersLabel?.setLabelDesign(offersLabelViewModel.type)
-//            itemView.offersLabel?.visibility = View.VISIBLE
-//            itemView.offersLabel?.text = offersLabelViewModel.title
-//        }
-//        else {
-//            itemView.offersLabel?.visibility = View.GONE
-//        }
-//    }
+
+    private fun initCredibilityLabel(productItem: ProductItemViewModel) {
+        val isCredibilityLabelVisible = isCredibilityLabelVisible(productItem)
+        itemView.productCardView?.setCredibilityLabelVisible(isCredibilityLabelVisible)
+
+        if (isCredibilityLabelVisible) {
+            val credibilityLabelViewModel : LabelGroupViewModel =
+                getFirstLabelGroupOfPosition(productItem, LABEL_GROUP_POSITION_CREDIBILITY)!!
+
+            itemView.productCardView?.setCredibilityLabelType(credibilityLabelViewModel.type)
+            itemView.productCardView?.setCredibilityLabelText(credibilityLabelViewModel.title)
+        }
+    }
+
+    private fun isCredibilityLabelVisible(productItem: ProductItemViewModel): Boolean {
+        return isRatingAndReviewNotVisible(productItem)
+                && isCredibilityLabelExists(productItem)
+    }
+
+    private fun isRatingAndReviewNotVisible(productItem: ProductItemViewModel): Boolean {
+        return !isRatingViewVisible(productItem) && !isReviewCountVisible(productItem)
+    }
+
+    private fun isCredibilityLabelExists(productItem: ProductItemViewModel): Boolean {
+        return getFirstLabelGroupOfPosition(productItem, LABEL_GROUP_POSITION_CREDIBILITY) != null
+    }
+
+    private fun initOffersLabel(productItem: ProductItemViewModel) {
+        val offersLabelViewModel = getFirstLabelGroupOfPosition(productItem, LABEL_GROUP_POSITION_OFFERS)
+
+        if(offersLabelViewModel != null) {
+            setOffersLabelContent(offersLabelViewModel)
+        }
+        else {
+            itemView.productCardView?.setOffersLabelVisible(false)
+        }
+
+        setOffersLabelPosition(productItem)
+    }
+
+    private fun setOffersLabelContent(offersLabelViewModel: LabelGroupViewModel) {
+        itemView.productCardView?.setOffersLabelVisible(true)
+        itemView.productCardView?.setOffersLabelType(offersLabelViewModel.type)
+        itemView.productCardView?.setOffersLabelText(offersLabelViewModel.title)
+    }
+
+    private fun setOffersLabelPosition(productItem: ProductItemViewModel) {
+        when {
+            isCredibilityLabelVisible(productItem) -> {
+                itemView.productCardView?.setOffersLabelConstraintTopToBottomOfCredibilityLabel()
+            }
+            isRatingViewVisible(productItem) -> {
+                itemView.productCardView?.setOffersLabelConstraintTopToBottomOfRatingView()
+            }
+            isReviewCountVisible(productItem) -> {
+                itemView.productCardView?.setOffersLabelConstraintTopToBottomOfReviewCount()
+            }
+            else -> {
+                itemView.productCardView?.setOffersLabelConstraintTopToBottomOfTextLocation()
+            }
+        }
+    }
 
     private fun initTopAdsIcon(productItem: ProductItemViewModel) {
         itemView.productCardView?.setTopAdsVisible(productItem.isTopAds)

@@ -27,6 +27,15 @@
                 app:corner_radius="0dp"
                 android:adjustViewBounds="true" />
 
+            <com.tokopedia.unifycomponents.Label
+                android:id="@+id/promoLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp_20"
+                android:visibility="gone"
+                app:layout_constraintLeft_toLeftOf="@id/image"
+                app:layout_constraintBottom_toBottomOf="@id/image"
+                tools:text="Promo Label" />
+
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/textShopName"
                 android:layout_width="wrap_content"
@@ -122,8 +131,6 @@
                 android:id="@+id/textLocation"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_16"
-                android:layout_toRightOf="@id/shopBadgesContainer"
-                android:layout_toEndOf="@id/shopBadgesContainer"
                 android:layout_marginTop="@dimen/dp_4"
                 android:layout_marginLeft="@dimen/dp_4"
                 android:layout_marginStart="@dimen/dp_4"
@@ -159,12 +166,30 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
+                    android:layout_marginStart="4dp"
                     android:textColor="@color/black_38"
                     android:textSize="@dimen/sp_12" />
+
+                <com.tokopedia.search.result.presentation.view.widget.Label
+                    android:id="@+id/credibilityLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_20"
+                    android:visibility="gone"
+                    tools:text="Credibility Label" />
 
             </LinearLayout>
 
         </LinearLayout>
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/offersLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
+            android:visibility="gone"
+            tools:text="Offers Label" />
 
         <ImageView
             android:id="@+id/topAdsIcon"
