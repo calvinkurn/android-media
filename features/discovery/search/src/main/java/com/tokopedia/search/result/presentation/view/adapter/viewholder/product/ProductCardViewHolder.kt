@@ -212,13 +212,12 @@ open class ProductCardViewHolder(
     }
 
     private fun initLocationTextView(productItem: ProductItemViewModel) {
-        setLocationTextViewMargin(productItem)
-
         val isShopCityShown = isShopCityShown(productItem)
         itemView.productCardView?.setTextLocationVisible(isShopCityShown)
 
         if(isShopCityShown) {
             itemView.productCardView?.setTextLocation(productItem.shopCity)
+            setLocationTextViewMargin(productItem)
         }
     }
 
@@ -236,7 +235,6 @@ open class ProductCardViewHolder(
     private fun initCredibilitySection(productItem: ProductItemViewModel) {
         initRatingAndReview(productItem)
         initCredibilityLabel(productItem)
-//        initCredibilitySectionContainer(productItem)
     }
 
     private fun initRatingAndReview(productItem: ProductItemViewModel) {
@@ -266,13 +264,12 @@ open class ProductCardViewHolder(
     }
 
     private fun initReviewCount(productItem: ProductItemViewModel) {
-        setReviewCountMargin(productItem)
-
         val isReviewCountVisible = isReviewCountVisible(productItem)
         itemView.productCardView?.setReviewVisible(isReviewCountVisible)
 
         if(isReviewCountVisible) {
             itemView.productCardView?.setReviewCount(productItem.countReview)
+            setReviewCountMargin(productItem)
         }
     }
 
@@ -285,7 +282,6 @@ open class ProductCardViewHolder(
         val marginLeftPixel = convertDpToPixel(marginLeftDp)
 
         itemView.productCardView?.setReviewCountMarginsWithNegativeDefaultValue(marginLeftPixel, -1, -1, -1)
-
     }
 
     private fun initCredibilityLabel(productItem: ProductItemViewModel) {
