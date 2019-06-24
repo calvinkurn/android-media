@@ -16,6 +16,8 @@ import android.widget.FrameLayout;
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.abstraction.common.utils.toolargetool.TooLargeTool;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.discovery.R;
@@ -199,10 +201,10 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
     @Override
     public void prepareFragment(ProductViewModel productViewModel) {
         if (productViewModel.getCategoryHeaderModel().getIsAdult() > 0) {
-            Intent intent = new Intent();
-            intent.setClassName(getPackageName(),
-                    "com.tokopedia.age_restriction.viewcontroller.AgeRestrictionHomeActivity");
+            Intent intent = RouteManager.getIntent(this, ApplinkConstInternalCategory.INSTANCE.getAGE_RESTRICTION());
             intent.putExtra("ORIGIN", 1);
+            intent.putExtra("DESTINATION_GTM",
+                    productViewModel.getCategoryHeaderModel().getHeaderModel().getCategoryName()+"/"+productViewModel.getCategoryHeaderModel().getDepartementId());
             startActivityForResult(intent, 5838);
         }
         List<CategorySectionItem> categorySectionItems = new ArrayList<>();

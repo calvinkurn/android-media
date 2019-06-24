@@ -26,6 +26,7 @@ abstract class BaseARActivity<T : BaseViewModel> : BaseViewModelActivity<T>() {
         var eventView = VIEWPDP
         var eventClick = CLICKPDP
         var origin = 1
+        var destinationUrlGtm = ""
 
 
     }
@@ -37,6 +38,7 @@ abstract class BaseARActivity<T : BaseViewModel> : BaseViewModelActivity<T>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         origin = intent.getIntExtra("ORIGIN", 1)
+        destinationUrlGtm = intent.getStringExtra("DESTINATION_GTM")
         when (origin) {
             1 -> {
                 event = CATEGORYPAGE

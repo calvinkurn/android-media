@@ -31,14 +31,14 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
                 sendGeneralEvent(eventClick,
                         event,
                         "click - adult pop up - login",
-                        "before login - {origin url/external} - {destination url}")
+                        "before login - $destinationUrlGtm")
             }
 
             notAdult -> {
                 sendGeneralEvent(eventClick,
                         event,
                         "click - adult pop up - kembali",
-                        "not eligible - {origin url/external} - {destination url}")
+                        "not eligible - - $destinationUrlGtm")
                 startActivity(RouteManager.getIntent(this, ApplinkConst.HOME)
                         .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                         .putExtra("VERIFICATION_SUCCESS", getString(R.string.ar_text_age_not_adult)))
@@ -51,7 +51,7 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
                     sendGeneralEvent(eventClick,
                             event,
                             "click - adult pop up - verifikasi tanggal lahir",
-                            "not yet verified - empty DOB - {origin url/external} - {destination url}")
+                            "not yet verified - empty DOB - $destinationUrlGtm")
                 } else {
                     navigateToActivityRequest(Intent(this, VerifyDOBActivity::class.java)
                             .putExtra(PARAM_EXTRA_DOB, arHomeViewModel.notVerified.value), VERIFICATION_REQUEST)
@@ -59,7 +59,7 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
                             event,
                             "click - adult pop up - benar lanjutkan",
                             "not yet verified - "
-                                    + arHomeViewModel.notVerified.value + " - {origin url/external} - {destination url}")
+                                    + arHomeViewModel.notVerified.value + " - $destinationUrlGtm")
                 }
                 selection = 0
             }
@@ -73,7 +73,7 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
                 sendGeneralEvent(eventClick,
                         event,
                         "click - adult pop up - kembali",
-                        "before login - {origin url/external} - {destination url}")
+                        "before login - $destinationUrlGtm")
                 finish()
             }
             notAdult -> {
@@ -81,19 +81,20 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
             }
 
             notVerified -> {
-                navigateToActivityRequest(Intent(this, VerifyDOBActivity::class.java), VERIFICATION_REQUEST)
+                navigateToActivityRequest(Intent(this, VerifyDOBActivity::class.java).putExtra("DESTINATION_GTM", destinationUrlGtm),
+                        VERIFICATION_REQUEST)
                 sendGeneralEvent(eventClick,
                         event,
                         "click - adult pop up - ubah tanggal lahir",
                         "not yet verified - "
-                                + arHomeViewModel.notVerified.value + " - {origin url/external} - {destination url}")
+                                + arHomeViewModel.notVerified.value + "- $destinationUrlGtm")
             }
 
             notFilledDob -> {
                 sendGeneralEvent(eventClick,
                         event,
                         "click - adult pop up - kembali",
-                        "not yet verified - empty DOB - {origin url/external} - {destination url}")
+                        "not yet verified - empty DOB - $destinationUrlGtm")
                 finish()
             }
         }
@@ -154,7 +155,7 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
             sendGeneralEvent(eventView,
                     event,
                     "view - adult pop up - not eligible",
-                    "not eligible - {origin url/external} - {destination url}")
+                    "not eligible - $destinationUrlGtm")
         })
 
         arHomeViewModel.userAdult.observe(this, Observer {
@@ -178,7 +179,7 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
             sendGeneralEvent(eventView,
                     event,
                     "view - adult pop up - not yet verified",
-                    "not yet verified - {origin url} - {destination url}")
+                    "not yet verified - $destinationUrlGtm")
         })
 
         arHomeViewModel.notVerified.observe(this, Observer<String> {
@@ -190,7 +191,7 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
             sendGeneralEvent(eventView,
                     event,
                     "view - adult pop up - not yet verified",
-                    "not yet verified - {origin url} - {destination url}")
+                    "not yet verified - $destinationUrlGtm")
         })
     }
 

@@ -35,6 +35,7 @@ import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffilia
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.base.BaseToaster
@@ -1268,9 +1269,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
         if (data.category.isAdult) {
             val intent = Intent()
             activity?.let {
-                intent.setClassName(it.packageName,
-                        "com.tokopedia.age_restriction.viewcontroller.AgeRestrictionHomeActivity")
+                val intent = RouteManager.getIntent(activity, ApplinkConstInternalCategory.AGE_RESTRICTION)
                 intent.putExtra("ORIGIN",2)
+                intent.putExtra("DESTINATION_GTM",
+                        productInfoP1.productInfo.category.name + "/" + productInfoP1.productInfo.category.id)
                 startActivityForResult(intent, 5838)
             }
         }
