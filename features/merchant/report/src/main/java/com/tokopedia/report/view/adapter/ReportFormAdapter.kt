@@ -63,8 +63,10 @@ class ReportFormAdapter(private val item: ProductReportReason,
     override fun getItemCount(): Int = items.size + 2
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (position == 0){
+        if (position == 0) {
             (holder as HeaderViewHolder).bind(item.value, item.detail)
+        } else if (holder is SubmitViewHolder){
+            holder.bind()
         } else if (position < itemCount - 1){
             val (_, field) = items[position - 1]
             if (holder is LinkViewHolder && field is ProductReportReason.AdditionalInfo){
@@ -78,8 +80,6 @@ class ReportFormAdapter(private val item: ProductReportReason,
                 }
             } else if (holder is UploadPhotoViewHolder && field is ProductReportReason.AdditionalField){
                 holder.bind(field)
-            } else if (holder is SubmitViewHolder){
-                holder.bind()
             }
         }
     }
