@@ -16,6 +16,7 @@ import rx.Observable;
  * @author by nisie on 5/26/17.
  */
 
+@Deprecated
 public class MakeLoginUseCase extends UseCase<OtpLoginDomain> {
 
     static final String PARAM_USER_ID = "user_id";

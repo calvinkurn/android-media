@@ -552,7 +552,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     private fun setTrackingUserId(userId: String) {
-//        try {
+        try {
             TkpdAppsFlyerMapper.getInstance(activity?.applicationContext).mapAnalytics()
             TrackApp.getInstance().gtm.pushUserId(userId)
             if (!GlobalConfig.DEBUG && Crashlytics.getInstance() != null)
@@ -590,9 +590,9 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                     LoginRegisterAnalytics.LABEL_EMAIL
             )
 
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//        }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     fun onErrorLogin(errorMessage: String?) {
@@ -834,7 +834,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             NetworkErrorHelper.createSnackbarWithAction(activity,
                     ErrorHandlerSession.getErrorMessage(it, context, true)) {
                 presenter.reloginAfterSQ(validateToken)
-            }
+            }.showRetrySnackbar()
         }
     }
 

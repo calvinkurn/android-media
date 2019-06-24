@@ -69,7 +69,8 @@ import javax.inject.Named
  * @author by nisie on 12/4/17.
  */
 
-class ChooseTokocashAccountFragment : BaseDaggerFragment(), ChooseTokocashAccountContract.View, ChooseTokocashAccountContract.ViewAdapter {
+class ChooseTokocashAccountFragment : BaseDaggerFragment(), ChooseTokocashAccountContract.View,
+        ChooseTokocashAccountContract.ViewAdapter {
 
     private val REQUEST_SECURITY_QUESTION = 101
 

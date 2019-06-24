@@ -32,6 +32,7 @@ class LoginTokenUseCase @Inject constructor(val resources: Resources,
 
     fun executeLoginAfterSQ(requestParams: Map<String, Any>, subscriber:
     Subscriber<GraphqlResponse>) {
+        userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
         execute(requestParams, subscriber, R.raw.mutation_login_after_sq)
     }
 
@@ -100,6 +101,7 @@ class LoginTokenUseCase @Inject constructor(val resources: Resources,
             requestParams[PARAM_PASSWORD_TYPE] = TYPE_OTP
             requestParams[PARAM_ACCESS_TOKEN] = userSession.accessToken
             requestParams[PARAM_GRANT_TYPE] = TokenGenerator().encode(TYPE_PASSWORD)
+            requestParams[PARAM_SUPPORTED] = "true"
 
             return requestParams
         }
@@ -110,6 +112,7 @@ class LoginTokenUseCase @Inject constructor(val resources: Resources,
             requestParams[PARAM_SOCIAL_TYPE] = socialType
             requestParams[PARAM_ACCESS_TOKEN] = accessToken
             requestParams[PARAM_GRANT_TYPE] = TokenGenerator().encode(TYPE_EXTENSION)
+            requestParams[PARAM_SUPPORTED] = "true"
 
             return requestParams
         }
@@ -122,6 +125,7 @@ class LoginTokenUseCase @Inject constructor(val resources: Resources,
             requestParams[PARAM_CODE] = phoneNumber
             requestParams[PARAM_GRANT_TYPE] = TokenGenerator().encode(TYPE_PASSWORD)
             requestParams[PARAM_PASSWORD_TYPE] = TYPE_LPN
+            requestParams[PARAM_SUPPORTED] = "true"
 
             return requestParams
         }
