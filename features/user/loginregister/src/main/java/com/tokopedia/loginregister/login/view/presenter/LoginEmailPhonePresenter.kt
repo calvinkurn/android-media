@@ -1,20 +1,15 @@
 package com.tokopedia.loginregister.login.view.presenter
 
 import android.content.Context
-import android.content.Intent
 import android.support.v4.app.Fragment
 import android.text.TextUtils
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.loginregister.R
-import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
-import com.tokopedia.loginregister.login.view.listener.LoginContract
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.model.DiscoverViewModel
-import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
-import com.tokopedia.loginregister.loginthirdparty.domain.LoginWebviewUseCase
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterValidationPojo
@@ -22,12 +17,12 @@ import com.tokopedia.loginregister.registerinitial.domain.usecase.RegisterValida
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
+import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -39,8 +34,6 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
                                                    GetFacebookCredentialUseCase,
                                                    private val registerValidationUseCase:
                                                    RegisterValidationUseCase,
-                                                   private val loginWebviewUseCase:
-                                                   LoginWebviewUseCase,
                                                    private val loginTokenUseCase:
                                                    LoginTokenUseCase,
                                                    private val getProfileUseCase: GetProfileUseCase,
@@ -258,7 +251,6 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
         super.detachView()
         discoverUseCase.unsubscribe()
         registerValidationUseCase.unsubscribe()
-        loginWebviewUseCase.unsubscribe()
         loginTokenUseCase.unsubscribe()
         getProfileUseCase.unsubscribe()
 

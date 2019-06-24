@@ -1,19 +1,16 @@
 package com.tokopedia.loginregister.registerinitial.view.presenter
 
-import android.content.Intent
 import android.support.v4.app.Fragment
 import android.text.TextUtils
-
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
 import com.tokopedia.loginregister.login.view.model.DiscoverViewModel
-import com.tokopedia.loginregister.loginthirdparty.domain.LoginWebviewUseCase
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
-import com.tokopedia.loginregister.registerinitial.domain.usecase.RegisterValidationUseCase
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterValidationPojo
+import com.tokopedia.loginregister.registerinitial.domain.usecase.RegisterValidationUseCase
 import com.tokopedia.loginregister.registerinitial.view.listener.RegisterInitialContract
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
@@ -21,10 +18,8 @@ import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.user.session.UserSessionInterface
-
-import javax.inject.Inject
-
 import rx.Subscriber
+import javax.inject.Inject
 import javax.inject.Named
 
 /**
