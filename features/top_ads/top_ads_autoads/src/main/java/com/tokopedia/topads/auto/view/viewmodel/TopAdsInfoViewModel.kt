@@ -32,7 +32,7 @@ class TopAdsInfoViewModel @Inject constructor(
         launchCatchError(block = {
             val data = withContext(Dispatchers.IO) {
                 val request = GraphqlRequest(rawQueries[RawQueryKeyObject.QUERY_ADS_SHOP_INFO],
-                        TopAdsShopInfo.Response::class.java, mapOf("shopId" to shopId))
+                        TopAdsShopInfo.Response::class.java, mapOf(SHOP_ID to shopId))
                 val cacheStrategy = GraphqlCacheStrategy
                         .Builder(CacheType.ALWAYS_CLOUD).build()
                 repository.getReseponse(listOf(request), cacheStrategy)
@@ -44,5 +44,9 @@ class TopAdsInfoViewModel @Inject constructor(
             onError(it)
             it.printStackTrace()
         }
+    }
+
+    companion object {
+        val SHOP_ID = "shopId"
     }
 }

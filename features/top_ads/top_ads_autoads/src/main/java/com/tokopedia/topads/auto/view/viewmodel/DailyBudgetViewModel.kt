@@ -49,12 +49,12 @@ class DailyBudgetViewModel @Inject constructor(
             val data = withContext(Dispatchers.IO){
                 val request = GraphqlRequest(rawQueries[RawQueryKeyObject.QUERY_ADS_BID_INFO],
                         TopadsBidInfo.Response::class.java,
-                        mapOf("shopId" to shopId, "requestType" to requestType, "source" to source))
+                        mapOf(SHOP_ID to shopId, REQUEST_TYPE to requestType, SOURCE to source))
                 repository.getReseponse(listOf(request), cacheStrategy)
             }
 
             val request = GraphqlRequest(rawQueries[RawQueryKeyObject.QUERY_ADS_SHOP_INFO],
-                    TopAdsShopInfo.Response::class.java, mapOf("shopId" to shopId))
+                    TopAdsShopInfo.Response::class.java, mapOf(SHOP_ID to shopId))
             val shopInfo = repository.getReseponse(listOf(request), cacheStrategy)
                     .getSuccessData<TopAdsShopInfo.Response>().shopInfo
 
@@ -62,22 +62,6 @@ class DailyBudgetViewModel @Inject constructor(
                 it.forEach {it.shopStatus = shopInfo.data.category }
                 budgetInfoData.postValue(it)
             }
-//            val shopInfoJob = async {
-//                try {
-//                    val request = GraphqlRequest(rawQueries[RawQueryKeyObject.QUERY_ADS_SHOP_INFO],
-//                            TopAdsShopInfo.Response::class.java, mapOf("shopId" to shopId))
-//                    repository.getReseponse(listOf(request), cacheStrategy).getSuccessData<TopAdsShopInfo.Response>()
-//                } catch (t: Throwable) {
-//                    t
-//                }
-//            }
-//            try {
-//                val result = shopInfoJob.await()
-//                if (result is Throwable) throw  result
-//                shopInfoData.postValue((result as TopAdsShopInfo.Response).shopInfo.data)
-//            } catch (e: Exception) {
-//                e.printStackTrace()
-//            }
         }) {
             it.printStackTrace()
         }
@@ -138,5 +122,8 @@ class DailyBudgetViewModel @Inject constructor(
 
     companion object {
         val BUDGET_MULTIPLE_BY = 1000.0
+        val SHOP_ID = "shopId"
+        val REQUEST_TYPE = "requestType"
+        val SOURCE = "source"
     }
 }
