@@ -82,4 +82,6 @@
     <string name="post_personal">Post Pribadi</string>
     <string name="post_shop">Post Toko</string>
     <string name="create_post_as">Buat Sebagai</string>
+    <string name="feed_create_post_byme">Buat Rekomendasi ByMe</string>
+    <string name="feed_create_post_shop">Buat Post Toko</string>
 </resources>

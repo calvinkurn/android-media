@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.google.android.exoplayer2.ui.PlayerView
+        android:id="@+id/playerView"
+        app:controller_layout_id="@layout/video_control_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true" />
+
+    <ProgressBar
+        android:id="@+id/pgLoader"
+        android:layout_width="@dimen/dp_80"
+        android:layout_height="@dimen/dp_80"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:background="@drawable/circular_progress_bar_green"
+        android:layout_centerInParent="true"/>
+
+</RelativeLayout>

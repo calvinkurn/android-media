@@ -141,6 +141,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
         }
     }
+    private var isAppBarCollapse = false
 
     private lateinit var layoutManager: LinearLayoutManager
 
@@ -593,10 +594,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
 
             setFollowBtn(it, false)
-            if (!isOwner) {
-                showFooterOthers()
-            }
-
             if (activity != null && arguments != null) {
                 if (resultIntent == null) {
                     resultIntent = Intent()
@@ -610,6 +607,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 activity!!.setResult(Activity.RESULT_OK, resultIntent)
             }
         }
+        if (!isOwner && footerOthers.isVisible) showFooterOthers()
     }
 
     override fun onErrorFollowKol(errorMessage: String) = showError(errorMessage)
@@ -818,9 +816,13 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    override fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>) {
+    override fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean) {
         for (tracking in trackList) {
-            presenter.trackPostClickUrl(tracking.clickURL)
+            if (isClick) {
+                presenter.trackPostClickUrl(tracking.clickURL)
+            } else {
+                presenter.trackPostClickUrl(tracking.viewURL)
+            }
         }
     }
 
@@ -935,12 +937,12 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (dy <= -10) {
-                    if (!isOwner && !footerOthers.isVisible) {
-                        showFooterOthers()
+                if (dy < 0) { // going up
+                    if (adapter.dataSize > 0 && isAppBarCollapse && !isOwner && !footerOthers.isVisible) {
+                       showFooterOthers()
                     }
-                } else if (dy > 10) {
-                    hideFootersOthers()
+                } else if (dy > 0) { // going down
+                    if (isAppBarCollapse && !isOwner && footerOthers.isVisible) hideFootersOthers()
                 }
             }
 
@@ -981,16 +983,29 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun showFooterOthers() {
-        profileHeader?.let {
-            if (!it.isFollowed) {
-                footerOthers.show()
-                footerOthersText.text = getString(R.string.sticky_footer_follow)
-                footerOthersFollow.show()
-                footerOthersFollow.setOnClickListener { _ ->
-                    followUnfollowUser(it.userId, !it.isFollowed, FOLLOW_FOOTER)
-                }
-            } else {
-                footerOthers.hide()
+        footerOthers.show()
+        if (profileHeader?.isFollowed == true){
+            footerOthersText.text = getString(R.string.sticky_footer_following)
+            footerOthersFollow.hide()
+            footerOthersShareText.show()
+        } else {
+            footerOthersText.text = getString(R.string.sticky_footer_follow)
+            footerOthersFollow.show()
+            footerOthersFollow.setOnClickListener { _ ->
+                profileHeader?.let { followUnfollowUser(it.userId, !it.isFollowed, FOLLOW_FOOTER) }
+            }
+            footerOthersShareText.hide()
+        }
+        footerOthersShare.setOnClickListener {
+            profileHeader?.let {
+                val linkerData = constructShareData(
+                        it.name,
+                        it.avatar,
+                        it.link,
+                        String.format(getString(R.string.profile_share_text),
+                                it.link),
+                        String.format(getString(R.string.profile_share_title)))
+                ShareBottomSheets().show(fragmentManager!!, linkerData, isOwner, userId.toString(), true)
             }
         }
     }
@@ -1030,8 +1045,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 toolbar.let {
                     if (Math.abs(verticalOffset) >= appBarLayout.totalScrollRange) {
                         it.visibility = View.VISIBLE
+                        isAppBarCollapse = true
                     } else {
                         it.visibility = View.GONE
+                        isAppBarCollapse = false
+                        if (!isOwner && footerOthers.isVisible) hideFootersOthers()
                     }
                 }
             } catch (e: IllegalStateException) {
@@ -1044,7 +1062,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         lateinit var action: View.OnClickListener
         action = if (!selfProfile) {
             iv_action_parallax.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_share_white))
-            iv_action.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_share_white))
+            iv_action.gone()
             View.OnClickListener {
                 val linkerData = constructShareData(
                         element.name,
@@ -1240,6 +1258,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                             }
                         }
                     }
+
+                    onAffiliateTrackClicked(model.tracking, false)
                 }
             }
         }
