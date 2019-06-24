@@ -518,11 +518,11 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                             info = "$countCharLeft karakter lagi diperlukan"
                         }
                         count > 4 -> {
-                            countCharLeft = 175 - count
+                            countCharLeft = 10 - count
                             info = "$countCharLeft karakter tersisa"
 
                         }
-                        count == 175 -> info = ""
+                        count == 10 -> info = ""
                     }
                     tv_alamat_info_mismatch.text = info
                 }
