@@ -2534,11 +2534,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onSuccessCheckPromoMerchantFirstStep(@NotNull ResponseGetPromoStackUiModel promoData) {
+    public void onSuccessCheckPromoMerchantFirstStep(@NotNull ResponseGetPromoStackUiModel promoData, @NotNull String promoCode) {
         onSuccessCheckPromoFirstStep(promoData);
         triggerSendEnhancedEcommerceCheckoutAnalyticAfterPromoChange(
                 ConstantTransactionAnalytics.EventAction.CLICK_PAKAI_MERCHANT_VOUCHER,
-                ConstantTransactionAnalytics.EventLabel.SUCCESS + " - " + promoData.getData().getCodes().get(0)
+                ConstantTransactionAnalytics.EventLabel.SUCCESS + " - " + promoCode
         );
     }
 

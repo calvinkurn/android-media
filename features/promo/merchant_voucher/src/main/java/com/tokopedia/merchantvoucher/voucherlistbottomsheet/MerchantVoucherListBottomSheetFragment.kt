@@ -77,7 +77,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
 
     interface ActionListener {
         fun onClashCheckPromo(clashingInfoDetailUiModel: ClashingInfoDetailUiModel, type: String)
-        fun onSuccessCheckPromoMerchantFirstStep(promoData: ResponseGetPromoStackUiModel)
+        fun onSuccessCheckPromoMerchantFirstStep(promoData: ResponseGetPromoStackUiModel, promoCode: String)
     }
 
     companion object {
@@ -314,7 +314,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         }
         hideKeyboard()
         dismiss()
-        actionListener.onSuccessCheckPromoMerchantFirstStep(model)
+        actionListener.onSuccessCheckPromoMerchantFirstStep(model, promoCode)
     }
 
     override fun onClashCheckPromoFirstStep(model: ClashingInfoDetailUiModel, type: String) {
