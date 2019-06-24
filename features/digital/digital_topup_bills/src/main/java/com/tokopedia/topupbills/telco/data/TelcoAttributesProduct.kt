@@ -36,9 +36,9 @@ class TelcoAttributesProduct(
         @SerializedName("detail_compact")
         @Expose
         val detailCompact: String,
-        @SerializedName("productPromo")
+        @SerializedName("promo")
         @Expose
-        val productPromo: TelcoProductPromo,
+        val productPromo: TelcoProductPromo? = TelcoProductPromo(),
         @SerializedName("category_id")
         @Expose
         val categoryId: Int,

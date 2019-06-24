@@ -11,6 +11,7 @@ import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.data.TelcoProductDataCollection
 import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
 import com.tokopedia.topupbills.telco.view.adapter.DigitalProductAdapter
+import com.tokopedia.topupbills.telco.view.bottomsheet.DigitalProductBottomSheet
 
 /**
  * Created by nabillasabbaha on 11/04/19.
@@ -40,7 +41,8 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
             }
 
             override fun onClickSeeMoreProduct(itemProduct: TelcoProductDataCollection) {
-                //TODO make bottom sheet here
+                listener.onSeeMoreProduct(itemProduct)
+
             }
         })
         recyclerView.adapter = adapter
@@ -60,6 +62,7 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
 
     interface ActionListener {
         fun onClickProduct(itemProduct: TelcoProductDataCollection)
+        fun onSeeMoreProduct(itemProduct: TelcoProductDataCollection)
     }
 
 }

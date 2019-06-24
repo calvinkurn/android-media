@@ -17,6 +17,7 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.data.TelcoProductComponentData
 import com.tokopedia.topupbills.telco.data.TelcoProductDataCollection
+import com.tokopedia.topupbills.telco.view.bottomsheet.DigitalProductBottomSheet
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
 import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoProductViewModel
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedProductTelcoViewModel
@@ -109,6 +110,15 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
             override fun onClickProduct(itemProduct: TelcoProductDataCollection) {
                 sharedModel.setProductSelected(itemProduct)
                 sharedModel.setShowTotalPrice(true)
+            }
+
+            override fun onSeeMoreProduct(itemProduct: TelcoProductDataCollection) {
+                activity?.let {
+                    val seeMoreBottomSheet = DigitalProductBottomSheet.newInstance(itemProduct.product.attributes.desc,
+                            itemProduct.product.attributes.detail,
+                            itemProduct.product.attributes.price)
+                    seeMoreBottomSheet.show(it.supportFragmentManager, "")
+                }
             }
         })
     }

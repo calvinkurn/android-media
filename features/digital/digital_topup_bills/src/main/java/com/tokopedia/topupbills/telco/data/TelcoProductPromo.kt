@@ -11,27 +11,27 @@ import com.google.gson.annotations.SerializedName
 class TelcoProductPromo(
         @SerializedName("id")
         @Expose
-        val id: Int,
+        val id: Int = 0,
         @SerializedName("bonus_text")
         @Expose
-        val bonusText: String,
+        val bonusText: String = "",
         @SerializedName("new_price")
         @Expose
-        val newPrice: String,
+        val newPrice: String = "",
         @SerializedName("new_price_plain")
         @Expose
-        val newPricePlain: Int,
+        val newPricePlain: Int = 0,
         @SerializedName("value_text")
         @Expose
-        val valueText: String)
+        val valueText: String = "")
     : Parcelable {
+
         constructor(parcel: Parcel) : this(
                 parcel.readInt(),
                 parcel.readString(),
                 parcel.readString(),
                 parcel.readInt(),
-                parcel.readString()) {
-        }
+                parcel.readString())
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
                 parcel.writeInt(id)
