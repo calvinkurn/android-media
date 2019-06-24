@@ -38,11 +38,11 @@ class UnifyDialog(private val activity: Activity,
         val dialogView = activity.layoutInflater.inflate(layoutResId(), null)
         initView(dialogView)
 
-        alertDialog = AlertDialog.Builder(activity)
-                .setView(dialogView)
-                .create()
-
+        alertDialog = AlertDialog.Builder(activity).create()
         alertDialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        alertDialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        alertDialog?.setView(dialogView)
 
         initListener(alertDialog)
     }
