@@ -18,6 +18,7 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.AlignmentSpan;
 import android.text.style.StyleSpan;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -68,6 +69,7 @@ public class AllBrandsActivity extends DealsBaseActivity implements AllBrandsHom
     private TextView toolbarTitle;
     private SearchInputView searchInputView;
     private ImageView backArrow, overFlowIcon;
+    private TextView title;
     AllBrandsFragment allBrandsFragment;
     CoordinatorLayout mainContent;
     DealsAnalytics dealsAnalytics;
@@ -116,6 +118,7 @@ public class AllBrandsActivity extends DealsBaseActivity implements AllBrandsHom
     }
 
     private void setUpVariables() {
+        title = findViewById(R.id.toolbar_title);
         mainContent = findViewById(R.id.main_content);
         tabs = findViewById(R.id.tabs);
         searchInputView = findViewById(R.id.search_input_view);
@@ -133,7 +136,10 @@ public class AllBrandsActivity extends DealsBaseActivity implements AllBrandsHom
             searchInputView.setSearchText(searchText);
         }
         if (!TextUtils.isEmpty(getIntent().getStringExtra(FROM_VOUCHER))) {
-            toolbarTitle.setText(getResources().getString(R.string.voucher));
+            title.setText(getResources().getString(R.string.voucher));
+            title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+            title.setTextColor(ContextCompat.getColor(this, R.color.clr_f531353b));
+            toolbarTitle.setVisibility(View.GONE);
             mPresenter.attachView(this);
             mPresenter.getAllCategories();
         } else {

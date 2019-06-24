@@ -49,6 +49,8 @@
                     android:textColor="@color/toolbar_title_color"
                     android:textSize="@dimen/sp_12"
                     app:layout_constraintLeft_toRightOf="@+id/backArraw"
+                    app:layout_constraintBottom_toTopOf="@+id/tv_location_name"
+                    app:layout_constraintVertical_chainStyle="packed"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
@@ -62,7 +64,8 @@
                     android:textSize="@dimen/sp_16"
                     android:textStyle="bold"
                     app:layout_constraintStart_toEndOf="@+id/backArraw"
-                    app:layout_constraintTop_toBottomOf="@+id/toolbar_title" />
+                    app:layout_constraintTop_toBottomOf="@+id/toolbar_title"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
 
                 <ImageView
                     android:id="@+id/overFlow_icon"
