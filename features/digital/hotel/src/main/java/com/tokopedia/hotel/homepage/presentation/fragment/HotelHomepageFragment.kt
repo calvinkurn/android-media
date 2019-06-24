@@ -34,6 +34,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_homepage.*
 import java.util.*
 import javax.inject.Inject
+import android.support.v7.widget.RecyclerView
 
 /**
  * @author by furqan on 28/03/19
@@ -117,7 +118,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
     override fun getScreenName(): String = ""
 
     override fun onSaveGuest(room: Int, adult: Int) {
-        trackingHotelUtil.hotelSelectRoomGuest(room, adult, 0)
+        trackingHotelUtil.hotelSelectRoomGuest(room, adult)
 
         hotelHomepageModel.roomCount = room
         hotelHomepageModel.adultCount = adult
@@ -291,7 +292,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun onDestinationChanged(name: String, destinationId: Int, type: String) {
-        trackingHotelUtil.hotelSelectDestination(name)
+        trackingHotelUtil.hotelSelectDestination(type, name)
 
         hotelHomepageModel.locName = name
         hotelHomepageModel.locId = destinationId
@@ -331,8 +332,6 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun renderHotelPromo(promoDataList: List<HotelPromoEntity>) {
-//        trackingHotelUtil.hotelBannerImpression("hotel", mapToHotelPromotionsView(promoDataList))
-
         showPromoContainer()
         if (!::promoAdapter.isInitialized) {
             promoAdapter = HotelPromoAdapter(promoDataList)
@@ -344,6 +343,15 @@ class HotelHomepageFragment : HotelBaseFragment(),
         rv_hotel_homepage_promo.setHasFixedSize(true)
         rv_hotel_homepage_promo.isNestedScrollingEnabled = false
         rv_hotel_homepage_promo.adapter = promoAdapter
+        rv_hotel_homepage_promo.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    val position = (rv_hotel_homepage_promo.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                    trackingHotelUtil.hotelBannerImpression(promoDataList.getOrNull(position)?.promoId ?: "")
+                }
+            }
+        })
     }
 
     private fun showPromoContainer() {
@@ -354,31 +362,9 @@ class HotelHomepageFragment : HotelBaseFragment(),
         hotel_container_promo.visibility = View.GONE
     }
 
-//    private fun mapToHotelPromotionsView(data: List<HotelPromoEntity>): List<TrackingHotelUtil.HotelPromotionsView> {
-//        return data.mapIndexed { index, it ->
-//            TrackingHotelUtil.HotelPromotionsView(
-//                    bannerId = it.promoId,
-//                    position = index,
-//                    bannerName = it.attributes.description
-//            )
-//        }
-//    }
-//
     override fun onPromoClicked(promo: HotelPromoEntity) {
-//        trackingHotelUtil.hotelClickBanner(promo.attributes.description, mapToHotelPromotionsClick(promoDataList))
+        trackingHotelUtil.hotelClickBanner(promo.promoId)
     }
-//
-//    private fun mapToHotelPromotionsClick(data: List<HotelPromoEntity>): List<TrackingHotelUtil.HotelPromotionsClick> {
-//        return data.mapIndexed { index, it ->
-//            TrackingHotelUtil.HotelPromotionsClick(
-//                    bannerId = it.promoId,
-//                    position = index,
-//                    bannerName = it.attributes.description,
-//                    promoId = it.promoId,
-//                    promoCode = it.attributes.promoCode
-//            )
-//        }
-//    }
 
     companion object {
         const val MAX_SELECTION_DATE = 30

@@ -20,6 +20,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.presentation.activity.HotelBookingActivity
+import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.FacilityTextView
 import com.tokopedia.hotel.common.presentation.widget.InfoTextView
@@ -50,6 +51,9 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
 
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
+
+    @Inject
+    lateinit var trackingHotelUtil: TrackingHotelUtil
 
     lateinit var hotelRoom: HotelRoom
     lateinit var addToCartParam: HotelAddCartParam
@@ -156,6 +160,8 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
 
             room_detail_images.imageViewPagerListener = object : ImageViewPager.ImageViewPagerListener{
                 override fun onImageClicked(position: Int) {
+                    trackingHotelUtil.hotelClickRoomDetailsPhoto(hotelRoom.additionalPropertyInfo.propertyId,
+                            hotelRoom.roomId, hotelRoom.roomPrice.roomPrice)
                     startActivity(ImagePreviewSliderActivity.getCallingIntent(
                             context!!, hotelRoom.roomInfo.name, roomImageUrls, roomImageUrlsSquare, position
                     ))
@@ -303,11 +309,13 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         tv_room_detail_price.text = hotelRoom.roomPrice.roomPrice
         room_detail_button.text = getString(R.string.hotel_room_list_choose_room_button)
         room_detail_button.setOnClickListener {
-            if (userSessionInterface.isLoggedIn) {
-                roomDetailViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart), addToCartParam)
-            } else {
-                goToLoginPage()
-            }
+            trackingHotelUtil.hotelChooseRoomDetails(hotelRoom)
+//            if (userSessionInterface.isLoggedIn) {
+//                roomDetailViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart), addToCartParam)
+//            } else {
+//                goToLoginPage()
+//            }
+            startActivity(HotelBookingActivity.getCallingIntent(context!!,""))
         }
     }
 

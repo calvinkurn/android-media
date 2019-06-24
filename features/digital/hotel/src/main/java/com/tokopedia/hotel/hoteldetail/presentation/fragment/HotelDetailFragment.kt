@@ -241,7 +241,7 @@ class HotelDetailFragment : HotelBaseFragment() {
                 1 -> {
                     iv_first_photo_preview.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
                     iv_first_photo_preview.setOnClickListener {
-                        trackingHotelUtil.hotelClickHotelPhoto(hotelId, roomPrice)
+                        onPhotoClicked()
                         openImagePreview(imageIndex)
                     }
                     imageCounter++
@@ -249,7 +249,7 @@ class HotelDetailFragment : HotelBaseFragment() {
                 2 -> {
                     iv_second_photo_preview.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
                     iv_second_photo_preview.setOnClickListener {
-                        trackingHotelUtil.hotelClickHotelPhoto(hotelId, roomPrice)
+                        onPhotoClicked()
                         openImagePreview(imageIndex)
                     }
                     imageCounter++
@@ -257,7 +257,7 @@ class HotelDetailFragment : HotelBaseFragment() {
                 3 -> {
                     iv_third_photo_preview.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
                     iv_third_photo_preview.setOnClickListener {
-                        trackingHotelUtil.hotelClickHotelPhoto(hotelId, roomPrice)
+                        onPhotoClicked()
                         openImagePreview(imageIndex)
                     }
                     imageCounter++
@@ -266,7 +266,7 @@ class HotelDetailFragment : HotelBaseFragment() {
             if (item.mainPhoto) {
                 iv_main_photo_preview.loadImage(item.urlMax300, R.drawable.ic_failed_load_image)
                 iv_main_photo_preview.setOnClickListener {
-                    trackingHotelUtil.hotelClickHotelPhoto(hotelId, roomPrice)
+                    onPhotoClicked()
                     openImagePreview(imageIndex)
                 }
                 imageCounter++
@@ -276,6 +276,10 @@ class HotelDetailFragment : HotelBaseFragment() {
         if (images.size - imageCounter > 0) {
             tv_more_image_counter.text = getString(R.string.hotel_detail_more_image_counter, images.size - imageCounter)
         }
+    }
+
+    private fun onPhotoClicked() {
+        trackingHotelUtil.hotelClickHotelPhoto(hotelId, roomPrice)
     }
 
     private fun setupReviewLayout(data: HotelReview.ReviewData) {
@@ -395,8 +399,8 @@ class HotelDetailFragment : HotelBaseFragment() {
         container_bottom.visibility = View.VISIBLE
 
         if (data.isNotEmpty()) {
+            trackingHotelUtil.hotelViewDetails(hotelId, true, data[0].roomPrice.priceAmount.toInt(), data[0].additionalPropertyInfo.isDirectPayment)
             roomPrice = data[0].roomPrice.roomPrice
-            trackingHotelUtil.hotelChooseViewRoom(hotelId, roomPrice)
             tv_hotel_price.text = roomPrice
 
             if (data[0].additionalPropertyInfo.isDirectPayment) {
@@ -405,12 +409,14 @@ class HotelDetailFragment : HotelBaseFragment() {
                 btn_see_room.buttonCompatType = ButtonCompat.DISABLE
             } else {
                 btn_see_room.setOnClickListener {
+                    trackingHotelUtil.hotelChooseViewRoom(hotelId, roomPrice)
                     startActivityForResult(HotelRoomListActivity.createInstance(context!!, hotelHomepageModel.locId, hotelName,
                             hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate, hotelHomepageModel.adultCount, 0,
                             hotelHomepageModel.roomCount), RESULT_ROOM_LIST)
                 }
             }
         } else {
+            trackingHotelUtil.hotelViewDetails(hotelId, false, 0, false)
             tv_hotel_price_subtitle.visibility = View.GONE
             tv_hotel_price.text = getString(R.string.hotel_detail_room_full_text)
             tv_hotel_price.setTextColor(ContextCompat.getColor(context!!, com.tokopedia.design.R.color.light_disabled))

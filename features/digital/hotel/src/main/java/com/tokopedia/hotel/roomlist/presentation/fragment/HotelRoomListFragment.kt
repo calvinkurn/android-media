@@ -276,7 +276,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     }
 
     override fun onItemClicked(room: HotelRoom) {
-        trackingHotelUtil.hotelClickRoomDetails(hotelRoomListPageModel.propertyId, room.roomId, room.roomPrice.totalPrice)
+        trackingHotelUtil.hotelClickRoomDetails(hotelRoomListPageModel.propertyId, room.roomId, room.roomPrice.roomPrice)
         val objectId = System.currentTimeMillis().toString()
         SaveInstanceCacheManager(context!!, objectId).apply {
             val addCartParam = mapToAddCartParam(hotelRoomListPageModel, room)
@@ -359,29 +359,23 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     }
 
     override fun onClickBookListener(room: HotelRoom) {
-//        trackingHotelUtil.hotelChooseRoom(
-//                hotelRoomListPageModel.propertyId,
-//                room.roomId,
-//                room.roomPrice.priceAmount.toInt(),
-//                mapToHotelPromoProduct(roomList))
-        if (userSessionInterface.isLoggedIn) {
-            roomListViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart),
-                    mapToAddCartParam(hotelRoomListPageModel, room))
-        } else {
-            goToLoginPage()
-        }
+        trackingHotelUtil.hotelChooseRoom(room, roomList)
+        startActivity(HotelBookingActivity.getCallingIntent(context!!,""))
+//        if (userSessionInterface.isLoggedIn) {
+//            roomListViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart),
+//                    mapToAddCartParam(hotelRoomListPageModel, room))
+//        } else {
+//            goToLoginPage()
+//        }
+    }
+
+    override fun onPhotoClickListener(room: HotelRoom) {
+        trackingHotelUtil.hotelClickRoomListPhoto(room.additionalPropertyInfo.propertyId, room.roomId, room.roomPrice.roomPrice)
     }
 
     fun goToLoginPage() {
         if (activity != null) {
             RouteManager.route(context, ApplinkConst.LOGIN)
-        }
-    }
-
-    private fun mapToHotelPromoProduct(data: List<HotelRoom>): List<TrackingHotelUtil.HotelPromoProduct> {
-        return data.mapIndexed { index, it ->
-            TrackingHotelUtil.HotelPromoProduct(
-                    it.roomInfo.name, it.roomId, it.roomPrice.priceAmount.toInt(), index)
         }
     }
 

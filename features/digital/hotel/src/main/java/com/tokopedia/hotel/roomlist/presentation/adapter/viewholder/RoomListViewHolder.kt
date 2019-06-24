@@ -29,7 +29,7 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener): Abs
                 room_description_layout.visibility = View.VISIBLE
                 room_full_layout.visibility = View.GONE
 
-                setImageViewPager(roomListModel.images)
+                setImageViewPager(roomListModel.images, hotelRoom)
                 room_name_text_view.text = roomListModel.roomName
                 max_occupancy_text_view.text = roomListModel.occupancyText
                 bed_info_text_view.text = context.getString(R.string.hotel_room_list_room_description,
@@ -47,7 +47,7 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener): Abs
             } else {
                 room_description_layout.visibility = View.GONE
                 room_full_layout.visibility = View.VISIBLE
-                setImageViewPager(listOf(roomListModel.images[0]))
+                setImageViewPager(listOf(roomListModel.images[0]), hotelRoom)
                 room_full_room_name_text_view.text = roomListModel.roomName
             }
         }
@@ -84,11 +84,12 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener): Abs
         }
     }
 
-    fun setImageViewPager(imageUrls: List<String>) {
+    fun setImageViewPager(imageUrls: List<String>, room: HotelRoom) {
         with(itemView) {
             room_image_view_pager.setImages(imageUrls)
             room_image_view_pager.imageViewPagerListener = object : ImageViewPager.ImageViewPagerListener{
                 override fun onImageClicked(position: Int) {
+                    listener.onPhotoClickListener(room)
                     context.startActivity(ImagePreviewSliderActivity.getCallingIntent(
                             context!!, "Image", imageUrls, imageUrls, position
                     ))
@@ -132,6 +133,7 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener): Abs
 
     interface OnClickBookListener {
         fun onClickBookListener(room: HotelRoom)
+        fun onPhotoClickListener(room: HotelRoom)
     }
 
 }
