@@ -772,26 +772,32 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
         setCourierPromoApplied(itemPosition);
         onSuccessCheckPromoFirstStep(responseGetPromoStackUiModel);
-        sendCheckoutEnhancedEcommercePromoEvent(responseGetPromoStackUiModel);
+        String promoCode = "";
+        if (responseGetPromoStackUiModel.getData().getCodes().size() > 0) {
+            promoCode = responseGetPromoStackUiModel.getData().getCodes().get(0);
+        }
+        if (!TextUtils.isEmpty(promoCode)) {
+            sendCheckoutEnhancedEcommercePromoEvent(responseGetPromoStackUiModel, promoCode);
+        }
     }
 
     @Override
-    public void renderCheckPromoStackLogisticSuccess(ResponseGetPromoStackUiModel responseGetPromoStackUiModel) {
+    public void renderCheckPromoStackLogisticSuccess(ResponseGetPromoStackUiModel responseGetPromoStackUiModel, String promoCode) {
         onSuccessCheckPromoFirstStep(responseGetPromoStackUiModel);
-        sendCheckoutEnhancedEcommercePromoEvent(responseGetPromoStackUiModel);
+        sendCheckoutEnhancedEcommercePromoEvent(responseGetPromoStackUiModel, promoCode);
     }
 
-    private void sendCheckoutEnhancedEcommercePromoEvent(ResponseGetPromoStackUiModel responseGetPromoStackUiModel) {
+    private void sendCheckoutEnhancedEcommercePromoEvent(ResponseGetPromoStackUiModel responseGetPromoStackUiModel, String promoCode) {
         if (responseGetPromoStackUiModel.getData().getCodes().size() > 0) {
             if (responseGetPromoStackUiModel.getData().isCoupon() == 1) {
                 triggerSendEnhancedEcommerceCheckoutAnalyticAfterPromoChange(
                         ConstantTransactionAnalytics.EventAction.CLICK_GUNAKAN_KUPON,
-                        ConstantTransactionAnalytics.EventLabel.SUCCESS + " - " + responseGetPromoStackUiModel.getData().getCodes().get(0)
+                        ConstantTransactionAnalytics.EventLabel.SUCCESS + " - " + promoCode
                 );
             } else {
                 triggerSendEnhancedEcommerceCheckoutAnalyticAfterPromoChange(
                         ConstantTransactionAnalytics.EventAction.CLICK_GUNAKAN_KODE_PROMO,
-                        ConstantTransactionAnalytics.EventLabel.SUCCESS + " - " + responseGetPromoStackUiModel.getData().getCodes().get(0)
+                        ConstantTransactionAnalytics.EventLabel.SUCCESS + " - " + promoCode
                 );
             }
         }
@@ -2543,9 +2549,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onSuccessCheckPromoFirstStepAfterClash(ResponseGetPromoStackUiModel responseGetPromoStackUiModel) {
+    public void onSuccessCheckPromoFirstStepAfterClash(ResponseGetPromoStackUiModel responseGetPromoStackUiModel, String promoCode) {
         onSuccessCheckPromoFirstStep(responseGetPromoStackUiModel);
-        sendCheckoutEnhancedEcommercePromoEvent(responseGetPromoStackUiModel);
+        sendCheckoutEnhancedEcommercePromoEvent(responseGetPromoStackUiModel, promoCode);
     }
 
     @Override
