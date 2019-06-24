@@ -73,6 +73,7 @@ class DeeplinkMatcher() {
             add(Pattern(GT, 0, mapOf(0 to "activation.pl")) to OTHER)
             add(Pattern(EQ, 1, null) to SHOP)
             add(Pattern(EQ, 2, mapOf(0 to "rekomendasi")) to RECOMMENDATION)
+            add(Pattern(EQ, 0, mapOf(0 to "rekomendasi")) to RECOMMENDATION)
             add(Pattern(EQ, 2, null) to PRODUCT)
         }
     }
