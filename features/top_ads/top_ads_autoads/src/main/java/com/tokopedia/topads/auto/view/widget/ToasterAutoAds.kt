@@ -30,7 +30,7 @@ class ToasterAutoAds : BaseToaster() {
                 return
             }
             ToasterAutoAds.make(activity.findViewById(android.R.id.content),
-                    snackbarText, BaseToaster.LENGTH_LONG)
+                    snackbarText, BaseToaster.LENGTH_INDEFINITE)
                     .setAction(activity.getString(com.tokopedia.design.R.string.close)) { v ->
                         // no-op
                     }.show()
