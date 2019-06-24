@@ -73,7 +73,7 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
         reason?.let {reasonItem ->
             val popupField = reasonItem.additionalFields.firstOrNull { additionalField -> additionalField.type == "popup" }
             if (popupField != null && activity != null){
-                dialogSubmit = UnifyDialog(activity!!, UnifyDialog.HORIZONTAL_ACTION, UnifyDialog.NO_HEADER).apply {
+                dialogSubmit = UnifyDialog(activity!!, UnifyDialog.HORIZONTAL_ACTION, UnifyDialog.ICON_HEADER).apply {
                     setTitle(popupField.value)
                     setDescription(popupField.detail)
                     setOk(getString(R.string.label_report))
