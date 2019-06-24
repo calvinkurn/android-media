@@ -6,6 +6,7 @@ import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
@@ -50,19 +51,6 @@ class DigitalTelcoFragment : BaseDaggerFragment() {
         listMenuTab.add(DigitalTabTelcoItem(DigitalTelcoPostpaidFragment.newInstance(), ""))
         val pagerAdapter = DigitalTelcoProductTabAdapter(listMenuTab, childFragmentManager)
         viewPager.adapter = pagerAdapter
-        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrollStateChanged(state: Int) {
-
-            }
-
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-
-            }
-
-            override fun onPageSelected(position: Int) {
-
-            }
-        })
 
         val list = mutableListOf<DigitalProductSubMenu>()
         list.add(DigitalProductSubMenu(TelcoComponentType.TELCO_PREPAID, TelcoComponentName.TELCO_PREPAID))
@@ -78,6 +66,24 @@ class DigitalTelcoFragment : BaseDaggerFragment() {
             }
         })
         headerView.setHeader(list)
+
+        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(state: Int) {
+
+            }
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+
+            }
+
+            override fun onPageSelected(position: Int) {
+                if (position == 0) {
+                    headerView.headerLeftActive(list.get(DigitalSubMenuWidget.HEADER_LEFT))
+                } else {
+                    headerView.headerRightActive(list.get(DigitalSubMenuWidget.HEADER_RIGHT))
+                }
+            }
+        })
     }
 
     companion object {
