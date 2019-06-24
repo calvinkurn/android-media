@@ -28,7 +28,6 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_product_info.*
 import javax.inject.Inject
 
@@ -37,17 +36,13 @@ class ProductInfoFragment : BaseDaggerFragment() {
     private val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
 
     @Inject
-    lateinit var userSessionInterface : UserSessionInterface
-
-    @Inject
-    lateinit var trackingQueue: TrackingQueue
-
-    @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val viewModelProvider by lazy{ ViewModelProviders.of(this, viewModelFactory) }
 
     private val primaryProductViewModel by lazy { viewModelProvider.get(PrimaryProductViewModel::class.java) }
+
+    private lateinit var trackingQueue: TrackingQueue
 
     private lateinit var productDataModel: ProductInfoDataModel
 
@@ -71,6 +66,13 @@ class ProductInfoFragment : BaseDaggerFragment() {
 
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
         private const val WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition"
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        activity?.let {
+            trackingQueue = TrackingQueue(it)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -121,7 +123,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
         }
 
         fab_detail.setOnClickListener {
-            if (userSessionInterface.isLoggedIn) {
+            if (primaryProductViewModel.isLoggedIn()) {
                 if (it.isActivated) {
                     RecommendationPageTracking.eventAddWishlistOnProductRecommendationLogin()
                     productDataModel.productDetailData.id.let {
@@ -152,7 +154,6 @@ class ProductInfoFragment : BaseDaggerFragment() {
     private fun onSuccessRemoveWishlist(productId: String?) {
         showToastSuccess(getString(R.string.msg_success_remove_wishlist))
         updateWishlist(false)
-        //TODO clear cache
         sendIntentResusltWishlistChange(productId ?: "", false)
 
     }
@@ -269,7 +270,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
     }
 
     private fun onImpressionOrganic(item: RecommendationItem) {
-        if(userSessionInterface.isLoggedIn){
+        if(primaryProductViewModel.isLoggedIn()){
             RecommendationPageTracking.eventImpressionOnOrganicProductRecommendationForLoginUser(trackingQueue, item, item.position.toString())
         } else {
             RecommendationPageTracking.eventImpressionOnOrganicProductRecommendationForNonLoginUser(trackingQueue, item, item.position.toString())
@@ -277,7 +278,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
     }
 
     private fun onImpressionTopAds(item: RecommendationItem) {
-        if(userSessionInterface.isLoggedIn){
+        if(primaryProductViewModel.isLoggedIn()){
             RecommendationPageTracking.eventImpressionOnTopAdsProductRecommendationForLoginUser(trackingQueue, item, item.position.toString())
         } else {
             RecommendationPageTracking.eventImpressionOnTopAdsProductRecommendationForNonLoginUser(trackingQueue, item, item.position.toString())
@@ -285,7 +286,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
     }
 
     private fun onClickTopAds(item: RecommendationItem) {
-        if(userSessionInterface.isLoggedIn){
+        if(primaryProductViewModel.isLoggedIn()){
             RecommendationPageTracking.eventClickOnTopAdsProductRecommendationForLoginUser(item, item.position.toString())
         }else{
             RecommendationPageTracking.eventClickOnTopAdsProductRecommendationForNonLoginUser(item, item.position.toString())
@@ -293,7 +294,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
     }
 
     private fun onClickOrganic(item: RecommendationItem) {
-        if(userSessionInterface.isLoggedIn){
+        if(primaryProductViewModel.isLoggedIn()){
             RecommendationPageTracking.eventClickOnOrganicProductRecommendationForLoginUser(item, item.position.toString())
         }else{
             RecommendationPageTracking.eventClickOnOrganicProductRecommendationForNonLoginUser(item, item.position.toString())

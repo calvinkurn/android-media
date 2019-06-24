@@ -46,8 +46,4 @@ class HomeRecommendationModule {
     fun provideGetRecommendationUseCase(@ApplicationContext context: Context,
                                         graphqlUseCase: GraphqlUseCase,
                                         userSessionInterface: UserSessionInterface): GetRecommendationUseCase = GetRecommendationUseCase(context, graphqlUseCase, userSessionInterface)
-
-    @Provides
-    @HomeRecommendationScope
-    fun provideTrackingQueue(@ApplicationContext context: Context): TrackingQueue = TrackingQueue(context)
 }

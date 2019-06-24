@@ -26,6 +26,7 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class RecommendationPageViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
+                                                      private val userSessionInterface: UserSessionInterface,
                                                       private val getRecommendationUseCase: GetRecommendationUseCase,
                                                       @Named("Main")
                                   val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
@@ -88,4 +89,6 @@ class RecommendationPageViewModel @Inject constructor(private val graphqlReposit
         }
         )
     }
+
+    fun isLoggedIn() = userSessionInterface.isLoggedIn
 }

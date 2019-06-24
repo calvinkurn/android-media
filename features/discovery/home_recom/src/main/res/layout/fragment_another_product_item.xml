@@ -7,7 +7,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
     <com.tokopedia.recommendation_widget_common.presentation.RecommendationCardView
             android:id="@+id/product_item"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             app:fixedHeight="true"
             app:layout_constraintTop_toTopOf="parent"

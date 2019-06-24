@@ -62,4 +62,6 @@ class PrimaryProductViewModel @Inject constructor(private val graphqlRepository:
             }
         })
     }
+
+    fun isLoggedIn() = userSessionInterface.isLoggedIn
 }

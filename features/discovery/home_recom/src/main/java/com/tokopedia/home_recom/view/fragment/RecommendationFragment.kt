@@ -40,9 +40,6 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
-    lateinit var userSessionInterface: UserSessionInterface
-
-    @Inject
     lateinit var trackingQueue: TrackingQueue
 
     private lateinit var productId: String
@@ -169,7 +166,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     }
 
     override fun onImpressionTopAds(item: RecommendationItem) {
-        if(userSessionInterface.isLoggedIn){
+        if(recommendationWidgetViewModel.isLoggedIn()){
             RecommendationPageTracking.eventImpressionProductRecommendationOnHeaderNameLogin(trackingQueue, getHeaderName(item), item, item.position.toString())
         } else {
             RecommendationPageTracking.eventImpressionProductRecommendationOnHeaderName(trackingQueue, getHeaderName(item), item, item.position.toString())
@@ -177,7 +174,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     }
 
     override fun onImpressionOrganic(item: RecommendationItem) {
-        if(userSessionInterface.isLoggedIn){
+        if(recommendationWidgetViewModel.isLoggedIn()){
             RecommendationPageTracking.eventImpressionProductRecommendationOnHeaderNameLogin(trackingQueue, getHeaderName(item), item, item.position.toString())
         } else {
             RecommendationPageTracking.eventImpressionProductRecommendationOnHeaderName(trackingQueue, getHeaderName(item), item, item.position.toString())
@@ -185,7 +182,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     }
 
     override fun onClickTopAds(item: RecommendationItem) {
-        if(userSessionInterface.isLoggedIn){
+        if(recommendationWidgetViewModel.isLoggedIn()){
             RecommendationPageTracking.eventUserClickOnHeaderNameProduct(getHeaderName(item), item, item.position.toString())
         }else{
             RecommendationPageTracking.eventUserClickOnHeaderNameProductNonLogin(getHeaderName(item), item, item.position.toString())
@@ -193,7 +190,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     }
 
     override fun onClickOrganic(item: RecommendationItem) {
-        if(userSessionInterface.isLoggedIn){
+        if(recommendationWidgetViewModel.isLoggedIn()){
             RecommendationPageTracking.eventUserClickOnHeaderNameProduct(getHeaderName(item), item, item.position.toString())
         }else{
             RecommendationPageTracking.eventUserClickOnHeaderNameProductNonLogin(getHeaderName(item), item, item.position.toString())
@@ -201,7 +198,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     }
 
     fun onClickAddWishlist(item: RecommendationItem) {
-        if(userSessionInterface.isLoggedIn){
+        if(recommendationWidgetViewModel.isLoggedIn()){
             RecommendationPageTracking.eventUserClickProductToWishlistForUserLogin(true)
         }else{
             RecommendationPageTracking.eventUserClickProductToWishlistForNonLogin()
@@ -209,7 +206,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     }
 
     fun onClickRemoveWishlist(item: RecommendationItem) {
-        if(userSessionInterface.isLoggedIn){
+        if(recommendationWidgetViewModel.isLoggedIn()){
             RecommendationPageTracking.eventUserClickProductToWishlistForUserLogin(false)
         }else{
             RecommendationPageTracking.eventUserClickProductToWishlistForNonLogin()
