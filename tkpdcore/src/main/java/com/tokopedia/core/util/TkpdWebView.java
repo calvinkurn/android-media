@@ -1,6 +1,5 @@
 package com.tokopedia.core.util;
 
-import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
@@ -13,6 +12,7 @@ import com.tokopedia.abstraction.base.view.webview.WebViewHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core2.R;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -28,8 +28,6 @@ public class TkpdWebView extends WebView {
 
     private static final String PARAM_URL = "url";
     private static final String FORMAT_UTF_8 = "UTF-8";
-    private static final String ERROR_MESSAGE = "Url tidak valid";
-    private static final String CRASHLYTICS_ERROR_MESSAGE = "Invalid webview url - ";
 
     public TkpdWebView(Context context) {
         super(context);
@@ -54,9 +52,11 @@ public class TkpdWebView extends WebView {
         }else {
             Crashlytics crashlytics = Crashlytics.getInstance();
             if(crashlytics != null)
-                crashlytics.log(CRASHLYTICS_ERROR_MESSAGE + url);
+                crashlytics.log(
+                        getContext().getString(R.string.error_message_url_invalid_crashlytics) + url);
 
-            NetworkErrorHelper.showRedSnackbar(getRootView(), ERROR_MESSAGE);
+            NetworkErrorHelper.showRedSnackbar(getRootView(),
+                    getContext().getString(R.string.error_message_url_invalid));
         }
     }
 
@@ -67,9 +67,11 @@ public class TkpdWebView extends WebView {
         }else {
             Crashlytics crashlytics = Crashlytics.getInstance();
             if(crashlytics != null)
-                crashlytics.log(CRASHLYTICS_ERROR_MESSAGE + url);
+                crashlytics.log(
+                        getContext().getString(R.string.error_message_url_invalid_crashlytics) + url);
 
-            NetworkErrorHelper.showRedSnackbar(getRootView(), ERROR_MESSAGE);
+            NetworkErrorHelper.showRedSnackbar(getRootView(),
+                    getContext().getString(R.string.error_message_url_invalid));
         }
     }
 

@@ -5,4 +5,7 @@
     <string name="title_ok">OK</string>
     <string name="dialog_cancel">BATAL</string>
 
+    <string name="error_message_url_invalid">Url tidak valid</string>
+    <string name="error_message_url_invalid_crashlytics">Invalid webview url - </string>
+
 </resources>

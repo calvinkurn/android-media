@@ -15,9 +15,6 @@ import java.util.regex.Pattern;
 
 public class BaseSessionWebViewFragment extends BaseWebViewFragment {
     public static final String ARGS_URL = "arg_url";
-    private static final String PATTERN = "^((http|https)://m[.]tokopedia[.]com/).+";
-    private static final String ERROR_MESSAGE = "Url tidak valid";
-    private static final String CRASHLYTICS_ERROR_MESSAGE = "Invalid webview url - ";
 
     private UserSessionInterface userSession;
     private String url;
@@ -53,9 +50,11 @@ public class BaseSessionWebViewFragment extends BaseWebViewFragment {
             if(getActivity() != null){
                 Crashlytics crashlytics = Crashlytics.getInstance();
                 if(crashlytics != null)
-                    crashlytics.log(CRASHLYTICS_ERROR_MESSAGE + url);
+                    crashlytics.log(
+                            getContext().getString(R.string.error_message_url_invalid_crashlytics) + url);
 
-                NetworkErrorHelper.showRedSnackbar(getActivity(), ERROR_MESSAGE);
+                NetworkErrorHelper.showRedSnackbar(getActivity(),
+                        getContext().getString(R.string.error_message_url_invalid));
             }
 
             return null;
@@ -81,9 +80,5 @@ public class BaseSessionWebViewFragment extends BaseWebViewFragment {
 
     protected String getPlainUrl() {
         return url;
-    }
-
-    private Boolean validateWebviewUrl(String url){
-        return Pattern.matches(PATTERN, url);
     }
 }
