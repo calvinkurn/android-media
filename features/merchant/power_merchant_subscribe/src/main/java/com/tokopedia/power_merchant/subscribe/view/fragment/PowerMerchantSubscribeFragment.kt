@@ -297,11 +297,8 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             showToasterCancellationSuccess()
         }
 
-        if (isTransitionKycPage) {
-            return
-        } else {
-            hideLoading()
-        }
+        hideLoading()
+
     }
 
     override fun hideLoading() {
@@ -335,6 +332,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
                 if (isAutoExtend()) {
                     showTickerYellowTransitionPeriod()
                 } else {
+                    showButtonActivatePm()
                     ticker_yellow_container.visibility = View.GONE
                 }
                 button_activate_root.text = getString(R.string.pm_label_button_kyc_upload)
