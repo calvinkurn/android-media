@@ -38,7 +38,6 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     private int position;
     private String originalPrice;
     private int discountPercentage;
-    private boolean isOfficial;
     private String topLabel;
     private String bottomLabel;
     private String productWishlistUrl;
@@ -259,14 +258,6 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         this.discountPercentage = discountPercentage;
     }
 
-    public boolean isOfficial() {
-        return isOfficial;
-    }
-
-    public void setOfficial(boolean official) {
-        isOfficial = official;
-    }
-
     public String getTopLabel() {
         return topLabel;
     }
@@ -413,7 +404,6 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         dest.writeInt(this.position);
         dest.writeString(this.originalPrice);
         dest.writeInt(this.discountPercentage);
-        dest.writeByte(this.isOfficial ? (byte) 1 : (byte) 0);
         dest.writeString(this.topLabel);
         dest.writeString(this.bottomLabel);
         dest.writeString(this.productWishlistUrl);
@@ -452,7 +442,6 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         this.position = in.readInt();
         this.originalPrice = in.readString();
         this.discountPercentage = in.readInt();
-        this.isOfficial = in.readByte() != 0;
         this.topLabel = in.readString();
         this.bottomLabel = in.readString();
         this.productWishlistUrl = in.readString();

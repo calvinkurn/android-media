@@ -157,7 +157,6 @@ public class ProductViewModelMapper {
         productItem.setShopName(productModel.getShop().getName());
         productItem.setShopCity(productModel.getShop().getCity());
         productItem.setGoldMerchant(productModel.getShop().isGoldmerchant());
-        productItem.setOfficial(productModel.getShop().isOfficial());
         productItem.setWishlisted(productModel.isWishlist());
         productItem.setBadgesList(convertToBadgesItemList(productModel.getBadges()));
         productItem.setLabelList(convertToLabelsItemList(productModel.getLabels()));
@@ -168,6 +167,8 @@ public class ProductViewModelMapper {
         productItem.setCategoryName(productModel.getCategoryName());
         productItem.setCategoryBreadcrumb(productModel.getCategoryBreadcrumb());
         productItem.setLabelGroupList(convertToLabelGroupList(productModel.getLabelGroupList()));
+        productItem.setIsShopPowerBadge(productModel.getShop().isPowerBadge());
+        productItem.setIsShopOfficialStore(productModel.getShop().isOfficial());
         return productItem;
     }
 

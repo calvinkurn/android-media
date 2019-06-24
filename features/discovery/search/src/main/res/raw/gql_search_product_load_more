@@ -8,7 +8,7 @@ query SearchProduct(
         isFilter
         count
         additional_params
-        #isQuerySafe
+        isQuerySafe
         suggestion {
             currentKeyword
             suggestion
@@ -72,7 +72,7 @@ query SearchProduct(
                 name
                 url
                 is_gold_shop
-                #is_power_badge
+                is_power_badge
                 location
                 city
                 reputation

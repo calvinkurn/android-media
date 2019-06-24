@@ -28,7 +28,7 @@ open class ProductCardViewHolder(
         val LAYOUT = R.layout.search_product_card
     }
 
-    private val context = itemView.context!!
+    protected val context = itemView.context!!
 
     override fun bind(productItem: ProductItemViewModel?) {
         if (productItem == null) return

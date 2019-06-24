@@ -732,7 +732,7 @@ public class SearchProductModel {
         private boolean goldmerchant;
         @SerializedName("is_official")
         @Expose
-        private boolean official;
+        private boolean isOfficial;
         @SerializedName("is_power_badge")
         @Expose
         private boolean isPowerBadge;
@@ -770,7 +770,7 @@ public class SearchProductModel {
         }
 
         public boolean isOfficial() {
-            return official;
+            return isOfficial;
         }
 
         public boolean isPowerBadge() {
