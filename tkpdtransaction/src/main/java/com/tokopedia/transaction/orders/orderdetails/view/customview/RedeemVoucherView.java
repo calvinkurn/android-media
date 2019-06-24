@@ -57,7 +57,7 @@ public class RedeemVoucherView extends LinearLayout {
         View view = LayoutInflater.from(context).inflate(R.layout.redeem_voucher_deals_layout, this);
         voucherNumber = view.findViewById(R.id.voucher_code_title_deals);
         redeemVoucher = view.findViewById(R.id.redeem_btn_deals);
-        voucherNumber.setText(String.format("%s %d", "E-Voucher #" + voucherCount+ 1));
+        voucherNumber.setText(String.format("%s %s", "E-Voucher #" , (voucherCount+ 1)));
         renderRedeemButton(actionButton);
         redeemVoucher.setOnClickListener(new OnClickListener() {
             @Override

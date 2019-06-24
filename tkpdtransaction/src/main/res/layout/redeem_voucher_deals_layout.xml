@@ -17,7 +17,8 @@
         android:text="@string/voucher_code_title_deals"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_margin="@dimen/dp_8"
+        android:padding="@dimen/dp_8"
         android:gravity="center"
         android:textColor="#ae31353b"
         android:textSize="12sp" />
@@ -31,6 +32,7 @@
         android:gravity="center"
         android:padding="@dimen/dp_8"
         android:layout_alignParentRight="true"
+        android:layout_margin="@dimen/dp_8"
         android:textSize="@dimen/sp_12"
         android:layout_alignParentEnd="true"
         android:text="@string/redeem_deals_btn"

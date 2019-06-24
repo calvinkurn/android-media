@@ -205,8 +205,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 tapActionLayoutEvents = itemView.findViewById(R.id.tapAction_events);
                 clCard = itemView.findViewById(R.id.cl_card);
                 llValid = itemView.findViewById(R.id.ll_valid);
-                itemView.findViewById(R.id.divider1).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             }
+            itemView.findViewById(R.id.divider1).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             progressBar = itemView.findViewById(R.id.prog_bar);
 
         }

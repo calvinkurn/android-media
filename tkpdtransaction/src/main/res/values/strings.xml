@@ -329,7 +329,7 @@ Anda di sini.</string>
     <string name="tooltip_fulfillment_desc">Semua pesanan berlabel Dilayani TokoCabang, akan diurus oleh admin TokoCabang</string>
 
     <string name="transaction_title_activity_order_history">Detail Status</string>
-    <string name="tiket_kategori">kategori Tiket: </string>
+    <string name="tiket_kategori">Kategori Tiket: </string>
     <string name="tanggal_events">Tanggal Events </string>
     <string name="location_events">Lokasi </string>
     <string name="user_label">Data Pemegang E-tiket</string>
