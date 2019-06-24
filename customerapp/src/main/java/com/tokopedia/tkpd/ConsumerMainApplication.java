@@ -170,7 +170,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         PersistentCacheManager.init(this);
 
         super.onCreate();
-        initReact();
 
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
@@ -192,6 +191,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             callback = new CharacterPerMinuteActivityLifecycleCallbacks(this);
         }
         registerActivityLifecycleCallbacks(callback);
+        initReact();
     }
 
     CharacterPerMinuteActivityLifecycleCallbacks callback;
@@ -444,7 +444,11 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     }
 
     private void initReact() {
-        SoLoader.init(this, false);
+        try {
+            SoLoader.init(this, false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void initCacheApi() {
