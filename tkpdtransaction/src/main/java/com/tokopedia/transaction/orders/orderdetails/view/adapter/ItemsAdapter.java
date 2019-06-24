@@ -231,8 +231,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     } else {
                         dealsDetails.setText(metaDataInfo.getEntityProductName());
                     }
-                    brandName.setText(metaDataInfo.getEntityBrandName());
-
                 }
                 if (itemType == ITEM_DEALS) {
                     if (!TextUtils.isEmpty(metaDataInfo.getEndDate())) {
@@ -244,9 +242,16 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     if (item.getActionButtons() != null && item.getActionButtons().size() > 0) {
                         setEventDetails.setEventDetails(item.getActionButtons().get(0), item);
                     }
+                    brandName.setText(metaDataInfo.getEntityBrandName());
+                    setEventDetails.setDetailTitle(context.getResources().getString(R.string.detail_label));
                 }
 
                 if (itemType == ITEM_EVENTS) {
+                    if (metaDataInfo.getTotalTicketCount() > 0) {
+                        brandName.setText(String.format("%s %s", metaDataInfo.getTotalTicketCount(), context.getResources().getString(R.string.event_ticket_count_multiple)));
+                    } else {
+                        brandName.setText(context.getResources().getString(R.string.event_ticket_count));
+                    }
                     if (!TextUtils.isEmpty(metaDataInfo.getEntityPackages().get(0).getCity())) {
                         eventCity.setText(metaDataInfo.getEntityPackages().get(0).getCity());
                     }
@@ -277,6 +282,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     if (item.getActionButtons() != null && item.getActionButtons().size() > 0) {
                         setEventDetails.setEventDetails(item.getActionButtons().get(0), item);
                     }
+                    setEventDetails.setDetailTitle(context.getResources().getString(R.string.detail_label_events));
                 }
 
                 EntityAddress entityAddress = metaDataInfo.getEntityAddress();
@@ -325,6 +331,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         }
                     }
                 } else if (item.getTapActions() == null || item.getTapActions().size() == 0) {
+                    customTicketView.setVisibility(View.GONE);
+                    tapActionLayoutDeals.setVisibility(View.GONE);
                     progressBar.setVisibility(View.GONE);
                 }
             } else if (itemType == ITEM_EVENTS) {
@@ -370,6 +378,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     }
                 } else if (item.getTapActions() == null || item.getTapActions().size() == 0) {
                     progressBar.setVisibility(View.GONE);
+                    tapActionLayoutEvents.setVisibility(View.GONE);
+                    customTicketView.setVisibility(View.GONE);
                 }
             }
 
@@ -454,6 +464,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         void setEventDetails(ActionButton actionButton, Items item);
 
         void openShowQRFragment(ActionButton actionButton, Items item);
+
+        void setDetailTitle(String title);
     }
 
 }

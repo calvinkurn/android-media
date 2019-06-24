@@ -610,4 +610,11 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         });
         dialog.show();
     }
+
+    @Override
+    public void setDetailTitle(String title) {
+        if (!TextUtils.isEmpty(title)) {
+            detailLabel.setText(title);
+        }
+    }
 }
