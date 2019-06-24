@@ -11,7 +11,7 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import com.tokopedia.recommendation_widget_common.R
+import com.tokopedia.home_recom.R
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
