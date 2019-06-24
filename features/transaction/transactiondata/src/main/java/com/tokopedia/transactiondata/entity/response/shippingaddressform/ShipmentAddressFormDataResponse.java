@@ -77,6 +77,9 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("is_show_onboarding")
     @Expose
     private boolean isShowOnboarding;
+    @SerializedName("is_ineligbile_promo_dialog_enabled")
+    @Expose
+    private boolean isIneligbilePromoDialogEnabled;
 
     public AutoapplyV2 getAutoapplyV2() {
         return autoapplyV2;
@@ -153,5 +156,9 @@ public class ShipmentAddressFormDataResponse {
 
     public boolean isShowOnboarding() {
         return isShowOnboarding;
+    }
+
+    public boolean isIneligbilePromoDialogEnabled() {
+        return true;
     }
 }

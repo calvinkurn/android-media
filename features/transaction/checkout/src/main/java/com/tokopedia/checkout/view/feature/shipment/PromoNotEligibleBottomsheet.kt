@@ -1,10 +1,8 @@
 package com.tokopedia.checkout.view.feature.shipment
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.SimpleItemAnimator
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.checkout.R
@@ -12,7 +10,6 @@ import com.tokopedia.checkout.view.feature.shipment.adapter.PromoNotEligibleAdap
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.NotEligiblePromoHolderdata
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.design.component.ButtonCompat
-import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 
 /**
  * Created by Irfan Khoirul on 2019-06-19.
@@ -24,6 +21,8 @@ class PromoNotEligibleBottomsheet : BottomSheets() {
     lateinit var tvInfo: TextView
     lateinit var rvPromoList: RecyclerView
     lateinit var btnContinue: ButtonCompat
+    lateinit var actionListener: PromoNotEligibleActionListener
+    var checkoutType: Int = 0
 
     companion object {
         const val EXTRA_PROMO_LIST = "EXTRA_PROMO_LIST"
@@ -37,6 +36,10 @@ class PromoNotEligibleBottomsheet : BottomSheets() {
             }
         }
 
+    }
+
+    fun setListener(actionListener: PromoNotEligibleActionListener) {
+        this.actionListener = actionListener
     }
 
     override fun getLayoutResourceId(): Int {
@@ -57,7 +60,7 @@ class PromoNotEligibleBottomsheet : BottomSheets() {
         rvPromoList.adapter = adapter
 
         btnContinue.setOnClickListener {
-
+            actionListener.onButtonContinueClicked(checkoutType)
         }
     }
 

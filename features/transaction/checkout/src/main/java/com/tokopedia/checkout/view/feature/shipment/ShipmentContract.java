@@ -347,6 +347,8 @@ public interface ShipmentContract {
         Token getKeroToken();
 
         boolean isShowOnboarding();
+
+        boolean isIneligbilePromoDialogEnabled();
     }
 
 }
