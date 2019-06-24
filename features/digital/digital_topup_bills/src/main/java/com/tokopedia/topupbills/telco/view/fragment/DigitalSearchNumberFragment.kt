@@ -1,8 +1,12 @@
 package com.tokopedia.topupbills.telco.view.fragment
 
+import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
+import android.provider.ContactsContract
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -19,12 +23,17 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
+import com.tokopedia.topupbills.covertContactUriToContactData
 import com.tokopedia.topupbills.telco.data.TelcoFavNumber
 import com.tokopedia.topupbills.telco.data.constant.TelcoFavNumberType
 import com.tokopedia.topupbills.telco.view.adapter.NumberListAdapter
+import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
 import com.tokopedia.topupbills.telco.view.model.DigitalFavNumber
 import java.util.*
+import javax.inject.Inject
 
 /**
  * @author rizkyfadillah on 10/4/2017.
@@ -35,22 +44,27 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnCl
     private lateinit var rvNumberList: RecyclerView
     private lateinit var editTextSearchNumber: EditText
     private lateinit var btnClearNumber: Button
-
+    private lateinit var btnContactPicker: Button
+    private lateinit var callback: OnClientNumberClickListener
     private lateinit var numberListAdapter: NumberListAdapter
-
     private lateinit var clientNumbers: List<TelcoFavNumber>
-
     private lateinit var clientNumber: DigitalFavNumber
+
     private var number: String? = null
 
-    private lateinit var callback: OnClientNumberClickListener
+    @Inject
+    lateinit var permissionCheckerHelper: PermissionCheckerHelper
+
 
     override fun initInjector() {
-
+        activity?.let {
+            val digitalTopupComponent = DigitalTopupInstance.getComponent(it.application)
+            digitalTopupComponent.inject(this)
+        }
     }
 
     override fun getScreenName(): String? {
-        return null
+        return DigitalSearchNumberFragment::class.java.simpleName
     }
 
     override fun onAttachActivity(context: Context) {
@@ -82,6 +96,7 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnCl
         rvNumberList = view.findViewById(R.id.recyclerview_number_list)
         editTextSearchNumber = view.findViewById(R.id.edittext_search_number)
         btnClearNumber = view.findViewById(R.id.btn_clear_number)
+        btnContactPicker = view.findViewById(R.id.btn_contact_picker)
 
         setClientNumberInputType()
 
@@ -90,6 +105,9 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnCl
         }
 
         btnClearNumber.setOnClickListener { editTextSearchNumber.setText("") }
+        btnContactPicker.setOnClickListener {
+            navigateContact()
+        }
 
         editTextSearchNumber.setText(number)
         editTextSearchNumber.setSelection(number!!.length)
@@ -187,11 +205,63 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnCl
         callback.onClientNumberClicked(orderClientNumber)
     }
 
+    fun navigateContact() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            activity?.let {
+                permissionCheckerHelper.checkPermission(it,
+                        PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT,
+                        object : PermissionCheckerHelper.PermissionCheckListener {
+                            override fun onPermissionDenied(permissionText: String) {
+                                permissionCheckerHelper.onPermissionDenied(it, permissionText)
+                            }
+
+                            override fun onNeverAskAgain(permissionText: String) {
+                                permissionCheckerHelper.onNeverAskAgain(it, permissionText)
+                            }
+
+                            override fun onPermissionGranted() {
+                                openContactPicker()
+                            }
+                        }, "")
+            }
+        } else {
+            openContactPicker()
+        }
+    }
+
+    fun openContactPicker() {
+        val contactPickerIntent = Intent(
+                Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
+        try {
+            startActivityForResult(contactPickerIntent, REQUEST_CODE_CONTACT_PICKER)
+        } catch (e: ActivityNotFoundException) {
+            NetworkErrorHelper.showSnackbar(activity,
+                    getString(R.string.error_message_contact_not_found))
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        data?.let {
+            if (resultCode == Activity.RESULT_OK) {
+                if (requestCode == REQUEST_CODE_CONTACT_PICKER) {
+                    activity?.let {
+                        val contactURI = data.data
+                        val contact = contactURI.covertContactUriToContactData(it.contentResolver)
+                        editTextSearchNumber.setText(contact.contactNumber)
+                    }
+                }
+            }
+        }
+    }
+
     companion object {
 
         private val ARG_PARAM_EXTRA_NUMBER_LIST = "ARG_PARAM_EXTRA_NUMBER_LIST"
         private val ARG_PARAM_EXTRA_NUMBER = "ARG_PARAM_EXTRA_NUMBER"
         private val ARG_PARAM_EXTRA_CLIENT_NUMBER = "ARG_PARAM_EXTRA_CLIENT_NUMBER"
+
+        private val REQUEST_CODE_CONTACT_PICKER = 75
 
         fun newInstance(clientNumber: DigitalFavNumber, number: String,
                         numberList: List<TelcoFavNumber>): Fragment {

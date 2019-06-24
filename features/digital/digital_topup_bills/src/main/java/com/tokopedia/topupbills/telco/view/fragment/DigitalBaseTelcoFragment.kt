@@ -249,6 +249,6 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
 
     companion object {
         val REQUEST_CODE_DIGITAL_SEARCH_NUMBER = 77
-        val REQUEST_CODE_CONTACT_PICKER = 78;
+        val REQUEST_CODE_CONTACT_PICKER = 78
     }
 }

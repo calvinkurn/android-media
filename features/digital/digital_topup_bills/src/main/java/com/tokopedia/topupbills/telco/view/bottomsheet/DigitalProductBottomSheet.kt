@@ -1,6 +1,8 @@
 package com.tokopedia.topupbills.telco.view.bottomsheet
 
+import android.app.Dialog
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.design.component.BottomSheets
@@ -34,11 +36,21 @@ class DigitalProductBottomSheet : BottomSheets() {
         }
     }
 
+    override fun setupDialog(dialog: Dialog?, style: Int) {
+        super.setupDialog(dialog, style)
+        val metrics = DisplayMetrics()
+        activity!!.windowManager.defaultDisplay.getMetrics(metrics)
+        if (metrics.heightPixels > 0) {
+            if (bottomSheetBehavior != null)
+                bottomSheetBehavior.peekHeight = metrics.heightPixels / 3
+        }
+    }
+
     companion object {
 
-        val TITLE = "title"
-        val DETAILS = "details"
-        val PRICE = "price"
+        private val TITLE = "title"
+        private val DETAILS = "details"
+        private val PRICE = "price"
 
         fun newInstance(title: String, details: String, price: String): DigitalProductBottomSheet {
             val fragment = DigitalProductBottomSheet()
