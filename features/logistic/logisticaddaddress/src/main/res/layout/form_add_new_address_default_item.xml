@@ -20,8 +20,7 @@
         style="@style/HintTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:hintEnabled="false"
-        android:layout_marginBottom="@dimen/dp_24">
+        app:hintEnabled="false">
 
         <EditText
             android:id="@+id/et_label_address"

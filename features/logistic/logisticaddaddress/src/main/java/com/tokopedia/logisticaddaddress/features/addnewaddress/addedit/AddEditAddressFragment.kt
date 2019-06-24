@@ -86,13 +86,13 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     private val EXTRA_DETAIL_ADDRESS_LATEST = "EXTRA_DETAIL_ADDRESS_LATEST"
     private lateinit var zipCodeChipsAdapter: ZipCodeChipsAdapter
     private lateinit var chipsLayoutManager: ChipsLayoutManager
-    private lateinit var labelAlamatLayoutManager: ChipsLayoutManager
+    private lateinit var labelAlamatChipsLayoutManager: ChipsLayoutManager
     private var staticDimen8dp: Int? = 0
     private lateinit var labelAlamatChipsAdapter: LabelAlamatChipsAdapter
     private val FINISH_PINPOINT_FLAG = 8888
     private var getView: View? = null
     private var getSavedInstanceState: Bundle? = null
-
+    private var labelAlamatList: Array<String> = emptyArray()
 
     @Inject
     lateinit var presenter: AddEditAddressPresenter
@@ -165,7 +165,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                 .setOrientation(ChipsLayoutManager.HORIZONTAL)
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                 .build()
-        labelAlamatLayoutManager = ChipsLayoutManager.newBuilder(getView?.context)
+        labelAlamatChipsLayoutManager = ChipsLayoutManager.newBuilder(getView?.context)
                 .setOrientation(ChipsLayoutManager.HORIZONTAL)
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                 .build()
@@ -208,10 +208,9 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                 addTextChangedListener(setWrapperWatcher(et_detail_address_wrapper))
                 setOnClickListener { AddNewAddressAnalytics.eventClickFieldDetailAlamatChangeAddressPositive() }
             }
-            et_label_address.setOnClickListener {
-                // setOnClickLabelAlamat()
-                AddNewAddressAnalytics.eventClickFieldLabelAlamatChangeAddressPositive()
-            }
+
+            setOnTouchLabelAddress("positive")
+
             et_receiver_name.setOnClickListener {
                 AddNewAddressAnalytics.eventClickFieldNamaPenerimaChangeAddressPositive()
             }
@@ -286,10 +285,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                 //addTextChangedListener(setWrapperWatcher(et_kode_pos_mismatch_wrapper))
             }
 
-            et_label_address.setOnClickListener {
-                // setOnClickLabelAlamat()
-                AddNewAddressAnalytics.eventClickFieldLabelAlamatChangeAddressNegative()
-            }
+            setOnTouchLabelAddress("negative")
 
             et_receiver_name.setOnClickListener {
                 AddNewAddressAnalytics.eventClickFieldNamaPenerimaChangeAddressNegative()
@@ -303,6 +299,54 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         et_label_address.addTextChangedListener(setWrapperWatcher(et_label_address_wrapper))
         et_receiver_name.addTextChangedListener(setWrapperWatcher(et_receiver_name_wrapper))
         et_phone.addTextChangedListener(setWrapperWatcher(et_phone_wrapper))
+    }
+
+    private fun setOnTouchLabelAddress(type: String) {
+        et_label_address.apply {
+            setOnFocusChangeListener { _, hasFocus ->
+                if (hasFocus) {
+                    AddNewAddressUtils.scrollUpLayout(scroll_view_layout)
+                    eventShowListLabelAlamat(type)
+                }
+            }
+            setOnClickListener {
+                AddNewAddressUtils.scrollUpLayout(scroll_view_layout)
+                eventShowListLabelAlamat(type)
+            }
+            addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int,
+                                               after: Int) {
+                }
+
+                override fun onTextChanged(s: CharSequence, start: Int, before: Int,
+                                           count: Int) {
+                    if (s.isNotEmpty()) {
+                        val input = "$s"
+                        val labelAlamatDisplay = mutableListOf<String>()
+
+                        labelAlamatList.forEach {
+                            if (it.contains(input, ignoreCase = true)) {
+                                labelAlamatDisplay.add(it)
+                            }
+                        }
+                        labelAlamatChipsAdapter.labelAlamatList = labelAlamatDisplay
+                        labelAlamatChipsAdapter.notifyDataSetChanged()
+                    }
+                }
+
+                override fun afterTextChanged(s: Editable) {
+                }
+            })
+        }
+    }
+
+    private fun eventShowListLabelAlamat(type: String) {
+        showLabelAlamatList()
+        if (type.equals("positive", true)) {
+            AddNewAddressAnalytics.eventClickFieldLabelAlamatChangeAddressPositive()
+        } else {
+            AddNewAddressAnalytics.eventClickFieldLabelAlamatChangeAddressNegative()
+        }
     }
 
     private fun doSaveAddress() {
@@ -510,13 +554,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                 setMismatchSolvedForm()
             }
             setupRvKodePosChips()
-            // setupRvLabelAlamatChips()
-
-            /*if (et_kode_pos_mismatch.text.isEmpty()) {
-                et_kode_pos_mismatch.setOnClickListener {
-                    showZipCodes()
-                }
-            }*/
+            setupRvLabelAlamatChips()
         }
     }
 
@@ -527,7 +565,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
 
     private fun setOnClickLabelAlamat() {
         et_label_address.setOnClickListener {
-            showLabelAlamatList()
+            // showLabelAlamatList()
         }
     }
 
@@ -542,7 +580,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     private fun setupRvLabelAlamatChips() {
         rv_label_alamat_chips.apply {
             addItemDecoration(staticDimen8dp?.let { ChipsItemDecoration(it) })
-            layoutManager = labelAlamatLayoutManager
+            layoutManager = labelAlamatChipsLayoutManager
             adapter = labelAlamatChipsAdapter
         }
     }
@@ -632,16 +670,12 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
 
     private fun showLabelAlamatList() {
         val res: Resources = resources
-        val labelAlamatList = res.getStringArray(R.array.labelAlamatList)
+        labelAlamatList = res.getStringArray(R.array.labelAlamatList)
 
         ViewCompat.setLayoutDirection(rv_label_alamat_chips, ViewCompat.LAYOUT_DIRECTION_LTR)
         labelAlamatChipsAdapter.labelAlamatList = labelAlamatList.toMutableList()
 
-        rv_label_alamat_chips.apply {
-            layoutManager = chipsLayoutManager
-            adapter = labelAlamatChipsAdapter
-            visibility = View.VISIBLE
-        }
+        rv_label_alamat_chips.visibility = View.VISIBLE
     }
 
     private fun setSaveAddressModel() {
