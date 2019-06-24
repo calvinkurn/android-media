@@ -37,10 +37,10 @@ class CategoryLevelTwoAdapter(private val list: MutableList<ChildItem>) : Recycl
 
         return if (viewType == TYPE_ONE) {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.item_exclusive_level_two, parent, false)
-            ViewHolder1(view)
+            ExclusiveViewHolder(view)
         } else {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.item_category_level_two_type_two, parent, false)
-            ViewHolder2(view)
+            DefaultViewHolder(view)
         }
 
     }
@@ -59,13 +59,13 @@ class CategoryLevelTwoAdapter(private val list: MutableList<ChildItem>) : Recycl
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder.itemViewType == TYPE_ONE) {
-            initLayoutOne(holder as ViewHolder1, position)
+            initLayoutOne(holder as ExclusiveViewHolder, position)
         } else {
-            initLayoutTwo(holder as ViewHolder2, position)
+            initLayoutTwo(holder as DefaultViewHolder, position)
         }
     }
 
-    private fun initLayoutTwo(holder: ViewHolder2, position: Int) {
+    private fun initLayoutTwo(holder: DefaultViewHolder, position: Int) {
         val item = list[position]
 
         ImageHandler.loadImage(holder.itemView.context, holder.item_image, item.iconImageUrl, R.drawable.loading_page)
@@ -129,7 +129,7 @@ class CategoryLevelTwoAdapter(private val list: MutableList<ChildItem>) : Recycl
     }
 
 
-    private fun initLayoutOne(holder: ViewHolder1, position: Int) {
+    private fun initLayoutOne(holder: ExclusiveViewHolder, position: Int) {
         val item = list[position]
 
         ImageHandler.loadImage(holder.itemView.context, holder.item_image_v1, item.iconImageUrl, R.drawable.loading_page)
@@ -155,14 +155,14 @@ class CategoryLevelTwoAdapter(private val list: MutableList<ChildItem>) : Recycl
 
     override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
         super.onViewAttachedToWindow(holder)
-        if (holder is ViewHolder1) {
+        if (holder is ExclusiveViewHolder) {
             val position = holder.adapterPosition
             if (!viewMap1.containsKey(position)) {
                 viewMap1[position] = true
                 CategoryAnalytics.createInstance().eventPromoView(holder.itemView.context, list[position], position)
             }
 
-        } else if (holder is ViewHolder2) {
+        } else if (holder is DefaultViewHolder) {
             val position = holder.adapterPosition
             if (!viewMap2.containsKey(position)) {
                 viewMap2[position] = true
@@ -172,7 +172,7 @@ class CategoryLevelTwoAdapter(private val list: MutableList<ChildItem>) : Recycl
     }
 
 
-    class ViewHolder2(view: View) : RecyclerView.ViewHolder(view) {
+    class DefaultViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val item_image = view.item_icon
         val item_name = view.item_name
         val item_child_recycler = view.child_recycler
@@ -182,7 +182,7 @@ class CategoryLevelTwoAdapter(private val list: MutableList<ChildItem>) : Recycl
 
     }
 
-    class ViewHolder1(view: View) : RecyclerView.ViewHolder(view) {
+    class ExclusiveViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val item_image_v1 = view.product_image
         val item_name_v1 = view.product_name
         val product_parent_name = view.product_parent_name
