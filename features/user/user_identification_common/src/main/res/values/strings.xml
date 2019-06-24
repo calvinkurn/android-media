@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">user_identification_common</string>
 
-    <string name="alert_not_verified_text">Akun toko Anda belum melakukan proses verifikasi.
-        Verifikasi sekarang</string>
-    <string name="alert_not_verified_highlight_text">Verifikasi sekarang</string>
+    <string name="alert_not_verified_text">Tingkatkan kepercayaan calon pembeli dengan
+        upload KTP. Upload Sekarang</string>
+    <string name="alert_not_verified_highlight_text">Upload Sekarang</string>
 
     <string name="alert_waiting_verification_text">Akun toko Anda sedang dalam proses menunggu
         verifikasi. Lihat status</string>

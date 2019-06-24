@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root_view_pm"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@color/pm_start_gradient"
     android:fitsSystemWindows="true">
 
@@ -12,12 +13,12 @@
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/ll_footer_submit"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_weight="1">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/img_top_1"
@@ -32,10 +33,9 @@
                 android:id="@+id/txt_join_1"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/img_top_1"
-                android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/dp_10"
                 android:gravity="center"
+                android:layout_gravity="center"
                 android:text="@string/pm_label_join_header"
                 android:textStyle="bold"
                 android:textColor="@color/black"
@@ -45,8 +45,6 @@
                 android:id="@+id/txt_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/txt_join_1"
-                android:layout_centerHorizontal="true"
                 android:layout_marginLeft="@dimen/dp_18"
                 android:layout_marginTop="@dimen/dp_10"
                 android:layout_marginRight="@dimen/dp_18"
@@ -169,7 +167,7 @@
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16" />
 
-        </RelativeLayout>
+        </LinearLayout>
 
     </ScrollView>
 
@@ -179,7 +177,6 @@
         android:layout_height="wrap_content"
         android:background="@drawable/card_shadow_top"
         android:padding="@dimen/dp_15"
-        app:layout_constraintBottom_toBottomOf="parent"
         tools:layout_editor_absoluteX="0dp">
 
         <com.tokopedia.design.component.ButtonCompat
@@ -195,4 +192,4 @@
     </LinearLayout>
 
 
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>
