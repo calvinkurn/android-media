@@ -16,6 +16,7 @@ import com.tokopedia.track.TrackAppUtils;
 /**
  * @author by nisie on 10/2/18.
  * https://docs.google.com/spreadsheets/d/1TCCs1XsXFtRZR8cO4ZQEDwOHCqCTVMXjDApzZ-fLEC8
+ * https://docs.google.com/spreadsheets/d/1F3IQYqqG62aSxNbeFvrxyy-Pu--ZrShh8ewMKELeKj4/edit?ts=5cca711b#gid=910823048
  */
 public class LoginRegisterAnalytics {
 
@@ -58,6 +59,9 @@ public class LoginRegisterAnalytics {
     public static final String ACTION_LOGIN_GOOGLE = "click on button google";
     public static final String ACTION_LOGIN_WEBVIEW = "click on button ";
     public static final String ACTION_LOGIN_PHONE = "click on masuk phone number";
+    public static final String ACTION_TICKER_LOGIN = "click on ticker login";
+    public static final String ACTION_LINK_TICKER_LOGIN = "click ticker link";
+    public static final String ACTION_CLOSE_TICKER_LOGIN = "click on button close ticker";
 
     private static final String LABEL_REGISTER = "Register";
     private static final String LABEL_PASSWORD = "Kata Sandi";
@@ -590,4 +594,30 @@ public class LoginRegisterAnalytics {
         ));
     }
 
+    public void eventClickTicker() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                ACTION_TICKER_LOGIN,
+                ""
+        ));
+    }
+
+    public void eventClickLinkTicker(String link) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                ACTION_LINK_TICKER_LOGIN,
+                link
+        ));
+    }
+
+    public void eventClickCloseTicker() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                ACTION_CLOSE_TICKER_LOGIN,
+                ""
+        ));
+    }
 }
