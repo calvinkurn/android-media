@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,25 +9,11 @@
     android:background="@color/white">
 
     <com.tokopedia.cameraview.CameraView
-        android:id="@+id/full_camera_view"
+        android:id="@+id/cameraView"
+        android:keepScreenOn="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:keepScreenOn="true"
-        app:cameraAudio="on"
-        app:cameraCropOutput="false"
-        app:cameraFacing="back"
-        app:cameraFlash="off"
-        app:cameraGestureLongTap="none"
-        app:cameraGesturePinch="zoom"
-        app:cameraGestureScrollHorizontal="none"
-        app:cameraGestureScrollVertical="exposureCorrection"
-        app:cameraGestureTap="focusWithMarker"
-        app:cameraGrid="off"
-        app:cameraJpegQuality="100"
-        app:cameraPlaySounds="true"
-        app:cameraSessionType="picture" />
-
+        app:cameraPlaySounds="true"/>
 
     <ImageView
         android:id="@+id/full_image_preview"
