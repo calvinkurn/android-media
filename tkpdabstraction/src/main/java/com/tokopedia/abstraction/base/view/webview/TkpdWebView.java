@@ -7,14 +7,17 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.webkit.WebView;
 
+import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.URLGenerator;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * Created by nisie on 11/30/16.
@@ -25,6 +28,9 @@ public class TkpdWebView extends WebView {
     private static final String PARAM_URL = "url";
     private static final String FORMAT_UTF_8 = "UTF-8";
     private static final String GET = "GET";
+    private static final String PATTERN = "^(http|https)://tokopedia.com";
+    private static final String ERROR_MESSAGE = "Url tidak valid";
+    private static final String CRASHLYTICS_ERROR_MESSAGE = "Invalid webview url - ";
 
     private WebviewScrollListener scrollListener = null;
 
@@ -156,5 +162,27 @@ public class TkpdWebView extends WebView {
             }
         }
         super.onScrollChanged(scrollX, scrollY, oldScrollX, oldScrollY);
+    }
+
+    @Override
+    public void loadUrl(String url, Map<String, String> additionalHttpHeaders) {
+        if(WebViewHelper.validateUrl(url)){
+            super.loadUrl(url, additionalHttpHeaders);
+        }else {
+            Crashlytics crashlytics = Crashlytics.getInstance();
+            if(crashlytics != null)
+                crashlytics.log(CRASHLYTICS_ERROR_MESSAGE + url);
+
+            NetworkErrorHelper.showRedSnackbar(getRootView(), ERROR_MESSAGE);
+        }
+    }
+
+    @Override
+    public void loadUrl(String url) {
+        if(WebViewHelper.validateUrl(url)){
+            super.loadUrl(url);
+        }else {
+            NetworkErrorHelper.showRedSnackbar(getRootView(), ERROR_MESSAGE);
+        }
     }
 }

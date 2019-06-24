@@ -8,6 +8,9 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.webkit.WebView;
 
+import com.crashlytics.android.Crashlytics;
+import com.tokopedia.abstraction.base.view.webview.WebViewHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 
@@ -25,6 +28,8 @@ public class TkpdWebView extends WebView {
 
     private static final String PARAM_URL = "url";
     private static final String FORMAT_UTF_8 = "UTF-8";
+    private static final String ERROR_MESSAGE = "Url tidak valid";
+    private static final String CRASHLYTICS_ERROR_MESSAGE = "Invalid webview url - ";
 
     public TkpdWebView(Context context) {
         super(context);
@@ -44,10 +49,32 @@ public class TkpdWebView extends WebView {
 
     @Override
     public void loadUrl(String url) {
-        loadAuthUrl(url);
+        if(WebViewHelper.validateUrl(url)){
+            loadAuthUrl(url);
+        }else {
+            Crashlytics crashlytics = Crashlytics.getInstance();
+            if(crashlytics != null)
+                crashlytics.log(CRASHLYTICS_ERROR_MESSAGE + url);
+
+            NetworkErrorHelper.showRedSnackbar(getRootView(), ERROR_MESSAGE);
+        }
+    }
+
+    @Override
+    public void loadUrl(String url, Map<String, String> additionalHttpHeaders) {
+        if(WebViewHelper.validateUrl(url)){
+            super.loadUrl(url, additionalHttpHeaders);
+        }else {
+            Crashlytics crashlytics = Crashlytics.getInstance();
+            if(crashlytics != null)
+                crashlytics.log(CRASHLYTICS_ERROR_MESSAGE + url);
+
+            NetworkErrorHelper.showRedSnackbar(getRootView(), ERROR_MESSAGE);
+        }
     }
 
     public void loadAuthUrl(String url) {
+
         loadUrl(url, getWebviewHeaders(url));
     }
 

@@ -19,4 +19,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.applink)
+
+    api (rootProject.ext.serviceDependencies.crashlytics) {
+        transitive = true
+    }
 }

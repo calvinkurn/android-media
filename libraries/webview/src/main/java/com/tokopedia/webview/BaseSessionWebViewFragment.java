@@ -4,12 +4,20 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.crashlytics.android.Crashlytics;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.network.utils.URLGenerator;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import java.util.regex.Pattern;
+
 public class BaseSessionWebViewFragment extends BaseWebViewFragment {
     public static final String ARGS_URL = "arg_url";
+    private static final String PATTERN = "^((http|https)://m[.]tokopedia[.]com/).+";
+    private static final String ERROR_MESSAGE = "Url tidak valid";
+    private static final String CRASHLYTICS_ERROR_MESSAGE = "Invalid webview url - ";
 
     private UserSessionInterface userSession;
     private String url;
@@ -28,7 +36,7 @@ public class BaseSessionWebViewFragment extends BaseWebViewFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         url = getArguments().getString(ARGS_URL);
-        isTokopediaUrl = Uri.parse(url).getHost().contains(TOKOPEDIA_STRING);
+        isTokopediaUrl = WebViewHelper.validateUrl(url);
         userSession = new UserSession(getActivity().getApplicationContext());
     }
 
@@ -42,7 +50,15 @@ public class BaseSessionWebViewFragment extends BaseWebViewFragment {
                     gcmId,
                     userId);
         } else {
-            return url;
+            if(getActivity() != null){
+                Crashlytics crashlytics = Crashlytics.getInstance();
+                if(crashlytics != null)
+                    crashlytics.log(CRASHLYTICS_ERROR_MESSAGE + url);
+
+                NetworkErrorHelper.showRedSnackbar(getActivity(), ERROR_MESSAGE);
+            }
+
+            return null;
         }
     }
 
@@ -65,5 +81,9 @@ public class BaseSessionWebViewFragment extends BaseWebViewFragment {
 
     protected String getPlainUrl() {
         return url;
+    }
+
+    private Boolean validateWebviewUrl(String url){
+        return Pattern.matches(PATTERN, url);
     }
 }
