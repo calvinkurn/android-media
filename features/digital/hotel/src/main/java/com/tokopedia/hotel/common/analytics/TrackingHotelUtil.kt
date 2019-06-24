@@ -101,7 +101,7 @@ class TrackingHotelUtil {
                                         "price", it.roomPrice.firstOrNull() ?: 0,
                                         "position", index
                                 )
-                        })
+                        }.toTypedArray())
                 )
         ))
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
