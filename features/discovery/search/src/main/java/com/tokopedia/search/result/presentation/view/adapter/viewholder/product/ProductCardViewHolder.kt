@@ -37,8 +37,8 @@ open class ProductCardViewHolder(
         initProductImage(productItem)
         initWishlistButton(productItem)
 //        initPromoLabel(productItem)
-//        initShopName(productItem)
-//        initShopImage(productItem)
+        initShopName(productItem)
+        initShopImage(productItem)
         initTitleTextView(productItem)
         initSlashPrice(productItem)
         initPriceTextView(productItem)
@@ -102,40 +102,31 @@ open class ProductCardViewHolder(
 //    private fun getLabelGroupOfPosition(productItem: ProductItemViewModel, position: String): List<LabelGroupViewModel>? {
 //        return productItem.labelGroupList.filter { labelGroup -> labelGroup.position == position }
 //    }
-//
-//    private fun initShopName(productItem: ProductItemViewModel) {
-//        if (isShopNameShown(productItem)) {
-//            itemView.shopNameTextView?.visibility = View.VISIBLE
-//            itemView.shopNameTextView?.text = productItem.shopName
-//        }
-//        else {
-//            itemView.shopNameTextView?.visibility = View.GONE
-//        }
-//    }
 
-    // TODO:: Dummy method, set Shop Name from productItem instead
-    private fun isShopNameShown(productItem: ProductItemViewModel): Boolean {
-//        return !TextUtils.isEmpty(productItem.shopName)
-        return false
+    private fun initShopName(productItem: ProductItemViewModel) {
+        val isShopNameShown = isShopNameShown(productItem)
+        itemView.productCardView?.setTextShopNameVisible(isShopNameShown)
+
+        if(isShopNameShown) {
+            itemView.productCardView?.setTextShopName(productItem.shopName)
+        }
     }
 
-//    private fun initShopImage(productItem: ProductItemViewModel) {
-//        if(isShopImageShown(productItem)) {
-//            itemView.shopImage?.visibility = View.VISIBLE
-//
-//            if (itemView.shopImage != null) {
-//                ImageHandler.loadImageCircle2(context, itemView.shopImage, productItem.imageUrl700)
-//            }
-//        }
-//        else {
-//            itemView.shopImage?.visibility = View.GONE
-//        }
-//    }
+    private fun isShopNameShown(productItem: ProductItemViewModel): Boolean {
+        return productItem.isShopPowerBadge || productItem.isShopOfficialStore
+    }
 
-    // TODO:: Dummy method, set Shop Name from productItem instead
+    private fun initShopImage(productItem: ProductItemViewModel) {
+        val isShopImageShown = isShopImageShown(productItem)
+        itemView.productCardView?.setShopImageVisible(isShopImageShown)
+
+        if(isShopImageShown) {
+            itemView.productCardView?.setShopImageUrl(productItem.imageUrl700)
+        }
+    }
+
     private fun isShopImageShown(productItem: ProductItemViewModel): Boolean {
-//        return adapterPosition % 2 == 0
-        return false
+        return productItem.isShopOfficialStore
     }
 
     private fun initTitleTextView(productItem: ProductItemViewModel) {

@@ -51,6 +51,9 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     private String topadsWishlistUrl;
     private boolean isNew;
     private List<LabelGroupViewModel> labelGroupList = new ArrayList<>();
+    private boolean isShopPowerBadge;
+    private boolean isShopOfficialStore;
+    private String shopImageUrl;
 
     public boolean isTopAds() {
         return isTopAds;
@@ -320,6 +323,30 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         return productWishlistUrl;
     }
 
+    public void setIsShopPowerBadge(boolean isShopPowerBadge) {
+        this.isShopPowerBadge = isShopPowerBadge;
+    }
+
+    public boolean isShopPowerBadge() {
+        return isShopPowerBadge;
+    }
+
+    public void setIsShopOfficialStore(boolean isShopOfficialStore) {
+        this.isShopOfficialStore = isShopOfficialStore;
+    }
+
+    public boolean isShopOfficialStore() {
+        return isShopOfficialStore;
+    }
+
+    public void setShopImageUrl(String shopImageUrl) {
+        this.shopImageUrl = shopImageUrl;
+    }
+
+    public String getShopImageUrl() {
+        return shopImageUrl;
+    }
+
     public ProductItemViewModel() {
     }
 
@@ -399,6 +426,9 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         dest.writeString(this.topadsClickUrl);
         dest.writeString(this.topadsWishlistUrl);
         dest.writeTypedList(this.labelGroupList);
+        dest.writeByte(this.isShopPowerBadge ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isShopOfficialStore ? (byte) 1 : (byte) 0);
+        dest.writeString(this.shopImageUrl);
     }
 
     protected ProductItemViewModel(Parcel in) {
@@ -435,6 +465,9 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         this.topadsClickUrl = in.readString();
         this.topadsWishlistUrl = in.readString();
         this.labelGroupList = in.createTypedArrayList(LabelGroupViewModel.CREATOR);
+        this.isShopPowerBadge = in.readByte() != 0;
+        this.isShopOfficialStore = in.readByte() != 0;
+        this.shopImageUrl = in.readString();
     }
 
     public static final Creator<ProductItemViewModel> CREATOR = new Creator<ProductItemViewModel>() {

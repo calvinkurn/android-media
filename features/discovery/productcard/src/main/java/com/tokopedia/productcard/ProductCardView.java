@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -18,7 +17,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.topads.sdk.view.ImpressedImageView;
-import com.tokopedia.unifyprinciples.Typography;
 
 public class ProductCardView extends BaseCustomView {
 
@@ -33,6 +31,8 @@ public class ProductCardView extends BaseCustomView {
     protected TextView reviewCountView;
     protected LinearLayout shopBadgesContainer;
     protected TextView textLocation;
+    protected TextView textShopName;
+    protected ImageView shopImage;
     protected int layout;
     protected boolean fixedHeight = false;
 
@@ -81,6 +81,8 @@ public class ProductCardView extends BaseCustomView {
         reviewCountView = view.findViewById(R.id.reviewCount);
         shopBadgesContainer = view.findViewById(R.id.shopBadgesContainer);
         textLocation = view.findViewById(R.id.textLocation);
+        textShopName = view.findViewById(R.id.textShopName);
+        shopImage = view.findViewById(R.id.shopImage);
 
         textName.setLineSpacing(0f, 1f);
     }
@@ -254,5 +256,21 @@ public class ProductCardView extends BaseCustomView {
 
             view.setLayoutParams(layoutParams);
         }
+    }
+
+    public void setTextShopNameVisible(boolean isVisible) {
+        textShopName.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+    }
+
+    public void setTextShopName(String shopName) {
+        textShopName.setText(MethodChecker.fromHtml(shopName));
+    }
+
+    public void setShopImageVisible(boolean isVisible) {
+        shopImage.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+    }
+
+    public void setShopImageUrl(String shopImageUrl) {
+        ImageHandler.loadImageCircle2(getContext(), shopImage, shopImageUrl);
     }
 }
