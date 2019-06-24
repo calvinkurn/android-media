@@ -86,6 +86,8 @@ public interface ShipmentContract {
 
         void renderCheckPromoStackCodeFromCourierSuccess(ResponseGetPromoStackUiModel responseGetPromoStackUiModel, int itemPosition, boolean noToast);
 
+        void renderCheckPromoStackLogisticSuccess(ResponseGetPromoStackUiModel responseGetPromoStackUiModel);
+
         void renderErrorCheckPromoCodeFromSuggestedPromo(String message);
 
         void renderErrorCheckPromoShipmentData(String message);
@@ -142,6 +144,8 @@ public interface ShipmentContract {
         Promo generateCheckPromoFirstStepParam();
 
         void onClashCheckPromo(ClashingInfoDetailUiModel clashingInfoDetailUiModel, String type);
+
+        void onSuccessCheckPromoFirstStepAfterClash(ResponseGetPromoStackUiModel responseGetPromoStackUiModel);
 
         void onSuccessCheckPromoFirstStep(ResponseGetPromoStackUiModel promoData);
 

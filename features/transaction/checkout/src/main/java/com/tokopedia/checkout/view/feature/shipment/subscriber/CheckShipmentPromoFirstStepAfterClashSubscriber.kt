@@ -42,7 +42,7 @@ class CheckShipmentPromoFirstStepAfterClashSubscriber(private val view: Shipment
             if (responseGetPromoStack.data.clashings.isClashedPromos) {
                 view?.onClashCheckPromo(responseGetPromoStack.data.clashings, type)
             } else {
-                view?.onSuccessCheckPromoFirstStep(responseGetPromoStack)
+                view?.onSuccessCheckPromoFirstStepAfterClash(responseGetPromoStack)
             }
         }
     }

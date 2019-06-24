@@ -1105,7 +1105,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                         getView().resetCourier(cartPosition);
                                     } else {
                                         mTrackerShipment.eventClickLanjutkanTerapkanPromoSuccess(code);
-                                        getView().onSuccessCheckPromoFirstStep(responseGetPromoStack);
+                                        getView().renderCheckPromoStackLogisticSuccess(responseGetPromoStack);
                                     }
                                 }
                             }
