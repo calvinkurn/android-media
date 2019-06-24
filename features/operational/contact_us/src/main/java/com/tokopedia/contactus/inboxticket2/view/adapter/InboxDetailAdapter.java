@@ -101,11 +101,14 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
         private AttachmentAdapter attachmentAdapter;
         private LinearLayoutManager layoutManager;
 
-        DetailViewHolder(View itemView) {
-            super(itemView);
-            findindViewsId(itemView);
+        DetailViewHolder(View view) {
+            super(view);
+            findindViewsId(view);
             layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
             rvAttachedImage.setLayoutManager(layoutManager);
+            itemView.setOnClickListener(this);
+            tvComment.setOnClickListener(this);
+            tvDateRecent.setOnClickListener(this);
         }
 
         private void findindViewsId(View view) {
@@ -169,11 +172,6 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
                 tvComment.setVisibility(View.GONE);
                 rvAttachedImage.setVisibility(View.GONE);
             }
-
-           itemView.setOnClickListener(this);
-           tvComment.setOnClickListener(this);
-           tvDateRecent.setOnClickListener(this);
-
         }
 
         void toggleCollapse() {
@@ -189,10 +187,7 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
 
         @Override
         public void onClick(View view) {
-            int id = view.getId();
-            if(id==R.id.layout_item_message||id==R.id.tv_comment||id==R.id.tv_date_recent){
                 toggleCollapse();
-            }
         }
     }
 }
