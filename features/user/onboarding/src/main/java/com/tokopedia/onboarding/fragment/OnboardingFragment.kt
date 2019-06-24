@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.airbnb.lottie.LottieAnimationView
+import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -134,6 +135,11 @@ OnboardingFragment : BaseDaggerFragment(),
             lottieAnimationView = defaultView.findViewById(R.id.animation_view)
             if (lottieAsset.isNotBlank()) {
                 lottieAnimationView.setAnimation(lottieAsset, LottieAnimationView.CacheStrategy.Strong)
+            } else {
+                var crashlytics: Crashlytics? = Crashlytics.getInstance()
+                if (crashlytics != null) {
+                    Crashlytics.log("Lottie Asset Is Blank")
+                }
             }
         } catch (e: Exception) {
             e.printStackTrace()
