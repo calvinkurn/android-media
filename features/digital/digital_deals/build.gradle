@@ -51,7 +51,8 @@ dependencies {
         exclude group: 'com.android.support'
     }
 
-    implementation 'com.tokopedia.unify:coach_mark:1.0.0@aar'
+    implementation rootProject.ext.unify.coach_mark
+
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor

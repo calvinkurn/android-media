@@ -115,5 +115,6 @@
     <string name="coachicon_description_promo">Ingin makan enak atau santai di spa dengan harga lebih murah? Cek koleksi promonya</string>
     <string name="coachicon_next">></string>
     <string name="coachicon_previous">&lt;</string>
+    <string name="voucher">Vocher</string>
 
 </resources>

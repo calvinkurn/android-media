@@ -85,15 +85,8 @@ public class AllBrandsActivity extends DealsBaseActivity implements AllBrandsHom
 
 
     @DeepLink({DealsUrl.AppLink.DIGITAL_DEALS_ALL_BRAND})
-    public static TaskStackBuilder getAllBrandsStaticIntent(Context context, Bundle extras) {
-        Intent destination;
-
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-
-        Intent homeIntent = ((DealsModuleRouter) context.getApplicationContext()).getHomeIntent(context);
-        taskStackBuilder.addNextIntent(homeIntent);
-        taskStackBuilder.addNextIntent(new Intent(context, DealsHomeActivity.class));
-
+    public static Intent getAllBrandsStaticIntent(Context context, Bundle extras) {
+        Intent destination = new Intent();
         if (extras != null) {
             String deepLink = extras.getString(DeepLink.URI);
             Uri.Builder uri = Uri.parse(deepLink).buildUpon();
@@ -103,10 +96,8 @@ public class AllBrandsActivity extends DealsBaseActivity implements AllBrandsHom
             destination = new Intent(context, AllBrandsActivity.class)
                     .setData(uri.build())
                     .putExtras(extras);
-
-            taskStackBuilder.addNextIntent(destination);
         }
-        return taskStackBuilder;
+        return destination;
     }
 
     @Override
@@ -142,7 +133,7 @@ public class AllBrandsActivity extends DealsBaseActivity implements AllBrandsHom
             searchInputView.setSearchText(searchText);
         }
         if (!TextUtils.isEmpty(getIntent().getStringExtra(FROM_VOUCHER))) {
-            toolbarTitle.setVisibility(View.GONE);
+            toolbarTitle.setText(getResources().getString(R.string.voucher));
             mPresenter.attachView(this);
             mPresenter.getAllCategories();
         } else {
@@ -346,6 +337,7 @@ public class AllBrandsActivity extends DealsBaseActivity implements AllBrandsHom
 
     @Override
     public void renderCategoryList(List<CategoryItem> categoryItems) {
+
         for (int i = 0; i < categoryItems.size() - 1; i++) {
             if (categoryItems.get(i).getIsCard() != 1) {
                 CategoriesModel categoriesModel = new CategoriesModel();
@@ -358,6 +350,13 @@ public class AllBrandsActivity extends DealsBaseActivity implements AllBrandsHom
                 categoryList.add(categoriesModel);
             }
         }
+        CategoriesModel categoriesModel = new CategoriesModel();
+        categoriesModel.setCategoryUrl("");
+        categoriesModel.setTitle(getResources().getString(R.string.all_brands));
+        categoriesModel.setName(getResources().getString(R.string.all_brands));
+        categoriesModel.setPosition(0);
+        categoryList.add(0, categoriesModel);
+
 
         if (getIntent() != null && !TextUtils.isEmpty(getIntent().getStringExtra("cat_id"))) {
             categoryId = Integer.parseInt(getIntent().getStringExtra("cat_id"));
