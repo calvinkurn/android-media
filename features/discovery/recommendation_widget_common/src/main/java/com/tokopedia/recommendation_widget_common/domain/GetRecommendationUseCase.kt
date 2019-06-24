@@ -24,13 +24,13 @@ import rx.Observable
  */
 
 class GetRecommendationUseCase @Inject
-constructor(private val context: Context,
+constructor(
+            private val recomRawString: String,
             private val graphqlUseCase: GraphqlUseCase,
             private val userSession: UserSessionInterface) : UseCase<List<RecommendationWidget>>() {
 
     override fun createObservable(requestParams: RequestParams): Observable<List<RecommendationWidget>> {
-        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
-                R.raw.query_recommendation_widget), RecomendationEntity::class.java, requestParams.parameters)
+        val graphqlRequest = GraphqlRequest(recomRawString, RecomendationEntity::class.java, requestParams.parameters)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY)

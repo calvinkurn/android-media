@@ -11,6 +11,7 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.recommendation_widget_common.R
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -43,11 +44,19 @@ class HomeRecommendationModule {
 
     @Provides
     @HomeRecommendationScope
-    fun provideGetRecommendationUseCase(@ApplicationContext context: Context,
+    fun provideGetRecommendationUseCase(@Named("recommendationQuery") recomQuery: String,
                                         graphqlUseCase: GraphqlUseCase,
-                                        userSessionInterface: UserSessionInterface): GetRecommendationUseCase = GetRecommendationUseCase(context, graphqlUseCase, userSessionInterface)
+                                        userSessionInterface: UserSessionInterface): GetRecommendationUseCase = GetRecommendationUseCase(recomQuery, graphqlUseCase, userSessionInterface)
 
     @Provides
     @HomeRecommendationScope
     fun provideTrackingQueue(@ApplicationContext context: Context): TrackingQueue = TrackingQueue(context)
+
+    @Provides
+    @HomeRecommendationScope
+    @Named("recommendationQuery")
+    fun provideRecommendationRawQuery(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources,
+                    R.raw.query_recommendation_widget)
+
 }
