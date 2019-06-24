@@ -405,7 +405,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
     private fun generateTopAdsParams(productInfo: ProductInfo): Map<String,Any> {
         return mapOf(
-                TopAdsDisplay.KEY_USER_ID to userSessionInterface.userId.toInt(),
+                TopAdsDisplay.KEY_USER_ID to (userSessionInterface.userId.toIntOrNull() ?: 0),
                 TopAdsDisplay.KEY_PAGE_NAME to TopAdsDisplay.DEFAULT_PAGE_NAME,
                 TopAdsDisplay.KEY_PAGE_NUMBER to TopAdsDisplay.DEFAULT_PAGE_NUMBER,
                 TopAdsDisplay.KEY_XDEVICE to TopAdsDisplay.DEFAULT_DEVICE,
@@ -579,7 +579,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 doLoadOtherProduct(product.data.productInfo)
             } else null
 
-            val topAdsProductDef = if (GlobalConfig.isCustomerApp() && isUserSessionActive() &&
+            val topAdsProductDef = if (GlobalConfig.isCustomerApp() &&
                     (loadTopAdsProduct.value as? Loaded)?.data as? Success == null){
                 loadTopAdsProduct.value = Loading
                 doLoadTopAdsProduct(product.data.productInfo)

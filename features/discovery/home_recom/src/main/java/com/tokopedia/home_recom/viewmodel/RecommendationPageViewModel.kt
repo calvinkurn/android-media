@@ -9,7 +9,9 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.home_recom.*
+import com.tokopedia.home_recom.PARAM_PRODUCT_ID
+import com.tokopedia.home_recom.PARAM_X_SOURCE
+import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
 import com.tokopedia.home_recom.model.entity.PrimaryProductEntity
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -24,8 +26,8 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class RecommendationPageViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
-                                                      private val getRecommendationUseCase: GetRecommendationUseCase,
                                                       private val userSessionInterface: UserSessionInterface,
+                                                      private val getRecommendationUseCase: GetRecommendationUseCase,
                                                       @Named("Main")
                                   val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
     val recommendationListModel = MutableLiveData<List<RecommendationWidget>>()
@@ -87,4 +89,6 @@ class RecommendationPageViewModel @Inject constructor(private val graphqlReposit
         }
         )
     }
+
+    fun isLoggedIn() = userSessionInterface.isLoggedIn
 }

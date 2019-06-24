@@ -39,23 +39,18 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    @Inject
-    lateinit var userSessionInterface: UserSessionInterface
 
-    @Inject
-    lateinit var trackingQueue: TrackingQueue
-
+    private lateinit var trackingQueue: TrackingQueue
     private lateinit var productId: String
     private val viewModelProvider by lazy{ ViewModelProviders.of(this, viewModelFactory) }
     private val adapterFactory by lazy { HomeRecommendationTypeFactoryImpl() }
     private val adapter by lazy { HomeRecommendationAdapter(adapterTypeFactory) }
     private val recommendationWidgetViewModel by lazy { viewModelProvider.get(RecommendationPageViewModel::class.java) }
     private var menu: Menu? = null
+    private val SPAN_COUNT = 2
+    private val SHARE_PRODUCT_TITLE = "Bagikan Produk Ini"
 
     companion object{
-        private const val SPAN_COUNT = 2
-        private const val SHARE_PRODUCT_TITLE = "Bagikan Produk Ini"
-
         fun newInstance(productId: String) = RecommendationFragment().apply {
             this.productId = productId
         }
@@ -63,6 +58,13 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_recommendation, container, false)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        activity?.let {
+            trackingQueue = TrackingQueue(it)
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -97,10 +99,12 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     }
 
     private fun loadData(){
-        recommendationWidgetViewModel.getPrimaryProduct(productId, activity!!)
+        activity?.let{
+            recommendationWidgetViewModel.getPrimaryProduct(productId, it)
 
-        recommendationWidgetViewModel.getRecommendationList(arrayListOf(productId),
-                onErrorGetRecommendation = this::onErrorGetRecommendation)
+            recommendationWidgetViewModel.getRecommendationList(arrayListOf(productId),
+                    onErrorGetRecommendation = this::onErrorGetRecommendation)
+        }
     }
 
     private fun onErrorGetRecommendation(errorMessage: String?) {
@@ -170,7 +174,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     }
 
     override fun onImpressionTopAds(item: RecommendationItem) {
-        if(userSessionInterface.isLoggedIn){
+        if(recommendationWidgetViewModel.isLoggedIn()){
             RecommendationPageTracking.eventImpressionProductRecommendationOnHeaderNameLogin(trackingQueue, getHeaderName(item), item, item.position.toString())
         } else {
             RecommendationPageTracking.eventImpressionProductRecommendationOnHeaderName(trackingQueue, getHeaderName(item), item, item.position.toString())
@@ -178,7 +182,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     }
 
     override fun onImpressionOrganic(item: RecommendationItem) {
-        if(userSessionInterface.isLoggedIn){
+        if(recommendationWidgetViewModel.isLoggedIn()){
             RecommendationPageTracking.eventImpressionProductRecommendationOnHeaderNameLogin(trackingQueue, getHeaderName(item), item, item.position.toString())
         } else {
             RecommendationPageTracking.eventImpressionProductRecommendationOnHeaderName(trackingQueue, getHeaderName(item), item, item.position.toString())
@@ -186,7 +190,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     }
 
     override fun onClickTopAds(item: RecommendationItem) {
-        if(userSessionInterface.isLoggedIn){
+        if(recommendationWidgetViewModel.isLoggedIn()){
             RecommendationPageTracking.eventUserClickOnHeaderNameProduct(getHeaderName(item), item, item.position.toString())
         }else{
             RecommendationPageTracking.eventUserClickOnHeaderNameProductNonLogin(getHeaderName(item), item, item.position.toString())
@@ -194,7 +198,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     }
 
     override fun onClickOrganic(item: RecommendationItem) {
-        if(userSessionInterface.isLoggedIn){
+        if(recommendationWidgetViewModel.isLoggedIn()){
             RecommendationPageTracking.eventUserClickOnHeaderNameProduct(getHeaderName(item), item, item.position.toString())
         }else{
             RecommendationPageTracking.eventUserClickOnHeaderNameProductNonLogin(getHeaderName(item), item, item.position.toString())
@@ -202,7 +206,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     }
 
     fun onClickAddWishlist(item: RecommendationItem) {
-        if(userSessionInterface.isLoggedIn){
+        if(recommendationWidgetViewModel.isLoggedIn()){
             RecommendationPageTracking.eventUserClickProductToWishlistForUserLogin(true)
         }else{
             RecommendationPageTracking.eventUserClickProductToWishlistForNonLogin()
@@ -210,7 +214,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     }
 
     fun onClickRemoveWishlist(item: RecommendationItem) {
-        if(userSessionInterface.isLoggedIn){
+        if(recommendationWidgetViewModel.isLoggedIn()){
             RecommendationPageTracking.eventUserClickProductToWishlistForUserLogin(false)
         }else{
             RecommendationPageTracking.eventUserClickProductToWishlistForNonLogin()
@@ -235,16 +239,19 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     }
 
     private fun shareProduct(productDetailData: ProductDetailData){
-        LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
-                productDataToLinkerDataMapper(productDetailData), object : ShareCallback {
-            override fun urlCreated(linkerShareData: LinkerShareResult) {
-                openIntentShare(productDetailData.name, context!!.getString(R.string.home_recommendation), linkerShareData.url)
-            }
+        context?.let{ context ->
+            RecommendationPageTracking.eventClickIconShare()
+            LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
+                    productDataToLinkerDataMapper(productDetailData), object : ShareCallback {
+                override fun urlCreated(linkerShareData: LinkerShareResult) {
+                    openIntentShare(productDetailData.name, context.getString(R.string.home_recommendation), linkerShareData.url)
+                }
 
-            override fun onError(linkerError: LinkerError) {
-                openIntentShare(productDetailData.name, context!!.getString(R.string.home_recommendation), "https://tokopedia.com/rekomendasi/${productDetailData.id}")
-            }
-        }))
+                override fun onError(linkerError: LinkerError) {
+                    openIntentShare(productDetailData.name, context.getString(R.string.home_recommendation), "https://tokopedia.com/rekomendasi/${productDetailData.id}")
+                }
+            }))
+        }
     }
 
     private fun productDataToLinkerDataMapper(productDetailData: ProductDetailData): LinkerShareData {

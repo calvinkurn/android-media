@@ -47,11 +47,7 @@ class HomeRecommendationModule {
     @HomeRecommendationScope
     fun provideGetRecommendationUseCase(@Named("recommendationQuery") recomQuery: String,
                                         graphqlUseCase: GraphqlUseCase,
-                                        userSessionInterface: UserSessionInterface): GetRecommendationUseCase = GetRecommendationUseCase(recomQuery, graphqlUseCase, userSessionInterface)
-
-    @Provides
-    @HomeRecommendationScope
-    fun provideTrackingQueue(@ApplicationContext context: Context): TrackingQueue = TrackingQueue(context)
+                                        userSessionInterface: UserSessionInterface): GetRecommendationUseCase = GetRecommendationUseCase(context, graphqlUseCase, userSessionInterface)
 
     @Provides
     @HomeRecommendationScope
@@ -59,5 +55,4 @@ class HomeRecommendationModule {
     fun provideRecommendationRawQuery(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources,
                     R.raw.query_recommendation_widget)
-
 }

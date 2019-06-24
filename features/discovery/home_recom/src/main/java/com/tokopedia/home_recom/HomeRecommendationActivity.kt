@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.home_recom.analytics.RecommendationPageTracking
 import com.tokopedia.home_recom.di.DaggerHomeRecommendationComponent
@@ -19,7 +20,7 @@ import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.view.fragment.RecommendationFragment
 
 class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecommendationComponent>{
-
+    private lateinit var productId: String
     companion object{
         const val PRODUCT_ID = "PRODUCT_ID"
         private const val DEEP_LINK_URI = "deep_link_uri"
@@ -39,18 +40,20 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
     }
 
     object DeeplinkIntents{
-
         @JvmStatic
         @DeepLink(ApplinkConst.RECOMMENDATION_PAGE)
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
             val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
             return RouteManager.getIntent(context,
-                    ApplinkConstInternalMarketplace.HOME_RECOMMENDATION_WITH_ID,
+                    ApplinkConstInternalMarketplace.HOME_RECOMMENDATION,
                     uri.lastPathSegment) ?: Intent()
         }
     }
 
     override fun getNewFragment(): Fragment {
+        if(intent.data != null && intent.data.pathSegments.size > 1 ){
+            return RecommendationFragment.newInstance(intent.data.lastPathSegment)
+        }
         return RecommendationFragment.newInstance(intent.getStringExtra(PRODUCT_ID))
     }
 

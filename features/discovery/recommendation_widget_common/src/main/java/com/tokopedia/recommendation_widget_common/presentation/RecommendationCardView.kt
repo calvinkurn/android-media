@@ -13,7 +13,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardView
-import com.tokopedia.productcard.R
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 
@@ -33,7 +32,6 @@ class RecommendationCardView : ProductCardView {
         setDiscount(item.discountPercentage)
         setWishlistButtonVisible(TextUtils.isEmpty(item.wishlistUrl))
         setWishlistButtonVisible(false)
-//        setWishlistButtonVisible(TextUtils.isEmpty(item.wishlistUrl))
         setRatingReviewCount(item.rating, item.countReview)
         imageView.addOnImpressionListener(item,
                 object: ViewHintListener {
@@ -61,6 +59,21 @@ class RecommendationCardView : ProductCardView {
             }
             context?.run {
                 RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString())
+            }
+        }
+    }
+
+    override fun setRatingReviewCount(rating: Int, reviewCount: Int) {
+        if (rating in 1..5) {
+            ratingView.setImageResource(getRatingDrawable(rating))
+            reviewCountView.text = reviewCount.toString()
+        } else {
+            if (fixedHeight) {
+                ratingView.visibility = View.INVISIBLE
+                reviewCountView.visibility = View.INVISIBLE
+            } else {
+                ratingView.visibility = View.GONE
+                reviewCountView.visibility = View.GONE
             }
         }
     }

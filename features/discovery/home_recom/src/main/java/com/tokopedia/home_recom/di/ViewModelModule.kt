@@ -6,9 +6,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.home_recom.viewmodel.PrimaryProductViewModel
 import com.tokopedia.home_recom.viewmodel.RecommendationPageViewModel
-import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
