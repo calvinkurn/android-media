@@ -9,15 +9,9 @@ import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.Spanned
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ProgressBar
 import android.widget.TextView
-
 import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -47,21 +41,13 @@ import com.tokopedia.loginphone.choosetokocashaccount.view.presenter.ChooseTokoc
 import com.tokopedia.loginphone.common.analytics.LoginPhoneNumberAnalytics
 import com.tokopedia.loginphone.common.di.DaggerLoginRegisterPhoneComponent
 import com.tokopedia.notifications.CMPushNotificationManager
-import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase
-import com.tokopedia.otp.cotp.view.activity.VerificationActivity
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
-import com.tokopedia.sessioncommon.data.model.GetUserInfoData
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.di.SessionModule
-import com.tokopedia.sessioncommon.view.LoginSuccessRouter
-import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
-import java.lang.Exception
-
-import java.util.ArrayList
-
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -260,9 +246,22 @@ class ChooseTokocashAccountFragment : BaseDaggerFragment(), ChooseTokocashAccoun
 
     override fun onErrorLoginToken(): (Throwable) -> Unit {
         return {
-            loginRouter.onErrorLogin(ErrorHandlerSession.getErrorMessage(it, context, true))
-            loginRouter.logUnknownError(Throwable("Login Phone Number Login Token is not success"))
+            onErrorLogin(ErrorHandlerSession.getErrorMessage(it, context, true))
+            logUnknownError(Throwable("Login Phone Number Login Token is not success"))
         }
+    }
+
+    private fun logUnknownError(throwable: Throwable) {
+        try {
+            Crashlytics.logException(throwable)
+        } catch (e: IllegalStateException) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun onErrorLogin(errorMessage: String) {
+        dismissLoadingProgress()
+        NetworkErrorHelper.showSnackbar(activity, errorMessage)
     }
 
     override fun onSuccessGetUserInfo(): (ProfilePojo) -> Unit {
@@ -273,40 +272,40 @@ class ChooseTokocashAccountFragment : BaseDaggerFragment(), ChooseTokocashAccoun
 
     override fun onErrorGetUserInfo(): (Throwable) -> Unit {
         return {
-            loginRouter.onErrorLogin(ErrorHandlerSession.getErrorMessage(it, context, true))
-            loginRouter.logUnknownError(Throwable("Login Phone Number Get User Info is not success"))
+            onErrorLogin(ErrorHandlerSession.getErrorMessage(it, context, true))
+            logUnknownError(Throwable("Login Phone Number Get User Info is not success"))
         }
     }
 
     //Impossible Flow
     override fun onGoToActivationPage(): (MessageErrorException) -> Unit {
         return {
-            loginRouter.onErrorLogin(ErrorHandlerSession.getErrorMessage(it, context, false))
-            loginRouter.logUnknownError(Throwable("Login Phone Number Login Token go to activation"))
+            onErrorLogin(ErrorHandlerSession.getErrorMessage(it, context, false))
+            logUnknownError(Throwable("Login Phone Number Login Token go to activation"))
         }
     }
 
     //Impossible Flow
     override fun onGoToSecurityQuestion(): () -> Unit {
         return {
-            loginRouter.onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW, context))
-            loginRouter.logUnknownError(Throwable("Login Phone Number Login Token go to sq"))
+            onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW, context))
+            logUnknownError(Throwable("Login Phone Number Login Token go to sq"))
         }
     }
 
     //Impossible Flow
     override fun onGoToCreatePassword(): (String, String) -> Unit {
         return { fullName: String, userId: String ->
-            loginRouter.onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW, context))
-            loginRouter.logUnknownError(Throwable("Login Phone Number Login Token go to create password"))
+            onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW, context))
+            logUnknownError(Throwable("Login Phone Number Login Token go to create password"))
         }
     }
 
     //Impossible Flow
     override fun onGoToPhoneVerification(): () -> Unit {
         return {
-            loginRouter.onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW, context))
-            loginRouter.logUnknownError(Throwable("Login Phone Number Login Token go to phone verification"))
+            onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW, context))
+            logUnknownError(Throwable("Login Phone Number Login Token go to phone verification"))
         }
     }
 
@@ -344,53 +343,6 @@ class ChooseTokocashAccountFragment : BaseDaggerFragment(), ChooseTokocashAccoun
         NetworkErrorHelper.showEmptyState(context, view, errorMessage) {
             showLoadingProgress()
             presenter.getAccountList(viewModel.accessToken, viewModel.phoneNumber)
-        }
-    }
-
-    override fun getLoginRouter(): LoginSuccessRouter {
-        return object : LoginSuccessRouter {
-            override fun onGoToActivationPage(email: String) {
-                // Not implemented in login phone number
-            }
-
-            override fun onForbidden() {
-                ForbiddenActivity.startActivity(activity)
-            }
-
-            override fun onErrorLogin(errorMessage: String) {
-                dismissLoadingProgress()
-                NetworkErrorHelper.showSnackbar(activity, errorMessage)
-            }
-
-            override fun onGoToCreatePasswordPage(info: GetUserInfoData) {
-                // Not implemented in login phone number
-            }
-
-            override fun onGoToPhoneVerification() {
-                // Not implemented in login phone number
-            }
-
-            override fun onGoToSecurityQuestion(email: String, phone: String) {
-                activity?.run {
-                    val intent = VerificationActivity.getShowChooseVerificationMethodIntent(
-                            activity,
-                            RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION,
-                            email,
-                            phone)
-                    intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
-                    startActivityForResult(intent, REQUEST_SECURITY_QUESTION)
-                    finish()
-                }
-            }
-
-            override fun logUnknownError(message: Throwable) {
-                try {
-                    Crashlytics.logException(message)
-                } catch (e: IllegalStateException) {
-                    e.printStackTrace()
-                }
-
-            }
         }
     }
 

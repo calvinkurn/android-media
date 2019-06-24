@@ -10,19 +10,8 @@ import android.text.SpannableString
 import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.util.TypedValue
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.RelativeLayout
-import android.widget.ScrollView
-import android.widget.TextView
-
-import com.crashlytics.android.Crashlytics
+import android.view.*
+import android.widget.*
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -60,21 +49,16 @@ import com.tokopedia.loginregister.welcomepage.WelcomePageActivity
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity
 import com.tokopedia.sessioncommon.ErrorHandlerSession
+import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
 import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel
-import com.tokopedia.sessioncommon.data.model.GetUserInfoData
-import com.tokopedia.sessioncommon.view.LoginSuccessRouter
+import com.tokopedia.sessioncommon.data.profile.ProfilePojo
+import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
-
-import java.util.ArrayList
-
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
-
-import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
-import com.tokopedia.sessioncommon.data.profile.ProfilePojo
-import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
 
 /**
  * @author by nisie on 10/24/18.
@@ -143,53 +127,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
             }
             return drawable
         }
-
-    override val loginRouter: LoginSuccessRouter
-        get() = object : LoginSuccessRouter {
-            override fun onGoToActivationPage(email: String) {
-
-            }
-
-            override fun onForbidden() {
-                ForbiddenActivity.startActivity(activity)
-            }
-
-            override fun onErrorLogin(errorMessage: String) {
-                NetworkErrorHelper.showSnackbar(activity, errorMessage)
-            }
-
-            override fun onGoToCreatePasswordPage(info: GetUserInfoData) {
-                activity?.let {
-                    val intent = (it.applicationContext as ApplinkRouter).getApplinkIntent(activity, ApplinkConst.CREATE_PASSWORD)
-                    intent.putExtra("name", info.fullName)
-                    intent.putExtra("user_id", info.userId.toString())
-                    startActivityForResult(intent, REQUEST_CREATE_PASSWORD)
-                }
-            }
-
-            override fun onGoToPhoneVerification() {
-                activity?.let {
-                    (it.applicationContext as ApplinkRouter)
-                            .goToApplinkActivity(activity, ApplinkConst.PHONE_VERIFICATION)
-                }
-            }
-
-            override fun onGoToSecurityQuestion(email: String, phone: String) {
-                val intent = VerificationActivity.getShowChooseVerificationMethodIntent(
-                        activity, RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION, phone, email)
-                startActivityForResult(intent, REQUEST_SECURITY_QUESTION)
-            }
-
-            override fun logUnknownError(message: Throwable) {
-                try {
-                    Crashlytics.logException(message)
-                } catch (e: IllegalStateException) {
-                    e.printStackTrace()
-                }
-
-            }
-        }
-
 
     override val facebookCredentialListener: GetFacebookCredentialSubscriber.GetFacebookCredentialListener
         get() = object : GetFacebookCredentialSubscriber.GetFacebookCredentialListener {

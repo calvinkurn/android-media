@@ -9,7 +9,6 @@ import com.tokopedia.loginphone.choosetokocashaccount.data.AccountList;
 import com.tokopedia.loginphone.choosetokocashaccount.data.UserDetail;
 import com.tokopedia.sessioncommon.data.LoginTokenPojo;
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo;
-import com.tokopedia.sessioncommon.view.LoginSuccessRouter;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -32,8 +31,6 @@ public interface ChooseTokocashAccountContract {
         void dismissLoadingProgress();
 
         Context getContext();
-
-        LoginSuccessRouter getLoginRouter();
 
         void onSuccessGetAccountList(AccountList accountList);
 

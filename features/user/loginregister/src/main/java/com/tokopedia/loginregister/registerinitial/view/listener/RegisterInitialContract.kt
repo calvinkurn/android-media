@@ -1,8 +1,6 @@
 package com.tokopedia.loginregister.registerinitial.view.listener
 
-import android.content.Intent
 import android.support.v4.app.Fragment
-
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.listener.CustomerView
@@ -10,11 +8,8 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
-import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
-import com.tokopedia.sessioncommon.view.LoginSuccessRouter
-
-import java.util.ArrayList
+import java.util.*
 
 /**
  * @author by nisie on 10/24/18.
@@ -24,8 +19,6 @@ interface RegisterInitialContract {
     interface View : CustomerView {
 
         val facebookCredentialListener: GetFacebookCredentialSubscriber.GetFacebookCredentialListener
-
-        val loginRouter: LoginSuccessRouter
 
         fun showLoadingDiscover()
 
