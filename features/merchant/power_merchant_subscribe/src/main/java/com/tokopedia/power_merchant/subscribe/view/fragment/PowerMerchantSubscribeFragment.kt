@@ -104,6 +104,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         root_view_pm.showLoading()
+        hideButtonActivatedPm()
         renderInitialLayout()
         button_activate_root.setOnClickListener {
             if (getApprovalStatusPojo.kycStatus.kycStatusDetailPojo.status == 1) {
@@ -169,6 +170,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     override fun refreshData() {
         root_view_pm.showLoading()
+        hideButtonActivatedPm()
         presenter.getPmStatusInfo(userSessionInterface.shopId)
     }
 

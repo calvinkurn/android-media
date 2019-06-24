@@ -2,6 +2,7 @@ package com.tokopedia.sellerapp.dashboard.view.fragment;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -40,6 +41,7 @@ import com.tokopedia.core.common.ticker.model.Ticker;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
+import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.router.SellerRouter;
@@ -48,6 +50,7 @@ import com.tokopedia.core.shopinfo.models.shopmodel.Info;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.design.card.EmptyCardContentView;
+import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.design.widget.WarningTickerView;
@@ -75,7 +78,6 @@ import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.user.session.UserSessionInterface;
-import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.user_identification_common.KycWidgetUtil;
 import com.tokopedia.user_identification_common.subscriber.GetApprovalStatusSubscriber;
 
@@ -108,7 +110,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     @Inject
     public UserSessionInterface userSession;
 
-//    private TickerView tickerView;
+    private TickerView tickerView;
     private LoadingStateView headerShopInfoLoadingStateView;
     private LoadingStateView footerShopInfoLoadingStateView;
     private ImageView shopIconImageView;
@@ -160,7 +162,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        tickerView = (TickerView) view.findViewById(R.id.ticker_view);
+        tickerView = (TickerView) view.findViewById(R.id.ticker_view);
         headerShopInfoLoadingStateView = (LoadingStateView) view.findViewById(R.id.loading_state_view_header);
         footerShopInfoLoadingStateView = (LoadingStateView) view.findViewById(R.id.loading_state_view_footer);
 
@@ -590,50 +592,50 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
     @Override
     public void onErrorGetTickers(Throwable throwable) {
-//        tickerView.setVisibility(View.GONE);
+        tickerView.setVisibility(View.GONE);
     }
 
     @Override
     public void onSuccessGetTickers(Ticker.Tickers[] tickers) {
-//
-//        ArrayList<String> messages = new ArrayList<>();
-//        final ArrayList<String> backgrounds = new ArrayList<>();
-//        for (Ticker.Tickers ticker : tickers) {
-//            messages.add(ticker.getBasicMessage());
-//            backgrounds.add(ticker.getColor());
-//        }
-//        tickerView.setListMessage(messages);
-//        tickerView.setHighLightColor(ContextCompat.getColor(getContext(), R.color.tkpd_yellow_status));
-//        tickerView.setOnPartialTextClickListener(new TickerView.OnPartialTextClickListener() {
-//            @Override
-//            public void onClick(View view, String messageClick) {
-//                Intent intent = new Intent(getActivity(), BannerWebView.class);
-//                intent.putExtra("url", messageClick);
-//                startActivity(intent);
-//            }
-//        });
-//        tickerView.setOnPageChangeListener(new TickerView.OnPageChangeListener() {
-//            @Override
-//            public void onScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//
-//            }
-//
-//            @Override
-//            public void onSelected(int position) {
-//                if (position < backgrounds.size()) {
-//                    tickerView.setHighLightColor(Color.parseColor(backgrounds.get(position)));
-//                }
-//            }
-//
-//            @Override
-//            public void onScrollStateChanged(int state) {
-//
-//            }
-//        });
-//        tickerView.buildView();
-//        checkShowTickerView();
-//
-//        sellerDashboardPresenter.getVerificationStatus();
+
+        ArrayList<String> messages = new ArrayList<>();
+        final ArrayList<String> backgrounds = new ArrayList<>();
+        for (Ticker.Tickers ticker : tickers) {
+            messages.add(ticker.getBasicMessage());
+            backgrounds.add(ticker.getColor());
+        }
+        tickerView.setListMessage(messages);
+        tickerView.setHighLightColor(ContextCompat.getColor(getContext(), R.color.tkpd_yellow_status));
+        tickerView.setOnPartialTextClickListener(new TickerView.OnPartialTextClickListener() {
+            @Override
+            public void onClick(View view, String messageClick) {
+                Intent intent = new Intent(getActivity(), BannerWebView.class);
+                intent.putExtra("url", messageClick);
+                startActivity(intent);
+            }
+        });
+        tickerView.setOnPageChangeListener(new TickerView.OnPageChangeListener() {
+            @Override
+            public void onScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onSelected(int position) {
+                if (position < backgrounds.size()) {
+                    tickerView.setHighLightColor(Color.parseColor(backgrounds.get(position)));
+                }
+            }
+
+            @Override
+            public void onScrollStateChanged(int state) {
+
+            }
+        });
+        tickerView.buildView();
+        checkShowTickerView();
+
+        sellerDashboardPresenter.getVerificationStatus();
 
     }
 
@@ -747,29 +749,18 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                     verificationWarningTickerView.setVisibility(View.VISIBLE);
                 }
 
-                if (status == KYCConstant.STATUS_NOT_VERIFIED) {
-                    String tickerMessage = getString(R.string.ticker_unverified);
-                    addMessageToTickerView(tickerMessage);
-                }
-
                 checkShowTickerView();
 
             }
         };
     }
 
-    private void addMessageToTickerView(String tickerMessage) {
-//        if (!TextUtils.isEmpty(tickerMessage) && !tickerView.contains(tickerMessage)) {
-//            tickerView.addMessage(tickerMessage);
-//        }
-    }
-
     private void checkShowTickerView() {
-//        if (tickerView.getCount() < 1) {
-//            tickerView.setVisibility(View.GONE);
-//        } else {
-//            tickerView.setVisibility(View.VISIBLE);
-//        }
+        if (tickerView.getCount() < 1) {
+            tickerView.setVisibility(View.GONE);
+        } else {
+            tickerView.setVisibility(View.VISIBLE);
+        }
     }
 
     private void shopPowerMerchantPopup(ShopStatusModel shopStatusModel) {
