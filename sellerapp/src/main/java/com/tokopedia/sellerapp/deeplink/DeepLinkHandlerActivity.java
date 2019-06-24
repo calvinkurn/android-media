@@ -101,7 +101,7 @@ import com.tokopedia.power_merchant.subscribe.applink.PowerMerchantSubscribeDeep
         ChangePasswordDeeplinkModule.class,
         UserIdentificationApplinkModule.class,
         ChatbotApplinkModule.class,
-        PowerMerchantSubscribeDeeplinkModule.class
+        PowerMerchantSubscribeDeeplinkModule.class,
         AutoAdsLinkModule.class
 })
 
