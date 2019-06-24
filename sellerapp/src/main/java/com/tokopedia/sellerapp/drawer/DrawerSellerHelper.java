@@ -1,7 +1,6 @@
 package com.tokopedia.sellerapp.drawer;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.view.GravityCompat;
@@ -15,10 +14,9 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
@@ -41,9 +39,12 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.flashsale.management.router.FlashSaleRouter;
 import com.tokopedia.gm.featured.view.activity.GMFeaturedProductActivity;
 import com.tokopedia.gm.statistic.view.activity.GMStatisticDashboardActivity;
+import com.tokopedia.gm.subscribe.tracking.GMTracking;
 import com.tokopedia.mitratoppers.MitraToppersRouter;
 import com.tokopedia.profile.view.activity.ProfileActivity;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
@@ -110,7 +111,10 @@ public class DrawerSellerHelper extends DrawerHelper
         data.add(getInboxMenu());
         data.add(getProductMenu());
 
-        data.add(((SellerDrawerAdapter) adapter).getGoldMerchantMenu());
+        data.add(new DrawerItem(context.getString(R.string.pm_title),
+                R.drawable.ic_pm_badge_shop_regular,
+                TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND,
+                true));
 
         data.add(new DrawerItem(context.getString(R.string.drawer_title_top_ads),
                 R.drawable.ic_top_ads,
@@ -222,6 +226,9 @@ public class DrawerSellerHelper extends DrawerHelper
         sellerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_draft_list),
                 TkpdState.DrawerPosition.DRAFT_PRODUCT,
                 true));
+        sellerMenu.add(new DrawerItem(context.getString(com.tokopedia.seller.R.string.featured_product_title),
+                TkpdState.DrawerPosition.FEATURED_PRODUCT,
+                true));
         sellerMenu.add(new DrawerItem(context.getString(R.string.drawer_title_etalase_list),
                 TkpdState.DrawerPosition.MANAGE_ETALASE,
                 true));
@@ -311,7 +318,7 @@ public class DrawerSellerHelper extends DrawerHelper
                         new GMTracking().sendClickHamburgerMenuEvent(item.label);
                     }
                     eventClickGoldMerchantViaDrawer();
-                    context.startActivity(GMSubscribeInternalRouter.getGMSubscribeHomeIntent(context));
+                    RouteManager.route(context, ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE);
                     break;
                 case TkpdState.DrawerPosition.SHOP_NEW_ORDER:
                     intent = SellerRouter.getActivitySellingTransactionNewOrder(context);
@@ -489,15 +496,8 @@ public class DrawerSellerHelper extends DrawerHelper
         alertDialog.setPositiveButton(R.string.label_subscribe, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if (selectedPosition != TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND) {
-                    sendGMAnalyticDialogEvent(true);
-
-                    if (context.getApplication() instanceof SellerModuleRouter) {
-                        Intent gmIntent = ((SellerModuleRouter) context.getApplication()).getGMHomeIntent(context);
-                        gmIntent.putExtra(GMParamConstant.PARAM_KEY_FROM_FEATURE, true);
-                        context.startActivity(gmIntent);
-                    }
-                }
+                sendGMAnalyticDialogEvent(true);
+                RouteManager.route(context, ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE);
             }
         });
         alertDialog.setNegativeButton(R.string.title_cancel, new DialogInterface.OnClickListener() {

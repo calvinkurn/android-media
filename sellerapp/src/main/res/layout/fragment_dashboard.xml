@@ -34,7 +34,6 @@
                 android:background="@color/white"
                 app:lsv_error_layout="@layout/partial_dashboard_header_error_view"
                 app:lsv_loading_layout="@layout/partial_dashboard_header_loading_view">
-
                 <include layout="@layout/partial_dashboard_header" />
 
             </com.tokopedia.design.loading.LoadingStateView>

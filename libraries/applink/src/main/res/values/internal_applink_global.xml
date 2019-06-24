@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="host_global" translatable="false">global</string>
+
+    <!--
+        If the link is Ended with {id}, must end with "/"
+        Otherwise, do not put "/"
+    -->
+    <string name="path_webview" translatable="false">/webview</string>
+</resources>
