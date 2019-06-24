@@ -201,7 +201,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        ((AbstractionRouter) getApplication()).instabugCaptureUserStep(this, ev);
         return super.dispatchTouchEvent(ev);
     }
 }

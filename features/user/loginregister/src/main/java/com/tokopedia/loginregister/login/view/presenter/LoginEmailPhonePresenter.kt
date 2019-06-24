@@ -8,12 +8,15 @@ import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
+import com.tokopedia.loginregister.ticker.domain.usecase.TickerInfoUseCase
+import com.tokopedia.loginregister.login.view.listener.LoginContract
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.model.DiscoverViewModel
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterValidationPojo
 import com.tokopedia.loginregister.registerinitial.domain.usecase.RegisterValidationUseCase
+import com.tokopedia.loginregister.ticker.subscriber.TickerInfoLoginSubscriber
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
@@ -37,6 +40,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
                                                    private val loginTokenUseCase:
                                                    LoginTokenUseCase,
                                                    private val getProfileUseCase: GetProfileUseCase,
+                                                   private val tickerInfoUseCase: TickerInfoUseCase,
                                                    @Named(SESSION_MODULE)
                                                    private val userSession: UserSessionInterface)
     : BaseDaggerPresenter<LoginEmailPhoneContract.View>(),
@@ -247,13 +251,20 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
                 view.onGoToPhoneVerification()))
     }
 
+    override fun getTickerInfo(){
+        tickerInfoUseCase.execute(TickerInfoUseCase.createRequestParam(TickerInfoUseCase.LOGIN_PAGE),
+                TickerInfoLoginSubscriber(viewEmailPhone))
+    }
+
     override fun detachView() {
         super.detachView()
         discoverUseCase.unsubscribe()
         registerValidationUseCase.unsubscribe()
         loginTokenUseCase.unsubscribe()
         getProfileUseCase.unsubscribe()
-
+        tickerInfoUseCase.unsubscribe()
     }
+
+
 
 }

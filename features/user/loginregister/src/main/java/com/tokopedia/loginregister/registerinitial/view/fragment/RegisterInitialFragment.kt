@@ -45,6 +45,7 @@ import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialCompo
 import com.tokopedia.loginregister.registerinitial.view.customview.PartialRegisterInputView
 import com.tokopedia.loginregister.registerinitial.view.listener.RegisterInitialContract
 import com.tokopedia.loginregister.registerinitial.view.presenter.RegisterInitialPresenter
+import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.welcomepage.WelcomePageActivity
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity
@@ -55,6 +56,10 @@ import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
@@ -97,6 +102,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
     lateinit var loginButton: TextView
     lateinit var container: ScrollView
     lateinit var progressBar: RelativeLayout
+    lateinit var tickerAnnouncement: Ticker
 
     private var phoneNumber: String? = ""
 
@@ -208,6 +214,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         loginButton = view.findViewById(R.id.login_button)
         container = view.findViewById(R.id.container)
         progressBar = view.findViewById(R.id.progress_bar)
+        tickerAnnouncement = view.findViewById(R.id.ticker_announcement)
         prepareView()
         setViewListener()
         presenter.attachView(this)
@@ -254,6 +261,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
     private fun initData() {
         presenter.getProvider()
         partialRegisterInputView.setListener(this)
+        presenter.getTickerInfo()
     }
 
     protected fun prepareView() {
@@ -784,6 +792,67 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         }
     }
 
+
+    override fun onSuccessGetTickerInfo(listTickerInfo: List<TickerInfoPojo>) {
+        if(listTickerInfo.isNotEmpty()){
+            tickerAnnouncement.visibility = View.VISIBLE
+            if(listTickerInfo.size > 1){
+                val mockData = arrayListOf<TickerData>()
+                listTickerInfo.forEach {
+                    mockData.add(TickerData(it.title, it.message, getTickerType(it.color), true))
+                }
+                val adapter = TickerPagerAdapter(activity!!, mockData)
+                adapter.setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(link: CharSequence?) {
+                        registerAnalytics.trackClickLinkTicker(link.toString())
+                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, link))
+                    }
+
+                    override fun onDismiss() {
+                        registerAnalytics.trackClickCloseTickerButton()
+                    }
+
+                })
+                tickerAnnouncement.addPagerView( adapter, mockData)
+            }else {
+                listTickerInfo.first().let {
+                    tickerAnnouncement.tickerTitle = it.title
+                    tickerAnnouncement.setHtmlDescription(it.message)
+                    tickerAnnouncement.tickerShape = getTickerType(it.color)
+                }
+                tickerAnnouncement.setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(link: CharSequence?) {
+                        registerAnalytics.trackClickLinkTicker(link.toString())
+                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, link))
+                    }
+
+                    override fun onDismiss() {
+                        registerAnalytics.trackClickCloseTickerButton()
+                    }
+
+                })
+            }
+            tickerAnnouncement.setOnClickListener { v ->
+                registerAnalytics.trackClickTicker() }
+
+        }
+    }
+
+    private fun getTickerType(hexColor: String): Int {
+        return when (hexColor) {
+            "#cde4c3" -> {
+                Ticker.TYPE_ANNOUNCEMENT
+            }
+            "#ecdb77" -> {
+                Ticker.TYPE_WARNING
+            }
+            else -> {
+                Ticker.TYPE_ANNOUNCEMENT
+            }
+        }
+    }
+
+    override fun onErrorGetTickerInfo(error: String) {}
 
     override fun onDestroy() {
         super.onDestroy()

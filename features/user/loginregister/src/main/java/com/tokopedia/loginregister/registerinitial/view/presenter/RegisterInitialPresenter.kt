@@ -21,6 +21,10 @@ import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import javax.inject.Inject
 import javax.inject.Named
+import com.tokopedia.loginregister.ticker.subscriber.TickerInfoRegisterSubscriber
+import com.tokopedia.loginregister.ticker.domain.usecase.TickerInfoUseCase
+
+
 
 /**
  * @author by nisie on 10/24/18.
@@ -32,7 +36,8 @@ class RegisterInitialPresenter @Inject constructor(
         private val loginTokenUseCase: LoginTokenUseCase,
         private val getProfileUseCase: GetProfileUseCase,
         @Named(SessionModule.SESSION_MODULE)
-        private val userSession: UserSessionInterface) : BaseDaggerPresenter<RegisterInitialContract.View>(), RegisterInitialContract.Presenter {
+        private val userSession: UserSessionInterface,
+        private val tickerInfoUseCase : TickerInfoUseCase) : BaseDaggerPresenter<RegisterInitialContract.View>(), RegisterInitialContract.Presenter {
 
     override fun getProvider() {
         view.showLoadingDiscover()
@@ -144,6 +149,11 @@ class RegisterInitialPresenter @Inject constructor(
                 view.onErrorGetUserInfo(),
                 view.onGoToCreatePassword(),
                 view.onGoToPhoneVerification()))
+    }
+
+    override fun getTickerInfo() {
+        tickerInfoUseCase.execute(TickerInfoUseCase.createRequestParam(TickerInfoUseCase.REGISTER_PAGE),
+                TickerInfoRegisterSubscriber(view))
     }
 
     companion object {

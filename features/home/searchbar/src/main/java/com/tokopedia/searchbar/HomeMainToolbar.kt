@@ -9,17 +9,18 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
 import android.os.Build
 import android.support.v4.content.ContextCompat
+import android.support.v4.graphics.drawable.DrawableCompat
+import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
+import android.widget.TextView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.searchbar.helper.ViewHelper
 import kotlinx.android.synthetic.main.home_main_toolbar.view.*
-import android.support.v4.graphics.drawable.DrawableCompat
 
 
 class HomeMainToolbar : MainToolbar {
-
     var toolbarType: Int = 0
 
     var shadowApplied: Boolean = false
@@ -171,8 +172,24 @@ class HomeMainToolbar : MainToolbar {
         return shadowApplied
     }
 
+    fun setHint(placeholder: String, keyword: String){
+        val editTextSearch = findViewById<TextView>(R.id.et_search)
+        editTextSearch.hint = if(placeholder.isEmpty()) context.getString(R.string.search_tokopedia) else placeholder
+        editTextSearch.setSingleLine()
+        editTextSearch.ellipsize = TextUtils.TruncateAt.END
+        editTextSearch.setOnClickListener {
+            searchBarAnalytics.eventTrackingSearchBar()
+            if(placeholder.isEmpty()){
+                RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
+            }else{
+                RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE_WITH_NAVSOURCE_AND_HINT, HOME_SOURCE, keyword)
+            }
+        }
+    }
+
     companion object {
         val TOOLBAR_LIGHT_TYPE = 0
         val TOOLBAR_DARK_TYPE = 1
+        private const val HOME_SOURCE = "home"
     }
 }

@@ -21,6 +21,8 @@ import javax.inject.Inject
 /**
  * @author by nisie on 10/2/18.
  * https://docs.google.com/spreadsheets/d/1TCCs1XsXFtRZR8cO4ZQEDwOHCqCTVMXjDApzZ-fLEC8
+ *
+ * https://docs.google.com/spreadsheets/d/1F3IQYqqG62aSxNbeFvrxyy-Pu--ZrShh8ewMKELeKj4/edit?ts=5cca711b#gid=910823048
  */
 class LoginRegisterAnalytics @Inject constructor() {
 
@@ -57,9 +59,12 @@ class LoginRegisterAnalytics @Inject constructor() {
         private val ACTION_SUCCESS = "Success"
         private val ACTION_CLICK_CHANNEL = "Click Channel"
         val ACTION_REGISTER_SUCCESS = "Register Success"
-        val ACTION_LOGIN_EMAIL = "click on button masuk"
-        val ACTION_LOGIN_FACEBOOK = "click on button facebook"
-        val ACTION_LOGIN_GOOGLE = "click on button google"
+        private val ACTION_LOGIN_EMAIL = "click on button masuk"
+        private val ACTION_LOGIN_FACEBOOK = "click on button facebook"
+        private val ACTION_LOGIN_GOOGLE = "click on button google"
+        private val ACTION_TICKER_LOGIN = "click on ticker login"
+        private val ACTION_LINK_TICKER_LOGIN = "click ticker link"
+        private val ACTION_CLOSE_TICKER_LOGIN = "click on button close ticker"
 
         private val LABEL_REGISTER = "Register"
         private val LABEL_PASSWORD = "Kata Sandi"
@@ -623,6 +628,33 @@ class LoginRegisterAnalytics @Inject constructor() {
 
     private fun onErrorLoginWithEmail() {
 
+    }
+
+    fun eventClickTicker() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                ACTION_TICKER_LOGIN,
+                ""
+        ))
+    }
+
+    fun eventClickLinkTicker(link: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                ACTION_LINK_TICKER_LOGIN,
+                link
+        ))
+    }
+
+    fun eventClickCloseTicker() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_LOGIN,
+                CATEGORY_LOGIN_PAGE,
+                ACTION_CLOSE_TICKER_LOGIN,
+                ""
+        ))
     }
 
     fun logUnknownError(message: Throwable) {

@@ -10,6 +10,9 @@ import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import java.util.*
+import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
+
+
 
 /**
  * @author by nisie on 10/24/18.
@@ -70,6 +73,10 @@ interface RegisterInitialContract {
 
         fun onGoToForbiddenPage()
 
+        fun onSuccessGetTickerInfo(listTickerInfo: List<TickerInfoPojo>)
+
+        fun onErrorGetTickerInfo(error: String)
+
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -85,6 +92,8 @@ interface RegisterInitialContract {
         fun validateRegister(id: String)
 
         fun getUserInfo()
+
+        fun getTickerInfo()
     }
 
 }

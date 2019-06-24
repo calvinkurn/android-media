@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.support.v4.app.Fragment
 import com.facebook.AccessToken
+import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
@@ -89,6 +90,10 @@ interface LoginEmailPhoneContract {
         fun onBackPressed()
 
         fun trackSuccessValidate()
+
+        fun onSuccessGetTickerInfo(listTickerInfo: List<TickerInfoPojo>)
+
+        fun onErrorGetTickerInfo(error: String)
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -107,5 +112,7 @@ interface LoginEmailPhoneContract {
         fun loginFacebook(context: Context, accessToken: AccessToken, email: String)
 
         fun reloginAfterSQ(validateToken: String)
+
+        fun getTickerInfo()
     }
 }

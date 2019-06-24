@@ -9,16 +9,14 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.design.widget.TextInputEditText
 import android.support.v4.app.Fragment
+import android.support.v7.widget.AppCompatImageButton
 import android.text.SpannableString
 import android.text.TextPaint
 import android.text.TextUtils
 import android.text.style.ClickableSpan
 import android.view.*
 import android.view.inputmethod.EditorInfo
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import com.crashlytics.android.Crashlytics
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
@@ -64,6 +62,7 @@ import com.tokopedia.loginregister.loginthirdparty.google.SmartLockActivity
 import com.tokopedia.loginregister.registeremail.view.activity.RegisterEmailActivity
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
 import com.tokopedia.loginregister.registerinitial.view.customview.PartialRegisterInputView
+import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.welcomepage.WelcomePageActivity
 import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase
@@ -80,6 +79,10 @@ import kotlinx.android.synthetic.main.fragment_login_with_phone.*
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifycomponents.ticker.TickerData;
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter;
 
 /**
  * @author by nisie on 18/01/19.
@@ -131,6 +134,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     private lateinit var emailPhoneEditText: EditText
     private lateinit var partialActionButton: TextView
     private lateinit var passwordEditText: TextInputEditText
+    private lateinit var tickerAnnouncement: Ticker
 
     companion object {
 
@@ -252,6 +256,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         emailPhoneEditText = partialRegisterInputView.findViewById(R.id.input_email_phone)
         partialActionButton = partialRegisterInputView.findViewById(R.id.register_btn)
         passwordEditText = partialRegisterInputView.findViewById(R.id.password)
+        tickerAnnouncement = view.findViewById(R.id.ticker_announcement)
         return view
     }
 
@@ -275,6 +280,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         } else {
             showSmartLock()
         }
+
+        presenter.getTickerInfo()
     }
 
     private fun onLoginEmailClick() {
@@ -1016,6 +1023,67 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             emailPhoneEditText.setSelection(emailPhoneEditText.text.length)
         } else if (activity != null) {
             activity?.finish()
+        }
+    }
+
+    override fun onSuccessGetTickerInfo(listTickerInfo: List<TickerInfoPojo>) {
+        if(listTickerInfo.isNotEmpty()){
+            tickerAnnouncement.visibility = View.VISIBLE
+            if(listTickerInfo.size > 1){
+                val mockData = arrayListOf<TickerData>()
+                listTickerInfo.forEach {
+                    mockData.add(TickerData(it.title, it.message, getTickerType(it.color), true))
+                }
+                val adapter = TickerPagerAdapter(activity!!, mockData)
+                adapter.setDescriptionClickEvent(object : TickerCallback{
+                    override fun onDescriptionViewClick(link: CharSequence?) {
+                        analytics.eventClickLinkTicker(link.toString())
+                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, link))
+                    }
+
+                    override fun onDismiss() {
+                        analytics.eventClickCloseTicker()
+                    }
+
+                })
+                tickerAnnouncement.addPagerView( adapter, mockData)
+            }else {
+                listTickerInfo.first().let {
+                    tickerAnnouncement.tickerTitle = it.title
+                    tickerAnnouncement.setHtmlDescription(it.message)
+                    tickerAnnouncement.tickerShape = getTickerType(it.color)
+                }
+                tickerAnnouncement.setDescriptionClickEvent(object : TickerCallback{
+                    override fun onDescriptionViewClick(link: CharSequence?) {
+                        analytics.eventClickLinkTicker(link.toString())
+                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, link))
+                    }
+
+                    override fun onDismiss() {
+                        analytics.eventClickCloseTicker()
+                    }
+
+                })
+            }
+            tickerAnnouncement.setOnClickListener { v ->
+                analytics.eventClickTicker() }
+
+        }
+    }
+
+    override fun onErrorGetTickerInfo(error: String) {}
+
+    private fun getTickerType(hexColor: String): Int {
+        return when (hexColor) {
+            "#cde4c3" -> {
+                Ticker.TYPE_ANNOUNCEMENT
+            }
+            "#ecdb77" -> {
+                Ticker.TYPE_WARNING
+            }
+            else -> {
+                Ticker.TYPE_ANNOUNCEMENT
+            }
         }
     }
 
