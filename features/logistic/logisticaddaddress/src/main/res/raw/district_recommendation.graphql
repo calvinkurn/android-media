@@ -1,0 +1,14 @@
+{
+  kero_district_recommendation(query:"#keyQuery", page:"#numPage") {
+    next_available
+    district {
+      district_id
+      district_name
+      city_id
+      city_name
+      province_id
+      province_name
+      zip_code
+    }
+  }
+}

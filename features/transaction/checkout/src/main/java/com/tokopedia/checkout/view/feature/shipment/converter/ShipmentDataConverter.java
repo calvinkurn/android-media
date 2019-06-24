@@ -238,6 +238,7 @@ public class ShipmentDataConverter {
         shipmentCartItemModel.setDropshiperPhone(groupShop.getDropshipperPhone());
         shipmentCartItemModel.setInsurance(groupShop.isUseInsurance());
         shipmentCartItemModel.setHasPromoList(groupShop.isHasPromoList());
+        shipmentCartItemModel.setSaveStateFlag(groupShop.isSaveStateFlag());
 
         List<Product> products = groupShop.getProducts();
         List<CartItemModel> cartItemModels = convertFromProductList(products);
@@ -257,6 +258,8 @@ public class ShipmentDataConverter {
                 voucherLogisticItemUiModel.setCode(groupShop.getShop().getVoucherOrdersItemData().getCode());
                 voucherLogisticItemUiModel.setCouponDesc(groupShop.getShop().getVoucherOrdersItemData().getTitleDescription());
                 voucherLogisticItemUiModel.setCouponAmount(Utils.getFormattedCurrency(groupShop.getShop().getVoucherOrdersItemData().getDiscountAmount()));
+                voucherLogisticItemUiModel.setCashbackAmount(groupShop.getShop().getVoucherOrdersItemData().getCashbackWalletAmount());
+                voucherLogisticItemUiModel.setDiscountAmount(groupShop.getShop().getVoucherOrdersItemData().getDiscountAmount());
                 voucherLogisticItemUiModel.setMessage(convertFromMessage(groupShop.getShop().getVoucherOrdersItemData().getMessageData()));
                 shipmentCartItemModel.setVoucherLogisticItemUiModel(voucherLogisticItemUiModel);
             } else {
