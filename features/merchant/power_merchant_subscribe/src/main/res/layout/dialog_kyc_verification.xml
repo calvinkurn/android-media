@@ -49,7 +49,7 @@
             android:layout_below="@+id/txt_kyc_static_desc_1"
             android:layout_marginBottom="@dimen/dp_10"
             android:textStyle="bold"
-            android:text="@string/pm_label_kyc_button_verification" />
+            android:text="@string/pm_label_transition_period_button" />
 
         <Button
             android:id="@+id/btn_close_kyc"

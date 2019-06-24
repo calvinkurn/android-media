@@ -46,7 +46,7 @@
     <string name="expired_label_bs">Layanan otomatis berhenti pada <b>[%1$s].</b></string>
     <string name="pm_title_activity">Power Merchant</string>
 
-    <string name="pm_label_bottom_sheet_cancel_header">Yakin mau turun status ke \nRegular Merchant?</string>
+    <string name="pm_label_bottom_sheet_cancel_header">Yakin mau turun status \nke Regular Merchant?</string>
     <string name="pm_label_bottom_sheet_cancel_button">Berhenti Jadi Power Merchant</string>
     <string name="pm_label_bottom_sheet_cancel_desc">Tokomu akan kehilangan semua keuntungan eksklusif Power Merchant:</string>
 
@@ -68,7 +68,7 @@
     <string name="pm_terms_agree">Dengan ini, saya menyetujui syarat dan ketentuan Power Merchant Tokopedia.</string>
     <string name="pm_terms_error_no_agreed">Kamu harus menyetujui Syarat dan Ketentuan.</string>
 
-    <string name="pm_cancellation_success">Pengajuan pembatalan berhasil.</string>
+    <string name="pm_cancellation_success">Pengajuan untuk berhenti berhasil.</string>
 
     <string name="pm_title_tnc">Syarat dan Ketentuan</string>
     <string name="pm_credit_desc">Dapatkan ekstra kredit 5% setiap top-up kredit TopAds.</string>
