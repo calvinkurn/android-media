@@ -57,10 +57,6 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.multiDex
 
-    annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
-    implementation rootProject.ext.dbDependencies.dbFlowCore
-    implementation rootProject.ext.dbDependencies.dbFlow
-
     implementation rootProject.ext.viewDependencies.appIntro
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
