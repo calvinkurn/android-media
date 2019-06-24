@@ -35,7 +35,7 @@
     <string name="action_preorder">PREORDER</string>
     <string name="product_from">Produk dari</string>
     <string name="from_official_store_label">Official Store</string>
-    <string name="from_power_badge_label">Power Badge</string>
+    <string name="from_power_badge_label">Power Merchant</string>
 
     <string name="label_cart">Keranjang</string>
     <string name="label_move_to_warehouse">Gudangkan</string>
