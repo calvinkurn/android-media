@@ -224,4 +224,9 @@
         <item name="android:textColor">@color/tkpd_main_green</item>
     </style>
 
+    <style name="shopOpenTncCheckBox" parent="Theme.AppCompat.Light">
+        <item name="colorAccent">@color/tkpd_main_green</item>
+        <item name="android:textColorSecondary">#bfbfbf</item>
+    </style>
+
 </resources>

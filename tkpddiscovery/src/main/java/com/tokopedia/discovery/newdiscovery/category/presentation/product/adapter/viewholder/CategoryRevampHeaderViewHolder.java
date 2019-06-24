@@ -19,13 +19,16 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
+import com.tokopedia.design.quickfilter.QuickFilterItem;
+import com.tokopedia.design.quickfilter.QuickSingleFilterView;
+import com.tokopedia.design.quickfilter.custom.CustomMultipleFilterView;
+import com.tokopedia.design.quickfilter.custom.CustomViewRoundedQuickFilterItem;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.BannerPagerAdapter;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.RevampCategoryAdapter;
@@ -44,6 +47,8 @@ import com.tokopedia.track.TrackApp;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 
@@ -51,7 +56,7 @@ import java.util.Locale;
  * @author by alifa on 11/1/17.
  */
 
-public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryHeaderModel> {
+public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryHeaderModel> implements QuickSingleFilterView.ActionListener {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.revamp_category_header;
@@ -63,6 +68,7 @@ public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryH
     LinearLayout expandLayout;
     LinearLayout hideLayout;
     RecyclerView revampCategoriesRecyclerView;
+    private CustomMultipleFilterView quickMultipleFilterView;
     TextView totalProduct;
     private final TopAdsBannerView topAdsBannerView;
 
@@ -91,12 +97,14 @@ public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryH
         this.revampCategoriesRecyclerView = (RecyclerView) itemView.findViewById(R.id.recycler_view_revamp_categories);
         this.titleHeader = (TextView) itemView.findViewById(R.id.title_header);
         this.totalProduct = (TextView) itemView.findViewById(R.id.total_product);
+        this.quickMultipleFilterView = (CustomMultipleFilterView) itemView.findViewById(R.id.quickFilterView);
         this.bannerViewPager = (ViewPager) itemView.findViewById(R.id.view_pager_intermediary);
         this.bannerIndicator = (CirclePageIndicator) itemView.findViewById(R.id.indicator_intermediary);
         this.bannerContainer = (RelativeLayout) itemView.findViewById(R.id.banner_container);
         this.imageHeaderContainer = (RelativeLayout) itemView.findViewById(R.id.image_header_container);
         this.topAdsBannerView = (TopAdsBannerView) itemView.findViewById(R.id.topAdsBannerView);
         this.categoryListener = categoryListener;
+        this.quickMultipleFilterView.setListener(this);
     }
 
     private void initTopAds(String depId, String categoryName) {
@@ -213,6 +221,17 @@ public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryH
             bannerContainer.setVisibility(View.VISIBLE);
             startSlide();
         }
+
+        renderQuickFilterView(categoryHeaderModel.getOptionList());
+    }
+
+    protected void renderQuickFilterView(List<QuickFilterItem> quickFilterItems) {
+
+        if(quickFilterItems == null || quickFilterItems.isEmpty()){
+            return;
+        } else {
+            quickMultipleFilterView.renderFilter(quickFilterItems);
+        }
     }
 
     public void eventShowMoreCategory(String parentCat) {
@@ -281,6 +300,12 @@ public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryH
         display.getSize(size);
         int width = size.x;
         return width / 2;
+    }
+
+    @Override
+    public void selectFilter(String typeFilter) {
+        String[] str = typeFilter.split("=");
+        categoryListener.onQuickFilterSelected(str[0], str[1]);
     }
 }
 

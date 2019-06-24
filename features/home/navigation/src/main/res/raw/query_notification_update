@@ -10,6 +10,7 @@ query get_notification_update($page: Int!, $typeId: Int!, $tagId: Int!, $lastNot
       shop_id
       section_id
       section_key
+      section_icon
       subsection_key
       template_key
       title

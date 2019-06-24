@@ -4,23 +4,20 @@ import android.app.Activity
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.support.v4.content.ContextCompat
-import android.support.v7.content.res.AppCompatResources
 import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
 import android.text.style.ImageSpan
 import android.text.style.StyleSpan
 import android.view.View
-import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.product.Campaign
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
-import com.tokopedia.product.detail.data.model.shop.ShopInfo
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.data.util.numberFormatted
 import kotlinx.android.synthetic.main.partial_product_detail_header.view.*
@@ -129,6 +126,7 @@ class PartialHeaderView private constructor(private val view: View,
                 sale_text_stock_available.gone()
                 text_stock_available.visible()
             }
+            label_prescription.showWithCondition(data.basic.needPrescription)
             divider.visible()
         }
     }

@@ -4,7 +4,7 @@ query hachikoCatalogQuery($device: Int) {
       id
       title
       imageUrl: image_url
-      redirectUrl: redirect_url
+      redirectUrl: applink
       promoCode: promo_code
     }
   }

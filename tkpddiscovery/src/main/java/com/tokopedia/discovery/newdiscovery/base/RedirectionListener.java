@@ -5,6 +5,6 @@ package com.tokopedia.discovery.newdiscovery.base;
  */
 
 public interface RedirectionListener {
-    void performNewProductSearch(String query, boolean forceSearch);
+    void performNewProductSearch(String queryParams);
     void showSearchInputView();
 }

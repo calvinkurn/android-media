@@ -11,7 +11,6 @@ import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.data.model.AccountModel;
-import com.tokopedia.home.account.presentation.util.AccountByMeHelper;
 import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel;
@@ -31,7 +30,6 @@ import javax.inject.Inject;
 
 import rx.functions.Func1;
 
-import static com.tokopedia.home.account.AccountConstants.Analytics.BY_ME;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK_CHALLENGE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
 
@@ -105,11 +103,11 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
             }
         }
 
-        if (!((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig("mainapp_android_enable_tokocard", false)
-                || accountModel.getVccUserStatus() == null
-                || accountModel.getVccUserStatus().getStatus() == null
-                || accountModel.getVccUserStatus().getStatus().equalsIgnoreCase(AccountConstants.VccStatus.NOT_FOUND)
-                || accountModel.getVccUserStatus().getStatus().equalsIgnoreCase(AccountConstants.VccStatus.NOT_ELIGIBLE)) {
+        if ((accountModel.getSaldoModel() != null &&
+                accountModel.getSaldoModel().getSaldo() != null &&
+                accountModel.getSaldoModel().getSaldo().getDepositLong() > 10000) ||
+                (accountModel.getVccUserStatus() != null && accountModel.getVccUserStatus().getStatus() != null &&
+                        accountModel.getVccUserStatus().getStatus().equalsIgnoreCase((AccountConstants.VccStatus.REJECTED)))) {
 
             tokopediaPayViewModel.setIconUrlRight(cdnUrl + AccountHomeUrl.ImageUrl.SALDO_IMG);
             tokopediaPayViewModel.setLabelRight(context.getString(R.string.label_tokopedia_pay_deposit));
@@ -119,6 +117,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
 
             tokopediaPayViewModel.setApplinkRight(ApplinkConst.DEPOSIT);
             items.add(tokopediaPayViewModel);
+
         } else {
             TokopediaPayBSModel bsDataRight = new TokopediaPayBSModel();
             tokopediaPayViewModel.setLabelRight(accountModel.getVccUserStatus().getTitle());
@@ -163,7 +162,6 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
             items.add(tokopediaPayViewModel);
         }
 
-
         MenuTitleViewModel menuTitle = new MenuTitleViewModel();
         menuTitle.setTitle(context.getString(R.string.title_menu_transaction));
         items.add(menuTitle);
@@ -205,6 +203,14 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         menuGrid.setTitle(context.getString(R.string.title_menu_other_transaction_1));
         menuGrid.setItems(getDigitalOrderMenu());
         items.add(menuGrid);
+
+        menuList = new MenuListViewModel();
+        menuList.setMenu(context.getString(R.string.ulasan));
+        menuList.setMenuDescription(context.getString(R.string.ulasan_desc));
+        menuList.setApplink(ApplinkConst.REPUTATION);
+        menuList.setTitleTrack(PEMBELI);
+        menuList.setSectionTrack(context.getString(R.string.title_menu_transaction));
+        items.add(menuList);
 
         items.add(getBuyerResolutionMenu(accountModel));
 

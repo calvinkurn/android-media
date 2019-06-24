@@ -10,6 +10,7 @@ data class TrackingBannerModel(
         val mediaType: String = "",
         val tagsType: String = "",
         val bannerUrl: String = "",
+        val applink: String = "",
         val postId: Int = 0,
         val totalBanner: Int = 0,
         val bannerPosition: Int = 0

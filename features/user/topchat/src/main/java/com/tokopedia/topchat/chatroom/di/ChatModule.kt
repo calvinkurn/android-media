@@ -143,7 +143,8 @@ class ChatModule {
 
     @ChatScope
     @Provides
-    fun provideOkHttpClient(@InboxQualifier retryPolicy: OkHttpRetryPolicy,
+    fun provideOkHttpClient(@ApplicationContext context: Context,
+                            @InboxQualifier retryPolicy: OkHttpRetryPolicy,
                             errorResponseInterceptor: ErrorResponseInterceptor,
                             chuckInterceptor: ChuckInterceptor,
                             fingerprintInterceptor: FingerprintInterceptor,
@@ -152,7 +153,7 @@ class ChatModule {
             OkHttpClient {
         val builder = OkHttpClient.Builder()
                 .addInterceptor(fingerprintInterceptor)
-                .addInterceptor(CacheApiInterceptor())
+                .addInterceptor(CacheApiInterceptor(context))
                 .addInterceptor(xUserIdInterceptor)
                 .addInterceptor(errorResponseInterceptor)
                 .connectTimeout(retryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)

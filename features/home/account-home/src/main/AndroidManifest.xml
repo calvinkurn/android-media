@@ -16,13 +16,14 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
             <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_marketplace"
-                    android:path="@string/path_store_setting" />
+                    android:path="@string/path_store_setting"/>
             </intent-filter>
         </activity>
 
