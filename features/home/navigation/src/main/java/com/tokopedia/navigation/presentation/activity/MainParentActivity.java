@@ -340,6 +340,9 @@ public class MainParentActivity extends BaseActivity implements
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+//        startActivity(HotelHomepageActivity.Companion.getCallingIntent(this));
+//        return false;
+
         int position = getPositionFragmentByMenu(item);
         if (!isFirstNavigationImpression) {
             globalNavAnalytics.eventBottomNavigation(item.getTitle().toString()); // push analytics
