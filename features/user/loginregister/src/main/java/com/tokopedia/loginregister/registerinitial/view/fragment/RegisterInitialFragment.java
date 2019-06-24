@@ -988,8 +988,9 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                     TickerPagerAdapter adapter = new TickerPagerAdapter(getActivity(), mockData);
                     adapter.setDescriptionClickEvent(new TickerCallback() {
                         @Override
-                        public void onDescriptionViewClick(CharSequence charSequence) {
-                            analytics.eventClickLinkTicker(charSequence.toString());
+                        public void onDescriptionViewClick(CharSequence link) {
+                            analytics.eventClickLinkTicker(link.toString());
+                            RouteManager.route(getContext(), String.format("%s?url=%s", ApplinkConst.WEBVIEW, link));
                         }
 
                         @Override
@@ -1010,8 +1011,9 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                     analytics.eventClickTicker());
             tickerAnnouncement.setDescriptionClickEvent(new TickerCallback() {
                 @Override
-                public void onDescriptionViewClick(CharSequence charSequence) {
-                    analytics.eventClickLinkTicker(charSequence.toString());
+                public void onDescriptionViewClick(CharSequence link) {
+                    analytics.eventClickLinkTicker(link.toString());
+                    RouteManager.route(getContext(), ApplinkConst.WEBVIEW, String.format("%s?url=%s", ApplinkConst.WEBVIEW, link));
                 }
 
                 @Override

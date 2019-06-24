@@ -996,6 +996,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 adapter.setDescriptionClickEvent(object : TickerCallback{
                     override fun onDescriptionViewClick(link: CharSequence?) {
                         registerAnalytics.trackClickLinkTicker(link.toString())
+                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, link))
                     }
 
                     override fun onDismiss() {
@@ -1013,6 +1014,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 tickerAnnouncement.setDescriptionClickEvent(object : TickerCallback{
                     override fun onDescriptionViewClick(link: CharSequence?) {
                         registerAnalytics.trackClickLinkTicker(link.toString())
+                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, link))
                     }
 
                     override fun onDismiss() {
