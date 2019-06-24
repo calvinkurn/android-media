@@ -51,7 +51,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     private val SHARE_PRODUCT_TITLE = "Bagikan Produk Ini"
 
     companion object{
-        fun newInstance(productId: String) = RecommendationFragment().apply {
+        fun newInstance(productId: String = "") = RecommendationFragment().apply {
             this.productId = productId
         }
     }
@@ -100,10 +100,13 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
 
     private fun loadData(){
         activity?.let{
-            recommendationWidgetViewModel.getPrimaryProduct(productId, it)
-
-            recommendationWidgetViewModel.getRecommendationList(arrayListOf(productId),
-                    onErrorGetRecommendation = this::onErrorGetRecommendation)
+            if(productId.isNotBlank()) {
+                recommendationWidgetViewModel.getPrimaryProduct(productId, it)
+                recommendationWidgetViewModel.getRecommendationList(arrayListOf(productId),
+                        onErrorGetRecommendation = this::onErrorGetRecommendation)
+            } else {
+                recommendationWidgetViewModel.getRecommendationList(arrayListOf(), onErrorGetRecommendation = this::onErrorGetRecommendation)
+            }
         }
     }
 
