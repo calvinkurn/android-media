@@ -1055,8 +1055,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }
                 if (TextUtils.isEmpty(firstInvoiceEventLabel) && shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
                     boolean isPromo = !TextUtils.isEmpty(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getPromoCode());
-                    firstInvoiceEventLabel = isPromo ? ConstantTransactionAnalytics.EventLabel.PROMO : ConstantTransactionAnalytics.EventLabel.NON_PROMO + " - " +
-                            shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getEstimatedTimeDelivery();
+                    firstInvoiceEventLabel = isPromo ?
+                            ConstantTransactionAnalytics.EventLabel.PROMO + " - " + shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getEstimatedTimeDelivery() :
+                            ConstantTransactionAnalytics.EventLabel.NON_PROMO + " - " + shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getEstimatedTimeDelivery();
 
                 }
             }
@@ -2060,7 +2061,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         dataCheckoutRequestsPromo,
                         EnhancedECommerceActionField.STEP_3,
                         ConstantTransactionAnalytics.EventAction.CLICK_CHECKLIST_PILIH_DURASI_PENGIRIMAN,
-                        !TextUtils.isEmpty(recommendedCourier.getPromoCode()) ? ConstantTransactionAnalytics.EventLabel.PROMO :
+                        !TextUtils.isEmpty(recommendedCourier.getPromoCode()) ?
+                                ConstantTransactionAnalytics.EventLabel.PROMO + " - " + recommendedCourier.getEstimatedTimeDelivery() :
                                 ConstantTransactionAnalytics.EventLabel.NON_PROMO + " - " + recommendedCourier.getEstimatedTimeDelivery()
                 );
             }
@@ -2142,7 +2144,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     dataCheckoutRequestsPromo,
                     EnhancedECommerceActionField.STEP_3,
                     ConstantTransactionAnalytics.EventAction.CLICK_CHECKLIST_PILIH_DURASI_PENGIRIMAN,
-                    isPromoCourier ? ConstantTransactionAnalytics.EventLabel.PROMO :
+                    isPromoCourier ?
+                            ConstantTransactionAnalytics.EventLabel.PROMO + " - " + courierItemData.getShipperProductId() :
                             ConstantTransactionAnalytics.EventLabel.NON_PROMO + " - " + courierItemData.getShipperProductId()
             );
         }
