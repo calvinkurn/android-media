@@ -211,7 +211,7 @@ import com.tokopedia.webview.WebViewApplinkModuleLoader;
         HomeCreditAppLinkModule.class,
         OfficialStoreApplinkModule.class,
         OvoPayWithQrApplinkModule.class,
-        WebViewApplinkModule.class
+        WebViewApplinkModule.class,
         RecommendationDeeplinkModule.class
 })
 
@@ -280,7 +280,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new HomeCreditAppLinkModuleLoader(),
                     new OfficialStoreApplinkModuleLoader(),
                     new OvoPayWithQrApplinkModuleLoader(),
-                    new WebViewApplinkModuleLoader()
+                    new WebViewApplinkModuleLoader(),
                     new RecommendationDeeplinkModuleLoader()
             );
         }
