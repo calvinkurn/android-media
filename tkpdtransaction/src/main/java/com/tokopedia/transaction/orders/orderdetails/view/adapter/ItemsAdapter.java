@@ -247,11 +247,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
 
                 if (itemType == ITEM_EVENTS) {
-                    if (metaDataInfo.getTotalTicketCount() > 0) {
-                        brandName.setText(String.format("%s %s", metaDataInfo.getTotalTicketCount(), context.getResources().getString(R.string.event_ticket_count_multiple)));
-                    } else {
-                        brandName.setText(context.getResources().getString(R.string.event_ticket_count));
-                    }
                     if (!TextUtils.isEmpty(metaDataInfo.getEntityPackages().get(0).getCity())) {
                         eventCity.setText(metaDataInfo.getEntityPackages().get(0).getCity());
                     }
@@ -349,6 +344,11 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         if (!TextUtils.isEmpty(item.getTrackingNumber())) {
                             String[] voucherCodes = item.getTrackingNumber().split(",");
                             if (voucherCodes.length > 0) {
+                                if (metaDataInfo.getTotalTicketCount() > 0) {
+                                    brandName.setText(String.format("%s %s", metaDataInfo.getTotalTicketCount(), context.getResources().getString(R.string.event_ticket_booking_multiple)));
+                                } else {
+                                    brandName.setText(context.getResources().getString(R.string.event_ticket_booking_count));
+                                }
                                 voucherCodeLayout.setVisibility(View.VISIBLE);
                                 for (int i = 0; i < voucherCodes.length; i++) {
                                     BookingCodeView bookingCodeView = new BookingCodeView(context, voucherCodes[i], i, context.getResources().getString(R.string.voucher_code_title), voucherCodes.length);
@@ -371,7 +371,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                             if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
                                 presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, getIndex(), true);
                             } else {
-                                setActionButtonClick(tapActionTextView, actionButton, item);
+                                setActionButtonClick(tapActionTextView, actionButton, item, metaDataInfo.getTotalTicketCount());
                             }
                             tapActionLayoutEvents.addView(tapActionTextView);
                         }
@@ -386,8 +386,13 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
 
 
-        private void setActionButtonClick(TextView view, ActionButton actionButton, Items item) {
+        private void setActionButtonClick(TextView view, ActionButton actionButton, Items item, int totalTicketCount) {
             if (actionButton.getControl().equalsIgnoreCase(KEY_REDIRECT)) {
+                if (totalTicketCount > 0) {
+                    brandName.setText(String.format("%s %s", totalTicketCount, context.getResources().getString(R.string.event_ticket_voucher_multiple)));
+                } else {
+                    brandName.setText(context.getResources().getString(R.string.event_ticket_voucher_count));
+                }
                 if (!actionButton.getBody().equals("") && !actionButton.getBody().getAppURL().equals("")) {
                     if (view == null)
                         RouteManager.route(context, actionButton.getBody().getAppURL());
@@ -395,6 +400,11 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         view.setOnClickListener(getActionButtonClickListener(actionButton.getBody().getAppURL()));
                 }
             } else if (actionButton.getControl().equalsIgnoreCase(KEY_QRCODE)) {
+                if (totalTicketCount > 0) {
+                    brandName.setText(String.format("%s %s", totalTicketCount, context.getResources().getString(R.string.event_ticket_qrcode_multiple)));
+                } else {
+                    brandName.setText(context.getResources().getString(R.string.event_ticket_qrcode_count));
+                }
                 view.setOnClickListener(v -> {
                     setEventDetails.openShowQRFragment(actionButton, item);
                 });
