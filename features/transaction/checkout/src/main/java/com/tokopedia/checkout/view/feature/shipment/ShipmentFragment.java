@@ -772,24 +772,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
         setCourierPromoApplied(itemPosition);
         onSuccessCheckPromoFirstStep(responseGetPromoStackUiModel);
-        if (responseGetPromoStackUiModel.getData().getCodes().size() > 0) {
-            if (responseGetPromoStackUiModel.getData().isCoupon() == 1) {
-                triggerSendEnhancedEcommerceCheckoutAnalyticAfterPromoChange(
-                        ConstantTransactionAnalytics.EventAction.CLICK_GUNAKAN_KUPON,
-                        ConstantTransactionAnalytics.EventLabel.SUCCESS + " - " + responseGetPromoStackUiModel.getData().getCodes().get(0)
-                );
-            } else {
-                triggerSendEnhancedEcommerceCheckoutAnalyticAfterPromoChange(
-                        ConstantTransactionAnalytics.EventAction.CLICK_GUNAKAN_KODE_PROMO,
-                        ConstantTransactionAnalytics.EventLabel.SUCCESS + " - " + responseGetPromoStackUiModel.getData().getCodes().get(0)
-                );
-            }
-        }
+        sendCheckoutEnhancedEcommercePromoEvent(responseGetPromoStackUiModel);
     }
 
     @Override
     public void renderCheckPromoStackLogisticSuccess(ResponseGetPromoStackUiModel responseGetPromoStackUiModel) {
         onSuccessCheckPromoFirstStep(responseGetPromoStackUiModel);
+        sendCheckoutEnhancedEcommercePromoEvent(responseGetPromoStackUiModel);
+    }
+
+    private void sendCheckoutEnhancedEcommercePromoEvent(ResponseGetPromoStackUiModel responseGetPromoStackUiModel) {
         if (responseGetPromoStackUiModel.getData().getCodes().size() > 0) {
             if (responseGetPromoStackUiModel.getData().isCoupon() == 1) {
                 triggerSendEnhancedEcommerceCheckoutAnalyticAfterPromoChange(
@@ -2553,19 +2545,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onSuccessCheckPromoFirstStepAfterClash(ResponseGetPromoStackUiModel responseGetPromoStackUiModel) {
         onSuccessCheckPromoFirstStep(responseGetPromoStackUiModel);
-        if (responseGetPromoStackUiModel.getData().getCodes().size() > 0) {
-            if (responseGetPromoStackUiModel.getData().isCoupon() == 1) {
-                triggerSendEnhancedEcommerceCheckoutAnalyticAfterPromoChange(
-                        ConstantTransactionAnalytics.EventAction.CLICK_GUNAKAN_KUPON,
-                        ConstantTransactionAnalytics.EventLabel.SUCCESS + " - " + responseGetPromoStackUiModel.getData().getCodes().get(0)
-                );
-            } else {
-                triggerSendEnhancedEcommerceCheckoutAnalyticAfterPromoChange(
-                        ConstantTransactionAnalytics.EventAction.CLICK_GUNAKAN_KODE_PROMO,
-                        ConstantTransactionAnalytics.EventLabel.SUCCESS + " - " + responseGetPromoStackUiModel.getData().getCodes().get(0)
-                );
-            }
-        }
+        sendCheckoutEnhancedEcommercePromoEvent(responseGetPromoStackUiModel);
     }
 
     @Override
