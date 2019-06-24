@@ -9,12 +9,11 @@ import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.recommendation_widget_common.presentation.RecommendationCardView
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationModel
-import com.tokopedia.topads.sdk.domain.model.Category
-import com.tokopedia.topads.sdk.domain.model.Product
 
-class RecommendationProductAdapter(private var product: RecommendationModel) : RecyclerView.Adapter<RecommendationProductAdapter.RecommendationProductViewHolder>() {
+class RecommendationProductAdapter(private var product: RecommendationModel,
+                                   private val userActiveListener: UserActiveListener) : RecyclerView.Adapter<RecommendationProductAdapter.RecommendationProductViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecommendationProductAdapter.RecommendationProductViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecommendationProductViewHolder {
         return RecommendationProductViewHolder(parent.inflateLayout(R.layout.item_product_recommendation))
     }
 
@@ -22,11 +21,11 @@ class RecommendationProductAdapter(private var product: RecommendationModel) : R
         return product.recommendationItemList.size
     }
 
-    override fun onBindViewHolder(holder: RecommendationProductAdapter.RecommendationProductViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecommendationProductViewHolder, position: Int) {
         holder.bind(product.recommendationItemList[position])
     }
 
-    class RecommendationProductViewHolder(itemView: View) : RecommendationCardView.TrackingListener, RecyclerView.ViewHolder(itemView) {
+    inner class RecommendationProductViewHolder(itemView: View) : RecommendationCardView.TrackingListener, RecyclerView.ViewHolder(itemView) {
         private val productDetailTracking = ProductDetailTracking()
         private val recommendationCardView: RecommendationCardView? = itemView.findViewById(R.id.productCardView)
 
@@ -36,41 +35,24 @@ class RecommendationProductAdapter(private var product: RecommendationModel) : R
         }
 
         override fun onImpressionTopAds(item: RecommendationItem) {
-            val product = Product()
-            product.id = item.productId.toString()
-            product.name = item.name
-            product.priceFormat = item.price
-            product.category = Category(item.departmentId)
-            productDetailTracking.eventRecommendationImpression(adapterPosition, product, item.recommendationType, item.isTopAds)
+            productDetailTracking.eventRecommendationImpression(adapterPosition, item, userActiveListener.isUserSessionActive)
         }
 
         override fun onImpressionOrganic(item: RecommendationItem) {
-            val product = Product()
-            product.id = item.productId.toString()
-            product.name = item.name
-            product.priceFormat = item.price
-            product.category = Category(item.departmentId)
-            productDetailTracking.eventRecommendationImpression(adapterPosition, product, item.recommendationType, item.isTopAds)
+            productDetailTracking.eventRecommendationImpression(adapterPosition, item, userActiveListener.isUserSessionActive)
         }
 
         override fun onClickTopAds(item: RecommendationItem) {
-            val product = Product()
-            product.id = item.productId.toString()
-            product.name = item.name
-            product.priceFormat = item.price
-            product.category = Category(item.departmentId)
-            productDetailTracking.eventRecommendationClick(product, adapterPosition, item.recommendationType, item.isTopAds)
+            productDetailTracking.eventRecommendationClick(item, adapterPosition, userActiveListener.isUserSessionActive)
         }
 
         override fun onClickOrganic(item: RecommendationItem) {
-            val product = Product()
-            product.id = item.productId.toString()
-            product.name = item.name
-            product.priceFormat = item.price
-            product.category = Category(item.departmentId)
-            productDetailTracking.eventRecommendationClick(product, adapterPosition, item.recommendationType, item.isTopAds)
+            productDetailTracking.eventRecommendationClick(item, adapterPosition, userActiveListener.isUserSessionActive)
         }
 
+    }
 
+    interface UserActiveListener{
+        val isUserSessionActive: Boolean
     }
 }

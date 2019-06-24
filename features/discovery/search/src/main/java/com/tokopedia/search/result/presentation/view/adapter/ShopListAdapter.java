@@ -52,15 +52,6 @@ public class ShopListAdapter extends SearchSectionGeneralAdapter {
         return list.size();
     }
 
-    @Override
-    public void clearData() {
-        int currentSize = getItemCount();
-
-        this.list.clear();
-
-        notifyItemRangeRemoved(0, currentSize);
-    }
-
     public void appendItems(List<ShopViewModel.ShopViewItem> list) {
         int newItemsFirstPosition = getItemCount();
 
@@ -79,10 +70,12 @@ public class ShopListAdapter extends SearchSectionGeneralAdapter {
     public void removeLoading() {
         int loadingModelPosition = this.list.indexOf(loadingMoreModel);
 
-        this.list.remove(loadingMoreModel);
+        if (loadingModelPosition != -1) {
+            this.list.remove(loadingMoreModel);
 
-        notifyItemRemoved(loadingModelPosition);
-        notifyItemRangeChanged(loadingModelPosition, 1);
+            notifyItemRemoved(loadingModelPosition);
+            notifyItemRangeChanged(loadingModelPosition, 1);
+        }
     }
 
     public void setFavoriteButtonEnabled(int adapterPosition, boolean isEnabled) {
