@@ -990,20 +990,40 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             if(listTickerInfo.size > 1){
                 val mockData = arrayListOf<TickerData>()
                 listTickerInfo.forEach {
-                    mockData.add(TickerData(it.title, it.message, getTickerType(it.color)))
+                    mockData.add(TickerData(it.title, it.message, getTickerType(it.color), true))
                 }
-                tickerAnnouncement.addPagerView( TickerPagerAdapter(activity!!, mockData), mockData)
+                val adapter = TickerPagerAdapter(activity!!, mockData)
+                adapter.setDescriptionClickEvent(object : TickerCallback{
+                    override fun onDescriptionViewClick(link: CharSequence?) {
+                        registerAnalytics.trackClickLinkTicker(link.toString())
+                    }
+
+                    override fun onDismiss() {
+                        registerAnalytics.trackClickCloseTickerButton()
+                    }
+
+                })
+                tickerAnnouncement.addPagerView( adapter, mockData)
             }else {
                 listTickerInfo.first().let {
                     tickerAnnouncement.tickerTitle = it.title
                     tickerAnnouncement.setHtmlDescription(it.message)
                     tickerAnnouncement.tickerShape = getTickerType(it.color)
                 }
+                tickerAnnouncement.setDescriptionClickEvent(object : TickerCallback{
+                    override fun onDescriptionViewClick(link: CharSequence?) {
+                        registerAnalytics.trackClickLinkTicker(link.toString())
+                    }
+
+                    override fun onDismiss() {
+                        registerAnalytics.trackClickCloseTickerButton()
+                    }
+
+                })
             }
             tickerAnnouncement.setOnClickListener { v ->
                 registerAnalytics.trackClickTicker() }
-            tickerAnnouncement.setDescriptionClickEvent { charSequence ->
-                registerAnalytics.trackClickLinkTicker(charSequence.toString()) }
+
         }
     }
 

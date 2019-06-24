@@ -982,10 +982,22 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                 List<TickerData> mockData = new ArrayList<>();
                 for (TickerInfoPojo tickerInfo :listTickerInfo) {
                     int type = getTickerType(tickerInfo.getColor());
-                    mockData.add(new TickerData(tickerInfo.getTitle(), tickerInfo.getMessage(), type));
+                    mockData.add(new TickerData(tickerInfo.getTitle(), tickerInfo.getMessage(), type, true));
                 }
                 if(getActivity() != null){
-                    tickerAnnouncement.addPagerView(new TickerPagerAdapter(getActivity(), mockData), mockData);
+                    TickerPagerAdapter adapter = new TickerPagerAdapter(getActivity(), mockData);
+                    adapter.setDescriptionClickEvent(new TickerCallback() {
+                        @Override
+                        public void onDescriptionViewClick(CharSequence charSequence) {
+                            analytics.eventClickLinkTicker(charSequence.toString());
+                        }
+
+                        @Override
+                        public void onDismiss() {
+                            analytics.eventClickCloseTicker();
+                        }
+                    });
+                    tickerAnnouncement.addPagerView(adapter, mockData);
                 }
             }else {
                 TickerInfoPojo tickerInfo = listTickerInfo.get(0);
@@ -996,8 +1008,17 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             }
             tickerAnnouncement.setOnClickListener(v ->
                     analytics.eventClickTicker());
-            tickerAnnouncement.setDescriptionClickEvent(charSequence ->
-                    analytics.eventClickLinkTicker(charSequence.toString()));
+            tickerAnnouncement.setDescriptionClickEvent(new TickerCallback() {
+                @Override
+                public void onDescriptionViewClick(CharSequence charSequence) {
+                    analytics.eventClickLinkTicker(charSequence.toString());
+                }
+
+                @Override
+                public void onDismiss() {
+                    analytics.eventClickCloseTicker();
+                }
+            });
         }
     }
 
