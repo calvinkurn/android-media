@@ -34,11 +34,13 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_homepage.*
 import java.util.*
 import javax.inject.Inject
+import android.support.v7.widget.RecyclerView
 
 /**
  * @author by furqan on 28/03/19
  */
-class HotelHomepageFragment : HotelBaseFragment(), HotelRoomAndGuestBottomSheets.HotelGuestListener {
+class HotelHomepageFragment : HotelBaseFragment(),
+        HotelRoomAndGuestBottomSheets.HotelGuestListener, HotelPromoAdapter.PromoClickListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -50,6 +52,7 @@ class HotelHomepageFragment : HotelBaseFragment(), HotelRoomAndGuestBottomSheets
     private var hotelHomepageModel: HotelHomepageModel = HotelHomepageModel()
 
     private lateinit var promoAdapter: HotelPromoAdapter
+    private var promoDataList: List<HotelPromoEntity> = listOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,7 +89,8 @@ class HotelHomepageFragment : HotelBaseFragment(), HotelRoomAndGuestBottomSheets
             when (it) {
                 is Success -> {
                     if (it.data.size > 0) {
-                        renderHotelPromo(it.data)
+                        promoDataList = it.data
+                        renderHotelPromo(promoDataList)
                     } else {
                         hidePromoContainer()
                     }
@@ -114,7 +118,7 @@ class HotelHomepageFragment : HotelBaseFragment(), HotelRoomAndGuestBottomSheets
     override fun getScreenName(): String = ""
 
     override fun onSaveGuest(room: Int, adult: Int) {
-        trackingHotelUtil.hotelSelectRoomGuest(room, adult, 0)
+        trackingHotelUtil.hotelSelectRoomGuest(room, adult)
 
         hotelHomepageModel.roomCount = room
         hotelHomepageModel.adultCount = adult
@@ -288,7 +292,7 @@ class HotelHomepageFragment : HotelBaseFragment(), HotelRoomAndGuestBottomSheets
     }
 
     private fun onDestinationChanged(name: String, destinationId: Int, type: String) {
-        trackingHotelUtil.hotelSelectDestination(name)
+        trackingHotelUtil.hotelSelectDestination(type, name)
 
         hotelHomepageModel.locName = name
         hotelHomepageModel.locId = destinationId
@@ -332,12 +336,22 @@ class HotelHomepageFragment : HotelBaseFragment(), HotelRoomAndGuestBottomSheets
         if (!::promoAdapter.isInitialized) {
             promoAdapter = HotelPromoAdapter(promoDataList)
         }
+        promoAdapter.promoClickListener = this
 
         val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         rv_hotel_homepage_promo.layoutManager = layoutManager
         rv_hotel_homepage_promo.setHasFixedSize(true)
         rv_hotel_homepage_promo.isNestedScrollingEnabled = false
         rv_hotel_homepage_promo.adapter = promoAdapter
+        rv_hotel_homepage_promo.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    val position = (rv_hotel_homepage_promo.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                    trackingHotelUtil.hotelBannerImpression(promoDataList.getOrNull(position)?.promoId ?: "")
+                }
+            }
+        })
     }
 
     private fun showPromoContainer() {
@@ -346,6 +360,10 @@ class HotelHomepageFragment : HotelBaseFragment(), HotelRoomAndGuestBottomSheets
 
     private fun hidePromoContainer() {
         hotel_container_promo.visibility = View.GONE
+    }
+
+    override fun onPromoClicked(promo: HotelPromoEntity) {
+        trackingHotelUtil.hotelClickBanner(promo.promoId)
     }
 
     companion object {

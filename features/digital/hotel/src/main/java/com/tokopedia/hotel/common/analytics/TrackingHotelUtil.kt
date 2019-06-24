@@ -1,7 +1,14 @@
 package com.tokopedia.hotel.common.analytics
 
+import com.google.android.gms.tagmanager.DataLayer
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.hotel.common.util.HotelUtils
+import com.tokopedia.hotel.homepage.data.cloud.entity.HotelPromoEntity
+import com.tokopedia.hotel.roomlist.data.model.HotelRoom
+import com.tokopedia.hotel.search.data.model.Property
+import com.tokopedia.hotel.search.data.model.PropertySearch
+import com.tokopedia.hotel.search.data.model.params.SearchParam
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils.*
 
@@ -10,9 +17,19 @@ import com.tokopedia.track.TrackAppUtils.*
  */
 class TrackingHotelUtil {
 
-    fun hotelSelectDestination(destination: String){
+    fun hotelBannerImpression(bannerId: String){
+        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOTEL, DIGITAL_NATIVE, BANNER_IMPRESSION,
+                "$HOTEL_LABEL - $bannerId")
+    }
+
+    fun hotelClickBanner(bannerId: String){
+        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOTEL, DIGITAL_NATIVE, CLICK_BANNER,
+                "$HOTEL_LABEL - $bannerId")
+    }
+
+    fun hotelSelectDestination(destType: String, destination: String){
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOTEL, DIGITAL_NATIVE, SELECT_DESTINATION,
-                "$HOTEL_LABEL - $destination")
+                "$HOTEL_LABEL - $destType - $destination")
     }
 
     fun hotelSelectStayDate(dayDiff: Int, dateRange: String){
@@ -20,52 +37,73 @@ class TrackingHotelUtil {
                 "$HOTEL_LABEL - $dayDiff - $dateRange")
     }
 
-    fun hotelSelectRoomGuest(roomCount: Int, adultCount: Int, childCount: Int){
+    fun hotelSelectRoomGuest(roomCount: Int, adultCount: Int){
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOTEL, DIGITAL_NATIVE, SELECT_ROOM_GUEST,
-                "$HOTEL_LABEL - $roomCount - $adultCount - $childCount")
+                "$HOTEL_LABEL - $roomCount - $adultCount")
     }
 
-    fun searchHotel(hotelType: String,
+    fun searchHotel(destType: String,
                     destination: String,
                     roomCount: Int,
                     guestCount: Int,
                     dayDiff: Int,
                     duration: Int){
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOTEL, DIGITAL_NATIVE, SEARCH_HOTEL,
-                "$HOTEL_LABEL - $hotelType - $destination - $roomCount - $guestCount - $dayDiff - $duration")
+                "$HOTEL_LABEL - $destType - $destination - $roomCount - $guestCount - $dayDiff - $duration")
     }
 
     fun hotelViewHotelListImpression(destination: String,
-                                     roomCount: Int,
-                                     guestCount: Int,
-                                     dayDiff: Int,
-                                     duration: Int,
-                                     products: List<HotelImpressionProduct>){
+                                     searchParam: SearchParam,
+                                     products: List<Property>){
         val map = mutableMapOf<String, Any?>()
+        val roomCount = searchParam.room
+        val guestCount = searchParam.guest.adult
+        val dayDiff = HotelUtils.countCurrentDayDifference(searchParam.checkIn)
+        val duration = HotelUtils.countDayDifference(searchParam.checkIn, searchParam.checkOut )
+
         map.put(EVENT, PRODUCT_VIEW)
         map.put(EVENT_CATEGORY, DIGITAL_NATIVE)
         map.put(EVENT_ACTION, VIEW_HOTEL_LIST_IMPRESSION)
         map.put(EVENT_LABEL, "$HOTEL_LABEL - $destination - $roomCount - $guestCount - $dayDiff - $duration")
-
-        val productsObj = mapOf(PRODUCTS_LABEL to products)
-        val impressionsObj = mapOf("impressions" to productsObj)
-        map.put(ECOMMERCE_LABEL, impressionsObj)
+        map.put(ECOMMERCE_LABEL, DataLayer.mapOf(
+                "impressions", DataLayer.mapOf(
+                        PRODUCTS_LABEL, DataLayer.listOf(products.map {
+                                DataLayer.mapOf(
+                                        "name", it.name,
+                                        "id", it.id,
+                                        "price", it.roomPrice.firstOrNull() ?: 0,
+                                        "direct_payment", it.isDirectPayment
+                                )
+                        })
+                )
+        ))
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun chooseHotel(hotelId: Int,
-                    dayDiff: Int,
-                    price: Int,
-                    promotions: List<HotelPromotions>){
+    fun chooseHotel(property: Property,
+                    checkInDate: String,
+                    products: List<Property>){
         val map = mutableMapOf<String, Any?>()
+        val hotelId = property.id
+        val dayDiff = HotelUtils.countCurrentDayDifference(checkInDate)
+        val price = property.roomPrice.firstOrNull() ?: 0
+
         map.put(EVENT, PRODUCT_CLICK)
         map.put(EVENT_CATEGORY, DIGITAL_NATIVE)
         map.put(EVENT_ACTION, CHOOSE_HOTEL)
         map.put(EVENT_LABEL, "$HOTEL_LABEL - $hotelId - $dayDiff - $price")
-
-        val promotionsObj = mapOf("promotions" to promotions)
-        val clickObj = mapOf("click" to promotionsObj)
-        map.put(ECOMMERCE_LABEL, clickObj)
+        map.put(ECOMMERCE_LABEL, DataLayer.mapOf(
+                "click", DataLayer.mapOf(
+                        PRODUCTS_LABEL, DataLayer.listOf(products.mapIndexed { index, it ->
+                                DataLayer.mapOf(
+                                        "name", it.name,
+                                        "id", it.id,
+                                        "price", it.roomPrice.firstOrNull() ?: 0,
+                                        "position", index
+                                )
+                        })
+                )
+        ))
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
@@ -77,6 +115,11 @@ class TrackingHotelUtil {
     fun hotelUserClickSort(sortValue: String){
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOTEL, DIGITAL_NATIVE, USER_CLICK_SORT,
                 "$HOTEL_LABEL - $sortValue")
+    }
+
+    fun hotelViewDetails(hotelId: Int, available: Boolean, price: Int, directPayment: Boolean){
+        TrackApp.getInstance().gtm.sendGeneralEvent(VIEW_HOTEL, DIGITAL_NATIVE, VIEW_HOTEL_PDP,
+                "$HOTEL_LABEL - $hotelId - $available - $price - $directPayment")
     }
 
     fun hotelClickHotelPhoto(hotelId: Int, price: String){
@@ -99,19 +142,29 @@ class TrackingHotelUtil {
                 "$HOTEL_LABEL - $hotelId")
     }
 
-    fun hotelChooseRoom(hotelId: Int,
-                        roomId: String,
-                        price: Int,
-                        products: List<HotelPromoProduct>){
+    fun hotelChooseRoom(room: HotelRoom,
+                        products: List<HotelRoom>){
         val map = mutableMapOf<String, Any?>()
+        val hotelId = room.additionalPropertyInfo.propertyId
+        val roomId = room.roomId
+        val price = room.roomPrice.priceAmount.toInt()
+
         map.put(EVENT, ADD_TO_CART)
         map.put(EVENT_CATEGORY, DIGITAL_NATIVE)
         map.put(EVENT_ACTION, CHOOSE_ROOM)
         map.put(EVENT_LABEL, "$HOTEL_LABEL - $hotelId - $roomId - $price")
-
-        val productsObj = mapOf(PRODUCTS_LABEL to products)
-        val addObj = mapOf(ADD_LABEL to productsObj)
-        map.put(ECOMMERCE_LABEL, addObj)
+        map.put(ECOMMERCE_LABEL, DataLayer.mapOf(
+                "add", DataLayer.mapOf(
+                        PRODUCTS_LABEL, DataLayer.listOf(products.mapIndexed { index, it ->
+                                DataLayer.mapOf(
+                                        "name", it.roomInfo.name,
+                                        "id", it.roomId,
+                                        "price", it.roomPrice.priceAmount.toInt(),
+                                        "position", index
+                                )
+                        })
+                )
+        ))
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
@@ -130,19 +183,27 @@ class TrackingHotelUtil {
                 "$HOTEL_LABEL - $hotelId - $roomId - $price")
     }
 
-    fun hotelChooseRoomDetails(hotelId: Int,
-                        roomId: String,
-                        price: Int,
-                        products: List<HotelPromoProduct>){
+    fun hotelChooseRoomDetails(room: HotelRoom){
+        val hotelId = room.additionalPropertyInfo.propertyId
+        val roomId = room.roomId
+        val price = room.roomPrice.priceAmount.toInt()
+
         val map = mutableMapOf<String, Any?>()
         map.put(EVENT, ADD_TO_CART)
         map.put(EVENT_CATEGORY, DIGITAL_NATIVE)
         map.put(EVENT_ACTION, CHOOSE_ROOM_DETAILS_PDP)
         map.put(EVENT_LABEL, "$HOTEL_LABEL - $hotelId - $roomId - $price")
-
-        val productsObj = mapOf(PRODUCTS_LABEL to products)
-        val addObj = mapOf(ADD_LABEL to productsObj)
-        map.put(ECOMMERCE_LABEL, addObj)
+        map.put(ECOMMERCE_LABEL, DataLayer.mapOf(
+                "add", DataLayer.mapOf(
+                        PRODUCTS_LABEL, DataLayer.listOf(listOf(room).map{
+                                DataLayer.mapOf(
+                                        "name", it.roomInfo.name,
+                                        "id", it.roomId,
+                                        "price", it.roomPrice.priceAmount.toInt()
+                                )
+                        })
+                )
+        ))
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
@@ -150,132 +211,4 @@ class TrackingHotelUtil {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOTEL, DIGITAL_NATIVE, CLICK_NEXT,
                 "$HOTEL_LABEL - $personal")
     }
-
-    fun hotelClickBayar(clickBayar: String,
-                        products: List<HotelCheckoutProduct>){
-        val map = mutableMapOf<String, Any?>()
-        map.put(EVENT, CHECKOUT)
-        map.put(EVENT_CATEGORY, DIGITAL_CHECKOUT)
-        map.put(EVENT_ACTION, CLICK_BAYAR)
-        map.put(EVENT_LABEL, "$HOTEL_LABEL - $clickBayar")
-
-        val productsObj = mapOf(PRODUCTS_LABEL to products)
-        val checkoutObj = mapOf(ADD_LABEL to productsObj)
-        map.put(ECOMMERCE_LABEL, checkoutObj)
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
-    }
-
-    fun hotelApplyPromo(success: Boolean){
-        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOTEL, DIGITAL_CHECKOUT, APPLY_PROMO,
-                "$HOTEL_LABEL - $success")
-    }
-
-    fun hotelViewPurchaseAttempt(purchaseAttemptStatus: String,
-                                 purchase: HotelPurchase,
-                                 products: List<HotelRoomBooking>){
-        val map = mutableMapOf<String, Any?>()
-        map.put(EVENT, PURCHASE)
-        map.put(EVENT_CATEGORY, DIGITAL_THANKS)
-        map.put(EVENT_ACTION, VIEW_PURCHASE_ATTEMPT)
-        map.put(EVENT_LABEL, "$HOTEL_LABEL - $purchaseAttemptStatus")
-
-        val ecommerceMap = mutableMapOf<String, Any?>()
-        ecommerceMap.put(PRODUCTS_LABEL, products)
-        ecommerceMap.put("purchase", purchase)
-        ecommerceMap.put("currencyCode", "IDR")
-        map.put(ECOMMERCE_LABEL, ecommerceMap)
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
-    }
-
-    data class HotelImpressionProduct(
-        @SerializedName("name")
-        @Expose
-        val hotelName: String = "",
-
-        @SerializedName("payment")
-        @Expose
-        val paymentAvailability: String = "",
-
-        @SerializedName("id")
-        @Expose
-        val hotelId: Int = 0,
-
-        @SerializedName("price")
-        @Expose
-        val cheapestPrice: Int = 0
-    )
-
-    data class HotelPromotions(
-        @SerializedName("products")
-        @Expose
-        val products: List<HotelPromoProduct> = listOf()
-    )
-
-    data class HotelPromoProduct(
-        @SerializedName("name")
-        @Expose
-        val hotelName: String = "",
-
-        @SerializedName("id")
-        @Expose
-        val productId: Int = 0,
-
-        @SerializedName("price")
-        @Expose
-        val price: Int = 0,
-
-        @SerializedName("position")
-        @Expose
-        val productPosition: Int = 0
-    )
-
-    open class HotelRoomBooking(
-        @SerializedName("name")
-        @Expose
-        val hotelName: String = "",
-
-        @SerializedName("id")
-        @Expose
-        val productId: String = "",
-
-        @SerializedName("room")
-        @Expose
-        val roomCount: Int = 0,
-
-        @SerializedName("time")
-        @Expose
-        val duration: Int = 0,
-
-        @SerializedName("price")
-        @Expose
-        val price: Int = 0
-    )
-
-    data class HotelCheckoutProduct(
-        @SerializedName("promo_code")
-        @Expose
-        val promoCode: String = "",
-
-        @SerializedName("promo_benefit")
-        @Expose
-        val promoBenefit: String = ""
-    ): HotelRoomBooking()
-
-    data class HotelPurchase(
-        @SerializedName("id")
-        @Expose
-        val orderId: String = "",
-
-        @SerializedName("sales_price")
-        @Expose
-        val totalPrice: Int = 0,
-
-        @SerializedName("promo_code")
-        @Expose
-        val promoCode: String = "",
-
-        @SerializedName("pym_gateway")
-        @Expose
-        val paymentGateway: String = ""
-    )
 }

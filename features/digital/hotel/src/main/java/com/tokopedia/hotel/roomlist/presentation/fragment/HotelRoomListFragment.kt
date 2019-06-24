@@ -276,7 +276,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     }
 
     override fun onItemClicked(room: HotelRoom) {
-        trackingHotelUtil.hotelClickRoomDetails(hotelRoomListPageModel.propertyId, room.roomId, room.roomPrice.totalPrice)
+        trackingHotelUtil.hotelClickRoomDetails(hotelRoomListPageModel.propertyId, room.roomId, room.roomPrice.roomPrice)
         val objectId = System.currentTimeMillis().toString()
         SaveInstanceCacheManager(context!!, objectId).apply {
             val addCartParam = mapToAddCartParam(hotelRoomListPageModel, room)
@@ -359,12 +359,8 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     }
 
     override fun onClickBookListener(room: HotelRoom) {
+        trackingHotelUtil.hotelChooseRoom(room, roomList)
         if (userSessionInterface.isLoggedIn) {
-            trackingHotelUtil.hotelChooseRoom(
-                    hotelRoomListPageModel.propertyId,
-                    room.roomId,
-                    room.roomPrice.priceAmount.toInt(),
-                    mapToHotelPromoProduct(roomList))
             roomListViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart),
                     mapToAddCartParam(hotelRoomListPageModel, room))
         } else {
@@ -372,16 +368,13 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         }
     }
 
+    override fun onPhotoClickListener(room: HotelRoom) {
+        trackingHotelUtil.hotelClickRoomListPhoto(room.additionalPropertyInfo.propertyId, room.roomId, room.roomPrice.roomPrice)
+    }
+
     fun goToLoginPage() {
         if (activity != null) {
             RouteManager.route(context, ApplinkConst.LOGIN)
-        }
-    }
-
-    private fun mapToHotelPromoProduct(data: List<HotelRoom>): List<TrackingHotelUtil.HotelPromoProduct> {
-        return data.mapIndexed { index, it ->
-            TrackingHotelUtil.HotelPromoProduct(
-                    it.roomInfo.name, it.roomId.toInt(), it.roomPrice.priceAmount.toInt(), index)
         }
     }
 
@@ -409,7 +402,6 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
 
         val TAG_CALENDAR_CHECK_IN = "calendarHotelCheckIn"
         val TAG_CALENDAR_CHECK_OUT = "calendarHotelCheckOut"
-        val ONE_DAY: Long = TimeUnit.DAYS.toMillis(1)
         val MAX_SELECTION_DATE = 30
         val DEFAULT_LAST_HOUR_IN_DAY = 23
         val DEFAULT_LAST_MIN_SEC_IN_DAY = 59

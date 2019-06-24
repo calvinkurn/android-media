@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.homepage.data.cloud.entity.HotelPromoEntity
+import com.tokopedia.hotel.homepage.presentation.adapter.HotelPromoAdapter
 import kotlinx.android.synthetic.main.item_hotel_promo.view.*
 
 /**
@@ -13,11 +14,14 @@ import kotlinx.android.synthetic.main.item_hotel_promo.view.*
  */
 class HotelPromoViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
-    fun bind(element: HotelPromoEntity) {
+    fun bind(element: HotelPromoEntity, listener: HotelPromoAdapter.PromoClickListener?) {
         with(itemView) {
             ImageHandler.loadImageWithoutPlaceholder(this.iv_hotel_promo, element.attributes.imageUrl)
 
-            this.setOnClickListener { RouteManager.route(context, element.attributes.linkUrl) }
+            this.setOnClickListener {
+                listener?.onPromoClicked(element)
+                RouteManager.route(context, element.attributes.linkUrl)
+            }
         }
     }
 
