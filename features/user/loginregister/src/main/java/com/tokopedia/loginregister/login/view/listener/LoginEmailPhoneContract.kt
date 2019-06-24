@@ -1,7 +1,6 @@
 package com.tokopedia.loginregister.login.view.listener
 
 import android.content.Context
-import android.content.Intent
 import android.support.v4.app.Fragment
 import com.facebook.AccessToken
 import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
@@ -11,7 +10,6 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
-import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import java.util.ArrayList
 
@@ -93,7 +91,7 @@ interface LoginEmailPhoneContract {
 
         fun onSuccessGetTickerInfo(listTickerInfo: List<TickerInfoPojo>)
 
-        fun onErrorGetTickerInfo(error: String)
+        fun onErrorGetTickerInfo(error: Throwable)
     }
 
     interface Presenter : CustomerPresenter<View> {

@@ -75,7 +75,7 @@ interface RegisterInitialContract {
 
         fun onSuccessGetTickerInfo(listTickerInfo: List<TickerInfoPojo>)
 
-        fun onErrorGetTickerInfo(error: String)
+        fun onErrorGetTickerInfo(error: Throwable)
 
     }
 

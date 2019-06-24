@@ -9,7 +9,6 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.design.widget.TextInputEditText
 import android.support.v4.app.Fragment
-import android.support.v7.widget.AppCompatImageButton
 import android.text.SpannableString
 import android.text.TextPaint
 import android.text.TextUtils
@@ -1071,7 +1070,9 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         }
     }
 
-    override fun onErrorGetTickerInfo(error: String) {}
+    override fun onErrorGetTickerInfo(error: Throwable) {
+        error.printStackTrace()
+    }
 
     private fun getTickerType(hexColor: String): Int {
         return when (hexColor) {

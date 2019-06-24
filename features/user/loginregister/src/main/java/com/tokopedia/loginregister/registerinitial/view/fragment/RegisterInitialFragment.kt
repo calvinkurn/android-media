@@ -852,7 +852,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         }
     }
 
-    override fun onErrorGetTickerInfo(error: String) {}
+    override fun onErrorGetTickerInfo(error: Throwable) {
+        error.printStackTrace()
+    }
 
     override fun onDestroy() {
         super.onDestroy()
