@@ -25,13 +25,12 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 
-
 /**
  * @author by stevenfredian on 14/05/19.
  */
 class
 OnboardingFragment : BaseDaggerFragment(),
-        CustomAnimationPageTransformerDelegate,  OnboardingActivity.onBoardingFirsbaseCallBack{
+        CustomAnimationPageTransformerDelegate, OnboardingActivity.onBoardingFirsbaseCallBack {
 
     companion object {
         val VIEW_DEFAULT = 100
@@ -88,7 +87,7 @@ OnboardingFragment : BaseDaggerFragment(),
     lateinit var main: View
 
     override fun getScreenName(): String {
-       return ""
+        return ""
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -116,11 +115,10 @@ OnboardingFragment : BaseDaggerFragment(),
             : View? {
         val defaultView: View = inflater.inflate(R.layout.base_onboarding_fragment, container,
                 false)
-        val main :View = defaultView.findViewById(R.id.main)
+        val main: View = defaultView.findViewById(R.id.main)
         main.setBackgroundColor(bgColor)
 
-        lottieAnimationView = defaultView.findViewById(R.id.animation_view)
-        lottieAnimationView.setAnimation(lottieAsset, LottieAnimationView.CacheStrategy.Strong)
+        setAnimation(defaultView)
 
         titleView = defaultView.findViewById(R.id.title)
         descView = defaultView.findViewById(R.id.description)
@@ -129,6 +127,17 @@ OnboardingFragment : BaseDaggerFragment(),
         descView.text = MethodChecker.fromHtml(getDescMsg())
 
         return defaultView
+    }
+
+    private fun setAnimation(defaultView: View) {
+        try {
+            lottieAnimationView = defaultView.findViewById(R.id.animation_view)
+            if (lottieAsset.isNotBlank()) {
+                lottieAnimationView.setAnimation(lottieAsset, LottieAnimationView.CacheStrategy.Strong)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -221,7 +230,7 @@ OnboardingFragment : BaseDaggerFragment(),
             var msg = remoteConfig.getString(descKey)
             if (!TextUtils.isEmpty(msg)) {
                 val descTxt = msg
-                activity?.runOnUiThread(object: Runnable {
+                activity?.runOnUiThread(object : Runnable {
                     override fun run() {
                         descView.text = MethodChecker.fromHtml(descTxt)
                     }
@@ -230,9 +239,10 @@ OnboardingFragment : BaseDaggerFragment(),
             msg = remoteConfig.getString(ttlKey)
             if (!TextUtils.isEmpty(msg)) {
                 val ttlTxt = msg
-                activity?.runOnUiThread(object: Runnable {
+                activity?.runOnUiThread(object : Runnable {
                     override fun run() {
-                        titleView.text = MethodChecker.fromHtml(ttlTxt)                    }
+                        titleView.text = MethodChecker.fromHtml(ttlTxt)
+                    }
                 })
             }
         }
