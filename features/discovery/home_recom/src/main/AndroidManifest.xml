@@ -15,6 +15,10 @@
                         android:host="@string/host_marketplace"
                         android:pathPattern="@string/path_global_home_recommendation_domain"/>
                 <data
+                        android:scheme="@string/internal_scheme"
+                        android:host="@string/host_marketplace"
+                        android:pathPattern="@string/path_global_home_recommendation"/>
+                <data
                         android:scheme="@string/tokopedia_scheme"
                         android:host="@string/host_marketplace"
                         android:pathPattern="@string/path_global_home_recommendation_domain"/>

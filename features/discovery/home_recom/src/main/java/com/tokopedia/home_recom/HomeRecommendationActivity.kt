@@ -41,6 +41,12 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
 
     object DeeplinkIntents{
         @JvmStatic
+        @DeepLink(ApplinkConst.DEFAULT_RECOMMENDATION_PAGE)
+        fun getDefaultCallingIntent(context: Context, extras: Bundle): Intent{
+            return RouteManager.getIntent(context, ApplinkConstInternalMarketplace.DEFAULT_HOME_RECOMMENDATION)
+        }
+
+        @JvmStatic
         @DeepLink(ApplinkConst.RECOMMENDATION_PAGE)
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
             val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
