@@ -99,10 +99,12 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     }
 
     private fun loadData(){
-        recommendationWidgetViewModel.getPrimaryProduct(productId, activity!!)
+        activity?.let{
+            recommendationWidgetViewModel.getPrimaryProduct(productId, it)
 
-        recommendationWidgetViewModel.getRecommendationList(arrayListOf(productId),
-                onErrorGetRecommendation = this::onErrorGetRecommendation)
+            recommendationWidgetViewModel.getRecommendationList(arrayListOf(productId),
+                    onErrorGetRecommendation = this::onErrorGetRecommendation)
+        }
     }
 
     private fun onErrorGetRecommendation(errorMessage: String?) {
@@ -237,17 +239,19 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     }
 
     private fun shareProduct(productDetailData: ProductDetailData){
-        RecommendationPageTracking.eventClickIconShare()
-        LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
-                productDataToLinkerDataMapper(productDetailData), object : ShareCallback {
-            override fun urlCreated(linkerShareData: LinkerShareResult) {
-                openIntentShare(productDetailData.name, context!!.getString(R.string.home_recommendation), linkerShareData.url)
-            }
+        context?.let{ context ->
+            RecommendationPageTracking.eventClickIconShare()
+            LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
+                    productDataToLinkerDataMapper(productDetailData), object : ShareCallback {
+                override fun urlCreated(linkerShareData: LinkerShareResult) {
+                    openIntentShare(productDetailData.name, context.getString(R.string.home_recommendation), linkerShareData.url)
+                }
 
-            override fun onError(linkerError: LinkerError) {
-                openIntentShare(productDetailData.name, context!!.getString(R.string.home_recommendation), "https://tokopedia.com/rekomendasi/${productDetailData.id}")
-            }
-        }))
+                override fun onError(linkerError: LinkerError) {
+                    openIntentShare(productDetailData.name, context.getString(R.string.home_recommendation), "https://tokopedia.com/rekomendasi/${productDetailData.id}")
+                }
+            }))
+        }
     }
 
     private fun productDataToLinkerDataMapper(productDetailData: ProductDetailData): LinkerShareData {

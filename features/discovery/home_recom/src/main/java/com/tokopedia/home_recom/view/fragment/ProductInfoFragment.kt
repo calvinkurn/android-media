@@ -163,7 +163,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
                 .putExtra(WISHLIST_STATUS_UPDATED_POSITION, activity?.intent?.getIntExtra(WISHLIST_STATUS_UPDATED_POSITION, -1))
         resultIntent.putExtra(WIHSLIST_STATUS_IS_WISHLIST, isInWishlist)
         resultIntent.putExtra("product_id", productId)
-        activity!!.setResult(Activity.RESULT_CANCELED, resultIntent)
+        activity?.setResult(Activity.RESULT_CANCELED, resultIntent)
     }
 
     private fun onErrorAddWishList(errorMessage: String?) {
@@ -180,7 +180,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
         activity?.run {
             Toaster.showError(
                     this,
-                    RecommendationPageErrorHandler.getErrorMessage(activity!!, throwable),
+                    RecommendationPageErrorHandler.getErrorMessage(this, throwable),
                     Snackbar.LENGTH_LONG)
         }
     }
