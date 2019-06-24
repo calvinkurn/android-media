@@ -10,6 +10,8 @@ import com.tokopedia.browse.R
 import com.tokopedia.browse.categoryNavigation.analytics.CategoryAnalytics
 import com.tokopedia.browse.categoryNavigation.data.model.category.CategoriesItem
 import com.tokopedia.browse.categoryNavigation.fragments.CategorylevelOneFragment
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.item_category_level_one.view.*
 
 class CategoryLevelOneAdapter(private val categoryList: MutableList<CategoriesItem>, private val context: Context,
@@ -39,12 +41,9 @@ class CategoryLevelOneAdapter(private val categoryList: MutableList<CategoriesIt
             CategoryAnalytics.createInstance().eventCategoryLevelOneClick(holder.itemView.context,categoryList[position], position)
         }
         if (categoryList[position].isSelected) {
-         //   holder.parent_layout.setBackgroundColor(context.resources.getColor(R.color.white))
-            holder.unselected_overlay.visibility = View.GONE
+            holder.unselected_overlay.hide()
         } else {
-          //  holder.parent_layout.setBackgroundColor(context.resources.getColor(R.color.unselected_background))
-            holder.unselected_overlay.visibility = View.VISIBLE
-
+            holder.unselected_overlay.show()
         }
 
     }

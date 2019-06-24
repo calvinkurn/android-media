@@ -13,30 +13,30 @@
         android:layout_height="@dimen/dp_180"
         android:src="@drawable/category_error" />
 
-    <TextView
+    <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/tv_error_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/sp_16"
         android:gravity="center"
-        android:text="Oops, Kategori Ini"
+        android:text="@string/error_text1"
         android:textColor="@color/color_text"
         android:textSize="@dimen/sp_16"
         android:textStyle="bold" />
 
-    <TextView
+    <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/tv_error_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/dp_16"
         android:gravity="center"
-        android:text="Gagal Dimuat"
+        android:text="@string/error_text2"
         android:textColor="@color/color_text"
         android:textSize="@dimen/sp_16"
         android:textStyle="bold" />
 
-    <TextView
+    <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/tv_button_retry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -47,7 +47,7 @@
         android:paddingTop="@dimen/dp_8"
         android:paddingRight="@dimen/dp_30"
         android:paddingBottom="@dimen/dp_8"
-        android:text="Coba Lagi"
+        android:text="@string/text_coba_lagi"
         android:textColor="@color/white"
         android:textSize="@dimen/dp_14" />
 

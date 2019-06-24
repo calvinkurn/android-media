@@ -19,14 +19,15 @@ class CategoryBrowseActivity : BaseCategoryBrowseActivity() {
 
 
     object DeepLinkIntents {
+        val KEY_EXTRA_DEPARTMENT_ID = "EXTRA_DEPARTMENT_ID"
 
         @DeepLink(ApplinkConst.CATEGORY_BELANJA_DEFAULT)
         @JvmStatic
         fun getCategoryBrowseDefaultIntent(context: Context, extras: Bundle): Intent {
-            return if(isNewCategoryEnabled(context)) {
+            return if (isNewCategoryEnabled(context)) {
                 Intent(context, CategoryBrowseActivity::class.java)
-            }else {
-                RouteManager.getIntent(context,ApplinkConst.CATEGORY)
+            } else {
+                RouteManager.getIntent(context, ApplinkConst.CATEGORY + "/" + extras.getString(KEY_EXTRA_DEPARTMENT_ID, ""))
             }
         }
     }

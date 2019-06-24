@@ -132,7 +132,7 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_search, menu)
+        menuInflater.inflate(R.menu.menu_digital_browse_search, menu)
         return true
     }
 

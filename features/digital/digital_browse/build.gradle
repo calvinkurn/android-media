@@ -31,6 +31,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation rootProject.ext.libraries.unifyIcon
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
 
     implementation rootProject.ext.miscDependencies.multiDex
 

@@ -12,6 +12,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.browse.R
 import com.tokopedia.browse.categoryNavigation.analytics.CategoryAnalytics
 import com.tokopedia.browse.categoryNavigation.data.model.category.ChildItem
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.item_category_level_two_type_two.view.*
 import kotlinx.android.synthetic.main.item_exclusive_level_two.view.*
 import kotlinx.android.synthetic.main.item_level_two_child.view.product_image
@@ -72,8 +74,8 @@ class CategoryLevelTwoAdapter(private val list: MutableList<ChildItem>) : Recycl
         if (holder.item_child_recycler.adapter == null) {
             val gridLayoutManager = GridLayoutManager(holder.itemView.context, 3, LinearLayoutManager.VERTICAL, false)
 
-            holder.item_child_recycler.visibility = View.VISIBLE
-            holder.item_child_recycler_divider.visibility = View.VISIBLE
+            holder.item_child_recycler.show()
+            holder.item_child_recycler_divider.show()
 
             holder.item_child_recycler.apply {
                 layoutManager = gridLayoutManager
@@ -82,23 +84,23 @@ class CategoryLevelTwoAdapter(private val list: MutableList<ChildItem>) : Recycl
         }
 
         if (item.child == null && !(item.child!!.size > 0)) {
-            holder.carrot.visibility = View.GONE
-            holder.item_child_recycler.visibility = View.GONE
-            holder.item_child_recycler_divider.visibility = View.GONE
+            holder.carrot.hide()
+            holder.item_child_recycler.hide()
+            holder.item_child_recycler_divider.hide()
 
         } else if (item.isExpanded) {
             childList?.clear()
             childList?.addAll(item.child)
-            holder.item_child_recycler.visibility = View.VISIBLE
-            holder.item_child_recycler_divider.visibility = View.VISIBLE
+            holder.item_child_recycler.show()
+            holder.item_child_recycler_divider.show()
 
             holder.carrot.setImageResource(R.drawable.carrot_up)
             holder.item_child_recycler.adapter.notifyDataSetChanged()
 
         } else {
             holder.carrot.setImageResource(R.drawable.carrot_down)
-            holder.item_child_recycler.visibility = View.GONE
-            holder.item_child_recycler_divider.visibility = View.GONE
+            holder.item_child_recycler.hide()
+            holder.item_child_recycler_divider.hide()
 
         }
 
