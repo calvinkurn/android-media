@@ -15,6 +15,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -87,6 +89,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                     startActivity(HotelBookingActivity.getCallingIntent(context!!, cartId))
                 }
                 is Fail -> {
+                    NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))
                 }
             }
         })
