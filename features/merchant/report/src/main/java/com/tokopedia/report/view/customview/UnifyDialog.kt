@@ -43,7 +43,6 @@ class UnifyDialog(private val activity: Activity,
                 .create()
 
         alertDialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        alertDialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         initListener(alertDialog)
     }

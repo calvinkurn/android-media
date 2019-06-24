@@ -35,22 +35,9 @@ class ReportInputDetailFragment : BaseDaggerFragment() {
 
         input.hint = getString(R.string.product_hint_product_report, minChar.toString())
         input.setText(value)
-
-        if (minChar == -1 && maxChar == -1){
-            btn_cont.isEnabled = true
-        } else {
+        btn_cont.isEnabled = true
+        if (maxChar != -1)
             input.filters = arrayOf(InputFilter.LengthFilter(maxChar))
-            btn_cont.isEnabled = value.isNotBlank()
-            input.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(p0: Editable?) {}
-
-                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                    btn_cont.isEnabled = (!p0.isNullOrEmpty() && p0.length in minChar..maxChar)
-                }
-            })
-        }
 
         btn_cont.setOnClickListener {
             val intent = Intent().putExtra(INPUT_VALUE, input.text.toString())
@@ -62,11 +49,9 @@ class ReportInputDetailFragment : BaseDaggerFragment() {
     }
 
     fun sendInputResult() {
-        if (input.text.toString().length >= minChar){
-            val intent = Intent().putExtra(INPUT_VALUE, input.text.toString())
-            activity?.run {
-                setResult(Activity.RESULT_OK, intent)
-            }
+        val intent = Intent().putExtra(INPUT_VALUE, input.text.toString())
+        activity?.run {
+            setResult(Activity.RESULT_OK, intent)
         }
     }
 
