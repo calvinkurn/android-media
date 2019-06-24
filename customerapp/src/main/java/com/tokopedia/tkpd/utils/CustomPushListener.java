@@ -109,12 +109,14 @@ public class CustomPushListener extends PushMessageListener {
         };
 
         for (int i = 0; i < 4; i++) {
-            remoteView.setTextViewText(titleResIds[i], titles[i]);
-            Intent intent = RouteManager.getIntent(context, deepLinks[i]);
-            remoteView.setImageViewBitmap(iconResIds[i], MoEHelperUtils.downloadImageBitmap(iconUrls[i]));
-            PendingIntent pIntent = PendingIntent.getActivity(context, 100 + i, intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT);
-            remoteView.setOnClickPendingIntent(containerResIds[i], pIntent);
+            if (!TextUtils.isEmpty(titles[i]) && !TextUtils.isEmpty(deepLinks[i]) && !TextUtils.isEmpty(iconUrls[i])) {
+                remoteView.setTextViewText(titleResIds[i], titles[i]);
+                Intent intent = RouteManager.getIntent(context, deepLinks[i]);
+                remoteView.setImageViewBitmap(iconResIds[i], MoEHelperUtils.downloadImageBitmap(iconUrls[i]));
+                PendingIntent pIntent = PendingIntent.getActivity(context, 100 + i, intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+                remoteView.setOnClickPendingIntent(containerResIds[i], pIntent);
+            }
         }
 
         Intent deleteIntent = new Intent(context, NotificationBroadcast.class);

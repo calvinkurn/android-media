@@ -243,9 +243,11 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
     public void removeLoading() {
         int loadingModelPosition = this.list.indexOf(loadingMoreModel);
 
-        this.list.remove(loadingMoreModel);
+        if(loadingModelPosition != -1) {
+            this.list.remove(loadingMoreModel);
 
-        notifyItemRemoved(loadingModelPosition);
-        notifyItemRangeChanged(loadingModelPosition, 1);
+            notifyItemRemoved(loadingModelPosition);
+            notifyItemRangeChanged(loadingModelPosition, 1);
+        }
     }
 }
