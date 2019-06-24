@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 
 import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.network.utils.URLGenerator;
 import com.tokopedia.user.session.UserSession;
@@ -48,13 +49,12 @@ public class BaseSessionWebViewFragment extends BaseWebViewFragment {
                     userId);
         } else {
             if(getActivity() != null){
-                Crashlytics crashlytics = Crashlytics.getInstance();
-                if(crashlytics != null)
-                    crashlytics.log(
-                            getContext().getString(R.string.error_message_url_invalid_crashlytics) + url);
+                if(!GlobalConfig.DEBUG)
+                    Crashlytics.log(
+                        getActivity().getString(R.string.error_message_url_invalid_crashlytics) + url);
 
                 NetworkErrorHelper.showRedSnackbar(getActivity(),
-                        getContext().getString(R.string.error_message_url_invalid));
+                        getActivity().getString(R.string.error_message_url_invalid));
             }
 
             return null;

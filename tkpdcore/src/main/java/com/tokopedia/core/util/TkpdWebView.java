@@ -50,9 +50,8 @@ public class TkpdWebView extends WebView {
         if(WebViewHelper.validateUrl(url)){
             loadAuthUrl(url);
         }else {
-            Crashlytics crashlytics = Crashlytics.getInstance();
-            if(crashlytics != null)
-                crashlytics.log(
+            if(!GlobalConfig.DEBUG)
+                Crashlytics.log(
                         getContext().getString(R.string.error_message_url_invalid_crashlytics) + url);
 
             NetworkErrorHelper.showRedSnackbar(getRootView(),
@@ -65,10 +64,8 @@ public class TkpdWebView extends WebView {
         if(WebViewHelper.validateUrl(url)){
             super.loadUrl(url, additionalHttpHeaders);
         }else {
-            Crashlytics crashlytics = Crashlytics.getInstance();
-            if(crashlytics != null)
-                crashlytics.log(
-                        getContext().getString(R.string.error_message_url_invalid_crashlytics) + url);
+            if(!GlobalConfig.DEBUG)
+                Crashlytics.log(getContext().getString(R.string.error_message_url_invalid_crashlytics) + url);
 
             NetworkErrorHelper.showRedSnackbar(getRootView(),
                     getContext().getString(R.string.error_message_url_invalid));
