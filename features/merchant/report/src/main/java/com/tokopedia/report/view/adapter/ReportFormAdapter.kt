@@ -78,6 +78,8 @@ class ReportFormAdapter(private val item: ProductReportReason,
                 }
             } else if (holder is UploadPhotoViewHolder && field is ProductReportReason.AdditionalField){
                 holder.bind(field)
+            } else if (holder is SubmitViewHolder){
+                holder.bind()
             }
         }
     }
@@ -154,7 +156,6 @@ class ReportFormAdapter(private val item: ProductReportReason,
                     spannable.setSpan(StyleSpan(Typeface.BOLD), start, end, 0)
                 }
                 footer.text = spannable
-                btn_lapor.isEnabled = isSubmitEnable
                 if (item.additionalFields.isEmpty()){
                     btn_lapor.gone()
                 } else {
@@ -165,6 +166,10 @@ class ReportFormAdapter(private val item: ProductReportReason,
                     submitForm.invoke()
                 }
             }
+        }
+
+        fun bind(){
+            itemView.btn_lapor.isEnabled =  isSubmitEnable
         }
     }
 
