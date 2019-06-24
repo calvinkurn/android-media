@@ -845,10 +845,7 @@ open class PlayViewStateImpl(
         showVideoToggle.hide()
         setChatListHasSpaceOnTop(true)
         videoId.let {
-            if (it.isEmpty()) {
-                listener.onVerticalVideoActive(true)
-                return
-            }
+            if (it.isEmpty()) return
             val videoFragment = fragmentManager.findFragmentById(R.id.video_container) as GroupChatVideoFragment
             videoFragment.run {
                 videoContainer.show()

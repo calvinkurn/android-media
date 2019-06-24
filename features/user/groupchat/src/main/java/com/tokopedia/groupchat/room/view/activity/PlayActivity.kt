@@ -1,17 +1,14 @@
 package com.tokopedia.groupchat.room.view.activity
 
 import android.app.Activity
-import android.app.PictureInPictureParams
 import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.graphics.drawable.DrawableCompat
 import android.util.DisplayMetrics
-import android.util.Rational
 import android.view.View
 import android.view.WindowManager
 import android.widget.RelativeLayout
@@ -29,18 +26,13 @@ import com.tokopedia.groupchat.room.di.DaggerPlayComponent
 import com.tokopedia.groupchat.room.view.adapter.FragmentPagerAdapter
 import com.tokopedia.groupchat.room.view.fragment.BlankFragment
 import com.tokopedia.groupchat.room.view.fragment.PlayFragment
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.videoplayer.utils.RepeatMode
-import com.tokopedia.videoplayer.view.player.TkpdVideoPlayer
-import kotlinx.android.synthetic.main.play_activity.*
-import kotlinx.android.synthetic.main.play_fragment.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
  * @author : Steven 11/02/19
  */
-open class PlayActivity : BaseSimpleActivity(), PlayViewListener {
+open class PlayActivity : BaseSimpleActivity() {
 
     lateinit var rootView: View
     lateinit var viewPager: NonSwipeableViewPager
@@ -48,13 +40,6 @@ open class PlayActivity : BaseSimpleActivity(), PlayViewListener {
 
     @Inject
     lateinit var analytics: GroupChatAnalytics
-
-    private val mPictureInPictureParamsBuilder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        PictureInPictureParams.Builder()
-    } else {
-        null
-    }
-
 
     override fun getNewFragment(): Fragment? {
         return null
@@ -99,16 +84,6 @@ open class PlayActivity : BaseSimpleActivity(), PlayViewListener {
     private fun initView() {
         setupToolbar()
         setFragment()
-    }
-
-    override fun onPlayerActive(isActive: Boolean) {
-        if (isActive) {
-            TkpdVideoPlayer.Builder()
-                    .transaction(R.id.playerView, supportFragmentManager)
-                    .videoSource("https://www.html5rocks.com/en/tutorials/video/basics/devstories.webm")
-                    .repeatMode(RepeatMode.REPEAT_MODE_ALL)
-                    .build()
-        }
     }
 
     private fun setFragment() {
@@ -233,26 +208,6 @@ open class PlayActivity : BaseSimpleActivity(), PlayViewListener {
     fun setSwipeable(swipeable: Boolean) {
         if (!swipeable) {
         } else {
-        }
-    }
-
-    override fun onUserLeaveHint() {
-        super.onUserLeaveHint()
-        minimize()
-    }
-
-    private fun minimize() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            enterPictureInPictureMode(mPictureInPictureParamsBuilder?.build())
-        }
-    }
-
-    override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration?) {
-        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
-        if(isInPictureInPictureMode) {
-            viewPager.visibility = View.GONE
-        } else {
-            viewPager.visibility = View.VISIBLE
         }
     }
 
