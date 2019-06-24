@@ -1,12 +1,14 @@
 package com.tokopedia.events.view.fragment;
 
 import android.content.Context;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.events.R;
@@ -29,26 +31,19 @@ import static com.tokopedia.events.view.contractor.EventFilterContract.EVERYDAY;
 import static com.tokopedia.events.view.contractor.EventFilterContract.TIME_ID;
 import static okhttp3.internal.Util.UTC;
 
-public class TimeFilterFragment extends Fragment {
+public class TimeFilterFragment extends Fragment implements View.OnClickListener {
     private static final String ARG_TIMERAMGE = "timerange";
     private static final String STARTDATE = "startdate";
     private static final String TAG_CALENDAR = "calendarTimeFilter";
-    @BindView(R2.id.tv_today)
     TextView tvToday;
-    @BindView(R2.id.tv_tomorrow)
     TextView tvTomorrow;
-    @BindView(R2.id.tv_next_week)
     TextView tvNextWeek;
-    @BindView(R2.id.tv_next_month)
     TextView tvNextMonth;
-    @BindView(R2.id.tv_everyday)
     TextView tvEveryday;
-    @BindView(R2.id.tv_from_date)
     TextView tvFromDate;
-    @BindView(R2.id.tv_simpan)
     TextView tvSimpan;
-    Unbinder unbinder;
-
+    ImageView ivCloseFilter;
+    TextView resetBtn;
     private TextView selectedButton;
 
     private String timeRange;
@@ -83,7 +78,25 @@ public class TimeFilterFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.layout_fragment_time_filter, container, false);
-        unbinder = ButterKnife.bind(this, view);
+        tvToday = view.findViewById(R.id.tv_today);
+        tvTomorrow = view.findViewById(R.id.tv_tomorrow);
+        tvNextWeek = view.findViewById(R.id.tv_next_week);
+        tvNextMonth = view.findViewById(R.id.tv_next_month);
+        tvEveryday = view.findViewById(R.id.tv_everyday);
+        tvFromDate = view.findViewById(R.id.tv_from_date);
+        tvSimpan = view.findViewById(R.id.tv_simpan);
+        ivCloseFilter = view.findViewById(R.id.iv_close_filter);
+        resetBtn = view.findViewById(R.id.tv_reset);
+        tvToday.setOnClickListener(this);
+        tvTomorrow.setOnClickListener(this);
+        tvNextWeek.setOnClickListener(this);
+        tvNextMonth.setOnClickListener(this);
+        tvEveryday.setOnClickListener(this);
+        tvFromDate.setOnClickListener(this);
+        ivCloseFilter.setOnClickListener(this);
+        resetBtn.setOnClickListener(this);
+
+
         if (timeRange.equals(TIME_ID[0])) {
             selectButton(tvTomorrow);
         } else if (timeRange.equals(TIME_ID[1]))
@@ -108,16 +121,8 @@ public class TimeFilterFragment extends Fragment {
         }
     }
 
-    @OnClick({R2.id.tv_today,
-            R2.id.tv_tomorrow,
-            R2.id.tv_next_week,
-            R2.id.tv_next_month,
-            R2.id.tv_everyday,
-            R2.id.tv_from_date,
-            R2.id.iv_close_filter,
-            R2.id.tv_reset
-    })
-    void onClick(View v) {
+    @Override
+    public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.tv_today) {
             selectButton(tvToday);
@@ -200,7 +205,6 @@ public class TimeFilterFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
     }
 
     private void selectButton(TextView v) {

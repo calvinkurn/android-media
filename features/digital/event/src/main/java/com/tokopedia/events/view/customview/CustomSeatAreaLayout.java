@@ -3,6 +3,7 @@ package com.tokopedia.events.view.customview;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -21,9 +22,7 @@ import butterknife.ButterKnife;
 public class CustomSeatAreaLayout extends LinearLayout {
 
 
-    @BindView(R2.id.seat_areaID)
     TextView seatAreaText;
-    @BindView(R2.id.seatTextLayout)
     LinearLayout seatTextLayout;
 
     SeatSelectionPresenter mPresenter;
@@ -50,8 +49,9 @@ public class CustomSeatAreaLayout extends LinearLayout {
     }
 
     private void initView() {
-        inflate(getContext(), R.layout.individual_seat_area_text, this);
-        ButterKnife.bind(this);
+        View view = inflate(getContext(), R.layout.individual_seat_area_text, this);
+        seatAreaText = view.findViewById(R.id.seat_areaID);
+        seatTextLayout = view.findViewById(R.id.seatTextLayout);
     }
 
     public void setSeatRow(String text) {

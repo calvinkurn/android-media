@@ -29,7 +29,6 @@ import butterknife.ButterKnife;
 
 public class CategoryFragment extends BaseDaggerFragment implements IFragmentLifecycleCallback {
 
-    @BindView(R2.id.recyclerview_event)
     RecyclerView recyclerview;
     LinearLayoutManager linearLayoutManager;
     EventCategoryAdapterRevamp eventCategoryAdapter;
@@ -74,7 +73,7 @@ public class CategoryFragment extends BaseDaggerFragment implements IFragmentLif
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.event_category_view, container, false);
-        ButterKnife.bind(this, view);
+        recyclerview = view.findViewById(R.id.recyclerview_event);
         linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         eventCategoryAdapter = new EventCategoryAdapterRevamp(getActivity(), categoryViewModel.getItems(), false);
         recyclerview.setLayoutManager(linearLayoutManager);

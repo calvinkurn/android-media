@@ -81,24 +81,15 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         mPresenter.resetViewHolders();
     }
 
-    public class TicketViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R2.id.tv_ticket_name)
+    public class TicketViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView tvTicketName;
-        @BindView(R2.id.ticket_sale_price)
         TextView ticketSalePrice;
-        @BindView(R2.id.btn_decrement)
         ImageView btnDecrement;
-        @BindView(R2.id.tv_ticket_cnt)
         TextView tvTicketCnt;
-        @BindView(R2.id.btn_increment)
         ImageView btnIncrement;
-        @BindView(R2.id.tv_sold_out)
         TextView tvSoldOut;
-        @BindView(R2.id.button_layout)
         View buttonLayout;
-        @BindView(R2.id.tv_ticket_description)
         TextView tickeyDescriptionText;
-        @BindView(R2.id.maks_ticket)
         TextView maksTicket;
 
         PackageViewModel holderViewModel;
@@ -109,6 +100,17 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         public TicketViewHolder(View view) {
             super(view);
+            tvTicketName = view.findViewById(R.id.tv_ticket_name);
+            ticketSalePrice = view.findViewById(R.id.ticket_sale_price);
+            btnDecrement = view.findViewById(R.id.btn_decrement);
+            tvTicketCnt = view.findViewById(R.id.tv_ticket_cnt);
+            btnIncrement = view.findViewById(R.id.btn_increment);
+            tvSoldOut = view.findViewById(R.id.tv_sold_out);
+            buttonLayout = view.findViewById(R.id.button_layout);
+            tickeyDescriptionText = view.findViewById(R.id.tv_ticket_description);
+            maksTicket = view.findViewById(R.id.maks_ticket);
+            btnIncrement.setOnClickListener(this);
+            btnDecrement.setOnClickListener(this);
             thisView = view;
             ButterKnife.bind(this, view);
         }
@@ -161,31 +163,6 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             setTicketSalePriceColor(mContext.getResources().getColor(R.color.black_38));
         }
 
-        @OnClick(R2.id.btn_increment)
-        void onClickIncrement() {
-            mPresenter.addTickets(index, holderViewModel, this);
-            if (holderViewModel.getSelectedQuantity() > 0) {
-                btnDecrement.setBackgroundResource(R.drawable.minus_button_layerlist_green);
-                btnDecrement.setClickable(true);
-            } else {
-                btnDecrement.setBackgroundResource(R.drawable.minus_button_layerlist_grey);
-                btnDecrement.setClickable(false);
-            }
-            //notifyItemChanged(index,holderViewModel);
-        }
-
-        @OnClick(R2.id.btn_decrement)
-        void onClickDecrement() {
-            mPresenter.removeTickets();
-            if (holderViewModel.getSelectedQuantity() > 0) {
-                btnDecrement.setBackgroundResource(R.drawable.minus_button_layerlist_green);
-                btnDecrement.setClickable(true);
-            } else {
-                btnDecrement.setBackgroundResource(R.drawable.minus_button_layerlist_grey);
-                btnDecrement.setClickable(false);
-            }
-        }
-
         public void setTvTicketCnt(int count) {
             tvTicketCnt.setText(String.valueOf(count));
         }
@@ -228,6 +205,29 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         public void toggleMinTicketWarning(int visibility, int quantity) {
             maksTicket.setText(String.format(mContext.getResources().getString(R.string.min_ticket_warning), quantity));
             maksTicket.setVisibility(visibility);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (v.getId() == R.id.btn_increment) {
+                mPresenter.addTickets(index, holderViewModel, this);
+                if (holderViewModel.getSelectedQuantity() > 0) {
+                    btnDecrement.setBackgroundResource(R.drawable.minus_button_layerlist_green);
+                    btnDecrement.setClickable(true);
+                } else {
+                    btnDecrement.setBackgroundResource(R.drawable.minus_button_layerlist_grey);
+                    btnDecrement.setClickable(false);
+                }
+            } else if (v.getId() == R.id.btn_decrement) {
+                mPresenter.removeTickets();
+                if (holderViewModel.getSelectedQuantity() > 0) {
+                    btnDecrement.setBackgroundResource(R.drawable.minus_button_layerlist_green);
+                    btnDecrement.setClickable(true);
+                } else {
+                    btnDecrement.setBackgroundResource(R.drawable.minus_button_layerlist_grey);
+                    btnDecrement.setClickable(false);
+                }
+            }
         }
     }
 }

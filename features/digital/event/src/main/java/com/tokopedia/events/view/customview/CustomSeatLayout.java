@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,12 +24,9 @@ import butterknife.OnClick;
  * Created by naveengoyal on 1/19/18.
  */
 
-public class CustomSeatLayout extends LinearLayout {
+public class CustomSeatLayout extends LinearLayout implements View.OnClickListener {
 
-    @BindView(R2.id.tv_seat)
     TextView individualSeat;
-
-
     SeatSelectionPresenter mPresenter;
 
     public static int numoFSeats;
@@ -65,8 +63,9 @@ public class CustomSeatLayout extends LinearLayout {
     }
 
     private void initView() {
-        inflate(getContext(), R.layout.individual_seat, this);
-        ButterKnife.bind(this);
+        View view = inflate(getContext(), R.layout.individual_seat, this);
+        individualSeat = view.findViewById(R.id.tv_seat);
+        individualSeat.setOnClickListener(this);
         mPresenter.setSelectedSeatText(selectedSeatList, rowids, actualSeatNos);
     }
 
@@ -92,8 +91,15 @@ public class CustomSeatLayout extends LinearLayout {
         }
     }
 
-    @OnClick(R2.id.tv_seat)
-    void seatClicked() {
+    public static void destroy() {
+        numoFSeats = 0;
+        CustomSeatLayout.selectedSeatList.clear();
+        CustomSeatLayout.rowids.clear();
+        CustomSeatLayout.actualSeatNos.clear();
+    }
+
+    @Override
+    public void onClick(View v) {
         if (!individualSeat.isSelected() && numoFSeats < maxCount) {
             individualSeat.setSelected(true);
             individualSeat.setBackgroundResource(R.drawable.currently_selected_seat_bg);
@@ -124,12 +130,5 @@ public class CustomSeatLayout extends LinearLayout {
                     Toast.LENGTH_SHORT).show();
         }
         mPresenter.setSeatData();
-    }
-
-    public static void destroy() {
-        numoFSeats = 0;
-        CustomSeatLayout.selectedSeatList.clear();
-        CustomSeatLayout.rowids.clear();
-        CustomSeatLayout.actualSeatNos.clear();
     }
 }

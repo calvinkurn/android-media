@@ -20,6 +20,8 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
 import com.tokopedia.events.view.activity.EventDetailsActivity;
+import com.tokopedia.events.view.activity.EventFavouriteActivity;
+import com.tokopedia.events.view.activity.EventsHomeActivity;
 import com.tokopedia.events.view.contractor.EventsContract;
 import com.tokopedia.events.view.presenter.EventSearchPresenter;
 import com.tokopedia.events.view.utils.CurrencyUtil;
@@ -222,36 +224,42 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
     }
 
 
-    public class EventsTitleHolder extends RecyclerView.ViewHolder {
+    public class EventsTitleHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        @BindView(R2.id.tv_add_to_wishlist)
         public TextView tvAddToWishlist;
-        @BindView(R2.id.tv_event_share)
         public TextView tvEventShare;
-        @BindView(R2.id.tv3_sold_cnt)
         public TextView tv3SoldCnt;
-        @BindView(R2.id.event_category_cardview)
         public CardView eventCategoryCardview;
-        @BindView(R2.id.tv4_event_title)
         public TextView eventTitle;
-        @BindView(R2.id.tv1_price)
         public TextView eventPrice;
-        @BindView(R2.id.iv_event_thumb)
         public ImageView eventImage;
-        @BindView(R2.id.tv4_location)
         public TextView eventLocation;
-        @BindView(R2.id.tv4_date_time)
         public TextView eventTime;
-        @BindView(R2.id.tv3_tag)
         public TextView tvDisplayTag;
-        @BindView(R2.id.tv_calendar)
         public TextView tvCalendar;
         private int index;
         private boolean isShown = false;
 
-        EventsTitleHolder(View itemLayoutView) {
-            super(itemLayoutView);
-            ButterKnife.bind(this, itemLayoutView);
+        EventsTitleHolder(View view) {
+            super(view);
+            tvAddToWishlist = view.findViewById(R.id.tv_add_to_wishlist);
+            tvEventShare = view.findViewById(R.id.tv_event_share);
+            tv3SoldCnt = view.findViewById(R.id.tv3_sold_cnt);
+            eventCategoryCardview = view.findViewById(R.id.event_category_cardview);
+            eventTitle = view.findViewById(R.id.tv4_event_title);
+            eventPrice = view.findViewById(R.id.tv1_price);
+            eventImage = view.findViewById(R.id.iv_event_thumb);
+            eventLocation = view.findViewById(R.id.tv4_location);
+            eventTime = view.findViewById(R.id.tv4_date_time);
+            tvDisplayTag = view.findViewById(R.id.tv3_tag);
+            tvCalendar = view.findViewById(R.id.tv_calendar);
+            eventTitle.setOnClickListener(this);
+            eventImage.setOnClickListener(this);
+            eventLocation.setOnClickListener(this);
+            eventTime.setOnClickListener(this);
+            tv3SoldCnt.setOnClickListener(this);
+            tvAddToWishlist.setOnClickListener(this);
+            tvEventShare.setOnClickListener(this);
         }
 
         void setViewHolder(CategoryItemsViewModel data, int position) {
@@ -319,46 +327,6 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
 
         }
 
-        @OnClick({
-                R2.id.tv4_event_title,
-                R2.id.iv_event_thumb,
-                R2.id.tv4_location,
-                R2.id.tv4_date_time,
-                R2.id.tv3_sold_cnt})
-        public void openEventDetails() {
-            Intent detailsIntent = new Intent(mContext, EventDetailsActivity.class);
-            detailsIntent.putExtra(EventDetailsActivity.FROM, EventDetailsActivity.FROM_HOME_OR_SEARCH);
-            detailsIntent.putExtra("homedata", categoryItems.get(index));
-            mContext.startActivity(detailsIntent);
-            eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH_CLICK,
-                    highLightText
-                            + " - " + categoryItems.get(getAdapterPosition()).getTitle().toLowerCase()
-                            + " - " + getAdapterPosition());
-        }
-
-        @OnClick(R2.id.tv_add_to_wishlist)
-        public void toggleLike() {
-            mPresenter.setEventLike(categoryItems.get(getAdapterPosition()), getAdapterPosition());
-            String like;
-            if (categoryItems.get(getAdapterPosition()).isLiked())
-                like = "like";
-            else
-                like = "unlike";
-            eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_LIKE,
-                    categoryItems.get(getAdapterPosition()).getTitle()
-                            + " - " + String.valueOf(getAdapterPosition())
-                            + " - " + like);
-        }
-
-        @OnClick(R2.id.tv_event_share)
-        public void shareEvent() {
-            CategoryItemsViewModel item = categoryItems.get(getAdapterPosition());
-            Utils.getSingletonInstance().shareEvent(mContext, item.getTitle(), item.getSeoUrl());
-            eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_SHARE,
-                    categoryItems.get(getAdapterPosition()).getTitle()
-                            + " - " + String.valueOf(getAdapterPosition()));
-        }
-
         public int getIndex() {
             return this.index;
         }
@@ -369,6 +337,41 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
 
         void setShown(boolean shown) {
             isShown = shown;
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (v.getId() == R.id.tv4_event_title ||
+                    v.getId() == R.id.iv_event_thumb ||
+                    v.getId() == R.id.tv4_location ||
+                    v.getId() == R.id.tv4_date_time ||
+                    v.getId() == R.id.tv3_sold_cnt) {
+                Intent detailsIntent = new Intent(mContext, EventDetailsActivity.class);
+                detailsIntent.putExtra(EventDetailsActivity.FROM, EventDetailsActivity.FROM_HOME_OR_SEARCH);
+                detailsIntent.putExtra("homedata", categoryItems.get(index));
+                mContext.startActivity(detailsIntent);
+                eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH_CLICK,
+                        highLightText
+                                + " - " + categoryItems.get(getAdapterPosition()).getTitle().toLowerCase()
+                                + " - " + getAdapterPosition());
+            } else if (v.getId() == R.id.tv_add_to_wishlist) {
+                mPresenter.setEventLike(categoryItems.get(getAdapterPosition()), getAdapterPosition());
+                String like;
+                if (categoryItems.get(getAdapterPosition()).isLiked())
+                    like = "like";
+                else
+                    like = "unlike";
+                eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_LIKE,
+                        categoryItems.get(getAdapterPosition()).getTitle()
+                                + " - " + String.valueOf(getAdapterPosition())
+                                + " - " + like);
+            } else if (v.getId() == R.id.tv_event_share) {
+                CategoryItemsViewModel item = categoryItems.get(getAdapterPosition());
+                Utils.getSingletonInstance().shareEvent(mContext, item.getTitle(), item.getSeoUrl());
+                eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_SHARE,
+                        categoryItems.get(getAdapterPosition()).getTitle()
+                                + " - " + String.valueOf(getAdapterPosition()));
+            }
         }
     }
 
