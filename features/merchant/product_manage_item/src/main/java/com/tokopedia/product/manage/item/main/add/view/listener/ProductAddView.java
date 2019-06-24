@@ -26,4 +26,5 @@ public interface ProductAddView extends CustomerView {
     void onErrorGetProductVariantByCat(Throwable throwable);
 
     long getProductDraftId();
+
 }

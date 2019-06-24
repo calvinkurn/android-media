@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/edit_add_address_container_mismatch"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginLeft="@dimen/dp_16"
+    android:layout_marginStart="@dimen/dp_16"
+    android:layout_marginRight="@dimen/dp_16"
+    android:layout_marginEnd="@dimen/dp_16">
+
+        <TextView
+            android:id="@+id/tv_kota_kecamatan_label_mismatch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_12"
+            android:textColor="@color/label_grey"
+            android:layout_marginTop="@dimen/dp_24"
+            android:text="@string/et_kota_kecamatan_label"/>
+
+        <com.tokopedia.design.text.TkpdHintTextInputLayout
+            android:id="@+id/et_kota_kecamatan_mismatch_wrapper"
+            style="@style/HintTextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:hintEnabled="false">
+
+            <EditText
+                android:id="@+id/et_kota_kecamatan_mismatch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/et_kota_kecamatan_hint"
+                android:inputType="textMultiLine"
+                android:textColor="#ae31353b"
+                android:singleLine="false"
+                android:scrollHorizontally="false"/>
+
+        </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+        <TextView
+            android:id="@+id/tv_kode_pos_label_mismatch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_12"
+            android:textColor="@color/label_grey"
+            android:layout_marginTop="@dimen/dp_24"
+            android:text="@string/et_kode_pos_label"/>
+
+        <com.tokopedia.design.text.TkpdHintTextInputLayout
+            android:id="@+id/et_kode_pos_mismatch_wrapper"
+            style="@style/HintTextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:hintEnabled="false">
+
+            <EditText
+                android:id="@+id/et_kode_pos_mismatch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/et_kode_pos_hint"
+                android:inputType="number"
+                android:maxLength="5"
+                android:focusableInTouchMode="true"
+                android:clickable="true"
+                android:focusable="true"
+                android:textColor="#ae31353b" />
+
+        </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_kodepos_chips_mismatch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_12"
+            android:visibility="gone"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_12"
+            android:textColor="@color/label_grey"
+            android:layout_marginTop="@dimen/dp_24"
+            android:text="@string/alamat_label"/>
+
+        <com.tokopedia.design.text.TkpdHintTextInputLayout
+            android:id="@+id/et_alamat_mismatch_wrapper"
+            style="@style/HintTextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:hintEnabled="false">
+
+            <EditText
+                android:id="@+id/et_alamat_mismatch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/et_alamat_hint"
+                android:inputType="text"
+                android:textColor="#ae31353b"
+                android:maxLength="175"/>
+
+        </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+        <TextView
+            android:id="@+id/tv_alamat_info_mismatch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_4"
+            android:textSize="@dimen/sp_12"
+            android:textColor="@color/label_grey"
+            android:text="@string/min_5_char"/>
+
+    <LinearLayout
+        android:id="@+id/ll_detail_alamat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_12"
+            android:textColor="@color/label_grey"
+            android:layout_marginTop="@dimen/dp_24"
+            android:text="@string/detail_alamat"/>
+
+        <com.tokopedia.design.text.TkpdHintTextInputLayout
+            android:id="@+id/et_detail_alamat_mismatch_wrapper"
+            style="@style/HintTextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:hintEnabled="false">
+
+            <EditText
+                android:id="@+id/et_detail_alamat_mismatch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/et_alamat_hint"
+                android:inputType="text"
+                android:textColor="#ae31353b" />
+
+        </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

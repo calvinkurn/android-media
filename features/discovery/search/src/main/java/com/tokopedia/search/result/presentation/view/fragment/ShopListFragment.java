@@ -122,6 +122,9 @@ public class ShopListFragment
         super.onViewCreated(view, savedInstanceState);
         initListener();
         bindView(view);
+        if (getUserVisibleHint()) {
+            setupSearchNavigation();
+        }
     }
 
     private void bindView(View rootView) {

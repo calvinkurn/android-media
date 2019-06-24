@@ -38,7 +38,7 @@ import com.tokopedia.transaction.orders.orderdetails.domain.FinishOrderUseCase;
 import com.tokopedia.transaction.orders.orderdetails.domain.PostCancelReasonUseCase;
 import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
 import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
-import com.tokopedia.transaction.purchase.detail.model.buyagain.ResponseBuyAgain;
+import com.tokopedia.transaction.common.sharedata.buyagain.ResponseBuyAgain;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 
