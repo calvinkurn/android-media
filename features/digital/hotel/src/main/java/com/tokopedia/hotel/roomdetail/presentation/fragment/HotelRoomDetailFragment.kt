@@ -310,12 +310,11 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         room_detail_button.text = getString(R.string.hotel_room_list_choose_room_button)
         room_detail_button.setOnClickListener {
             trackingHotelUtil.hotelChooseRoomDetails(hotelRoom)
-//            if (userSessionInterface.isLoggedIn) {
-//                roomDetailViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart), addToCartParam)
-//            } else {
-//                goToLoginPage()
-//            }
-            startActivity(HotelBookingActivity.getCallingIntent(context!!,""))
+            if (userSessionInterface.isLoggedIn) {
+                roomDetailViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart), addToCartParam)
+            } else {
+                goToLoginPage()
+            }
         }
     }
 
