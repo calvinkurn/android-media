@@ -39,9 +39,8 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    @Inject
-    lateinit var trackingQueue: TrackingQueue
 
+    private lateinit var trackingQueue: TrackingQueue
     private lateinit var productId: String
     private val viewModelProvider by lazy{ ViewModelProviders.of(this, viewModelFactory) }
     private val adapterFactory by lazy { HomeRecommendationTypeFactoryImpl() }
@@ -59,6 +58,13 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_recommendation, container, false)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        activity?.let {
+            trackingQueue = TrackingQueue(it)
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
