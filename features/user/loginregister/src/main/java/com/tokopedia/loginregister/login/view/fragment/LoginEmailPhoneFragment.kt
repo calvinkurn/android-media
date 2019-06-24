@@ -43,6 +43,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.iris.Iris
+import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -233,10 +234,10 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         }
 
         performanceMonitoring = PerformanceMonitoring.start(LOGIN_LOAD_TRACE)
-//     TODO UNCOMMENT
-//        context?.run{
-//            mIris = IrisAnalytics.getInstance(this)
-//        }
+
+        context?.run {
+            mIris = IrisAnalytics.getInstance(this)
+        }
 
     }
 
@@ -535,7 +536,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         if (emailPhoneEditText.text.isNotBlank())
             userSession.autofillUserData = emailPhoneEditText.text.toString()
 
-
         if (activity != null) {
             activity!!.setResult(Activity.RESULT_OK)
             activity!!.finish()
@@ -547,47 +547,52 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     private fun setFCM() {
-        CMPushNotificationManager.getInstance()
+        CMPushNotificationManager.instance
                 .refreshFCMTokenFromForeground(userSession.deviceId, true)
     }
 
     private fun setTrackingUserId(userId: String) {
-        TkpdAppsFlyerMapper.getInstance(context).mapAnalytics()
-        TrackApp.getInstance().gtm.pushUserId(userId)
-        if (!GlobalConfig.DEBUG && Crashlytics.getInstance() != null)
-            Crashlytics.setUserIdentifier(userId)
+//        try {
+            TkpdAppsFlyerMapper.getInstance(activity?.applicationContext).mapAnalytics()
+            TrackApp.getInstance().gtm.pushUserId(userId)
+            if (!GlobalConfig.DEBUG && Crashlytics.getInstance() != null)
+                Crashlytics.setUserIdentifier(userId)
 
-        if (userSession.isLoggedIn) {
-            val userData = UserData()
-            userData.userId = userSession.userId
-            userData.email = userSession.email
-            userData.phoneNumber = userSession.phoneNumber
+            if (userSession.isLoggedIn) {
+                val userData = UserData()
+                userData.userId = userSession.userId
+                userData.email = userSession.email
+                userData.phoneNumber = userSession.phoneNumber
 
-            //Identity Event
-            LinkerManager.getInstance().sendEvent(
-                    LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY, userData))
+                //Identity Event
+                LinkerManager.getInstance().sendEvent(
+                        LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY, userData))
 
-            //Login Event
-            LinkerManager.getInstance().sendEvent(
-                    LinkerUtils.createGenericRequest(LinkerConstants.EVENT_LOGIN_VAL, userData))
-        }
+                //Login Event
+                LinkerManager.getInstance().sendEvent(
+                        LinkerUtils.createGenericRequest(LinkerConstants.EVENT_LOGIN_VAL, userData))
+            }
 
-        if (::mIris.isInitialized) {
-            mIris.setUserId(userId)
-            mIris.setDeviceId(userSession.deviceId)
-        }
+            if (::mIris.isInitialized) {
+                mIris.setUserId(userId)
+                mIris.setDeviceId(userSession.deviceId)
+            }
 
-        TrackApp.getInstance().moEngage.setMoEUserAttributesLogin(
-                userSession.userId,
-                userSession.name,
-                userSession.email,
-                userSession.phoneNumber,
-                userSession.isGoldMerchant,
-                userSession.shopName,
-                userSession.shopId,
-                userSession.hasShop(),
-                LoginRegisterAnalytics.LABEL_EMAIL
-        )
+            TrackApp.getInstance().moEngage.setMoEUserAttributesLogin(
+                    userSession.userId,
+                    userSession.name,
+                    userSession.email,
+                    userSession.phoneNumber,
+                    userSession.isGoldMerchant,
+                    userSession.shopName,
+                    userSession.shopId,
+                    userSession.hasShop(),
+                    LoginRegisterAnalytics.LABEL_EMAIL
+            )
+
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//        }
     }
 
     fun onErrorLogin(errorMessage: String?) {
@@ -756,7 +761,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     override fun onSuccessGetUserInfo(): (ProfilePojo) -> Unit {
         return {
-            //TODO check analytics
 
             val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
 

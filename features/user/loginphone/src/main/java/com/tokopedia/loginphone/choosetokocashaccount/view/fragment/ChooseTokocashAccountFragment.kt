@@ -46,6 +46,7 @@ import com.tokopedia.loginphone.choosetokocashaccount.view.listener.ChooseTokoca
 import com.tokopedia.loginphone.choosetokocashaccount.view.presenter.ChooseTokocashAccountPresenter
 import com.tokopedia.loginphone.common.analytics.LoginPhoneNumberAnalytics
 import com.tokopedia.loginphone.common.di.DaggerLoginRegisterPhoneComponent
+import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity
 import com.tokopedia.sessioncommon.ErrorHandlerSession
@@ -57,6 +58,7 @@ import com.tokopedia.sessioncommon.view.LoginSuccessRouter
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
+import java.lang.Exception
 
 import java.util.ArrayList
 
@@ -135,10 +137,9 @@ class ChooseTokocashAccountFragment : BaseDaggerFragment(), ChooseTokocashAccoun
             activity != null -> activity!!.finish()
         }
 
-        //TODO UNCOMMENT
-//        context?.run{
-//            mIris = IrisAnalytics.getInstance(this)
-//        }
+        context?.run {
+            mIris = IrisAnalytics.getInstance(this)
+        }
 
     }
 
@@ -207,36 +208,46 @@ class ChooseTokocashAccountFragment : BaseDaggerFragment(), ChooseTokocashAccoun
         activity?.let {
             analytics.eventSuccessLoginPhoneNumber()
             setTrackingUserId(userId)
+            setFCM()
             it.setResult(Activity.RESULT_OK)
             it.finish()
         }
     }
 
+    private fun setFCM() {
+        CMPushNotificationManager.instance
+                .refreshFCMTokenFromForeground(userSessionInterface.deviceId, true)
+    }
+
     private fun setTrackingUserId(userId: String) {
-        TkpdAppsFlyerMapper.getInstance(context).mapAnalytics()
-        TrackApp.getInstance().gtm
-                .pushUserId(userId)
-        if (!GlobalConfig.DEBUG && Crashlytics.getInstance() != null)
-            Crashlytics.setUserIdentifier(userId)
+        try {
+            TkpdAppsFlyerMapper.getInstance(activity?.applicationContext).mapAnalytics()
+            TrackApp.getInstance().gtm
+                    .pushUserId(userId)
+            if (!GlobalConfig.DEBUG && Crashlytics.getInstance() != null)
+                Crashlytics.setUserIdentifier(userId)
 
-        if (userSessionInterface.isLoggedIn) {
-            val userData = UserData()
-            userData.setUserId(userSessionInterface.userId)
-            userData.setEmail(userSessionInterface.email)
-            userData.setPhoneNumber(userSessionInterface.phoneNumber)
+            if (userSessionInterface.isLoggedIn) {
+                val userData = UserData()
+                userData.userId = userSessionInterface.userId
+                userData.email = userSessionInterface.email
+                userData.phoneNumber = userSessionInterface.phoneNumber
 
-            //Identity Event
-            LinkerManager.getInstance().sendEvent(
-                    LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY, userData))
+                //Identity Event
+                LinkerManager.getInstance().sendEvent(
+                        LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY, userData))
 
-            //Login Event
-            LinkerManager.getInstance().sendEvent(
-                    LinkerUtils.createGenericRequest(LinkerConstants.EVENT_LOGIN_VAL, userData))
-        }
+                //Login Event
+                LinkerManager.getInstance().sendEvent(
+                        LinkerUtils.createGenericRequest(LinkerConstants.EVENT_LOGIN_VAL, userData))
+            }
 
-        if(::mIris.isInitialized) {
-            mIris.setUserId(userId)
-            mIris.setDeviceId(userSessionInterface.deviceId)
+            if (::mIris.isInitialized) {
+                mIris.setUserId(userId)
+                mIris.setDeviceId(userSessionInterface.deviceId)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
