@@ -179,10 +179,10 @@ public class BottomSheetButtonsFragment extends InboxBottomSheetFragment impleme
     @Override
     public void onClick(View view) {
         int id = view.getId();
-        if(id==R.id.tv_bad_reason_1||id==R.id.tv_bad_reason_2||id==R.id.tv_bad_reason_3||id==R.id.tv_bad_reason_4||id==R.id.tv_bad_reason_5 ||id==R.id.tv_bad_reason_6 ||id==R.id.tv_custom_reason){
-            handleClickBadCsat(view);
-        }else if(id==R.id.btn_send){
+        if(id==R.id.btn_send){
             onClickSend();
+        }else{
+            handleClickBadCsat(view);
         }
     }
 }
