@@ -2,6 +2,7 @@ package com.tokopedia.product.manage.item.main.base.data.source.cloud;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.network.mapper.DataResponseMapper;
+import com.tokopedia.product.manage.item.common.data.source.cloud.ProductSubmitResp;
 import com.tokopedia.product.manage.item.common.data.source.cloud.TomeProductApi;
 import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel;
 import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.ProductVariantViewModel;
@@ -31,24 +32,14 @@ public class ProductCloud {
         this.tomeProductApi = tomeProductApi;
     }
 
-    public Observable<Boolean> addProductSubmit(String productViewModel) {
+    public Observable<Integer> addProductSubmit(String productViewModel) {
         return tomeProductApi.addProductSubmit(productViewModel)
-                .map(new Func1<Response<DataResponse<Void>>, Boolean>() {
-                    @Override
-                    public Boolean call(Response<DataResponse<Void>> dataResponse) {
-                        return true;
-                    }
-                });
+                .map(dataResponse -> dataResponse.body().getData().getProductId());
     }
 
-    public Observable<Boolean> editProduct(String productId, String productViewModel) {
+    public Observable<Integer> editProduct(String productId, String productViewModel) {
         return tomeProductApi.editProductSubmit(productId, productViewModel)
-                .map(new Func1<Response<DataResponse<Void>>, Boolean>() {
-                    @Override
-                    public Boolean call(Response<DataResponse<Void>> dataResponse) {
-                        return true;
-                    }
-                });
+                .map(dataResponse -> dataResponse.body().getData().getProductId());
     }
 
     public Observable<ProductViewModel> getProductDetail(String productId) {
