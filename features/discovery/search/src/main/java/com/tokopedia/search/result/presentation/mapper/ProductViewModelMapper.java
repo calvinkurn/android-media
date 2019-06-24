@@ -43,6 +43,7 @@ public class ProductViewModelMapper {
         productViewModel.setShareUrl(searchProduct.getShareUrl());
         productViewModel.setSuggestionModel(createSuggestionModel(searchProduct));
         productViewModel.setTotalData(searchProduct.getCount());
+        productViewModel.setQuerySafe(searchProduct.isQuerySafe());
         if (searchProductModel.getDynamicFilterModel() != null) {
             productViewModel.setDynamicFilterModel(searchProductModel.getDynamicFilterModel());
         }
