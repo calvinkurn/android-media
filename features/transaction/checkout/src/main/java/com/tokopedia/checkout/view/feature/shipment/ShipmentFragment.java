@@ -1061,9 +1061,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }
             }
 
-            List<DataCheckoutRequest> dataCheckoutRequestsStep2 = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentAdapter.getPromoGlobalStackData(), shipmentAdapter.getShipmentCartItemModelList());
             shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
-                    dataCheckoutRequestsStep2,
                     EnhancedECommerceActionField.STEP_2,
                     ConstantTransactionAnalytics.EventAction.VIEW_CHECKOUT_PAGE,
                     ConstantTransactionAnalytics.EventLabel.SUCCESS);

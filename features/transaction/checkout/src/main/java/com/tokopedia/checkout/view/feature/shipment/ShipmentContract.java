@@ -359,6 +359,8 @@ public interface ShipmentContract {
 
         boolean isShowOnboarding();
 
+        void triggerSendEnhancedEcommerceCheckoutAnalytics(String step, String eventAction, String eventLabel);
+
         void triggerSendEnhancedEcommerceCheckoutAnalytics(List<DataCheckoutRequest> dataCheckoutRequests, String step, String eventAction, String eventLabel);
 
         List<DataCheckoutRequest> updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(String cartString, String shippingDuration, String shippingPrice, String courierName);
