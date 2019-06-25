@@ -20,15 +20,14 @@ class PromoNotEligibleBottomsheet : BottomSheets() {
     lateinit var rvPromoList: RecyclerView
     lateinit var btnContinue: ButtonCompat
     lateinit var actionListener: PromoNotEligibleActionListener
+    lateinit var notEligiblePromoHolderDataList: ArrayList<NotEligiblePromoHolderdata>
     var checkoutType: Int = 0
 
     companion object {
-
         @JvmStatic
         fun createInstance(): PromoNotEligibleBottomsheet {
             return PromoNotEligibleBottomsheet()
         }
-
     }
 
     fun setListener(actionListener: PromoNotEligibleActionListener) {
@@ -46,11 +45,9 @@ class PromoNotEligibleBottomsheet : BottomSheets() {
         btnContinue.setOnClickListener {
             actionListener.onButtonContinueClicked(checkoutType)
         }
-    }
 
-    fun setupData(promoList: ArrayList<NotEligiblePromoHolderdata>) {
         val adapter = PromoNotEligibleAdapter()
-        adapter.notEligiblePromoHolderDataList = promoList
+        adapter.notEligiblePromoHolderDataList = notEligiblePromoHolderDataList
         val linearLayoutManager = LinearLayoutManager(activity)
         rvPromoList.layoutManager = linearLayoutManager
         rvPromoList.adapter = adapter

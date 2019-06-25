@@ -2475,7 +2475,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             promoNotEligibleBottomsheet = PromoNotEligibleBottomsheet.Companion.createInstance();
             promoNotEligibleBottomsheet.setActionListener(this);
         }
-        promoNotEligibleBottomsheet.setupData(notEligiblePromoHolderdataList);
+        promoNotEligibleBottomsheet.setNotEligiblePromoHolderDataList(notEligiblePromoHolderdataList);
         promoNotEligibleBottomsheet.setCheckoutType(requestCode);
         promoNotEligibleBottomsheet.show(getFragmentManager(), "");
     }
