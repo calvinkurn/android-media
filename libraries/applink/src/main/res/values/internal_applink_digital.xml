@@ -7,4 +7,5 @@
         Otherwise, do not put "/"
     -->
     <string name="path_telco" translatable="false">/telco</string>
+    <string name="path_telco_cart" translatable="false">/telco/cart</string>
 </resources>

@@ -20,6 +20,7 @@ class DigitalTelcoBuyWidget @JvmOverloads constructor(@NotNull context: Context,
     private val totalPrice: TextView
     private val nextButton: Button
     private val buyLayout: RelativeLayout
+    private lateinit var listener: ActionListener
 
     init {
         val view = View.inflate(context, R.layout.view_digital_buy_telco, this)
@@ -28,8 +29,12 @@ class DigitalTelcoBuyWidget @JvmOverloads constructor(@NotNull context: Context,
         buyLayout = view.findViewById(R.id.buy_layout)
 
         nextButton.setOnClickListener {
-
+            listener.onClickNextBuyButton()
         }
+    }
+
+    fun setListener(listener: ActionListener) {
+        this.listener = listener
     }
 
     fun setTotalPrice(price: String) {
@@ -42,5 +47,9 @@ class DigitalTelcoBuyWidget @JvmOverloads constructor(@NotNull context: Context,
         } else {
             buyLayout.visibility = View.GONE
         }
+    }
+
+    interface ActionListener {
+        fun onClickNextBuyButton()
     }
 }

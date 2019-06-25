@@ -11,6 +11,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import android.widget.Toast
+import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.common_digital.common.constant.DigitalCartExtraParam
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.data.*
@@ -26,6 +32,11 @@ import com.tokopedia.topupbills.telco.view.model.DigitalTabTelcoItem
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedProductTelcoViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
 import com.tokopedia.topupbills.telco.view.widget.DigitalTelcoBuyWidget
+import com.tokopedia.user.session.UserSessionInterface
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
+import javax.inject.Inject
+import kotlin.experimental.and
 
 /**
  * Created by nabillasabbaha on 11/04/19.
@@ -44,6 +55,10 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             TelcoCustomComponentData(TelcoCustomData(mutableListOf()))
     private var selectedProductId = ""
     private var selectedCategoryId = 0
+    private lateinit var checkoutPassData: DigitalCheckoutPassData
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     override fun onStart() {
         context?.let {
@@ -77,6 +92,22 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         sharedModel.productItem.observe(this, Observer {
             it?.run {
                 buyWidget.setTotalPrice(it.product.attributes.price)
+
+                checkoutPassData = DigitalCheckoutPassData.Builder()
+                        .action(DigitalCheckoutPassData.DEFAULT_ACTION)
+                        .categoryId(it.product.attributes.categoryId.toString())
+                        .clientNumber(telcoClientNumberWidget.getInputNumber())
+                        .instantCheckout("0")
+                        .isPromo(if (it.product.attributes.productPromo != null) "1" else "0")
+                        .operatorId(it.product.attributes.operatorId.toString())
+                        .productId(it.product.id)
+                        .utmCampaign(it.product.attributes.categoryId.toString())
+                        .utmContent(GlobalConfig.VERSION_NAME)
+                        .idemPotencyKey(generateATokenRechargeCheckout(userSession.userId))
+                        .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
+                        .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
+                        .voucherCodeCopied("")
+                        .build()
             }
         })
         sharedModel.showTotalPrice.observe(this, Observer {
@@ -84,6 +115,29 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 buyWidget.setVisibilityLayout(it)
             }
         })
+    }
+
+    private fun generateATokenRechargeCheckout(userLoginId: String): String {
+        val timeMillis = System.currentTimeMillis().toString()
+        val token = md5(timeMillis)
+        return userLoginId + "_" + if (token.isEmpty()) timeMillis else token
+    }
+
+    private fun md5(s: String): String {
+        try {
+            val digest = MessageDigest.getInstance("MD5")
+            digest.update(s.toByteArray())
+            val messageDigest = digest.digest()
+            val hexString = StringBuilder()
+            for (b in messageDigest) {
+                hexString.append(String.format("%02x", b and 0xff.toByte()))
+            }
+            return hexString.toString()
+        } catch (e: NoSuchAlgorithmException) {
+            e.printStackTrace()
+            return ""
+        }
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -107,6 +161,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         getInputFilterDataCollections()
         renderInputNumber()
         getCatalogMenuDetail()
+        renderBuyProduct()
     }
 
     override fun getMapCustomData(): Map<String, Any> {
@@ -257,6 +312,21 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         favNumberList.addAll(data.favNumber.favNumberList)
     }
 
+    fun renderBuyProduct() {
+        buyWidget.setListener(object : DigitalTelcoBuyWidget.ActionListener {
+            override fun onClickNextBuyButton() {
+                if (userSession.isLoggedIn) {
+                    val intent = RouteManager.getIntent(activity, ApplinkConsInternalDigital.CART_DIGITAL)
+                    intent.putExtra(DigitalCartExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, checkoutPassData)
+                    startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL)
+                } else {
+                    val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
+                    startActivityForResult(intent, REQUEST_CODE_LOGIN)
+                }
+            }
+        })
+    }
+
     override fun onDestroy() {
         sharedModel.clear()
         super.onDestroy()
@@ -268,6 +338,9 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     companion object {
+
+        val REQUEST_CODE_CART_DIGITAL = 1090
+        val REQUEST_CODE_LOGIN = 1010
 
         fun newInstance(): Fragment {
             val fragment = DigitalTelcoPrepaidFragment()
