@@ -638,7 +638,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
         if (!::productDescrView.isInitialized) {
             productDescrView = PartialProductDescrFullView.build(base_info_and_description, activity)
-            addLoadMoreImpression(base_info_and_description)
+            addLoadMoreImpression(label_see_detail_product_descr)
         }
 
         if (!::actionButtonView.isInitialized) {
