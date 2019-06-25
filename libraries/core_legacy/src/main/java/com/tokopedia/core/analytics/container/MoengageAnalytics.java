@@ -108,12 +108,10 @@ public class MoengageAnalytics extends ContextAnalytics {
     }
 
     public void sendExistingUserAndInstallTrackingEvent() {
-        boolean status = false;
         if (getContext() != null) {
             UserSessionInterface userSession = new UserSession(getContext());
-            status = userSession.isLoggedIn();
+            MoEHelper.getInstance(getContext()).setExistingUser(userSession.isLoggedIn());
         }
-        MoEHelper.getInstance(getContext()).setExistingUser(status);
     }
 
     /**
