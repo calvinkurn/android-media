@@ -46,7 +46,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/hint_district_recommendation_search"
                 android:inputType="text"
-                android:focusableInTouchMode="true"
+                android:focusable="true"
                 android:enabled="true"
                 android:textSize="@dimen/sp_14"
                 android:maxLines="1"

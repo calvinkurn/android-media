@@ -330,6 +330,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     }
 
     private fun updateGetDistrictBottomSheet(saveAddressDataModel: SaveAddressDataModel) {
+        this.saveAddressDataModel = saveAddressDataModel
         if (saveAddressDataModel.title.equals(unnamedRoad, true)) {
             whole_loading_container.visibility = View.GONE
             getdistrict_container.visibility = View.GONE

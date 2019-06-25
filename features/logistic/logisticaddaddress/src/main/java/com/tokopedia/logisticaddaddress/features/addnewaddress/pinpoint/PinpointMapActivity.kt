@@ -33,7 +33,7 @@ class PinpointMapActivity : BaseSimpleActivity() {
                     putExtra(KERO_TOKEN, token)
                     putExtra(EXTRA_LAT, lat)
                     putExtra(EXTRA_LONG, long)
-                    putExtra(EXTRA_SHOW_AUTOCOMPLETE, true)
+                    putExtra(EXTRA_SHOW_AUTOCOMPLETE, isShowAutoComplete)
                     putExtra(EXTRA_IS_POLYGON, isPolygon)
                     putExtra(EXTRA_DISTRICT_ID, districtId)
                     putExtra(EXTRA_IS_MISMATCH_SOLVED, isMismatchSolved)
