@@ -21,6 +21,7 @@ import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
+import android.support.design.bottomnavigation.LabelVisibilityMode;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -248,6 +249,7 @@ public class MainParentActivity extends BaseActivity implements
         fragmentContainer = findViewById(R.id.container);
 
         bottomNavigation.setItemIconTintList(null);
+        bottomNavigation.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
         bottomNavigation.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
         bottomNavigation.setOnNavigationItemReselectedListener(item -> {
             Fragment fragment = fragmentList.get(getPositionFragmentByMenu(item));

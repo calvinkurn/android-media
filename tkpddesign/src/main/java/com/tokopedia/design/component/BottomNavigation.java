@@ -246,6 +246,7 @@ public class BottomNavigation extends BottomNavigationView {
                 // let the mLargeLabel font size equal to mSmallLabel
                 if (mLargeLabel != null) {
                     mLargeLabel.setTextSize(TypedValue.COMPLEX_UNIT_PX, mSmallLabelSize);
+                    mLargeLabel.setPadding(0,0,0,0);
                 }
 
             } else {
