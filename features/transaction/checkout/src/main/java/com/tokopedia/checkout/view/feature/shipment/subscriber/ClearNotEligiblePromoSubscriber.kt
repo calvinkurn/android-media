@@ -2,8 +2,10 @@ package com.tokopedia.checkout.view.feature.shipment.subscriber
 
 import com.tokopedia.checkout.view.feature.shipment.ShipmentContract
 import com.tokopedia.checkout.view.feature.shipment.ShipmentPresenter
+import com.tokopedia.checkout.view.feature.shipment.viewmodel.NotEligiblePromoHolderdata
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import rx.Subscriber
+import java.util.ArrayList
 
 /**
  * Created by Irfan Khoirul on 2019-06-25.
@@ -11,7 +13,8 @@ import rx.Subscriber
 
 class ClearNotEligiblePromoSubscriber(val view: ShipmentContract.View?,
                                       val presenter: ShipmentPresenter,
-                                      val checkoutType: Int) : Subscriber<GraphqlResponse>() {
+                                      val checkoutType: Int,
+                                      val notEligiblePromoHolderdata: ArrayList<NotEligiblePromoHolderdata>) : Subscriber<GraphqlResponse>() {
 
     override fun onCompleted() {
     }
@@ -19,12 +22,12 @@ class ClearNotEligiblePromoSubscriber(val view: ShipmentContract.View?,
     override fun onError(e: Throwable) {
         e.printStackTrace()
         view?.hideLoading()
-        view?.doCheckout(checkoutType)
+        view?.removeIneligiblePromo(checkoutType, notEligiblePromoHolderdata)
     }
 
     override fun onNext(t: GraphqlResponse?) {
         view?.hideLoading()
-        view?.doCheckout(checkoutType)
+        view?.removeIneligiblePromo(checkoutType, notEligiblePromoHolderdata)
     }
 
 }
