@@ -48,6 +48,7 @@ public class MoengageAnalytics extends ContextAnalytics {
                         .optOutTokenRegistration()
                         .build();
         MoEngage.initialise(moEngage);
+        sendExistingUserAndInstallTrackingEvent();
     }
 
     @Override
