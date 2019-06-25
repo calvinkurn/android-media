@@ -38,8 +38,6 @@ class ReportFormAdapter(private val item: ProductReportReason,
     val trackingReasonLabel: String
         get() = item.value.toLowerCase()
 
-    private var isSubmitEnable = false
-
     private val items = mutableListOf<Pair<String, Any>>()
     val inputs = mutableMapOf<String, Any>()
 
@@ -65,8 +63,6 @@ class ReportFormAdapter(private val item: ProductReportReason,
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (position == 0) {
             (holder as HeaderViewHolder).bind(item.value, item.detail)
-        } else if (holder is SubmitViewHolder){
-            holder.bind()
         } else if (position < itemCount - 1){
             val (_, field) = items[position - 1]
             if (holder is LinkViewHolder && field is ProductReportReason.AdditionalInfo){
@@ -107,13 +103,6 @@ class ReportFormAdapter(private val item: ProductReportReason,
     fun updateTextInput(key: String, input: String?) {
         inputs[key] = input ?: ""
         notifyDataSetChanged()
-    }
-
-    fun toggleActiveSubmit(inputValid: Boolean) {
-        if (getItemViewType(itemCount - 1) == TYPE_SUBMIT && inputValid != isSubmitEnable){
-            isSubmitEnable = inputValid
-            notifyDataSetChanged()
-        }
     }
 
     inner class HeaderViewHolder(view: View): RecyclerView.ViewHolder(view){
@@ -168,8 +157,8 @@ class ReportFormAdapter(private val item: ProductReportReason,
             }
         }
 
-        fun bind(){
-            itemView.btn_lapor.isEnabled =  isSubmitEnable
+        fun validateButtonSubmit(inputValid: Boolean) {
+            itemView.btn_lapor.isEnabled =  inputValid
         }
     }
 
