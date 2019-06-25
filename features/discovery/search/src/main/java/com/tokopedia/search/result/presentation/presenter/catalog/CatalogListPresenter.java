@@ -1,36 +1,39 @@
 package com.tokopedia.search.result.presentation.presenter.catalog;
 
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.discovery.common.constants.SearchConstant;
-import com.tokopedia.discovery.common.data.DynamicFilterModel;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.search.result.domain.model.SearchCatalogModel;
 import com.tokopedia.search.result.presentation.CatalogListSectionContract;
+import com.tokopedia.search.result.presentation.mapper.CatalogViewModelMapper;
 import com.tokopedia.search.result.presentation.presenter.abstraction.SearchSectionPresenter;
-import com.tokopedia.search.result.presentation.presenter.subscriber.RefreshCatalogSubscriber;
-import com.tokopedia.search.result.presentation.presenter.subscriber.RequestDynamicFilterSubscriber;
-import com.tokopedia.search.result.presentation.presenter.subscriber.SearchCatalogLoadMoreSubscriber;
-import com.tokopedia.search.result.presentation.presenter.subscriber.SearchCatalogSubscriber;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import rx.Subscriber;
+
 final class CatalogListPresenter
         extends SearchSectionPresenter<CatalogListSectionContract.View>
         implements CatalogListSectionContract.Presenter {
+
     @Inject
     @Named(SearchConstant.SearchCatalog.SEARCH_CATALOG_USE_CASE)
     UseCase<SearchCatalogModel> searchCatalogUseCase;
     @Inject
-    @Named(SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_USE_CASE)
-    UseCase<DynamicFilterModel> getDynamicFilterUseCase;
+    CatalogViewModelMapper catalogViewModelMapper;
     @Inject
     UserSessionInterface userSession;
+
+    private boolean isSearchCatalogReturnedNull = false;
 
     @Override
     public void initInjector(CatalogListSectionContract.View view) {
@@ -43,19 +46,20 @@ final class CatalogListPresenter
 
     @Override
     public void requestCatalogList() {
+        checkViewAttached();
+
         RequestParams requestParams = generateParamSearchCatalog();
-        getView().initTopAdsParamsByQuery(requestParams);
-        searchCatalogUseCase.execute(requestParams, new SearchCatalogSubscriber(getView()));
+        getView().initTopAdsParams(requestParams);
+
+        searchCatalogUseCase.unsubscribe();
+        searchCatalogUseCase.execute(requestParams, getSearchCatalogSubscriber());
     }
 
     private RequestParams generateParamSearchCatalog() {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putAll(getView().getSearchParameterMap());
-        requestParams.putString(SearchApiConst.Q, getView().getQueryKey());
 
         setRequestParamsDefaultValues(requestParams);
-        enrichWithFilterAndSortParams(requestParams);
-        removeDefaultCategoryParam(requestParams);
+        requestParams.putAll(getView().getSearchParameterMap());
         return requestParams;
     }
 
@@ -70,76 +74,184 @@ final class CatalogListPresenter
         requestParams.putString(SearchApiConst.OB, requestParams.getString(SearchApiConst.OB, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT));
     }
 
+    private Subscriber<SearchCatalogModel> getSearchCatalogSubscriber() {
+        return new Subscriber<SearchCatalogModel>() {
+            @Override
+            public void onStart() {
+                searchCatalogSubscriberOnStart();
+            }
+
+            @Override
+            public void onNext(SearchCatalogModel searchCatalogModel) {
+                searchCatalogSubscriberOnNext(searchCatalogModel);
+            }
+
+            @Override
+            public void onCompleted() {
+                searchCatalogSubscriberOnCompleted();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                searchCatalogSubscriberOnError(e);
+            }
+        };
+    }
+
+    private void searchCatalogSubscriberOnStart() {
+        getView().setTopAdsEndlessListener();
+        getView().showRefreshLayout();
+    }
+
+    private void searchCatalogSubscriberOnNext(SearchCatalogModel searchCatalogModel) {
+        if(searchCatalogModel == null) {
+            isSearchCatalogReturnedNull = true;
+            getView().renderRetryInit();
+            return;
+        }
+
+        getView().renderListView(catalogViewModelMapper.mappingCatalogViewModelWithHeader(searchCatalogModel));
+        getView().renderShareURL(searchCatalogModel.shareURL);
+        getView().setHasNextPage(isHasNextPage(searchCatalogModel.paging.uriNext));
+        if (!isHasNextPage(searchCatalogModel.paging.uriNext)) {
+            getView().unSetTopAdsEndlessListener();
+        }
+    }
+
+    private boolean isHasNextPage(String uriNext) {
+        return uriNext != null && !uriNext.isEmpty();
+    }
+
+    private void searchCatalogSubscriberOnCompleted() {
+        if(!isSearchCatalogReturnedNull) requestDynamicFilter(getView().getSearchParameterMap());
+        getView().hideRefreshLayout();
+    }
+
+    private void searchCatalogSubscriberOnError(Throwable e) {
+        if(e == null) {
+            getView().renderUnknown();
+        }
+        else {
+            e.printStackTrace();
+
+            if (e instanceof MessageErrorException || e instanceof RuntimeException) {
+                getView().renderErrorView(e.getMessage());
+            } else if (e instanceof IOException) {
+                getView().renderRetryInit();
+            } else {
+                getView().renderUnknown();
+            }
+        }
+
+        getView().hideRefreshLayout();
+    }
+
     @Override
     public void requestCatalogLoadMore() {
-        searchCatalogUseCase.execute(generateParamSearchCatalog(), new SearchCatalogLoadMoreSubscriber(getView()));
+        searchCatalogUseCase.unsubscribe();
+
+        searchCatalogUseCase.execute(generateParamSearchCatalog(), getSearchCatalogLoadMoreSubscriber());
+    }
+
+    private Subscriber<SearchCatalogModel> getSearchCatalogLoadMoreSubscriber() {
+        return new Subscriber<SearchCatalogModel>() {
+            @Override
+            public void onNext(SearchCatalogModel searchCatalogModel) {
+                searchCatalogLoadMoreSubscriberOnNext(searchCatalogModel);
+            }
+
+            @Override
+            public void onCompleted() { }
+
+            @Override
+            public void onError(Throwable e) {
+                searchCatalogLoadMoreSubscriberOnError(e);
+            }
+        };
+    }
+
+    private void searchCatalogLoadMoreSubscriberOnNext(SearchCatalogModel searchCatalogModel) {
+        getView().renderNextListView(catalogViewModelMapper.mappingCatalogViewModelWithoutHeader(searchCatalogModel));
+        getView().setHasNextPage(isHasNextPage(searchCatalogModel.paging.uriNext));
+        if (!isHasNextPage(searchCatalogModel.paging.uriNext)) {
+            getView().unSetTopAdsEndlessListener();
+        }
+    }
+
+    private void searchCatalogLoadMoreSubscriberOnError(Throwable e) {
+        if (e instanceof MessageErrorException) {
+            getView().renderErrorView(e.getMessage());
+        } else if (e instanceof RuntimeException) {
+            getView().renderErrorView(e.getMessage());
+        } else if (e instanceof IOException) {
+            getView().renderRetryInit();
+        } else {
+            getView().renderUnknown();
+            e.printStackTrace();
+        }
+        getView().hideRefreshLayout();
     }
 
     @Override
     public void refreshSort() {
-        if (getView().getDepartmentId() != null && !getView().getDepartmentId().isEmpty()) {
-            searchCatalogUseCase.execute(
-                    generateParamSearchCatalog(getView().getDepartmentId()),
-                    new RefreshCatalogSubscriber(getView())
-            );
-        } else {
-            searchCatalogUseCase.execute(
-                    generateParamSearchCatalog(),
-                    new RefreshCatalogSubscriber(getView())
-            );
-        }
+        searchCatalogUseCase.unsubscribe();
+        searchCatalogUseCase.execute(generateParamSearchCatalog(), getRefreshCatalogSubscriber());
     }
 
-    private RequestParams generateParamSearchCatalog(String departmentId) {
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putAll(getView().getSearchParameterMap());
-        requestParams.putString(SearchApiConst.SC, departmentId);
+    private Subscriber<SearchCatalogModel> getRefreshCatalogSubscriber() {
+        return new Subscriber<SearchCatalogModel>() {
+            @Override
+            public void onStart() {
+                searchCatalogSubscriberOnStart();
+            }
 
-        setRequestParamsDefaultValues(requestParams);
-        enrichWithFilterAndSortParams(requestParams);
-        removeDefaultCategoryParam(requestParams);
-        return requestParams;
+            @Override
+            public void onNext(SearchCatalogModel searchCatalogModel) {
+                refreshCatalogSubscriberOnNext(searchCatalogModel);
+            }
+
+            @Override
+            public void onCompleted() {
+                searchCatalogSubscriberOnCompleted();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                searchCatalogSubscriberOnError(e);
+            }
+        };
     }
 
-    @Override
-    public void requestCatalogList(String departmentId) {
-        if (getView() == null) {
+    private void refreshCatalogSubscriberOnNext(SearchCatalogModel searchCatalogModel) {
+        if(searchCatalogModel == null) {
+            isSearchCatalogReturnedNull = true;
+            getView().renderRetryInit();
             return;
         }
-        RequestParams requestParams = generateParamSearchCatalog(departmentId);
-        getView().initTopAdsParamsByCategory(requestParams);
-        searchCatalogUseCase.execute(requestParams, new SearchCatalogSubscriber(getView()));
+
+        getView().successRefreshCatalog(catalogViewModelMapper.mappingCatalogViewModelWithHeader(searchCatalogModel));
+        getView().renderShareURL(searchCatalogModel.shareURL);
+        getView().setHasNextPage(isHasNextPage(searchCatalogModel.paging.uriNext));
+        if (!isHasNextPage(searchCatalogModel.paging.uriNext)) {
+            getView().unSetTopAdsEndlessListener();
+        }
     }
 
     @Override
-    public void requestCatalogLoadMore(String departmentId) {
-        searchCatalogUseCase.execute(generateParamSearchCatalog(departmentId), new SearchCatalogLoadMoreSubscriber(getView()));
-    }
-
-    @Override
-    public void requestDynamicFilter() {
+    public void requestDynamicFilter(Map<String, Object> searchParameterMap) {
         checkViewAttached();
 
-        RequestParams requestParams = createRequestDynamicFilterParams();
+        RequestParams requestParams = createRequestDynamicFilterParams(searchParameterMap);
 
-        getDynamicFilterUseCase.execute(requestParams, new RequestDynamicFilterSubscriber(requestDynamicFilterListener));
+        getDynamicFilterUseCase.execute(requestParams, getDynamicFilterSubscriber(true));
     }
 
-    private RequestParams createRequestDynamicFilterParams() {
+    private RequestParams createRequestDynamicFilterParams(Map<String, Object> searchParameterMap) {
         RequestParams requestParams = RequestParams.create();
+        requestParams.putAll(searchParameterMap);
         requestParams.putAllString(generateParamsNetwork(requestParams));
         requestParams.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_CATALOG);
         requestParams.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
-
-        if (getView().getDepartmentId() != null && !getView().getDepartmentId().isEmpty()) {
-            requestParams.putString(SearchApiConst.SC, getView().getDepartmentId());
-        } else {
-            requestParams.putString(SearchApiConst.Q, getView().getQueryKey());
-            requestParams.putString(SearchApiConst.SC, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SC);
-        }
-
-        enrichWithFilterAndSortParams(requestParams);
-        removeDefaultCategoryParam(requestParams);
 
         return requestParams;
     }

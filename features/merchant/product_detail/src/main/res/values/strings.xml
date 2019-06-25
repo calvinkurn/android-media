@@ -35,7 +35,7 @@
     <string name="action_preorder">PREORDER</string>
     <string name="product_from">Produk dari</string>
     <string name="from_official_store_label">Official Store</string>
-    <string name="from_power_badge_label">Power Badge</string>
+    <string name="from_power_badge_label">Power Merchant</string>
 
     <string name="label_cart">Keranjang</string>
     <string name="label_move_to_warehouse">Gudangkan</string>
@@ -98,7 +98,7 @@
     <string name="button_affiliate">Buat Post</string>
     <string name="affiliate_get_commission">Raih Komisi</string>
     <string name="priority_order_label">Order Prioritas</string>
-    <string name="purchase_protection_label">Proteksi Gadget</string>
+    <string name="purchase_protection_label">Proteksi Produk</string>
     <string name="title_cod">Bayar di Tempat</string>
     <string name="cod_content">Bayar ke kurir saat pesanan diterima. Tersedia di beberapa kota tertentu</string>
     <string name="installment_template">Bunga %1$s%% mulai dari %2$s</string>
@@ -115,4 +115,5 @@
     <string name="service_by_tokopedia">Dilayani oleh Tokopedia</string>
     <string name="multiorigin_desc">Barang dikirim dari lokasi penyimpanan terdekat.</string>
     <string name="pdp_search_hint">Cari %s di Tokopedia</string>
+    <string name="label_prescription">Obat Keras</string>
 </resources>

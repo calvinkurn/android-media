@@ -564,10 +564,14 @@ public class InboxChatFragment extends BaseDaggerFragment
     public void onIncomingEvent(final WebSocketResponse response) {
         switch (response.getCode()) {
             case ChatWebSocketConstant.EVENT_TOPCHAT_TYPING:
-                adapter.showTyping(response.getData().getMsgId());
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() -> adapter.showTyping(response.getData().getMsgId()));
+                }
                 break;
             case ChatWebSocketConstant.EVENT_TOPCHAT_END_TYPING:
-                adapter.removeTyping(response.getData().getMsgId());
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() -> adapter.removeTyping(response.getData().getMsgId()));
+                }
                 break;
             case ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE:
                 if (getActivity() != null) {
@@ -579,7 +583,6 @@ public class InboxChatFragment extends BaseDaggerFragment
                             reloadNotifDrawer();
                         }
                     });
-
                 }
                 break;
             default:

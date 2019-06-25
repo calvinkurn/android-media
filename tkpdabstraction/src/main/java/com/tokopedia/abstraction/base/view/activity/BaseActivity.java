@@ -172,7 +172,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     }
 
     public void showForceLogoutDialog() {
-        DialogForceLogout.createShow(this,
+        DialogForceLogout.createShow(this, getScreenName(),
                 new DialogForceLogout.ActionListener() {
                     @Override
                     public void onDialogClicked() {
@@ -201,7 +201,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        ((AbstractionRouter) getApplication()).instabugCaptureUserStep(this, ev);
         return super.dispatchTouchEvent(ev);
     }
 }

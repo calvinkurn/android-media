@@ -10,9 +10,11 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel;
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber;
+import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo;
 import com.tokopedia.sessioncommon.view.LoginSuccessRouter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author by nisie on 10/24/18.
@@ -57,7 +59,13 @@ public interface RegisterInitialContract {
 
         void onSuccessRegisterSosmed(String methodName);
 
+        void onSuccessGetTickerInfo(List<TickerInfoPojo> listTickerInfo);
+
+        void onErrorGetTickerInfo(String error);
+
         LoginSuccessRouter getLoginRouter();
+
+        void onBackPressed();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -73,6 +81,8 @@ public interface RegisterInitialContract {
         void registerGoogle(String model, String email);
 
         void validateRegister(String id);
+
+        void getTickerInfo();
     }
 
 }

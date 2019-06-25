@@ -34,9 +34,7 @@ public interface CatalogListSectionContract {
 
         int getStartFrom();
 
-        void initTopAdsParamsByQuery(RequestParams requestParams);
-
-        void initTopAdsParamsByCategory(RequestParams requestParams);
+        void initTopAdsParams(RequestParams requestParams);
 
         String getSource();
 
@@ -58,10 +56,6 @@ public interface CatalogListSectionContract {
         void requestCatalogList();
 
         void requestCatalogLoadMore();
-
-        void requestCatalogList(String departmentId);
-
-        void requestCatalogLoadMore(String departmentId);
 
         void refreshSort();
     }

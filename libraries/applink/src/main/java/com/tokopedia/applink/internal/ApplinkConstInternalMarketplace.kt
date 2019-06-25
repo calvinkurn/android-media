@@ -5,6 +5,8 @@ import com.tokopedia.applink.constant.DeeplinkConstant
 /**
  * This class is used to store deeplink "tokopedia-android-internal://marketplace".
  * Order by name
+ * Only create "tokopedia-android-internal://" if this deeplink is used only for android app, and not shared to iOs and web.
+ * If the deeplink is shared between iOS and web, it should use "tokopedia://" scheme.
  */
 object ApplinkConstInternalMarketplace {
 
@@ -55,8 +57,11 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val PRODUCT_REVIEW = "$INTERNAL_MARKETPLACE/product/{id}/review"
 
+    @JvmField
+    val HOME_RECOMMENDATION = "$INTERNAL_MARKETPLACE/rekomendasi/{id}/"
 
-
+    @JvmField
+    val HOME_RECOMMENDATION_WITH_ID = "$INTERNAL_MARKETPLACE/home-recommendation/{id}/"
 
     // ImageReviewGalleryActivity
     @JvmField
@@ -66,7 +71,44 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val OPEN_SHOP = "$INTERNAL_MARKETPLACE/shop-open"
 
-    // Gold Merchant
+    // GmSubscribeHomeActivity
     @JvmField
     val GOLD_MERCHANT_SUBSCRIBE_DASHBOARD = "$INTERNAL_MARKETPLACE/gold-merchant-subscribe-dashboard"
+
+    // GmMembershipActivity
+    @JvmField
+    val GOLD_MERCHANT_MEMBERSHIP = "$INTERNAL_MARKETPLACE/gold-merchant-membership"
+
+    // CustomerApp only: GoldMerchantRedirectActivity
+    @JvmField
+    val GOLD_MERCHANT_REDIRECT = "$INTERNAL_MARKETPLACE/gold-merchant-redirect"
+
+    //ShopSettingsInfoActivity
+    @JvmField
+    val SHOP_SETTINGS = "$INTERNAL_MARKETPLACE/shop/setting"
+
+    //ShopSettingsNoteActivity
+    @JvmField
+    val SHOP_NOTE_SETTING = "$INTERNAL_MARKETPLACE/shop/setting/notes"
+
+    @JvmField
+    val SHOP_SHIPPING_SETTING = "$INTERNAL_MARKETPLACE/shop/setting/shipping"
+
+    //ShopSettingsEtalaseActivity
+    @JvmField
+    val SHOP_SETTINGS_ETALASE = "$INTERNAL_MARKETPLACE/shop/setting/etalase"
+
+    //ShopSettingsAddressActivity
+    @JvmField
+    val SHOP_SETTINGS_ADDRESS = "$INTERNAL_MARKETPLACE/shop/setting/address"
+
+    //DistrictRecommendationShopSettingsActivity
+    @JvmField
+    val DISTRICT_RECOMMENDATION_SHOP_SETTINGS = "$INTERNAL_MARKETPLACE/district-recommendation-shop-settings"
+
+
+    // OnboardingActivity
+    @JvmField
+    val ONBOARDING = "$INTERNAL_MARKETPLACE/onboarding"
+
 }

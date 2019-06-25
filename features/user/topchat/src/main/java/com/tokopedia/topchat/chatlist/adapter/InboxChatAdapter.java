@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatlist.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Pair;
@@ -13,6 +14,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.topchat.chatlist.adapter.viewholder.chatlist.ListChatViewHolder;
 import com.tokopedia.topchat.chatlist.domain.pojo.reply.WebSocketResponse;
 import com.tokopedia.topchat.chatlist.presenter.InboxChatPresenter;
 import com.tokopedia.topchat.chatlist.viewmodel.ChatListViewModel;
@@ -67,6 +69,15 @@ public class InboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
             showTitle(holder.itemView.getContext(), holder.getAdapterPosition());
         }
         holder.bind(list.get(holder.getAdapterPosition()));
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull AbstractViewHolder holder, int position, @NonNull List<Object> payloads) {
+        if (payloads.isEmpty()) {
+            super.onBindViewHolder(holder, position, payloads);
+        } else {
+            holder.bind(list.get(holder.getAdapterPosition()), payloads);
+        }
     }
 
     private void showTitle(Context context, int position) {
@@ -274,10 +285,9 @@ public class InboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
                         temp.setTyping(false);
                     }
                     list.remove(i);
-                    notifyItemRemoved(i);
                     list.add(0, temp);
-                    notifyItemInserted(0);
-                    notifyItemRangeChanged(0, i);
+                    notifyItemMoved(i, 0);
+                    notifyItemChanged(0);
                     presenter.moveViewToTop();
                     isNew = false;
                     break;
@@ -384,7 +394,7 @@ public class InboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
                 String temp = tempModel.getId();
                 if (msgId == Integer.valueOf(temp)) {
                     tempModel.setTyping(true);
-                    notifyItemChanged(i);
+                    notifyItemChanged(i, ListChatViewHolder.PAYLOAD_SHOW_TYPING);
                     break;
                 }
             }
@@ -398,7 +408,7 @@ public class InboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
                 String temp = tempModel.getId();
                 if (msgId == Integer.valueOf(temp)) {
                     tempModel.setTyping(false);
-                    notifyItemChanged(i);
+                    notifyItemChanged(i, ListChatViewHolder.PAYLOAD_REMOVE_TYPING);
                     break;
                 }
             }

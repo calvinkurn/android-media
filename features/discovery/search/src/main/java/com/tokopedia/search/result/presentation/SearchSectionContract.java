@@ -3,9 +3,10 @@ package com.tokopedia.search.result.presentation;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.search.result.presentation.view.listener.RequestDynamicFilterListener;
+import com.tokopedia.discovery.common.data.DynamicFilterModel;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public interface SearchSectionContract {
 
@@ -16,11 +17,7 @@ public interface SearchSectionContract {
 
         HashMap<String, String> getSelectedFilter();
 
-        HashMap<String, String> getExtraFilter();
-
         void setSelectedFilter(HashMap<String, String> selectedFilter);
-
-        void getDynamicFilter();
 
         void showRefreshLayout();
 
@@ -34,14 +31,14 @@ public interface SearchSectionContract {
 
         void logDebug(String tag, String message);
 
-        void launchLoginActivity(String shopId);
+        void renderDynamicFilter(DynamicFilterModel dynamicFilterModel);
+
+        void renderFailRequestDynamicFilter();
     }
 
     interface Presenter<T extends View> extends CustomerPresenter<T> {
         void initInjector(T view);
 
-        void requestDynamicFilter();
-
-        void setRequestDynamicFilterListener(RequestDynamicFilterListener requestDynamicFilterListener);
+        void requestDynamicFilter(Map<String, Object> searchParameter);
     }
 }
