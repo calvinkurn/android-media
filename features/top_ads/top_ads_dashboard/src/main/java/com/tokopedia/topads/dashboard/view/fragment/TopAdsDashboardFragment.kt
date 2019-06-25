@@ -68,6 +68,7 @@ import kotlinx.android.synthetic.main.fragment_top_ads_dashboard.*
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.partial_top_ads_shop_info.*
 import kotlinx.android.synthetic.main.top_ads_dashboard_empty_layout.*
+import java.lang.StringBuilder
 
 import java.util.Calendar
 import java.util.Date
@@ -633,10 +634,16 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
     }
 
     override fun onSuccessGetTicker(message: List<String>) {
-        if(message.isNotEmpty()) {
+        if(isContainString(message)) {
             ticker_view.addAllMessage(message)
             ticker_view.visibility = View.VISIBLE
         }
+    }
+
+    private fun isContainString(message: List<String>): Boolean {
+        var string = StringBuffer()
+        message.forEach { string.append(it) }
+        return string.isNotBlank()
     }
 
     override fun onErrorGetTicker(e: Throwable) {}
