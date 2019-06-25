@@ -43,7 +43,7 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
         @JvmStatic
         @DeepLink(ApplinkConst.DEFAULT_RECOMMENDATION_PAGE)
         fun getDefaultCallingIntent(context: Context, extras: Bundle): Intent{
-            return RouteManager.getIntent(context, ApplinkConstInternalMarketplace.DEFAULT_HOME_RECOMMENDATION)
+            return RouteManager.getIntent(context, ApplinkConstInternalMarketplace.HOME_RECOMMENDATION, "")
         }
 
         @JvmStatic
@@ -57,10 +57,13 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
     }
 
     override fun getNewFragment(): Fragment {
-        if(intent.data != null && intent.data.pathSegments.size > 1 ){
-            return RecommendationFragment.newInstance(intent.data.lastPathSegment)
+        return if(intent.data != null && intent.data.pathSegments.size > 1 ){
+            RecommendationFragment.newInstance(intent.data.lastPathSegment ?: "")
+        } else if (intent.hasExtra(PRODUCT_ID)) {
+            RecommendationFragment.newInstance(intent.getStringExtra(PRODUCT_ID))
+        } else {
+            RecommendationFragment.newInstance()
         }
-        return RecommendationFragment.newInstance(intent.getStringExtra(PRODUCT_ID))
     }
 
     override fun getComponent(): HomeRecommendationComponent = DaggerHomeRecommendationComponent.builder()
