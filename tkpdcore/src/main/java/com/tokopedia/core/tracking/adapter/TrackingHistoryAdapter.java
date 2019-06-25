@@ -17,8 +17,8 @@ import com.tokopedia.core.util.MethodChecker;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+//import butterknife.BindView;
+//import butterknife.ButterKnife;
 
 /**
  * Created by Alifa on 10/12/2016.
@@ -31,19 +31,26 @@ public class TrackingHistoryAdapter extends BaseLinearRecyclerViewAdapter {
     private final Context context;
 
     public class ViewHolder extends RecyclerView.ViewHolder  {
-
-        @BindView(R2.id.status)
         TextView status;
-
-        @BindView(R2.id.city)
         TextView city;
-
-        @BindView(R2.id.time)
         TextView time;
+
+//        @BindView(R2.id.status)
+//        TextView status;
+//
+//        @BindView(R2.id.city)
+//        TextView city;
+//
+//        @BindView(R2.id.time)
+//        TextView time;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+
+            status = (TextView) itemView.findViewById(R2.id.status);
+            city = (TextView) itemView.findViewById(R2.id.city);
+            time = (TextView) itemView.findViewById(R2.id.time);
+//            ButterKnife.bind(this, itemView);
         }
 
     }
