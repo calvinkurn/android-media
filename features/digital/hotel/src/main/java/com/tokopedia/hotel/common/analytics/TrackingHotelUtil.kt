@@ -131,9 +131,9 @@ class TrackingHotelUtil {
 
     fun hotelViewDetails(hotelName: String, hotelId: Int, available: Boolean, price: Int, directPayment: Boolean){
         val map = mutableMapOf<String, Any?>()
-        map[EVENT] = ADD_TO_CART
+        map[EVENT] = VIEW_HOTEL
         map[EVENT_CATEGORY] = DIGITAL_NATIVE
-        map[EVENT_ACTION] = CHOOSE_ROOM
+        map[EVENT_ACTION] = VIEW_HOTEL_PDP
         map[EVENT_LABEL] = "$HOTEL_LABEL - $hotelId - $available - $price - $directPayment"
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
                 "view", DataLayer.mapOf(
