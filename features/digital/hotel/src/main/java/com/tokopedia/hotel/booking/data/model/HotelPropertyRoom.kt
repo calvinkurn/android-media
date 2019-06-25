@@ -33,10 +33,6 @@ data class HotelPropertyRoom (
     @Expose
     val isCCRequired: Boolean = false,
 
-    @SerializedName("isDirectPayment")
-    @Expose
-    val isDirectPayment: Boolean = false,
-
     @SerializedName("paymentTerms")
     @Expose
     val paymentTerms: PaymentTerms = PaymentTerms(),
