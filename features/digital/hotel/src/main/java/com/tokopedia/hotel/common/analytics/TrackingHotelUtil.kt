@@ -67,17 +67,24 @@ class TrackingHotelUtil {
         map.put(EVENT_LABEL, "$HOTEL_LABEL - $destination - $roomCount - $guestCount - $dayDiff - $duration")
         map.put(ECOMMERCE_LABEL, DataLayer.mapOf(
                 "impressions", DataLayer.mapOf(
-                        PRODUCTS_LABEL, DataLayer.listOf(products.map {
-                                DataLayer.mapOf(
-                                        "name", it.name,
-                                        "id", it.id,
-                                        "price", it.roomPrice.firstOrNull() ?: 0,
-                                        "direct_payment", it.isDirectPayment
-                                )
-                        })
+                        PRODUCTS_LABEL, getViewHotelListProducts(products)
                 )
         ))
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+
+    private fun getViewHotelListProducts(listProduct: List<Property>): List<Any> {
+        val list = ArrayList<Map<String, Any>>()
+        for (product in listProduct) {
+            val map = java.util.HashMap<String, Any>()
+            map["name"] = product.name
+            map["id"] = product.id
+            map["price"] = product.roomPrice.firstOrNull() ?: 0
+            map["direct_payment"] = product.isDirectPayment
+
+            list.add(map)
+        }
+        return DataLayer.listOf(*list.toTypedArray<Any>())
     }
 
     fun chooseHotel(property: Property,
@@ -93,12 +100,12 @@ class TrackingHotelUtil {
         map.put(EVENT_ACTION, CHOOSE_HOTEL)
         map.put(EVENT_LABEL, "$HOTEL_LABEL - $hotelId - $dayDiff - $price")
         map.put(ECOMMERCE_LABEL, DataLayer.mapOf(
-                "click", DataLayer.mapOf(PRODUCTS_LABEL, getProducts(products))
+                "click", DataLayer.mapOf(PRODUCTS_LABEL, getChooseHotelProducts(products))
         ))
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    private fun getProducts(listProduct: List<Property>): List<Any> {
+    private fun getChooseHotelProducts(listProduct: List<Property>): List<Any> {
         val list = ArrayList<Map<String, Any>>()
         for ((index, product) in listProduct.withIndex()) {
             val map = java.util.HashMap<String, Any>()
