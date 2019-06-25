@@ -17,7 +17,6 @@ import com.tokopedia.design.component.ButtonCompat
 
 class PromoNotEligibleBottomsheet : BottomSheets() {
 
-    lateinit var tvTitle: TextView
     lateinit var tvInfo: TextView
     lateinit var rvPromoList: RecyclerView
     lateinit var btnContinue: ButtonCompat
@@ -47,7 +46,6 @@ class PromoNotEligibleBottomsheet : BottomSheets() {
     }
 
     override fun initView(dialogView: View) {
-        tvTitle = dialogView.findViewById(R.id.tv_title)
         tvInfo = dialogView.findViewById(R.id.tv_info)
         rvPromoList = dialogView.findViewById(R.id.rv_promo_list)
         btnContinue = dialogView.findViewById(R.id.btn_continue)
