@@ -40,7 +40,9 @@ class ReportInputDetailFragment : BaseDaggerFragment() {
             input.filters = arrayOf(InputFilter.LengthFilter(maxChar))
 
         btn_cont.setOnClickListener {
-            val intent = Intent().putExtra(INPUT_VALUE, input.text.toString())
+            val inputText = input.text.toString()
+            val intent = Intent().putExtra(INPUT_VALUE, inputText)
+                    .putExtra(VALID_VALUE, inputText.length in minChar..maxChar)
             activity?.run {
                 setResult(Activity.RESULT_OK, intent)
                 finish()
@@ -61,6 +63,7 @@ class ReportInputDetailFragment : BaseDaggerFragment() {
         private const val ARG_VALUE = "arg_value"
 
         const val INPUT_VALUE = "input_value"
+        const val VALID_VALUE = "inputIsValid"
 
         fun createInstance(minChar: Int, maxChar: Int, value: String) = ReportInputDetailFragment().also {
             fragment -> fragment.arguments = Bundle().apply {

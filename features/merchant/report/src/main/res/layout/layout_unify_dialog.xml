@@ -102,7 +102,7 @@
 
         <Button android:id="@+id/dialog_btn_secondary"
             android:layout_width="0dp"
-            android:layout_height="@dimen/dp_32"
+            android:layout_height="@dimen/dp_40"
             android:background="@drawable/report_bg_button_white_greenborder"
             android:textColor="@color/tkpd_main_green"
             android:textAllCaps="false"
@@ -120,7 +120,7 @@
 
         <Button android:id="@+id/dialog_btn_primary"
             android:layout_width="0dp"
-            android:layout_height="@dimen/dp_32"
+            android:layout_height="@dimen/dp_40"
             android:background="@drawable/bg_button_green"
             android:textColor="@color/white"
             android:textAllCaps="false"
@@ -138,7 +138,7 @@
 
         <Button android:id="@+id/dialog_btn_secondary_long"
             android:layout_width="0dp"
-            android:layout_height="@dimen/dp_32"
+            android:layout_height="@dimen/dp_40"
             android:background="@color/white"
             android:textColor="@color/Neutral_N400"
             android:textAllCaps="false"

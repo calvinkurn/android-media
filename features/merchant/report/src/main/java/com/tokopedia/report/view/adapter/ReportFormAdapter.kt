@@ -35,6 +35,8 @@ class ReportFormAdapter(private val item: ProductReportReason,
                         private val addPhotoListener: ((String, Int) -> Unit),
                         private val submitForm: (()-> Unit)) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    private var submitEnabled = false
+
     val trackingReasonLabel: String
         get() = item.value.toLowerCase()
 
@@ -63,6 +65,8 @@ class ReportFormAdapter(private val item: ProductReportReason,
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (position == 0) {
             (holder as HeaderViewHolder).bind(item.value, item.detail)
+        } else if (getItemViewType(position) == TYPE_SUBMIT){
+            (holder as SubmitViewHolder).validateButtonSubmit()
         } else if (position < itemCount - 1){
             val (_, field) = items[position - 1]
             if (holder is LinkViewHolder && field is ProductReportReason.AdditionalInfo){
@@ -100,8 +104,9 @@ class ReportFormAdapter(private val item: ProductReportReason,
         notifyDataSetChanged()
     }
 
-    fun updateTextInput(key: String, input: String?) {
+    fun updateTextInput(key: String, input: String?, isButtonNeedEnabled: Boolean) {
         inputs[key] = input ?: ""
+        submitEnabled = isButtonNeedEnabled
         notifyDataSetChanged()
     }
 
@@ -157,8 +162,8 @@ class ReportFormAdapter(private val item: ProductReportReason,
             }
         }
 
-        fun validateButtonSubmit(inputValid: Boolean) {
-            itemView.btn_lapor.isEnabled =  inputValid
+        fun validateButtonSubmit() {
+            itemView.btn_lapor.isEnabled =  submitEnabled
         }
     }
 

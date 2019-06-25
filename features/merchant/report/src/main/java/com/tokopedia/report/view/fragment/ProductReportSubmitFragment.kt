@@ -191,11 +191,10 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
             if (requestCode == REQUEST_CODE_DETAIL_INPUT){
                 photoTypeSelected?.let {
                     val input = data.getStringExtra(ReportInputDetailFragment.INPUT_VALUE)
-                    adapter.updateTextInput(it, input)
-                    val holder = recycler_view.findViewHolderForAdapterPosition(adapter.itemCount - 1)
-                    if (holder is ReportFormAdapter.SubmitViewHolder){
-                        holder.validateButtonSubmit(isInputValid)
-                    }
+                    val isValid = data.getBooleanExtra(ReportInputDetailFragment.VALID_VALUE, false)
+                    adapter.updateTextInput(it, input, isInputValid && isValid)
+
+
                 }
             }
         } else {
