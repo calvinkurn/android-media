@@ -11,6 +11,7 @@ import com.tokopedia.hotel.booking.data.model.HotelCheckoutParam
 import com.tokopedia.hotel.booking.data.model.HotelCheckoutResponse
 import com.tokopedia.hotel.common.getSuccessData
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
@@ -39,7 +40,7 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
 
             hotelCartResult.value = Success(data)
         }) {
-            it.printStackTrace()
+            hotelCartResult.value = Fail(it)
 //            val gson = Gson()
 //            hotelCartResult.value = Success(gson.fromJson(dummy,
 //                    HotelCart::class.java))
