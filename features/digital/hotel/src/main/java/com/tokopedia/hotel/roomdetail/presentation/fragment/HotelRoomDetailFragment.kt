@@ -15,6 +15,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -81,14 +82,17 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         super.onActivityCreated(savedInstanceState)
 
         roomDetailViewModel.addCartResponseResult.observe(this, android.arch.lifecycle.Observer {
+            loading_screen.visibility = View.GONE
             when (it) {
                 is Success -> {
                     val cartId = it.data.cartId
                     startActivity(HotelBookingActivity.getCallingIntent(context!!, cartId))
                 }
                 is Fail -> {
+                    NetworkErrorHelper.showRedSnackbar(activity, it.throwable.message)
                 }
             }
+            room_detail_button.isEnabled = true
         })
     }
 
@@ -309,6 +313,8 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         tv_room_detail_price.text = hotelRoom.roomPrice.roomPrice
         room_detail_button.text = getString(R.string.hotel_room_list_choose_room_button)
         room_detail_button.setOnClickListener {
+            loading_screen.visibility = View.VISIBLE
+            room_detail_button.isEnabled = false
             trackingHotelUtil.hotelChooseRoomDetails(hotelRoom)
             if (userSessionInterface.isLoggedIn) {
                 roomDetailViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart), addToCartParam)

@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -114,11 +115,13 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         })
 
         roomListViewModel.addCartResponseResult.observe(this, android.arch.lifecycle.Observer {
+            loading_screen.visibility = View.GONE
             when (it) {
                 is Success -> {
                     startActivity(HotelBookingActivity.getCallingIntent(context!!,it.data.cartId))
                 }
                 is Fail -> {
+                    NetworkErrorHelper.showRedSnackbar(activity, it.throwable.message)
                 }
             }
         })
@@ -359,6 +362,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     }
 
     override fun onClickBookListener(room: HotelRoom) {
+        loading_screen.visibility = View.VISIBLE
         trackingHotelUtil.hotelChooseRoom(room, roomList)
         if (userSessionInterface.isLoggedIn) {
             roomListViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart),
