@@ -55,6 +55,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.libraries.permissionchecker)
 
     implementation project(rootProject.ext.features.transactionanalytics)
     implementation project(rootProject.ext.features.transactiondata)
@@ -108,7 +109,6 @@ dependencies {
     }
 
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    annotationProcessor rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 
     implementation rootProject.ext.viewDependencies.recyclerMultiSelect
     implementation rootProject.ext.viewDependencies.appIntro

@@ -13,6 +13,8 @@ import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core2.R;
@@ -23,7 +25,6 @@ import com.tokopedia.inbox.rescenter.inbox.model.ResCenterHeader;
 import com.tokopedia.inbox.rescenter.inbox.model.ResCenterInboxItem;
 import com.tokopedia.inbox.rescenter.inbox.model.ResolutionDetail;
 import com.tokopedia.inbox.rescenter.inbox.presenter.InboxResCenterPresenter;
-import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.track.TrackApp;
 
@@ -174,21 +175,18 @@ public class ResCenterInboxAdapter extends ResCenterExtendedAdapter {
         String linkStatus = context.getString(R.string.msg_no_res_center1);
         String linkTransactions = context.getString(R.string.msg_no_res_center2);
 
-        stringNoResult.setSpan(redirect(TransactionPurchaseRouter.createIntentPurchaseActivity(context), TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER), stringNoResult.toString().indexOf(linkStatus), stringNoResult.toString().indexOf(linkStatus) + linkStatus.length(), 0);
-        stringNoResult.setSpan(redirect(TransactionPurchaseRouter.createIntentPurchaseActivity(context), TransactionPurchaseRouter.TAB_POSITION_PURCHASE_ALL_ORDER), stringNoResult.toString().indexOf(linkTransactions), stringNoResult.toString().indexOf(linkTransactions) + linkTransactions.length(), 0);
+        stringNoResult.setSpan(redirect(ApplinkConst.PURCHASE_SHIPPED), stringNoResult.toString().indexOf(linkStatus), stringNoResult.toString().indexOf(linkStatus) + linkStatus.length(), 0);
+        stringNoResult.setSpan(redirect(ApplinkConst.PURCHASE_HISTORY), stringNoResult.toString().indexOf(linkTransactions), stringNoResult.toString().indexOf(linkTransactions) + linkTransactions.length(), 0);
 
         holder.additionalInfoText.setMovementMethod(LinkMovementMethod.getInstance());
         holder.additionalInfoText.setText(stringNoResult);
     }
 
-    private ClickableSpan redirect(final Intent intent, final int stateTab) {
+    private ClickableSpan redirect(String appLink) {
         return new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                Bundle bundle = new Bundle();
-                bundle.putInt(TransactionPurchaseRouter.EXTRA_STATE_TAB_POSITION, stateTab);
-                intent.putExtras(bundle);
-                context.startActivity(intent);
+                RouteManager.route(context, appLink);
                 ((Activity) context).finish();
             }
 

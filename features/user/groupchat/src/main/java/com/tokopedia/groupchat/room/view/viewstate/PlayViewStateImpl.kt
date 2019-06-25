@@ -58,7 +58,6 @@ import com.tokopedia.groupchat.room.view.fragment.PlayWebviewDialogFragment
 import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
-import com.tokopedia.groupchat.room.view.viewmodel.InteractiveButton
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -409,10 +408,13 @@ open class PlayViewStateImpl(
     }
 
     override fun onSuccessGetInfoFirstTime(it: ChannelInfoViewModel, childFragmentManager: FragmentManager) {
+        showBottomSheetFirstTime(it)
+        setDefaultBackground()
+        onSuccessGetInfo(it, childFragmentManager)
 
-        viewModel = it
-        viewModel?.infoUrl = it.infoUrl
+    }
 
+    override fun onSuccessGetInfo(it: ChannelInfoViewModel, childFragmentManager: FragmentManager) {
         loadingView.hide()
 
         if (it.isFreeze) {
@@ -425,23 +427,27 @@ open class PlayViewStateImpl(
         setSponsorData(it.adsId, it.adsImageUrl, it.adsName)
         initVideoFragment(childFragmentManager, it.videoId, it.isVideoLive)
         setBottomView()
-        showBottomSheetFirstTime(it)
         showLoginButton(!userSession.isLoggedIn)
         it.settingGroupChat?.maxChar?.let {
             replyEditText.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(it))
         }
-        onBackgroundUpdated(it.backgroundViewModel)
         errorView.hide()
 
-        autoAddSprintSale()
-
         setPinnedMessage(it)
+        onBackgroundUpdated(it.backgroundViewModel)
+
+        viewModel = it
+        viewModel?.infoUrl = it.infoUrl
+        autoAddSprintSale()
+    }
+
+    fun setDefaultBackground() {
+        var background = defaultBackground[0]
+        activity.window?.setBackgroundDrawable(MethodChecker.getDrawable(view.context, background))
     }
 
     override fun onBackgroundUpdated(it: BackgroundViewModel) {
-        var background = defaultBackground[0]
-        activity.window?.setBackgroundDrawable(MethodChecker.getDrawable(view.context, background))
-
+        var background: Int
         lateinit var url: String
         it.let {
             var index = defaultType.indexOf(it.default)
@@ -853,87 +859,89 @@ open class PlayViewStateImpl(
                 setChatListHasSpaceOnTop(false)
                 liveIndicator.showWithCondition(isVideoLive)
                 youTubePlayer?.let {
-                    it.cueVideo(videoId)
+                    if (videoId != viewModel?.videoId) {
+                        it.cueVideo(videoId)
+                    }
                     autoPlayVideo()
                 }
 
-                videoFragment.initialize(
-                        YoutubePlayerConstant.GOOGLE_API_KEY,
-                        object : YouTubePlayer.OnInitializedListener {
-                            override fun onInitializationSuccess(provider: YouTubePlayer.Provider, player: YouTubePlayer, wasRestored: Boolean) {
-                                if (!wasRestored) {
-                                    try {
-                                        youTubePlayer = player
+                videoFragment.initialize(YoutubePlayerConstant.GOOGLE_API_KEY, getVideoInitializer(videoId))
+            }
+        }
+    }
 
-                                        youTubePlayer?.let {
-                                            it.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT)
-                                            it.setShowFullscreenButton(false)
-                                            it.cueVideo(viewModel?.videoId)
-                                            autoPlayVideo()
+    fun getVideoInitializer(videoId: String): YouTubePlayer.OnInitializedListener{
+        return object : YouTubePlayer.OnInitializedListener {
+            override fun onInitializationSuccess(provider: YouTubePlayer.Provider, player: YouTubePlayer, wasRestored: Boolean) {
+                if (!wasRestored) {
+                    try {
+                        youTubePlayer = player
 
-                                            it.setPlaybackEventListener(object : YouTubePlayer.PlaybackEventListener {
-                                                internal var TAG = "youtube"
+                        youTubePlayer?.let {
+                            it.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT)
+                            it.setShowFullscreenButton(false)
+                            it.cueVideo(videoId)
+                            autoPlayVideo()
 
-                                                override fun onPlaying() {
-                                                    if (onPlayTime == 0L) {
-                                                        onPlayTime = System.currentTimeMillis() / 1000L
-                                                    }
-                                                    analytics.eventClickAutoPlayVideo(viewModel?.channelId)
-                                                    hideVideoToggle.hide()
-                                                }
+                            it.setPlaybackEventListener(object : YouTubePlayer.PlaybackEventListener {
+                                internal var TAG = "youtube"
 
-                                                override fun onPaused() {
-                                                    if (!showVideoToggle.isShown) {
-                                                        hideVideoToggle.show()
-                                                    }
-                                                    analytics.eventClickPauseVideo(viewModel?.channelId)
-                                                    onPauseTime = System.currentTimeMillis() / 1000L
-                                                }
-
-                                                override fun onStopped() {
-                                                }
-
-                                                override fun onBuffering(b: Boolean) {
-                                                }
-
-                                                override fun onSeekTo(i: Int) {}
-                                            })
-
-                                            it.setPlayerStateChangeListener(object : YouTubePlayer.PlayerStateChangeListener {
-                                                override fun onLoading() {
-                                                }
-
-                                                override fun onLoaded(s: String) {
-                                                }
-
-                                                override fun onAdStarted() {
-                                                }
-
-                                                override fun onVideoStarted() {
-                                                }
-
-                                                override fun onVideoEnded() {
-                                                    onEndTime = System.currentTimeMillis() / 1000L
-                                                }
-
-                                                override fun onError(errorReason: YouTubePlayer.ErrorReason) {
-                                                }
-                                            })
-                                        }
-
-                                    } catch (e: Exception) {
-                                        onInitializationFailure(provider, YouTubeInitializationResult.SERVICE_MISSING)
+                                override fun onPlaying() {
+                                    if (onPlayTime == 0L) {
+                                        onPlayTime = System.currentTimeMillis() / 1000L
                                     }
-
+                                    analytics.eventClickAutoPlayVideo(viewModel?.channelId)
+                                    hideVideoToggle.hide()
                                 }
-                            }
 
-                            override fun onInitializationFailure(provider: YouTubePlayer.Provider, youTubeInitializationResult: YouTubeInitializationResult) {
-                                Log.e(GroupChatActivity::class.java.simpleName, "Youtube Player View initialization failed")
-                            }
+                                override fun onPaused() {
+                                    if (!showVideoToggle.isShown) {
+                                        hideVideoToggle.show()
+                                    }
+                                    analytics.eventClickPauseVideo(viewModel?.channelId)
+                                    onPauseTime = System.currentTimeMillis() / 1000L
+                                }
+
+                                override fun onStopped() {
+                                }
+
+                                override fun onBuffering(b: Boolean) {
+                                }
+
+                                override fun onSeekTo(i: Int) {}
+                            })
+
+                            it.setPlayerStateChangeListener(object : YouTubePlayer.PlayerStateChangeListener {
+                                override fun onLoading() {
+                                }
+
+                                override fun onLoaded(s: String) {
+                                }
+
+                                override fun onAdStarted() {
+                                }
+
+                                override fun onVideoStarted() {
+                                }
+
+                                override fun onVideoEnded() {
+                                    onEndTime = System.currentTimeMillis() / 1000L
+                                }
+
+                                override fun onError(errorReason: YouTubePlayer.ErrorReason) {
+                                }
+                            })
                         }
-                )
 
+                    } catch (e: Exception) {
+                        onInitializationFailure(provider, YouTubeInitializationResult.SERVICE_MISSING)
+                    }
+
+                }
+            }
+
+            override fun onInitializationFailure(provider: YouTubePlayer.Provider, youTubeInitializationResult: YouTubeInitializationResult) {
+                Log.e(GroupChatActivity::class.java.simpleName, "Youtube Player View initialization failed")
             }
         }
     }
