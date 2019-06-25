@@ -47,7 +47,7 @@ import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesEstimationModel
 import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
 import com.tokopedia.recommendation_widget_common.data.mapper.RecommendationEntityMapper
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationModel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -75,7 +75,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
     val productInfoP3resp = MutableLiveData<ProductInfoP3>()
 
     val loadOtherProduct = MutableLiveData<RequestDataState<List<ProductOther>>>()
-    val loadTopAdsProduct = MutableLiveData<RequestDataState<RecommendationModel>>()
+    val loadTopAdsProduct = MutableLiveData<RequestDataState<RecommendationWidget>>()
 
     var multiOrigin : WarehouseInfo = WarehouseInfo()
     val userId: String
@@ -588,8 +588,8 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
             otherProductDef?.await()?.let { loadOtherProduct.value = it }
             topAdsProductDef?.await()?.let {
-                val recommendationModel = RecommendationEntityMapper.mappingToRecommendationModel((it.data as? Success)?.data?.get(0) ?: return@launch)
-                loadTopAdsProduct.value = Loaded(Success(recommendationModel))
+                val recommendationWidget = RecommendationEntityMapper.mappingToRecommendationModel((it.data as? Success)?.data?: return@launch)
+                loadTopAdsProduct.value = Loaded(Success(recommendationWidget.get(0)))
             }
             lazyNeedForceUpdate = false
         }

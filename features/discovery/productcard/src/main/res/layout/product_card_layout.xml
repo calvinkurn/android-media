@@ -181,6 +181,7 @@
             android:layout_gravity="center_vertical"
             app:layout_constraintStart_toStartOf="@+id/image"
             app:layout_constraintTop_toBottomOf="@+id/textLocation"
+            app:layout_constraintBottom_toBottomOf="parent"
             tools:background="@color/red_150"
             tools:layout_height="@dimen/dp_10" />
 
@@ -195,6 +196,7 @@
             android:gravity="center_vertical"
             app:layout_constraintStart_toEndOf="@+id/rating"
             app:layout_constraintTop_toBottomOf="@+id/textLocation"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:typographyType="body_3"
             tools:background="@color/red_150"
             tools:width="20dp" />

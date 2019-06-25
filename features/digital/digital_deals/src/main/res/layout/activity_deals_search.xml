@@ -47,7 +47,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/dp_40"
                         android:layout_marginLeft="@dimen/dp_4"
-
                         android:layout_marginTop="@dimen/dp_7"
                         android:layout_marginRight="@dimen/dp_16"
                         android:layout_marginBottom="@dimen/dp_7" />
@@ -151,6 +150,23 @@
                 android:visibility="gone"
                 android:padding="@dimen/dp_8"
                 app:layout_scrollFlags="scroll" />
+
+            <TextView
+                android:id="@+id/num_of_brands"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_green_selected_border"
+                android:text="@string/brand_count_text"
+                android:textSize="@dimen/sp_12"
+                android:textColor="#03ac0e"
+                android:gravity="center"
+                android:visibility="gone"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginBottom="@dimen/dp_4"
+                app:layout_scrollFlags="scroll"
+                android:padding="@dimen/dp_8"/>
 
             <LinearLayout
                 android:id="@+id/no_brands"
