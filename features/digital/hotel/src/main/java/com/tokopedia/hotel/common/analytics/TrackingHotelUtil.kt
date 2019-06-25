@@ -166,11 +166,13 @@ class TrackingHotelUtil {
         map.put(EVENT_LABEL, "$HOTEL_LABEL - $hotelId - $roomId - $price")
         map.put(ECOMMERCE_LABEL, DataLayer.mapOf(
                 "add", DataLayer.mapOf(
-                        PRODUCTS_LABEL, DataLayer.mapOf(
-                                "name", room.roomInfo.name,
-                                "id", room.roomId,
-                                "price", room.roomPrice.priceAmount.toInt(),
-                                "position", position
+                        PRODUCTS_LABEL, DataLayer.listOf(
+                                DataLayer.mapOf(
+                                        "name", room.roomInfo.name,
+                                        "id", room.roomId,
+                                        "price", room.roomPrice.priceAmount.toInt(),
+                                        "position", position
+                                )
                         )
                 )
         ))
@@ -204,10 +206,12 @@ class TrackingHotelUtil {
         map.put(EVENT_LABEL, "$HOTEL_LABEL - $hotelId - $roomId - $price")
         map.put(ECOMMERCE_LABEL, DataLayer.mapOf(
                 "add", DataLayer.mapOf(
-                        PRODUCTS_LABEL, DataLayer.mapOf(
-                                "name", room.roomInfo.name,
-                                "id", room.roomId,
-                                "price", room.roomPrice.priceAmount.toInt()
+                        PRODUCTS_LABEL, DataLayer.listOf(
+                                DataLayer.mapOf(
+                                        "name", room.roomInfo.name,
+                                        "id", room.roomId,
+                                        "price", room.roomPrice.priceAmount.toInt()
+                                )
                         )
                 )
         ))
