@@ -28,7 +28,7 @@ abstract class SettingViewHolder<T : Setting>(
             if (element.status != isChecked) {
                 element.status = isChecked
                 updateSiblingAndChild(element, isChecked)
-                updateUserSetting(element)
+                updateUserSetting(element, isChecked)
             }
         }
     }
@@ -44,7 +44,7 @@ abstract class SettingViewHolder<T : Setting>(
 
     abstract fun updateSiblingAndChild(element: T, checked: Boolean)
 
-    private fun updateUserSetting(element: T) {
+    private fun updateUserSetting(element: T, checked: Boolean) {
 
     }
 
