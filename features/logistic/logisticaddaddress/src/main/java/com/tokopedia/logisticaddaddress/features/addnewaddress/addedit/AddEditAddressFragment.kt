@@ -218,7 +218,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                 AddNewAddressAnalytics.eventClickFieldNoPonselChangeAddressPositive()
             }
             btn_map.setOnClickListener {
-                goToPinpointActivity(currentLat, currentLong, token, false, districtId,
+                goToPinpointActivity(currentLat, currentLong, false, token, false, districtId,
                         isMismatchSolved, saveAddressDataModel)
                 AddNewAddressAnalytics.eventClickButtonUbahPinPointChangeAddressPositive()
             }
@@ -612,7 +612,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                     view?.let { it1 -> activity?.let { it2 -> AddNewAddressUtils.showToastError(getString(R.string.choose_district_first), it1, it2) } }
                     AddNewAddressAnalytics.eventViewToasterPilihKotaDanKodePosTerlebihDahulu()
                 } else {
-                    goToPinpointActivity(currentLat, currentLong, token, false, districtId,
+                    goToPinpointActivity(currentLat, currentLong, false, token, true, districtId,
                             isMismatchSolved, saveAddressDataModel)
                     AddNewAddressAnalytics.eventClickButtonPilihLokasiIni()
                 }
@@ -631,7 +631,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             btn_map.layoutParams = params
             setOnClickListener {
                 saveAddressDataModel?.editDetailAddress = et_detail_alamat_mismatch.text.toString()
-                goToPinpointActivity(currentLat, currentLong, token, false, districtId,
+                goToPinpointActivity(currentLat, currentLong, false, token, true, districtId,
                         isMismatchSolved, saveAddressDataModel)
             }
         }
@@ -871,10 +871,10 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         }
     }
 
-    private fun goToPinpointActivity(lat: Double?, long: Double?, token: Token?, isPolygon: Boolean, districtId: Int?,
+    private fun goToPinpointActivity(lat: Double?, long: Double?, isShowAutocomplete: Boolean, token: Token?, isPolygon: Boolean, districtId: Int?,
                                      isMismatchSolved: Boolean, saveAddressDataModel: SaveAddressDataModel?) {
         startActivityForResult(context?.let {
-            PinpointMapActivity.newInstance(it, lat, long, token, isPolygon,
+            PinpointMapActivity.newInstance(it, lat, long, isShowAutocomplete, token, isPolygon,
                     districtId, isMismatchSolved, saveAddressDataModel, true)
         }, FINISH_PINPOINT_FLAG)
     }

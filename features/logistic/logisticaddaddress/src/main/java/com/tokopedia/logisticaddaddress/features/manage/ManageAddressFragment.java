@@ -204,8 +204,8 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
         Token token = mPresenter.getToken();
         if (data == null) {
             if (isAddNewAddressEnabled()) {
-                startActivityForResult(PinpointMapActivity.Companion.newInstance(getActivity(),
-                        AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, token,
+                startActivityForResult(PinpointMapActivity.newInstance(getActivity(),
+                        AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
                         false, 0, false, null,
                         false), REQUEST_CODE_PARAM_CREATE);
 
@@ -217,17 +217,19 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
             }
 
         } else {
-            if (isAddNewAddressEnabled()) {
+            // edit address
+
+            /*if (isAddNewAddressEnabled()) {
                 startActivityForResult(PinpointMapActivity.Companion.newInstance(getActivity(),
                         AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, token,
                         false, 0, false, null,
                         false), REQUEST_CODE_PARAM_EDIT);
-            } else {
+            } else {*/
                 startActivityForResult(
                     AddAddressActivity.createInstanceEditAddressFromManageAddress(
                             getActivity(), data, token
                     ), REQUEST_CODE_PARAM_EDIT);
-            }
+            // }
         }
     }
 

@@ -525,7 +525,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
                 if (isAddNewAddressEnabled()) {
                     startActivityForResult(PinpointMapActivity.Companion.newInstance(getActivity(),
-                            AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, token,
+                            AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
                             false, 0, false, null,
                             false), ADD_NEW_ADDRESS_CREATED);
 
@@ -552,7 +552,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
                 if (isAddNewAddressEnabled()) {
                     startActivityForResult(PinpointMapActivity.Companion.newInstance(getActivity(),
-                            AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, token,
+                            AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
                             false, 0, false, null,
                             false), ADD_NEW_ADDRESS_CREATED);
 
