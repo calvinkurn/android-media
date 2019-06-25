@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.core.tracking.model.tracking.TrackHistory;
 import com.tokopedia.core.util.MethodChecker;
@@ -35,22 +34,12 @@ public class TrackingHistoryAdapter extends BaseLinearRecyclerViewAdapter {
         TextView city;
         TextView time;
 
-//        @BindView(R2.id.status)
-//        TextView status;
-//
-//        @BindView(R2.id.city)
-//        TextView city;
-//
-//        @BindView(R2.id.time)
-//        TextView time;
-
         public ViewHolder(View itemView) {
             super(itemView);
 
-            status = (TextView) itemView.findViewById(R2.id.status);
-            city = (TextView) itemView.findViewById(R2.id.city);
-            time = (TextView) itemView.findViewById(R2.id.time);
-//            ButterKnife.bind(this, itemView);
+            status = (TextView) itemView.findViewById(R.id.status);
+            city = (TextView) itemView.findViewById(R.id.city);
+            time = (TextView) itemView.findViewById(R.id.time);
         }
 
     }
