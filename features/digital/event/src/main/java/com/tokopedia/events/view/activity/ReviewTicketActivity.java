@@ -22,7 +22,6 @@ import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
-import com.tokopedia.events.R2;
 import com.tokopedia.events.view.contractor.EventReviewTicketsContractor;
 import com.tokopedia.events.view.presenter.EventReviewTicketPresenter;
 import com.tokopedia.events.view.utils.CurrencyUtil;
@@ -34,9 +33,6 @@ import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
 import com.tokopedia.oms.scrooge.ScroogePGUtil;
 
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class ReviewTicketActivity extends EventBaseActivity implements
         EventReviewTicketsContractor.EventReviewTicketsView, View.OnClickListener, View.OnFocusChangeListener {
@@ -61,7 +57,6 @@ public class ReviewTicketActivity extends EventBaseActivity implements
     View updateEmail;
     View updateNumber;
     ScrollView scrollView;
-    @BindView(R2.id.form_layout)
     View formLayout;
     EditText edForm1;
     EditText edForm2;
@@ -195,8 +190,6 @@ public class ReviewTicketActivity extends EventBaseActivity implements
         ImageHandler.loadImageCover2(eventImageSmall, packageViewModel.getThumbnailApp());
         timeHolder = new ImageTextViewHolder(this);
         addressHolder = new ImageTextViewHolder(this);
-        ButterKnife.bind(timeHolder, eventTimeTv);
-        ButterKnife.bind(addressHolder, eventAddressTv);
         eventNameTv.setText(packageViewModel.getDisplayName());
         if (timerange == null || timerange.length() == 0) {
             eventTimeTv.setVisibility(View.GONE);

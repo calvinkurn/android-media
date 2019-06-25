@@ -30,7 +30,6 @@ import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
-import com.tokopedia.events.R2;
 import com.tokopedia.events.ScanQrCodeRouter;
 import com.tokopedia.events.data.source.EventsUrl;
 import com.tokopedia.events.domain.model.scanticket.ScanResponseInfo;

@@ -27,9 +27,6 @@ import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 
 import java.util.List;
 
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-
 /**
  * Created by pranaymohapatra on 10/01/18.
  */
@@ -53,7 +50,6 @@ public class EventSearchActivity extends EventBaseActivity implements
 
     LinearLayoutManager layoutManager;
 
-    Unbinder unbinder;
     private EventsAnalytics eventsAnalytics;
 
     @Override
@@ -76,7 +72,6 @@ public class EventSearchActivity extends EventBaseActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        unbinder = ButterKnife.bind(this);
         searchInputView.setListener(this);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         eventsAnalytics = new EventsAnalytics();

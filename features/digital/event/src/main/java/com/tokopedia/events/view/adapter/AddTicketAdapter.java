@@ -16,8 +16,6 @@ import com.tokopedia.events.view.viewmodel.PackageViewModel;
 import java.util.Date;
 import java.util.List;
 
-import butterknife.ButterKnife;
-
 /**
  * Created by pranaymohapatra on 27/11/17.
  */
@@ -108,7 +106,6 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             btnIncrement.setOnClickListener(this);
             btnDecrement.setOnClickListener(this);
             thisView = view;
-            ButterKnife.bind(this, view);
         }
 
         void setViewHolder(PackageViewModel viewModel, int position) {

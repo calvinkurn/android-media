@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,8 +20,6 @@ import android.widget.Toast;
 
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
-import com.tokopedia.events.R2;
-import com.tokopedia.events.di.EventComponent;
 import com.tokopedia.events.view.contractor.SeatSelectionContract;
 import com.tokopedia.events.view.customview.CustomSeatAreaLayout;
 import com.tokopedia.events.view.customview.CustomSeatLayout;
@@ -40,9 +37,6 @@ import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.OnClick;
 
 public class SeatSelectionActivity extends EventBaseActivity implements
         SeatSelectionContract.SeatSelectionView, View.OnClickListener {

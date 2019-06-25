@@ -50,9 +50,6 @@ import com.tokopedia.events.view.viewmodel.CategoryViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-
 /**
  * Created by ashwanityagi on 02/11/17.
  */
@@ -60,7 +57,6 @@ public class EventsHomeActivity extends EventBaseActivity
         implements
         EventsContract.EventHomeView, View.OnClickListener {
 
-    private Unbinder unbinder;
     public static final int REQUEST_CODE_EVENTLOCATIONACTIVITY = 101;
     public static final int REQUEST_CODE_EVENTSEARCHACTIVITY = 901;
 
@@ -131,7 +127,6 @@ public class EventsHomeActivity extends EventBaseActivity
         defaultSection = getIntent().getStringExtra(EXTRA_SECTION);
         if (defaultSection == null || defaultSection.length() <= 1)
             defaultSection = TOP;
-        unbinder = ButterKnife.bind(this);
         eventsAnalytics = new EventsAnalytics();
         addToCalendar.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_event_calendar_green), null,
                 null, null);

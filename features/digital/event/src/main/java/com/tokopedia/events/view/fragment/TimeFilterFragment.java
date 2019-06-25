@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.events.R;
-import com.tokopedia.events.R2;
 import com.tokopedia.events.view.contractor.ICloseFragement;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet;
@@ -20,8 +19,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Calendar;
 import java.util.Date;
-
-import butterknife.OnClick;
 
 import static com.tokopedia.events.view.contractor.EventFilterContract.EVERYDAY;
 import static com.tokopedia.events.view.contractor.EventFilterContract.TIME_ID;
@@ -109,14 +106,6 @@ public class TimeFilterFragment extends Fragment implements View.OnClickListener
         return view;
     }
 
-
-    @OnClick(R2.id.tv_simpan)
-    public void onButtonPressed() {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(timeRange, startDate);
-        }
-    }
-
     @Override
     public void onClick(View v) {
         int id = v.getId();
@@ -148,6 +137,10 @@ public class TimeFilterFragment extends Fragment implements View.OnClickListener
             timeRange = EVERYDAY;
             startDate = 0;
             mListener.onFragmentInteraction(timeRange, startDate);
+        } else if (id == R.id.tv_simpan) {
+            if (mListener != null) {
+                mListener.onFragmentInteraction(timeRange, startDate);
+            }
         }
     }
 
