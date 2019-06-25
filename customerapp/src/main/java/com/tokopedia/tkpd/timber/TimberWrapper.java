@@ -28,7 +28,7 @@ public class TimberWrapper {
         Timber.uprootAll();
         boolean isDebug = BuildConfig.DEBUG;
         if (isDebug) {
-            Timber.plant(new Timber.DebugTree());
+            Timber.plant(new TimberDebugTree());
         } else {
             String logConfigString = remoteConfig.getString(ANDROID_CUSTOMER_APP_LOG_CONFIG);
             if (!TextUtils.isEmpty(logConfigString)) {

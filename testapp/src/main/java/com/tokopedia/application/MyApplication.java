@@ -15,7 +15,6 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.application.timber.TimberWrapper;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
@@ -26,7 +25,6 @@ import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.cpm.CharacterPerMinuteInterface;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.logger.LogSentryWrapper;
 import com.tokopedia.logger.LogWrapper;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
@@ -35,6 +33,8 @@ import com.tokopedia.tkpd.network.DataSource;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.user.session.UserSession;
+
+import timber.log.Timber;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -76,8 +76,9 @@ public class MyApplication extends BaseMainApplication
         FlowManager.initModule(TkpdCacheApiGeneratedDatabaseHolder.class);
         initCacheApi();
 
-        LogSentryWrapper.init(this);
-        TimberWrapper.init(this);
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+        }
     }
 
     public static class GTMAnalytics extends DummyAnalytics {
