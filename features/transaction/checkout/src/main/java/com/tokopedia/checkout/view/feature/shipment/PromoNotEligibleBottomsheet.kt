@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.view.feature.shipment
 
-import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
@@ -24,15 +23,10 @@ class PromoNotEligibleBottomsheet : BottomSheets() {
     var checkoutType: Int = 0
 
     companion object {
-        const val EXTRA_PROMO_LIST = "EXTRA_PROMO_LIST"
 
         @JvmStatic
-        fun createInstance(promoList: ArrayList<NotEligiblePromoHolderdata>): PromoNotEligibleBottomsheet {
-            return PromoNotEligibleBottomsheet().apply {
-                arguments = Bundle().apply {
-                    putParcelableArrayList(EXTRA_PROMO_LIST, promoList)
-                }
-            }
+        fun createInstance(): PromoNotEligibleBottomsheet {
+            return PromoNotEligibleBottomsheet()
         }
 
     }
@@ -49,17 +43,17 @@ class PromoNotEligibleBottomsheet : BottomSheets() {
         tvInfo = dialogView.findViewById(R.id.tv_info)
         rvPromoList = dialogView.findViewById(R.id.rv_promo_list)
         btnContinue = dialogView.findViewById(R.id.btn_continue)
-
-        val adapter = PromoNotEligibleAdapter()
-        adapter.notEligiblePromoHolderDataList = arguments?.getParcelableArrayList(EXTRA_PROMO_LIST)
-                ?: arrayListOf()
-        val linearLayoutManager = LinearLayoutManager(activity)
-        rvPromoList.layoutManager = linearLayoutManager
-        rvPromoList.adapter = adapter
-
         btnContinue.setOnClickListener {
             actionListener.onButtonContinueClicked(checkoutType)
         }
+    }
+
+    fun setupData(promoList: ArrayList<NotEligiblePromoHolderdata>) {
+        val adapter = PromoNotEligibleAdapter()
+        adapter.notEligiblePromoHolderDataList = promoList
+        val linearLayoutManager = LinearLayoutManager(activity)
+        rvPromoList.layoutManager = linearLayoutManager
+        rvPromoList.adapter = adapter
     }
 
     override fun title(): String {

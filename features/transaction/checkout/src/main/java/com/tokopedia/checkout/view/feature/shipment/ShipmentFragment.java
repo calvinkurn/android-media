@@ -1628,7 +1628,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                            int errorPosition, int requestCode) {
         if (shipmentData == null && result) {
             if (shipmentPresenter.isIneligbilePromoDialogEnabled()) {
-                List<NotEligiblePromoHolderdata> notEligiblePromoHolderdataList = new ArrayList<>();
+                ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataList = new ArrayList<>();
                 if (shipmentAdapter.getPromoGlobalStackData() != null &&
                         shipmentAdapter.getPromoGlobalStackData().getState() == TickerPromoStackingCheckoutView.State.FAILED) {
                     NotEligiblePromoHolderdata notEligiblePromoHolderdata = new NotEligiblePromoHolderdata();
@@ -1655,7 +1655,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }
 
                 if (notEligiblePromoHolderdataList.size() > 0) {
-                    showPromoNotEligibleDialog(requestCode);
+                    showPromoNotEligibleDialog(notEligiblePromoHolderdataList, requestCode);
                 } else {
                     doCheckout(requestCode);
                 }
@@ -2470,11 +2470,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentAdapter.updateShipmentCostModel();
     }
 
-    private void showPromoNotEligibleDialog(int requestCode) {
+    private void showPromoNotEligibleDialog(ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataList, int requestCode) {
         if (getActivity() != null && promoNotEligibleBottomsheet == null) {
-            promoNotEligibleBottomsheet = new PromoNotEligibleBottomsheet();
+            promoNotEligibleBottomsheet = PromoNotEligibleBottomsheet.Companion.createInstance();
             promoNotEligibleBottomsheet.setActionListener(this);
         }
+        promoNotEligibleBottomsheet.setupData(notEligiblePromoHolderdataList);
         promoNotEligibleBottomsheet.setCheckoutType(requestCode);
         promoNotEligibleBottomsheet.show(getFragmentManager(), "");
     }
