@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
+import com.tokopedia.loginregister.ticker.domain.usecase.TickerInfoUseCase
 import com.tokopedia.loginregister.login.view.listener.LoginContract
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.model.DiscoverViewModel
@@ -21,6 +22,7 @@ import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentia
 import com.tokopedia.loginregister.loginthirdparty.subscriber.LoginThirdPartySubscriber
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterValidationPojo
 import com.tokopedia.loginregister.registerinitial.domain.usecase.RegisterValidationUseCase
+import com.tokopedia.loginregister.ticker.subscriber.TickerInfoLoginSubscriber
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.domain.usecase.LoginEmailUseCase
 import com.tokopedia.usecase.RequestParams
@@ -40,7 +42,10 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
                                                    RegisterValidationUseCase,
                                                    private val loginEmailUseCase:
                                                    LoginEmailUseCase,
-                                                   private val loginWebviewUseCase: LoginWebviewUseCase
+                                                   private val loginWebviewUseCase:
+                                                   LoginWebviewUseCase,
+                                                   private val tickerInfoUseCase:
+                                                   TickerInfoUseCase
 )
     : BaseDaggerPresenter<LoginContract.View>(),
         LoginEmailPhoneContract.Presenter {
@@ -231,7 +236,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
         registerValidationUseCase.unsubscribe()
         loginEmailUseCase.unsubscribe()
         loginWebviewUseCase.unsubscribe()
-
+        tickerInfoUseCase.unsubscribe()
     }
 
     override fun discoverLogin() {
@@ -249,6 +254,11 @@ class LoginEmailPhonePresenter @Inject constructor(private val discoverUseCase: 
     override fun getLoginIdList(): ArrayList<String> {
         //NOT USED
         return ArrayList()
+    }
+
+    override fun getTickerInfo(){
+        tickerInfoUseCase.execute(TickerInfoUseCase.createRequestParam(TickerInfoUseCase.LOGIN_PAGE),
+                TickerInfoLoginSubscriber(viewEmailPhone))
     }
 
 }

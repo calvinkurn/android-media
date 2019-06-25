@@ -1,5 +1,7 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment;
 
+import android.content.Context;
+
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.discovery.common.data.DynamicFilterModel;
 
@@ -33,4 +35,6 @@ public interface BrowseSectionFragmentView extends CustomerView {
     String getScreenNameId();
 
     void setTotalSearchResultCount(String formattedResultCount);
+
+    Context getContext();
 }
