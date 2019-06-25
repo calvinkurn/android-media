@@ -196,6 +196,7 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
+        (supportFragmentManager.findFragmentByTag(TAG) as TopAdsDashboardFragment)
+                .onActivityResult(requestCode, resultCode, data)
     }
 }
