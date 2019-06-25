@@ -180,10 +180,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         selectedStatisticType = TopAdsStatisticsType.PRODUCT_ADS
         totalProductAd = Integer.MIN_VALUE
         val refresh = RefreshHandler(activity, swipe_refresh_layout, RefreshHandler.OnRefreshHandlerListener {
-            topAdsDashboardPresenter.clearStatisticsCache()
-            topAdsDashboardPresenter.clearTotalAdCache()
-            loadData()
-            loadAutoAds()
+            refreshData()
         })
         initTicker()
         initShopInfoComponent()
@@ -205,6 +202,13 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(activity) { loadData() }
         snackbarRetry?.setColorActionRetry(ContextCompat.getColor(activity!!, R.color.green_400))
         setHasOptionsMenu(true)
+    }
+
+    private fun refreshData() {
+        topAdsDashboardPresenter.clearStatisticsCache()
+        topAdsDashboardPresenter.clearTotalAdCache()
+        loadData()
+        loadAutoAds()
     }
 
     private fun initTicker() {
@@ -480,7 +484,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
                 goToCreditHistory(true)
         } else if (requestCode == AutoAdsWidgetView.REQUEST_KEY_AUTOADS_WIDGET && resultCode == Activity.RESULT_OK) {
             ToasterAutoAds.showClose(activity!!, getString(R.string.toaster_inactive_success), onClick = {
-                autoAdsWidgetView?.fetchData()
+                refreshData()
             })
         }
     }
