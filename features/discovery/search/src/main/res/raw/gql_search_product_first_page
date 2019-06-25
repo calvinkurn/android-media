@@ -57,11 +57,11 @@ query SearchProduct(
                 title
                 color
             }
-          	label_groups {
-                position
-                type
-                title
-            }
+          	#label_groups {
+            #    position
+            #    type
+            #    title
+            #}
             badges {
                 title
                 image_url
