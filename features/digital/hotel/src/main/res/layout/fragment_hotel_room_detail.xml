@@ -322,4 +322,11 @@
             app:buttonCompatType="transaction" />
 
     </LinearLayout>
+
+    <include
+        android:id="@+id/loading_screen"
+        layout="@layout/layout_hotel_loading_screen"
+        android:visibility="gone"
+        />
+
 </RelativeLayout>
