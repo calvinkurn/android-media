@@ -53,14 +53,16 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private String categoryEvents = "event";
     SetEventDetails setEventDetails;
     private int position;
+    private String orderId;
 
 
-    public ItemsAdapter(Context context, List<Items> itemsList, boolean isShortLayout, OrderListDetailPresenter presenter, SetEventDetails setEventDetails) {
+    public ItemsAdapter(Context context, List<Items> itemsList, boolean isShortLayout, OrderListDetailPresenter presenter, SetEventDetails setEventDetails, String orderId) {
         this.context = context;
         this.itemsList = itemsList;
         this.isShortLayout = isShortLayout;
         this.presenter = presenter;
         this.setEventDetails = setEventDetails;
+        this.orderId = orderId;
     }
 
     @Override
@@ -220,6 +222,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 metaDataInfo = gson.fromJson(item.getMetaData(), MetaDataInfo.class);
             }
             if (metaDataInfo != null) {
+                presenter.sendThankYouEvent(metaDataInfo);
                 if (itemType == ITEM_DEALS || itemType == ITEM_DEALS_SHORT || itemType == ITEM_EVENTS) {
                     if (TextUtils.isEmpty(metaDataInfo.getEntityImage())) {
                         ImageHandler.loadImage(context, dealImage, item.getImageUrl(), R.color.grey_1100, R.color.grey_1100);

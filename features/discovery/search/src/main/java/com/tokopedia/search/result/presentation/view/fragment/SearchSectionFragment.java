@@ -78,7 +78,7 @@ public abstract class SearchSectionFragment
 
     private SearchNavigationListener searchNavigationListener;
     private BottomSheetListener bottomSheetListener;
-    private RedirectionListener redirectionListener;
+    protected RedirectionListener redirectionListener;
     private GridLayoutManager gridLayoutManager;
     private LinearLayoutManager linearLayoutManager;
     private SwipeRefreshLayout refreshLayout;
@@ -98,25 +98,17 @@ public abstract class SearchSectionFragment
     SearchTracking searchTracking;
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        if (getUserVisibleHint()) {
-            setupSearchNavigation();
-        }
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initSpan();
+        initLayoutManager();
+        initSwipeToRefresh(view);
 
         if (savedInstanceState == null) {
             refreshLayout.post(this::onFirstTimeLaunch);
         } else {
             onRestoreInstanceState(savedInstanceState);
         }
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        initSpan();
-        initLayoutManager();
-        initSwipeToRefresh(view);
     }
 
     private void initSwipeToRefresh(View view) {
@@ -188,7 +180,7 @@ public abstract class SearchSectionFragment
         }
     }
 
-    private void setupSearchNavigation() {
+    protected void setupSearchNavigation() {
         searchNavigationListener
                 .setupSearchNavigation(new SearchNavigationListener.ClickListener() {
                     @Override

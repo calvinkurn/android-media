@@ -80,6 +80,7 @@ import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.estimasiongkir.view.activity.RatesEstimationDetailActivity
 import com.tokopedia.product.detail.view.activity.ProductInstallmentActivity
 import com.tokopedia.product.detail.view.activity.WholesaleActivity
+import com.tokopedia.product.detail.view.adapter.RecommendationProductAdapter
 import com.tokopedia.product.detail.view.fragment.partialview.*
 import com.tokopedia.product.detail.view.util.AppBarState
 import com.tokopedia.product.detail.view.util.AppBarStateChangeListener
@@ -127,7 +128,7 @@ import view.customview.TradeInTextView
 import viewmodel.TradeInBroadcastReceiver
 import javax.inject.Inject
 
-class ProductDetailFragment : BaseDaggerFragment() {
+class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter.UserActiveListener {
     private var productId: String? = null
     private var productKey: String? = null
     private var shopDomain: String? = null
@@ -189,6 +190,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
     var shopInfo: ShopInfo? = null
 
     private var refreshLayout: SwipeToRefresh? = null
+
+    override val isUserSessionActive: Boolean
+        get() = if (!::productInfoViewModel.isInitialized) false else productInfoViewModel.isUserSessionActive()
 
     companion object {
         const val REQUEST_CODE_TALK_PRODUCT = 1
@@ -658,7 +662,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             otherProductView = PartialOtherProductView.build(base_other_product)
 
         if (!::recommendationProductView.isInitialized) {
-            recommendationProductView = PartialRecommendationProductView.build(base_recommen_product)
+            recommendationProductView = PartialRecommendationProductView.build(base_recommen_product, this)
         }
 
     }

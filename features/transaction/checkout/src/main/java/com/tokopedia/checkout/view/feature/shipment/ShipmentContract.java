@@ -111,7 +111,7 @@ public interface ShipmentContract {
 
         void navigateToSetPinpoint(String message, LocationPass locationPass);
 
-        List<DataCheckoutRequest> generateNewCheckoutRequest(List<ShipmentCartItemModel> shipmentCartItemModelList);
+        List<DataCheckoutRequest> generateNewCheckoutRequest(List<ShipmentCartItemModel> shipmentCartItemModelList, boolean isAnalyticsPurpose);
 
         ShipmentDataConverter getShipmentDataConverter();
 
@@ -148,6 +148,10 @@ public interface ShipmentContract {
         void onSuccessClearPromoStackAfterClash();
 
         void clearTotalBenefitPromoStacking();
+
+        void triggerSendEnhancedEcommerceCheckoutAnalyticAfterPromoChange(String eventAction, String eventLabel);
+
+        void triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess();
     }
 
     interface AnalyticsActionListener {
@@ -158,7 +162,10 @@ public interface ShipmentContract {
         @Deprecated
         void sendAnalyticsChoosePaymentMethodCourierNotComplete();
 
-        void sendAnalyticsCheckoutStep2(Map<String, Object> stringObjectMap, String transactionId);
+        void sendEnhancedEcommerceAnalyticsCheckout(Map<String, Object> stringObjectMap,
+                                                    String transactionId,
+                                                    String eventAction,
+                                                    String eventLabel);
 
         void sendAnalyticsOnClickChooseOtherAddressShipment();
 
@@ -347,6 +354,13 @@ public interface ShipmentContract {
         Token getKeroToken();
 
         boolean isShowOnboarding();
+
+        void triggerSendEnhancedEcommerceCheckoutAnalytics(List<DataCheckoutRequest> dataCheckoutRequests, String step, String eventAction, String eventLabel);
+
+        List<DataCheckoutRequest> updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(String cartString, String shippingDuration, String shippingPrice, String courierName);
+
+        List<DataCheckoutRequest> updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(PromoStackingData promoStackingData, List<ShipmentCartItemModel> shipmentCartItemModels);
+
     }
 
 }

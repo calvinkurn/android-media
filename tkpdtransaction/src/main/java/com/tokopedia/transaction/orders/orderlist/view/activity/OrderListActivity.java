@@ -17,6 +17,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
 import com.tokopedia.transaction.orders.orderlist.data.OrderLabelList;
 import com.tokopedia.transaction.orders.orderlist.di.DaggerOrderListComponent;
@@ -39,6 +40,42 @@ public class OrderListActivity extends BaseSimpleActivity
     private OrderTabAdapter adapter;
     private OrderListComponent orderListComponent;
     private OrderListInitContract.Presenter presenter;
+
+
+    @DeepLink({ApplinkConst.PURCHASE_CONFIRMED, ApplinkConst.PURCHASE_ORDER})
+    public static Intent getConfirmedIntent(Context context, Bundle extras) {
+        return getMarketPlaceIntent(context, extras);
+
+    }
+
+    @DeepLink(ApplinkConst.PURCHASE_PROCESSED)
+    public static Intent getProcessedIntent(Context context, Bundle extras) {
+        return getMarketPlaceIntent(context, extras);
+    }
+
+    @DeepLink({ApplinkConst.PURCHASE_SHIPPED})
+    public static Intent getShippedIntent(Context context, Bundle extras) {
+        return getMarketPlaceIntent(context, extras);
+    }
+
+    @DeepLink({ApplinkConst.PURCHASE_DELIVERED, ApplinkConst.PURCHASE_SHIPPING_CONFIRM})
+    public static Intent getDeliveredIntent(Context context, Bundle extras) {
+        return getMarketPlaceIntent(context, extras);
+    }
+
+    @DeepLink(ApplinkConst.PURCHASE_HISTORY)
+    public static Intent getHistoryIntent(Context context, Bundle extras) {
+        return getMarketPlaceIntent(context, extras);
+    }
+
+
+    private static Intent getMarketPlaceIntent(Context context, Bundle extras) {
+        Uri uri = Uri.parse(extras.getString(DeepLink.URI));
+        extras.putString(OrderCategory.KEY_LABEL, OrderCategory.MARKETPLACE);
+        extras.putString(OrderListContants.ORDER_FILTER_ID, uri.getQueryParameter(OrderListContants.ORDER_FILTER_ID));
+        Intent intent = new Intent(context, OrderListActivity.class);
+        return intent.putExtras(extras);
+    }
 
     @DeepLink({ApplinkConst.DEALS_ORDER,
             ApplinkConst.DIGITAL_ORDER,
@@ -70,16 +107,18 @@ public class OrderListActivity extends BaseSimpleActivity
                 .setData(uri.build())
                 .putExtras(bundle);
     }
-    @DeepLink({ApplinkConst.MARKETPLACE_ORDER,ApplinkConst.MARKETPLACE_ORDER_FILTER})
+
+    @DeepLink({ApplinkConst.MARKETPLACE_ORDER, ApplinkConst.MARKETPLACE_ORDER_FILTER})
     public static Intent getMarketPlaceOrderListIntent(Context context, Bundle bundle) {
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
         bundle.putString(ORDER_CATEGORY, OrderCategory.MARKETPLACE);
-        Intent intent = new Intent(context,OrderListActivity.class);
-        if(uri!=null) {
+        Intent intent = new Intent(context, OrderListActivity.class);
+        if (uri != null) {
             intent.setData(uri.build());
         }
         return intent.putExtras(bundle);
     }
+
     public static Intent getInstance(Context context) {
         return new Intent(context, OrderListActivity.class);
     }
@@ -127,9 +166,9 @@ public class OrderListActivity extends BaseSimpleActivity
     @Override
     public Bundle getBundle() {
         Bundle bundle = getIntent().getExtras();
-        if(bundle == null){
+        if (bundle == null) {
             return new Bundle();
-        } else  {
+        } else {
             return bundle;
         }
     }
@@ -179,8 +218,8 @@ public class OrderListActivity extends BaseSimpleActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE ) {
-            if(resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
                 presenter.getInitData();
             } else {
                 finish();
