@@ -66,6 +66,7 @@ class SettingBudgetAdsFragment : DailyBudgetFragment() {
                 when(it!!.status){
                     AutoAdsStatus.STATUS_IN_PROGRESS_ACTIVE -> inProgressActive(it!!.adsInfo)
                     AutoAdsStatus.STATUS_IN_PROGRESS_INACTIVE -> inProgressInactive()
+                    else -> activity!!.finish()
                 }
             })
         }
