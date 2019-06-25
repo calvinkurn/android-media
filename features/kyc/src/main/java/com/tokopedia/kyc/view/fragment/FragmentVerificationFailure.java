@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.kyc.Constants;
@@ -23,6 +25,7 @@ public class FragmentVerificationFailure extends BaseDaggerFragment implements
     private ActivityListener activityListener;
     private Button upgradeNow;
     private Button returnToMainPage;
+    private TextView failureDesc;
 
     @Override
     public void onClick(View v) {
@@ -58,6 +61,7 @@ public class FragmentVerificationFailure extends BaseDaggerFragment implements
         if(activityListener != null) {
             activityListener.setHeaderTitle(Constants.Values.OVO);
         }
+        setDescMsg();
     }
 
     @Override
@@ -76,7 +80,15 @@ public class FragmentVerificationFailure extends BaseDaggerFragment implements
         upgradeNow = view.findViewById(R.id.upgrade_now);
         upgradeNow.setOnClickListener(this::onClick);
         returnToMainPage = view.findViewById(R.id.returnto_main_page);
+        failureDesc = view.findViewById(R.id.desc);
         returnToMainPage.setOnClickListener(this::onClick);
         return view;
+    }
+
+    private void setDescMsg(){
+        String msg = getArguments().getString(Constants.Keys.MESSAGE, "");
+        if(!TextUtils.isEmpty(msg)) {
+            failureDesc.setText(msg);
+        }
     }
 }

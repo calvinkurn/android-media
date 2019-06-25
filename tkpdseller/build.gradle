@@ -38,6 +38,15 @@ dependencies {
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.userSession)
 
+    implementation project(rootProject.ext.libraries.network)
+    implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.features.logisticanalytics)
+    implementation project(rootProject.ext.features.logisticinputreceiptshipment)
+    implementation project(rootProject.ext.features.transactionanalytics)
+    implementation rootProject.ext.playServicesDependencies.analytics
+    implementation project(rootProject.ext.features.logisticCommon)
+
+
     implementation project(rootProject.ext.features.topAdsSourceTagging)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
     implementation project(rootProject.ext.features.goldMerchantCommon)
@@ -70,9 +79,6 @@ dependencies {
 
     implementation rootProject.ext.viewDependencies.recyclerMultiSelect
     implementation rootProject.ext.viewDependencies.appIntro
-
-    implementation rootProject.ext.butterKnifeDependencies.butterKnife
-    annotationProcessor rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     annotationProcessor  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
@@ -116,6 +122,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.core_legacy)
     
     implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.permissionchecker)
 }
 
 apply from: '../publish_local.gradle'

@@ -74,6 +74,13 @@ allprojects {
             dirs project(rootProject.ext.libraries.inappupdate).file('libs')
         }
         maven { url 'https://hansel.io/maven' }
+        maven {
+            url "${artifactory_url}" + "/libs-snapshot-local";
+            credentials {
+                username = "${artifactory_username}"
+                password = "${artifactory_password}"
+            }
+        }
     }
 }
 apply plugin: 'com.uber.okbuck'

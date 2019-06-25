@@ -526,6 +526,7 @@ final class ProductListPresenter
         headerViewModel.setSuggestionViewModel(productViewModel.getSuggestionModel());
         if (productViewModel.getGuidedSearchViewModel() != null) {
             headerViewModel.setGuidedSearch(productViewModel.getGuidedSearchViewModel());
+            getView().sendImpressionGuidedSearch();
         }
         if (productViewModel.getQuickFilterModel() != null
                 && productViewModel.getQuickFilterModel().getFilter() != null) {

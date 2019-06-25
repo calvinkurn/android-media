@@ -79,8 +79,8 @@ public class ShopCommonModule {
     }
 
     @Provides
-    public DeleteShopInfoCacheUseCase provideDeleteShopInfoCacheUseCase() {
-        return new DeleteShopInfoCacheUseCase();
+    public DeleteShopInfoCacheUseCase provideDeleteShopInfoCacheUseCase(@ApplicationContext Context context) {
+        return new DeleteShopInfoCacheUseCase(context);
     }
 
     @Provides
@@ -129,8 +129,8 @@ public class ShopCommonModule {
     }
 
     @Provides
-    public CacheApiInterceptor provideApiCacheInterceptor() {
-        return new CacheApiInterceptor(new CacheApiTKPDResponseValidator<>(TkpdV4ResponseError.class));
+    public CacheApiInterceptor provideApiCacheInterceptor(@ApplicationContext Context context) {
+        return new CacheApiInterceptor(context, new CacheApiTKPDResponseValidator<>(TkpdV4ResponseError.class));
     }
 
     @Provides

@@ -63,6 +63,7 @@ public class RemoteConfigKey {
     public static final String REFERRAL_HELP_LINK_CONTENT_SUBTITLE= "app_apa_itu_tokocash_referral_content_subtitle";
     public static final String MAIN_APP_ENABLE_BUY_AGAIN = "main_app_enable_buy_again";
     public static final String PINJAMAN_MODAL_AKUN_PAGE_POSITION_TOP = "app_widget_pinjamin_show_on_top";
+    public static final String SELLER_ACCOUNT_TICKER_MSG = "android_seller_account_ticker_msg";
 
     public static final String APP_ENABLE_ACCOUNT_AFFILIATE = "app_enable_account_affiliate";
     public static final String AFFILIATE_PROFILE_SHARE_ALL = "android_customer_enable_profile_share_allow_all";
@@ -88,22 +89,25 @@ public class RemoteConfigKey {
     public static final String MAIN_APP_DISABLE_NEW_PRODUCT_DETAIL = "main_app_disable_new_product_detail";
     public static final String APP_ENABLE_MERCHANT_CREDIT_LINE = "app_enable_merchant_credit_line";
 
-    public static final String NONB1_TTL = "nonb_1_ttl";
-    public static final String NONB1_DESC = "nonb_1_dsc";
-    public static final String NONB2_TTL = "nonb_2_ttl";
-    public static final String NONB2_DESC = "nonb_2_dsc";
-    public static final String NONB3_TTL = "nonb_3_ttl";
-    public static final String NONB3_DESC = "nonb_3_dsc";
-    public static final String NONB4_TTL = "nonb_4_ttl";
-    public static final String NONB4_DESC = "nonb_4_dsc";
-    public static final String NONB5_TTL = "nonb_5_ttl";
-    public static final String NONB5_DESC = "nonb_5_dsc";
+    public static final String NONB1_TTL = "app_nonb_1_ttl";
+    public static final String NONB1_DESC = "app_nonb_1_dsc";
+    public static final String NONB2_TTL = "app_nonb_2_ttl";
+    public static final String NONB2_DESC = "app_nonb_2_dsc";
+    public static final String NONB3_TTL = "app_nonb_3_ttl";
+    public static final String NONB3_DESC = "app_nonb_3_dsc";
+    public static final String NONB4_TTL = "app_nonb_4_ttl";
+    public static final String NONB4_DESC = "app_nonb_4_dsc";
+    public static final String NONB5_TTL = "app_nonb_5_ttl";
+    public static final String NONB5_DESC = "app_nonb_5_dsc";
     public static final String OVO_ENABLE_FLAG = "app_enable_ovo_pay_by_qr";
     public static final String OVO_QR_MIN_AMOUNT = "app_ovo_min_balance";
     public static final String OVO_QR_MAX_AMOUNT = "app_ovo_max_balance";
+    public static final String OVO_TNC_LINK = "app_ovo_tnc_link";
     public static final String APP_SHOW_CATEGORY_QUICK_FILTERS = "app_show_category_quick_filters";
 
     public static final String ENABLE_GLOBAL_NAV_WIDGET = "android_customer_enable_global_nav_widget";
 
     public static final String APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP = "app_enable_saldo_split_for_seller_app";
+    public static final String SHOP_SHARE_MSG = "app_shop_shr_msg";
+    public static final String HOTLIST_SHARE_MSG = "app_hotlist_shr_msg";
 }
