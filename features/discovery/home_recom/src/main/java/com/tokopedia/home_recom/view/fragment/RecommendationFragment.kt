@@ -27,6 +27,7 @@ import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.recommendation_widget_common.TYPE_CAROUSEL
 import com.tokopedia.recommendation_widget_common.TYPE_SCROLL
+import com.tokopedia.recommendation_widget_common.TYPE_CUSTOM_HORIZONTAL
 import com.tokopedia.recommendation_widget_common.presentation.RecommendationCardView
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -78,6 +79,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        clearProductInfoView()
         setHasOptionsMenu(true)
         disableLoadMore()
         getRecyclerView(view).layoutManager = recyclerViewLayoutManager
@@ -105,6 +107,10 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
 
     override fun hasInitialSwipeRefresh(): Boolean {
         return true
+    }
+
+    private fun clearProductInfoView(){
+        childFragmentManager.beginTransaction().remove(childFragmentManager.findFragmentById(R.id.product_info_container)).commit()
     }
 
     private fun loadData(){
@@ -180,6 +186,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
                     }
                 }
                 TYPE_CAROUSEL -> list.add(RecommendationCarouselDataModel(recommendationWidget.title, recommendationWidget.recommendationItemList, this))
+                TYPE_CUSTOM_HORIZONTAL -> list.add(RecommendationCarouselDataModel(recommendationWidget.title, recommendationWidget.recommendationItemList, this))
             }
         }
         return list
