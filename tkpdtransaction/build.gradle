@@ -64,6 +64,8 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.commonNetwork)
 
+    implementation rootProject.ext.libraries.unifyComponents
+
 }
 
 apply from: '../publish_local.gradle'

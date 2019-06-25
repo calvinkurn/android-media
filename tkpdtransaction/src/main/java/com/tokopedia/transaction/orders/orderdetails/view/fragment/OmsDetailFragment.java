@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.orders.orderdetails.view.fragment;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -11,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -63,6 +65,7 @@ import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDet
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.transaction.orders.orderlist.data.ConditionalInfo;
 import com.tokopedia.transaction.orders.orderlist.data.PaymentData;
+import com.tokopedia.unifycomponents.Toaster;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -536,6 +539,8 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
     @Override
     public void setEventDetails(ActionButton actionButton, Items item) {
+
+        MetaDataInfo metaDataInfo = new Gson().fromJson(item.getMetaData(), MetaDataInfo.class);
         if (item.getActionButtons() == null || item.getActionButtons().size() == 0) {
             actionButtonLayout.setVisibility(View.GONE);
             dividerActionBtn.setVisibility(View.GONE);
@@ -547,6 +552,13 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                 @Override
                 public void onClick(View v) {
                     if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
+                        if (!TextUtils.isEmpty(item.getCategory()) && "Deal".equalsIgnoreCase(item.getCategory())) {
+                            Toaster.Companion.showNormalWithAction((Activity) getContext(), String.format("%s %s", "Berhasil! Silakan cek voucher di", metaDataInfo.getEntityaddress().getEmail()), Snackbar.LENGTH_LONG, "Ok", v1 -> {
+                            });
+                        } else {
+                            Toaster.Companion.showNormalWithAction((Activity) getContext(), String.format("%s %s", "Berhasil! Silakan cek e-tiket di", metaDataInfo.getEntityaddress().getEmail()), Snackbar.LENGTH_LONG, "Ok", v1 -> {
+                            });
+                        }
                         presenter.setActionButton(item.getActionButtons(), null, 0, false);
                     } else if (actionButton.getControl().equalsIgnoreCase(KEY_REDIRECT)){
                         RouteManager.route(getContext(), actionButton.getBody().getAppURL());
@@ -556,7 +568,6 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
         }
 
-        MetaDataInfo metaDataInfo = new Gson().fromJson(item.getMetaData(), MetaDataInfo.class);
         if (metaDataInfo != null && metaDataInfo.getEntityPessengers() != null && metaDataInfo.getEntityPessengers().size() > 0) {
             userInfoLabel.setVisibility(View.VISIBLE);
             userInfo.setVisibility(View.VISIBLE);

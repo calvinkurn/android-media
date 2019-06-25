@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.support.design.widget.Snackbar;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.transaction.R;
+import com.tokopedia.unifycomponents.Toaster;
 
 import static android.content.Context.CLIPBOARD_SERVICE;
 
@@ -66,7 +68,9 @@ public class BookingCodeView extends RelativeLayout {
                 ClipboardManager myClipboard = (ClipboardManager) getContext().getSystemService(CLIPBOARD_SERVICE);
                 myClip = ClipData.newPlainText("text", bookingCode);
                 myClipboard.setPrimaryClip(myClip);
-                ToasterNormal.showClose((Activity)context, "Kode booking telah disalin");
+                Toaster.Companion.showNormalWithAction((Activity)context, "Kode booking telah disalin", Snackbar.LENGTH_LONG, "Ok", v1 -> {});
+//                ToasterNormal.showClose((Activity)context, "Kode booking telah disalin");
+
             }
         });
 

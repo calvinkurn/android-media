@@ -153,7 +153,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     if (view == null)
                         RouteManager.route(context, actionButton.getBody().getAppURL());
                     else
-                        view.setOnClickListener(getActionButtonClickListener(actionButton.getBody().getAppURL()));
+                        ((UnifiedOrderListRouter) context.getApplicationContext())
+                                .actionOpenGeneralWebView((Activity) context, actionButton.getBody().getAppURL());
                 }
             }
         }
@@ -458,6 +459,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         /*
         private void setButtonLayout(List<ActionButton> tapActions, )*/
+
 
         public void setIndex(int position) {
             this.index = position;
