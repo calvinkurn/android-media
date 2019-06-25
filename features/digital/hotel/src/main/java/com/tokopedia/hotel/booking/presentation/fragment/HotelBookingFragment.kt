@@ -186,7 +186,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         if (property.rooms.isNotEmpty()) {
             tv_booking_room_info_title.text = property.rooms[0].roomName
 
-            if (property.rooms[0].isDirectPayment) {
+            if (property.isDirectPayment) {
                 tv_booking_room_info_pay_at_hotel.visibility = View.VISIBLE
                 tv_booking_room_info_pay_at_hotel.setDrawableLeft(R.drawable.ic_hotel_16)
             }
@@ -331,7 +331,7 @@ class HotelBookingFragment : HotelBaseFragment() {
     }
 
     private fun setupPayNowPromoTicker(property: HotelPropertyData) {
-        if (property.rooms.isNotEmpty() && !property.rooms[0].isDirectPayment) {
+        if (property.rooms.isNotEmpty() && !property.isDirectPayment) {
             booking_pay_now_promo_container.visibility = View.VISIBLE
         }
     }
@@ -345,7 +345,7 @@ class HotelBookingFragment : HotelBaseFragment() {
             tv_room_tax_label.text = it.description
             tv_room_tax.text = it.localPrice
         }
-        val priceLabelResId = if (property.rooms[0].isDirectPayment) R.string.hotel_booking_invoice_estimate_pay_at_hotel else R.string.hotel_booking_invoice_estimate_pay_now
+        val priceLabelResId = if (property.isDirectPayment) R.string.hotel_booking_invoice_estimate_pay_at_hotel else R.string.hotel_booking_invoice_estimate_pay_now
         tv_room_estimated_price_label.text = getString(priceLabelResId)
         tv_room_estimated_price.text = cart.localTotalPrice
         tv_room_estimated_price.setTextColor(ContextCompat.getColor(context!!, R.color.orange_607))
