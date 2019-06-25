@@ -24,8 +24,7 @@
             android:supportsPictureInPicture="true"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Transparent.Groupchat"
-            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation|locale"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation|locale" />
 
 
         <activity

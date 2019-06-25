@@ -50,8 +50,6 @@ open class PlayActivity : BaseSimpleActivity(), PlayViewListener {
     @Inject
     lateinit var analytics: GroupChatAnalytics
 
-    lateinit var player: TkpdVideoPlayer
-
     private val mPictureInPictureParamsBuilder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         PictureInPictureParams.Builder()
     } else {
@@ -108,16 +106,12 @@ open class PlayActivity : BaseSimpleActivity(), PlayViewListener {
         if (isActive) {
             sendViewToBack(playerView)
             val sourceMedia = "https://scontent-sin6-2.cdninstagram.com/vp/23547017e19e62618f3ae1cf42ba4e41/5D14312A/t50.12441-16/50237559_1201746266639073_6724633886427853004_n.mp4?_nc_ht=scontent-sin6-2.cdninstagram.com"
-            player = TkpdVideoPlayer.Builder()
+            TkpdVideoPlayer.Builder()
                     .transaction(R.id.playerView, supportFragmentManager)
                     .videoSource(sourceMedia)
                     .repeatMode(RepeatMode.REPEAT_MODE_ALL)
                     .build()
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
     }
 
     private fun setFragment() {
