@@ -7,13 +7,17 @@ public class DataLogConfig {
 
     @SerializedName("appVersionMin")
     @Expose
-    private int appVersionMin;
+    private long appVersionMin;
 
-    public int getAppVersionMin() {
+    @SerializedName("enabled")
+    @Expose
+    private boolean enabled;
+
+    public long getAppVersionMin() {
         return appVersionMin;
     }
 
-    public void setAppVersionMin(int appVersionMin) {
-        this.appVersionMin = appVersionMin;
+    public boolean isEnabled() {
+        return enabled;
     }
 }

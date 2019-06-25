@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.timber;
 
 import android.app.Application;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
@@ -19,11 +20,11 @@ import timber.log.Timber;
 public class TimberWrapper {
     private static final String ANDROID_CUSTOMER_APP_LOG_CONFIG = "android_customer_app_log_config";
 
-    public static void init(Application application){
+    public static void init(@NonNull Application application){
         initByConfig(new FirebaseRemoteConfigImpl(application));
     }
 
-    public static void initByConfig(RemoteConfig remoteConfig){
+    public static void initByConfig(@NonNull RemoteConfig remoteConfig){
         Timber.uprootAll();
         boolean isDebug = BuildConfig.DEBUG;
         if (isDebug) {
@@ -31,11 +32,11 @@ public class TimberWrapper {
         } else {
             String logConfigString = remoteConfig.getString(ANDROID_CUSTOMER_APP_LOG_CONFIG);
             if (!TextUtils.isEmpty(logConfigString)) {
-                DataLogConfig dataLogConfig = new Gson().fromJson(logConfigString, DataLogConfig.class);
+                DataLogConfig dataLogConfig = new Gson().fromJson(logConfigString,
+                        DataLogConfig.class);
                 if(dataLogConfig != null) {
-                    if (GlobalConfig.VERSION_CODE < dataLogConfig.getAppVersionMin()) {
-                        Timber.plant(new Timber.DebugTree());
-                    } else {
+                    if (dataLogConfig.isEnabled() &&
+                            GlobalConfig.VERSION_CODE >= dataLogConfig.getAppVersionMin()) {
                         Timber.plant(new TimberReportingTree());
                     }
                 }
