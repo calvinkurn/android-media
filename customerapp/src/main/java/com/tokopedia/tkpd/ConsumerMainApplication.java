@@ -81,7 +81,6 @@ import com.tokopedia.payment.setting.util.PaymentSettingUrlKt;
 import com.tokopedia.phoneverification.PhoneVerificationConst;
 import com.tokopedia.product.detail.data.util.ProductDetailConstant;
 import com.tokopedia.product.manage.item.imagepicker.util.CatalogConstant;
-import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.recentview.data.api.RecentViewUrl;
 import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
 import com.tokopedia.sessioncommon.data.SessionCommonUrl;
@@ -101,7 +100,7 @@ import com.tokopedia.tokocash.network.api.WalletUrl;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.train.common.constant.TrainUrl;
-import com.tokopedia.transaction.network.TransactionUrl;
+import com.tokopedia.seller.purchase.network.TransactionUrl;
 import com.tokopedia.transactiondata.constant.TransactionDataApiUrl;
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneURL;
 import com.tokopedia.user_identification_common.KycCommonUrl;
@@ -184,7 +183,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         PushManager.getInstance().setMessageListener(new CustomPushListener());
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
-        InstabugInitalize.init(this);
 
         if (!GlobalConfig.DEBUG) {
             new ANRWatchDog().setANRListener(Crashlytics::logException).start();
@@ -385,7 +383,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         FlowManager.init(new FlowConfig.Builder(this)
                 .addDatabaseHolder(ProductDraftGeneratedDatabaseHolder.class)
                 .build());
-        PushNotification.initDatabase(getApplicationContext());
         CategoryDbFlow.initDatabase(getApplicationContext());
     }
 

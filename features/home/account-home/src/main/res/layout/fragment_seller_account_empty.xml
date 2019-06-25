@@ -125,7 +125,7 @@
         android:id="@+id/btn_learn_more"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/learn_more"
+        android:text="@string/know_more"
         android:gravity="center"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"

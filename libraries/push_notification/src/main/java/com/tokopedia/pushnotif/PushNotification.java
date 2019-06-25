@@ -1,33 +1,25 @@
 package com.tokopedia.pushnotif;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationManagerCompat;
 
-import com.raizlabs.android.dbflow.config.FlowConfig;
-import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.config.PushNotificationGeneratedDatabaseHolder;
 import com.tokopedia.pushnotif.factory.ChatNotificationFactory;
 import com.tokopedia.pushnotif.factory.GeneralNotificationFactory;
 import com.tokopedia.pushnotif.factory.SummaryNotificationFactory;
 import com.tokopedia.pushnotif.factory.TalkNotificationFactory;
 import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
+import com.tokopedia.pushnotif.util.NotificationTracker;
 
 /**
  * @author ricoharisin .
  */
 
 public class PushNotification {
-
-    public static void initDatabase(Context applicationContext) {
-        try{
-            FlowManager.getConfig();
-        } catch (IllegalStateException e) {
-            FlowManager.init(new FlowConfig.Builder(applicationContext).build());
-        }
-        FlowManager.initModule(PushNotificationGeneratedDatabaseHolder.class);
-    }
 
     public static void notify(Context context, Bundle data) {
         ApplinkNotificationModel applinkNotificationModel = ApplinkNotificationHelper.convertToApplinkModel(data);
@@ -45,6 +37,9 @@ public class PushNotification {
             } else {
                 notifyGeneral(context, applinkNotificationModel, notificationId, notificationManagerCompat);
             }
+            if (isNotificationEnabled(context)) {
+                NotificationTracker.getInstance(context).trackDeliveredNotification(applinkNotificationModel);
+            }
         }
     }
 
@@ -54,7 +49,7 @@ public class PushNotification {
         int notificationId = ApplinkNotificationHelper.getNotificationId(applinkNotificationModel.getApplinks());
 
         Notification notifTalk = new TalkNotificationFactory(context)
-                    .createNotification(applinkNotificationModel, notificationType, notificationId);
+                .createNotification(applinkNotificationModel, notificationType, notificationId);
 
         SummaryNotificationFactory summaryNotificationFactory = new SummaryNotificationFactory(context);
         Notification notifSummary = summaryNotificationFactory
@@ -103,7 +98,7 @@ public class PushNotification {
     }
 
     private static void notifyGeneral(Context context, ApplinkNotificationModel applinkNotificationModel,
-                                   int notificationType, NotificationManagerCompat notificationManagerCompat) {
+                                      int notificationType, NotificationManagerCompat notificationManagerCompat) {
         Notification notifChat = new GeneralNotificationFactory(context)
                 .createNotification(applinkNotificationModel, notificationType, notificationType);
 
@@ -112,10 +107,22 @@ public class PushNotification {
     }
 
     private static void notifyChallenges(Context context, ApplinkNotificationModel applinkNotificationModel,
-                                      int notificationType, NotificationManagerCompat notificationManagerCompat) {
+                                         int notificationType, NotificationManagerCompat notificationManagerCompat) {
         Notification notifChat = new GeneralNotificationFactory(context)
                 .createNotification(applinkNotificationModel, notificationType, notificationType);
 
         notificationManagerCompat.notify(notificationType, notifChat);
+    }
+
+    private static boolean isNotificationEnabled(Context context) {
+        boolean isAllNotificationEnabled = NotificationManagerCompat.from(context).areNotificationsEnabled();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && isAllNotificationEnabled) {
+            NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationChannel channel = manager.getNotificationChannel(Constant.NotificationChannel.GENERAL);
+            return channel.getImportance() != NotificationManager.IMPORTANCE_NONE;
+        } else {
+            return isAllNotificationEnabled;
+        }
+
     }
 }

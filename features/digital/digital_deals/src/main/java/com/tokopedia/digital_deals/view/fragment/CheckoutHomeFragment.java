@@ -45,6 +45,7 @@ import javax.inject.Inject;
 public class CheckoutHomeFragment extends BaseDaggerFragment implements CheckoutDealContractor.View, View.OnClickListener {
 
 
+    private static final String SCREEN_NAME = "/digital/deals/checkout";
     private ConstraintLayout clPromoApplied;
     private ConstraintLayout baseMainContent;
     private ConstraintLayout clPromoAmount;
@@ -155,8 +156,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
 
     @Override
     public void renderFromDetails(DealsDetailsResponse dealDetails, PackageViewModel packageViewModel) {
-
-
+        dealsAnalytics.sendScreenNameEvent(getScreenName());
         if (dealDetails == null)
             return;
 
@@ -269,7 +269,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
 
     @Override
     protected String getScreenName() {
-        return null;
+        return SCREEN_NAME;
     }
 
     @Override
@@ -287,6 +287,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
                         dealDetails.getDisplayName(), dealDetails.getBrand().getTitle(), promoApplied);
             }
         } else if (v.getId() == R.id.tv_promocode) {
+            dealsAnalytics.sendPromoCodeClickEvent(dealDetails);
             mPresenter.clickGoToPromo();
         } else if (v.getId() == R.id.tv_no_locations) {
             fragmentCallbacks.replaceFragment(mPresenter.getOutlets(), 0);
