@@ -298,4 +298,9 @@
         <key>android_shop_etalase_toggle</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>app_show_search_bar_pdp</key>
+        <value>true</value>
+    </entry>
+
 </defaultsMap>

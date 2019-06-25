@@ -25,7 +25,7 @@ import android.support.v4.util.ArrayMap
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.*
-import android.widget.TextView
+import android.support.v7.widget.Toolbar
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -48,10 +48,7 @@ import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActi
 import com.tokopedia.gallery.ImageReviewGalleryActivity
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.imagepreview.ImagePreviewActivity
-import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
@@ -72,7 +69,7 @@ import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.Wholesale
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
-import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
+import com.tokopedia.product.detail.constant.RemoteConfig.REMOTE_CONFIG_APP_SHOW_SEARCH_BAR_PDP
 import com.tokopedia.product.detail.data.model.ProductInfoP1
 import com.tokopedia.product.detail.data.model.ProductInfoP2
 import com.tokopedia.product.detail.data.model.ProductInfoP3
@@ -83,7 +80,6 @@ import com.tokopedia.product.detail.data.util.numberFormatted
 import com.tokopedia.product.detail.data.util.origin
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.estimasiongkir.view.activity.RatesEstimationDetailActivity
-import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.activity.ProductInstallmentActivity
 import com.tokopedia.product.detail.view.activity.WholesaleActivity
 import com.tokopedia.product.detail.view.fragment.partialview.*
@@ -95,6 +91,7 @@ import com.tokopedia.product.detail.view.viewmodel.Loading
 import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
 import com.tokopedia.product.detail.view.viewmodel.ProductInfoViewModel
 import com.tokopedia.product.detail.view.widget.CountDrawable
+import com.tokopedia.product.detail.view.widget.PictureScrollingView
 import com.tokopedia.product.report.view.dialog.ReportDialogFragment
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
@@ -106,10 +103,6 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shopetalasepicker.constant.ShopParamConstant
 import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
-import com.tokopedia.topads.sdk.domain.model.Data
-import com.tokopedia.topads.sdk.domain.model.Product
-import com.tokopedia.topads.sdk.domain.model.Shop
-import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
 import com.tokopedia.transaction.common.TransactionRouter
@@ -173,6 +166,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private var isAppBarCollapsed = false
     private var menu: Menu? = null
     private var useVariant = true
+    private lateinit var varToolbar: Toolbar
+    private lateinit var varPictureImage: PictureScrollingView
 
     private var userCod: Boolean = false
     private var shopCod: Boolean = false
@@ -189,6 +184,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private var userInputQuantity = 0
     private var userInputVariant: String? = null
 
+    private lateinit var initToolBarMethod:()-> Unit
     private val productDetailTracking: ProductDetailTracking by lazy {
         ProductDetailTracking()
     }
@@ -712,25 +708,25 @@ class ProductDetailFragment : BaseDaggerFragment() {
         return !(scrollBounds.top > bottom)
     }
     private fun initView() {
-        //collapsing_toolbar.title = ""
-        toolbar.title = ""
+        val appShowSearchPDP = remoteConfig.getBoolean(REMOTE_CONFIG_APP_SHOW_SEARCH_BAR_PDP, true)
+
+        if(appShowSearchPDP) {
+            initShowSearchPDP()
+        }else {
+            initCollapsingToolBar()
+        }
+        varToolbar.show()
+        varPictureImage.show()
+        collapsing_toolbar.title = ""
+        varToolbar.title = ""
         activity?.let {
-            toolbar.setBackgroundColor(ContextCompat.getColor(it, R.color.white))
-            (it as AppCompatActivity).setSupportActionBar(toolbar)
+            varToolbar.setBackgroundColor(ContextCompat.getColor(it, R.color.white))
+            (it as AppCompatActivity).setSupportActionBar(varToolbar)
             it.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         }
         setupByConfiguration(resources.configuration)
-        nested_scroll.viewTreeObserver.addOnScrollChangedListener(ViewTreeObserver.OnScrollChangedListener {
-            activity?.run {
-                if(isAdded) {
-                    if (isViewVisible(view_picture)) {
-                        fab_detail.show()
-                    } else {
-                        fab_detail.hide()
-                    }
-                }
-            }
-        })
+
+
         appbar.addOnOffsetChangedListener(object : AppBarStateChangeListener() {
             override fun onStateChanged(appBarLayout: AppBarLayout?, state: Int) {
                 when (state) {
@@ -750,6 +746,38 @@ class ProductDetailFragment : BaseDaggerFragment() {
         })
     }
 
+    private fun initShowSearchPDP() {
+        search_pdp_toolbar.show()
+        varToolbar = search_pdp_toolbar
+        varPictureImage = view_picture_search_bar
+        initToolBarMethod  =  ::initToolbarLight
+        fab_detail.setAnchor(R.id.view_picture_search_bar)
+        nested_scroll.viewTreeObserver.addOnScrollChangedListener(ViewTreeObserver.OnScrollChangedListener {
+            activity?.run {
+                if(isAdded) {
+                    if (isViewVisible(varPictureImage)) {
+                        fab_detail.show()
+                    } else {
+                        fab_detail.hide()
+                    }
+                }
+            }
+        })
+
+    }
+    private fun initCollapsingToolBar() {
+        collapsing_toolbar.show()
+        varToolbar = toolbar
+        varPictureImage = view_picture
+        initToolBarMethod  =  ::initToolbarTransparent
+        fab_detail.setAnchor(R.id.view_picture)
+
+    }
+
+
+
+
+
     private fun collapsedAppBar() {
         initStatusBarLight()
         initToolbarLight()
@@ -759,7 +787,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
     private fun expandedAppBar() {
         initStatusBarDark()
-        initToolbarLight()
+        initToolBarMethod()
         showFabDetailAfterLoadData()
         label_cod?.visibility = if (shouldShowCod && userCod && shopCod) View.INVISIBLE else View.GONE
     }
@@ -767,10 +795,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private fun initToolbarLight() {
         activity?.run {
             if (isAdded) {
-                //collapsing_toolbar.setCollapsedTitleTextColor(ContextCompat.getColor(this, R.color.grey_icon_light_toolbar))
-               // collapsing_toolbar.setExpandedTitleColor(Color.TRANSPARENT)
-                toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.grey_icon_light_toolbar))
-                toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.white))
+                collapsing_toolbar.setCollapsedTitleTextColor(ContextCompat.getColor(this, R.color.grey_icon_light_toolbar))
+                collapsing_toolbar.setExpandedTitleColor(Color.TRANSPARENT)
+                varToolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.grey_icon_light_toolbar))
+                varToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.white))
                 (this as AppCompatActivity).supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back_dark)
                 menu?.let {
                     if (it.size() > 2) {
@@ -781,7 +809,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                     }
                 }
 
-                toolbar.overflowIcon = ContextCompat.getDrawable(activity!!, R.drawable.ic_product_more_dark)
+                varToolbar.overflowIcon = ContextCompat.getDrawable(activity!!, R.drawable.ic_product_more_dark)
             }
         }
     }
@@ -798,10 +826,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
     private fun initToolbarTransparent() {
         activity?.run {
-            if (isAdded) {/*
+            if (isAdded) {
                 collapsing_toolbar.setCollapsedTitleTextColor(ContextCompat.getColor(this, R.color.white))
                 collapsing_toolbar.setExpandedTitleColor(Color.TRANSPARENT)
-                toolbar.background = ContextCompat.getDrawable(this, R.drawable.gradient_shadow_black_vertical)*/
+                varToolbar.background = ContextCompat.getDrawable(this, R.drawable.gradient_shadow_black_vertical)
                 (this as AppCompatActivity).supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back_light)
                 menu?.let {
                     if (it.size() > 2) {
@@ -811,7 +839,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                         setBadgeMenuCart(menuCart)
                     }
                 }
-                toolbar.overflowIcon = ContextCompat.getDrawable(this, R.drawable.ic_product_more_light)
+                varToolbar.overflowIcon = ContextCompat.getDrawable(this, R.drawable.ic_product_more_light)
             }
         }
     }
@@ -836,15 +864,11 @@ class ProductDetailFragment : BaseDaggerFragment() {
         configuration?.let {
             val screenWidth = resources.displayMetrics.widthPixels
             if (it.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                val layoutParams = appbar.layoutParams as CoordinatorLayout.LayoutParams
                 val height = screenWidth / 3
-                //layoutParams.height = height
-                view_picture.layoutParams.height = height
+                varPictureImage.layoutParams.height = height
                 appbar.visibility = View.VISIBLE
             } else if (it.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                val layoutParams = appbar.layoutParams as CoordinatorLayout.LayoutParams
-                //layoutParams.height = screenWidth
-                view_picture.layoutParams.height = screenWidth
+                varPictureImage.layoutParams.height = screenWidth
                 appbar.visibility = View.VISIBLE
             }
         }
@@ -981,7 +1005,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                     if (isAppBarCollapsed) {
                         initToolbarLight()
                     } else {
-                        initToolbarLight()
+                        initToolBarMethod()
                     }
                 }
             })
@@ -1080,7 +1104,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 data.preorder)
             actionButtonView.visibility = !isAffiliate && shopInfo.statusInfo.shopStatus == 1
             headerView.showOfficialStore(shopInfo.goldOS)
-            view_picture.renderShopStatus(shopInfo, productInfo?.basic?.status
+            varPictureImage.renderShopStatus(shopInfo, productInfo?.basic?.status
                 ?: ProductStatusTypeDef.ACTIVE)
             activity?.let {
                 productStatsView.renderClickShipment(it, productInfo?.basic?.id?.toString()
@@ -1218,7 +1242,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         et_search.hint = String.format(getString(R.string.pdp_search_hint),productInfo?.category?.name)
         shouldShowCod = data.shouldShowCod
         headerView.renderData(data)
-        view_picture.renderData(data.pictures, this::onPictureProductClicked)
+        varPictureImage.renderData(data.pictures, this::onPictureProductClicked)
         productStatsView.renderData(data, this::onReviewClicked, this::onDiscussionClicked)
         productDescrView.renderData(data)
         attributeInfoView.renderData(data)
@@ -1564,6 +1588,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
             R.menu.menu_product_detail_light, menu)
         super.onCreateOptionsMenu(menu, inflater)
         this.menu = menu
+        initToolBarMethod()
+
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?) {
