@@ -10,9 +10,9 @@
     <string name="host_hotel" translatable="false">hotel</string>
 
     <string name="path_hotel_dashboard" translatable="false">/dashboard</string>
-    <string name="path_hotel_detail" translatable="false">/detail/.*\\/</string>
-    <string name="path_hotel_booking" translatable="false">/booking/.*\\/</string>
+    <string name="path_hotel_detail" translatable="false">/detail/.*\\</string>
+    <string name="path_hotel_booking" translatable="false">/booking/.*\\</string>
     <string name="path_hotel_order" translatable="false">/order</string>
-    <string name="path_hotel_order_detail" translatable="false">/order/.*\\/</string>
+    <string name="path_hotel_order_detail" translatable="false">/order/.*\\</string>
 
 </resources>
