@@ -22,6 +22,7 @@
             android:label="@string/activity_channel"
             android:resizeableActivity="true"
             android:supportsPictureInPicture="true"
+            android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Transparent.Groupchat"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation|locale" />
