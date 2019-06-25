@@ -54,7 +54,7 @@ public class ChallengesGaAnalyticsTracker {
     }
 
     public void sendEventChallenges(String event, String category, String action, String label) {
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(TrackAppUtils.gtmData(event, category, action, label));
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(event, category, action, label));
     }
 
     public void sendScreenEvent(Activity activity, String screen) {
