@@ -110,7 +110,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     }
 
     private fun clearProductInfoView(){
-        childFragmentManager.beginTransaction().remove(childFragmentManager.findFragmentById(R.id.product_info_container)).commit()
+        if(childFragmentManager.findFragmentById(R.id.product_info_container) != null) childFragmentManager.beginTransaction().remove(childFragmentManager.findFragmentById(R.id.product_info_container)).commit()
     }
 
     private fun loadData(){
