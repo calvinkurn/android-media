@@ -75,6 +75,7 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
             android.R.id.home -> {
                 RecommendationPageTracking.eventUserClickBack()
                 RouteManager.route(this, ApplinkConst.HOME)
+                this.finish()
                 true
             }
             else -> super.onOptionsItemSelected(item)
