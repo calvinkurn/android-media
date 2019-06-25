@@ -625,14 +625,9 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         snackbarRetry?.hideRetrySnackbar()
         swipe_refresh_layout.isRefreshing = false
         onLoadTopAdsShopDepositSuccess(dashboardPopulateResponse.dataDeposit)
-        if (isUsageExists || isAdExists) {
-            onSuccessPopulateTotalAds(dashboardPopulateResponse.totalAd)
-            loadStatisticsData()
-//            topads_dashboard_empty.visibility = View.GONE
-//            topads_dashboard_content.visibility = View.VISIBLE
-        } else {
-//            topads_dashboard_empty.visibility = View.VISIBLE
-//            topads_dashboard_content.visibility = View.GONE
+        onSuccessPopulateTotalAds(dashboardPopulateResponse.totalAd)
+        loadStatisticsData()
+        if (!isUsageExists || !isAdExists) {
             isShowAutoAddPromo = GlobalConfig.isCustomerApp()
         }
     }
