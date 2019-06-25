@@ -1,7 +1,10 @@
 package com.tokopedia.pushnotif;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationManagerCompat;
 
@@ -10,6 +13,7 @@ import com.tokopedia.pushnotif.factory.GeneralNotificationFactory;
 import com.tokopedia.pushnotif.factory.SummaryNotificationFactory;
 import com.tokopedia.pushnotif.factory.TalkNotificationFactory;
 import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
+import com.tokopedia.pushnotif.util.NotificationTracker;
 
 /**
  * @author ricoharisin .
@@ -32,6 +36,9 @@ public class PushNotification {
                 notifyGroupChat(context, applinkNotificationModel, notificationId, notificationManagerCompat);
             } else {
                 notifyGeneral(context, applinkNotificationModel, notificationId, notificationManagerCompat);
+            }
+            if (isNotificationEnabled(context)) {
+                NotificationTracker.getInstance(context).trackDeliveredNotification(applinkNotificationModel);
             }
         }
     }
@@ -105,5 +112,17 @@ public class PushNotification {
                 .createNotification(applinkNotificationModel, notificationType, notificationType);
 
         notificationManagerCompat.notify(notificationType, notifChat);
+    }
+
+    private static boolean isNotificationEnabled(Context context) {
+        boolean isAllNotificationEnabled = NotificationManagerCompat.from(context).areNotificationsEnabled();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && isAllNotificationEnabled) {
+            NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationChannel channel = manager.getNotificationChannel(Constant.NotificationChannel.GENERAL);
+            return channel.getImportance() != NotificationManager.IMPORTANCE_NONE;
+        } else {
+            return isAllNotificationEnabled;
+        }
+
     }
 }

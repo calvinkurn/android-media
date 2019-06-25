@@ -71,6 +71,9 @@ public class RegisterAnalytics {
     private static final String ACTION_CLICK_UBAH_EMAIL_ACTIVATION = "click ubah email";
     private static final String ACTION_CLICK_ON_BUTTON_VERIFIKASI = "click on button verifikasi";
     private static final String ACTION_CLICK_ON_BUTTON_SELESAI = "click on button selesai";
+    public static final String ACTION_CLICK_ON_TICKER_LOGIN = "click on ticker login";
+    public static final String ACTION_CLICK_TICKER_LINK = "click ticker link";
+    public static final String ACTION_CLICK_ON_BUTTON_CLOSE_TICKER = "click on button close ticker";
 
     private static final String LABEL_EMPTY = "";
     private static final String LABEL_CLICK = "click";
@@ -806,6 +809,33 @@ public class RegisterAnalytics {
                 CATEGORY_REGISTER_WITH_PHONE_NUMBER_PAGE,
                 ACTION_CLICK_KEBIJAKAN_PRIVASI,
                 LABEL_EMPTY
+        ));
+    }
+
+    public void trackClickTicker() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_TICKER_LOGIN,
+                ""
+        ));
+    }
+
+    public void trackClickLinkTicker(String link) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_TICKER_LINK,
+                link
+        ));
+    }
+
+    public void trackClickCloseTickerButton() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_CLICK_REGISTER,
+                CATEGORY_REGISTER_PAGE,
+                ACTION_CLICK_ON_BUTTON_CLOSE_TICKER,
+                ""
         ));
     }
 }

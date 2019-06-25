@@ -1,7 +1,6 @@
 package com.tokopedia.digital_deals.view.presenter;
 
 
-import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 
@@ -16,8 +15,6 @@ import com.tokopedia.digital_deals.domain.getusecase.GetLocationListRequestUseCa
 import com.tokopedia.digital_deals.domain.getusecase.GetSearchDealsListRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetSearchNextUseCase;
 import com.tokopedia.digital_deals.view.TopDealsCacheHandler;
-import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
-import com.tokopedia.digital_deals.view.activity.DealsLocationActivity;
 import com.tokopedia.digital_deals.view.contractor.DealsSearchContract;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.model.ProductItem;
@@ -64,12 +61,7 @@ public class DealsSearchPresenter
             return;
         }
         highlight = searchText;
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putString(getSearchDealsListRequestUseCase.TAG, searchText);
-        Location location = Utils.getSingletonInstance().getLocation(getView().getActivity());
-        requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, location.getId());
-        requestParams.putString(Utils.BRAND_QUERY_PARAM_TREE, "brand_product");
-        getSearchDealsListRequestUseCase.setRequestParams(requestParams);
+        getSearchDealsListRequestUseCase.setRequestParams(getView().getParams());
         getSearchDealsListRequestUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
@@ -92,7 +84,7 @@ public class DealsSearchPresenter
                 RestResponse restResponse = typeRestResponseMap.get(token);
                 DataResponse dataResponse = restResponse.getData();
                 SearchResponse searchResponse = (SearchResponse) dataResponse.getData();
-                getView().setSuggestedBrands(searchResponse.getBrandList());
+                getView().setSuggestedBrands(searchResponse.getBrandList(), searchResponse.getBrandCount());
                 getView().setTrendingDealsOrSuggestions(processSearchResponse(searchResponse), false, highlight, searchResponse.getCount());
                 checkIfToLoad(getView().getLayoutManager());
                 CommonUtils.dumper("enter onNext");
@@ -102,7 +94,6 @@ public class DealsSearchPresenter
 
     @Override
     public void initialize() {
-//        mTopDeals = getView().getActivity().getIntent().getParcelableArrayListExtra("TOPDEALS");
         mTopDeals = TopDealsCacheHandler.init().getTopDeals();
         if (mTopDeals != null && mTopDeals.size() > 0) {
             getView().showSuggestedDeals(mTopDeals, true);
