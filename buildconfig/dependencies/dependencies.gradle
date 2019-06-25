@@ -257,5 +257,12 @@ ext {
     instabugDependencies = [
             instabug: "com.instabug.library:instabug:8.0.3"
     ]
-    
+
+    unify = [
+       icon: 'com.tokopedia.unify:icon:0.0.1@aar',
+       principles: 'com.tokopedia.unify:principles:0.0.1@aar',
+       components: 'com.tokopedia.unify:components:0.0.1@aar',
+       coach_mark: 'com.tokopedia.unify.compositions:coach_mark:1.0.0@aar',
+       calendar: 'com.tokopedia.unify.compositions:calendar:0.0.1@aar'
+    ]   
 }
