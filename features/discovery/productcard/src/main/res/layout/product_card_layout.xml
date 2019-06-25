@@ -2,6 +2,7 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container"
     app:cardCornerRadius="@dimen/dp_8"
     app:cardElevation="@dimen/dp_1"
     app:cardPreventCornerOverlap="false"

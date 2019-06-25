@@ -120,7 +120,6 @@ public class ProductListFragment
     UserSessionInterface userSession;
 
     private EndlessRecyclerViewScrollListener linearLayoutLoadMoreTriggerListener;
-//    private EndlessRecyclerViewScrollListener gridLayoutLoadMoreTriggerListener;
     private EndlessRecyclerViewScrollListener staggeredGridLayoutLoadMoreTriggerListener;
 
     private Config topAdsConfig;
@@ -251,7 +250,6 @@ public class ProductListFragment
     private void setupListener() {
         recyclerView.addOnScrollListener(getRecyclerViewBottomSheetScrollListener());
 
-//        gridLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(getGridLayoutManager());
         linearLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(getLinearLayoutManager());
         staggeredGridLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(getStaggeredGridLayoutManager());
 
@@ -934,7 +932,6 @@ public class ProductListFragment
 
     @Override
     public void updateScrollListener() {
-//        gridLayoutLoadMoreTriggerListener.updateStateAfterGetData();
         linearLayoutLoadMoreTriggerListener.updateStateAfterGetData();
         staggeredGridLayoutLoadMoreTriggerListener.updateStateAfterGetData();
     }
