@@ -178,7 +178,7 @@ class HotelEVoucherFragment : HotelBaseFragment() {
                     tv_room_facility.text = amenitiesString
                 }
 
-                tv_additional_notes.text = propertyDetail.extraInfo
+                tv_additional_notes.text = propertyDetail.extraInfo.content
 
                 tv_request_label.text = propertyDetail.specialRequest.title
                 tv_request_info.text = propertyDetail.specialRequest.content

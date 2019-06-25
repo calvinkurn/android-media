@@ -74,7 +74,7 @@ data class HotelTransportDetail(
 
             @SerializedName("extraInfo")
             @Expose
-            val extraInfo: String = ""
+            val extraInfo: ExtraInfo = ExtraInfo()
     )
 
     data class Image(
@@ -201,5 +201,36 @@ data class HotelTransportDetail(
             @SerializedName("number")
             @Expose
             val number: String = ""
+    )
+
+    data class ExtraInfo(
+            @SerializedName("content")
+            @Expose
+            val content: String = "",
+
+            @SerializedName("uri")
+            @Expose
+            val uri: String = "",
+
+            @SerializedName("uriWeb")
+            @Expose
+            val uriWeb: String = "",
+
+            @SerializedName("isClickable")
+            @Expose
+            val isClickable: Boolean = false,
+
+            @SerializedName("title")
+            @Expose
+            val title: String = "",
+
+            @SerializedName("shortDesc")
+            @Expose
+            val shortDesc: String = "",
+
+            @SerializedName("longDesc")
+            @Expose
+            val longDesc: String = ""
+
     )
 }

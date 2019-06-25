@@ -101,7 +101,15 @@ query OrderDetailsQuery($orderCategoryStr: String, $orderId: String) {
           title
           content
         }
-        extraInfo
+        extraInfo {
+          content
+          uri
+          uriWeb
+          isClickable
+          title
+          shortDesc
+          longDesc
+         }
       }
       cancellationPolicies{
         title

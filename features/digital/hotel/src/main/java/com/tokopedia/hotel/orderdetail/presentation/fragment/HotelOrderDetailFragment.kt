@@ -235,8 +235,8 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             specialRequestAdapter.addData(mutableListOf(propertyDetail.specialRequest))
         } else special_request_recycler_view.visibility = View.GONE
 
-        special_notes.text = propertyDetail.extraInfo
-        special_notes.visibility = if (propertyDetail.extraInfo.isNotBlank()) View.VISIBLE else View.GONE
+        special_notes.text = propertyDetail.extraInfo.content
+        special_notes.visibility = if (propertyDetail.extraInfo.content.isNotBlank()) View.VISIBLE else View.GONE
 
         checkin_checkout_date.setRoomDatesFormatted(
                 propertyDetail.checkInOut[0].checkInOut.date,
