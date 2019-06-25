@@ -449,7 +449,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                         newRecipientAddAddressModel.setRecipientPhoneNumber(saveAddressDataModel.getPhone());
                         newRecipientAddAddressModel.setStreet(saveAddressDataModel.getFormattedAddress());
                         newRecipientAddAddressModel.setPostalCode(saveAddressDataModel.getPostalCode());
-                        mShipmentAddressListPresenter.resetAddressList(newRecipientAddAddressModel, isDisableCorner);
                     }
                     onSearchReset();
                     break;
