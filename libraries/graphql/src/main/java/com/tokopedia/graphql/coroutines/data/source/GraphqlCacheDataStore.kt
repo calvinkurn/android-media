@@ -14,9 +14,18 @@ class GraphqlCacheDataStore(private val mCacheManager: GraphqlCacheManager,
 
     override suspend fun getResponse(requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy): GraphqlResponseInternal {
         return withContext(Dispatchers.IO){
-            val rawJson = mCacheManager.get(mFingerprintManager.generateFingerPrint(requests.toString(),
-                    cacheStrategy.isSessionIncluded))
-            GraphqlResponseInternal(JsonParser().parse(rawJson).asJsonArray, true)
+            val indexOfEmptyCached = ArrayList<Int>()
+            val listOfCached = ArrayList<String>()
+            requests.forEachIndexed { index, graphqlRequest ->
+                val rawJson = mCacheManager.get(mFingerprintManager.generateFingerPrint(graphqlRequest.toString(),
+                        cacheStrategy.isSessionIncluded))
+                if (rawJson.isNullOrEmpty()){
+                    indexOfEmptyCached.add(index)
+                }else{
+                    listOfCached.add(rawJson)
+                }
+            }
+            GraphqlResponseInternal(JsonParser().parse(listOfCached.toString()).asJsonArray, true, indexOfEmptyCached)
         }
     }
 }
