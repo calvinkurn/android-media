@@ -2,227 +2,121 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/container"
-    app:cardCornerRadius="@dimen/dp_8"
+    app:cardCornerRadius="@dimen/dp_10"
     app:cardElevation="@dimen/dp_1"
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/productCardConstraintLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/dp_8">
-
         <com.tokopedia.topads.sdk.view.ImpressedImageView
             android:id="@+id/image"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             app:corner_radius="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:layout_height="100dp" />
+            tools:layout_height="100dp"/>
 
-        <com.tokopedia.unifycomponents.Label
-            android:id="@+id/promoLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_20"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:visibility="gone"
-            app:layout_constraintLeft_toLeftOf="@id/image"
-            app:layout_constraintBottom_toBottomOf="@id/image"
-            tools:text="Promo Label" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/textShopName"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_4"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_8"
-            android:gravity="center_vertical"
-            android:ellipsize="end"
-            android:textColor="@color/charcoal_grey_88"
-            android:visibility="gone"
-            app:typographyType="small"
-            app:typographyWeight="bold"
-            app:layout_constraintLeft_toLeftOf="@id/image"
-            app:layout_constraintTop_toBottomOf="@id/image"
-            tools:text="Shop Name"/>
-
-        <View
-            android:id="@+id/dummyViewForShopImagePosition"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_0"
-            android:layout_marginBottom="@dimen/dp_16"
-            android:visibility="invisible"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/image" />
-
-        <ImageView
-            android:id="@+id/shopImage"
-            android:layout_width="@dimen/dp_32"
-            android:layout_height="@dimen/dp_32"
-            android:layout_marginRight="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_8"
-            android:visibility="gone"
-            app:layout_constraintRight_toRightOf="@id/image"
-            app:layout_constraintTop_toBottomOf="@id/dummyViewForShopImagePosition" />
-
-        <com.tokopedia.unifyprinciples.Typography
+        <TextView
             android:id="@+id/textName"
+            style="@style/TextView.Small"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
             android:ellipsize="end"
             android:maxLines="2"
             android:textColor="@color/charcoal_grey_88"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/image"
-            app:layout_constraintTop_toBottomOf="@+id/textShopName"
-            app:typographyType="heading_5"
+            app:layout_constraintTop_toBottomOf="@+id/image"
             tools:text="Nama" />
 
-        <com.tokopedia.unifycomponents.Label
+        <TextView
             android:id="@+id/textDiscount"
+            android:paddingBottom="@dimen/dp_2"
+            android:paddingTop="@dimen/dp_2"
+            android:paddingRight="@dimen/dp_4"
+            android:paddingLeft="@dimen/dp_4"
+            android:paddingStart="@dimen/dp_4"
+            android:paddingEnd="@dimen/dp_4"
+            style="@style/TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/discount_text_background"
             android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginStart="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_6"
+            android:textColor="@color/discountTextColor"
+            android:textSize="@dimen/sp_10"
+            android:textStyle="bold"
             android:visibility="gone"
-            app:labelType="general_light_red"
             app:layout_constraintStart_toStartOf="@+id/image"
             app:layout_constraintTop_toBottomOf="@+id/textName"
             tools:text="100%"
             tools:visibility="visible" />
 
-        <com.tokopedia.unifyprinciples.Typography
+        <TextView
             android:id="@+id/textSlashedPrice"
+            style="@style/TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_4"
-            android:layout_marginStart="@dimen/dp_4"
             android:textColor="@color/charcoal_grey_40"
+            android:textSize="@dimen/sp_10"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/textDiscount"
             app:layout_constraintStart_toEndOf="@+id/textDiscount"
             app:layout_constraintTop_toTopOf="@+id/textDiscount"
-            app:typographyType="small"
             tools:text="95000"
-            tools:visibility="visible"/>
+            tools:visibility="visible" />
 
-        <com.tokopedia.unifyprinciples.Typography
+        <TextView
             android:id="@+id/textPrice"
             android:layout_marginTop="@dimen/dp_2"
-            android:layout_marginEnd="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
+            style="@style/TextView.Small.Bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/product_card_price_text_color"
             app:layout_constraintStart_toStartOf="@+id/image"
             app:layout_constraintTop_toBottomOf="@+id/textDiscount"
-            app:typographyType="body_2"
-            app:typographyWeight="bold"
             tools:text="Harga" />
 
-        <LinearLayout
-            android:id="@+id/shopBadgesContainer"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_4"
+        <ImageView
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
-            android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/textPrice"
-            app:layout_constraintStart_toStartOf="@id/image"
-            android:orientation="horizontal" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/textLocation"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_16"
-            android:layout_toRightOf="@id/shopBadgesContainer"
-            android:layout_toEndOf="@id/shopBadgesContainer"
             android:layout_marginTop="@dimen/dp_4"
-            android:layout_marginLeft="@dimen/dp_4"
-            android:layout_marginStart="@dimen/dp_4"
-            android:layout_marginRight="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_8"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="@color/product_card_location_text_color"
-            android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/textPrice"
-            app:layout_constraintStart_toEndOf="@id/shopBadgesContainer"
-            app:typographyType="body_3"
-            tools:text="Town Location" />
-
-        <ImageView
             android:id="@+id/rating"
             android:layout_width="@dimen/dp_52"
-            android:layout_height="@dimen/dp_20"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginTop="@dimen/dp_4"
-            android:layout_gravity="center_vertical"
+            android:layout_height="@dimen/dp_10"
             app:layout_constraintStart_toStartOf="@+id/image"
-            app:layout_constraintTop_toBottomOf="@+id/textLocation"
-            tools:background="@color/red_150"
-            tools:layout_height="@dimen/dp_10" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/reviewCount"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_20"
-            android:layout_marginLeft="@dimen/dp_4"
-            android:layout_marginStart="@dimen/dp_4"
-            android:layout_marginTop="@dimen/dp_4"
-            android:textColor="@color/black_38"
-            android:gravity="center_vertical"
-            app:layout_constraintStart_toEndOf="@+id/rating"
-            app:layout_constraintTop_toBottomOf="@+id/textLocation"
+            app:layout_constraintTop_toBottomOf="@+id/textPrice"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:typographyType="body_3"
+            tools:background="@color/red_150"
+            tools:layout_height="20dp" android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/review_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:textColor="@color/black_38"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintBottom_toBottomOf="@+id/rating"
+            app:layout_constraintStart_toEndOf="@+id/rating"
+            app:layout_constraintTop_toTopOf="@+id/rating"
             tools:background="@color/red_150"
             tools:width="20dp" />
-
-        <com.tokopedia.unifycomponents.Label
-            android:id="@+id/credibilityLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_20"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginTop="@dimen/dp_4"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="@+id/image"
-            app:layout_constraintTop_toBottomOf="@+id/textLocation"
-            tools:text="Credibility Label" />
-
-        <com.tokopedia.unifycomponents.Label
-            android:id="@+id/offersLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_20"
-            android:layout_marginTop="@dimen/dp_4"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginStart="@dimen/dp_8"
-            android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/rating"
-            app:layout_constraintLeft_toLeftOf="@id/image"
-            tools:text="Offers Label" />
 
         <ImageView
             android:id="@+id/topAdsIcon"
@@ -239,17 +133,16 @@
             tools:visibility="visible" />
 
         <ImageView
-            android:id="@+id/btnWishlist"
-            android:layout_width="@dimen/dp_28"
-            android:layout_height="@dimen/dp_28"
+            android:id="@+id/btn_wishlist"
+            android:layout_width="@dimen/dp_32"
+            android:layout_height="@dimen/dp_32"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:background="@drawable/wishlist_icon_product_card_background"
-            android:padding="@dimen/dp_4"
+            android:padding="@dimen/dp_6"
             android:scaleType="fitXY"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
