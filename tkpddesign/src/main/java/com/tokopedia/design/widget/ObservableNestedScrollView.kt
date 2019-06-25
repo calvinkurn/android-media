@@ -3,7 +3,6 @@ package com.tokopedia.design.widget
 import android.content.Context
 import android.support.v4.widget.NestedScrollView
 import android.util.AttributeSet
-import android.util.Log
 
 class ObservableNestedScrollView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -21,8 +20,6 @@ class ObservableNestedScrollView @JvmOverloads constructor(
         listener?.let {
             if (diff < threshold && !isLoading) it.onScrollEnded(this, x, y, oldX, oldY)
         }
-        Log.e("tresholdnya", "scrolly $scrollY")
-        Log.e("tresholdnya", "getchild " + getChildAt(childCount - 1).bottom.toString())
     }
 
     interface ScrollViewListener{
