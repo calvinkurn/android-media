@@ -2473,11 +2473,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         promoNotEligibleBottomsheet.setNotEligiblePromoHolderDataList(notEligiblePromoHolderdataList);
         promoNotEligibleBottomsheet.setCheckoutType(requestCode);
         promoNotEligibleBottomsheet.show(getFragmentManager(), "");
+        checkoutAnalyticsCourierSelection.eventViewPopupErrorPromoConfirmation();
     }
 
     @Override
     public void onButtonContinueClicked(int checkoutType) {
         if (promoNotEligibleBottomsheet != null) {
+            checkoutAnalyticsCourierSelection.eventClickLanjutkanOnErrorPromoConfirmation();
             ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataArrayList = promoNotEligibleBottomsheet.getNotEligiblePromoHolderDataList();
             promoNotEligibleBottomsheet.dismiss();
             shipmentPresenter.cancelNotEligiblePromo(notEligiblePromoHolderdataArrayList, checkoutType);

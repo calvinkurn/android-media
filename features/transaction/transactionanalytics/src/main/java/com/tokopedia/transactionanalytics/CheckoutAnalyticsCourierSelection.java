@@ -812,4 +812,30 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 promoCode
         );
     }
+
+    // Promo not eligible bottomsheet
+    public void eventClickLanjutkanOnErrorPromoConfirmation() {
+        sendEventCategoryAction(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_LANJUTKAN_ON_ERROR_PROMO_CONFIRMATION
+        );
+    }
+
+    public void eventClickBatalOnErrorPromoConfirmation() {
+        sendEventCategoryAction(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_BATAL_ON_ERROR_PROMO_CONFIRMATION
+        );
+    }
+
+    public void eventViewPopupErrorPromoConfirmation() {
+        sendEventCategoryAction(
+                EventName.VIEW_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_POP_UP_ERROR_PROMO_CONFIRMATION
+        );
+    }
+
 }

@@ -260,6 +260,11 @@ public interface ConstantTransactionAnalytics {
         String CLICK_PROMO_LOGISTIC_TICKER = "click promo logistic ticker";
         String CLICK_LANJUTKAN_TERAPKAN_PROMO = "click lanjutkan di pop up terapkan promo";
         String CLICK_BATAL_TERAPKAN_PROMO = "click batal di pop up terapkan promo";
+
+        //Promo not eligible bottomsheet
+        String CLICK_LANJUTKAN_ON_ERROR_PROMO_CONFIRMATION = "click lanjutkan on error promo confirmation";
+        String CLICK_BATAL_ON_ERROR_PROMO_CONFIRMATION = "click batal on error promo confirmation";
+        String VIEW_POP_UP_ERROR_PROMO_CONFIRMATION = "view pop up error promo confirmation";
     }
 
     interface EventLabel {
