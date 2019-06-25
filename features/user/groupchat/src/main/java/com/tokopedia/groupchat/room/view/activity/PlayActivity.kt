@@ -31,6 +31,7 @@ import com.tokopedia.groupchat.room.view.fragment.BlankFragment
 import com.tokopedia.groupchat.room.view.fragment.PlayFragment
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.videoplayer.utils.RepeatMode
+import com.tokopedia.videoplayer.utils.sendViewToBack
 import com.tokopedia.videoplayer.view.player.TkpdVideoPlayer
 import kotlinx.android.synthetic.main.play_activity.*
 import kotlinx.android.synthetic.main.play_fragment.*
@@ -103,6 +104,7 @@ open class PlayActivity : BaseSimpleActivity(), PlayViewListener {
 
     override fun onPlayerActive(isActive: Boolean) {
         if (isActive) {
+            sendViewToBack(playerView)
             TkpdVideoPlayer.Builder()
                     .transaction(R.id.playerView, supportFragmentManager)
                     .videoSource("https://www.html5rocks.com/en/tutorials/video/basics/devstories.webm")
