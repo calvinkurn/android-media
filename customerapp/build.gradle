@@ -249,9 +249,18 @@ android {
 //            exclude "lib/arm64-v8a/libgnustl_shared.so"
 //        }
         resConfigs "en", "id"
+        externalNativeBuild {
+            cmake {
+                cppFlags ""
+            }
+        }
+     }
 
+    externalNativeBuild {
+        cmake {
+            path "CMakeLists.txt"
+        }
     }
-
 
     dexOptions {
         javaMaxHeapSize "8g"
