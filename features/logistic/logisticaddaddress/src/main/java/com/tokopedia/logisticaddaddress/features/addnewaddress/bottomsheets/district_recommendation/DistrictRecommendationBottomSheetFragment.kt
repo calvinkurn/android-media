@@ -72,8 +72,7 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
             initInjector()
         }
 
-        val staticDimen8dp = view.context?.resources?.getDimensionPixelOffset(R.dimen.dp_8)
-        setViewListener(staticDimen8dp)
+        setViewListener()
     }
 
     private fun prepareLayout(view: View) {
@@ -146,7 +145,9 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
         AddNewAddressAnalytics.eventClickChipsKotaKecamatanChangeAddressNegative()
     }
 
-    private fun setViewListener(staticDimen8dp: Int?) {
+    private fun setViewListener() {
+        etSearch.isFocusableInTouchMode = true
+        etSearch.requestFocus()
         etSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int,
                                            after: Int) {
@@ -174,6 +175,7 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
             popularCityAdapter.notifyDataSetChanged()
         }
 
+        val staticDimen8dp = view?.context?.resources?.getDimensionPixelOffset(R.dimen.dp_8)
         rvChips.addItemDecoration(staticDimen8dp?.let { ChipsItemDecoration(staticDimen8dp) })
 
         var visibleItemCount: Int

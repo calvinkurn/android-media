@@ -356,19 +356,29 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             tv_title_getdistrict.text = saveAddressDataModel.title
             tv_address_getdistrict.text = saveAddressDataModel.formattedAddress
             btn_choose_location.setOnClickListener {
-                if (validateDetailAlamat()) {
-                    saveAddressDataModel.editDetailAddress = et_detail_address.text.toString()
-                    this.isPolygon?.let {
-                        if (this.isPolygon as Boolean) {
-                            isMismatchSolved = true
+                isMismatchSolved?.let {
+                    if (it) {
+                        doLoadAddEdit()
+                    } else {
+                        if (validateDetailAlamat()) {
+                            doLoadAddEdit()
                         }
                     }
-
-                    presenter.loadAddEdit( isMismatchSolved, isChangesRequested)
                 }
                 AddNewAddressAnalytics.eventClickButtonPilihLokasi()
             }
         }
+    }
+
+    private fun doLoadAddEdit() {
+        saveAddressDataModel?.editDetailAddress = et_detail_address.text.toString()
+        /*this.isPolygon?.let {
+            if (this.isPolygon as Boolean) {
+                isMismatchSolved = true
+            }
+        }*/
+
+        presenter.loadAddEdit( isMismatchSolved, isChangesRequested)
     }
 
     private fun validateDetailAlamat(): Boolean {

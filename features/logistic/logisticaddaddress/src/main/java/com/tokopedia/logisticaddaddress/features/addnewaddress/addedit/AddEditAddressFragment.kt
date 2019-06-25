@@ -218,15 +218,10 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             et_phone.setOnClickListener {
                 AddNewAddressAnalytics.eventClickFieldNoPonselChangeAddressPositive()
             }
-            btn_map.setOnClickListener {
-                goToPinpointActivity(currentLat, currentLong, false, token, false, districtId,
-                        isMismatchSolved, saveAddressDataModel)
-                AddNewAddressAnalytics.eventClickButtonUbahPinPointChangeAddressPositive()
-            }
 
         } else {
             if (isMismatch) {
-                et_detail_alamat_mismatch.addTextChangedListener(setWrapperWatcher(et_detail_alamat_mismatch_wrapper))
+                // et_detail_alamat_mismatch.addTextChangedListener(setWrapperWatcher(et_detail_alamat_mismatch_wrapper))
 
                 et_kota_kecamatan_mismatch.apply {
                     addTextChangedListener(setWrapperWatcher(et_kota_kecamatan_mismatch_wrapper))
@@ -402,14 +397,14 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             field += "alamat"
         }
 
-        if (isMismatchSolved) {
+        /*if (isMismatchSolved) {
             if (et_detail_alamat_mismatch.text.isEmpty()) {
                 validated = false
                 setWrapperError(et_detail_alamat_mismatch_wrapper, getString(R.string.validate_detail_alamat))
                 if (!isErrorFieldEmpty(field)) field += ", "
                 field += "detail alamat"
             }
-        }
+        }*/
 
 
         if (!validateFormDefault(errorField)) validated = false
@@ -473,7 +468,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         setWrapperError(et_kota_kecamatan_mismatch_wrapper, null)
         setWrapperError(et_kode_pos_mismatch_wrapper, null)
         setWrapperError(et_alamat_mismatch_wrapper, null)
-        setWrapperError(et_detail_alamat_mismatch_wrapper, null)
+        // setWrapperError(et_detail_alamat_mismatch_wrapper, null)
     }
 
     private fun resetErrorFormDefault() {
@@ -510,20 +505,19 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (s.isNotEmpty()) {
-                    var countCharLeft = 0
+                    var countCharLeft: Int
                     var info = ""
-                    println("## start = $start, before = $before, count = $count")
                     when {
                         count < 5 -> {
                             countCharLeft = 5 - count
                             info = "$countCharLeft karakter lagi diperlukan"
                         }
                         count > 4 -> {
-                            countCharLeft = 10 - count
+                            countCharLeft = 175 - count
                             info = "$countCharLeft karakter tersisa"
 
                         }
-                        count == 10 -> info = ""
+                        count == 175 -> info = ""
                     }
                     tv_alamat_info_mismatch.text = info
                 }
@@ -595,6 +589,12 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             val params = btn_map.layoutParams
             params.width = 450
             btn_map.layoutParams = params
+            setOnClickListener {
+                saveAddressDataModel?.editDetailAddress = et_detail_address.text.toString()
+                goToPinpointActivity(currentLat, currentLong, false, token, false, districtId,
+                        isMismatchSolved, saveAddressDataModel)
+                AddNewAddressAnalytics.eventClickButtonUbahPinPointChangeAddressPositive()
+            }
         }
     }
 
@@ -631,7 +631,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             params.width = 450
             btn_map.layoutParams = params
             setOnClickListener {
-                saveAddressDataModel?.editDetailAddress = et_detail_alamat_mismatch.text.toString()
+                saveAddressDataModel?.editDetailAddress = tv_detail_alamat_mismatch.text.toString()
                 goToPinpointActivity(currentLat, currentLong, false, token, true, districtId,
                         isMismatchSolved, saveAddressDataModel)
             }
@@ -650,8 +650,8 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     private fun setMismatchSolvedForm() {
         ll_detail_alamat.visibility = View.VISIBLE
         et_kota_kecamatan_mismatch.setText(this.saveAddressDataModel?.formattedAddress)
-        et_alamat_mismatch.setText(this.saveAddressDataModel?.title)
-        et_detail_alamat_mismatch.setText(this.saveAddressDataModel?.editDetailAddress)
+        // et_alamat_mismatch.setText(this.saveAddressDataModel?.title)
+        tv_detail_alamat_mismatch.setText(this.saveAddressDataModel?.editDetailAddress)
         et_kode_pos_mismatch.setText(this.saveAddressDataModel?.postalCode)
     }
 
@@ -688,7 +688,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             saveAddressDataModel?.address2 = "$currentLat,$currentLong"
 
         } else {
-            detailAddress = et_detail_alamat_mismatch.text.toString()
+            detailAddress = tv_detail_alamat_mismatch.text.toString()
             if (isMismatch) {
                 saveAddressDataModel?.address1 = "${detailAddress} ${saveAddressDataModel?.selectedDistrict}"
                 saveAddressDataModel?.address2 = ""
@@ -886,7 +886,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         if (requestCode == FINISH_PINPOINT_FLAG && resultCode == Activity.RESULT_OK) {
             if (data != null) {
                 if (data.hasExtra(AddressConstants.EXTRA_IS_MISMATCH)) {
-                    isMismatch = data.getBooleanExtra(AddressConstants.EXTRA_IS_MISMATCH, true)
+                    isMismatch = data.getBooleanExtra(AddressConstants.EXTRA_IS_MISMATCH, false)
                 }
 
                 if (data.hasExtra(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL)) {

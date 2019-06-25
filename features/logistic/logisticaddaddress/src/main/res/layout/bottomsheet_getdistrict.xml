@@ -124,7 +124,8 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/et_detail_address_hint"
                 android:inputType="text"
-                android:textColor="#ae31353b" />
+                android:textColor="#ae31353b"
+                android:imeOptions="actionNext"/>
 
         </com.tokopedia.design.text.TkpdHintTextInputLayout>
 

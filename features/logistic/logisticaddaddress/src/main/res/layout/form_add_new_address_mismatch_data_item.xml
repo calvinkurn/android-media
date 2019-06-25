@@ -98,7 +98,7 @@
                 android:hint="@string/et_alamat_hint"
                 android:inputType="text"
                 android:textColor="#ae31353b"
-                android:maxLength="10"/>
+                android:maxLength="175"/>
 
         </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
@@ -125,22 +125,13 @@
             android:layout_marginTop="@dimen/dp_24"
             android:text="@string/detail_alamat"/>
 
-        <com.tokopedia.design.text.TkpdHintTextInputLayout
-            android:id="@+id/et_detail_alamat_mismatch_wrapper"
-            style="@style/HintTextInputLayout"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/tv_detail_alamat_mismatch"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:hintEnabled="false">
-
-            <EditText
-                android:id="@+id/et_detail_alamat_mismatch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/et_alamat_hint"
-                android:inputType="text"
-                android:textColor="#ae31353b" />
-
-        </com.tokopedia.design.text.TkpdHintTextInputLayout>
+            android:textSize="@dimen/sp_12"
+            android:textColor="@color/title_search_location_color"
+            android:layout_marginTop="@dimen/dp_24"/>
 
     </LinearLayout>
 
