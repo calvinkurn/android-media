@@ -406,13 +406,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             loadingAffiliate.visible()
         }
 
-//        nested_scroll.listener = object : ObservableNestedScrollView.ScrollViewListener {
-//            override fun onScrollEnded(scrollView: ObservableNestedScrollView, x: Int, y: Int, oldX: Int, oldY: Int) {
-//                scrollView.startLoad()
-//                productInfoViewModel.loadMore()
-//            }
-//        }
-
         merchantVoucherListWidget.setOnMerchantVoucherListWidgetListener(object : MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener {
             override val isOwner: Boolean
                 get() = productInfo?.basic?.shopID?.let { productInfoViewModel.isShopOwner(it) }
@@ -739,7 +732,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     AppBarState.EXPANDED -> {
                         isAppBarCollapsed = false
                         expandedAppBar()
-//                        nested_scroll.completeLoad()
                     }
                     AppBarState.COLLAPSED -> {
                         isAppBarCollapsed = true
