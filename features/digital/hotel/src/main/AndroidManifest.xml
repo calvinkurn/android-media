@@ -57,7 +57,7 @@
 
                 <data
                     android:host="@string/host_hotel"
-                    android:path="@string/path_hotel_detail"
+                    android:pathPattern="@string/path_hotel_detail"
                     android:scheme="@string/tokopedia_scheme" />
             </intent-filter>
         </activity>
@@ -107,7 +107,7 @@
 
                 <data
                     android:host="@string/host_hotel"
-                    android:path="@string/path_hotel_order_detail"
+                    android:pathPattern="@string/path_hotel_order_detail"
                     android:scheme="@string/tokopedia_scheme" />
             </intent-filter>
         </activity>
@@ -116,19 +116,7 @@
             android:name=".booking.presentation.activity.HotelBookingActivity"
             android:label="Pembayaran"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/host_hotel"
-                    android:path="@string/path_hotel_booking"
-                    android:scheme="@string/tokopedia_scheme" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/Theme.White" />
 
     </application>
 
