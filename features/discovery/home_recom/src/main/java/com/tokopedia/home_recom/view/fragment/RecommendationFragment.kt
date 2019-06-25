@@ -27,6 +27,7 @@ import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.recommendation_widget_common.TYPE_CAROUSEL
 import com.tokopedia.recommendation_widget_common.TYPE_SCROLL
+import com.tokopedia.recommendation_widget_common.TYPE_CUSTOM_HORIZONTAL
 import com.tokopedia.recommendation_widget_common.presentation.RecommendationCardView
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -38,7 +39,6 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
 
     private lateinit var trackingQueue: TrackingQueue
     private lateinit var productId: String
@@ -63,6 +63,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        clearProductInfoView()
         savedInstanceState?.let{
             productId = it.getString(SAVED_PRODUCT_ID) ?: ""
         }
@@ -107,6 +108,10 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
         return true
     }
 
+    private fun clearProductInfoView(){
+        if(childFragmentManager.findFragmentById(R.id.product_info_container) != null) childFragmentManager.beginTransaction().remove(childFragmentManager.findFragmentById(R.id.product_info_container)).commit()
+    }
+
     private fun loadData(){
         activity?.let{
             if(productId.isNotBlank()) {
@@ -117,6 +122,11 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
                 recommendationWidgetViewModel.getRecommendationList(arrayListOf(), onErrorGetRecommendation = this::onErrorGetRecommendation)
             }
         }
+    }
+
+    override fun onDestroy() {
+        clearProductInfoView()
+        super.onDestroy()
     }
 
     private fun onErrorGetRecommendation(errorMessage: String?) {
@@ -180,6 +190,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
                     }
                 }
                 TYPE_CAROUSEL -> list.add(RecommendationCarouselDataModel(recommendationWidget.title, recommendationWidget.recommendationItemList, this))
+                TYPE_CUSTOM_HORIZONTAL -> list.add(RecommendationCarouselDataModel(recommendationWidget.title, recommendationWidget.recommendationItemList, this))
             }
         }
         return list
