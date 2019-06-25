@@ -84,10 +84,10 @@ public class ContactUsHomeActivity extends BaseSimpleActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if(id==R.id.action_inbox) {
-            startActivity(InboxListActivity.getCallingIntent(this));
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+            if(id==R.id.action_inbox){
+                startActivity(InboxListActivity.getCallingIntent(this));
+                return true;
+            }
+            return super.onOptionsItemSelected(item);
     }
 }
