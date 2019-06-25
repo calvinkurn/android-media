@@ -63,6 +63,9 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        savedInstanceState?.let{
+            productId = it.getString(SAVED_PRODUCT_ID) ?: ""
+        }
         activity?.let {
             trackingQueue = TrackingQueue(it)
         }
@@ -75,9 +78,6 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        savedInstanceState?.let{
-            productId = it.getString(SAVED_PRODUCT_ID) ?: ""
-        }
         setHasOptionsMenu(true)
         disableLoadMore()
         getRecyclerView(view).layoutManager = recyclerViewLayoutManager
