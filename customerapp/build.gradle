@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
-apply plugin: 'com.jakewharton.butterknife'
 
 if (!project.hasProperty("disable-performance-plugin")) {
     apply plugin: 'com.google.firebase.firebase-perf'
@@ -108,9 +107,6 @@ buildscript {
         }
     }
     dependencies {
-        classpath ('com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT'){
-            exclude group: 'com.android.tools.build', module: 'gradle'
-        }
         classpath rootProject.ext.gradlePlugin.crashlytics
         classpath rootProject.ext.miscDependencies.hansel
     }
@@ -290,7 +286,7 @@ android {
 afterEvaluate {
     dependencies {
         liveDevImplementation rootProject.ext.instabugDependencies.instabug
-        stagingDevImplementation rootProject.ext.instabugDependencies.instabug
+       // stagingDevImplementation rootProject.ext.instabugDependencies.instabug
     }
 }
 
@@ -333,6 +329,7 @@ dependencies {
     implementation project(rootProject.ext.features.discovery)
     implementation project(rootProject.ext.features.search)
     implementation project(rootProject.ext.features.payment)
+    implementation project(rootProject.ext.features.homeRecommendation)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.profile)
     implementation project(rootProject.ext.features.reputationCommon)
@@ -481,9 +478,6 @@ dependencies {
     implementation (rootProject.ext.analyticsDependencies.moengageMSG) {
         exclude group: 'com.android.support'
     }
-
-    implementation rootProject.ext.butterKnifeDependencies.butterKnife
-    annotationProcessor rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.miscDependencies.gson
