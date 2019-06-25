@@ -16,7 +16,7 @@
             android:layout_height="0dp"
             android:visibility="gone"/>
 
-        <View
+        <RelativeLayout
             android:id="@+id/playerView"
             android:fitsSystemWindows="true"
             android:layout_width="match_parent"
