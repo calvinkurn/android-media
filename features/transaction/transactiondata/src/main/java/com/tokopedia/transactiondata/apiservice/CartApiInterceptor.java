@@ -57,7 +57,7 @@ public class CartApiInterceptor extends TkpdAuthInterceptor {
                 authKey,
                 "EEE, dd MMM yyyy HH:mm:ss ZZZ", userSession.getUserId());
 
-        mapHeader.put("X-APP-VERSION", "3.34");
+        mapHeader.put("X-APP-VERSION", GlobalConfig.VERSION_NAME);
         mapHeader.put("Tkpd-UserId", userSession.getUserId());
         mapHeader.put("X-Device", "android");
         mapHeader.put("Tkpd-SessionId", userSession.getDeviceId());
