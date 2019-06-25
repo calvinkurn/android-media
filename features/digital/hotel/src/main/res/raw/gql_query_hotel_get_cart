@@ -1,5 +1,5 @@
-query PropertyCart($data: PropertyGetCartRequest) {
-    propertyCart(input: $data) {
+query PropertyCart($data: PropertyGetCartRequest!) {
+    propertyGetCart(input: $data) {
         cartID
         cart {
             contact {
@@ -32,41 +32,48 @@ query PropertyCart($data: PropertyGetCartRequest) {
             }
         }
         property {
-            propertyID
-            name
-            type
-            address
-            image
-            star
-            paymentNote
-            rooms: {
-                roomID
-                isBreakFastIncluded
-                maxOccupancy
-                roomName
-                isNeedDeposit
-                isRefundAble
-                isCCRequired
-                importantNote
-                paymentTerms {
-                    name
-                    cancellationDescription
-                    prepaymentDescription
-                }
-                roomPolicies {
-                    content
-                    policyType
-                }
-                cancellationPolicies {
-                    content
-                    policyType
-                    isClickable
-                    details {
-                        title
-                        content
-                    }
-                }
+          propertyID
+          name
+          type
+          address
+          image
+          star
+          paymentNote
+          room {
+            roomID
+            isBreakFastIncluded
+            maxOccupancy
+            roomName
+            isNeedDeposit
+            isRefundAble
+            isCCRequired
+            paymentTerms {
+              name
+              cancellationDescription
+              prepaymentDescription
             }
+            roomPolicies {
+              content
+              policyType
+            }
+            cancellationPolicies {
+              title
+              content
+              isClickable
+              details {
+                shortTitle
+                longTitle
+                shortDesc
+                longDesc
+                isActive
+              }
+            }
+          }
+          checkInFrom
+          checkInTo
+          checkOutFrom
+          checkOutTo
+          isDirectPayment
         }
     }
 }

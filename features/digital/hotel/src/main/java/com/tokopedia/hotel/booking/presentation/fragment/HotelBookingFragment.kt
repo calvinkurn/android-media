@@ -18,6 +18,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.common.payment.model.PaymentPassData
@@ -81,7 +83,9 @@ class HotelBookingFragment : HotelBaseFragment() {
                     hotelCart = it.data
                     initView()
                 }
-                is Fail -> {}
+                is Fail -> {
+                    NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))
+                }
             }
         })
 
@@ -98,7 +102,9 @@ class HotelBookingFragment : HotelBaseFragment() {
                         startActivityForResult(intent, REQUEST_CODE_CHECKOUT)
                     }
                 }
-                is Fail -> {}
+                is Fail -> {
+                    NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))
+                }
             }
         })
     }
@@ -210,7 +216,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                         spannableString.length - moreInfoString.length, spannableString.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 cancellationDesc = spannableString
             }
-            tv_cancellation_policy_ticker.setTitleAndDescription(cancellationPolicy.policyType, cancellationDesc)
+            tv_cancellation_policy_ticker.setTitleAndDescription(cancellationPolicy.title, cancellationDesc)
             tv_cancellation_policy_ticker.info_desc.movementMethod = LinkMovementMethod.getInstance()
         }
     }
@@ -222,7 +228,7 @@ class HotelBookingFragment : HotelBaseFragment() {
 
             for (policy in property.rooms[0].cancellationPolicies.details) {
                 val policyView = InfoTextView(context!!)
-                policyView.setTitleAndDescription(policy.title, policy.content)
+                policyView.setTitleAndDescription(policy.longTitle, policy.longDesc)
                 policyView.info_title.setFontSize(TextViewCompat.FontSize.SMALL)
                 policyView.info_container.setMargin(0,0,0, policyView.info_container.getDimens(R.dimen.dp_16))
                 hotelCancellationPolicyBottomSheets.addContentView(policyView)
@@ -354,7 +360,7 @@ class HotelBookingFragment : HotelBaseFragment() {
     }
 
     private fun setupImportantNotes(property: HotelPropertyData) {
-        if (property.rooms.isNotEmpty() && property.rooms[0].importantNote.isNotEmpty()) {
+        if (property.rooms.isNotEmpty() && property.paymentNote.isNotEmpty()) {
             hotel_booking_important_notes.visibility = View.VISIBLE
 
             val notesDescription = getString(R.string.hotel_booking_important_notes)
@@ -362,7 +368,7 @@ class HotelBookingFragment : HotelBaseFragment() {
             val spannableString = SpannableString("$notesDescription $expandNotesLabel")
             val moreInfoSpan = object : ClickableSpan() {
                 override fun onClick(textView: View) {
-                    onImportantNotesClicked(property.rooms[0].importantNote)
+                    onImportantNotesClicked(property.paymentNote)
                 }
             }
             spannableString.setSpan(moreInfoSpan,spannableString.length - expandNotesLabel.length, spannableString.length,

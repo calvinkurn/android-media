@@ -37,10 +37,6 @@ data class HotelPropertyRoom (
     @Expose
     val isDirectPayment: Boolean = false,
 
-    @SerializedName("importantNote")
-    @Expose
-    val importantNote: String = "",
-
     @SerializedName("paymentTerms")
     @Expose
     val paymentTerms: PaymentTerms = PaymentTerms(),
@@ -85,9 +81,9 @@ data class HotelPropertyRoom (
 
     data class CancellationPolicy (
 
-        @SerializedName("policyType")
+        @SerializedName("title")
         @Expose
-        var policyType: String = "",
+        var title: String = "",
 
         @SerializedName("content")
         @Expose
@@ -105,13 +101,25 @@ data class HotelPropertyRoom (
 
     data class CancellationPolicyDetail (
 
-        @SerializedName("title")
+        @SerializedName("shortTitle")
         @Expose
-        var title: String = "",
+        var shortTitle: String = "",
 
-        @SerializedName("content")
+        @SerializedName("longTitle")
         @Expose
-        var content: String = ""
+        var longTitle: String = "",
+
+        @SerializedName("shortDesc")
+        @Expose
+        var shortDesc: String = "",
+
+        @SerializedName("longDesc")
+        @Expose
+        var longDesc: String = "",
+
+        @SerializedName("isActive")
+        @Expose
+        var isActive: Boolean = false
 
     )
 

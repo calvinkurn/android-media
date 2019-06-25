@@ -40,9 +40,9 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
             hotelCartResult.value = Success(data)
         }) {
             it.printStackTrace()
-            val gson = Gson()
-            hotelCartResult.value = Success(gson.fromJson(dummy,
-                    HotelCart::class.java))
+//            val gson = Gson()
+//            hotelCartResult.value = Success(gson.fromJson(dummy,
+//                    HotelCart::class.java))
         }
     }
 
