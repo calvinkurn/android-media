@@ -16,6 +16,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -89,7 +90,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                     startActivity(HotelBookingActivity.getCallingIntent(context!!, cartId))
                 }
                 is Fail -> {
-                    NetworkErrorHelper.showRedSnackbar(activity, it.throwable.message)
+                    NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))
                 }
             }
             room_detail_button.isEnabled = true
@@ -315,7 +316,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         room_detail_button.setOnClickListener {
             loading_screen.visibility = View.VISIBLE
             room_detail_button.isEnabled = false
-            trackingHotelUtil.hotelChooseRoomDetails(hotelRoom)
+//            trackingHotelUtil.hotelChooseRoomDetails(hotelRoom)
             if (userSessionInterface.isLoggedIn) {
                 roomDetailViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart), addToCartParam)
             } else {

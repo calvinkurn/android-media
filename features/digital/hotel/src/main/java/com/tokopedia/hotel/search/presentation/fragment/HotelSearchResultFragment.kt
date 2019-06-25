@@ -204,7 +204,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
     override fun onItemClicked(t: Property) {
         with(searchResultviewModel.searchParam) {
-            trackingHotelUtil.chooseHotel(t, checkIn, searchProperties)
+//            trackingHotelUtil.chooseHotel(t, checkIn, searchProperties)
 
             startActivityForResult(HotelDetailActivity.getCallingIntent(context!!,
                     checkIn, checkOut, t.id, room, guest.adult),

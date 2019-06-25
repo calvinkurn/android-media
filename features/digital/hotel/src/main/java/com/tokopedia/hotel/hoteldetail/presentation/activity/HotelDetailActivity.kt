@@ -16,7 +16,32 @@ import com.tokopedia.hotel.hoteldetail.presentation.fragment.HotelDetailFragment
  */
 class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailComponent> {
 
+    private var checkInDate: String = ""
+    private var checkOutDate: String = ""
+    private var propertyId: Int = 0
+    private var roomCount: Int = 0
+    private var adultCount: Int = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        val uri = intent.data
+        if (uri != null) {
+            propertyId = uri.lastPathSegment.toInt()
+            if (!uri.getQueryParameter(PARAM_CHECK_IN).isNullOrEmpty()) {
+                checkInDate = uri.getQueryParameter(PARAM_CHECK_IN)
+                checkOutDate = uri.getQueryParameter(PARAM_CHECK_OUT)
+                roomCount = uri.getQueryParameter(PARAM_ROOM_COUNT).toInt()
+                adultCount = uri.getQueryParameter(PARAM_ADULT_COUNT).toInt()
+            }
+        } else {
+            with(intent) {
+                checkInDate = getStringExtra(EXTRA_CHECK_IN_DATE)
+                checkOutDate = getStringExtra(EXTRA_CHECK_OUT_DATE)
+                propertyId = getIntExtra(EXTRA_PROPERTY_ID, 0)
+                roomCount = getIntExtra(EXTRA_ROOM_COUNT, 1)
+                adultCount = getIntExtra(EXTRA_ADULT_COUNT, 1)
+            }
+        }
+
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
     }
@@ -24,15 +49,7 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
     override fun shouldShowOptionMenu(): Boolean = true
 
     override fun getNewFragment(): Fragment =
-            with(intent) {
-                HotelDetailFragment.getInstance(
-                        getStringExtra(EXTRA_CHECK_IN_DATE),
-                        getStringExtra(EXTRA_CHECK_OUT_DATE),
-                        getIntExtra(EXTRA_PROPERTY_ID, 0),
-                        getIntExtra(EXTRA_ROOM_COUNT, 1),
-                        getIntExtra(EXTRA_ADULT_COUNT, 1),
-                        getBooleanExtra(EXTRA_ENABLE_BUTTON, true))
-            }
+            HotelDetailFragment.getInstance(checkInDate, checkOutDate, propertyId, roomCount, adultCount)
 
     override fun getComponent(): HotelDetailComponent =
             DaggerHotelDetailComponent.builder()
@@ -48,41 +65,20 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
         const val EXTRA_ADULT_COUNT = "EXTRA_ADULT_COUNT"
         const val EXTRA_CHECK_IN_DATE = "EXTRA_CHECK_IN_DATE"
         const val EXTRA_CHECK_OUT_DATE = "EXTRA_CHECK_OUT_DATE"
-        const val EXTRA_ENABLE_BUTTON = "EXTRA_ENABLE_BUTTON"
+
+        const val PARAM_CHECK_IN = "check_in"
+        const val PARAM_CHECK_OUT = "check_out"
+        const val PARAM_ROOM_COUNT = "room"
+        const val PARAM_ADULT_COUNT = "adult"
 
         fun getCallingIntent(context: Context, checkInDate: String, checkOutDate: String, propertyId: Int, roomCount: Int,
-                             adultCount: Int, enableButton: Boolean = true): Intent =
+                             adultCount: Int): Intent =
                 Intent(context, HotelDetailActivity::class.java)
                         .putExtra(EXTRA_CHECK_IN_DATE, checkInDate)
                         .putExtra(EXTRA_CHECK_OUT_DATE, checkOutDate)
                         .putExtra(EXTRA_PROPERTY_ID, propertyId)
                         .putExtra(EXTRA_ROOM_COUNT, roomCount)
                         .putExtra(EXTRA_ADULT_COUNT, adultCount)
-                        .putExtra(EXTRA_ENABLE_BUTTON, enableButton)
 
     }
 }
-/*
-
-*/
-/**
- * eg : tokopedia://hotel/detail/{id}?check_in={checkin_date}&check_out={checkout_date}&room={#}&adult={#}&enable_book={0/1}
- *
- * check_in = check in date
- * check_out = check out date
- * room = number of room
- * adult = number of adult
- * enable_book = enable book 1 (true) user can see room list etc. enable book 0 (false) user can't see room list and button book room will not shown
- *//*
-
-@DeepLink(ApplinkConstant.HOTEL_DETAIL)
-fun getCallingIntent(context: Context, extras: Bundle): Intent {
-    val uri: Uri.Builder = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
-    return HotelDetailActivity.getCallingIntent(context,
-            extras.getString("check_in", ""),
-            extras.getString("check_out", ""),
-            extras.getInt("id"),
-            extras.getInt("room", 1),
-            extras.getInt("adult", 1),extras.getInt("enable_book") == 1)
-            .setData(uri.build())
-}*/
