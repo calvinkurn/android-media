@@ -182,6 +182,97 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/product_image" />
+
+            <FrameLayout
+                    android:id="@+id/buy_now"
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="@dimen/dp_32"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginBottom="@dimen/dp_8"
+                    android:layout_marginRight="@dimen/dp_5"
+                    android:layout_marginEnd="@dimen/dp_5"
+                    android:background="@drawable/background_recom_buy"
+                    android:visibility="visible"
+                    tools:visibility="visible"
+                    app:layout_constraintHorizontal_weight="0.2"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/product_image"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toLeftOf="@+id/add_to_cart"
+                    app:layout_constraintEnd_toStartOf="@+id/add_to_cart">
+
+                <com.tokopedia.design.component.TextViewCompat
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/recom_buy"
+                        android:textColor="@color/orange_red"
+                        android:layout_gravity="center"
+                        android:paddingLeft="@dimen/dp_8"
+                        android:paddingStart="@dimen/dp_8"
+                        android:paddingRight="@dimen/dp_8"
+                        android:paddingEnd="@dimen/dp_8"
+                        app:fontSize="micro"/>
+
+                <ProgressBar
+                        android:id="@+id/pb_buy_now"
+                        android:layout_width="@dimen/dp_30"
+                        android:layout_height="@dimen/dp_19"
+                        android:layout_gravity="center"
+                        android:background="@color/white"
+                        android:indeterminate="true"
+                        android:indeterminateTint="@color/orange_red"
+                        tools:visibility="visible"
+                        android:visibility="gone"/>
+
+            </FrameLayout>
+
+            <FrameLayout
+                    android:id="@+id/add_to_cart"
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="@dimen/dp_32"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:layout_marginBottom="@dimen/dp_8"
+                    android:layout_marginRight="@dimen/dp_8"
+                    android:layout_marginEnd="@dimen/dp_16"
+                    android:background="@drawable/background_add_to_cart"
+                    android:visibility="visible"
+                    tools:visibility="visible"
+                    app:layout_constraintHorizontal_weight="0.7"
+                    app:layout_constraintLeft_toRightOf="@+id/buy_now"
+                    app:layout_constraintStart_toEndOf="@+id/buy_now"
+                    app:layout_constraintTop_toBottomOf="@+id/product_image"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                <com.tokopedia.design.component.TextViewCompat
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/add_to_cart"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:paddingLeft="@dimen/dp_8"
+                        android:paddingStart="@dimen/dp_8"
+                        android:paddingRight="@dimen/dp_8"
+                        android:paddingEnd="@dimen/dp_8"
+                        app:textViewTheme="darkPrimary"
+                        app:fontSize="micro"/>
+
+                <ProgressBar
+                        android:id="@+id/pb_add_to_cart"
+                        style="?android:progressBarStyleInverse"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp_19"
+                        android:layout_gravity="center"
+                        android:background="@color/deep_orange_500"
+                        android:indeterminate="true"
+                        android:indeterminateTint="@color/white"
+                        tools:visibility="visible"
+                        android:visibility="gone"/>
+
+            </FrameLayout>
+
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>
 </FrameLayout>

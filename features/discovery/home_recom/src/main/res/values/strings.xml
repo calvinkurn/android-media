@@ -2,6 +2,7 @@
     <string name="app_name">home_recom</string>
     <string name="home_recommendation">Pilihan Tokopedia</string>
     <string name="add_to_cart">Tambah ke Keranjang</string>
+    <string name="recom_buy">Beli</string>
     <string name="review_count">(%d)</string>
     <string name="similar_product_title">Produk Serupa</string>
     <string name="another_product_title">Produk Lain dari Toko Ini</string>
