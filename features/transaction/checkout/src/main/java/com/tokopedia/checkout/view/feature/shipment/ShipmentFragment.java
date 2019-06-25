@@ -144,7 +144,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private static final int REQUEST_CODE_COURIER_PINPOINT = 13;
     private static final int REQUEST_CODE_SEND_TO_MULTIPLE_ADDRESS = 55;
     public static final int INDEX_PROMO_GLOBAL = -1;
-    public static final int INDEX_PROMO_ALL = -2;
 
     private static final int REQUEST_CODE_NORMAL_CHECKOUT = 0;
     private static final int REQUEST_CODE_COD = 1218;
@@ -1696,7 +1695,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
-    private void doCheckout(int requestCode) {
+    @Override
+    public void doCheckout(int requestCode) {
         CheckPromoParam checkPromoParam = new CheckPromoParam();
         checkPromoParam.setPromo(generateCheckPromoFirstStepParam());
         switch (requestCode) {
@@ -2340,30 +2340,28 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onSuccessClearPromoStack(int shopIndex) {
         setBenefitSummaryInfoUiModel(null);
 
-        if (shopIndex != INDEX_PROMO_ALL) {
-            if (shopIndex == INDEX_PROMO_GLOBAL) {
-                PromoStackingData promoStackingData = shipmentAdapter.getPromoGlobalStackData();
-                promoStackingData.setState(TickerPromoStackingCheckoutView.State.EMPTY);
-                promoStackingData.setAmount(0);
-                promoStackingData.setPromoCode("");
-                promoStackingData.setDescription("");
-                promoStackingData.setTitle(promoStackingData.getTitleDefault());
-                promoStackingData.setCounterLabel(promoStackingData.getCounterLabelDefault());
-                shipmentAdapter.updateItemPromoStackVoucher(promoStackingData);
-            } else {
-                ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(shopIndex);
-                if (shipmentCartItemModel != null) {
-                    shipmentCartItemModel.setVoucherOrdersItemUiModel(null);
-                    shipmentAdapter.notifyItemChanged(shopIndex);
-                }
+        if (shopIndex == INDEX_PROMO_GLOBAL) {
+            PromoStackingData promoStackingData = shipmentAdapter.getPromoGlobalStackData();
+            promoStackingData.setState(TickerPromoStackingCheckoutView.State.EMPTY);
+            promoStackingData.setAmount(0);
+            promoStackingData.setPromoCode("");
+            promoStackingData.setDescription("");
+            promoStackingData.setTitle(promoStackingData.getTitleDefault());
+            promoStackingData.setCounterLabel(promoStackingData.getCounterLabelDefault());
+            shipmentAdapter.updateItemPromoStackVoucher(promoStackingData);
+        } else {
+            ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(shopIndex);
+            if (shipmentCartItemModel != null) {
+                shipmentCartItemModel.setVoucherOrdersItemUiModel(null);
+                shipmentAdapter.notifyItemChanged(shopIndex);
             }
-            shipmentAdapter.clearTotalPromoStackAmount();
-            shipmentAdapter.updateShipmentCostModel();
-            shipmentAdapter.updateCheckoutButtonData(null);
-            shipmentAdapter.notifyItemChanged(shipmentAdapter.getShipmentCostPosition());
-            shipmentAdapter.checkHasSelectAllCourier(false);
-            shipmentPresenter.setCouponStateChanged(true);
         }
+        shipmentAdapter.clearTotalPromoStackAmount();
+        shipmentAdapter.updateShipmentCostModel();
+        shipmentAdapter.updateCheckoutButtonData(null);
+        shipmentAdapter.notifyItemChanged(shipmentAdapter.getShipmentCostPosition());
+        shipmentAdapter.checkHasSelectAllCourier(false);
+        shipmentPresenter.setCouponStateChanged(true);
     }
 
     @Override
@@ -2490,9 +2488,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             for (NotEligiblePromoHolderdata notEligiblePromoHolderdata : promoNotEligibleBottomsheet.getNotEligiblePromoHolderDataList()) {
                 notEligiblePromoCodes.add(notEligiblePromoHolderdata.getPromoCode());
             }
-            shipmentPresenter.cancelAutoApplyPromoStack(INDEX_PROMO_ALL, notEligiblePromoCodes, true);
+            shipmentPresenter.cancelNotEligiblePromo(notEligiblePromoCodes, checkoutType);
             promoNotEligibleBottomsheet.dismiss();
-            doCheckout(checkoutType);
         }
     }
 }

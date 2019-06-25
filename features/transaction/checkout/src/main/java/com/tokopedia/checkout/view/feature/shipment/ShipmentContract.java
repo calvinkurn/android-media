@@ -148,6 +148,9 @@ public interface ShipmentContract {
         void onSuccessClearPromoStackAfterClash();
 
         void clearTotalBenefitPromoStacking();
+
+        void doCheckout(int checkoutType);
+
     }
 
     interface AnalyticsActionListener {
@@ -306,6 +309,8 @@ public interface ShipmentContract {
         void cancelAutoApplyCoupon(String variant);
 
         void cancelAutoApplyPromoStack(int shopIndex, ArrayList<String> promoCodeList, boolean ignoreAPIResponse);
+
+        void cancelNotEligiblePromo(ArrayList<String> promoCodeList, int checkoutType);
 
         void cancelAutoApplyPromoStackLogistic(String promoCode);
 
