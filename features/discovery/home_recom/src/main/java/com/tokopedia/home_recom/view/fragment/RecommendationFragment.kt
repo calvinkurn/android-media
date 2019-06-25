@@ -49,6 +49,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     private var menu: Menu? = null
     private val SPAN_COUNT = 2
     private val SHARE_PRODUCT_TITLE = "Bagikan Produk Ini"
+    private val SAVED_PRODUCT_ID = "saved_product_id"
 
     companion object{
         fun newInstance(productId: String = "") = RecommendationFragment().apply {
@@ -67,8 +68,16 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(SAVED_PRODUCT_ID, productId)
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        savedInstanceState?.let{
+            productId = it.getString(SAVED_PRODUCT_ID) ?: ""
+        }
         setHasOptionsMenu(true)
         disableLoadMore()
         getRecyclerView(view).layoutManager = recyclerViewLayoutManager
