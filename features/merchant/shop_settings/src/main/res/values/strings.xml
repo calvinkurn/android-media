@@ -121,7 +121,7 @@
     <string name="remove_schedule_message">Jadwal tutup toko Anda akan terhapus, lanjutkan?</string>
     <string name="note_must_be_filled">Catatan harus diisi</string>
     <string name="activate_power_merchant">Aktifkan Power Merchant</string>
-    <string name="upgrade_power_merchant">Upgrade Power Merchant</string>
+    <string name="upgrade_power_merchant">Upgrade Tokomu</string>
     <string name="active_label">Aktif</string>
     <string name="inactive_label">Nonaktif</string>
     <string name="regular_merchant_learn_more">Power Merchant sekarang bebas biaya bulanan!</string>
