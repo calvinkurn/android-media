@@ -202,21 +202,24 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
 
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
 
-        this.googleMap?.setOnCameraIdleListener {
-            if (!isGetDistrict) {
-                val target: LatLng? = this.googleMap?.cameraPosition?.target
-                val latTarget = target?.latitude
-                val longTarget = target?.longitude
+        this.googleMap?.setOnCameraMoveListener { onMapDraggedListener() }
+        this.googleMap?.setOnCameraMoveStartedListener { onMapDraggedListener() }
+    }
 
-                getdistrict_container.visibility = View.GONE
-                invalid_container.visibility = View.GONE
-                whole_loading_container.visibility = View.VISIBLE
+    private fun onMapDraggedListener() {
+        if (!isGetDistrict) {
+            val target: LatLng? = this.googleMap?.cameraPosition?.target
+            val latTarget = target?.latitude
+            val longTarget = target?.longitude
 
-                presenter.clearCacheAutofill()
-                presenter.autofill("$latTarget,$longTarget")
-            }
-            isGetDistrict = false
+            getdistrict_container.visibility = View.GONE
+            invalid_container.visibility = View.GONE
+            whole_loading_container.visibility = View.VISIBLE
+
+            presenter.clearCacheAutofill()
+            presenter.autofill("$latTarget,$longTarget")
         }
+        isGetDistrict = false
     }
 
     /*override fun loadPoiList(lat: Double, long: Double) {

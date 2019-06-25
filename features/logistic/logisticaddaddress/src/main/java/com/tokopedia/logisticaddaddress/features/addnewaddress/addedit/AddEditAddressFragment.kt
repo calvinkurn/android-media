@@ -164,6 +164,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         chipsLayoutManager = ChipsLayoutManager.newBuilder(getView?.context)
                 .setOrientation(ChipsLayoutManager.HORIZONTAL)
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
+                .setScrollingEnabled(true)
                 .build()
         labelAlamatChipsLayoutManager = ChipsLayoutManager.newBuilder(getView?.context)
                 .setOrientation(ChipsLayoutManager.HORIZONTAL)
@@ -711,8 +712,10 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         this.googleMap = googleMap
         this.googleMap?.uiSettings?.isMapToolbarEnabled = false
         this.googleMap?.uiSettings?.isMyLocationButtonEnabled = true
+        this.googleMap?.uiSettings?.setAllGesturesEnabled(false)
         activity?.let { MapsInitializer.initialize(activity) }
         moveMap(AddNewAddressUtils.generateLatLng(currentLat, currentLong))
+
     }
 
     private fun moveMap(latLng: LatLng) {
