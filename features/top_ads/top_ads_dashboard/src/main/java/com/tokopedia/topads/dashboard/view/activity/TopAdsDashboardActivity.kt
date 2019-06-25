@@ -30,6 +30,7 @@ import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsDashboardFragment
 import com.tokopedia.topads.common.view.listener.OneUseGlobalLayoutListener
+import kotlinx.android.synthetic.main.fragment_top_ads_dashboard.*
 
 import java.util.ArrayList
 
@@ -196,8 +197,5 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == AutoAdsWidgetView.REQUEST_KEY_AUTOADS_WIDGET && resultCode == Activity.RESULT_OK) {
-            ToasterAutoAds.showClose(this, getString(R.string.toaster_inactive_success))
-        }
     }
 }

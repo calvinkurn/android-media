@@ -25,14 +25,14 @@ class ToasterAutoAds : BaseToaster() {
         }
 
         fun showClose(activity: Activity,
-                      snackbarText: String) {
+                      snackbarText: String, onClick: (View) -> Unit) {
             if (activity == null) {
                 return
             }
             ToasterAutoAds.make(activity.findViewById(android.R.id.content),
                     snackbarText, BaseToaster.LENGTH_INDEFINITE)
                     .setAction(activity.getString(com.tokopedia.design.R.string.close)) { v ->
-                        // no-op
+                        onClick(v)
                     }.show()
         }
     }

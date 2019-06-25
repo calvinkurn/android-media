@@ -36,6 +36,7 @@ import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
 import com.tokopedia.design.component.Tooltip
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.topads.auto.view.widget.AutoAdsWidgetView
+import com.tokopedia.topads.auto.view.widget.ToasterAutoAds
 import com.tokopedia.topads.common.TopAdsMenuBottomSheets
 import com.tokopedia.topads.common.constant.TopAdsAddingOption
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
@@ -476,6 +477,10 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
                     .loadRawString(resources, R.raw.gql_query_get_status_auto_topup))
             if (data?.getBooleanExtra("no_redirect", false) != true)
                 goToCreditHistory(true)
+        } else if (requestCode == AutoAdsWidgetView.REQUEST_KEY_AUTOADS_WIDGET && resultCode == Activity.RESULT_OK) {
+            ToasterAutoAds.showClose(activity!!, getString(R.string.toaster_inactive_success), onClick = {
+                autoAdsWidgetView?.fetchData()
+            })
         }
     }
 
@@ -623,11 +628,11 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         if (isUsageExists || isAdExists) {
             onSuccessPopulateTotalAds(dashboardPopulateResponse.totalAd)
             loadStatisticsData()
-            topads_dashboard_empty.visibility = View.GONE
-            topads_dashboard_content.visibility = View.VISIBLE
+//            topads_dashboard_empty.visibility = View.GONE
+//            topads_dashboard_content.visibility = View.VISIBLE
         } else {
-            topads_dashboard_empty.visibility = View.VISIBLE
-            topads_dashboard_content.visibility = View.GONE
+//            topads_dashboard_empty.visibility = View.VISIBLE
+//            topads_dashboard_content.visibility = View.GONE
             isShowAutoAddPromo = GlobalConfig.isCustomerApp()
         }
     }
