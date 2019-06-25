@@ -40,7 +40,6 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-
     private lateinit var trackingQueue: TrackingQueue
     private lateinit var productId: String
     private val viewModelProvider by lazy{ ViewModelProviders.of(this, viewModelFactory) }
@@ -64,6 +63,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        clearProductInfoView()
         savedInstanceState?.let{
             productId = it.getString(SAVED_PRODUCT_ID) ?: ""
         }
@@ -79,7 +79,6 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        clearProductInfoView()
         setHasOptionsMenu(true)
         disableLoadMore()
         getRecyclerView(view).layoutManager = recyclerViewLayoutManager
@@ -123,6 +122,11 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
                 recommendationWidgetViewModel.getRecommendationList(arrayListOf(), onErrorGetRecommendation = this::onErrorGetRecommendation)
             }
         }
+    }
+
+    override fun onDestroy() {
+        clearProductInfoView()
+        super.onDestroy()
     }
 
     private fun onErrorGetRecommendation(errorMessage: String?) {
