@@ -80,7 +80,6 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
 
                     JsonElement error = response.getOriginalResponse().get(i).getAsJsonObject().get(GraphqlConstant.GqlApiKeys.ERROR);
                     if (error != null && !error.isJsonNull()) {
-                        Timber.w(error.toString());
                         //Lookup for error
                         errors.put(requests.get(i).getTypeOfT(), CommonUtils.fromJson(error.toString(), new TypeToken<List<GraphqlError>>() {
                         }.getType()));

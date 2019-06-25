@@ -67,7 +67,7 @@ import com.tokopedia.imageuploader.data.ImageUploaderUrl;
 import com.tokopedia.inbox.rescenter.network.ResolutionUrl;
 import com.tokopedia.instantloan.network.InstantLoanUrl;
 import com.tokopedia.kol.common.network.KolUrl;
-import com.tokopedia.logger.LogSentryWrapper;
+import com.tokopedia.logger.LogWrapper;
 import com.tokopedia.loginregister.common.data.LoginRegisterUrl;
 import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
 import com.tokopedia.logout.data.LogoutUrl;
@@ -193,7 +193,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         }
         registerActivityLifecycleCallbacks(callback);
 
-        LogSentryWrapper.init(this);
+        LogWrapper.init(this);
         TimberWrapper.init(this);
     }
 
