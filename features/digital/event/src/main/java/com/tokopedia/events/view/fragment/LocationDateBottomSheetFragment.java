@@ -10,17 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.events.R;
-import com.tokopedia.events.R2;
 import com.tokopedia.events.view.adapter.LocationDateListAdapter;
 import com.tokopedia.events.view.contractor.EventBookTicketContract;
-import com.tokopedia.events.view.presenter.EventBookTicketPresenter;
 import com.tokopedia.events.view.viewmodel.LocationDateModel;
 
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Created by pranaymohapatra on 23/02/18.

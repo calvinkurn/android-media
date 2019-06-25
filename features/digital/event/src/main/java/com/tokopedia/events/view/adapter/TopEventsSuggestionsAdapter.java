@@ -18,10 +18,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.events.R;
-import com.tokopedia.events.R2;
 import com.tokopedia.events.view.activity.EventDetailsActivity;
-import com.tokopedia.events.view.activity.EventFavouriteActivity;
-import com.tokopedia.events.view.activity.EventsHomeActivity;
 import com.tokopedia.events.view.contractor.EventsContract;
 import com.tokopedia.events.view.presenter.EventSearchPresenter;
 import com.tokopedia.events.view.utils.CurrencyUtil;
@@ -31,10 +28,6 @@ import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Created by pranaymohapatra on 25/01/18.
@@ -376,35 +369,34 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
     }
 
     public class EventsSuggestionHolder extends RecyclerView.ViewHolder {
-        @BindView(R2.id.tv_simple_item)
         TextView tvTitle;
 
         EventsSuggestionHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            tvTitle = itemView.findViewById(R.id.tv_simple_item);
+            tvTitle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent detailsIntent = new Intent(mContext, EventDetailsActivity.class);
+                    detailsIntent.putExtra(EventDetailsActivity.FROM, EventDetailsActivity.FROM_HOME_OR_SEARCH);
+                    detailsIntent.putExtra("homedata", categoryItems.get(getAdapterPosition()));
+                    mContext.startActivity(detailsIntent);
+                }
+            });
         }
 
         void bindView(int position) {
             tvTitle.setText(getBoldTitle(categoryItems.get(position).getDisplayName()));
         }
-
-        @OnClick(R2.id.tv_simple_item)
-        void onClick() {
-            Intent detailsIntent = new Intent(mContext, EventDetailsActivity.class);
-            detailsIntent.putExtra(EventDetailsActivity.FROM, EventDetailsActivity.FROM_HOME_OR_SEARCH);
-            detailsIntent.putExtra("homedata", categoryItems.get(getAdapterPosition()));
-            mContext.startActivity(detailsIntent);
-        }
     }
 
     public class FooterViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.loading_fl)
         View loadingLayout;
 
         private FooterViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            loadingLayout = itemView.findViewById(R.id.loading_fl);
         }
     }
 

@@ -7,13 +7,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-
 import com.tokopedia.events.R;
-import com.tokopedia.events.R2;
 import com.tokopedia.events.view.presenter.SeatSelectionPresenter;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by naveengoyal on 1/19/18.

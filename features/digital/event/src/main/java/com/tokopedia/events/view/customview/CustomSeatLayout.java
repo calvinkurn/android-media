@@ -10,15 +10,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.events.R;
-import com.tokopedia.events.R2;
 import com.tokopedia.events.view.presenter.SeatSelectionPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Created by naveengoyal on 1/19/18.

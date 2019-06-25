@@ -16,19 +16,10 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.tokopedia.events.R;
-import com.tokopedia.events.R2;
 import com.tokopedia.events.view.activity.EventFilterActivity;
 import com.tokopedia.events.view.contractor.ICloseFragement;
-import com.tokopedia.payment.presenter.TopPayContract;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnCheckedChanged;
-import butterknife.OnClick;
-import butterknife.Unbinder;
 
 import static com.tokopedia.events.view.contractor.EventFilterContract.CATEGORY_ID;
-import static com.tokopedia.events.view.contractor.EventFilterContract.EVERYDAY;
 
 /**
  * Created by pranaymohapatra on 16/01/18.

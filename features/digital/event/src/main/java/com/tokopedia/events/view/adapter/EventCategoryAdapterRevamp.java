@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.events.R;
-import com.tokopedia.events.R2;
 import com.tokopedia.events.view.activity.EventDetailsActivity;
 import com.tokopedia.events.view.activity.EventFavouriteActivity;
 import com.tokopedia.events.view.activity.EventsHomeActivity;
@@ -25,10 +24,6 @@ import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Created by pranaymohapatra on 02/04/18.

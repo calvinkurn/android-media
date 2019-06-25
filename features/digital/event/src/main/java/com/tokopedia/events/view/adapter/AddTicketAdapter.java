@@ -9,18 +9,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.events.R;
-import com.tokopedia.events.R2;
 import com.tokopedia.events.view.contractor.EventBookTicketContract;
-import com.tokopedia.events.view.presenter.EventBookTicketPresenter;
 import com.tokopedia.events.view.utils.CurrencyUtil;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 
 import java.util.Date;
 import java.util.List;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Created by pranaymohapatra on 27/11/17.

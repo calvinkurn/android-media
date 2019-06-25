@@ -9,9 +9,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.events.R;
-import com.tokopedia.events.R2;
-
-import butterknife.BindView;
 
 /**
  * Created by pranaymohapatra on 28/11/17.

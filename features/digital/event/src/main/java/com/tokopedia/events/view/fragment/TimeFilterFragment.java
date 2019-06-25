@@ -1,7 +1,6 @@
 package com.tokopedia.events.view.fragment;
 
 import android.content.Context;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -22,10 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Calendar;
 import java.util.Date;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.Unbinder;
 
 import static com.tokopedia.events.view.contractor.EventFilterContract.EVERYDAY;
 import static com.tokopedia.events.view.contractor.EventFilterContract.TIME_ID;
