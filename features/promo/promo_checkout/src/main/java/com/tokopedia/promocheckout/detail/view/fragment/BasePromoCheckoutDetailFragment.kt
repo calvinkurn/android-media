@@ -2,12 +2,14 @@ package com.tokopedia.promocheckout.detail.view.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -105,7 +107,8 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
                 view?.textMinTrans?.visibility = View.VISIBLE
                 view?.textMinTrans?.text = promoCheckoutDetailModel.minimumUsage
             }
-            textTitlePromo.text = it.title
+            textTitlePromo?.text = it.title
+            hideTimerView()
             if ((it.usage?.activeCountDown ?: 0 > 0 &&
                             it.usage?.activeCountDown ?: 0 < TimerPromoCheckout.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)) {
                 setActiveTimerUsage(it.usage?.activeCountDown?.toLong() ?: 0)
@@ -113,11 +116,26 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
                             it.usage?.expiredCountDown ?: 0 < TimerPromoCheckout.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)) {
                 setExpiryTimerUsage(it.usage?.expiredCountDown?.toLong() ?: 0)
             }
-            textPeriod.text = it.usage?.usageStr
-            webviewTnc.settings.javaScriptEnabled = true
-            webviewTnc.loadData(getFormattedHtml(it.tnc), "text/html", "UTF-8")
+            view?.textPeriod?.text = it.usage?.usageStr
+            webviewTnc?.settings?.javaScriptEnabled = true
+            webviewTnc?.loadData(getFormattedHtml(it.tnc), "text/html", "UTF-8")
             enableOrDisableViews(it)
         }
+    }
+
+
+    private fun showTimerView(){
+        view?.timerUsage?.visibility = View.VISIBLE
+        view?.titlePeriod?.visibility = View.GONE
+        view?.textPeriod?.visibility = View.GONE
+
+    }
+
+    private fun hideTimerView(){
+        view?.timerUsage?.visibility = View.GONE
+        view?.titlePeriod?.visibility = View.VISIBLE
+        view?.textPeriod?.visibility = View.VISIBLE
+
     }
 
     private fun enableOrDisableViews(item: PromoCheckoutDetailModel) {
@@ -130,15 +148,15 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
 
 
     private fun disableViews() {
-        imageMinTrans.setImageResource(R.drawable.ic_tp_rp_grey)
-        imagePeriod.setImageResource(R.drawable.ic_tp_time)
-        buttonUse.isEnabled = false
+        imageMinTrans?.setImageResource(R.drawable.ic_tp_rp_grey)
+        imagePeriod?.setImageResource(R.drawable.ic_tp_time)
+        buttonUse?.isEnabled = false
     }
 
     private fun enableViews() {
-        imageMinTrans.setImageResource(R.drawable.ic_voucher_promo_green)
-        imagePeriod.setImageResource(R.drawable.ic_period_promo_green)
-        buttonUse.isEnabled = true
+        imageMinTrans?.setImageResource(R.drawable.ic_voucher_promo_green)
+        imagePeriod?.setImageResource(R.drawable.ic_period_promo_green)
+        buttonUse?.isEnabled = true
     }
 
 
@@ -150,9 +168,11 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
             override fun onTick(l: Long) {
                 buttonUse?.text = timerUsage.formatMilliSecondsToTime(l * 1000)
             }
+
             override fun onFinishTick() {
                 buttonUse?.text = getString(R.string.promo_label_use)
                 buttonUse?.isEnabled = true
+                enableViews()
             }
         }
         timerUsage?.start()
@@ -160,15 +180,14 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
 
     private fun setExpiryTimerUsage(countDown: Long) {
         view?.timerUsage?.cancel()
-        view?.timerUsage?.visibility = View.VISIBLE
-        view?.titlePeriod?.visibility = View.GONE
-        view?.textPeriod?.visibility = View.GONE
+        showTimerView()
         view?.timerUsage?.expiredTimer = countDown
-        view?.timerUsage?.listener = object : TimerCheckoutWidget.Listener{
+        view?.timerUsage?.listener = object : TimerCheckoutWidget.Listener {
             override fun onTick(l: Long) {}
             override fun onFinishTick() {
-                buttonUse.text = getString(R.string.promo_label_coupon_not_eligible)
-                buttonUse?.isEnabled = false
+                buttonUse?.text = getString(R.string.promo_label_coupon_not_eligible)
+                hideTimerView()
+                disableViews()
             }
         }
         view?.timerUsage?.start()
@@ -259,5 +278,9 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
         validateViewLoading()
     }
 
-
+    override fun onDestroyView() {
+        view?.timerUsage?.cancel()
+        timerUsage?.cancel()
+        super.onDestroyView()
+    }
 }
