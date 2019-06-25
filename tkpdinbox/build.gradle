@@ -73,8 +73,8 @@ dependencies {
     implementation rootProject.ext.dbDependencies.dbFlowCore
     implementation rootProject.ext.dbDependencies.dbFlow
 
-    implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    annotationProcessor  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+   // implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
+   // annotationProcessor  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 
     implementation rootProject.ext.butterKnifeDependencies.butterKnife
     annotationProcessor  rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
@@ -92,6 +92,8 @@ dependencies {
 
     implementation rootProject.ext.viewDependencies.appIntro
     implementation project(rootProject.ext.libraries.core_legacy)
+    implementation project(rootProject.ext.libraries.permissionchecker)
+
 }
 
 apply from: '../publish_local.gradle'

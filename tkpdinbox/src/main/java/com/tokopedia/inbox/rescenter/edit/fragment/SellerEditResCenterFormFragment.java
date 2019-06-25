@@ -44,24 +44,28 @@ import com.tokopedia.inbox.rescenter.edit.model.responsedata.ActionParameterPass
 import com.tokopedia.inbox.rescenter.edit.presenter.SellerEditResCenterImpl;
 import com.tokopedia.inbox.rescenter.edit.presenter.SellerEditResCenterPresenter;
 import com.tokopedia.inbox.rescenter.utils.LocalCacheManager;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.track.TrackApp;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import permissions.dispatcher.NeedsPermission;
+/*import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
+import permissions.dispatcher.RuntimePermissions;*/
 
 /**
  * Created on 8/24/16.
  */
-@RuntimePermissions
+//@RuntimePermissions
 public class SellerEditResCenterFormFragment extends BasePresenterFragment<SellerEditResCenterPresenter>
         implements SellerEditResCenterListener, AttachmentAdapter.AttachmentAdapterListener {
 
@@ -87,6 +91,9 @@ public class SellerEditResCenterFormFragment extends BasePresenterFragment<Selle
     private List<AttachmentResCenterVersion2DB> attachmentData;
     private AttachmentAdapter attachmentAdapter;
     private UploadImageEditResCenterDialog uploadImageDialog;
+
+    private PermissionCheckerHelper permissionCheckerHelper;
+
 
     public static Fragment newInstance(ActionParameterPassData passData) {
         SellerEditResCenterFormFragment fragment = new SellerEditResCenterFormFragment();
@@ -324,12 +331,65 @@ public class SellerEditResCenterFormFragment extends BasePresenterFragment<Selle
         builder.setPositiveButton(context.getString(R.string.title_gallery), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                SellerEditResCenterFormFragmentPermissionsDispatcher.actionImagePickerWithCheck(SellerEditResCenterFormFragment.this);
+               // SellerEditResCenterFormFragmentPermissionsDispatcher.actionImagePickerWithCheck(SellerEditResCenterFormFragment.this);
+
+                String permission = Manifest.permission.READ_EXTERNAL_STORAGE;
+                if(null == permissionCheckerHelper ){
+                    permissionCheckerHelper = new PermissionCheckerHelper();
+                }
+
+                permissionCheckerHelper.checkPermission(getActivity(), permission, new PermissionCheckerHelper.PermissionCheckListener() {
+                    @Override
+                    public void onPermissionDenied(@NotNull String permissionText) {
+                        permissionCheckerHelper.onPermissionDenied(getActivity(), permissionText);
+
+                    }
+
+                    @Override
+                    public void onNeverAskAgain(@NotNull String permissionText) {
+                        permissionCheckerHelper.onNeverAskAgain(getActivity(), permissionText);
+
+                    }
+
+                    @Override
+                    public void onPermissionGranted() {
+                        uploadImageDialog.openImagePicker();
+                    }
+                },permission);
+
             }
-        }).setNegativeButton(context.getString(R.string.title_camera), new DialogInterface.OnClickListener() {
+        });
+        builder.setNegativeButton(context.getString(R.string.title_camera), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                SellerEditResCenterFormFragmentPermissionsDispatcher.actionCameraWithCheck(SellerEditResCenterFormFragment.this);
+
+                String[] listOfPermission = {PermissionCheckerHelper.Companion.PERMISSION_CAMERA,
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE};
+
+                //  SellerEditResCenterFormFragmentPermissionsDispatcher.actionCameraWithCheck(SellerEditResCenterFormFragment.this);
+                if(null == permissionCheckerHelper ){
+                    permissionCheckerHelper = new PermissionCheckerHelper();
+                }
+
+                permissionCheckerHelper.checkPermissions(getActivity(), listOfPermission, new PermissionCheckerHelper.PermissionCheckListener() {
+                    @Override
+                    public void onPermissionDenied(@NotNull String permissionText) {
+                        permissionCheckerHelper.onPermissionDenied(getActivity(), permissionText);
+                    }
+
+                    @Override
+                    public void onNeverAskAgain(@NotNull String permissionText) {
+                        permissionCheckerHelper.onNeverAskAgain(getActivity(), permissionText);
+                    }
+
+                    @Override
+                    public void onPermissionGranted() {
+                        uploadImageDialog.openCamera();
+                    }
+
+                }, Arrays.toString(listOfPermission));
+
             }
         });
 
@@ -338,7 +398,7 @@ public class SellerEditResCenterFormFragment extends BasePresenterFragment<Selle
         dialog.show();
     }
 
-    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    /*@NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void actionCamera() {
         uploadImageDialog.openCamera();
     }
@@ -347,7 +407,7 @@ public class SellerEditResCenterFormFragment extends BasePresenterFragment<Selle
     public void actionImagePicker() {
         uploadImageDialog.openImagePicker();
     }
-
+*/
     @Override
     public void onClickOpenAttachment(View view, final int position) {
         uploadImageDialog.showRemoveDialog(new UploadImageEditResCenterDialog.onRemoveAttachmentListener() {
@@ -457,11 +517,15 @@ public class SellerEditResCenterFormFragment extends BasePresenterFragment<Selle
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        SellerEditResCenterFormFragmentPermissionsDispatcher.onRequestPermissionsResult(
-                SellerEditResCenterFormFragment.this, requestCode, grantResults);
+       /* SellerEditResCenterFormFragmentPermissionsDispatcher.onRequestPermissionsResult(
+                SellerEditResCenterFormFragment.this, requestCode, grantResults);*/
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            permissionCheckerHelper.onRequestPermissionsResult(getActivity(), requestCode, permissions, grantResults);
+        }
     }
 
-    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
+   /* @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void showRationaleForStorageAndCamera(final PermissionRequest request) {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
@@ -514,5 +578,5 @@ public class SellerEditResCenterFormFragment extends BasePresenterFragment<Selle
         listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         RequestPermissionUtil.onNeverAskAgain(getActivity(),listPermission);
-    }
+    }*/
 }

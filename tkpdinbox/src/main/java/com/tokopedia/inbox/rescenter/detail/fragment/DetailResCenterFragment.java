@@ -41,20 +41,23 @@ import com.tokopedia.inbox.rescenter.detail.presenter.DetailResCenterImpl;
 import com.tokopedia.inbox.rescenter.detail.presenter.DetailResCenterPresenter;
 import com.tokopedia.inbox.rescenter.edit.activity.EditResCenterActivity;
 import com.tokopedia.inbox.rescenter.player.VideoPlayerActivity;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import permissions.dispatcher.NeedsPermission;
+/*import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
+import permissions.dispatcher.RuntimePermissions;*/
 
 @Deprecated
-@RuntimePermissions
+//@RuntimePermissions
 public class DetailResCenterFragment extends BasePresenterFragment<DetailResCenterPresenter>
         implements DetailResCenterView {
 
@@ -82,6 +85,9 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     DetailView detailView;
 
     private String ahrefEditAddressURL;
+
+    private PermissionCheckerHelper permissionCheckerHelper;
+
 
     public static DetailResCenterFragment newInstance(ActivityParamenterPassData activityParamenterPassData) {
         DetailResCenterFragment fragment = new DetailResCenterFragment();
@@ -380,12 +386,58 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
         builder.setPositiveButton(context.getString(R.string.title_gallery), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                DetailResCenterFragmentPermissionsDispatcher.actionImagePickerWithCheck(DetailResCenterFragment.this);
+               // DetailResCenterFragmentPermissionsDispatcher.actionImagePickerWithCheck(DetailResCenterFragment.this);
+                String permission = Manifest.permission.READ_EXTERNAL_STORAGE;
+                if(null == permissionCheckerHelper ){
+                    permissionCheckerHelper = new PermissionCheckerHelper();
+                }
+
+                permissionCheckerHelper.checkPermission(getActivity(), permission, new PermissionCheckerHelper.PermissionCheckListener() {
+                    @Override
+                    public void onPermissionDenied(@NotNull String permissionText) {
+                        permissionCheckerHelper.onPermissionDenied(getActivity(), permissionText);
+
+                    }
+
+                    @Override
+                    public void onNeverAskAgain(@NotNull String permissionText) {
+                        permissionCheckerHelper.onNeverAskAgain(getActivity(), permissionText);
+
+                    }
+
+                    @Override
+                    public void onPermissionGranted() {
+                        presenter.actionImagePicker();
+                    }
+                },permission);
             }
         }).setNegativeButton(context.getString(R.string.title_camera), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                DetailResCenterFragmentPermissionsDispatcher.actionCameraWithCheck(DetailResCenterFragment.this);
+               // DetailResCenterFragmentPermissionsDispatcher.actionCameraWithCheck(DetailResCenterFragment.this);
+                String permission = Manifest.permission.READ_EXTERNAL_STORAGE;
+                if(null == permissionCheckerHelper ){
+                    permissionCheckerHelper = new PermissionCheckerHelper();
+                }
+
+                permissionCheckerHelper.checkPermission(getActivity(), permission, new PermissionCheckerHelper.PermissionCheckListener() {
+                    @Override
+                    public void onPermissionDenied(@NotNull String permissionText) {
+                        permissionCheckerHelper.onPermissionDenied(getActivity(), permissionText);
+
+                    }
+
+                    @Override
+                    public void onNeverAskAgain(@NotNull String permissionText) {
+                        permissionCheckerHelper.onNeverAskAgain(getActivity(), permissionText);
+
+                    }
+
+                    @Override
+                    public void onPermissionGranted() {
+                        presenter.actionCamera();
+                    }
+                },permission);
             }
         });
 
@@ -393,7 +445,7 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.show();
     }
-
+/*
     @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void actionCamera() {
         presenter.actionCamera();
@@ -402,7 +454,7 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void actionImagePicker() {
         presenter.actionImagePicker();
-    }
+    }*/
 
     @Override
     public void actionAcceptAdmin(String paramID) {
@@ -540,9 +592,12 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        DetailResCenterFragmentPermissionsDispatcher.onRequestPermissionsResult(DetailResCenterFragment.this, requestCode, grantResults);
+        //DetailResCenterFragmentPermissionsDispatcher.onRequestPermissionsResult(DetailResCenterFragment.this, requestCode, grantResults);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            permissionCheckerHelper.onRequestPermissionsResult(getActivity(), requestCode, permissions, grantResults);
+        }
     }
-
+/*
     @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     void showRationaleForStorageAndCamera(final PermissionRequest request) {
         List<String> listPermission = new ArrayList<>();
@@ -595,7 +650,7 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
         listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         RequestPermissionUtil.onNeverAskAgain(getActivity(),listPermission);
-    }
+    }*/
 
     @Override
     public void openVideoPlayer(String url) {

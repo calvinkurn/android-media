@@ -48,14 +48,14 @@ import com.tokopedia.track.TrackApp;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
+/*import javax.inject.Inject;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
+import permissions.dispatcher.RuntimePermissions;*/
 
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB;
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MIN_RESOLUTION;
@@ -66,7 +66,7 @@ import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDe
  * Created by yoasfs on 30/08/17.
  */
 
-@RuntimePermissions
+//@RuntimePermissions
 public class AttachmentFragment extends BaseDaggerFragment implements AttachmentFragmentListener.View, AttachmentAdapterListener {
 
     public static final String RESULT_VIEW_MODEL_DATA = "result_view_model_data";
@@ -96,10 +96,10 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        AttachmentFragmentPermissionsDispatcher.onRequestPermissionsResult(AttachmentFragment.this, requestCode, grantResults);
+       // AttachmentFragmentPermissionsDispatcher.onRequestPermissionsResult(AttachmentFragment.this, requestCode, grantResults);
     }
 
-    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
+   /* @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void showRationaleForStorageAndCamera(final PermissionRequest request) {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
@@ -152,7 +152,7 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
         listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
-    }
+    }*/
 
     @Override
     protected String getScreenName() {
@@ -352,10 +352,10 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
         getActivity().finish();
     }
 
-    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
+   /* @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void actionCamera() {
         uploadImageDialog.actionCamera();
-    }
+    }*/
 
     public void actionVideoPicker() {
         VideoPickerBuilder builder = new VideoPickerBuilder(getString(R.string.choose_video), MAX_VIDEO_SIZE_IN_KB,
