@@ -16,9 +16,6 @@ import com.tokopedia.core.util.MethodChecker;
 import java.util.ArrayList;
 import java.util.List;
 
-//import butterknife.BindView;
-//import butterknife.ButterKnife;
-
 /**
  * Created by Alifa on 10/12/2016.
  */
