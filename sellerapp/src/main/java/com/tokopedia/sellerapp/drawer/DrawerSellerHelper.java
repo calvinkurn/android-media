@@ -45,7 +45,6 @@ import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity
 import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
-import com.tokopedia.topads.auto.internal.AutoAdsLinkConstant;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.tracking.view.SimpleWebViewActivity;
 
@@ -382,7 +381,7 @@ public class DrawerSellerHelper extends DrawerHelper
                     eventDrawerClick(AppEventTracking.EventLabel.TOPADS);
                     if (context.getApplication() instanceof ApplinkRouter) {
                         ApplinkRouter applinkRouter = ((ApplinkRouter) context.getApplication());
-                        applinkRouter.goToApplinkActivity(context, AutoAdsLinkConstant.AUTOADS_ROUTE_LINK);
+                        applinkRouter.goToApplinkActivity(context, ApplinkConst.SellerApp.TOPADS_AUTOADS);
                     }
                     break;
                 case TkpdState.DrawerPosition.SELLER_FLASH_SALE:

@@ -2725,12 +2725,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void gotoTopAdsDashboard(Context context) {
-        Intent intent = new Intent(context, TopAdsDashboardActivity.class);
-        context.startActivity(intent);
-    }
-
-    @Override
     public String getContactUsBaseURL() {
         return TkpdBaseURL.ContactUs.URL_HELP;
     }

@@ -49,7 +49,7 @@ public interface AccountHomeRouter {
 
     Fragment getFavoriteFragment();
 
-    void gotoTopAdsDashboard(Context context);
+    void goToApplinkActivity(Context context, String applink);
 
     void goToGMSubscribe(Context context);
 

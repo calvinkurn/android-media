@@ -5,27 +5,24 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Build
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
-import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.design.component.ToasterError
 
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.base.AutoAdsBaseActivity
-import com.tokopedia.topads.auto.internal.AutoAdsLinkConstant
 import com.tokopedia.topads.auto.router.TopAdsAutoRouter
 import com.tokopedia.topads.auto.view.factory.TopAdsInfoViewModelFactory
 import com.tokopedia.topads.auto.view.fragment.DailyBudgetFragment
 import com.tokopedia.topads.auto.view.viewmodel.TopAdsInfoViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.topads.common.constant.TopAdsAddingOption
-import kotlinx.android.synthetic.main.activity_auto_ads_route.*
 import javax.inject.Inject
 
-@DeepLink(AutoAdsLinkConstant.AUTOADS_ROUTE_LINK)
+@DeepLink(ApplinkConst.SellerApp.TOPADS_AUTOADS)
 class AutoAdsRouteActivity : AutoAdsBaseActivity() {
 
     @Inject
