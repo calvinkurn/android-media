@@ -118,7 +118,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         roomListViewModel.addCartResponseResult.observe(this, android.arch.lifecycle.Observer {
             when (it) {
                 is Success -> {
-                    startActivity(HotelBookingActivity.getCallingIntent(context!!,it.data.cartId))
+                    startActivity(HotelBookingActivity.getCallingIntent(context!!,it.data.response.cartId))
                 }
                 is Fail -> {
                     NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))

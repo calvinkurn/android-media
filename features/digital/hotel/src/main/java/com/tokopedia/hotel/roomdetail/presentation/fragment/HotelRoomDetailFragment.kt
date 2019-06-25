@@ -85,7 +85,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         roomDetailViewModel.addCartResponseResult.observe(this, android.arch.lifecycle.Observer {
             when (it) {
                 is Success -> {
-                    val cartId = it.data.cartId
+                    val cartId = it.data.response.cartId
                     startActivity(HotelBookingActivity.getCallingIntent(context!!, cartId))
                 }
                 is Fail -> {
