@@ -2,12 +2,15 @@ package com.tokopedia.topads.auto.view.activity
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
+import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.design.component.ToasterError
@@ -20,6 +23,7 @@ import com.tokopedia.topads.auto.view.fragment.DailyBudgetFragment
 import com.tokopedia.topads.auto.view.viewmodel.TopAdsInfoViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.topads.common.constant.TopAdsAddingOption
+import com.tokopedia.topads.common.data.util.ApplinkUtil
 import javax.inject.Inject
 
 @DeepLink(ApplinkConst.SellerApp.TOPADS_AUTOADS)
@@ -95,5 +99,29 @@ class AutoAdsRouteActivity : AutoAdsBaseActivity() {
     private fun manualAds() {
         startActivity((application as TopAdsAutoRouter).getTopAdsDashboardIntent(this@AutoAdsRouteActivity))
     }
+
+    companion object {
+        val TAG = AutoAdsRouteActivity::class.java.simpleName
+
+        fun getCallingIntent(context: Context): Intent {
+            return Intent(context, AutoAdsRouteActivity::class.java)
+        }
+    }
+
+    object DeepLinkIntents {
+        @DeepLink(ApplinkConst.SellerApp.TOPADS_AUTOADS)
+        @JvmStatic
+        fun getCallingApplinkIntent(context: Context, extras: Bundle): Intent {
+            if (GlobalConfig.isSellerApp()) {
+                val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
+                return getCallingIntent(context)
+                        .setData(uri.build())
+                        .putExtras(extras)
+            } else {
+                return ApplinkUtil.getSellerAppApplinkIntent(context, extras)
+            }
+        }
+    }
+
 
 }

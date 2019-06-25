@@ -14,6 +14,7 @@ import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.appsflyer.AppsFlyerLib;
 import com.tokopedia.affiliate.applink.AffiliateApplinkModule;
 import com.tokopedia.affiliate.applink.AffiliateApplinkModuleLoader;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.SessionApplinkModule;
@@ -389,7 +390,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
             Constants.Applinks.SellerApp.TOPADS_DASHBOARD,
             Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL,
             Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL_CONSTS,
-            Constants.Applinks.SellerApp.BROWSER})
+            Constants.Applinks.SellerApp.BROWSER,
+            ApplinkConst.SellerApp.TOPADS_AUTOADS})
     public static Intent getIntentSellerApp(Context context, Bundle extras) {
         Intent launchIntent = context.getPackageManager()
                 .getLaunchIntentForPackage(GlobalConfig.PACKAGE_SELLER_APP);
