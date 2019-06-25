@@ -76,7 +76,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         savedInstanceState?.let{
-            productId = it.getString(SAVED_PRODUCT_ID)
+            productId = it.getString(SAVED_PRODUCT_ID) ?: ""
         }
         setHasOptionsMenu(true)
         disableLoadMore()
