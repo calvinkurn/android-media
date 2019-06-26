@@ -35,10 +35,6 @@ import com.tokopedia.topupbills.telco.view.model.DigitalFavNumber
 import java.util.*
 import javax.inject.Inject
 
-/**
- * @author rizkyfadillah on 10/4/2017.
- */
-
 class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnClientNumberClickListener {
 
     private lateinit var rvNumberList: RecyclerView
@@ -95,8 +91,8 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnCl
     private fun initView(view: View) {
         rvNumberList = view.findViewById(R.id.recyclerview_number_list)
         editTextSearchNumber = view.findViewById(R.id.edittext_search_number)
-        btnClearNumber = view.findViewById(R.id.btn_clear_number)
-        btnContactPicker = view.findViewById(R.id.btn_contact_picker)
+        btnClearNumber = view.findViewById(R.id.btn_clear_number_telco)
+        btnContactPicker = view.findViewById(R.id.btn_contact_picker_telco)
 
         setClientNumberInputType()
 
