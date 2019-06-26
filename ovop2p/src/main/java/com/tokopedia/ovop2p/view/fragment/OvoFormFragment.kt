@@ -81,7 +81,9 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
                     alertDialog.dismiss()
                 }
                 R.id.proceed_dlg -> {
-                    //make transfer request
+                    //make transfer confirm request
+                    alertDialog.dismiss()
+                    (activity as LoaderUiListener).showProgressDialog()
                     context?.let { ovoP2pTransferConfirmViewModel.makeTransferConfirmCall(it, trnsfrReqDataMap) }
                 }
             }
@@ -131,7 +133,7 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
         if(!::walletBalanceViewModel.isInitialized){
             if(activity != null) {
                 walletBalanceViewModel = ViewModelProviders.of(this.activity!!).get(GetWalletBalanceViewModel::class.java)
-                walletBalanceViewModel.walletLiveData?.observe(this.activity!!, Observer <WalletDataBase>{
+                walletBalanceViewModel.walletLiveData?.observe(this, Observer <WalletDataBase>{
                     if(it != null){
                         (activity as LoaderUiListener).hideProgressDialog()
                         saldoTextView.text = it.wallet?.balance ?: ""

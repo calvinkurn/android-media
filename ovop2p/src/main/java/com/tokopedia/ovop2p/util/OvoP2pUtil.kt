@@ -38,7 +38,7 @@ object OvoP2pUtil {
             dialogView.findViewById<TextView>(R.id.trnsfr_amt).text = "Rp"+dataMap[Constants.Keys.FORMATTED_AMOUNT].toString()
             dialogView.findViewById<TextView>(R.id.msg).text = dataMap[Constants.Keys.MESSAGE].toString()
         }
-        dialogView?.findViewById<View>(R.id.proceed)?.setOnClickListener(onClickListener)
+        dialogView?.findViewById<View>(R.id.proceed_dlg)?.setOnClickListener(onClickListener)
         dialogView?.findViewById<View>(R.id.cancel)?.setOnClickListener(onClickListener)
         dialogBuilder.setView(dialogView)
         return dialogBuilder

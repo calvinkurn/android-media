@@ -44,7 +44,7 @@ class OvoP2pTrxnConfirmVM(application: Application) : AndroidViewModel(applicati
             override fun onNext(graphqlResponse: GraphqlResponse) {
                 val ovoP2pTransferConfirmBase = graphqlResponse.getData<OvoP2pTransferConfirmBase>(OvoP2pTransferRequestBase::class.java)
                 if (ovoP2pTransferConfirmBase != null && ovoP2pTransferConfirmBase.ovoP2pTransferConfirm != null) {
-                    ovoP2pTransferConfirmBaseMutableLiveData!!.postValue(ovoP2pTransferConfirmBase)
+                    ovoP2pTransferConfirmBaseMutableLiveData!!.value = ovoP2pTransferConfirmBase
                 }
             }
         }

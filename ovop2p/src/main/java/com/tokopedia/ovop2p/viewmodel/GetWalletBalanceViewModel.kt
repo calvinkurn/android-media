@@ -41,7 +41,7 @@ class GetWalletBalanceViewModel(application: Application) : AndroidViewModel(app
             override fun onNext(graphqlResponse: GraphqlResponse) {
                 val walletData = graphqlResponse.getData<WalletDataBase>(WalletDataBase::class.java)
                 if (walletData != null && walletData!!.wallet != null) {
-                    walletLiveData?.postValue(walletData)
+                    walletLiveData?.value = walletData
                 }
 
             }
