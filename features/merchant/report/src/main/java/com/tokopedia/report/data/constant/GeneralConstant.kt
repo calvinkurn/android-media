@@ -1,5 +1,5 @@
 package com.tokopedia.report.data.constant
 
 object GeneralConstant {
-    const val URL_REPORT_TYPE = "https://www.tokopedia.com/help/article/a-1891"
+    const val URL_REPORT_TYPE = "https://www.tokopedia.com/help/article/a-0586"
 }
