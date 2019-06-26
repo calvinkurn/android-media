@@ -126,11 +126,6 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
         }
     }
 
-    override fun onDestroy() {
-        clearProductInfoView()
-        super.onDestroy()
-    }
-
     private fun onErrorGetRecommendation(errorMessage: String?) {
         showGetListError(Throwable(errorMessage))
     }
