@@ -356,7 +356,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         loadAutoAds()
     }
 
-    private fun loadData() {
+    fun loadData() {
         ticker_view.clearMessage()
         swipe_refresh_layout.isRefreshing = true
         topAdsDashboardPresenter.clearTotalAdCache()
@@ -366,7 +366,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         topAdsDashboardPresenter.getTickerTopAds(resources)
     }
 
-    private fun loadAutoAds() {
+    fun loadAutoAds() {
         autoAdsWidgetView?.fetchData()
         autoAdsWidgetView?.setActiveListener(object : AutoAdsWidgetView.ActiveListener {
             override fun onActive() {
@@ -483,10 +483,6 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
                     .loadRawString(resources, R.raw.gql_query_get_status_auto_topup))
             if (data?.getBooleanExtra("no_redirect", false) != true)
                 goToCreditHistory(true)
-        } else if (requestCode == AutoAdsWidgetView.REQUEST_KEY_AUTOADS_WIDGET && resultCode == Activity.RESULT_OK) {
-            ToasterAutoAds.showClose(activity!!, getString(R.string.toaster_inactive_success), onClick = {
-                refreshData()
-            })
         }
     }
 

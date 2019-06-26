@@ -196,7 +196,13 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        (supportFragmentManager.findFragmentByTag(TAG) as TopAdsDashboardFragment)
-                .onActivityResult(requestCode, resultCode, data)
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == AutoAdsWidgetView.REQUEST_KEY_AUTOADS_WIDGET && resultCode == Activity.RESULT_OK) {
+            ToasterAutoAds.showClose(this, getString(R.string.toaster_inactive_success), onClick = {
+                val fragment = (supportFragmentManager.findFragmentByTag(TAG) as TopAdsDashboardFragment)
+                fragment.loadData()
+                fragment.loadAutoAds()
+            })
+        }
     }
 }
