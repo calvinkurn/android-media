@@ -48,7 +48,7 @@ class CartWishlistItemViewHolder(val view: View, val actionListener: ActionListe
             itemView.tv_badge_dot_separator.visibility = View.VISIBLE
         } else {
             itemView.img_badge.visibility = View.GONE
-            itemView.tv_badge_dot_separator.visibility = View.VISIBLE
+            itemView.tv_badge_dot_separator.visibility = View.GONE
         }
 
         ImageHandler.loadImage(itemView.context, itemView.img_product,

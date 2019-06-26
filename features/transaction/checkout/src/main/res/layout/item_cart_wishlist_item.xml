@@ -39,12 +39,12 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_36"
         android:layout_marginTop="@dimen/dp_4"
         android:ellipsize="end"
         android:maxLines="2"
         app:typographyType="heading_6"
-        tools:text="Nexus 5X 32 GB sedia carbon black, ice blue,  pure white dan juga warna rose gold" />
+        tools:text="Nexus 5Xrose gold" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_price"
