@@ -13,10 +13,13 @@ public class AdultManager {
 
     public static final String EXTRA_ORIGIN = "ORIGIN";
     public static final String EXTRA_DESTINATION_GTM = "DESTINATION_GTM";
+    public static final String EXTRA_VERIFICATION_SUCCESS = "VERIFICATION_SUCCESS";
 
     public static final int ORIGIN_CATEGORY_PAGE = 1;
     public static final int ORIGIN_PDP = 2;
     public static final int ORIGIN_SEARCH_PAGE = 3;
+
+    public static final int RESULT_CODE_DOB_VERIFICATION_SUCCESS = 980;
 
     private static final int REQUEST_CODE = 5838;
 
@@ -31,9 +34,8 @@ public class AdultManager {
         if (requestCode == REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 //todo something when user logged in and preverified
-            } else if (resultCode == 980) {
-                //User DOb verfied succesfully
-                String message = data.getStringExtra("VERIFICATION_SUCCESS");
+            } else if (resultCode == RESULT_CODE_DOB_VERIFICATION_SUCCESS) {
+                String message = data.getStringExtra(EXTRA_VERIFICATION_SUCCESS);
                 Toaster.Companion.showNormalWithAction(activity,
                         message,
                         Snackbar.LENGTH_INDEFINITE,
