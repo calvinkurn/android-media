@@ -343,7 +343,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
                     ds.isUnderlineText = false
                     ds.color = resources.getColor(R.color.green_250) // specific color for this link
                 }
-            }, startIndexOfLink, startIndexOfLink + endIndexOfLink, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }, startIndexOfLink, endIndexOfLink, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
             helpLabel.highlightColor = Color.TRANSPARENT
             helpLabel.movementMethod = LinkMovementMethod.getInstance()
