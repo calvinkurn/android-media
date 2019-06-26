@@ -37,7 +37,9 @@ class GraphqlRepositoryImpl(private val graphqlCloudDataStore: GraphqlCloudDataS
                     if(!tempRequestCloud.isNullOrEmpty()){
                         responseCloud = graphqlCloudDataStore.getResponse(tempRequestCloud, cacheStrategy);
                     }
-                    responseCache.originalResponse.addAll(responseCloud?.originalResponse)
+                    responseCloud?.let {
+                        responseCache.originalResponse.addAll(it.originalResponse)
+                    }
                     GraphqlResponseInternal(responseCache.originalResponse, cacheStrategy.isSessionIncluded)
                 } catch (e: Exception) {
                     e.printStackTrace()
