@@ -2,7 +2,8 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingBottom="@dimen/dp_24">
 
     <TextView
         android:id="@+id/txtv_trnsfr"
@@ -40,6 +41,7 @@
     <TextView
         android:id="@+id/rcvr_name"
         android:layout_width="wrap_content"
+        android:visibility="gone"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toEndOf="@+id/rcvr_img"
         app:layout_constraintTop_toTopOf="@+id/rcvr_img"

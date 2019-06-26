@@ -54,7 +54,6 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
     private var sndrAmt: Long = 0
     private var rcvrMsg: String = ""
     private var rcvrName: String = ""
-    private var senderName: String = ""
 
     override fun onClick(v: View?) {
         var id: Int = v?.id ?: -1
@@ -64,6 +63,8 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
                     //make request call
                     rcvrMsg = msgEdtxtv.text.toString()
                     createOvoP2pTransferReqMap(Constants.Keys.AMOUNT, rcvrAmt)
+                    createOvoP2pTransferReqMap(Constants.Keys.NAME, rcvrName)
+                    createOvoP2pTransferReqMap(Constants.Keys.FORMATTED_AMOUNT, rcvrAmt)
                     createOvoP2pTransferReqMap(Constants.Keys.TO_PHN_NO, rcvrPhnNo)
                     createOvoP2pTransferReqMap(Constants.Keys.MESSAGE, rcvrMsg)
                     (activity as LoaderUiListener).showProgressDialog()
@@ -157,7 +158,7 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
                                 }
                             }
                         }
-                        else if(!TextUtils.isEmpty(it.ovoP2pTransferRequest.dstAccName)){
+                        else if(TextUtils.isEmpty(it.ovoP2pTransferRequest.dstAccName)){
                             //show non ovo user confirmation dialog
                             showNonOvoUserConfirmDialog()
                         }

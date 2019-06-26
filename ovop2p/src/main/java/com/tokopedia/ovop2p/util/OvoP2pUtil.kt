@@ -29,7 +29,11 @@ object OvoP2pUtil {
         val inflater = context?.layoutInflater
         val dialogView = inflater?.inflate(R.layout.ovo_p2p_confirmation_dlg, null)
         if(dialogView != null) {
-            dialogView.findViewById<TextView>(R.id.rcvr_name).text = dataMap[Constants.Keys.NAME].toString()
+            var rcvrName = dataMap[Constants.Keys.NAME].toString()
+            if(!TextUtils.isEmpty(rcvrName)) {
+                dialogView.findViewById<TextView>(R.id.rcvr_name).text = rcvrName
+                dialogView.findViewById<TextView>(R.id.rcvr_name).visibility = View.VISIBLE
+            }
             dialogView.findViewById<TextView>(R.id.rcvr_no).text = dataMap[Constants.Keys.TO_PHN_NO].toString()
             dialogView.findViewById<TextView>(R.id.trnsfr_amt).text = "Rp"+dataMap[Constants.Keys.FORMATTED_AMOUNT].toString()
             dialogView.findViewById<TextView>(R.id.msg).text = dataMap[Constants.Keys.MESSAGE].toString()
@@ -89,7 +93,7 @@ object OvoP2pUtil {
         val inflater = context?.layoutInflater
         val dialogView = inflater?.inflate(R.layout.non_ovo_user_confirmation_dialog, null)
         dialogView?.findViewById<View>(R.id.proceed_dlg)?.setOnClickListener(onClickListener)
-        dialogView?.findViewById<View>(R.id.cancel)?.setOnClickListener(onClickListener)
+        dialogView?.findViewById<View>(R.id.close)?.setOnClickListener(onClickListener)
         dialogBuilder.setView(dialogView)
         return dialogBuilder
     }
