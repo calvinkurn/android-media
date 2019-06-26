@@ -13,11 +13,6 @@ import kotlinx.android.synthetic.main.partial_product_recommendation.view.*
 
 abstract class BaseRecommendationView {
 
-    init {
-        this.getRecyclerView().layoutManager = LinearLayoutManager(this.getView().context,
-                LinearLayoutManager.HORIZONTAL, false)
-    }
-
     fun hideView() {
         getView().gone()
     }
@@ -29,6 +24,8 @@ abstract class BaseRecommendationView {
                 gone()
             else {
                 getLayoutTitle().text = product.title
+                getRecyclerView().layoutManager = LinearLayoutManager(context,
+                        LinearLayoutManager.HORIZONTAL, false)
                 getRecyclerView().adapter = RecommendationProductAdapter(product, getListener())
                 recommendation_product.visible()
                 visible()
