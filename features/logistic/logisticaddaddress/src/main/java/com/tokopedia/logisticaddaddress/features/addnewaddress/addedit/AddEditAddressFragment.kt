@@ -87,7 +87,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     private lateinit var zipCodeChipsAdapter: ZipCodeChipsAdapter
     private lateinit var chipsLayoutManager: ChipsLayoutManager
     private lateinit var labelAlamatLayoutManager: ChipsLayoutManager
-    private var staticDimen8dp: Int? = 0
+    private var staticDimen8dp: Int = 0
     private lateinit var labelAlamatChipsAdapter: LabelAlamatChipsAdapter
     private val FINISH_PINPOINT_FLAG = 8888
     private var getView: View? = null
@@ -169,7 +169,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                 .setOrientation(ChipsLayoutManager.HORIZONTAL)
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                 .build()
-        staticDimen8dp = context?.resources?.getDimensionPixelOffset(R.dimen.dp_8)
+        staticDimen8dp = context?.resources?.getDimensionPixelOffset(R.dimen.dp_8) ?: 0
 
         arrangeLayout(isMismatch, isMismatchSolved)
 
@@ -533,7 +533,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
 
     private fun setupRvKodePosChips() {
         rv_kodepos_chips_mismatch.apply {
-            addItemDecoration(staticDimen8dp?.let { ChipsItemDecoration(it) })
+            addItemDecoration(ChipsItemDecoration(staticDimen8dp))
             layoutManager = chipsLayoutManager
             adapter = zipCodeChipsAdapter
         }
@@ -541,7 +541,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
 
     private fun setupRvLabelAlamatChips() {
         rv_label_alamat_chips.apply {
-            addItemDecoration(staticDimen8dp?.let { ChipsItemDecoration(it) })
+            addItemDecoration(ChipsItemDecoration(staticDimen8dp))
             layoutManager = labelAlamatLayoutManager
             adapter = labelAlamatChipsAdapter
         }
