@@ -175,7 +175,7 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
             popularCityAdapter.notifyDataSetChanged()
         }
 
-        val staticDimen8dp = view?.context?.resources?.getDimensionPixelOffset(R.dimen.dp_8)
+        val staticDimen8dp = this.view?.context?.resources?.getDimensionPixelOffset(R.dimen.dp_8)
         rvChips.addItemDecoration(staticDimen8dp?.let { ChipsItemDecoration(staticDimen8dp) })
 
         var visibleItemCount: Int

@@ -35,8 +35,8 @@ class LabelAlamatChipsAdapter(context: Context?, private var actionListener: Act
         holder.itemView.tv_chips_item.apply {
             text = labelAlamatList[position]
             setOnClickListener {
-                holder.itemView.tv_chips_item.background = drawablePressed
-                holder.itemView.tv_chips_item.setTextColor(res.getColor(R.color.tkpd_green))
+                background = drawablePressed
+                setTextColor(res.getColor(R.color.tkpd_green))
                 actionListener.onLabelAlamatChipClicked(labelAlamatList[position])
             }
         }

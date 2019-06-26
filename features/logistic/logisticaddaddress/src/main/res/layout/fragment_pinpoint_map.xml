@@ -8,31 +8,39 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.google.android.gms.maps.MapView
-            android:id="@+id/map_view"
+        <include layout="@layout/bottomsheet_getdistrict"
+            android:id="@+id/layout_getdistrict"/>
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <ImageView
-            android:id="@+id/pointer_0"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:contentDescription="@string/pointer" />
+            android:layout_above="@id/layout_getdistrict">
 
-        <ImageView
-            android:id="@+id/icon_pointer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/pointer_0"
-            android:layout_centerHorizontal="true"
-            android:contentDescription="@string/pointer"
-            android:src="@drawable/ic_green_pointer" />
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/map_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <ImageView
+                android:id="@+id/pointer_0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:contentDescription="@string/pointer" />
+
+            <ImageView
+                android:id="@+id/icon_pointer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/pointer_0"
+                android:layout_centerHorizontal="true"
+                android:contentDescription="@string/pointer"
+                android:src="@drawable/ic_green_pointer" />
+
+        </RelativeLayout>
 
     </RelativeLayout>
-
-    <include layout="@layout/bottomsheet_getdistrict" />
 
     <ImageButton
         android:id="@+id/back_button"

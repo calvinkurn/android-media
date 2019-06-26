@@ -337,7 +337,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     }
 
     private fun eventShowListLabelAlamat(type: String) {
-        showLabelAlamatList()
+        // showLabelAlamatList()
         if (type.equals("positive", true)) {
             AddNewAddressAnalytics.eventClickFieldLabelAlamatChangeAddressPositive()
         } else {
