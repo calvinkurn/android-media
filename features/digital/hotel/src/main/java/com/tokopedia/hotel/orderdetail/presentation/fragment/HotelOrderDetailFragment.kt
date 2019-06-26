@@ -235,8 +235,12 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             specialRequestAdapter.addData(mutableListOf(propertyDetail.specialRequest))
         } else special_request_recycler_view.visibility = View.GONE
 
-        special_notes.text = propertyDetail.extraInfo.content
-        special_notes.visibility = if (propertyDetail.extraInfo.content.isNotBlank()) View.VISIBLE else View.GONE
+        if (propertyDetail.extraInfo.content.isNotBlank()) {
+            special_notes.setText(createHyperlinkText(propertyDetail.extraInfo.content,
+                    propertyDetail.extraInfo.uri), TextView.BufferType.SPANNABLE)
+            special_notes.visibility = View.VISIBLE
+            special_notes.movementMethod = LinkMovementMethod.getInstance()
+        } else special_notes.visibility = View.GONE
 
         checkin_checkout_date.setRoomDatesFormatted(
                 propertyDetail.checkInOut[0].checkInOut.date,
@@ -293,8 +297,25 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
     fun renderFooter(orderDetail: HotelOrderDetail) {
 
         order_detail_footer_layout.removeAllViews()
-        if (orderDetail.contactUs.helpText.isNotBlank())
-            order_detail_footer_layout.addView(createHelpText(orderDetail.contactUs))
+        if (orderDetail.contactUs.helpText.isNotBlank()){
+            val helpLabel = TextViewCompat(context)
+            helpLabel.setFontSize(TextViewCompat.FontSize.MICRO)
+            helpLabel.setTextColor(resources.getColor(R.color.light_primary))
+
+            val spannableString = createHyperlinkText(orderDetail.contactUs.helpText,
+                    orderDetail.contactUs.helpUrl)
+
+            helpLabel.highlightColor = Color.TRANSPARENT
+            helpLabel.movementMethod = LinkMovementMethod.getInstance()
+            helpLabel.setText(spannableString, TextView.BufferType.SPANNABLE)
+            helpLabel.gravity = Gravity.CENTER
+            val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            params.bottomMargin = resources.getDimensionPixelSize(R.dimen.dp_16)
+            helpLabel.layoutParams = params
+
+            order_detail_footer_layout.addView(helpLabel)
+        }
+
 
         for (button in orderDetail.actionButtons) {
             val buttonCompat = ButtonCompat(context)
@@ -319,20 +340,17 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
         }
     }
 
-    fun createHelpText(help: HotelOrderDetail.Contact): TextViewCompat {
+    fun createHyperlinkText(htmlText: String = "", url: String = ""): SpannableString {
 
-        val helpLabel = TextViewCompat(context)
-        helpLabel.setFontSize(TextViewCompat.FontSize.MICRO)
-        helpLabel.setTextColor(resources.getColor(R.color.light_primary))
-        val text = Html.fromHtml(help.helpText)
+        val text = Html.fromHtml(htmlText)
         val spannableString = SpannableString(text)
-        val startIndexOfLink = help.helpText.toLowerCase().indexOf("<hyperlink>") + "<hyperlink>".length
-        val endIndexOfLink = help.helpText.toLowerCase().indexOf("</hyperlink>") - 1
+        val startIndexOfLink = htmlText.toLowerCase().indexOf("<hyperlink>") + "<hyperlink>".length
+        val endIndexOfLink = htmlText.toLowerCase().indexOf("</hyperlink>")
         if (startIndexOfLink >= 0) {
             spannableString.setSpan(object : ClickableSpan() {
                 override fun onClick(view: View) {
                     try {
-                        RouteManager.route(context, help.helpUrl)
+                        RouteManager.route(context, url)
                     } catch (e: UnsupportedEncodingException) {
                         e.printStackTrace()
                     }
@@ -343,19 +361,9 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
                     ds.isUnderlineText = false
                     ds.color = resources.getColor(R.color.green_250) // specific color for this link
                 }
-            }, startIndexOfLink, endIndexOfLink, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-
-            helpLabel.highlightColor = Color.TRANSPARENT
-            helpLabel.movementMethod = LinkMovementMethod.getInstance()
+            }, startIndexOfLink - "<hyperlink>".length, endIndexOfLink - "<hyperlink>".length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
-
-        helpLabel.setText(spannableString, TextView.BufferType.SPANNABLE)
-        helpLabel.gravity = Gravity.CENTER
-        val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        params.bottomMargin = resources.getDimensionPixelSize(R.dimen.dp_16)
-        helpLabel.layoutParams = params
-
-        return helpLabel
+        return spannableString
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
