@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.CursorAdapter
 import android.widget.TextView
 import android.widget.Toast
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 
 import com.tokopedia.ovop2p.R
 
@@ -32,10 +33,11 @@ class ContactsCursorAdapter(context: Context, cursor: Cursor, private val mParti
     override fun bindView(view: View, context: Context, cursor: Cursor?) {
         var name = ""
         var phoneNum = ""
+        var prettyPhnNo = ""
         var imageUri = ""
         if (cursor != null && cursor.count > 0) {
             phoneNum = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
-            phoneNum = phoneNum.replaceFirst(mPartialMatch.toRegex(), "<font color='#06b3ba'>$mPartialMatch</font>")
+            prettyPhnNo = phoneNum.replaceFirst(mPartialMatch.toRegex(), "<font color='#06b3ba'>$mPartialMatch</font>")
             name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
             if(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI)) != null) {
                 imageUri = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI))
@@ -46,11 +48,7 @@ class ContactsCursorAdapter(context: Context, cursor: Cursor, private val mParti
         nameTv.text = name
 
         val phoneNo = view.findViewById<TextView>(R.id.tv_phone)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            phoneNo.text = Html.fromHtml(phoneNum, Html.FROM_HTML_MODE_LEGACY)
-        } else {
-            phoneNo.text = Html.fromHtml(phoneNum)
-        }
+        phoneNo.text = MethodChecker.fromHtml(prettyPhnNo)
         view.setOnClickListener { view ->
             contactsDataSetFunction(name, phoneNum)
         }

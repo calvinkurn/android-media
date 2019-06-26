@@ -51,7 +51,6 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
     lateinit var ovoP2pTransferConfirmViewModel: OvoP2pTrxnConfirmVM
     lateinit var trnsfrReqDataMap: HashMap<String, Any>
     lateinit var amtErrorTxtv: TextView
-    lateinit var msgHeader: TextView
     private var rcvrPhnNo: String = ""
     private var rcvrAmt: Int = 0
     private var sndrAmt: Int = 0
@@ -119,7 +118,6 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
         contactsImageView.setOnClickListener(this)
         searchNoHeader = view.findViewById(R.id.search_no_header)
         amtErrorTxtv = view.findViewById(R.id.amt_err_txtv)
-        msgHeader = view.findViewById(R.id.msg_header)
         createAndSusbcribeToWalletBalVM()
         createAndSubscribeTransferRequestVM()
         createAndSubscribeTransferConfirmVM()
@@ -138,7 +136,7 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
                         (activity as LoaderUiListener).hideProgressDialog()
                         saldoTextView.text = it.wallet?.balance ?: ""
                         if(!TextUtils.isEmpty(saldoTextView.text)){
-                            sndrAmt = saldoTextView.text.toString().toInt()
+                            sndrAmt = OvoP2pUtil.extractNumbersFromString(saldoTextView.text.toString()).toInt()
                         }
                     }
                 })
@@ -276,14 +274,6 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
                         searchNoHeader.visibility = View.GONE
                     }
                 }
-                R.id.msg_edtxt -> {
-                    if(hasFocus){
-                        msgHeader.visibility = View.VISIBLE
-                    }
-                    else{
-                        msgHeader.visibility = View.INVISIBLE
-                    }
-                }
             }
         }
     }
@@ -297,7 +287,7 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
     override fun onQueryTextChange(newText: String?): Boolean {
         val contacts = context?.let { newText?.let { it1 -> getPartialMatchContact(it, it1) } }
         val cursorAdapter = context?.let { newText?.let { it1 -> contacts?.let { it2 -> ContactsCursorAdapter(it, it2, it1,
-                {rcvrName: String, rcvrPhone: String -> setContactsData(rcvrName, rcvrPhone)}) } } }
+                ::setContactsData) } } }
         searchView.suggestionsAdapter = cursorAdapter
         return true
     }
@@ -332,6 +322,7 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
     fun setContactsData(rcvrName: String, rcvrPhone: String){
         this.rcvrName = rcvrName
         this.rcvrPhnNo = rcvrPhone
+        setSearchViewQuery()
     }
 
     private fun showNonOvoUserConfirmDialog(){
@@ -342,11 +333,15 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Constants.Keys.RESULT_CODE_CONTACTS_SELECTION) {
-            rcvrName = data!!.getStringExtra(Constants.Keys.USER_NAME)
-            rcvrPhnNo = data.getStringExtra(Constants.Keys.USER_NUMBER)
-            val searchViewStr = "$rcvrName-$rcvrPhnNo"
-            searchView.setQuery(searchViewStr, false)
+            this.rcvrName = data!!.getStringExtra(Constants.Keys.USER_NAME)
+            this.rcvrPhnNo = data.getStringExtra(Constants.Keys.USER_NUMBER)
+            setSearchViewQuery()
         }
+    }
+
+    private fun setSearchViewQuery(){
+        val searchViewStr = "$rcvrPhnNo-$rcvrName"
+        searchView.setQuery(searchViewStr, false)
     }
 
 }

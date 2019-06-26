@@ -33,6 +33,18 @@ class AllContactsFragment  : BaseDaggerFragment(), View.OnClickListener{
         getComponent<OvoP2pTransferComponent>(OvoP2pTransferComponent::class.java).inject(this)
     }
 
+    companion object{
+        fun newInstance(): AllContactsFragment {
+            return AllContactsFragment()
+        }
+
+        fun newInstance(bundle: Bundle): AllContactsFragment {
+            val allContactsFragment = newInstance()
+            allContactsFragment.setArguments(bundle)
+            return allContactsFragment
+        }
+    }
+
     override fun onClick(v: View?) {
         var id: Int = v?.id ?: -1
         if (id != -1) {

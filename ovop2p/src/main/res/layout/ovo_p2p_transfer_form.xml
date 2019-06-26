@@ -18,7 +18,6 @@
         android:id="@+id/search_no"
         android:layout_width="300dp"
         android:searchIcon="@null"
-        android:focusable="false"
         android:iconifiedByDefault="false"
         android:layout_height="wrap_content"
         android:theme="@style/SearchViewStyle"
@@ -45,6 +44,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="12sp"
+        android:focusedByDefault="true"
         android:textColor="#6b767e"
         app:layout_constraintStart_toStartOf="@id/search_no"
         android:lineSpacingExtra="2sp"
@@ -100,8 +100,8 @@
         android:id="@+id/cntnr_vw_amt"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_110"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_26"
+        android:layout_marginRight="@dimen/dp_26"
         android:layout_marginTop="@dimen/dp_40"
         android:background="@color/clr_f8f8f8"
         app:layout_constraintTop_toBottomOf="@+id/cntnr_vw" />
@@ -147,38 +147,29 @@
         app:layout_constraintTop_toBottomOf="@+id/trnsfr_amt_edtv"
         app:layout_constraintStart_toStartOf="@+id/search_no"
         android:layout_width="wrap_content"
-        android:text="Error Amount"
+        android:text=""
+        android:visibility="gone"
         android:textSize="12sp"
         android:textColor="@color/red_600"
         android:layout_height="wrap_content" />
 
-    <TextView
-        android:id="@+id/msg_header"
-        android:layout_marginTop="@dimen/dp_20"
-        app:layout_constraintTop_toBottomOf="@+id/cntnr_vw_amt"
-        app:layout_constraintStart_toStartOf="@+id/search_no"
-        android:text="Pesan (opsional)"
-        android:textSize="12sp"
-        android:visibility="invisible"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
     <android.support.design.widget.TextInputLayout
         android:id="@+id/msg"
-        android:layout_width="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/msg_header"
+        android:layout_width="360dp"
+        app:layout_constraintTop_toBottomOf="@+id/cntnr_vw_amt"
         app:layout_constraintStart_toStartOf="@+id/search_no"
         android:layout_height="wrap_content"
         app:counterEnabled="true"
         app:counterMaxLength="25">
+
         <EditText
             android:id="@+id/msg_edtxt"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="#6b767e"
             android:maxLength="25"
-            android:text="Pesan (opsional)"/>
+            android:hint="Pesan (opsional)"
+            android:textColor="#6b767e"
+            android:textSize="16sp" />
     </android.support.design.widget.TextInputLayout>
 
     <!--<EditText-->

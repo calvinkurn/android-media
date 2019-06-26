@@ -4,6 +4,6 @@
         <item name="android:editTextColor">#6b767e</item>
         <item name="android:textCursorDrawable">@drawable/cursor_color</item>
         <item name="android:searchSuggestThreshold">0</item>
-        <item name="android:textSize">@dimen/sp_12</item>
+        <item name="android:textSize">@dimen/sp_14</item>
     </style>
 </resources>
