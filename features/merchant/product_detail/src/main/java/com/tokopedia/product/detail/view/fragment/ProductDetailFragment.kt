@@ -375,6 +375,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
         initializePartialView(view)
         initView()
+        tv_trade_in_promo.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(activity, R.drawable.tradein_white), null, null, null)
         refreshLayout = view.findViewById(R.id.swipeRefresh)
          et_search.setOnClickListener { v ->
             RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
@@ -731,7 +732,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
     private fun initView() {
         val appShowSearchPDP = remoteConfig.getBoolean(RemoteConfigKey.REMOTE_CONFIG_APP_SHOW_SEARCH_BAR_PDP, true)
-
         if(appShowSearchPDP) {
             initShowSearchPDP()
         }else {

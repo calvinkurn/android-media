@@ -33,6 +33,7 @@ import com.tokopedia.digital_deals.view.presenter.CheckoutDealPresenter;
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,7 +41,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-;
 
 public class CheckoutHomeFragment extends BaseDaggerFragment implements CheckoutDealContractor.View, View.OnClickListener {
 
@@ -130,7 +130,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         progressParLayout = view.findViewById(R.id.progress_bar_layout);
         ivRemovePromo = view.findViewById(R.id.iv_remove_promo);
         clPromoAmount = view.findViewById(R.id.cl_promo);
-        Drawable img = getResources().getDrawable(R.drawable.ic_promo_code);
+        Drawable img = MethodChecker.getDrawable(getActivity(),R.drawable.ic_promo_code);
         tvApplyPromo.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
 
     }
