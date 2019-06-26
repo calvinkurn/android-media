@@ -112,7 +112,6 @@ import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_product_detail.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.*
 import kotlinx.android.synthetic.main.partial_most_helpful_review_view.*
-import kotlinx.android.synthetic.main.partial_other_product.*
 import kotlinx.android.synthetic.main.partial_product_detail_header.*
 import kotlinx.android.synthetic.main.partial_product_detail_visibility.*
 import kotlinx.android.synthetic.main.partial_product_detail_wholesale.*
@@ -120,6 +119,7 @@ import kotlinx.android.synthetic.main.partial_product_full_descr.*
 import kotlinx.android.synthetic.main.partial_product_image_review.*
 import kotlinx.android.synthetic.main.partial_product_latest_talk.*
 import kotlinx.android.synthetic.main.partial_product_rating_talk_courier.*
+import kotlinx.android.synthetic.main.partial_product_recom_top_1.*
 import kotlinx.android.synthetic.main.partial_product_recommendation.*
 import kotlinx.android.synthetic.main.partial_product_shop_info.*
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
@@ -329,15 +329,15 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 performanceMonitoringFull.stopTrace()
             it?.run { renderProductInfo3(this) }
         })
-
-        productInfoViewModel.loadOtherProduct.observe(this, Observer {
-            when (it) {
-                is Loading -> otherProductView.startLoading()
-                is Loaded -> {
-                    otherProductView.renderData((it.data as? Success)?.data ?: listOf())
-                }
-            }
-        })
+//
+//        productInfoViewModel.loadOtherProduct.observe(this, Observer {
+//            when (it) {
+//                is Loading -> otherProductView.startLoading()
+//                is Loaded -> {
+//                    otherProductView.renderData((it.data as? Success)?.data ?: listOf())
+//                }
+//            }
+//        })
 
         productInfoViewModel.loadTopAdsProduct.observe(this, Observer {
             when (it) {
@@ -660,11 +660,15 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         if (!::latestTalkView.isInitialized)
             latestTalkView = PartialLatestTalkView.build(base_latest_talk)
 
-        if (!::otherProductView.isInitialized)
-            otherProductView = PartialOtherProductView.build(base_other_product)
+//        if (!::otherProductView.isInitialized)
+//            otherProductView = PartialOtherProductView.build(base_other_product)
 
         if (!::recommendationProductView.isInitialized) {
             recommendationProductView = PartialRecommendationProductView.build(base_recommen_product, this)
+        }
+
+        if (!::recommendationTopFirstView.isInitialized) {
+            recommendationTopFirstView = PartialRecommendationTopFirstView.build(base_recom_1, this)
         }
 
     }
@@ -849,7 +853,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun loadProductData(forceRefresh: Boolean = false) {
         if (forceRefresh) {
-            otherProductView.renderData(listOf())
+//            otherProductView.renderData(listOf())
             recommendationProductView.hideView()
             recommendationTopFirstView.hideView()
         }
