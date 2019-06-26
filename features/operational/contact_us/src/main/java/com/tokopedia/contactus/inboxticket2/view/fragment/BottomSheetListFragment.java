@@ -12,6 +12,7 @@ import com.tokopedia.contactus.R2;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
 
 import butterknife.BindView;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class BottomSheetListFragment extends InboxBottomSheetFragment {
     @BindView(R2.id.rv_filter)

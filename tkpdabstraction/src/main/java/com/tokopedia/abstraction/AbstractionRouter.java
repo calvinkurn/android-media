@@ -42,7 +42,5 @@ public interface AbstractionRouter {
 
     void logInvalidGrant(Response response);
 
-    void instabugCaptureUserStep(Activity activity, MotionEvent me);
-
     boolean isAllowLogOnChuckInterceptorNotification();
 }

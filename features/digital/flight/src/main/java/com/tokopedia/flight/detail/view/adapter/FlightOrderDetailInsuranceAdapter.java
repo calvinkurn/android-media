@@ -10,6 +10,7 @@ import com.tokopedia.flight.R;
 import com.tokopedia.flight.orderlist.domain.model.FlightInsurance;
 
 import java.util.List;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class FlightOrderDetailInsuranceAdapter extends RecyclerView.Adapter<FlightOrderDetailInsuranceAdapter.ViewHolder> {
     private List<FlightInsurance> insurances;
@@ -35,6 +36,7 @@ public class FlightOrderDetailInsuranceAdapter extends RecyclerView.Adapter<Flig
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        private final AppCompatTextView InsuranceProtTv;
         private AppCompatTextView titleTextView;
         private AppCompatTextView taglineTextView;
 
@@ -42,6 +44,10 @@ public class FlightOrderDetailInsuranceAdapter extends RecyclerView.Adapter<Flig
             super(itemView);
             titleTextView = itemView.findViewById(R.id.tv_title);
             taglineTextView = itemView.findViewById(R.id.tv_tagline);
+            InsuranceProtTv = itemView.findViewById(R.id.ic_flight_insurance_protection_tv);
+
+            InsuranceProtTv.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable
+                    (InsuranceProtTv.getContext(), R.drawable.ic_flight_insurance_protection), null);
         }
 
         public void bind(FlightInsurance insurance) {

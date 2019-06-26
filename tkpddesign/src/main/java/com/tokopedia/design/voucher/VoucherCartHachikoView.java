@@ -1,8 +1,11 @@
 package com.tokopedia.design.voucher;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.content.res.AppCompatResources;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -36,6 +39,13 @@ public class VoucherCartHachikoView extends BaseCustomView {
         init(context);
     }
 
+    public static Drawable getDrawable(Context context, int resId) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1)
+            return context.getResources().getDrawable(resId, context.getApplicationContext().getTheme());
+        else
+            return AppCompatResources.getDrawable(context, resId);
+    }
+
     public VoucherCartHachikoView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init(context);
@@ -49,6 +59,8 @@ public class VoucherCartHachikoView extends BaseCustomView {
     private void init(Context context) {
         View rootView = inflate(context, getLayoutId(), this);
         labelUseVoucher = rootView.findViewById(R.id.textview_voucher);
+        labelUseVoucher.setCompoundDrawablesWithIntrinsicBounds(getDrawable
+                (context, R.drawable.ic_kupon), null, null , null);
         labelPromoCode = rootView.findViewById(R.id.label_promo_code);
         textviewPromoCode = rootView.findViewById(R.id.textview_promo_code);
         textviewVoucherDetail = rootView.findViewById(R.id.textview_voucher_detail);

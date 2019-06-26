@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
@@ -21,6 +22,9 @@ import com.tokopedia.gm.common.domain.repository.GMCommonRepository;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.product.manage.item.common.data.source.cloud.TomeProductApi;
 import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.product.manage.item.main.add.di.ProductAddScope;
+import com.tokopedia.product.manage.item.main.add.view.presenter.ProductAddPresenterImpl;
+import com.tokopedia.product.manage.list.R;
 import com.tokopedia.product.manage.list.data.repository.ActionProductManageRepositoryImpl;
 import com.tokopedia.product.manage.list.data.source.ActionProductManageDataSource;
 import com.tokopedia.product.manage.list.data.source.ProductActionApi;
@@ -28,6 +32,7 @@ import com.tokopedia.product.manage.list.domain.ActionProductManageRepository;
 import com.tokopedia.product.manage.list.domain.DeleteProductUseCase;
 import com.tokopedia.product.manage.list.domain.EditPriceProductUseCase;
 import com.tokopedia.product.manage.list.domain.MultipleDeleteProductUseCase;
+import com.tokopedia.product.manage.list.domain.PopupManagerAddProductUseCase;
 import com.tokopedia.product.manage.list.view.mapper.GetProductListManageMapperView;
 import com.tokopedia.product.manage.list.view.presenter.ProductManagePresenter;
 import com.tokopedia.product.manage.list.view.presenter.ProductManagePresenterImpl;
@@ -46,11 +51,15 @@ import com.tokopedia.topads.sourcetagging.domain.repository.TopAdsSourceTaggingR
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import javax.inject.Named;
+
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
+
+import static com.tokopedia.product.manage.list.view.presenter.ProductManagePresenterImpl.GQL_POPUP_NAME;
 
 /**
  * Created by zulfikarrahman on 9/26/17.
@@ -71,10 +80,11 @@ public class ProductManageModule {
                                                                 TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase,
                                                                 TopAdsGetShopDepositGraphQLUseCase topAdsGetShopDepositGraphQLUseCase,
                                                                 GetFeatureProductListUseCase getFeatureProductListUseCase,
-                                                                SetCashbackUseCase setCashbackUseCase){
+                                                                SetCashbackUseCase setCashbackUseCase,
+                                                                PopupManagerAddProductUseCase popupManagerAddProductUseCase){
         return new ProductManagePresenterImpl(getShopInfoUseCase, getProductListSellingUseCase, editPriceProductUseCase,
                 deleteProductUseCase, getProductListManageMapperView, multipleDeleteProductUseCase, userSession,
-                topAdsAddSourceTaggingUseCase, topAdsGetShopDepositGraphQLUseCase, getFeatureProductListUseCase, setCashbackUseCase);
+                topAdsAddSourceTaggingUseCase, topAdsGetShopDepositGraphQLUseCase, getFeatureProductListUseCase, setCashbackUseCase, popupManagerAddProductUseCase);
     }
 
     @Provides
@@ -228,4 +238,15 @@ public class ProductManageModule {
     public GraphqlUseCase provideGraphqlUseCase(){
         return new GraphqlUseCase();
     }
+
+    @ProductManageScope
+    @Provides
+    @Named(GQL_POPUP_NAME)
+    public String requestQuery(@ApplicationContext Context context){
+        return GraphqlHelper.loadRawString(
+                context.getResources(),
+                R.raw.gql_popup_manager
+        );
+    }
+
 }

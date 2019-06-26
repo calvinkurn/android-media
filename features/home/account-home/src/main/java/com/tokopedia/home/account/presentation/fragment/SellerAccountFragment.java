@@ -1,5 +1,6 @@
 package com.tokopedia.home.account.presentation.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -191,6 +192,9 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == OPEN_SHOP_SUCCESS){
             getData();
+        } else if (resultCode == Activity.RESULT_OK && requestCode == BaseAccountFragment.REQUEST_PHONE_VERIFICATION){
+            userSession.setIsMSISDNVerified(true);
+            moveToCreateShop();
         }
     }
 
