@@ -95,7 +95,7 @@
                 android:layout_marginStart="@dimen/dp_10"
                 android:layout_marginTop="@dimen/dp_5"
                 android:contentDescription="@string/research_description"
-                android:src="@drawable/ic_search"
+                android:src="@drawable/ic_search_btn"
                 android:visibility="visible" />
             
         </RelativeLayout>
@@ -130,7 +130,9 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/et_detail_address_hint"
                 android:inputType="text"
-                android:textColor="#ae31353b" />
+                android:textColor="#ae31353b"
+                android:imeOptions="actionDone"
+                android:maxLines="1"/>
 
         </com.tokopedia.design.text.TkpdHintTextInputLayout>
 

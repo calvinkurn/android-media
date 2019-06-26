@@ -631,7 +631,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             params.width = 450
             btn_map.layoutParams = params
             setOnClickListener {
-                saveAddressDataModel?.editDetailAddress = tv_detail_alamat_mismatch.text.toString()
+                saveAddressDataModel?.editDetailAddress = et_detail_alamat_mismatch.text.toString()
                 goToPinpointActivity(currentLat, currentLong, false, token, true, districtId,
                         isMismatchSolved, isMismatch, saveAddressDataModel)
             }
@@ -651,7 +651,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         ll_detail_alamat.visibility = View.VISIBLE
         et_kota_kecamatan_mismatch.setText(this.saveAddressDataModel?.formattedAddress)
         // et_alamat_mismatch.setText(this.saveAddressDataModel?.title)
-        tv_detail_alamat_mismatch.setText(this.saveAddressDataModel?.editDetailAddress)
+        et_detail_alamat_mismatch.setText(this.saveAddressDataModel?.editDetailAddress)
         et_kode_pos_mismatch.setText(this.saveAddressDataModel?.postalCode)
     }
 
@@ -688,7 +688,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             saveAddressDataModel?.address2 = "$currentLat,$currentLong"
 
         } else {
-            detailAddress = tv_detail_alamat_mismatch.text.toString()
+            detailAddress = et_detail_alamat_mismatch.text.toString()
             if (isMismatch) {
                 saveAddressDataModel?.address1 = "${detailAddress} ${saveAddressDataModel?.selectedDistrict}"
                 saveAddressDataModel?.address2 = ""
@@ -891,6 +891,10 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
 
                 if (data.hasExtra(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL)) {
                     saveAddressDataModel = data.getParcelableExtra<SaveAddressDataModel>(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL)
+                    saveAddressDataModel?.let {
+                        currentLat = it.latitude.toDouble()
+                        currentLong = it.longitude.toDouble()
+                    }
                 }
 
                 if (data.hasExtra(AddressConstants.EXTRA_IS_MISMATCH_SOLVED)) {
