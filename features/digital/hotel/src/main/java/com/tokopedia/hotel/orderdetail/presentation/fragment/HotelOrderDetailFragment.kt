@@ -22,7 +22,6 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -346,8 +345,8 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
                 }
             }, startIndexOfLink, startIndexOfLink + endIndexOfLink, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
-            helpLabel.setHighlightColor(Color.TRANSPARENT)
-            helpLabel.setMovementMethod(LinkMovementMethod.getInstance())
+            helpLabel.highlightColor = Color.TRANSPARENT
+            helpLabel.movementMethod = LinkMovementMethod.getInstance()
         }
 
         helpLabel.setText(spannableString, TextView.BufferType.SPANNABLE)
@@ -363,7 +362,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             inflater.inflate(R.layout.fragment_hotel_order_detail, container, false)
 
 
-    fun hideBookingCode(enableHide: Boolean) {
+    private fun hideBookingCode(enableHide: Boolean) {
         booking_code_hint.visibility = if (enableHide) View.GONE else View.VISIBLE
         booking_code.visibility = if (enableHide) View.GONE else View.VISIBLE
         order_hotel_detail.seperator_1.visibility = if (enableHide) View.GONE else View.VISIBLE
@@ -372,7 +371,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
     override fun onClickCall(contactNumber: String) {
         Toast.makeText(context, contactNumber, Toast.LENGTH_SHORT).show()
         val callIntent = Intent(ACTION_DIAL)
-        callIntent.setData(Uri.parse("tel:${contactNumber}"))
+        callIntent.data = Uri.parse("tel:$contactNumber")
         startActivity(callIntent)
     }
 
