@@ -1271,8 +1271,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             activity?.let {
                 val intent = RouteManager.getIntent(activity, ApplinkConstInternalCategory.AGE_RESTRICTION)
                 intent.putExtra("ORIGIN",2)
-                intent.putExtra("DESTINATION_GTM",
-                        productInfoP1.productInfo.category.name + "/" + productInfoP1.productInfo.category.id)
+                intent.putExtra("DESTINATION_GTM", productInfoP1.productInfo.category.id)
                 startActivityForResult(intent, 5838)
             }
         }

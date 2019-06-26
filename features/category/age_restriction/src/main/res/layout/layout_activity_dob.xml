@@ -42,8 +42,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_32"
         android:background="?attr/selectableItemBackground"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
         android:lineHeight="@dimen/sp_20"
         android:text="Pilih Tanggal"
         android:textColor="@color/black_36"

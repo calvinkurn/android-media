@@ -203,8 +203,7 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
         if (productViewModel.getCategoryHeaderModel().getIsAdult() > 0) {
             Intent intent = RouteManager.getIntent(this, ApplinkConstInternalCategory.INSTANCE.getAGE_RESTRICTION());
             intent.putExtra("ORIGIN", 1);
-            intent.putExtra("DESTINATION_GTM",
-                    productViewModel.getCategoryHeaderModel().getHeaderModel().getCategoryName()+"/"+productViewModel.getCategoryHeaderModel().getDepartementId());
+            intent.putExtra("DESTINATION_GTM", productViewModel.getCategoryHeaderModel().getDepartementId());
             startActivityForResult(intent, 5838);
         }
         List<CategorySectionItem> categorySectionItems = new ArrayList<>();
