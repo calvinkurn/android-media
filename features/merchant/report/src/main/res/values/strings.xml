@@ -10,7 +10,7 @@
     <string name="product_label_product_report">Detail Laporan (Wajib Diisi)</string>
     <string name="product_report_upload_title">%1$s (%2$d/%3$d)</string>
     <string name="product_report_upload_foto">Tambah Foto</string>
-    <string name="report_choose_picture">Pilih Gambar</string>
+    <string name="report_choose_picture">Pilih Foto</string>
     <string name="label_continue">Lanjutkan</string>
     <string name="detail_report">Detail Laporan</string>
     <string name="required_error">Field harus diisi</string>
