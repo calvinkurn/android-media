@@ -15,11 +15,13 @@ import android.text.Spanned
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import android.widget.LinearLayout
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.travel.utils.TravelDateUtil
@@ -27,9 +29,11 @@ import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
 import com.tokopedia.hotel.evoucher.di.HotelEVoucherComponent
+import com.tokopedia.hotel.evoucher.presentation.adapter.HotelEVoucherCancellationPoliciesAdapter
 import com.tokopedia.hotel.evoucher.presentation.viewmodel.HotelEVoucherViewModel
 import com.tokopedia.hotel.evoucher.presentation.widget.HotelSharePdfBottomSheets
 import com.tokopedia.hotel.orderdetail.data.model.HotelOrderDetail
+import com.tokopedia.hotel.orderdetail.data.model.HotelTransportDetail
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_e_voucher.*
@@ -49,6 +53,7 @@ class HotelEVoucherFragment : HotelBaseFragment() {
     lateinit var eVoucherViewModel: HotelEVoucherViewModel
 
     lateinit var orderId: String
+    lateinit var cancellationPoliciesAdapter: HotelEVoucherCancellationPoliciesAdapter
 
     override fun getScreenName(): String = ""
 
@@ -153,56 +158,69 @@ class HotelEVoucherFragment : HotelBaseFragment() {
 
     private fun renderData(data: HotelOrderDetail) {
 
-            tv_guest_title.text = data.hotelTransportDetails.guestDetail.title
-            tv_guest_name.text = data.hotelTransportDetails.guestDetail.content
+        tv_guest_title.text = data.hotelTransportDetails.guestDetail.title
+        tv_guest_name.text = data.hotelTransportDetails.guestDetail.content
 
-            if (data.hotelTransportDetails.propertyDetail.isNotEmpty()) {
-                val propertyDetail = data.hotelTransportDetails.propertyDetail[0]
+        if (data.hotelTransportDetails.propertyDetail.isNotEmpty()) {
+            val propertyDetail = data.hotelTransportDetails.propertyDetail[0]
 
-                tv_property_name.text = propertyDetail.propertyInfo.name
-                tv_property_address.text = propertyDetail.propertyInfo.address
+            tv_property_name.text = propertyDetail.propertyInfo.name
+            tv_property_address.text = propertyDetail.propertyInfo.address
 
-                rdv_checkin_checkout_date.setRoomDatesFormatted(
-                        propertyDetail.checkInOut[0].checkInOut.date,
-                        propertyDetail.checkInOut[1].checkInOut.date,
-                        propertyDetail.stayLength.content)
+            rdv_checkin_checkout_date.setRoomDatesFormatted(
+                    propertyDetail.checkInOut[0].checkInOut.date,
+                    propertyDetail.checkInOut[1].checkInOut.date,
+                    propertyDetail.stayLength.content)
 
-                for (i in 1..propertyDetail.propertyInfo.starRating) {
-                    container_rating_view.addView(RatingStarView(context!!))
+            for (i in 1..propertyDetail.propertyInfo.starRating) {
+                container_rating_view.addView(RatingStarView(context!!))
+            }
+
+            tv_booking_title.text = propertyDetail.bookingKey.title
+            tv_booking_code.text = propertyDetail.bookingKey.content
+
+            if (propertyDetail.room.isNotEmpty()) {
+                tv_room_title.text = propertyDetail.room[0].title
+                tv_room_info.text = propertyDetail.room[0].content
+
+                var amenitiesString = ""
+                for ((index, item) in propertyDetail.room[0].amenities.withIndex()) {
+                    amenitiesString += item.content
+                    if (index < propertyDetail.room[0].amenities.size - 1) amenitiesString += ", "
                 }
 
-                tv_booking_title.text = propertyDetail.bookingKey.title
-                tv_booking_code.text = propertyDetail.bookingKey.content
-
-                if (propertyDetail.room.isNotEmpty()) {
-                    tv_room_title.text = propertyDetail.room[0].title
-                    tv_room_info.text = propertyDetail.room[0].content
-
-                    var amenitiesString = ""
-                    for ((index, item) in propertyDetail.room[0].amenities.withIndex()) {
-                        amenitiesString += item.content
-                        if (index < propertyDetail.room[0].amenities.size - 1) amenitiesString += ", "
-                    }
-
-                    tv_room_facility.text = amenitiesString
-                }
+                tv_room_facility.text = amenitiesString
+            }
 
                 tv_additional_notes.setText(createHyperlinkText(propertyDetail.extraInfo.content,
                         propertyDetail.extraInfo.uri), TextView.BufferType.SPANNABLE)
                 tv_additional_notes.movementMethod = LinkMovementMethod.getInstance()
 
-                tv_request_label.text = propertyDetail.specialRequest.title
-                tv_request_info.text = propertyDetail.specialRequest.content
+            tv_request_label.text = propertyDetail.specialRequest.title
+            tv_request_info.text = propertyDetail.specialRequest.content
 
-            }
+        }
 
-            var phoneString = ""
-            for ((index, item) in data.hotelTransportDetails.contactInfo.withIndex()) {
-                phoneString += item.number
-                if (index < data.hotelTransportDetails.contactInfo.size - 1) phoneString += ", "
-            }
-            tv_property_phone.text = getString(R.string.hotel_e_voucher_phone, phoneString)
+        var phoneString = ""
+        for ((index, item) in data.hotelTransportDetails.contactInfo.withIndex()) {
+            phoneString += item.number
+            if (index < data.hotelTransportDetails.contactInfo.size - 1) phoneString += ", "
+        }
+        tv_property_phone.text = getString(R.string.hotel_e_voucher_phone, phoneString)
 
+        if (data.hotelTransportDetails.cancellation.cancellationPolicies.isNotEmpty()) {
+            renderCancellationPolicies(data.hotelTransportDetails.cancellation.cancellationPolicies)
+        }
+    }
+
+    private fun renderCancellationPolicies(cancellationList: List<HotelTransportDetail.Cancellation.CancellationPolicy>) {
+        cancellationPoliciesAdapter = HotelEVoucherCancellationPoliciesAdapter(cancellationList)
+
+        val layoutManager = LinearLayoutManager(context, LinearLayout.VERTICAL, false)
+        rv_cancellation_policies.layoutManager = layoutManager
+        rv_cancellation_policies.setHasFixedSize(true)
+        rv_cancellation_policies.isNestedScrollingEnabled = false
+        rv_cancellation_policies.adapter = cancellationPoliciesAdapter
     }
 
     override fun onErrorRetryClicked() {

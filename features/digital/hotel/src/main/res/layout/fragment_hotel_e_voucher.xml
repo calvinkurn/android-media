@@ -237,84 +237,26 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/dp_16"
-                    android:text="KETENTUAN PEMBATALAN"
+                    android:text="@string/hotel_e_voucher_cancellation_policy_title"
                     app:fontSize="micro"
                     app:textViewTheme="lightPrimary"
-                    app:weight="medium"
-                    tools:text="KETENTUAN PEMBATALAN" />
+                    app:weight="medium" />
 
-                <com.tokopedia.design.component.TextViewCompat
+                <android.support.v7.widget.RecyclerView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_8"
-                    android:layout_marginRight="@dimen/dp_16"
-                    android:text="Pembatalan gratis"
-                    app:fontSize="small"
-                    app:textViewTheme="lightPrimary"
-                    app:weight="medium"
-                    tools:text="Pembatalan gratis" />
+                    android:paddingLeft="@dimen/dp_16"
+                    android:paddingRight="@dimen/dp_16"
+                    android:id="@+id/rv_cancellation_policies">
 
-                <com.tokopedia.design.component.TextViewCompat
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
-                    android:layout_marginBottom="@dimen/dp_16"
-                    android:text="Untuk pengajuan pembatalan sebelum 20 November 2019, 21:00"
-                    app:fontSize="micro"
-                    tools:text="Untuk pengajuan pembatalan sebelum 20 November 2019, 21:00" />
-
-                <com.tokopedia.design.component.TextViewCompat
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_8"
-                    android:layout_marginRight="@dimen/dp_16"
-                    android:text="Biaya pemesanan dikembalikan Rp 50.000.000"
-                    app:fontSize="small"
-                    app:textViewTheme="lightPrimary"
-                    app:weight="medium"
-                    tools:text="Biaya pemesanan dikembalikan Rp 50.000.000" />
-
-                <com.tokopedia.design.component.TextViewCompat
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
-                    android:layout_marginBottom="@dimen/dp_16"
-                    android:text="Untuk pengajuan pembatalan antara 24 November 2019, 21:00 - 30 November 2019, 21:00"
-                    app:fontSize="micro"
-                    tools:text="Untuk pengajuan pembatalan antara 24 November 2019, 21:00 - 30 November 2019, 21:00" />
-
-                <com.tokopedia.design.component.TextViewCompat
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_8"
-                    android:layout_marginRight="@dimen/dp_16"
-                    android:text="Non-refundable"
-                    app:fontSize="small"
-                    app:textViewTheme="lightPrimary"
-                    app:weight="medium"
-                    tools:text="Non-refundable" />
-
-                <com.tokopedia.design.component.TextViewCompat
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
-                    android:text="Untuk pengajuan pembatalan setelah 15 Desember 2019, 21:00 biaya pemesanan tidak bisa dikembalikan."
-                    app:fontSize="micro"
-                    tools:text="Untuk pengajuan pembatalan setelah 15 Desember 2019, 21:00 biaya pemesanan tidak bisa dikembalikan." />
+                </android.support.v7.widget.RecyclerView>
 
                 <com.tokopedia.design.component.TextViewCompat
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/dp_16"
-                    android:text="* Mengikuti waktu setempat."
-                    android:textSize="@dimen/sp_10"
-                    tools:text="* Mengikuti waktu setempat." />
+                    android:text="@string/hotel_e_voucher_local_time"
+                    android:textSize="@dimen/sp_10" />
 
             </LinearLayout>
 
@@ -331,16 +273,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Powered by:"
-                app:fontSize="micro"
-                tools:text="Powered by:" />
+                android:text="@string/hotel_e_voucher_powered_by"
+                app:fontSize="micro" />
 
-            <com.tokopedia.design.component.TextViewCompat
+            <android.support.v7.widget.AppCompatImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Logo Booking"
-                app:fontSize="micro"
-                tools:text="Logo Booking" />
+                app:srcCompat="@drawable/ic_hotel_booking_com_logo"/>
 
         </LinearLayout>
     </LinearLayout>
