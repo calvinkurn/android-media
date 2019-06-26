@@ -82,67 +82,69 @@ class ProductInfoFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        product_name.text = productDataModel.productDetailData.name
-        fab_detail.visibility = View.GONE
-        handleDiscount()
-        product_price.text = productDataModel.productDetailData.price
-        location.text = productDataModel.productDetailData.shop.location
-        if (!productDataModel.productDetailData.badges.isEmpty()) {
-            badge.visibility = View.VISIBLE
-            ImageHandler.loadImageFitCenter(view.context, badge, productDataModel.productDetailData.badges.get(0).imageUrl)
-        } else {
-            badge.visibility = View.GONE
-        }
-        updateWishlist(productDataModel.productDetailData.isWishlist)
-        ImageHandler.loadImageRounded2(view.context, product_image, productDataModel.productDetailData.imageUrl)
-        setRatingReviewCount(productDataModel.productDetailData.rating, productDataModel.productDetailData.countReview)
-
-        product_image.addOnImpressionListener(recommendationItem, object: ViewHintListener{
-            override fun onViewHint() {
-                RecommendationPageTracking.eventImpressionPrimaryProduct(recommendationItem, "0")
-                if(productDataModel.productDetailData.isTopads){
-                    onImpressionTopAds(recommendationItem)
-                }else {
-                    onImpressionOrganic(recommendationItem)
-                }
-            }
-        })
-
-        product_card.setOnClickListener {
-            RecommendationPageTracking.eventClickPrimaryProduct(recommendationItem, "0")
-            if(productDataModel.productDetailData.isTopads){
-                onClickTopAds(recommendationItem)
-            }else{
-                onClickOrganic(recommendationItem)
-            }
-
-            RouteManager.route(
-                    context,
-                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                    productDataModel.productDetailData.id.toString())
-        }
-
-        fab_detail.setOnClickListener {
-            if (primaryProductViewModel.isLoggedIn()) {
-                if (it.isActivated) {
-                    RecommendationPageTracking.eventAddWishlistOnProductRecommendationLogin()
-                    productDataModel.productDetailData.id.let {
-                        primaryProductViewModel.removeWishList(it.toString(),
-                                onSuccessRemoveWishlist = this::onSuccessRemoveWishlist,
-                                onErrorRemoveWishList = this::onErrorRemoveWishList)
-                    }
-
-                } else {
-                    RecommendationPageTracking.eventRemoveWishlistOnProductRecommendationLogin()
-                    productDataModel.productDetailData.id.let {
-                        primaryProductViewModel.addWishList(it.toString(),
-                                onSuccessAddWishlist = this::onSuccessAddWishlist,
-                                onErrorAddWishList = this::onErrorAddWishList)
-                    }
-                }
+        if(this::productDataModel.isInitialized && productDataModel != null) {
+            product_name.text = productDataModel.productDetailData.name
+            fab_detail.visibility = View.GONE
+            handleDiscount()
+            product_price.text = productDataModel.productDetailData.price
+            location.text = productDataModel.productDetailData.shop.location
+            if (!productDataModel.productDetailData.badges.isEmpty()) {
+                badge.visibility = View.VISIBLE
+                ImageHandler.loadImageFitCenter(view.context, badge, productDataModel.productDetailData.badges.get(0).imageUrl)
             } else {
-                RecommendationPageTracking.eventAddWishlistOnProductRecommendationNonLogin()
-                RouteManager.route(activity, ApplinkConst.LOGIN)
+                badge.visibility = View.GONE
+            }
+            updateWishlist(productDataModel.productDetailData.isWishlist)
+            ImageHandler.loadImageRounded2(view.context, product_image, productDataModel.productDetailData.imageUrl)
+            setRatingReviewCount(productDataModel.productDetailData.rating, productDataModel.productDetailData.countReview)
+
+            product_image.addOnImpressionListener(recommendationItem, object : ViewHintListener {
+                override fun onViewHint() {
+                    RecommendationPageTracking.eventImpressionPrimaryProduct(recommendationItem, "0")
+                    if (productDataModel.productDetailData.isTopads) {
+                        onImpressionTopAds(recommendationItem)
+                    } else {
+                        onImpressionOrganic(recommendationItem)
+                    }
+                }
+            })
+
+            product_card.setOnClickListener {
+                RecommendationPageTracking.eventClickPrimaryProduct(recommendationItem, "0")
+                if (productDataModel.productDetailData.isTopads) {
+                    onClickTopAds(recommendationItem)
+                } else {
+                    onClickOrganic(recommendationItem)
+                }
+
+                RouteManager.route(
+                        context,
+                        ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                        productDataModel.productDetailData.id.toString())
+            }
+
+            fab_detail.setOnClickListener {
+                if (primaryProductViewModel.isLoggedIn()) {
+                    if (it.isActivated) {
+                        RecommendationPageTracking.eventAddWishlistOnProductRecommendationLogin()
+                        productDataModel.productDetailData.id.let {
+                            primaryProductViewModel.removeWishList(it.toString(),
+                                    onSuccessRemoveWishlist = this::onSuccessRemoveWishlist,
+                                    onErrorRemoveWishList = this::onErrorRemoveWishList)
+                        }
+
+                    } else {
+                        RecommendationPageTracking.eventRemoveWishlistOnProductRecommendationLogin()
+                        productDataModel.productDetailData.id.let {
+                            primaryProductViewModel.addWishList(it.toString(),
+                                    onSuccessAddWishlist = this::onSuccessAddWishlist,
+                                    onErrorAddWishList = this::onErrorAddWishList)
+                        }
+                    }
+                } else {
+                    RecommendationPageTracking.eventAddWishlistOnProductRecommendationNonLogin()
+                    RouteManager.route(activity, ApplinkConst.LOGIN)
+                }
             }
         }
     }
