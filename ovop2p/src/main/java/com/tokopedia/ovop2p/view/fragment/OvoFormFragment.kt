@@ -147,8 +147,12 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
                 ovoP2pTransferRequestViewModel.ovoP2pTransferRequestBaseMutableLiveData?.observe(this.activity!!, Observer <OvoP2pTransferRequestBase>{
                     if(it != null){
                         (activity as LoaderUiListener).hideProgressDialog()
-                        if(it.ovoP2pTransferRequest.errors != null && !TextUtils.isEmpty(it.ovoP2pTransferRequest.errors.message)){
-                            it.ovoP2pTransferRequest.errors.message?.let { it1 -> gotoErrorPage(it1) }
+                        if(it.ovoP2pTransferRequest.errors != null && (it.ovoP2pTransferRequest.errors!!.isNotEmpty())){
+                            it.ovoP2pTransferRequest.errors?.let {
+                                it1 -> it1[0][Constants.Keys.MESSAGE]?.let {
+                                it2 -> gotoErrorPage(it2)
+                                }
+                            }
                         }
                         else if(!TextUtils.isEmpty(it.ovoP2pTransferRequest.dstAccName)){
                             //show non ovo user confirmation dialog
@@ -172,9 +176,13 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
                     if(it != null){
                         (activity as LoaderUiListener).hideProgressDialog()
                         if(it.ovoP2pTransferConfirm!!.errors != null &&
-                                !TextUtils.isEmpty(it.ovoP2pTransferConfirm!!.errors.message)){
+                                it.ovoP2pTransferConfirm!!.errors?.size ?: 0 > 0){
                             //show error page
-                            it.ovoP2pTransferConfirm!!.errors.message?.let { it1 -> gotoErrorPage(it1) }
+                            it.ovoP2pTransferConfirm!!.errors?.let {
+                                it1 -> it1[0][Constants.Keys.MESSAGE]?.let {
+                                it2 -> gotoErrorPage(it2)
+                                }
+                            }
                         }
                         else if(!it.ovoP2pTransferConfirm!!.rcvrLink){
                             //show non ovo success page

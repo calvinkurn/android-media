@@ -18,7 +18,7 @@ class OvoP2pTransferConfirm {
 
     @SerializedName("receiver_link")
     var rcvrLink: Boolean = false
-
+    
     @SerializedName("errors")
-    lateinit var errors: Errors
+    var errors: List<Map<String, String>>? = null
 }

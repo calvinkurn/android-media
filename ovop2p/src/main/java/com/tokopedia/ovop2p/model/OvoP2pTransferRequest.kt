@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 class OvoP2pTransferRequest {
     @SerializedName("errors")
-    lateinit var errors: Errors
+    var errors: List<Map<String, String>>? = null
 
     @SerializedName("dest_acc_name")
     lateinit var dstAccName: String

@@ -1,4 +1,4 @@
-mutation goalP2PConfirm($amount: Int!, $to_phone_number: String!, $message: String) {
+mutation goalP2PConfirm($amount: Int!, $to_phone_number: String!, $message: String!) {
  goalP2PConfirm(amount: $amount, to_phone_number: $to_phone_number, message: $message) {
     status
     transfer_id
