@@ -32,6 +32,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.logisticaddaddress.AddressConstants
+import com.tokopedia.logisticaddaddress.AddressConstants.ANA_NEGATIVE
+import com.tokopedia.logisticaddaddress.AddressConstants.ANA_POSITIVE
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
 import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
@@ -210,7 +212,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                 setOnClickListener { AddNewAddressAnalytics.eventClickFieldDetailAlamatChangeAddressPositive() }
             }
 
-            setOnTouchLabelAddress("positive")
+            setOnTouchLabelAddress(ANA_POSITIVE)
 
             et_receiver_name.setOnClickListener {
                 AddNewAddressAnalytics.eventClickFieldNamaPenerimaChangeAddressPositive()
@@ -221,8 +223,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
 
         } else {
             if (isMismatch) {
-                // et_detail_alamat_mismatch.addTextChangedListener(setWrapperWatcher(et_detail_alamat_mismatch_wrapper))
-
                 et_kota_kecamatan_mismatch.apply {
                     addTextChangedListener(setWrapperWatcher(et_kota_kecamatan_mismatch_wrapper))
                     setOnClickListener {
@@ -281,7 +281,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                 //addTextChangedListener(setWrapperWatcher(et_kode_pos_mismatch_wrapper))
             }
 
-            setOnTouchLabelAddress("negative")
+            setOnTouchLabelAddress(ANA_NEGATIVE)
 
             et_receiver_name.setOnClickListener {
                 AddNewAddressAnalytics.eventClickFieldNamaPenerimaChangeAddressNegative()
@@ -337,7 +337,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     }
 
     private fun eventShowListLabelAlamat(type: String) {
-        // showLabelAlamatList()
+        // showLabelAlamatList() - on next phase
         if (type.equals("positive", true)) {
             AddNewAddressAnalytics.eventClickFieldLabelAlamatChangeAddressPositive()
         } else {
@@ -396,16 +396,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             if (!isErrorFieldEmpty(field)) field += ", "
             field += "alamat"
         }
-
-        /*if (isMismatchSolved) {
-            if (et_detail_alamat_mismatch.text.isEmpty()) {
-                validated = false
-                setWrapperError(et_detail_alamat_mismatch_wrapper, getString(R.string.validate_detail_alamat))
-                if (!isErrorFieldEmpty(field)) field += ", "
-                field += "detail alamat"
-            }
-        }*/
-
 
         if (!validateFormDefault(errorField)) validated = false
         return validated
@@ -559,9 +549,10 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     }
 
     private fun setOnClickLabelAlamat() {
-        et_label_address.setOnClickListener {
+        // next phase
+        /*et_label_address.setOnClickListener {
             // showLabelAlamatList()
-        }
+        }*/
     }
 
     private fun setupRvKodePosChips() {
@@ -650,7 +641,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     private fun setMismatchSolvedForm() {
         ll_detail_alamat.visibility = View.VISIBLE
         et_kota_kecamatan_mismatch.setText(this.saveAddressDataModel?.formattedAddress)
-        // et_alamat_mismatch.setText(this.saveAddressDataModel?.title)
         et_detail_alamat_mismatch.setText(this.saveAddressDataModel?.editDetailAddress)
         et_kode_pos_mismatch.setText(this.saveAddressDataModel?.postalCode)
     }

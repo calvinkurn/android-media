@@ -529,16 +529,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                             false, 0, false, false, null,
                             false), ADD_NEW_ADDRESS_CREATED);
 
-                    /*Intent intent = new Intent(getActivity(), PinpointMapActivity.class);
-                    intent.putExtra(AddressConstants.KERO_TOKEN, token);
-                    intent.putExtra(AddressConstants.EXTRA_LAT, AddressConstants.MONAS_LAT);
-                    intent.putExtra(AddressConstants.EXTRA_LONG, AddressConstants.MONAS_LONG);
-                    intent.putExtra(AddressConstants.EXTRA_SHOW_AUTOCOMPLETE, true);
-                    intent.putExtra(AddressConstants.EXTRA_IS_POLYGON, false);
-                    intent.putExtra(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, false);
-                    intent.putExtra(AddressConstants.EXTRA_IS_CHANGES_REQUESTED, false);
-                    startActivityForResult(intent, ADD_NEW_ADDRESS_CREATED);*/
-
                 } else {
                     startActivityForResult(
                             AddAddressActivity.createInstanceAddAddressFromCheckoutMultipleAddressForm(
@@ -555,16 +545,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                             AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
                             false, 0, false, false, null,
                             false), ADD_NEW_ADDRESS_CREATED);
-
-                    /*Intent intent = new Intent(getActivity(), PinpointMapActivity.class);
-                    intent.putExtra(AddressConstants.KERO_TOKEN, token);
-                    intent.putExtra(AddressConstants.EXTRA_LAT, AddressConstants.MONAS_LAT);
-                    intent.putExtra(AddressConstants.EXTRA_LONG, AddressConstants.MONAS_LONG);
-                    intent.putExtra(AddressConstants.EXTRA_SHOW_AUTOCOMPLETE, true);
-                    intent.putExtra(AddressConstants.EXTRA_IS_POLYGON, false);
-                    intent.putExtra(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, false);
-                    intent.putExtra(AddressConstants.EXTRA_IS_CHANGES_REQUESTED, false);
-                    startActivityForResult(intent, ADD_NEW_ADDRESS_CREATED);*/
 
                 } else {
                     startActivityForResult(

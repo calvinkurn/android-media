@@ -217,19 +217,10 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
             }
 
         } else {
-            // edit address
-
-            /*if (isAddNewAddressEnabled()) {
-                startActivityForResult(PinpointMapActivity.newInstance(getActivity(),
-                        AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, token,
-                        false, 0, false, null,
-                        false), REQUEST_CODE_PARAM_EDIT);
-            } else {*/
-                startActivityForResult(
-                    AddAddressActivity.createInstanceEditAddressFromManageAddress(
-                            getActivity(), data, token
-                    ), REQUEST_CODE_PARAM_EDIT);
-            // }
+            startActivityForResult(
+                AddAddressActivity.createInstanceEditAddressFromManageAddress(
+                        getActivity(), data, token
+                ), REQUEST_CODE_PARAM_EDIT);
         }
     }
 
