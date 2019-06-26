@@ -172,7 +172,8 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
 
     fun renderRecentSearch(recentSearches: MutableList<RecentSearch>) {
         recentSearchLayout.visibility = if (recentSearches.isEmpty()) View.GONE else View.VISIBLE
-        recentSearchAdapter.setData(recentSearches)
+        if (recentSearches.size >= 5) recentSearchAdapter.setData(recentSearches.subList(0, 5))
+        else recentSearchAdapter.setData(recentSearches)
     }
 
     override fun getAdapterTypeFactory(): PopularSearchTypeFactory = PopularSearchTypeFactory()

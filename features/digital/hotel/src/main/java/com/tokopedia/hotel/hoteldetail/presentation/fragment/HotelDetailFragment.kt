@@ -105,12 +105,19 @@ class HotelDetailFragment : HotelBaseFragment() {
 
         showLoadingLayout()
 
-        detailViewModel.getHotelDetailData(
-                GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_info),
-                GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_room_list),
-                GraphqlHelper.loadRawString(resources, R.raw.gql_get_hotel_review),
-                hotelHomepageModel.locId,
-                hotelHomepageModel)
+        if (isButtonEnabled) {
+            detailViewModel.getHotelDetailData(
+                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_info),
+                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_room_list),
+                    GraphqlHelper.loadRawString(resources, R.raw.gql_get_hotel_review),
+                    hotelHomepageModel.locId,
+                    hotelHomepageModel)
+        } else {
+            detailViewModel.getHotelDetailDataWithoutRoom(
+                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_info),
+                    GraphqlHelper.loadRawString(resources, R.raw.gql_get_hotel_review),
+                    hotelHomepageModel.locId)
+        }
 
     }
 
@@ -216,6 +223,11 @@ class HotelDetailFragment : HotelBaseFragment() {
         btn_hotel_detail_show.setOnClickListener {
             startActivity(HotelDetailMapActivity.getCallingIntent(context!!, data.property.name,
                     data.property.latitude, data.property.longitude, data.property.address))
+        }
+
+        if (!isButtonEnabled) {
+            container_shimmering_bottom.visibility = View.GONE
+            container_bottom.visibility = View.GONE
         }
     }
 
@@ -442,12 +454,19 @@ class HotelDetailFragment : HotelBaseFragment() {
     }
 
     override fun onErrorRetryClicked() {
-        detailViewModel.getHotelDetailData(
-                GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_info),
-                GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_room_list),
-                GraphqlHelper.loadRawString(resources, R.raw.gql_get_hotel_review),
-                hotelHomepageModel.locId,
-                hotelHomepageModel)
+        if (isButtonEnabled) {
+            detailViewModel.getHotelDetailData(
+                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_info),
+                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_room_list),
+                    GraphqlHelper.loadRawString(resources, R.raw.gql_get_hotel_review),
+                    hotelHomepageModel.locId,
+                    hotelHomepageModel)
+        } else {
+            detailViewModel.getHotelDetailDataWithoutRoom(
+                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_info),
+                    GraphqlHelper.loadRawString(resources, R.raw.gql_get_hotel_review),
+                    hotelHomepageModel.locId)
+        }
     }
 
     companion object {
