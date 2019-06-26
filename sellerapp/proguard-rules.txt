@@ -367,3 +367,6 @@
 -dontwarn org.apache.log4j.**
 -dontwarn ch.qos.logback.**
 -dontwarn com.rapid7.**
+
+-keepnames class com.rapid7.jul.LogentriesHandler
+-keepnames class com.tokopedia.logger.LogFormatter
