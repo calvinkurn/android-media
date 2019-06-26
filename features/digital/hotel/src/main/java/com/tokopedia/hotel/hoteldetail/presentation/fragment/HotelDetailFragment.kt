@@ -415,7 +415,7 @@ class HotelDetailFragment : HotelBaseFragment() {
         container_bottom.visibility = View.VISIBLE
 
         if (data.isNotEmpty()) {
-            trackingHotelUtil.hotelViewDetails(hotelId, true, data[0].roomPrice.priceAmount.toInt(), data[0].additionalPropertyInfo.isDirectPayment)
+            trackingHotelUtil.hotelViewDetails(hotelName, hotelId, true, data[0].roomPrice.priceAmount.toInt(), data[0].additionalPropertyInfo.isDirectPayment)
             roomPrice = data[0].roomPrice.roomPrice
             tv_hotel_price.text = roomPrice
 
@@ -432,7 +432,7 @@ class HotelDetailFragment : HotelBaseFragment() {
                 }
             }
         } else {
-            trackingHotelUtil.hotelViewDetails(hotelId, false, 0, false)
+            trackingHotelUtil.hotelViewDetails(hotelName, hotelId, false, 0, false)
             tv_hotel_price_subtitle.visibility = View.GONE
             tv_hotel_price.text = getString(R.string.hotel_detail_room_full_text)
             tv_hotel_price.setTextColor(ContextCompat.getColor(context!!, com.tokopedia.design.R.color.light_disabled))
