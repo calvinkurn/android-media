@@ -63,7 +63,7 @@ class VerifyDOBActivity : BaseARActivity<VerifyDOBViewModel>() {
             sendGeneralEvent(eventClick,
                     event,
                     "click - adult pop up - simpan",
-                    "tanggal lahir page - " + simpleDateFormat.format(selectedDate) + " - $destinationUrlGtm")
+                    "tanggal lahir page - " + simpleDateFormat.format(selectedDate) + " - $event/$destinationUrlGtm")
         }
     }
 
@@ -103,7 +103,7 @@ class VerifyDOBActivity : BaseARActivity<VerifyDOBViewModel>() {
         sendGeneralEvent(eventView,
                 event,
                 "view - adult pop up - tanggal lahir page",
-                "tanggal lahir page - $destinationUrlGtm")
+                "tanggal lahir page - $event/$destinationUrlGtm")
     }
 
     override fun getMenuRes(): Int {

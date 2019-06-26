@@ -72,7 +72,7 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
             initInjector()
         }
 
-        val staticDimen8dp = view.context?.resources?.getDimensionPixelOffset(R.dimen.dp_8) ?: 0
+        val staticDimen8dp = view.context?.resources?.getDimensionPixelOffset(R.dimen.dp_8)
         setViewListener(staticDimen8dp)
     }
 
@@ -146,7 +146,7 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
         AddNewAddressAnalytics.eventClickChipsKotaKecamatanChangeAddressNegative()
     }
 
-    private fun setViewListener(staticDimen8dp: Int) {
+    private fun setViewListener(staticDimen8dp: Int?) {
         etSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int,
                                            after: Int) {
@@ -174,7 +174,7 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
             popularCityAdapter.notifyDataSetChanged()
         }
 
-        rvChips.addItemDecoration(ChipsItemDecoration(staticDimen8dp))
+        staticDimen8dp?.let { ChipsItemDecoration(staticDimen8dp) }?.let { rvChips.addItemDecoration(it) }
 
         var visibleItemCount: Int
         var totalItemCount: Int
