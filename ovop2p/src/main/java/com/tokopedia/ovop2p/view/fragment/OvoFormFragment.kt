@@ -288,11 +288,21 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
     }
 
     override fun onQueryTextChange(newText: String?): Boolean {
+        setSearchViewHeader(!TextUtils.isEmpty(newText))
         val contacts = context?.let { newText?.let { it1 -> getPartialMatchContact(it, it1) } }
         val cursorAdapter = context?.let { newText?.let { it1 -> contacts?.let { it2 -> ContactsCursorAdapter(it, it2, it1,
                 ::setContactsData) } } }
         searchView.suggestionsAdapter = cursorAdapter
         return true
+    }
+
+    private fun setSearchViewHeader(showheader: Boolean){
+        if(showheader){
+            searchNoHeader.visibility = View.VISIBLE
+        }
+        else{
+            searchNoHeader.visibility = View.GONE
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

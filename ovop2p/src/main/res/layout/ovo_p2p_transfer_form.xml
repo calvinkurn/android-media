@@ -22,7 +22,8 @@
         android:layout_height="wrap_content"
         android:theme="@style/SearchViewStyle"
         android:layout_marginTop="@dimen/dp_40"
-        android:closeIcon="@drawable/ic_icon_qr_code"
+        android:inputType="number"
+        android:closeIcon="@drawable/ic_clear_small"
         android:queryHint="@string/entr_name_num"
         app:layout_constraintEnd_toStartOf="@+id/iv_contact"
         app:layout_constraintHorizontal_chainStyle="spread"
@@ -135,7 +136,9 @@
         android:layout_height="wrap_content"
         android:textSize="24sp"
         android:textColor="#2d263b"
+        android:theme="@style/editTextTheme"
         android:inputType="number"
+        android:maxLength="18"
         android:paddingTop="@dimen/dp_10"
         android:paddingBottom="@dimen/dp_16"
         app:layout_constraintStart_toEndOf="@+id/rp_symbl"
@@ -170,16 +173,6 @@
             android:textColor="#6b767e"
             android:textSize="16sp" />
     </android.support.design.widget.TextInputLayout>
-
-    <!--<EditText-->
-        <!--android:id="@+id/msg"-->
-        <!--app:layout_constraintTop_toBottomOf="@+id/msg_header"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:textSize="16sp"-->
-        <!--android:textColor="#6b767e"-->
-        <!--app:layout_constraintStart_toStartOf="@+id/search_no"-->
-        <!--android:text="Pesan (opsional)"/>-->
 
     <Button
         android:id="@+id/proceed"
