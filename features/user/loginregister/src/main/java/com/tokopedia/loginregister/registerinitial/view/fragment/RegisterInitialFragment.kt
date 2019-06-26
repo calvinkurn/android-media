@@ -421,7 +421,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
                 it.setResult(Activity.RESULT_OK)
                 it.finish()
             } else if (requestCode == REQUEST_ADD_NAME && resultCode == Activity.RESULT_OK) {
-               onSuccessRegister()
+               presenter.getUserInfo()
             } else if (requestCode == REQUEST_ADD_NAME && resultCode == Activity.RESULT_CANCELED) {
                 userSession.logoutSession()
                 dismissProgressBar()
