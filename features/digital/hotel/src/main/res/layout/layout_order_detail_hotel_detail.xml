@@ -168,45 +168,22 @@
                     android:orientation="vertical"
                     app:layout_constraintTop_toBottomOf="@id/room_info" />
 
-                <!--Ticker-->
-                <LinearLayout
-                    android:id="@+id/refund_ticker_layout"
+                <com.tokopedia.unifycomponents.ticker.Ticker
+                    android:id="@+id/refund_ticker"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:tickerType="announcement"
+                    app:tickerShapeType="loose"
+                    app:layout_constraintTop_toBottomOf="@id/room_amenities"
                     android:layout_marginTop="@dimen/dp_16"
-                    android:background="@drawable/bg_green_rect_corner"
-                    android:orientation="vertical"
-                    android:paddingStart="@dimen/dp_16"
-                    android:paddingLeft="@dimen/dp_16"
-                    android:paddingTop="@dimen/dp_8"
-                    android:paddingEnd="@dimen/dp_16"
-                    android:paddingRight="@dimen/dp_16"
-                    android:paddingBottom="@dimen/dp_8"
-                    app:layout_constraintTop_toBottomOf="@id/room_amenities">
-
-                    <com.tokopedia.design.component.TextViewCompat
-                        android:id="@+id/refund_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:fontSize="micro"
-                        app:textViewTheme="lightPrimary"
-                        app:weight="medium"
-                        tools:text="Refund Bersyarat" />
-
-                    <com.tokopedia.design.component.TextViewCompat
-                        android:id="@+id/refund_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:fontSize="micro"
-                        tools:text="Pembatalan gratis sebelum 20 November 2019, 21:00. Pelajari lebih lanjut" />
-                </LinearLayout>
+                    />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/special_request_recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_16"
-                    app:layout_constraintTop_toBottomOf="@id/refund_ticker_layout" />
+                    app:layout_constraintTop_toBottomOf="@id/refund_ticker" />
 
                 <com.tokopedia.design.component.TextViewCompat
                     android:id="@+id/special_notes"

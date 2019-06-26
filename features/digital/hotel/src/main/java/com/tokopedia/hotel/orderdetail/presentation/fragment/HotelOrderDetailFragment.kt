@@ -143,33 +143,34 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
         top_conditional_text.text = hotelOrderDetail.conditionalInfo.title
 
         bottom_conditional_text.visibility = if (hotelOrderDetail.conditionalInfoBottom.title.isNotBlank()) View.VISIBLE else View.GONE
-        bottom_conditional_text.text = hotelOrderDetail.conditionalInfoBottom.title
+        bottom_conditional_text.text = Html.fromHtml(hotelOrderDetail.conditionalInfoBottom.title)
     }
 
     fun renderCancellationInfo(hotelTransportDetail: HotelTransportDetail) {
 
         if (hotelTransportDetail.cancellation.title.isEmpty()) {
-            refund_ticker_layout.visibility = View.GONE
+            refund_ticker.visibility = View.GONE
         } else {
-            refund_ticker_layout.visibility = View.VISIBLE
-            refund_ticker_layout.setOnClickListener {
+            refund_ticker.visibility = View.VISIBLE
+            refund_ticker.tickerTitle = hotelTransportDetail.cancellation.title
+            refund_ticker.setHtmlDescription(hotelTransportDetail.cancellation.content)
+
+            refund_ticker.setOnClickListener {
                 if (hotelTransportDetail.cancellation.isClickable)
                     showRefundInfo(hotelTransportDetail.cancellation.cancellationPolicies)
             }
-            refund_title.text = hotelTransportDetail.cancellation.title
-            refund_text.text = hotelTransportDetail.cancellation.content
         }
 
-        call_hotel_layout.setOnClickListener { showCallButtonSheet(hotelTransportDetail.contactInfo) }
+        if (hotelTransportDetail.contactInfo.isNotEmpty()) {
+            call_hotel_layout.setOnClickListener { showCallButtonSheet(hotelTransportDetail.contactInfo) }
+        } else call_hotel_layout.visibility = View.GONE
+
     }
 
     fun renderTransactionDetail(orderDetail: HotelOrderDetail) {
 
         transaction_status.text = orderDetail.status.statusText
-        when (orderDetail.status.status) {
-            ORDER_STATUS_FAIL -> transaction_status.setTextColor(resources.getColor(R.color.red_pink))
-            ORDER_STATUS_SUCCESS -> transaction_status.setTextColor(resources.getColor(R.color.tkpd_main_green))
-        }
+        transaction_status.setTextColor(Color.parseColor(orderDetail.status.textColor))
 
         var transactionDetailAdapter = TitleTextAdapter(TitleTextAdapter.HORIZONTAL_LAYOUT)
         transaction_detail_title_recycler_view.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
@@ -192,7 +193,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             }
         }
 
-        if (orderDetail.status.status == ORDER_STATUS_SUCCESS) {
+        if (orderDetail.hotelTransportDetails.isShowEVoucher) {
             evoucher_layout.visibility = View.VISIBLE
             evoucher_layout.setOnClickListener {
                 goToEvoucherPage()
@@ -235,8 +236,12 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             specialRequestAdapter.addData(mutableListOf(propertyDetail.specialRequest))
         } else special_request_recycler_view.visibility = View.GONE
 
-        special_notes.text = propertyDetail.extraInfo
-        special_notes.visibility = if (propertyDetail.extraInfo.isNotBlank()) View.VISIBLE else View.GONE
+        if (propertyDetail.extraInfo.content.isNotBlank()) {
+            special_notes.setText(createHyperlinkText(propertyDetail.extraInfo.content,
+                    propertyDetail.extraInfo.uri), TextView.BufferType.SPANNABLE)
+            special_notes.visibility = View.VISIBLE
+            special_notes.movementMethod = LinkMovementMethod.getInstance()
+        } else special_notes.visibility = View.GONE
 
         checkin_checkout_date.setRoomDatesFormatted(
                 propertyDetail.checkInOut[0].checkInOut.date,
@@ -293,8 +298,25 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
     fun renderFooter(orderDetail: HotelOrderDetail) {
 
         order_detail_footer_layout.removeAllViews()
-        if (orderDetail.contactUs.helpText.isNotBlank())
-            order_detail_footer_layout.addView(createHelpText(orderDetail.contactUs))
+        if (orderDetail.contactUs.helpText.isNotBlank()){
+            val helpLabel = TextViewCompat(context)
+            helpLabel.setFontSize(TextViewCompat.FontSize.MICRO)
+            helpLabel.setTextColor(resources.getColor(R.color.light_primary))
+
+            val spannableString = createHyperlinkText(orderDetail.contactUs.helpText,
+                    orderDetail.contactUs.helpUrl)
+
+            helpLabel.highlightColor = Color.TRANSPARENT
+            helpLabel.movementMethod = LinkMovementMethod.getInstance()
+            helpLabel.setText(spannableString, TextView.BufferType.SPANNABLE)
+            helpLabel.gravity = Gravity.CENTER
+            val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            params.bottomMargin = resources.getDimensionPixelSize(R.dimen.dp_16)
+            helpLabel.layoutParams = params
+
+            order_detail_footer_layout.addView(helpLabel)
+        }
+
 
         for (button in orderDetail.actionButtons) {
             val buttonCompat = ButtonCompat(context)
@@ -319,20 +341,17 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
         }
     }
 
-    fun createHelpText(help: HotelOrderDetail.Contact): TextViewCompat {
+    fun createHyperlinkText(htmlText: String = "", url: String = ""): SpannableString {
 
-        val helpLabel = TextViewCompat(context)
-        helpLabel.setFontSize(TextViewCompat.FontSize.MICRO)
-        helpLabel.setTextColor(resources.getColor(R.color.light_primary))
-        val text = Html.fromHtml(help.helpText)
+        val text = Html.fromHtml(htmlText)
         val spannableString = SpannableString(text)
-        val startIndexOfLink = help.helpText.toLowerCase().indexOf("<hyperlink>") + "<hyperlink>".length
-        val endIndexOfLink = help.helpText.toLowerCase().indexOf("</hyperlink>") - 1
+        val startIndexOfLink = htmlText.toLowerCase().indexOf("<hyperlink>") + "<hyperlink>".length
+        val endIndexOfLink = htmlText.toLowerCase().indexOf("</hyperlink>")
         if (startIndexOfLink >= 0) {
             spannableString.setSpan(object : ClickableSpan() {
                 override fun onClick(view: View) {
                     try {
-                        RouteManager.route(context, help.helpUrl)
+                        RouteManager.route(context, url)
                     } catch (e: UnsupportedEncodingException) {
                         e.printStackTrace()
                     }
@@ -343,19 +362,9 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
                     ds.isUnderlineText = false
                     ds.color = resources.getColor(R.color.green_250) // specific color for this link
                 }
-            }, startIndexOfLink, startIndexOfLink + endIndexOfLink, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-
-            helpLabel.highlightColor = Color.TRANSPARENT
-            helpLabel.movementMethod = LinkMovementMethod.getInstance()
+            }, startIndexOfLink - "<hyperlink>".length, endIndexOfLink - "<hyperlink>".length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
-
-        helpLabel.setText(spannableString, TextView.BufferType.SPANNABLE)
-        helpLabel.gravity = Gravity.CENTER
-        val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        params.bottomMargin = resources.getDimensionPixelSize(R.dimen.dp_16)
-        helpLabel.layoutParams = params
-
-        return helpLabel
+        return spannableString
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -392,8 +401,6 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
 
         const val TAG_CONTACT_INFO = "guestContactInfo"
         const val TAG_CANCELLATION_INFO = "cancellationPolicyInfo"
-        const val ORDER_STATUS_SUCCESS = 700
-        const val ORDER_STATUS_FAIL = 600
 
         const val SAVED_KEY_ORDER_ID = "keyOrderId"
         const val SAVED_KEY_ORDER_CATEGORY = "keyOrderCategory"

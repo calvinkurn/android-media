@@ -67,7 +67,7 @@ data class HotelOrderDetail(
 
             @SerializedName("textColor")
             @Expose
-            val textColor: String = "",
+            val textColor: String = "#42b549",
 
             @SerializedName("backgroundColor")
             @Expose
@@ -99,7 +99,7 @@ data class HotelOrderDetail(
     )
 
     data class ConditionalInfo(
-            @SerializedName("Title")
+            @SerializedName("title")
             @Expose
             val title: String = ""
     )
