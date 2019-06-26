@@ -147,7 +147,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         hideLoadingBar()
 
         setupHotelInfo(hotelCart.property)
-        setupRoomDuration(hotelCart.cart)
+        setupRoomDuration(hotelCart.property, hotelCart.cart)
         setupRoomInfo(hotelCart.property, hotelCart.cart)
         setupRoomRequestForm(hotelCart.cart)
         setupContactDetail(hotelCart.cart)
@@ -178,8 +178,9 @@ class HotelBookingFragment : HotelBaseFragment() {
         iv_hotel_info_image.loadImage(property.image, R.drawable.ic_failed_load_image)
     }
 
-    private fun setupRoomDuration(cart: HotelCartData) {
+    private fun setupRoomDuration(property: HotelPropertyData, cart: HotelCartData) {
         booking_room_duration_info.setRoomDates(cart.checkIn, cart.checkOut)
+        booking_room_duration_info.setRoomCheckTimes(property.checkInFrom, property.checkOutTo)
     }
 
     private fun setupRoomInfo(property: HotelPropertyData, cart: HotelCartData) {
@@ -345,18 +346,24 @@ class HotelBookingFragment : HotelBaseFragment() {
             tv_room_tax_label.text = it.description
             tv_room_tax.text = it.localPrice
         }
-        val priceLabelResId = if (property.isDirectPayment) R.string.hotel_booking_invoice_estimate_pay_at_hotel else R.string.hotel_booking_invoice_estimate_pay_now
-        tv_room_estimated_price_label.text = getString(priceLabelResId)
-        tv_room_estimated_price.text = cart.localTotalPrice
-        tv_room_estimated_price.setTextColor(ContextCompat.getColor(context!!, R.color.orange_607))
 
-        if (cart.currency != "IDR") {
+        val priceLabelResId = if (property.isDirectPayment) R.string.hotel_booking_invoice_estimate_pay_at_hotel else R.string.hotel_booking_invoice_estimate_pay_now
+        val price: String
+        if (cart.localCurrency.isEmpty()) {
+            price = cart.totalPrice
+        } else {
+            price = cart.localTotalPrice
+
+            // Show price estimate in IDR
             tv_invoice_foreign_currency.visibility = View.VISIBLE
             val spannableString = SpannableString(getString(R.string.hotel_booking_invoice_foreign_currency_label, cart.totalPrice))
             spannableString.setSpan(StyleSpan(Typeface.BOLD), spannableString.length - cart.totalPrice.length, spannableString.length,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             tv_invoice_foreign_currency.text = spannableString
         }
+        tv_room_estimated_price_label.text = getString(priceLabelResId)
+        tv_room_estimated_price.text = price
+        tv_room_estimated_price.setTextColor(ContextCompat.getColor(context!!, R.color.orange_607))
     }
 
     private fun setupImportantNotes(property: HotelPropertyData) {

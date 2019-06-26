@@ -33,10 +33,6 @@ class HotelPropertyData {
     @Expose
     val paymentNote: String = ""
 
-    @SerializedName("room")
-    @Expose
-    val rooms: List<HotelPropertyRoom> = listOf()
-
     @SerializedName("checkInFrom")
     @Expose
     val checkInFrom: String = ""
@@ -56,5 +52,9 @@ class HotelPropertyData {
     @SerializedName("isDirectPayment")
     @Expose
     val isDirectPayment: Boolean = false
+
+    @SerializedName("room")
+    @Expose
+    val rooms: List<HotelPropertyRoom> = listOf()
 
 }
