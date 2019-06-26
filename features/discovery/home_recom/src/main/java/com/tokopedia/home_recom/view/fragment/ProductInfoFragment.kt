@@ -28,7 +28,17 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.fragment_product_info.*
+import kotlinx.android.synthetic.main.fragment_product_info.product_name
+import kotlinx.android.synthetic.main.fragment_product_info.badge
+import kotlinx.android.synthetic.main.fragment_product_info.fab_detail
+import kotlinx.android.synthetic.main.fragment_product_info.product_price
+import kotlinx.android.synthetic.main.fragment_product_info.location
+import kotlinx.android.synthetic.main.fragment_product_info.product_image
+import kotlinx.android.synthetic.main.fragment_product_info.product_card
+import kotlinx.android.synthetic.main.fragment_product_info.rating
+import kotlinx.android.synthetic.main.fragment_product_info.review_count
+import kotlinx.android.synthetic.main.fragment_product_info.product_slashed_price
+import kotlinx.android.synthetic.main.fragment_product_info.product_discount
 import javax.inject.Inject
 
 class ProductInfoFragment : BaseDaggerFragment() {
