@@ -53,7 +53,6 @@ class OvoP2PFormActivity : BaseSimpleActivity(), HasComponent<OvoP2pTransferComp
     }
 
     override fun getComponent(): OvoP2pTransferComponent {
-
         if (!::ovoP2pTransferComponent.isInitialized) {
             initInjector()
         }

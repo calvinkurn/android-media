@@ -2,7 +2,6 @@ package com.tokopedia.ovop2p
 
 import android.app.AlertDialog
 import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
@@ -34,7 +33,6 @@ import com.tokopedia.ovop2p.view.interfaces.LoaderUiListener
 import com.tokopedia.ovop2p.viewmodel.GetWalletBalanceViewModel
 import com.tokopedia.ovop2p.viewmodel.OvoP2pTransferRequestViewModel
 import com.tokopedia.ovop2p.viewmodel.OvoP2pTrxnConfirmVM
-import kotlinx.android.synthetic.main.ovo_p2p_transfer_form.*
 
 class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocusChangeListener, SearchView.OnQueryTextListener {
 
@@ -52,8 +50,8 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
     lateinit var trnsfrReqDataMap: HashMap<String, Any>
     lateinit var amtErrorTxtv: TextView
     private var rcvrPhnNo: String = ""
-    private var rcvrAmt: Int = 0
-    private var sndrAmt: Int = 0
+    private var rcvrAmt: Long = 0
+    private var sndrAmt: Long = 0
     private var rcvrMsg: String = ""
     private var rcvrName: String = ""
     private var senderName: String = ""
@@ -136,7 +134,7 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
                         (activity as LoaderUiListener).hideProgressDialog()
                         saldoTextView.text = it.wallet?.balance ?: ""
                         if(!TextUtils.isEmpty(saldoTextView.text)){
-                            sndrAmt = OvoP2pUtil.extractNumbersFromString(saldoTextView.text.toString()).toInt()
+                            sndrAmt = OvoP2pUtil.extractNumbersFromString(saldoTextView.text.toString()).toLong()
                         }
                     }
                 })
@@ -225,19 +223,24 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
         trnsfrAmtEdtxtv.addTextChangedListener(object: TextWatcher{
             override fun afterTextChanged(s: Editable?) {
                 if(!TextUtils.isEmpty(s.toString())) {
-                    var enteredAmt = OvoP2pUtil.extractNumbersFromString(s.toString()).toInt()
+                    var enteredAmt = OvoP2pUtil.extractNumbersFromString(s.toString()).toLong()
                     if(enteredAmt < Constants.Thresholds.MIN_TRANSFER_LIMIT){
                         amtErrorTxtv.text = Constants.Messages.MINIMAL_TRNSFR_MSG
+                        amtErrorTxtv.visibility = View.VISIBLE
                         proceedBtn.isEnabled = false
                     }
                     else if(enteredAmt > sndrAmt){
                         amtErrorTxtv.text = Constants.Messages.AMT_MORE_THN_BAL
+                        amtErrorTxtv.visibility = View.VISIBLE
                         proceedBtn.isEnabled = false
                     }
                     else{
                         rcvrAmt = enteredAmt
                         proceedBtn.isEnabled = true
+                        amtErrorTxtv.visibility = View.GONE
                     }
+                }else{
+                    amtErrorTxtv.visibility = View.GONE
                 }
             }
 
@@ -267,7 +270,7 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
         if(id != -1){
             when(id){
                 R.id.search_no -> {
-                    if(hasFocus){
+                    if(!hasFocus){
                         searchNoHeader.visibility = View.VISIBLE
                     }
                     else{

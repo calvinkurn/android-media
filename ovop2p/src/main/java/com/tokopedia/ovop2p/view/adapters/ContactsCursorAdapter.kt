@@ -14,6 +14,7 @@ import android.widget.Toast
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 
 import com.tokopedia.ovop2p.R
+import com.tokopedia.ovop2p.util.OvoP2pUtil
 
 class ContactsCursorAdapter(context: Context, cursor: Cursor, private val mPartialMatch: String,
                             contactsSelectionCall: (String, String) -> Unit) : CursorAdapter(context, cursor, false) {
@@ -37,7 +38,8 @@ class ContactsCursorAdapter(context: Context, cursor: Cursor, private val mParti
         var imageUri = ""
         if (cursor != null && cursor.count > 0) {
             phoneNum = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
-            prettyPhnNo = phoneNum.replaceFirst(mPartialMatch.toRegex(), "<font color='#06b3ba'>$mPartialMatch</font>")
+            phoneNum = OvoP2pUtil.extractNumbersFromString(phoneNum)
+            prettyPhnNo = phoneNum.replaceFirst(mPartialMatch.toRegex(), "<font color='#06b3ba'>$mPartialMatch</font>")+"-"
             name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
             if(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI)) != null) {
                 imageUri = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI))
