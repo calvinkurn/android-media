@@ -289,8 +289,11 @@ class ProductInfoFragment : BaseDaggerFragment() {
                     message,
                     Snackbar.LENGTH_LONG,
                     actionString,
-                    View.OnClickListener {
-                        action.invoke()
+                    object : View.OnClickListener {
+                        override fun onClick(v: View?) {
+                            action.invoke()
+                            print("here")
+                        }
                     }
             )
         }
