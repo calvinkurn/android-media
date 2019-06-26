@@ -372,6 +372,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
         initializePartialView(view)
         initView()
+        tv_trade_in_promo.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(activity, R.drawable.tradein_white), null, null, null)
         refreshLayout = view.findViewById(R.id.swipeRefresh)
 
         tradeInBroadcastReceiver = TradeInBroadcastReceiver()
@@ -718,6 +719,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     private fun initView() {
+
         collapsing_toolbar.title = ""
         toolbar.title = ""
         activity?.let {
