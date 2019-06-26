@@ -193,10 +193,6 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
                     val input = data.getStringExtra(ReportInputDetailFragment.INPUT_VALUE)
                     val isValid = data.getBooleanExtra(ReportInputDetailFragment.VALID_VALUE, false)
                     adapter.updateTextInput(it, input, isValid)
-                    recycler_view.setRecyclerListener { viewHolder ->
-                        if (viewHolder is ReportFormAdapter.ValidateViewHolder) viewHolder.validate()
-                    }
-
                 }
             }
         } else {

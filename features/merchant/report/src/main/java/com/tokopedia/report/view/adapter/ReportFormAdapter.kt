@@ -207,6 +207,8 @@ class ReportFormAdapter(private val item: ProductReportReason,
                         field.min.toString())
                 edit_text_report.filters = arrayOf(InputFilter.LengthFilter(field.max))
                 edit_text_report.setText(input)
+                if (inputs[field.key] != null)
+                    validate()
             }
         }
     }
