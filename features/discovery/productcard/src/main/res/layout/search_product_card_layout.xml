@@ -137,8 +137,6 @@
             android:id="@+id/textLocation"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_18"
-            android:layout_toRightOf="@id/shopBadgesContainer"
-            android:layout_toEndOf="@id/shopBadgesContainer"
             android:layout_marginTop="@dimen/dp_4"
             android:layout_marginLeft="@dimen/dp_4"
             android:layout_marginStart="@dimen/dp_4"
