@@ -37,6 +37,7 @@ import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import kotlinx.android.synthetic.main.activity_shop_edit_basic_info.*
 import kotlinx.android.synthetic.main.partial_toolbar_save_button.*
 import javax.inject.Inject
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 
 class ShopEditBasicInfoActivity : BaseSimpleActivity(), UpdateShopSettingsInfoPresenter.View {
 
@@ -62,6 +63,9 @@ class ShopEditBasicInfoActivity : BaseSimpleActivity(), UpdateShopSettingsInfoPr
                 .build()
                 .inject(this)
         updateShopSettingsInfoPresenter.attachView(this)
+
+        parentTvBrowseFile.setBackground(MethodChecker
+                .getDrawable(parentTvBrowseFile.getContext(), R.drawable.ic_balloon_gray))
 
         etShopSlogan.addTextChangedListener(object : AfterTextWatcher() {
             override fun afterTextChanged(s: Editable) {
@@ -189,7 +193,8 @@ class ShopEditBasicInfoActivity : BaseSimpleActivity(), UpdateShopSettingsInfoPr
         if (TextUtils.isEmpty(savedLocalImageUrl)) {
             val logoUrl = shopBasicDataModel.logo
             if (TextUtils.isEmpty(logoUrl)) {
-                ivLogo.setImageResource(R.drawable.ic_camera_add)
+                ivLogo.setImageDrawable(
+                        MethodChecker.getDrawable(ivLogo.getContext(),R.drawable.ic_camera_add))
             } else {
                 ImageHandler.LoadImage(ivLogo, logoUrl)
             }

@@ -350,6 +350,11 @@ public class MainParentActivity extends BaseActivity implements
         }
         isFirstNavigationImpression = false;
 
+        if (position == FEED_MENU) {
+            Intent intent = new Intent(BROADCAST_FEED);
+            LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
+        }
+
         if (position == OS_MENU && !isNewOfficialStoreEnabled()) {
             startActivity(((GlobalNavRouter) getApplication()).getOldOfficialStore(this));
             return false;
@@ -918,6 +923,7 @@ public class MainParentActivity extends BaseActivity implements
                     }
 
                     shortcutManager.addDynamicShortcuts(shortcutInfos);
+
                 }
             } catch (SecurityException e) {
                 e.printStackTrace();

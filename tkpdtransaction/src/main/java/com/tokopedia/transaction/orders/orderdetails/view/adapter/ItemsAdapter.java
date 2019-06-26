@@ -24,7 +24,6 @@ import com.tokopedia.transaction.orders.orderdetails.data.Items;
 import com.tokopedia.transaction.orders.orderdetails.data.MetaDataInfo;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailContract;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailPresenter;
-
 import java.util.List;
 
 public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements OrderListDetailContract.ActionInterface {
@@ -43,13 +42,14 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     OrderListDetailPresenter presenter;
     private String categoryDeals = "deal";
     private String categoryEvents = "event";
+    private String orderId;
 
-
-    public ItemsAdapter(Context context, List<Items> itemsList, boolean isShortLayout, OrderListDetailPresenter presenter) {
+    public ItemsAdapter(Context context, List<Items> itemsList, boolean isShortLayout, OrderListDetailPresenter presenter, String orderId) {
         this.context = context;
         this.itemsList = itemsList;
         this.isShortLayout = isShortLayout;
         this.presenter = presenter;
+        this.orderId = orderId;
     }
 
     @Override
@@ -190,6 +190,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 metaDataInfo = gson.fromJson(item.getMetaData(), MetaDataInfo.class);
             }
             if (metaDataInfo != null) {
+                presenter.sendThankYouEvent(metaDataInfo);
                 if (itemType == ITEM_DEALS || itemType == ITEM_DEALS_SHORT) {
                     if (TextUtils.isEmpty(metaDataInfo.getEntityImage())) {
                         ImageHandler.loadImage(context, dealImage, item.getImageUrl(), R.color.grey_1100, R.color.grey_1100);

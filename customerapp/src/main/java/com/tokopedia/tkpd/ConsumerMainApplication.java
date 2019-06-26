@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AppCompatDelegate;
 
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.crashlytics.android.Crashlytics;
@@ -99,7 +100,7 @@ import com.tokopedia.tokocash.network.api.WalletUrl;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.train.common.constant.TrainUrl;
-import com.tokopedia.transaction.network.TransactionUrl;
+import com.tokopedia.seller.purchase.network.TransactionUrl;
 import com.tokopedia.transactiondata.constant.TransactionDataApiUrl;
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneURL;
 import com.tokopedia.user_identification_common.KycCommonUrl;
@@ -134,6 +135,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     // Used to load the 'native-lib' library on application startup.
     static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         System.loadLibrary("native-lib");
     }
 
@@ -181,7 +183,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         PushManager.getInstance().setMessageListener(new CustomPushListener());
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
-        InstabugInitalize.init(this);
 
         if (!GlobalConfig.DEBUG) {
             new ANRWatchDog().setANRListener(Crashlytics::logException).start();

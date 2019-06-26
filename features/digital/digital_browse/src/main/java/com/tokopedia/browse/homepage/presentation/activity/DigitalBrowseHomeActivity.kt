@@ -24,6 +24,8 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.browse.R
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.browse.categoryNavigation.view.BaseCategoryBrowseActivity
+import com.tokopedia.browse.categoryNavigation.view.CategoryBrowseActivity
 import javax.inject.Inject
 
 class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<DigitalBrowseHomeComponent> {
@@ -144,15 +146,21 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
 
 }
 
+
 @DeepLink(ApplinkConstant.DIGITAL_BROWSE)
 fun getCallingIntent(context: Context, extras: Bundle): Intent {
     val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
-    val intent = Intent(context, DigitalBrowseHomeActivity::class.java)
+    var intent = Intent(context, DigitalBrowseHomeActivity::class.java)
 
     if (!extras.containsKey(DigitalBrowseHomeActivity.EXTRA_TITLE)) {
         if (Integer.parseInt(extras.getString(DigitalBrowseHomeActivity.EXTRA_TYPE)) == DigitalBrowseHomeActivity.TYPE_BELANJA) {
-            extras.putString(DigitalBrowseHomeActivity.EXTRA_TITLE, DigitalBrowseHomeActivity.TITLE_BELANJA)
+            if(BaseCategoryBrowseActivity.isNewCategoryEnabled(context)) {
+                intent = BaseCategoryBrowseActivity.newIntent(context)
+            }else {
+                extras.putString(DigitalBrowseHomeActivity.EXTRA_TITLE, DigitalBrowseHomeActivity.TITLE_BELANJA)
+            }
         } else if (Integer.parseInt(extras.getString(DigitalBrowseHomeActivity.EXTRA_TYPE)) == DigitalBrowseHomeActivity.TYPE_LAYANAN) {
+            intent = Intent(context, DigitalBrowseHomeActivity::class.java)
             extras.putString(DigitalBrowseHomeActivity.EXTRA_TITLE, DigitalBrowseHomeActivity.TITLE_LAYANAN)
         }
     }
