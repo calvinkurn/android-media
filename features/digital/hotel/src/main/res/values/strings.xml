@@ -198,4 +198,5 @@
     <string name="hotel_error_no_internet_connection_subtitle">"Kamu bisa pindah tempat atau cek paket data / jaringan Wi-Fi."</string>
     <string name="hotel_error_server_error_title">Ada gangguan di rumah Toped</string>
     <string name="hotel_error_server_error_subtitle">Kami akan bereskan secepatnya. Klik tombol di bawah atau balik lagi nanti.</string>
+    <string name="hotel_e_voucher_powered_by">Powered by:</string>
 </resources>
