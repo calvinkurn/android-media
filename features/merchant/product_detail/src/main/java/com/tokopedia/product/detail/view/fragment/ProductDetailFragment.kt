@@ -120,6 +120,8 @@ import kotlinx.android.synthetic.main.partial_product_full_descr.*
 import kotlinx.android.synthetic.main.partial_product_image_review.*
 import kotlinx.android.synthetic.main.partial_product_latest_talk.*
 import kotlinx.android.synthetic.main.partial_product_rating_talk_courier.*
+import kotlinx.android.synthetic.main.partial_product_recom_3.*
+import kotlinx.android.synthetic.main.partial_product_recom_4.*
 import kotlinx.android.synthetic.main.partial_product_recom_top_1.*
 import kotlinx.android.synthetic.main.partial_product_recommendation.*
 import kotlinx.android.synthetic.main.partial_product_shop_info.*
@@ -676,6 +678,14 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
         if (!::recommendationTopFirstView.isInitialized) {
             recommendationTopFirstView = PartialRecommendationTopFirstView.build(base_recom_1, this)
+        }
+
+        if (!::recommendationThirdView.isInitialized) {
+            recommendationThirdView = PartialRecommendationThirdView.build(base_recom_3, this)
+        }
+
+        if (!::recommendationFourthView.isInitialized) {
+            recommendationFourthView = PartialRecommendationFourthView.build(base_recom_4, this)
         }
 
     }
