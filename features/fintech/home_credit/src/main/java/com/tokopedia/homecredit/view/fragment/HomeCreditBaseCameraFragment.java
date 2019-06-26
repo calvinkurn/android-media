@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
 
@@ -104,11 +105,11 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
 
     private void setUIFlashCamera(int flashEnum) {
         if (flashEnum == Flash.AUTO.ordinal()) {
-            flashControl.setImageResource(com.tokopedia.imagepicker.R.drawable.ic_auto_flash);
+            flashControl.setImageDrawable(MethodChecker.getDrawable(getActivity(),com.tokopedia.imagepicker.R.drawable.ic_auto_flash));
         } else if (flashEnum == Flash.ON.ordinal()) {
-            flashControl.setImageResource(com.tokopedia.imagepicker.R.drawable.ic_on_flash);
+            flashControl.setImageDrawable(MethodChecker.getDrawable(getActivity(),com.tokopedia.imagepicker.R.drawable.ic_on_flash));
         } else if (flashEnum == Flash.OFF.ordinal()) {
-            flashControl.setImageResource(com.tokopedia.imagepicker.R.drawable.ic_off_flash);
+            flashControl.setImageDrawable(MethodChecker.getDrawable(getActivity(),com.tokopedia.imagepicker.R.drawable.ic_off_flash));
         }
     }
 

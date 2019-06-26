@@ -22,6 +22,7 @@ import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public abstract class InboxBottomSheetFragment extends BottomSheetDialogFragment {
 
@@ -65,6 +66,8 @@ public abstract class InboxBottomSheetFragment extends BottomSheetDialogFragment
                              Bundle savedInstanceState) {
         View contentView = inflater.inflate(layoutID, container, false);
         ButterKnife.bind(this, contentView);
+        title.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                (getActivity(), R.drawable.ic_close_x_black), null, null , null);
         getDialog().setOnShowListener(dialog -> {
             BottomSheetDialog d = (BottomSheetDialog) dialog;
             View bottomSheetInternal = d.findViewById(R.id.design_bottom_sheet);
