@@ -28,19 +28,17 @@ class OvoP2pTxnThankYouOvoUsrVM(application: Application) : AndroidViewModel(app
 
     fun getThankYouDataSubscriber(): Subscriber<GraphqlResponse>{
         transferThankyouSubscriber = object : Subscriber<GraphqlResponse>() {
-            override fun onNext(graphqlResponse: GraphqlResponse?) {
-                val ovoP2pTransferConfirmBase = graphqlResponse?.getData<OvoP2pTransferThankyouBase>(OvoP2pTransferThankyouBase::class.java)
-                if(ovoP2pTransferConfirmBase != null){
-                    ovoP2pTransferThankyouBaseMutableLiveData?.postValue(ovoP2pTransferConfirmBase)
-                }
-            }
-
             override fun onCompleted() {
             }
 
             override fun onError(e: Throwable?) {
             }
-
+            override fun onNext(graphqlResponse: GraphqlResponse?) {
+                val ovoP2pTransferConfirmBase = graphqlResponse?.getData<OvoP2pTransferThankyouBase>(OvoP2pTransferThankyouBase::class.java)
+                if(ovoP2pTransferConfirmBase != null){
+                    ovoP2pTransferThankyouBaseMutableLiveData?.value = ovoP2pTransferConfirmBase
+                }
+            }
         }
         return transferThankyouSubscriber as Subscriber<GraphqlResponse>
     }

@@ -35,7 +35,6 @@ class FragmentTransactionSuccessOvoUser : BaseDaggerFragment(), View.OnClickList
     private lateinit var infoIcon: ImageView
     private var transferId: String = ""
     private lateinit var txnThankYouPageVM: OvoP2pTxnThankYouOvoUsrVM
-    private lateinit var userSession : UserSessionInterface
 
     override fun initInjector() {
         getComponent<OvoP2pTransferComponent>(OvoP2pTransferComponent::class.java).inject(this)
@@ -68,7 +67,7 @@ class FragmentTransactionSuccessOvoUser : BaseDaggerFragment(), View.OnClickList
     }
 
     private fun setSenderUserData(){
-        userSession = UserSession(context)
+        var userSession = UserSession(context)
         sndrName.text = userSession.name
         sndrNum.text = userSession.phoneNumber
     }
@@ -78,7 +77,7 @@ class FragmentTransactionSuccessOvoUser : BaseDaggerFragment(), View.OnClickList
         updateHeader()
         if(!TextUtils.isEmpty(transferId)) {
             var dataMap: HashMap<String, Any> = HashMap()
-            dataMap.put(Constants.Keys.TRANSFER_ID, transferId)
+            dataMap.put(Constants.Keys.TRANSFER_ID, transferId.toInt())
             context?.let {
                 (activity as LoaderUiListener).showProgressDialog()
                 txnThankYouPageVM.makeThankyouDataCall(it, dataMap)
@@ -124,8 +123,8 @@ class FragmentTransactionSuccessOvoUser : BaseDaggerFragment(), View.OnClickList
     private fun assignThankYouData(thankYouData: OvoP2pTransferThankyouBase) {
         date.text = thankYouData.ovoP2pTransferThankyou.trnsfrDate
         trnsfrAmt.text = thankYouData.ovoP2pTransferThankyou.amt.toString()
-        rcvrName.text = thankYouData.ovoP2pTransferThankyou.soure1.name
-        rcvrNum.text = thankYouData.ovoP2pTransferThankyou.soure1.phone
+        rcvrName.text = thankYouData.ovoP2pTransferThankyou.source.name
+        rcvrNum.text = thankYouData.ovoP2pTransferThankyou.source.phone
         setSenderUserData()
     }
 

@@ -226,7 +226,7 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
 
     private fun gotoThankYouActivity(transferId: String, nonOvo: Boolean){
         var intent = Intent(activity, OVOP2PThankyouActivity::class.java)
-        intent.putExtra(Constants.Keys.TRANSFER_ID, transferId)
+        intent.putExtra(Constants.PlaceHolders.TRNSFER_ID_PLCHLDR, transferId)
         intent.putExtra(Constants.Keys.NON_OVO_SUCS, nonOvo)
         activity?.startActivity(intent)
         activity?.finish()

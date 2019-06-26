@@ -13,6 +13,7 @@ import com.tokopedia.ovop2p.Constants
 import com.tokopedia.ovop2p.R
 import com.tokopedia.ovop2p.di.OvoP2pTransferComponent
 import com.tokopedia.ovop2p.model.OvoP2pTransferThankyouBase
+import com.tokopedia.user.session.UserSession
 
 class FragmentTransactionDetails : BaseDaggerFragment(){
     private lateinit var sucsMsg: TextureView
@@ -54,13 +55,12 @@ class FragmentTransactionDetails : BaseDaggerFragment(){
     fun setViewData(){
         if(::ovoP2pTransferThankyouBase.isInitialized) {
             date.text = ovoP2pTransferThankyouBase.ovoP2pTransferThankyou.trnsfrDate
-            senderName.text = ovoP2pTransferThankyouBase.ovoP2pTransferThankyou.soure1.name
-            senderNumber.text = ovoP2pTransferThankyouBase.ovoP2pTransferThankyou.soure1.phone
             rcvrName.text = ovoP2pTransferThankyouBase.ovoP2pTransferThankyou.source.name
             rcvrNum.text = ovoP2pTransferThankyouBase.ovoP2pTransferThankyou.source.phone
             txtMsgTxn.text = ovoP2pTransferThankyouBase.ovoP2pTransferThankyou.msg
             amt.text = "-" + ovoP2pTransferThankyouBase.ovoP2pTransferThankyou.amt
             txnNo.text = "Ref - " + ovoP2pTransferThankyouBase.ovoP2pTransferThankyou.txnId
+            setSenderUserData()
         }
     }
 
@@ -77,5 +77,11 @@ class FragmentTransactionDetails : BaseDaggerFragment(){
 
     private fun getThankyouDataFromArgs(){
         ovoP2pTransferThankyouBase = arguments?.getSerializable(Constants.Keys.THANKYOU_ARGS) as OvoP2pTransferThankyouBase
+    }
+
+    private fun setSenderUserData(){
+        var userSession = UserSession(context)
+        senderName.text = userSession.name
+        senderNumber.text = userSession.phoneNumber
     }
 }
