@@ -172,22 +172,22 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
     fun activatedAds() {
         val budget = priceEditText.textWithoutPrefix.replace(",", "").toInt()
         budgetViewModel.postAutoAds(AutoAdsParam(AutoAdsParam.Input(
-                "toggle_on",
-                "topchat",
+                TOGGLE_ON,
+                CHANNEL,
                 budget,
                 userSession.shopId.toInt(),
-                "one_click_promo"
+                SOURCE
         )))
     }
 
     fun deactivedAds() {
         val budget = priceEditText.textWithoutPrefix.replace(",", "").toInt()
         budgetViewModel.postAutoAds(AutoAdsParam(AutoAdsParam.Input(
-                "toggle_off",
-                "topchat",
+                TOGGLE_OFF,
+                CHANNEL,
                 budget,
                 userSession.shopId.toInt(),
-                "one_click_promo"
+                SOURCE
         )))
     }
 
@@ -227,5 +227,9 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
         val KEY_AUTOADS_STATUS = "AUTOADS_STATUS"
         val REQUEST_CODE_AD_OPTION = 3
         val SELECTED_OPTION = "selected_option"
+        val TOGGLE_ON = "toggle_on"
+        val TOGGLE_OFF = "toggle_off"
+        val CHANNEL = "topchat"
+        val SOURCE = "one_click_promo"
     }
 }
