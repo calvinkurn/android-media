@@ -1,7 +1,6 @@
 package com.tokopedia.adult.common;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import com.tokopedia.unifycomponents.Toaster;
@@ -23,11 +22,11 @@ public class AdultManager {
 
     private static final int REQUEST_CODE = 5838;
 
-    public static void showAdultPopUp(Context context, int origin, String destinationGtm) {
-        Intent intent = RouteManager.getIntent(context, ApplinkConstInternalCategory.INSTANCE.getAGE_RESTRICTION());
+    public static void showAdultPopUp(Activity activity, int origin, String destinationGtm) {
+        Intent intent = RouteManager.getIntent(activity, ApplinkConstInternalCategory.INSTANCE.getAGE_RESTRICTION());
         intent.putExtra(EXTRA_ORIGIN, origin);
         intent.putExtra(EXTRA_DESTINATION_GTM, destinationGtm);
-        startActivityForResult(intent, REQUEST_CODE);
+        activity.startActivityForResult(intent, REQUEST_CODE);
     }
 
     public static void handleActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
