@@ -1,15 +1,15 @@
 package com.tokopedia.productcard;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Paint;
+import android.support.annotation.DimenRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -130,6 +130,10 @@ public class SearchProductCardView extends BaseCustomView {
         textPrice.setText(price);
     }
 
+    public void setPriceMarginsWithNegativeDefaultValue(int leftPixel, int topPixel, int rightPixel, int bottomPixel) {
+        setMarginsToView(textPrice, leftPixel, topPixel, rightPixel, bottomPixel);
+    }
+
     public void setImageUrl(String imageUrl) {
         ImageHandler.loadImageFitCenter(getContext(), imageView, imageUrl);
     }
@@ -231,13 +235,22 @@ public class SearchProductCardView extends BaseCustomView {
     }
 
     private void setMarginsToView(View view, int leftPixel, int topPixel, int rightPixel, int bottomPixel) {
-        if(view.getLayoutParams() instanceof ConstraintLayout.LayoutParams) {
-            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) view.getLayoutParams();
+        if(view.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+//            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) view.getLayoutParams();
+//
+//            layoutParams.leftMargin = leftPixel < 0 ? layoutParams.leftMargin : leftPixel;
+//            layoutParams.topMargin = topPixel < 0 ? layoutParams.topMargin : topPixel;
+//            layoutParams.rightMargin = rightPixel < 0 ? layoutParams.rightMargin : rightPixel;
+//            layoutParams.bottomMargin = bottomPixel < 0 ? layoutParams.bottomMargin : bottomPixel;
 
-            layoutParams.leftMargin = leftPixel < 0 ? layoutParams.leftMargin : leftPixel;
-            layoutParams.topMargin = topPixel < 0 ? layoutParams.topMargin : topPixel;
-            layoutParams.rightMargin = rightPixel < 0 ? layoutParams.rightMargin : rightPixel;
-            layoutParams.bottomMargin = bottomPixel < 0 ? layoutParams.bottomMargin : bottomPixel;
+            ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+
+            layoutParams.setMargins(
+                    leftPixel < 0 ? layoutParams.leftMargin : leftPixel,
+                    topPixel < 0 ? layoutParams.topMargin : topPixel,
+                    rightPixel < 0 ? layoutParams.rightMargin : rightPixel,
+                    bottomPixel < 0 ? layoutParams.bottomMargin : bottomPixel
+            );
 
             view.setLayoutParams(layoutParams);
         }
@@ -315,34 +328,30 @@ public class SearchProductCardView extends BaseCustomView {
     }
 
     public void setOffersLabelConstraintTopToBottomOfTextLocation() {
-        setViewConstraintTopToBottomOf(offersLabel.getId(), textLocation.getId(), 4);
+        setViewConstraintTopToBottomOf(offersLabel.getId(), textLocation.getId(), R.dimen.dp_4);
     }
 
     public void setOffersLabelConstraintTopToBottomOfRatingView() {
-        setViewConstraintTopToBottomOf(offersLabel.getId(), ratingView.getId(), 4);
+        setViewConstraintTopToBottomOf(offersLabel.getId(), ratingView.getId(), R.dimen.dp_4);
     }
 
     public void setOffersLabelConstraintTopToBottomOfReviewCount() {
-        setViewConstraintTopToBottomOf(offersLabel.getId(), reviewCountView.getId(), 4);
+        setViewConstraintTopToBottomOf(offersLabel.getId(), reviewCountView.getId(), R.dimen.dp_4);
     }
 
     public void setOffersLabelConstraintTopToBottomOfCredibilityLabel() {
-        setViewConstraintTopToBottomOf(offersLabel.getId(), credibilityLabel.getId(), 4);
+        setViewConstraintTopToBottomOf(offersLabel.getId(), credibilityLabel.getId(), R.dimen.dp_4);
     }
 
-    private void setViewConstraintTopToBottomOf(int viewLayoutId, int bottomOfLayoutId, int topMarginDp) {
+    private void setViewConstraintTopToBottomOf(int viewLayoutId, int bottomOfLayoutId, @DimenRes int topMarginDp) {
         if (productCardConstraintLayout != null) {
             ConstraintSet constraintSet = new ConstraintSet();
             constraintSet.clone(productCardConstraintLayout);
 
-            int topMarginPixel = convertDpToPixel(topMarginDp);
+            int topMarginPixel = getContext().getResources().getDimensionPixelSize(topMarginDp);
             constraintSet.connect(viewLayoutId, ConstraintSet.TOP, bottomOfLayoutId, ConstraintSet.BOTTOM, topMarginPixel);
 
             constraintSet.applyTo(productCardConstraintLayout);
         }
-    }
-
-    private int convertDpToPixel(int dpValue) {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpValue, getContext().getResources().getDisplayMetrics());
     }
 }

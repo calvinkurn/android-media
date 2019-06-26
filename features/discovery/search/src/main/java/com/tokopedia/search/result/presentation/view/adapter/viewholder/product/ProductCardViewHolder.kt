@@ -5,7 +5,6 @@ import android.graphics.drawable.Drawable
 import android.support.annotation.LayoutRes
 import android.support.annotation.Nullable
 import android.text.TextUtils
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
@@ -128,17 +127,13 @@ open class ProductCardViewHolder(
     }
 
     private fun setTitleMarginTop(productItem: ProductItemViewModel) {
-        var paddingTopPixel = 0
+        var marginTopPixel = context.resources.getDimensionPixelSize(R.dimen.dp_2)
 
         if(!isShopNameShown(productItem)) {
-            paddingTopPixel = convertDpToPixel(8f)
+            marginTopPixel = context.resources.getDimensionPixelSize(R.dimen.dp_8)
         }
 
-        itemView.productCardView?.setTitleMarginsWithNegativeDefaultValue(-1, paddingTopPixel, -1, -1)
-    }
-
-    private fun convertDpToPixel(dpValue: Float): Int {
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpValue, context.resources.displayMetrics).toInt()
+        itemView.productCardView?.setTitleMarginsWithNegativeDefaultValue(-1, marginTopPixel, -1, -1)
     }
 
     private fun initSlashPrice(productItem: ProductItemViewModel) {
@@ -147,7 +142,19 @@ open class ProductCardViewHolder(
     }
 
     private fun initPriceTextView(productItem: ProductItemViewModel) {
+        setPriceMarginTop(productItem)
+
         itemView.productCardView?.setPrice(getPriceText(productItem))
+    }
+
+    private fun setPriceMarginTop(productItem: ProductItemViewModel) {
+        var marginTopPixel = context.resources.getDimensionPixelSize(R.dimen.dp_2)
+
+        if(productItem.discountPercentage == 0) {
+            marginTopPixel = context.resources.getDimensionPixelSize(R.dimen.dp_4)
+        }
+
+        itemView.productCardView?.setPriceMarginsWithNegativeDefaultValue(-1, marginTopPixel, -1, -1)
     }
 
     private fun getPriceText(productItem: ProductItemViewModel) : String {
@@ -226,8 +233,8 @@ open class ProductCardViewHolder(
     }
 
     private fun setLocationTextViewMargin(productItem: ProductItemViewModel) {
-        val marginLeftDp = if (hasAnyBadgesShown(productItem)) 4f else 8f
-        val marginLeftPixel = convertDpToPixel(marginLeftDp)
+        val marginLeftDp = if (hasAnyBadgesShown(productItem)) R.dimen.dp_4 else R.dimen.dp_8
+        val marginLeftPixel = context.resources.getDimensionPixelSize(marginLeftDp)
 
         itemView.productCardView?.setTextLocationMarginsWithNegativeDefaultValue(marginLeftPixel, -1, -1, -1)
     }
@@ -278,8 +285,8 @@ open class ProductCardViewHolder(
     }
 
     private fun setReviewCountMargin(productItem: ProductItemViewModel) {
-        val marginLeftDp = if (isRatingViewVisible(productItem)) 4f else 8f
-        val marginLeftPixel = convertDpToPixel(marginLeftDp)
+        val marginLeftDp = if (isRatingViewVisible(productItem)) R.dimen.dp_4 else R.dimen.dp_8
+        val marginLeftPixel = context.resources.getDimensionPixelSize(marginLeftDp)
 
         itemView.productCardView?.setReviewCountMarginsWithNegativeDefaultValue(marginLeftPixel, -1, -1, -1)
     }
