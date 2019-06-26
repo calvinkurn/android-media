@@ -1,5 +1,6 @@
 package com.tokopedia.graphql.coroutines.data.source
 
+import com.google.gson.JsonElement
 import com.tokopedia.graphql.FingerprintManager
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.graphql.GraphqlConstant
@@ -22,14 +23,13 @@ class GraphqlCloudDataStore(private val api: GraphqlApi,
             launch(Dispatchers.IO) {
                 when (cacheStrategy.type) {
                     CacheType.CACHE_FIRST, CacheType.ALWAYS_CLOUD -> {
-                        if (!isError(graphqlResponseInternal)) {
-                            graphqlResponseInternal.originalResponse.forEachIndexed { index, jsonElement ->
+                        graphqlResponseInternal.originalResponse.forEachIndexed { index, jsonElement ->
+                            if (!isError(jsonElement)) {
                                 cacheManager.save(fingerprintManager.generateFingerPrint(requests[index].toString(),
                                         cacheStrategy.isSessionIncluded),
                                         jsonElement.toString(),
                                         cacheStrategy.expiryTime)
                             }
-
                         }
                     }
                     else -> {
@@ -40,18 +40,14 @@ class GraphqlCloudDataStore(private val api: GraphqlApi,
         }
     }
 
-    fun isError(graphqlResponseInternal: GraphqlResponseInternal): Boolean {
-        var index = 0
-        for (item in graphqlResponseInternal.originalResponse) {
-            try {
-                val error = item.asJsonObject.get(GraphqlConstant.GqlApiKeys.ERROR)
-                if (error != null && !error.isJsonNull) {
-                    return true
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
+    fun isError(jsonElement: JsonElement): Boolean {
+        try {
+            val error = jsonElement.asJsonObject.get(GraphqlConstant.GqlApiKeys.ERROR)
+            if (error != null && !error.isJsonNull) {
+                return true
             }
-            index++
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
         return false
     }
