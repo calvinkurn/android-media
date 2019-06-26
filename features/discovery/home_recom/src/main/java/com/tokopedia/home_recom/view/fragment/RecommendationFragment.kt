@@ -110,7 +110,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
 
     private fun clearProductInfoView(){
         if(childFragmentManager.fragments.size > 0 && childFragmentManager.fragments[0] is ProductInfoFragment){
-            childFragmentManager.beginTransaction().remove(childFragmentManager.fragments[0])
+            childFragmentManager.beginTransaction().remove(childFragmentManager.fragments[0]).commit()
         }
     }
 
