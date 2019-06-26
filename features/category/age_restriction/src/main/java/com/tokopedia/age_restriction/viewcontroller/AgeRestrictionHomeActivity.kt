@@ -47,7 +47,9 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
 
             notVerified, notFilledDob -> {
                 if (selection == notFilledDob) {
-                    navigateToActivityRequest(Intent(this, VerifyDOBActivity::class.java).putExtra("DESTINATION_GTM", destinationUrlGtm),
+                    navigateToActivityRequest(Intent(this, VerifyDOBActivity::class.java)
+                            .putExtra("DESTINATION_GTM", destinationUrlGtm)
+                            .putExtra("ORIGIN", origin),
                             VERIFICATION_REQUEST)
                     sendGeneralEvent(eventClick,
                             event,
@@ -56,6 +58,7 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
                 } else {
                     navigateToActivityRequest(Intent(this, VerifyDOBActivity::class.java)
                             .putExtra("DESTINATION_GTM", destinationUrlGtm)
+                            .putExtra("ORIGIN", origin)
                             .putExtra(PARAM_EXTRA_DOB, arHomeViewModel.notVerified.value), VERIFICATION_REQUEST)
                     sendGeneralEvent(eventClick,
                             event,
@@ -83,7 +86,9 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
             }
 
             notVerified -> {
-                navigateToActivityRequest(Intent(this, VerifyDOBActivity::class.java).putExtra("DESTINATION_GTM", destinationUrlGtm),
+                navigateToActivityRequest(Intent(this, VerifyDOBActivity::class.java)
+                        .putExtra("DESTINATION_GTM", destinationUrlGtm)
+                        .putExtra("ORIGIN", origin),
                         VERIFICATION_REQUEST)
                 sendGeneralEvent(eventClick,
                         event,

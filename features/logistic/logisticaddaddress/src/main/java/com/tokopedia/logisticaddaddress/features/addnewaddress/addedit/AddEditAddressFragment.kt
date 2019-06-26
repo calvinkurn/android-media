@@ -533,7 +533,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
 
     private fun setupRvKodePosChips() {
         rv_kodepos_chips_mismatch.apply {
-            addItemDecoration(staticDimen8dp?.let { ChipsItemDecoration(it) })
+            staticDimen8dp?.let { ChipsItemDecoration(it) }?.let { addItemDecoration(it) }
             layoutManager = chipsLayoutManager
             adapter = zipCodeChipsAdapter
         }
@@ -541,7 +541,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
 
     private fun setupRvLabelAlamatChips() {
         rv_label_alamat_chips.apply {
-            addItemDecoration(staticDimen8dp?.let { ChipsItemDecoration(it) })
+            staticDimen8dp?.let { ChipsItemDecoration(it) }?.let { addItemDecoration(it) }
             layoutManager = labelAlamatLayoutManager
             adapter = labelAlamatChipsAdapter
         }
