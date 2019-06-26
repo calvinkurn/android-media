@@ -178,6 +178,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openProduct(linkSegment, uriData);
                     screenName = AppScreen.SCREEN_PRODUCT_INFO;
                     break;
+                case DeepLinkChecker.ETALASE:
                 case DeepLinkChecker.SHOP:
                     openShopInfo(linkSegment, uriData);
                     screenName = AppScreen.SCREEN_SHOP_INFO;
@@ -499,8 +500,13 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             public void onNext(ShopInfo shopInfo) {
                 viewListener.finishLoading();
                 if (shopInfo != null && shopInfo.getInfo() != null) {
-                    Intent intent = ((TkpdCoreRouter) context.getApplication()).getShopPageIntent(context, shopInfo.getInfo().getShopId());
-                    context.startActivity(intent);
+                    if (linkSegment.size() == 3){
+                        RouteManager.route(context, ApplinkConst.SHOP_ETALASE, shopInfo.getInfo().getShopId(), linkSegment.get(2));
+                    } else {
+                        Intent intent = ((TkpdCoreRouter) context.getApplication()).getShopPageIntent(context, shopInfo.getInfo().getShopId());
+                        context.startActivity(intent);
+                    }
+
                     context.finish();
                 } else {
                     if (!GlobalConfig.DEBUG) {
