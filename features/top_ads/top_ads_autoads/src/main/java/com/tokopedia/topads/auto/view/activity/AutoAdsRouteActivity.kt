@@ -26,7 +26,6 @@ import com.tokopedia.topads.common.constant.TopAdsAddingOption
 import com.tokopedia.topads.common.data.util.ApplinkUtil
 import javax.inject.Inject
 
-@DeepLink(ApplinkConst.SellerApp.TOPADS_AUTOADS)
 class AutoAdsRouteActivity : AutoAdsBaseActivity() {
 
     @Inject
@@ -108,20 +107,15 @@ class AutoAdsRouteActivity : AutoAdsBaseActivity() {
         }
     }
 
-    object DeepLinkIntents {
+    object DeeplinkIntent {
         @DeepLink(ApplinkConst.SellerApp.TOPADS_AUTOADS)
         @JvmStatic
         fun getCallingApplinkIntent(context: Context, extras: Bundle): Intent {
-            if (GlobalConfig.isSellerApp()) {
-                val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
-                return getCallingIntent(context)
-                        .setData(uri.build())
-                        .putExtras(extras)
-            } else {
-                return ApplinkUtil.getSellerAppApplinkIntent(context, extras)
-            }
+            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
+            val intent = Intent(context, AutoAdsRouteActivity::class.java)
+            return intent
+                    .setData(uri.build())
+                    .putExtras(extras)
         }
     }
-
-
 }

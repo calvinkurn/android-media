@@ -129,6 +129,11 @@ public class HomeApp extends BaseMainApplication implements AccountHomeRouter, G
     }
 
     @Override
+    public void gotoTopAdsDashboard(Context context) {
+
+    }
+
+    @Override
     public void goToGMSubscribe(Context context) {
 
     }

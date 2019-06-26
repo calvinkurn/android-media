@@ -390,8 +390,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
             Constants.Applinks.SellerApp.TOPADS_DASHBOARD,
             Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL,
             Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL_CONSTS,
-            Constants.Applinks.SellerApp.BROWSER,
-            ApplinkConst.SellerApp.TOPADS_AUTOADS})
+            Constants.Applinks.SellerApp.BROWSER})
     public static Intent getIntentSellerApp(Context context, Bundle extras) {
         Intent launchIntent = context.getPackageManager()
                 .getLaunchIntentForPackage(GlobalConfig.PACKAGE_SELLER_APP);

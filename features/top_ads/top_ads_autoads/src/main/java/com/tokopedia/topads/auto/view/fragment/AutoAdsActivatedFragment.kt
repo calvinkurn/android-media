@@ -30,9 +30,7 @@ class AutoAdsActivatedFragment : BaseDaggerFragment() {
         val view = inflater.inflate(R.layout.layout_autoads_activated, container, false)
         performanceBtn = view.findViewById(R.id.see_performance_btn)
         performanceBtn!!.setOnClickListener {
-            val intent = (activity!!.application as TopAdsAutoRouter)
-                    .getTopAdsDashboardIntent(activity!!)
-            activity!!.startActivity(intent)
+            (activity!!.application as TopAdsAutoRouter).openTopAdsDashboardApplink(activity!!)
             activity!!.finishAffinity()
         }
         return view
