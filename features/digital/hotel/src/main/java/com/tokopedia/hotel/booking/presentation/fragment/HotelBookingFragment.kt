@@ -121,8 +121,7 @@ class HotelBookingFragment : HotelBaseFragment() {
 
         showLoadingBar()
 
-        bookingViewModel.getCartData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_cart), hotelBookingPageModel.cartId,
-                GraphqlHelper.loadRawString(resources, R.raw.dummy_hotel_cart))
+        bookingViewModel.getCartData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_cart), hotelBookingPageModel.cartId)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -340,11 +339,11 @@ class HotelBookingFragment : HotelBaseFragment() {
     private fun setupInvoiceSummary(cart: HotelCartData, property: HotelPropertyData) {
         cart.fares.find { it.type == "base_price" }?.let {
             tv_room_price_label.text = it.description
-            tv_room_price.text = it.localPrice
+            tv_room_price.text = if(cart.localCurrency.isEmpty()) it.price else it.localPrice
         }
         cart.fares.find { it.type == "tax" }?.let {
             tv_room_tax_label.text = it.description
-            tv_room_tax.text = it.localPrice
+            tv_room_tax.text = if(cart.localCurrency.isEmpty()) it.price else it.localPrice
         }
 
         val priceLabelResId = if (!property.isDirectPayment) R.string.hotel_booking_invoice_estimate_pay_at_hotel else R.string.hotel_booking_invoice_estimate_pay_now
@@ -440,8 +439,7 @@ class HotelBookingFragment : HotelBaseFragment() {
     }
 
     override fun onErrorRetryClicked() {
-        bookingViewModel.getCartData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_cart), hotelBookingPageModel.cartId,
-                GraphqlHelper.loadRawString(resources, R.raw.dummy_hotel_cart))
+        bookingViewModel.getCartData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_cart), hotelBookingPageModel.cartId)
     }
 
     companion object {
