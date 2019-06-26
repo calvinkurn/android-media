@@ -3,6 +3,7 @@ package com.tokopedia.productcard;
 import android.content.Context;
 import android.graphics.Paint;
 import android.support.annotation.DimenRes;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -21,18 +22,18 @@ import com.tokopedia.topads.sdk.domain.model.ImpressHolder;
 import com.tokopedia.topads.sdk.view.ImpressedImageView;
 import com.tokopedia.unifycomponents.Label;
 
-public class SearchProductCardView extends BaseCustomView {
+public abstract class SearchProductCardView extends BaseCustomView {
 
-    private static final String LIGHT_GREY = "lightGrey";
-    private static final String LIGHT_BLUE = "lightBlue";
-    private static final String LIGHT_GREEN = "lightGreen";
-    private static final String LIGHT_RED = "lightRed";
-    private static final String LIGHT_ORANGE = "lightOrange";
-    private static final String DARK_GREY = "darkGrey";
-    private static final String DARK_BLUE = "darkBlue";
-    private static final String DARK_GREEN = "darkGreen";
-    private static final String DARK_RED = "darkRed";
-    private static final String DARK_ORANGE = "darkOrange";
+    protected static final String LIGHT_GREY = "lightGrey";
+    protected static final String LIGHT_BLUE = "lightBlue";
+    protected static final String LIGHT_GREEN = "lightGreen";
+    protected static final String LIGHT_RED = "lightRed";
+    protected static final String LIGHT_ORANGE = "lightOrange";
+    protected static final String DARK_GREY = "darkGrey";
+    protected static final String DARK_BLUE = "darkBlue";
+    protected static final String DARK_GREEN = "darkGreen";
+    protected static final String DARK_RED = "darkRed";
+    protected static final String DARK_ORANGE = "darkOrange";
 
     protected ConstraintLayout productCardConstraintLayout;
     protected TextView textName;
@@ -89,23 +90,9 @@ public class SearchProductCardView extends BaseCustomView {
         textName.setLineSpacing(0f, 1f);
     }
 
-    protected int getLayout() {
-        return R.layout.search_product_card_layout;
-    }
+    protected abstract int getLayout();
 
-    public void realignLayout() {
-        setTitleMarginTop();
-    }
-
-    private void setTitleMarginTop() {
-        int marginTopPixel = getContext().getResources().getDimensionPixelSize(R.dimen.dp_8);
-
-        if(textShopName.getVisibility() == View.VISIBLE) {
-            marginTopPixel = getContext().getResources().getDimensionPixelSize(R.dimen.dp_2);
-        }
-
-        setMarginsToView(textName, -1, marginTopPixel, -1, -1);
-    }
+    public abstract void realignLayout();
 
     public void setTitle(String title) {
         textName.setText(MethodChecker.fromHtml(title));
@@ -132,10 +119,6 @@ public class SearchProductCardView extends BaseCustomView {
 
     public void setPrice(String price) {
         textPrice.setText(price);
-    }
-
-    public void setPriceMarginsWithNegativeDefaultValue(int leftPixel, int topPixel, int rightPixel, int bottomPixel) {
-        setMarginsToView(textPrice, leftPixel, topPixel, rightPixel, bottomPixel);
     }
 
     public void setImageUrl(String imageUrl) {
@@ -226,15 +209,7 @@ public class SearchProductCardView extends BaseCustomView {
         textLocation.setText(MethodChecker.fromHtml(location));
     }
 
-    public void setTextLocationMarginsWithNegativeDefaultValue(int leftPixel, int topPixel, int rightPixel, int bottomPixel) {
-        setMarginsToView(textLocation, leftPixel, topPixel, rightPixel, bottomPixel);
-    }
-
-    public void setReviewCountMarginsWithNegativeDefaultValue(int leftPixel, int topPixel, int rightPixel, int bottomPixel) {
-        setMarginsToView(reviewCountView, leftPixel, topPixel, rightPixel, bottomPixel);
-    }
-
-    private void setMarginsToView(View view, int leftPixel, int topPixel, int rightPixel, int bottomPixel) {
+    protected void setMarginsToView(View view, int leftPixel, int topPixel, int rightPixel, int bottomPixel) {
         if(view.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
             ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
 
@@ -293,7 +268,7 @@ public class SearchProductCardView extends BaseCustomView {
         offersLabel.setLabelType(getLabelTypeFromString(offersLabelType));
     }
 
-    private int getLabelTypeFromString(String labelType) {
+    protected int getLabelTypeFromString(String labelType) {
         switch(labelType) {
             case LIGHT_GREY :
                 return Label.GENERAL_LIGHT_GREY;
@@ -320,31 +295,23 @@ public class SearchProductCardView extends BaseCustomView {
         }
     }
 
-    public void setOffersLabelConstraintTopToBottomOfTextLocation() {
-        setViewConstraintTopToBottomOf(offersLabel.getId(), textLocation.getId(), R.dimen.dp_4);
-    }
-
-    public void setOffersLabelConstraintTopToBottomOfRatingView() {
-        setViewConstraintTopToBottomOf(offersLabel.getId(), ratingView.getId(), R.dimen.dp_4);
-    }
-
-    public void setOffersLabelConstraintTopToBottomOfReviewCount() {
-        setViewConstraintTopToBottomOf(offersLabel.getId(), reviewCountView.getId(), R.dimen.dp_4);
-    }
-
-    public void setOffersLabelConstraintTopToBottomOfCredibilityLabel() {
-        setViewConstraintTopToBottomOf(offersLabel.getId(), credibilityLabel.getId(), R.dimen.dp_4);
-    }
-
-    private void setViewConstraintTopToBottomOf(int viewLayoutId, int bottomOfLayoutId, @DimenRes int topMarginDp) {
+    protected void setViewConstraintTopToBottomOf(@IdRes int viewLayoutId, @IdRes int bottomOfLayoutId, @DimenRes int topMarginDp) {
         if (productCardConstraintLayout != null) {
             ConstraintSet constraintSet = new ConstraintSet();
             constraintSet.clone(productCardConstraintLayout);
 
-            int topMarginPixel = getContext().getResources().getDimensionPixelSize(topMarginDp);
+            int topMarginPixel = getDimensionPixelSize(topMarginDp);
             constraintSet.connect(viewLayoutId, ConstraintSet.TOP, bottomOfLayoutId, ConstraintSet.BOTTOM, topMarginPixel);
 
             constraintSet.applyTo(productCardConstraintLayout);
         }
+    }
+
+    protected boolean isViewVisible(View view) {
+        return view.getVisibility() == View.VISIBLE;
+    }
+
+    protected int getDimensionPixelSize(@DimenRes int id) {
+        return getContext().getResources().getDimensionPixelSize(id);
     }
 }

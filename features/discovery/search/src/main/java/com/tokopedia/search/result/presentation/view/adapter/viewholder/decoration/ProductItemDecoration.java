@@ -23,7 +23,7 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
             R.layout.search_srp_item_big_grid,
             R.layout.search_srp_item_grid,
             R.layout.search_srp_item_list,
-            R.layout.search_product_card);
+            R.layout.search_small_grid_product_card);
 
     public ProductItemDecoration(int spacing, int color) {
         this.spacing = spacing;

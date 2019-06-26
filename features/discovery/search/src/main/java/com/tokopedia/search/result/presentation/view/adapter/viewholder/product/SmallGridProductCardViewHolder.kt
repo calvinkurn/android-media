@@ -17,20 +17,21 @@ import com.tokopedia.search.result.presentation.model.BadgeItemViewModel
 import com.tokopedia.search.result.presentation.model.LabelGroupViewModel
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
-import kotlinx.android.synthetic.main.search_product_card.view.*
+import kotlinx.android.synthetic.main.search_small_grid_product_card.view.*
 
 private const val LABEL_GROUP_POSITION_PROMO = "promo"
 private const val LABEL_GROUP_POSITION_CREDIBILITY = "credibility"
 private const val LABEL_GROUP_POSITION_OFFERS = "offers"
 
-open class ProductCardViewHolder(
+open class SmallGridProductCardViewHolder(
     itemView: View,
     protected val productListener: ProductListener
 ) : AbstractViewHolder<ProductItemViewModel>(itemView) {
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.search_product_card
+        @JvmField
+        val LAYOUT = R.layout.search_small_grid_product_card
     }
 
     protected val context = itemView.context!!
@@ -132,19 +133,7 @@ open class ProductCardViewHolder(
     }
 
     private fun initPriceTextView(productItem: ProductItemViewModel) {
-        setPriceMarginTop(productItem)
-
         itemView.productCardView?.setPrice(getPriceText(productItem))
-    }
-
-    private fun setPriceMarginTop(productItem: ProductItemViewModel) {
-        var marginTopPixel = context.resources.getDimensionPixelSize(R.dimen.dp_2)
-
-        if(productItem.discountPercentage == 0) {
-            marginTopPixel = context.resources.getDimensionPixelSize(R.dimen.dp_4)
-        }
-
-        itemView.productCardView?.setPriceMarginsWithNegativeDefaultValue(-1, marginTopPixel, -1, -1)
     }
 
     private fun getPriceText(productItem: ProductItemViewModel) : String {
@@ -214,19 +203,11 @@ open class ProductCardViewHolder(
 
         if(isShopCityShown) {
             itemView.productCardView?.setTextLocation(productItem.shopCity)
-            setLocationTextViewMargin(productItem)
         }
     }
 
     private fun isShopCityShown(productItem: ProductItemViewModel) : Boolean {
         return !TextUtils.isEmpty(productItem.shopCity)
-    }
-
-    private fun setLocationTextViewMargin(productItem: ProductItemViewModel) {
-        val marginLeftDp = if (hasAnyBadgesShown(productItem)) R.dimen.dp_4 else R.dimen.dp_8
-        val marginLeftPixel = context.resources.getDimensionPixelSize(marginLeftDp)
-
-        itemView.productCardView?.setTextLocationMarginsWithNegativeDefaultValue(marginLeftPixel, -1, -1, -1)
     }
 
     private fun initCredibilitySection(productItem: ProductItemViewModel) {
@@ -242,7 +223,7 @@ open class ProductCardViewHolder(
     private fun initRatingView(productItem: ProductItemViewModel) {
         val isRatingViewVisible = isRatingViewVisible(productItem)
 
-        itemView.productCardView?.setRatingVisible(isRatingViewVisible(productItem))
+        itemView.productCardView?.setRatingVisible(isRatingViewVisible)
 
         if(isRatingViewVisible) {
             itemView.productCardView?.setRating(getStarCount(productItem))
@@ -266,19 +247,11 @@ open class ProductCardViewHolder(
 
         if(isReviewCountVisible) {
             itemView.productCardView?.setReviewCount(productItem.countReview)
-            setReviewCountMargin(productItem)
         }
     }
 
     private fun isReviewCountVisible(productItem: ProductItemViewModel): Boolean {
         return productItem.countReview != 0
-    }
-
-    private fun setReviewCountMargin(productItem: ProductItemViewModel) {
-        val marginLeftDp = if (isRatingViewVisible(productItem)) R.dimen.dp_4 else R.dimen.dp_8
-        val marginLeftPixel = context.resources.getDimensionPixelSize(marginLeftDp)
-
-        itemView.productCardView?.setReviewCountMarginsWithNegativeDefaultValue(marginLeftPixel, -1, -1, -1)
     }
 
     private fun initCredibilityLabel(productItem: ProductItemViewModel) {
@@ -310,37 +283,17 @@ open class ProductCardViewHolder(
     private fun initOffersLabel(productItem: ProductItemViewModel) {
         val offersLabelViewModel = getFirstLabelGroupOfPosition(productItem, LABEL_GROUP_POSITION_OFFERS)
 
+        itemView.productCardView?.setOffersLabelVisible(offersLabelViewModel != null)
+
         if(offersLabelViewModel != null) {
             setOffersLabelContent(offersLabelViewModel)
         }
-        else {
-            itemView.productCardView?.setOffersLabelVisible(false)
-        }
-
-        setOffersLabelPosition(productItem)
     }
 
     private fun setOffersLabelContent(offersLabelViewModel: LabelGroupViewModel) {
         itemView.productCardView?.setOffersLabelVisible(true)
         itemView.productCardView?.setOffersLabelType(offersLabelViewModel.type)
         itemView.productCardView?.setOffersLabelText(offersLabelViewModel.title)
-    }
-
-    private fun setOffersLabelPosition(productItem: ProductItemViewModel) {
-        when {
-            isCredibilityLabelVisible(productItem) -> {
-                itemView.productCardView?.setOffersLabelConstraintTopToBottomOfCredibilityLabel()
-            }
-            isRatingViewVisible(productItem) -> {
-                itemView.productCardView?.setOffersLabelConstraintTopToBottomOfRatingView()
-            }
-            isReviewCountVisible(productItem) -> {
-                itemView.productCardView?.setOffersLabelConstraintTopToBottomOfReviewCount()
-            }
-            else -> {
-                itemView.productCardView?.setOffersLabelConstraintTopToBottomOfTextLocation()
-            }
-        }
     }
 
     private fun initTopAdsIcon(productItem: ProductItemViewModel) {

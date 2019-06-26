@@ -14,8 +14,8 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.GridProductItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.HeaderViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ListProductItemViewHolder;
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ProductCardViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RelatedSearchViewHolder;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridProductCardViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.TopAdsViewHolder;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
@@ -74,7 +74,7 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
                 return BigGridProductItemViewHolder.LAYOUT;
             case SearchConstant.RecyclerView.VIEW_PRODUCT_GRID_2:
             default:
-                return ProductCardViewHolder.Companion.getLAYOUT();
+                return SmallGridProductCardViewHolder.LAYOUT;
         }
     }
 
@@ -99,8 +99,8 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
 
         if (type == ListProductItemViewHolder.LAYOUT) {
             viewHolder = new ListProductItemViewHolder(view, productListener);
-        } else if(type == ProductCardViewHolder.Companion.getLAYOUT()) {
-            viewHolder = new ProductCardViewHolder(view, productListener);
+        } else if(type == SmallGridProductCardViewHolder.LAYOUT) {
+            viewHolder = new SmallGridProductCardViewHolder(view, productListener);
         } else if (type == GridProductItemViewHolder.LAYOUT) {
             viewHolder = new GridProductItemViewHolder(view, productListener);
         } else if (type == BigGridProductItemViewHolder.LAYOUT) {
