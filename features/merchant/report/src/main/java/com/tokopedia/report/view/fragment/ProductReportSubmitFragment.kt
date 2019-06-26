@@ -192,8 +192,10 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
                 photoTypeSelected?.let {
                     val input = data.getStringExtra(ReportInputDetailFragment.INPUT_VALUE)
                     val isValid = data.getBooleanExtra(ReportInputDetailFragment.VALID_VALUE, false)
-                    adapter.updateTextInput(it, input, isInputValid && isValid)
-
+                    adapter.updateTextInput(it, input, isValid)
+                    recycler_view.setRecyclerListener {
+                        if (it is ReportFormAdapter.ValidateViewHolder) it.validate()
+                    }
 
                 }
             }
