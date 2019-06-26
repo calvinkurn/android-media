@@ -1961,10 +1961,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void renderRecommendation(List<RecommendationItem> recommendationItems) {
-        if (this.recommendationItems == null) {
-            recommendationItems = new ArrayList<>();
-        }
-        this.recommendationItems.addAll(recommendationItems);
+        this.recommendationItems = recommendationItems;
         List<CartRecommendationItemHolderData> cartRecommendationItemHolderDataList = new ArrayList<>();
         int previousItemCount = cartAdapter.getItemCount();
         for (RecommendationItem recommendationItem : recommendationItems) {
