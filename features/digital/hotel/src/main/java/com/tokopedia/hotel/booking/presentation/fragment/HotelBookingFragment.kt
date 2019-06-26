@@ -80,7 +80,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         bookingViewModel.hotelCartResult.observe(this, android.arch.lifecycle.Observer {
             when (it) {
                 is Success -> {
-                    hotelCart = it.data.response
+                    hotelCart = it.data
                     initView()
                 }
                 is Fail -> {
