@@ -54,38 +54,26 @@ public class SearchProductCardView extends BaseCustomView {
 
     public SearchProductCardView(@NonNull Context context) {
         super(context);
-        init(null);
+        init();
     }
 
     public SearchProductCardView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        init(attrs);
+        init();
     }
 
     public SearchProductCardView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(attrs);
+        init();
     }
 
     public void setFixedHeight(boolean fixedHeight) {
         this.fixedHeight = fixedHeight;
     }
 
-    protected void init(@Nullable AttributeSet attrs) {
-        if (attrs != null) {
-            TypedArray a = getContext().obtainStyledAttributes(
-                    attrs,
-                    R.styleable.ProductCardView,
-                    0, 0);
-
-            try {
-                fixedHeight = a.getBoolean(R.styleable.ProductCardView_fixedHeight, false);
-            } finally {
-                a.recycle();
-            }
-        }
-
+    protected void init() {
         final View view = inflate(getContext(), getLayout(), this);
+
         textName = view.findViewById(R.id.textName);
         textPrice = view.findViewById(R.id.textPrice);
         textDiscount = view.findViewById(R.id.textDiscount);
@@ -167,20 +155,6 @@ public class SearchProductCardView extends BaseCustomView {
         wishlistButton.setOnClickListener(onClickListener);
     }
 
-    public void setRatingReviewCount(int rating, int reviewCount) {
-        if (rating > 0 && rating <= 5) {
-            ratingView.setImageResource(getRatingDrawable(rating));
-        } else {
-            if(fixedHeight) {
-                ratingView.setVisibility(View.INVISIBLE);
-                reviewCountView.setVisibility(View.INVISIBLE);
-            } else {
-                ratingView.setVisibility(View.GONE);
-                reviewCountView.setVisibility(View.GONE);
-            }
-        }
-    }
-
     public void setRatingVisible(boolean isVisible) {
         ratingView.setVisibility(isVisible ? View.VISIBLE : (fixedHeight ? View.INVISIBLE : View.GONE));
     }
@@ -225,15 +199,7 @@ public class SearchProductCardView extends BaseCustomView {
     }
 
     protected int getLayout() {
-        if(fixedHeight) {
-            return R.layout.product_card_layout_fixed_height;
-        } else {
-            return R.layout.product_card_layout;
-        }
-    }
-
-    public void setLayout(int layout) {
-        this.layout = layout;
+        return R.layout.search_product_card_layout;
     }
 
     public void setShopBadgesVisible(boolean isVisible) {
