@@ -32,6 +32,7 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmo
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.util.MoEngageEventTracking;
 import com.tokopedia.unifycomponents.Toaster;
+import com.tokopedia.adult.common.AdultManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -201,10 +202,7 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
     @Override
     public void prepareFragment(ProductViewModel productViewModel) {
         if (productViewModel.getCategoryHeaderModel().getIsAdult() > 0) {
-            Intent intent = RouteManager.getIntent(this, ApplinkConstInternalCategory.INSTANCE.getAGE_RESTRICTION());
-            intent.putExtra("ORIGIN", 1);
-            intent.putExtra("DESTINATION_GTM", productViewModel.getCategoryHeaderModel().getDepartementId());
-            startActivityForResult(intent, 5838);
+            AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_CATEGORY_PAGE, productViewModel.getCategoryHeaderModel().getDepartementId());
         }
         List<CategorySectionItem> categorySectionItems = new ArrayList<>();
         if (!TextUtils.isEmpty(categoryUrl)) {
@@ -301,21 +299,8 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
         if (resultCode == CategoryNavigationActivity.DESTROY_BROWSE_PARENT) {
             setResult(CategoryNavigationActivity.DESTROY_INTERMEDIARY);
             finish();
-        } else if (requestCode == 5838) {
-            if (resultCode == Activity.RESULT_OK) {
-                //todo something when user logged in and preverified
-            } else if (resultCode == 980) {
-                //User DOb verfied succesfully
-                String message = data.getStringExtra("VERIFICATION_SUCCESS");
-                Toaster.Companion.showNormalWithAction(this,
-                        message,
-                        Snackbar.LENGTH_INDEFINITE,
-                        getString(R.string.general_label_ok), (v) -> {
-                        });
-            } else {
-                finish();
-            }
         }
+        AdultManager.handleActivityResult(this, requestCode, resultCode, data);
     }
 
     @Override

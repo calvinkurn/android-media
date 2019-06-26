@@ -117,6 +117,7 @@ include "features:payment:payment_setting"
 //include "features:payment:payment_setting_no_op"
 
 include "features:product:gallery"
+include "features:adult_common"
 
 include "features:promo:gamification"
 include "features:promo:merchant_voucher"

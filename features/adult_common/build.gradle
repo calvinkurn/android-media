@@ -1,0 +1,25 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+
+repositories {
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+dependencies {
+    
+    implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.kotlinMockito
+    testImplementation rootProject.ext.testDependencies.spekApi
+    testImplementation rootProject.ext.testDependencies.platformEngine
+    testImplementation rootProject.ext.testDependencies.junitPlatformRunner
+}
