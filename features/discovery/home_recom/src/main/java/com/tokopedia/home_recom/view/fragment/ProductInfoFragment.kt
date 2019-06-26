@@ -22,15 +22,15 @@ import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
 import com.tokopedia.home_recom.router.HomeRecommendationRouter
 import com.tokopedia.home_recom.util.RecommendationPageErrorHandler
+import com.tokopedia.home_recom.view.customview.Toaster
 import com.tokopedia.home_recom.viewmodel.PrimaryProductViewModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_product_info.*
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -284,16 +284,13 @@ class ProductInfoFragment : BaseDaggerFragment() {
 
     private fun showToastSuccessWithAction(message: String, actionString: String, action: () -> Unit){
         activity?.run {
-            Toaster.showNormalWithAction(
-                    this,
+            Toaster.showGreenWithAction(
+                    this.findViewById(android.R.id.content),
                     message,
                     Snackbar.LENGTH_LONG,
                     actionString,
-                    object : View.OnClickListener {
-                        override fun onClick(v: View?) {
-                            action.invoke()
-                            print("here")
-                        }
+                    View.OnClickListener {
+                        action.invoke()
                     }
             )
         }
@@ -301,8 +298,8 @@ class ProductInfoFragment : BaseDaggerFragment() {
 
     private fun showToastError(throwable: Throwable) {
         activity?.run {
-            Toaster.showError(
-                    this,
+            Toaster.showRed(
+                    findViewById(android.R.id.content),
                     RecommendationPageErrorHandler.getErrorMessage(this, throwable),
                     Snackbar.LENGTH_LONG)
         }
@@ -310,8 +307,8 @@ class ProductInfoFragment : BaseDaggerFragment() {
 
     private fun showToastSuccess(message: String) {
         activity?.run {
-            Toaster.showNormal(
-                    this,
+            Toaster.showGreen(
+                    findViewById(android.R.id.content),
                     message,
                     Snackbar.LENGTH_LONG)
         }
