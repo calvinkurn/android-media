@@ -71,7 +71,6 @@ import com.tokopedia.product.detail.common.data.model.product.Wholesale
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.product.detail.data.model.*
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.data.util.numberFormatted
@@ -99,6 +98,7 @@ import com.tokopedia.referral.ReferralAction
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shopetalasepicker.constant.ShopParamConstant
 import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
@@ -150,6 +150,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     lateinit var latestTalkView: PartialLatestTalkView
     lateinit var otherProductView: PartialOtherProductView
     lateinit var recommendationProductView: PartialRecommendationProductView
+    lateinit var recommendationTopFirstView: PartialRecommendationTopFirstView
+    lateinit var recommendationBottomView: PartialRecommendationBottomView
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -341,12 +343,12 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             when (it) {
                 is Loading -> {
                     recommendationProductView.startLoading()
+                    recommendationTopFirstView.startLoading()
                 }
                 is Loaded -> {
-                    recommendationProductView.renderData((it.data as? Success)?.data
-                            ?: return@Observer)
                     (it.data as? Success)?.data?.let { result ->
-                        recommendationProductView.renderData(result)
+                        recommendationTopFirstView.renderData(result[0])
+                        recommendationProductView.renderData(result[1])
                     }
                 }
             }
@@ -849,6 +851,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         if (forceRefresh) {
             otherProductView.renderData(listOf())
             recommendationProductView.hideView()
+            recommendationTopFirstView.hideView()
         }
         if (productId != null || (productKey != null && shopDomain != null)) {
             productInfoViewModel.getProductInfo(ProductParams(productId, shopDomain, productKey), forceRefresh)
