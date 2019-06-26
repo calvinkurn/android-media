@@ -194,7 +194,10 @@ class ProductInfoFragment : BaseDaggerFragment() {
                         }
                 )
             } else {
-
+                context?.let {
+                    startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
+                            REQUEST_CODE_LOGIN)
+                }
             }
         }
     }
@@ -286,7 +289,9 @@ class ProductInfoFragment : BaseDaggerFragment() {
                     message,
                     Snackbar.LENGTH_LONG,
                     actionString,
-                    View.OnClickListener { action.invoke() }
+                    View.OnClickListener {
+                        action.invoke()
+                    }
             )
         }
     }
