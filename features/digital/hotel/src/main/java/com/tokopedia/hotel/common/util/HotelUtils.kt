@@ -1,6 +1,7 @@
 package com.tokopedia.hotel.common.util
 
 import com.tokopedia.common.travel.utils.TravelDateUtil
+import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 

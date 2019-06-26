@@ -19,5 +19,11 @@ data class HotelCart (
         @SerializedName("property")
         @Expose
         val property: HotelPropertyData = HotelPropertyData()
-)
+) {
+        data class Response (
+                @SerializedName("propertyGetCart")
+                @Expose
+                val response: HotelCart = HotelCart()
+        )
+}
 

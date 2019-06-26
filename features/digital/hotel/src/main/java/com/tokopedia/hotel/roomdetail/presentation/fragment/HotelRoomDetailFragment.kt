@@ -86,7 +86,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
             loading_screen.visibility = View.GONE
             when (it) {
                 is Success -> {
-                    val cartId = it.data.cartId
+                    val cartId = it.data.response.cartId
                     startActivity(HotelBookingActivity.getCallingIntent(context!!, cartId))
                 }
                 is Fail -> {

@@ -4,57 +4,58 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class HotelCartData (
-        @SerializedName("contact")
-    @Expose
-    val contact: BookingContact = BookingContact(),
 
-        @SerializedName("adult")
+    @SerializedName("adult")
     @Expose
     val adult: Int = 0,
 
-        @SerializedName("rooms")
-    @Expose
-    val rooms: List<HotelCartRoom> = listOf(),
-
-        @SerializedName("checkIn")
+    @SerializedName("checkIn")
     @Expose
     val checkIn: String = "",
 
-        @SerializedName("checkOut")
+    @SerializedName("checkOut")
     @Expose
     val checkOut: String = "",
 
-        @SerializedName("guestName")
+    @SerializedName("guestName")
     @Expose
     val guestName: String = "",
 
-        @SerializedName("specialRequest")
+    @SerializedName("specialRequest")
     @Expose
     val specialRequest: String = "",
 
-        @SerializedName("totalPrice")
+    @SerializedName("totalPrice")
     @Expose
     val totalPrice: String = "",
 
-        @SerializedName("totalPriceAmount")
+    @SerializedName("totalPriceAmount")
     @Expose
-    val totalPriceAmount: Double = 0.0,
+    val totalPriceAmount: Float = 0f,
 
-        @SerializedName("localTotalPrice")
-    @Expose
-    val localTotalPrice: String = "",
-
-        @SerializedName("localTotalPriceAmount")
-    @Expose
-    val localTotalPriceAmount: Int = 0,
-
-        @SerializedName("currency")
+    @SerializedName("currency")
     @Expose
     val currency: String = "",
 
-        @SerializedName("fares")
+    @SerializedName("localTotalPrice")
     @Expose
-    val fares: List<BookingFare> = listOf()
+    val localTotalPrice: String = "",
+
+    @SerializedName("localTotalPriceAmount")
+    @Expose
+    val localTotalPriceAmount: Float = 0f,
+
+    @SerializedName("localCurrency")
+    @Expose
+    val localCurrency: String = "",
+
+    @SerializedName("fares")
+    @Expose
+    val fares: List<BookingFare> = listOf(),
+
+    @SerializedName("contact")
+    @Expose
+    val contact: BookingContact = BookingContact()
 
 ) {
 
@@ -102,7 +103,7 @@ data class HotelCartData (
 
         @SerializedName("priceAmount")
         @Expose
-        var priceAmount: Double = 0.0,
+        var priceAmount: Float = 0f,
 
         @SerializedName("price")
         @Expose
@@ -110,7 +111,7 @@ data class HotelCartData (
 
         @SerializedName("localPriceAmount")
         @Expose
-        var localPriceAmount: Int = 0,
+        var localPriceAmount: Float = 0f,
 
         @SerializedName("localPrice")
         @Expose
