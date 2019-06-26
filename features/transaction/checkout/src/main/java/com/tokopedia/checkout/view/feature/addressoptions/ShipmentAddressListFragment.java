@@ -524,9 +524,9 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                 checkoutAnalyticsMultipleAddress.eventClickAddressCartMultipleAddressClickPlusFromMultiple();
 
                 if (isAddNewAddressEnabled()) {
-                    startActivityForResult(PinpointMapActivity.Companion.newInstance(getActivity(),
+                    startActivityForResult(PinpointMapActivity.newInstance(getActivity(),
                             AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
-                            false, 0, false, null,
+                            false, 0, false, false, null,
                             false), ADD_NEW_ADDRESS_CREATED);
 
                     /*Intent intent = new Intent(getActivity(), PinpointMapActivity.class);
@@ -551,9 +551,9 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                 checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickTambahFromAlamatPengiriman();
 
                 if (isAddNewAddressEnabled()) {
-                    startActivityForResult(PinpointMapActivity.Companion.newInstance(getActivity(),
+                    startActivityForResult(PinpointMapActivity.newInstance(getActivity(),
                             AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
-                            false, 0, false, null,
+                            false, 0, false, false, null,
                             false), ADD_NEW_ADDRESS_CREATED);
 
                     /*Intent intent = new Intent(getActivity(), PinpointMapActivity.class);

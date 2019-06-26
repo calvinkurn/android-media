@@ -206,7 +206,7 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
             if (isAddNewAddressEnabled()) {
                 startActivityForResult(PinpointMapActivity.newInstance(getActivity(),
                         AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
-                        false, 0, false, null,
+                        false, 0, false, false, null,
                         false), REQUEST_CODE_PARAM_CREATE);
 
             } else {
@@ -220,7 +220,7 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
             // edit address
 
             /*if (isAddNewAddressEnabled()) {
-                startActivityForResult(PinpointMapActivity.Companion.newInstance(getActivity(),
+                startActivityForResult(PinpointMapActivity.newInstance(getActivity(),
                         AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, token,
                         false, 0, false, null,
                         false), REQUEST_CODE_PARAM_EDIT);

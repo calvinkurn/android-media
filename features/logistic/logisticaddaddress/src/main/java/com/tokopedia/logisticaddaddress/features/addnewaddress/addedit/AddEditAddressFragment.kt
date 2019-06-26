@@ -592,7 +592,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             setOnClickListener {
                 saveAddressDataModel?.editDetailAddress = et_detail_address.text.toString()
                 goToPinpointActivity(currentLat, currentLong, false, token, false, districtId,
-                        isMismatchSolved, saveAddressDataModel)
+                        isMismatchSolved, isMismatch, saveAddressDataModel)
                 AddNewAddressAnalytics.eventClickButtonUbahPinPointChangeAddressPositive()
             }
         }
@@ -614,7 +614,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                     AddNewAddressAnalytics.eventViewToasterPilihKotaDanKodePosTerlebihDahulu()
                 } else {
                     goToPinpointActivity(currentLat, currentLong, false, token, true, districtId,
-                            isMismatchSolved, saveAddressDataModel)
+                            isMismatchSolved, isMismatch, saveAddressDataModel)
                     AddNewAddressAnalytics.eventClickButtonPilihLokasiIni()
                 }
             }
@@ -633,7 +633,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             setOnClickListener {
                 saveAddressDataModel?.editDetailAddress = tv_detail_alamat_mismatch.text.toString()
                 goToPinpointActivity(currentLat, currentLong, false, token, true, districtId,
-                        isMismatchSolved, saveAddressDataModel)
+                        isMismatchSolved, isMismatch, saveAddressDataModel)
             }
         }
     }
@@ -875,10 +875,10 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     }
 
     private fun goToPinpointActivity(lat: Double?, long: Double?, isShowAutocomplete: Boolean, token: Token?, isPolygon: Boolean, districtId: Int?,
-                                     isMismatchSolved: Boolean, saveAddressDataModel: SaveAddressDataModel?) {
+                                     isMismatchSolved: Boolean, isMismatch: Boolean, saveAddressDataModel: SaveAddressDataModel?) {
         startActivityForResult(context?.let {
             PinpointMapActivity.newInstance(it, lat, long, isShowAutocomplete, token, isPolygon,
-                    districtId, isMismatchSolved, saveAddressDataModel, true)
+                    districtId, isMismatchSolved, isMismatch, saveAddressDataModel, true)
         }, FINISH_PINPOINT_FLAG)
     }
 
