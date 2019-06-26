@@ -1955,7 +1955,10 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void renderRecommendation(List<RecommendationItem> recommendationItems) {
-        this.recommendationItems = recommendationItems;
+        if (this.recommendationItems == null) {
+            recommendationItems = new ArrayList<>();
+        }
+        this.recommendationItems.addAll(recommendationItems);
         List<CartRecommendationItemHolderData> cartRecommendationItemHolderDataList = new ArrayList<>();
         int previousItemCount = cartAdapter.getItemCount();
         for (RecommendationItem recommendationItem : recommendationItems) {
@@ -1974,5 +1977,15 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         endlessRecyclerViewScrollListener.updateStateAfterGetData();
         hasLoadRecommendation = true;
         cartAdapter.addCartRecommendationData(cartRecommendationItemHolderDataList);
+    }
+
+    @Override
+    public void showItemLoading() {
+        cartAdapter.addCartLoadingData();
+    }
+
+    @Override
+    public void hideItemLoading() {
+        cartAdapter.removeCartLoadingData();
     }
 }

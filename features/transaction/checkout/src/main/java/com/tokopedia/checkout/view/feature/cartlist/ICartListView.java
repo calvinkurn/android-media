@@ -95,4 +95,8 @@ public interface ICartListView extends IBaseView {
     void renderWishlist(List<Wishlist> wishlist);
 
     void renderRecommendation(List<RecommendationItem> recommendationItems);
+
+    void showItemLoading();
+
+    void hideItemLoading();
 }

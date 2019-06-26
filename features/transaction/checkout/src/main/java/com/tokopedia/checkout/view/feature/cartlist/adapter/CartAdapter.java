@@ -61,6 +61,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private ShipmentSellerCashbackModel shipmentSellerCashbackModel;
     private CompositeSubscription compositeSubscription;
     private CartEmptyHolderData cartEmptyHolderData;
+    private CartLoadingHolderData cartLoadingHolderData;
     private CartWishlistAdapter cartWishlistAdapter;
     private CartRecentViewAdapter cartRecentViewAdapter;
 
@@ -682,4 +683,17 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
         }
     }
+
+    public void addCartLoadingData() {
+        if (cartLoadingHolderData == null) {
+            cartLoadingHolderData = new CartLoadingHolderData();
+        }
+        cartDataList.add(cartLoadingHolderData);
+        notifyItemInserted(cartDataList.indexOf(cartLoadingHolderData));
+    }
+
+    public void removeCartLoadingData() {
+        cartDataList.remove(cartLoadingHolderData);
+    }
+
 }

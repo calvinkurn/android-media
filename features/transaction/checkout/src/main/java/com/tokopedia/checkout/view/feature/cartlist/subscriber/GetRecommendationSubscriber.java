@@ -28,11 +28,15 @@ public class GetRecommendationSubscriber extends Subscriber<RecommendationModel>
     @Override
     public void onError(Throwable e) {
         e.printStackTrace();
+        if (view != null) {
+            view.hideItemLoading();
+        }
     }
 
     @Override
     public void onNext(RecommendationModel recommendationModel) {
         if (view != null) {
+            view.hideItemLoading();
             view.renderRecommendation(recommendationModel.getRecommendationItemList());
         }
     }
