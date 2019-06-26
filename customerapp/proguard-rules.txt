@@ -379,9 +379,9 @@
 -dontwarn com.google.firebase.appindexing.**
 
 # -- logentries
--dontwarn org.apache.logging.log4j.**
--dontwarn ch.qos.logback.classic.**
--dontwarn ch.qos.logback.core.**
+-dontwarn org.apache.logging.**
+-dontwarn org.apache.log4j.**
+-dontwarn ch.qos.logback.**
 
 -keepnames class com.rapid7.jul.LogentriesHandler
 -keepnames class com.tokopedia.logger.LogFormatter
