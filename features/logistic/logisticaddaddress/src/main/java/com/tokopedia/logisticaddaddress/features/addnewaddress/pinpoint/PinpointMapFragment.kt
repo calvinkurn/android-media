@@ -208,9 +208,10 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
 
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         bottomSheetBehavior.isHideable = false
+        this.googleMap?.setOnCameraMoveListener { onMapDraggedListener() }
     }
 
-    /*private fun onMapDraggedListener() {
+    private fun onMapDraggedListener() {
         if (!isGetDistrict) {
             val target: LatLng? = this.googleMap?.cameraPosition?.target
             val latTarget = target?.latitude
@@ -224,7 +225,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             presenter.autofill("$latTarget,$longTarget")
         }
         isGetDistrict = false
-    }*/
+    }
 
     /*override fun loadPoiList(lat: Double, long: Double) {
         autocompleteGeocodeBottomSheetFragment.loadAutocompleteGeocode(lat, long)
@@ -377,11 +378,11 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
 
     private fun doLoadAddEdit() {
         saveAddressDataModel?.editDetailAddress = et_detail_address.text.toString()
-        /*this.isPolygon?.let {
+        this.isPolygon?.let {
             if (this.isPolygon as Boolean) {
                 isMismatchSolved = true
             }
-        }*/
+        }
 
         presenter.loadAddEdit( isMismatchSolved, isChangesRequested)
     }
