@@ -27,6 +27,11 @@
             android:theme="@style/Theme.Transparent.Groupchat"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation|locale" />
 
+        <activity
+            android:name=".room.view.activity.TestActivity"
+            android:label="@string/activity_channel"
+            android:windowSoftInputMode="adjustResize"
+            android:screenOrientation="portrait"/>
 
         <activity
             android:name=".room.view.activity.PlayWebviewActivity"
