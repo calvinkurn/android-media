@@ -51,7 +51,7 @@ class GraphqlRepositoryImpl(private val graphqlCloudDataStore: GraphqlCloudDataS
         if(indexOfEmptyCached.isNullOrEmpty()) this.toMutableList()
 
         val tempGraphqlRequest : MutableList<GraphqlRequest> = this.toMutableList()
-        indexOfEmptyCached?.forEach {
+        indexOfEmptyCached?.sortedDescending()?.forEach{
             tempGraphqlRequest.removeAt(it)
         }
         indexOfEmptyCached?.forEach {
