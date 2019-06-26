@@ -16,7 +16,7 @@
 
     <SearchView
         android:id="@+id/search_no"
-        android:layout_width="300dp"
+        android:layout_width="320dp"
         android:searchIcon="@null"
         android:iconifiedByDefault="false"
         android:layout_height="wrap_content"

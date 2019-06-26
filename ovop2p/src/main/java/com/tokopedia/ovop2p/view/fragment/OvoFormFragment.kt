@@ -18,6 +18,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.design.text.watcher.CurrencyTextWatcher
+import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.ovop2p.di.OvoP2pTransferComponent
 import com.tokopedia.ovop2p.model.OvoP2pTransferConfirmBase
 import com.tokopedia.ovop2p.model.OvoP2pTransferRequestBase
@@ -235,8 +237,9 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
     private fun setTextSenderAmountWatcher(){
         trnsfrAmtEdtxtv.addTextChangedListener(object: TextWatcher{
             override fun afterTextChanged(s: Editable?) {
+                var enteredAmt: Long = 0
                 if(!TextUtils.isEmpty(s.toString())) {
-                    var enteredAmt = OvoP2pUtil.extractNumbersFromString(s.toString()).toLong()
+                    enteredAmt = OvoP2pUtil.extractNumbersFromString(s.toString()).toLong()
                     if(enteredAmt < Constants.Thresholds.MIN_TRANSFER_LIMIT){
                         amtErrorTxtv.text = Constants.Messages.MINIMAL_TRNSFR_MSG
                         amtErrorTxtv.visibility = View.VISIBLE
@@ -259,6 +262,8 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
                 }else{
                     amtErrorTxtv.visibility = View.GONE
                 }
+                val thousandString = CurrencyFormatUtil.getThousandSeparatorString(
+                        enteredAmt.toDouble(), false, 0)
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -350,7 +355,7 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
     }
 
     private fun setSearchViewQuery(){
-        val searchViewStr = "$rcvrPhnNo-$rcvrName"
+        val searchViewStr = "$rcvrPhnNo - $rcvrName"
         searchView.setQuery(searchViewStr, false)
     }
 

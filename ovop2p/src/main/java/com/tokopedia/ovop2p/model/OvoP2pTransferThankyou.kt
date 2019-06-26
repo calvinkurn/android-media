@@ -5,9 +5,9 @@ import java.io.Serializable
 
 class OvoP2pTransferThankyou : Serializable{
     @SerializedName("transfer_id")
-    var trnsfrId: String? = ""
+    var trnsfrId: Int = 0
     @SerializedName("transaction_id")
-    lateinit var txnId: String
+    var txnId: Int = 0
     @SerializedName("status")
     var status: String = ""
     @SerializedName("amount")
@@ -23,7 +23,7 @@ class OvoP2pTransferThankyou : Serializable{
     @SerializedName("message")
     var msg: String = ""
     @SerializedName("reference_number")
-    var refNum: String = ""
+    var refNum: Int = 0
     @SerializedName("errors")
-    lateinit var errors: Errors
+    var errors: List<Map<String, String>>? = null
 }

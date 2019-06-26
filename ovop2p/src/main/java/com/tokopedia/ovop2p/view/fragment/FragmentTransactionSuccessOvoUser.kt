@@ -96,11 +96,12 @@ class FragmentTransactionSuccessOvoUser : BaseDaggerFragment(), View.OnClickList
                 txnThankYouPageVM.ovoP2pTransferThankyouBaseMutableLiveData?.observe(this, Observer<OvoP2pTransferThankyouBase> {
                     if(it != null){
                         (activity as LoaderUiListener).hideProgressDialog()
-                        if(TextUtils.isEmpty(it.ovoP2pTransferThankyou.errors.message)){
+                        if(it.ovoP2pTransferThankyou.errors?.isEmpty()!!){
                             assignThankYouData(it)
                         }
                         else{
-                            it.ovoP2pTransferThankyou.errors.message?.let { it1 -> gotoErrorPage(it1) }
+                            var errMsg = it.ovoP2pTransferThankyou.errors!!.get(0).get(Constants.Keys.MESSAGE)
+                            errMsg?.let { it1 -> gotoErrorPage(it1) }
                         }
                     }
                 })
@@ -134,7 +135,8 @@ class FragmentTransactionSuccessOvoUser : BaseDaggerFragment(), View.OnClickList
             when (id) {
                 R.id.see_dtl -> {
                     //go to see detail fragment
-                    (activity as ActivityListener).addReplaceFragment(FragmentTransactionDetails.createInstance(), true,
+                    var bundle = Bundle()
+                    (activity as ActivityListener).addReplaceFragment(FragmentTransactionDetails.newInstance(), true,
                             FragmentTransactionDetails.TAG)
                 }
                 R.id.back_to_app -> {

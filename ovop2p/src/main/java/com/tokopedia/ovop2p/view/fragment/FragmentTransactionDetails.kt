@@ -16,7 +16,7 @@ import com.tokopedia.ovop2p.model.OvoP2pTransferThankyouBase
 import com.tokopedia.user.session.UserSession
 
 class FragmentTransactionDetails : BaseDaggerFragment(){
-    private lateinit var sucsMsg: TextureView
+    private lateinit var sucsMsg: TextView
     private lateinit var date: TextView
     private lateinit var senderName: TextView
     private lateinit var senderNumber: TextView
@@ -66,8 +66,13 @@ class FragmentTransactionDetails : BaseDaggerFragment(){
 
     companion object{
         var TAG: String = "TXN_DTL_FRAG"
-        fun createInstance() : FragmentTransactionDetails{
+        fun newInstance() : FragmentTransactionDetails{
             return FragmentTransactionDetails()
+        }
+        fun newInstance(bundle: Bundle): FragmentTransactionDetails {
+            val fragmentTxnDetails = newInstance()
+            fragmentTxnDetails.setArguments(bundle)
+            return fragmentTxnDetails
         }
     }
 

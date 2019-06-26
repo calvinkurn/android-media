@@ -39,7 +39,7 @@ class ContactsCursorAdapter(context: Context, cursor: Cursor, private val mParti
         if (cursor != null && cursor.count > 0) {
             phoneNum = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
             phoneNum = OvoP2pUtil.extractNumbersFromString(phoneNum)
-            prettyPhnNo = phoneNum.replaceFirst(mPartialMatch.toRegex(), "<font color='#06b3ba'>$mPartialMatch</font>")+"-"
+            prettyPhnNo = phoneNum.replaceFirst(mPartialMatch.toRegex(), "<font color='#06b3ba'>$mPartialMatch</font>")+" - "
             name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
             if(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI)) != null) {
                 imageUri = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI))
