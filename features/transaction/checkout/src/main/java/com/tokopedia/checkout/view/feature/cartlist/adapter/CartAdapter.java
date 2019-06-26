@@ -497,17 +497,42 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public void addCartRecentViewData(CartRecentViewHolderData cartRecentViewHolderData) {
-        cartDataList.add(cartRecentViewHolderData);
+        int recentViewIndex = 0;
+        for (Object item : cartDataList) {
+            if (item instanceof CartEmptyHolderData ||
+                    item instanceof CartShopHolderData) {
+                recentViewIndex = cartDataList.indexOf(item);
+            }
+        }
+        cartDataList.add(++recentViewIndex, cartRecentViewHolderData);
         notifyDataSetChanged();
     }
 
     public void addCartWishlistData(CartWishlistHolderData cartWishlistHolderData) {
-        cartDataList.add(cartWishlistHolderData);
+        int wishlistIndex = 0;
+        for (Object item : cartDataList) {
+            if (item instanceof CartEmptyHolderData ||
+                    item instanceof CartShopHolderData ||
+                    item instanceof CartRecentViewHolderData) {
+                wishlistIndex = cartDataList.indexOf(item);
+            }
+        }
+        cartDataList.add(++wishlistIndex, cartWishlistHolderData);
         notifyDataSetChanged();
     }
 
     public void addCartRecommendationData(List<CartRecommendationItemHolderData> cartRecommendationItemHolderDataList) {
-        cartDataList.addAll(cartRecommendationItemHolderDataList);
+        int recommendationIndex = 0;
+        for (Object item : cartDataList) {
+            if (item instanceof CartEmptyHolderData ||
+                    item instanceof CartShopHolderData ||
+                    item instanceof CartRecentViewHolderData ||
+                    item instanceof CartWishlistHolderData ||
+                    item instanceof CartRecommendationItemHolderData) {
+                recommendationIndex = cartDataList.indexOf(item);
+            }
+        }
+        cartDataList.addAll(++recommendationIndex, cartRecommendationItemHolderDataList);
         notifyDataSetChanged();
     }
 

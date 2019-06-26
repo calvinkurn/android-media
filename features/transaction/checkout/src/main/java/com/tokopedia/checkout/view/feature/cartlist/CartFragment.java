@@ -1436,7 +1436,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             if (dPresenter.getCartListData() != null && dPresenter.getCartListData().getShopGroupDataList().size() > 0) {
                 showMainContainer();
             }
-            dPresenter.processInitialGetCartData(getCartId(), dPresenter.getCartListData() == null);
+            dPresenter.processInitialGetCartData(getCartId(), true);
             String promo = checkoutModuleRouter.checkoutModuleRouterGetAutoApplyCouponBranchUtil();
             if (!TextUtils.isEmpty(promo)) {
                 dPresenter.processCheckPromoCodeFromSuggestedPromo(promo, true);
