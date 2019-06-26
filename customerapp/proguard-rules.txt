@@ -377,3 +377,11 @@
 
 # -- App indexing
 -dontwarn com.google.firebase.appindexing.**
+
+# -- logentries
+-dontwarn org.apache.logging.log4j.**
+-dontwarn ch.qos.logback.classic.**
+-dontwarn ch.qos.logback.core.**
+
+-keepnames class com.rapid7.jul.LogentriesHandler
+-keepnames class com.tokopedia.logger.LogFormatter
