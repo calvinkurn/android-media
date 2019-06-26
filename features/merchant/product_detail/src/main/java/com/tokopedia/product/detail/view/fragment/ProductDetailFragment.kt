@@ -42,13 +42,13 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
-import com.tokopedia.design.widget.ObservableNestedScrollView
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListenerWithRetry
 import com.tokopedia.gallery.ImageReviewGalleryActivity
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
@@ -70,7 +70,6 @@ import com.tokopedia.product.detail.common.data.model.product.Wholesale
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.product.detail.data.model.*
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.data.util.numberFormatted
@@ -99,6 +98,7 @@ import com.tokopedia.referral.ReferralAction
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shopetalasepicker.constant.ShopParamConstant
 import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
@@ -416,13 +416,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             loadingAffiliate.visible()
         }
 
-        nested_scroll.listener = object : ObservableNestedScrollView.ScrollViewListener {
-            override fun onScrollEnded(scrollView: ObservableNestedScrollView, x: Int, y: Int, oldX: Int, oldY: Int) {
-                scrollView.startLoad()
-                productInfoViewModel.loadMore()
-            }
-        }
-
         merchantVoucherListWidget.setOnMerchantVoucherListWidgetListener(object : MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener {
             override val isOwner: Boolean
                 get() = productInfo?.basic?.shopID?.let { productInfoViewModel.isShopOwner(it) }
@@ -617,6 +610,15 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
     }
 
+    private fun addLoadMoreImpression(view:View){
+        val impressionHolder = ImpressHolder()
+        view.addOnImpressionListener(impressionHolder, object : ViewHintListener {
+            override fun onViewHint() {
+                productInfoViewModel.loadMore()
+            }
+        })
+    }
+
     private fun showSnackbarClose(string: String) {
         Snackbar.make(coordinator, string, Snackbar.LENGTH_LONG).apply {
             setAction(getString(R.string.close)) { dismiss() }
@@ -639,6 +641,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
         if (!::productDescrView.isInitialized) {
             productDescrView = PartialProductDescrFullView.build(base_info_and_description, activity)
+            addLoadMoreImpression(title_product_desc_label)
         }
 
         if (!::actionButtonView.isInitialized) {
@@ -755,7 +758,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     AppBarState.EXPANDED -> {
                         isAppBarCollapsed = false
                         expandedAppBar()
-                        nested_scroll.completeLoad()
                     }
                     AppBarState.COLLAPSED -> {
                         isAppBarCollapsed = true
