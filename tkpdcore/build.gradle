@@ -136,7 +136,6 @@ dependencies {
     implementation rootProject.ext.firebase.config
     implementation rootProject.ext.debugToolsDependencies.stetho
 
-    implementation rootProject.ext.analyticsDependencies.logentries
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.userSession)
