@@ -51,6 +51,8 @@ open class ProductCardViewHolder(
         initCredibilitySection(productItem)
         initOffersLabel(productItem)
         initTopAdsIcon(productItem)
+
+        itemView.productCardView?.realignLayout()
     }
 
     private fun initProductCardContainer(productItem: ProductItemViewModel) {
@@ -67,7 +69,7 @@ open class ProductCardViewHolder(
     private fun initProductImage(productItem: ProductItemViewModel) {
         itemView.productCardView?.setImageUrl(productItem.imageUrl)
 
-        itemView.productCardView?.imageView?.setViewHintListener(productItem){
+        itemView.productCardView?.setImageViewHintListener(productItem){
             productListener.onProductImpressed(productItem, adapterPosition)
         }
     }
@@ -121,19 +123,7 @@ open class ProductCardViewHolder(
     }
 
     private fun initTitleTextView(productItem: ProductItemViewModel) {
-        setTitleMarginTop(productItem)
-
         itemView.productCardView?.setTitle(productItem.productName)
-    }
-
-    private fun setTitleMarginTop(productItem: ProductItemViewModel) {
-        var marginTopPixel = context.resources.getDimensionPixelSize(R.dimen.dp_2)
-
-        if(!isShopNameShown(productItem)) {
-            marginTopPixel = context.resources.getDimensionPixelSize(R.dimen.dp_8)
-        }
-
-        itemView.productCardView?.setTitleMarginsWithNegativeDefaultValue(-1, marginTopPixel, -1, -1)
     }
 
     private fun initSlashPrice(productItem: ProductItemViewModel) {

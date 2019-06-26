@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.base.BaseCustomView;
+import com.tokopedia.topads.sdk.domain.model.ImpressHolder;
 import com.tokopedia.topads.sdk.view.ImpressedImageView;
 import com.tokopedia.unifycomponents.Label;
 
@@ -49,8 +50,6 @@ public class SearchProductCardView extends BaseCustomView {
     protected TextView textLocation;
     protected TextView textShopName;
     protected Label offersLabel;
-    protected int layout;
-    protected boolean fixedHeight = false;
 
     public SearchProductCardView(@NonNull Context context) {
         super(context);
@@ -65,10 +64,6 @@ public class SearchProductCardView extends BaseCustomView {
     public SearchProductCardView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
-    }
-
-    public void setFixedHeight(boolean fixedHeight) {
-        this.fixedHeight = fixedHeight;
     }
 
     protected void init() {
@@ -94,12 +89,26 @@ public class SearchProductCardView extends BaseCustomView {
         textName.setLineSpacing(0f, 1f);
     }
 
-    public void setTitle(String title) {
-        textName.setText(MethodChecker.fromHtml(title));
+    protected int getLayout() {
+        return R.layout.search_product_card_layout;
     }
 
-    public void setTitleMarginsWithNegativeDefaultValue(int leftPixel, int topPixel, int rightPixel, int bottomPixel) {
-        setMarginsToView(textName, leftPixel, topPixel, rightPixel, bottomPixel);
+    public void realignLayout() {
+        setTitleMarginTop();
+    }
+
+    private void setTitleMarginTop() {
+        int marginTopPixel = getContext().getResources().getDimensionPixelSize(R.dimen.dp_8);
+
+        if(textShopName.getVisibility() == View.VISIBLE) {
+            marginTopPixel = getContext().getResources().getDimensionPixelSize(R.dimen.dp_2);
+        }
+
+        setMarginsToView(textName, -1, marginTopPixel, -1, -1);
+    }
+
+    public void setTitle(String title) {
+        textName.setText(MethodChecker.fromHtml(title));
     }
 
     public void setDiscount(int discount) {
@@ -109,13 +118,8 @@ public class SearchProductCardView extends BaseCustomView {
             textDiscount.setVisibility(View.VISIBLE);
             textSlashedPrice.setVisibility(View.VISIBLE);
         } else {
-            if(fixedHeight) {
-                textDiscount.setVisibility(View.INVISIBLE);
-                textSlashedPrice.setVisibility(View.INVISIBLE);
-            } else {
-                textDiscount.setVisibility(View.GONE);
-                textSlashedPrice.setVisibility(View.GONE);
-            }
+            textDiscount.setVisibility(View.GONE);
+            textSlashedPrice.setVisibility(View.GONE);
         }
     }
 
@@ -160,11 +164,11 @@ public class SearchProductCardView extends BaseCustomView {
     }
 
     public void setRatingVisible(boolean isVisible) {
-        ratingView.setVisibility(isVisible ? View.VISIBLE : (fixedHeight ? View.INVISIBLE : View.GONE));
+        ratingView.setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
 
     public void setReviewVisible(boolean isVisible) {
-        reviewCountView.setVisibility(isVisible ? View.VISIBLE : (fixedHeight ? View.INVISIBLE : View.GONE));
+        reviewCountView.setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
 
     public void setRating(int rating) {
@@ -179,8 +183,8 @@ public class SearchProductCardView extends BaseCustomView {
         return "(" + reviewCount + ")";
     }
 
-    public ImpressedImageView getImageView() {
-        return imageView;
+    public void setImageViewHintListener(ImpressHolder holder, ImpressedImageView.ViewHintListener listener) {
+        imageView.setViewHintListener(holder, listener);
     }
 
     protected int getRatingDrawable(int param) {
@@ -200,10 +204,6 @@ public class SearchProductCardView extends BaseCustomView {
             default:
                 return R.drawable.ic_star_none;
         }
-    }
-
-    protected int getLayout() {
-        return R.layout.search_product_card_layout;
     }
 
     public void setShopBadgesVisible(boolean isVisible) {
