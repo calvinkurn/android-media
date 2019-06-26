@@ -20,6 +20,8 @@ import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.soloader.SoLoader;
 import com.github.anrwatchdog.ANRWatchDog;
+import com.github.moduth.blockcanary.BlockCanary;
+import com.github.moduth.blockcanary.BlockCanaryContext;
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
 import com.moengage.inapp.InAppTracker;
@@ -141,6 +143,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @Override
     public void onCreate() {
+        BlockCanary.install(this, new BlockCanaryContext()).start();
         com.example.akamai_bot_lib.UtilsKt.initAkamaiBotManager(this);
         setVersionCode();
         GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
