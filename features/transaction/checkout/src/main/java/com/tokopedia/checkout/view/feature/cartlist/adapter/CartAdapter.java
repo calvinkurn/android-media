@@ -496,7 +496,8 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         notifyDataSetChanged();
     }
 
-    public void addCartRecentViewData(CartRecentViewHolderData cartRecentViewHolderData) {
+    public void addCartRecentViewData(CartSectionHeaderHolderData cartSectionHeaderHolderData,
+                                      CartRecentViewHolderData cartRecentViewHolderData) {
         int recentViewIndex = 0;
         for (Object item : cartDataList) {
             if (item instanceof CartEmptyHolderData ||
@@ -504,11 +505,13 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 recentViewIndex = cartDataList.indexOf(item);
             }
         }
-        cartDataList.add(recentViewIndex + 2, cartRecentViewHolderData);
+        cartDataList.add(++recentViewIndex, cartSectionHeaderHolderData);
+        cartDataList.add(++recentViewIndex, cartRecentViewHolderData);
         notifyDataSetChanged();
     }
 
-    public void addCartWishlistData(CartWishlistHolderData cartWishlistHolderData) {
+    public void addCartWishlistData(CartSectionHeaderHolderData cartSectionHeaderHolderData,
+                                    CartWishlistHolderData cartWishlistHolderData) {
         int wishlistIndex = 0;
         for (Object item : cartDataList) {
             if (item instanceof CartEmptyHolderData ||
@@ -517,13 +520,14 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 wishlistIndex = cartDataList.indexOf(item);
             }
         }
-        cartDataList.add(wishlistIndex + 2, cartWishlistHolderData);
+        cartDataList.add(++wishlistIndex, cartSectionHeaderHolderData);
+        cartDataList.add(++wishlistIndex, cartWishlistHolderData);
         notifyDataSetChanged();
     }
 
-    public void addCartRecommendationData(List<CartRecommendationItemHolderData> cartRecommendationItemHolderDataList) {
+    public void addCartRecommendationData(CartSectionHeaderHolderData cartSectionHeaderHolderData,
+                                          List<CartRecommendationItemHolderData> cartRecommendationItemHolderDataList) {
         int recommendationIndex = 0;
-        boolean firstRecommendation = true;
         for (Object item : cartDataList) {
             if (item instanceof CartEmptyHolderData ||
                     item instanceof CartShopHolderData ||
@@ -532,23 +536,14 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     item instanceof CartRecommendationItemHolderData) {
                 recommendationIndex = cartDataList.indexOf(item);
             }
-
-            if (item instanceof CartRecommendationItemHolderData) {
-                firstRecommendation = false;
-            }
         }
 
-        if (firstRecommendation) {
-            recommendationIndex += 2;
-        } else {
-            recommendationIndex += 1;
+        if (cartSectionHeaderHolderData != null) {
+            cartDataList.add(++recommendationIndex, cartSectionHeaderHolderData);
         }
-        cartDataList.addAll(recommendationIndex, cartRecommendationItemHolderDataList);
+
+        cartDataList.addAll(++recommendationIndex, cartRecommendationItemHolderDataList);
         notifyDataSetChanged();
-    }
-
-    public void addSectionHeaderData(CartSectionHeaderHolderData cartSectionHeaderHolderData) {
-        cartDataList.add(cartSectionHeaderHolderData);
     }
 
     public void removeCartEmptyData() {

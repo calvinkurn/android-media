@@ -1921,11 +1921,10 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         }
         CartSectionHeaderHolderData cartSectionHeaderHolderData = new CartSectionHeaderHolderData();
         cartSectionHeaderHolderData.setTitle("Terakhir Dilihat");
-        cartAdapter.addSectionHeaderData(cartSectionHeaderHolderData);
 
         CartRecentViewHolderData cartRecentViewHolderData = new CartRecentViewHolderData();
         cartRecentViewHolderData.setRecentViewList(cartRecentViewItemHolderDataList);
-        cartAdapter.addCartRecentViewData(cartRecentViewHolderData);
+        cartAdapter.addCartRecentViewData(cartSectionHeaderHolderData, cartRecentViewHolderData);
         this.recentViewList = cartRecentViewItemHolderDataList;
     }
 
@@ -1958,11 +1957,10 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         CartSectionHeaderHolderData cartSectionHeaderHolderData = new CartSectionHeaderHolderData();
         cartSectionHeaderHolderData.setTitle("Wishlist");
         cartSectionHeaderHolderData.setShowAllAppLink(ApplinkConst.WISHLIST);
-        cartAdapter.addSectionHeaderData(cartSectionHeaderHolderData);
 
         CartWishlistHolderData cartRecentViewHolderData = new CartWishlistHolderData();
         cartRecentViewHolderData.setWishList(cartWishlistItemHolderDataList);
-        cartAdapter.addCartWishlistData(cartRecentViewHolderData);
+        cartAdapter.addCartWishlistData(cartSectionHeaderHolderData, cartRecentViewHolderData);
         this.wishlist = cartWishlistItemHolderDataList;
     }
 
@@ -1981,15 +1979,15 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             }
         }
 
+        CartSectionHeaderHolderData cartSectionHeaderHolderData = null;
         if (endlessRecyclerViewScrollListener.getCurrentPage() == 0) {
-            CartSectionHeaderHolderData cartSectionHeaderHolderData = new CartSectionHeaderHolderData();
+            cartSectionHeaderHolderData = new CartSectionHeaderHolderData();
             cartSectionHeaderHolderData.setTitle("Rekomendasi");
-            cartAdapter.addSectionHeaderData(cartSectionHeaderHolderData);
         }
 
         endlessRecyclerViewScrollListener.updateStateAfterGetData();
         hasLoadRecommendation = true;
-        cartAdapter.addCartRecommendationData(cartRecommendationItemHolderDataList);
+        cartAdapter.addCartRecommendationData(cartSectionHeaderHolderData, cartRecommendationItemHolderDataList);
         this.recommendationItems = cartRecommendationItemHolderDataList;
     }
 
