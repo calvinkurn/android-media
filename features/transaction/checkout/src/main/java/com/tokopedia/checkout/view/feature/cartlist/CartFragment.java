@@ -110,6 +110,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 /**
@@ -179,9 +180,9 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
     private boolean hasLoadRecommendation;
 
-    private List<Wishlist> wishlist;
-    private List<RecentView> recentViewList;
-    private List<RecommendationItem> recommendationItems;
+    private List<CartWishlistItemHolderData> wishlist;
+    private List<CartRecentViewItemHolderData> recentViewList;
+    private List<CartRecommendationItemHolderData> recommendationItems;
 
     public static CartFragment newInstance(Bundle bundle, String args) {
         if (bundle == null) {
@@ -1062,19 +1063,19 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             if (recentViewList == null) {
                 dPresenter.processGetRecentViewData();
             } else {
-                renderRecentView(recentViewList);
+                renderRecentView(null);
             }
 
             if (wishlist == null) {
                 dPresenter.processGetWishlistData();
             } else {
-                renderWishlist(wishlist);
+                renderWishlist(null);
             }
 
             if (recommendationItems == null) {
                 dPresenter.processGetRecommendationData(endlessRecyclerViewScrollListener.getCurrentPage());
             } else {
-                renderRecommendation(recommendationItems);
+                renderRecommendation(null);
             }
 
             if (toolbar != null) {
@@ -1895,27 +1896,29 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void renderRecentView(List<RecentView> recentViewList) {
-        this.recentViewList = recentViewList;
+    public void renderRecentView(@Nullable List<RecentView> recentViewList) {
         List<CartRecentViewItemHolderData> cartRecentViewItemHolderDataList = new ArrayList<>();
-        for (RecentView recentView : recentViewList) {
-            CartRecentViewItemHolderData cartRecentViewItemHolderData = new CartRecentViewItemHolderData();
-            cartRecentViewItemHolderData.setId(recentView.getProductId());
-            cartRecentViewItemHolderData.setName(recentView.getProductName());
-            cartRecentViewItemHolderData.setPrice(recentView.getProductPrice());
-            cartRecentViewItemHolderData.setImageUrl(recentView.getProductImage());
-            cartRecentViewItemHolderData.setWishlist(recentView.isWishlist());
-            cartRecentViewItemHolderData.setRating(recentView.getProductRating());
-            cartRecentViewItemHolderData.setReviewCount(recentView.getProductReviewCount());
-            cartRecentViewItemHolderData.setShopLocation(recentView.getShopLocation());
-            cartRecentViewItemHolderData.setShopId(recentView.getShopId());
-            cartRecentViewItemHolderData.setMinOrder(1);
-            if (recentView.getBadges().size() > 0) {
-                cartRecentViewItemHolderData.setBadgeUrl(recentView.getBadges().get(0).getImageUrl());
+        if (this.recentViewList != null) {
+            cartRecentViewItemHolderDataList.addAll(this.recentViewList);
+        } else if (recentViewList != null) {
+            for (RecentView recentView : recentViewList) {
+                CartRecentViewItemHolderData cartRecentViewItemHolderData = new CartRecentViewItemHolderData();
+                cartRecentViewItemHolderData.setId(recentView.getProductId());
+                cartRecentViewItemHolderData.setName(recentView.getProductName());
+                cartRecentViewItemHolderData.setPrice(recentView.getProductPrice());
+                cartRecentViewItemHolderData.setImageUrl(recentView.getProductImage());
+                cartRecentViewItemHolderData.setWishlist(recentView.isWishlist());
+                cartRecentViewItemHolderData.setRating(recentView.getProductRating());
+                cartRecentViewItemHolderData.setReviewCount(recentView.getProductReviewCount());
+                cartRecentViewItemHolderData.setShopLocation(recentView.getShopLocation());
+                cartRecentViewItemHolderData.setShopId(recentView.getShopId());
+                cartRecentViewItemHolderData.setMinOrder(1);
+                if (recentView.getBadges().size() > 0) {
+                    cartRecentViewItemHolderData.setBadgeUrl(recentView.getBadges().get(0).getImageUrl());
+                }
+                cartRecentViewItemHolderDataList.add(cartRecentViewItemHolderData);
             }
-            cartRecentViewItemHolderDataList.add(cartRecentViewItemHolderData);
         }
-
         CartSectionHeaderHolderData cartSectionHeaderHolderData = new CartSectionHeaderHolderData();
         cartSectionHeaderHolderData.setTitle("Terakhir Dilihat");
         cartAdapter.addSectionHeaderData(cartSectionHeaderHolderData);
@@ -1923,32 +1926,35 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         CartRecentViewHolderData cartRecentViewHolderData = new CartRecentViewHolderData();
         cartRecentViewHolderData.setRecentViewList(cartRecentViewItemHolderDataList);
         cartAdapter.addCartRecentViewData(cartRecentViewHolderData);
+        this.recentViewList = cartRecentViewItemHolderDataList;
     }
 
     @Override
-    public void renderWishlist(List<Wishlist> wishlist) {
-        this.wishlist = wishlist;
+    public void renderWishlist(@Nullable List<Wishlist> wishlist) {
         List<CartWishlistItemHolderData> cartWishlistItemHolderDataList = new ArrayList<>();
-        for (Wishlist item : wishlist) {
-            CartWishlistItemHolderData cartWishlistItemHolderData = new CartWishlistItemHolderData();
-            cartWishlistItemHolderData.setId(item.getId());
-            cartWishlistItemHolderData.setName(item.getName());
-            cartWishlistItemHolderData.setPrice(item.getPriceFmt());
-            cartWishlistItemHolderData.setImageUrl(item.getImageUrl());
-            cartWishlistItemHolderData.setWishlist(true);
-            cartWishlistItemHolderData.setRating(item.rating);
-            cartWishlistItemHolderData.setReviewCount(item.reviewCount);
-            cartWishlistItemHolderData.setMinOrder(item.getMinimumOrder());
-            if (item.getShop() != null) {
-                cartWishlistItemHolderData.setShopId(item.getShop().getId());
-                cartWishlistItemHolderData.setShopLocation(item.getShop().getLocation());
+        if (this.wishlist != null) {
+            cartWishlistItemHolderDataList.addAll(this.wishlist);
+        } else if (wishlist != null) {
+            for (Wishlist item : wishlist) {
+                CartWishlistItemHolderData cartWishlistItemHolderData = new CartWishlistItemHolderData();
+                cartWishlistItemHolderData.setId(item.getId());
+                cartWishlistItemHolderData.setName(item.getName());
+                cartWishlistItemHolderData.setPrice(item.getPriceFmt());
+                cartWishlistItemHolderData.setImageUrl(item.getImageUrl());
+                cartWishlistItemHolderData.setWishlist(true);
+                cartWishlistItemHolderData.setRating(item.rating);
+                cartWishlistItemHolderData.setReviewCount(item.reviewCount);
+                cartWishlistItemHolderData.setMinOrder(item.getMinimumOrder());
+                if (item.getShop() != null) {
+                    cartWishlistItemHolderData.setShopId(item.getShop().getId());
+                    cartWishlistItemHolderData.setShopLocation(item.getShop().getLocation());
+                }
+                if (item.getBadges().size() > 0) {
+                    cartWishlistItemHolderData.setBadgeUrl(item.getBadges().get(0).getImageUrl());
+                }
+                cartWishlistItemHolderDataList.add(cartWishlistItemHolderData);
             }
-            if (item.getBadges().size() > 0) {
-                cartWishlistItemHolderData.setBadgeUrl(item.getBadges().get(0).getImageUrl());
-            }
-            cartWishlistItemHolderDataList.add(cartWishlistItemHolderData);
         }
-
         CartSectionHeaderHolderData cartSectionHeaderHolderData = new CartSectionHeaderHolderData();
         cartSectionHeaderHolderData.setTitle("Wishlist");
         cartSectionHeaderHolderData.setShowAllAppLink(ApplinkConst.WISHLIST);
@@ -1957,18 +1963,22 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         CartWishlistHolderData cartRecentViewHolderData = new CartWishlistHolderData();
         cartRecentViewHolderData.setWishList(cartWishlistItemHolderDataList);
         cartAdapter.addCartWishlistData(cartRecentViewHolderData);
+        this.wishlist = cartWishlistItemHolderDataList;
     }
 
     @Override
-    public void renderRecommendation(List<RecommendationItem> recommendationItems) {
-        this.recommendationItems = recommendationItems;
+    public void renderRecommendation(@Nullable List<RecommendationItem> recommendationItems) {
         List<CartRecommendationItemHolderData> cartRecommendationItemHolderDataList = new ArrayList<>();
-        int previousItemCount = cartAdapter.getItemCount();
-        for (RecommendationItem recommendationItem : recommendationItems) {
-            boolean rightPosition = ++previousItemCount % 2 == 0;
-            CartRecommendationItemHolderData cartRecommendationItemHolderData =
-                    new CartRecommendationItemHolderData(recommendationItem, rightPosition);
-            cartRecommendationItemHolderDataList.add(cartRecommendationItemHolderData);
+        if (this.recommendationItems != null) {
+            cartRecommendationItemHolderDataList.addAll(this.recommendationItems);
+        } else if (recommendationItems != null) {
+            int previousItemCount = cartAdapter.getItemCount();
+            for (RecommendationItem recommendationItem : recommendationItems) {
+                boolean rightPosition = ++previousItemCount % 2 == 0;
+                CartRecommendationItemHolderData cartRecommendationItemHolderData =
+                        new CartRecommendationItemHolderData(recommendationItem, rightPosition);
+                cartRecommendationItemHolderDataList.add(cartRecommendationItemHolderData);
+            }
         }
 
         if (endlessRecyclerViewScrollListener.getCurrentPage() == 0) {
@@ -1980,6 +1990,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         endlessRecyclerViewScrollListener.updateStateAfterGetData();
         hasLoadRecommendation = true;
         cartAdapter.addCartRecommendationData(cartRecommendationItemHolderDataList);
+        this.recommendationItems = cartRecommendationItemHolderDataList;
     }
 
     @Override
