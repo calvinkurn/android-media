@@ -92,26 +92,28 @@ class ProductInfoFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        product_name.text = productDataModel.productDetailData.name
-        handleDiscount()
-        product_price.text = productDataModel.productDetailData.price
-        location.text = productDataModel.productDetailData.shop.location
-        if (productDataModel.productDetailData.badges.isNotEmpty()) {
-            badge.visibility = View.VISIBLE
-            ImageHandler.loadImageFitCenter(view.context, badge, productDataModel.productDetailData.badges[0].imageUrl)
-        } else {
-            badge.visibility = View.GONE
+        if(this::productDataModel.isInitialized && productDataModel != null) {
+            product_name.text = productDataModel.productDetailData.name
+            handleDiscount()
+            product_price.text = productDataModel.productDetailData.price
+            location.text = productDataModel.productDetailData.shop.location
+            if (productDataModel.productDetailData.badges.isNotEmpty()) {
+                badge.visibility = View.VISIBLE
+                ImageHandler.loadImageFitCenter(view.context, badge, productDataModel.productDetailData.badges[0].imageUrl)
+            } else {
+                badge.visibility = View.GONE
+            }
+            updateWishlist(productDataModel.productDetailData.isWishlist)
+            ImageHandler.loadImageRounded2(view.context, product_image, productDataModel.productDetailData.imageUrl)
+            setRatingReviewCount(productDataModel.productDetailData.rating, productDataModel.productDetailData.countReview)
+
+
+            onProductImpression()
+            onClickAddToCart()
+            onClickBuyNow()
+            onClickProductCard()
+            onClickWishlist()
         }
-        updateWishlist(productDataModel.productDetailData.isWishlist)
-        ImageHandler.loadImageRounded2(view.context, product_image, productDataModel.productDetailData.imageUrl)
-        setRatingReviewCount(productDataModel.productDetailData.rating, productDataModel.productDetailData.countReview)
-
-
-        onProductImpression()
-        onClickAddToCart()
-        onClickBuyNow()
-        onClickProductCard()
-        onClickWishlist()
     }
 
     private fun onProductImpression(){

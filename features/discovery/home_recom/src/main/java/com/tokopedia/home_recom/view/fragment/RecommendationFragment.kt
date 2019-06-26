@@ -110,7 +110,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
 
     private fun clearProductInfoView(){
         if(childFragmentManager.fragments.size > 0 && childFragmentManager.fragments[0] is ProductInfoFragment){
-            childFragmentManager.beginTransaction().remove(childFragmentManager.fragments[0])
+            childFragmentManager.beginTransaction().remove(childFragmentManager.fragments[0]).commit()
         }
     }
 
@@ -124,11 +124,6 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
                 recommendationWidgetViewModel.getRecommendationList(arrayListOf(), onErrorGetRecommendation = this::onErrorGetRecommendation)
             }
         }
-    }
-
-    override fun onDestroy() {
-        clearProductInfoView()
-        super.onDestroy()
     }
 
     private fun onErrorGetRecommendation(errorMessage: String?) {
