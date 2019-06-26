@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container"
     app:cardCornerRadius="@dimen/dp_8"
-    app:cardElevation="@dimen/dp_8"
+    app:cardElevation="@dimen/dp_1"
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true"
     android:layout_width="match_parent"
