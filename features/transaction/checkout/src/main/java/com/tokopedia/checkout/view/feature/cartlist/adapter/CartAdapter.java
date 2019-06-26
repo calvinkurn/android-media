@@ -18,6 +18,7 @@ import com.tokopedia.checkout.view.common.viewholder.CartVoucherPromoViewHolder;
 import com.tokopedia.checkout.view.common.viewholder.ShipmentSellerCashbackViewHolder;
 import com.tokopedia.checkout.view.feature.cartlist.ActionListener;
 import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartEmptyViewHolder;
+import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartLoadingViewHolder;
 import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartRecentViewViewHolder;
 import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartRecommendationViewHolder;
 import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartSectionHeaderViewHolder;
@@ -27,6 +28,7 @@ import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartTopAdsViewHol
 import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartWishlistViewHolder;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartEmptyHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartLoadingHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartRecentViewHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartRecentViewItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartRecommendationItemHolderData;
@@ -96,6 +98,8 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             return CartSectionHeaderViewHolder.Companion.getLAYOUT();
         } else if (cartDataList.get(position) instanceof CartRecommendationItemHolderData) {
             return CartRecommendationViewHolder.Companion.getLAYOUT();
+        } else if (cartDataList.get(position) instanceof CartLoadingHolderData) {
+            return CartLoadingViewHolder.Companion.getLAYOUT();
         } else {
             return super.getItemViewType(position);
         }
@@ -148,6 +152,10 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(CartRecommendationViewHolder.Companion.getLAYOUT(), parent, false);
             return new CartRecommendationViewHolder(view, actionListener);
+        } else if (viewType == CartLoadingViewHolder.Companion.getLAYOUT()) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(CartLoadingViewHolder.Companion.getLAYOUT(), parent, false);
+            return new CartLoadingViewHolder(view);
         }
         throw new RuntimeException("No view holder type found");
     }
@@ -199,6 +207,10 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         } else if (getItemViewType(position) == CartRecommendationViewHolder.Companion.getLAYOUT()) {
             final CartRecommendationViewHolder holderView = (CartRecommendationViewHolder) holder;
             final CartRecommendationItemHolderData data = (CartRecommendationItemHolderData) cartDataList.get(position);
+            holderView.bind(data);
+        } else if (getItemViewType(position) == CartLoadingViewHolder.Companion.getLAYOUT()) {
+            final CartLoadingViewHolder holderView = (CartLoadingViewHolder) holder;
+            final CartLoadingHolderData data = (CartLoadingHolderData) cartDataList.get(position);
             holderView.bind(data);
         }
     }

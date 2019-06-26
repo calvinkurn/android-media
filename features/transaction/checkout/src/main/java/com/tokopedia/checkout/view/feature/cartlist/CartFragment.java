@@ -339,21 +339,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         cartRecyclerView.setLayoutManager(layoutManager);
         cartRecyclerView.setAdapter(cartAdapter);
         cartRecyclerView.addItemDecoration(cartItemDecoration);
-        cartRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (recyclerView.canScrollVertically(-1)) {
-                    disableSwipeRefresh();
-                } else {
-                    enableSwipeRefresh();
-                }
-            }
-        });
         ((SimpleItemAnimator) cartRecyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
@@ -365,6 +350,16 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             }
         });
         endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onScrolled(RecyclerView view, int dx, int dy) {
+                if (view.canScrollVertically(-1)) {
+                    disableSwipeRefresh();
+                } else {
+                    enableSwipeRefresh();
+                }
+                super.onScrolled(view, dx, dy);
+            }
+
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 if (hasLoadRecommendation) {

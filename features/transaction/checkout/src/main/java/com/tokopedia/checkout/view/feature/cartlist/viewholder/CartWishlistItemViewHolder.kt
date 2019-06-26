@@ -36,8 +36,8 @@ class CartWishlistItemViewHolder(val view: View, val actionListener: ActionListe
             itemView.img_rating.visibility = View.VISIBLE
             itemView.tv_review_count.visibility = View.VISIBLE
         } else {
-            itemView.img_rating.visibility = View.GONE
-            itemView.tv_review_count.visibility = View.GONE
+            itemView.img_rating.visibility = View.INVISIBLE
+            itemView.tv_review_count.visibility = View.INVISIBLE
         }
 
         if (!TextUtils.isEmpty(element.badgeUrl)) {
