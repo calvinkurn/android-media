@@ -87,6 +87,10 @@ class VerifyDOBActivity : BaseARActivity<VerifyDOBViewModel>() {
 
     override fun onStart() {
         super.onStart()
+        sendGeneralEvent(eventView,
+                event,
+                "view - adult pop up - tanggal lahir page",
+                "tanggal lahir page - $event/$destinationUrlGtm")
         verifyDobModel.userIsAdult.observe(this, Observer {
             setResult(RESULT_IS_ADULT)
             finish()
@@ -96,14 +100,6 @@ class VerifyDOBActivity : BaseARActivity<VerifyDOBViewModel>() {
             setResult(RESULT_IS_NOT_ADULT)
             finish()
         })
-    }
-
-    override fun onResume() {
-        super.onResume()
-        sendGeneralEvent(eventView,
-                event,
-                "view - adult pop up - tanggal lahir page",
-                "tanggal lahir page - $event/$destinationUrlGtm")
     }
 
     override fun getMenuRes(): Int {
