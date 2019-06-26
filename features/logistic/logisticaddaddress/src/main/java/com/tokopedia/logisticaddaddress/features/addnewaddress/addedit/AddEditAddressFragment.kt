@@ -458,7 +458,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         setWrapperError(et_kota_kecamatan_mismatch_wrapper, null)
         setWrapperError(et_kode_pos_mismatch_wrapper, null)
         setWrapperError(et_alamat_mismatch_wrapper, null)
-        // setWrapperError(et_detail_alamat_mismatch_wrapper, null)
     }
 
     private fun resetErrorFormDefault() {
