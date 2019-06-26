@@ -123,6 +123,10 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
             doLoadAutocompleteGeocode()
         } else {
             if (isLocationEnabled()) {
+                if (currentLat == 0.0 && currentLong == 0.0) {
+                    currentLat = defaultLat
+                    currentLong = defaultLong
+                }
                 doLoadAutocompleteGeocode()
 
             } else {
