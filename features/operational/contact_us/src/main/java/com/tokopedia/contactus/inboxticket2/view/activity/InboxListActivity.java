@@ -43,6 +43,8 @@ public class InboxListActivity extends InboxBaseActivity
     private View clearSearch;
     private TicketListAdapter mAdapter;
 
+    private TextView btnFilterTv;
+
     @DeepLink(ApplinkConst.INBOX_TICKET)
     public static TaskStackBuilder getCallingTaskStackList(Context context, Bundle extras) {
         Intent homeIntent = ((ContactUsModuleRouter) context.getApplicationContext()).getHomeIntent
@@ -148,6 +150,7 @@ public class InboxListActivity extends InboxBaseActivity
         searchView = findViewById(R.id.inbox_search_view);
         editText = findViewById(R.id.custom_search);
         clearSearch = findViewById(R.id.close_search);
+        btnFilterTv = findViewById(R.id.btn_filter_tv);
     }
 
     private void settingOnClickListener() {
