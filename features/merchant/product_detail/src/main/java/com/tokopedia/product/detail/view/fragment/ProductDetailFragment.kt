@@ -93,6 +93,7 @@ import com.tokopedia.product.report.view.dialog.ReportDialogFragment
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.product.warehouse.view.viewmodel.ProductWarehouseViewModel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.referral.Constants.Action.Companion.ACTION_GET_REFERRAL_CODE
 import com.tokopedia.referral.ReferralAction
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -148,10 +149,10 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     lateinit var imageReviewViewView: PartialImageReviewView
     lateinit var mostHelpfulReviewView: PartialMostHelpfulReviewView
     lateinit var latestTalkView: PartialLatestTalkView
-    lateinit var otherProductView: PartialOtherProductView
     lateinit var recommendationProductView: PartialRecommendationProductView
     lateinit var recommendationTopFirstView: PartialRecommendationTopFirstView
-    lateinit var recommendationBottomView: PartialRecommendationBottomView
+    lateinit var recommendationThirdView: PartialRecommendationThirdView
+    lateinit var recommendationFourthView: PartialRecommendationFourthView
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -329,31 +330,40 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 performanceMonitoringFull.stopTrace()
             it?.run { renderProductInfo3(this) }
         })
-//
-//        productInfoViewModel.loadOtherProduct.observe(this, Observer {
-//            when (it) {
-//                is Loading -> otherProductView.startLoading()
-//                is Loaded -> {
-//                    otherProductView.renderData((it.data as? Success)?.data ?: listOf())
-//                }
-//            }
-//        })
 
         productInfoViewModel.loadTopAdsProduct.observe(this, Observer {
             when (it) {
                 is Loading -> {
-                    recommendationProductView.startLoading()
-                    recommendationTopFirstView.startLoading()
+                    loadingRecommendationView()
                 }
                 is Loaded -> {
                     (it.data as? Success)?.data?.let { result ->
-                        recommendationTopFirstView.renderData(result[0])
-                        recommendationProductView.renderData(result[1])
+                        renderRecommendationData(result)
                     }
                 }
             }
         })
+    }
 
+    private fun hideRecommendationView(){
+        recommendationProductView.hideView()
+        recommendationTopFirstView.hideView()
+        recommendationThirdView.hideView()
+        recommendationFourthView.hideView()
+    }
+
+    private fun loadingRecommendationView() {
+        recommendationProductView.startLoading()
+        recommendationTopFirstView.startLoading()
+        recommendationThirdView.startLoading()
+        recommendationFourthView.startLoading()
+    }
+
+    private fun renderRecommendationData(result: List<RecommendationWidget>) {
+        recommendationTopFirstView.renderData(result[0])
+        recommendationProductView.renderData(result[1])
+        recommendationThirdView.renderData(result[2])
+        recommendationFourthView.renderData(result[3])
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -660,9 +670,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         if (!::latestTalkView.isInitialized)
             latestTalkView = PartialLatestTalkView.build(base_latest_talk)
 
-//        if (!::otherProductView.isInitialized)
-//            otherProductView = PartialOtherProductView.build(base_other_product)
-
         if (!::recommendationProductView.isInitialized) {
             recommendationProductView = PartialRecommendationProductView.build(base_recommen_product, this)
         }
@@ -853,9 +860,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun loadProductData(forceRefresh: Boolean = false) {
         if (forceRefresh) {
-//            otherProductView.renderData(listOf())
-            recommendationProductView.hideView()
-            recommendationTopFirstView.hideView()
+            hideRecommendationView()
         }
         if (productId != null || (productKey != null && shopDomain != null)) {
             productInfoViewModel.getProductInfo(ProductParams(productId, shopDomain, productKey), forceRefresh)
@@ -967,7 +972,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         productInfoViewModel.p2General.removeObservers(this)
         productInfoViewModel.p2Login.removeObservers(this)
         productInfoViewModel.productInfoP3resp.removeObservers(this)
-        productInfoViewModel.loadOtherProduct.removeObservers(this)
         productInfoViewModel.loadTopAdsProduct.removeObservers(this)
         productInfoViewModel.clear()
         productWarehouseViewModel.clear()

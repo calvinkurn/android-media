@@ -9,10 +9,8 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.view.adapter.RecommendationProductAdapter
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import kotlinx.android.synthetic.main.partial_product_recommendation.view.*
 
-abstract class BaseRecommendationView() {
-
+abstract class BaseRecommendationView {
 
     fun hideView() {
         getView().gone()
