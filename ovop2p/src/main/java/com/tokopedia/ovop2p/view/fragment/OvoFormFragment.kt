@@ -61,14 +61,15 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
             when(id){
                 R.id.proceed -> {
                     //make request call
-                    rcvrMsg = msgEdtxtv.text.toString()
-                    createOvoP2pTransferReqMap(Constants.Keys.AMOUNT, rcvrAmt)
-                    createOvoP2pTransferReqMap(Constants.Keys.NAME, rcvrName)
-                    createOvoP2pTransferReqMap(Constants.Keys.FORMATTED_AMOUNT, rcvrAmt)
-                    createOvoP2pTransferReqMap(Constants.Keys.TO_PHN_NO, rcvrPhnNo)
-                    createOvoP2pTransferReqMap(Constants.Keys.MESSAGE, rcvrMsg)
-                    (activity as LoaderUiListener).showProgressDialog()
-                    context?.let { ovoP2pTransferRequestViewModel.makeTransferRequestCall(it, trnsfrReqDataMap) }
+                    gotoThankYouActivity("3558", nonOvo = false)
+//                    rcvrMsg = msgEdtxtv.text.toString()
+//                    createOvoP2pTransferReqMap(Constants.Keys.AMOUNT, rcvrAmt)
+//                    createOvoP2pTransferReqMap(Constants.Keys.NAME, rcvrName)
+//                    createOvoP2pTransferReqMap(Constants.Keys.FORMATTED_AMOUNT, rcvrAmt)
+//                    createOvoP2pTransferReqMap(Constants.Keys.TO_PHN_NO, rcvrPhnNo)
+//                    createOvoP2pTransferReqMap(Constants.Keys.MESSAGE, rcvrMsg)
+//                    (activity as LoaderUiListener).showProgressDialog()
+//                    context?.let { ovoP2pTransferRequestViewModel.makeTransferRequestCall(it, trnsfrReqDataMap) }
                 }
                 R.id.iv_contact -> {
                     val intent = Intent(activity, AllContactsActivity::class.java)
@@ -136,9 +137,9 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
                 walletBalanceViewModel.walletLiveData?.observe(this, Observer <WalletDataBase>{
                     if(it != null){
                         (activity as LoaderUiListener).hideProgressDialog()
-                        saldoTextView.text = it.wallet?.balance ?: ""
+                        saldoTextView.text = it.wallet?.cashBalance ?: ""
                         if(!TextUtils.isEmpty(saldoTextView.text)){
-                            sndrAmt = OvoP2pUtil.extractNumbersFromString(saldoTextView.text.toString()).toLong()
+                            sndrAmt = it.wallet?.rawCashBalance?.toLong() ?: 0
                         }
                     }
                 })
@@ -324,8 +325,6 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
 
     private fun showOvoUserConfirmationDialog() {
         createOvoP2pTransferReqMap(Constants.Keys.RECIEVER_NAME, rcvrName)
-        createOvoP2pTransferReqMap(Constants.Keys.SENDER_NAME, "")
-        createOvoP2pTransferReqMap(Constants.Keys.SENDER_PHONE, "")
         alertDialog = OvoP2pUtil.getOvoUserTransferConfirmSubmitAlertDialog(activity, this, trnsfrReqDataMap).create()
         alertDialog.show()
     }

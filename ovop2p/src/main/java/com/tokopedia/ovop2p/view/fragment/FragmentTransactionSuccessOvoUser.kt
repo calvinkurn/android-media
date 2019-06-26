@@ -18,6 +18,8 @@ import com.tokopedia.ovop2p.model.OvoP2pTransferThankyouBase
 import com.tokopedia.ovop2p.view.interfaces.ActivityListener
 import com.tokopedia.ovop2p.view.interfaces.LoaderUiListener
 import com.tokopedia.ovop2p.viewmodel.OvoP2pTxnThankYouOvoUsrVM
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 
 class FragmentTransactionSuccessOvoUser : BaseDaggerFragment(), View.OnClickListener {
 
@@ -33,6 +35,7 @@ class FragmentTransactionSuccessOvoUser : BaseDaggerFragment(), View.OnClickList
     private lateinit var infoIcon: ImageView
     private var transferId: String = ""
     private lateinit var txnThankYouPageVM: OvoP2pTxnThankYouOvoUsrVM
+    private lateinit var userSession : UserSessionInterface
 
     override fun initInjector() {
         getComponent<OvoP2pTransferComponent>(OvoP2pTransferComponent::class.java).inject(this)
@@ -64,6 +67,12 @@ class FragmentTransactionSuccessOvoUser : BaseDaggerFragment(), View.OnClickList
         return view
     }
 
+    private fun setSenderUserData(){
+        userSession = UserSession(context)
+        sndrName.text = userSession.name
+        sndrNum.text = userSession.phoneNumber
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         updateHeader()
@@ -85,7 +94,7 @@ class FragmentTransactionSuccessOvoUser : BaseDaggerFragment(), View.OnClickList
         if (!::txnThankYouPageVM.isInitialized) {
             if (activity != null) {
                 txnThankYouPageVM = ViewModelProviders.of(this.activity!!).get(OvoP2pTxnThankYouOvoUsrVM::class.java)
-                txnThankYouPageVM.ovoP2pTransferThankyouBaseMutableLiveData?.observe(this.activity!!, Observer<OvoP2pTransferThankyouBase> {
+                txnThankYouPageVM.ovoP2pTransferThankyouBaseMutableLiveData?.observe(this, Observer<OvoP2pTransferThankyouBase> {
                     if(it != null){
                         (activity as LoaderUiListener).hideProgressDialog()
                         if(TextUtils.isEmpty(it.ovoP2pTransferThankyou.errors.message)){
@@ -102,7 +111,7 @@ class FragmentTransactionSuccessOvoUser : BaseDaggerFragment(), View.OnClickList
 
     private fun gotoErrorPage(errMsg: String){
         var fragment: BaseDaggerFragment = FragmentTransferError.createInstance()
-        var bundle: Bundle = Bundle()
+        var bundle = Bundle()
         bundle.putString(Constants.Keys.ERR_MSG_ARG, errMsg)
         fragment.arguments = bundle
         (activity as ActivityListener).addReplaceFragment(fragment, true, FragmentTransferError.TAG)
@@ -115,10 +124,9 @@ class FragmentTransactionSuccessOvoUser : BaseDaggerFragment(), View.OnClickList
     private fun assignThankYouData(thankYouData: OvoP2pTransferThankyouBase) {
         date.text = thankYouData.ovoP2pTransferThankyou.trnsfrDate
         trnsfrAmt.text = thankYouData.ovoP2pTransferThankyou.amt.toString()
-        sndrName.text = thankYouData.ovoP2pTransferThankyou.source.name
-        sndrNum.text = thankYouData.ovoP2pTransferThankyou.source.phone
         rcvrName.text = thankYouData.ovoP2pTransferThankyou.soure1.name
         rcvrNum.text = thankYouData.ovoP2pTransferThankyou.soure1.phone
+        setSenderUserData()
     }
 
     override fun onClick(v: View?) {
