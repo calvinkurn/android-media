@@ -236,13 +236,6 @@ public class SearchProductCardView extends BaseCustomView {
 
     private void setMarginsToView(View view, int leftPixel, int topPixel, int rightPixel, int bottomPixel) {
         if(view.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
-//            ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) view.getLayoutParams();
-//
-//            layoutParams.leftMargin = leftPixel < 0 ? layoutParams.leftMargin : leftPixel;
-//            layoutParams.topMargin = topPixel < 0 ? layoutParams.topMargin : topPixel;
-//            layoutParams.rightMargin = rightPixel < 0 ? layoutParams.rightMargin : rightPixel;
-//            layoutParams.bottomMargin = bottomPixel < 0 ? layoutParams.bottomMargin : bottomPixel;
-
             ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
 
             layoutParams.setMargins(
