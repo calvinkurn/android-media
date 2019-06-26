@@ -10,7 +10,7 @@ class RecommendationCarouselItemViewHolder (
         private val view: View
 ) : AbstractViewHolder<RecommendationCarouselItemDataModel>(view){
 
-    private val productItem: RecommendationCardView by lazy { view.findViewById(R.id.product_item) }
+    private val productItem: RecommendationCardView by lazy { view.findViewById<RecommendationCardView>(R.id.product_item) }
 
     override fun bind(element: RecommendationCarouselItemDataModel) {
         productItem.setRecommendationModel(element.productItem, element.listener)
