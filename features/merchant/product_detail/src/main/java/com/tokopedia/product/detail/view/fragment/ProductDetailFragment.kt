@@ -788,6 +788,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         })
 
     }
+
     private fun initCollapsingToolBar() {
         collapsing_toolbar.show()
         varToolbar = toolbar
@@ -796,10 +797,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         fab_detail.setAnchor(R.id.view_picture)
 
     }
-
-
-
-
 
     private fun collapsedAppBar() {
         initStatusBarLight()
