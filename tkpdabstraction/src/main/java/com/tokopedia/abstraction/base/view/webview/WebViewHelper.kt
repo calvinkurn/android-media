@@ -1,6 +1,7 @@
 package com.tokopedia.abstraction.base.view.webview
 
-import java.util.regex.Pattern
+import java.net.URI
+import java.net.URISyntaxException
 
 /**
  * Created by Ade Fulki on 2019-06-21.
@@ -9,8 +10,19 @@ import java.util.regex.Pattern
 
 object WebViewHelper {
 
-    private val PATTERN: String = "^((http|https)://(.+[.]|)tokopedia[.]com)[^.].*"
+    private const val PREFIX_PATTERN: String = "www."
+    private const val SUFFIX_PATTERN: String = ".tokopedia.com"
+    private const val DOMAIN_PATTERN: String = "tokopedia.com"
 
     @JvmStatic
-    fun validateUrl(url: String): Boolean = Pattern.matches(PATTERN, url)
+    fun validateUrl(url: String): Boolean {
+        val domain = getDomainName(url)
+        return domain.endsWith(SUFFIX_PATTERN) || domain == DOMAIN_PATTERN
+    }
+
+    @Throws(URISyntaxException::class)
+    private fun getDomainName(url: String): String {
+        val domain = URI(url).host
+        return if (domain.startsWith(PREFIX_PATTERN)) domain.substring(4) else domain
+    }
 }
