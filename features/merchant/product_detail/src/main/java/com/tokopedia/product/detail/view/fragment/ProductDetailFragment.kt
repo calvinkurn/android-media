@@ -69,7 +69,6 @@ import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.Wholesale
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
-import com.tokopedia.product.detail.constant.RemoteConfig.REMOTE_CONFIG_APP_SHOW_SEARCH_BAR_PDP
 import com.tokopedia.product.detail.data.model.*
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
@@ -731,11 +730,60 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         return !(scrollBounds.top > bottom)
     }
     private fun initView() {
-        val appShowSearchPDP = remoteConfig.getBoolean(REMOTE_CONFIG_APP_SHOW_SEARCH_BAR_PDP, true)
+        val appShowSearchPDP = remoteConfig.getBoolean(RemoteConfigKey.REMOTE_CONFIG_APP_SHOW_SEARCH_BAR_PDP, true)
 
         if(appShowSearchPDP) {
             initShowSearchPDP()
         }else {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             initCollapsingToolBar()
         }
         varToolbar.show()
