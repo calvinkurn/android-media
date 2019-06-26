@@ -23,14 +23,14 @@ public class AdultManager {
 
     private static final int REQUEST_CODE = 5838;
 
-    public static showAdultPopUp(Context context, int origin, String destinationGtm) {
+    public static void showAdultPopUp(Context context, int origin, String destinationGtm) {
         Intent intent = RouteManager.getIntent(context, ApplinkConstInternalCategory.INSTANCE.getAGE_RESTRICTION());
         intent.putExtra(EXTRA_ORIGIN, origin);
         intent.putExtra(EXTRA_DESTINATION_GTM, destinationGtm);
         startActivityForResult(intent, REQUEST_CODE);
     }
 
-    public static handleActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
+    public static void handleActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 //todo something when user logged in and preverified
