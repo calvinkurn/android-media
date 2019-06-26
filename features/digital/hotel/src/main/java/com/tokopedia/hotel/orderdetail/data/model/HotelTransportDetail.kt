@@ -40,7 +40,7 @@ data class HotelTransportDetail(
             @Expose
             val propertyCountry: String = "",
 
-            @SerializedName("applink")
+            @SerializedName("appLink")
             @Expose
             val applink: String = "",
 

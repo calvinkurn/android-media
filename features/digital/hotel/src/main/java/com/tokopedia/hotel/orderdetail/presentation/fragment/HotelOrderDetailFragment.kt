@@ -143,7 +143,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
         top_conditional_text.text = hotelOrderDetail.conditionalInfo.title
 
         bottom_conditional_text.visibility = if (hotelOrderDetail.conditionalInfoBottom.title.isNotBlank()) View.VISIBLE else View.GONE
-        bottom_conditional_text.text = hotelOrderDetail.conditionalInfoBottom.title
+        bottom_conditional_text.text = Html.fromHtml(hotelOrderDetail.conditionalInfoBottom.title)
     }
 
     fun renderCancellationInfo(hotelTransportDetail: HotelTransportDetail) {
@@ -160,16 +160,16 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             refund_text.text = hotelTransportDetail.cancellation.content
         }
 
-        call_hotel_layout.setOnClickListener { showCallButtonSheet(hotelTransportDetail.contactInfo) }
+        if (hotelTransportDetail.contactInfo.isNotEmpty()) {
+            call_hotel_layout.setOnClickListener { showCallButtonSheet(hotelTransportDetail.contactInfo) }
+        } else call_hotel_layout.visibility = View.GONE
+
     }
 
     fun renderTransactionDetail(orderDetail: HotelOrderDetail) {
 
         transaction_status.text = orderDetail.status.statusText
-        when (orderDetail.status.status) {
-            ORDER_STATUS_FAIL -> transaction_status.setTextColor(resources.getColor(R.color.red_pink))
-            ORDER_STATUS_SUCCESS -> transaction_status.setTextColor(resources.getColor(R.color.tkpd_main_green))
-        }
+        transaction_status.setTextColor(Color.parseColor(orderDetail.status.textColor))
 
         var transactionDetailAdapter = TitleTextAdapter(TitleTextAdapter.HORIZONTAL_LAYOUT)
         transaction_detail_title_recycler_view.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
@@ -192,7 +192,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             }
         }
 
-        if (orderDetail.status.status == ORDER_STATUS_SUCCESS) {
+        if (orderDetail.hotelTransportDetails.isShowEVoucher) {
             evoucher_layout.visibility = View.VISIBLE
             evoucher_layout.setOnClickListener {
                 goToEvoucherPage()
@@ -401,7 +401,6 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
         const val TAG_CONTACT_INFO = "guestContactInfo"
         const val TAG_CANCELLATION_INFO = "cancellationPolicyInfo"
         const val ORDER_STATUS_SUCCESS = 700
-        const val ORDER_STATUS_FAIL = 600
 
         const val SAVED_KEY_ORDER_ID = "keyOrderId"
         const val SAVED_KEY_ORDER_CATEGORY = "keyOrderCategory"
