@@ -80,11 +80,11 @@ class HotelBookingFragment : HotelBaseFragment() {
         bookingViewModel.hotelCartResult.observe(this, android.arch.lifecycle.Observer {
             when (it) {
                 is Success -> {
-                    hotelCart = it.data
+                    hotelCart = it.data.response
                     initView()
                 }
                 is Fail -> {
-                    NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))
+                    showErrorState(it.throwable)
                 }
             }
         })

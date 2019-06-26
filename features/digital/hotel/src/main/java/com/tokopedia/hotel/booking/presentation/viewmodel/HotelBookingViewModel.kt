@@ -26,7 +26,7 @@ import javax.inject.Inject
 class HotelBookingViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
                                                 val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
-    val hotelCartResult = MutableLiveData<Result<HotelCart>>()
+    val hotelCartResult = MutableLiveData<Result<HotelCart.Response>>()
     val hotelCheckoutResult = MutableLiveData<Result<HotelCheckoutResponse>>()
 
     fun getCartData(rawQuery: String, cartId: String, dummy: String = "") {
@@ -36,7 +36,7 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
             val data = withContext(Dispatchers.Default) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TYPE_HOTEL_CART, params)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
-            }.getSuccessData<HotelCart>()
+            }.getSuccessData<HotelCart.Response>()
 
             hotelCartResult.value = Success(data)
         }) {
