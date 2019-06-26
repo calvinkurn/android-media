@@ -68,7 +68,7 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
 
     companion object {
         const val PARAM_CART_PROPERTY = "data"
-        private val TYPE_HOTEL_CART = HotelCart::class.java
+        private val TYPE_HOTEL_CART = HotelCart.Response::class.java
         private val TYPE_HOTEL_CHECKOUT = HotelCheckoutResponse::class.java
     }
 }
