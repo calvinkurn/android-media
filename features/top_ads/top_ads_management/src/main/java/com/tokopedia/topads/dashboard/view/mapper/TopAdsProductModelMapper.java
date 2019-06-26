@@ -14,6 +14,7 @@ public class TopAdsProductModelMapper {
         TopAdsProductViewModel pd
                 = new TopAdsProductViewModel();
         pd.setAdId(productDomain.getAdId());
+        pd.setGroupId(productDomain.getGroupId());
         pd.setGroupName(productDomain.getGroupName());
         pd.setId(productDomain.getId());
         pd.setImageUrl(productDomain.getImageUrl());

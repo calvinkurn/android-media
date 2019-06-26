@@ -30,8 +30,6 @@ public interface GlobalNavRouter {
 
     ApplicationUpdate getAppUpdate(Context context);
 
-    Intent getOnBoardingIntent(Activity activity);
-
     int getCartCount(Context context);
 
     void setCartCount(Context context, int count);

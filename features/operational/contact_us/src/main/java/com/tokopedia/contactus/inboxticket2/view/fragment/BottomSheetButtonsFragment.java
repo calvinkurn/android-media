@@ -17,7 +17,7 @@ import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract;
 
 import java.util.Arrays;
-
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class BottomSheetButtonsFragment extends InboxBottomSheetFragment implements View.OnClickListener {
 

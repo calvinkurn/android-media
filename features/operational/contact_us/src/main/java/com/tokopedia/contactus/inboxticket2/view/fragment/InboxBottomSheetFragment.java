@@ -17,8 +17,7 @@ import com.tokopedia.contactus.common.analytics.ContactUsTracking;
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking;
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxDetailActivity;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
-
-
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public abstract class InboxBottomSheetFragment extends BottomSheetDialogFragment {
 
@@ -61,6 +60,8 @@ public abstract class InboxBottomSheetFragment extends BottomSheetDialogFragment
                              Bundle savedInstanceState) {
         View contentView = inflater.inflate(layoutID, container, false);
         title = contentView.findViewById(R.id.tv_bottom_sheet_title);
+        title.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                (getActivity(), R.drawable.ic_close_x_black), null, null , null);
         getDialog().setOnShowListener(dialog -> {
             BottomSheetDialog d = (BottomSheetDialog) dialog;
             View bottomSheetInternal = d.findViewById(R.id.design_bottom_sheet);

@@ -5,6 +5,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.image.ImageHandler;
+import com.tokopedia.core.ReviewForm;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.MethodChecker;

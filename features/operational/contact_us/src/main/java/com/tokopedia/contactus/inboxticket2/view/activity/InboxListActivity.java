@@ -27,6 +27,8 @@ import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract;
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText;
 
 import java.util.List;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+
 
 public class InboxListActivity extends InboxBaseActivity
         implements InboxListContract.InboxListView, View.OnClickListener {
@@ -131,6 +133,8 @@ public class InboxListActivity extends InboxBaseActivity
     void initView() {
         findingViewsId();
         settingOnClickListener();
+        btnFilterTv.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                (this, R.drawable.ic_filter_list), null, null , null);
         rvEmailList.addOnScrollListener(rvOnScrollListener);
         editText.setListener(((InboxListContract.InboxListPresenter) mPresenter).getSearchListener());
     }

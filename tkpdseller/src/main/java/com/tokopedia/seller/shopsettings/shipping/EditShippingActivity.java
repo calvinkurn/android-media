@@ -3,11 +3,14 @@ package com.tokopedia.seller.shopsettings.shipping;
 import android.os.Bundle;
 import android.view.WindowManager;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.shopsettings.shipping.fragment.FragmentEditShipping;
 
+@DeepLink({ApplinkConst.SELLER_SHIPPING_EDITOR})
 public class EditShippingActivity extends TActivity {
 
     @Override

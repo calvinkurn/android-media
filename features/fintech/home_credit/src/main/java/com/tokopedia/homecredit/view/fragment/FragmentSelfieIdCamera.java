@@ -17,6 +17,7 @@ import com.tokopedia.homecredit.R;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class FragmentSelfieIdCamera extends HomeCreditSelfieFragment{
 
@@ -29,7 +30,7 @@ public class FragmentSelfieIdCamera extends HomeCreditSelfieFragment{
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.frgament_kyc_selfieid_camera, container, false);
-        ((ImageView)view.findViewById(R.id.iv_capture_image)).setImageResource(R.drawable.ic_button_capture);
+        ((ImageView)view.findViewById(R.id.iv_capture_image)).setImageDrawable(MethodChecker.getDrawable(getActivity(), R.drawable.ic_button_capture));
         return view;
     }
 
@@ -60,6 +61,7 @@ public class FragmentSelfieIdCamera extends HomeCreditSelfieFragment{
         super.onCreate(savedInstanceState);
         actionCreator = (ActionCreator) getArguments().getSerializable(ACTION_CREATOR_ARG);
         actionDataProvider = (ActionDataProvider) getArguments().getSerializable(ACTION_KEYS_PROVIDER_ARG);
+        getArguments().clear();
     }
 
     @Override

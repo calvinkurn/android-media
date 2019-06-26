@@ -3,7 +3,6 @@ package com.tokopedia.shipping_recommendation.domain.shipping;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.promocheckout.common.domain.model.promostacking.response.VoucherOrdersItem;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.transaction.common.data.pickuppoint.Store;
@@ -46,6 +45,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
     private String dropshiperName;
     private String dropshiperPhone;
     private boolean isInsurance;
+    private boolean saveStateFlag;
 
     private int weightUnit;
     private boolean productFinsurance;
@@ -116,6 +116,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dropshiperName = in.readString();
         dropshiperPhone = in.readString();
         isInsurance = in.readByte() != 0;
+        saveStateFlag = in.readByte() != 0;
         weightUnit = in.readInt();
         productFinsurance = in.readByte() != 0;
         productFcancelPartial = in.readByte() != 0;
@@ -170,6 +171,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeString(dropshiperName);
         dest.writeString(dropshiperPhone);
         dest.writeByte((byte) (isInsurance ? 1 : 0));
+        dest.writeByte((byte) (saveStateFlag ? 1 : 0));
         dest.writeInt(weightUnit);
         dest.writeByte((byte) (productFinsurance ? 1 : 0));
         dest.writeByte((byte) (productFcancelPartial ? 1 : 0));
@@ -256,6 +258,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         newShipmentCartItemModel.setDropshiperName(shipmentCartItemModel.getDropshiperName());
         newShipmentCartItemModel.setDropshiperPhone(shipmentCartItemModel.getDropshiperPhone());
         newShipmentCartItemModel.setInsurance(shipmentCartItemModel.isInsurance());
+        newShipmentCartItemModel.setSaveStateFlag(shipmentCartItemModel.isSaveStateFlag());
         newShipmentCartItemModel.setStateLoadingCourierState(shipmentCartItemModel.isStateLoadingCourierState());
         newShipmentCartItemModel.setStateHasLoadCourierState(shipmentCartItemModel.isStateHasLoadCourierState());
         newShipmentCartItemModel.setStateHasExtraMarginTop(shipmentCartItemModel.isStateHasExtraMarginTop());
@@ -660,6 +663,14 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
 
     public void setVoucherLogisticItemUiModel(VoucherLogisticItemUiModel voucherLogisticItemUiModel) {
         this.voucherLogisticItemUiModel = voucherLogisticItemUiModel;
+    }
+
+    public boolean isSaveStateFlag() {
+        return saveStateFlag;
+    }
+
+    public void setSaveStateFlag(boolean saveStateFlag) {
+        this.saveStateFlag = saveStateFlag;
     }
 
     @Override

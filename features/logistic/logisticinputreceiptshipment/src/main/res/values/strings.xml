@@ -11,5 +11,7 @@
     <string name="error_no_courier_chosen_logistic_module">Mohon Pilih Kurir</string>
     <string name="label_select_courier_logistic_module">Kurir Pengiriman</string>
     <string name="label_select_service_logistic_module">Tipe Pesanan</string>
+    <string name="rationale_barcode_permission">Aplikasi ini membutuhkan beberapa izin. Perbolehkan?</string>
+    <string name="permission_denied">Akses tidak diberikan</string>
 
 </resources>

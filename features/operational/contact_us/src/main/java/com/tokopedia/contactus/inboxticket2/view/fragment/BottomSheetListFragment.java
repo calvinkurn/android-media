@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class BottomSheetListFragment extends InboxBottomSheetFragment {
 
