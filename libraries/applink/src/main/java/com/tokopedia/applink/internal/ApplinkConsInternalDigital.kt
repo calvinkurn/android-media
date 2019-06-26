@@ -1,8 +1,12 @@
 package com.tokopedia.applink.internal
 
+import com.tokopedia.applink.constant.DeeplinkConstant
+
 object ApplinkConsInternalDigital {
 
     const val HOST_DIGITAL = "digital"
 
-    const val CART_DIGITAL = "${HOST_DIGITAL}/telco/cart"
+    const val INTERNAL_DIGITAL = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_DIGITAL}"
+
+    const val CART_DIGITAL = "${INTERNAL_DIGITAL}/telco/cart"
 }
