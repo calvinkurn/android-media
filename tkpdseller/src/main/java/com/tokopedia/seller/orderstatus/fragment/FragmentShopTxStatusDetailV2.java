@@ -1,6 +1,5 @@
 package com.tokopedia.seller.orderstatus.fragment;
 
-import android.Manifest;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -57,6 +56,9 @@ import org.jetbrains.annotations.NotNull;
 import org.parceler.Parcels;
 
 import rx.subscriptions.CompositeSubscription;
+
+import static com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_CAMERA;
+import static com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE;
 
 /**
  * Created by kris on 2/14/17. Tokopedia
@@ -438,7 +440,7 @@ public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment
     }
 
     private String[] getPermissions() {
-        return new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE};
+        return new String[]{PERMISSION_CAMERA, PERMISSION_WRITE_EXTERNAL_STORAGE};
     }
 
     public void onScanBarcodeClicked() {

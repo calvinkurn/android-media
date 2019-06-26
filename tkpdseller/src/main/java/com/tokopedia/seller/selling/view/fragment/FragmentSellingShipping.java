@@ -56,6 +56,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import static com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_CAMERA;
+import static com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE;
+
 /**
  * Created by Toped10 on 7/28/2016.
  */
@@ -125,7 +128,7 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
     }
 
     private String[] getPermissions() {
-        return new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE};
+        return new String[]{PERMISSION_CAMERA, PERMISSION_WRITE_EXTERNAL_STORAGE};
     }
 
     public void scanBarCode() {

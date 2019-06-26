@@ -1,6 +1,5 @@
 package com.tokopedia.seller.selling.view.fragment;
 
-import android.Manifest;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -30,17 +29,16 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.permissionchecker.PermissionCheckerHelper;
-import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.core.session.baseFragment.BaseFragment;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.RefreshHandler;
+import com.tokopedia.core2.R;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.seller.facade.FacadeActionShopTransaction;
 import com.tokopedia.seller.selling.model.SellingStatusTxModel;
 import com.tokopedia.seller.selling.presenter.SellingStatusTransaction;
@@ -49,11 +47,16 @@ import com.tokopedia.seller.selling.presenter.SellingStatusTransactionView;
 import com.tokopedia.seller.selling.presenter.adapter.BaseSellingAdapter;
 import com.tokopedia.seller.selling.view.viewHolder.BaseSellingViewHolder;
 import com.tokopedia.seller.selling.view.viewHolder.StatusViewHolder;
+import com.tokopedia.transaction.common.TransactionRouter;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+
 import rx.subscriptions.CompositeSubscription;
+
+import static com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_CAMERA;
+import static com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE;
 
 /**
  * Created by Erry on 7/19/2016.
@@ -405,7 +408,7 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
 
                     @Override
                     public void onNeverAskAgain(@NotNull String permissionText) {
-                        permissionCheckerHelper.onNeverAskAgain(getActivity(),permissionText);\
+                        permissionCheckerHelper.onNeverAskAgain(getActivity(),permissionText);
                     }
 
                     @Override
@@ -430,7 +433,7 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
     }
 
     private String[] getPermissions() {
-        return new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE};
+        return new String[]{PERMISSION_CAMERA, PERMISSION_WRITE_EXTERNAL_STORAGE};
     }
 
     private void actionEditRefNum(String refNum, SellingStatusTxModel model) {

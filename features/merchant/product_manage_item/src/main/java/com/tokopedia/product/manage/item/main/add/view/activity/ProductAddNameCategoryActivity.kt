@@ -1,6 +1,5 @@
 package com.tokopedia.product.manage.item.main.add.view.activity
 
-import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -103,7 +102,7 @@ open class ProductAddNameCategoryActivity : BaseSimpleActivity(), HasComponent<P
     }
 
     private fun permissionHelper(grantedPermission: () -> Unit){
-        permissionCheckerHelper.checkPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE, object : PermissionCheckerHelper.PermissionCheckListener{
+        permissionCheckerHelper.checkPermission(this, PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE, object : PermissionCheckerHelper.PermissionCheckListener{
             override fun onPermissionDenied(permissionText: String) {
                 createProductAddFragment()
 

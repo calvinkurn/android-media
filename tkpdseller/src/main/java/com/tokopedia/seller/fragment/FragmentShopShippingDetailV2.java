@@ -71,6 +71,9 @@ import java.util.List;
 
 import rx.subscriptions.CompositeSubscription;
 
+import static com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_CAMERA;
+import static com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE;
+
 /**
  * Created by Tkpd_Eka on 2/17/2015.
  * modified by m.normansyah on 11/05/2016, ButterKnife and change json String to model
@@ -488,7 +491,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     }
 
     private String[] getPermissions() {
-        return new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE};
+        return new String[]{PERMISSION_CAMERA, PERMISSION_WRITE_EXTERNAL_STORAGE};
     }
 
     public void scanBarCode() {
