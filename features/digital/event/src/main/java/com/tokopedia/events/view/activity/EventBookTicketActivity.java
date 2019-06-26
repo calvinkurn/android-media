@@ -83,6 +83,7 @@ public class EventBookTicketActivity
 
     @Override
     void setupVariables() {
+        toolbar = findViewById(R.id.toolbar_book_ticket);
         buttonPayTickets = findViewById(R.id.pay_tickets);
         buttonTextview = findViewById(R.id.button_textview);
         progressBarLayout = findViewById(R.id.progress_bar_layout);
@@ -108,17 +109,18 @@ public class EventBookTicketActivity
         if (detailsViewModel.getSchedulesViewModels() != null) {
             if (detailsViewModel.getSchedulesViewModels().size() > 1) {
                 tvUbahJadwal.setVisibility(View.VISIBLE);
-            } else
+            } else {
                 tvUbahJadwal.setVisibility(View.GONE);
+            }
+            tvLocation.setText(detailsViewModel.getSchedulesViewModels().get(0).getCityName());
+            if (detailsViewModel.getTimeRange() != null && detailsViewModel.getTimeRange().length() > 1)
+                tvDate.setText(Utils.getSingletonInstance().convertEpochToString(detailsViewModel.getSchedulesViewModels().get(0).getStartDate()));
+            else
+                tvDate.setVisibility(View.GONE);
+            setFragmentData(detailsViewModel.getSchedulesViewModels().get(0));
         } else {
             tvUbahJadwal.setVisibility(View.GONE);
         }
-        tvLocation.setText(detailsViewModel.getSchedulesViewModels().get(0).getCityName());
-        if (detailsViewModel.getTimeRange() != null && detailsViewModel.getTimeRange().length() > 1)
-            tvDate.setText(Utils.getSingletonInstance().convertEpochToString(detailsViewModel.getSchedulesViewModels().get(0).getStartDate()));
-        else
-            tvDate.setVisibility(View.GONE);
-        setFragmentData(detailsViewModel.getSchedulesViewModels().get(0));
     }
 
     @Override
