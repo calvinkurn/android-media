@@ -1,7 +1,7 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode
 
+import android.annotation.TargetApi
 import android.app.Activity
-import android.app.Dialog
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -24,7 +24,11 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.loca
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AutocompleteDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete_geocode.AutocompleteGeocodeDataUiModel
 import javax.inject.Inject
-
+import android.provider.Settings.Secure.LOCATION_MODE_OFF
+import android.provider.Settings.Secure.LOCATION_MODE
+import android.content.Context.LOCATION_SERVICE
+import android.location.LocationManager
+import android.provider.Settings
 
 /**
  * Created by fwidjaja on 2019-05-13.
@@ -116,14 +120,15 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
 
     private fun setViewListener() {
         if (currentLat != 0.0 && currentLong != 0.0) {
-            presenter.getAutocompleteGeocode(currentLat, currentLong)
-            rlCurrentLocation.setOnClickListener {
-                actionListener.useCurrentLocation(currentLat, currentLong)
-                dismiss()
-            }
+            doLoadAutocompleteGeocode()
         } else {
-            rlCurrentLocation.setOnClickListener {
-                showLocationInfoBottomSheet()
+            if (isLocationEnabled()) {
+                doLoadAutocompleteGeocode()
+
+            } else {
+                rlCurrentLocation.setOnClickListener {
+                    showLocationInfoBottomSheet()
+                }
             }
         }
 
@@ -149,6 +154,26 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
             override fun afterTextChanged(s: Editable) {
             }
         })
+    }
+
+    private fun doLoadAutocompleteGeocode() {
+        presenter.getAutocompleteGeocode(currentLat, currentLong)
+        rlCurrentLocation.setOnClickListener {
+            actionListener.useCurrentLocation(currentLat, currentLong)
+            dismiss()
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    private fun isLocationEnabled(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            val lm = context?.getSystemService(LOCATION_SERVICE) as LocationManager
+            lm.isLocationEnabled
+        } else {
+            val mode = Settings.Secure.getInt(context?.contentResolver, LOCATION_MODE, LOCATION_MODE_OFF)
+            mode != LOCATION_MODE_OFF
+
+        }
     }
 
     override fun configView(parentView: View?) {
