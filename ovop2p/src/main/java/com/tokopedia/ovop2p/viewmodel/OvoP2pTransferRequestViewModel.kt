@@ -35,12 +35,9 @@ class OvoP2pTransferRequestViewModel(application: Application) : AndroidViewMode
 
             override fun onNext(graphqlResponse: GraphqlResponse) {
                 val ovoP2pTransferRequestBase = graphqlResponse.getData<OvoP2pTransferRequestBase>(OvoP2pTransferRequestBase::class.java)
-                if (ovoP2pTransferRequestBase != null && ovoP2pTransferRequestBase.ovoP2pTransferRequest != null &&
-                        ovoP2pTransferRequestBase.ovoP2pTransferRequest.errors == null) {
-                    //execute success
-                    ovoP2pTransferRequestBaseMutableLiveData!!.postValue(ovoP2pTransferRequestBase)
-                } else {
-                    //execute failure
+                if (ovoP2pTransferRequestBase?.ovoP2pTransferRequest != null) {
+                    ovoP2pTransferRequestBaseMutableLiveData.value = ovoP2pTransferRequestBase
+
                 }
             }
         }

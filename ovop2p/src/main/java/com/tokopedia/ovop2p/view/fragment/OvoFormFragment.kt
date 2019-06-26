@@ -73,7 +73,10 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
                     val intent = Intent(activity, AllContactsActivity::class.java)
                     startActivityForResult(intent, Constants.Keys.RESULT_CODE_CONTACTS_SELECTION)
                 }
-                R.id.cancel or R.id.close-> {
+                R.id.cancel -> {
+                    alertDialog.dismiss()
+                }
+                R.id.close->{
                     alertDialog.dismiss()
                 }
                 R.id.proceed_dlg -> {
@@ -144,7 +147,7 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
         if(!::ovoP2pTransferRequestViewModel.isInitialized){
             if(activity != null){
                 ovoP2pTransferRequestViewModel = ViewModelProviders.of(this.activity!!).get(OvoP2pTransferRequestViewModel::class.java)
-                ovoP2pTransferRequestViewModel.ovoP2pTransferRequestBaseMutableLiveData?.observe(this.activity!!, Observer <OvoP2pTransferRequestBase>{
+                ovoP2pTransferRequestViewModel.ovoP2pTransferRequestBaseMutableLiveData?.observe(this, Observer <OvoP2pTransferRequestBase>{
                     if(it != null){
                         (activity as LoaderUiListener).hideProgressDialog()
                         if(it.ovoP2pTransferRequest.errors != null && (it.ovoP2pTransferRequest.errors!!.isNotEmpty())){
