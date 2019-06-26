@@ -179,6 +179,10 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
     private boolean hasLoadRecommendation;
 
+    private List<Wishlist> wishlist;
+    private List<RecentView> recentViewList;
+    private List<RecommendationItem> recommendationItems;
+
     public static CartFragment newInstance(Bundle bundle, String args) {
         if (bundle == null) {
             bundle = new Bundle();
@@ -1054,9 +1058,23 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 cartPageAnalytics.eventViewCartListFinishRender();
             }
 
-            dPresenter.processGetRecentViewData();
-            dPresenter.processGetWishlistData();
-            dPresenter.processGetRecommendationData(endlessRecyclerViewScrollListener.getCurrentPage());
+            if (recentViewList == null) {
+                dPresenter.processGetRecentViewData();
+            } else {
+                renderRecentView(recentViewList);
+            }
+
+            if (wishlist == null) {
+                dPresenter.processGetWishlistData();
+            } else {
+                renderWishlist(wishlist);
+            }
+
+            if (recommendationItems == null) {
+                dPresenter.processGetRecommendationData(endlessRecyclerViewScrollListener.getCurrentPage());
+            } else {
+                renderRecommendation(recommendationItems);
+            }
 
             if (toolbar != null) {
                 setVisibilityRemoveButton(!cartListData.getShopGroupDataList().isEmpty());
@@ -1877,6 +1895,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void renderRecentView(List<RecentView> recentViewList) {
+        this.recentViewList = recentViewList;
         List<CartRecentViewItemHolderData> cartRecentViewItemHolderDataList = new ArrayList<>();
         for (RecentView recentView : recentViewList) {
             CartRecentViewItemHolderData cartRecentViewItemHolderData = new CartRecentViewItemHolderData();
@@ -1907,6 +1926,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void renderWishlist(List<Wishlist> wishlist) {
+        this.wishlist = wishlist;
         List<CartWishlistItemHolderData> cartWishlistItemHolderDataList = new ArrayList<>();
         for (Wishlist item : wishlist) {
             CartWishlistItemHolderData cartWishlistItemHolderData = new CartWishlistItemHolderData();
@@ -1940,6 +1960,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void renderRecommendation(List<RecommendationItem> recommendationItems) {
+        this.recommendationItems = recommendationItems;
         List<CartRecommendationItemHolderData> cartRecommendationItemHolderDataList = new ArrayList<>();
         int previousItemCount = cartAdapter.getItemCount();
         for (RecommendationItem recommendationItem : recommendationItems) {
