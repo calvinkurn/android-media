@@ -7,9 +7,9 @@ import java.util.regex.Pattern
  * ade.hadian@tokopedia.com
  */
 
-object WebViewHelper{
+object WebViewHelper {
 
-    private val PATTERN: String = "^((http|https)://(.+[.]|)tokopedia[.]com).*"
+    private val PATTERN: String = "^((http|https)://(.+[.]|)tokopedia[.]com)[^.].*"
 
     @JvmStatic
     fun validateUrl(url: String): Boolean = Pattern.matches(PATTERN, url)
