@@ -1,4 +1,4 @@
-query goalP2PThanks($transfer_id: String!){
+query goalP2PThanks($transfer_id: Int!){
       goalP2PThanks(transfer_id: $transfer_id) {
           transfer_id
           transaction_id

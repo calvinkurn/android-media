@@ -3,6 +3,7 @@ package com.tokopedia.ovop2p.util
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
+import android.text.TextUtils
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -91,5 +92,14 @@ object OvoP2pUtil {
         dialogView?.findViewById<View>(R.id.cancel)?.setOnClickListener(onClickListener)
         dialogBuilder.setView(dialogView)
         return dialogBuilder
+    }
+
+    fun checkValidRcvrPhoneEntry(svQuery: String, rcvrPhnNo: String): String{
+        return if(!TextUtils.isEmpty(rcvrPhnNo) && svQuery.contains(rcvrPhnNo)){
+            rcvrPhnNo
+        }
+        else{
+            svQuery
+        }
     }
 }

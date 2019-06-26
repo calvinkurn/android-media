@@ -139,6 +139,7 @@
         android:theme="@style/editTextTheme"
         android:inputType="number"
         android:maxLength="18"
+        android:hint="0"
         android:paddingTop="@dimen/dp_10"
         android:paddingBottom="@dimen/dp_16"
         app:layout_constraintEnd_toEndOf="@+id/cntnr_vw"
@@ -170,6 +171,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLength="25"
+            android:theme="@style/msgEditTextTheme"
             android:hint="Pesan (opsional)"
             android:textColor="#6b767e"
             android:textSize="16sp" />

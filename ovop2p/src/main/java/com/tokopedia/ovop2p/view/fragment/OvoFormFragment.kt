@@ -34,7 +34,7 @@ import com.tokopedia.ovop2p.viewmodel.GetWalletBalanceViewModel
 import com.tokopedia.ovop2p.viewmodel.OvoP2pTransferRequestViewModel
 import com.tokopedia.ovop2p.viewmodel.OvoP2pTrxnConfirmVM
 
-class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocusChangeListener, SearchView.OnQueryTextListener {
+class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQueryTextListener {
 
     lateinit var searchView: SearchView
     lateinit var saldoTextView: TextView
@@ -65,7 +65,7 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
                     rcvrMsg = msgEdtxtv.text.toString()
                     createOvoP2pTransferReqMap(Constants.Keys.AMOUNT, rcvrAmt)
                     createOvoP2pTransferReqMap(Constants.Keys.TO_PHN_NO, rcvrPhnNo)
-                    createOvoP2pTransferReqMap(Constants.Keys.AMOUNT, rcvrMsg)
+                    createOvoP2pTransferReqMap(Constants.Keys.MESSAGE, rcvrMsg)
                     (activity as LoaderUiListener).showProgressDialog()
                     context?.let { ovoP2pTransferRequestViewModel.makeTransferRequestCall(it, trnsfrReqDataMap) }
                 }
@@ -102,14 +102,12 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var view: View = inflater.inflate(R.layout.ovo_p2p_transfer_form, container,false)
         searchView = view.findViewById(R.id.search_no)
-        searchView.onFocusChangeListener = this
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             searchView.setOnQueryTextListener(this)
         }
         saldoTextView = view.findViewById(R.id.saldo)
         trnsfrAmtEdtxtv = view.findViewById(R.id.trnsfr_amt_edtv)
         msgEdtxtv = view.findViewById(R.id.msg_edtxt)
-        msgEdtxtv.onFocusChangeListener = this
         proceedBtn = view.findViewById(R.id.proceed)
         proceedBtn.setOnClickListener(this)
         contactsImageView = view.findViewById(R.id.iv_contact)
@@ -236,8 +234,12 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
                     }
                     else{
                         rcvrAmt = enteredAmt
-                        proceedBtn.isEnabled = true
-                        amtErrorTxtv.visibility = View.GONE
+                        if(!TextUtils.isEmpty(searchView.query)){
+                            rcvrPhnNo = OvoP2pUtil.checkValidRcvrPhoneEntry(searchView.query.toString(), rcvrPhnNo)
+                            rcvrPhnNo = OvoP2pUtil.extractNumbersFromString(rcvrPhnNo)
+                            proceedBtn.isEnabled = true
+                            amtErrorTxtv.visibility = View.GONE
+                        }
                     }
                 }else{
                     amtErrorTxtv.visibility = View.GONE
@@ -260,28 +262,10 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
 
         fun newInstance(bundle: Bundle): OvoFormFragment {
             val fragmentOVOP2PForm = newInstance()
-            fragmentOVOP2PForm.setArguments(bundle)
+            fragmentOVOP2PForm.arguments = bundle
             return fragmentOVOP2PForm
         }
     }
-
-    override fun onFocusChange(v: View?, hasFocus: Boolean) {
-        var id: Int = v?.id ?: -1
-        if(id != -1){
-            when(id){
-                R.id.search_no -> {
-                    if(!hasFocus){
-                        searchNoHeader.visibility = View.VISIBLE
-                    }
-                    else{
-                        searchNoHeader.visibility = View.GONE
-                    }
-                }
-            }
-        }
-    }
-
-
 
     override fun onQueryTextSubmit(query: String?): Boolean {
         return false
@@ -334,7 +318,7 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
 
     fun setContactsData(rcvrName: String, rcvrPhone: String){
         this.rcvrName = rcvrName
-        this.rcvrPhnNo = rcvrPhone
+        this.rcvrPhnNo = OvoP2pUtil.extractNumbersFromString(rcvrPhone)
         setSearchViewQuery()
     }
 
@@ -347,7 +331,7 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, View.OnFocus
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Constants.Keys.RESULT_CODE_CONTACTS_SELECTION) {
             this.rcvrName = data!!.getStringExtra(Constants.Keys.USER_NAME)
-            this.rcvrPhnNo = data.getStringExtra(Constants.Keys.USER_NUMBER)
+            this.rcvrPhnNo = OvoP2pUtil.extractNumbersFromString(data.getStringExtra(Constants.Keys.USER_NUMBER))
             setSearchViewQuery()
         }
     }
