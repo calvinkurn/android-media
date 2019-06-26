@@ -149,15 +149,16 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
     fun renderCancellationInfo(hotelTransportDetail: HotelTransportDetail) {
 
         if (hotelTransportDetail.cancellation.title.isEmpty()) {
-            refund_ticker_layout.visibility = View.GONE
+            refund_ticker.visibility = View.GONE
         } else {
-            refund_ticker_layout.visibility = View.VISIBLE
-            refund_ticker_layout.setOnClickListener {
+            refund_ticker.visibility = View.VISIBLE
+            refund_ticker.tickerTitle = hotelTransportDetail.cancellation.title
+            refund_ticker.setHtmlDescription(hotelTransportDetail.cancellation.content)
+
+            refund_ticker.setOnClickListener {
                 if (hotelTransportDetail.cancellation.isClickable)
                     showRefundInfo(hotelTransportDetail.cancellation.cancellationPolicies)
             }
-            refund_title.text = hotelTransportDetail.cancellation.title
-            refund_text.text = hotelTransportDetail.cancellation.content
         }
 
         if (hotelTransportDetail.contactInfo.isNotEmpty()) {
@@ -400,7 +401,6 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
 
         const val TAG_CONTACT_INFO = "guestContactInfo"
         const val TAG_CANCELLATION_INFO = "cancellationPolicyInfo"
-        const val ORDER_STATUS_SUCCESS = 700
 
         const val SAVED_KEY_ORDER_ID = "keyOrderId"
         const val SAVED_KEY_ORDER_CATEGORY = "keyOrderCategory"
