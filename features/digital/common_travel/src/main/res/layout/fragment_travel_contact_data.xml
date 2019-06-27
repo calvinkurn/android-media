@@ -78,14 +78,14 @@
 
         </LinearLayout>
 
-        <com.tokopedia.unifycomponents.ticker.Ticker
-            android:id="@+id/contact_data_info_ticker"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:tickerType="warning"
-            app:closeButtonVisibility="gone"
-            app:tickerShapeType="loose"
-            app:descriptionText="@string/travel_contact_data_notice"/>
+        <!--<com.tokopedia.unifycomponents.ticker.Ticker-->
+            <!--android:id="@+id/contact_data_info_ticker"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--app:tickerType="warning"-->
+            <!--app:closeButtonVisibility="gone"-->
+            <!--app:tickerShapeType="loose"-->
+            <!--app:descriptionText="@string/travel_contact_data_notice"/>-->
 
     </LinearLayout>
 

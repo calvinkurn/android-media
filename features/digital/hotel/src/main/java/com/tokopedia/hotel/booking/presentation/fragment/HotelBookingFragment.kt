@@ -196,8 +196,9 @@ class HotelBookingFragment : HotelBaseFragment() {
                 tv_booking_room_info_pay_at_hotel.visibility = View.VISIBLE
                 tv_booking_room_info_pay_at_hotel.setDrawableLeft(R.drawable.ic_hotel_16)
             }
-            val spannableString = SpannableString(getString(R.string.hotel_booking_pay_at_hotel_label))
-            spannableString.setSpan(StyleSpan(Typeface.BOLD), 1, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            val payAtHotelString = SpannableString(getString(R.string.hotel_booking_pay_at_hotel_label))
+            payAtHotelString.setSpan(StyleSpan(Typeface.BOLD), 1, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            tv_booking_room_info_pay_at_hotel.text = payAtHotelString
 
             cart.fares.find { it.type == "base_price" }?.let {
                 tv_booking_room_info_occupancy.text = it.description.replace("x", "•")
@@ -205,8 +206,6 @@ class HotelBookingFragment : HotelBaseFragment() {
             if (!property.rooms[0].isBreakFastIncluded) tv_booking_room_info_breakfast.visibility = View.GONE
 
             val cancellationPolicy = property.rooms[0].cancellationPolicies
-            cancellation_policy_ticker.info_title.setFontSize(TextViewCompat.FontSize.MICRO)
-
             var cancellationDesc: CharSequence = cancellationPolicy.content
             if (cancellationPolicy.isClickable) {
                 val moreInfoString = getString(R.string.hotel_booking_cancellation_policy_more_info)
@@ -215,15 +214,15 @@ class HotelBookingFragment : HotelBaseFragment() {
                         spannableString.length - moreInfoString.length, spannableString.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 cancellationDesc = spannableString
             }
-            cancellation_policy_ticker.tickerTitle = cancellationPolicy.title
-            cancellation_policy_ticker.setTextDescription(cancellationDesc)
-            cancellation_policy_ticker.setDescriptionClickEvent(object : TickerCallback {
-                override fun onDescriptionViewClick(p0: CharSequence?) {
-                    onCancellationPolicyClicked(property)
-                }
-
-                override fun onDismiss() {}
-            })
+//            cancellation_policy_ticker.tickerTitle = cancellationPolicy.title
+//            cancellation_policy_ticker.setTextDescription(cancellationDesc)
+//            cancellation_policy_ticker.setDescriptionClickEvent(object : TickerCallback {
+//                override fun onDescriptionViewClick(p0: CharSequence?) {
+//                    onCancellationPolicyClicked(property)
+//                }
+//
+//                override fun onDismiss() {}
+//            })
         }
     }
 
