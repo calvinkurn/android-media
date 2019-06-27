@@ -4,15 +4,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.crashlytics.android.Crashlytics;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.network.utils.URLGenerator;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
-
-import java.util.regex.Pattern;
 
 public class BaseSessionWebViewFragment extends BaseWebViewFragment {
     public static final String ARGS_URL = "arg_url";
@@ -34,7 +28,7 @@ public class BaseSessionWebViewFragment extends BaseWebViewFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         url = getArguments().getString(ARGS_URL);
-        isTokopediaUrl = WebViewHelper.validateUrl(url);
+        isTokopediaUrl = Uri.parse(url).getHost().contains(TOKOPEDIA_STRING);
         userSession = new UserSession(getActivity().getApplicationContext());
     }
 
@@ -48,16 +42,7 @@ public class BaseSessionWebViewFragment extends BaseWebViewFragment {
                     gcmId,
                     userId);
         } else {
-            if(getActivity() != null){
-                if(!GlobalConfig.DEBUG)
-                    Crashlytics.log(
-                        getActivity().getString(R.string.error_message_url_invalid_crashlytics) + url);
-
-                NetworkErrorHelper.showRedSnackbar(getActivity(),
-                        getActivity().getString(R.string.error_message_url_invalid));
-            }
-
-            return null;
+            return url;
         }
     }
 
