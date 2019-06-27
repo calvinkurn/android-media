@@ -745,9 +745,9 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public void removeCartItemById(List<Integer> cartIds) {
+        // Store item first before remove item to prevent ConcurrentModificationException
+        List<CartShopHolderData> toBeRemovedcartShopholderData = new ArrayList<>();
         for (Object object : cartDataList) {
-            // Store item first before remove item to prevent ConcurrentModificationException
-            List<CartShopHolderData> toBeRemovedcartShopholderData = new ArrayList<>();
             if (object instanceof CartShopHolderData) {
                 List<CartItemHolderData> cartItemHolderDataList = ((CartShopHolderData) object).getShopGroupData().getCartItemDataList();
                 List<CartItemHolderData> toBeRemovedCartItemHolderData = new ArrayList<>();
@@ -764,9 +764,9 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     toBeRemovedcartShopholderData.add((CartShopHolderData) object);
                 }
             }
-            for (CartShopHolderData cartShopHolderData : toBeRemovedcartShopholderData) {
-                cartDataList.remove(cartShopHolderData);
-            }
+        }
+        for (CartShopHolderData cartShopHolderData : toBeRemovedcartShopholderData) {
+            cartDataList.remove(cartShopHolderData);
         }
         notifyDataSetChanged();
     }
