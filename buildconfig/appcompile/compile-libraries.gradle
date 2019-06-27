@@ -56,7 +56,4 @@ include "libraries:collapsing_tab_layout"
 include "libraries:videouploader"
 
 include "libraries:unify:unify_compositions:banner"
-include "libraries:unify:unify_icon"
-include "libraries:unify:unify_principles"
-include "libraries:unify:unify_components"
 
