@@ -523,36 +523,38 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
             if (originDirectionType == ORIGIN_DIRECTION_TYPE_FROM_MULTIPLE_ADDRESS_FORM) {
                 checkoutAnalyticsMultipleAddress.eventClickAddressCartMultipleAddressClickPlusFromMultiple();
 
-                if (isAddNewAddressEnabled()) {
+                // TODO: remove comment if PR, this just ignore the remote config!
+                // if (isAddNewAddressEnabled()) {
                     startActivityForResult(PinpointMapActivity.newInstance(getActivity(),
                             AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
                             false, 0, false, false, null,
                             false), ADD_NEW_ADDRESS_CREATED);
 
-                } else {
+                /*} else {
                     startActivityForResult(
                             AddAddressActivity.createInstanceAddAddressFromCheckoutMultipleAddressForm(
                                     getActivity(), token
                             ), LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);
-                }
+                }*/
 
             } else {
                 checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickTambahAlamatBaruFromGantiAlamat();
                 checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickTambahFromAlamatPengiriman();
 
-                if (isAddNewAddressEnabled()) {
+                // TODO: remove comment if PR, this just ignore the remote config!
+                // if (isAddNewAddressEnabled()) {
                     startActivityForResult(PinpointMapActivity.newInstance(getActivity(),
                             AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
                             false, 0, false, false, null,
                             false), ADD_NEW_ADDRESS_CREATED);
 
-                } else {
+                /*} else {
                     startActivityForResult(
                             AddAddressActivity.createInstanceAddAddressFromCheckoutSingleAddressForm(
                                     getActivity(), token
                             ), LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE
                     );
-                }
+                }*/
             }
 
 
