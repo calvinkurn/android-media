@@ -1394,7 +1394,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void onDeleteCartDataSuccess(List<Integer> deletedCartIds) {
-        for (CartShopHolderData cartShopHolderData : cartAdapter.getAllShopGroupDataList()) {
+        List<CartShopHolderData> cartShopHolderDataList = cartAdapter.getAllShopGroupDataList();
+        for (CartShopHolderData cartShopHolderData : cartShopHolderDataList) {
             List<CartItemHolderData> cartItemHolderDataList = cartShopHolderData.getShopGroupData().getCartItemDataList();
             for (CartItemHolderData cartItemHolderData : cartItemHolderDataList) {
                 if (deletedCartIds.contains(cartItemHolderData.getCartItemData().getOriginData().getCartId())) {

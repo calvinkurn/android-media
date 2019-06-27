@@ -90,8 +90,8 @@ public class CartUseCaseModule {
     }
 
     @Provides
-    DeleteCartListUseCase deleteCartGetCartListUseCase(Context context, ICartRepository cartRepository, ICartMapper mapper, ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase) {
-        return new DeleteCartListUseCase(context, cartRepository, mapper, clearCacheAutoApplyStackUseCase);
+    DeleteCartListUseCase deleteCartGetCartListUseCase(ICartRepository cartRepository, ICartMapper mapper, ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase) {
+        return new DeleteCartListUseCase(cartRepository, mapper, clearCacheAutoApplyStackUseCase);
     }
 
     @Provides
