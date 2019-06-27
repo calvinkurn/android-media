@@ -1,5 +1,6 @@
 package com.tokopedia.hotel.roomlist.presentation.fragment
 
+import android.app.ProgressDialog
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.graphics.Rect
@@ -69,6 +70,8 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
 
     var firstTime = true
 
+    lateinit var progressDialog: ProgressDialog
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -116,7 +119,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         })
 
         roomListViewModel.addCartResponseResult.observe(this, android.arch.lifecycle.Observer {
-            loading_screen.visibility = View.GONE
+            progressDialog.dismiss()
             when (it) {
                 is Success -> {
                     startActivity(HotelBookingActivity.getCallingIntent(context!!,it.data.cartId))
@@ -146,6 +149,9 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         renderDate()
 
         loadInitialData()
+
+        progressDialog = ProgressDialog(activity)
+        progressDialog.setCancelable(false)
     }
 
     override fun hasInitialSwipeRefresh(): Boolean = true
@@ -363,7 +369,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     }
 
     override fun onClickBookListener(room: HotelRoom) {
-        loading_screen.visibility = View.VISIBLE
+        progressDialog.show()
         trackingHotelUtil.hotelChooseRoom(room, roomList.indexOf(room))
         if (userSessionInterface.isLoggedIn) {
             roomListViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart),

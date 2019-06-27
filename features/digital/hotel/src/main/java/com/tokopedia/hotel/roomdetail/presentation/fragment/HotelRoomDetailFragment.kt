@@ -1,5 +1,6 @@
 package com.tokopedia.hotel.roomdetail.presentation.fragment
 
+import android.app.ProgressDialog
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.graphics.PorterDuff
@@ -62,6 +63,8 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
 
     lateinit var saveInstanceCacheManager: SaveInstanceCacheManager
 
+    lateinit var progressDialog: ProgressDialog
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -83,7 +86,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         super.onActivityCreated(savedInstanceState)
 
         roomDetailViewModel.addCartResponseResult.observe(this, android.arch.lifecycle.Observer {
-            loading_screen.visibility = View.GONE
+            progressDialog.dismiss()
             when (it) {
                 is Success -> {
                     val cartId = it.data.cartId
@@ -103,6 +106,8 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
+        progressDialog = ProgressDialog(activity)
+        progressDialog.setCancelable(false)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -314,7 +319,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         tv_room_detail_price.text = hotelRoom.roomPrice.roomPrice
         room_detail_button.text = getString(R.string.hotel_room_list_choose_room_button)
         room_detail_button.setOnClickListener {
-            loading_screen.visibility = View.VISIBLE
+            progressDialog.show()
             room_detail_button.isEnabled = false
             trackingHotelUtil.hotelChooseRoomDetails(hotelRoom)
             if (userSessionInterface.isLoggedIn) {
