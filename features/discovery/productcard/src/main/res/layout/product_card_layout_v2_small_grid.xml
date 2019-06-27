@@ -115,9 +115,9 @@
             android:textColor="@color/charcoal_grey_40"
             android:visibility="gone"
             android:gravity="center_vertical"
-            app:layout_constraintBottom_toBottomOf="@id/textDiscount"
-            app:layout_constraintStart_toEndOf="@id/textDiscount"
-            app:layout_constraintTop_toTopOf="@id/textDiscount"
+            app:layout_constraintBottom_toBottomOf="@id/labelDiscount"
+            app:layout_constraintStart_toEndOf="@id/labelDiscount"
+            app:layout_constraintTop_toTopOf="@id/labelDiscount"
             app:typographyType="small"
             tools:text="95000"
             tools:visibility="visible"/>
