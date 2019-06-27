@@ -2,7 +2,9 @@ package com.tokopedia.checkout.view.feature.cartlist.subscriber;
 
 import com.tokopedia.checkout.view.feature.cartlist.ICartListPresenter;
 import com.tokopedia.checkout.view.feature.cartlist.ICartListView;
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationModel;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
+
+import java.util.List;
 
 import rx.Subscriber;
 
@@ -10,7 +12,7 @@ import rx.Subscriber;
  * Created by Irfan Khoirul on 20/09/18.
  */
 
-public class GetRecommendationSubscriber extends Subscriber<RecommendationModel> {
+public class GetRecommendationSubscriber extends Subscriber<List<? extends RecommendationWidget>> {
 
     private ICartListView view;
     private ICartListPresenter presenter;
@@ -34,10 +36,10 @@ public class GetRecommendationSubscriber extends Subscriber<RecommendationModel>
     }
 
     @Override
-    public void onNext(RecommendationModel recommendationModel) {
+    public void onNext(List<? extends RecommendationWidget> recommendationModels) {
         if (view != null) {
             view.hideItemLoading();
-            view.renderRecommendation(recommendationModel.getRecommendationItemList());
+            view.renderRecommendation(recommendationModels.get(0).getRecommendationItemList());
         }
     }
 }
