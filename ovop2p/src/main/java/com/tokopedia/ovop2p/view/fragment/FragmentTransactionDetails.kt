@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.ovop2p.Constants
 import com.tokopedia.ovop2p.R
 import com.tokopedia.ovop2p.di.OvoP2pTransferComponent
@@ -56,10 +57,11 @@ class FragmentTransactionDetails : BaseDaggerFragment(){
         if(::ovoP2pTransferThankyouBase.isInitialized) {
             date.text = ovoP2pTransferThankyouBase.ovoP2pTransferThankyou.trnsfrDate
             rcvrName.text = ovoP2pTransferThankyouBase.ovoP2pTransferThankyou.source.name
-            rcvrNum.text = ovoP2pTransferThankyouBase.ovoP2pTransferThankyou.source.phone
+            rcvrNum.text = "Ovo - "+ovoP2pTransferThankyouBase.ovoP2pTransferThankyou.source.phone
             txtMsgTxn.text = ovoP2pTransferThankyouBase.ovoP2pTransferThankyou.msg
-            amt.text = "-" + ovoP2pTransferThankyouBase.ovoP2pTransferThankyou.amt
-            txnNo.text = "Ref - " + ovoP2pTransferThankyouBase.ovoP2pTransferThankyou.txnId
+            val rpFormattedString = CurrencyFormatUtil.getThousandSeparatorString(ovoP2pTransferThankyouBase.ovoP2pTransferThankyou.amt.toDouble(), false, 0)
+            amt.text = "-Rp" + rpFormattedString.formattedString
+            txnNo.text = "Ref - " + ovoP2pTransferThankyouBase.ovoP2pTransferThankyou.refNum
             setSenderUserData()
         }
     }
@@ -87,6 +89,6 @@ class FragmentTransactionDetails : BaseDaggerFragment(){
     private fun setSenderUserData(){
         var userSession = UserSession(context)
         senderName.text = userSession.name
-        senderNumber.text = userSession.phoneNumber
+        senderNumber.text = "Ovo - "+userSession.phoneNumber
     }
 }

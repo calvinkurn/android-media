@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.ovop2p.Constants
 import com.tokopedia.ovop2p.R
 import com.tokopedia.ovop2p.di.OvoP2pTransferComponent
@@ -70,7 +71,7 @@ class FragmentTransactionSuccessOvoUser : BaseDaggerFragment(), View.OnClickList
     private fun setSenderUserData(){
         var userSession = UserSession(context)
         sndrName.text = userSession.name
-        sndrNum.text = userSession.phoneNumber
+        sndrNum.text = "Ovo - "+userSession.phoneNumber
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -125,10 +126,10 @@ class FragmentTransactionSuccessOvoUser : BaseDaggerFragment(), View.OnClickList
     private fun assignThankYouData(thankYouData: OvoP2pTransferThankyouBase) {
         thankYouDataCntnr = thankYouData
         date.text = thankYouData.ovoP2pTransferThankyou.trnsfrDate
-        val rpFormattedString = CurrencyFormatUtil.getThousandSeparatorString(thankYouData.ovoP2pTransferThankyou.amt, false, 0)
-        trnsfrAmt.text =    rpFormattedString
+        val rpFormattedString = CurrencyFormatUtil.getThousandSeparatorString(thankYouData.ovoP2pTransferThankyou.amt.toDouble(), false, 0)
+        trnsfrAmt.text =    rpFormattedString.formattedString
         rcvrName.text = thankYouData.ovoP2pTransferThankyou.source.name
-        rcvrNum.text = thankYouData.ovoP2pTransferThankyou.source.phone
+        rcvrNum.text = "Ovo - "+thankYouData.ovoP2pTransferThankyou.source.phone
         setSenderUserData()
     }
 

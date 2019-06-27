@@ -39,8 +39,7 @@
         android:layout_height="wrap_content"
         android:textSize="14sp"
         android:textColor="#6b767e"
-        android:gravity="center_horizontal"
-        android:text="12 Dec 2018, 11.20 WIB"/>
+        android:gravity="center_horizontal" />
 
     <TextView
         android:id="@+id/rp_symbl"
@@ -60,7 +59,7 @@
         android:id="@+id/trnsfr_amt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="65.000"
+
         android:textColor="#2d263b"
         app:layout_constraintTop_toTopOf="@+id/rp_symbl"
         android:textSize="36sp"
@@ -132,7 +131,6 @@
         android:textSize="16sp"
         android:textColor="#2d263b"
         app:layout_constraintStart_toEndOf="@+id/ic_ovo"
-        android:text="Saka"
         app:layout_constraintTop_toTopOf="@+id/ic_ovo"/>
 
     <TextView
@@ -141,7 +139,6 @@
         android:layout_height="wrap_content"
         android:textSize="14sp"
         android:textColor="#2d263b"
-        android:text="OVO - 081273699476"
         app:layout_constraintStart_toEndOf="@+id/ic_ovo"
         app:layout_constraintTop_toBottomOf="@+id/name_sender" />
 
@@ -172,7 +169,6 @@
         android:textSize="16sp"
         android:textColor="#2d263b"
         app:layout_constraintStart_toEndOf="@+id/ic_ovo_to"
-        android:text="Saka"
         app:layout_constraintTop_toTopOf="@+id/ic_ovo_to"/>
 
     <TextView
@@ -181,7 +177,6 @@
         android:layout_height="wrap_content"
         android:textSize="14sp"
         android:textColor="#2d263b"
-        android:text="OVO - 081273699476"
         app:layout_constraintStart_toEndOf="@+id/ic_ovo_to"
         app:layout_constraintTop_toBottomOf="@+id/name_rcvr" />
 

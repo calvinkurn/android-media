@@ -63,15 +63,14 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
             when(id){
                 R.id.proceed -> {
                     //make request call
-                    gotoThankYouActivity("3558", nonOvo = false)
-//                    rcvrMsg = msgEdtxtv.text.toString()
-//                    createOvoP2pTransferReqMap(Constants.Keys.AMOUNT, rcvrAmt)
-//                    createOvoP2pTransferReqMap(Constants.Keys.NAME, rcvrName)
-//                    createOvoP2pTransferReqMap(Constants.Keys.FORMATTED_AMOUNT, rcvrAmt)
-//                    createOvoP2pTransferReqMap(Constants.Keys.TO_PHN_NO, rcvrPhnNo)
-//                    createOvoP2pTransferReqMap(Constants.Keys.MESSAGE, rcvrMsg)
-//                    (activity as LoaderUiListener).showProgressDialog()
-//                    context?.let { ovoP2pTransferRequestViewModel.makeTransferRequestCall(it, trnsfrReqDataMap) }
+                    rcvrMsg = msgEdtxtv.text.toString()
+                    createOvoP2pTransferReqMap(Constants.Keys.AMOUNT, rcvrAmt)
+                    createOvoP2pTransferReqMap(Constants.Keys.NAME, rcvrName)
+                    createOvoP2pTransferReqMap(Constants.Keys.FORMATTED_AMOUNT, rcvrAmt)
+                    createOvoP2pTransferReqMap(Constants.Keys.TO_PHN_NO, rcvrPhnNo)
+                    createOvoP2pTransferReqMap(Constants.Keys.MESSAGE, rcvrMsg)
+                    (activity as LoaderUiListener).showProgressDialog()
+                    context?.let { ovoP2pTransferRequestViewModel.makeTransferRequestCall(it, trnsfrReqDataMap) }
                 }
                 R.id.iv_contact -> {
                     val intent = Intent(activity, AllContactsActivity::class.java)

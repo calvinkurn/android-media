@@ -36,7 +36,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:text="12 Dec 2018, 11.20 WIB"
         android:textColor="#6b767e"
         android:layout_marginTop="@dimen/dp_7"
         android:textSize="14sp"
@@ -74,7 +73,6 @@
         android:textColor="#2d263b"
         android:paddingLeft="@dimen/dp_10"
         app:layout_constraintStart_toEndOf="@+id/ic_ovo"
-        android:text="Saka"
         app:layout_constraintTop_toTopOf="@+id/ic_ovo"/>
 
     <TextView
@@ -83,7 +81,6 @@
         android:layout_height="wrap_content"
         android:textSize="14sp"
         android:textColor="#2d263b"
-        android:text="OVO - 081273699476"
         android:paddingLeft="@dimen/dp_10"
         app:layout_constraintStart_toEndOf="@+id/ic_ovo"
         app:layout_constraintTop_toBottomOf="@+id/name_sender" />
@@ -118,7 +115,6 @@
         android:textSize="16sp"
         android:textColor="#2d263b"
         app:layout_constraintStart_toEndOf="@+id/ic_ovo_to"
-        android:text="Saka"
         app:layout_constraintTop_toTopOf="@+id/ic_ovo_to"/>
 
     <TextView
@@ -127,7 +123,6 @@
         android:layout_height="wrap_content"
         android:textSize="14sp"
         android:textColor="#2d263b"
-        android:text="OVO - 081273699476"
         android:paddingLeft="@dimen/dp_10"
         app:layout_constraintStart_toEndOf="@+id/ic_ovo_to"
         app:layout_constraintTop_toBottomOf="@+id/name_rcvr" />
@@ -185,8 +180,7 @@
         android:paddingTop="@dimen/dp_8"
         android:textColor="#2d263b"
         android:background="@drawable/bottom_border"
-        android:paddingBottom="@dimen/dp_8"
-        android:text="TRF-489417b4e9b725fas829alsd" />
+        android:paddingBottom="@dimen/dp_8"/>
 
     <TextView
         android:id="@+id/ttl_src_fnd"
@@ -224,8 +218,7 @@
         android:textColor="#73bd00"
         android:layout_marginRight="@dimen/dp_16"
         android:paddingTop="@dimen/dp_8"
-        android:gravity="end"
-        android:text="-Rp130.000" />
+        android:gravity="end" />
 
     <View
         android:id="@+id/vw_dvdr"
