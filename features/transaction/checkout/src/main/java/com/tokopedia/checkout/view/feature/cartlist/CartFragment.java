@@ -2,7 +2,6 @@ package com.tokopedia.checkout.view.feature.cartlist;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -445,7 +444,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             final com.tokopedia.design.component.Dialog dialog = getDialogDeleteConfirmation(toBeDeletedCartItemDataList.size());
             dialog.setOnOkClickListener(v -> {
                 if (toBeDeletedCartItemDataList.size() > 0) {
-                    dPresenter.processDeleteAndRefreshCart(allCartItemDataList, toBeDeletedCartItemDataList, getAppliedPromoCodeList(toBeDeletedCartItemDataList), true);
+                    dPresenter.processDeleteCartItem(allCartItemDataList, toBeDeletedCartItemDataList, getAppliedPromoCodeList(toBeDeletedCartItemDataList), true);
                     sendAnalyticsOnClickConfirmationRemoveCartSelectedWithAddToWishList(
                             dPresenter.generateCartDataAnalytics(
                                     toBeDeletedCartItemDataList, EnhancedECommerceCartMapData.REMOVE_ACTION
@@ -456,7 +455,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             });
             dialog.setOnCancelClickListener(v -> {
                 if (toBeDeletedCartItemDataList.size() > 0) {
-                    dPresenter.processDeleteAndRefreshCart(allCartItemDataList, toBeDeletedCartItemDataList, getAppliedPromoCodeList(toBeDeletedCartItemDataList), false);
+                    dPresenter.processDeleteCartItem(allCartItemDataList, toBeDeletedCartItemDataList, getAppliedPromoCodeList(toBeDeletedCartItemDataList), false);
                     sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
                             dPresenter.generateCartDataAnalytics(
                                     toBeDeletedCartItemDataList, EnhancedECommerceCartMapData.REMOVE_ACTION
@@ -560,7 +559,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         final com.tokopedia.design.component.Dialog dialog = getDialogDeleteConfirmation(1);
         dialog.setOnOkClickListener(view -> {
             if (cartItemDatas.size() > 0) {
-                dPresenter.processDeleteAndRefreshCart(allCartItemDataList, cartItemDatas, appliedPromoCodes, true);
+                dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, appliedPromoCodes, true);
                 sendAnalyticsOnClickConfirmationRemoveCartSelectedWithAddToWishList(
                         dPresenter.generateCartDataAnalytics(
                                 cartItemDatas, EnhancedECommerceCartMapData.REMOVE_ACTION
@@ -571,7 +570,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         });
         dialog.setOnCancelClickListener(view -> {
             if (cartItemDatas.size() > 0) {
-                dPresenter.processDeleteAndRefreshCart(allCartItemDataList, cartItemDatas, appliedPromoCodes, false);
+                dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, appliedPromoCodes, false);
                 sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
                         dPresenter.generateCartDataAnalytics(
                                 cartItemDatas, EnhancedECommerceCartMapData.REMOVE_ACTION
@@ -829,7 +828,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         final com.tokopedia.design.component.Dialog dialog = getDialogDeleteConfirmation(toBeDeletedCartItem.size());
         dialog.setOnOkClickListener(view -> {
             if (toBeDeletedCartItem.size() > 0) {
-                dPresenter.processDeleteAndRefreshCart(allCartItemDataList, toBeDeletedCartItem, appliedPromoCodes, true);
+                dPresenter.processDeleteCartItem(allCartItemDataList, toBeDeletedCartItem, appliedPromoCodes, true);
                 sendAnalyticsOnClickConfirmationRemoveCartConstrainedProductWithAddToWishList(
                         dPresenter.generateCartDataAnalytics(
                                 toBeDeletedCartItem, EnhancedECommerceCartMapData.REMOVE_ACTION
@@ -840,7 +839,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         });
         dialog.setOnCancelClickListener(view -> {
             if (toBeDeletedCartItem.size() > 0) {
-                dPresenter.processDeleteAndRefreshCart(allCartItemDataList, toBeDeletedCartItem, appliedPromoCodes, false);
+                dPresenter.processDeleteCartItem(allCartItemDataList, toBeDeletedCartItem, appliedPromoCodes, false);
                 sendAnalyticsOnClickConfirmationRemoveCartConstrainedProductNoAddToWishList(
                         dPresenter.generateCartDataAnalytics(
                                 toBeDeletedCartItem, EnhancedECommerceCartMapData.REMOVE_ACTION
@@ -1394,7 +1393,17 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void onDeleteCartDataSuccess() {
+    public void onDeleteCartDataSuccess(List<Integer> deletedCartIds) {
+        for (CartShopHolderData cartShopHolderData : cartAdapter.getAllShopGroupDataList()) {
+            List<CartItemHolderData> cartItemHolderDataList = cartShopHolderData.getShopGroupData().getCartItemDataList();
+            for (CartItemHolderData cartItemHolderData : cartItemHolderDataList) {
+                if (deletedCartIds.contains(cartItemHolderData.getCartItemData().getOriginData().getCartId())) {
+                    cartItemHolderDataList.remove(cartItemHolderData);
+                    break;
+                }
+            }
+        }
+        cartAdapter.notifyDataSetChanged();
         notifyBottomCartParent();
     }
 

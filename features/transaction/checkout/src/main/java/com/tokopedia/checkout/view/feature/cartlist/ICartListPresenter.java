@@ -25,7 +25,7 @@ public interface ICartListPresenter {
 
     void processInitialGetCartData(String cartId, boolean initialLoad);
 
-    void processDeleteAndRefreshCart(List<CartItemData> allCartItemData, List<CartItemData> removedCartItems, ArrayList<String> appliedPromocodeList, boolean addWishList);
+    void processDeleteCartItem(List<CartItemData> allCartItemData, List<CartItemData> removedCartItems, ArrayList<String> appliedPromocodeList, boolean addWishList);
 
     void processToUpdateCartData(List<CartItemData> cartItemDataList, List<CartShopHolderData> cartShopHolderDataList);
 

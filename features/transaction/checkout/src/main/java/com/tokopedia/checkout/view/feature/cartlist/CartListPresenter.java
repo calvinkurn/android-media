@@ -17,8 +17,7 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.WholesalePrice;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
-import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
-import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
+import com.tokopedia.checkout.domain.usecase.DeleteCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.GetRecentViewUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
@@ -97,8 +96,7 @@ public class CartListPresenter implements ICartListPresenter {
     private ICartListView view;
     private final GetCartListUseCase getCartListUseCase;
     private final CompositeSubscription compositeSubscription;
-    private final DeleteCartUseCase deleteCartUseCase;
-    private final DeleteCartGetCartListUseCase deleteCartGetCartListUseCase;
+    private final DeleteCartListUseCase deleteCartListUseCase;
     private final UpdateCartUseCase updateCartUseCase;
     private final ResetCartGetCartListUseCase resetCartGetCartListUseCase;
     private final CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase;
@@ -120,8 +118,7 @@ public class CartListPresenter implements ICartListPresenter {
 
     @Inject
     public CartListPresenter(GetCartListUseCase getCartListUseCase,
-                             DeleteCartUseCase deleteCartUseCase,
-                             DeleteCartGetCartListUseCase deleteCartGetCartListUseCase,
+                             DeleteCartListUseCase deleteCartListUseCase,
                              UpdateCartUseCase updateCartUseCase,
                              ResetCartGetCartListUseCase resetCartGetCartListUseCase,
                              CheckPromoStackingCodeUseCase checkPromoStackingCodeUseCase,
@@ -141,8 +138,7 @@ public class CartListPresenter implements ICartListPresenter {
                              AddToCartUseCase addToCartUseCase) {
         this.getCartListUseCase = getCartListUseCase;
         this.compositeSubscription = compositeSubscription;
-        this.deleteCartUseCase = deleteCartUseCase;
-        this.deleteCartGetCartListUseCase = deleteCartGetCartListUseCase;
+        this.deleteCartListUseCase = deleteCartListUseCase;
         this.updateCartUseCase = updateCartUseCase;
         this.resetCartGetCartListUseCase = resetCartGetCartListUseCase;
         this.checkPromoStackingCodeUseCase = checkPromoStackingCodeUseCase;
@@ -230,53 +226,32 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public void processDeleteAndRefreshCart(List<CartItemData> allCartItemData, List<CartItemData> removedCartItems,
-                                            ArrayList<String> appliedPromoOnDeletedProductList, boolean addWishList) {
+    public void processDeleteCartItem(List<CartItemData> allCartItemData, List<CartItemData> removedCartItems,
+                                      ArrayList<String> appliedPromoOnDeletedProductList, boolean addWishList) {
         view.showProgressLoading();
-        boolean removeAllItem = allCartItemData.size() == removedCartItems.size();
 
-        List<Integer> ids = new ArrayList<>();
+        List<Integer> toBeDeletedCartIds = new ArrayList<>();
         for (CartItemData cartItemData : removedCartItems) {
-            ids.add(cartItemData.getOriginData().getCartId());
+            toBeDeletedCartIds.add(cartItemData.getOriginData().getCartId());
         }
         RemoveCartRequest removeCartRequest = new RemoveCartRequest.Builder()
-                .cartIds(ids)
+                .cartIds(toBeDeletedCartIds)
                 .addWishlist(addWishList ? 1 : 0)
                 .build();
         TKPDMapParam<String, String> paramDelete = new TKPDMapParam<>();
         paramDelete.put(PARAM_PARAMS, new Gson().toJson(removeCartRequest));
 
-        TKPDMapParam<String, String> paramGetList = new TKPDMapParam<>();
-        paramGetList.put(PARAM_LANG, "id");
-
-        List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
-        for (CartItemData data : allCartItemData) {
-            if (!data.isError()) {
-                updateCartRequestList.add(new UpdateCartRequest.Builder()
-                        .cartId(data.getOriginData().getCartId())
-                        .notes(data.getUpdatedData().getRemark())
-                        .quantity(data.getUpdatedData().getQuantity())
-                        .build());
-            }
-        }
-        TKPDMapParam<String, String> paramUpdate = new TKPDMapParam<>();
-        paramUpdate.put(UpdateCartUseCase.PARAM_CARTS, new Gson().toJson(updateCartRequestList));
-
         RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(DeleteCartGetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_DELETE_CART,
+        requestParams.putObject(DeleteCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_DELETE_CART,
                 view.getGeneratedAuthParamNetwork(paramDelete));
-        requestParams.putObject(DeleteCartGetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_CART,
-                view.getGeneratedAuthParamNetwork(paramGetList));
-        requestParams.putObject(UpdateCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART,
-                view.getGeneratedAuthParamNetwork(paramUpdate));
-        requestParams.putBoolean(DeleteCartGetCartListUseCase.PARAM_IS_DELETE_ALL_DATA, allCartItemData.size() == removedCartItems.size());
-        requestParams.putObject(DeleteCartGetCartListUseCase.PARAM_TO_BE_REMOVED_PROMO_CODES, appliedPromoOnDeletedProductList);
+        requestParams.putBoolean(DeleteCartListUseCase.PARAM_IS_DELETE_ALL_DATA, allCartItemData.size() == removedCartItems.size());
+        requestParams.putObject(DeleteCartListUseCase.PARAM_TO_BE_REMOVED_PROMO_CODES, appliedPromoOnDeletedProductList);
 
-        compositeSubscription.add(deleteCartGetCartListUseCase.createObservable(requestParams)
+        compositeSubscription.add(deleteCartListUseCase.createObservable(requestParams)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
-                .subscribe(getSubscriberDeleteAndRefreshCart(removeAllItem, appliedPromoOnDeletedProductList)));
+                .subscribe(getSubscriberDeleteAndRefreshCart(toBeDeletedCartIds)));
     }
 
     @Override
@@ -750,7 +725,7 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @NonNull
-    private Subscriber<DeleteAndRefreshCartListData> getSubscriberDeleteAndRefreshCart(boolean removeAllItem, ArrayList<String> appliedPromoOnDeletedProductList) {
+    private Subscriber<DeleteAndRefreshCartListData> getSubscriberDeleteAndRefreshCart(List<Integer> toBeDeletedCartIds) {
         return new Subscriber<DeleteAndRefreshCartListData>() {
             @Override
             public void onCompleted() {
@@ -762,15 +737,11 @@ public class CartListPresenter implements ICartListPresenter {
                 if (view != null) {
                     view.hideProgressLoading();
                     e.printStackTrace();
-                    if (!removeAllItem) {
-                        String errorMessage = e.getMessage();
-                        if (!(e instanceof CartResponseErrorException)) {
-                            errorMessage = ErrorHandler.getErrorMessage(view.getActivity(), e);
-                        }
-                        view.showToastMessageRed(errorMessage);
-                    } else {
-                        processInitialGetCartData(view.getCartId(), cartListData == null);
+                    String errorMessage = e.getMessage();
+                    if (!(e instanceof CartResponseErrorException)) {
+                        errorMessage = ErrorHandler.getErrorMessage(view.getActivity(), e);
                     }
+                    view.showToastMessageRed(errorMessage);
                 }
             }
 
@@ -779,23 +750,12 @@ public class CartListPresenter implements ICartListPresenter {
                 if (view != null) {
                     view.hideProgressLoading();
                     view.renderLoadGetCartDataFinish();
-                    if (!removeAllItem) {
-                        if (deleteAndRefreshCartListData.getDeleteCartData().isSuccess()
-                                && deleteAndRefreshCartListData.getCartListData() != null) {
-                            if (deleteAndRefreshCartListData.getCartListData().getShopGroupDataList().isEmpty()) {
-                                processInitialGetCartData(view.getCartId(), cartListData == null);
-                            } else {
-                                CartListPresenter.this.cartListData = deleteAndRefreshCartListData.getCartListData();
-                                view.renderInitialGetCartListDataSuccess(deleteAndRefreshCartListData.getCartListData());
-                                view.onDeleteCartDataSuccess();
-                            }
-                        } else {
-                            view.showToastMessageRed(
-                                    deleteAndRefreshCartListData.getDeleteCartData().getMessage()
-                            );
-                        }
+                    if (deleteAndRefreshCartListData.getDeleteCartData().isSuccess()) {
+                        view.onDeleteCartDataSuccess(toBeDeletedCartIds);
                     } else {
-                        processInitialGetCartData(view.getCartId(), cartListData == null);
+                        view.showToastMessageRed(
+                                deleteAndRefreshCartListData.getDeleteCartData().getMessage()
+                        );
                     }
                 }
             }

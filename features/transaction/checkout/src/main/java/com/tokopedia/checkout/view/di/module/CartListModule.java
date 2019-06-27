@@ -9,8 +9,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
-import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
-import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
+import com.tokopedia.checkout.domain.usecase.DeleteCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.GetRecentViewUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
@@ -143,8 +142,7 @@ public class CartListModule {
     @Provides
     @CartListScope
     ICartListPresenter provideICartListPresenter(GetCartListUseCase getCartListUseCase,
-                                                 DeleteCartUseCase deleteCartUseCase,
-                                                 DeleteCartGetCartListUseCase deleteCartGetCartListUseCase,
+                                                 DeleteCartListUseCase deleteCartListUseCase,
                                                  UpdateCartUseCase updateCartUseCase,
                                                  ResetCartGetCartListUseCase resetCartGetCartListUseCase,
                                                  CheckPromoStackingCodeUseCase checkPromoStackingCodeUseCase,
@@ -162,7 +160,7 @@ public class CartListModule {
                                                  GetWishlistUseCase getWishlistUseCase,
                                                  GetRecommendationUseCase getRecommendationUseCase,
                                                  AddToCartUseCase addToCartUseCase) {
-        return new CartListPresenter(getCartListUseCase, deleteCartUseCase, deleteCartGetCartListUseCase,
+        return new CartListPresenter(getCartListUseCase, deleteCartListUseCase,
                 updateCartUseCase, resetCartGetCartListUseCase, checkPromoStackingCodeUseCase,
                 checkPromoStackingCodeMapper, checkPromoCodeCartListUseCase, compositeSubscription,
                 cartApiRequestParamGenerator, addWishListUseCase, removeWishListUseCase,

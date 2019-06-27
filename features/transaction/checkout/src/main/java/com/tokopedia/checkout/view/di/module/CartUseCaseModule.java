@@ -12,9 +12,8 @@ import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
 import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
-import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
+import com.tokopedia.checkout.domain.usecase.DeleteCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartUpdateCartUseCase;
-import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartMultipleAddressListUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCouponListCartMarketPlaceUseCase;
@@ -86,18 +85,13 @@ public class CartUseCaseModule {
     }
 
     @Provides
-    DeleteCartUseCase deleteCartUseCase(ICartRepository cartRepository, ICartMapper mapper) {
-        return new DeleteCartUseCase(cartRepository, mapper);
-    }
-
-    @Provides
     DeleteCartUpdateCartUseCase deleteCartUpdateCartUseCase(ICartRepository cartRepository, ICartMapper mapper) {
         return new DeleteCartUpdateCartUseCase(cartRepository, mapper);
     }
 
     @Provides
-    DeleteCartGetCartListUseCase deleteCartGetCartListUseCase(Context context, ICartRepository cartRepository, ICartMapper mapper, ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase) {
-        return new DeleteCartGetCartListUseCase(context, cartRepository, mapper, clearCacheAutoApplyStackUseCase);
+    DeleteCartListUseCase deleteCartGetCartListUseCase(Context context, ICartRepository cartRepository, ICartMapper mapper, ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase) {
+        return new DeleteCartListUseCase(context, cartRepository, mapper, clearCacheAutoApplyStackUseCase);
     }
 
     @Provides

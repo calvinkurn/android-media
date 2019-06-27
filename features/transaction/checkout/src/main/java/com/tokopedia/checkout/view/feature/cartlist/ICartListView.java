@@ -64,7 +64,7 @@ public interface ICartListView extends IBaseView {
 
     void renderLoadGetCartDataFinish();
 
-    void onDeleteCartDataSuccess();
+    void onDeleteCartDataSuccess(List<Integer> deletedCartIds);
 
     Activity getActivity();
 
