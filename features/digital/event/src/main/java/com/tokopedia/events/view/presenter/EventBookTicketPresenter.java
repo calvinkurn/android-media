@@ -135,7 +135,7 @@ public class EventBookTicketPresenter extends BaseDaggerPresenter<EventBaseContr
             @Override
             public void onNext(ValidateResponse objectResponse) {
                 if (objectResponse.getStatus() != 400) {
-                    if (hasSeatLayout == 1 && seatLayoutViewModel.getArea() != null) {
+                    if (hasSeatLayout == 1 && seatLayoutViewModel.getArea() != null && seatLayoutViewModel.getLayoutDetail() != null && seatLayoutViewModel.getLayoutDetail().size() > 0) {
                         Intent reviewTicketIntent = new Intent(mView.getActivity(), SeatSelectionActivity.class);
                         reviewTicketIntent.putExtra(Utils.Constants.EXTRA_PACKAGEVIEWMODEL, selectedPackageViewModel);
                         reviewTicketIntent.putExtra(Utils.Constants.EXTRA_SEATLAYOUTVIEWMODEL, seatLayoutViewModel);
