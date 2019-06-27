@@ -119,7 +119,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
             loading_screen.visibility = View.GONE
             when (it) {
                 is Success -> {
-                    startActivity(HotelBookingActivity.getCallingIntent(context!!,it.data.cartId))
+                    startActivity(HotelBookingActivity.getCallingIntent(context!!,it.data.response.cartId))
                 }
                 is Fail -> {
                     NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))
@@ -364,7 +364,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
 
     override fun onClickBookListener(room: HotelRoom) {
         loading_screen.visibility = View.VISIBLE
-//        trackingHotelUtil.hotelChooseRoom(room, roomList)
+        trackingHotelUtil.hotelChooseRoom(room, roomList.indexOf(room))
         if (userSessionInterface.isLoggedIn) {
             roomListViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart),
                     mapToAddCartParam(hotelRoomListPageModel, room))

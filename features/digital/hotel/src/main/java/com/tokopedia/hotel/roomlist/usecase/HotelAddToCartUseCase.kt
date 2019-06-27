@@ -3,8 +3,8 @@ package com.tokopedia.hotel.roomlist.usecase
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.hotel.common.getSuccessData
+import com.tokopedia.hotel.roomlist.data.model.HotelAddCartData
 import com.tokopedia.hotel.roomlist.data.model.HotelAddCartParam
-import com.tokopedia.hotel.roomlist.data.model.HotelAddCartResponse
 import com.tokopedia.hotel.roomlist.util.HotelUtil
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -21,7 +21,7 @@ import javax.inject.Inject
 
 class HotelAddToCartUseCase @Inject constructor(val useCase: MultiRequestGraphqlUseCase) {
 
-    suspend fun execute(rawQuery: String, hotelAddCartParam: HotelAddCartParam): Result<HotelAddCartResponse> {
+    suspend fun execute(rawQuery: String, hotelAddCartParam: HotelAddCartParam): Result<HotelAddCartData.Response> {
 
         if (hotelAddCartParam.rooms.isNotEmpty())
             hotelAddCartParam.idempotencyKey = generateIdEmpotency(hotelAddCartParam.rooms.first().roomId)
@@ -30,12 +30,12 @@ class HotelAddToCartUseCase @Inject constructor(val useCase: MultiRequestGraphql
         useCase.clearRequest()
 
         try {
-            val graphqlRequest = GraphqlRequest(rawQuery, HotelAddCartResponse::class.java, param)
+            val graphqlRequest = GraphqlRequest(rawQuery, HotelAddCartData.Response::class.java, param)
             useCase.addRequest(graphqlRequest)
 
             val hotelRoomData = GlobalScope.async {
                 val response =  withContext(Dispatchers.IO) {
-                    useCase.executeOnBackground().getSuccessData<HotelAddCartResponse>()
+                    useCase.executeOnBackground().getSuccessData<HotelAddCartData.Response>()
                 }
                 response
             }

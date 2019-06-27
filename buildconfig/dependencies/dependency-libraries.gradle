@@ -19,9 +19,9 @@ ext {
     tkpdBaseAdapterlVersion = '2.22'
     tkpdGraphViewVersion = '2.22'
 
-    unifyIconVersion = '0.0.1-SNAPSHOT'
+    unifyIconVersion = '0.0.2-SNAPSHOT'
     unifyPrinciplesVersion = '0.0.1-SNAPSHOT'
-    unifyComponentsVersion = '0.0.1-SNAPSHOT'
+    unifyComponentsVersion = '0.0.3-SNAPSHOT'
 
     // Sort alphabetically by package name
     tkpdInternalLibDependencies = [

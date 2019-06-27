@@ -10,12 +10,21 @@ import android.graphics.Canvas
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.text.Html
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import android.widget.LinearLayout
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
@@ -31,6 +40,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_e_voucher.*
 import java.io.File
 import java.io.FileOutputStream
+import java.io.UnsupportedEncodingException
 import javax.inject.Inject
 
 
@@ -193,7 +203,9 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
                 tv_room_facility.text = amenitiesString
             }
 
-            tv_additional_notes.text = propertyDetail.extraInfo
+                tv_additional_notes.setText(createHyperlinkText(propertyDetail.extraInfo.content,
+                        propertyDetail.extraInfo.uri), TextView.BufferType.SPANNABLE)
+                tv_additional_notes.movementMethod = LinkMovementMethod.getInstance()
 
             tv_request_label.text = propertyDetail.specialRequest.title
             tv_request_info.text = propertyDetail.specialRequest.content
@@ -231,6 +243,31 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
         progressDialog.show()
         eVoucherViewModel.sendPdf(GraphqlHelper.loadRawString(resources,
                 R.raw.gql_mutation_hotel_share_pdf), emailList, orderId)
+    }
+
+    fun createHyperlinkText(htmlText: String = "", url: String = ""): SpannableString {
+
+        val text = Html.fromHtml(htmlText)
+        val spannableString = SpannableString(text)
+        val startIndexOfLink = htmlText.toLowerCase().indexOf("<hyperlink>") + "<hyperlink>".length
+        val endIndexOfLink = htmlText.toLowerCase().indexOf("</hyperlink>")
+        if (startIndexOfLink >= 0) {
+            spannableString.setSpan(object : ClickableSpan() {
+                override fun onClick(view: View) {
+                    try {
+                        RouteManager.route(context, url)
+                    } catch (e: UnsupportedEncodingException) {
+                        e.printStackTrace()
+                    }
+                }
+                override fun updateDrawState(ds: TextPaint) {
+                    super.updateDrawState(ds)
+                    ds.isUnderlineText = false
+                    ds.color = resources.getColor(R.color.green_250) // specific color for this link
+                }
+            }, startIndexOfLink - "<hyperlink>".length, endIndexOfLink - "<hyperlink>".length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+        return spannableString
     }
 
     companion object {

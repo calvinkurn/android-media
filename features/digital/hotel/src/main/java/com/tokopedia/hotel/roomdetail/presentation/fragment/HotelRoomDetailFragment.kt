@@ -86,7 +86,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
             loading_screen.visibility = View.GONE
             when (it) {
                 is Success -> {
-                    val cartId = it.data.cartId
+                    val cartId = it.data.response.cartId
                     startActivity(HotelBookingActivity.getCallingIntent(context!!, cartId))
                 }
                 is Fail -> {
@@ -316,7 +316,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         room_detail_button.setOnClickListener {
             loading_screen.visibility = View.VISIBLE
             room_detail_button.isEnabled = false
-//            trackingHotelUtil.hotelChooseRoomDetails(hotelRoom)
+            trackingHotelUtil.hotelChooseRoomDetails(hotelRoom)
             if (userSessionInterface.isLoggedIn) {
                 roomDetailViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart), addToCartParam)
             } else {

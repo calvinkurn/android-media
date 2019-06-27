@@ -18,6 +18,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.common.payment.model.PaymentPassData
@@ -81,7 +83,9 @@ class HotelBookingFragment : HotelBaseFragment() {
                     hotelCart = it.data
                     initView()
                 }
-                is Fail -> {}
+                is Fail -> {
+                    showErrorState(it.throwable)
+                }
             }
         })
 
@@ -98,7 +102,9 @@ class HotelBookingFragment : HotelBaseFragment() {
                         startActivityForResult(intent, REQUEST_CODE_CHECKOUT)
                     }
                 }
-                is Fail -> {}
+                is Fail -> {
+                    NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))
+                }
             }
         })
     }
@@ -115,8 +121,7 @@ class HotelBookingFragment : HotelBaseFragment() {
 
         showLoadingBar()
 
-        bookingViewModel.getCartData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_cart), hotelBookingPageModel.cartId,
-                GraphqlHelper.loadRawString(resources, R.raw.dummy_hotel_cart))
+        bookingViewModel.getCartData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_cart), hotelBookingPageModel.cartId)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -141,7 +146,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         hideLoadingBar()
 
         setupHotelInfo(hotelCart.property)
-        setupRoomDuration(hotelCart.cart)
+        setupRoomDuration(hotelCart.property, hotelCart.cart)
         setupRoomInfo(hotelCart.property, hotelCart.cart)
         setupRoomRequestForm(hotelCart.cart)
         setupContactDetail(hotelCart.cart)
@@ -172,15 +177,16 @@ class HotelBookingFragment : HotelBaseFragment() {
         iv_hotel_info_image.loadImage(property.image, R.drawable.ic_failed_load_image)
     }
 
-    private fun setupRoomDuration(cart: HotelCartData) {
+    private fun setupRoomDuration(property: HotelPropertyData, cart: HotelCartData) {
         booking_room_duration_info.setRoomDates(cart.checkIn, cart.checkOut)
+        booking_room_duration_info.setRoomCheckTimes(property.checkInFrom, property.checkOutTo)
     }
 
     private fun setupRoomInfo(property: HotelPropertyData, cart: HotelCartData) {
         if (property.rooms.isNotEmpty()) {
             tv_booking_room_info_title.text = property.rooms[0].roomName
 
-            if (property.rooms[0].isDirectPayment) {
+            if (!property.isDirectPayment) {
                 tv_booking_room_info_pay_at_hotel.visibility = View.VISIBLE
                 tv_booking_room_info_pay_at_hotel.setDrawableLeft(R.drawable.ic_hotel_16)
             }
@@ -210,7 +216,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                         spannableString.length - moreInfoString.length, spannableString.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 cancellationDesc = spannableString
             }
-            tv_cancellation_policy_ticker.setTitleAndDescription(cancellationPolicy.policyType, cancellationDesc)
+            tv_cancellation_policy_ticker.setTitleAndDescription(cancellationPolicy.title, cancellationDesc)
             tv_cancellation_policy_ticker.info_desc.movementMethod = LinkMovementMethod.getInstance()
         }
     }
@@ -222,7 +228,7 @@ class HotelBookingFragment : HotelBaseFragment() {
 
             for (policy in property.rooms[0].cancellationPolicies.details) {
                 val policyView = InfoTextView(context!!)
-                policyView.setTitleAndDescription(policy.title, policy.content)
+                policyView.setTitleAndDescription(policy.longTitle, policy.longDesc)
                 policyView.info_title.setFontSize(TextViewCompat.FontSize.SMALL)
                 policyView.info_container.setMargin(0,0,0, policyView.info_container.getDimens(R.dimen.dp_16))
                 hotelCancellationPolicyBottomSheets.addContentView(policyView)
@@ -325,7 +331,7 @@ class HotelBookingFragment : HotelBaseFragment() {
     }
 
     private fun setupPayNowPromoTicker(property: HotelPropertyData) {
-        if (property.rooms.isNotEmpty() && !property.rooms[0].isDirectPayment) {
+        if (property.rooms.isNotEmpty() && property.isDirectPayment) {
             booking_pay_now_promo_container.visibility = View.VISIBLE
         }
     }
@@ -333,28 +339,34 @@ class HotelBookingFragment : HotelBaseFragment() {
     private fun setupInvoiceSummary(cart: HotelCartData, property: HotelPropertyData) {
         cart.fares.find { it.type == "base_price" }?.let {
             tv_room_price_label.text = it.description
-            tv_room_price.text = it.localPrice
+            tv_room_price.text = if(cart.localCurrency.isEmpty()) it.price else it.localPrice
         }
         cart.fares.find { it.type == "tax" }?.let {
             tv_room_tax_label.text = it.description
-            tv_room_tax.text = it.localPrice
+            tv_room_tax.text = if(cart.localCurrency.isEmpty()) it.price else it.localPrice
         }
-        val priceLabelResId = if (property.rooms[0].isDirectPayment) R.string.hotel_booking_invoice_estimate_pay_at_hotel else R.string.hotel_booking_invoice_estimate_pay_now
-        tv_room_estimated_price_label.text = getString(priceLabelResId)
-        tv_room_estimated_price.text = cart.localTotalPrice
-        tv_room_estimated_price.setTextColor(ContextCompat.getColor(context!!, R.color.orange_607))
 
-        if (cart.currency != "IDR") {
+        val priceLabelResId = if (!property.isDirectPayment) R.string.hotel_booking_invoice_estimate_pay_at_hotel else R.string.hotel_booking_invoice_estimate_pay_now
+        val price: String
+        if (cart.localCurrency.isEmpty()) {
+            price = cart.totalPrice
+        } else {
+            price = cart.localTotalPrice
+
+            // Show price estimate in IDR
             tv_invoice_foreign_currency.visibility = View.VISIBLE
             val spannableString = SpannableString(getString(R.string.hotel_booking_invoice_foreign_currency_label, cart.totalPrice))
             spannableString.setSpan(StyleSpan(Typeface.BOLD), spannableString.length - cart.totalPrice.length, spannableString.length,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             tv_invoice_foreign_currency.text = spannableString
         }
+        tv_room_estimated_price_label.text = getString(priceLabelResId)
+        tv_room_estimated_price.text = price
+        tv_room_estimated_price.setTextColor(ContextCompat.getColor(context!!, R.color.orange_607))
     }
 
     private fun setupImportantNotes(property: HotelPropertyData) {
-        if (property.rooms.isNotEmpty() && property.rooms[0].importantNote.isNotEmpty()) {
+        if (property.rooms.isNotEmpty() && property.paymentNote.isNotEmpty()) {
             hotel_booking_important_notes.visibility = View.VISIBLE
 
             val notesDescription = getString(R.string.hotel_booking_important_notes)
@@ -362,7 +374,7 @@ class HotelBookingFragment : HotelBaseFragment() {
             val spannableString = SpannableString("$notesDescription $expandNotesLabel")
             val moreInfoSpan = object : ClickableSpan() {
                 override fun onClick(textView: View) {
-                    onImportantNotesClicked(property.rooms[0].importantNote)
+                    onImportantNotesClicked(property.paymentNote)
                 }
             }
             spannableString.setSpan(moreInfoSpan,spannableString.length - expandNotesLabel.length, spannableString.length,
@@ -427,8 +439,7 @@ class HotelBookingFragment : HotelBaseFragment() {
     }
 
     override fun onErrorRetryClicked() {
-        bookingViewModel.getCartData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_cart), hotelBookingPageModel.cartId,
-                GraphqlHelper.loadRawString(resources, R.raw.dummy_hotel_cart))
+        bookingViewModel.getCartData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_cart), hotelBookingPageModel.cartId)
     }
 
     companion object {
