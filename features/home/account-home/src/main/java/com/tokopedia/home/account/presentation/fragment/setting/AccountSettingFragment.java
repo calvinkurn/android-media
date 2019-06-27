@@ -51,7 +51,6 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     private View personalDataMenu;
     private View addressMenu;
     private View passwordMenu;
-    private View pinSeparator;
     private View pinMenu;
     private View kycSeparator;
     private View kycMenu;
@@ -82,7 +81,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
         personalDataMenu = view.findViewById(R.id.label_view_identity);
         addressMenu = view.findViewById(R.id.label_view_address);
         passwordMenu = view.findViewById(R.id.label_view_password);
-        pinMenu = view.findViewById(R.id.label_view_password);
+        pinMenu = view.findViewById(R.id.label_view_pin);
         kycMenu = view.findViewById(R.id.label_view_kyc);
         sampaiMenu = view.findViewById(R.id.label_view_sampai);
         sampaiSeparator = view.findViewById(R.id.separator_sampai);
@@ -190,9 +189,10 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
                     }
                     break;
                 case SettingConstant.SETTING_PIN:
+                    //TODO CHANGE URL
                     RouteManager.route(getActivity(),
                             String.format("%s?url=%s", ApplinkConst.WEBVIEW,
-                                    );
+                                    "https://www.tokopedia.com"));
                     break;
                 case SettingConstant.SETTING_ACCOUNT_ADDRESS_ID:
                     accountAnalytics.eventClickAccountSetting(ADDRESS_LIST);
@@ -258,10 +258,6 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
                 .isAddressEnabled() ? View.VISIBLE : View.GONE);
         passwordMenu.setVisibility(accountSettingConfig.getAccountSettingConfig()
                 .isPasswordEnabled() ? View.VISIBLE : View.GONE);
-        pinSeparator.setVisibility(accountSettingConfig.getAccountSettingConfig()
-                .isIdentityEnabled() ? View.VISIBLE : View.GONE);
-        pinMenu.setVisibility(accountSettingConfig.getAccountSettingConfig()
-                .isIdentityEnabled() ? View.VISIBLE : View.GONE);
         kycSeparator.setVisibility(accountSettingConfig.getAccountSettingConfig()
                 .isIdentityEnabled() ? View.VISIBLE : View.GONE);
         kycMenu.setVisibility(accountSettingConfig.getAccountSettingConfig()
