@@ -80,7 +80,7 @@ abstract class HotelBaseActivity: BaseSimpleActivity(), HotelMenuBottomSheets.Ho
     }
 
     override fun onHelpClicked() {
-        //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        RouteManager.route(this, ApplinkConst.CONTACT_US_NATIVE)
     }
 
     private fun showBottomMenus() {
