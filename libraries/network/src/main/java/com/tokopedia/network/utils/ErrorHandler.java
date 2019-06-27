@@ -1,21 +1,17 @@
-package com.tokopedia.abstraction.common.utils.network;
+package com.tokopedia.network.utils;
 
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.tokopedia.abstraction.R;
-import com.tokopedia.abstraction.common.data.model.response.ResponseV4ErrorException;
-import com.tokopedia.abstraction.common.network.constant.ResponseStatus;
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
+import com.tokopedia.network.R;
+import com.tokopedia.network.constant.ResponseStatus;
+import com.tokopedia.network.data.model.response.ResponseV4ErrorException;
+import com.tokopedia.network.exception.MessageErrorException;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
-/*
- * Use {com.tokopedia.network.utils.ErrorHandler} instead of this class
- */
-@Deprecated
 public class ErrorHandler {
 
     public static String getErrorMessage(final Context context, Throwable e) {
