@@ -114,7 +114,7 @@ class HotelDestinationViewModel @Inject constructor(
 
     fun onGetLocation(): Function1<DeviceLocation, Unit> {
         return { (latitude, longitude) ->
-            if (latitude == 0.0 && latitude == 0.0) longLat.value = Fail(Throwable())
+            if (latitude == 0.0 && longitude == 0.0) longLat.value = Fail(Throwable())
             else longLat.value = Success(Pair(longitude, latitude))
             null
         }
