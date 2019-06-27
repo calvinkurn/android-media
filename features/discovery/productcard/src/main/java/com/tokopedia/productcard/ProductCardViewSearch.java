@@ -22,7 +22,7 @@ import com.tokopedia.topads.sdk.domain.model.ImpressHolder;
 import com.tokopedia.topads.sdk.view.ImpressedImageView;
 import com.tokopedia.unifycomponents.Label;
 
-public abstract class SearchProductCardView extends BaseCustomView {
+public abstract class ProductCardViewSearch extends BaseCustomView {
 
     protected static final String LIGHT_GREY = "lightGrey";
     protected static final String LIGHT_BLUE = "lightBlue";
@@ -52,17 +52,17 @@ public abstract class SearchProductCardView extends BaseCustomView {
     protected TextView textShopName;
     protected Label offersLabel;
 
-    public SearchProductCardView(@NonNull Context context) {
+    public ProductCardViewSearch(@NonNull Context context) {
         super(context);
         init();
     }
 
-    public SearchProductCardView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public ProductCardViewSearch(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public SearchProductCardView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ProductCardViewSearch(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
