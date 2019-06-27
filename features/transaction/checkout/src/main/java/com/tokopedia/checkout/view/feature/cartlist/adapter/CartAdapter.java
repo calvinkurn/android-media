@@ -744,4 +744,22 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         cartDataList.remove(cartLoadingHolderData);
     }
 
+    public void removeCartItemById(List<Integer> cartIds) {
+        for (Object object : cartDataList) {
+            if (object instanceof CartShopHolderData) {
+                List<CartItemHolderData> cartItemHolderDataList = ((CartShopHolderData) object).getShopGroupData().getCartItemDataList();
+                for (CartItemHolderData cartItemHolderData : cartItemHolderDataList) {
+                    if (cartIds.contains(cartItemHolderData.getCartItemData().getOriginData().getCartId())) {
+                        cartItemHolderDataList.remove(cartItemHolderData);
+                        break;
+                    }
+                }
+                if (cartItemHolderDataList.size() == 0) {
+                    cartDataList.remove(object);
+                }
+            }
+        }
+        notifyDataSetChanged();
+    }
+
 }
