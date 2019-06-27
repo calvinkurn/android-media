@@ -1,10 +1,12 @@
 package com.tokopedia.search.result.presentation.view.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -72,6 +74,7 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
+import com.tokopedia.unifycomponents.Toaster;
 
 import org.json.JSONArray;
 
@@ -451,6 +454,21 @@ public class ProductListFragment
             boolean isWishlist = data.getExtras().getBoolean(SearchConstant.Wishlist.WIHSLIST_STATUS_IS_WISHLIST, false);
 
             updateWishlistFromPDP(position, isWishlist);
+
+        } else if (requestCode == 5838) {
+            if (resultCode == Activity.RESULT_OK) {
+                //todo something when user logged in and preverified
+            } else if (resultCode == 980) {
+                //User DOb verfied succesfully
+                String message = data.getStringExtra("VERIFICATION_SUCCESS");
+                Toaster.Companion.showNormalWithAction(getActivity(),
+                        message,
+                        Snackbar.LENGTH_INDEFINITE,
+                        getString(R.string.general_label_ok), (v) -> {
+                        });
+            } else {
+                getActivity().finish();
+            }
         }
     }
 
@@ -1043,5 +1061,14 @@ public class ProductListFragment
                 currentKey,
                 currentPage
         );
+    }
+
+    @Override
+    public void showAdultRestriction() {
+        Intent intent = new Intent();
+        intent.setClassName(getActivity().getPackageName(),
+                "com.tokopedia.age_restriction.viewcontroller.AgeRestrictionHomeActivity");
+        intent.putExtra("ORIGIN", 3);
+        startActivityForResult(intent, 5838);
     }
 }
