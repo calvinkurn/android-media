@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.library.baseadapter.BaseItem;
+import com.tokopedia.tokopoints.view.model.section.CouponUpperLeftSection;
 
 public class CouponValueEntity extends BaseItem {
     @Expose
@@ -87,6 +88,61 @@ public class CouponValueEntity extends BaseItem {
 
     @SerializedName("swipe")
     private CouponSwipeDetail swipe;
+
+    @SerializedName("isStacked")
+    private boolean isStacked;
+
+    @SerializedName("isNewCoupon")
+    private boolean isNewCoupon;
+
+    @SerializedName("stackID")
+    private String stackId;
+
+    @SerializedName("redirectAppLink")
+    private String redirectAppLink;
+
+    @SerializedName("upperLeftSection")
+    private CouponUpperLeftSection upperLeftSection;
+
+    public CouponUpperLeftSection getUpperLeftSection() {
+        return upperLeftSection;
+    }
+
+    public void setUpperLeftSection(CouponUpperLeftSection upperLeftSection) {
+        this.upperLeftSection = upperLeftSection;
+    }
+
+    public String getRedirectAppLink() {
+        return redirectAppLink;
+    }
+
+    public void setRedirectAppLink(String redirectAppLink) {
+        this.redirectAppLink = redirectAppLink;
+    }
+
+    public boolean isStacked() {
+        return isStacked;
+    }
+
+    public void setStacked(boolean stacked) {
+        isStacked = stacked;
+    }
+
+    public boolean isNewCoupon() {
+        return isNewCoupon;
+    }
+
+    public void setNewCoupon(boolean newCoupon) {
+        isNewCoupon = newCoupon;
+    }
+
+    public String getStackId() {
+        return stackId;
+    }
+
+    public void setStackId(String stackId) {
+        this.stackId = stackId;
+    }
 
     public CouponSwipeDetail getSwipe() {
         return swipe;

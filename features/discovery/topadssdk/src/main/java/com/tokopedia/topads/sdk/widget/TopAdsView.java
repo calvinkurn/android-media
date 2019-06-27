@@ -25,6 +25,7 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.presenter.TopAdsPresenter;
 import com.tokopedia.topads.sdk.view.AdsView;
@@ -57,6 +58,7 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
     private RelativeLayout contentLayout;
     private static final int DEFAULT_SPAN_COUNT = 2;
     private TopAdsListener adsListener;
+    private TopAdsItemImpressionListener impressionListener;
 
     public TopAdsView(Context context) {
         super(context);
@@ -84,6 +86,14 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
         inflate(getContext(), R.layout.layout_ads, this);
         adapter = new AdsItemAdapter(getContext());
         adapter.setItemClickListener(this);
+        adapter.setAdsItemImpressionListener(new TopAdsItemImpressionListener() {
+            @Override
+            public void onImpressionProductAdsItem(int position, Product product) {
+                if(impressionListener!=null){
+                    impressionListener.onImpressionProductAdsItem(position, product);
+                }
+            }
+        });
         adapter.setEnableWishlist(true);
         recyclerView = (RecyclerView) findViewById(R.id.list);
         recyclerView.setNestedScrollingEnabled(false);
@@ -98,6 +108,10 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
 
     public void setConfig(Config config) {
         presenter.setConfig(config);
+    }
+
+    public void setAdsImpressionListener(TopAdsItemImpressionListener impressionListener) {
+        this.impressionListener = impressionListener;
     }
 
     @Override

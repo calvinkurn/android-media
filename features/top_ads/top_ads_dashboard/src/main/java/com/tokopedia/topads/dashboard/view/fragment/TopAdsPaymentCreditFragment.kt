@@ -3,26 +3,24 @@ package com.tokopedia.topads.dashboard.view.fragment
 import android.net.Uri
 import android.os.Bundle
 import android.webkit.WebView
-
-import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.fragment.BaseWebViewFragment
-import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.abstraction.common.utils.network.URLGenerator
-import com.tokopedia.topads.common.data.util.ApplinkUtil
 import com.tokopedia.topads.dashboard.TopAdsDashboardRouter
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.model.DataCredit
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 
 class TopAdsPaymentCreditFragment : BaseWebViewFragment() {
 
     private var dataCredit: DataCredit? = null
-    private var userSession: UserSession? = null
+    private var userSession: UserSessionInterface? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.run {
             dataCredit = intent.getParcelableExtra(TopAdsDashboardConstant.EXTRA_CREDIT)
-            userSession = (application as AbstractionRouter).session
+            userSession = UserSession(activity)
         }
     }
 

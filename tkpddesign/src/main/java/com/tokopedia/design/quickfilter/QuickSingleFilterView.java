@@ -50,10 +50,18 @@ public class QuickSingleFilterView extends BaseCustomView {
         recyclerView = (RecyclerView) rootView.findViewById(R.id.rv_filter);
 
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
-                LinearLayoutManager.HORIZONTAL, false));
+        recyclerView.setLayoutManager(getLayoutManager());
         initialAdapter();
         recyclerView.setAdapter(adapterFilter);
+    }
+
+    public void updateLayoutManager(RecyclerView.LayoutManager layoutManager) {
+        recyclerView.setLayoutManager(layoutManager);
+    }
+
+    protected RecyclerView.LayoutManager getLayoutManager() {
+        return new LinearLayoutManager(getContext(),
+                LinearLayoutManager.HORIZONTAL, false);
     }
 
     @LayoutRes
@@ -67,6 +75,9 @@ public class QuickSingleFilterView extends BaseCustomView {
 
     public void renderFilter(List<QuickFilterItem> quickFilterItems) {
         adapterFilter.addQuickFilterList(quickFilterItems);
+    }
+    protected boolean isMultipleSelectionAllowed() {
+        return false;
     }
 
     protected QuickSingleFilterListener getQuickSingleFilterListener() {
@@ -84,7 +95,7 @@ public class QuickSingleFilterView extends BaseCustomView {
                         } else {
                             items.get(i).setSelected(true);
                         }
-                    } else {
+                    } else if(!isMultipleSelectionAllowed()){
                         totalFalse++;
                         items.get(i).setSelected(false);
                     }
@@ -97,11 +108,15 @@ public class QuickSingleFilterView extends BaseCustomView {
                         setSelectedFilter(items.get(indexOf).getType());
                     }
                 } else {
-                    setSelectedFilter(quickFilterItem.getType());
+                        setSelectedFilter(getDefaultSelectedFilterType(quickFilterItem));
                 }
                 adapterFilter.notifyDataSetChanged();
             }
         };
+    }
+
+    protected String getDefaultSelectedFilterType(QuickFilterItem quickFilterItem) {
+            return quickFilterItem.getType();
     }
 
     private void setSelectedFilter(String type) {

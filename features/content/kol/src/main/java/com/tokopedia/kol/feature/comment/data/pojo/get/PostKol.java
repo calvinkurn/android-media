@@ -10,7 +10,7 @@ public class PostKol {
 
     @SerializedName("id")
     @Expose
-    private int id;
+    private int id = 0;
     @SerializedName("headerTitle")
     @Expose
     private Object headerTitle;
@@ -53,6 +53,9 @@ public class PostKol {
     @SerializedName("content")
     @Expose
     private List<Content> content = null;
+
+    public PostKol() {
+    }
 
     public PostKol(int id, Object headerTitle, String description, int commentCount,
                    int likeCount, boolean isLiked, boolean isFollowed, String userName,

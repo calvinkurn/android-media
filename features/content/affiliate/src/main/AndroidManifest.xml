@@ -13,32 +13,38 @@
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name=".feature.onboarding.view.activity.OnboardingActivity"
-            android:label="@string/title_af_onboarding"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity
-            android:name=".feature.onboarding.view.activity.UsernameInputActivity"
-            android:label="@string/title_af_onboarding"
+            android:name=".feature.explore.view.activity.ExploreActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
         <activity
-            android:name=".feature.onboarding.view.activity.RecommendProductActivity"
-            android:label="@string/title_af_onboarding"
+            android:name=".feature.explore.view.activity.FilterActivity"
+            android:label="@string/text_title_filter"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name=".feature.explore.view.activity.ExploreActivity"
-            android:label="@string/title_af_dashboard"
+            android:name=".feature.education.view.activity.AffiliateEducationActivity"
+            android:label="@string/title_af_tokopedia_byme"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".feature.explore.view.activity.SortActivity"
+            android:label="@string/text_button_sort"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".feature.createpost.view.activity.CreatePostActivity"
             android:label="@string/title_af_create_post"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".feature.createpost.view.activity.MediaPreviewActivity"
+            android:label="@string/af_title_edit"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden" />
@@ -49,17 +55,21 @@
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
+            android:name=".feature.createpost.view.activity.CreatePostVideoPickerActivity"
+            android:label="@string/title_af_image_video"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
             android:name=".feature.createpost.view.activity.CreatePostImageEditorActivity"
             android:label="@string/title_af_image_editor"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity
-            android:name=".feature.createpost.view.activity.CreatePostExampleActivity"
-            android:label="@string/title_af_create_post_example"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden" />
+        <service
+            android:name=".feature.createpost.view.service.SubmitPostService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:enabled="true" />
         <activity android:name=".feature.tracking.view.activity.AffiliateTrackingActivity" >
             <intent-filter android:order="1">
                 <action android:name="android.intent.action.VIEW" />
@@ -75,12 +85,13 @@
                     android:host="tokopedia.me"
                     android:pathPattern="/.*"
                     android:scheme="http" />
+
                 <data
-                    android:host="staging.tokopedia.me"
+                    android:host="tokopedia.by"
                     android:pathPattern="/.*"
                     android:scheme="https" />
                 <data
-                    android:host="staging.tokopedia.me"
+                    android:host="tokopedia.by"
                     android:pathPattern="/.*"
                     android:scheme="http" />
             </intent-filter>

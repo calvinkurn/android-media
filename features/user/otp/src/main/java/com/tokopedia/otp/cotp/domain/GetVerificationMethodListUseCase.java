@@ -33,7 +33,7 @@ public class GetVerificationMethodListUseCase extends UseCase<ListVerificationMe
 
     public static RequestParams getParam(String phoneNumber, int otpType, String userId) {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(PARAM_MSISDN, phoneNumber);
+        requestParams.putString(PARAM_MSISDN, phoneNumber.replace("-",""));
         requestParams.putInt(PARAM_OTP_TYPE, otpType);
         requestParams.putString(PARAM_USER_ID, userId);
         return requestParams;

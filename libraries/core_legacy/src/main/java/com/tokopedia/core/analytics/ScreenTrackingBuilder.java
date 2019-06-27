@@ -1,57 +1,51 @@
 package com.tokopedia.core.analytics;
 
-import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
-import com.tokopedia.core.deprecated.SessionHandler;
-import com.tokopedia.core.gcm.utils.RouterUtils;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ScreenTrackingBuilder {
-    private static final String AF_UNAVAILABLE_VALUE = "none";
-    private final SessionHandler sessionHandler;
+    private String screenName;
+    private Map<String, String> customDimension = new HashMap<>();
 
-    private Authenticated authEvent;
-    private Activity mActivity;
-    private ScreenTracking.IOpenScreenAnalytics mOpenScreenAnalytics;
-
-    public static ScreenTrackingBuilder newInstance(Activity activity,
-                                                    ScreenTracking.IOpenScreenAnalytics openScreenAnalytics,
-                                                    String afUniqueId) {
-        return new ScreenTrackingBuilder(activity, openScreenAnalytics, afUniqueId);
+    public static ScreenTrackingBuilder newInstance(ScreenTracking.IOpenScreenAnalytics openScreenAnalytics) {
+        return new ScreenTrackingBuilder(openScreenAnalytics);
     }
 
-    private ScreenTrackingBuilder(Activity activity,
-                                  ScreenTracking.IOpenScreenAnalytics openScreenAnalytics,
-                                  String afUniqueId) {
-        this.mOpenScreenAnalytics = openScreenAnalytics;
-        this.mActivity = activity;
-        authEvent = new Authenticated();
-        sessionHandler = RouterUtils.getRouterFromContext(activity).legacySessionHandler();
+    public static ScreenTrackingBuilder newInstance(String screenName) {
+        return new ScreenTrackingBuilder(screenName);
+    }
 
-        authEvent.setUserFullName(sessionHandler.getLoginName());
-        authEvent.setUserID(sessionHandler.getGTMLoginID());
-        authEvent.setShopID(sessionHandler.getShopID());
-        authEvent.setUserSeller(sessionHandler.isUserHasShop() ? 1 : 0);
-        authEvent.setAfUniqueId(afUniqueId != null ? afUniqueId : AF_UNAVAILABLE_VALUE);
+    private ScreenTrackingBuilder(ScreenTracking.IOpenScreenAnalytics openScreenAnalytics) {
+        if (openScreenAnalytics != null) {
+            screenName = openScreenAnalytics.getScreenName();
+        }
+    }
+
+    private ScreenTrackingBuilder(String screenName) {
+        this.screenName = screenName;
     }
 
     public ScreenTrackingBuilder setNetworkSpeed(String networkSpeed) {
-        authEvent.setNetworkSpeed(networkSpeed);
+        customDimension.put(Authenticated.KEY_NETWORK_SPEED, networkSpeed);
         return this;
     }
 
     public ScreenTrackingBuilder setKeyCompetitorIntelligence(String data) {
-        if (!TextUtils.isEmpty(data))
-            authEvent.setKeyCompetitorIntelligence(data);
+        if (!TextUtils.isEmpty(data)) {
+            customDimension.put(Authenticated.KEY_COMPETITOR_INTELLIGENCE, data);
+        }
         return this;
     }
 
-
     public void execute(Context context) {
-        if (mOpenScreenAnalytics != null && !TextUtils.isEmpty(mOpenScreenAnalytics.getScreenName())) {
-            ScreenTracking.eventAuthScreen(context, authEvent, mOpenScreenAnalytics.getScreenName());
+        if (!TextUtils.isEmpty(screenName)) {
+            ScreenTracking.eventAuthScreen(context, customDimension, screenName);
         }
     }
+
 }

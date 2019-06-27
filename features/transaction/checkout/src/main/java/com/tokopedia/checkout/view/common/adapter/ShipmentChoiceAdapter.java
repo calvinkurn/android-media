@@ -10,9 +10,10 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentItemData;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentItemData;
 
 import java.util.List;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * Created by Irfan Khoirul on 24/01/18.
@@ -150,6 +151,8 @@ public class ShipmentChoiceAdapter extends RecyclerView.Adapter<ShipmentChoiceAd
             tvShipmentType = itemView.findViewById(R.id.tv_shipment_type);
             tvPriceRange = itemView.findViewById(R.id.tv_price_range);
             imgBtCheck = itemView.findViewById(R.id.img_bt_check);
+            imgBtCheck.setBackground(MethodChecker.getDrawable(imgBtCheck.getContext(), R.drawable.ic_check));
+
             tvDeliveryTimeRange = itemView.findViewById(R.id.tv_delivery_time_range);
             vSeparator = itemView.findViewById(R.id.v_separator);
         }

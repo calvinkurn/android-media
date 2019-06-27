@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/dp_10"
-        app:tckv_indicator_off_color="@color/grey"
+        app:tckv_indicator_off_color="@color/digital_grey"
         app:tckv_indicator_on_color="@color/tkpd_main_green" />
 
 </LinearLayout>

@@ -2,12 +2,12 @@ package com.tokopedia.imageuploader.domain;
 
 
 import com.google.gson.Gson;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.imageuploader.domain.model.GenerateHostDomainModel;
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel;
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.File;
 import java.util.Map;
@@ -32,7 +32,7 @@ public class UploadImageUseCase<T> extends UseCase<ImageUploadDomainModel<T>> {
     private static final String PARAM_DEVICE_TIME = "device_time";
     private static final String PARAM_HASH = "hash";
     private static final String PARAM_OS_TYPE = "os_type";
-    private final UserSession userSession;
+    private final UserSessionInterface userSession;
 
     private UploadImageRepository uploadImageRepository;
     private GenerateHostRepository generateHostRepository;
@@ -43,7 +43,7 @@ public class UploadImageUseCase<T> extends UseCase<ImageUploadDomainModel<T>> {
     public UploadImageUseCase(UploadImageRepository uploadImageRepository,
                               GenerateHostRepository generateHostRepository,
                               Gson gson,
-                              UserSession userSession,
+                              UserSessionInterface userSession,
                               Class<T> imageUploadResultModel,
                               ImageUploaderUtils imageUploaderUtils) {
         this.uploadImageRepository = uploadImageRepository;

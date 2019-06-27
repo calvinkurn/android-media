@@ -78,7 +78,7 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
         voucherShopId = arguments!!.getString(EXTRA_SHOP_ID)
         super.onCreate(savedInstanceState)
         activity?.run {
-            merchantVoucherTracking = MerchantVoucherTracking(application as AbstractionRouter)
+            merchantVoucherTracking = MerchantVoucherTracking()
         }
     }
 

@@ -157,6 +157,7 @@
     <declare-styleable name="BottomActionView">
         <attr name="bav_1_display" format="boolean" />
         <attr name="bav_2_display" format="boolean" />
+        <attr name="bav_2_icon_display" format="boolean" />
         <attr name="bav_icon_1" format="reference" />
         <attr name="bav_label_1" format="reference" />
         <attr name="bav_icon_2" format="reference" />
@@ -208,6 +209,11 @@
         </attr>
     </declare-styleable>
 
+    <declare-styleable name="PrefixEditText">
+        <attr name="prefix" format="string" />
+        <attr name="prefixTextColor" format="color" />
+    </declare-styleable>
+
     <declare-styleable name="TextViewCompat">
         <attr name="fontSize" format="enum">
             <enum name="headline" value="1" />
@@ -249,6 +255,8 @@
             <enum name="secondary" value="2" />
             <enum name="transaction" value="3" />
             <enum name="disable" value="4" />
+            <enum name="white_transparent" value="5" />
+            <enum name="white" value="6" />
         </attr>
         <attr name="buttonCompatSize" format="enum">
             <enum name="big" value="4" />
@@ -282,5 +290,11 @@
     </declare-styleable>
     <declare-styleable name="TouchViewPager">
         <attr name="can_swipe" format="boolean" />
+        <attr name="default_measure" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="RectangleOverlayView">
+        <attr name="fg_color" format="reference"/>
+        <attr name="inset_distance" format="dimension"/>
+        <attr name="outline_img" format="reference"/>
     </declare-styleable>
 </resources>

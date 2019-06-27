@@ -40,7 +40,7 @@
                 app:srcCompat="@drawable/ic_send_24dp_green"
                 tools:layout_editor_absoluteX="42dp"
                 tools:layout_editor_absoluteY="460dp"
-                tools:visibility="gone" />
+                tools:visibility="visible" />
 
             <com.tokopedia.design.text.BackEditText
                 android:id="@+id/reply_edit_text"

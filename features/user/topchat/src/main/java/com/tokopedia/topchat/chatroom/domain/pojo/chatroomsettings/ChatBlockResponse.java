@@ -16,6 +16,10 @@ public class ChatBlockResponse implements Parcelable {
     @Expose
     private ChatBlockStatus chatBlockStatus;
 
+    public ChatBlockResponse(boolean isSuccess, ChatBlockStatus chatBlockStatus) {
+        this.isSuccess = isSuccess;
+        this.chatBlockStatus = chatBlockStatus;
+    }
 
     protected ChatBlockResponse(Parcel in) {
         isSuccess = in.readByte() != 0;

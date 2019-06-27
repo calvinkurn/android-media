@@ -8,8 +8,8 @@ import android.view.ViewGroup;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressItemData;
-import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
 import com.tokopedia.checkout.view.feature.multipleaddressform.viewholder.MultipleAddressViewHolder;
+import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,15 +32,18 @@ public class MultipleAddressAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private MultipleAddressAdapterListener listener;
     private List<Object> adapterObjectList;
     private CompositeSubscription compositeSubscription;
+    private boolean isShowOnboarding;
 
     public MultipleAddressAdapter(List<MultipleAddressAdapterData> addressData,
-                                  MultipleAddressAdapterListener listener) {
+                                  MultipleAddressAdapterListener listener,
+                                  boolean isShowOnboarding) {
         this.addressData = new ArrayList<>(addressData);
         this.listener = listener;
         compositeSubscription = new CompositeSubscription();
         adapterObjectList = new ArrayList<>();
         adapterObjectList.addAll(addressData);
         adapterObjectList.add(addressData);
+        this.isShowOnboarding = isShowOnboarding;
     }
 
     @Override
@@ -69,7 +72,7 @@ public class MultipleAddressAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             MultipleAddressViewHolder itemViewHolder = (MultipleAddressViewHolder) holder;
             MultipleAddressAdapterData data = (MultipleAddressAdapterData)
                     adapterObjectList.get(position);
-            itemViewHolder.bindAdapterView(addressData, data, this, listener, compositeSubscription, isFirstItem(data));
+            itemViewHolder.bindAdapterView(addressData, data, this, listener, compositeSubscription, isFirstItem(data), isShowOnboarding);
         } else if (getItemViewType(position) == MULTIPLE_ADDRESS_FOOTER_LAYOUT) {
             ((MultipleAddressFooterViewHolder) holder).goToCourierPageButton
                     .setOnClickListener(onGoToCourierPageButtonClicked(addressData));

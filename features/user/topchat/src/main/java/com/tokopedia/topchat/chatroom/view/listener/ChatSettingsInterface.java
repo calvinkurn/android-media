@@ -1,6 +1,5 @@
 package com.tokopedia.topchat.chatroom.view.listener;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.RawRes;
 
@@ -44,9 +43,9 @@ public interface ChatSettingsInterface {
     }
 
     interface Presenter extends CustomerPresenter<View> {
-        void onPersonalChatSettingChange(String messageId, boolean state, boolean initialState);
+        void onPersonalChatSettingChange(String messageId, boolean state, boolean initialState, String shopId);
 
-        void onPromotionalChatSettingChange(String messageId, boolean state, boolean initialState);
+        void onPromotionalChatSettingChange(String messageId, boolean state, boolean initialState, String shopId);
 
         void initialChatSettings(ChatSettingsResponse chatSettingsResponse);
 

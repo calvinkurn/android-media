@@ -1,9 +1,8 @@
 package com.tokopedia.challenges.view.model.challengesubmission;
 
-import java.util.List;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.challenges.view.model.Channel;
@@ -11,8 +10,9 @@ import com.tokopedia.challenges.view.model.Collection;
 import com.tokopedia.challenges.view.model.Me;
 import com.tokopedia.challenges.view.model.User;
 
-public class SubmissionResult implements Parcelable
-{
+import java.util.List;
+
+public class SubmissionResult implements Parcelable {
 
     @SerializedName("Id")
     @Expose
@@ -70,6 +70,9 @@ public class SubmissionResult implements Parcelable
     @Expose
     private String statusMessage;
 
+    @Expose(deserialize = false)
+    private boolean isExpanded;
+
 
     public SubmissionResult() {
     }
@@ -93,6 +96,7 @@ public class SubmissionResult implements Parcelable
         sharing = in.readParcelable(Sharing.class.getClassLoader());
         awards = in.createTypedArrayList(Awards.CREATOR);
         statusMessage = in.readString();
+        isExpanded = in.readByte() != 0;
 
     }
 
@@ -116,6 +120,7 @@ public class SubmissionResult implements Parcelable
         dest.writeParcelable(sharing, flags);
         dest.writeTypedList(awards);
         dest.writeString(statusMessage);
+        dest.writeByte((byte) (isExpanded ? 1 : 0));
 
     }
 
@@ -278,5 +283,13 @@ public class SubmissionResult implements Parcelable
 
     public void setStatusMessage(String statusMessage) {
         this.statusMessage = statusMessage;
+    }
+
+    public boolean isExpanded() {
+        return isExpanded;
+    }
+
+    public void setExpanded(boolean expanded) {
+        isExpanded = expanded;
     }
 }

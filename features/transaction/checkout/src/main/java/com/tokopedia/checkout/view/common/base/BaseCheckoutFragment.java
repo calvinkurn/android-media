@@ -10,16 +10,12 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-
 /**
  * @author anggaprasetiyo on 18/04/18.
  */
 public abstract class BaseCheckoutFragment extends TkpdBaseV4Fragment {
 
     protected Bundle savedState;
-    protected Unbinder unbinder;
 
     @Override
     public void onAttach(Activity activity) {
@@ -62,7 +58,6 @@ public abstract class BaseCheckoutFragment extends TkpdBaseV4Fragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        injectView(view);
         initView(view);
         initialVar();
         setViewListener();
@@ -141,13 +136,6 @@ public abstract class BaseCheckoutFragment extends TkpdBaseV4Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         saveStateToArguments();
-        if(unbinder != null) {
-            unbinder.unbind();
-        }
-    }
-
-    private void injectView(View view) {
-        unbinder = ButterKnife.bind(this, view);
     }
 
     @Override

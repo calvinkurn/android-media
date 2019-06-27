@@ -2,8 +2,8 @@ package com.tokopedia.contactus.inboxticket2.view.contract;
 
 import android.text.TextWatcher;
 
+import com.tokopedia.contactus.inboxticket2.data.model.Tickets;
 import com.tokopedia.contactus.inboxticket2.domain.AttachmentItem;
-import com.tokopedia.contactus.inboxticket2.domain.Tickets;
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText;
 import com.tokopedia.contactus.inboxticket2.view.utils.Utils;
 import com.tokopedia.contactus.orderquery.data.ImageUpload;
@@ -25,6 +25,8 @@ public interface InboxDetailContract {
 
         String getUserMessage();
 
+        String getTicketID();
+
         void showSendProgress();
 
         void hideSendProgress();
@@ -44,6 +46,8 @@ public interface InboxDetailContract {
         void setCurrentRes(int currentRes);
 
         void updateClosedStatus(String subject);
+
+        String getCommentID();
     }
 
     interface InboxDetailPresenter extends InboxBaseContract.InboxBasePresenter {
@@ -68,5 +72,7 @@ public interface InboxDetailContract {
         Utils getUtils();
 
         void showImagePreview(int position, List<AttachmentItem> imagesURL);
+
+        void onClickEmoji(int number);
     }
 }

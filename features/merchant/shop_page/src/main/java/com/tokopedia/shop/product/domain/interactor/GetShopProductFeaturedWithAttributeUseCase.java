@@ -1,11 +1,11 @@
 package com.tokopedia.shop.product.domain.interactor;
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct;
 import com.tokopedia.gm.common.domain.interactor.GetFeatureProductListUseCase;
 import com.tokopedia.shop.product.view.mapper.ShopProductMapper;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.domain.interactor.GetWishListUseCase;
 
 import java.util.List;
@@ -30,7 +30,7 @@ public class GetShopProductFeaturedWithAttributeUseCase extends BaseGetShopProdu
     public GetShopProductFeaturedWithAttributeUseCase(GetFeatureProductListUseCase getFeatureProductListUseCase,
                                                       GetWishListUseCase getWishListUseCase,
                                                       GetProductCampaignsUseCase getProductCampaignsUseCase,
-                                                      UserSession userSession,
+                                                      UserSessionInterface userSession,
                                                       ShopProductMapper shopProductMapper) {
         super(getWishListUseCase, getProductCampaignsUseCase, userSession, shopProductMapper);
         this.getFeatureProductListUseCase = getFeatureProductListUseCase;
@@ -45,7 +45,8 @@ public class GetShopProductFeaturedWithAttributeUseCase extends BaseGetShopProdu
             @Override
             public Observable<List<ShopProductViewModel>> call(final List<GMFeaturedProduct> gmFeaturedProductList) {
                 List<ShopProductViewModel> shopProductViewModelList = shopProductMapper.convertFromProductFeatured(gmFeaturedProductList);
-                return getShopProductViewModelList(isShopOwner(shopId), officialStore, shopProductViewModelList);
+                return getShopProductViewModelList(userSession.isLoggedIn(),
+                        isShopOwner(shopId), officialStore, shopProductViewModelList);
             }
         });
     }

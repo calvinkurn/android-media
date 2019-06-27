@@ -17,23 +17,18 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.tokopedia.core.analytics.HotlistPageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.discovery.model.Option;
-import com.tokopedia.core.share.DefaultShare;
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
-import com.tokopedia.core.discovery.model.Filter;
-import com.tokopedia.core.discovery.model.Sort;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.model.share.ShareData;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
-import com.tokopedia.core.share.ShareBottomSheet;
-import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.SortProductActivity;
+import com.tokopedia.discovery.common.data.DynamicFilterModel;
+import com.tokopedia.discovery.common.data.Filter;
+import com.tokopedia.discovery.common.data.Option;
+import com.tokopedia.discovery.common.data.Sort;
+import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomNavigationListener;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
@@ -41,6 +36,7 @@ import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivit
 import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
+import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 
 import java.util.ArrayList;
@@ -55,7 +51,7 @@ import static com.tokopedia.core.home.helper.ProductFeedHelper.PORTRAIT_COLUMN_M
  */
 
 public abstract class BrowseSectionFragment extends BaseDaggerFragment
-        implements SearchSectionFragmentView {
+        implements BrowseSectionFragmentView {
 
     public static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 4;
 
@@ -85,7 +81,7 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
     private ArrayList<Sort> sort;
     private ArrayList<Filter> filters;
     private HashMap<String, String> selectedSort;
-    private HashMap<String, String> selectedFilter;
+    protected HashMap<String, String> selectedFilter;
     private FilterFlagSelectedModel flagFilterHelper;
     private boolean isGettingDynamicFilter;
 
@@ -274,15 +270,15 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
 
         SearchTracking.eventSearchResultShare(getActivity(), getScreenName());
 
-        ShareData shareData = ShareData.Builder.aShareData()
-                .setType(ShareData.DISCOVERY_TYPE)
+        LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
+                .setType(LinkerData.DISCOVERY_TYPE)
                 .setName(getString(R.string.message_share_catalog))
                 .setTextContent(getString(R.string.message_share_category))
                 .setUri(shareUrl)
                 .build();
 
         if(getActivity() instanceof HotlistActivity){
-            shareData.setType(ShareData.HOTLIST_TYPE);
+            shareData.setType(LinkerData.HOTLIST_TYPE);
         } else {
             SearchTracking.eventSearchResultShare(getActivity(), getScreenName());
         }
@@ -398,14 +394,13 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
         openFilterPage();
     }
 
-    protected void openBottomSheetFilter() {
-        bottomSheetListener.loadFilterItems(getFilters(), getFlagFilterHelper());
-        bottomSheetListener.launchFilterBottomSheet();
-    }
-
     protected void openFilterPage() {
+        if(getSelectedFilter() == null) {
+            setSelectedFilter(new HashMap<>());
+        }
+
         Intent intent = RevampedDynamicFilterActivity.createInstance(
-                getActivity(), getScreenName(), getFlagFilterHelper()
+                getActivity(), getScreenName(), getSelectedFilter(), getFlagFilterHelper()
         );
         startActivityForResult(intent, getFilterRequestCode());
         getActivity().overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out);
@@ -457,10 +452,6 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
         NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.error_get_dynamic_filter));
     }
 
-    public void performNewProductSearch(String query, boolean forceSearch) {
-        redirectionListener.performNewProductSearch(query, forceSearch);
-    }
-
     public void showSearchInputView() {
         redirectionListener.showSearchInputView();
     }
@@ -505,9 +496,9 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
 
     protected abstract AHBottomNavigation.OnTabSelectedListener getBottomNavClickListener();
 
-    protected abstract SearchSectionGeneralAdapter getAdapter();
+    protected abstract BrowseSectionGeneralAdapter getAdapter();
 
-    protected abstract SearchSectionFragmentPresenter getPresenter();
+    protected abstract BrowseSectionFragmentPresenter getPresenter();
 
     protected abstract GridLayoutManager.SpanSizeLookup onSpanSizeLookup();
 

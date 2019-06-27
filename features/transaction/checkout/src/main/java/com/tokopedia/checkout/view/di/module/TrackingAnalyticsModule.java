@@ -1,12 +1,14 @@
 package com.tokopedia.checkout.view.di.module;
 
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.logisticanalytics.CodAnalytics;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsAddToCart;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsMultipleAddress;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsPurchaseProtection;
+import com.tokopedia.transactionanalytics.CornerAnalytics;
 import com.tokopedia.transactionanalytics.OrderAnalyticsOrderTracking;
 
 import dagger.Module;
@@ -19,37 +21,48 @@ import dagger.Provides;
 public class TrackingAnalyticsModule {
 
     @Provides
-    CheckoutAnalyticsCart checkoutAnalyticsCartPage(AbstractionRouter abstractionRouter) {
-        return new CheckoutAnalyticsCart(abstractionRouter.getAnalyticTracker());
+    CheckoutAnalyticsCart checkoutAnalyticsCartPage() {
+        return new CheckoutAnalyticsCart();
     }
 
     @Provides
-    CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress(AbstractionRouter abstractionRouter) {
-        return new CheckoutAnalyticsChangeAddress(abstractionRouter.getAnalyticTracker());
+    CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress() {
+        return new CheckoutAnalyticsChangeAddress();
     }
 
     @Provides
-    CheckoutAnalyticsMultipleAddress checkoutAnalyticsMultipleAddress(AbstractionRouter abstractionRouter) {
-        return new CheckoutAnalyticsMultipleAddress(abstractionRouter.getAnalyticTracker());
+    CheckoutAnalyticsMultipleAddress checkoutAnalyticsMultipleAddress() {
+        return new CheckoutAnalyticsMultipleAddress();
     }
 
     @Provides
-    CheckoutAnalyticsAddToCart checkoutAnalyticsAddToCart(AbstractionRouter abstractionRouter) {
-        return new CheckoutAnalyticsAddToCart(abstractionRouter.getAnalyticTracker());
+    CheckoutAnalyticsAddToCart checkoutAnalyticsAddToCart() {
+        return new CheckoutAnalyticsAddToCart();
     }
 
     @Provides
-    CheckoutAnalyticsCourierSelection checkoutAnalyticsCourierSelection(AbstractionRouter abstractionRouter) {
-        return new CheckoutAnalyticsCourierSelection(abstractionRouter.getAnalyticTracker());
+    CheckoutAnalyticsCourierSelection checkoutAnalyticsCourierSelection() {
+        return new CheckoutAnalyticsCourierSelection();
     }
 
     @Provides
-    OrderAnalyticsOrderTracking orderAnalyticsOrderTracking(AbstractionRouter abstractionRouter) {
-        return new OrderAnalyticsOrderTracking(abstractionRouter.getAnalyticTracker());
+    OrderAnalyticsOrderTracking orderAnalyticsOrderTracking() {
+        return new OrderAnalyticsOrderTracking();
     }
 
     @Provides
-    CheckoutAnalyticsPurchaseProtection providePurchaseProtectionAnalytics(AbstractionRouter abstractionRouter) {
-        return new CheckoutAnalyticsPurchaseProtection(abstractionRouter.getAnalyticTracker());
+    CheckoutAnalyticsPurchaseProtection providePurchaseProtectionAnalytics() {
+        return new CheckoutAnalyticsPurchaseProtection();
     }
+
+    @Provides
+    CodAnalytics provideCodAnalytics() {
+        return new CodAnalytics();
+    }
+
+    @Provides
+    CornerAnalytics provideCornerAnalytics() {
+        return new CornerAnalytics();
+    }
+
 }

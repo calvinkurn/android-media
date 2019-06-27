@@ -8,16 +8,16 @@ public class Purchase {
 
     @SerializedName("reorder")
     @Expose
-    private int purchaseReorder;
+    private int purchaseReorder = 0;
     @SerializedName("paymentConfirm")
     @Expose
-    private int purchasePaymentConfirm;
+    private int purchasePaymentConfirm = 0;
     @SerializedName("orderStatus")
     @Expose
-    private int purchaseOrderStatus;
+    private int purchaseOrderStatus = 0;
     @SerializedName("deliveryConfirm")
     @Expose
-    private int purchaseDeliveryConfirm;
+    private int purchaseDeliveryConfirm = 0;
 
     public int getPurchaseReorder() {
         return purchaseReorder;

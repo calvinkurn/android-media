@@ -8,19 +8,19 @@ public class Action {
 
     @SerializedName("__typename")
     @Expose
-    private String typename;
+    private String typename = "";
     @SerializedName("text")
     @Expose
-    private String text;
+    private String text = "";
     @SerializedName("redirect_url")
     @Expose
-    private String redirectUrl;
+    private String redirectUrl = "";
     @SerializedName("applinks")
     @Expose
-    private String applinks;
+    private String applinks = "";
     @SerializedName("visibility")
     @Expose
-    private String visibility;
+    private String visibility = "";
 
     public String getTypename() {
         return typename;

@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatlist.viewmodel.IndicatorItem;
 import com.tokopedia.topchat.chatlist.viewmodel.IndicatorItem;

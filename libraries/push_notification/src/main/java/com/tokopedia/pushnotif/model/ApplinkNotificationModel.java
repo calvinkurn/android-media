@@ -18,6 +18,8 @@ public class ApplinkNotificationModel {
     private String summary;
     private Boolean loginRequired;
     private String createTime;
+    private String targetApp;
+    private String transactionId;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     public String getDesc() {
@@ -130,5 +132,21 @@ public class ApplinkNotificationModel {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getTargetApp() {
+        return targetApp;
+    }
+
+    public void setTargetApp(String targetApp) {
+        this.targetApp = targetApp;
+    }
+
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
     }
 }

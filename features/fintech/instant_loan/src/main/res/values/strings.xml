@@ -2,10 +2,10 @@
     <string name="app_name">features/digital/instant_loan</string>
     <string name="title_instant_loan">Pinjaman Online</string>
     <string name="label_instant_fund">Dana Instan</string>
-    <string name="description_instant_fund">Hanya dibutuhkan waktu 1 menit - 24 jam untuk pencairan dana. Mudah dan tak diperlukan jaminan.</string>
+    <string name="description_instant_fund">Alternatif sumber dana darurat untuk memenuhi kebutuhan mendesak, seperti biaya darurat rumah sakit atau modal usaha.</string>
     <string name="label_amount">Jumlah Pinjaman</string>
     <string name="label_duration">Periode Pinjaman</string>
-    <string name="label_processing_time">Periode Proses</string>
+    <string name="label_processing_time">Waktu Proses</string>
     <string name="label_interest_rate">Bunga Pinjaman</string>
     <string name="label_nominal_pinjaman">Nominal Pinjaman</string>
     <string name="label_search_loans">Cari Pinjaman</string>
@@ -20,77 +20,48 @@
     <string name="description_intro_slide_3">Perangkat Anda dibutuhkan untuk membantu membangun profil kredit Anda.</string>
     <string name="label_online_promo">Promo Pinjaman Online</string>
     <string name="label_connect_device">Hubungkan Perangkat</string>
-    <string name="label_no_collateral">Tanpa Jaminan</string>
-    <string name="label_with_collateral">Jaminan</string>
     <string name="label_select_nominal">Pilih Nominal</string>
 
-    <string-array name="values_amount_array">
-        <item>@string/label_select_nominal</item>
-        <item>Rp 2.000.000</item>
-        <item>Rp 5.000.000</item>
-        <item>Rp 8.000.000</item>
-        <item>Rp 12.000.000</item>
-        <item>Rp 25.000.000</item>
-        <item>Rp 50.000.000</item>
-        <item>Rp 100.000.000</item>
-        <item>Rp 200.000.000</item>
-    </string-array>
-
     <string-array name="values_title">
+        <item>@string/label_loan_online</item>
         <item>@string/label_instant_fund</item>
-        <item>@string/label_no_collateral</item>
-        <item>@string/label_with_collateral</item>
-    </string-array>
-
-    <integer-array name="values_drawable_enable">
-        <item>@drawable/ic_dana_instan_enable</item>
-        <item>@drawable/ic_tapna_agunan_enable</item>
-        <item>@drawable/ic_dengan_agunan_enable</item>
-    </integer-array>
-
-    <integer-array name="values_drawable_disable">
-        <item>@drawable/ic_dana_instan</item>
-        <item>@drawable/ic_tapna_agunan_disable</item>
-        <item>@drawable/ic_dengan_agunan_disable</item>
-    </integer-array>
-
-    <string-array name="values_duration">
-        <item>14 - 21 Hari</item>
-        <item>1 - 36 Bulan</item>
-        <item>6 - 96 Bulan</item>
-    </string-array>
-
-    <string-array name="values_processing_time">
-        <item>1 Menit - 24 Jam</item>
-        <item>1-7 Hari</item>
-        <item>3 - 14 Hari</item>
-    </string-array>
-
-    <string-array name="values_interest_rate">
-        <item>14% - 21%</item>
-        <item>1,09% - 3%</item>
-        <item>0,58% - 2,25%</item>
-    </string-array>
-
-    <string-array name="values_amount">
-        <item>600 Ribu - 1.2 Juta</item>
-        <item>1 Juta - 500 Juta</item>
-        <item>1 Juta - 5 Milyar</item>
-    </string-array>
-
-    <string-array name="values_description">
-        <item>Hanya dibutuhkan waktu 1 menit - 24 jam untuk pencairan dana. Mudah dan tak diperlukan jaminan</item>
-        <item>Tanpa perlu jaminan, aplikasi pinjaman akan diproses dan dana segera cair jika disetujui.</item>
-        <item>Dana pinjaman bervariasi sesuai nilai jaminan. Pinjaman diproses cepat dengan bunga ringan.</item>
     </string-array>
 
     <string name="label_tnc">Dengan mengklik tombol diatas Anda sudah menyetujui syarat dan ketentuan kami</string>
-    <string name="login_to_proceed">Please login to access instant loan features</string>
+    <string name="login_to_proceed">Silakan login buat mengakses Fitur Dana Instan</string>
     <string name="instant_loan_coming_soon">Instant Loan Coming Soon</string>
     <string name="submission_history_menu_item">Riwayat Pengajuan Dana Instan</string>
     <string name="payment_method_menu_item">Cara Pembayaran Dana Instan</string>
     <string name="help_menu_item">Bantuan</string>
     <string name="instant_loan_clickable_link">syarat dan ketentuan</string>
+    <string name="disclaimer_instant_fund">Pinjaman oleh mitra yang resmi terdaftar dan diawasi oleh <b>Otoritas Jasa Keuangan (OJK)</b>.</string>
+    <string name="il_partners">Mitra Kami</string>
+    <string name="il_supervisors">Diawasi oleh</string>
+    <string name="il_learn_more">Pelajari Lebih Lanjut</string>
+    <string name="il_label_testimonials">Testimonial Pengguna Dana Instan</string>
+    <string name="il_label_other_financial_products">Produk Finansial Lainnya</string>
+    <string name="label_financial_product_heading_one">Kartu Kredit</string>
+    <string name="label_financial_product_desc_one">Ajukan Kartu Kredit yang sesuai</string>
+    <string name="il_testimonial_name_1">Asty Afisha</string>
+    <string name="il_testimonial_review_1">\"Alhamdulillah dengan adanya Dana Instan oleh mitra penyedia pinjaman di Tokopedia, saya merasa terbantu untuk penambahan modal usaha yang saya jalani. Saya merasa sangat diuntungkan dengan adanya Dana Instan yang diberikan oleh Mitra Tokopedia, pengajuannya sangat cepat dan tidak ribet. Hanya dengan sekali klik, dananya bisa langsung cair. Terima kasih Dana Instan, top markotop deh.”</string>
+    <string name="il_testimonial_review_2">\"Dengan Pinjaman online oleh Mitra Tokopedia, semua kebutuhan mendesak bisa teratasi. Pengajuannya mudah, persyaratannya gampang, dan yang paling penting pencairannya cepat. Tidak sampai 5 menit. 👍👍 Recommended\"</string>
+    <string name="il_testimonial_name_2">Abdullah Muriadin</string>
+    <string name="il_testimonial_review_3">\"Dengan bantuan Dana Instan oleh Mitra Tokopedia, syukur alhamdulillah usaha jualan pulsa &amp; kuota yang saya jalani berjalan sangat ramai. Sekali lagi terima kasih Dana Instan Tokopedia 👍👍👍\" </string>
+    <string name="il_testimonial_name_3">Adam Bachtiar</string>
+    <string name="label_financial_product_heading_two">Asuransi</string>
+    <string name="label_financial_product_desc_two">Ajukan Asuransi yang sesuai</string>
+    <string name="il_lending_category">Kategori Pinjaman</string>
+    <string name="il_lending_partner">Mitra Kami</string>
+    <string name="label_loan_online">Pinjaman Online</string>
+    <string name="label_loan_amount">Jumlah Pinjaman</string>
+    <string name="il_loan_period">Periode Pinjaman</string>
+    <string name="il_loan_period_type_label">Pilih</string>
+    <string name="il_loan_period_value_label">Pilih Jumlah</string>
+    <string name="il_min_loan_amount_warning">Minimal Pinjaman %s</string>
+    <string name="il_max_loan_amount_warning">Maksimal Pinjaman %s</string>
+    <string name="il_dana_instant_loan_value">Rp600 Rb - Rp1,2 Juta</string>
+    <string name="il_loan_processing_time_value">Kurang dari 24 Jam</string>
+    <string name="il_dana_instant_interest_rate">Rp66.000 - Rp201.600</string>
 
 
 </resources>

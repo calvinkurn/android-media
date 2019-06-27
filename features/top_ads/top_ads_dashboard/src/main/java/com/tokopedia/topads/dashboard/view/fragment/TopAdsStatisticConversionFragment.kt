@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.partial_statistics_graph_fragment.*
 
 class TopAdsStatisticConversionFragment : TopAdsDashboardStatisticFragment() {
     @StringRes
-    private var title = R.string.title_top_ads_statistic_graph_convertion_all_ads
+    private var title = R.string.title_top_ads_statistic_graph_convertion_product
 
     override val titleGraph: String
         get() = getString(title)

@@ -15,4 +15,8 @@
     <color name="topchat_admin_label_text_color">#ca8600</color>
     <color name="topchat_admin_label_shape_color">#ffeaac</color>
     <color name="topchat_seller_label_shape_color">#daf5db</color>
+
+    <color name="add_template_disabled">#26000000</color>
+    <color name="clicked_green">#8ad4efd5</color>
+
 </resources>

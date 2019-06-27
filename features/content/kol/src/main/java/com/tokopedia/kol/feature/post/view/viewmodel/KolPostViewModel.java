@@ -12,6 +12,11 @@ import java.util.List;
 public class KolPostViewModel extends BaseKolViewModel implements Visitable<KolPostTypeFactory> {
     public final static int DEFAULT_ID = -1;
 
+    public final static String TYPE_YOUTUBE = "youtube";
+    public final static String TYPE_VIDEO = "video";
+    public final static String TYPE_MULTI = "multi";
+
+
     private List<String> imageList;
     private int tagsId;
     private String contentName;
@@ -21,6 +26,10 @@ public class KolPostViewModel extends BaseKolViewModel implements Visitable<KolP
     private String trackingId;
     private String info;
     private boolean showTopShadow;
+
+    public KolPostViewModel(int userId, String activityType, String cardType, String title, String name, String avatar, String label, String kolProfileUrl, boolean followed, String review, boolean liked, int totalLike, int totalComment, int page, int contentId, String time, boolean isShowComment, boolean isShowLike, boolean editable, boolean deletable, boolean multipleContent) {
+        super(userId, activityType, cardType, title, name, avatar, label, kolProfileUrl, followed, review, liked, totalLike, totalComment, page, contentId, time, isShowComment, isShowLike, editable, deletable, multipleContent);
+    }
 
     public KolPostViewModel(int userId, String cardType, String title, String name, String avatar,
                             String label, String kolProfileUrl, boolean followed, String review,

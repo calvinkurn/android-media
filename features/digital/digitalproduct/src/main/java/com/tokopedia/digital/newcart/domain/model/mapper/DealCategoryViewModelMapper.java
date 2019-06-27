@@ -1,6 +1,6 @@
 package com.tokopedia.digital.newcart.domain.model.mapper;
 
-import com.tokopedia.digital.newcart.data.entity.DealCategoryEntity;
+import com.tokopedia.digital.newcart.data.entity.response.deal.DealCategoryEntity;
 import com.tokopedia.digital.newcart.domain.model.DealCategoryViewModel;
 
 import java.util.ArrayList;

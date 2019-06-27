@@ -3,7 +3,7 @@ package com.tokopedia.logisticaddaddress.features.manage;
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 import com.tokopedia.logisticaddaddress.adapter.AddressViewModel;
 import com.tokopedia.logisticdata.data.module.qualifier.AddressScope;
-import com.tokopedia.logisticaddaddress.domain.AddressViewModelMapper;
+import com.tokopedia.logisticaddaddress.domain.mapper.AddressViewModelMapper;
 import com.tokopedia.logisticaddaddress.domain.usecase.GetAddressUseCase;
 import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;
 import com.tokopedia.logisticdata.data.entity.address.Token;
@@ -43,8 +43,8 @@ public class ManageAddressPresenter implements ManageAddressContract.Presenter {
     @Override
     public void getAddress(int page, int sortId, String query) {
         getAddressUseCase
-            .execute(getAddressUseCase.getAddressParam(page, sortId, query),
-                    getPeopleAddressSubscriber());
+                .execute(getAddressUseCase.getAddressParam(page, sortId, query),
+                        getPeopleAddressSubscriber(page, query));
     }
 
     @Override
@@ -66,7 +66,7 @@ public class ManageAddressPresenter implements ManageAddressContract.Presenter {
         return mToken;
     }
 
-    private Subscriber<GetPeopleAddress> getPeopleAddressSubscriber() {
+    private Subscriber<GetPeopleAddress> getPeopleAddressSubscriber(final int page, final String query) {
         return new Subscriber<GetPeopleAddress>() {
             @Override
             public void onCompleted() {
@@ -76,6 +76,9 @@ public class ManageAddressPresenter implements ManageAddressContract.Presenter {
             @Override
             public void onError(Throwable e) {
                 mView.showNetworkError();
+                if (page == 1 && query.isEmpty()) {
+                    mView.stopPerformanceMonitoring();
+                }
             }
 
             @Override
@@ -88,6 +91,9 @@ public class ManageAddressPresenter implements ManageAddressContract.Presenter {
                 if (getPeopleAddress.getPaging() != null)
                     hasNext = PagingHandler.CheckHasNext(getPeopleAddress.getPaging().getUriNext());
                 mView.showData(addressViewModelList, hasNext);
+                if (page == 1 && query.isEmpty()) {
+                    mView.stopPerformanceMonitoring();
+                }
             }
         };
     }

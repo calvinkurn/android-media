@@ -18,6 +18,7 @@ import com.tokopedia.seller.shop.common.di.ShopScope;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Component;
 import okhttp3.OkHttpClient;

@@ -5,7 +5,7 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 /**
  * @author Irfan Khoirul on 24/05/18.
  */
-
+@Deprecated
 public class CartProductItemViewModel implements CartRemoveProductModel {
 
     private CartItemData cartItemData;

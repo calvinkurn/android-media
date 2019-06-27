@@ -1,7 +1,7 @@
 package com.tokopedia.topads.keyword.data.source.cloud.api;
 
 import com.tokopedia.abstraction.common.data.model.request.DataRequest;
-import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.product.manage.item.common.data.source.cloud.DataResponse;
 import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
 import com.tokopedia.topads.keyword.data.model.EditTopAdsKeywordDetailDataModel;

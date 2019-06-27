@@ -11,17 +11,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
-import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation
-        .FeedRecommendationViewHolder;
-import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder;
 import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory;
-import com.tokopedia.feedplus.view.adapter.viewholder.topads.FeedTopadsViewHolder;
 import com.tokopedia.feedplus.view.util.EndlessScrollRecycleListener;
 import com.tokopedia.feedplus.view.viewmodel.EmptyFeedBeforeLoginModel;
 import com.tokopedia.feedplus.view.viewmodel.RetryModel;
-import com.tokopedia.feedplus.view.viewmodel.product.AddFeedModel;
-import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +32,6 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     private LoadingMoreModel loadingMoreModel;
     private RetryModel retryModel;
     private boolean unsetListener;
-    private AddFeedModel addFeedModel;
     private OnLoadListener loadListener;
     private RecyclerView recyclerView;
     private int itemTreshold = 5;
@@ -68,7 +60,6 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         this.emptyModel = new EmptyModel();
         this.loadingMoreModel = new LoadingMoreModel();
         this.retryModel = new RetryModel();
-        this.addFeedModel = new AddFeedModel();
         this.emptyFeedBeforeLoginModel = new EmptyFeedBeforeLoginModel();
     }
 
@@ -156,6 +147,8 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     }
 
     public void showLoading() {
+        int removePosition = this.list.indexOf(loadingMoreModel);
+        if (removePosition != -1) remove(loadingMoreModel);
         add(loadingMoreModel);
     }
 
@@ -169,14 +162,6 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     public List<Visitable> getlist() {
         return list;
-    }
-
-    public void showAddFeed() {
-        add(addFeedModel);
-    }
-
-    public void removeAddFeed(){
-        remove(addFeedModel);
     }
 
     public void addItem(Visitable item) {
@@ -205,18 +190,7 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     @Override
     public void onViewRecycled(@NonNull AbstractViewHolder holder) {
         super.onViewRecycled(holder);
-
-        if (holder instanceof KolPostViewHolder) {
-            ((KolPostViewHolder) holder).onViewRecycled();
-        } else if (holder instanceof FeedTopadsViewHolder) {
-            ((FeedTopadsViewHolder) holder).onViewRecycled();
-        } else if (holder instanceof FeedRecommendationViewHolder) {
-            ((FeedRecommendationViewHolder) holder).onViewRecycled();
-        } else if (holder instanceof TopadsShopViewHolder) {
-            ((TopadsShopViewHolder) holder).onViewRecycled();
-        } else if (holder instanceof DynamicPostViewHolder) {
-            ((DynamicPostViewHolder) holder).onViewRecycled();
-        }
+        holder.onViewRecycled();
     }
 
     public void setOnLoadListener(OnLoadListener loadListener) {

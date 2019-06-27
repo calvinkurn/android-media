@@ -11,7 +11,6 @@ import android.widget.RelativeLayout;
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.model.CategoryData;
@@ -127,8 +126,9 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
             if (isChecked) onInstantCheckoutChecked();
             else onInstantCheckoutUnChecked();
 
-            if (data instanceof CategoryData)
-                UnifyTracking.eventCheckInstantSaldo(getContext(), ((CategoryData) data).getName(), ((CategoryData) data).getName(), isChecked);
+            if (data instanceof CategoryData){
+                actionListener.onInstantCheckoutChanged(((CategoryData) data).getName(), isChecked);
+            }
         };
     }
 
@@ -189,6 +189,8 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
         void onOperatorSelected(String categoryName, String operatorName);
 
         void onProductSelected(String categoryName, String productDesc);
+
+        void onInstantCheckoutChanged(String categoryName, boolean isChecked);
     }
 
     public static class PreCheckoutProduct {

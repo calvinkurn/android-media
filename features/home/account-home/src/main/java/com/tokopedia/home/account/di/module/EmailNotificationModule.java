@@ -8,6 +8,8 @@ import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterce
 import com.tokopedia.home.account.di.scope.EmailNotifScope;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.Arrays;
 import java.util.List;
@@ -44,5 +46,10 @@ public class EmailNotificationModule {
     public List<Interceptor> provideInterceptorList(ErrorResponseInterceptor errorResponseInterceptor,
                                                     TkpdAuthInterceptor tkpdAuthInterceptor){
         return Arrays.asList(tkpdAuthInterceptor, errorResponseInterceptor);
+    }
+
+    @Provides
+    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 }

@@ -3,6 +3,7 @@ package com.tokopedia.topads.sdk.domain.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.json.JSONException;
@@ -12,7 +13,7 @@ import org.json.JSONObject;
  * Created by errysuprayogi on 3/27/17.
  */
 
-public class ImageProduct implements Parcelable {
+public class ImageProduct extends ImpressHolder implements Parcelable {
 
     private static final String KEY_PRODUCT_ID = "product_id";
     private static final String KEY_PRODUCT_NAME = "product_name";
@@ -20,13 +21,20 @@ public class ImageProduct implements Parcelable {
     private static final String KEY_IMAGE_CLICK_URL = "image_click_url";
 
     @SerializedName(KEY_PRODUCT_ID)
-    private String productId;
+    @Expose
+    private String productId = "";
+
     @SerializedName(KEY_PRODUCT_NAME)
-    private String productName;
+    @Expose
+    private String productName = "";
+
     @SerializedName(KEY_IMAGE_URL)
-    private String imageUrl;
+    @Expose
+    private String imageUrl = "";
+
     @SerializedName(KEY_IMAGE_CLICK_URL)
-    private String imageClickUrl;
+    @Expose
+    private String imageClickUrl = "";
     private boolean loaded;
 
     public ImageProduct(JSONObject object) throws JSONException {
@@ -108,11 +116,4 @@ public class ImageProduct implements Parcelable {
         this.imageUrl = imageUrl;
     }
 
-    public boolean isLoaded() {
-        return loaded;
-    }
-
-    public void setLoaded(boolean loaded) {
-        this.loaded = loaded;
-    }
 }

@@ -18,7 +18,7 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapte
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.BadgeItem;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.LabelItem;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductItem;
-import com.tokopedia.tkpdpdp.customview.RatingView;
+import com.tokopedia.discovery.view.RatingView;
 
 import java.util.ArrayList;
 import java.util.List;

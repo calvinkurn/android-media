@@ -3,8 +3,8 @@ package com.tokopedia.digital.product.view.activity;
 import android.os.Bundle;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.digital.product.di.DigitalProductComponentInstance;
 import com.tokopedia.digital.product.di.DigitalProductComponent;
+import com.tokopedia.digital.product.di.DigitalProductComponentInstance;
 
 /**
  * @author by furqan on 25/06/18.

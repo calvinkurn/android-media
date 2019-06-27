@@ -14,7 +14,7 @@ public class OfficialStore {
     private int isOfficial;
     @SerializedName("os_logo_url")
     @Expose
-    private String osLogoUrl;
+    private String osLogoUrl = "";
 
     public int isOfficial() {
         return isOfficial;

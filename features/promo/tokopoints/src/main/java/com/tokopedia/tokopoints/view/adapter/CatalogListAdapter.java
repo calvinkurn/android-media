@@ -9,16 +9,22 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.graphql.data.model.GraphqlRequest;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.library.baseadapter.AdapterCallback;
+import com.tokopedia.library.baseadapter.BaseAdapter;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.activity.CouponCatalogDetailsActivity;
 import com.tokopedia.tokopoints.view.contract.CatalogPurchaseRedemptionPresenter;
+import com.tokopedia.tokopoints.view.model.CatalogListingOuter;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
@@ -29,13 +35,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.ViewHolder> {
+import rx.Subscriber;
 
-    private List<CatalogsValueEntity> mItems;
+public class CatalogListAdapter extends BaseAdapter<CatalogsValueEntity> {
+
+    private int categoryId;
+    private int subCategoryId;
+    private final Context mContext;
     private CatalogPurchaseRedemptionPresenter mPresenter;
     private boolean mIsLimitEnable;
+    private int pointRange;
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+
+    public CatalogListAdapter(CatalogPurchaseRedemptionPresenter mPresenter, Context context, AdapterCallback callback, int categoryId, int subCategoryId, int pointRange, boolean isLimitEnable) {
+        super(callback);
+        this.mPresenter = mPresenter;
+        this.mIsLimitEnable = isLimitEnable;
+        this.categoryId = categoryId;
+        this.subCategoryId = subCategoryId;
+        this.pointRange = pointRange;
+        this.mContext = context;
+    }
+
+    public class ViewHolder extends BaseVH {
         TextView quota, description, pointLabel, pointValue,
                 timeLabel, timeValue, disabledError, btnContinue,
                 labelPoint, textDiscount;
@@ -60,30 +82,14 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
             textDiscount = view.findViewById(R.id.text_point_discount);
             pbQuota = view.findViewById(R.id.progress_timer_quota);
         }
+
+        @Override
+        public void bindView(CatalogsValueEntity item, int position) {
+            setData(this, item, position);
+        }
     }
 
-    public CatalogListAdapter(CatalogPurchaseRedemptionPresenter presenter, List<CatalogsValueEntity> items) {
-        this.mPresenter = presenter;
-        this.mItems = items;
-    }
-
-    public CatalogListAdapter(CatalogPurchaseRedemptionPresenter presenter, List<CatalogsValueEntity> items, boolean isLimitEnable) {
-        this.mPresenter = presenter;
-        this.mItems = items;
-        this.mIsLimitEnable = isLimitEnable;
-    }
-
-    @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.tp_item_coupon, parent, false);
-
-        return new ViewHolder(itemView);
-    }
-
-    @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        CatalogsValueEntity item = mItems.get(position);
+    private void setData(ViewHolder holder, CatalogsValueEntity item, int position) {
         holder.btnContinue.setEnabled(!item.isDisabledButton());
         holder.description.setText(item.getTitle());
         holder.btnContinue.setText(R.string.tp_label_exchange); //TODO asked for server driven value
@@ -186,11 +192,17 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
         holder.btnContinue.setOnClickListener(v -> {
             //call validate api the show dialog
             mPresenter.startValidateCoupon(item);
+
+            AnalyticsTrackerUtil.sendEvent(holder.btnContinue.getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_TUKAR,
+                    item.getBaseCode());
         });
 
         holder.imgBanner.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
-            bundle.putString(CommonConstant.EXTRA_CATALOG_CODE, mItems.get(position).getSlug());
+            bundle.putString(CommonConstant.EXTRA_CATALOG_CODE, item.getSlug());
             holder.imgBanner.getContext().startActivity(CouponCatalogDetailsActivity.getCatalogDetail(holder.imgBanner.getContext(), bundle), bundle);
             sendClickEvent(holder.imgBanner.getContext(), item, position);
         });
@@ -200,53 +212,106 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
     }
 
     @Override
-    public int getItemCount() {
-        if (mIsLimitEnable) {
-            return mItems.size() > CommonConstant.HOMEPAGE_PAGE_SIZE ? CommonConstant.HOMEPAGE_PAGE_SIZE : mItems.size();
-        } else {
-            return mItems.size();
-        }
-    }
+    protected BaseVH getItemViewHolder(ViewGroup parent, LayoutInflater inflater, int viewType) {
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.tp_item_coupon, parent, false);
 
-    public void updateItems(List<CatalogsValueEntity> items) {
-        this.mItems = items;
-    }
-
-    public List<CatalogsValueEntity> getItems() {
-        return this.mItems;
+        return new ViewHolder(itemView);
     }
 
     @Override
-    public void onViewAttachedToWindow(@NonNull ViewHolder holder) {
-        super.onViewAttachedToWindow(holder);
-
-        CatalogsValueEntity data = mItems.get(holder.getAdapterPosition());
-        if (data == null) {
+    public void loadData(int currentPageIndex) {
+        if (mIsLimitEnable) {
             return;
         }
+        super.loadData(currentPageIndex);
+        GraphqlUseCase mGetHomePageData = new GraphqlUseCase();
+        mGetHomePageData.clearRequest();
+        //Adding request for main query
+        Map<String, Object> variablesMain = new HashMap<>();
+        variablesMain.put(CommonConstant.GraphqlVariableKeys.PAGE, currentPageIndex);
+        variablesMain.put(CommonConstant.GraphqlVariableKeys.PAGE_SIZE, CommonConstant.PAGE_SIZE);
+        //Default page sort id
+        variablesMain.put(CommonConstant.GraphqlVariableKeys.SORT_ID, getSortId());
+        variablesMain.put(CommonConstant.GraphqlVariableKeys.CATEGORY_ID, categoryId);
+        variablesMain.put(CommonConstant.GraphqlVariableKeys.SUB_CATEGORY_ID, subCategoryId);
+        //Point range will be zero for all catalog
+        variablesMain.put(CommonConstant.GraphqlVariableKeys.POINTS_RANGE, getPointsRange());
 
-        if (!holder.isVisited) {
-            Map<String, String> item = new HashMap<>();
-            item.put("id", String.valueOf(data.getId()));
-            item.put("name", data.getTitle());
-            item.put("position", String.valueOf(holder.getAdapterPosition()));
-            item.put("creative", data.getTitle());
-            item.put("creative_url", data.getImageUrlMobile());
-            item.put("promo_code", data.getBaseCode());
+        GraphqlRequest graphqlRequestMain = new GraphqlRequest(GraphqlHelper.loadRawString(mContext.getResources(), R.raw.tp_gql_catalog_listing),
+                CatalogListingOuter.class,
+                variablesMain, false);
+        mGetHomePageData.addRequest(graphqlRequestMain);
 
-            Map<String, List<Map<String, String>>> promotions = new HashMap<>();
-            promotions.put("promotions", Arrays.asList(item));
 
-            Map<String, Map<String, List<Map<String, String>>>> promoView = new HashMap<>();
-            promoView.put("promoView", promotions);
+        mGetHomePageData.execute(new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
 
-            AnalyticsTrackerUtil.sendECommerceEvent(holder.btnContinue.getContext(),
-                    AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
-                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
-                    AnalyticsTrackerUtil.ActionKeys.VIEW_MY_COUPON,
-                    data.getTitle(), promoView);
+            }
 
-            holder.isVisited = true;
+            @Override
+            public void onError(Throwable e) {
+                loadCompletedWithError();
+            }
+
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+                //handling the catalog listing and tabs
+                CatalogListingOuter catalogListingOuter = graphqlResponse.getData(CatalogListingOuter.class);
+                if (catalogListingOuter != null) {
+                    loadCompleted(catalogListingOuter.getCatalog().getCatalogs(), catalogListingOuter);
+                    setLastPage(!catalogListingOuter.getCatalog().getPaging().isHasNext());
+                }else{
+                    loadCompletedWithError();
+                }
+            }
+        });
+    }
+
+    private int getPointsRange() {
+        return pointRange;
+    }
+
+    private int getSortId() {
+        return 1;
+    }
+
+    @Override
+    public void onViewAttachedToWindow(@NonNull RecyclerView.ViewHolder vh) {
+        super.onViewAttachedToWindow(vh);
+
+
+        if (vh instanceof ViewHolder) {
+            ViewHolder holder = (ViewHolder) vh;
+            CatalogsValueEntity data = getItems().get(vh.getAdapterPosition());
+            if (data == null) {
+                return;
+            }
+
+            if (!holder.isVisited) {
+                Map<String, String> item = new HashMap<>();
+                item.put("id", String.valueOf(data.getId()));
+                item.put("name", data.getTitle());
+                item.put("position", String.valueOf(holder.getAdapterPosition()));
+                item.put("creative", data.getTitle());
+                item.put("creative_url", data.getImageUrlMobile());
+                item.put("promo_code", data.getBaseCode());
+
+                Map<String, List<Map<String, String>>> promotions = new HashMap<>();
+                promotions.put("promotions", Arrays.asList(item));
+
+                Map<String, Map<String, List<Map<String, String>>>> promoView = new HashMap<>();
+                promoView.put("promoView", promotions);
+
+                AnalyticsTrackerUtil.sendECommerceEvent(holder.btnContinue.getContext(),
+                        AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
+                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
+                        AnalyticsTrackerUtil.ActionKeys.VIEW_MY_COUPON,
+                        data.getTitle(), promoView);
+
+                holder.isVisited = true;
+            }
         }
     }
 

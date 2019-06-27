@@ -16,6 +16,7 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.Router;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -38,6 +39,10 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 
 /**
  * Created by m.normansyah on 11/12/2015.
@@ -107,11 +112,11 @@ public class DialogLogoutFragment extends DialogFragment {
                                     TkpdResponse response = responseData.body();
                                     if (!response.isError() || sessionIsNotExist(response)) {
 //                                        CacheHomeInteractorImpl.deleteAllCache();
-                                        new GlobalCacheManager().deleteAll();
+                                        PersistentCacheManager.instance.delete();
                                         // clear etalase
                                         Router.clearEtalase(getActivity());
                                         DbManagerImpl.getInstance().removeAllEtalase();
-                                        TrackingUtils.eventMoEngageLogoutUser(getActivity());
+                                        TrackApp.getInstance().getMoEngage().logoutEvent();
                                         SessionHandler.clearUserData(activity);
                                         NotificationModHandler notif = new NotificationModHandler(activity);
                                         notif.dismissAllActivedNotifications();

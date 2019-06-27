@@ -1,5 +1,6 @@
 package com.tokopedia.discovery;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,4 +18,14 @@ public interface DiscoveryRouter {
     Intent getShopPageIntentByDomain(Context context, String domain);
 
     Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId);
+
+    Intent gotoSearchAutoCompletePage(Context context);
+
+    Intent gotoSearchPage(Context context);
+
+    boolean isSupportApplink(String appLink);
+
+    void goToApplinkActivity(Context context, String applink);
+
+    void actionOpenGeneralWebView(Activity activity, String mobileUrl);
 }

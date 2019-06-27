@@ -11,13 +11,13 @@ public class WholesalePrice {
 
     @Expose
     @SerializedName("qty_min_fmt")
-    private String qtyMinFmt;
+    private String qtyMinFmt = "";
     @Expose
     @SerializedName("qty_max_fmt")
-    private String qtyMaxFmt;
+    private String qtyMaxFmt = "";
     @Expose
     @SerializedName("prd_prc_fmt")
-    private String prdPrcFmt;
+    private String prdPrcFmt = "";
     @Expose
     @SerializedName("qty_min")
     private int qtyMin;

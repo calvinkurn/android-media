@@ -4,8 +4,8 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.seller.common.cashback.DataCashbackModel;
+import com.tokopedia.gm.common.data.source.cloud.model.GMGetCashbackModel;
+import com.tokopedia.gm.common.domain.interactor.GetCashbackUseCase;
 import com.tokopedia.seller.product.manage.constant.CatalogProductOption;
 import com.tokopedia.seller.product.manage.constant.ConditionProductOption;
 import com.tokopedia.seller.product.manage.constant.PictureStatusProductOption;
@@ -14,6 +14,7 @@ import com.tokopedia.seller.product.manage.constant.SortProductOption;
 import com.tokopedia.seller.product.picker.common.ProductListPickerConstant;
 import com.tokopedia.seller.product.picker.data.model.ProductListSellerModel;
 import com.tokopedia.seller.product.picker.domain.GetProductListSellingRepository;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,44 +31,43 @@ import rx.functions.Func1;
 public class GetProductListSellingUseCase extends UseCase<ProductListSellerModel> {
     public static final String VALUE_REQUEST_PRODUCT_VARIANT = "1";
     private final GetProductListSellingRepository getProductListSellingRepository;
-    private final SellerModuleRouter sellerModuleRouter;
+    private final GetCashbackUseCase getCashbackUseCase;
+    private final UserSessionInterface userSession;
 
     @Inject
     public GetProductListSellingUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,
                                         GetProductListSellingRepository getProductListSellingRepository,
-                                        SellerModuleRouter sellerModuleRouter) {
+                                        GetCashbackUseCase getCashbackUseCase,
+                                        UserSessionInterface userSession) {
         super(threadExecutor, postExecutionThread);
         this.getProductListSellingRepository = getProductListSellingRepository;
-        this.sellerModuleRouter = sellerModuleRouter;
+        this.getCashbackUseCase = getCashbackUseCase;
+        this.userSession = userSession;
     }
 
     @Override
     public Observable<ProductListSellerModel> createObservable(RequestParams requestParams) {
         return getProductListSellingRepository.getProductListSeller(requestParams.getParamsAllValueInString())
-                .flatMap(new Func1<ProductListSellerModel, Observable<ProductListSellerModel>>() {
-                    @Override
-                    public Observable<ProductListSellerModel> call(final ProductListSellerModel productListSellerModel) {
-                        List<String> productIds = new ArrayList<String>();
-                        for (ProductListSellerModel.Product data : productListSellerModel.getData().getList()) {
-                            productIds.add(data.getProductId());
-                        }
-                        return sellerModuleRouter.getCashbackList(productIds)
-                                .flatMap(new Func1<List<DataCashbackModel>, Observable<ProductListSellerModel>>() {
-                                    @Override
-                                    public Observable<ProductListSellerModel> call(List<DataCashbackModel> dataCashbackModels) {
-                                        for(DataCashbackModel dataCashbackModel : dataCashbackModels){
-                                            String productId = String.valueOf(dataCashbackModel.getProductId());
-                                            for(ProductListSellerModel.Product product : productListSellerModel.getData().getList()){
-                                                if(productId.equals(product.getProductId())){
-                                                    product.setProductCashback(dataCashbackModel.getCashback());
-                                                    product.setProductCashbackAmount(dataCashbackModel.getCashbackAmount());
-                                                }
-                                            }
-                                        }
-                                        return Observable.just(productListSellerModel);
-                                    }
-                                });
+                .flatMap((Func1<ProductListSellerModel, Observable<ProductListSellerModel>>) productListSellerModel -> {
+                    List<String> productIds = new ArrayList<>();
+                    for (ProductListSellerModel.Product data : productListSellerModel.getData().getList()) {
+                        productIds.add(data.getProductId());
                     }
+
+
+                    return getCashbackUseCase.createObservable(GetCashbackUseCase.createRequestParams(productIds, userSession.getShopId()))
+                            .flatMap((Func1<List<GMGetCashbackModel>, Observable<ProductListSellerModel>>) dataCashbackModels -> {
+                                for(GMGetCashbackModel dataCashbackModel : dataCashbackModels){
+                                    String productId = String.valueOf(dataCashbackModel.getProductId());
+                                    for(ProductListSellerModel.Product product : productListSellerModel.getData().getList()){
+                                        if(productId.equals(product.getProductId())){
+                                            product.setProductCashback(dataCashbackModel.getCashback());
+                                            product.setProductCashbackAmount(dataCashbackModel.getCashbackAmount());
+                                        }
+                                    }
+                                }
+                                return Observable.just(productListSellerModel);
+                            });
                 });
     }
 

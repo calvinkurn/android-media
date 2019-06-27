@@ -13,12 +13,6 @@ buildscript {
 }
 
 dependencies {
-    implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.libraries.useCase)
-
-    implementation rootProject.ext.playServicesDependencies.firebase
-    implementation rootProject.ext.playServicesDependencies.remoteConfig
-
-    implementation rootProject.ext.miscDependencies.dagger
-    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    implementation rootProject.ext.firebase.config
+    implementation project(rootProject.ext.libraries.config)
 }

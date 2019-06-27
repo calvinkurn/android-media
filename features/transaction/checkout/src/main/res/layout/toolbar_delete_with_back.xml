@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="horizontal"
-    android:layout_marginLeft="16dp"
-    android:layout_marginStart="16dp">
+    android:paddingStart="16dp"
+    android:paddingLeft="16dp"
+    android:paddingEnd="0dp"
+    android:paddingRight="0dp">
 
     <ImageView
         android:id="@+id/btn_back"
@@ -14,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:src="@drawable/ic_arrow_back_black"/>
+        app:srcCompat="@drawable/ic_arrow_back_black"/>
 
     <TextView
         android:layout_toRightOf="@+id/btn_back"

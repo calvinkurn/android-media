@@ -6,10 +6,12 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.moengage.push.PushManager;
 import com.tkpd.library.utils.legacy.CommonUtils;
+import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.model.FCMTokenUpdate;
 import com.tokopedia.core.gcm.utils.RouterUtils;
+import com.tokopedia.track.TrackApp;
 
 import io.hansel.hanselsdk.Hansel;
 import rx.Observable;
@@ -29,7 +31,12 @@ public class FCMInstanceIDService extends FirebaseInstanceIdService implements I
         propagateIDtoServer(refreshedToken);
         updateMoEngageToken(refreshedToken);
         Hansel.setNewToken(this, refreshedToken);
-        ((TkpdCoreRouter) this.getApplicationContext()).refereshFcmTokenToCMNotif(refreshedToken);
+        updateApsFlyerToken(refreshedToken);
+        ((TkpdCoreRouter) this.getApplicationContext()).refreshFCMFromInstantIdService(refreshedToken);
+    }
+
+    private void updateApsFlyerToken(String refreshedToken) {
+        TrackApp.getInstance().getAppsFlyer().updateFCMToken(refreshedToken);
     }
 
     @Override

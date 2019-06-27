@@ -9,12 +9,14 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.feature.comment.data.pojo.get.GetKolCommentData;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscriber;
 
 /**
@@ -23,10 +25,10 @@ import rx.Subscriber;
 
 public class GetKolPostDetailUseCase {
 
-    private static final String PARAM_ID = "idPost";
-    private static final String PARAM_CURSOR = "cursor";
-    private static final String PARAM_LIMIT = "limit";
-    private static final String FIRST_CURSOR = "";
+    public static final String PARAM_ID = "idPost";
+    public static final String PARAM_CURSOR = "cursor";
+    public static final String PARAM_LIMIT = "limit";
+    public static final String FIRST_CURSOR = "";
 
     public static final int DEFAULT_LIMIT = 3;
 
@@ -50,6 +52,20 @@ public class GetKolPostDetailUseCase {
 
         graphqlUseCase.addRequest(request);
         graphqlUseCase.execute(subscriber);
+    }
+
+    public Observable<GraphqlResponse> createObservable(RequestParams requestParams
+                                                        ) {
+        graphqlUseCase.clearRequest();
+
+        String query = GraphqlHelper.loadRawString(context.getResources(),
+                R.raw.query_get_kol_comment);
+
+        GraphqlRequest request = new GraphqlRequest(query, GetKolCommentData.class,
+                requestParams.getParameters());
+
+        graphqlUseCase.addRequest(request);
+       return graphqlUseCase.createObservable(requestParams);
     }
 
     public void unsubsribe() {

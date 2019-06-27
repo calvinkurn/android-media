@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,7 +81,7 @@ public class TopAdsFeedWidgetView extends LinearLayout implements LocalAdsClickL
         List<Item> visitables = new ArrayList<>();
         for (int i = 0; i < data.size(); i++) {
             Data d = data.get(i);
-            if (d.getProduct() != null) {
+            if (d.getProduct() != null && !TextUtils.isEmpty(d.getProduct().getId())) {
                 layoutManager.setSpanCount(data.size() == 4 ? 2 : 3);
                 visitables.add(ModelConverter.convertToProductFeedNewViewModel(d));
 
@@ -88,7 +89,7 @@ public class TopAdsFeedWidgetView extends LinearLayout implements LocalAdsClickL
                 promotedLayout.setOnClickListener(getOnInfoClickListener());
                 int leftMargin = (int) getContext().getResources().getDimension(R.dimen.dp_6);
                 setRecyclerViewLeftMargin(leftMargin);
-            } else if (d.getShop() != null) {
+            } else if (d.getShop() != null && !TextUtils.isEmpty(d.getShop().getId())) {
                 layoutManager.setSpanCount(1);
                 visitables.add(ModelConverter.convertToShopFeedNewViewModel(d));
 

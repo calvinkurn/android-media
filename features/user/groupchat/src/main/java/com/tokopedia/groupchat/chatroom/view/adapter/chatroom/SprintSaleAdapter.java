@@ -23,14 +23,14 @@ import java.util.List;
 
 public class SprintSaleAdapter extends RecyclerView.Adapter<SprintSaleAdapter.ViewHolder> {
 
-    private final ChatroomContract.View.SprintSaleViewHolderListener listener;
+    private final ChatroomContract.ChatItem.SprintSaleViewHolderListener listener;
     List<SprintSaleProductViewModel> list;
 
-    public static SprintSaleAdapter createInstance(ChatroomContract.View.SprintSaleViewHolderListener listener) {
+    public static SprintSaleAdapter createInstance(ChatroomContract.ChatItem.SprintSaleViewHolderListener listener) {
         return new SprintSaleAdapter(listener);
     }
 
-    private SprintSaleAdapter(ChatroomContract.View.SprintSaleViewHolderListener listener) {
+    private SprintSaleAdapter(ChatroomContract.ChatItem.SprintSaleViewHolderListener listener) {
         this.list = new ArrayList<>();
         this.listener = listener;
     }

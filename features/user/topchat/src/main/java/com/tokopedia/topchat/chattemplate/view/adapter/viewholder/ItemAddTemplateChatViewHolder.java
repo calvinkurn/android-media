@@ -6,10 +6,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.topchat.R;
-import com.tokopedia.topchat.chattemplate.view.listener.TemplateChatContract;
-import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel;
 import com.tokopedia.topchat.chattemplate.view.listener.TemplateChatContract;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel;
 
@@ -36,12 +34,13 @@ public class ItemAddTemplateChatViewHolder extends AbstractViewHolder<TemplateCh
 
     @Override
     public void bind(final TemplateChatModel element) {
-        if(element.size() >=5) {
+        if (element.size() >= 5) {
             imageView.setImageDrawable(MethodChecker.getDrawable(view.getContext(), R.drawable.ic_plus_grey));
-            textView.setTextColor(MethodChecker.getColor(view.getContext(),R.color.add_template_disabled));
-        }else {
-            imageView.setImageDrawable(MethodChecker.getDrawable(view.getContext(), R.drawable.ic_plus_green));
-            textView.setTextColor(MethodChecker.getColor(view.getContext(),R.color.medium_green));
+            textView.setTextColor(MethodChecker.getColor(view.getContext(), R.color.add_template_disabled));
+        } else {
+            imageView.setImageDrawable(MethodChecker.getDrawable(view.getContext(), R.drawable
+                    .ic_plus_green));
+            textView.setTextColor(MethodChecker.getColor(view.getContext(), R.color.medium_green));
         }
 
         view.setOnClickListener(new View.OnClickListener() {

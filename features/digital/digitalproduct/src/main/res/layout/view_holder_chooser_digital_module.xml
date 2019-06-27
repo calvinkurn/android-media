@@ -28,17 +28,17 @@
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@+id/iv_arrow"
             android:layout_toStartOf="@+id/iv_arrow"
-            android:paddingTop="@dimen/padding_vs"
-            android:paddingBottom="@dimen/padding_vs"
+            android:paddingTop="@dimen/dp_5"
+            android:paddingBottom="@dimen/dp_5"
             android:textColor="@color/digital_voucher"
-            android:textSize="@dimen/font_medium"
+            android:textSize="@dimen/sp_16"
             tools:text="Extra Combo 6GB"/>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_below="@+id/tv_operator_product_name"
-            android:background="@color/grey"/>
+            android:background="@color/digital_grey"/>
 
         <ImageView
             android:id="@+id/iv_arrow"
@@ -47,8 +47,8 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/margin_small"
-            android:layout_marginRight="@dimen/margin_small"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
             app:srcCompat="@drawable/page_2"
             android:tint="@color/digital_voucher"
             tools:ignore="ContentDescription"/>
@@ -60,12 +60,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingEnd="@null"
-        android:paddingLeft="@dimen/padding_vvs"
+        android:paddingLeft="@dimen/dp_3"
         android:paddingRight="@null"
-        android:paddingStart="@dimen/padding_vvs"
+        android:paddingStart="@dimen/dp_3"
         android:text="@string/title_empty_stock"
         android:textColor="@color/red_600"
-        android:textSize="@dimen/fontvs"
+        android:textSize="@dimen/sp_12"
         android:visibility="gone"
         tools:visibility="visible"/>
 

@@ -26,7 +26,7 @@ class AuthenticateCCPresenter(val whiteListCCUseCase : GraphqlUseCase, val userS
         variables.put(UPDATE_STATUS, true)
         variables.put(AUTH_VALUE, authValue)
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.whitelist_credit_card), Data::class.java, variables)
+                R.raw.whitelist_credit_card), Data::class.java, variables, false)
         whiteListCCUseCase.clearRequest()
         whiteListCCUseCase.addRequest(graphqlRequest)
         whiteListCCUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
@@ -54,7 +54,7 @@ class AuthenticateCCPresenter(val whiteListCCUseCase : GraphqlUseCase, val userS
         variables.put(UPDATE_STATUS, false)
         variables.put(AUTH_VALUE, 0)
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.whitelist_credit_card), Data::class.java, variables)
+                R.raw.whitelist_credit_card), Data::class.java, variables, false)
         whiteListCCUseCase.clearRequest()
         whiteListCCUseCase.addRequest(graphqlRequest)
         whiteListCCUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {

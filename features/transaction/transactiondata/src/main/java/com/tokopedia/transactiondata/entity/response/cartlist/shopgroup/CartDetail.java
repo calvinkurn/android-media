@@ -24,7 +24,10 @@ public class CartDetail {
     private List<String> messages = new ArrayList<>();
     @SerializedName("product")
     @Expose
-    private Product product;
+    private Product product = new Product();
+    @SerializedName("checkbox_state")
+    @Expose
+    private boolean checkboxState;
 
     public int getCartId() {
         return cartId;
@@ -40,5 +43,9 @@ public class CartDetail {
 
     public Product getProduct() {
         return product;
+    }
+
+    public boolean isCheckboxState() {
+        return checkboxState;
     }
 }

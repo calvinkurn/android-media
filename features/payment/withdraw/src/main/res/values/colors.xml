@@ -3,4 +3,5 @@
     <color name="grey_transp">#fafbfc</color>
     <color name="red_error">#d50000</color>
     <color name="grey">#888888</color>
+    <color name="hint_red">#d6001c</color>
 </resources>

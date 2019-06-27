@@ -12,18 +12,13 @@ import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.text.TextUtils;
 
+import com.tokopedia.abstraction.common.utils.RequestPermissionUtil;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyAppsFlyer;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Validation;
-import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.RequestPermissionUtil;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.user.session.UserSession;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -103,17 +98,17 @@ public class DeviceUtil {
 
     public static RequestBodyIdentifier getDigitalIdentifierParam(Context context) {
         RequestBodyIdentifier requestBodyIdentifier = new RequestBodyIdentifier();
-        requestBodyIdentifier.setDeviceToken(GCMHandler.getRegistrationId(context));
-        requestBodyIdentifier.setUserId(SessionHandler.getLoginID(context));
+        UserSession userSession = new UserSession(context);
+        requestBodyIdentifier.setDeviceToken(userSession.getDeviceId());
+        requestBodyIdentifier.setUserId(userSession.getUserId());
         requestBodyIdentifier.setOsType("1");
         return requestBodyIdentifier;
     }
 
-    public static RequestBodyAppsFlyer getAppsFlyerIdentifierParam() {
-        AnalyticsCacheHandler analHandler = new AnalyticsCacheHandler(new GlobalCacheManager());
+    public static RequestBodyAppsFlyer getAppsFlyerIdentifierParam(String afUniqueId, String adsId) {
         RequestBodyAppsFlyer requestBodyAppsFlyer = new RequestBodyAppsFlyer();
-        requestBodyAppsFlyer.setAppsflyerId(TrackingUtils.getAfUniqueId(MainApplication.getAppContext()));
-        requestBodyAppsFlyer.setDeviceId(analHandler.getAdsId());
+        requestBodyAppsFlyer.setAppsflyerId(afUniqueId);
+        requestBodyAppsFlyer.setDeviceId(adsId);
         return requestBodyAppsFlyer;
     }
 

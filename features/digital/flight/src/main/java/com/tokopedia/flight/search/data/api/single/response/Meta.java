@@ -30,6 +30,9 @@ public class Meta {
     @SerializedName("infant")
     @Expose
     private int infant;
+    @SerializedName("special_tag")
+    @Expose
+    private String specialTag;
 
     private String departureAirport; // merge result
     private String arrivalAirport; // merge result
@@ -88,4 +91,6 @@ public class Meta {
     public String getArrivalAirport() {
         return arrivalAirport;
     }
+
+    public String getSpecialTag() { return specialTag; }
 }

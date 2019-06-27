@@ -13,9 +13,12 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.talk.R
@@ -74,14 +77,21 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
     @Inject
     lateinit var analytics: TalkAnalytics
 
+    private lateinit var performanceMonitoring: PerformanceMonitoring
+
+    private var isTraceStopped: Boolean = false
+
     companion object {
+
+        const val TALK_SHOP_TRACE = "mp_talk_shop_list"
         fun newInstance(bundle: Bundle): ShopTalkFragment {
             val fragment = ShopTalkFragment()
             fragment.arguments = bundle
             return fragment
         }
-    }
 
+
+    }
 
     override fun initInjector() {
         val shopTalkComponent = DaggerShopTalkComponent.builder()
@@ -100,6 +110,11 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
         activity?.run {
             analytics.sendScreen(this, screenName)
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        performanceMonitoring = PerformanceMonitoring.start(TALK_SHOP_TRACE)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -172,6 +187,14 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
     override fun onSuccessGetShopTalk(talkViewModel: InboxTalkViewModel) {
         adapter.hideEmpty()
         adapter.addList(talkViewModel.listTalk)
+        stopTrace()
+    }
+
+    fun stopTrace() {
+        if (!isTraceStopped) {
+            performanceMonitoring.stopTrace()
+            isTraceStopped = true
+        }
     }
 
     override fun onErrorGetShopTalk(errorMessage: String) {
@@ -184,6 +207,7 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
                 presenter.getShopTalk(shopId)
             }.showRetrySnackbar()
         }
+        stopTrace()
     }
 
     override fun onErrorActionTalk(errorMessage: String) {
@@ -370,8 +394,16 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
     private fun onGoToPdp(productId: String) {
         activity?.applicationContext?.run {
             analytics.trackClickProduct()
-            val intent: Intent = (this as TalkRouter).getProductPageIntent(this, productId)
+            val intent: Intent? = getProductIntent(productId)
             this@ShopTalkFragment.startActivity(intent)
+        }
+    }
+
+    private fun getProductIntent(productId: String): Intent? {
+        return if (context != null) {
+            RouteManager.getIntent(context!!,ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
+        } else {
+            null
         }
     }
 

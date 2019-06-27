@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * @author  by ricoharisin on 11/20/15.
  */
-public class Checkout extends BaseGTMModel {
+public class Checkout {
 
     private Map<String, Object> ActionField = new HashMap<>();
     private Map<String, Object> Checkout = new HashMap<>();

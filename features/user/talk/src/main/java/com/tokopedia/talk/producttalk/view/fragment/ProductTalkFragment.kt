@@ -15,9 +15,12 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.design.component.ToasterNormal
@@ -63,6 +66,8 @@ class ProductTalkFragment : BaseDaggerFragment(),
         TalkProductAttachmentAdapter.ProductAttachmentItemClickListener,
         EmptyProductTalkViewHolder.TalkItemListener,
         LoadMoreCommentTalkViewHolder.LoadMoreListener {
+
+    private lateinit var performanceMonitoring: PerformanceMonitoring
 
     override fun getContext(): Context? {
         return activity
@@ -110,6 +115,8 @@ class ProductTalkFragment : BaseDaggerFragment(),
     var shopName: String = ""
     var shopAvatar: String = ""
 
+    private var isTraceStopped: Boolean = false
+
     override fun initInjector() {
         val productTalkComponent = DaggerProductTalkComponent.builder()
                 .talkComponent(getComponent(TalkComponent::class.java))
@@ -119,6 +126,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     companion object {
+        const val TALK_PRODUCT_TRACE = "mp_talk_product_list"
 
         fun newInstance(extras: Bundle): ProductTalkFragment {
             val fragment = ProductTalkFragment()
@@ -126,6 +134,11 @@ class ProductTalkFragment : BaseDaggerFragment(),
             return fragment
         }
 
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        performanceMonitoring = PerformanceMonitoring.start(TALK_PRODUCT_TRACE)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -216,6 +229,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
         presenter.getProductTalk(productId)
     }
 
+
     private fun setUpView(view: View) {
         val adapterTypeFactory = ProductTalkTypeFactoryImpl(this, this, this, this, this, this)
         val listProductTalk = ArrayList<Visitable<*>>()
@@ -241,7 +255,6 @@ class ProductTalkFragment : BaseDaggerFragment(),
         swiper.setOnRefreshListener { onRefreshData() }
     }
 
-
     private fun onRefreshData() {
         presenter.resetProductTalk(productId)
     }
@@ -264,9 +277,10 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     override fun onEmptyTalk(productTalkViewModel: ProductTalkViewModel) {
         setupViewModel(productTalkViewModel)
-
         setHasOptionsMenu(false)
         adapter.showEmpty(presenter.isMyShop(shopId))
+        stopTrace()
+
     }
 
     override fun setCanLoad() {
@@ -275,11 +289,9 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     override fun onSuccessResetTalk(productTalkViewModel: ProductTalkViewModel) {
         setupViewModel(productTalkViewModel)
-
-
         adapter.setList(productTalkViewModel.listThread, ProductTalkTitleViewModel(productImage,
                 productName, productPrice))
-
+        stopTrace()
     }
 
     private fun setupViewModel(productTalkViewModel: ProductTalkViewModel) {
@@ -295,9 +307,16 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     override fun onSuccessGetTalks(productTalkViewModel: ProductTalkViewModel) {
         setupViewModel(productTalkViewModel)
-
         adapter.hideLoading()
         adapter.addList(productTalkViewModel.listThread)
+        stopTrace()
+    }
+
+    fun stopTrace() {
+        if (!isTraceStopped) {
+            performanceMonitoring.stopTrace()
+            isTraceStopped = true
+        }
     }
 
     override fun onLoadClicked() {
@@ -309,6 +328,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
         NetworkErrorHelper.showEmptyState(context, view, errorMessage) {
             presenter.getProductTalk(productId)
         }
+        stopTrace()
     }
 
     override fun onSuccessDeleteCommentTalk(talkId: String, commentId: String) {
@@ -534,9 +554,16 @@ class ProductTalkFragment : BaseDaggerFragment(),
     override fun onClickProductAttachment(attachProduct: TalkProductAttachmentViewModel) {
         activity?.applicationContext?.run {
             analytics.trackClickProductFromAttachment()
-            val intent: Intent = (this as TalkRouter).getProductPageIntent(this, attachProduct
-                    .productId.toString())
+            val intent: Intent? = getProductIntent(attachProduct.productId.toString())
             this@ProductTalkFragment.startActivity(intent)
+        }
+    }
+
+    private fun getProductIntent(productId: String): Intent? {
+        return if (context != null) {
+            RouteManager.getIntent(context!!,ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
+        } else {
+            null
         }
     }
 

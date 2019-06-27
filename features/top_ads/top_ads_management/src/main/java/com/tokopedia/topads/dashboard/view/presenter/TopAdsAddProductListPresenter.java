@@ -1,7 +1,7 @@
 package com.tokopedia.topads.dashboard.view.presenter;
 
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.base.list.seller.common.util.ItemType;
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.common.utils.DefaultErrorSubscriber;

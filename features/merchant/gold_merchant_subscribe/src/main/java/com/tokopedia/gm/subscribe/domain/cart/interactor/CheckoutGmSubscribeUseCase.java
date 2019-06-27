@@ -1,7 +1,7 @@
 package com.tokopedia.gm.subscribe.domain.cart.interactor;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.gm.subscribe.domain.cart.GmSubscribeCartRepository;
@@ -24,8 +24,8 @@ public class CheckoutGmSubscribeUseCase extends UseCase<GmCheckoutDomainModel> {
     protected final GmSubscribeCartRepository gmSubscribeCartRepository;
 
     @Inject
-    public CheckoutGmSubscribeUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, GmSubscribeCartRepository gmSubscribeCartRepository) {
-        super(threadExecutor, postExecutionThread);
+    public CheckoutGmSubscribeUseCase(GmSubscribeCartRepository gmSubscribeCartRepository) {
+        super();
         this.gmSubscribeCartRepository = gmSubscribeCartRepository;
     }
 

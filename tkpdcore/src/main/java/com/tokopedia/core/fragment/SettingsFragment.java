@@ -20,6 +20,7 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.TkpdBasePreferenceFragment;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.track.TrackApp;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -169,7 +170,7 @@ public class SettingsFragment extends TkpdBasePreferenceFragment {
                     preference.setSummary(stringValue);
 
                 if(value instanceof Boolean) {
-                    TrackingUtils.setMoEngagePushPreference(MainApplication.getAppContext(), (Boolean) value);
+                    TrackApp.getInstance().getMoEngage().setPushPreference((Boolean) value);
                 }
             }
 

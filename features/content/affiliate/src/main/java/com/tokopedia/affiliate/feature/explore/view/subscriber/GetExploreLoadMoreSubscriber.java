@@ -2,16 +2,15 @@ package com.tokopedia.affiliate.feature.explore.view.subscriber;
 
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.affiliate.feature.explore.data.pojo.ExploreData;
 import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract;
-import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreViewModel;
 
 import rx.Subscriber;
 
 /**
  * @author by yfsx on 08/10/18.
  */
-public class GetExploreLoadMoreSubscriber extends Subscriber<GraphqlResponse> {
+public class GetExploreLoadMoreSubscriber extends Subscriber<ExploreViewModel> {
 
     private ExploreContract.View mainView;
 
@@ -32,17 +31,17 @@ public class GetExploreLoadMoreSubscriber extends Subscriber<GraphqlResponse> {
         if (mainView == null)
             return;
         mainView.hideLoading();
+        mainView.unsubscribeAutoComplete();
         mainView.onErrorGetMoreData(ErrorHandler.getErrorMessage(mainView.getContext(), e));
     }
 
     @Override
-    public void onNext(GraphqlResponse response) {
+    public void onNext(ExploreViewModel exploreViewModel) {
         mainView.hideLoading();
-        ExploreData query = response.getData(ExploreData.class);
-
+        mainView.unsubscribeAutoComplete();
         mainView.onSuccessGetMoreData(
-                GetExploreFirstSubscriber.mappingProducts(query.getExploreProduct().getProducts(), mainView),
-                query.getExploreProduct().getPagination().getNextCursor()
+                exploreViewModel.getExploreProducts(),
+                exploreViewModel.getNextCursor()
         );
     }
 }

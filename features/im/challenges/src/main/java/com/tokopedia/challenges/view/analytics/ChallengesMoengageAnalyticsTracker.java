@@ -1,11 +1,8 @@
 package com.tokopedia.challenges.view.analytics;
 
 import android.app.Activity;
-import android.content.Context;
-import android.util.Log;
 
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.challenges.ChallengesModuleRouter;
+import com.tokopedia.track.TrackApp;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,10 +14,10 @@ public class ChallengesMoengageAnalyticsTracker {
 
     public static String Challenge_Screen_Launched = "Challenge_Screen_Launched";
     public static String Challenge_Detail_Open = "Challenge_Detail_Opened";
-    public static String Challenge_Post_Opened = "Challenge_Post_Opened";
-    public static String Challenge_Post_Shared = "Challenge_Post_Shared";
-    public static String Challenge_Delete_Submission = "Challenge_Delete_Submission";
-    public static String Challenge_Submit_Start = "Challenge_Submit_Start";
+    public static String Challenge_Post_Opened = "Challenge_Opened_Post";
+    public static String Challenge_Post_Shared = "Challenge_Shared_Post";
+    public static String Challenge_Delete_Submission = "Challenge_Submission_Delete";
+    public static String Challenge_Submit_Start = "Challenge_Start_Submit";
     public static String Challenge_Submit_Finished = "Challenge_Submit_Finished";
 
     public static String screen_name = "screen_name";
@@ -50,7 +47,7 @@ public class ChallengesMoengageAnalyticsTracker {
         Map<String, Object> values = new HashMap<>();
         values.put(challenge_name, challengeName);
         values.put(challenge_id, challengeId);
-        values.put(postId, postId);
+        values.put(post_id, postId);
         values.put(challenge_joined, is_participated);
         sendEvent(activity, Challenge_Post_Opened, values);
     }
@@ -59,7 +56,7 @@ public class ChallengesMoengageAnalyticsTracker {
         Map<String, Object> values = new HashMap<>();
         values.put(challenge_name, challengeName);
         values.put(challenge_id, challengeId);
-        values.put(postId, postId);
+        values.put(post_id, postId);
         values.put(challenge_joined, is_participated);
         values.put(channel, channelName);
         sendEvent(activity, Challenge_Post_Shared, values);
@@ -69,7 +66,7 @@ public class ChallengesMoengageAnalyticsTracker {
         Map<String, Object> values = new HashMap<>();
         values.put(challenge_name, challengeName);
         values.put(challenge_id, challengeId);
-        values.put(postId, postId);
+        values.put(post_id, postId);
         sendEvent(activity, Challenge_Delete_Submission, values);
     }
 
@@ -77,7 +74,7 @@ public class ChallengesMoengageAnalyticsTracker {
         Map<String, Object> values = new HashMap<>();
         values.put(challenge_name, challengeName);
         values.put(challenge_id, challengeId);
-        values.put(postId, postId);
+        values.put(post_id, postId);
         sendEvent(activity, Challenge_Submit_Start, values);
     }
 
@@ -91,6 +88,6 @@ public class ChallengesMoengageAnalyticsTracker {
 
 
     public static void sendEvent(Activity activity, String name, Map<String, Object> values) {
-        ((ChallengesModuleRouter) (activity.getApplication())).sendMoengageEvents(name, values);
+        TrackApp.getInstance().getMoEngage().sendTrackEvent(name, values);
     }
 }

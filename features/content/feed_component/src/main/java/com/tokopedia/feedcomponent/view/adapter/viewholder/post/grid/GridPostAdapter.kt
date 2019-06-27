@@ -11,9 +11,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
+import com.tokopedia.kotlin.extensions.view.*
 import kotlinx.android.synthetic.main.item_grid.view.*
 
 /**
@@ -48,8 +47,14 @@ class GridPostAdapter(private val contentPosition: Int,
 
     @Suppress("ConvertTwoComparisonsToRangeCheck")
     override fun onBindViewHolder(holder: GridItemViewHolder, position: Int) {
-        holder.bindImage(gridPostViewModel.itemList[position].thumbnail)
-        if (gridPostViewModel.itemList.size > MAX_FEED_SIZE && position == LAST_FEED_POSITION) {
+        holder.bindImage(
+                gridPostViewModel.itemList[position].thumbnail,
+                gridPostViewModel.itemList.size
+        )
+
+        if (gridPostViewModel.showGridButton
+                && gridPostViewModel.totalItems > MAX_FEED_SIZE
+                && position == LAST_FEED_POSITION) {
             val extraProduct = gridPostViewModel.totalItems - LAST_FEED_POSITION
             holder.bindOthers(
                     extraProduct,
@@ -58,8 +63,9 @@ class GridPostAdapter(private val contentPosition: Int,
                     gridPostViewModel.postId
             )
 
-        } else if (gridPostViewModel.itemList.size < MAX_FEED_SIZE
-                && gridPostViewModel.itemList.size > MAX_FEED_SIZE_SMALL
+        } else if (gridPostViewModel.showGridButton
+                && gridPostViewModel.totalItems < MAX_FEED_SIZE
+                && gridPostViewModel.totalItems > MAX_FEED_SIZE_SMALL
                 && position == LAST_FEED_POSITION_SMALL) {
             val extraProduct = gridPostViewModel.totalItems - LAST_FEED_POSITION_SMALL
             holder.bindOthers(
@@ -78,8 +84,9 @@ class GridPostAdapter(private val contentPosition: Int,
                              private val positionInFeed: Int,
                              private val contentPosition: Int,
                              private val listener: GridItemListener) : RecyclerView.ViewHolder(v) {
-        fun bindImage(image: String) {
+        fun bindImage(image: String, listSize: Int) {
             itemView.productImage.loadImage(image)
+            setImageMargins(listSize)
         }
 
         fun bindProduct(item: GridItemViewModel) {
@@ -90,7 +97,10 @@ class GridPostAdapter(private val contentPosition: Int,
             itemView.text.text = item.price
 
             itemView.setOnClickListener {
-                listener.onGridItemClick(positionInFeed, contentPosition, item.redirectLink)
+                listener.onGridItemClick(positionInFeed, contentPosition, adapterPosition, item.redirectLink)
+                if (!item.trackingList.isEmpty()) {
+                    listener.onAffiliateTrackClicked(item.trackingList, true)
+                }
             }
         }
 
@@ -110,14 +120,45 @@ class GridPostAdapter(private val contentPosition: Int,
                 listener.onGridItemClick(
                         positionInFeed,
                         contentPosition,
+                        adapterPosition,
                         if (!TextUtils.isEmpty(actionLink)) actionLink
                         else ApplinkConst.FEED_DETAILS.replace(EXTRA_DETAIL_ID, postId.toString())
+                )
+            }
+        }
+
+        private fun setImageMargins(listSize: Int) {
+            if (listSize == 1) {
+                itemView.productLayout.setMargin(0,0,0,0)
+                itemView.productLayout.radius = 0f
+                itemView.text.setPadding(
+                        itemView.getDimens(R.dimen.dp_16),
+                        0,
+                        itemView.getDimens(R.dimen.dp_16),
+                        0
+                )
+            } else {
+                itemView.productLayout.setMargin(
+                        itemView.getDimens(R.dimen.dp_2),
+                        0,
+                        itemView.getDimens(R.dimen.dp_2),
+                        0
+                )
+                itemView.productLayout.radius = itemView.getDimens(R.dimen.dp_4).toFloat()
+                itemView.text.setPadding(
+                        itemView.getDimens(R.dimen.dp_4),
+                        0,
+                        itemView.getDimens(R.dimen.dp_4),
+                        0
                 )
             }
         }
     }
 
     interface GridItemListener {
-        fun onGridItemClick(positionInFeed: Int, contentPosition: Int, redirectLink: String)
+        fun onGridItemClick(positionInFeed: Int, contentPosition: Int, productPosition: Int,
+                            redirectLink: String)
+
+        fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean)
     }
 }

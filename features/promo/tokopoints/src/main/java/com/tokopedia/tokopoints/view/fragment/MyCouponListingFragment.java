@@ -81,6 +81,7 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
     @Override
     public void onResume() {
         super.onResume();
+        AnalyticsTrackerUtil.sendScreenEvent(getActivity(), getScreenName());
     }
 
     @Override
@@ -118,7 +119,7 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
 
     @Override
     protected String getScreenName() {
-        return null;
+        return AnalyticsTrackerUtil.ScreenKeys.MY_COUPON_LISTING_SCREEN_NAME;
     }
 
     @Override
@@ -137,7 +138,7 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
     private void initViews(@NonNull View view) {
         mContainerMain = view.findViewById(R.id.container);
         mRecyclerView = view.findViewById(R.id.recycler_view_coupons);
-        mSwipeToRefresh=view.findViewById(R.id.swipe_refresh_layout);
+        mSwipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
         mItemDecoration = new SpacesItemDecoration(getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_14),
                 getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_16),
                 getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_16));
@@ -172,7 +173,7 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
 
     @Override
     public void populateCoupons(int categoryId) {
-        mAdapter = new CouponListBaseAdapter(mPresenter, this, getAppContext(), categoryId);
+        mAdapter = new CouponListBaseAdapter(this, getAppContext(), categoryId);
 
         if (mRecyclerView.getItemDecorationCount() > 0) {
             mRecyclerView.removeItemDecoration(mItemDecoration);

@@ -75,6 +75,10 @@ public class FlightAirportViewHolder extends AbstractViewHolder<FlightAirportVie
         indexStartBold = strToPutLowerCase.indexOf(strToBoldLowerCase);
         if (indexStartBold != -1) {
             indexEndBold = indexStartBold + stringToBold.length();
+
+            if (indexEndBold >= strToPut.length()) {
+                indexEndBold = strToPut.length() - 1;
+            }
         }
         if (indexStartBold == -1) {
             return spannableStringBuilder;

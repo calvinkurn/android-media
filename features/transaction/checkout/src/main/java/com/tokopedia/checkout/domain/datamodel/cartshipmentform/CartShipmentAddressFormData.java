@@ -4,7 +4,11 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.checkout.domain.datamodel.cartlist.AutoApplyData;
+import com.tokopedia.checkout.domain.datamodel.promostacking.AutoApplyStackData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
+import com.tokopedia.checkout.domain.datamodel.promostacking.GlobalCouponAttrData;
+import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
+import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldAttributeModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,17 +21,23 @@ public class CartShipmentAddressFormData implements Parcelable {
     private boolean hasError;
     private boolean isError;
     private String errorMessage;
-
     private int errorCode;
+    private boolean isShowOnboarding;
     private boolean isMultiple;
     private List<GroupAddress> groupAddress = new ArrayList<>();
     private String keroToken;
     private String keroDiscomToken;
     private int keroUnixTime;
     private Donation donation;
+    private CodModel cod;
     private boolean useCourierRecommendation;
+    private boolean isHidingCourier;
+    private boolean isBlackbox;
     private CartPromoSuggestion cartPromoSuggestion;
     private AutoApplyData autoApplyData;
+    private EgoldAttributeModel egoldAttributes;
+    private AutoApplyStackData autoApplyStackData;
+    private GlobalCouponAttrData globalCouponAttrData;
 
     public boolean isHasError() {
         return hasError;
@@ -117,6 +127,14 @@ public class CartShipmentAddressFormData implements Parcelable {
         this.useCourierRecommendation = useCourierRecommendation;
     }
 
+    public boolean getIsBlackbox() {
+        return isBlackbox;
+    }
+
+    public void setIsBlackbox(boolean blackbox) {
+        this.isBlackbox = blackbox;
+    }
+
     public CartPromoSuggestion getCartPromoSuggestion() {
         return cartPromoSuggestion;
     }
@@ -133,6 +151,54 @@ public class CartShipmentAddressFormData implements Parcelable {
         this.autoApplyData = autoApplyData;
     }
 
+    public AutoApplyStackData getAutoApplyStackData() {
+        return autoApplyStackData;
+    }
+
+    public void setAutoApplyStackData(AutoApplyStackData autoApplyStackData) {
+        this.autoApplyStackData = autoApplyStackData;
+    }
+
+    public GlobalCouponAttrData getGlobalCouponAttrData() {
+        return globalCouponAttrData;
+    }
+
+    public void setGlobalCouponAttrData(GlobalCouponAttrData globalCouponAttrData) {
+        this.globalCouponAttrData = globalCouponAttrData;
+    }
+
+    public CodModel getCod() {
+        return cod;
+    }
+
+    public void setCod(CodModel cod) {
+        this.cod = cod;
+    }
+
+    public EgoldAttributeModel getEgoldAttributes() {
+        return egoldAttributes;
+    }
+
+    public void setEgoldAttributes(EgoldAttributeModel egoldAttributes) {
+        this.egoldAttributes = egoldAttributes;
+    }
+
+    public boolean isHidingCourier() {
+        return isHidingCourier;
+    }
+
+    public void setHidingCourier(boolean hidingCourier) {
+        isHidingCourier = hidingCourier;
+    }
+
+    public boolean isShowOnboarding() {
+        return isShowOnboarding;
+    }
+
+    public void setShowOnboarding(boolean showOnboarding) {
+        isShowOnboarding = showOnboarding;
+    }
+
     public CartShipmentAddressFormData() {
     }
 
@@ -141,6 +207,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         isError = in.readByte() != 0;
         errorMessage = in.readString();
         errorCode = in.readInt();
+        isShowOnboarding = in.readByte() != 0;
         isMultiple = in.readByte() != 0;
         groupAddress = in.createTypedArrayList(GroupAddress.CREATOR);
         keroToken = in.readString();
@@ -148,8 +215,11 @@ public class CartShipmentAddressFormData implements Parcelable {
         keroUnixTime = in.readInt();
         donation = in.readParcelable(Donation.class.getClassLoader());
         useCourierRecommendation = in.readByte() != 0;
+        isHidingCourier = in.readByte() != 0;
         cartPromoSuggestion = in.readParcelable(CartPromoSuggestion.class.getClassLoader());
         autoApplyData = in.readParcelable(AutoApplyData.class.getClassLoader());
+        egoldAttributes = in.readParcelable(EgoldAttributeModel.class.getClassLoader());
+        autoApplyStackData = in.readParcelable(AutoApplyStackData.class.getClassLoader());
     }
 
     @Override
@@ -158,6 +228,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         dest.writeByte((byte) (isError ? 1 : 0));
         dest.writeString(errorMessage);
         dest.writeInt(errorCode);
+        dest.writeByte((byte) (isShowOnboarding ? 1 : 0));
         dest.writeByte((byte) (isMultiple ? 1 : 0));
         dest.writeTypedList(groupAddress);
         dest.writeString(keroToken);
@@ -165,8 +236,11 @@ public class CartShipmentAddressFormData implements Parcelable {
         dest.writeInt(keroUnixTime);
         dest.writeParcelable(donation, flags);
         dest.writeByte((byte) (useCourierRecommendation ? 1 : 0));
+        dest.writeByte((byte) (isHidingCourier ? 1 : 0));
         dest.writeParcelable(cartPromoSuggestion, flags);
         dest.writeParcelable(autoApplyData, flags);
+        dest.writeParcelable(egoldAttributes, flags);
+        dest.writeParcelable(autoApplyStackData, flags);
     }
 
     @Override
@@ -190,7 +264,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         for (GroupAddress address : groupAddress) {
             for (GroupShop groupShop : address.getGroupShop()) {
                 for (Product product : groupShop.getProducts()) {
-                    if(product.getPurchaseProtectionPlanData() != null &&
+                    if (product.getPurchaseProtectionPlanData() != null &&
                             product.getPurchaseProtectionPlanData().isProtectionAvailable()) {
                         return true;
                     }

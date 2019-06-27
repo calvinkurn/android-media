@@ -3,7 +3,6 @@ package com.tokopedia.flight.common.data.source;
 import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
@@ -30,9 +29,8 @@ public class FlightAuthInterceptor extends TkpdAuthInterceptor {
     private static final String KEY_ZIP_ENCODING = "gzip";
 
     @Inject
-    public FlightAuthInterceptor(@ApplicationContext Context context, AbstractionRouter abstractionRouter,
-                                 UserSession userSession) {
-        super(context, abstractionRouter, userSession);
+    public FlightAuthInterceptor(@ApplicationContext Context context, AbstractionRouter abstractionRouter) {
+        super(context, abstractionRouter);
         this.maxRetryAttempt = 0;
     }
 
@@ -40,7 +38,8 @@ public class FlightAuthInterceptor extends TkpdAuthInterceptor {
     @Override
     protected Map<String, String> getHeaderMap(String path, String strParam, String method, String authKey, String contentTypeHeader) {
         String newPath = path.replace("/travel", "");
-        return AuthUtil.generateHeadersWithXUserId(newPath,strParam,method,authKey,contentTypeHeader,userSession.getUserId(), userSession.getDeviceId());
+        return AuthUtil.generateHeadersWithXUserId(newPath,strParam,method,authKey,
+                contentTypeHeader,userSession.getUserId(), userSession.getDeviceId(), userSession);
     }
 
     protected Response getResponse(Chain chain, Request request) throws IOException {

@@ -14,6 +14,6 @@ public interface BuyerAccount {
     }
 
     interface Presenter extends CustomerPresenter<View> {
-        void getBuyerData(String query);
+        void getBuyerData(String query, String saldoQuery);
     }
 }

@@ -35,6 +35,7 @@ public class BuyerCardViewHolder extends AbstractViewHolder<BuyerCardViewModel> 
                 .progress(element.getProgress())
                 .tokopoint(element.getTokopoint())
                 .coupons(element.getCoupons())
+                .isAffliate(element.isAffiliate())
                 .build();
 
         buyerCardView.renderData(buyerCard);
@@ -43,5 +44,6 @@ public class BuyerCardViewHolder extends AbstractViewHolder<BuyerCardViewModel> 
         buyerCardView.setOnClickProfileCompletion(v -> listener.onProfileCompletionClicked(element));
         buyerCardView.setOnClickTokoPoint(v -> listener.onBuyerTokopointClicked(element));
         buyerCardView.setOnClickVoucher(v -> listener.onBuyerVoucherClicked(element));
+        buyerCardView.setOnClickByMe(v -> listener.onByMeClicked());
     }
 }

@@ -137,6 +137,18 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
         }
     }
 
+    fun getJourneyRouteById(onwardJourneyId: String?): JourneyAndRoutes? {
+        return flightJourneyDao.findJourneyById(onwardJourneyId)
+    }
+
+    fun updateJourneyData(journeyTable: FlightJourneyTable) {
+        flightJourneyDao.update(journeyTable)
+    }
+
+    fun updateJourneyDataList(journeyTableList: List<FlightJourneyTable>) {
+        flightJourneyDao.update(journeyTableList)
+    }
+
     private fun getAirlineCondition(airlines: List<String>?): String? {
         if (airlines == null || airlines.isEmpty()) {
             return ""

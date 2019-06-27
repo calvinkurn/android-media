@@ -90,4 +90,5 @@ public abstract class NotificationListener implements DrawerDataListener {
     public void onSuccessGetTopChatNotification(int notifUnreads) {
 
     }
+
 }

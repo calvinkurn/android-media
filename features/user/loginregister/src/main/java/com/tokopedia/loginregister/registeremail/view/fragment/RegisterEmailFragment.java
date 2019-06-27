@@ -1,16 +1,17 @@
 package com.tokopedia.loginregister.registeremail.view.fragment;
 
-import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -29,33 +30,31 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import com.tokopedia.loginregister.R;
 
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.RequestPermissionUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
+import com.tokopedia.design.utils.StripedUnderlineUtil;
 import com.tokopedia.loginregister.LoginRegisterRouter;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.activation.view.activity.ActivationActivity;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
+import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
-import com.tokopedia.sessioncommon.di.SessionModule;
-import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
-import com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity;
 import com.tokopedia.loginregister.registeremail.di.DaggerRegisterEmailComponent;
 import com.tokopedia.loginregister.registeremail.domain.pojo.RegisterEmailPojo;
 import com.tokopedia.loginregister.registeremail.view.activity.RegisterEmailActivity;
-import com.tokopedia.loginregister.registeremail.view.adapter.AutoCompleteTextAdapter;
 import com.tokopedia.loginregister.registeremail.view.listener.RegisterEmailContract;
 import com.tokopedia.loginregister.registeremail.view.presenter.RegisterEmailPresenter;
 import com.tokopedia.loginregister.registeremail.view.util.CustomPhoneNumberUtil;
 import com.tokopedia.loginregister.registeremail.view.util.RegisterUtil;
-import com.tokopedia.design.utils.StripedUnderlineUtil;
+import com.tokopedia.sessioncommon.di.SessionModule;
+import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -67,20 +66,9 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
-
-import static com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT;
-import static com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity.RC_SIGN_IN_GOOGLE;
-
 /**
  * @author by nisie on 10/25/18.
  */
-@RuntimePermissions
 public class RegisterEmailFragment extends BaseDaggerFragment
         implements RegisterEmailContract.View {
 
@@ -93,6 +81,12 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     String PHONE = "PHONE";
     String PASSWORD = "PASSWORD";
     String EMAIL = "EMAIL";
+
+    String TERM_CONDITION = "Syarat dan Ketentuan";
+    String PRIVACY_POLICY = "Kebijakan Privasi";
+
+    String TERM_CONDITION_URL = "launch.TermPrivacy://parent?param=0";
+    String PRIVACY_POLICY_URL = "launch.TermPrivacy://parent?param=1";
 
     View container;
     View redirectView;
@@ -113,6 +107,9 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
     @Inject
     LoginRegisterAnalytics analytics;
+
+    @Inject
+    RegisterAnalytics registerAnalytics;
 
     @Named(SessionModule.SESSION_MODULE)
     @Inject
@@ -174,10 +171,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        Intent intent = new Intent(getActivity(), GoogleSignInActivity.class);
-        startActivityForResult(intent, RC_SIGN_IN_GOOGLE);
-    }
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) { }
 
 
     private void prepareView() {
@@ -185,9 +179,54 @@ public class RegisterEmailFragment extends BaseDaggerFragment
             email.setText(getArguments().getString(RegisterEmailActivity.EXTRA_PARAM_EMAIL, ""));
         }
 
-        registerNextTAndC.setText(MethodChecker.fromHtml(getString(R.string.bottom_info_terms_and_privacy)));
+        String sourceString = getActivity().getString(R.string.bottom_info_terms_and_privacy2);
+
+        SpannableString spannable = new SpannableString(sourceString);
+
+        ClickableSpan clickableSpanTermCondition = new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View textView) {
+                registerAnalytics.trackClickTermConditionButton();
+                if(getActivity() != null){
+                    Intent intent = new Intent (Intent.ACTION_VIEW);
+                    intent.setData (Uri.parse(TERM_CONDITION_URL));
+                    getActivity().startActivity(intent);
+                }
+            }
+
+            @Override
+            public void updateDrawState(@NonNull TextPaint textPaint) {
+                super.updateDrawState(textPaint);
+                textPaint.setColor(ContextCompat.getColor(registerNextTAndC.getContext(), R.color.green_nob));
+            }
+        };
+
+        ClickableSpan clickableSpanPrivacyPolicy = new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View textView) {
+                registerAnalytics.trackClickPrivacyPolicyButton();
+                if(getActivity() != null){
+                    Intent intent = new Intent (Intent.ACTION_VIEW);
+                    intent.setData (Uri.parse(PRIVACY_POLICY_URL));
+                    getActivity().startActivity(intent);
+                }
+            }
+
+            @Override
+            public void updateDrawState(@NonNull TextPaint textPaint) {
+                super.updateDrawState(textPaint);
+                textPaint.setColor(ContextCompat.getColor(registerNextTAndC.getContext(), R.color.green_nob));
+            }
+        };
+
+        spannable.setSpan(clickableSpanTermCondition, sourceString.indexOf(TERM_CONDITION),
+                sourceString.indexOf(TERM_CONDITION) + TERM_CONDITION.length(), 0);
+
+        spannable.setSpan(clickableSpanPrivacyPolicy, sourceString.indexOf(PRIVACY_POLICY),
+                sourceString.indexOf(PRIVACY_POLICY) + PRIVACY_POLICY.length(), 0);
+
+        registerNextTAndC.setText(spannable, TextView.BufferType.SPANNABLE);
         registerNextTAndC.setMovementMethod(LinkMovementMethod.getInstance());
-        StripedUnderlineUtil.stripUnderlines(registerNextTAndC);
 
         showPasswordHint();
         showEmailHint();
@@ -430,31 +469,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         };
     }
 
-
-    @NeedsPermission(Manifest.permission.GET_ACCOUNTS)
-    public void setupEmailAddressToEmailTextView() {
-        List<String> list = getEmailListOfAccountsUserHasLoggedInto();
-        if (list.size() > 0) {
-            String mEmail = list.get(0);
-            if (email.getText().toString().equals("")) {
-                email.setText(mEmail);
-                email.setSelection(mEmail.length());
-            }
-        }
-        email.setThreshold(0);
-        AutoCompleteTextAdapter adapter = new AutoCompleteTextAdapter(
-                getActivity(),
-                android.R.layout.simple_list_item_1,
-                list,
-                selected -> {
-                    email.setText(selected);
-                    email.setSelection(selected.length());
-                    email.dismissDropDown();
-                });
-        email.setAdapter(adapter);
-    }
-
-
     public List<String> getEmailListOfAccountsUserHasLoggedInto() {
         Set<String> listOfAddresses = new LinkedHashSet<>();
         Pattern emailPattern = Patterns.EMAIL_ADDRESS;
@@ -476,8 +490,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment
             }
             return false;
         });
-        RegisterEmailFragmentPermissionsDispatcher
-                .setupEmailAddressToEmailTextViewWithCheck(RegisterEmailFragment.this);
 
         registerPassword.setOnEditorActionListener((v, id, event) -> {
             if (id == REGISTER_BUTTON_IME || id == EditorInfo.IME_NULL) {
@@ -491,7 +503,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     }
 
     private void registerEmail() {
-        analytics.eventRegisterWithEmail();
+        registerAnalytics.trackClickSignUpButtonEmail();
         presenter.onRegisterClicked(
                 email.getText().toString(),
                 name.getText().toString(),
@@ -640,6 +652,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     @Override
     public void onErrorRegister(String errorMessage) {
         dismissLoadingProgress();
+        onFailedRegisterEmail(errorMessage);
         setActionsEnabled(true);
         if (errorMessage.equals(""))
             NetworkErrorHelper.showSnackbar(getActivity());
@@ -653,6 +666,8 @@ public class RegisterEmailFragment extends BaseDaggerFragment
             dismissLoadingProgress();
             setActionsEnabled(true);
             lostViewFocus();
+            registerAnalytics.trackSuccessClickSignUpButtonEmail();
+            registerAnalytics.trackSuccessClickEmailSignUpButton();
             analytics.eventSuccessRegisterEmail(getActivity().getApplicationContext(),
                     pojo.getuId(), name, email, phone);
         }
@@ -711,40 +726,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        RegisterEmailFragmentPermissionsDispatcher.onRequestPermissionsResult(
-                RegisterEmailFragment.this, requestCode, grantResults);
-    }
-
-    @OnShowRationale(Manifest.permission.GET_ACCOUNTS)
-    void showRationaleForGetAccounts(final PermissionRequest request) {
-        RequestPermissionUtil.onShowRationale(getActivity(),
-                new RequestPermissionUtil.PermissionRequestListener() {
-                    @Override
-                    public void onProceed() {
-                        request.proceed();
-                    }
-
-                    @Override
-                    public void onCancel() {
-                        request.cancel();
-                    }
-                }, Manifest.permission.GET_ACCOUNTS);
-    }
-
-    @OnPermissionDenied(Manifest.permission.GET_ACCOUNTS)
-    void showDeniefForGetAccounts() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.GET_ACCOUNTS);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.GET_ACCOUNTS)
-    void showNeverAskForGetAccounts() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.GET_ACCOUNTS);
-    }
-
-    @Override
     public void onDestroyView() {
         super.onDestroyView();
         presenter.detachView();
@@ -762,15 +743,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case RC_SIGN_IN_GOOGLE:
-                if (data != null) {
-                    GoogleSignInAccount googleSignInAccount = data.getParcelableExtra(KEY_GOOGLE_ACCOUNT);
-                    email.setText(googleSignInAccount.getEmail());
-                    if (googleSignInAccount.getDisplayName() != null
-                            && !googleSignInAccount.getDisplayName().equals(googleSignInAccount.getEmail()))
-                        name.setText(googleSignInAccount.getDisplayName());
-                }
-                break;
             case REQUEST_AUTO_LOGIN:
                 if (getActivity() != null && resultCode == Activity.RESULT_OK) {
                     getActivity().setResult(Activity.RESULT_OK);
@@ -796,5 +768,15 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
     public int getIsAutoVerify() {
         return isEmailAddressFromDevice() ? 1 : 0;
+    }
+
+    private void onFailedRegisterEmail(String errorMessage){
+        registerAnalytics.trackFailedClickEmailSignUpButton(errorMessage);
+        registerAnalytics.trackFailedClickSignUpButtonEmail(errorMessage);
+    }
+
+    @Override
+    public void onBackPressed() {
+        registerAnalytics.trackClickOnBackButtonRegisterEmail();
     }
 }

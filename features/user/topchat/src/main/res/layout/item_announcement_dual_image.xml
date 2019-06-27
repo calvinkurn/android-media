@@ -19,7 +19,7 @@
         android:layout_marginBottom="@dimen/dp_16"
         android:textAllCaps="true"
         android:textColor="@color/grey_500"
-        android:textSize="@dimen/fontvs"
+        android:textSize="@dimen/sp_12"
         tools:text="13:16 wib"/>
 
     <android.support.v7.widget.CardView
@@ -64,7 +64,7 @@
         android:layout_toRightOf="@id/user_ava"
         android:gravity="left"
         android:textColor="@color/time_color"
-        android:textSize="@dimen/fontvvs"
+        android:textSize="@dimen/sp_10"
         tools:text="testtest"
         />
 </RelativeLayout>

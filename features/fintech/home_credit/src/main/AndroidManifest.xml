@@ -1,0 +1,11 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.homecredit" >
+
+    <application>
+        <activity
+            android:name=".view.activity.HomeCreditRegisterActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+    </application>
+
+</manifest>

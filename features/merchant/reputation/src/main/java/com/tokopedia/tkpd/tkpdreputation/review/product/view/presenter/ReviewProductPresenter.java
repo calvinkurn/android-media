@@ -3,7 +3,6 @@ package com.tokopedia.tkpd.tkpdreputation.review.product.view.presenter;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.DeleteReviewResponseUseCase;
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.LikeDislikeReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain;
@@ -16,6 +15,7 @@ import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetL
 import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetRatingUseCase;
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.ReviewProductListMapper;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import rx.Subscriber;
 
@@ -25,7 +25,7 @@ import rx.Subscriber;
 
 public class ReviewProductPresenter extends BaseDaggerPresenter<ReviewProductContract.View> implements ReviewProductContract.Presenter {
 
-    private final UserSession userSession;
+    private final UserSessionInterface userSession;
     private final ReviewProductGetListUseCase productReviewGetListUseCase;
     private final ReviewProductGetHelpfulUseCase productReviewGetHelpfulUseCase;
     private final ReviewProductGetRatingUseCase productReviewGetRatingUseCase;
@@ -39,7 +39,7 @@ public class ReviewProductPresenter extends BaseDaggerPresenter<ReviewProductCon
                                   LikeDislikeReviewUseCase likeDislikeReviewUseCase,
                                   DeleteReviewResponseUseCase deleteReviewResponseUseCase,
                                   ReviewProductListMapper productReviewListMapper,
-                                  UserSession userSession) {
+                                  UserSessionInterface userSession) {
         this.productReviewGetListUseCase = productReviewGetListUseCase;
         this.productReviewGetHelpfulUseCase = productReviewGetHelpfulUseCase;
         this.productReviewGetRatingUseCase = productReviewGetRatingUseCase;

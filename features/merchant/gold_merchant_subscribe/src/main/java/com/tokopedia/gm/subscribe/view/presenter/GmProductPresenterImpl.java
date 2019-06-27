@@ -1,7 +1,7 @@
 package com.tokopedia.gm.subscribe.view.presenter;
 
 
-import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.gm.subscribe.domain.product.interactor.GetGmSubscribeCurrentProductUseCase;
 import com.tokopedia.gm.subscribe.domain.product.interactor.GetGmSubscribeExtendProductUseCase;

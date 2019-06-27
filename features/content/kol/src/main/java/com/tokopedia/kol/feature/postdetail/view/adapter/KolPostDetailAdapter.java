@@ -1,94 +1,47 @@
 package com.tokopedia.kol.feature.postdetail.view.adapter;
 
-import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.v7.util.DiffUtil;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter;
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.kol.feature.postdetail.view.adapter.typefactory.KolPostDetailTypeFactory;
+import com.tokopedia.kol.feature.postdetail.view.viewmodel.EmptyDetailViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 /**
  * @author by milhamj on 27/07/18.
  */
 
-public class KolPostDetailAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
+public class KolPostDetailAdapter extends BaseAdapter<KolPostDetailTypeFactory> {
 
-    private List<Visitable> list;
-    private KolPostDetailTypeFactory typeFactory;
+    private EmptyModel emptyModel;
 
-    @Inject
-    KolPostDetailAdapter() {
-        list = new ArrayList<>();
-    }
-
-    @NonNull
-    @Override
-    public AbstractViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        View view = LayoutInflater.from(context).inflate(viewType, parent, false);
-        return typeFactory.createViewHolder(view, viewType);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public void onBindViewHolder(@NonNull AbstractViewHolder holder, int position) {
-        holder.bind(list.get(position));
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public void onBindViewHolder(@NonNull AbstractViewHolder holder, int position,
-                                 @NonNull List<Object> payloads) {
-        if (!payloads.isEmpty()) {
-            holder.bind(list.get(position), payloads);
-        } else {
-            super.onBindViewHolder(holder, position, payloads);
-        }
-    }
-
-    @Override
-    public int getItemCount() {
-        return list.size();
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public int getItemViewType(int position) {
-        return list.get(position).type(typeFactory);
-    }
-
-    public void setTypeFactory(KolPostDetailTypeFactory typeFactory) {
-        this.typeFactory = typeFactory;
-    }
-
-    public List<Visitable> getList() {
-        return list;
+    public KolPostDetailAdapter(KolPostDetailTypeFactory typeFactory) {
+        super(typeFactory, new ArrayList<>());
+        this.emptyModel = new EmptyModel();
     }
 
     public void setList(List<Visitable> list) {
-        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new Callback(this.list, list));
-        diffResult.dispatchUpdatesTo(this);
-
-        this.list.clear();
-        this.list.addAll(list);
+        this.visitables.clear();
+        this.visitables.addAll(list);
+        notifyDataSetChanged();
     }
 
     public void clearData() {
         int itemCount = getItemCount();
-        this.list.clear();
+        this.visitables.clear();
         notifyItemRangeRemoved(0, itemCount);
+    }
+
+    public void showEmpty() {
+        this.visitables.clear();
+        this.visitables.add(new EmptyDetailViewModel());
+        notifyDataSetChanged();
     }
 
     static class Callback extends DiffUtil.Callback {

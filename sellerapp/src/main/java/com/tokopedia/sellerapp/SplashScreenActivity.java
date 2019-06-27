@@ -1,6 +1,8 @@
 package com.tokopedia.sellerapp;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,8 +26,30 @@ import org.json.JSONObject;
 
 public class SplashScreenActivity extends SplashScreen {
 
+    private boolean isApkTempered;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        isApkTempered = false;
+        try {
+            getResources().getDrawable(R.drawable.launch_screen);
+        } catch (Exception e) {
+            isApkTempered = true;
+            setTheme(R.style.Theme_Tokopedia3_PlainGreen);
+        }
+        super.onCreate(savedInstanceState);
+        if (isApkTempered) {
+            startActivity(new Intent(this, FallbackActivity.class));
+            finish();
+        }
+    }
+
     @Override
     public void finishSplashScreen() {
+        if (isApkTempered) {
+            return;
+        }
+
         if (SessionHandler.isUserHasShop(this)) {
             if (getIntent().hasExtra(Constants.EXTRA_APPLINK)) {
                 String applinkUrl = getIntent().getStringExtra(Constants.EXTRA_APPLINK);
@@ -59,10 +83,5 @@ public class SplashScreenActivity extends SplashScreen {
         Intent intent = SellerRouter.getActivityShopCreateEdit(context);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         return intent;
-    }
-
-    @Override
-    protected void handlingInitBranchSession(JSONObject referringParams) {
-        moveToHome();
     }
 }

@@ -1,0 +1,36 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation rootProject.ext.miscDependencies.viewModel
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.design)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation project(rootProject.ext.libraries.commonNetwork)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.features.tradeInCommon)
+    implementation (rootProject.ext.miscDependencies.laku6Sdk){
+        exclude group: 'com.android.support'
+        exclude group: 'com.squareup.retrofit2'
+        exclude group: 'com.google.firebase'
+        exclude group: 'com.google.android.gms'
+        exclude group: 'com.android.support.constraint'
+    }
+    implementation rootProject.ext.firebase.fireStore
+    implementation rootProject.ext.miscDependencies.dagger
+    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
+    implementation rootProject.ext.miscDependencies.multiDex
+
+    implementation rootProject.ext.networkDependencies.glide
+
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    testImplementation 'junit:junit:4.12'
+}

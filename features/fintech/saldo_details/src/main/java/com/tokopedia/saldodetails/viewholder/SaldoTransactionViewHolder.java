@@ -10,7 +10,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.saldodetails.R;
-import com.tokopedia.saldodetails.presentation.listener.SaldoItemListener;
 import com.tokopedia.saldodetails.response.model.DepositHistoryList;
 
 import java.text.ParseException;
@@ -19,23 +18,21 @@ import java.util.Date;
 
 public class SaldoTransactionViewHolder extends AbstractViewHolder<DepositHistoryList> {
 
-    private static final String DATE_PATTERN_FROM_SERVER = "yyyy-MM-dd hh:mm:ss";
-    private static final String DATE_PATTERN_FOR_UI = "dd MMM yyyy hh:mm";
+    private static final String DATE_PATTERN_FROM_SERVER = "yyyy-MM-dd HH:mm:ss";
+    private static final String DATE_PATTERN_FOR_UI = "dd MMM yyyy HH:mm";
     private TextView dateTV;
     private TextView note;
     private TextView nominal;
     private TextView heading;
     private ImageView imageView;
-    private SaldoItemListener listener;
     private Context context;
 
     @LayoutRes
     public static final int LAYOUT = R.layout.item_saldo_transaction;
 
-    public SaldoTransactionViewHolder(View itemView, SaldoItemListener listener) {
+    public SaldoTransactionViewHolder(View itemView) {
         super(itemView);
         this.context = itemView.getContext();
-        this.listener = listener;
         dateTV = itemView.findViewById(R.id.date);
         note = itemView.findViewById(R.id.note);
         nominal = itemView.findViewById(R.id.nominal);
@@ -62,7 +59,6 @@ public class SaldoTransactionViewHolder extends AbstractViewHolder<DepositHistor
         heading.setText(element.getTransactionClass());
         ImageHandler.LoadImage(imageView, element.getImageURL());
         if (element.getAmount() > 0) {
-            listener.setTextColor(nominal, R.color.tkpd_light_green);
             if (context != null) {
                 nominal.setTextColor(context.getResources().getColor(R.color.tkpd_light_green));
                 nominal.setText(String.format(
@@ -73,7 +69,6 @@ public class SaldoTransactionViewHolder extends AbstractViewHolder<DepositHistor
             }
 
         } else {
-            listener.setTextColor(nominal, R.color.tkpd_prod_price);
             if (context != null) {
                 nominal.setTextColor(context.getResources().getColor(R.color.tkpd_prod_price));
                 nominal.setText(String.format(

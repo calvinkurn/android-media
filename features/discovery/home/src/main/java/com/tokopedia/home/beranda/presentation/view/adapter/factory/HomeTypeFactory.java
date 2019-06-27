@@ -3,16 +3,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.factory;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.InspirationHeaderViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SellViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsDynamicChannelModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.*;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
 
 /**
@@ -27,9 +18,15 @@ public interface HomeTypeFactory {
 
     int type(TickerViewModel tickerViewModel);
 
+    int type(SearchPlaceholderViewModel searchPlaceholderViewModel);
+
     int type(DigitalsViewModel digitalsViewModel);
 
-    int type(CategorySectionViewModel categorySectionViewModel);
+    int type(BusinessUnitViewModel businessUnitViewModel);
+
+    int type(UseCaseIconSectionViewModel useCaseIconSectionViewModel);
+
+    int type(DynamicIconSectionViewModel dynamicIconSectionViewModel);
 
     int type(SellViewModel sellViewModel);
 
@@ -44,4 +41,8 @@ public interface HomeTypeFactory {
     int type(InspirationViewModel inspirationViewModel);
 
     int type(DynamicChannelViewModel dynamicChannelViewModel);
+
+    int type(SpotlightViewModel spotlightViewModel);
+
+    int type(HomeRecommendationFeedViewModel homeRecommendationFeedViewModel);
 }

@@ -56,6 +56,7 @@ public class FlightJourneyTable {
     private int totalNumericCombo;
     private boolean isBestPairing;
     private String beforeTotal;
+    private boolean showSpecialPriceTag;
     private String sortPrice;
     private int sortPriceNumeric;
     private boolean isReturn;
@@ -76,8 +77,8 @@ public class FlightJourneyTable {
                               String childCombo, int childNumeric, int childNumericCombo, String infant,
                               String infantCombo, int infantNumeric, int infantNumericCombo, String total,
                               String totalCombo, int totalNumeric, int totalNumericCombo,
-                              boolean isBestPairing, String beforeTotal, String sortPrice,
-                              int sortPriceNumeric, boolean isReturn, RefundableEnum isRefundable,
+                              boolean isBestPairing, String beforeTotal, boolean showSpecialPriceTag,
+                              String sortPrice, int sortPriceNumeric, boolean isReturn, RefundableEnum isRefundable,
                               boolean isSpecialPrice, String comboId) {
         this.id = id;
         this.term = term;
@@ -115,6 +116,7 @@ public class FlightJourneyTable {
         this.totalNumericCombo = totalNumericCombo;
         this.isBestPairing = isBestPairing;
         this.beforeTotal = beforeTotal;
+        this.showSpecialPriceTag = showSpecialPriceTag;
         this.sortPrice = sortPrice;
         this.sortPriceNumeric = sortPriceNumeric;
         this.isReturn = isReturn;
@@ -411,6 +413,10 @@ public class FlightJourneyTable {
     public void setBeforeTotal(String beforeTotal) {
         this.beforeTotal = beforeTotal;
     }
+
+    public boolean isShowSpecialPriceTag() { return showSpecialPriceTag; }
+
+    public void setShowSpecialPriceTag(boolean showSpecialPriceTag) { this.showSpecialPriceTag = showSpecialPriceTag; }
 
     public String getSortPrice() {
         return sortPrice;

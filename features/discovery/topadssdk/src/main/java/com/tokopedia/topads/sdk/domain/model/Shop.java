@@ -3,6 +3,7 @@ package com.tokopedia.topads.sdk.domain.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.json.JSONArray;
@@ -35,39 +36,70 @@ public class Shop implements Parcelable {
     private static final String KEY_BADGES = "badges";
 
     @SerializedName(KEY_ID)
-    private String id;
-    private String adRefKey;
-    private String adId;
+    @Expose
+    private String id = "";
+
+    private String adRefKey = "";
+    private String adId = "";
+
     @SerializedName(KEY_NAME)
-    private String name;
+    @Expose
+    private String name = "";
+
     @SerializedName(KEY_DOMAIN)
-    private String domain;
+    @Expose
+    private String domain = "";
+
     @SerializedName(KEY_TAGLINE)
-    private String tagline;
+    @Expose
+    private String tagline = "";
+
     @SerializedName(KEY_LOCATION)
-    private String location;
+    @Expose
+    private String location = "";
+
     @SerializedName(KEY_CITY)
-    private String city;
+    @Expose
+    private String city = "";
+
     @SerializedName(KEY_IMAGE_SHOP)
-    private ImageShop imageShop;
+    @Expose
+    private ImageShop imageShop = new ImageShop();
+
     @SerializedName(KEY_GOLD_SHOP)
-    private boolean goldShop;
+    @Expose
+    private boolean goldShop = false;
+
     @SerializedName(KEY_GOLD_SHOP_BADGE)
-    private boolean goldShopBadge;
+    @Expose
+    private boolean goldShopBadge = false;
+
     @SerializedName(KEY_LUCKY_SHOP)
-    private String luckyShop;
+    @Expose
+    private String luckyShop = "";
+
     @SerializedName(KEY_SHOP_IS_OFFICIAL)
-    private boolean shopIsOfficial;
+    @Expose
+    private boolean shopIsOfficial = false;
+
     @SerializedName(KEY_URI)
-    private String uri;
+    @Expose
+    private String uri = "";
+
     @SerializedName(KEY_IMAGE_PRODUCT)
+    @Expose
     private List<ImageProduct> imageProduct = new ArrayList<>();
+
     @SerializedName(KEY_OWNER_ID)
+    @Expose
     private String ownerId;
+
     @SerializedName(KEY_IS_OWNER)
+    @Expose
     private boolean isOwner;
     private boolean loaded;
     @SerializedName(KEY_BADGES)
+    @Expose
     private List<Badge> badges = new ArrayList<>();
 
     public Shop() {

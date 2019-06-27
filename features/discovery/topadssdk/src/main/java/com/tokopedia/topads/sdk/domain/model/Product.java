@@ -3,6 +3,7 @@ package com.tokopedia.topads.sdk.domain.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.json.JSONArray;
@@ -43,54 +44,97 @@ public class Product implements Parcelable {
     private static final String KEY_IMAGE_PRODUCT = "image_product";
 
     @SerializedName(KEY_ID)
-    private String id;
-    private String adRefKey;
-    private String adId;
+    @Expose
+    private String id = "";
+    private String adRefKey = "";
+    private String adId = "";
     @SerializedName(KEY_NAME)
-    private String name;
+    @Expose
+    private String name = "";
+
     @SerializedName(KEY_WISHLIST)
-    private boolean wishlist;
+    @Expose
+    private boolean wishlist = false;
+
     @SerializedName(KEY_IMAGE)
-    private ProductImage image;
+    @Expose
+    private ProductImage image = new ProductImage();
+
     @SerializedName(KEY_URI)
-    private String uri;
+    @Expose
+    private String uri = "";
+
     @SerializedName(KEY_RELATIVE_URI)
-    private String relativeUri;
+    @Expose
+    private String relativeUri = "";
+
     @SerializedName(KEY_PRICE_FORMAT)
-    private String priceFormat;
+    @Expose
+    private String priceFormat = "";
+
     @SerializedName(KEY_COUNT_TALK_FORMAT)
-    private String countTalkFormat;
+    @Expose
+    private String countTalkFormat = "";
+
     @SerializedName(KEY_COUNT_REVIEW_FORMAT)
-    private String countReviewFormat;
+    private String countReviewFormat = "0";
+
     @SerializedName(KEY_CATEGORY)
-    private Category category;
+    @Expose
+    private Category category = new Category();
+
     @SerializedName(KEY_PRODUCT_PREORDER)
-    private boolean productPreorder;
+    @Expose
+    private boolean productPreorder = false;
+
     @SerializedName(KEY_PRODUCT_WHOLESALE)
-    private boolean productWholesale;
+    @Expose
+    private boolean productWholesale = false;
+
     @SerializedName(KEY_FREERETURN)
-    private String freeReturn;
+    @Expose
+    private String freeReturn = "";
+
     @SerializedName(KEY_PRODUCT_CASHBACK)
-    private boolean productCashback;
+    @Expose
+    private boolean productCashback = false;
+
     @SerializedName(KEY_PRODUCT_CASHBACK_RATE)
-    private String productCashbackRate;
+    @Expose
+    private String productCashbackRate = "";
+
     @SerializedName(KEY_PRODUCT_NEW_LABEL)
-    private boolean productNewLabel;
+    @Expose
+    private boolean productNewLabel = false;
+
     @SerializedName(KEY_PRODUCT_RATE)
-    private int productRating;
+    @Expose
+    private int productRating = 0;
+
     @SerializedName(KEY_APPLINKS)
-    private String applinks;
+    @Expose
+    private String applinks = "";
+
     @SerializedName(KEY_WHOLESALE_PRICE)
+    @Expose
     private List<WholesalePrice> wholesalePrice = new ArrayList<>();
+
     @SerializedName(KEY_LABELS)
+    @Expose
     private List<Label> labels = new ArrayList<>();
+
     @SerializedName(KEY_TOP_LABEL)
+    @Expose
     private List<String> topLabels = new ArrayList<>();
+
     @SerializedName(KEY_BOTTOM_LABEL)
+    @Expose
     private List<String> bottomLabels = new ArrayList<>();
+
     @SerializedName(KEY_IMAGE_PRODUCT)
+    @Expose
     private ImageProduct imageProduct;
-    private boolean loaded;
+    private boolean loaded = false;
 
     public Product() {
     }

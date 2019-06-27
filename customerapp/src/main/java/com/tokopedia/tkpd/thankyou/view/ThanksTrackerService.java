@@ -1,21 +1,21 @@
 package com.tokopedia.tkpd.thankyou.view;
 
-import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.v4.app.JobIntentService;
 
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.tkpd.thankyou.di.component.DaggerThanksTrackerComponent;
 import com.tokopedia.tkpd.thankyou.view.viewmodel.ThanksTrackerData;
 
 import javax.inject.Inject;
 
 
-public class ThanksTrackerService extends IntentService {
+public class ThanksTrackerService extends JobIntentService {
     public static final String DATA = "ThanksTrackerData";
+    private static final int THANKSTRACKER_JOB_ID = 1000;
 
     @Inject
     ThanksTracker.Presenter presenter;
@@ -23,15 +23,17 @@ public class ThanksTrackerService extends IntentService {
     public static void start(Context context, ThanksTrackerData data) {
         Intent intent = new Intent(context, ThanksTrackerService.class);
         intent.putExtra(DATA, data);
-        context.startService(intent);
-    }
 
-    public ThanksTrackerService() {
-        super("ThanksTrackerService");
+        enqueueWork(context, ThanksTrackerService.class, THANKSTRACKER_JOB_ID, intent);
     }
 
     @Override
-    protected void onHandleIntent(Intent intent) {
+    public void onCreate() {
+        super.onCreate();
+    }
+
+    @Override
+    protected void onHandleWork(@NonNull Intent intent) {
         if(intent != null) {
             ThanksTrackerData data = intent.getParcelableExtra(DATA);
             if(isDataValid(data)) {

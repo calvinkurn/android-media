@@ -29,7 +29,7 @@ public class DigitalCategoryNoStyleUseCase {
 
     private GraphqlRequest getRequest(RequestParams requestParams) {
         return new GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
-                R.raw.query_agent_digital_category), ResponseAgentDigitalCategory.class, requestParams.getParameters());
+                R.raw.query_agent_digital_category), ResponseAgentDigitalCategory.class, requestParams.getParameters(), false);
     }
 
     public RequestParams createRequestParams(int categoryId) {

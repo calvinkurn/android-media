@@ -1,0 +1,15 @@
+mutation check_eligible_survey($params: CheckBOMSurveyParams!) {
+  check_eligible_survey(params: $params) {
+    header {
+      process_time
+      messages
+      reason
+      error_code
+    }
+    data {
+      status_insert
+      is_eligible
+    }
+    status
+  }
+}

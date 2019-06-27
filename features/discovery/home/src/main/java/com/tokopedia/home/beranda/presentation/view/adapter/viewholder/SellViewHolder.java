@@ -45,5 +45,4 @@ public class SellViewHolder extends AbstractViewHolder<SellViewModel> {
         subtitleTxt.setText(element.getSubtitle());
         button.setText(element.getBtn_title());
     }
-
 }

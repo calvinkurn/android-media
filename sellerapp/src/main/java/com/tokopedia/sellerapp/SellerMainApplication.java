@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.webkit.URLUtil;
 
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
@@ -15,18 +16,22 @@ import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.ProductDraftGeneratedDatabaseHolder;
-import com.raizlabs.android.dbflow.config.TkpdCacheApiGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.constant.AbstractionBaseURL;
 import com.tokopedia.attachproduct.data.source.url.AttachProductUrl;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.changepassword.data.ChangePasswordUrl;
+import com.tokopedia.chat_common.network.ChatUrl;
+import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
+import com.tokopedia.core.analytics.container.GTMAnalytics;
+import com.tokopedia.core.analytics.container.MoengageAnalytics;
+import com.tokopedia.core.common.category.CategoryDbFlow;
+import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.digital.common.constant.DigitalUrl;
 import com.tokopedia.gm.common.constant.GMCommonUrl;
 import com.tokopedia.graphql.data.GraphqlClient;
@@ -41,8 +46,8 @@ import com.tokopedia.otp.cotp.data.SQLoginUrl;
 import com.tokopedia.payment.fingerprint.util.PaymentFingerprintConstant;
 import com.tokopedia.payment.setting.util.PaymentSettingUrlKt;
 import com.tokopedia.product.manage.item.imagepicker.util.CatalogConstant;
-import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
+import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.utils.CacheApiWhiteList;
@@ -51,9 +56,10 @@ import com.tokopedia.settingbank.banklist.data.SettingBankUrl;
 import com.tokopedia.settingbank.choosebank.data.BankListUrl;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.shop.common.constant.ShopUrl;
+import com.tokopedia.product.detail.data.util.ProductDetailConstant;
 import com.tokopedia.talk.common.data.TalkUrl;
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
-import com.tokopedia.topchat.chatroom.data.network.TopChatUrl;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
 
 /**
@@ -96,23 +102,19 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     }
 
     private boolean handleClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
-
-        CommonUtils.dumper("FCM moengage SELLER clicked " + deepLinkUri.toString());
-
         if (deepLinkUri != null) {
-
-            if (deepLinkUri.getScheme().equals(Constants.Schemes.HTTP) || deepLinkUri.getScheme().equals(Constants.Schemes.HTTPS)) {
+            CommonUtils.dumper("FCM moengage SELLER clicked " + deepLinkUri.toString());
+            if (URLUtil.isNetworkUrl(deepLinkUri.toString())) {
                 Intent intent = new Intent(this, DeepLinkActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.setData(Uri.parse(deepLinkUri.toString()));
                 startActivity(intent);
 
-            } else if (deepLinkUri.getScheme().equals(Constants.Schemes.APPLINKS_SELLER)) {
+            } else if (Constants.Schemes.APPLINKS_SELLER.equals(deepLinkUri.getScheme())) {
                 Intent intent = new Intent(this, DeepLinkHandlerActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.setData(Uri.parse(deepLinkUri.toString()));
                 startActivity(intent);
-
             } else {
                 CommonUtils.dumper("FCM entered no one");
             }
@@ -125,15 +127,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     }
 
     @Override
-    public int getApplicationType() {
-        return SELLER_APPLICATION;
-    }
-
-    @Override
     public void onCreate() {
-        HockeyAppHelper.setEnableDistribution(BuildConfig.ENABLE_DISTRIBUTION);
-        HockeyAppHelper.setAllowAnonymousLogin(true);
-        HockeyAppHelper.setHockeyappKey(HockeyAppHelper.KEY_SELLERAPP);
         GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION;
         GlobalConfig.PACKAGE_APPLICATION = GlobalConfig.PACKAGE_SELLER_APP;
         setVersionCode();
@@ -143,6 +137,9 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         com.tokopedia.config.GlobalConfig.PACKAGE_APPLICATION = GlobalConfig.PACKAGE_SELLER_APP;
         com.tokopedia.config.GlobalConfig.DEBUG = BuildConfig.DEBUG;
         com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
+        com.tokopedia.config.GlobalConfig.HOME_ACTIVITY_CLASS_NAME = DashboardActivity.class.getName();
+        com.tokopedia.config.GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME = DeepLinkHandlerActivity.class.getName();
+        com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME = DeepLinkActivity.class.getName();
         setVersionCode();
         try {
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -153,12 +150,21 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         }
         generateSellerAppBaseUrl();
         generateSellerAppNetworkKeys();
+
+        TrackApp.initTrackApp(this);
+
+        TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
+        TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, AppsflyerAnalytics.class);
+        TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
+        TrackApp.getInstance().initializeAllApis();
+
         super.onCreate();
 
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
         initCacheApi();
-        GraphqlClient.init(getApplicationContext());
+        GraphqlClient.init(this);
+        NetworkClient.init(this);
         InstabugInitalize.init(this);
     }
 
@@ -207,6 +213,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         ShopUrl.BASE_ACE_URL = SellerAppBaseUrl.BASE_ACE_DOMAIN;
         ShopCommonUrl.BASE_URL = SellerAppBaseUrl.BASE_TOME_DOMAIN;
         ShopCommonUrl.BASE_WS_URL = SellerAppBaseUrl.BASE_DOMAIN;
+        ProductDetailConstant.BASE_REST_URL = SellerAppBaseUrl.BASE_DOMAIN;
         ReputationCommonUrl.BASE_URL = SellerAppBaseUrl.BASE_DOMAIN;
         AbstractionBaseURL.JS_DOMAIN = SellerAppBaseUrl.BASE_JS_DOMAIN;
         CatalogConstant.URL_HADES = SellerAppBaseUrl.BASE_HADES_DOMAIN;
@@ -230,10 +237,10 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         PaymentSettingUrlKt.setPAYMENT_SETTING_URL(SellerAppBaseUrl.PAYMENT_DOMAIN);
         AttachProductUrl.URL = SellerAppBaseUrl.BASE_ACE_DOMAIN;
         TalkUrl.Companion.setBASE_URL(SellerAppBaseUrl.BASE_INBOX_DOMAIN);
-        TopChatUrl.TOPCHAT_JS_API = SellerAppBaseUrl.BASE_JS_DOMAIN;
         LoginRegisterUrl.BASE_DOMAIN = SellerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         SessionCommonUrl.BASE_DOMAIN = SellerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         SessionCommonUrl.BASE_WS_DOMAIN = SellerAppBaseUrl.BASE_DOMAIN;
+        ChatUrl.Companion.setTOPCHAT(SellerAppBaseUrl.CHAT_DOMAIN);
 
     }
 
@@ -250,8 +257,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
             FlowManager.init(new FlowConfig.Builder(getApplicationContext()).build());
         }
         FlowManager.initModule(ProductDraftGeneratedDatabaseHolder.class);
-        FlowManager.initModule(TkpdCacheApiGeneratedDatabaseHolder.class);
-        PushNotification.initDatabase(getApplicationContext());
+        CategoryDbFlow.initDatabase(getApplicationContext());
     }
 
     private void initCacheApi() {
@@ -265,4 +271,21 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     public Class<?> getDeeplinkClass() {
         return DeepLinkActivity.class;
     }
+
+
+    @Override
+    public Intent getCreateResCenterActivityIntent(Context context, String orderId) {
+        return null;
+    }
+
+    @Override
+    public Intent getCreateResCenterActivityIntent(Context context, String orderId, int troubleId, int solutionId) {
+        return null;
+    }
+
+    //@Override
+    public Intent getInboxTicketCallingIntent(Context context) {
+        return null;
+    }
+
 }

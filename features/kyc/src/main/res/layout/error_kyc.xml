@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/clr_ae31353b">
+
+    <ScrollView
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        android:background="@drawable/header_bottom_sheet_rounded_white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginLeft="@dimen/dp_30"
+            android:layout_marginRight="@dimen/dp_30">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/kesalahan_teknis"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/dp_32"/>
+            <TextView
+                android:text="@string/nt_sucsfl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:textColor="@color/black_70"
+                android:textStyle="bold"
+                android:layout_marginTop="@dimen/dp_40"
+                android:layout_gravity="center"
+                android:textSize="@dimen/sp_17" />
+
+            <TextView
+                android:text="@string/dnt_wry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:textColor="@color/clr_6b767e"
+                android:id="@+id/error_desc"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_gravity="center"
+                android:textSize="@dimen/sp_14" />
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:text="@string/try_agn"
+        android:background="@drawable/btn_bg_green_curved_corners"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_14"
+        android:id="@+id/try_again"
+        android:layout_marginLeft="@dimen/dp_30"
+        android:layout_marginRight="@dimen/dp_30"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_above="@+id/cancel_btn"/>
+
+    <Button
+        android:id="@+id/cancel_btn"
+        style="@style/Button.Submit.White.Border"
+        android:layout_marginLeft="@dimen/dp_30"
+        android:layout_marginRight="@dimen/dp_30"
+        android:text="@string/button_cancel_voucher"
+        android:textColor="@color/font_black_disabled_38"
+        android:layout_above="@+id/branding_container"
+        android:layout_marginBottom="@dimen/dp_8"/>
+
+    <include
+        layout="@layout/branding_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"></include>
+</RelativeLayout>

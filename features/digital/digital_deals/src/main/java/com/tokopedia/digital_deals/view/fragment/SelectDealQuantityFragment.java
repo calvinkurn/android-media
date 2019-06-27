@@ -31,17 +31,14 @@ import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import javax.inject.Inject;
 
 public class SelectDealQuantityFragment extends BaseDaggerFragment implements SelectQuantityContract.View, View.OnClickListener {
 
 
-    private int MAX_QUANTITY = 1;
-    private int CURRENT_QUANTITY = 1;
+    private int maxQuantity = 1;
+    private int minQuantity = 1;
+    private int currentQuantity = 1;
 
     private TextView tvContinue;
     private CoordinatorLayout mainContent;
@@ -133,7 +130,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
 
     void setButtons() {
 
-        if (CURRENT_QUANTITY > 1) {
+        if (currentQuantity > 1) {
             ivSubtract.setColorFilter(ContextCompat.getColor(getContext(), R.color.green_250), android.graphics.PorterDuff.Mode.SRC_IN);
             ivSubtract.setClickable(true);
 
@@ -141,7 +138,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
             ivSubtract.setColorFilter(ContextCompat.getColor(getContext(), R.color.grey_400), android.graphics.PorterDuff.Mode.SRC_IN);
             ivSubtract.setClickable(false);
         }
-        if (CURRENT_QUANTITY < MAX_QUANTITY) {
+        if (currentQuantity < maxQuantity) {
             ivAdd.setColorFilter(ContextCompat.getColor(getContext(), R.color.green_250), android.graphics.PorterDuff.Mode.SRC_IN);
             ivAdd.setClickable(true);
 
@@ -154,24 +151,24 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
 
     void setUpTotalAmount() {
 
-        tvTotalAmount.setText(Utils.convertToCurrencyString(dealDetails.getSalesPrice() * CURRENT_QUANTITY));
+        tvTotalAmount.setText(Utils.convertToCurrencyString(dealDetails.getSalesPrice() * currentQuantity));
 
     }
 
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.iv_subtract) {
-            if (CURRENT_QUANTITY > 1) {
-                CURRENT_QUANTITY--;
-                tvQuantity.setText(String.format(getContext().getResources().getString(R.string.quantity_of_deals), CURRENT_QUANTITY));
+            if (currentQuantity > minQuantity) {
+                currentQuantity--;
+                tvQuantity.setText(String.format(getContext().getResources().getString(R.string.quantity_of_deals), currentQuantity));
             }
             setUpTotalAmount();
             setButtons();
 
         } else if (v.getId() == R.id.iv_add) {
-            if (CURRENT_QUANTITY < MAX_QUANTITY) {
-                CURRENT_QUANTITY++;
-                tvQuantity.setText(String.format(getContext().getResources().getString(R.string.quantity_of_deals), CURRENT_QUANTITY));
+            if (currentQuantity < maxQuantity) {
+                currentQuantity++;
+                tvQuantity.setText(String.format(getContext().getResources().getString(R.string.quantity_of_deals), currentQuantity));
             }
             setUpTotalAmount();
             setButtons();
@@ -182,12 +179,12 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
             packageViewModel.setProductId(dealDetails.getId());
             packageViewModel.setSalesPrice(dealDetails.getSalesPrice());
             packageViewModel.setMrp(dealDetails.getMrp());
-            packageViewModel.setSelectedQuantity(CURRENT_QUANTITY);
+            packageViewModel.setSelectedQuantity(currentQuantity);
             packageViewModel.setDigitalCategoryID(dealDetails.getCatalog().getDigitalCategoryId());
             packageViewModel.setDigitalProductID(dealDetails.getCatalog().getDigitalProductId());
             mPresenter.verifyCart(packageViewModel);
-            if(dealDetails.getBrand()!=null){
-                dealsAnalytics.sendEcommerceQuantity(dealDetails.getId(), CURRENT_QUANTITY, dealDetails.getSalesPrice(),
+            if (dealDetails.getBrand() != null) {
+                dealsAnalytics.sendEcommerceQuantity(dealDetails.getId(), currentQuantity, dealDetails.getSalesPrice(),
                         dealDetails.getDisplayName(), dealDetails.getBrand().getTitle());
             }
 
@@ -221,8 +218,10 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
         }
 
         tvDealDetails.setText(dealDetails.getDisplayName());
-
-        tvQuantity.setText(String.format(getContext().getResources().getString(R.string.quantity_of_deals), CURRENT_QUANTITY));
+        minQuantity = dealDetail.getMinQty() > 0 ? dealDetail.getMinQty() : minQuantity;
+        maxQuantity = dealDetail.getMaxQty() > 0 ? dealDetail.getMaxQty() : maxQuantity;
+        currentQuantity = minQuantity;
+        tvQuantity.setText(String.format(getContext().getResources().getString(R.string.quantity_of_deals), currentQuantity));
         if (dealDetails.getMrp() != 0 && dealDetail.getMrp() != dealDetail.getSalesPrice()) {
             tvMrp.setVisibility(View.VISIBLE);
             tvMrp.setText(Utils.convertToCurrencyString(dealDetails.getMrp()));

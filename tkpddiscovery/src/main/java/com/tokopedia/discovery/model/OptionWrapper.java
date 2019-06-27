@@ -1,7 +1,7 @@
 package com.tokopedia.discovery.model;
 
-import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.design.list.item.SectionDividedItem;
+import com.tokopedia.discovery.common.data.Option;
 
 /**
  * Created by henrypriyono on 8/31/17.

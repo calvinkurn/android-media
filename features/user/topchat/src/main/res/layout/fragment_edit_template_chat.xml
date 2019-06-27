@@ -59,7 +59,7 @@
         android:layout_above="@id/input"
         android:background="@color/white"
         android:hint="@string/hint_template_chat"
-        android:textSize="@dimen/text_size_l_medium"
+        android:textSize="@dimen/sp_16"
         android:textColorHint="#2e000000"
         android:gravity="top"/>
 

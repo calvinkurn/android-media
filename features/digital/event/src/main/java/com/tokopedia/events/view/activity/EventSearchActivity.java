@@ -14,6 +14,7 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
 import com.tokopedia.events.di.EventComponent;
@@ -91,7 +92,7 @@ public class EventSearchActivity extends EventBaseActivity implements
         unbinder = ButterKnife.bind(this);
         searchInputView.setListener(this);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        eventsAnalytics = new EventsAnalytics(getApplicationContext());
+        eventsAnalytics = new EventsAnalytics();
 
     }
 
@@ -212,7 +213,8 @@ public class EventSearchActivity extends EventBaseActivity implements
     @Override
     public void setFilterInactive() {
         TextView tvFilter = findViewById(R.id.tv_filter);
-        tvFilter.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_filter_button, 0, 0, 0);
+        tvFilter.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                (this, R.drawable.ic_filter_button), null, null, null);
     }
 
 

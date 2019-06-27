@@ -15,8 +15,8 @@ public class ServerErrorHandlerUtil {
     public static void handleError(Throwable serverErrorException) {
         if (serverErrorException instanceof ServerErrorRequestDeniedException) {
             ServerErrorHandler.sendForceLogoutAnalytics(
-                    ((ServerErrorRequestDeniedException) serverErrorException).getUrl()
-            );
+                    ((ServerErrorRequestDeniedException) serverErrorException).getUrl(),
+                    false, true);
             ServerErrorHandler.showForceLogoutDialog();
         } else if (serverErrorException instanceof ServerErrorMaintenanceException) {
             ServerErrorHandler.showMaintenancePage();
@@ -28,7 +28,6 @@ public class ServerErrorHandlerUtil {
                         ((ServerErrorException) serverErrorException).getUrl(),
                         ((ServerErrorException) serverErrorException).getErrorCode()
                 );
-            ServerErrorHandler.showServerErrorSnackbar();
         }
     }
 }

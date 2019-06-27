@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Created by nathan on 8/3/17.
  */
-
+@Deprecated
 public abstract class BaseCacheListFragment<T extends ItemPickerType> extends BaseListFragment<BlankPresenter, T> implements BasePickerItemCacheList<T> {
 
     protected BasePickerMultipleItem<T> pickerMultipleItem;

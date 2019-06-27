@@ -1,25 +1,30 @@
 package com.tokopedia.home.account.presentation.view.buyercardview;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * @author okasurya on 8/29/18.
  */
-public class BuyerCard {
+public class BuyerCard implements Parcelable {
     private String avatar;
     private int progress;
     private String username;
     private String tokopointAmount;
-    private int couponAmount;
+    private String couponAmount;
+    private boolean isAffiliate;
 
     public BuyerCard() {
 
     }
 
-    BuyerCard(String avatar, String username, int progress, String tokopoint, int coupon) {
+    BuyerCard(String avatar, String username, int progress, String tokopointAmount, String couponAmount, boolean isAffiliate) {
         this.avatar = avatar;
-        this.username = username;
         this.progress = progress;
-        this.tokopointAmount = tokopoint;
-        this.couponAmount = coupon;
+        this.username = username;
+        this.tokopointAmount = tokopointAmount;
+        this.couponAmount = couponAmount;
+        this.isAffiliate = isAffiliate;
     }
 
     public String getAvatar() {
@@ -50,15 +55,23 @@ public class BuyerCard {
         return tokopointAmount;
     }
 
+    public boolean isAffiliate() {
+        return isAffiliate;
+    }
+
+    public void setAffiliate(boolean affiliate) {
+        isAffiliate = affiliate;
+    }
+
     public void setTokopointAmount(String tokopointAmount) {
         this.tokopointAmount = tokopointAmount;
     }
 
-    public int getCouponAmount() {
+    public String getCouponAmount() {
         return couponAmount;
     }
 
-    public void setCouponAmount(int couponAmount) {
+    public void setCouponAmount(String couponAmount) {
         this.couponAmount = couponAmount;
     }
 
@@ -68,7 +81,8 @@ public class BuyerCard {
         private String username;
         private int progress;
         private String tokopoint;
-        private int coupon;
+        private String coupon;
+        private boolean isAffiliate;
 
         public Builder avatar(String avatar) {
             this.avatar = avatar;
@@ -90,13 +104,54 @@ public class BuyerCard {
             return this;
         }
 
-        public Builder coupons(int coupon) {
+        public Builder coupons(String coupon) {
             this.coupon = coupon;
             return this;
         }
 
+        public Builder isAffliate(boolean isAffiliate) {
+            this.isAffiliate = isAffiliate;
+            return this;
+        }
+
         public BuyerCard build() {
-            return new BuyerCard(avatar, username, progress, tokopoint, coupon);
+            return new BuyerCard(avatar, username, progress, tokopoint, coupon, isAffiliate);
         }
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.avatar);
+        dest.writeInt(this.progress);
+        dest.writeString(this.username);
+        dest.writeString(this.tokopointAmount);
+        dest.writeString(this.couponAmount);
+        dest.writeByte(this.isAffiliate ? (byte) 1 : (byte) 0);
+    }
+
+    protected BuyerCard(Parcel in) {
+        this.avatar = in.readString();
+        this.progress = in.readInt();
+        this.username = in.readString();
+        this.tokopointAmount = in.readString();
+        this.couponAmount = in.readString();
+        this.isAffiliate = in.readByte() != 0;
+    }
+
+    public static final Parcelable.Creator<BuyerCard> CREATOR = new Parcelable.Creator<BuyerCard>() {
+        @Override
+        public BuyerCard createFromParcel(Parcel source) {
+            return new BuyerCard(source);
+        }
+
+        @Override
+        public BuyerCard[] newArray(int size) {
+            return new BuyerCard[size];
+        }
+    };
 }

@@ -1,6 +1,6 @@
 package com.tokopedia.topads.keyword.data.source;
 
-import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.topads.keyword.data.mapper.KeywordAddDomainDataMapper;
 import com.tokopedia.topads.keyword.data.mapper.KeywordDashboardMapper;
 import com.tokopedia.topads.keyword.data.mapper.TopAdsKeywordEditDetailDataMapper;

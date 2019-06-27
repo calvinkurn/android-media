@@ -7,6 +7,7 @@ import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.RawQuery;
 import android.arch.persistence.room.Transaction;
+import android.arch.persistence.room.Update;
 
 import java.util.List;
 
@@ -29,6 +30,12 @@ public interface FlightJourneyDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(List<FlightJourneyTable> item);
+
+    @Update
+    void update(FlightJourneyTable item);
+
+    @Update
+    void update(List<FlightJourneyTable> items);
 
     @Transaction
     @RawQuery

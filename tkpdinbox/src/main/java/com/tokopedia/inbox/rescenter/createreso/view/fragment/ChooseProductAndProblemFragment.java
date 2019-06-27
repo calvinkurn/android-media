@@ -15,7 +15,9 @@ import android.widget.Button;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.createreso.view.activity.ProductProblemDetailActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.adapter.ProductProblemAdapter;
@@ -27,6 +29,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemListViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
 import com.tokopedia.inbox.rescenter.di.DaggerResolutionComponent;
+import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,10 +131,19 @@ public class ChooseProductAndProblemFragment extends BaseDaggerFragment implemen
             @Override
             public void onClick(View view) {
                 presenter.buttonContinueClicked();
-                UnifyTracking.eventCreateResoStep1Continue(getActivity());
+                eventCreateResoStep1Continue();
             }
         });
 
+    }
+
+    private void eventCreateResoStep1Continue(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
+                "clickResolution",
+                "resolution center",
+                "click barang & masalah",
+                "problem - continue"
+        ).getEvent());
     }
 
     @Override

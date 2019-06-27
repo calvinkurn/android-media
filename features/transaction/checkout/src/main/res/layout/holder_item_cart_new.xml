@@ -7,13 +7,6 @@
     android:foreground="?selectableItemBackground"
     android:orientation="vertical">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:background="@color/separator_color" />
-
     <include
         android:id="@+id/ll_warning_and_error"
         layout="@layout/layout_item_warning_and_error" />
@@ -44,24 +37,36 @@
                     android:id="@+id/cb_select_item"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_14"
+                    android:layout_marginTop="@dimen/dp_10"
                     android:paddingRight="@dimen/dp_8"
                     android:theme="@style/TransactionCheckbox" />
 
-                <ImageView
-                    android:id="@+id/iv_image_product"
+                <android.support.v7.widget.CardView
+                    android:id="@+id/iv_product_card"
                     android:layout_width="@dimen/dp_52"
                     android:layout_height="@dimen/dp_52"
-                    android:layout_marginTop="@dimen/dp_4"
                     android:layout_toRightOf="@+id/cb_select_item"
-                    tools:ignore="ContentDescription"
-                    tools:src="@drawable/empty_photo" />
+                    android:layout_marginTop="@dimen/dp_4"
+                    android:layout_marginEnd="@dimen/dp_20"
+                    android:layout_marginRight="@dimen/dp_20"
+                    app:cardCornerRadius="6dp"
+                    app:cardElevation="@dimen/dp_0"
+                    android:layout_margin="5dp">
+
+                    <ImageView
+                        android:id="@+id/iv_image_product"
+                        android:layout_width="@dimen/dp_52"
+                        android:layout_height="@dimen/dp_52"
+                        tools:ignore="ContentDescription"
+                        tools:src="@drawable/empty_photo" />
+
+                </android.support.v7.widget.CardView>
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toEndOf="@id/iv_image_product"
-                    android:layout_toRightOf="@id/iv_image_product"
+                    android:layout_toEndOf="@id/iv_product_card"
+                    android:layout_toRightOf="@id/iv_product_card"
                     android:paddingLeft="@dimen/dp_8">
 
                     <LinearLayout
@@ -77,8 +82,9 @@
                             android:layout_gravity="center_vertical"
                             android:layout_weight="1"
                             android:ellipsize="end"
-                            android:maxLines="1"
+                            android:maxLines="2"
                             android:textColor="@color/black"
+                            android:textStyle="bold"
                             tools:text="Tas organizerdfnlgjdhdfhn sepeda double container" />
 
                         <ImageView
@@ -97,7 +103,7 @@
                         android:id="@+id/product_properties"
                         layout="@layout/layout_cart_item_policy"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp_24"
+                        android:layout_height="wrap_content"
                         android:layout_below="@id/ll_product_name"
                         android:layout_marginTop="4dp" />
 
@@ -109,6 +115,7 @@
                         android:layout_below="@+id/product_properties"
                         android:layout_marginTop="@dimen/dp_4"
                         android:textColor="@color/orange_red"
+                        android:textStyle="bold"
                         tools:text="Rp 200.000" />
 
                     <LinearLayout
@@ -130,7 +137,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="@dimen/dp_16"
                                 android:background="@drawable/bg_round_button_with_shadow"
-                                android:src="@drawable/ic_wishlist_checkout_on" />
+                                app:srcCompat="@drawable/ic_wishlist_checkout_on" />
 
                             <ImageView
                                 android:id="@+id/btn_qty_min"
@@ -225,7 +232,7 @@
                         android:id="@+id/tv_label_remark_option"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_2"
+                        android:layout_marginLeft="@dimen/dp_5"
                         android:layout_weight="2"
                         android:fontFamily="sans-serif-medium"
                         android:text="@string/label_button_add_note"
@@ -298,5 +305,13 @@ barangnya gan!" />
         </LinearLayout>
 
     </FrameLayout>
+
+    <View
+        android:id="@+id/holder_item_cart_divider"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginLeft="@dimen/dp_14"
+        android:layout_marginRight="@dimen/dp_14"
+        android:background="@color/separator_color" />
 
 </LinearLayout>

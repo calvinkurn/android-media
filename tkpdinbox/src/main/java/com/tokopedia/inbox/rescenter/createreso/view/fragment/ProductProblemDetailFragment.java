@@ -22,7 +22,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.text.SpinnerTextView;
@@ -33,6 +35,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.presenter.ProductProblemDet
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ComplaintResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
 import com.tokopedia.inbox.rescenter.utils.TimeTickerUtil;
+import com.tokopedia.track.TrackApp;
 
 /**
  * Created by yoasfs on 21/08/17.
@@ -162,17 +165,34 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements
 
         btnSave.setOnClickListener(view -> {
             presenter.btnSaveClicked(false);
-            UnifyTracking.eventCreateResoStep1Save(getActivity());
+            eventCreateResoStep1Save();
         });
 
         btnSaveAndChooseOther.setOnClickListener(view -> {
             presenter.btnSaveClicked(true);
-            UnifyTracking.eventCreateResoStep1SaveAndChooseOther(getActivity());
+            eventCreateResoStep1SaveAndChooseOther();
         });
 
         btnCancel.setOnClickListener(view -> getActivity().finish());
 
         btnInfo.setOnClickListener(view -> presenter.btnInfoClicked());
+    }
+
+    private void eventCreateResoStep1Save(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(new EventTracking(
+                "clickResolution",
+                "resolution center",
+                "click barang & masalah",
+                "problem - save"
+        ).getEvent());
+    }
+
+    private void eventCreateResoStep1SaveAndChooseOther (){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                "clickResolution",
+                "resolution center",
+                "click barang & masalah",
+                "problem - simpan dan pilih barang lain");
     }
 
     @Override

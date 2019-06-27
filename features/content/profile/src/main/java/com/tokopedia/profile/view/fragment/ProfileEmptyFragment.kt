@@ -18,7 +18,7 @@ import com.tokopedia.profile.ProfileModuleRouter
 import com.tokopedia.profile.R
 import com.tokopedia.profile.di.DaggerProfileComponent
 import com.tokopedia.profile.view.activity.ProfileActivity
-import com.tokopedia.profile.view.adapter.factory.ProfileTypeFactoryImpl
+import com.tokopedia.profile.view.adapter.factory.ProfileEmptyTypeFactoryImpl
 import com.tokopedia.profile.view.listener.ProfileEmptyContract
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
@@ -48,7 +48,7 @@ class ProfileEmptyFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFacto
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_profile, container, false)
+        return inflater.inflate(R.layout.fragment_profile_empty, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -65,11 +65,13 @@ class ProfileEmptyFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFacto
     override fun getScreenName(): String? = null
 
     override fun initInjector() {
-        GraphqlClient.init(context!!)
-        DaggerProfileComponent.builder()
-                .kolComponent(KolComponentInstance.getKolComponent(activity!!.application))
-                .build()
-                .inject(this)
+        activity?.let {
+            GraphqlClient.init(it)
+            DaggerProfileComponent.builder()
+                    .kolComponent(KolComponentInstance.getKolComponent(it.application))
+                    .build()
+                    .inject(this)
+        }
     }
 
     override fun onItemClicked(t: Visitable<*>?) {
@@ -78,7 +80,7 @@ class ProfileEmptyFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFacto
     override fun loadData(page: Int) = presenter.getProfileHeader(userId)
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
-        return ProfileTypeFactoryImpl(this, null)
+        return ProfileEmptyTypeFactoryImpl(this)
     }
 
     override fun getRecyclerView(view: View?): RecyclerView {
@@ -100,10 +102,6 @@ class ProfileEmptyFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFacto
 
     override fun goToFollowing() {
     }
-
-    override fun followUnfollowUser(userId: Int, follow: Boolean) {
-    }
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

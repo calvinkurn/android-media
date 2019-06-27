@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">TkpdContent</string>
     <string name="action_share">Share</string>
+    <string name="action_share_detail">Share</string>
     <string name="action_like">Like</string>
     <string name="action_follow_english">Follow</string>
     <string name="read_more_english">Read More</string>
@@ -17,6 +18,7 @@
     <string name="kol_delete_post_desc">Setelah dihapus, kamu tidak akan bisa melihat post ini lagi.</string>
     <string name="kol_post_deleted">Post berhasil dihapus</string>
     <string name="kol_error_delete">Terjadi kesalahan saat menghapus post.</string>
+    <string name="kol_edit_post">Edit Post</string>
 
     <!--Kol Comment-->
     <string name="title_comment_kol">Comments</string>
@@ -42,7 +44,9 @@
     <string name="see_all_comment">Lihat Semua Comments (%d)</string>
     <string name="post_detail_follow_success_toast">Cek Feeds mu sekarang untuk melihat update TopProfile ini</string>
     <string name="post_detail_follow_success_check_now">Cek Sekarang</string>
-
+    <string name="post_detail_empty_title">Duh, halamannya gak ketemu</string>
+    <string name="post_detail_empty_sub">Sabar ya, mungkin halamannya udah dihapus</string>
+    <string name="post_detail_empty_btn">Kembali</string>
     <!--Kol Post-->
     <string name="title_post">Pilih gambar</string>
     <string name="empty_own_feed_title">Feed Tokomu Kosong</string>

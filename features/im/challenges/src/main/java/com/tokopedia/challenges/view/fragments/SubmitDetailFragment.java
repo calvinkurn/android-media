@@ -24,7 +24,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
-import com.tokopedia.challenges.view.activity.ChallengeDetailActivity;
+import com.tokopedia.challenges.view.activity.ChallengeDetailsActivity;
 import com.tokopedia.challenges.view.activity.SubmitDetailActivity;
 import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
 import com.tokopedia.challenges.view.customview.CustomVideoPlayer;
@@ -37,11 +37,13 @@ import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 import java.io.File;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
+
 
 /**
  * Created by ashwanityagi on 06/08/18.
@@ -134,6 +136,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         btnSubmit = view.findViewById(R.id.btn_submit);
         llShare = view.findViewById(R.id.ll_share);
         tvWinnerNumber = view.findViewById(R.id.tv_winner_number);
+        tvWinnerNumber.setBackground(MethodChecker.getDrawable(tvWinnerNumber.getContext(), R.drawable.ic_winner_badge));
 
         scrollView = view.findViewById(R.id.submit_detail_scrollview);
 
@@ -169,11 +172,11 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
     @Override
     public void onResume() {
-        if (ChallegeneSubmissionFragment.VIDEO_POS != -1) {
+        if (ChallengeDetailsFragment.VIDEO_POS != -1) {
             if (challengeImage != null)
-                challengeImage.startPlay(ChallegeneSubmissionFragment.VIDEO_POS, ChallegeneSubmissionFragment.isVideoPlaying);
+                challengeImage.startPlay(ChallengeDetailsFragment.VIDEO_POS, ChallengeDetailsFragment.isVideoPlaying);
         }
-        analytics.sendScreenEvent(getActivity(),SCREEN_NAME);
+        analytics.sendScreenEvent(getActivity(), SCREEN_NAME);
         super.onResume();
 
     }
@@ -182,8 +185,8 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     public void onPause() {
         if (challengeImage != null && challengeImage.isVideoPlaying()) {
             challengeImage.pause();
-            ChallegeneSubmissionFragment.VIDEO_POS = challengeImage.getPosition();
-            ChallegeneSubmissionFragment.isVideoPlaying = false;
+            ChallengeDetailsFragment.VIDEO_POS = challengeImage.getPosition();
+            ChallengeDetailsFragment.isVideoPlaying = false;
         }
         super.onPause();
     }
@@ -191,10 +194,19 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     private void setClickListeners() {
         btnShare.setOnClickListener(v -> {
             ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), submissionResult, false);
-            analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SHARE,
-                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_SUBMISSIONS,
-                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_POST_PAGE,
-                    ChallengesGaAnalyticsTracker.EVENT_ACTION_SHARE);
+            if (submissionResult.getCollection() != null && submissionResult.getMe() != null) {
+                if (presenter.getParticipatedStatus(submissionResult)) {
+                    analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SHARE,
+                            ChallengesGaAnalyticsTracker.EVENT_CATEGORY_MYSUBMISSIONS,
+                            ChallengesGaAnalyticsTracker.EVENT_ACTION_SHARE,
+                            submissionResult.getCollection().getTitle());
+                } else {
+                    analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SHARE,
+                            ChallengesGaAnalyticsTracker.EVENT_CATEGORY_OTHER_SUBMISSION,
+                            ChallengesGaAnalyticsTracker.EVENT_ACTION_SHARE,
+                            submissionResult.getCollection().getTitle());
+                }
+            }
         });
 
         likeBtn.setOnClickListener(v -> {
@@ -308,8 +320,9 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         this.participateTitle.setText(participateTitle);
 
         this.participateTitle.setOnClickListener(view -> {
-            Intent intent = new Intent(getActivity(), ChallengeDetailActivity.class);
+            Intent intent = new Intent(getActivity(), ChallengeDetailsActivity.class);
             intent.putExtra(Utils.QUERY_PARAM_CHALLENGE_ID, submissionResult.getCollection().getId());
+            intent.putExtra(Utils.QUERY_PARAM_IS_PAST_CHALLENGE, isPastChallenge);
             navigateToActivity(intent);
         });
     }
@@ -344,12 +357,12 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         submissionResult.getMe().setLiked(isLiked);
         if (isLiked) {
             updateLikeCount(true);
-            likeBtn.setImageResource(R.drawable.ic_wishlist_checked);
-            likesImageView.setImageResource(R.drawable.ic_wishlist_checked);
+            likeBtn.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_wishlist_checked));
+            likesImageView.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_wishlist_checked));
         } else {
             updateLikeCount(false);
-            likeBtn.setImageResource(R.drawable.ic_wishlist_unchecked);
-            likesImageView.setImageResource(R.drawable.ic_wishlist_unchecked);
+            likeBtn.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_wishlist_unchecked));
+            likesImageView.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_wishlist_unchecked));
         }
     }
 

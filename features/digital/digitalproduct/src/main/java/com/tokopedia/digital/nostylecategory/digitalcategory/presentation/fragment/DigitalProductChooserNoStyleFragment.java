@@ -14,8 +14,8 @@ import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.common_digital.common.di.DaggerDigitalComponent;
-import com.tokopedia.common_digital.common.di.DigitalComponent;
+import com.tokopedia.common_digital.common.di.DaggerDigitalCommonComponent;
+import com.tokopedia.common_digital.common.di.DigitalCommonComponent;
 import com.tokopedia.common_digital.product.presentation.adapter.ProductChooserAdapter;
 import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.digital.R;
@@ -112,12 +112,12 @@ public class DigitalProductChooserNoStyleFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        DigitalComponent digitalComponent =
-                DaggerDigitalComponent.builder().baseAppComponent((
+        DigitalCommonComponent digitalCommonComponent =
+                DaggerDigitalCommonComponent.builder().baseAppComponent((
                         (BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
                         .build();
         DigitalCategoryNoStyleComponent digitalCategoryNoStyleComponent =
-                DaggerDigitalCategoryNoStyleComponent.builder().digitalComponent(digitalComponent)
+                DaggerDigitalCategoryNoStyleComponent.builder().digitalCommonComponent(digitalCommonComponent)
                         .build();
         digitalCategoryNoStyleComponent.inject(this);
     }

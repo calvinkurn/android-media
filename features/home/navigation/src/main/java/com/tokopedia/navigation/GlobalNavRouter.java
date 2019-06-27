@@ -20,17 +20,15 @@ public interface GlobalNavRouter {
 
     Fragment getCartFragment(Bundle bundle);
 
-    Fragment getEmptyCartFragment(String autoApplyMessage, String state, String titleDesc);
+    Fragment getEmptyCartFragment(String autoApplyMessage, String state, String titleDesc, String promoCode);
+
+    Fragment getOfficialStoreFragment(Bundle bundle);
 
     Intent getInboxTalkCallingIntent(Context context);
 
     Intent getInboxTicketCallingIntent(Context context);
 
     ApplicationUpdate getAppUpdate(Context context);
-
-    void showHockeyAppDialog(Activity activity);
-
-    Intent getOnBoardingIntent(Activity activity);
 
     int getCartCount(Context context);
 
@@ -44,7 +42,7 @@ public interface GlobalNavRouter {
 
     Intent getHomeIntent(Context context);
 
-    Intent gotoSearchPage(Context context);
+    Intent gotoSearchAutoCompletePage(Context context);
 
     Intent instanceIntentDigitalCategoryList();
 
@@ -53,4 +51,6 @@ public interface GlobalNavRouter {
     boolean getBooleanRemoteConfig(String key, boolean defaultValue);
 
     void sendOpenHomeEvent();
+
+    Intent getOldOfficialStore(Context context);
 }

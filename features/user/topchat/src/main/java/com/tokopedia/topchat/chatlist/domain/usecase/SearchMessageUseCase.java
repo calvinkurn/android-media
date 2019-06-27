@@ -1,11 +1,11 @@
 package com.tokopedia.topchat.chatlist.domain.usecase;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.topchat.chatlist.data.repository.SearchRepository;
 import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -19,8 +19,9 @@ public class SearchMessageUseCase extends UseCase<InboxChatViewModel> {
 
     private final SearchRepository searchRepository;
 
-    public SearchMessageUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, SearchRepository searchRepository) {
-        super(threadExecutor, postExecutionThread);
+    @Inject
+    public SearchMessageUseCase(SearchRepository searchRepository) {
+        super();
         this.searchRepository = searchRepository;
     }
 
@@ -29,18 +30,16 @@ public class SearchMessageUseCase extends UseCase<InboxChatViewModel> {
         return searchRepository.searchChat(requestParams.getParameters());
     }
 
-    public static RequestParams generateParam(String keyword, int page, String by)
-    {
+    public static RequestParams generateParam(String keyword, int page, String by) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString("keyword", keyword);
         requestParams.putInt("page", page);
-        if(page==1) by = "";
+        if (page == 1) by = "";
         requestParams.putString("by", by);
         return requestParams;
     }
 
-    public static RequestParams generateParam(String keyword)
-    {
+    public static RequestParams generateParam(String keyword) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString("keyword", keyword);
         requestParams.putString("by", "");

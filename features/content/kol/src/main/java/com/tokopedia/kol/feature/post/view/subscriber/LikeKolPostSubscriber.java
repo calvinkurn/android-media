@@ -13,10 +13,12 @@ import rx.Subscriber;
 public class LikeKolPostSubscriber extends Subscriber<Boolean> {
     private final KolPostListener.View.Like  view;
     private final int rowNumber;
+    private final int action;
 
-    public LikeKolPostSubscriber(KolPostListener.View.Like view, int rowNumber) {
+    public LikeKolPostSubscriber(KolPostListener.View.Like view, int rowNumber, int action) {
         this.view = view;
         this.rowNumber = rowNumber;
+        this.action = action;
     }
 
     @Override
@@ -37,7 +39,7 @@ public class LikeKolPostSubscriber extends Subscriber<Boolean> {
     public void onNext(Boolean isSuccess) {
         if (view != null) {
             if (isSuccess) {
-                view.onLikeKolSuccess(rowNumber);
+                view.onLikeKolSuccess(rowNumber, action);
             } else {
                 view.onLikeKolError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
             }

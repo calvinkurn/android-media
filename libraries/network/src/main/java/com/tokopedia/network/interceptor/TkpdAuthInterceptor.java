@@ -37,6 +37,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     private static final String REQUEST_METHOD_POST = "POST";
     private static final String REQUEST_METHOD_PATCH = "PATCH";
     private static final String REQUEST_METHOD_DELETE = "DELETE";
+    private static final String REQUEST_METHOD_PUT = "PUT";
 
     private static final String RESPONSE_STATUS_OK = "OK";
     private static final String RESPONSE_STATUS_FORBIDDEN = "FORBIDDEN";
@@ -59,6 +60,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     private static final String PARAM_BETA_TRUE = "1";
     private static final String RESPONSE_PARAM_TOKEN = "token";
     private static final String REQUEST_PARAM_REFRESH_TOKEN = "refresh_token";
+    public static final int BYTE_COUNT = 512;
 
     private Context context;
     protected UserSessionInterface userSession;
@@ -89,7 +91,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
     public TkpdAuthInterceptor(Context context,
                                NetworkRouter networkRouter,
-                               UserSession userSession,
+                               UserSessionInterface userSession,
                                String authKey) {
         this.context = context;
         this.networkRouter = networkRouter;
@@ -114,25 +116,27 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
 
         checkForceLogout(chain, response, finalRequest);
+        checkResponse(response);
 
-        String bodyResponse = response.body().string();
-        checkResponse(bodyResponse, response);
-
-        return createNewResponse(response, bodyResponse);
+        return response;
     }
 
-    protected void checkResponse(String string, Response response) {
-        String bodyResponse = string;
-
-        if (isOnBetaServer(response)) networkRouter.showForceHockeyAppDialog();
-
-        if (isMaintenance(bodyResponse)) {
-            showMaintenancePage();
-        } else if (isServerError(response.code()) && !isHasErrorMessage(bodyResponse)) {
-            showServerError(response);
-        } else if (isForbiddenRequest(bodyResponse, response.code())
-                && isTimezoneNotAutomatic()) {
-            showTimezoneErrorSnackbar();
+    protected void checkResponse(Response response) {
+        String bodyResponse;
+        try {
+            // Improvement for response, only check maintenance, server error and timezone by only peeking the body
+            // instead of getting all string and create the new response.
+            bodyResponse = response.peekBody(BYTE_COUNT).string();
+            if (isMaintenance(bodyResponse)) {
+                showMaintenancePage();
+            } else if (isServerError(response.code()) && !isHasErrorMessage(bodyResponse)) {
+                showServerError(response);
+            } else if (isForbiddenRequest(bodyResponse, response.code())
+                    && isTimezoneNotAutomatic()) {
+                showTimezoneErrorSnackbar();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -151,11 +155,16 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     }
 
     protected boolean isForbiddenRequest(String bodyResponse, int code) {
-        JSONObject json;
+        // improvement for by java.lang.OutOfMemoryError
+        // at java.lang.AbstractStringBuilder.enlargeBuffer(AbstractStringBuilder.java:94)
+        // do not parse too much JSONObject for checking forbidden request
         try {
-            json = new JSONObject(bodyResponse);
+            if (code != ERROR_FORBIDDEN_REQUEST) {
+                return false;
+            }
+            JSONObject json = new JSONObject(bodyResponse);
             String status = json.optString(RESPONSE_PARAM_STATUS, RESPONSE_STATUS_OK);
-            return status.equals(RESPONSE_STATUS_FORBIDDEN) && code == ERROR_FORBIDDEN_REQUEST;
+            return status.equals(RESPONSE_STATUS_FORBIDDEN);
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -184,6 +193,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             case REQUEST_METHOD_PATCH:
             case REQUEST_METHOD_DELETE:
             case REQUEST_METHOD_POST:
+            case REQUEST_METHOD_PUT:
                 authHeaders = getHeaderMap(
                         originRequest.url().uri().getPath(),
                         generateParamBodyString(originRequest),
@@ -207,7 +217,8 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
     protected Map<String, String> getHeaderMap(
             String path, String strParam, String method, String authKey, String contentTypeHeader) {
-        return AuthUtil.generateHeaders(path, strParam, method, authKey, contentTypeHeader, userSession.getUserId());
+        return AuthUtil.generateHeaders(path, strParam, method, authKey, contentTypeHeader,
+                userSession.getUserId(), userSession);
     }
 
     protected void generateHeader(Map<String, String> authHeaders, Request originRequest, Request.Builder newRequest) {
@@ -298,10 +309,6 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         networkRouter.showMaintenancePage();
     }
 
-    protected void showForceLogoutDialog(Response response) {
-        networkRouter.showForceLogoutDialog(response);
-    }
-
     protected void showServerError(Response response) {
         networkRouter.showServerError(response);
     }
@@ -348,13 +355,18 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             String newAccessToken = accessTokenRefresh.refreshToken(context, userSession, networkRouter);
             networkRouter.doRelogin(newAccessToken);
 
+            Request newestRequest;
             if (finalRequest.header(AUTHORIZATION).contains(BEARER)) {
-                Request newestRequest = recreateRequestWithNewAccessToken(chain);
-                return checkShowForceLogout(chain, newestRequest);
+                newestRequest = recreateRequestWithNewAccessToken(chain);
             } else {
-                Request newestRequest = recreateRequestWithNewAccessTokenAccountsAuth(chain);
-                return checkShowForceLogout(chain, newestRequest);
+                newestRequest = recreateRequestWithNewAccessTokenAccountsAuth(chain);
             }
+            if (isUnauthorized(newestRequest, response) || isNeedGcmUpdate(response)){
+                networkRouter.sendForceLogoutAnalytics(response, isUnauthorized(newestRequest,
+                        response), isNeedGcmUpdate(response));
+            }
+
+            return chain.proceed(newestRequest);
         } catch (IOException e) {
             e.printStackTrace();
             return response;
@@ -366,7 +378,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         try {
             accessTokenRefresh.refreshToken(context, userSession, networkRouter);
             Request newest = recreateRequestWithNewAccessToken(chain);
-            return checkShowForceLogout(chain, newest);
+            return chain.proceed(newest);
         } catch (IOException e) {
             e.printStackTrace();
             return response;
@@ -374,7 +386,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     }
 
     private Request recreateRequestWithNewAccessToken(Chain chain) {
-        String freshAccessToken = userSession.getFreshToken();
+        String freshAccessToken = userSession.getAccessToken();
         return chain.request().newBuilder()
                 .header(HEADER_PARAM_AUTHORIZATION, HEADER_PARAM_BEARER + " " + freshAccessToken)
                 .header(HEADER_ACCOUNTS_AUTHORIZATION, HEADER_PARAM_BEARER + " " + freshAccessToken)
@@ -402,18 +414,9 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
 
     private Request recreateRequestWithNewAccessTokenAccountsAuth(Chain chain) {
-        String freshAccessToken = userSession.getFreshToken();
+        String freshAccessToken = userSession.getAccessToken();
         return chain.request().newBuilder()
                 .header(HEADER_ACCOUNTS_AUTHORIZATION, HEADER_PARAM_BEARER + " " + freshAccessToken)
                 .build();
-    }
-
-
-    private Response checkShowForceLogout(Chain chain, Request newestRequest) throws IOException {
-        Response response = chain.proceed(newestRequest);
-        if (isUnauthorized(newestRequest, response) || isNeedGcmUpdate(response)) {
-            networkRouter.showForceLogoutDialog(response);
-        }
-        return response;
     }
 }

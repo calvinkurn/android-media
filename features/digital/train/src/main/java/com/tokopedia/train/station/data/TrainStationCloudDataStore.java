@@ -5,10 +5,9 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.constant.TrainApi;
 import com.tokopedia.train.common.constant.TrainUrl;
-import com.tokopedia.train.common.specification.GqlNetworkSpecification;
-import com.tokopedia.train.common.specification.Specification;
 import com.tokopedia.train.station.data.entity.StationDataEntity;
 import com.tokopedia.train.station.data.entity.TrainStationIslandEntity;
 import com.tokopedia.usecase.RequestParams;
@@ -32,8 +31,8 @@ public class TrainStationCloudDataStore {
         this.context = context;
     }
 
-    public Observable<List<TrainStationIslandEntity>> getDatas(Specification specification) {
-        String jsonQuery = getRequestStationPayload(((GqlNetworkSpecification) specification).rawFileNameQuery());
+    public Observable<List<TrainStationIslandEntity>> getDatas() {
+        String jsonQuery = getRequestStationPayload();
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(TrainUrl.QUERY_GQL, jsonQuery);
 
@@ -45,11 +44,7 @@ public class TrainStationCloudDataStore {
         });
     }
 
-    public Observable<TrainStationIslandEntity> getData(Specification specification) {
-        return null;
-    }
-
-    private String getRequestStationPayload(int rawFile) {
-        return GraphqlHelper.loadRawString(context.getResources(), rawFile);
+    private String getRequestStationPayload() {
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.kai_station_query);
     }
 }

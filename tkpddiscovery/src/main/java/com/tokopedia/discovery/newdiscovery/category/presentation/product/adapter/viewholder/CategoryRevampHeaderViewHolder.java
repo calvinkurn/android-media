@@ -18,26 +18,37 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
-import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
+import com.tokopedia.design.quickfilter.QuickFilterItem;
+import com.tokopedia.design.quickfilter.QuickSingleFilterView;
+import com.tokopedia.design.quickfilter.custom.CustomMultipleFilterView;
+import com.tokopedia.design.quickfilter.custom.CustomViewRoundedQuickFilterItem;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.BannerPagerAdapter;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.RevampCategoryAdapter;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ChildCategoryModel;
 import com.tokopedia.discovery.view.CategoryHeaderTransformation;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
+import com.tokopedia.track.TrackApp;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 
@@ -45,17 +56,19 @@ import java.util.Locale;
  * @author by alifa on 11/1/17.
  */
 
-public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryHeaderModel> {
+public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryHeaderModel> implements QuickSingleFilterView.ActionListener {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.revamp_category_header;
     public static final String DEFAULT_ITEM_VALUE = "1";
+    public static final String SHOP = "shop";
 
     ImageView imageHeader;
     TextView titleHeader;
     LinearLayout expandLayout;
     LinearLayout hideLayout;
     RecyclerView revampCategoriesRecyclerView;
+    private CustomMultipleFilterView quickMultipleFilterView;
     TextView totalProduct;
     private final TopAdsBannerView topAdsBannerView;
 
@@ -70,7 +83,7 @@ public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryH
     private Handler bannerHandler;
     private Runnable incrementPage;
     private RevampCategoryAdapter categoryAdapter;
-
+    private boolean isInit;
     private final RevampCategoryAdapter.CategoryListener categoryListener;
     private boolean isUsedUnactiveChildren = false;
     private ArrayList<ChildCategoryModel> activeChildren = new ArrayList<>();
@@ -84,15 +97,17 @@ public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryH
         this.revampCategoriesRecyclerView = (RecyclerView) itemView.findViewById(R.id.recycler_view_revamp_categories);
         this.titleHeader = (TextView) itemView.findViewById(R.id.title_header);
         this.totalProduct = (TextView) itemView.findViewById(R.id.total_product);
+        this.quickMultipleFilterView = (CustomMultipleFilterView) itemView.findViewById(R.id.quickFilterView);
         this.bannerViewPager = (ViewPager) itemView.findViewById(R.id.view_pager_intermediary);
         this.bannerIndicator = (CirclePageIndicator) itemView.findViewById(R.id.indicator_intermediary);
         this.bannerContainer = (RelativeLayout) itemView.findViewById(R.id.banner_container);
         this.imageHeaderContainer = (RelativeLayout) itemView.findViewById(R.id.image_header_container);
         this.topAdsBannerView = (TopAdsBannerView) itemView.findViewById(R.id.topAdsBannerView);
         this.categoryListener = categoryListener;
+        this.quickMultipleFilterView.setListener(this);
     }
 
-    private void initTopAds(String depId) {
+    private void initTopAds(String depId, String categoryName) {
         TopAdsParams adsParams = new TopAdsParams();
         adsParams.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_DIRECTORY);
         adsParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, depId);
@@ -107,15 +122,29 @@ public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryH
         this.topAdsBannerView.setConfig(config);
         this.topAdsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
             @Override
-            public void onBannerAdsClicked(String applink) {
+            public void onBannerAdsClicked(int position, String applink, CpmData data) {
                 categoryListener.onBannerAdsClicked(applink);
+                if(applink.contains(SHOP)) {
+                    TopAdsGtmTracker.eventCategoryPromoShopClick(context, categoryName, data, position);
+                } else {
+                    TopAdsGtmTracker.eventCategoryPromoProductClick(context, categoryName, data, position);
+                }
+            }
+        });
+        this.topAdsBannerView.setTopAdsImpressionListener(new TopAdsItemImpressionListener() {
+            @Override
+            public void onImpressionHeadlineAdsItem(int position, CpmData data) {
+                TopAdsGtmTracker.eventCategoryPromoView(context, categoryName, data, position);
             }
         });
         this.topAdsBannerView.loadTopAds();
     }
 
     public void bind(final CategoryHeaderModel categoryHeaderModel) {
-        initTopAds(categoryHeaderModel.getDepartementId());
+        if (!isInit) {
+            initTopAds(categoryHeaderModel.getDepartementId(), categoryHeaderModel.getHeaderModel().getCategoryName());
+            isInit = true;
+        }
         activeChildren = new ArrayList<>();
         hideLayout.setVisibility(View.GONE);
         if (categoryHeaderModel.getChildCategoryModelList() != null && categoryHeaderModel.getChildCategoryModelList().size() > 9) {
@@ -149,7 +178,7 @@ public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryH
             expandLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    UnifyTracking.eventShowMoreCategory(v.getContext(), categoryHeaderModel.getDepartementId());
+                    eventShowMoreCategory(categoryHeaderModel.getDepartementId());
                     categoryAdapter.addDataChild(categoryHeaderModel.getChildCategoryModelList()
                             .subList(9, categoryHeaderModel.getChildCategoryModelList().size()));
                     expandLayout.setVisibility(View.GONE);
@@ -192,8 +221,26 @@ public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryH
             bannerContainer.setVisibility(View.VISIBLE);
             startSlide();
         }
+
+        renderQuickFilterView(categoryHeaderModel.getOptionList());
     }
 
+    protected void renderQuickFilterView(List<QuickFilterItem> quickFilterItems) {
+
+        if(quickFilterItems == null || quickFilterItems.isEmpty()){
+            return;
+        } else {
+            quickMultipleFilterView.renderFilter(quickFilterItems);
+        }
+    }
+
+    public void eventShowMoreCategory(String parentCat) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.CATEGORY_PAGE,
+                AppEventTracking.Category.CATEGORY_PAGE + "-" + parentCat,
+                AppEventTracking.Action.CATEGORY_MORE,
+                AppEventTracking.EventLabel.CATEGORY_SHOW_MORE);
+    }
 
     private Runnable runnableIncrement() {
         return new Runnable() {
@@ -253,6 +300,12 @@ public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryH
         display.getSize(size);
         int width = size.x;
         return width / 2;
+    }
+
+    @Override
+    public void selectFilter(String typeFilter) {
+        String[] str = typeFilter.split("=");
+        categoryListener.onQuickFilterSelected(str[0], str[1]);
     }
 }
 

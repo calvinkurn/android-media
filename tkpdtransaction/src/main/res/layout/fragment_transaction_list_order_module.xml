@@ -1,57 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainContent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:background="@color/white"
     android:focusable="true"
-    android:focusableInTouchMode="true">
-
-    <LinearLayout
-        android:id="@+id/empty_view"
-        android:layout_width="wrap_content"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+    <com.tokopedia.design.text.SearchInputView
+        android:id="@+id/simpleSearchView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:iconifiedByDefault="false"
+        android:queryHint="@string/hint_search_text"
+        android:visibility="gone" />
+    <com.tokopedia.design.quickfilter.custom.CustomViewRounderCornerFilterView
+        android:id="@+id/quick_filter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/simpleSearchView"
         android:orientation="vertical"
-        android:layout_margin="@dimen/dp_30"
-        android:visibility="gone">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            app:srcCompat="@drawable/empty_state_oms" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/oops_message"
-            android:textSize="@dimen/sp_20"
-            android:textStyle="bold"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:textSize="@dimen/sp_14"
-            android:text="@string/empty_list_message"/>
-    </LinearLayout>
-
+        android:visibility="visible" />
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
+        android:layout_height="match_parent"
+        android:layout_below="@+id/quick_filter">
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-
+            <include
+                android:id="@+id/empty_state_order_list"
+                layout="@layout/empty_state_normal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/quick_filter"
+                android:visibility="gone" />
+            <include
+                android:id="@+id/empty_state_marketplace"
+                layout="@layout/empty_state_marketplace"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/quick_filter"
+                android:visibility="gone" />
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/order_list_rv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:divider="@android:color/transparent"
                 android:listSelector="@android:color/transparent" />
-        </LinearLayout>
+        </FrameLayout>
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
-</LinearLayout>
+    <LinearLayout
+        android:id="@+id/filterDate"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:background="@drawable/filter_button_white_bg"
+        android:elevation="@dimen/dp_5"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        tools:visibility="visible">
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_marginBottom="@dimen/dp_10"
+            app:srcCompat="@drawable/ic_filter_button" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="@dimen/dp_15"
+            android:fontFamily="sans-serif-medium"
+            android:letterSpacing="0.02"
+            android:text="@string/filter"
+            android:textColor="@color/black_70"
+            android:textSize="@dimen/sp_14"
+            android:textStyle="normal"
+            />
+    </LinearLayout>
+
+
+    <ImageView
+        android:id="@+id/survey_bom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/survey_btn"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_10"/>
+</RelativeLayout>

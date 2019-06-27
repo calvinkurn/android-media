@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,11 +14,10 @@ import android.widget.TextView;
 import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.image.SquareImageView;
-import com.tokopedia.design.image.SquareImageView;
 import com.tokopedia.home.R;
+import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.helper.DateHelper;
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper;
@@ -61,9 +61,9 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
 
     private void findViews(View itemView) {
         recyclerView = itemView.findViewById(R.id.recycleList);
-        channelTitle = (TextView) itemView.findViewById(R.id.channel_title);
+        channelTitle = itemView.findViewById(R.id.channel_title);
         channelTitleContainer = itemView.findViewById(R.id.channel_title_container);
-        seeAllButton = (TextView) itemView.findViewById(R.id.see_all_button);
+        seeAllButton = itemView.findViewById(R.id.see_all_button);
         countDownView = itemView.findViewById(R.id.count_down);
         recyclerView = itemView.findViewById(R.id.recycleList);
         recyclerView.setLayoutManager(new GridLayoutManager(itemView.getContext(), spanCount,
@@ -76,9 +76,10 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
         try {
             final DynamicHomeChannel.Channels channel = element.getChannel();
             String titleText = element.getChannel().getHeader().getName();
-            listener.onServerTimeReceived(channel.getHeader().getServerTimeUnix());
             if (!TextUtils.isEmpty(titleText)) {
                 channelTitleContainer.setVisibility(View.VISIBLE);
+                Typeface typeface = Typeface.createFromAsset(context.getAssets(), "fonts/NunitoSans-ExtraBold.ttf");
+                channelTitle.setTypeface(typeface);
                 channelTitle.setText(titleText);
             } else {
                 channelTitleContainer.setVisibility(View.GONE);
@@ -90,7 +91,7 @@ public class SixGridChannelViewHolder extends AbstractViewHolder<DynamicChannelV
             }
             if (isSprintSale(channel)) {
                 Date expiredTime = DateHelper.getExpiredTime(channel.getHeader().getExpiredTime());
-                countDownView.setup(listener.getServerTimeOffset(), expiredTime, countDownListener);
+                countDownView.setup(element.getServerTimeOffset(), expiredTime, countDownListener);
                 countDownView.setVisibility(View.VISIBLE);
             } else {
                 countDownView.setVisibility(View.GONE);

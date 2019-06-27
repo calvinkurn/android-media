@@ -14,7 +14,9 @@
                     android:startColor="@color/red_100" />
                 <corners
                     android:bottomLeftRadius="8dp"
-                    android:topLeftRadius="8dp" />
+                    android:topLeftRadius="8dp"
+                    android:topRightRadius="8dp"
+                    android:bottomRightRadius="8dp" />
             </shape>
         </clip>
     </item>

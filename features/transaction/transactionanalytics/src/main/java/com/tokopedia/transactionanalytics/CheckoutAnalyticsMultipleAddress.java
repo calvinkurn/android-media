@@ -1,9 +1,5 @@
 package com.tokopedia.transactionanalytics;
 
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-
-import javax.inject.Inject;
-
 import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventAction;
 import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventCategory;
 import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventName;
@@ -13,9 +9,7 @@ import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.Ev
  * @author anggaprasetiyo on 05/06/18.
  */
 public class CheckoutAnalyticsMultipleAddress extends TransactionAnalytics {
-    @Inject
-    public CheckoutAnalyticsMultipleAddress(AnalyticTracker analyticTracker) {
-        super(analyticTracker);
+    public CheckoutAnalyticsMultipleAddress() {
     }
 
     public void eventClickAtcCartMultipleAddressClickBackArrowFromKirimKeBeberapaAlamat() {
@@ -102,6 +96,12 @@ public class CheckoutAnalyticsMultipleAddress extends TransactionAnalytics {
                 EventCategory.CART_MULTIPLE_ADDRESS,
                 EventAction.CLICK_TAMBAH_PENGIRIMAN_BARU_FROM_KIRIM_KE_BEBERAPA_ALAMAT
         );
+
+        sendEventCategoryAction(
+                EventName.CLICK_ADDRESS,
+                EventCategory.CART_MULTIPLE_ADDRESS,
+                EventAction.CLICK_TAMBAH_PENGIRIMAN_BARU_FROM_KIRIM_KE_BEBERAPA_ALAMAT
+        );
     }
 
     public void eventClickAtcCartMultipleAddressClickMinFromUbahFromKirimKeBeberapaAlamat() {
@@ -117,6 +117,51 @@ public class CheckoutAnalyticsMultipleAddress extends TransactionAnalytics {
                 EventName.CLICK_ATC,
                 EventCategory.CART_MULTIPLE_ADDRESS,
                 EventAction.CLICK_PLUS_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT
+        );
+    }
+
+
+    public void eventClickAddressCartMultipleAddressClickPlusFromMultiple() {
+        sendEventCategoryAction(
+                EventName.CLICK_ADDRESS,
+                EventCategory.CART_MULTIPLE_ADDRESS,
+                EventAction.CLICK_PLUS_FROM_MULTIPLE
+        );
+    }
+
+    public void eventClickAddressCartMultipleAddressClickButtonSimpanSuccess() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_ADDRESS,
+                EventCategory.CART_MULTIPLE_ADDRESS,
+                EventAction.CLICK_BUTTON_SIMPAN,
+                ConstantTransactionAnalytics.EventLabel.SUCCESS
+        );
+    }
+
+    public void eventClickAddressCartMultipleAddressClickButtonSimpanNotSuccess() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_ADDRESS,
+                EventCategory.CART_MULTIPLE_ADDRESS,
+                EventAction.CLICK_BUTTON_SIMPAN,
+                ConstantTransactionAnalytics.EventLabel.NOT_SUCCESS
+        );
+    }
+
+    public void eventClickAddressCartMultipleAddressClickButtonSimpanFromEditSuccess() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_ADDRESS,
+                EventCategory.CART_MULTIPLE_ADDRESS,
+                EventAction.CLICK_BUTTON_SIMPAN_FROM_EDIT,
+                ConstantTransactionAnalytics.EventLabel.SUCCESS
+        );
+    }
+
+    public void eventClickAddressCartMultipleAddressClickButtonSimpanFromEditNotSuccess() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_ADDRESS,
+                EventCategory.CART_MULTIPLE_ADDRESS,
+                EventAction.CLICK_BUTTON_SIMPAN_FROM_EDIT,
+                ConstantTransactionAnalytics.EventLabel.NOT_SUCCESS
         );
     }
 }

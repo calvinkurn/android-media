@@ -15,15 +15,17 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.design.component.ToasterNormal;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.di.CampaignComponent;
 import com.tokopedia.tkpd.campaign.di.DaggerCampaignComponent;
 import com.tokopedia.tkpd.campaign.view.presenter.ShakeDetectContract;
 import com.tokopedia.tkpd.campaign.view.presenter.ShakeDetectPresenter;
 
-import javax.inject.Inject;
+import android.support.annotation.NonNull;
+import android.os.Build;
 
-import butterknife.ButterKnife;
+import javax.inject.Inject;
 
 /**
  * Created by sandeepgoyal on 14/02/18.
@@ -45,6 +47,7 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
     private View btnTurnOff;
     private TkpdProgressDialog progressDialog;
     protected CampaignComponent campaignComponent;
+    private PermissionCheckerHelper permissionCheckerHelper;
 
     @Inject
     ShakeDetectPresenter presenter;
@@ -62,6 +65,7 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        permissionCheckerHelper = new PermissionCheckerHelper();
         shakeShakeMessage = (TextView) findViewById(R.id.shake_shake_message);
         shakeShakeMessageButton =  findViewById(R.id.shake_shake_message_button);
         cancelButton = findViewById(R.id.cancel_button);
@@ -77,7 +81,6 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
 
         initInjector();
         attachToPresenter();
-        ButterKnife.bind(this);
         cancelButton.setOnClickListener(cancelListener);
         cancelBtn.setOnClickListener(cancelListener);
         cancelBtn1.setOnClickListener(cancelListener);
@@ -109,6 +112,7 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
 
     void attachToPresenter() {
         presenter.attachView(this);
+        presenter.setPermissionChecker(permissionCheckerHelper);
     }
 
     protected void shakeDetect() {
@@ -165,8 +169,8 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
     }
 
     @Override
-    public void showErrorGetInfo(String message) {
-        shakeShakeErrorMsg.setText(message);
+    public void showErrorGetInfo() {
+        shakeShakeErrorMsg.setText(getString(R.string.shake_default_error));
         layoutshakeShakeErrorMsg.setVisibility(View.VISIBLE);
         cancelButton.setVisibility(View.GONE);
     }
@@ -260,4 +264,13 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
         }
     };
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            permissionCheckerHelper.onRequestPermissionsResult(ShakeDetectCampaignActivity.this,
+                    requestCode, permissions,
+                    grantResults);
+        }
+    }
 }

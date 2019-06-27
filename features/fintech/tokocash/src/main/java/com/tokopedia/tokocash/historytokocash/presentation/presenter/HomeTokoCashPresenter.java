@@ -1,7 +1,6 @@
 package com.tokopedia.tokocash.historytokocash.presentation.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.tokocash.balance.domain.GetBalanceTokoCashUseCase;
 import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
 import com.tokopedia.tokocash.historytokocash.domain.GetHistoryDataUseCase;
@@ -9,6 +8,7 @@ import com.tokopedia.tokocash.historytokocash.presentation.contract.HomeTokoCash
 import com.tokopedia.tokocash.historytokocash.presentation.model.TokoCashHistoryData;
 import com.tokopedia.tokocash.network.exception.UserInactivateTokoCashException;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -23,12 +23,12 @@ public class HomeTokoCashPresenter extends BaseDaggerPresenter<HomeTokoCashContr
 
     private GetBalanceTokoCashUseCase balanceTokoCashUseCase;
     private GetHistoryDataUseCase getHistoryDataUseCase;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
 
     @Inject
     public HomeTokoCashPresenter(GetBalanceTokoCashUseCase balanceTokoCashUseCase,
                                  GetHistoryDataUseCase getHistoryDataUseCase,
-                                 UserSession userSession) {
+                                 UserSessionInterface userSession) {
         this.balanceTokoCashUseCase = balanceTokoCashUseCase;
         this.getHistoryDataUseCase = getHistoryDataUseCase;
         this.userSession = userSession;

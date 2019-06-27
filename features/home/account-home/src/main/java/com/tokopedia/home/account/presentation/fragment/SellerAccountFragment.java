@@ -1,9 +1,10 @@
 package com.tokopedia.home.account.presentation.fragment;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.account.R;
@@ -39,17 +41,20 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
 
     public static final String TAG = SellerAccountFragment.class.getSimpleName();
     public static final String SELLER_DATA = "seller_data";
+    private static final String FPM_SELLER = "mp_account_seller";
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private SellerAccountAdapter adapter;
+    private PerformanceMonitoring fpmSeller;
 
     @Inject
     SellerAccount.Presenter presenter;
     private boolean isLoaded = false;
+//    private RemoteConfig remoteConfig;
 
-    public static Fragment newInstance() {
-        Fragment fragment = new SellerAccountFragment();
+    public static SellerAccountFragment newInstance() {
+        SellerAccountFragment fragment = new SellerAccountFragment();
         Bundle bundle = new Bundle();
         fragment.setArguments(bundle);
         return fragment;
@@ -58,6 +63,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        fpmSeller = PerformanceMonitoring.start(FPM_SELLER);
         initInjector();
     }
 
@@ -72,6 +78,15 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
                 .VERTICAL, false));
         swipeRefreshLayout.setColorSchemeResources(R.color.tkpd_main_green);
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (isOpenShop) {
+            getData();
+            isOpenShop = false;
+        }
     }
 
     @Override
@@ -97,8 +112,10 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     }
 
     private void getData() {
+        String saldoQuery = GraphqlHelper.loadRawString(getContext().getResources(), R.raw
+                .new_query_saldo_balance);
         presenter.getSellerData(GraphqlHelper.loadRawString(getContext().getResources(), R.raw.query_seller_account_home),
-                GraphqlHelper.loadRawString(getContext().getResources(), R.raw.gql_get_deposit));
+                GraphqlHelper.loadRawString(getContext().getResources(), R.raw.gql_get_deposit), saldoQuery);
     }
 
     @Override
@@ -107,6 +124,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
             adapter.clearAllElements();
             adapter.setElement(model.getItems());
         }
+        fpmSeller.stopTrace();
     }
 
     @Override
@@ -145,6 +163,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
                     .setAction(getString(R.string.title_try_again), view -> getData())
                     .show();
         }
+        fpmSeller.stopTrace();
     }
 
     @Override
@@ -154,6 +173,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
                     .setAction(getString(R.string.title_try_again), view -> getData())
                     .show();
         }
+        fpmSeller.stopTrace();
     }
 
     @Override
@@ -168,6 +188,17 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == OPEN_SHOP_SUCCESS){
+            getData();
+        } else if (resultCode == Activity.RESULT_OK && requestCode == BaseAccountFragment.REQUEST_PHONE_VERIFICATION){
+            userSession.setIsMSISDNVerified(true);
+            moveToCreateShop();
+        }
+    }
+
+    @Override
     public void onTickerClosed() {
         if (adapter.getItemCount() > 0 &&
                 adapter.getItemAt(0) instanceof TickerViewModel) {
@@ -179,5 +210,10 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     public void onDestroyView() {
         super.onDestroyView();
         presenter.detachView();
+    }
+
+    @Override
+    void notifyItemChanged(int position) {
+        adapter.notifyItemChanged(position);
     }
 }

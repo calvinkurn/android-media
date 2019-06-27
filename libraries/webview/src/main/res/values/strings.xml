@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">webview</string>
+
+    <string name="cs_notification_error_ssl_cert_invalid">Invalid SSL Certificate. Apakah anda ingin melanjutkan?</string>
+    <string name="title_ok">OK</string>
+    <string name="dialog_cancel">BATAL</string>
+
+</resources>

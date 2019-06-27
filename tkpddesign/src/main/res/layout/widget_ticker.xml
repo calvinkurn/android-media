@@ -46,8 +46,8 @@
 
     <RelativeLayout android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/bg_ticker"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_ticker_inside"
         android:padding="@dimen/dp_8">
 
         <com.tokopedia.design.component.ticker.TouchViewPager
@@ -60,7 +60,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
+            android:layout_below="@+id/view_pager_ticker"
             android:padding="@dimen/dp_5" />
 
         <ImageView

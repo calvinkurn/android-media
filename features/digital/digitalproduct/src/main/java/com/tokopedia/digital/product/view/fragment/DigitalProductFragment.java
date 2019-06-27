@@ -1,11 +1,10 @@
 package com.tokopedia.digital.product.view.fragment;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.Fragment;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -17,6 +16,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -34,9 +34,11 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.gson.reflect.TypeToken;
-import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
@@ -46,23 +48,11 @@ import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
-import com.tokopedia.core.util.RequestPermissionUtil;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.util.VersionInfo;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.common.analytic.DigitalAnalytics;
+import com.tokopedia.digital.common.constant.DigitalCache;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
-import com.tokopedia.digital.common.util.DigitalAnalytics;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.common.view.compoundview.ClientNumberInputView;
 import com.tokopedia.digital.product.additionalfeature.etoll.view.activity.DigitalCheckETollBalanceNFCActivity;
@@ -71,9 +61,9 @@ import com.tokopedia.digital.product.di.DigitalProductComponentInstance;
 import com.tokopedia.digital.product.receiver.USSDBroadcastReceiver;
 import com.tokopedia.digital.product.service.USSDAccessibilityService;
 import com.tokopedia.digital.product.view.activity.DigitalChooserActivity;
+import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.activity.DigitalSearchNumberActivity;
 import com.tokopedia.digital.product.view.activity.DigitalUssdActivity;
-import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.digital.product.view.adapter.PromoGuidePagerAdapter;
 import com.tokopedia.digital.product.view.compoundview.CheckPulsaBalanceView;
 import com.tokopedia.digital.product.view.compoundview.DigitalWrapContentViewPager;
@@ -82,40 +72,39 @@ import com.tokopedia.digital.product.view.listener.IUssdUpdateListener;
 import com.tokopedia.digital.product.view.model.BannerData;
 import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.digital.product.view.model.ContactData;
+import com.tokopedia.digital.product.view.model.DigitalCategoryDetailPassData;
 import com.tokopedia.digital.product.view.model.GuideData;
 import com.tokopedia.digital.product.view.model.HistoryClientNumber;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
-import com.tokopedia.digital.product.view.presenter.IProductDigitalPresenter;
 import com.tokopedia.digital.product.view.presenter.ProductDigitalPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
+import com.tokopedia.network.constant.TkpdBaseURL;
+import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.user.session.UserSession;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
-
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
 
 import static com.tokopedia.digital.product.view.activity.DigitalSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER;
 
 /**
  * @author anggaprasetiyo on 4/25/17.
  */
-@RuntimePermissions
-public class DigitalProductFragment extends BasePresenterFragment<IProductDigitalPresenter>
+public class DigitalProductFragment extends BaseDaggerFragment
         implements IProductDigitalView, BaseDigitalProductView.ActionListener, IUssdUpdateListener,
         CheckPulsaBalanceView.ActionListener {
 
@@ -150,9 +139,17 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             "CLIP_DATA_LABEL_VOUCHER_CODE_DIGITAL";
 
     private static final String DIGITAL_SMARTCARD = "mainapp_digital_smartcard";
+    private static final String DIGITAL_DETAIL_TRACE = "dg_detail";
 
     private static final int DEFAULT_POST_DELAYED_VALUE = 500;
     private static final int PANDUAN_TAB_POSITION = 1;
+    private static final int REQUEST_CODE_LOGIN = 1001;
+    private static final int REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER = 1002;
+    private static final int REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER = 1003;
+    private static final int REQUEST_CODE_DIGITAL_SEARCH_NUMBER = 1004;
+    private static final int REQUEST_CODE_CONTACT_PICKER = 1005;
+    private static final int REQUEST_CODE_CART_DIGITAL = 1006;
+    private static final int REQUEST_CODE_CHECK_SALDO_EMONEY = 1007;
 
     private NestedScrollView mainHolderContainer;
     private ProgressBar pbMainLoading;
@@ -204,11 +201,18 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private PromoGuidePagerAdapter promoGuidePagerAdapter;
 
     private boolean isCouponApplied;
+    private boolean traceStop;
+    private PerformanceMonitoring performanceMonitoring;
 
     private SaveInstanceCacheManager saveInstanceCacheManager;
+    private PermissionCheckerHelper permissionCheckerHelper;
 
     @Inject
     ProductDigitalPresenter presenter;
+    @Inject
+    UserSession userSession;
+    @Inject
+    DigitalModuleRouter digitalModuleRouter;
 
     public static Fragment newInstance(
             String categoryId, String operatorId, String productId, String clientNumber,
@@ -228,15 +232,30 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         return fragment;
     }
 
-    @Override
-    protected boolean isRetainInstance() {
-        return false;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        performanceMonitoring = PerformanceMonitoring.start(DIGITAL_DETAIL_TRACE);
         saveInstanceCacheManager = new SaveInstanceCacheManager(getActivity(), savedInstanceState);
+        permissionCheckerHelper = new PermissionCheckerHelper();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
+        digitalAnalytics = new DigitalAnalytics();
+        View view = inflater.inflate(R.layout.fragment_product_digital_module, container, false);
+        initView(view);
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        renderViewShadow();
+        setupArguments(getArguments());
+
         if (savedInstanceState != null) {
             categoryDataState = saveInstanceCacheManager.get(EXTRA_STATE_CATEGORY_DATA,
                     CategoryData.class, null);
@@ -251,62 +270,48 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                     }).getType(), new ArrayList<>());
             digitalCheckoutPassDataState = saveInstanceCacheManager.get(EXTRA_STATE_CHECKOUT_PASS_DATA,
                     DigitalCheckoutPassData.class, null);
-        }
-    }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
-        if (context.getApplicationContext() instanceof AbstractionRouter) {
-            digitalAnalytics = new DigitalAnalytics(((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker(), context);
-        }
-
-        return super.onCreateView(inflater, container, savedInstanceState);
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        renderViewShadow();
-    }
-
-    @Override
-    protected void onFirstTimeLaunched() {
-        if (!isFromWidget) {
-            presenter.processGetHelpUrlData(categoryId);
-            presenter.processGetCategoryAndBannerData(
-                    categoryId, operatorId, productId, clientNumber);
+            clientNumberState = savedInstanceState.getString(EXTRA_STATE_CLIENT_NUMBER);
+            operatorSelectedState = savedInstanceState.getParcelable(EXTRA_STATE_OPERATOR_SELECTED);
+            productSelectedState = savedInstanceState.getParcelable(EXTRA_STATE_PRODUCT_SELECTED);
+            isInstantCheckoutChecked = savedInstanceState.getBoolean(EXTRA_STATE_INSTANT_CHECKOUT_CHECKED);
+            historyClientNumberState = savedInstanceState.getParcelable(EXTRA_STATE_HISTORY_CLIENT_NUMBER);
+            voucherCodeCopiedState = savedInstanceState.getString(EXTRA_STATE_VOUCHER_CODE_COPIED);
+            digitalHelpUrl = savedInstanceState.getString(EXTRA_STATE_HELP_URL);
+            presenter.processStateDataToReRender();
         } else {
-            setMenuVisibility(false);
-            presenter.getCategoryData(
-                    categoryId, operatorId, productId, clientNumber
-            );
+            if (!isFromWidget) {
+                setHasOptionsMenu(true);
+                presenter.processGetCategoryAndBannerData(
+                        categoryId, operatorId, productId, clientNumber);
+            } else {
+                setMenuVisibility(false);
+                presenter.getCategoryData(
+                        categoryId, operatorId, productId, clientNumber
+                );
+            }
         }
-    }
-
-    @Override
-    public void onSaveState(Bundle state) {
-        if (digitalProductView != null) {
-            state.putString(EXTRA_STATE_CLIENT_NUMBER, digitalProductView.getClientNumber());
-            state.putParcelable(
-                    EXTRA_STATE_OPERATOR_SELECTED, digitalProductView.getSelectedOperator()
-            );
-            state.putParcelable(
-                    EXTRA_STATE_PRODUCT_SELECTED, digitalProductView.getSelectedProduct()
-            );
-            state.putBoolean(
-                    EXTRA_STATE_INSTANT_CHECKOUT_CHECKED,
-                    digitalProductView.isInstantCheckoutChecked()
-            );
-        }
-        state.putString(EXTRA_STATE_VOUCHER_CODE_COPIED, voucherCodeCopiedState);
-        state.putParcelable(EXTRA_STATE_HISTORY_CLIENT_NUMBER, historyClientNumberState);
-        state.putString(EXTRA_STATE_HELP_URL, digitalHelpUrl);
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        if (digitalProductView != null) {
+            outState.putString(EXTRA_STATE_CLIENT_NUMBER, digitalProductView.getClientNumber());
+            outState.putParcelable(
+                    EXTRA_STATE_OPERATOR_SELECTED, digitalProductView.getSelectedOperator()
+            );
+            outState.putParcelable(
+                    EXTRA_STATE_PRODUCT_SELECTED, digitalProductView.getSelectedProduct()
+            );
+            outState.putBoolean(
+                    EXTRA_STATE_INSTANT_CHECKOUT_CHECKED,
+                    digitalProductView.isInstantCheckoutChecked()
+            );
+        }
+        outState.putString(EXTRA_STATE_VOUCHER_CODE_COPIED, voucherCodeCopiedState);
+        outState.putParcelable(EXTRA_STATE_HISTORY_CLIENT_NUMBER, historyClientNumberState);
+        outState.putString(EXTRA_STATE_HELP_URL, digitalHelpUrl);
         saveInstanceCacheManager.onSave(outState);
         saveInstanceCacheManager.put(EXTRA_STATE_CATEGORY_DATA, categoryDataState);
         saveInstanceCacheManager.put(EXTRA_STATE_BANNER_LIST_DATA, bannerDataListState);
@@ -316,41 +321,23 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
-    public void onRestoreState(Bundle savedState) {
-        clientNumberState = savedState.getString(EXTRA_STATE_CLIENT_NUMBER);
-        operatorSelectedState = savedState.getParcelable(EXTRA_STATE_OPERATOR_SELECTED);
-        productSelectedState = savedState.getParcelable(EXTRA_STATE_PRODUCT_SELECTED);
-        isInstantCheckoutChecked = savedState.getBoolean(EXTRA_STATE_INSTANT_CHECKOUT_CHECKED);
-        historyClientNumberState = savedState.getParcelable(EXTRA_STATE_HISTORY_CLIENT_NUMBER);
-        voucherCodeCopiedState = savedState.getString(EXTRA_STATE_VOUCHER_CODE_COPIED);
-        digitalHelpUrl = savedState.getString(EXTRA_STATE_HELP_URL);
-        presenter.processStateDataToReRender();
-    }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return true;
-    }
-
-    @Override
     protected void initInjector() {
-        super.initInjector();
-
         DigitalProductComponentInstance.getDigitalProductComponent(getActivity().getApplication())
                 .inject(this);
-    }
-
-    @Override
-    protected void initialPresenter() {
         presenter.attachView(this);
     }
 
     @Override
-    protected void initialListener(Activity activity) {
-        actionListener = (ActionListener) activity;
+    protected String getScreenName() {
+        return null;
     }
 
     @Override
+    protected void onAttachActivity(Context context) {
+        super.onAttachActivity(context);
+        actionListener = (ActionListener) context;
+    }
+
     protected void setupArguments(Bundle arguments) {
         categoryId = arguments.getString(ARG_PARAM_EXTRA_CATEGORY_ID);
         operatorId = arguments.getString(ARG_PARAM_EXTRA_OPERATOR_ID);
@@ -362,12 +349,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         additionalETollLastUpdatedDate = arguments.getString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_UPDATE_DATE);
     }
 
-    @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_product_digital_module;
-    }
-
-    @Override
     protected void initView(View view) {
         pbMainLoading = view.findViewById(R.id.pb_main_loading);
         holderProductDetail = view.findViewById(R.id.holder_product_detail);
@@ -392,24 +373,11 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         });
 
         selectedCheckPulsaBalanceView = null;
-    }
-
-    @Override
-    protected void setViewListener() {
         checkETollBalanceView.setListener(() -> {
-            Intent intent = DigitalCheckETollBalanceNFCActivity.newInstance(getActivity());
-            startActivity(intent);
+            Intent intent = DigitalCheckETollBalanceNFCActivity.newInstance(getActivity(),
+                    DigitalCheckETollBalanceNFCActivity.DIGITAL_NFC_FROM_PDP);
+            startActivityForResult(intent, REQUEST_CODE_CHECK_SALDO_EMONEY);
         });
-    }
-
-    @Override
-    protected void initialVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
     }
 
     public void renderStateSelectedAllData() {
@@ -473,6 +441,14 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
+    public void stopTrace() {
+        if (!traceStop) {
+            performanceMonitoring.stopTrace();
+            traceStop = true;
+        }
+    }
+
+    @Override
     public void renderCheckPulsaBalanceData(int selectedSim, String ussdCode, String phoneNumber, String operatorErrorMsg, Boolean isSimActive, String carrierName) {
         CheckPulsaBalanceView checkPulsaBalanceView = new CheckPulsaBalanceView(getActivity());
         checkPulsaBalanceView.setActionListener(this);
@@ -499,25 +475,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
-    public void showHelpMenu(String url) {
-        digitalHelpUrl = url;
-        getActivity().invalidateOptionsMenu();
-    }
-
-    @Override
-    public String getHelpUrl() {
-        return digitalHelpUrl;
-    }
-
-    @Override
-    public void navigateToWebview(String helpUrl) {
-        if (getActivity() != null && getActivity().getApplication() instanceof DigitalModuleRouter) {
-            Intent intent = ((DigitalModuleRouter) getActivity().getApplication())
-                    .getDefaultContactUsIntent(getActivity(), helpUrl, getString(R.string.digital_product_help_menu_label));
-            if (intent != null) {
-                startActivity(intent);
-            }
-        }
+    public void navigateToWebview() {
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.CONTACT_US_NATIVE);
+        startActivity(intent);
     }
 
     @Override
@@ -646,15 +606,15 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public boolean isUserLoggedIn() {
-        return SessionHandler.isV4Login(getActivity());
+        return userSession.isLoggedIn();
     }
 
     @Override
     public void interruptUserNeedLoginOnCheckout(DigitalCheckoutPassData digitalCheckoutPassData) {
         this.digitalCheckoutPassDataState = digitalCheckoutPassData;
-        Intent intent = ((IDigitalModuleRouter) MainApplication.getAppContext())
+        Intent intent = ((DigitalModuleRouter) getContext().getApplicationContext())
                 .getLoginIntent(getActivity());
-        navigateToActivityRequest(intent, IDigitalModuleRouter.REQUEST_CODE_LOGIN);
+        navigateToActivityRequest(intent, REQUEST_CODE_LOGIN);
     }
 
     @Override
@@ -663,9 +623,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
-    public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
-            TKPDMapParam<String, String> originParams) {
-        return AuthUtil.generateParamsNetwork(getActivity(), originParams);
+    public Map<String, String> getGeneratedAuthParamNetwork(
+            Map<String, String> originParams) {
+        return AuthUtil.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), originParams);
     }
 
     @Override
@@ -684,7 +644,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     public void onButtonBuyClicked(BaseDigitalProductView.PreCheckoutProduct preCheckoutProduct,
                                    boolean isInstantCheckoutChecked) {
         String isInstant = isInstantCheckoutChecked ? "instant" : "no instant";
-        UnifyTracking.eventClickBuyOnNative(getActivity(), categoryDataState.getName(), isInstant);
+        digitalAnalytics.eventClickBuyOnNative(categoryDataState.getName(), isInstant);
 
         if (!preCheckoutProduct.isCanBeCheckout()) {
             if (!TextUtils.isEmpty(preCheckoutProduct.getErrorCheckout())) {
@@ -695,16 +655,16 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         preCheckoutProduct.setVoucherCodeCopied(voucherCodeCopiedState);
 
         DigitalCheckoutPassData digitalCheckoutPassData = presenter.generateCheckoutPassData(preCheckoutProduct,
-                VersionInfo.getVersionInfo(getActivity()),
-                SessionHandler.getLoginID(getActivity()));
+                GlobalConfig.VERSION_NAME,
+                userSession.getUserId());
 
-        if (SessionHandler.isV4Login(getActivity())) {
+        if (userSession.isLoggedIn()) {
             if (getActivity().getApplication() instanceof DigitalRouter) {
                 DigitalRouter digitalModuleRouter =
                         (DigitalRouter) getActivity().getApplication();
                 navigateToActivityRequest(
                         digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassData),
-                        DigitalRouter.REQUEST_CODE_CART_DIGITAL
+                        REQUEST_CODE_CART_DIGITAL
                 );
             }
         } else {
@@ -724,16 +684,16 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                 operatorId,
                 productId,
                 clientNumber,
-                VersionInfo.getVersionInfo(getActivity()),
-                SessionHandler.getLoginID(getActivity()));
+                GlobalConfig.VERSION_NAME,
+                userSession.getUserId());
 
-        if (SessionHandler.isV4Login(getActivity())) {
-            if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
+        if (userSession.isLoggedIn()) {
+            if (getActivity().getApplication() instanceof DigitalRouter) {
                 DigitalRouter digitalModuleRouter =
                         (DigitalRouter) getActivity().getApplication();
                 navigateToActivityRequest(
                         digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassData),
-                        DigitalRouter.REQUEST_CODE_CART_DIGITAL
+                        REQUEST_CODE_CART_DIGITAL
                 );
                 getActivity().overridePendingTransition(0, 0);
             }
@@ -757,7 +717,28 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                     operator, phoneNumber)) {
                 presenter.storeUssdPhoneNumber(simPosition, "");
             }
-            DigitalProductFragmentPermissionsDispatcher.checkBalanceByUSSDWithCheck(this, simPosition, ussdCode);
+            String[] listOfPermission = {PermissionCheckerHelper.Companion.PERMISSION_CALL_PHONE,
+                    PermissionCheckerHelper.Companion.PERMISSION_READ_PHONE_STATE};
+            permissionCheckerHelper.checkPermissions(getActivity(), listOfPermission, new PermissionCheckerHelper.PermissionCheckListener() {
+                @Override
+                public void onPermissionDenied(@NotNull String permissionText) {
+                    permissionCheckerHelper.onPermissionDenied(getActivity(), permissionText);
+                    digitalAnalytics.eventUssdAttempt(categoryDataState.getName(),
+                            getString(R.string.ussd_permission_denied_label));
+                }
+
+                @Override
+                public void onNeverAskAgain(@NotNull String permissionText) {
+                    permissionCheckerHelper.onNeverAskAgain(getActivity(), permissionText);
+                    digitalAnalytics.eventUssdAttempt(categoryDataState.getName(),
+                            getString(R.string.ussd_permission_denied_label));
+                }
+
+                @Override
+                public void onPermissionGranted() {
+                    checkBalanceByUSSD(simPosition, ussdCode);
+                }
+            }, "");
         }
     }
 
@@ -767,7 +748,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                 DigitalChooserActivity.newInstanceProductChooser(
                         getActivity(), categoryId, operatorId, titleChooser
                 ),
-                IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER
+                REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER
         );
     }
 
@@ -779,28 +760,44 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                         categoryDataState.getOperatorLabel(),
                         categoryDataState.getName()
                 ),
-                IDigitalModuleRouter.REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER
+                REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER
         );
     }
 
     @Override
     public void onButtonContactPickerClicked() {
-        DigitalProductFragmentPermissionsDispatcher.openContactPickerWithCheck(this);
+        permissionCheckerHelper.checkPermission(getActivity(),
+                PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACTS, new PermissionCheckerHelper.PermissionCheckListener() {
+                    @Override
+                    public void onPermissionDenied(@NotNull String permissionText) {
+                        permissionCheckerHelper.onPermissionDenied(getActivity(), permissionText);
+                    }
+
+                    @Override
+                    public void onNeverAskAgain(@NotNull String permissionText) {
+                        permissionCheckerHelper.onNeverAskAgain(getActivity(), permissionText);
+                    }
+
+                    @Override
+                    public void onPermissionGranted() {
+                        openContactPicker();
+                    }
+                }, "");
     }
 
     @Override
     public void onProductDetailLinkClicked(String url) {
-        startActivity(DigitalWebActivity.newInstance(getActivity(), url));
+        startActivity(digitalModuleRouter.getWebviewActivityWithIntent(getActivity(), url));
     }
 
     @Override
     public boolean isRecentInstantCheckoutUsed(String categoryId) {
         if (cacheHandlerRecentInstantCheckoutUsed == null)
             cacheHandlerRecentInstantCheckoutUsed = new LocalCacheHandler(
-                    getActivity(), TkpdCache.DIGITAL_INSTANT_CHECKOUT_HISTORY
+                    getActivity(), DigitalCache.DIGITAL_INSTANT_CHECKOUT_HISTORY
             );
         return cacheHandlerRecentInstantCheckoutUsed.getBoolean(
-                TkpdCache.Key.DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY + categoryId, false
+                DigitalCache.DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY + categoryId, false
         );
     }
 
@@ -808,10 +805,10 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     public void storeLastInstantCheckoutUsed(String categoryId, boolean checked) {
         if (cacheHandlerRecentInstantCheckoutUsed == null)
             cacheHandlerRecentInstantCheckoutUsed = new LocalCacheHandler(
-                    getActivity(), TkpdCache.DIGITAL_INSTANT_CHECKOUT_HISTORY
+                    getActivity(), DigitalCache.DIGITAL_INSTANT_CHECKOUT_HISTORY
             );
         cacheHandlerRecentInstantCheckoutUsed.putBoolean(
-                TkpdCache.Key.DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY + categoryId, checked
+                DigitalCache.DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY + categoryId, checked
         );
         cacheHandlerRecentInstantCheckoutUsed.applyEditor();
     }
@@ -823,7 +820,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                     DigitalSearchNumberActivity.newInstance(
                             getActivity(), categoryId, clientNumber, number, numberList
                     ),
-                    IDigitalModuleRouter.REQUEST_CODE_DIGITAL_SEARCH_NUMBER
+                    REQUEST_CODE_DIGITAL_SEARCH_NUMBER
             );
         }
     }
@@ -835,7 +832,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                     DigitalSearchNumberActivity.newInstance(
                             getActivity(), categoryId, clientNumber, "", numberList
                     ),
-                    IDigitalModuleRouter.REQUEST_CODE_DIGITAL_SEARCH_NUMBER
+                    REQUEST_CODE_DIGITAL_SEARCH_NUMBER
             );
         }
     }
@@ -847,36 +844,41 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onOperatorSelected(String categoryName, String operatorName) {
-        UnifyTracking.eventSelectOperatorOnNativePage(getActivity(), categoryName,
+        digitalAnalytics.eventSelectOperatorOnNativePage(categoryName,
                 operatorName);
     }
 
     @Override
     public void onProductSelected(String categoryName, String productDesc) {
-        UnifyTracking.eventSelectProductOnNativePage(getActivity(), categoryName,
+        digitalAnalytics.eventSelectProductOnNativePage(categoryName,
                 productDesc);
+    }
+
+    @Override
+    public void onInstantCheckoutChanged(String categoryName, boolean isChecked) {
+        digitalAnalytics.eventCheckInstantSaldo(categoryName, isChecked);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case IDigitalModuleRouter.REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER:
+            case REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER:
                 if (resultCode == Activity.RESULT_OK && data != null)
                     handleCallBackOperatorChooser(
                             data.getParcelableExtra(DigitalChooserActivity.EXTRA_CALLBACK_OPERATOR_DATA)
                     );
                 break;
-            case IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER:
+            case REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER:
                 if (resultCode == Activity.RESULT_OK && data != null)
                     handleCallBackProductChooser(
                             data.getParcelableExtra(DigitalChooserActivity.EXTRA_CALLBACK_PRODUCT_DATA)
                     );
                 break;
-            case DigitalRouter.REQUEST_CODE_CART_DIGITAL:
+            case REQUEST_CODE_CART_DIGITAL:
                 if (resultCode == Activity.RESULT_OK && data != null) {
-                    if (data.hasExtra(IDigitalModuleRouter.EXTRA_MESSAGE)) {
-                        String message = data.getStringExtra(IDigitalModuleRouter.EXTRA_MESSAGE);
+                    if (data.hasExtra(DigitalRouter.Companion.getEXTRA_MESSAGE())) {
+                        String message = data.getStringExtra(DigitalRouter.Companion.getEXTRA_MESSAGE());
                         if (!TextUtils.isEmpty(message)) {
                             showToastMessage(message);
                         }
@@ -884,13 +886,12 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                 }
                 if (isFromWidget) {
                     isFromWidget = false;
-                    presenter.processGetHelpUrlData(categoryId);
                     presenter.processGetCategoryAndBannerData(
                             categoryId, operatorId, productId, clientNumber);
                     setMenuVisibility(true);
                 }
                 break;
-            case IDigitalModuleRouter.REQUEST_CODE_CONTACT_PICKER:
+            case REQUEST_CODE_CONTACT_PICKER:
                 try {
                     Uri contactURI = data.getData();
                     ContactData contact = presenter.processGenerateContactDataFromUri(contactURI,
@@ -900,25 +901,46 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                     e.printStackTrace();
                 }
                 break;
-            case IDigitalModuleRouter.REQUEST_CODE_LOGIN:
+            case REQUEST_CODE_LOGIN:
                 if (isUserLoggedIn() && digitalCheckoutPassDataState != null) {
                     if (getActivity().getApplication() instanceof DigitalRouter) {
                         DigitalRouter digitalModuleRouter =
                                 (DigitalRouter) getActivity().getApplication();
                         navigateToActivityRequest(
                                 digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassDataState),
-                                DigitalRouter.REQUEST_CODE_CART_DIGITAL
+                                REQUEST_CODE_CART_DIGITAL
                         );
                     }
                 }
                 break;
-            case IDigitalModuleRouter.REQUEST_CODE_DIGITAL_SEARCH_NUMBER:
+            case REQUEST_CODE_DIGITAL_SEARCH_NUMBER:
                 if (digitalProductView != null) {
                     if (resultCode == Activity.RESULT_OK && data != null) {
                         OrderClientNumber orderClientNumber = data.getParcelableExtra(EXTRA_CALLBACK_CLIENT_NUMBER);
                         handleCallbackSearchNumber(orderClientNumber);
                     } else {
                         handleCallbackSearchNumberCancel();
+                    }
+                }
+                break;
+            case REQUEST_CODE_CHECK_SALDO_EMONEY:
+                if (checkETollBalanceView != null) {
+                    if (resultCode == Activity.RESULT_OK && data != null &&
+                            data.getParcelableExtra(DigitalProductActivity.EXTRA_CATEGORY_PASS_DATA) != null) {
+                        DigitalCategoryDetailPassData passData = data.getParcelableExtra(DigitalProductActivity.EXTRA_CATEGORY_PASS_DATA);
+                        Bundle bundle = new Bundle();
+                        bundle.putString(ARG_PARAM_EXTRA_CATEGORY_ID, passData.getCategoryId());
+                        bundle.putString(ARG_PARAM_EXTRA_OPERATOR_ID, passData.getOperatorId());
+                        bundle.putString(ARG_PARAM_EXTRA_PRODUCT_ID, passData.getProductId());
+                        bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER, passData.getClientNumber());
+                        bundle.putBoolean(ARG_PARAM_EXTRA_IS_FROM_WIDGET, passData.isFromWidget());
+                        bundle.putBoolean(ARG_PARAM_EXTRA_IS_COUPON_APPLIED, passData.isCouponApplied());
+                        bundle.putString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_BALANCE, passData.getAdditionalETollBalance());
+                        bundle.putString(ARG_PARAM_EXTRA_ADDITIONAL_ETOLL_LAST_UPDATE_DATE, passData.getAdditionalETollLastUpdatedDate());
+                        setupArguments(bundle);
+                        setHasOptionsMenu(true);
+                        presenter.processGetCategoryAndBannerData(
+                                categoryId, operatorId, productId, clientNumber);
                     }
                 }
                 break;
@@ -932,11 +954,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             menu.findItem(R.id.action_menu_subscription_digital).setVisible(false);
             menu.findItem(R.id.action_menu_product_list_digital).setVisible(false);
         }
-        if (digitalHelpUrl != null && digitalHelpUrl.length() > 0) {
-            menu.findItem(R.id.action_menu_help_digital).setVisible(true);
-        } else {
-            menu.findItem(R.id.action_menu_help_digital).setVisible(false);
-        }
+        menu.findItem(R.id.action_menu_help_digital).setVisible(true);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -944,7 +962,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_menu_product_list_digital) {
             navigateToActivity(
-                    DigitalWebActivity.newInstance(
+                    digitalModuleRouter.getWebviewActivityWithIntent(
                             getActivity(), TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
                                     + TkpdBaseURL.DigitalWebsite.PATH_PRODUCT_LIST
                     )
@@ -952,7 +970,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             return true;
         } else if (item.getItemId() == R.id.action_menu_subscription_digital) {
             navigateToActivity(
-                    DigitalWebActivity.newInstance(
+                    digitalModuleRouter.getWebviewActivityWithIntent(
                             getActivity(), TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
                                     + TkpdBaseURL.DigitalWebsite.PATH_SUBSCRIPTIONS
                     )
@@ -960,14 +978,12 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             return true;
         } else if (item.getItemId() == R.id.action_menu_transaction_list_digital) {
             if (categoryDataState != null) {
-                UnifyTracking.eventClickDaftarTransaksiEvent(getActivity(), categoryDataState.getName(), categoryDataState.getName());
+                digitalAnalytics.eventClickDaftarTransaksiEvent(categoryDataState.getName());
             }
             if (GlobalConfig.isSellerApp()) {
                 navigateToActivity(
-                        DigitalWebActivity.newInstance(
-                                getActivity(), TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
-                                        + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST
-                        )
+                        digitalModuleRouter.getWebviewActivityWithIntent(getActivity(), TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
+                                + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST)
                 );
             } else {
                 RouteManager.route(getActivity(), ApplinkConst.DIGITAL_ORDER);
@@ -985,12 +1001,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        DigitalProductFragmentPermissionsDispatcher.onRequestPermissionsResult(
-                this, requestCode, grantResults
-        );
+        permissionCheckerHelper.onRequestPermissionsResult(getActivity(), requestCode, permissions, grantResults);
     }
 
-    @NeedsPermission(Manifest.permission.READ_CONTACTS)
     public void openContactPicker() {
         Intent contactPickerIntent = new Intent(
                 Intent.ACTION_PICK,
@@ -998,7 +1011,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         );
         try {
             navigateToActivityRequest(
-                    contactPickerIntent, IDigitalModuleRouter.REQUEST_CODE_CONTACT_PICKER
+                    contactPickerIntent, REQUEST_CODE_CONTACT_PICKER
             );
         } catch (ActivityNotFoundException e) {
             e.printStackTrace();
@@ -1007,41 +1020,17 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         }
     }
 
-    @OnPermissionDenied(Manifest.permission.READ_CONTACTS)
-    void showDeniedForContacts() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_CONTACTS);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.READ_CONTACTS)
-    void showNeverAskForContacts() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_CONTACTS);
-    }
-
-    @OnShowRationale(Manifest.permission.READ_CONTACTS)
-    void showRationaleForContacts(final PermissionRequest request) {
-        RequestPermissionUtil.onShowRationale(
-                getActivity(), request, Manifest.permission.READ_CONTACTS
-        );
-    }
-
-    @NeedsPermission({Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE})
     public void checkBalanceByUSSD(int simPosition, String ussdCode) {
         presenter.processToCheckBalance(null, simPosition, ussdCode);
 
-        UnifyTracking.eventUssd(getActivity(), AppEventTracking.Action.CLICK_USSD_CEK_SALDO, DeviceUtil.getOperatorName(getActivity(), simPosition) + " - " + presenter.getDeviceMobileNumber(simPosition));
-        UnifyTracking.eventUssdAttempt(getActivity(), getString(R.string.ussd_permission_allowed_label));
-    }
-
-    @OnPermissionDenied({Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE})
-    void showDeniedForPhone() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CALL_PHONE);
-        UnifyTracking.eventUssdAttempt(getActivity(), getString(R.string.ussd_permission_denied_label));
-    }
-
-    @OnNeverAskAgain({Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE})
-    void showNeverAskForPhone() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CALL_PHONE);
-        UnifyTracking.eventUssdAttempt(getActivity(), getString(R.string.ussd_permission_denied_label));
+        digitalAnalytics.eventUssd(
+                categoryDataState.getName(),
+                String.format("%s - %s", DeviceUtil.getOperatorName(getActivity(), simPosition),
+                        presenter.getDeviceMobileNumber(simPosition)
+                )
+        );
+        digitalAnalytics.eventUssdAttempt(categoryDataState.getName(),
+                getString(R.string.ussd_permission_allowed_label));
     }
 
     private void renderContactDataToClientNumber(ContactData contactData) {
@@ -1050,7 +1039,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     private void handleCallbackSearchNumber(OrderClientNumber orderClientNumber) {
         if (orderClientNumber != null) {
-            UnifyTracking.eventSelectNumberOnUserProfileNative(getActivity(), categoryDataState.getName());
+            digitalAnalytics.eventSelectNumberOnUserProfileNative(categoryDataState.getName());
         }
         if (categoryDataState.isSupportedStyle()) {
             switch (categoryDataState.getOperatorStyle()) {
@@ -1116,7 +1105,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     private void handleCallBackProductChooser(Product product) {
-        digitalProductView.renderUpdateProductSelected(product);
+        if (digitalProductView != null) digitalProductView.renderUpdateProductSelected(product);
     }
 
     private void handleCallBackOperatorChooser(Operator operator) {
@@ -1173,9 +1162,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                     USSDBroadcastReceiver.ACTION_GET_BALANCE_FROM_USSD
             ));
         }
-        Intent intent = new Intent(context, USSDAccessibilityService.class);
+        Intent intent = new Intent(getActivity(), USSDAccessibilityService.class);
         intent.putExtra(USSDAccessibilityService.KEY_START_SERVICE_FROM_APP, true);
-        context.startService(intent);
+        getActivity().startService(intent);
         ussdInProgress = true;
     }
 
@@ -1190,13 +1179,13 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             }
             if (pulsaBalance != null && pulsaBalance.isSuccess()) {
                 pulsaBalance.setMobileNumber(number);
-                UnifyTracking.eventUssdAttempt(getActivity(), getString(R.string.status_success_label));
+                digitalAnalytics.eventUssdAttempt(categoryDataState.getName(), getString(R.string.status_success_label));
                 startActivity(DigitalUssdActivity.newInstance(getActivity(), pulsaBalance, presenter.getSelectedUssdOperator(selectedSim),
                         categoryDataState.getClientNumberList().get(0).getValidation(),
                         categoryId, categoryDataState.getName(), selectedSim, presenter.getSelectedUssdOperatorList(selectedSim)));
             } else {
                 showMessageAlert(getActivity().getString(R.string.error_message_ussd_msg_not_parsed), getActivity().getString(R.string.message_ussd_title));
-                UnifyTracking.eventUssdAttempt(getActivity(), getString(R.string.status_failed_label) + getActivity().getString(R.string.error_message_ussd_msg_not_parsed));
+                digitalAnalytics.eventUssdAttempt(categoryDataState.getName(), getString(R.string.status_failed_label) + getString(R.string.error_message_ussd_msg_not_parsed));
             }
         }
     }
@@ -1231,11 +1220,11 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                 .textColorRes(R.color.grey_400)
                 .shadowColorRes(R.color.shadow)
                 .backgroundContentColorRes(R.color.black)
-                .textSizeRes(R.dimen.fontvs)
+                .textSizeRes(R.dimen.dp_12)
                 .circleIndicatorBackgroundDrawableRes(R.drawable.selector_circle_green)
-                .prevStringRes(R.string.navigate_back)
+                .prevStringRes(R.string.digital_navigate_back_showcase)
                 .nextStringRes(R.string.next)
-                .finishStringRes(R.string.title_done)
+                .finishStringRes(R.string.digital_navigate_done_showcase)
                 .useCircleIndicator(true)
                 .clickable(true)
                 .useArrow(true)
@@ -1328,7 +1317,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     private PagerAdapter getViewPagerAdapter(int tabCount, String firstTab) {
-        promoGuidePagerAdapter = new PromoGuidePagerAdapter(getFragmentManager(), context,
+        promoGuidePagerAdapter = new PromoGuidePagerAdapter(getChildFragmentManager(), getActivity(),
                 tabCount, firstTab);
         return promoGuidePagerAdapter;
     }
@@ -1365,7 +1354,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     private View getTickerCouponApplied() {
-        View view = LayoutInflater.from(context).inflate(R.layout.include_digital_ticker_coupon_applied_view, null);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.include_digital_ticker_coupon_applied_view, null);
 
         TickerView tickerView = view.findViewById(R.id.ticker_view);
         setupTickerCouponApplied(tickerView);
@@ -1378,7 +1367,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         messages.add(getString(R.string.digital_coupon_applied_ticker_message));
         tickerView.setVisibility(View.INVISIBLE);
         tickerView.setListMessage(messages);
-        tickerView.setHighLightColor(ContextCompat.getColor(context, R.color.green_200));
+        tickerView.setHighLightColor(ContextCompat.getColor(getContext(), R.color.green_200));
         tickerView.buildView();
 
         tickerView.postDelayed(() -> {

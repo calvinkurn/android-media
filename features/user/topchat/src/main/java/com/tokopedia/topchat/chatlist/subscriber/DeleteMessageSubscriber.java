@@ -2,9 +2,8 @@ package com.tokopedia.topchat.chatlist.subscriber;
 
 import android.util.Pair;
 
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.topchat.chatlist.listener.InboxChatContract;
-import com.tokopedia.topchat.chatlist.presenter.InboxChatPresenter;
 import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatListViewModel;
 import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatViewModel;
 
@@ -33,7 +32,7 @@ public class DeleteMessageSubscriber extends Subscriber<DeleteChatListViewModel>
 
     @Override
     public void onError(Throwable e) {
-        view.onErrorDeleteMessage(ErrorHandler.getErrorMessage(e));
+        view.onErrorDeleteMessage(ErrorHandler.getErrorMessage(view.getContext(), e));
     }
 
     @Override

@@ -49,7 +49,16 @@ public class PhoneVerificationActivationActivity extends BaseSimpleActivity {
     public static Intent getCallingApplinkIntent(Context context, Bundle bundle) {
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
         Intent intent = getCallingIntent(context);
+        intent.putExtra(EXTRA_IS_MANDATORY, false);
+        intent.putExtra(EXTRA_IS_LOGOUT_ON_BACK, false);
         return intent.setData(uri.build());
+    }
+
+    public static Intent getCallingIntent(Context context) {
+        Intent intent = new Intent(context, PhoneVerificationActivationActivity.class);
+        intent.putExtra(EXTRA_IS_MANDATORY, false);
+        intent.putExtra(EXTRA_IS_LOGOUT_ON_BACK, false);
+        return intent;
     }
 
     public static Intent getIntent(Context context, boolean isMandatory, boolean isLogoutOnBack){
@@ -72,7 +81,7 @@ public class PhoneVerificationActivationActivity extends BaseSimpleActivity {
         initInjector();
         initView();
 
-        analytics = PhoneVerificationAnalytics.createInstance(getApplicationContext());
+        analytics = PhoneVerificationAnalytics.createInstance();
     }
 
     private void initInjector() {
@@ -197,12 +206,5 @@ public class PhoneVerificationActivationActivity extends BaseSimpleActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-    }
-
-    public static Intent getCallingIntent(Context context) {
-        Intent intent = new Intent(context, PhoneVerificationActivationActivity.class);
-        intent.putExtra(EXTRA_IS_MANDATORY, false);
-        intent.putExtra(EXTRA_IS_LOGOUT_ON_BACK, false);
-        return intent;
     }
 }

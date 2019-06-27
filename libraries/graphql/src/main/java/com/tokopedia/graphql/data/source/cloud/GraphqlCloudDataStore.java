@@ -1,5 +1,7 @@
 package com.tokopedia.graphql.data.source.cloud;
 
+import android.text.TextUtils;
+
 import com.tokopedia.graphql.FingerprintManager;
 import com.tokopedia.graphql.GraphqlCacheManager;
 import com.tokopedia.graphql.data.GraphqlClient;
@@ -46,6 +48,15 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                         mCacheManager.save(mFingerprintManager.generateFingerPrint(requests.toString(), cacheStrategy.isSessionIncluded()),
                                 graphqlResponseInternal.getOriginalResponse().toString(),
                                 cacheStrategy.getExpiryTime());
+                        break;
+                    case CLOUD_THEN_CACHE:
+                        //store the data into disk if data is not empty
+                        if(!TextUtils.isEmpty(graphqlResponseInternal.getOriginalResponse().toString())) {
+                            mCacheManager.save(mFingerprintManager.generateFingerPrint(requests.toString(), cacheStrategy.isSessionIncluded()),
+                                    graphqlResponseInternal.getOriginalResponse().toString(),
+                                    cacheStrategy.getExpiryTime());
+                        }
+                        break;
                 }
             }
         });

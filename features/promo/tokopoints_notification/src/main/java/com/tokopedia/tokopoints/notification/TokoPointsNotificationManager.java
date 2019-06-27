@@ -24,7 +24,7 @@ public class TokoPointsNotificationManager {
         variable.put(Constant.KEY_TYPE, notificationType);
 
         GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(context.getApplicationContext().getResources(), R.raw.tp_gql_popup_notification),
-                TokoPointDetailEntity.class, variable);
+                TokoPointDetailEntity.class, variable, false);
         useCase.clearRequest();
         useCase.addRequest(request);
         useCase.execute(new Subscriber<GraphqlResponse>() {

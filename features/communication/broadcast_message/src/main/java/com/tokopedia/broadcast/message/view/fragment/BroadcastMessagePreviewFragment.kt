@@ -26,10 +26,12 @@ import com.tokopedia.broadcast.message.view.widget.PreviewProductWidget
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.track.TrackApp
 import kotlinx.android.synthetic.main.fragment_broadcast_message_preview.*
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 
 class BroadcastMessagePreviewFragment: BaseDaggerFragment(), BroadcastMessagePreviewView {
     @Inject
@@ -64,7 +66,7 @@ class BroadcastMessagePreviewFragment: BaseDaggerFragment(), BroadcastMessagePre
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         context?.let { GraphqlClient.init(it) }
-    }
+    }time_message
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_broadcast_message_preview, container, false)
@@ -95,16 +97,16 @@ class BroadcastMessagePreviewFragment: BaseDaggerFragment(), BroadcastMessagePre
         }
         message.text = model.message
         time_message.text = getString(R.string.time_template, getTimeNow())
+        time_message.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable
+        (activity, R.drawable.ic_broadcast_message_grey), null)
     }
 
     private fun getTimeNow() = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
 
     private fun submitMessage() {
-        router?.run {
-            sendEventTracking(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
+        TrackApp.getInstance().gtm.sendGeneralEvent(BroadcastMessageConstant.VALUE_GTM_EVENT_NAME_INBOX,
                     BroadcastMessageConstant.VALUE_GTM_EVENT_CATEGORY,
                     BroadcastMessageConstant.VALUE_GTM_EVENT_ACTION_SUBMIT, "")
-        }
         mutationModel?.let {presenter.sendBlastMessage(it)}
     }
 

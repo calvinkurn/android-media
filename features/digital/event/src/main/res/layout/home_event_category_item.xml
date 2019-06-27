@@ -96,7 +96,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_below="@+id/textView3"
                 android:text="Rp 552.00"
-                android:textColor="@color/orange"
+                android:textColor="@color/red_800"
                 android:textSize="@dimen/sp_14"
                 android:textStyle="bold" />
 
@@ -118,8 +118,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/linearLayout2"
-                android:layout_marginBottom="@dimen/keyline_1_minus_8dp"
-                android:layout_marginTop="@dimen/keyline_1_minus_8dp"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_8"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -149,7 +149,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/event_title"
-                android:layout_marginTop="@dimen/keyline_1_minus_8dp"
+                android:layout_marginTop="@dimen/dp_8"
                 android:layout_toLeftOf="@+id/textView3"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"

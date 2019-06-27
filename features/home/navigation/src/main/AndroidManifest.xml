@@ -3,6 +3,11 @@
 
     <application>
         <activity
+            android:name=".presentation.activity.InboxMainActivity"
+            android:label="@string/inbox"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
+        <activity
             android:name=".presentation.activity.NotificationActivity"
             android:label="@string/notifications"
             android:screenOrientation="portrait"

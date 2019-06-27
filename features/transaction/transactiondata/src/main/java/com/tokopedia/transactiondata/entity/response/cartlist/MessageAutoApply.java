@@ -7,13 +7,13 @@ public class MessageAutoApply {
 
     @SerializedName("state")
     @Expose
-    private String state;
+    private String state = "";
     @SerializedName("color")
     @Expose
-    private String color;
+    private String color = "";
     @SerializedName("text")
     @Expose
-    private String text;
+    private String text = "";
 
     public String getState() {
         return state;

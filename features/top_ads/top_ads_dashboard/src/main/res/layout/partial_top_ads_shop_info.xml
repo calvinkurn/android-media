@@ -35,9 +35,13 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="@string/label_top_ads_impression" />
 
-        <TextView
+        <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/text_view_deposit_desc"
-            style="@style/TextView.Micro.BlackSecondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fontSize="micro"
+            app:textViewTheme="lightSecondary"
+            android:drawablePadding="@dimen/dp_5"
             android:text="@string/top_ads_desc_credit_label"
             app:layout_constraintLeft_toLeftOf="@+id/text_view_shop_title"
             app:layout_constraintStart_toStartOf="@+id/text_view_shop_title"
@@ -53,16 +57,39 @@
 
     </android.support.constraint.ConstraintLayout>
 
-    <Button
-        android:id="@+id/text_view_add_deposit"
-        style="@style/Button.Submit.White.Border"
-        android:minHeight="@dimen/dp_32"
-        android:textSize="@dimen/sp_12"
-        android:textColor="@color/font_black_disabled_38"
-        android:layout_marginLeft="@dimen/dp_0"
-        android:layout_marginStart="@dimen/dp_0"
-        android:layout_marginRight="@dimen/dp_0"
-        android:layout_marginEnd="@dimen/dp_0"
-        android:text="@string/label_add_credit" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/text_view_credit_history"
+            style="@style/Button.Submit.White.Border"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:minHeight="@dimen/dp_32"
+            android:textSize="@dimen/sp_12"
+            android:textColor="@color/font_black_disabled_38"
+            android:layout_marginLeft="@dimen/dp_0"
+            android:layout_marginStart="@dimen/dp_0"
+            android:layout_marginRight="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:text="@string/label_credit_history" />
+
+        <Button
+            android:id="@+id/text_view_add_deposit"
+            style="@style/Button.Submit.White.BorderGreen"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:minHeight="@dimen/dp_32"
+            android:textSize="@dimen/sp_12"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginRight="@dimen/dp_0"
+            android:layout_marginEnd="@dimen/dp_0"
+            android:text="@string/label_add_credit" />
+
+
+    </LinearLayout>
 
 </LinearLayout>

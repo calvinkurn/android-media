@@ -4,14 +4,16 @@ import android.text.TextUtils;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
-import com.tokopedia.core.discovery.model.LevelThreeCategory;
-import com.tokopedia.core.discovery.model.LevelTwoCategory;
-import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.discovery.categorynav.domain.model.Category;
+import com.tokopedia.discovery.common.data.LevelThreeCategory;
+import com.tokopedia.discovery.common.data.LevelTwoCategory;
+import com.tokopedia.discovery.common.data.Option;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterDetailView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -20,8 +22,10 @@ import java.util.List;
 
 public class OptionHelper {
 
+    public static final String VALUE_SEPARATOR = ",";
+
     public static void saveOptionShownInMainState(Option option,
-                                                     HashMap<String, Boolean> shownInMainState) {
+                                                  HashMap<String, Boolean> shownInMainState) {
 
         if (!TextUtils.isEmpty(option.getInputState()) && Boolean.parseBoolean(option.getInputState())) {
             shownInMainState.put(option.getUniqueId(), true);
@@ -39,6 +43,10 @@ public class OptionHelper {
         } else if (Option.INPUT_TYPE_TEXTBOX.equals(option.getInputType())) {
             saveTextboxOptionInputState(option, savedTextInput);
         }
+    }
+
+    public static void saveOptionInputState(Option option, HashMap<String, Boolean> flagFilterHelper) {
+        saveCheckboxOptionInputState(option, flagFilterHelper);
     }
 
     private static void saveCheckboxOptionInputState(Option option,
@@ -214,5 +222,56 @@ public class OptionHelper {
         option.setKey(Option.KEY_CATEGORY);
         option.setValue(categoryId);
         return option;
+    }
+
+    public static Option generateOptionFromUniqueId(String uniqueId) {
+        String key = parseKeyFromUniqueId(uniqueId);
+        String value = parseValueFromUniqueId(uniqueId);
+        String name = parseNameFromUniqueId(uniqueId);
+
+        Option option = new Option();
+        option.setKey(key);
+        option.setValue(value);
+        option.setName(name);
+
+        return option;
+    }
+
+    public static String constructUniqueId(String key, String value, String name) {
+        return key + Option.UID_FIRST_SEPARATOR_SYMBOL + value + Option.UID_SECOND_SEPARATOR_SYMBOL + name;
+    }
+
+    public static List<Option> combinePriceFilterIfExists(List<Option> activeFilterOptionList, String combinedPriceFilterName) {
+        List<Option> returnedActiveFilterOptionList = new ArrayList<>(activeFilterOptionList);
+
+        boolean hasActivePriceFilter = false;
+
+        Iterator<Option> iterator = returnedActiveFilterOptionList.iterator();
+        while(iterator.hasNext()) {
+            Option option = iterator.next();
+
+            if(isPriceOption(option)) {
+                hasActivePriceFilter = true;
+                iterator.remove();
+            }
+        }
+
+        addGenericFilterOptionIfPriceFilterActive(hasActivePriceFilter, returnedActiveFilterOptionList, combinedPriceFilterName);
+
+        return returnedActiveFilterOptionList;
+    }
+
+    private static boolean isPriceOption(Option option) {
+        return option.getKey().equals(SearchApiConst.PMIN) || option.getKey().equals(SearchApiConst.PMAX);
+    }
+
+    private static void addGenericFilterOptionIfPriceFilterActive(boolean hasActivePriceFilter, List<Option> activeFilterOptionList, String combinedPriceFilterName) {
+        if(hasActivePriceFilter) {
+            activeFilterOptionList.add(
+                    generateOptionFromUniqueId(
+                            constructUniqueId(Option.KEY_PRICE_MIN, "", combinedPriceFilterName)
+                    )
+            );
+        }
     }
 }

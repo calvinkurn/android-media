@@ -8,18 +8,19 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.loyaltytokopoint.ILoyaltyRouter;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,7 +28,10 @@ import java.util.List;
 /**
  * Created by Nisie on 28/10/15.
  * Modified by Alifa
+ *
+ * use DeepLinkChecker from library applink instead.
  */
+@Deprecated
 public class DeepLinkChecker {
 
     public static final int OTHER = -1;
@@ -55,13 +59,23 @@ public class DeepLinkChecker {
     public static final int GROUPCHAT = 21;
     public static final int SALE = 22;
     public static final int WALLET_OVO = 23;
+    public static final int PLAY = 24;
+    public static final int PROFILE = 25;
+    public static final int CONTENT = 26;
+    public static final int SMCREFERRAL = 27;
+    public static final int HOME_RECOMMENDATION = 28;
+
 
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
     private static final String FLIGHT_SEGMENT = "flight";
     private static final String KEY_PROMO = "promo";
     private static final String KEY_SALE = "sale";
     private static final String GROUPCHAT_SEGMENT = "groupchat";
+    private static final String PLAY_SEGMENT = "play";
     private static final String MYBILLS = "mybills";
+
+    private static final String APP_EXCLUDED_URL = "app_excluded_url";
+    private static final String APP_EXCLUDED_HOST = "app_excluded_host";
 
     public static int getDeepLinkType(String url) {
         Uri uriData = Uri.parse(url);
@@ -76,6 +90,8 @@ public class DeepLinkChecker {
         try {
             if (isExcludedHostUrl(uriData))
                 return OTHER;
+            else if (isPlay(linkSegment))
+                return PLAY;
             else if (isGroupChat(linkSegment))
                 return GROUPCHAT;
             else if (isExcludedUrl(uriData))
@@ -122,6 +138,14 @@ public class DeepLinkChecker {
                 return TOKOPOINT;
             else if (isWalletOvo(linkSegment))
                 return WALLET_OVO;
+            else if (isProfile(linkSegment))
+                return PROFILE;
+            else if (isContent(linkSegment))
+                return CONTENT;
+            else if (isSMCReferral(linkSegment))
+                return SMCREFERRAL;
+            else if(isHomeRecoomendation(linkSegment))
+                return HOME_RECOMMENDATION;
             else return OTHER;
         } catch (Exception e) {
             e.printStackTrace();
@@ -137,11 +161,15 @@ public class DeepLinkChecker {
         return linkSegment.size() > 0 && linkSegment.get(0).equalsIgnoreCase(GROUPCHAT_SEGMENT);
     }
 
+    private static boolean isPlay(List<String> linkSegment) {
+        return linkSegment.size() > 0 && linkSegment.get(0).equalsIgnoreCase(PLAY_SEGMENT);
+    }
+
     private static boolean isFlight(List<String> linkSegment) {
         return linkSegment.size() > 0 && linkSegment.get(0).equalsIgnoreCase(FLIGHT_SEGMENT);
     }
 
-    public static List<String> getLinkSegment(String url) {
+    private static List<String> getLinkSegment(String url) {
         return Uri.parse(url).getPathSegments();
     }
 
@@ -229,7 +257,10 @@ public class DeepLinkChecker {
                 && !isEGold(linkSegment)
                 && !isMutualFund(linkSegment)
                 && !isWalletOvo(linkSegment)
-                && !isKycTerms(linkSegment);
+                && !isKycTerms(linkSegment)
+                && !isProfile(linkSegment)
+                && !isSMCReferral(linkSegment)
+                && !isHomeRecoomendation(linkSegment);
     }
 
     private static boolean isShop(List<String> linkSegment) {
@@ -243,7 +274,9 @@ public class DeepLinkChecker {
                 && !isTokoPoint(linkSegment)
                 && !isEGold(linkSegment)
                 && !isMutualFund(linkSegment)
-                && !isMyBills(linkSegment);
+                && !isMyBills(linkSegment)
+                && !linkSegment.get(0).equals("contact-us")
+                && !isSMCReferral(linkSegment);
     }
 
     private static boolean isSearch(String url) {
@@ -264,6 +297,18 @@ public class DeepLinkChecker {
 
     private static boolean isWalletOvo(List<String> linkSegment) {
         return (linkSegment.get(0).equals("ovo"));
+    }
+
+    private static boolean isProfile(List<String> linkSegment) {
+        return (linkSegment.size() >= 2 && linkSegment.get(0).equals("people"));
+    }
+
+    private static boolean isSMCReferral(List<String> linkSegment) {
+        return (linkSegment.get(0).equals("kupon-thr"));
+    }
+
+    private static boolean isHomeRecoomendation(List<String> linkSegment){
+        return (linkSegment.get(0).equals("rekomendasi"));
     }
 
     private static boolean isKycTerms(List<String> linkSegment) {
@@ -299,22 +344,27 @@ public class DeepLinkChecker {
         String searchQuery = uriData.getQueryParameter("q");
         String source = BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT;
 
-        bundle.putInt(BrowseProductRouter.FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
         bundle.putBoolean(IS_DEEP_LINK_SEARCH, true);
-        bundle.putString(BrowseProductRouter.DEPARTMENT_ID, departmentId);
-        bundle.putString(BrowseProductRouter.AD_SRC, TopAdsApi.SRC_HOTLIST);
-        bundle.putString(BrowseProductRouter.EXTRAS_SEARCH_TERM, searchQuery);
-        bundle.putString(BrowseProductRouter.EXTRA_SOURCE, source);
 
         Intent intent;
         if (TextUtils.isEmpty(departmentId)) {
-            intent = BrowseProductRouter.getSearchProductIntent(context);
+            intent = RouteManager.getIntent(context, constructSearchApplink(searchQuery, departmentId));
+            intent.putExtras(bundle);
         } else {
-            intent = BrowseProductRouter.getIntermediaryIntent(context, departmentId);
+            intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL, departmentId);
         }
-
-        intent.putExtras(bundle);
         context.startActivity(intent);
+    }
+
+    private static String constructSearchApplink(String query, String departmentId) {
+        String applink = TextUtils.isEmpty(query) ?
+                ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE :
+                ApplinkConst.DISCOVERY_SEARCH;
+
+        return applink
+                + "?"
+                + "q=" + query
+                + "&sc=" + departmentId;
     }
 
     private static boolean isHotBrowse(String url) {
@@ -340,27 +390,13 @@ public class DeepLinkChecker {
     }
 
     public static void openCategory(String url, Context context) {
-        Bundle bundle = new Bundle();
-        bundle.putString(BrowseProductRouter.DEPARTMENT_ID, getLinkSegment(url).get(1));
-        bundle.putString(BrowseProductRouter.AD_SRC, TopAdsApi.SRC_DIRECTORY);
-        bundle.putString(BrowseProductRouter.EXTRA_SOURCE, TopAdsApi.SRC_DIRECTORY);
-        Intent intent = BrowseProductRouter.getIntermediaryIntent(context);
-        intent.putExtras(bundle);
-        context.startActivity(intent);
+        String departmentId = getLinkSegment(url).get(1);
+        RouteManager.route(context, ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL, departmentId);
     }
 
     public static void openProduct(String url, Context context) {
         if (context != null) {
-            Bundle bundle = new Bundle();
-            if (getLinkSegment(url).size() > 1) {
-                bundle.putString("shop_domain", getLinkSegment(url).get(0));
-                bundle.putString("product_key", getLinkSegment(url).get(1));
-            }
-            bundle.putString("url", url);
-            Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
-            intent.putExtras(bundle);
-            intent.setData(Uri.parse(url));
-            context.startActivity(intent);
+            RouteManager.route(context, url);
         }
     }
 
@@ -393,13 +429,25 @@ public class DeepLinkChecker {
         }
     }
 
+    public static void openProfile(Context context, String url) {
+        if (getLinkSegment(url).size() >= 2) {
+            String userId = getLinkSegment(url).get(1);
+            RouteManager.route(context, ApplinkConst.PROFILE.replace("{user_id}", userId));
+        }
+    }
+
+    public static void openContent(Context context, String url) {
+        if (getLinkSegment(url).size() >= 2) {
+            String contentId = getLinkSegment(url).get(1);
+            RouteManager.route(context, ApplinkConst.PROFILE, contentId);
+        }
+    }
+
     private static boolean isExcludedUrl(Uri uriData) {
-        if (!TextUtils.isEmpty(TrackingUtils.getGtmString(
-                MainApplication.getAppContext(),
-                AppEventTracking.GTM.EXCLUDED_URL))) {
-            List<String> listExcludedString = Arrays.asList(TrackingUtils.getGtmString(
-                    MainApplication.getAppContext(),
-                    AppEventTracking.GTM.EXCLUDED_URL).split(","));
+        RemoteConfig firebaseRemoteConfig = new FirebaseRemoteConfigImpl(MainApplication.getAppContext());
+        String excludedUrl = firebaseRemoteConfig.getString(APP_EXCLUDED_URL);
+        if (!TextUtils.isEmpty(excludedUrl)) {
+            List<String> listExcludedString = Arrays.asList(excludedUrl.split(","));
             for (String excludedString : listExcludedString) {
                 if (uriData.getPath().endsWith(excludedString)) {
                     return true;
@@ -410,11 +458,10 @@ public class DeepLinkChecker {
     }
 
     private static boolean isExcludedHostUrl(Uri uriData) {
-        if (!TextUtils.isEmpty(TrackingUtils.getGtmString(MainApplication.getAppContext(),
-                AppEventTracking.GTM.EXCLUDED_HOST))) {
-            List<String> listExcludedString = Arrays.asList(TrackingUtils.getGtmString(
-                    MainApplication.getAppContext(),
-                    AppEventTracking.GTM.EXCLUDED_HOST).split(","));
+        RemoteConfig firebaseRemoteConfig = new FirebaseRemoteConfigImpl(MainApplication.getAppContext());
+        String excludedHost = firebaseRemoteConfig.getString(APP_EXCLUDED_HOST);
+        if (!TextUtils.isEmpty(excludedHost)) {
+            List<String> listExcludedString = Arrays.asList(excludedHost.split(","));
             for (String excludedString : listExcludedString) {
                 if (uriData.getPath().startsWith(excludedString)) {
                     return true;

@@ -3,23 +3,20 @@ package com.tokopedia.home.account.presentation.presenter;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.home.account.domain.GetSellerAccountUseCase;
 import com.tokopedia.home.account.presentation.SellerAccount;
 import com.tokopedia.home.account.presentation.subscriber.GetSellerAccountSubscriber;
-import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.user_identification_common.KYCConstant;
 
-import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
 
-import rx.Subscriber;
-
 import static com.tokopedia.home.account.AccountConstants.QUERY;
+import static com.tokopedia.home.account.AccountConstants.SALDO_QUERY;
 import static com.tokopedia.home.account.AccountConstants.TOPADS_QUERY;
 import static com.tokopedia.home.account.AccountConstants.VARIABLES;
 
@@ -31,12 +28,12 @@ public class SellerAccountPresenter extends BaseDaggerPresenter<SellerAccount.Vi
         implements SellerAccount.Presenter{
 
     private GetSellerAccountUseCase getSellerAccountUseCase;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
     private SellerAccount.View view;
 
     @Inject
     public SellerAccountPresenter(GetSellerAccountUseCase getSellerAccountUseCase,
-                                  UserSession userSession) {
+                                  UserSessionInterface userSession) {
         this.getSellerAccountUseCase = getSellerAccountUseCase;
         this.userSession = userSession;
     }
@@ -53,12 +50,13 @@ public class SellerAccountPresenter extends BaseDaggerPresenter<SellerAccount.Vi
     }
 
     @Override
-    public void getSellerData(String query, String topadsQuery) {
+    public void getSellerData(String query, String topadsQuery, String saldoQuery) {
         view.showLoading();
         RequestParams requestParams = RequestParams.create();
 
         requestParams.putString(QUERY, query);
         requestParams.putString(TOPADS_QUERY, topadsQuery);
+        requestParams.putString(SALDO_QUERY, saldoQuery);
         Map<String, Object> variables = new HashMap<>();
         int[] shopId = new int[1];
         if(!TextUtils.isEmpty(userSession.getShopId())) {

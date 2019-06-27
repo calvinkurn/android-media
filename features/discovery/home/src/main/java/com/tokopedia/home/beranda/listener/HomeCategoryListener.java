@@ -1,7 +1,11 @@
 package com.tokopedia.home.beranda.listener;
 
+import android.support.v4.app.FragmentManager;
+
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.BannerViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
+import com.tokopedia.trackingoptimizer.TrackingQueue;
 
 /**
  * @author by errysuprayogi on 11/29/17.
@@ -27,7 +31,7 @@ public interface HomeCategoryListener {
 
     void actionInfoPendingCashBackTokocash(CashBackData cashBackData, String appLinkActionButton);
 
-    void actionTokoPointClicked(String tokoPointUrl, String pageTitle);
+    void actionTokoPointClicked(String appLink, String tokoPointUrl, String pageTitle);
 
     void showNetworkError(String message);
 
@@ -39,13 +43,35 @@ public interface HomeCategoryListener {
 
     void onSixGridItemClicked(String actionLink, String trackingAttribution);
 
+    void onThreeGridItemClicked(String actionLink, String trackingAttribution);
+
     void onPromoScrolled(BannerSlidesModel bannerSlidesModel);
 
     void onPromoAllClick();
 
-    void onServerTimeReceived(long serverTimeUnix);
-
-    long getServerTimeOffset();
-
     boolean isHomeFragment();
+
+    void onPromoDragStart();
+
+    void onPromoDragEnd();
+
+    void setActivityStateListener(ActivityStateListener activityStateListener);
+
+    void onDynamicIconScrollStart();
+
+    void onDynamicIconScrollEnd();
+
+    void onSpotlightItemClicked(String actionLink);
+
+    void onTokopointCheckNowClicked(String applink);
+
+    HomeEggListener getEggListener();
+
+    TrackingQueue getTrackingQueue();
+
+    FragmentManager getChildFragmentManager();
+
+    int getWindowHeight();
+
+    int getHomeMainToolbarHeight();
 }

@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
  */
 public class ResponsePendingCashback {
 
-    @SerializedName("pending_cashback")
+    @SerializedName("goalPendingBalance")
     @Expose
     private PendingCashbackEntity pendingCashbackEntity;
 

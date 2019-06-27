@@ -11,7 +11,7 @@ import com.tokopedia.shop.settings.etalase.view.adapter.factory.BaseShopEtalaseF
 /**
  * Created by hendry on 23/08/18.
  */
-abstract class BaseShopEtalaseViewModel : Parcelable, Visitable<BaseShopEtalaseFactory> {
+abstract class BaseShopEtalaseViewModel() : Parcelable, Visitable<BaseShopEtalaseFactory> {
     var id: String = ""
         protected set
     var name: String = ""
@@ -23,10 +23,8 @@ abstract class BaseShopEtalaseViewModel : Parcelable, Visitable<BaseShopEtalaseF
     var isPrimaryEtalase: Boolean = false
         protected set
 
-    constructor() {}
-
     constructor(shopEtalaseModel: ShopEtalaseModel,
-                isPrimaryEtalase: Boolean) {
+                isPrimaryEtalase: Boolean): this() {
         this.id = shopEtalaseModel.id
         this.name = shopEtalaseModel.name
         this.count = shopEtalaseModel.count
@@ -49,7 +47,7 @@ abstract class BaseShopEtalaseViewModel : Parcelable, Visitable<BaseShopEtalaseF
         dest.writeByte(if (this.isPrimaryEtalase) 1.toByte() else 0.toByte())
     }
 
-    protected constructor(`in`: Parcel) {
+    protected constructor(`in`: Parcel) : this() {
         this.id = `in`.readString()
         this.name = `in`.readString()
         this.count = `in`.readInt()

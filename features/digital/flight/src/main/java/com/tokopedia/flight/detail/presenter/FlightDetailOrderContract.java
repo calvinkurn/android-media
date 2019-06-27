@@ -73,6 +73,10 @@ public interface FlightDetailOrderContract {
 
         void hidePaymentDueDate();
 
+        void showLihatEticket();
+
+        void hideLihatEticket();
+
         void showCancellationStatus();
 
         void showCancellationStatusInProgress(int numberOfProcess);
@@ -88,8 +92,6 @@ public interface FlightDetailOrderContract {
         Observable<ProfileInfo> getProfileObservable();
 
         void setTransactionDate(String transactionDate);
-
-        void showLessThan6HoursDialog();
 
         void showRefundableCancelDialog(String id, List<FlightCancellationJourney> items);
 
@@ -111,11 +113,9 @@ public interface FlightDetailOrderContract {
 
         void actionReorderButtonClicked();
 
-        void onDownloadETicketButtonClicked();
+        void onSendEticketButtonClicked();
 
         void onGetProfileData();
-
-        void checkIfFlightCancellable(String invoiceId, List<FlightCancellationJourney> items);
 
         List<FlightCancellationJourney> transformOrderToCancellation(List<FlightOrderJourney> flightOrderJourneyList);
 

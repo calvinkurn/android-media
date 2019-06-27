@@ -1,6 +1,7 @@
 package com.tokopedia.topads.keyword.view.listener;
 
-import com.tokopedia.core.base.presentation.CustomerView;
+
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
 
 /**
  * Created by normansyahputa on 5/22/17.

@@ -92,7 +92,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
-                        android:src="@drawable/ic_password_hint_hidden_eye_opened"
+                        app:srcCompat="@drawable/ic_see_grey"
                         />
 
                     <TextView
@@ -117,7 +117,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
-                        android:src="@drawable/ic_af_dashboard_click_grey"
+                        app:srcCompat="@drawable/ic_af_dashboard_click_grey"
                         />
 
                     <TextView
@@ -142,7 +142,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
-                        android:src="@drawable/ic_af_dashboard_cart"
+                        app:srcCompat="@drawable/ic_af_dashboard_cart"
                         />
 
                     <TextView

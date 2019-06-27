@@ -1,7 +1,7 @@
 package com.tokopedia.digital.newcart.domain.model.mapper;
 
-import com.tokopedia.digital.newcart.data.entity.DealProductEntity;
-import com.tokopedia.digital.newcart.data.entity.DealProductsResponse;
+import com.tokopedia.digital.newcart.data.entity.response.deal.DealProductEntity;
+import com.tokopedia.digital.newcart.data.entity.response.deal.DealProductsResponse;
 import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
 import com.tokopedia.digital.newcart.domain.model.DealProductsViewModel;
 

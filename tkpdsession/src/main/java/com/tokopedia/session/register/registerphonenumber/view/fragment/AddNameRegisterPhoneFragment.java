@@ -17,20 +17,19 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.analytics.LoginAnalytics;
-import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.session.R;
-import com.tokopedia.session.register.registerphonenumber.view.activity.AddNameRegisterPhoneActivity;
 import com.tokopedia.session.register.registerphonenumber.view.listener.AddNameListener;
 import com.tokopedia.session.register.registerphonenumber.view.presenter.AddNamePresenter;
 import com.tokopedia.session.register.registerphonenumber.view.viewmodel.LoginRegisterPhoneNumberModel;
 import com.tokopedia.session.register.view.util.ViewUtil;
+import com.tokopedia.track.TrackApp;
 
 import javax.inject.Inject;
 
@@ -42,6 +41,7 @@ public class AddNameRegisterPhoneFragment extends BaseDaggerFragment implements 
 
 
     private String phoneNumber;
+    private String uuid;
 
     protected EditText etName;
     private TextView bottomInfo, message;
@@ -75,11 +75,28 @@ public class AddNameRegisterPhoneFragment extends BaseDaggerFragment implements 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putString(ApplinkConstInternalGlobal.PARAM_PHONE, phoneNumber);
+        outState.putString(ApplinkConstInternalGlobal.PARAM_UUID, uuid);
     }
 
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            phoneNumber = getArguments().getString(ApplinkConstInternalGlobal.PARAM_PHONE, "0");
+            uuid = getArguments().getString(ApplinkConstInternalGlobal.PARAM_UUID, "");
+        } else if (savedInstanceState != null) {
+            phoneNumber = savedInstanceState.getString(ApplinkConstInternalGlobal.PARAM_PHONE, "0");
+            uuid = savedInstanceState.getString(ApplinkConstInternalGlobal.PARAM_UUID, "");
+        } else{
+            phoneNumber = "0";
+            uuid = "";
+        }
     }
 
     @Override
@@ -92,7 +109,7 @@ public class AddNameRegisterPhoneFragment extends BaseDaggerFragment implements 
     }
 
     private void setView() {
-        phoneNumber = getArguments().getString(AddNameRegisterPhoneActivity.PARAM_PHONE);
+
         disableNextButton();
         btnContinue.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
 
@@ -133,7 +150,7 @@ public class AddNameRegisterPhoneFragment extends BaseDaggerFragment implements 
         btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               onContinueClick();
+                onContinueClick();
             }
         });
         btnContinue.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -150,7 +167,7 @@ public class AddNameRegisterPhoneFragment extends BaseDaggerFragment implements 
 
     protected void onContinueClick() {
         KeyboardHandler.DropKeyboard(getActivity(), getView());
-        presenter.registerPhoneNumberAndName(etName.getText().toString());
+        presenter.registerPhoneNumberAndName(etName.getText().toString(), uuid, phoneNumber);
     }
 
 
@@ -196,10 +213,10 @@ public class AddNameRegisterPhoneFragment extends BaseDaggerFragment implements 
     @Override
     public void onSuccessRegister(LoginRegisterPhoneNumberModel model) {
         dismissLoading();
-        if(model.getMakeLoginDomain() != null) {
-            if(getContext().getApplicationContext() instanceof SessionRouter) {
-                ((SessionRouter) getContext().getApplicationContext()).sendAFCompleteRegistrationEvent(model.getMakeLoginDomain().getUserId(), LoginAnalytics.Label.PHONE_NUMBER);
-            }
+        if (model.getMakeLoginDomain() != null) {
+            TrackApp.getInstance().getAppsFlyer().sendAppsflyerRegisterEvent(
+                    String.valueOf(model.getMakeLoginDomain().getUserId()),
+                    LoginAnalytics.Label.PHONE_NUMBER);
         }
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();

@@ -11,6 +11,7 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -30,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 public class SearchInputView extends BaseCustomView {
 
     private static final long DEFAULT_DELAY_TEXT_CHANGED = TimeUnit.SECONDS.toMillis(0);
+    protected View view;
 
     public interface Listener {
 
@@ -83,7 +85,6 @@ public class SearchInputView extends BaseCustomView {
     }
 
     private void init(AttributeSet attrs) {
-        init();
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.SearchInputView);
         try {
             searchDrawable = styledAttributes.getDrawable(R.styleable.SearchInputView_siv_search_icon);
@@ -92,20 +93,16 @@ public class SearchInputView extends BaseCustomView {
         } finally {
             styledAttributes.recycle();
         }
+        init();
     }
 
-    private void init() {
-        View view = inflate(getContext(), getLayout(), this);
+    protected void init() {
+        view = inflate(getContext(), getLayout(), this);
         searchImageView = (ImageView) view.findViewById(R.id.image_view_search);
         searchTextView = (EditText) view.findViewById(R.id.edit_text_search);
         closeImageButton = (ImageButton) view.findViewById(R.id.image_button_close);
         delayTextChanged = DEFAULT_DELAY_TEXT_CHANGED;
-    }
 
-
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
         if (searchDrawable != null) {
             searchImageView.setImageDrawable(searchDrawable);
         }
@@ -119,6 +116,7 @@ public class SearchInputView extends BaseCustomView {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH && listener != null) {
+                    hideKeyboard();
                     listener.onSearchSubmitted(textView.getText().toString());
                     return true;
                 }
@@ -129,14 +127,19 @@ public class SearchInputView extends BaseCustomView {
         closeImageButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                searchTextView.setText("");
+                hideKeyboard();
                 if (reset != null) {
                     reset.onSearchReset();
                 }
-                searchTextView.setText("");
             }
         });
-        invalidate();
-        requestLayout();
+    }
+
+    public void hideKeyboard(){
+        searchTextView.clearFocus();
+        InputMethodManager in = (InputMethodManager)getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        in.hideSoftInputFromWindow(searchTextView.getWindowToken(), 0);
     }
 
     public void setSearchText(String searchText) {

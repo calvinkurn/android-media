@@ -7,9 +7,10 @@ import android.support.annotation.Nullable;
 
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
-import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.promocheckout.common.data.entity.request.Promo;
 import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.transactiondata.entity.response.cod.Data;
 
 import java.security.PublicKey;
 
@@ -23,16 +24,13 @@ import retrofit2.Converter;
 public interface ICheckoutModuleRouter {
 
     Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartListIntent(
-            boolean couponActive, String additionalStringData, int pageTracking);
+            boolean couponActive, String additionalStringData, int pageTracking,
+            String cartString, Promo promo
+    );
 
     Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
-            boolean couponActive, String additionalStringData, boolean isOneClickShipment, int pageTracking);
-
-    Intent checkoutModuleRouterGetProductDetailIntent(String productId);
-
-    Intent checkoutModuleRouterGetProductDetailIntentForTopAds(Product product);
-
-    Intent checkoutModuleRouterGetTransactionSummaryIntent();
+            boolean couponActive, String additionalStringData, boolean isOneClickShipment, int pageTracking,
+            Promo promo);
 
     void checkoutModuleRouterResetBadgeCart();
 
@@ -52,8 +50,6 @@ public interface ICheckoutModuleRouter {
 
     Intent checkoutModuleRouterGetHomeIntent(Context context);
 
-    Intent getAddAddressIntent(Activity activity, @Nullable AddressModel data, Token token, boolean isEdit, boolean isEmptyAddressFirst);
-
     Intent getGeolocationIntent(Context context, LocationPass locationPass);
 
     boolean checkoutModuleRouterGetEnableFingerprintPayment();
@@ -62,11 +58,13 @@ public interface ICheckoutModuleRouter {
 
     String checkoutModuleRouterGetPublicKey(PublicKey publicKey);
 
-    void goToPurchasePage(Activity activity);
-
     Intent checkoutModuleRouterGetRecentViewIntent();
 
-    Intent getPromoCheckoutDetailIntentWithCode(String promoCode, boolean promoCouponActive, boolean oneClickShipment, int pageTracking);
+    Intent getPromoCheckoutDetailIntentWithCode(String promoCode, boolean promoCouponActive, boolean oneClickShipment, int pageTracking, Promo promo);
 
-    Intent getPromoCheckoutListIntentWithCode(String promoCode, boolean promoCouponActive, boolean oneClickShipment, int pageTracking);
+    Intent getPromoCheckoutListIntentWithCode(String promoCode, boolean promoCouponActive, boolean oneClickShipment, int pageTracking,
+                                              Promo promo);
+
+    Intent getCodPageIntent(Context context, Data data);
+
 }

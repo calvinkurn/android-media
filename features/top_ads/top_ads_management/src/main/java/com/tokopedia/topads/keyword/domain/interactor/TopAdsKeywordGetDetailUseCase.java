@@ -1,15 +1,13 @@
 package com.tokopedia.topads.keyword.domain.interactor;
 
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.keyword.constant.KeywordTypeDef;
 import com.tokopedia.topads.keyword.data.mapper.TopAdsKeywordDetailMapperToDomain;
 import com.tokopedia.topads.keyword.domain.TopAdsKeywordGetDetailRepository;
 import com.tokopedia.topads.keyword.domain.model.KeywordDetailDomain;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -29,10 +27,9 @@ public class TopAdsKeywordGetDetailUseCase extends UseCase<KeywordDetailDomain> 
     private final TopAdsKeywordDetailMapperToDomain topAdsKeywordDetailMapperToDomain;
 
     @Inject
-    public TopAdsKeywordGetDetailUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,
-                                         TopAdsKeywordGetDetailRepository topAdsKeywordGetDetailRepository,
+    public TopAdsKeywordGetDetailUseCase(TopAdsKeywordGetDetailRepository topAdsKeywordGetDetailRepository,
                                          TopAdsKeywordDetailMapperToDomain topAdsKeywordDetailMapperToDomain) {
-        super(threadExecutor, postExecutionThread);
+        super();
         this.topAdsKeywordGetDetailRepository = topAdsKeywordGetDetailRepository;
         this.topAdsKeywordDetailMapperToDomain = topAdsKeywordDetailMapperToDomain;
 

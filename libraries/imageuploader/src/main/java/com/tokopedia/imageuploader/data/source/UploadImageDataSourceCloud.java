@@ -2,12 +2,10 @@ package com.tokopedia.imageuploader.data.source;
 
 import android.net.Uri;
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.imageuploader.data.source.api.ImageUploadApi;
 
 import java.util.Map;
 
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 import retrofit2.Response;
@@ -24,7 +22,7 @@ public class UploadImageDataSourceCloud {
     private Retrofit.Builder retrofitBuilder;
     private OkHttpClient okHttpClient;
 
-    public UploadImageDataSourceCloud(Retrofit.Builder retrofitBuilder, OkHttpClient okHttpClient, UserSession userSession) {
+    public UploadImageDataSourceCloud(Retrofit.Builder retrofitBuilder, OkHttpClient okHttpClient) {
         this.retrofitBuilder = retrofitBuilder;
         this.okHttpClient = okHttpClient;
     }

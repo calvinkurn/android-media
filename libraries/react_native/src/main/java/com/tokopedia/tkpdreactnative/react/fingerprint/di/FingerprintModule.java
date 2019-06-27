@@ -2,7 +2,6 @@ package com.tokopedia.tkpdreactnative.react.fingerprint.di;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
@@ -21,11 +20,13 @@ import com.tokopedia.tkpdreactnative.react.fingerprint.domain.SaveFingerPrintUse
 import com.tokopedia.tkpdreactnative.react.fingerprint.utils.FingerprintConstantRegister;
 import com.tokopedia.tkpdreactnative.react.fingerprint.view.presenter.FingerprintConfirmationPresenter;
 import com.tokopedia.tkpdreactnative.react.fingerprint.view.presenter.SaveFingerPrintPresenter;
-import com.tokopedia.tkpdreactnative.react.singleauthpayment.view.presenter.SetSingleAuthPaymentPresenter;
-import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
 import com.tokopedia.tkpdreactnative.react.singleauthpayment.domain.SinglePaymentGetPreferenceUseCase;
 import com.tokopedia.tkpdreactnative.react.singleauthpayment.domain.SinglePaymentSavePreferenceUseCase;
+import com.tokopedia.tkpdreactnative.react.singleauthpayment.view.presenter.SetSingleAuthPaymentPresenter;
 import com.tokopedia.tkpdreactnative.react.singleauthpayment.view.presenter.SinglePaymentPresenter;
+import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.concurrent.TimeUnit;
 
@@ -49,14 +50,14 @@ public class FingerprintModule {
     @FingerprintScope
     @Provides
     SaveFingerPrintPresenter provideSaveFingerPrintPresenter(SaveFingerPrintUseCase saveFingerPrintUseCase,
-                                                    UserSession userSession){
+                                                             UserSessionInterface userSession){
         return new SaveFingerPrintPresenter(userSession, saveFingerPrintUseCase);
     };
 
     @FingerprintScope
     @Provides
     SetSingleAuthPaymentPresenter provideSetSingleAuthPaymentPresenter(ReactNativeRouter reactNativeRouter,
-                                                                       UserSession userSession) {
+                                                                       UserSessionInterface userSession) {
         return new SetSingleAuthPaymentPresenter(reactNativeRouter, userSession);
     }
 
@@ -141,5 +142,11 @@ public class FingerprintModule {
             builder.addInterceptor(httpLoggingInterceptor);
         }
         return builder.build();
+    }
+
+    @FingerprintScope
+    @Provides
+    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 }

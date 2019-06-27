@@ -39,13 +39,13 @@ class BasicDeviceData(private val mContext: Context, private val mLocationManage
 
             try {
                 basicInfoMap[LATITUDE] = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).latitude.toString()
-            } catch (npe: NullPointerException) {
+            } catch (e: Exception) {
                 basicInfoMap[LATITUDE] = "0.0"
             }
 
             try {
-                basicInfoMap[LONGITUDE] = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).latitude.toString()
-            } catch (npe: NullPointerException) {
+                basicInfoMap[LONGITUDE] = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).longitude.toString()
+            } catch (e: Exception) {
                 basicInfoMap[LONGITUDE] = "0.0"
             }
 

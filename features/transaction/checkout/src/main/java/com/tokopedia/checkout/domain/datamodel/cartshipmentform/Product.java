@@ -3,6 +3,8 @@ package com.tokopedia.checkout.domain.datamodel.cartshipmentform;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.shipping_recommendation.domain.shipping.AnalyticsProductCheckoutData;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,11 +49,21 @@ public class Product implements Parcelable {
     private int productCatId;
     private int productCatalogId;
     private PurchaseProtectionPlanData purchaseProtectionPlanData;
+    private String productPreOrderInfo;
+    private TradeInInfo tradeInInfo;
 
     private AnalyticsProductCheckoutData analyticsProductCheckoutData;
 
     public AnalyticsProductCheckoutData getAnalyticsProductCheckoutData() {
         return analyticsProductCheckoutData;
+    }
+
+    public String getProductPreOrderInfo() {
+        return productPreOrderInfo;
+    }
+
+    public void setProductPreOrderInfo(String productPreOrderInfo) {
+        this.productPreOrderInfo = productPreOrderInfo;
     }
 
     public void setAnalyticsProductCheckoutData(AnalyticsProductCheckoutData analyticsProductCheckoutData) {
@@ -338,6 +350,14 @@ public class Product implements Parcelable {
         return purchaseProtectionPlanData;
     }
 
+    public TradeInInfo getTradeInInfo() {
+        return tradeInInfo;
+    }
+
+    public void setTradeInInfo(TradeInInfo tradeInInfo) {
+        this.tradeInInfo = tradeInInfo;
+    }
+
     public Product() {
     }
 
@@ -383,7 +403,9 @@ public class Product implements Parcelable {
         dest.writeInt(this.productCatId);
         dest.writeInt(this.productCatalogId);
         dest.writeParcelable(this.purchaseProtectionPlanData, flags);
+        dest.writeString(this.productPreOrderInfo);
         dest.writeParcelable(this.analyticsProductCheckoutData, flags);
+        dest.writeParcelable(this.tradeInInfo, flags);
     }
 
     protected Product(Parcel in) {
@@ -422,7 +444,9 @@ public class Product implements Parcelable {
         this.productCatId = in.readInt();
         this.productCatalogId = in.readInt();
         this.purchaseProtectionPlanData = in.readParcelable(PurchaseProtectionPlanData.class.getClassLoader());
+        this.productPreOrderInfo = in.readString();
         this.analyticsProductCheckoutData = in.readParcelable(AnalyticsProductCheckoutData.class.getClassLoader());
+        this.tradeInInfo = in.readParcelable(TradeInInfo.class.getClassLoader());
     }
 
     public static final Creator<Product> CREATOR = new Creator<Product>() {

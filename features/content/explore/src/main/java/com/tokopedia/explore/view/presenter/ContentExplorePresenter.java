@@ -45,14 +45,6 @@ public class ContentExplorePresenter
     }
 
     @Override
-    public void refreshExploreData() {
-        getExploreDataUseCase.executeNoCache(
-                GetExploreDataUseCase.getVariables(categoryId, cursor, search),
-                new GetExploreDataSubscriber(getView(), true)
-        );
-    }
-
-    @Override
     public void updateCursor(String cursor) {
         this.cursor = cursor;
     }

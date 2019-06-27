@@ -13,6 +13,7 @@ public class SearchParameter implements Parcelable {
     private String uniqueID;
     private String userID;
     private String departmentId;
+    private boolean isOfficial;
     private int startRow;
 
     public void setQueryKey(String queryKey) {
@@ -63,6 +64,14 @@ public class SearchParameter implements Parcelable {
         this.departmentId = departmentId;
     }
 
+    public boolean isOfficial() {
+        return isOfficial;
+    }
+
+    public void setOfficial(boolean official) {
+        isOfficial = official;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -76,6 +85,7 @@ public class SearchParameter implements Parcelable {
         dest.writeString(this.userID);
         dest.writeString(this.departmentId);
         dest.writeInt(this.startRow);
+        dest.writeByte(this.isOfficial ? (byte) 1 : (byte) 0);
     }
 
     public SearchParameter() {
@@ -88,6 +98,7 @@ public class SearchParameter implements Parcelable {
         this.userID = in.readString();
         this.departmentId = in.readString();
         this.startRow = in.readInt();
+        this.isOfficial = in.readByte() != 0;
     }
 
     public static final Parcelable.Creator<SearchParameter> CREATOR = new Parcelable.Creator<SearchParameter>() {

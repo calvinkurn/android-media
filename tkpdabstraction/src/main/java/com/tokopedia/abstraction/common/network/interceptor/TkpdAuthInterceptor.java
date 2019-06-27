@@ -3,10 +3,11 @@ package com.tokopedia.abstraction.common.network.interceptor;
 import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -59,26 +60,25 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     private static final String PARAM_BETA_TRUE = "1";
     private static final String RESPONSE_PARAM_TOKEN = "token";
     private static final String REQUEST_PARAM_REFRESH_TOKEN = "refresh_token";
+    public static final int BYTE_COUNT = 512;
 
     private Context context;
     private AbstractionRouter abstractionRouter;
-    protected UserSession userSession;
+    protected UserSessionInterface userSession;
     protected String authKey;
 
     public TkpdAuthInterceptor(@ApplicationContext Context context,
-                               AbstractionRouter abstractionRouter,
-                               UserSession userSession) {
-        this(context, abstractionRouter, userSession, AuthUtil.KEY.KEY_WSV4);
+                               AbstractionRouter abstractionRouter) {
+        this(context, abstractionRouter, AuthUtil.KEY.KEY_WSV4);
     }
 
     @Inject
     public TkpdAuthInterceptor(@ApplicationContext Context context,
                                AbstractionRouter abstractionRouter,
-                               UserSession userSession,
                                String authKey) {
         this.context = context;
         this.abstractionRouter = abstractionRouter;
-        this.userSession = userSession;
+        this.userSession = new UserSession(context);
         this.authKey = authKey;
     }
 
@@ -100,24 +100,27 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
         checkForceLogout(chain, response, finalRequest);
 
-        String bodyResponse = response.body().string();
-        checkResponse(bodyResponse, response);
+        checkResponse(response);
 
-        return createNewResponse(response, bodyResponse);
+        return response;
     }
 
-    protected void checkResponse(String string, Response response) {
-        String bodyResponse = string;
-
-        if (isOnBetaServer(response)) abstractionRouter.showForceHockeyAppDialog();
-
-        if (isMaintenance(bodyResponse)) {
-            showMaintenancePage();
-        } else if (isServerError(response.code()) && !isHasErrorMessage(bodyResponse)) {
-            showServerError(response);
-        } else if (isForbiddenRequest(bodyResponse, response.code())
-                && isTimezoneNotAutomatic()) {
-            showTimezoneErrorSnackbar();
+    protected void checkResponse(Response response) {
+        String bodyResponse;
+        try {
+            // Improvement for response, only check maintenance, server error and timezone by only peeking the body
+            // instead of getting all string and create the new response.
+            bodyResponse = response.peekBody(BYTE_COUNT).string();
+            if (isMaintenance(bodyResponse)) {
+                showMaintenancePage();
+            } else if (isServerError(response.code()) && !isHasErrorMessage(bodyResponse)) {
+                showServerError(response);
+            } else if (isForbiddenRequest(bodyResponse, response.code())
+                    && isTimezoneNotAutomatic()) {
+                showTimezoneErrorSnackbar();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -137,11 +140,16 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
     protected boolean isForbiddenRequest(String bodyResponse, int code) {
 
-        JSONObject json;
+        // improvement for by java.lang.OutOfMemoryError
+        // at java.lang.AbstractStringBuilder.enlargeBuffer(AbstractStringBuilder.java:94)
+        // do not parse too much JSONObject for checking forbidden request
         try {
-            json = new JSONObject(bodyResponse);
+            if (code != ERROR_FORBIDDEN_REQUEST) {
+                return false;
+            }
+            JSONObject json = new JSONObject(bodyResponse);
             String status = json.optString(RESPONSE_PARAM_STATUS, RESPONSE_STATUS_OK);
-            return status.equals(RESPONSE_STATUS_FORBIDDEN) && code == ERROR_FORBIDDEN_REQUEST;
+            return status.equals(RESPONSE_STATUS_FORBIDDEN);
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -193,7 +201,8 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
     protected Map<String, String> getHeaderMap(
             String path, String strParam, String method, String authKey, String contentTypeHeader) {
-        return AuthUtil.generateHeaders(path, strParam, method, authKey, contentTypeHeader, userSession.getUserId());
+        return AuthUtil.generateHeaders(path, strParam, method, authKey, contentTypeHeader,
+                userSession.getUserId(), userSession);
     }
 
     private void generateHeader(Map<String, String> authHeaders, Request originRequest, Request.Builder newRequest) {
@@ -304,11 +313,6 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     @Deprecated
     protected void showMaintenancePage() {
         abstractionRouter.showMaintenancePage();
-    }
-
-    @Deprecated
-    protected void showForceLogoutDialog(Response response) {
-        abstractionRouter.showForceLogoutDialog(response);
     }
 
     @Deprecated

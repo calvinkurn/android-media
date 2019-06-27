@@ -2,7 +2,6 @@ package com.tokopedia.train.search.di;
 
 import com.tokopedia.train.common.domain.TrainRepository;
 import com.tokopedia.train.search.domain.GetAvailabilityScheduleUseCase;
-import com.tokopedia.train.search.domain.GetDetailScheduleUseCase;
 import com.tokopedia.train.search.domain.GetFilterSearchParamDataUseCase;
 import com.tokopedia.train.search.domain.GetFilteredAndSortedScheduleUseCase;
 import com.tokopedia.train.search.domain.GetScheduleUseCase;

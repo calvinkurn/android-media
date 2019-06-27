@@ -14,9 +14,11 @@ import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.activity.DigitalYoutubeActivity;
 import com.tokopedia.digital.product.view.model.GuideData;
+import com.tokopedia.youtubeutils.common.YoutubePlayerConstant;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * @author by furqan on 04/07/18.
@@ -45,7 +47,7 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
         GuideData data = guideDataList.get(position);
 
         holder.tvTitle.setText(data.getTitle());
-        holder.youtubeTV.initialize(context.getApplicationContext().getString(R.string.GOOGLE_API_KEY),
+        holder.youtubeTV.initialize(YoutubePlayerConstant.GOOGLE_API_KEY,
                 youtubeListenerInitialize(data.getSourceLink(), holder.progressBar));
         holder.youtubeTV.setOnClickListener(youtubeListenerOnClick(data.getSourceLink()));
     }
@@ -113,6 +115,11 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
 
             tvTitle = itemView.findViewById(R.id.tv_guide_title);
             youtubeTV = itemView.findViewById(R.id.youtube_thumbnail_view);
+            itemView.findViewById(R.id.circle_thumbnail_view)
+                    .setBackground(MethodChecker
+                            .getDrawable(itemView.getContext(),
+                                    R.drawable.ic_play_circle_outline_48dp));
+
             progressBar = itemView.findViewById(R.id.youtube_thumbnail_loading_bar);
         }
     }

@@ -2,10 +2,10 @@ package com.tokopedia.topchat.chatlist.data.repository;
 
 
 import com.google.gson.JsonObject;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatListViewModel;
 import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
-import com.tokopedia.topchat.chatroom.view.viewmodel.SendMessageViewModel;
+
+import java.util.HashMap;
 
 import rx.Observable;
 
@@ -15,9 +15,8 @@ import rx.Observable;
 
 public interface MessageRepository {
 
-    Observable<InboxChatViewModel> getMessage(TKPDMapParam<String, Object> requestParams);
+    Observable<InboxChatViewModel> getMessage(HashMap<String, Object> requestParams);
 
     Observable<DeleteChatListViewModel> deleteMessage(JsonObject parameters);
 
-    Observable<SendMessageViewModel> sendMessage(TKPDMapParam<String, Object> requestParams);
 }

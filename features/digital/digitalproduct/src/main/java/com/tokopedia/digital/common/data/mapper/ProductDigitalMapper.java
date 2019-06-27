@@ -1,6 +1,7 @@
 package com.tokopedia.digital.common.data.mapper;
 
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
+import com.tokopedia.common_digital.product.presentation.model.ClientNumberType;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.OperatorBuilder;
 import com.tokopedia.common_digital.product.presentation.model.Product;
@@ -86,7 +87,7 @@ public class ProductDigitalMapper {
     private List<ClientNumber> transformClientNumberList(RechargeCategoryDetail entity) {
         List<ClientNumber> clientNumberCategoryList = new ArrayList<>();
 
-        if (entity != null && entity.getClientNumber() != null && entity.getClientNumber().getName().equalsIgnoreCase(ClientNumber.DEFAULT_TYPE_CONTRACT)) {
+        if (entity != null && entity.getClientNumber() != null && entity.getClientNumber().getName().equalsIgnoreCase(ClientNumberType.DEFAULT_TYPE_CONTRACT)) {
             ClientNumber clientNumberCategory = new ClientNumber();
             clientNumberCategory.setName(entity.getClientNumber().getName());
             clientNumberCategory.set_default(entity.getClientNumber().getDefault());
@@ -133,7 +134,7 @@ public class ProductDigitalMapper {
             List<Product> products = new ArrayList<>();
             for (com.tokopedia.digital.common.data.entity.response.Product product
                     : categoryDetailIncluded.getAttributes().getProduct()) {
-                if (product.getAttributes().getStatus() != Product.STATUS_INACTIVE) {
+                if (product.getAttributes().getStatus() != Product.Companion.getSTATUS_INACTIVE()) {
                     Product productOperator = new Product();
                     productOperator.setDesc(product.getAttributes().getDesc());
                     productOperator.setDetail(product.getAttributes().getDetail());

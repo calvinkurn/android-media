@@ -45,16 +45,31 @@
                 android:background="@color/grey_200"
                 android:orientation="vertical">
 
+                <com.tokopedia.design.component.ticker.TickerView
+                    android:id="@+id/flight_ticker_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_8"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_8"
+                    android:layout_marginBottom="@dimen/dp_4"
+                    android:padding="@dimen/dp_10"
+                    android:visibility="gone"
+                    app:tckv_content_text_size="@dimen/dp_11"
+                    app:tckv_indicator_off_color="@color/grey_550"
+                    app:tckv_indicator_on_color="@color/tkpd_main_green"
+                    tools:visibility="visible" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:paddingBottom="@dimen/dp_20"
-                    android:paddingEnd="@dimen/padding_16"
-                    android:paddingLeft="@dimen/padding_16"
-                    android:paddingRight="@dimen/padding_16"
                     android:paddingStart="@dimen/padding_16"
-                    android:paddingTop="@dimen/dp_20">
+                    android:paddingLeft="@dimen/padding_16"
+                    android:paddingTop="@dimen/dp_20"
+                    android:paddingEnd="@dimen/padding_16"
+                    android:paddingRight="@dimen/padding_16"
+                    android:paddingBottom="@dimen/dp_20">
 
                     <android.support.v7.widget.AppCompatTextView
                         style="@style/TextView.Micro.BlackSecondary"
@@ -83,8 +98,8 @@
                         style="@style/TextView.Micro"
                         android:layout_width="match_parent"
                         android:layout_marginLeft="@dimen/margin_16"
-                        android:layout_marginRight="@dimen/margin_16"
                         android:layout_marginTop="@dimen/dp_20"
+                        android:layout_marginRight="@dimen/margin_16"
                         android:background="@drawable/bg_stroke_dash_green_flight"
                         android:padding="@dimen/dp_10"
                         android:text="@string/flight_label_warn_to_check_again" />
@@ -206,11 +221,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:paddingEnd="@dimen/padding_16"
-                        android:paddingLeft="@dimen/padding_16"
-                        android:paddingRight="@dimen/padding_16"
                         android:paddingStart="@dimen/padding_16"
-                        android:paddingTop="@dimen/dp_20">
+                        android:paddingLeft="@dimen/padding_16"
+                        android:paddingTop="@dimen/dp_20"
+                        android:paddingEnd="@dimen/padding_16"
+                        android:paddingRight="@dimen/padding_16">
 
                         <View
                             android:layout_width="match_parent"
@@ -224,11 +239,11 @@
 
                             <TextView
                                 style="@style/TextView.Small"
-                                android:layout_alignParentLeft="true"
                                 android:layout_alignParentStart="true"
+                                android:layout_alignParentLeft="true"
                                 android:layout_centerVertical="true"
-                                android:layout_toLeftOf="@+id/total_price"
                                 android:layout_toStartOf="@+id/total_price"
+                                android:layout_toLeftOf="@+id/total_price"
                                 android:text="@string/flight_label_price_total" />
 
                             <TextView
@@ -267,18 +282,18 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:layout_marginEnd="@dimen/dp_20"
-                        android:layout_marginLeft="@dimen/dp_20"
-                        android:layout_marginRight="@dimen/dp_20"
                         android:layout_marginStart="@dimen/dp_20"
+                        android:layout_marginLeft="@dimen/dp_20"
                         android:layout_marginTop="@dimen/dp_20"
+                        android:layout_marginEnd="@dimen/dp_20"
+                        android:layout_marginRight="@dimen/dp_20"
                         android:background="@drawable/bg_line_separator" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/dp_15"
                         android:layout_marginTop="@dimen/dp_5"
+                        android:layout_marginBottom="@dimen/dp_15"
                         android:orientation="horizontal"
                         android:padding="@dimen/dp_20">
 
@@ -306,8 +321,8 @@
                     android:layout_height="wrap_content"
                     android:background="@color/background_apps"
                     android:orientation="vertical"
-                    android:paddingBottom="@dimen/dp_10"
-                    android:paddingTop="@dimen/dp_10">
+                    android:paddingTop="@dimen/dp_10"
+                    android:paddingBottom="@dimen/dp_10">
 
                     <Button
                         android:id="@+id/button_submit"

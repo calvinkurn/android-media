@@ -26,7 +26,7 @@ class EmptyInboxTalkViewHolder(val v: View) :
         ImageHandler.loadImageWithIdWithoutPlaceholder(emptyIcon, R.drawable.ic_empty_state)
     }
 
-    fun onViewRecycled() {
+    override fun onViewRecycled() {
         ImageHandler.clearImage(emptyIcon)
     }
 

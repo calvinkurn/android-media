@@ -38,7 +38,9 @@
 
         <TextView
             android:id="@+id/tv_sub_total_price"
-            style="@style/TextSmallMediumBlack70"
+            android:textColor="@color/orange_red"
+            android:textSize="@dimen/sp_14"
+            android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -140,7 +142,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_insurance_fee"
             android:layout_marginBottom="@dimen/dp_16"
-            tools:text="Proteksi Gadget (3 Barang)" />
+            tools:text="Proteksi Produk (3 Barang)" />
 
         <TextView
             android:id="@+id/tv_purchase_protection_fee"
@@ -170,6 +172,26 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_below="@id/tv_purchase_protection_label"
+            android:gravity="end"
+            tools:text="Rp 19.000" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/tv_priority_fee"
+            style="@style/TextSmallNormalBlack54"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_additional_fee"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:text="@string/label_order_priority_cost" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/tv_priority_fee_price"
+            style="@style/TextSmallMediumBlack70"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/tv_additional_fee"
             android:gravity="end"
             tools:text="Rp 19.000" />
 

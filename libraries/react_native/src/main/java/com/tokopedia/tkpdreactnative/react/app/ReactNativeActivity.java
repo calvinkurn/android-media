@@ -9,7 +9,7 @@ import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactRootView;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
-import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 
 /**

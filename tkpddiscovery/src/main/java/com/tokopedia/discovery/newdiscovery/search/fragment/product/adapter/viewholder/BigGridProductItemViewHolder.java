@@ -12,8 +12,8 @@ public class BigGridProductItemViewHolder extends GridProductItemViewHolder {
     @LayoutRes
     public static final int LAYOUT = R.layout.search_result_product_item_big_grid;
 
-    public BigGridProductItemViewHolder(View itemView, ProductListener itemClickListener) {
-        super(itemView, itemClickListener);
+    public BigGridProductItemViewHolder(View itemView, ProductListener itemClickListener, String searchQuery) {
+        super(itemView, itemClickListener, searchQuery);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.tokopedia.digital.categorylist.view.adapter;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,8 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.categorylist.view.model.DigitalCategoryItemData;
 import com.tokopedia.digital.categorylist.view.model.DigitalCategoryItemDataError;

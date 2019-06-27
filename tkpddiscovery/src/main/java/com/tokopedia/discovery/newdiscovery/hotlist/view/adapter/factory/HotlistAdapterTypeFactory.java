@@ -14,21 +14,23 @@ import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.viewholder.Sear
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistHeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistProductViewModel;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.SearchEmptyViewModel;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionTypeFactoryImpl;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionTypeFactoryImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.EmptySearchModel;
 
 /**
  * Created by hangnadi on 10/8/17.
  */
 
-public class HotlistAdapterTypeFactory extends SearchSectionTypeFactoryImpl implements HotlistTypeFactory {
+public class HotlistAdapterTypeFactory extends BrowseSectionTypeFactoryImpl implements HotlistTypeFactory {
 
     private final HotlistListener mHotlistListener;
     private final String searchQuery;
+    private final String hotlistAlias;
 
-    public HotlistAdapterTypeFactory(HotlistListener mHotlistListener, String searchQuery) {
+    public HotlistAdapterTypeFactory(HotlistListener mHotlistListener, String searchQuery, String hotlistAlias) {
         this.mHotlistListener = mHotlistListener;
         this.searchQuery = searchQuery;
+        this.hotlistAlias = hotlistAlias;
     }
 
     @Override
@@ -63,7 +65,7 @@ public class HotlistAdapterTypeFactory extends SearchSectionTypeFactoryImpl impl
     public AbstractViewHolder createViewHolder(View parent, int type) {
         AbstractViewHolder viewHolder;
         if (type == HotlistHeaderViewHolder.LAYOUT) {
-            viewHolder = new HotlistHeaderViewHolder(parent, mHotlistListener, searchQuery);
+            viewHolder = new HotlistHeaderViewHolder(parent, mHotlistListener, searchQuery, hotlistAlias);
         } else if (type == BigGridProductViewHolder.LAYOUT) {
             viewHolder = new BigGridProductViewHolder(parent, mHotlistListener);
         } else if (type == GridProductViewHolder.LAYOUT) {

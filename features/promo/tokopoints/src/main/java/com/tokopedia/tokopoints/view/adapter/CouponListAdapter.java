@@ -78,7 +78,8 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
     @Override
     public void onBindViewHolder(CouponListAdapter.ViewHolder holder, int position) {
         final CouponValueEntity item = mItems.get(position);
-        ImageHandler.loadImageFitCenter(holder.imgBanner.getContext(), holder.imgBanner, item.getThumbnailUrlMobile());
+        ImageHandler.loadImageFitCenter(holder.imgBanner.getContext(), holder.imgBanner,
+                TextUtils.isEmpty(item.getThumbnailUrlMobile()) ? item.getImageUrlMobile() : item.getThumbnailUrlMobile());
 
         if (item.getUsage() != null) {
             holder.label.setVisibility(View.VISIBLE);
@@ -109,12 +110,7 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
             bundle.putString(CommonConstant.EXTRA_COUPON_CODE, mItems.get(position).getCode());
             holder.imgBanner.getContext().startActivity(CouponDetailActivity.getCouponDetail(holder.imgBanner.getContext(), bundle), bundle);
 
-            //TODO need to add transectinal ga
-            AnalyticsTrackerUtil.sendEvent(holder.imgBanner.getContext(),
-                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                    AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_BACK_ARROW,
-                    AnalyticsTrackerUtil.EventKeys.BACK_ARROW_LABEL);
+            sendClickEvent(holder.imgBanner.getContext(), item, position);
         });
 
 
@@ -153,11 +149,36 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
                 holder.progressTimer.setVisibility(View.GONE);
                 holder.value.setPadding(0, 0, 0, 0);
                 holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), R.color.black_70));
+
             }
         } else {
             holder.progressTimer.setVisibility(View.GONE);
             holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), R.color.black_70));
         }
+        enableOrDisableImages(holder, item);
+    }
+
+    private void enableOrDisableImages(ViewHolder holder, CouponValueEntity item) {
+        if(item.getUsage()!=null) {
+            if (item.getUsage().getActiveCountDown() > 0
+                    || item.getUsage().getExpiredCountDown() <= 0) {
+                disableImages(holder);
+            } else {
+                enableImages(holder);
+            }
+        }else{
+            disableImages(holder);
+        }
+    }
+
+    private void disableImages(ViewHolder holder) {
+        holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.imgLabel.getContext(), R.color.tp_coupon_disable), android.graphics.PorterDuff.Mode.SRC_IN);
+        holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.ivMinTxn.getContext(), R.color.tp_coupon_disable), android.graphics.PorterDuff.Mode.SRC_IN);
+    }
+
+    private void enableImages(ViewHolder holder) {
+        holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.imgLabel.getContext(), R.color.medium_green), android.graphics.PorterDuff.Mode.SRC_IN);
+        holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.ivMinTxn.getContext(), R.color.medium_green), android.graphics.PorterDuff.Mode.SRC_IN);
     }
 
     @Override
@@ -216,7 +237,7 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
         promotions.put("promotions", Arrays.asList(item));
 
         Map<String, Map<String, List<Map<String, String>>>> promoClick = new HashMap<>();
-        promoClick.put("promoClick", promotions);
+        promoClick.put("promoView", promotions);
 
         AnalyticsTrackerUtil.sendECommerceEvent(context,
                 AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,

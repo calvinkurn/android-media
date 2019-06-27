@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/dp_10"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="@dimen/dp_4"
+    app:cardUseCompatPadding="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/dp_8">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/image_reviewer"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
+            android:scaleType="centerCrop"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            tools:src="@color/grey_300"/>
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/iv_quote"
+            android:layout_width="55dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            app:srcCompat="@drawable/ic_quote"
+            android:scaleType="fitXY"/>
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/txt_reviewer_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="@dimen/sp_6"
+            android:layout_toRightOf="@+id/image_reviewer"
+            android:layout_toEndOf="@+id/image_reviewer"
+            android:layout_toLeftOf="@+id/iv_quote"
+            android:layout_toStartOf="@+id/iv_quote"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            tools:text="Achmad Zaky"
+            app:fontSize="small"
+            app:weight="medium"
+            app:textViewTheme="lightPrimary"/>
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/text_review_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="@dimen/sp_6"
+            android:layout_below="@+id/txt_reviewer_name"
+            android:layout_alignLeft="@+id/txt_reviewer_name"
+            android:layout_alignStart="@+id/txt_reviewer_name"
+            android:layout_alignRight="@+id/txt_reviewer_name"
+            android:layout_alignEnd="@+id/txt_reviewer_name"
+            tools:text="20 Okt 2016 pukul 10:20"
+            app:fontSize="micro"
+            app:textViewTheme="lightDisabled"/>
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/iv_rating_review"
+            android:layout_width="80dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center_vertical|start"
+            android:layout_below="@+id/text_review_date"
+            android:layout_alignLeft="@+id/txt_reviewer_name"
+            android:layout_alignStart="@+id/txt_reviewer_name"
+            tools:srcCompat="@drawable/ic_star_five" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/text_review"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            android:lineSpacingExtra="@dimen/sp_4"
+            android:maxLines="4"
+            android:layout_below="@+id/iv_rating_review"
+            android:layout_alignLeft="@+id/txt_reviewer_name"
+            android:layout_alignStart="@+id/txt_reviewer_name"
+            android:layout_alignRight="@+id/txt_reviewer_name"
+            android:layout_alignEnd="@+id/txt_reviewer_name"
+            tools:text="dsdadadnsohdoiasdosahdosahdosahdoishdlashdlashdsdalsdhlashdashdaohdsahdhsaodihsidoiashddsajddbsadsjbalbdjlsa"
+            android:ellipsize="end"
+            app:fontSize="small"
+            app:textViewTheme="lightSecondary"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_review_attachment"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_below="@+id/text_review"
+            android:layout_alignLeft="@+id/txt_reviewer_name"
+            android:layout_alignStart="@+id/txt_reviewer_name"
+            android:layout_alignRight="@+id/txt_reviewer_name"
+            android:layout_alignEnd="@+id/txt_reviewer_name"
+            tools:listitem="@layout/item_youtube_thumbnail" />
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

@@ -10,34 +10,34 @@ public class Wallet {
 
     @SerializedName("linked")
     @Expose
-    private Boolean linked;
+    private Boolean linked = false;
     @SerializedName("balance")
     @Expose
-    private String balance;
+    private String balance = "";
     @SerializedName("rawBalance")
     @Expose
-    private Integer rawBalance;
+    private Integer rawBalance = 0;
     @SerializedName("text")
     @Expose
-    private String text;
+    private String text = "";
     @SerializedName("total_balance")
     @Expose
-    private String totalBalance;
+    private String totalBalance = "";
     @SerializedName("raw_total_balance")
     @Expose
-    private Integer rawTotalBalance;
+    private Integer rawTotalBalance = 0;
     @SerializedName("hold_balance")
     @Expose
-    private String holdBalance;
+    private String holdBalance = "";
     @SerializedName("raw_hold_balance")
     @Expose
-    private Integer rawHoldBalance;
+    private Integer rawHoldBalance = 0;
     @SerializedName("redirect_url")
     @Expose
-    private String redirectUrl;
+    private String redirectUrl = "";
     @SerializedName("applinks")
     @Expose
-    private String applinks;
+    private String applinks = "";
     @SerializedName("ab_tags")
     @Expose
     private List<AbTag> abTags = null;

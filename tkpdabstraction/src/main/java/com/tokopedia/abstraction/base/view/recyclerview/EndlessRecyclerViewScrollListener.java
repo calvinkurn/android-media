@@ -67,7 +67,7 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
         return currentPage;
     }
 
-    private int getLastVisibleItem(int[] lastVisibleItemPositions) {
+    protected int getLastVisibleItem(int[] lastVisibleItemPositions) {
         int maxSize = 0;
         for (int i = 0; i < lastVisibleItemPositions.length; i++) {
             if (i == 0) {
@@ -82,6 +82,13 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
     @Override
     public void onScrolled(RecyclerView view, int dx, int dy) {
         super.onScrolled(view, dx, dy);
+
+        checkLoadMore(view, dx, dy);
+
+    }
+
+    protected void checkLoadMore(RecyclerView view, int dx, int dy) {
+
         // assume load more when going down or going right
         if (dy <= 0 && dx <= 0) {
             return;

@@ -1,8 +1,8 @@
 package com.tokopedia.topchat.chattemplate.view.listener;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.core.base.presentation.CustomerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatSettingAdapter;
 import com.tokopedia.topchat.chattemplate.view.adapter.viewholder.ItemTemplateChatViewHolder;
 
@@ -33,7 +33,7 @@ public class TemplateChatContract {
 
         void successRearrange();
 
-        void showError(String errorMessage);
+        void showError(Throwable errorMessage);
 
         void successSwitch();
 

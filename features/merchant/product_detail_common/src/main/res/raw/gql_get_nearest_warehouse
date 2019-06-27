@@ -1,0 +1,23 @@
+query getNearestWarehouse($productIds: [String!]!){
+    GetNearestWarehouse(productIDs:$productIds) {
+        header{
+            processTime
+            messages
+            reason
+            error_code
+        }
+        data{
+            product_id
+            stock
+            stock_wording
+            price
+            warehouse_info{
+                warehouse_id
+                is_fulfillment
+                district_id
+                postal_code
+                geolocation
+            }
+        }
+    }
+}

@@ -7,8 +7,8 @@
 
 package com.tokopedia.core.discovery.catalog.listener;
 
-
 import com.tokopedia.core.model.share.ShareData;
+import com.tokopedia.linker.model.LinkerData;
 
 /**
  * @author anggaprasetiyo on 10/18/16.
@@ -28,5 +28,5 @@ public interface ICatalogActionFragment {
      *
      * @param shareData share data object
      */
-    void deliverCatalogShareData(ShareData shareData);
+    void deliverCatalogShareData(LinkerData shareData);
 }

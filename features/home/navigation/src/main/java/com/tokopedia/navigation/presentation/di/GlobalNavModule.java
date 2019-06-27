@@ -1,24 +1,22 @@
 package com.tokopedia.navigation.presentation.di;
 
 import android.content.Context;
-import android.support.v4.app.Fragment;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.navigation.GlobalNavConstant;
 import com.tokopedia.navigation.GlobalNavRouter;
+import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.data.mapper.NotificationMapper;
 import com.tokopedia.navigation.domain.GetBottomNavNotificationUseCase;
 import com.tokopedia.navigation.domain.GetDrawerNotificationUseCase;
 import com.tokopedia.navigation.domain.GetNewFeedCheckerUseCase;
 import com.tokopedia.navigation.listener.CartListener;
-import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
+import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Named;
 
@@ -32,16 +30,8 @@ import dagger.Provides;
 @Module
 public class GlobalNavModule {
     @Provides
-    MainParentPresenter provideMainParentPresenter(GetBottomNavNotificationUseCase getNotificationUseCase, UserSession userSession){
+    MainParentPresenter provideMainParentPresenter(GetBottomNavNotificationUseCase getNotificationUseCase, UserSessionInterface userSession){
         return new MainParentPresenter(getNotificationUseCase, userSession);
-    }
-
-    @Provides
-    AnalyticTracker provideAnalyticTracker(@ApplicationContext Context context) {
-        if (context instanceof AbstractionRouter) {
-            return ((AbstractionRouter) context).getAnalyticTracker();
-        }
-        throw new RuntimeException("App should implement " + AbstractionRouter.class.getSimpleName());
     }
 
     @Provides
@@ -61,6 +51,19 @@ public class GlobalNavModule {
     @Provides
     GetDrawerNotificationUseCase provideGetDrawerNotificationUseCase(GraphqlUseCase graphqlUseCase, CartListener cartListener) {
         return new GetDrawerNotificationUseCase(graphqlUseCase, new NotificationMapper(), cartListener);
+    }
+
+    @Provides
+    GetRecommendationUseCase provideGetRecomendationUseCase(@Named("recommendationQuery") String recomQuery,
+                                                            GraphqlUseCase graphqlUseCase,
+                                                            UserSessionInterface userSession){
+        return new GetRecommendationUseCase(recomQuery, graphqlUseCase, userSession);
+    }
+
+    @Provides
+    @Named("recommendationQuery")
+    String provideRecommendationRawQuery(@ApplicationContext Context context) {
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.query_recommendation_widget);
     }
 
     @Provides
@@ -85,7 +88,7 @@ public class GlobalNavModule {
 
     @Provides
     @GlobalNavScope
-    com.tokopedia.user.session.UserSessionInterface provideUserSession(@ApplicationContext Context context) {
-        return new com.tokopedia.user.session.UserSession(context);
+    UserSessionInterface provideUserSession(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 }

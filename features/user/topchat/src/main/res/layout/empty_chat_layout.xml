@@ -16,14 +16,14 @@
 
     <android.support.v4.widget.Space
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/padding_large" />
+        android:layout_height="@dimen/dp_25" />
 
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/no_existing_chat"
-        android:textSize="@dimen/text_size_l_medium"
+        android:textSize="@dimen/sp_16"
         android:fontFamily="sans-serif"
         android:textStyle="bold"
         android:textColor="@color/black_54"
@@ -31,7 +31,7 @@
         android:lineSpacingExtra="4sp"/>
 
     <android.support.v4.widget.Space
-        android:layout_height="@dimen/keyline_1_minus_8dp"
+        android:layout_height="@dimen/dp_8"
         android:layout_width="wrap_content" />
 
     <TextView

@@ -8,31 +8,31 @@ public class UserInfo {
 
     @SerializedName("user_messenger")
     @Expose
-    private String userMessenger;
+    private String userMessenger = "";
     @SerializedName("user_birth")
     @Expose
-    private String userBirth;
+    private String userBirth = "";
     @SerializedName("user_name")
     @Expose
-    private String userName;
+    private String userName = "";
     @SerializedName("user_reputation")
     @Expose
-    private UserReputation userReputation;
+    private UserReputation userReputation = new UserReputation();
     @SerializedName("user_email")
     @Expose
-    private String userEmail;
+    private String userEmail = "";
     @SerializedName("user_id")
     @Expose
-    private String userId;
+    private String userId = "";
     @SerializedName("user_phone")
     @Expose
-    private String userPhone;
+    private String userPhone = "";
     @SerializedName("user_hobbies")
     @Expose
-    private String userHobbies;
+    private String userHobbies = "";
     @SerializedName("user_image")
     @Expose
-    private String userImage;
+    private String userImage = "";
 
     public String getUserMessenger() {
         return userMessenger;

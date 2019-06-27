@@ -5,15 +5,16 @@ import android.os.Build;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
 import com.tokopedia.checkout.domain.mapper.ICheckoutMapper;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
+import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
 import java.security.PublicKey;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -24,6 +25,7 @@ import rx.Observable;
  */
 
 public class CheckoutUseCase extends UseCase<CheckoutData> {
+    public static final String PARAM_TRADE_IN_DATA = "PARAM_TRADE_IN_DATA";
     public static final String PARAM_CARTS = "carts";
     private static final String PARAM_OPTIONAL = "optional";
     private static final String PARAM_IS_THANKYOU_NATIVE = "is_thankyou_native";
@@ -31,6 +33,9 @@ public class CheckoutUseCase extends UseCase<CheckoutData> {
     private static final String PARAM_FINGERPRINT_PUBLICKEY = "fingerprint_publickey";
     private static final String PARAM_FINGERPRINT_SUPPORT = "fingerprint_support";
     public static final String PARAM_ONE_CLICK_SHIPMENT = "is_one_click_shipment";
+    public static final String PARAM_IS_EXPRESS = "is_express";
+    public static final String PARAM_IS_TRADEIN = "is_trade_in";
+    public static final String PARAM_DEVICE_ID = "dev_id";
 
     private final ICartRepository cartRepository;
     private final ICheckoutMapper checkoutMapper;
@@ -58,6 +63,10 @@ public class CheckoutUseCase extends UseCase<CheckoutData> {
         param.put(PARAM_IS_THANKYOU_NATIVE_NEW, "1");
         param.put(PARAM_ONE_CLICK_SHIPMENT, String.valueOf(requestParams.getBoolean(
                 PARAM_ONE_CLICK_SHIPMENT, false)));
+        param.put(PARAM_IS_EXPRESS, String.valueOf(requestParams.getBoolean(PARAM_IS_EXPRESS, false)));
+        if (requestParams.getObject(PARAM_TRADE_IN_DATA) != null) {
+            param.putAll((Map<String, String>) requestParams.getObject(PARAM_TRADE_IN_DATA));
+        }
         param = createParamFingerprint(param);
         return cartRepository.checkout(param)
                 .map(checkoutMapper::convertCheckoutData);

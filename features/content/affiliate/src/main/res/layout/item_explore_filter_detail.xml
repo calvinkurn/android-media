@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainView"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_48"
+    android:layout_marginEnd="@dimen/dp_4"
+    android:layout_marginRight="@dimen/dp_4"
+    android:background="@drawable/bg_af_chips_background"
+    android:gravity="center_vertical|start"
+    android:padding="@dimen/dp_8">
+
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:visibility="gone"
+        tools:src="@tools:sample/avatars"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:layout_marginEnd="@dimen/dp_4"
+        android:layout_marginRight="@dimen/dp_4"
+        android:ellipsize="end"
+        android:fontFamily="sans-serif-medium"
+        android:lineSpacingExtra="4sp"
+        android:textColor="@color/black_54"
+        android:textSize="@dimen/sp_10"
+        tools:text="Perawatan Tubuh\nPerawatan muka" />
+</LinearLayout>

@@ -1,5 +1,6 @@
 package com.tokopedia.seller.selling.view.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.ActivityNotFoundException;
@@ -25,11 +26,8 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.container.GTMContainer;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
@@ -43,9 +41,9 @@ import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.core2.R;
 import com.tokopedia.design.component.Tabs;
 import com.tokopedia.seller.opportunity.fragment.OpportunityListFragment;
 import com.tokopedia.seller.selling.SellingService;
@@ -60,6 +58,7 @@ import com.tokopedia.seller.selling.view.listener.SellingTransaction;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class ActivitySellingTransaction extends TkpdActivity
         implements FragmentSellingTxCenter.OnCenterMenuClickListener,
@@ -78,18 +77,16 @@ public class ActivitySellingTransaction extends TkpdActivity
     public final static int TAB_POSITION_SELLING_TRANSACTION_LIST = 5;
 
     ViewPager mViewPager;
+    DownloadResultReceiver mReceiver;
+    FragmentManager fragmentManager;
     private Tabs indicator;
     private TextView sellerTickerView;
-
     private String[] CONTENT;
     private List<Fragment> fragmentList;
-    DownloadResultReceiver mReceiver;
-
-    FragmentManager fragmentManager;
 
     @DeepLink(ApplinkConst.SELLER_OPPORTUNITY)
     public static Intent getCallingIntentSellerOpportunity(Context context, Bundle extras) {
-        if(GlobalConfig.isSellerApp()) {
+        if (GlobalConfig.isSellerApp()) {
             Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
             return new Intent(context, ActivitySellingTransaction.class)
                     .setData(uri.build())
@@ -102,7 +99,7 @@ public class ActivitySellingTransaction extends TkpdActivity
 
     @DeepLink(ApplinkConst.SELLER_NEW_ORDER)
     public static Intent getCallingIntentSellerNewOrder(Context context, Bundle extras) {
-        if(GlobalConfig.isSellerApp()) {
+        if (GlobalConfig.isSellerApp()) {
             Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
             return new Intent(context, ActivitySellingTransaction.class)
                     .setData(uri.build())
@@ -115,7 +112,7 @@ public class ActivitySellingTransaction extends TkpdActivity
 
     @DeepLink(ApplinkConst.SELLER_SHIPMENT)
     public static Intent getCallingIntentSellerShipment(Context context, Bundle extras) {
-        if(GlobalConfig.isSellerApp()) {
+        if (GlobalConfig.isSellerApp()) {
             Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
             return new Intent(context, ActivitySellingTransaction.class)
                     .setData(uri.build())
@@ -128,7 +125,7 @@ public class ActivitySellingTransaction extends TkpdActivity
 
     @DeepLink(ApplinkConst.SELLER_STATUS)
     public static Intent getCallingIntentSellerStatus(Context context, Bundle extras) {
-        if(GlobalConfig.isSellerApp()) {
+        if (GlobalConfig.isSellerApp()) {
             Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
             return new Intent(context, ActivitySellingTransaction.class)
                     .setData(uri.build())
@@ -231,29 +228,39 @@ public class ActivitySellingTransaction extends TkpdActivity
         return 0;
     }
 
+    private void setDrawerPosition(int position) {
+        switch (position) {
+            case TAB_POSITION_SELLING_NEW_ORDER:
+                drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_NEW_ORDER);
+                break;
+            case TAB_POSITION_SELLING_CONFIRM_SHIPPING:
+                drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_CONFIRM_SHIPPING);
+                break;
+            case TAB_POSITION_SELLING_SHIPPING_STATUS:
+                drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_SHIPPING_STATUS);
+                break;
+            case TAB_POSITION_SELLING_TRANSACTION_LIST:
+                drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_TRANSACTION_LIST);
+                break;
+            case TAB_POSITION_SELLING_OPPORTUNITY:
+                drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_OPPORTUNITY_LIST);
+                break;
+            default:
+                break;
+        }
+    }
+
     private void setView() {
         sellerTickerView = findViewById(R.id.ticker);
         sellerTickerView.setMovementMethod(new ScrollingMovementMethod());
+        sellerTickerView.setVisibility(View.GONE);
         mViewPager = findViewById(R.id.pager);
         indicator = findViewById(R.id.indicator);
-    }
-
-    private void initSellerTicker() {
-        GTMContainer gtmContainer = GTMContainer.newInstance(this);
-
-        if (gtmContainer.getString("is_show_ticker_sales").equalsIgnoreCase("true")) {
-            String message = gtmContainer.getString("ticker_text_sales_rich");
-            showTickerGTM(message);
-        } else {
-            showTickerGTM(null);
-        }
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        initSellerTicker();
         setDrawerPosition(mViewPager.getCurrentItem());
     }
 
@@ -318,7 +325,6 @@ public class ActivitySellingTransaction extends TkpdActivity
 
     }
 
-
     private void initVariable() {
         CONTENT = new String[]{getString(R.string.title_dashboard_sell),
                 getString(R.string.title_opportunity_list),
@@ -357,7 +363,6 @@ public class ActivitySellingTransaction extends TkpdActivity
                 if (indicator.getTabAt(position) != null) {
                     UnifyTracking.eventShopTabSelected(ActivitySellingTransaction.this, indicator.getTabAt(position).getText().toString());
                 }
-                initSellerTicker();
             }
 
             @Override
@@ -380,28 +385,6 @@ public class ActivitySellingTransaction extends TkpdActivity
             setDrawerPosition(getIntent().getExtras().getInt(EXTRA_STATE_TAB_POSITION));
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    private void setDrawerPosition(int position) {
-        switch (position) {
-            case TAB_POSITION_SELLING_NEW_ORDER:
-                drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_NEW_ORDER);
-                break;
-            case TAB_POSITION_SELLING_CONFIRM_SHIPPING:
-                drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_CONFIRM_SHIPPING);
-                break;
-            case TAB_POSITION_SELLING_SHIPPING_STATUS:
-                drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_SHIPPING_STATUS);
-                break;
-            case TAB_POSITION_SELLING_TRANSACTION_LIST:
-                drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_TRANSACTION_LIST);
-                break;
-            case TAB_POSITION_SELLING_OPPORTUNITY:
-                drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_OPPORTUNITY_LIST);
-                break;
-            default:
-                break;
         }
     }
 
@@ -505,10 +488,11 @@ public class ActivitySellingTransaction extends TkpdActivity
             LocalCacheHandler Cache = new LocalCacheHandler(getBaseContext(), DrawerHelper.DRAWER_CACHE);
             int CartCache = Cache.getInt(DrawerNotification.IS_HAS_CART);
             if (CartCache > 0) {
-                menu.findItem(R.id.action_cart).setIcon(R.drawable.ic_cart_white_new_active);
+                menu.findItem(R.id.action_cart)
+                        .setIcon(MethodChecker.getDrawable(this,R.drawable.ic_cart_white_new_active));
             } else {
-                menu.findItem(R.id.action_cart).setIcon(R.drawable.
-                        ic_cart_white_new);
+                menu.findItem(R.id.action_cart)
+                        .setIcon(MethodChecker.getDrawable(this,R.drawable.ic_cart_white_new));
             }
             return true;
         } else {
@@ -556,23 +540,6 @@ public class ActivitySellingTransaction extends TkpdActivity
         }
     }
 
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return fragmentList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return fragmentList.size();
-        }
-    }
-
     @Override
     public void onBackPressed() {
         if (isTaskRoot()) {
@@ -589,8 +556,26 @@ public class ActivitySellingTransaction extends TkpdActivity
         }
     }
 
+    @SuppressLint("MissingSuperCall")
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         // Do not put super, avoid crash transactionTooLarge
+    }
+
+    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+
+        public SectionsPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return fragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return fragmentList.size();
+        }
     }
 }

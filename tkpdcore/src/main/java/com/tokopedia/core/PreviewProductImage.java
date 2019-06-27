@@ -1,5 +1,6 @@
 package com.tokopedia.core;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -37,9 +38,13 @@ import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.customadapter.TouchImageAdapter;
 import com.tokopedia.core.customadapter.TouchImageAdapter.OnImageStateChange;
 import com.tokopedia.core.gcm.utils.NotificationChannelId;
-import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.core2.R;
+import com.tokopedia.core2.R2;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -49,16 +54,12 @@ import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
-import com.tokopedia.core2.R2;
-import com.tokopedia.core2.R;
 
-@RuntimePermissions
+/**
+ * Use image_preview library instead
+ * ImagePreviewActivity
+ */
+@Deprecated
 public class PreviewProductImage extends TActivity {
 
     @BindView(R2.id.view_pager)
@@ -72,6 +73,7 @@ public class PreviewProductImage extends TActivity {
     private ArrayList<String> imageDescriptions;
     private int lastPos = 0;
     private int position = 0;
+    private PermissionCheckerHelper permissionCheck;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +108,7 @@ public class PreviewProductImage extends TActivity {
     }
 
     private void setViewListener() {
+        permissionCheck = new PermissionCheckerHelper();
         if (imageDescriptions == null) {
             tvDescription.setVisibility(View.GONE);
         } else {
@@ -214,7 +217,35 @@ public class PreviewProductImage extends TActivity {
                     @Override
                     public void onClick(DialogInterface dialog,
                                         int which) {
-                        PreviewProductImagePermissionsDispatcher.actionDownloadAndSavePictureWithCheck(PreviewProductImage.this);
+                        permissionCheck.checkPermission(
+                                PreviewProductImage.this,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                new PermissionCheckerHelper.PermissionCheckListener() {
+                                    @Override
+                                    public void onPermissionDenied(@NotNull String permissionText) {
+                                        RequestPermissionUtil.onPermissionDenied(
+                                                PreviewProductImage.this,
+                                                android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+                                        );
+                                        finish();
+                                    }
+
+                                    @Override
+                                    public void onNeverAskAgain(@NotNull String permissionText) {
+                                        RequestPermissionUtil.onNeverAskAgain(
+                                                PreviewProductImage.this,
+                                                android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+                                        );
+                                        finish();
+                                    }
+
+                                    @Override
+                                    public void onPermissionGranted() {
+                                        actionDownloadAndSavePicture();
+                                    }
+                                },
+                                ""
+                        );
                     }
                 });
         builder.setNegativeButton(getString(R.string.title_no),
@@ -245,7 +276,6 @@ public class PreviewProductImage extends TActivity {
         return picName;
     }
 
-    @NeedsPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
     public void actionDownloadAndSavePicture() {
         final String filenameParam = processPicName(vpImage.getCurrentItem()) + ".jpg";
         Random random = new Random();
@@ -352,26 +382,9 @@ public class PreviewProductImage extends TActivity {
         ImageHandler.loadImageBitmap2(getApplicationContext(), fileLocations.get(vpImage.getCurrentItem()), targetListener);
     }
 
-    @OnShowRationale(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-    void showRationaleForWriteExternal(final PermissionRequest request) {
-        RequestPermissionUtil.onShowRationale(this, request, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
-    }
-
-    @OnPermissionDenied(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-    void showDeniedForWriteExternal() {
-        RequestPermissionUtil.onPermissionDenied(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        finish();
-    }
-
-    @OnNeverAskAgain(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-    void showNeverAskForWriteExternal() {
-        RequestPermissionUtil.onNeverAskAgain(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        finish();
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        PreviewProductImagePermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+        permissionCheck.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
     }
 }

@@ -17,16 +17,8 @@ import com.tokopedia.core.TkpdCoreRouter;
 
 public class RouterUtils {
 
-    public static TkpdCoreRouter getRouterFromContext (Context context) {
-        if (context instanceof Activity) {
-            return (TkpdCoreRouter) ((Activity) context).getApplication();
-        } else if (context instanceof Service) {
-            return (TkpdCoreRouter) ((Service) context).getApplication();
-        } else if (context instanceof Application) {
-            return (TkpdCoreRouter) context;
-        } else {
-            return (TkpdCoreRouter) context.getApplicationContext();
-        }
+    public static TkpdCoreRouter getRouterFromContext(Context context) {
+        return (TkpdCoreRouter) context.getApplicationContext();
     }
 
     public static Intent getActivityIntent(Context context, String activityFullPath) {
@@ -44,7 +36,7 @@ public class RouterUtils {
         return componentName;
     }
 
-    public static ComponentName getActivityComponentName(Context context, Class<?> clss){
+    public static ComponentName getActivityComponentName(Context context, Class<?> clss) {
         return new ComponentName(context, clss);
     }
 

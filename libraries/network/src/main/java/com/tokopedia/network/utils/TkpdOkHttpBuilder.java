@@ -6,8 +6,13 @@ import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.network.interceptor.TkpdBaseInterceptor;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.CipherSuite;
+import okhttp3.ConnectionSpec;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -52,6 +57,21 @@ public class TkpdOkHttpBuilder {
         return this;
     }
 
+    public TkpdOkHttpBuilder addLegacyChiper(){
+        // Add legacy cipher suite for Android 4
+        List<CipherSuite> cipherSuites = ConnectionSpec.MODERN_TLS.cipherSuites();
+        if (!cipherSuites.contains(CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA)) {
+            cipherSuites = new ArrayList(cipherSuites);
+            cipherSuites.add(CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA);
+            cipherSuites.add(CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA);
+        }
+        final ConnectionSpec spec = new ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
+                .cipherSuites(cipherSuites.toArray(new CipherSuite[0]))
+                .build();
+        builder.connectionSpecs(Collections.singletonList(spec));
+        return this;
+    }
+
     private HttpLoggingInterceptor getHttpLoggingInterceptor() {
         HttpLoggingInterceptor.Level loggingLevel = HttpLoggingInterceptor.Level.NONE;
         if (GlobalConfig.isAllowDebuggingTools()) {
@@ -63,6 +83,7 @@ public class TkpdOkHttpBuilder {
     public OkHttpClient build() {
         setOkHttpRetryPolicy();
         addDebugInterceptor();
+        addLegacyChiper();
         return builder.build();
     }
 }

@@ -8,34 +8,34 @@ public class Info {
 
     @SerializedName("__typename")
     @Expose
-    private String typename;
+    private String typename = "";
     @SerializedName("date_shop_created")
     @Expose
-    private String dateShopCreated;
+    private String dateShopCreated = "";
     @SerializedName("shop_id")
     @Expose
-    private String shopId;
+    private String shopId = "";
     @SerializedName("shop_location")
     @Expose
-    private String shopLocation;
+    private String shopLocation = "";
     @SerializedName("shop_name")
     @Expose
-    private String shopName;
+    private String shopName = "";
     @SerializedName("shop_score")
     @Expose
-    private Integer shopScore;
+    private Integer shopScore = 0;
     @SerializedName("total_active_product")
     @Expose
-    private Integer totalActiveProduct;
+    private Integer totalActiveProduct = 0;
     @SerializedName("shop_avatar")
     @Expose
-    private String shopAvatar;
+    private String shopAvatar = "";
     @SerializedName("shop_cover")
     @Expose
-    private String shopCover;
+    private String shopCover = "";
     @SerializedName("shop_domain")
     @Expose
-    private String shopDomain;
+    private String shopDomain = "";
 
     public String getTypename() {
         return typename;

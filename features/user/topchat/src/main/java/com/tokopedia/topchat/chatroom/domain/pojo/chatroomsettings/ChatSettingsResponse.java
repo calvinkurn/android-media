@@ -12,6 +12,10 @@ public class ChatSettingsResponse implements Parcelable {
     @Expose
     ChatBlockResponse chatBlockResponse;
 
+    public ChatSettingsResponse(ChatBlockResponse chatBlockResponse) {
+        this.chatBlockResponse = chatBlockResponse;
+    }
+
     protected ChatSettingsResponse(Parcel in) {
         chatBlockResponse = in.readParcelable(ChatBlockResponse.class.getClassLoader());
     }

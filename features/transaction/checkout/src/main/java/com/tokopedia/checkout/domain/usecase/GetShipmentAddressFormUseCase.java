@@ -1,8 +1,8 @@
 package com.tokopedia.checkout.domain.usecase;
 
-import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.mapper.IShipmentMapper;
+import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.transactiondata.entity.response.shippingaddressform.ShipmentAddressFormDataResponse;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.usecase.RequestParams;
@@ -19,6 +19,7 @@ import rx.functions.Func1;
 public class GetShipmentAddressFormUseCase extends UseCase<CartShipmentAddressFormData> {
     public static final String PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS
             = "PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS";
+    public static final String PARAM_SKIP_ONBOARDING_UPDATE_STATE = "so";
 
     private final ICartRepository cartRepository;
     private final IShipmentMapper shipmentMapper;

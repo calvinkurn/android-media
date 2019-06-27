@@ -16,6 +16,7 @@ import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.listener.DisplayChangeListener;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.adapter.AdsItemAdapter;
 import com.tokopedia.topads.sdk.view.adapter.AdsItemDecoration;
@@ -44,7 +45,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
     private TopAdsInfoClickListener clickListener;
     private TextView textHeader;
 
-    public TopAdsViewHolder(View itemView, LocalAdsClickListener itemClickListener) {
+    public TopAdsViewHolder(View itemView, LocalAdsClickListener itemClickListener, TopAdsItemImpressionListener itemImpressionListener) {
         super(itemView);
         context = itemView.getContext();
         recyclerView = (RecyclerView) itemView.findViewById(R.id.list);
@@ -55,6 +56,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
         adapter = new AdsItemAdapter(context);
         adapter.setEnableWishlist(true);
         adapter.setItemClickListener(itemClickListener);
+        adapter.setAdsItemImpressionListener(itemImpressionListener);
         recyclerView.addItemDecoration(new AdsItemDecoration(context.getResources()
                 .getDimensionPixelSize(R.dimen.dp_16)));
         recyclerView.setLayoutManager(gridLayoutManager);

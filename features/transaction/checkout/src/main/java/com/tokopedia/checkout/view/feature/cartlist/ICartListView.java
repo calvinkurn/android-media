@@ -5,11 +5,17 @@ import android.app.Activity;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartTickerErrorData;
+import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
+import com.tokopedia.checkout.domain.datamodel.voucher.promostacking.ResponseFirstStep;
 import com.tokopedia.checkout.view.common.base.IBaseView;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
+import com.tokopedia.promocheckout.common.data.entity.request.Promo;
 import com.tokopedia.promocheckout.common.view.model.PromoData;
+import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
+import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel;
+import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel;
 
 import java.util.List;
 import java.util.Map;
@@ -24,53 +30,20 @@ public interface ICartListView extends IBaseView {
 
     void renderErrorInitialGetCartListData(String message);
 
-    void renderErrorHttpInitialGetCartListData(String message);
-
-    void renderErrorNoConnectionInitialGetCartListData(String message);
-
-    void renderErrorTimeoutConnectionInitialGetCartListData(String message);
-
     void renderActionDeleteCartDataSuccess(CartItemData cartItemData, String message, boolean addWishList);
-
-    void renderErrorActionDeleteCartData(String message);
-
-    void renderErrorHttpActionDeleteCartData(String message);
-
-    void renderErrorNoConnectionActionDeleteCartData(String message);
-
-    void renderErrorTimeoutConnectionActionDeleteCartData(String message);
 
     void renderNoRecipientAddressShipmentForm(CartShipmentAddressFormData shipmentAddressFormData);
 
-    void renderToShipmentFormSuccess(Map<String, Object> stringObjectMap, int condition);
+    void renderToShipmentFormSuccess(Map<String, Object> stringObjectMap,
+                                     boolean checkoutProductEligibleForCashOnDelivery, int condition);
 
     void renderToAddressChoice();
 
     void renderErrorToShipmentForm(String message);
 
-    void renderErrorHttpToShipmentForm(String message);
-
-    void renderErrorNoConnectionToShipmentForm(String message);
-
-    void renderErrorTimeoutConnectionToShipmentForm(String message);
-
-    void renderErrorToShipmentMultipleAddress(String message);
-
-    void renderErrorHttpToShipmentMultipleAddress(String message);
-
-    void renderErrorNoConnectionToShipmentMultipleAddress(String message);
-
-    void renderErrorTimeoutConnectionToShipmentMultipleAddress(String message);
-
     void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData);
 
-    void renderErrorCheckPromoCodeFromSuggestedPromo(String message);
-
-    void renderErrorHttpCheckPromoCodeFromSuggestedPromo(String message);
-
-    void renderErrorNoConnectionCheckPromoCodeFromSuggestedPromo(String message);
-
-    void renderErrorTimeoutConnectionCheckPromoCodeFromSuggestedPromo(String message);
+    void renderCheckPromoStackingCodeFromSuggestedPromoSuccess(ResponseFirstStep responseFirstStep);
 
     void renderEmptyCartData(CartListData cartListData);
 
@@ -90,6 +63,8 @@ public interface ICartListView extends IBaseView {
 
     void renderPromoVoucher();
 
+    void renderPromoGlobalVoucher();
+
     void showToastMessageRed(String message);
 
     void showToastMessageGreen(String message);
@@ -102,6 +77,8 @@ public interface ICartListView extends IBaseView {
 
     void renderCancelAutoApplyCouponSuccess();
 
+    void renderCancelAutoApplyCouponStackSuccess(int position);
+
     void renderCancelAutoApplyCouponError();
 
     void onDeleteCartDataSuccess();
@@ -111,4 +88,28 @@ public interface ICartListView extends IBaseView {
     void goToCouponList();
 
     void goToDetail(PromoData promoData);
+
+    void goToDetailPromoStacking(PromoStackingData promoStackingData);
+
+    void stopTrace();
+
+    void renderAppliedPromoStacking();
+
+    void onSuccessClearPromoStack(int shopIndex);
+
+    void onSuccessCheckPromoFirstStep(ResponseGetPromoStackUiModel responseGetPromoStackUiModel);
+
+    void onFailedClearPromoStack(boolean ignoreAPIResponse);
+
+    Promo generateCheckPromoFirstStepParam();
+
+    void showMerchantVoucherListBottomsheet(ShopGroupData shopGroupData);
+
+    void onClashCheckPromo(ClashingInfoDetailUiModel clashingInfoDetailUiModel, String type);
+
+    void onSuccessClearPromoStackAfterClash();
+
+    String getCartId();
+
+    PromoStackingData getPromoStackingGlobalData();
 }

@@ -16,6 +16,9 @@ import com.tokopedia.inbox.rescenter.shipping.model.ResCenterKurir;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
+
 /**
  * Created by hangnadi on 12/13/16.
  */
@@ -68,4 +71,6 @@ public interface InputShippingFragmentView {
     void finishAsSuccessResult();
 
     void dropKeyBoard();
+
+    Retrofit getRetrofit();
 }

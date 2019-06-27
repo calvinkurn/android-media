@@ -14,11 +14,11 @@ import com.tokopedia.common_digital.product.presentation.compoundview.CommonClie
 import com.tokopedia.common_digital.product.presentation.model.AdditionalButton;
 import com.tokopedia.common_digital.product.presentation.model.BaseWidgetItem;
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
+import com.tokopedia.common_digital.product.presentation.model.ClientNumberType;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Validation;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.utils.DeviceUtil;
-
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -60,13 +60,13 @@ public class ClientNumberInputNoStyleView extends CommonClientNumberInputView {
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
                 String tempInput = charSequence.toString();
-                btnClear.setVisibility(tempInput.length() > 0 ? VISIBLE : GONE);
-                tvErrorClientNumber.setText("");
-                tvErrorClientNumber.setVisibility(GONE);
+                getBtnClear().setVisibility(tempInput.length() > 0 ? VISIBLE : GONE);
+                getTvErrorClientNumber().setText("");
+                getTvErrorClientNumber().setVisibility(GONE);
                 if (tempInput.isEmpty()) {
                     resetOperator();
                 } else {
-                    if (clientNumber.getType().equals(ClientNumber.TYPE_INPUT_TEL)) {
+                    if (clientNumber.getType().equals(ClientNumberType.TYPE_INPUT_TEL)) {
                         if (tempInput.length() >= 4) {
                             String validClientNumber = DeviceUtil.validatePrefixClientNumber(tempInput);
                             boolean operatorFound = false;
@@ -92,12 +92,12 @@ public class ClientNumberInputNoStyleView extends CommonClientNumberInputView {
                         if (clientNumber.getAdditionalButton() != null &&
                                 clientNumber.getAdditionalButton().getType().equals("inquiry")) {
                             if (isValidInput()) {
-                                buttonAditional.setBackground(getResources().getDrawable(R.drawable.bg_button_green_enabled));
-                                buttonAditional.setClickable(true);
+                                getButtonAditional().setBackground(getResources().getDrawable(R.drawable.bg_button_green_enabled));
+                                getButtonAditional().setClickable(true);
                             } else {
                                 disableAditionalButton();
-                                buttonAditional.setBackground(getResources().getDrawable(R.drawable.digital_bg_button_disable));
-                                buttonAditional.setClickable(false);
+                                getButtonAditional().setBackground(getResources().getDrawable(R.drawable.digital_bg_button_disable));
+                                getButtonAditional().setClickable(false);
                             }
                         }
                     }
@@ -105,8 +105,8 @@ public class ClientNumberInputNoStyleView extends CommonClientNumberInputView {
             }
 
             private void disableAditionalButton() {
-                buttonAditional.setBackground(getResources().getDrawable(R.drawable.digital_bg_button_disable));
-                buttonAditional.setClickable(false);
+                getButtonAditional().setBackground(getResources().getDrawable(R.drawable.digital_bg_button_disable));
+                getButtonAditional().setClickable(false);
             }
 
             @Override
@@ -125,7 +125,7 @@ public class ClientNumberInputNoStyleView extends CommonClientNumberInputView {
     protected OnClickListener getButtonClearClickListener() {
         return v -> {
             actionListener.onClientNumberCleared();
-            autoCompleteTextView.setText("");
+            getAutoCompleteTextView().setText("");
         };
     }
 
@@ -134,7 +134,7 @@ public class ClientNumberInputNoStyleView extends CommonClientNumberInputView {
         return (view, hasFocus) -> {
             if (hasFocus) {
                 actionListener.onClientNumberHasFocus(((TextView) view).getText().toString());
-                if (autoCompleteTextView.getText().length() > 0) {
+                if (getAutoCompleteTextView().getText().length() > 0) {
                     setBtnClearVisible();
                 } else {
                     setBtnClearInvisible();
@@ -149,8 +149,8 @@ public class ClientNumberInputNoStyleView extends CommonClientNumberInputView {
     }
 
     private void setOperator(Operator operator) {
-        tvErrorClientNumber.setText("");
-        tvErrorClientNumber.setVisibility(GONE);
+        getTvErrorClientNumber().setText("");
+        getTvErrorClientNumber().setVisibility(GONE);
         enableImageOperator(operator.getImage());
         setFilterMaxLength(operator.getRule().getMaximumLength());
         actionListener.onOperatorFoundByPrefix(operator);
@@ -158,49 +158,49 @@ public class ClientNumberInputNoStyleView extends CommonClientNumberInputView {
 
     public void renderData(ClientNumber clientNumber, List<BaseWidgetItem> operators) {
         this.items = operators;
-        this.clientNumber = clientNumber;
+        this.setClientNumber(clientNumber);
         if (!TextUtils.isEmpty(clientNumber.getText())) {
-            tvLabel.setVisibility(VISIBLE);
-            tvLabel.setText(clientNumber.getText());
+            getTvLabel().setVisibility(VISIBLE);
+            getTvLabel().setText(clientNumber.getText());
         } else {
-            tvLabel.setVisibility(GONE);
+            getTvLabel().setVisibility(GONE);
         }
         if (clientNumber.getAdditionalButton() != null) {
             if (clientNumber.getAdditionalButton().getType().equals("inquiry")) {
-                buttonAditional.setVisibility(VISIBLE);
-                buttonAditional.setOnClickListener(view -> {
+                getButtonAditional().setVisibility(VISIBLE);
+                getButtonAditional().setOnClickListener(view -> {
                     actionListener.onClickAdditionalButton(clientNumber.getAdditionalButton());
-                    buttonAditional.setBackground(getResources().getDrawable(R.drawable.digital_bg_button_disable));
-                    buttonAditional.setClickable(false);
+                    getButtonAditional().setBackground(getResources().getDrawable(R.drawable.digital_bg_button_disable));
+                    getButtonAditional().setClickable(false);
                 });
             }
         }
-        tvLabel.setText(clientNumber.getText());
-        autoCompleteTextView.setHint(clientNumber.getPlaceholder());
+        getTvLabel().setText(clientNumber.getText());
+        getAutoCompleteTextView().setHint(clientNumber.getPlaceholder());
         setupLayoutParamAndInputType(clientNumber) ;
 
         final TextWatcher textWatcher = getTextWatcherInput(clientNumber);
-        autoCompleteTextView.removeTextChangedListener(textWatcher);
-        autoCompleteTextView.setOnFocusChangeListener(getFocusChangeListener());
-        autoCompleteTextView.addTextChangedListener(textWatcher);
-        btnClear.setOnClickListener(getButtonClearClickListener());
-        btnContactPicker.setOnClickListener(getButtonContactPickerClickListener());
+        getAutoCompleteTextView().removeTextChangedListener(textWatcher);
+        getAutoCompleteTextView().setOnFocusChangeListener(getFocusChangeListener());
+        getAutoCompleteTextView().addTextChangedListener(textWatcher);
+        getBtnClear().setOnClickListener(getButtonClearClickListener());
+        getBtnContactPicker().setOnClickListener(getButtonContactPickerClickListener());
     }
 
     @Override
     protected void setupLayoutParamAndInputType(ClientNumber clientNumber) {
         LayoutParams layoutParams = new LayoutParams(
                 0, ViewGroup.LayoutParams.WRAP_CONTENT);
-        if (clientNumber.getType().equalsIgnoreCase(ClientNumber.TYPE_INPUT_TEL)) {
-            btnContactPicker.setVisibility(View.VISIBLE);
+        if (clientNumber.getType().equalsIgnoreCase(ClientNumberType.TYPE_INPUT_TEL)) {
+            getBtnContactPicker().setVisibility(View.VISIBLE);
             layoutParams.weight = 0.88f;
         } else {
-            btnContactPicker.setVisibility(View.GONE);
+            getBtnContactPicker().setVisibility(View.GONE);
             layoutParams.weight = 1;
         }
-        pulsaFramelayout.setLayoutParams(layoutParams);
-        if (clientNumber.getType().equalsIgnoreCase(ClientNumber.TYPE_INPUT_TEL)
-                || clientNumber.getType().equalsIgnoreCase(ClientNumber.TYPE_INPUT_NUMERIC)) {
+        getPulsaFramelayout().setLayoutParams(layoutParams);
+        if (clientNumber.getType().equalsIgnoreCase(ClientNumberType.TYPE_INPUT_TEL)
+                || clientNumber.getType().equalsIgnoreCase(ClientNumberType.TYPE_INPUT_NUMERIC)) {
             setInputTypeNumber();
         } else {
             setInputTypeText();
@@ -208,10 +208,10 @@ public class ClientNumberInputNoStyleView extends CommonClientNumberInputView {
     }
 
     private boolean isValidInput() {
-        String clientNumberInput = autoCompleteTextView.getText().toString();
-        if (clientNumber != null) {
+        String clientNumberInput = getAutoCompleteTextView().getText().toString();
+        if (getClientNumber() != null) {
             boolean isValidRegex = false;
-            for (Validation validation : clientNumber.getValidation()) {
+            for (Validation validation : getClientNumber().getValidation()) {
                 if (Pattern.matches(validation.getRegex(), clientNumberInput))
                     isValidRegex = true;
             }

@@ -10,6 +10,7 @@ public class AccountConstants {
     public static final String VARIABLES = "variables";
     public static final String RC_GIFTCARD_ENABLE = "enable_gift_card_transaction_history_entry";
     public static final String TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp";
+    public static final String SALDO_QUERY = "saldo_query";
 
     public static class Navigation {
         public static final String SEE_ALL = "lihat_semua";
@@ -29,6 +30,7 @@ public class AccountConstants {
         public static final String LOAN = "modal usaha";
         public static final String PEMBELI = "pembeli";
         public static final String CLICK_CHALLENGE = "challenge";
+        public static final String BY_ME = "by.me";
         public static final String PENJUAL = "penjual";
         public static final String USER = "user";
         public static final String SETTING = "setting";
@@ -93,6 +95,8 @@ public class AccountConstants {
         public static final String OVO_PAY_LATER_CLICK = "ovo - pay later click";
         public static final String OVO_PAY_LATER_LABEL = "success - %s";
         public static final String OVO_PAY_ICON_CLICK = "ovo - tokopedia pay icon click";
+        public static final String BY_ME_CURATION = "kurasi produk by.me";
+        public static final String CLICK_FINTECH_MICROSITE = "clickFintechMicrosite";
     }
 
     public class ImageUrl {

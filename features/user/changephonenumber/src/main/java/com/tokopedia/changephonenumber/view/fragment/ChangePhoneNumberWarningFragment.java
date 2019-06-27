@@ -14,8 +14,9 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.changephonenumber.ChangePhoneNumberInstance;
-import com.tokopedia.changephonenumber.ChangePhoneNumberRouter;
 import com.tokopedia.changephonenumber.R;
 import com.tokopedia.changephonenumber.analytics.ChangePhoneNumberAnalytics;
 import com.tokopedia.changephonenumber.di.warning.ChangePhoneNumberWarningComponent;
@@ -132,16 +133,19 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
         withdrawButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = ((ChangePhoneNumberRouter) getActivity().getApplicationContext())
-                        .getWithdrawIntent(getActivity());
-                Bundle bundle = new Bundle();
-                bundle.putString(BUNDLE_TOTAL_BALANCE,
-                        viewModel.getTokopediaBalance());
-                bundle.putString(BUNDLE_TOTAL_BALANCE_INT,
-                        viewModel.getTokopediaBalance().replaceAll("[^\\d]", ""));
-                intent.putExtras(bundle);
-                changePhoneNumberAnalytics.getEventWarningPageClickOnWithdraw();
-                startActivityForResult(intent, REQUEST_WITHDRAW_TOKOPEDIA_BALANCE);
+                if (getActivity() != null) {
+                    boolean isSeller = userSession.hasShop() || userSession.isAffiliate();
+                    Intent intent = RouteManager.getIntent(getActivity(),
+                            ApplinkConstInternalGlobal.WITHDRAW);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(BUNDLE_TOTAL_BALANCE,
+                            viewModel.getTokopediaBalance());
+                    bundle.putString(BUNDLE_TOTAL_BALANCE_INT,
+                            viewModel.getTokopediaBalance().replaceAll("[^\\d]", ""));
+                    intent.putExtras(bundle);
+                    changePhoneNumberAnalytics.getEventWarningPageClickOnWithdraw();
+                    startActivityForResult(intent, REQUEST_WITHDRAW_TOKOPEDIA_BALANCE);
+                }
             }
         });
     }

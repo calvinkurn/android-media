@@ -44,6 +44,8 @@ public interface TrainSearchContract {
         int getScheduleVariantSelected();
 
         void resetFilterAndSortParam();
+
+        void stopTrace();
     }
 
     interface Presenter extends CustomerPresenter<View> {

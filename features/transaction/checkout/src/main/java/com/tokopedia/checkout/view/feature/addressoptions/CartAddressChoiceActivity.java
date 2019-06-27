@@ -4,53 +4,52 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
+import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.data.mapper.AddressModelMapper;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
-import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
-import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutActivity;
-import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
+import com.tokopedia.logisticaddaddress.AddressConstants;
+import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity;
+import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity;
+import com.tokopedia.logisticcommon.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.address.Token;
+import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 
 import java.util.ArrayList;
-
-import static com.tokopedia.core.manage.people.address.ManageAddressConstant.REQUEST_CODE_PARAM_CREATE;
 
 /**
  * @author Irfan Khoirul on 05/02/18
  * Aghny A. Putra on 07/02/18
+ * Fajar U N
  */
-
 public class CartAddressChoiceActivity extends BaseCheckoutActivity
-        implements ICartAddressChoiceActivityListener {
+        implements ShipmentAddressListFragment.ICartAddressChoiceActivityListener {
 
     public static final int REQUEST_CODE = 981;
 
+    public static final int RESULT_CODE_ACTION_ADD_DEFAULT_ADDRESS = 102;
     public static final int RESULT_CODE_ACTION_SELECT_ADDRESS = 100;
     public static final int RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM = 101;
-    public static final int RESULT_CODE_ACTION_ADD_DEFAULT_ADDRESS = 102;
-    public static final int RESULT_CODE_MULTIPLE_ADDRESS_EDIT_ADDRESS = 103;
-    public static final int RESULT_CODE_MULTIPLE_ADDRESS_ADD_SHIPMENT = 104;
+    public static final int RESULT_CODE_ACTION_EDIT_ADDRESS = 103;
 
     private static final String EXTRA_TYPE_REQUEST = "EXTRA_TYPE_REQUEST";
-    public static final String EXTRA_DEFAULT_SELECTED_ADDRESS = "EXTRA_DEFAULT_SELECTED_ADDRESS";
-    public static final String EXTRA_NAVIGATION_FROM_ADDRESS_LIST = "EXTRA_NAVIGATION_FROM_ADDRESS_LIST";
-    public static final String EXTRA_SELECTED_ADDRESS_DATA = "EXTRA_SELECTED_ADDRESS_DATA";
     public static final String EXTRA_CURRENT_ADDRESS = "CURRENT_ADDRESS";
     public static final String EXTRA_DISTRICT_RECOMMENDATION_TOKEN = "DISTRICT_RECOMMENDATION_TOKEN";
-    public static final String EXTRA_MULTIPLE_ADDRESS_DATA_LIST = "EXTRA_MULTIPLE_ADDRESS_DATA_LIST";
     public static final String EXTRA_MULTIPLE_ADDRESS_CHILD_INDEX = "EXTRA_MULTIPLE_ADDRESS_CHILD_INDEX";
+    public static final String EXTRA_MULTIPLE_ADDRESS_DATA_LIST = "EXTRA_MULTIPLE_ADDRESS_DATA_LIST";
     public static final String EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX = "EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX";
+    public static final String EXTRA_SELECTED_ADDRESS_DATA = "EXTRA_SELECTED_ADDRESS_DATA";
 
-    public static final int TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST = 0;
     public static final int TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS = 1;
-    public static final int TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS = 2;
     public static final int TYPE_REQUEST_MULTIPLE_ADDRESS_ADD_SHIPMENT = 3;
+    public static final int TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS = 2;
+    public static final int TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST = 0;
+    public static final int TYPE_REQUEST_EDIT_ADDRESS_FOR_TRADE_IN = 4;
 
     private int typeRequest;
     private Token token;
-
-    private ShipmentAddressListFragment defaultFragment;
 
     public static Intent createInstance(Activity activity,
                                         ArrayList<MultipleAddressAdapterData> dataList,
@@ -88,6 +87,19 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     }
 
     public static Intent createInstance(Activity activity,
+                                        RecipientAddressModel currentAddress,
+                                        Token token,
+                                        int typeRequest) {
+        Intent intent = new Intent(activity, CartAddressChoiceActivity.class);
+        intent.putExtra(EXTRA_TYPE_REQUEST, typeRequest);
+        intent.putExtra(EXTRA_DISTRICT_RECOMMENDATION_TOKEN, token);
+        if (currentAddress != null) {
+            intent.putExtra(EXTRA_CURRENT_ADDRESS, currentAddress);
+        }
+        return intent;
+    }
+
+    public static Intent createInstance(Activity activity,
                                         int typeRequest) {
         Intent intent = new Intent(activity, CartAddressChoiceActivity.class);
         intent.putExtra(EXTRA_TYPE_REQUEST, typeRequest);
@@ -114,13 +126,6 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     }
 
     @Override
-    public void setToolbarTitle(String title) {
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(title);
-        }
-    }
-
-    @Override
     protected void setupBundlePass(Bundle extras) {
         this.typeRequest = extras.getInt(EXTRA_TYPE_REQUEST);
         this.token = extras.getParcelable(EXTRA_DISTRICT_RECOMMENDATION_TOKEN);
@@ -129,19 +134,37 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     @Override
     public void setTitle(CharSequence title) {
         super.setTitle(title);
-        updateTitle(title.toString());
+        updateTitle(getString(R.string.checkout_module_title_shipping_dest_multiple_address));
     }
 
     @Override
     protected void initView() {
+        Intent intent;
         switch (typeRequest) {
             case TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS:
-                Intent intent = ((ICheckoutModuleRouter) getApplication()).getAddAddressIntent(
-                        this, null, token, false, true);
+                /*intent = AddAddressActivity
+                        .createInstanceAddAddressFromCheckoutSingleAddressFormWhenDefaultAddressIsEmpty(
+                                this, token);
                 startActivityForResult(intent,
-                        REQUEST_CODE_PARAM_CREATE);
-                break;
+                        LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);*/
 
+                startActivityForResult(PinpointMapActivity.Companion.newInstance(this,
+                        AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, token,
+                        false, 0, false, null,
+                        false), LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT);
+
+                break;
+            case TYPE_REQUEST_EDIT_ADDRESS_FOR_TRADE_IN:
+                RecipientAddressModel currentAddress = getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS);
+                AddressModelMapper mapper = new AddressModelMapper();
+                intent = AddAddressActivity.createInstanceEditAddressFromCheckoutSingleAddressForm(
+                        this, mapper.transform(currentAddress), token
+                );
+                startActivityForResult(intent,
+                        LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT);
+                /*intent = new Intent(this, PinpointMapActivity.class);
+                startActivity(intent);*/
+                break;
             default:
         }
     }
@@ -164,8 +187,11 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_PARAM_CREATE) {
+        if (requestCode == LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE) {
             if (resultCode == Activity.RESULT_OK) setResult(RESULT_CODE_ACTION_ADD_DEFAULT_ADDRESS);
+            finish();
+        } else if (requestCode == LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT) {
+            setResult(RESULT_CODE_ACTION_EDIT_ADDRESS);
             finish();
         }
     }
@@ -217,21 +243,16 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     }
 
     @Override
-    public void finishSendResultActionToMultipleAddressForm() {
-        setResult(RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM);
-        finish();
-    }
-
-    @Override
-    protected android.support.v4.app.Fragment getNewFragment() {
+    protected Fragment getNewFragment() {
+        RecipientAddressModel currentAddress = getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS);
         switch (typeRequest) {
             case TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST:
-                return ShipmentAddressListFragment.newInstance(
-                        (RecipientAddressModel) getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS));
+                return ShipmentAddressListFragment.newInstance(currentAddress);
+            case TYPE_REQUEST_MULTIPLE_ADDRESS_ADD_SHIPMENT:
+            case TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS:
+                return ShipmentAddressListFragment.newInstanceFromMultipleAddressForm(currentAddress, true);
             default:
-                defaultFragment = ShipmentAddressListFragment.newInstance(
-                        (RecipientAddressModel) getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS));
-                return defaultFragment;
+                return ShipmentAddressListFragment.newInstance(currentAddress);
         }
     }
 
@@ -243,4 +264,5 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
             super.onBackPressed();
         }
     }
+
 }

@@ -1,6 +1,8 @@
 package com.tokopedia.home.beranda.presentation.view.subscriber;
 
+import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
+import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData;
 import com.tokopedia.home.beranda.presentation.view.HomeContract;
 
 import rx.Subscriber;
@@ -8,7 +10,7 @@ import rx.Subscriber;
 /**
  * Created by meta on 16/07/18.
  */
-public class TokopointHomeSubscriber extends Subscriber<TokopointHomeDrawerData> {
+public class TokopointHomeSubscriber extends Subscriber<GraphqlResponse> {
 
     private HomeContract.Presenter presenter;
 
@@ -25,7 +27,8 @@ public class TokopointHomeSubscriber extends Subscriber<TokopointHomeDrawerData>
     }
 
     @Override
-    public void onNext(TokopointHomeDrawerData tokoPointDrawerData) {
-        presenter.updateHeaderTokoPointData(tokoPointDrawerData);
+    public void onNext(GraphqlResponse graphqlResponse) {
+        TokopointsDrawerHomeData tokopointsDrawerHomeData=graphqlResponse.getData(TokopointsDrawerHomeData.class);
+        presenter.updateHeaderTokoPointData(tokopointsDrawerHomeData);
     }
 }

@@ -1,11 +1,10 @@
 package com.tokopedia.topchat.chattemplate.data.repository;
 
 import com.google.gson.JsonObject;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.topchat.chattemplate.data.factory.TemplateChatFactory;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateViewModel;
-import com.tokopedia.topchat.chattemplate.data.factory.TemplateChatFactory;
-import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateViewModel;
+
+import java.util.HashMap;
 
 import rx.Observable;
 
@@ -13,7 +12,7 @@ import rx.Observable;
  * Created by stevenfredian on 11/27/17.
  */
 
-public class TemplateRepositoryImpl implements TemplateRepository{
+public class TemplateRepositoryImpl implements TemplateRepository {
 
     private TemplateChatFactory templateChatFactory;
 
@@ -22,7 +21,7 @@ public class TemplateRepositoryImpl implements TemplateRepository{
     }
 
     @Override
-    public Observable<GetTemplateViewModel> getTemplate(TKPDMapParam<String, Object> parameters) {
+    public Observable<GetTemplateViewModel> getTemplate(HashMap<String, Object> parameters) {
         return templateChatFactory.createCloudGetTemplateDataSource().getTemplate(parameters);
     }
 

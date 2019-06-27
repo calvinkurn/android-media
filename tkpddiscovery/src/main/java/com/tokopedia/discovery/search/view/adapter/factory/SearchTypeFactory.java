@@ -6,12 +6,15 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.discovery.autocomplete.viewmodel.AutoCompleteSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.CategorySearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.DigitalSearch;
+import com.tokopedia.discovery.autocomplete.viewmodel.HotlistSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.InCategorySearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.PopularSearch;
+import com.tokopedia.discovery.autocomplete.viewmodel.ProfileSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.RecentSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.RecentViewSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.ShopSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.TitleSearch;
+import com.tokopedia.discovery.autocomplete.viewmodel.TopProfileSearch;
 
 /**
  * @author erry on 14/02/17.
@@ -36,6 +39,12 @@ public interface SearchTypeFactory {
     int type(AutoCompleteSearch viewModel);
 
     int type(RecentViewSearch viewModel);
+
+    int type(HotlistSearch viewModel);
+
+    int type(ProfileSearch viewModel);
+
+    int type(TopProfileSearch viewModel);
 
     AbstractViewHolder createViewHolder(View view, int viewType);
 }

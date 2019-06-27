@@ -66,7 +66,7 @@ public class MyCouponListingPresenter extends BaseDaggerPresenter<MyCouponListin
         GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                 R.raw.tp_gql_tokopoint_apply_coupon),
                 com.tokopedia.tokopoints.view.model.ApplyCouponBaseEntity.class,
-                variables);
+                variables, false);
         mSaveCouponUseCase.clearRequest();
         mSaveCouponUseCase.addRequest(request);
         mSaveCouponUseCase.execute(new Subscriber<GraphqlResponse>() {

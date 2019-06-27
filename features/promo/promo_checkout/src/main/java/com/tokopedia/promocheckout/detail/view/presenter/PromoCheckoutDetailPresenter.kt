@@ -1,29 +1,37 @@
 package com.tokopedia.promocheckout.detail.view.presenter
 
-import android.content.res.Resources
+import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.common.network.data.model.RestResponse
-import com.tokopedia.promocheckout.common.domain.CancelPromoUseCase
-import com.tokopedia.promocheckout.common.domain.CheckPromoCodeUseCase
+import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.promocheckout.common.data.entity.request.CurrentApplyCode
+import com.tokopedia.promocheckout.common.data.entity.request.Promo
+import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
+import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.GetDetailCouponMarketplaceUseCase
-import com.tokopedia.promocheckout.common.domain.model.DataVoucher
-import com.tokopedia.promocheckout.common.domain.model.cancelpromo.ResponseCancelPromo
-import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
+import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
+import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStackResponse
+import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
-import com.tokopedia.promocheckout.detail.domain.DetailCouponMarkeplaceModel
+import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
+import com.tokopedia.promocheckout.detail.model.DataPromoCheckoutDetail
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
-import java.lang.reflect.Type
 
-class PromoCheckoutDetailPresenter(val getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
-                                   val checkPromoUseCase: CheckPromoCodeUseCase,
-                                   val cancelPromoUseCase: CancelPromoUseCase) :
+class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
+                                   private val checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase,
+                                   private val checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper,
+                                   private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase) :
         BaseDaggerPresenter<PromoCheckoutDetailContract.View>(), PromoCheckoutDetailContract.Presenter {
 
-    override fun cancelPromo() {
+    private val paramGlobal = "global"
+    private val statusOK = "OK"
+
+    override fun cancelPromo(codeCoupon: String) {
         view.showProgressLoading()
-        cancelPromoUseCase.execute(RequestParams.EMPTY, object : Subscriber<Map<Type, RestResponse>>() {
+        val promoCodes = arrayListOf(codeCoupon)
+        clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, promoCodes)
+        clearCacheAutoApplyStackUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
             override fun onCompleted() {
 
             }
@@ -35,24 +43,80 @@ class PromoCheckoutDetailPresenter(val getDetailCouponMarketplaceUseCase: GetDet
                 }
             }
 
-            override fun onNext(restResponse: Map<Type, RestResponse>) {
-                view.hideProgressLoading()
-                val responseCancel = restResponse.get(ResponseCancelPromo::class.java)
-                val responseCancelPromo = responseCancel?.getData<ResponseCancelPromo>()
-                var resultSuccess = responseCancelPromo?.data?.isSuccess ?: false
-
-                if (resultSuccess) {
-                    view.onSuccessCancelPromo();
-                } else {
-                    view.onErrorCancelPromo(RuntimeException())
+            override fun onNext(response: GraphqlResponse) {
+                if (isViewAttached) {
+                    view.hideProgressLoading()
+                    val responseData = response.getData<ClearCacheAutoApplyStackResponse>(ClearCacheAutoApplyStackResponse::class.java)
+                    if (responseData.successData.success) {
+                        view.onSuccessCancelPromoStacking()
+                    } else {
+                        view.onErrorCancelPromo(RuntimeException())
+                    }
                 }
             }
+
         })
+
     }
 
-    override fun validatePromoUse(codeCoupon: String, oneClickShipment: Boolean, resources: Resources) {
+    override fun validatePromoStackingUse(promoCode: String, promo: Promo?, isFromLoadDetail: Boolean) {
+        if (promo == null) return
+
+        if (TextUtils.isEmpty(promoCode)) return
+
+        // Clear all merchant promo
+        promo.orders?.forEach { order ->
+            order.codes = ArrayList()
+        }
+        // Set promo global
+        promo.codes = arrayListOf(promoCode)
+
+        var currentApplyCode: CurrentApplyCode? = null
+        if (promoCode.isNotEmpty()) {
+            currentApplyCode = CurrentApplyCode(
+                    promoCode,
+                    paramGlobal
+            )
+        }
+        promo.currentApplyCode = currentApplyCode
+
+        if (isFromLoadDetail) {
+            promo.skipApply = 1
+        } else {
+            promo.skipApply = 0
+        }
+
         view.showProgressLoading()
-        checkPromoUseCase.execute(checkPromoUseCase.createRequestParams(codeCoupon, oneClickShipment = oneClickShipment), object : Subscriber<DataVoucher>() {
+        checkPromoStackingCodeUseCase.setParams(promo)
+        checkPromoStackingCodeUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
+            override fun onNext(t: GraphqlResponse?) {
+                if (isViewAttached) {
+                    view.hideProgressLoading()
+                    val responseGetPromoStack = checkPromoStackingCodeMapper.call(t)
+                    if (responseGetPromoStack.status.equals(statusOK, true) && responseGetPromoStack.data.success) {
+                        if (!isFromLoadDetail) {
+                            if (promo.skipApply == 0 && responseGetPromoStack.data.clashings.isClashedPromos) {
+                                view.onClashCheckPromo(responseGetPromoStack.data.clashings)
+                            } else {
+                                responseGetPromoStack.data.codes.forEach {
+                                    if (it.equals(promoCode, true)) {
+                                        if (responseGetPromoStack.data.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
+                                            view?.hideProgressLoading()
+                                            view.onErrorValidatePromoStacking(MessageErrorException(responseGetPromoStack.data.message.text))
+                                        } else {
+                                            view.onSuccessValidatePromoStacking(responseGetPromoStack.data)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        val message = responseGetPromoStack.data.message.text
+                        view.onErrorValidatePromoStacking(MessageErrorException(message))
+                    }
+                }
+            }
+
             override fun onCompleted() {
 
             }
@@ -64,21 +128,13 @@ class PromoCheckoutDetailPresenter(val getDetailCouponMarketplaceUseCase: GetDet
                 }
             }
 
-            override fun onNext(dataVoucher: DataVoucher) {
-                view.hideProgressLoading()
-                if (dataVoucher.message?.state?.mapToStatePromoCheckout() == TickerCheckoutView.State.FAILED) {
-                    view.onErrorValidatePromo(MessageErrorException(dataVoucher.message?.text))
-                } else {
-                    view.onSuccessValidatePromo(dataVoucher)
-                }
-            }
         })
     }
 
-    override fun getDetailPromo(codeCoupon: String, oneClickShipment: Boolean) {
+    override fun getDetailPromo(codeCoupon: String, oneClickShipment: Boolean, promo: Promo?) {
         view.showLoading()
         getDetailCouponMarketplaceUseCase.execute(getDetailCouponMarketplaceUseCase.createRequestParams(codeCoupon, oneClickShipment = oneClickShipment),
-                object : Subscriber<DetailCouponMarkeplaceModel>() {
+                object : Subscriber<GraphqlResponse>() {
 
                     override fun onError(e: Throwable) {
                         if (isViewAttached) {
@@ -91,21 +147,21 @@ class PromoCheckoutDetailPresenter(val getDetailCouponMarketplaceUseCase: GetDet
 
                     }
 
-                    override fun onNext(t: DetailCouponMarkeplaceModel?) {
+                    override fun onNext(response: GraphqlResponse?) {
                         view.hideLoading()
-                        view.onSuccessGetDetailPromo(t?.dataPromoCheckoutDetail?.promoCheckoutDetailModel
+                        val dataDetailCheckoutPromo = response?.getData<DataPromoCheckoutDetail>(DataPromoCheckoutDetail::class.java)
+                        view.onSuccessGetDetailPromo(dataDetailCheckoutPromo?.promoCheckoutDetailModel
                                 ?: throw RuntimeException())
-                        if (t.dataVoucher?.message?.state?.mapToStatePromoCheckout() == TickerCheckoutView.State.FAILED) {
-                            view.onErroGetDetail(CheckPromoCodeDetailException(t.dataVoucher?.message?.text
-                                    ?: ""))
-                        }
+
+                        validatePromoStackingUse(codeCoupon, promo, true)
                     }
                 })
     }
 
     override fun detachView() {
         getDetailCouponMarketplaceUseCase.unsubscribe()
-        checkPromoUseCase.unsubscribe()
+        checkPromoStackingCodeUseCase.unsubscribe()
+        clearCacheAutoApplyStackUseCase.unsubscribe()
         super.detachView()
     }
 }

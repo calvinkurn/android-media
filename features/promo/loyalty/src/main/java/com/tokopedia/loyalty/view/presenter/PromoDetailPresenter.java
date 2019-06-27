@@ -67,8 +67,8 @@ public class PromoDetailPresenter extends IBasePresenter<IPromoDetailView>
                         // Undefined errors
                         getMvpView().renderErrorHttpGetPromoDetail(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                     }
+                    getMvpView().stopPerformanceMonitoring();
                 }
-
                 e.printStackTrace();
             }
 
@@ -80,6 +80,7 @@ public class PromoDetailPresenter extends IBasePresenter<IPromoDetailView>
                     } else {
                         getMvpView().renderErrorShowingPromoDetail(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                     }
+                    getMvpView().stopPerformanceMonitoring();
                 }
             }
         };

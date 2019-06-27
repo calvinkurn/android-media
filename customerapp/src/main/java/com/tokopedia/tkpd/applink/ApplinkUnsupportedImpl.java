@@ -5,9 +5,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.gson.Gson;
+import com.tokopedia.abstraction.base.view.appupdate.model.DataUpdateApp;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
 import com.tokopedia.applink.ApplinkUnsupported;
@@ -21,11 +24,7 @@ import com.tokopedia.tkpd.R;
 
 public class ApplinkUnsupportedImpl implements ApplinkUnsupported {
 
-    private static final String MAINAPP_IS_NEED_UPDATE = "mainapp_applink_is_need_update";
-    private static final String MAINAPP_LATEST_VERSION_CODE = "mainapp_latest_version_code";
-    private static final String MAINAPP_UPDATE_TITLE = "mainapp_applink_update_title";
-    private static final String MAINAPP_UPDATE_MESSAGE = "mainapp_applink_update_message";
-    private static final String MAINAPP_UPDATE_LINK = "mainapp_applink_update_link";
+    private static final String ANDROID_CUSTOMER_APP_UPDATE = "android_customer_app_update";
 
     private Activity activity;
     private RemoteConfig remoteConfig;
@@ -37,48 +36,72 @@ public class ApplinkUnsupportedImpl implements ApplinkUnsupported {
 
     @Override
     public void showAndCheckApplinkUnsupported() {
-        final DetailUpdate detail = new DetailUpdate();
-        detail.setNeedUpdate(remoteConfig.getBoolean(MAINAPP_IS_NEED_UPDATE));
-        detail.setLatestVersionCode(remoteConfig.getLong(MAINAPP_LATEST_VERSION_CODE));
-        detail.setForceUpdate(false);
-        detail.setUpdateTitle(remoteConfig.getString(MAINAPP_UPDATE_TITLE));
-        detail.setUpdateMessage(remoteConfig.getString(MAINAPP_UPDATE_MESSAGE));
-        detail.setUpdateLink(remoteConfig.getString(MAINAPP_UPDATE_LINK));
-        if (detail.isNeedUpdate() && GlobalConfig.VERSION_CODE < detail.getLatestVersionCode()) {
-            final AlertDialog alertDialog = new AlertDialog.Builder(activity)
-                    .setTitle(detail.getUpdateTitle())
-                    .setMessage(detail.getUpdateMessage())
-                    .setPositiveButton(activity.getString(R.string.deeplink_receiver_applink_update_button_title), null)
-                    .setNegativeButton(activity.getString(R.string.deeplink_receiver_applink_update_button_cancel_title), null)
-                    .setCancelable(true)
-                    .create();
-
-            alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-                @Override
-                public void onShow(final DialogInterface dialog) {
-                    Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
-                    Button negativeButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-
-                    positiveButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            activity.startActivity(
-                                    new Intent(Intent.ACTION_VIEW, Uri.parse(detail.getUpdateLink()))
-                            );
-
-                            if (!detail.isForceUpdate()) dialog.dismiss();
-                        }
-                    });
-
-                    negativeButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            dialog.dismiss();
-                        }
-                    });
-                }
-            });
-            alertDialog.show();
+        if (remoteConfig == null) {
+            return;
         }
+        String dataAppUpdate = remoteConfig.getString(ANDROID_CUSTOMER_APP_UPDATE);
+        if (!TextUtils.isEmpty(dataAppUpdate)) {
+            Gson gson = new Gson();
+            DataUpdateApp dataUpdateApp = gson.fromJson(dataAppUpdate, DataUpdateApp.class);
+            if(dataUpdateApp != null) {
+                DetailUpdate detail = generateDetailUpdate(dataUpdateApp);
+                if (detail.isNeedUpdate()) {
+                    final AlertDialog alertDialog = new AlertDialog.Builder(activity)
+                            .setTitle(detail.getUpdateTitle())
+                            .setMessage(detail.getUpdateMessage())
+                            .setPositiveButton(activity.getString(R.string.deeplink_receiver_applink_update_button_title), null)
+                            .setNegativeButton(activity.getString(R.string.deeplink_receiver_applink_update_button_cancel_title), null)
+                            .setCancelable(true)
+                            .create();
+
+                    alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                        @Override
+                        public void onShow(final DialogInterface dialog) {
+                            Button positiveButton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+                            Button negativeButton = alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+
+                            positiveButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    activity.startActivity(
+                                            new Intent(Intent.ACTION_VIEW, Uri.parse(detail.getUpdateLink()))
+                                    );
+
+                                    if (!detail.isForceUpdate()) dialog.dismiss();
+                                }
+                            });
+
+                            negativeButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    dialog.dismiss();
+                                }
+                            });
+                        }
+                    });
+                    alertDialog.show();
+                }
+            }
+        }
+    }
+
+    private DetailUpdate generateDetailUpdate(DataUpdateApp dataUpdateApp) {
+        DetailUpdate detailUpdate = new DetailUpdate();
+        detailUpdate.setInAppUpdateEnabled(false);
+        if (dataUpdateApp.isIsForceEnabled() && GlobalConfig.VERSION_CODE < dataUpdateApp.getLatestVersionForceUpdate()) {
+            detailUpdate.setLatestVersionCode(dataUpdateApp.getLatestVersionForceUpdate());
+            detailUpdate.setNeedUpdate(true);
+            detailUpdate.setForceUpdate(true);
+        } else if (dataUpdateApp.isIsOptionalEnabled() && GlobalConfig.VERSION_CODE < dataUpdateApp.getLatestVersionOptionalUpdate()) {
+            detailUpdate.setLatestVersionCode(dataUpdateApp.getLatestVersionOptionalUpdate());
+            detailUpdate.setNeedUpdate(true);
+            detailUpdate.setForceUpdate(false);
+        } else {
+            detailUpdate.setNeedUpdate(false);
+        }
+        detailUpdate.setUpdateTitle(dataUpdateApp.getTitle());
+        detailUpdate.setUpdateMessage(dataUpdateApp.getMessage());
+        detailUpdate.setUpdateLink(dataUpdateApp.getLink());
+        return detailUpdate;
     }
 }

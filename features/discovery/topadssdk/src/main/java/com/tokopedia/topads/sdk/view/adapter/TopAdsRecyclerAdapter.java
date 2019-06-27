@@ -15,6 +15,7 @@ import com.tokopedia.topads.sdk.base.adapter.ObserverType;
 import com.tokopedia.topads.sdk.listener.DisplayChangeListener;
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.utils.EndlessScrollRecycleListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
@@ -169,6 +170,10 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     public void setTopAdsListener(TopAdsListener topAdsListener) {
         placer.setTopAdsListener(topAdsListener);
+    }
+
+    public void setAdsImpressionListener(TopAdsItemImpressionListener itemImpressionListener){
+        placer.setImpressionListener(itemImpressionListener);
     }
 
     @Override

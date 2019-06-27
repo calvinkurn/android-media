@@ -15,7 +15,6 @@ import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.adapter.factory.AdsAdapterTypeFactory;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.feed.ProductFeedViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.feed.ShopFeedViewHolder;
-import com.tokopedia.topads.sdk.widget.TopAdsCarouselView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,12 +27,11 @@ public class AdsItemAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     private List<Item> list;
     private AdsAdapterTypeFactory typeFactory;
-    private int clickPosition = -1;
     private int adapterPosition = -1;
 
     public AdsItemAdapter(Context context) {
         this.list = new ArrayList<>();
-        this.typeFactory = new AdsAdapterTypeFactory(context, clickPosition);
+        this.typeFactory = new AdsAdapterTypeFactory(context);
     }
 
     public void setList(List<Item> list) {

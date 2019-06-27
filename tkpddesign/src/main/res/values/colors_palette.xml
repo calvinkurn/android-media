@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- This resources is deprecated. Please use colors at unify_principles -->
 <resources>
 
     <color name="grey_100">#f5f5f5</color>
@@ -17,6 +18,7 @@
     <color name="grey_800">#424242</color>
     <color name="grey_1100">#f6f6f6</color>
     <color name="grey_title">#60000000</color>
+    <color name="green_variant_choosed">#f3fef3</color>
 
     <color name="light_blue_300">#4fc3f7</color>
 
@@ -91,5 +93,8 @@
     <color name="medium_green">#42b549</color>
     <color name="divider_color">#ededed</color>
     <color name="ic_back_color">#26000000</color>
+
+    <color name="grey_button_compat">#ae31353b</color>
+
 
 </resources>

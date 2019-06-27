@@ -2,21 +2,17 @@ package com.tokopedia.topchat.chattemplate.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
-import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.topchat.R;
-import com.tokopedia.topchat.chattemplate.view.fragment.TemplateChatFragment;
+import com.tokopedia.topchat.chattemplate.analytics.ChatTemplateAnalytics;
 import com.tokopedia.topchat.chattemplate.view.fragment.TemplateChatFragment;
 
-public class TemplateChatActivity extends BasePresenterActivity implements HasComponent {
+public class TemplateChatActivity extends BaseSimpleActivity {
 
     private static final String TAG = "TEMPLATE_CHAT_FRAGMENT";
-
 
     public static Intent createInstance(Context context) {
         Intent intent = new Intent(context, TemplateChatActivity.class);
@@ -30,60 +26,12 @@ public class TemplateChatActivity extends BasePresenterActivity implements HasCo
     }
 
     @Override
-    protected void setupURIPass(Uri data) {
-
-    }
-
-    @Override
-    protected void setupBundlePass(Bundle extras) {
-
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_simple_fragment;
-    }
-
-    @Override
-    protected void initView() {
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.container, TemplateChatFragment.createInstance(getIntent().getExtras()),
-                        TAG)
-                .commit();
-    }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
-    }
-
-    @Override
-    public AppComponent getComponent() {
-        return getApplicationComponent();
-    }
-
-    @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
+    protected Fragment getNewFragment() {
+        return TemplateChatFragment.createInstance(getIntent().getExtras());
     }
 
     @Override
     public String getScreenName() {
-        return AppScreen.SCREEN_TEMPLATE_CHAT_SETTING;
+        return ChatTemplateAnalytics.Companion.SCREEN_TEMPLATE_CHAT_SETTING;
     }
 }

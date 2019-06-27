@@ -1,0 +1,40 @@
+query DepositActivityQuery($page: Int!, $maxRows: Int!, $dateFrom: String!, $dateTo: String!) {
+    allDepositHistory: depositActivity(page: $page, maxRows: $maxRows, dateFrom: $dateFrom, dateTo: $dateTo, saldoType: 2) {
+        message
+        have_error
+        have_next_page
+        deposit_history_list {
+              note
+              amount
+              class
+              image
+              create_time
+        }
+    }
+
+    buyerDepositHistory: depositActivity(page: $page, maxRows: $maxRows, dateFrom: $dateFrom, dateTo: $dateTo, saldoType: 0) {
+        message
+        have_error
+        have_next_page
+        deposit_history_list {
+              note
+              amount
+              class
+              image
+              create_time
+        }
+    }
+
+    sellerDepositHistory: depositActivity(page: $page, maxRows: $maxRows, dateFrom: $dateFrom, dateTo: $dateTo, saldoType: 1) {
+        message
+        have_error
+        have_next_page
+        deposit_history_list {
+              note
+              amount
+              class
+              image
+              create_time
+        }
+    }
+}

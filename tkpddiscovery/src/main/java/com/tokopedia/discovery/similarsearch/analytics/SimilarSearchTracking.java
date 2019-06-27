@@ -60,29 +60,35 @@ public class SimilarSearchTracking extends UnifyTracking {
         }
     }
     public static void eventUserSeeNoSimilarProduct(Context context, String productId,String screenName) {
-        sendGTMEvent(context, new EventTracking(
-                SimilarSearchAppEventTracking.Event.GenericViewSearchResult,
-                SimilarSearchAppEventTracking.Category.EventSimilarProduct,
-                SimilarSearchAppEventTracking.Action.EventNoSimilarProduct,
-                String.format(SimilarSearchAppEventTracking.Label.LableOriginProductId, productId,screenName)
-        ).getEvent());
+        if (context != null) {
+            sendGTMEvent(context, new EventTracking(
+                    SimilarSearchAppEventTracking.Event.GenericViewSearchResult,
+                    SimilarSearchAppEventTracking.Category.EventSimilarProduct,
+                    SimilarSearchAppEventTracking.Action.EventNoSimilarProduct,
+                    String.format(SimilarSearchAppEventTracking.Label.LableOriginProductId, productId,screenName)
+            ).getEvent());
+        }
     }
 
     public static void eventAddWishList(Context context, String productId) {
-        sendGTMEvent(context, new EventTracking(
-                SimilarSearchAppEventTracking.Event.GenericViewSearchResult,
-                SimilarSearchAppEventTracking.Category.EventSimilarProduct,
-                SimilarSearchAppEventTracking.Action.EventAddWishList,
-                String.format(SimilarSearchAppEventTracking.Label.LabelProductID, productId)
-        ).getEvent());
+        if (context != null) {
+            sendGTMEvent(context, new EventTracking(
+                    SimilarSearchAppEventTracking.Event.GenericViewSearchResult,
+                    SimilarSearchAppEventTracking.Category.EventSimilarProduct,
+                    SimilarSearchAppEventTracking.Action.EventAddWishList,
+                    String.format(SimilarSearchAppEventTracking.Label.LabelProductID, productId)
+            ).getEvent());
+        }
     }
 
     public static void eventRemoveWishList(Context context, String productId) {
-        sendGTMEvent(context, new EventTracking(
-                SimilarSearchAppEventTracking.Event.GenericViewSearchResult,
-                SimilarSearchAppEventTracking.Category.EventSimilarProduct,
-                SimilarSearchAppEventTracking.Action.EventRemoveWishList,
-                String.format(SimilarSearchAppEventTracking.Label.LabelProductID, productId)
-        ).getEvent());
+        if (context != null) {
+            sendGTMEvent(context, new EventTracking(
+                    SimilarSearchAppEventTracking.Event.GenericViewSearchResult,
+                    SimilarSearchAppEventTracking.Category.EventSimilarProduct,
+                    SimilarSearchAppEventTracking.Action.EventRemoveWishList,
+                    String.format(SimilarSearchAppEventTracking.Label.LabelProductID, productId)
+            ).getEvent());
+        }
     }
 }

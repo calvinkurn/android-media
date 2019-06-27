@@ -1,10 +1,11 @@
 package com.tokopedia.otp.common;
 
-import android.app.Activity;
-import android.content.Context;
 
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import android.app.Activity;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 
 import javax.inject.Inject;
 
@@ -13,8 +14,6 @@ import javax.inject.Inject;
  */
 
 public class OTPAnalytics {
-
-    private final AnalyticTracker analyticTracker;
 
     public static class Screen {
         public static final String SCREEN_COTP_SMS = "Input OTP sms";
@@ -31,6 +30,10 @@ public class OTPAnalytics {
 
     }
 
+    public static class Category {
+        private static final String REGISTER_WITH_PHONE_NUMBER_OTP = "register with phone number otp";
+    }
+
     public static class Event {
         public static final String CLICK_LOGIN = "clickLogin";
         public static final String CLICK_CONFIRM = "clickConfirm";
@@ -44,67 +47,139 @@ public class OTPAnalytics {
     public static class Action {
         public static final String INPUT_OTP_PAGE = "input otp page";
         public static final String CHOOSE_OTP_PAGE = "choose otp page";
+        private static final String CLICK_ON_BUTTON_VERIFIKASI = "click on button verifikasi";
+        private static final String CLICK_KIRIM_ULANG = "click kirim ulang";
+    }
+
+    public static class Label {
+        private static final String CLICK = "click";
+        private static final String SUCCESS = "success";
+        private static final String FAILED = "failed - ";
     }
 
     @Inject
-    public OTPAnalytics(AnalyticTracker analyticTracker) {
-        this.analyticTracker = analyticTracker;
-    }
+    public OTPAnalytics() {
 
-    public static OTPAnalytics createInstance(Context context) {
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-        return new OTPAnalytics(tracker);
     }
 
     public void sendScreen(Activity activity, String screenName) {
-        analyticTracker.sendScreen(activity, screenName);
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName);
     }
 
     public void eventClickBackOTPPage(int otpType) {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_BACK,
                 Action.INPUT_OTP_PAGE,
                 "click back button",
                 String.valueOf(otpType)
-        );
+        ));
+    }
+
+    public void eventClickBackRegisterOTPPage() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.CLICK_REGISTER,
+                "register with phone number otp",
+                "click on button back",
+                ""
+        ));
     }
 
     public void eventClickVerifyButton(int otpType) {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_CONFIRM,
                 Action.INPUT_OTP_PAGE,
                 "click on verifikasi",
                 String.valueOf(otpType)
 
-        );
+        ));
     }
 
     public void eventClickResendOtp(int otpType) {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_OTP,
                 Action.INPUT_OTP_PAGE,
                 "click on kirim ulang",
                 String.valueOf(otpType)
 
-        );
+        ));
     }
 
     public void eventClickUseOtherMethod(int otpType) {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_OTP,
                 Action.INPUT_OTP_PAGE,
                 "click on gunakan metode verifikasi lain",
                 String.valueOf(otpType)
-        );
+        ));
     }
 
 
     public void eventClickMethodOtp(int otpType, String modeName) {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.CLICK_OTP,
                 Action.CHOOSE_OTP_PAGE,
                 "click on otp method ",
                 String.format("%s - %s", String.valueOf(otpType), modeName)
-        );
+        ));
+    }
+
+    //#R28
+    public void eventClickVerificationButton(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.CLICK_REGISTER,
+                Category.REGISTER_WITH_PHONE_NUMBER_OTP,
+                Action.CLICK_ON_BUTTON_VERIFIKASI,
+                Label.CLICK
+        ));
+    }
+
+    //#R28
+    public void eventSuccessClickVerificationButton(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.CLICK_REGISTER,
+                Category.REGISTER_WITH_PHONE_NUMBER_OTP,
+                Action.CLICK_ON_BUTTON_VERIFIKASI,
+                Label.SUCCESS
+        ));
+    }
+
+    //#R28
+    public void eventFailedClickVerificationButton(String failedMessage){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.CLICK_REGISTER,
+                Category.REGISTER_WITH_PHONE_NUMBER_OTP,
+                Action.CLICK_ON_BUTTON_VERIFIKASI,
+                Label.FAILED + failedMessage
+        ));
+    }
+
+    //#R29
+    public void eventClickResendPhoneOtpButton(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.CLICK_REGISTER,
+                Category.REGISTER_WITH_PHONE_NUMBER_OTP,
+                Action.CLICK_KIRIM_ULANG,
+                Label.CLICK
+        ));
+    }
+
+    //#R29
+    public void trackSuccessClickResendPhoneOtpButton(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.CLICK_REGISTER,
+                Category.REGISTER_WITH_PHONE_NUMBER_OTP,
+                Action.CLICK_KIRIM_ULANG,
+                Label.SUCCESS
+        ));
+    }
+
+    //#R29
+    public void trackFailedClickResendPhoneOtpButton(String failedMessage){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.CLICK_REGISTER,
+                Category.REGISTER_WITH_PHONE_NUMBER_OTP,
+                Action.CLICK_KIRIM_ULANG,
+                Label.FAILED + failedMessage
+        ));
     }
 }

@@ -4,13 +4,12 @@ import android.text.TextUtils;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.abstraction.common.data.model.request.DataRequest;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils;
+import com.tokopedia.topads.common.domain.interactor.TopAdsDatePickerInteractor;
 import com.tokopedia.topads.common.view.presenter.TopAdsBaseListPresenter;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
-import com.tokopedia.topads.common.domain.interactor.TopAdsDatePickerInteractor;
 import com.tokopedia.topads.group.domain.usecase.TopAdsSearchGroupAdUseCase;
 import com.tokopedia.topads.keyword.data.model.cloud.bulkkeyword.DataBulkKeyword;
 import com.tokopedia.topads.keyword.data.model.cloud.bulkkeyword.Keyword;
@@ -20,6 +19,7 @@ import com.tokopedia.topads.keyword.view.listener.TopAdsKeywordListView;
 import com.tokopedia.topads.keyword.view.model.BaseKeywordParam;
 import com.tokopedia.topads.keyword.view.model.KeywodDashboardViewModel;
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -53,7 +53,7 @@ public class TopAdsKeywordListPresenter extends TopAdsBaseListPresenter<TopAdsKe
                                       TopAdsGetKeywordListUseCase topAdsGetKeywordListUseCase,
                                       TopAdsKeywordActionBulkUseCase topAdsKeywordActionBulkUseCase,
                                       TopAdsSearchGroupAdUseCase topAdsSearchGroupAdUseCase,
-                                      UserSession userSession) {
+                                      UserSessionInterface userSession) {
         super(topAdsDatePickerInteractor, topAdsAddSourceTaggingUseCase, userSession);
         this.topAdsGetKeywordListUseCase = topAdsGetKeywordListUseCase;
         this.topAdsKeywordActionBulkUseCase = topAdsKeywordActionBulkUseCase;

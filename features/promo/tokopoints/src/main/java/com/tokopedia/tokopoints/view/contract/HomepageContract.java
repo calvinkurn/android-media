@@ -62,6 +62,8 @@ public interface HomepageContract {
         void showTokoPointCoupon(TokoPointSumCoupon data);
 
         void onSuccessDynamicLink(TokopointsDynamicLinkEntity tokopointsDynamicLinkEntity);
+
+        void onFinishRendering();
     }
 
     interface Presenter extends CustomerPresenter<View> {

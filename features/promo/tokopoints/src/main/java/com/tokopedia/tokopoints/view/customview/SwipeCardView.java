@@ -22,6 +22,7 @@ import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.tokopedia.tokopoints.R;
+import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
 public class SwipeCardView extends FrameLayout implements View.OnTouchListener {
@@ -73,6 +74,12 @@ public class SwipeCardView extends FrameLayout implements View.OnTouchListener {
                 clipboard.setPrimaryClip(clip);
                 Toast.makeText(getContext(), getResources().getString(R.string.tp_mes_copy_code), Toast.LENGTH_LONG).show();
             }
+
+            AnalyticsTrackerUtil.sendEvent(getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                    AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA_DETAIL,
+                    AnalyticsTrackerUtil.ActionKeys.COPY_CODE,
+                    mTextCoupon.getText().toString());
         });
     }
 

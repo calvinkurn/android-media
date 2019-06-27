@@ -35,7 +35,12 @@ import android.widget.TextView;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
@@ -45,7 +50,6 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.design.text.TextDrawable;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
-import com.tokopedia.loginphone.checkloginphone.view.activity.CheckLoginPhoneNumberActivity;
 import com.tokopedia.loginregister.LoginRegisterRouter;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.activation.view.activity.ActivationActivity;
@@ -58,7 +62,6 @@ import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.login.view.listener.LoginContract;
 import com.tokopedia.loginregister.login.view.presenter.LoginPresenter;
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber;
-import com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity;
 import com.tokopedia.loginregister.loginthirdparty.google.SmartLockActivity;
 import com.tokopedia.loginregister.loginthirdparty.webview.WebViewLoginFragment;
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity;
@@ -69,16 +72,16 @@ import com.tokopedia.sessioncommon.data.model.SecurityPojo;
 import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.sessioncommon.view.LoginSuccessRouter;
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 import java.util.ArrayList;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import static com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT;
-import static com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT_TOKEN;
-import static com.tokopedia.loginregister.loginthirdparty.google.GoogleSignInActivity.RC_SIGN_IN_GOOGLE;
+import static com.tokopedia.sessioncommon.data.Token.GOOGLE_API_KEY;
 
 /**
  * @author by nisie on 12/18/17.
@@ -100,6 +103,7 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
     private static final int REQUEST_ACTIVATE_ACCOUNT = 107;
     private static final int REQUEST_VERIFY_PHONE = 108;
     private static final int REQUEST_ADD_NAME = 109;
+    private static final int REQUEST_LOGIN_GOOGLE = 110;
 
     public static final String IS_AUTO_LOGIN = "auto_login";
     public static final String AUTO_LOGIN_METHOD = "method";
@@ -128,6 +132,7 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
 
     ArrayAdapter<String> autoCompleteAdapter;
     CallbackManager callbackManager;
+    GoogleSignInClient mGoogleSignInClient;
 
     @Inject
     LoginPresenter presenter;
@@ -161,18 +166,6 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
 
         daggerLoginComponent.inject(this);
     }
-
-//    public void initOuterInjector(SessionModule sessionModule) {
-//        AppComponent appComponent = getComponent(AppComponent.class);
-//        DaggerSessionComponent daggerSessionComponent = (DaggerSessionComponent)
-//                DaggerSessionComponent.builder()
-//                        .appComponent(appComponent)
-//                        .sessionModule(sessionModule)
-//                        .build();
-//        daggerSessionComponent.inject(this);
-//
-//        presenter.attachView(this);
-//    }
 
     @Override
     public void onStart() {
@@ -224,7 +217,16 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        callbackManager = CallbackManager.Factory.create();
+        if (getActivity() != null) {
+            callbackManager = CallbackManager.Factory.create();
+            GoogleSignInOptions gso =
+                    new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                            .requestIdToken(GOOGLE_API_KEY)
+                            .requestEmail()
+                            .requestProfile()
+                            .build();
+            mGoogleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
+        }
     }
 
     @Nullable
@@ -587,8 +589,6 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
             tv.setOnClickListener(v -> onLoginFacebookClick());
         } else if (discoverItemViewModel.getId().equalsIgnoreCase(GPLUS)) {
             tv.setOnClickListener(v -> onLoginGoogleClick());
-        } else if (discoverItemViewModel.getId().equalsIgnoreCase(PHONE_NUMBER)) {
-            tv.setOnClickListener(v -> onLoginPhoneNumberClick());
         } else {
             tv.setOnClickListener(v -> onLoginWebviewClick(discoverItemViewModel.getName(),
                     discoverItemViewModel.getUrl()));
@@ -613,24 +613,14 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
         }
     }
 
-    private void onLoginPhoneNumberClick() {
-        if (getActivity() != null) {
-            actionLoginMethod = LoginRegisterAnalytics.ACTION_LOGIN_PHONE;
-
-            analytics.eventClickLoginPhoneNumber(getActivity().getApplicationContext());
-            Intent intent = CheckLoginPhoneNumberActivity.getCallingIntent(getActivity());
-            startActivityForResult(intent, REQUEST_LOGIN_PHONE_NUMBER);
-        }
-
-    }
-
     private void onLoginGoogleClick() {
         if (getActivity() != null) {
             actionLoginMethod = LoginRegisterAnalytics.ACTION_LOGIN_GOOGLE;
 
             analytics.eventClickLoginGoogle(getActivity().getApplicationContext());
-            Intent intent = new Intent(getActivity(), GoogleSignInActivity.class);
-            startActivityForResult(intent, RC_SIGN_IN_GOOGLE);
+
+            Intent signinIntent = mGoogleSignInClient.getSignInIntent();
+            startActivityForResult(signinIntent, REQUEST_LOGIN_GOOGLE);
         }
 
     }
@@ -703,11 +693,9 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
                 passwordEditText.setText(data.getExtras().getString(SmartLockActivity.PASSWORD));
                 presenter.login(data.getExtras().getString(SmartLockActivity.USERNAME),
                         data.getExtras().getString(SmartLockActivity.PASSWORD));
-            } else if (requestCode == RC_SIGN_IN_GOOGLE && data != null) {
-                GoogleSignInAccount googleSignInAccount = data.getParcelableExtra(KEY_GOOGLE_ACCOUNT);
-                String email = googleSignInAccount.getEmail();
-                String accessToken = data.getStringExtra(KEY_GOOGLE_ACCOUNT_TOKEN);
-                presenter.loginGoogle(accessToken, email);
+            } else if (requestCode == REQUEST_LOGIN_GOOGLE && data != null) {
+                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                handleGoogleSignInResult(task);
             } else if (requestCode == REQUEST_LOGIN_WEBVIEW && resultCode == Activity.RESULT_OK) {
                 presenter.loginWebview(data);
             } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
@@ -742,6 +730,25 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
             } else {
                 super.onActivityResult(requestCode, resultCode, data);
             }
+        }
+    }
+
+    /**
+     * Please refer to the
+     * {@link com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes class reference for
+     * status code
+     */
+    private void handleGoogleSignInResult(Task<GoogleSignInAccount> completedTask) {
+        try {
+            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+            String accessToken = account.getIdToken();
+            String email = account.getEmail();
+            presenter.loginGoogle(accessToken, email);
+        } catch (ApiException e) {
+            onErrorLoginSosmed(LoginRegisterAnalytics.GOOGLE,
+                    String.format(getString(R.string.loginregister_failed_login_google),
+                            String.valueOf(e.getStatusCode()))
+            );
         }
     }
 
@@ -811,20 +818,19 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
     public void onSuccessLoginEmail() {
         dismissLoadingLogin();
         analytics.eventSuccessLoginEmail();
-        if (getActivity() != null) {
-            ((LoginRegisterRouter) getActivity().getApplicationContext()).setMoEUserAttributesLogin
-                    (userSession.getUserId(),
-                            userSession.getName(),
-                            userSession.getEmail(),
-                            userSession.getPhoneNumber(),
-                            userSession.isGoldMerchant(),
-                            userSession.getShopName(),
-                            userSession.getShopId(),
-                            userSession.hasShop(),
-                            LoginRegisterAnalytics.LABEL_EMAIL
-                    );
+        if (TrackApp.getInstance()!= null) {
+            TrackApp.getInstance().getMoEngage().setMoEUserAttributesLogin(
+                    userSession.getUserId(),
+                    userSession.getName(),
+                    userSession.getEmail(),
+                    userSession.getPhoneNumber(),
+                    userSession.isGoldMerchant(),
+                    userSession.getShopName(),
+                    userSession.getShopId(),
+                    userSession.hasShop(),
+                    LoginRegisterAnalytics.LABEL_EMAIL
+            );
         }
-
         onSuccessLogin();
     }
 
@@ -836,6 +842,11 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
     }
 
     @Override
+    public void trackErrorLoginEmail() {
+        analytics.trackClickOnLoginButtonError();
+    }
+
+    @Override
     public void onErrorLoginSosmed(String loginMethodName, String errorMessage) {
         onErrorLogin(errorMessage);
     }
@@ -844,19 +855,19 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
     public void onSuccessLoginSosmed(String loginMethod) {
         dismissLoadingLogin();
 
-        analytics.eventSuccessLoginSosmed(loginMethod);
-        if (getActivity() != null) {
-            ((LoginRegisterRouter) getActivity().getApplicationContext()).setMoEUserAttributesLogin
-                    (userSession.getUserId(),
-                            userSession.getName(),
-                            userSession.getEmail(),
-                            userSession.getPhoneNumber(),
-                            userSession.isGoldMerchant(),
-                            userSession.getShopName(),
-                            userSession.getShopId(),
-                            userSession.hasShop(),
-                            LoginRegisterAnalytics.LABEL_EMAIL
-                    );
+        analytics.trackEventSuccessLoginSosmed(loginMethod);
+        if (TrackApp.getInstance()!= null) {
+            TrackApp.getInstance().getMoEngage().setMoEUserAttributesLogin(
+                    userSession.getUserId(),
+                    userSession.getName(),
+                    userSession.getEmail(),
+                    userSession.getPhoneNumber(),
+                    userSession.isGoldMerchant(),
+                    userSession.getShopName(),
+                    userSession.getShopId(),
+                    userSession.hasShop(),
+                    LoginRegisterAnalytics.LABEL_EMAIL
+            );
         }
         onSuccessLogin();
     }
@@ -872,5 +883,10 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
     public void onDestroy() {
         super.onDestroy();
         presenter.detachView();
+    }
+
+    @Override
+    public void stopTrace() {
+        //Not implemented here
     }
 }

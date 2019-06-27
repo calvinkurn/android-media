@@ -42,7 +42,7 @@ public class AddTravelPassengerUseCase extends BaseTravelPassengerUseCase<Travel
 
                     if (!TextUtils.isEmpty(query)) {
                         GraphqlRequest request = new GraphqlRequest(query, ResponseTravelAddPassenger.class,
-                                variableGql);
+                                variableGql, false);
                         graphqlUseCase.clearRequest();
                         graphqlUseCase.addRequest(request);
                         return graphqlUseCase.createObservable(null);

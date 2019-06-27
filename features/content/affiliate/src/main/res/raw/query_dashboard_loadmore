@@ -8,6 +8,7 @@ query GetDashboardLoadMore($cursor: String) {
       totalSold
       totalClick
       commission
+      productCommission
     }
     pagination {
       nextCursor

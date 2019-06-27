@@ -1,11 +1,9 @@
 package com.tokopedia.topads.dashboard.domain.interactor;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.topads.dashboard.domain.TopAdsEtalaseListRepository;
 import com.tokopedia.topads.dashboard.data.model.data.Etalase;
+import com.tokopedia.topads.dashboard.domain.TopAdsEtalaseListRepository;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import java.util.List;
 
@@ -19,9 +17,8 @@ public class TopAdsEtalaseListUseCase extends UseCase<List<Etalase>> {
     public static final String SHOP_ID = "shop_id";
     private final TopAdsEtalaseListRepository topAdsEtalaseListRepository;
 
-    public TopAdsEtalaseListUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,
-                                    TopAdsEtalaseListRepository topAdsEtalaseListRepository) {
-        super(threadExecutor, postExecutionThread);
+    public TopAdsEtalaseListUseCase(TopAdsEtalaseListRepository topAdsEtalaseListRepository) {
+        super();
         this.topAdsEtalaseListRepository = topAdsEtalaseListRepository;
     }
 

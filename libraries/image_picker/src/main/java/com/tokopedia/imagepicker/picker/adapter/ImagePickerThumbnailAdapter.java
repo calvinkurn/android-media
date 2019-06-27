@@ -20,6 +20,8 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.tokopedia.imagepicker.R;
 
 import java.util.ArrayList;
+import java.util.List;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * Created by hendry on 02/05/18.
@@ -31,8 +33,8 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
     public static final int ITEM_TYPE = 1;
     private final int thumbnailSize;
     private Context context;
-    private ArrayList<String> imagePathList;
-    private ArrayList<Integer> placeholderDrawableResList;
+    private List<String> imagePathList;
+    private List<Integer> placeholderDrawableResList;
     private int maxSize;
     private @StringRes
     int primaryImageStringRes;
@@ -51,7 +53,7 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
         void onThumbnailRemoved(int index);
     }
 
-    public ImagePickerThumbnailAdapter(Context context, ArrayList<String> imagePathList, ArrayList<Integer> placeholderDrawableResList,
+    public ImagePickerThumbnailAdapter(Context context, List<String> imagePathList, List<Integer> placeholderDrawableResList,
                                        OnImageEditThumbnailAdapterListener onImageEditThumbnailAdapterListener) {
         this.context = context;
         this.imagePathList = imagePathList;
@@ -145,12 +147,12 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
 
         public void bind(@DrawableRes int drawableRes, int backgroundColor) {
             vFrameImage.setBackgroundColor(backgroundColor);
-            ivPlaceholder.setImageResource(drawableRes);
+            ivPlaceholder.setImageDrawable(MethodChecker.getDrawable(ivPlaceholder.getContext(),drawableRes));
         }
     }
 
-    public void setData(ArrayList<String> imagePathList, @StringRes int primaryImageStringRes,
-                        ArrayList<Integer> placeholderDrawableList) {
+    public void setData(List<String> imagePathList, @StringRes int primaryImageStringRes,
+                        List<Integer> placeholderDrawableList) {
         this.imagePathList = imagePathList;
         this.primaryImageStringRes = primaryImageStringRes;
         this.placeholderDrawableResList = placeholderDrawableList;
@@ -181,7 +183,7 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
         }
     }
 
-    public ArrayList<String> getImagePathList() {
+    public List<String> getImagePathList() {
         return imagePathList;
     }
 

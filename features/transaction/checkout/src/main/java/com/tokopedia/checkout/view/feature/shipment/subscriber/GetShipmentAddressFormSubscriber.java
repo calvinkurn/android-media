@@ -1,17 +1,10 @@
 package com.tokopedia.checkout.view.feature.shipment.subscriber;
 
-import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentContract;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentPresenter;
-import com.tokopedia.transactiondata.apiservice.CartHttpErrorException;
-import com.tokopedia.transactiondata.apiservice.CartResponseDataNullException;
 import com.tokopedia.transactiondata.apiservice.CartResponseErrorException;
-import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
-
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 
 import rx.Subscriber;
 
@@ -23,17 +16,17 @@ public class GetShipmentAddressFormSubscriber extends Subscriber<CartShipmentAdd
 
     private final ShipmentPresenter shipmentPresenter;
     private final ShipmentContract.View view;
-    private final boolean isFromMultipleAddress;
-    private final boolean isFromPdp;
+    private final boolean isReloadData;
+    private final boolean isOneClickShipment;
 
     public GetShipmentAddressFormSubscriber(ShipmentPresenter shipmentPresenter,
                                             ShipmentContract.View view,
-                                            boolean isFromMultipleAddress,
-                                            boolean isFromPdp) {
+                                            boolean isReloadData,
+                                            boolean isOneClickShipment) {
         this.shipmentPresenter = shipmentPresenter;
         this.view = view;
-        this.isFromMultipleAddress = isFromMultipleAddress;
-        this.isFromPdp = isFromPdp;
+        this.isReloadData = isReloadData;
+        this.isOneClickShipment = isOneClickShipment;
     }
 
     @Override
@@ -44,35 +37,24 @@ public class GetShipmentAddressFormSubscriber extends Subscriber<CartShipmentAdd
     @Override
     public void onError(Throwable e) {
         e.printStackTrace();
-        if (isFromMultipleAddress) {
+        if (isReloadData) {
             view.hideLoading();
         } else {
             view.hideInitialLoading();
         }
-        if (e instanceof UnknownHostException) {
-            view.showToastError(
-                    ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-            );
-        } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-            view.showToastError(
-                    ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-            );
-        } else if (e instanceof CartResponseErrorException) {
-            view.showToastError(e.getMessage());
-        } else if (e instanceof CartResponseDataNullException) {
-            view.showToastError(e.getMessage());
-        } else if (e instanceof CartHttpErrorException) {
-            view.showToastError(e.getMessage());
-        } else if (e instanceof ResponseCartApiErrorException) {
-            view.showToastError(e.getMessage());
-        } else {
-            view.showToastError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+
+        String errorMessage = e.getMessage();
+        if (!(e instanceof CartResponseErrorException)) {
+            errorMessage = ErrorHandler.getErrorMessage(view.getActivityContext(), e);
         }
+        view.showToastError(errorMessage);
+
+        view.stopTrace();
     }
 
     @Override
     public void onNext(CartShipmentAddressFormData cartShipmentAddressFormData) {
-        if (isFromMultipleAddress) {
+        if (isReloadData) {
             view.hideLoading();
         } else {
             view.hideInitialLoading();
@@ -85,7 +67,8 @@ public class GetShipmentAddressFormSubscriber extends Subscriber<CartShipmentAdd
                 view.renderNoRecipientAddressShipmentForm(cartShipmentAddressFormData);
             } else {
                 shipmentPresenter.initializePresenterData(cartShipmentAddressFormData);
-                view.renderCheckoutPage(!isFromMultipleAddress, isFromPdp);
+                view.renderCheckoutPage(!isReloadData, isOneClickShipment);
+                view.stopTrace();
             }
         }
     }

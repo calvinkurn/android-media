@@ -2,32 +2,33 @@ package com.tokopedia.core.share.presenter;
 
 
 import com.tokopedia.core.model.share.ShareData;
+import com.tokopedia.linker.model.LinkerData;
 
 /**
  * Created by Angga.Prasetiyo on 11/12/2015.
  */
 public interface ProductSharePresenter {
-    void shareBBM(ShareData data);
+    void shareBBM(LinkerData data);
 
-    void shareFb(ShareData data);
+    void shareFb(LinkerData data);
 
-    void shareTwitter(ShareData data);
+    void shareTwitter(LinkerData data);
 
-    void shareWhatsApp(ShareData data);
+    void shareWhatsApp(LinkerData data);
 
-    void shareLine(ShareData data);
+    void shareLine(LinkerData data);
 
-    void sharePinterest(ShareData data);
+    void sharePinterest(LinkerData data);
 
-    void shareMore(ShareData data);
+    void shareMore(LinkerData data);
 
-    void shareInstagram(ShareData data);
+    void shareInstagram(LinkerData data);
 
-    void shareGPlus(ShareData data);
+    void shareGPlus(LinkerData data);
 
-    void shareCopy(ShareData data);
+    void shareCopy(LinkerData data);
 
     void setFacebookCache();
 
-    void shareCategory(ShareData data, String media);
+    void shareCategory(LinkerData data, String media);
 }

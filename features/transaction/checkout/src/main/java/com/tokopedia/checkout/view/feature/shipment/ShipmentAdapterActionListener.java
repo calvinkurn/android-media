@@ -1,11 +1,13 @@
 package com.tokopedia.checkout.view.feature.shipment;
 
-import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
-import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
+import android.view.View;
+
 import com.tokopedia.checkout.view.common.adapter.CartAdapterActionListener;
-import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
-import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShippingCourierViewModel;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 
@@ -41,17 +43,23 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
 
     void updateCheckoutRequest(List<DataCheckoutRequest> checkoutRequestData);
 
-    void onRemovePromoCode();
+    void onRemovePromoCode(String promoCode);
 
     void resetTotalPrice();
 
+    void showBottomSheetTotalBenefit();
+
     void onInsuranceChecked(int position);
+
+    void onPriorityChecked(int position);
 
     void onNeedUpdateViewItem(int position);
 
     void onSubTotalCartItemClicked(int position);
 
     void onInsuranceTncClicked();
+
+    void onPriorityTncClicker();
 
     void onNeedUpdateRequestData();
 
@@ -62,6 +70,8 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
     void onChoosePaymentMethodButtonClicked();
 
     void onDonationChecked(boolean checked);
+
+    void onEgoldChecked(boolean checked);
 
     void onChangeShippingDuration(ShipmentCartItemModel shipmentCartItemModel,
                                   RecipientAddressModel recipientAddressModel,
@@ -81,7 +91,7 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
                              List<ShopShipment> shopShipmentList,
                              boolean isCourierRecommendation);
 
-    void onCourierPromoCanceled(String shipperName);
+    void onCourierPromoCanceled(String shipperName, String promoCode);
 
     boolean isToogleYearEndPromoOn();
 
@@ -90,4 +100,12 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
     void onPurchaseProtectionChangeListener(int position);
 
     void navigateToProtectionMore(String url);
+
+    void onNotifierClicked(String url);
+
+    void onClickChangePhoneNumber(RecipientAddressModel recipientAddressModel);
+
+    void onProcessToPayment();
+
+    void onProcessToPaymentCod();
 }

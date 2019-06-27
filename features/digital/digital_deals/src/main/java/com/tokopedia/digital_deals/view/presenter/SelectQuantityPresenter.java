@@ -7,12 +7,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.digital_deals.DealsModuleRouter;
-import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.activity.CheckoutActivity;
 import com.tokopedia.digital_deals.view.contractor.SelectQuantityContract;
 import com.tokopedia.digital_deals.view.model.PackageViewModel;
@@ -25,6 +22,8 @@ import com.tokopedia.oms.data.entity.response.verifyresponse.VerifyMyCartRespons
 import com.tokopedia.oms.domain.postusecase.PostVerifyCartUseCase;
 import com.tokopedia.oms.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +41,7 @@ public class SelectQuantityPresenter
     private String promocode = "";
     private PackageViewModel checkoutData;
     private DealsDetailsResponse dealDetails;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
 
     @Inject
     public SelectQuantityPresenter(PostVerifyCartUseCase postVerifyCartUseCase) {
@@ -51,7 +50,7 @@ public class SelectQuantityPresenter
 
     @Override
     public void initialize(DealsDetailsResponse detailsViewModel) {
-        userSession = ((AbstractionRouter) getView().getActivity().getApplication()).getSession();
+        userSession = new UserSession(getView().getActivity());
         this.dealDetails = detailsViewModel;
         getView().renderFromDetails(dealDetails);
     }

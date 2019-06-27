@@ -20,8 +20,8 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.similarsearch.analytics.SimilarSearchTracking;
-import com.tokopedia.discovery.similarsearch.di.SimilarSearchComponent;
 import com.tokopedia.discovery.similarsearch.di.DaggerSimilarSearchComponent;
+import com.tokopedia.discovery.similarsearch.di.SimilarSearchComponent;
 import com.tokopedia.discovery.similarsearch.model.ProductsItem;
 import com.tokopedia.discovery.similarsearch.view.presenter.SimilarSearchPresenter;
 import com.tokopedia.user.session.UserSession;
@@ -119,10 +119,12 @@ public class SimilarSearchFragment extends BaseDaggerFragment implements Similar
 
     @Override
     protected void initInjector() {
-        similarSearhComponent = DaggerSimilarSearchComponent.builder()
-                .appComponent(((MainApplication) getAppContext()).getApplicationComponent())
-                .build();
-        similarSearhComponent.inject(this);
+        if (getAppContext() != null) {
+            similarSearhComponent = DaggerSimilarSearchComponent.builder()
+                    .appComponent(((MainApplication) getAppContext()).getApplicationComponent())
+                    .build();
+            similarSearhComponent.inject(this);
+        }
     }
 
     @Override
@@ -131,8 +133,13 @@ public class SimilarSearchFragment extends BaseDaggerFragment implements Similar
     }
 
     @Override
+    @Nullable
     public Context getAppContext() {
-        return getContext().getApplicationContext();
+        if (getActivity() != null) {
+            return getActivity().getApplicationContext();
+        } else {
+            return null;
+        }
     }
 
     @Override

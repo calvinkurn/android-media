@@ -12,7 +12,7 @@ import org.json.JSONObject;
  * Created by errysuprayogi on 12/28/17.
  */
 
-public class CpmImage implements Parcelable {
+public class CpmImage extends ImpressHolder implements Parcelable {
 
     private static final String KEY_FULL_URL = "full_url";
     private static final String KEY_FULL_ECS = "full_ecs";

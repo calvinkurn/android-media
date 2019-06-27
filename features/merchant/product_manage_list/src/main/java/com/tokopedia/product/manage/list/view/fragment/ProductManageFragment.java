@@ -8,34 +8,43 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.TextView;
 
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
 import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.base.list.seller.view.adapter.BaseEmptyDataBinder;
 import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.base.list.seller.view.adapter.BaseMultipleCheckListAdapter;
@@ -46,18 +55,13 @@ import com.tokopedia.base.list.seller.view.old.NoResultDataBinder;
 import com.tokopedia.base.list.seller.view.old.RetryDataBinder;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.model.share.ShareData;
-import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.productdetail.PdpRouter;
-import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.product.share.ProductData;
-import com.tokopedia.product.share.ProductShare;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef;
 import com.tokopedia.product.manage.item.common.util.ViewUtils;
@@ -70,13 +74,14 @@ import com.tokopedia.product.manage.list.constant.CashbackOption;
 import com.tokopedia.product.manage.list.constant.StatusProductOption;
 import com.tokopedia.product.manage.list.di.DaggerProductManageComponent;
 import com.tokopedia.product.manage.list.di.ProductManageModule;
-import com.tokopedia.product.manage.list.utils.ProductManageImageSticker;
 import com.tokopedia.product.manage.list.view.activity.ProductManageFilterActivity;
 import com.tokopedia.product.manage.list.view.activity.ProductManageSortActivity;
 import com.tokopedia.product.manage.list.view.adapter.ProductManageListAdapter;
 import com.tokopedia.product.manage.list.view.listener.ProductManageView;
 import com.tokopedia.product.manage.list.view.model.ProductManageViewModel;
 import com.tokopedia.product.manage.list.view.presenter.ProductManagePresenter;
+import com.tokopedia.product.share.ProductData;
+import com.tokopedia.product.share.ProductShare;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.utils.KMNumbers;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
@@ -92,8 +97,9 @@ import com.tokopedia.topads.common.data.model.FreeDeposit;
 import com.tokopedia.topads.freeclaim.data.constant.TopAdsFreeClaimConstantKt;
 import com.tokopedia.topads.freeclaim.view.widget.TopAdsWidgetFreeClaim;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,6 +109,7 @@ import kotlin.Unit;
 
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMAGE_DESCRIPTION_LIST;
+import static com.tokopedia.product.manage.list.view.fragment.ProductManageSellerFragment.URL_TIPS_TRICK;
 
 /**
  * Created by zulfikarrahman on 9/22/17.
@@ -131,7 +138,11 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     private Boolean goldMerchant;
     private boolean isOfficialStore;
     private String shopDomain;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
+    private Button btnSubmit;
+    private Button btnGoToPdp;
+    private TextView txtTipsTrick;
+    private Dialog dialog;
 
     private BroadcastReceiver addProductReceiver = new BroadcastReceiver() {
         @Override
@@ -139,16 +150,55 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             if (intent.getAction().equals(TkpdState.ProductService.BROADCAST_ADD_PRODUCT) &&
                     intent.hasExtra(TkpdState.ProductService.STATUS_FLAG) &&
                     intent.getIntExtra(TkpdState.ProductService.STATUS_FLAG, 0) == TkpdState.ProductService.STATUS_DONE) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        resetPageAndRefresh();
-                    }
+                getActivity().runOnUiThread(() -> {
+                    String productId = intent.getExtras().getString(TkpdState.ProductService.PRODUCT_ID);
+                    productManagePresenter.getPopupsInfo(productId);
+                    resetPageAndRefresh();
                 });
 
             }
         }
     };
+
+    private Dialog initPopUpDialog(String productId){
+        dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.dialog_product_add);
+
+        btnSubmit = dialog.findViewById(R.id.btn_submit);
+        btnGoToPdp = dialog.findViewById(R.id.btn_product_list);
+        txtTipsTrick = dialog.findViewById(R.id.txt_tips_trick);
+
+        btnSubmit.setOnClickListener(v -> {
+            RouteManager.route(getContext(),ApplinkConst.SELLER_SHIPPING_EDITOR);
+            getActivity().finish();
+        });
+
+        btnGoToPdp.setOnClickListener(v -> {
+            goToPDP(productId);
+            dialog.dismiss();
+        });
+        int backgroundColor = ContextCompat.getColor(getContext(), R.color.tkpd_main_green);
+
+        SpannableString spanText = new SpannableString(getString(R.string.popup_tips_trick_clickable));
+        spanText.setSpan(new StyleSpan(Typeface.BOLD),
+                5, spanText.length() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spanText.setSpan(new ForegroundColorSpan(backgroundColor),
+                5, spanText.length() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        ClickableSpan cs = new ClickableSpan() {
+            @Override
+            public void onClick(View v) {
+                RouteManager.route(getContext(), String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_TIPS_TRICK));
+                getActivity().finish();
+            }
+        };
+        spanText.setSpan(cs, 5, spanText.length() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        txtTipsTrick.setMovementMethod(LinkMovementMethod.getInstance());
+        txtTipsTrick.setText(spanText);
+        return dialog;
+    }
 
     @Override
     protected void initInjector() {
@@ -245,13 +295,13 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         productManageFilterModel.reset();
         hasNextPage = false;
 
-        userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
+        userSession = new UserSession(getActivity());
         productManagePresenter.getFreeClaim(GraphqlHelper.loadRawString(getResources(), R.raw.gql_get_deposit), userSession.getShopId());
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if(GlobalConfig.isCustomerApp()) {
+        if (GlobalConfig.isCustomerApp()) {
             inflater.inflate(R.menu.menu_product_manage_dark, menu);
         } else {
             inflater.inflate(R.menu.menu_product_manage, menu);
@@ -287,6 +337,18 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onSuccessGetPopUp(boolean isShowPopup, String productId) {
+        if (isShowPopup) {
+            initPopUpDialog(productId).show();
+        }
+    }
+
+    @Override
+    public void onErrorGetPopUp(Throwable e) {
+        onSuccessGetPopUp(false, null);
+    }
+
     @NonNull
     protected ActionMode.Callback getCallbackActionMode() {
         return new ActionMode.Callback() {
@@ -294,7 +356,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
                 mode.setTitle(String.valueOf(((ProductManageListAdapter) adapter).getTotalChecked()));
                 actionMode = mode;
-                if(GlobalConfig.isCustomerApp()) {
+                if (GlobalConfig.isCustomerApp()) {
                     getActivity().getMenuInflater().inflate(R.menu.menu_product_manage_action_mode_dark, menu);
                 } else {
                     getActivity().getMenuInflater().inflate(R.menu.menu_product_manage_action_mode, menu);
@@ -458,8 +520,18 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         if (actionMode == null) {
             ((ProductManageListAdapter) adapter).setChecked(productManageViewModel.getId(), false);
             adapter.notifyDataSetChanged();
-            ((PdpRouter) getActivity().getApplication()).goToProductDetail(getActivity(), productManageViewModel.getProductUrl());
+            goToPDP(productManageViewModel.getProductId());
             UnifyTracking.eventProductManageClickDetail(getActivity());
+        }
+    }
+
+    /**
+     * This function is temporary for testing to avoid router and applink
+     * For Dynamic Feature Support
+     */
+    private void goToPDP(String productId) {
+        if (getContext() != null && productId != null){
+            RouteManager.route(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
         }
     }
 
@@ -518,9 +590,9 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Override
     public void onErrorSetCashback(Throwable t, final String productId, final int cashback) {
-        if(t instanceof MessageErrorException && ((MessageErrorException)t).getErrorCode().equals(ERROR_CODE_LIMIT_CASHBACK)){
+        if (t instanceof MessageErrorException && ((MessageErrorException) t).getErrorCode().equals(ERROR_CODE_LIMIT_CASHBACK)) {
             showDialogActionGoToGMSubscribe();
-        }else {
+        } else {
             NetworkErrorHelper.createSnackbarWithAction(coordinatorLayout,
                     ErrorHandler.getErrorMessage(getActivity(), t), Snackbar.LENGTH_LONG, new NetworkErrorHelper.RetryClickedListener() {
                         @Override
@@ -607,9 +679,9 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     public void onSuccessGetFreeClaim(DataDeposit dataDeposit) {
         FreeDeposit freeDeposit = dataDeposit.getFreeDeposit();
 
-        if (freeDeposit.getNominal() > 0 && freeDeposit.getStatus() == 1){
+        if (freeDeposit.getNominal() > 0 && freeDeposit.getStatus() == 1) {
             topAdsWidgetFreeClaim.setContent(MethodChecker.fromHtml(getString(R.string.free_claim_template, freeDeposit.getNominalFmt(),
-                    freeDeposit.getRemainingDays()+"", TopAdsFreeClaimConstantKt.TOPADS_FREE_CLAIM_URL)));
+                    freeDeposit.getRemainingDays() + "", TopAdsFreeClaimConstantKt.TOPADS_FREE_CLAIM_URL)));
             topAdsWidgetFreeClaim.setVisibility(View.VISIBLE);
         } else {
             topAdsWidgetFreeClaim.setVisibility(View.GONE);
@@ -775,7 +847,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     public void downloadBitmap(final ProductManageViewModel productManageViewModel){
-        ProductShare productShare = new ProductShare(getActivity());
+        ProductShare productShare = new ProductShare(getActivity(), ProductShare.MODE_IMAGE);
 
         String price = (productManageViewModel.getProductCurrencyId() == CurrencyTypeDef.TYPE_USD) ? productManageViewModel.getProductPricePlain() : productManageViewModel.getProductPrice();
         ProductData data = new ProductData();

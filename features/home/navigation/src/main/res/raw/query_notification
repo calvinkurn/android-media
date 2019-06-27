@@ -47,4 +47,8 @@ query Notification($cursor: String) {
       content
       newFeeds
     }
+
+  homeFlag {
+    isOSBottomNav
+  }
 }

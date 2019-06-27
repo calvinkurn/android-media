@@ -1,6 +1,17 @@
 package com.tokopedia.tkpdreactnative.react;
 
+import android.content.Context;
+import android.os.Build;
+import android.text.TextUtils;
+
+import com.facebook.react.bridge.Arguments;
+
 import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.WritableMap;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.network.constant.TkpdBaseURL;
+import com.tokopedia.network.utils.AuthUtil;
+
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -8,7 +19,6 @@ import com.facebook.react.bridge.ReadableMap;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.tkpdreactnative.react.di.DaggerReactNativeNetworkComponent;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeNetworkComponent;
@@ -25,6 +35,7 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.function.Function;
 
 import javax.inject.Inject;
 
@@ -32,11 +43,19 @@ import rx.Subscriber;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
+import static com.example.akamai_bot_lib.UtilsKt.getSensorData;
+
 /**
  * @author ricoharisin .
  */
 public class ReactNetworkModule extends ReactContextBaseJavaModule {
 
+    private static final String PATH = "path";
+    private static final String PARAM = "param";
+    private static final String METHOD = "method";
+    private static final String CONTENT_TYPE = "contentType";
+    private static final String APPLICATION_JSON_CHARSET_UTF_8 = "application/json; charset=UTF-8";
+    public static final String METHOD_GET = "GET";
 
     @Inject
     ReactNetworkRepository reactNetworkRepository;
@@ -46,9 +65,12 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
     ReactNativeNetworkComponent daggerRnNetworkComponent;
 
     private CompositeSubscription compositeSubscription;
+    private Context context;
 
     public ReactNetworkModule(ReactApplicationContext reactContext) {
         super(reactContext);
+
+        this.context = reactContext;
         if (reactContext.getApplicationContext() instanceof MainApplication) {
             AppComponent appComponent = ((MainApplication) reactContext.getApplicationContext()).getApplicationComponent();
             daggerRnNetworkComponent = DaggerReactNativeNetworkComponent.builder()
@@ -117,6 +139,40 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
         } catch (Exception e) {
             promise.reject(e);
         }
+    }
+
+    /**
+     *
+     * @param reactParam will consists of
+     * {
+     *  path: string of url path
+     *  param: string of graphql query with all id / params included
+     *  method: string of request method like POST, GET, etc
+     *  contentType: string of content type,
+     *               if empty / null the default value is "application/json; charset=UTF-8"
+     * }
+     * @param promise
+     */
+    @ReactMethod
+    public void getAuthHeader(ReadableMap reactParam, Promise promise) {
+        Map<String, Object> param = reactParam.toHashMap();
+        String contentType = APPLICATION_JSON_CHARSET_UTF_8;
+        if(param.containsKey(CONTENT_TYPE) && TextUtils.isEmpty(String.valueOf(param.get(CONTENT_TYPE)))) {
+            contentType = String.valueOf(param.get(CONTENT_TYPE));
+        }
+
+        Map<String, String> headers = AuthUtil.getAuthHeaderReact(
+                context,
+                param.containsKey(PATH) ? String.valueOf(param.get(PATH)) : "",
+                param.containsKey(PARAM) ? String.valueOf(param.get(PARAM)) : "",
+                param.containsKey(METHOD) ? String.valueOf(param.get(METHOD)) : METHOD_GET,
+                contentType
+        );
+        WritableMap writableMap = Arguments.createMap();
+        for(Map.Entry<String, String> item : headers.entrySet()) {
+           writableMap.putString(item.getKey(), item.getValue());
+        }
+        promise.resolve(writableMap);
     }
 
     @ReactMethod
@@ -215,42 +271,36 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
         }
     }
 
-
-
-
+     interface Convert<E extends Map,F>{
+        F convert(E value, String key);
+     }
 
     @ReactMethod
     public void request(ReadableMap readableMap, final Promise promise) {
         try {
             HashMap<String, Object> maps = readableMap.toHashMap();
             ReactNetworkingConfiguration.Builder builder = new ReactNetworkingConfiguration.Builder();
-            for (Map.Entry<String, Object> map : maps.entrySet()) {
-                switch (map.getKey()) {
-                    case ReactConst.Networking.URL:
-                        builder.setUrl(String.valueOf(map.getValue()));
-                        break;
-                    case ReactConst.Networking.METHOD:
-                        builder.setMethod(String.valueOf(map.getValue()));
-                        break;
-                    case ReactConst.Networking.ENCODING:
-                        builder.setEncoding(String.valueOf(map.getValue()));
-                        break;
-                    case ReactConst.Networking.AUTHORIZATIONMODE:
-                        builder.setAuthorizationMode(String.valueOf(map.getValue()));
-                        break;
-                    case ReactConst.Networking.HEADERS:
-                        if (map.getValue() instanceof HashMap) {
-                            builder.setHeaders((HashMap<String, Object>) map.getValue());
-                        }
-                        break;
-                    case ReactConst.Networking.PARAMS:
-                        if (map.getValue() instanceof HashMap) {
-                            builder.setParams((HashMap<String, Object>) map.getValue());
-                        }
-                        break;
 
-                }
+            Convert<Map, String> fun = (value, key) -> TextUtils.isEmpty(String.valueOf(value.get(key)))?
+                    "":String.valueOf(maps.get(key));
+            Convert<Map, HashMap<String, Object>> getHashMap = (value, key) -> {
+                return (value.get(key) instanceof HashMap) ? (HashMap<String, Object>) value.get(key) : new HashMap<>();
+            };
+
+            String url = null;
+            builder.setUrl(url = fun.convert(maps,ReactConst.Networking.URL ));
+            builder.setMethod(fun.convert(maps,ReactConst.Networking.METHOD));
+            builder.setEncoding(fun.convert(maps,ReactConst.Networking.ENCODING));
+            builder.setAuthorizationMode(fun.convert(maps,ReactConst.Networking.AUTHORIZATIONMODE));
+
+            HashMap<String, Object> headers = getHashMap.convert(maps, ReactConst.Networking.HEADERS);
+            if(url.contains("/hoth/discovery/api/page/flash-sale")){
+                if(!TextUtils.isEmpty(getSensorData()))
+                headers.put("X-acf-sensor-data", getSensorData());
             }
+            headers.put("User-Agent", getUserAgent());
+            builder.setHeaders(headers);
+            builder.setParams(getHashMap.convert(maps, ReactConst.Networking.PARAMS));
             ReactNetworkingConfiguration configuration = builder.build();
 
             compositeSubscription.add(unifyReactNetworkRepository.request(configuration)
@@ -279,5 +329,10 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
         } catch (Exception e) {
             promise.reject(e);
         }
+    }
+
+    private static final String userAgentFormat = "TkpdConsumer/%s (%s;)";
+    public static String getUserAgent(){
+        return String.format(userAgentFormat, GlobalConfig.VERSION_NAME, "Android "+ Build.VERSION.RELEASE);
     }
 }

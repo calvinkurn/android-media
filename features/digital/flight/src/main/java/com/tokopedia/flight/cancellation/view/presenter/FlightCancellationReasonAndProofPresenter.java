@@ -5,11 +5,10 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.airline.domain.FlightAirlineUseCase;
+import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
 import com.tokopedia.flight.cancellation.domain.model.AttachmentImageModel;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationReasonAndProofContract;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentViewModel;
@@ -20,6 +19,7 @@ import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrappe
 import com.tokopedia.imageuploader.domain.UploadImageUseCase;
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -59,18 +59,15 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
     private static final int MINIMUM_WIDTH = 300;
     private static final long DEFAULT_ONE_MEGABYTE = 1024;
 
-    private FlightAirlineUseCase flightAirlineUseCase;
     private UploadImageUseCase<AttachmentImageModel> uploadImageUseCase;
     private CompositeSubscription compositeSubscription;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
     private FlightModuleRouter flightModuleRouter;
 
     @Inject
-    public FlightCancellationReasonAndProofPresenter(FlightAirlineUseCase flightAirlineUseCase,
-                                                     UploadImageUseCase<AttachmentImageModel> uploadImageUseCase,
-                                                     UserSession userSession,
+    public FlightCancellationReasonAndProofPresenter(UploadImageUseCase<AttachmentImageModel> uploadImageUseCase,
+                                                     UserSessionInterface userSession,
                                                      FlightModuleRouter flightModuleRouter) {
-        this.flightAirlineUseCase = flightAirlineUseCase;
         this.uploadImageUseCase = uploadImageUseCase;
         this.userSession = userSession;
         this.flightModuleRouter = flightModuleRouter;
@@ -235,7 +232,8 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
 
     @NonNull
     private Boolean checkIfAttachmentMandatory() {
-        return getView().getReason().getRequiredDocs().size() > 0;
+        return getView().getReason().getRequiredDocs().size() > 0 && getView().getAttachments() != null
+                && getView().getAttachments().size() > 0;
     }
 
     @Override
@@ -262,7 +260,6 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
                                 ), new Func2<FlightCancellationAttachmentViewModel, ImageUploadDomainModel<AttachmentImageModel>, FlightCancellationAttachmentViewModel>() {
                                     @Override
                                     public FlightCancellationAttachmentViewModel call(FlightCancellationAttachmentViewModel attachmentViewModel, ImageUploadDomainModel<AttachmentImageModel> uploadDomainModel) {
-                                        getView().setUploadingPosition(getView().getUploadingPosition() + 1);
                                         String url = uploadDomainModel.getDataResultImageUpload().getData().getPicSrc();
                                         if (url.contains(DEFAULT_RESOLUTION)) {
                                             url = url.replaceFirst(DEFAULT_RESOLUTION, RESOLUTION_300);
@@ -312,7 +309,8 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
 
         for (FlightCancellationViewModel viewModel : cancellationWrapperViewModel.getGetCancellations()) {
             for (FlightCancellationPassengerViewModel passengerViewModel : viewModel.getPassengerViewModelList()) {
-                if (!uniquePassengers.contains(getPassengerName(passengerViewModel))) {
+                if (!uniquePassengers.contains(getPassengerName(passengerViewModel)) &&
+                        passengerViewModel.getType() == FlightBookingPassenger.ADULT) {
                     uniquePassengers.add(getPassengerName(passengerViewModel));
                 }
             }
@@ -325,7 +323,8 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
         List<String> uniquePassengers = new ArrayList<>();
         for (FlightCancellationViewModel viewModel : cancellationViewModel.getGetCancellations()) {
             for (FlightCancellationPassengerViewModel passengerViewModel : viewModel.getPassengerViewModelList()) {
-                if (!uniquePassengers.contains(passengerViewModel.getPassengerId())) {
+                if (!uniquePassengers.contains(passengerViewModel.getPassengerId()) &&
+                        passengerViewModel.getType() == FlightBookingPassenger.ADULT) {
                     uniquePassengers.add(passengerViewModel.getPassengerId());
                 }
             }

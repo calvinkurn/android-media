@@ -24,7 +24,11 @@ public class GraphqlResponse {
      * @return Return the object of T
      */
     public final <T> T getData(Type type) {
-        return (T) mResults.get(type);
+        try {
+            return (T) mResults.get(type);
+        }catch (Exception e){
+            return null;
+        }
     }
 
     public final List<GraphqlError> getError(Type type) {

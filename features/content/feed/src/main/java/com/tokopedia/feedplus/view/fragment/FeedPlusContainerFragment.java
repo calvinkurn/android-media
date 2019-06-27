@@ -1,8 +1,10 @@
 package com.tokopedia.feedplus.view.fragment;
 
 import android.os.Bundle;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -10,14 +12,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.explore.view.fragment.ContentExploreFragment;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.adapter.FeedPlusTabAdapter;
 import com.tokopedia.feedplus.view.viewmodel.FeedPlusTabItem;
+import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
-import com.tokopedia.navigation_common.listener.NotificationListener;
 import com.tokopedia.searchbar.MainToolbar;
-import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,17 +29,17 @@ import java.util.List;
  */
 
 public class FeedPlusContainerFragment extends BaseDaggerFragment
-        implements FragmentListener, NotificationListener {
+        implements FragmentListener, AllNotificationListener {
 
     private MainToolbar mainToolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private View statusBarBackground;
 
-    private UserSession userSession;
     private FeedPlusFragment feedPlusFragment;
     private ContentExploreFragment contentExploreFragment;
 
-    private int badgeNumber;
+    private int badgeNumberNotification, badgeNumberInbox;
 
     public static FeedPlusContainerFragment newInstance(Bundle bundle) {
         FeedPlusContainerFragment fragment = new FeedPlusContainerFragment();
@@ -50,16 +52,20 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_feed_plus_container, container, false);
+        statusBarBackground = view.findViewById(R.id.status_bar_bg);
         mainToolbar = view.findViewById(R.id.toolbar);
         tabLayout = view.findViewById(R.id.tab_layout);
         viewPager = view.findViewById(R.id.view_pager);
+        if (getActivity() != null) {
+            statusBarBackground.getLayoutParams().height =
+                    DisplayMetricUtils.getStatusBarHeight(getActivity());
+        }
         return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initVar();
         initView();
     }
 
@@ -69,8 +75,11 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
     }
 
     @Override
-    protected void initInjector() {
+    protected void initInjector() { }
 
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     @Override
@@ -81,39 +90,33 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
             contentExploreFragment.scrollToTop();
         }
     }
-
-    @Override
-    public void onNotifyBadgeNotification(int number) {
-        this.badgeNumber = number;
-        if (mainToolbar != null || getActivity() != null) {
-            mainToolbar.setNotificationNumber(number);
-        }
-    }
-
-    private void initVar() {
-        userSession = new UserSession(getContext());
-    }
-
+    
     private void initView() {
+        //status bar background compability
+        statusBarBackground.getLayoutParams().height =
+                DisplayMetricUtils.getStatusBarHeight(getActivity());
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            statusBarBackground.setVisibility(View.INVISIBLE);
+        } else if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            statusBarBackground.setVisibility(View.VISIBLE);
+        } else {
+            statusBarBackground.setVisibility(View.GONE);
+        }
+
         setAdapter();
         if (hasCategoryIdParam()) {
             goToExplore();
         }
-        onNotifyBadgeNotification(badgeNumber); // notify badge after toolbar created
+        onNotificationChanged(badgeNumberNotification, badgeNumberInbox); // notify badge after toolbar created
     }
 
     private void setAdapter() {
         List<FeedPlusTabItem> tabItemList = new ArrayList<>();
 
-        if (userSession.isLoggedIn()) {
-            tabItemList.add(new FeedPlusTabItem(
-                    getString(R.string.tab_my_feed),
-                    getFeedPlusFragment())
-            );
-            tabLayout.setVisibility(View.VISIBLE);
-        } else {
-            tabLayout.setVisibility(View.GONE);
-        }
+        tabItemList.add(new FeedPlusTabItem(
+                getString(R.string.tab_my_feed),
+                getFeedPlusFragment())
+        );
 
         tabItemList.add(new FeedPlusTabItem(
                 getString(R.string.tab_explore),
@@ -128,7 +131,7 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
 
     private FeedPlusFragment getFeedPlusFragment() {
         if (feedPlusFragment == null) {
-            feedPlusFragment = FeedPlusFragment.newInstance();
+            feedPlusFragment = FeedPlusFragment.newInstance(getArguments());
         }
         return feedPlusFragment;
     }
@@ -163,5 +166,15 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
         return viewPager != null
                 && tabLayout != null
                 && tabLayout.getTabCount() - 1 >= 0;
+    }
+
+    @Override
+    public void onNotificationChanged(int notificationCount, int inboxCount) {
+        if (mainToolbar != null && getActivity() != null) {
+            mainToolbar.setNotificationNumber(notificationCount);
+            mainToolbar.setInboxNumber(inboxCount);
+        }
+        this.badgeNumberNotification = notificationCount;
+        this.badgeNumberInbox = inboxCount;
     }
 }

@@ -16,7 +16,7 @@ public class PerformanceMonitoring {
         return performanceMonitoring;
     }
 
-    private void startTrace(String traceName) {
+    public void startTrace(String traceName) {
         trace = FirebasePerformance.getInstance().newTrace(traceName);
         trace.start();
     }

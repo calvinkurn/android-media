@@ -26,8 +26,6 @@ public interface ChallengesModuleRouter {
 
     String getStringRemoteConfig(String key);
 
-    void sendMoengageEvents(String eventName, Map<String, Object> values);
-
     boolean getBooleanRemoteConfig(String key, boolean defaultValue);
 
     interface BranchLinkGenerateListener {

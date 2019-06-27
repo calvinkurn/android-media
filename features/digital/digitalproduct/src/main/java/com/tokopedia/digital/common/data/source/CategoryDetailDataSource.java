@@ -7,14 +7,14 @@ import android.support.annotation.NonNull;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.database.CacheUtil;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.network.CacheUtil;
+import com.tokopedia.cachemanager.PersistentCacheManager;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.constant.DigitalCache;
 import com.tokopedia.digital.common.constant.DigitalCategoryConstant;
 import com.tokopedia.digital.common.constant.DigitalUrl;
-import com.tokopedia.digital.common.data.apiservice.DigitalGqlApiService;
+import com.tokopedia.digital.common.data.apiservice.DigitalGqlApi;
 import com.tokopedia.digital.common.data.entity.response.RechargeResponseEntity;
 import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
 import com.tokopedia.digital.product.view.model.ProductDigitalData;
@@ -36,18 +36,19 @@ import rx.functions.Func1;
 
 public class CategoryDetailDataSource {
 
-    private DigitalGqlApiService digitalEndpointService;
+    private DigitalGqlApi digitalGqlApi;
     private CacheManager cacheManager;
     private ProductDigitalMapper productDigitalMapper;
     private Context context;
 
-    public CategoryDetailDataSource(DigitalGqlApiService digitalEndpointService,
+    public CategoryDetailDataSource(DigitalGqlApi digitalGqlApi,
                                     CacheManager cacheManager,
-                                    ProductDigitalMapper productDigitalMapper) {
-        this.digitalEndpointService = digitalEndpointService;
+                                    ProductDigitalMapper productDigitalMapper,
+                                    Context context) {
+        this.digitalGqlApi = digitalGqlApi;
         this.cacheManager = cacheManager;
         this.productDigitalMapper = productDigitalMapper;
-        context = MainApplication.getAppContext();
+        this.context = context;
     }
 
     /**
@@ -105,7 +106,7 @@ public class CategoryDetailDataSource {
      * @return
      */
     private Observable<ProductDigitalData> getCategoryDataFromCloud(String categoryId) {
-        return digitalEndpointService.getApi().getCategory(getCategoryRequestPayload(categoryId))
+        return digitalGqlApi.getCategory(getCategoryRequestPayload(categoryId))
                 .map(response -> {
                     if(response != null && response.body() != null && response.body().size() > 0) {
                         return response.body().get(0).getData();
@@ -125,8 +126,9 @@ public class CategoryDetailDataSource {
     private Observable<ProductDigitalData> getCategoryAndFavDataFromLocal(String categoryId) {
         RechargeResponseEntity digitalCategoryDetailEntity;
         try {
+            // currently, DigitalCache.NEW_DIGITAL_CATEGORY_AND_FAV is saved via CacheManager library
             digitalCategoryDetailEntity = CacheUtil.convertStringToModel(
-                    cacheManager.get(DigitalCache.NEW_DIGITAL_CATEGORY_AND_FAV + "/" + categoryId),
+                    PersistentCacheManager.instance.getString(DigitalCache.NEW_DIGITAL_CATEGORY_AND_FAV + "/" + categoryId),
                     new TypeToken<RechargeResponseEntity>() {
                     }.getType());
         } catch (RuntimeException e) {
@@ -142,7 +144,7 @@ public class CategoryDetailDataSource {
     }
 
     public Observable<ProductDigitalData> getCategoryAndFavoritFromCloud(String categoryId, String operatorId, String clientNumber, String productId) {
-        return digitalEndpointService.getApi().getCategoryAndFavoriteList(getCategoryAndFavRequestPayload(categoryId, operatorId, clientNumber, productId))
+        return digitalGqlApi.getCategoryAndFavoriteList(getCategoryAndFavRequestPayload(categoryId, operatorId, clientNumber, productId))
                 .map(response -> {
                     RechargeResponseEntity newMappedObject = new RechargeResponseEntity();
 
@@ -172,12 +174,12 @@ public class CategoryDetailDataSource {
 
     private Action1<RechargeResponseEntity> saveCategoryDetailAndFavToCache(final String categoryId) {
         return digitalCategoryDetailEntity -> {
-            cacheManager.save(
+            PersistentCacheManager.instance.put(
                     DigitalCache.NEW_DIGITAL_CATEGORY_AND_FAV + "/" + categoryId,
                     CacheUtil.convertModelToString(digitalCategoryDetailEntity,
                             new TypeToken<RechargeResponseEntity>() {
                             }.getType()),
-                    900
+                    900_000
             );
         };
     }
@@ -187,70 +189,9 @@ public class CategoryDetailDataSource {
         return digitalCategoryDetailEntity -> productDigitalMapper.transformCategoryData(digitalCategoryDetailEntity);
     }
 
+    @Deprecated
     public Observable<String> getHelpUrl(String categoryId) {
-        String result;
-        switch (categoryId) {
-            case DigitalCategoryConstant.PULSA:
-                result = DigitalUrl.HelpUrl.PULSA;
-                break;
-            case DigitalCategoryConstant.PAKET_DATA:
-                result = DigitalUrl.HelpUrl.PAKET_DATA;
-                break;
-            case DigitalCategoryConstant.PLN:
-                result = DigitalUrl.HelpUrl.PLN;
-                break;
-            case DigitalCategoryConstant.BPJS:
-                result = DigitalUrl.HelpUrl.BPJS;
-                break;
-            case DigitalCategoryConstant.PDAM:
-                result = DigitalUrl.HelpUrl.PDAM;
-                break;
-            case DigitalCategoryConstant.GAME:
-                result = DigitalUrl.HelpUrl.GAME;
-                break;
-            case DigitalCategoryConstant.CREDIT:
-                result = DigitalUrl.HelpUrl.CREDIT;
-                break;
-            case DigitalCategoryConstant.TV:
-                result = DigitalUrl.HelpUrl.TV;
-                break;
-            case DigitalCategoryConstant.POSTPAID:
-                result = DigitalUrl.HelpUrl.POSTPAID;
-                break;
-            case DigitalCategoryConstant.TELKOM:
-                result = DigitalUrl.HelpUrl.TELKOM;
-                break;
-            case DigitalCategoryConstant.STREAMING:
-                result = DigitalUrl.HelpUrl.STREAMING;
-                break;
-            case DigitalCategoryConstant.PGN:
-                result = DigitalUrl.HelpUrl.PGN;
-                break;
-            case DigitalCategoryConstant.ROAMING:
-                result = DigitalUrl.HelpUrl.ROAMING;
-                break;
-            case DigitalCategoryConstant.TAX:
-                result = DigitalUrl.HelpUrl.TAX;
-                break;
-            case DigitalCategoryConstant.GIFT_CARD:
-                result = DigitalUrl.HelpUrl.GIFT_CARD;
-                break;
-            case DigitalCategoryConstant.RETRIBUTION:
-                result = DigitalUrl.HelpUrl.RETRIBUTION;
-                break;
-            case DigitalCategoryConstant.MTIX:
-                result = DigitalUrl.HelpUrl.MTIX;
-                break;
-            case DigitalCategoryConstant.CREDIT_CARD:
-                result = DigitalUrl.HelpUrl.CREDIT_CARD;
-                break;
-            case DigitalCategoryConstant.ETOLL:
-                result = DigitalUrl.HelpUrl.ETOLL;
-                break;
-            default:
-                result = "";
-        }
-        return Observable.just(result);
+        return Observable.just(DigitalUrl.DIGITAL_BANTUAN);
     }
 
     private String getCategoryRequestPayload(String categoryId) {

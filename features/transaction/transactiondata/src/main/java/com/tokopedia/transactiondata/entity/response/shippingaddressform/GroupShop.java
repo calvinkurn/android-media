@@ -38,6 +38,21 @@ public class GroupShop {
     @SerializedName("is_insurance")
     @Expose
     private boolean isInsurance;
+    @SerializedName("is_fulfillment_service")
+    @Expose
+    private boolean isFulfillment;
+    @SerializedName("warehouse")
+    @Expose
+    private Warehouse warehouse;
+    @SerializedName("cart_string")
+    @Expose
+    private String cartString;
+    @SerializedName("has_promo_list")
+    @Expose
+    private boolean hasPromoList;
+    @SerializedName("save_state_flag")
+    @Expose
+    private boolean saveStateFlag;
 
     public List<String> getErrors() {
         return errors;
@@ -73,5 +88,21 @@ public class GroupShop {
 
     public boolean isInsurance() {
         return isInsurance;
+    }
+
+    public boolean isFulfillment() {
+        return isFulfillment;
+    }
+
+    public Warehouse getWarehouse() {
+        return warehouse;
+    }
+
+    public String getCartString() { return cartString; }
+
+    public boolean isHasPromoList() { return hasPromoList; }
+
+    public boolean isSaveStateFlag() {
+        return saveStateFlag;
     }
 }

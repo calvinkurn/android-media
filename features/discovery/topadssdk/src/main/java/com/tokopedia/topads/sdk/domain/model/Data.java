@@ -3,6 +3,7 @@ package com.tokopedia.topads.sdk.domain.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.json.JSONException;
@@ -25,26 +26,45 @@ public class Data implements Parcelable {
     private static final String KEY_PRODUCT = "product";
 
     @SerializedName(KEY_ID)
-    private String id;
+    @Expose
+    private String id = "";
+
     @SerializedName(KEY_AD_REF)
-    private String adRefKey;
+    @Expose
+    private String adRefKey = "";
+
     @SerializedName(KEY_REDIRECT)
-    private String redirect;
+    @Expose
+    private String redirect = "";
+
     @SerializedName(KEY_STICKER_ID)
-    private String stickerId;
+    @Expose
+    private String stickerId = "";
+
     @SerializedName(KEY_STICKER_IMAGE)
-    private String stickerImage;
+    @Expose
+    private String stickerImage = "";
+
     @SerializedName(KEY_PRODUCT_CLICK_URL)
-    private String productClickUrl;
+    @Expose
+    private String productClickUrl = "";
+
     @SerializedName(KEY_PRODUCT_WISHLIST_URL)
-    private String productWishlistUrl;
+    @Expose
+    private String productWishlistUrl = "";
+
     @SerializedName(KEY_SHOP_CLICK_URL)
-    private String shopClickUrl;
+    @Expose
+    private String shopClickUrl = "";
+
     @SerializedName(KEY_SHOP)
-    private Shop shop;
+    @Expose
+    private Shop shop = new Shop();
+
     @SerializedName(KEY_PRODUCT)
-    private Product product;
-    private boolean favorit;
+    @Expose
+    private Product product = new Product();
+    private boolean favorit = false;
 
     public Data() {
     }

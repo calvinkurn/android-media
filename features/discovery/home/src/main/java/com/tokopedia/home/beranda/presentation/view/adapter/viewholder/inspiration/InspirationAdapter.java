@@ -12,7 +12,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.R;
-import com.tokopedia.home.beranda.listener.HomeFeedListener;
+import com.tokopedia.home.beranda.listener.HomeInspirationListener;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationProductViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
@@ -25,11 +25,11 @@ import java.util.ArrayList;
 
 public class InspirationAdapter extends RecyclerView.Adapter<InspirationAdapter.ViewHolder> {
 
-    private final HomeFeedListener viewListener;
+    private final HomeInspirationListener viewListener;
     private InspirationViewModel inspirationViewModel;
     private Context context;
 
-    public InspirationAdapter(Context context, HomeFeedListener viewListener) {
+    public InspirationAdapter(Context context, HomeInspirationListener viewListener) {
         this.viewListener = viewListener;
         this.context = context;
     }

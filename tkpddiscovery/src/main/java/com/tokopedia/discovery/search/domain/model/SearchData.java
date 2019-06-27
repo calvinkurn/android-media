@@ -13,12 +13,14 @@ public class SearchData {
     public static final String AUTOCOMPLETE_RECENT_VIEW = "recent_view";
     public static final String AUTOCOMPLETE_RECENT_SEARCH = "recent_search";
     public static final String AUTOCOMPLETE_POPULAR_SEARCH = "popular_search";
-    public static final String AUTOCOMPLETE_DIGITAL = "digital";
+    public static final String AUTOCOMPLETE_DIGITAL = "top_digital";
     public static final String AUTOCOMPLETE_CATEGORY = "category";
     public static final String AUTOCOMPLETE_DEFAULT = "autocomplete";
     public static final String AUTOCOMPLETE_HOTLIST = "hotlist";
     public static final String AUTOCOMPLETE_IN_CATEGORY = "in_category";
     public static final String AUTOCOMPLETE_SHOP = "shop";
+    public static final String AUTOCOMPLETE_PROFILE = "profile";
+    public static final String AUTOCOMPLETE_TOP_PROFILE = "top_profile";
 
     @SerializedName("id")
     private String id;

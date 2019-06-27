@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:fontFamily="sans-serif-medium"
-                android:padding="@dimen/padding_ms"
+                android:padding="@dimen/dp_8"
                 android:text="@string/title_activity_shipment_choice" />
 
         </LinearLayout>
@@ -46,9 +46,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/toolbar"
-        android:layout_marginBottom="@dimen/new_margin_med"
-        android:layout_marginLeft="@dimen/margin_ms"
-        android:layout_marginRight="@dimen/margin_ms"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8"
         android:background="@drawable/border_rectangle_yellow"
         android:orientation="horizontal"
         android:visibility="gone"
@@ -69,7 +69,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:lineSpacingExtra="7sp"
-            android:padding="@dimen/padding_ms"
+            android:padding="@dimen/dp_8"
             android:textSize="11sp"
             tools:text="Pengiriman instan dan same day yang dipesan diatas pk 15:00 WIB, akan dikirim hari kerja berikutnya" />
 
@@ -80,7 +80,7 @@
             android:layout_gravity="end"
             android:background="@color/transparent"
             android:foreground="?selectableItemBackground"
-            android:padding="4dp"
+            android:padding="@dimen/dp_4"
             android:tint="@color/yellow_ticker"
             app:srcCompat="@drawable/ic_close_ticker_10dp" />
 

@@ -48,6 +48,7 @@ public class GetExploreDataSubscriber extends Subscriber<GraphqlResponse> {
             e.printStackTrace();
         }
         view.dismissLoading();
+        view.stopTrace();
         if (clearData) {
             view.onErrorGetExploreDataFirstPage(ErrorHandler.getErrorMessage(view.getContext(), e));
         } else {
@@ -80,6 +81,7 @@ public class GetExploreDataSubscriber extends Subscriber<GraphqlResponse> {
                 clearData
         );
         view.dismissLoading();
+        view.stopTrace();
     }
 
     private List<ExploreImageViewModel> convertToKolPostViewModelList(List<PostKol> postKolList) {
@@ -98,7 +100,7 @@ public class GetExploreDataSubscriber extends Subscriber<GraphqlResponse> {
 
         KolPostViewModel kolPostViewModel = new KolPostViewModel(
                 postKol.getUserId(),
-                "",
+                checkType(postKol, content),
                 "",
                 postKol.getUserName() == null ? "" : postKol.getUserName(),
                 postKol.getUserPhoto() == null ? "" : postKol.getUserPhoto(),
@@ -123,6 +125,14 @@ public class GetExploreDataSubscriber extends Subscriber<GraphqlResponse> {
         );
 
         return new ExploreImageViewModel(getImageUrl(content), kolPostViewModel);
+    }
+
+    private String checkType(PostKol postKol, Content content) {
+        if (postKol.getContent().size() > 1) {
+            return KolPostViewModel.TYPE_MULTI;
+        } else {
+            return content.getType() == null ? "" : content.getType();
+        }
     }
 
     private String generateTime(String rawTime) {

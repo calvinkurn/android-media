@@ -65,4 +65,6 @@
     <string name="travel_salutation_mister_string">Tn</string>
     <string name="travel_salutation_mrs_string">Ny</string>
     <string name="travel_salutation_miss_string">Nn</string>
+
+    <string name="travel_departure_trip_price_value"><![CDATA[<b>%s</b> /org]]></string>
 </resources>

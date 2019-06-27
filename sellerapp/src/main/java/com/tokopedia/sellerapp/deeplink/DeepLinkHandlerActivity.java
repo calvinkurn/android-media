@@ -5,22 +5,27 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
+import com.tokopedia.applink.DeeplinkMapper;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.SessionApplinkModule;
 import com.tokopedia.applink.SessionApplinkModuleLoader;
+import com.tokopedia.chatbot.applink.ChatbotApplinkModule;
+import com.tokopedia.chatbot.applink.ChatbotApplinkModuleLoader;
+import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModule;
+import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModuleLoader;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModuleLoader;
-import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
 import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.digital.applink.DigitalApplinkModule;
-import com.tokopedia.digital.applink.DigitalApplinkModuleLoader;
 import com.tokopedia.gm.applink.GMApplinkModule;
 import com.tokopedia.gm.applink.GMApplinkModuleLoader;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
@@ -29,8 +34,6 @@ import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModule;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModuleLoader;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModule;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModuleLoader;
-import com.tokopedia.product.manage.item.utils.ProductAddDeeplinkModule;
-import com.tokopedia.product.manage.item.utils.ProductAddDeeplinkModuleLoader;
 import com.tokopedia.profile.applink.ProfileApplinkModule;
 import com.tokopedia.profile.applink.ProfileApplinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
@@ -47,14 +50,15 @@ import com.tokopedia.talk.common.applink.InboxTalkApplinkModule;
 import com.tokopedia.talk.common.applink.InboxTalkApplinkModuleLoader;
 import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModule;
 import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModuleLoader;
-import com.tokopedia.tkpdpdp.applink.PdpApplinkModule;
-import com.tokopedia.tkpdpdp.applink.PdpApplinkModuleLoader;
+import com.tokopedia.product.detail.applink.ProductDetailApplinkModule;
+import com.tokopedia.product.detail.applink.ProductDetailApplinkModuleLoader;
 import com.tokopedia.topads.applink.TopAdsApplinkModule;
 import com.tokopedia.topads.applink.TopAdsApplinkModuleLoader;
 import com.tokopedia.topads.dashboard.data.applink.TopAdsDashboardApplinkModule;
 import com.tokopedia.topads.dashboard.data.applink.TopAdsDashboardApplinkModuleLoader;
 import com.tokopedia.topchat.deeplink.TopChatAppLinkModule;
 import com.tokopedia.topchat.deeplink.TopChatAppLinkModuleLoader;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.tracking.applink.TrackingAppLinkModule;
 import com.tokopedia.tracking.applink.TrackingAppLinkModuleLoader;
 import com.tokopedia.transaction.applink.TransactionApplinkModule;
@@ -68,7 +72,6 @@ import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleL
  * @author rizkyfadillah on 26/07/17.
  */
 @DeepLinkHandler({
-        DigitalApplinkModule.class,
         SellerApplinkModule.class,
         TopAdsDashboardApplinkModule.class,
         TopAdsApplinkModule.class,
@@ -79,19 +82,20 @@ import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleL
         ShopAppLinkModule.class,
         ProfileApplinkModule.class,
         TrackingAppLinkModule.class,
-        ProductAddDeeplinkModule.class,
         TopChatAppLinkModule.class,
         CoreDeeplinkModule.class,
         CustomerCareApplinkModule.class,
         ReputationApplinkModule.class,
         SessionApplinkModule.class,
-        PdpApplinkModule.class,
+        ProductDetailApplinkModule.class,
         SettingBankApplinkModule.class,
         InboxTalkApplinkModule.class,
         LoginRegisterApplinkModule.class,
         ChangeInactivePhoneApplinkModule.class,
         PhoneVerificationApplinkModule.class,
-        UserIdentificationApplinkModule.class
+        ChangePasswordDeeplinkModule.class,
+        UserIdentificationApplinkModule.class,
+        ChatbotApplinkModule.class
 })
 
 public class DeepLinkHandlerActivity extends AppCompatActivity {
@@ -99,7 +103,6 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
 
     public static DeepLinkDelegate getDelegateInstance() {
         return new DeepLinkDelegate(
-                new DigitalApplinkModuleLoader(),
                 new SellerApplinkModuleLoader(),
                 new TopAdsDashboardApplinkModuleLoader(),
                 new TopAdsApplinkModuleLoader(),
@@ -110,19 +113,20 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new ShopAppLinkModuleLoader(),
                 new ProfileApplinkModuleLoader(),
                 new TrackingAppLinkModuleLoader(),
-                new ProductAddDeeplinkModuleLoader(),
                 new TopChatAppLinkModuleLoader(),
                 new CoreDeeplinkModuleLoader(),
                 new CustomerCareApplinkModuleLoader(),
                 new ReputationApplinkModuleLoader(),
                 new SessionApplinkModuleLoader(),
-                new PdpApplinkModuleLoader(),
+                new ProductDetailApplinkModuleLoader(),
                 new SettingBankApplinkModuleLoader(),
                 new InboxTalkApplinkModuleLoader(),
                 new LoginRegisterApplinkModuleLoader(),
                 new ChangeInactivePhoneApplinkModuleLoader(),
                 new PhoneVerificationApplinkModuleLoader(),
-                new UserIdentificationApplinkModuleLoader()
+                new ChangePasswordDeeplinkModuleLoader(),
+                new UserIdentificationApplinkModuleLoader(),
+                new ChatbotApplinkModuleLoader()
         );
     }
 
@@ -147,17 +151,46 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
     }
 
     private void processApplink(DeepLinkDelegate deepLinkDelegate, DeepLinkAnalyticsImpl presenter) {
-        Intent intent = getIntent();
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        Uri applink = intent.getData();
+        Uri applink = getIntent().getData();
         presenter.processUTM(this, applink);
-        if (deepLinkDelegate.supportsUri(applink.toString())) {
-            deepLinkDelegate.dispatchFrom(this, intent);
+
+        if (applink == null) {
+            return;
+        }
+
+        String applinkString = applink.toString();
+
+        //map applink to internal if any
+        String mappedDeeplink = DeeplinkMapper.getRegisteredNavigation(this, applinkString);
+        if (!TextUtils.isEmpty(mappedDeeplink)) {
+            routeToApplink(deepLinkDelegate, mappedDeeplink);
+        } else {
+            routeToApplink(deepLinkDelegate, applinkString);
+        }
+    }
+
+    private void routeToApplink(DeepLinkDelegate deepLinkDelegate, String applinkString) {
+        if (deepLinkDelegate.supportsUri(applinkString)) {
+            getIntent().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            deepLinkDelegate.dispatchFrom(this, getIntent());
             if (getIntent().getExtras() != null) {
                 Bundle bundle = getIntent().getExtras();
-                UnifyTracking.eventPersonalizedClicked(this, bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
+                eventPersonalizedClicked(bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
             }
+        } else {
+            Intent intent = RouteManager.getIntent(this, applinkString);
+            startActivity(intent);
+            this.finish();
         }
+    }
+
+
+    public void eventPersonalizedClicked(String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.OPEN_PUSH_NOTIFICATION,
+                AppEventTracking.Category.PUSH_NOTIFICATION,
+                AppEventTracking.Action.OPEN,
+                label);
     }
 
     public static Intent moveToCreateShop(Context context) {

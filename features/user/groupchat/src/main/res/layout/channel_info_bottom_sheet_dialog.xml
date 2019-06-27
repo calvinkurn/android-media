@@ -4,7 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/space_med">
+    android:paddingTop="@dimen/dp_6"
+    android:paddingBottom="@dimen/dp_16"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16"
+    >
 
     <LinearLayout
         android:id="@+id/linearLayout2"
@@ -52,7 +56,7 @@
             android:fontFamily="sans-serif-medium"
             android:lineSpacingExtra="4sp"
             android:maxLines="2"
-            android:textColor="@color/black_70"
+            android:textColor="@color/charcoal_grey"
             android:textSize="@dimen/sp_16"
             android:textStyle="normal"
             tools:text="2018 FIFA World Cup" />
@@ -68,7 +72,7 @@
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="6sp"
             android:maxLines="4"
-            android:textColor="@color/black_55"
+            android:textColor="@color/pinned_chat_message"
             android:textSize="@dimen/sp_14"
             android:textStyle="normal"
             tools:text="Hai para pecinta sepak bola, Ramaikan piala dunia 2018 bersama Tokopedia! Ikuti quiznya dan menangkan Tokocash senilai jutaan rupiah. Buruan, jangan sampai kelewatan!" />
@@ -112,7 +116,8 @@
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@+id/participant"
                 android:layout_toStartOf="@+id/participant"
-                app:srcCompat="@drawable/ic_eyes_view" />
+                android:tint="@color/eye_color_play"
+                app:srcCompat="@drawable/ic_eye_password_open" />
 
 
             <TextView
@@ -124,7 +129,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/space_mini"
                 android:fontFamily="sans-serif"
-                android:textColor="@color/black_38"
+                android:textColor="@color/eye_color_play"
                 android:textSize="12sp"
                 android:textStyle="normal"
                 tools:text="2.546.000" />

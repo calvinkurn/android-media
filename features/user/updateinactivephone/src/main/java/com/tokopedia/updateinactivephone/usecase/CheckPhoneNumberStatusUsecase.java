@@ -40,7 +40,7 @@ public class CheckPhoneNumberStatusUsecase {
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_check_phone_number_status),
                 GqlCheckPhoneStatusResponse.class,
-                variables, CHECK_USER_STATUS);
+                variables, CHECK_USER_STATUS, false);
 
         graphqlUseCase.addRequest(graphqlRequest);
         graphqlUseCase.execute(checkPhoneNumberStatusSubscriber);

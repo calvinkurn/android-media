@@ -9,10 +9,10 @@ import com.google.gson.annotations.SerializedName;
 public class Resolution {
     @SerializedName("resolution_as_buyer")
     @Expose
-    private int resolutionBuyer;
+    private int resolutionBuyer = 0;
     @SerializedName("resolution_as_seller")
     @Expose
-    private int resolutionSeller;
+    private int resolutionSeller = 0;
 
     public int getResolutionBuyer() {
         return resolutionBuyer;

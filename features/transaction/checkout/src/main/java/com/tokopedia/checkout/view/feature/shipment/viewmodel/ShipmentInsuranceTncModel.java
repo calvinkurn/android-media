@@ -1,6 +1,6 @@
 package com.tokopedia.checkout.view.feature.shipment.viewmodel;
 
-import com.tokopedia.checkout.view.feature.shipment.ShipmentData;
+import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentData;
 
 /**
  * @author Irfan Khoirul on 09/05/18.

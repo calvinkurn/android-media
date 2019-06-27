@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -19,8 +18,6 @@ import java.util.List;
 public interface KolPostListener {
     interface View extends CustomerView {
         Context getContext();
-
-        KolRouter getKolRouter();
 
         AbstractionRouter getAbstractionRouter();
 
@@ -45,7 +42,7 @@ public interface KolPostListener {
         interface Like {
             Context getContext();
 
-            void onLikeKolSuccess(int rowNumber);
+            void onLikeKolSuccess(int rowNumber, int action);
 
             void onLikeKolError(String message);
         }
@@ -54,8 +51,6 @@ public interface KolPostListener {
             Context getContext();
 
             UserSessionInterface getUserSession();
-
-            AbstractionRouter getAbstractionRouter();
 
             void onGoToKolProfile(int rowNumber, String userId, int postId);
 

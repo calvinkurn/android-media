@@ -8,7 +8,7 @@ import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
-import com.tokopedia.core.util.BranchSdkUtils;
+import com.tokopedia.track.TrackApp;
 
 import org.json.JSONArray;
 
@@ -20,13 +20,6 @@ import java.util.Map;
  */
 
 public class PaymentTracking extends TrackingUtils {
-
-    public static void eventTransactionGTM(Context context, Purchase purchase) {
-        BranchSdkUtils.sendCommerceEvent(context, purchase, BranchSdkUtils.PRODUCTTYPE_MARKETPLACE);
-        getGTMEngine(context).eventTransaction(purchase);
-        getGTMEngine(context).sendScreen(AppScreen.SCREEN_FINISH_TX_OLD);
-        getGTMEngine(context).clearTransactionDataLayer(purchase);
-    }
 
     /* new from TopPayActivity revamped*/
     public static void eventTransactionAF(Context context,
@@ -52,12 +45,12 @@ public class PaymentTracking extends TrackingUtils {
             afValue.put(AFInAppEventParameterName.CONTENT_TYPE, Jordan.AF_VALUE_PRODUCTTYPE);
         }
 
-        getAFEngine(context).sendTrackEvent(AFInAppEventType.PURCHASE, afValue);
-        getAFEngine(context).sendTrackEvent(Jordan.AF_KEY_CRITEO, afValue);
+        TrackApp.getInstance().getAppsFlyer().sendTrackEvent(AFInAppEventType.PURCHASE, afValue);
+        TrackApp.getInstance().getAppsFlyer().sendTrackEvent(Jordan.AF_KEY_CRITEO, afValue);
     }
 
     public static void atcAF(Context context,Map<String, Object> values) {
-        getAFEngine(context).sendTrackEvent(AFInAppEventType.ADD_TO_CART, values);
+        TrackApp.getInstance().getAppsFlyer().sendTrackEvent(AFInAppEventType.ADD_TO_CART, values);
     }
 
     public static void checkoutEventAppsflyer(Context context,ProductCartPass param) {
@@ -69,21 +62,7 @@ public class PaymentTracking extends TrackingUtils {
         values.put(AFInAppEventParameterName.QUANTITY, param.getOrderQuantity());
         values.put(AFInAppEventParameterName.PRICE, param.getPrice());
         values.put(Jordan.AF_SHOP_ID,param.getShopId());
-        getAFEngine(context).sendTrackEvent(AFInAppEventType.INITIATED_CHECKOUT, values);
-    }
-
-    public static void eventCartCheckoutStep1(Context context,Checkout checkout) {
-        getGTMEngine(context)
-                .eventCheckout(checkout)
-                .sendScreen(AppScreen.SCREEN_CART_PAGE)
-                .clearCheckoutDataLayer();
-    }
-
-    public static void eventCartCheckoutStep2(Context context,Checkout checkout, String paymentId) {
-        getGTMEngine(context)
-                .eventCheckout(checkout, paymentId)
-                .sendScreen(AppScreen.SCREEN_CART_SUMMARY_CHECKOUT)
-                .clearCheckoutDataLayer();
+        TrackApp.getInstance().getAppsFlyer().sendTrackEvent(AFInAppEventType.INITIATED_CHECKOUT, values);
     }
 
 }

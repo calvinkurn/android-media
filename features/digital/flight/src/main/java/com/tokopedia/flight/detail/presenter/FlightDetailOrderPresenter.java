@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import android.text.style.RelativeSizeSpan;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
@@ -34,6 +33,7 @@ import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderPassengerViewModel;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 import com.tokopedia.flight.review.view.model.FlightDetailPassenger;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -57,18 +57,17 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         implements FlightDetailOrderContract.Presenter {
 
     private static final String NEW_LINE = "\n";
-    private static final int MINIMUM_HOURS_CANCELLATION_DURATION = 6;
 
     private final FlightGetOrderUseCase flightGetOrderUseCase;
     private FlightOrderToCancellationJourneyMapper flightOrderToCancellationJourneyMapper;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
     private CompositeSubscription compositeSubscription;
     private int totalPrice = 0;
     private String userResendEmail = "";
 
     @Inject
     public FlightDetailOrderPresenter(FlightOrderToCancellationJourneyMapper flightOrderToCancellationJourneyMapper,
-                                      UserSession userSession,
+                                      UserSessionInterface userSession,
                                       FlightGetOrderUseCase flightGetOrderUseCase) {
         this.flightOrderToCancellationJourneyMapper = flightOrderToCancellationJourneyMapper;
         this.userSession = userSession;
@@ -84,20 +83,22 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     @Override
     public void actionCancelOrderButtonClicked() {
 
-        List<FlightCancellationJourney> items = transformOrderToCancellation(getView()
-                .getFlightOrder().getJourneys());
+        if (isViewAttached() && getView().getFlightOrder() != null) {
+            List<FlightCancellationJourney> items = transformOrderToCancellation(getView()
+                    .getFlightOrder().getJourneys());
 
-        boolean isRefundable = false;
-        for (FlightCancellationJourney item : items) {
-            if (item.isRefundable()) {
-                isRefundable = true;
+            boolean isRefundable = false;
+            for (FlightCancellationJourney item : items) {
+                if (item.isRefundable()) {
+                    isRefundable = true;
+                }
             }
-        }
 
-        if (isRefundable) {
-            getView().showRefundableCancelDialog(getView().getFlightOrder().getId(), items);
-        } else {
-            getView().showNonRefundableCancelDialog(getView().getFlightOrder().getId(), items);
+            if (isRefundable) {
+                getView().showRefundableCancelDialog(getView().getFlightOrder().getId(), items);
+            } else {
+                getView().showNonRefundableCancelDialog(getView().getFlightOrder().getId(), items);
+            }
         }
     }
 
@@ -112,7 +113,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     }
 
     @Override
-    public void onDownloadETicketButtonClicked() {
+    public void onSendEticketButtonClicked() {
         getView().navigateToInputEmailForm(userSession.getUserId(), userResendEmail);
     }
 
@@ -177,6 +178,12 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                     getView().hideCancelButton();
                 }
                 renderInsurances(flightOrder);
+
+                if (flightOrder.getEticketUri() != null && flightOrder.getEticketUri().length() > 0) {
+                    getView().showLihatEticket();
+                } else {
+                    getView().hideLihatEticket();
+                }
             }
         };
     }
@@ -226,12 +233,6 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     @Override
     public void onMoreAirlineInfoClicked() {
         getView().navigateToWebview(FlightUrl.AIRLINES_CONTACT_URL);
-    }
-
-    private boolean isDepartureDateMoreThan6Hours(Date departureDate) {
-        Date currentDate = FlightDateUtil.getCurrentDate();
-        long diffHours = (departureDate.getTime() - currentDate.getTime()) / TimeUnit.HOURS.toMillis(1);
-        return diffHours >= MINIMUM_HOURS_CANCELLATION_DURATION || diffHours < 0;
     }
 
     private void renderPaymentInfo(FlightOrder flightOrder) {
@@ -380,23 +381,6 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                 break;
             default:
                 break;
-        }
-    }
-
-    @Override
-    public void checkIfFlightCancellable(String invoiceId, List<FlightCancellationJourney> items) {
-        boolean canGoToCancelPage = false;
-        for (FlightOrderJourney item : getView().getFlightOrder().getJourneys()) {
-            if (isDepartureDateMoreThan6Hours(
-                    FlightDateUtil.stringToDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, item.getDepartureTime()))) {
-                canGoToCancelPage = true;
-            }
-        }
-
-        if (canGoToCancelPage) {
-            getView().navigateToCancellationPage(invoiceId, items);
-        } else {
-            getView().showLessThan6HoursDialog();
         }
     }
 

@@ -3,7 +3,6 @@ package com.tokopedia.contactus.common.di;
 import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
@@ -46,9 +45,8 @@ public class ContactUsModule {
 
     @Provides
     ContactUsAuthInterceptor provideContactUsAuthInterceptor(@ApplicationContext Context context,
-                                                             AbstractionRouter abstractionRouter,
-                                                             UserSession userSession) {
-        return new ContactUsAuthInterceptor(context,abstractionRouter,userSession);
+                                                             AbstractionRouter abstractionRouter) {
+        return new ContactUsAuthInterceptor(context,abstractionRouter);
 
     }
 }

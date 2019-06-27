@@ -66,3 +66,6 @@ BUCK
 
 # NDK
 .externalNativeBuild
+
+file_changes.log
+coverageResults/

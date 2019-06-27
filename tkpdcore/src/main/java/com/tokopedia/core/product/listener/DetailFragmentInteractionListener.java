@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.linker.model.LinkerData;
 
 /**
  * @author madi on 5/12/17.
@@ -13,7 +14,7 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 
 public interface DetailFragmentInteractionListener {
 
-    void shareProductInfo(@NonNull ShareData shareData);
+    void shareProductInfo(@NonNull LinkerData shareData);
 
     void onProductDetailLoaded(@NonNull ProductDetailData productData);
 

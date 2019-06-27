@@ -10,11 +10,24 @@
         android:id="@+id/top_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_14"
         android:layout_weight="1"/>
-    <TextView
-        android:id="@+id/bottom_text"
+
+    <LinearLayout
+        android:id="@+id/ll_bottom_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:paddingLeft="@dimen/dp_3">
+
+        <TextView
+            android:id="@+id/bottom_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_deadline"
+            android:text="fsdfasd"
+            android:textSize="@dimen/sp_14"
+            android:textStyle="bold" />
+    </LinearLayout>
+
 </LinearLayout>

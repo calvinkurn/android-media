@@ -14,9 +14,11 @@ import android.widget.LinearLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.browse.R
 import com.tokopedia.browse.common.DigitalBrowseRouter
+import com.tokopedia.browse.common.data.DigitalBrowseServiceAnalyticsModel
 import com.tokopedia.browse.common.util.DigitalBrowseAnalytics
 import com.tokopedia.browse.homepage.di.DigitalBrowseHomeComponent
 import com.tokopedia.browse.homepage.presentation.adapter.DigitalBrowseServiceAdapter
@@ -26,8 +28,10 @@ import com.tokopedia.browse.homepage.presentation.contract.DigitalBrowseServiceC
 import com.tokopedia.browse.homepage.presentation.model.DigitalBrowseServiceCategoryViewModel
 import com.tokopedia.browse.homepage.presentation.model.DigitalBrowseServiceViewModel
 import com.tokopedia.browse.homepage.presentation.presenter.DigitalBrowseServicePresenter
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 /**
  * @author by furqan on 30/08/18.
@@ -44,6 +48,7 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
     private lateinit var smoothScroller: LinearSmoothScroller
     private lateinit var layoutManager: GridLayoutManager
     private lateinit var containerData: LinearLayout
+    private lateinit var performanceMonitoring: PerformanceMonitoring
 
     private var scrollSelected: RecyclerView.OnScrollListener? = null
     private var tabSelectedListener: TabLayout.OnTabSelectedListener? = null
@@ -51,14 +56,23 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
     private var oldTitlePosition = 0
     private var currentTitlePosition = 0
     private var currentScrollIndex = 0
+    private var traceStop: Boolean = false;
 
     private var selectedCategoryId = -1
 
     private lateinit var viewModel: DigitalBrowseServiceViewModel
     private lateinit var serviceAdapter: DigitalBrowseServiceAdapter
 
+    private lateinit var trackingQueue: TrackingQueue
+
     override val fragmentContext: Context?
         get() = context
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        trackingQueue = TrackingQueue(activity!!)
+        performanceMonitoring = PerformanceMonitoring.start(BROWSE_TRACE)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_digital_browse_service, container, false)
@@ -86,6 +100,13 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
 
         if (arguments != null && arguments!!.containsKey(EXTRA_CATEGORY_ID)) {
             selectedCategoryId = arguments!!.getInt(EXTRA_CATEGORY_ID)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (::trackingQueue.isInitialized) {
+            trackingQueue.sendAll()
         }
     }
 
@@ -168,7 +189,20 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
         presenter.processTabData(viewModel.titleMap!!, viewModel, selectedCategoryId)
 
         renderDataList(viewModel.categoryViewModelList)
+
+        viewModel.categoryViewModelList?.run {
+            sendImpressionAnalytics(viewModel.categoryViewModelList)
+        }
+
         setRecyclerViewListener()
+        stopTrace()
+    }
+
+    private fun stopTrace() {
+        if (!traceStop) {
+            performanceMonitoring.stopTrace()
+            traceStop = true
+        }
     }
 
     override fun showTab() {
@@ -200,8 +234,9 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
         ) {
             containerData.visibility = View.VISIBLE
             serviceAdapter.showLoading()
-            presenter.getDigitalCategoryCloud()
+            presenter.getDigitalCategory()
         }
+        stopTrace()
     }
 
     private fun setRecyclerViewListener() {
@@ -280,11 +315,43 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
         }
     }
 
-    override fun sendImpressionAnalytics(viewModel: DigitalBrowseServiceCategoryViewModel, itemPosition: Int) {
-        val analyticsModel = presenter.getItemPositionInGroup(this.viewModel.titleMap!!, itemPosition)
-        analyticsModel.iconName = viewModel.name!!
+    override fun sendImpressionAnalytics(viewModels: List<DigitalBrowseServiceCategoryViewModel>) {
+        //create analytics model (combine data objects with their corresponding header name
+        var dataObjects : ArrayList<DigitalBrowseServiceAnalyticsModel> =
+                arrayListOf<DigitalBrowseServiceAnalyticsModel>()
+        var position = 1
+        for (item: DigitalBrowseServiceCategoryViewModel in viewModels) {
+            val analyticsModel = presenter.getItemPositionInGroup(
+                    this.viewModel.titleMap!!,
+                    position)
+            analyticsModel.iconName = item.name?:""
+            dataObjects.add(analyticsModel)
+            position++
+        }
 
-        digitalBrowseAnalytics.eventImpressionIconLayanan(analyticsModel)
+        //hit impression based on their header name
+        var dataObjectsPerHeader : ArrayList<DigitalBrowseServiceAnalyticsModel> =
+                arrayListOf()
+        var currentHeader = ""
+        for (item: DigitalBrowseServiceAnalyticsModel in dataObjects) {
+            if (currentHeader.isEmpty()) {
+                currentHeader = item.headerName
+            }
+            if (!currentHeader.equals(item.headerName)) {
+                digitalBrowseAnalytics.eventImpressionIconLayanan(
+                        trackingQueue,
+                        dataObjectsPerHeader,
+                        currentHeader)
+                currentHeader = item.headerName
+                dataObjectsPerHeader.clear()
+            }
+            dataObjectsPerHeader.add(item)
+        }
+        //last header section impression
+        digitalBrowseAnalytics.eventImpressionIconLayanan(
+                trackingQueue,
+                dataObjectsPerHeader,
+                currentHeader)
     }
 
     override fun onDestroy() {
@@ -299,6 +366,7 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
         private val EXTRA_CATEGORY_ID = "CATEGORY_ID"
         private val COLUMN_NUMBER = 4
         private val KEY_SERVICE_DATA = "KEY_SERVICE_DATA"
+        private val BROWSE_TRACE = "dg_browse"
 
         val fragmentInstance: Fragment
             get() = DigitalBrowseServiceFragment()

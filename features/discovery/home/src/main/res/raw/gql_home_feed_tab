@@ -1,0 +1,9 @@
+{
+  get_home_recommendation{
+    recommendation_tabs{
+      id
+      name
+      image_url
+    }
+  }
+}

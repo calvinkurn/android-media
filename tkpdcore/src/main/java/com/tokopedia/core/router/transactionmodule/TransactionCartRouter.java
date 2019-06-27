@@ -9,6 +9,7 @@ import com.tokopedia.core.util.RouterUtils;
  * @author anggaprasetiyo on 12/14/16.
  */
 
+@Deprecated
 public class TransactionCartRouter {
     private final static String CART_ACTIVITY_OLD
             = "com.tokopedia.transaction.cart.activity.CartActivity";

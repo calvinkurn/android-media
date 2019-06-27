@@ -15,7 +15,7 @@ interface BuyerCardContract {
 
         void setTokopoint(String tokopoint);
 
-        void setCoupon(int coupons);
+        void setCoupon(String coupons);
 
         void showProfileProgress(int progress);
 
@@ -24,6 +24,8 @@ interface BuyerCardContract {
         void setProfileStatusCompleted();
 
         void setProfileStatusIncomplete(int progress);
+
+        void showBymeIcon();
     }
 
     interface Presenter {

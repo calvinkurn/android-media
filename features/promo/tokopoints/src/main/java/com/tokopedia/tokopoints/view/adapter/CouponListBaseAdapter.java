@@ -40,11 +40,10 @@ import rx.Subscriber;
 
 public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
 
-    private CatalogPurchaseRedemptionPresenter mPresenter;
     private Context mContext;
     private int mCategoryId = 0;
 
-    public class ViewHolder extends BaseAdapter.BaseVH {
+    public class ViewHolder extends BaseVH {
         TextView label, value, tvMinTxnValue, tvMinTxnLabel;
         ImageView imgBanner, imgLabel, ivMinTxn;
         public boolean isVisited = false;
@@ -65,14 +64,13 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
         }
 
         @Override
-        public void bindView(BaseItem item, int position) {
-            setData(this, (CouponValueEntity) item);
+        public void bindView(CouponValueEntity item, int position) {
+            setData(this, item);
         }
     }
 
-    public CouponListBaseAdapter(CatalogPurchaseRedemptionPresenter presenter, AdapterCallback callback, Context context, int categoryId) {
+    public CouponListBaseAdapter(AdapterCallback callback, Context context, int categoryId) {
         super(callback);
-        this.mPresenter = presenter;
         this.mContext = context;
         this.mCategoryId = categoryId;
     }
@@ -128,7 +126,7 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
         promotions.put("promotions", Arrays.asList(item));
 
         Map<String, Map<String, List<Map<String, String>>>> promoClick = new HashMap<>();
-        promoClick.put("promoClick", promotions);
+        promoClick.put("promoView", promotions);
 
         AnalyticsTrackerUtil.sendECommerceEvent(context,
                 AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
@@ -159,11 +157,9 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
         variablesMain.put(CommonConstant.GraphqlVariableKeys.CATEGORY_ID_COUPON, mCategoryId);
         variablesMain.put(CommonConstant.GraphqlVariableKeys.CATEGORY_ID, 0);
 
-        GraphqlRequest graphqlRequestMain = new GraphqlRequest(GraphqlHelper.loadRawString(mContext.getResources(), R.raw.tp_gql_coupon_listing),
-                TokoPointPromosEntity.class,
-                variablesMain);
+        String query = GraphqlHelper.loadRawString(mContext.getResources(), R.raw.tp_gql_coupon_listing);
+        GraphqlRequest graphqlRequestMain = new GraphqlRequest(query, TokoPointPromosEntity.class, variablesMain, false);
         graphqlUseCase.addRequest(graphqlRequestMain);
-
 
         graphqlUseCase.execute(new Subscriber<GraphqlResponse>() {
             @Override
@@ -228,12 +224,7 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
             bundle.putString(CommonConstant.EXTRA_COUPON_CODE, item.getCode());
             holder.imgBanner.getContext().startActivity(CouponDetailActivity.getCouponDetail(holder.imgBanner.getContext(), bundle), bundle);
 
-            //TODO need to add transectinal ga
-            AnalyticsTrackerUtil.sendEvent(holder.imgBanner.getContext(),
-                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                    AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_BACK_ARROW,
-                    AnalyticsTrackerUtil.EventKeys.BACK_ARROW_LABEL);
+            sendClickEvent(holder.imgBanner.getContext(), item, holder.getAdapterPosition());
         });
 
 
@@ -254,7 +245,7 @@ public class CouponListBaseAdapter extends BaseAdapter<CouponValueEntity> {
                         int seconds = (int) (l / 1000) % 60;
                         int minutes = (int) ((l / (1000 * 60)) % 60);
                         int hours = (int) ((l / (1000 * 60 * 60)) % 24);
-                        holder.value.setText(String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds))  ;
+                        holder.value.setText(String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds));
                         holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), R.color.medium_green));
                         holder.progressTimer.setProgress((int) l / 1000);
                         holder.value.setPadding(holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_regular),

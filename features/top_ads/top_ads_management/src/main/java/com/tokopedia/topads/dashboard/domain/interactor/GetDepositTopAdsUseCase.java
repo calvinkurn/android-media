@@ -1,12 +1,10 @@
 package com.tokopedia.topads.dashboard.domain.interactor;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.domain.GetDepositTopAdsRepository;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import rx.Observable;
 
@@ -18,8 +16,8 @@ public class GetDepositTopAdsUseCase extends UseCase<DataDeposit> {
 
     private GetDepositTopAdsRepository getDepositTopAdsRepository;
 
-    public GetDepositTopAdsUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, GetDepositTopAdsRepository getDepositTopAdsRepository) {
-        super(threadExecutor, postExecutionThread);
+    public GetDepositTopAdsUseCase(GetDepositTopAdsRepository getDepositTopAdsRepository) {
+        super();
         this.getDepositTopAdsRepository = getDepositTopAdsRepository;
     }
 

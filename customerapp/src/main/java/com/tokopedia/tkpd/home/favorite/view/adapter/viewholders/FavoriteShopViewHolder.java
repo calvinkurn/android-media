@@ -8,12 +8,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.FavoriteShopViewModel;
+import com.tokopedia.track.TrackApp;
 
 /**
  * @author kulomady on 1/24/17.
@@ -76,8 +79,16 @@ public class FavoriteShopViewHolder extends AbstractViewHolder<FavoriteShopViewM
     }
 
     void onShopLayoutClicked() {
-        UnifyTracking.eventFavoriteShop(context);
+        eventFavoriteShop();
         Intent intent = ShopPageActivity.createIntent(context, favoriteShop.getShopId());
         context.startActivity(intent);
+    }
+
+    public void eventFavoriteShop() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.FAVORITE,
+                AppEventTracking.Category.HOMEPAGE.toLowerCase(),
+                AppEventTracking.Action.CLICK_SHOP_FAVORITE,
+                "");
     }
 }

@@ -7,6 +7,89 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <RelativeLayout
+        android:id="@+id/ll_prioritas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/dp_4"
+        android:paddingLeft="@dimen/dp_9"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_8">
+
+        <CheckBox
+            android:id="@+id/cb_prioritas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:theme="@style/TransactionCheckbox"
+            android:layout_alignParentStart="true" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/tv_label_prioritas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/cb_prioritas"
+            android:padding="@dimen/dp_4"
+            android:text="@string/label_order_prioritas"
+            android:layout_toEndOf="@+id/cb_prioritas" />
+
+        <ImageView
+            android:id="@+id/img_prioritas_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/tv_label_prioritas"
+            android:layout_toRightOf="@+id/tv_label_prioritas"
+            android:foregroundGravity="center_vertical"
+            android:padding="@dimen/dp_4"
+            android:src="@drawable/info_icon"
+            android:layout_toEndOf="@+id/tv_label_prioritas" />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/tv_order_prioritas_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_label_prioritas"
+            android:layout_toRightOf="@+id/cb_prioritas"
+            android:padding="@dimen/dp_4"
+            android:text="@string/label_hardcoded_order_prioritas_info"
+            android:textSize="@dimen/font_small"
+            app:textViewTheme="lightSecondary"
+            android:layout_toEndOf="@+id/cb_prioritas" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_prioritas_ticker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:background="@drawable/border_rectangle_yellow_checkout"
+        android:orientation="horizontal"
+        tools:ignore="UselessParent"
+        tools:visbility="visible">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="@dimen/dp_10">
+
+            <TextView
+                android:id="@+id/tv_prioritas_ticker"
+                style="@style/TextSmall"
+                android:lines="2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lineSpacingExtra="7sp"
+                tools:text="@string/label_hardcoded_prioritas_ticker" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
     <LinearLayout
         android:id="@+id/ll_insurance"
         android:layout_width="match_parent"
@@ -82,7 +165,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_12"
         android:layout_marginRight="@dimen/dp_12"
-        android:layout_marginTop="@dimen/margin_ms"
+        android:layout_marginTop="@dimen/dp_8"
         android:orientation="vertical"
         android:visibility="gone"
         tools:visibility="visible">
@@ -170,6 +253,10 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
         android:background="@color/separator_color" />
 
 </LinearLayout>

@@ -19,10 +19,6 @@ import com.tokopedia.topads.dashboard.view.presenter.TopAdsEtalaseListPresenterI
 
 public class TopAdsGetEtalaseListDI {
     public static TopAdsEtalaseListPresenter createPresenter() {
-        // Gson gson = new Gson();
-
-        JobExecutor threadExecutor = new JobExecutor();
-        UIThread postExecutionThread = new UIThread();
 
         TopAdsShopService topAdsShopService = new TopAdsShopService();
         TopAdsShopApi topAdsShopApi = topAdsShopService.getApi();
@@ -34,11 +30,7 @@ public class TopAdsGetEtalaseListDI {
 
         TopAdsEtalaseListRepository topAdsEtalaseListRepository = new TopAdsEtalaseListRepositoryImpl(topAdsEtalaseFactory);
 
-        TopAdsEtalaseListUseCase topAdsEtalaseListUseCase =
-                new TopAdsEtalaseListUseCase(
-                        threadExecutor,
-                        postExecutionThread,
-                        topAdsEtalaseListRepository);
+        TopAdsEtalaseListUseCase topAdsEtalaseListUseCase = new TopAdsEtalaseListUseCase(topAdsEtalaseListRepository);
 
         return new TopAdsEtalaseListPresenterImpl(topAdsEtalaseListUseCase);
     }

@@ -20,11 +20,18 @@ buildscript {
 }
 
 dependencies {
-    implementation project(rootProject.ext.libraries.useCase)
+
+    implementation project(rootProject.ext.libraries.track)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.libraries.trackingOptimizer)
+    implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation rootProject.ext.libraries.unifyIcon
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
 
     implementation rootProject.ext.miscDependencies.multiDex
 
@@ -32,6 +39,10 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
+    kapt rootProject.ext.miscDependencies.guava
+
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
     implementation(rootProject.ext.miscDependencies.loaderviewlibrary) {
         exclude group: 'com.android.support'
@@ -46,6 +57,7 @@ dependencies {
 
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockitorCore
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
 }
 
 apply from: '../../../publish_local.gradle'

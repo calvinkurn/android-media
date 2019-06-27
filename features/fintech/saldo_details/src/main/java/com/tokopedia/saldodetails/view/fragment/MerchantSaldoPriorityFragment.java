@@ -30,13 +30,16 @@ import com.tokopedia.saldodetails.design.UserStatusInfoBottomSheet;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
 import com.tokopedia.saldodetails.presenter.MerchantSaldoPriorityPresenter;
-import com.tokopedia.saldodetails.response.model.GqlAnchorListResponse;
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse;
 import com.tokopedia.saldodetails.response.model.GqlInfoListResponse;
+import com.tokopedia.saldodetails.response.model.GqlSpAnchorListResponse;
 
 import java.util.List;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.BUNDLE_PARAM_SELLER_DETAILS;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
         MerchantSaldoPriorityContract.View {
@@ -75,7 +78,7 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_saldo_prioritas, container, false);
         Bundle bundle = getArguments();
-        sellerDetails = bundle != null ? bundle.getParcelable("seller_details") : null;
+        sellerDetails = bundle != null ? bundle.getParcelable(BUNDLE_PARAM_SELLER_DETAILS) : null;
         initViews(view);
         return view;
     }
@@ -238,18 +241,18 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
             spStatusInfoIcon.setVisibility(View.GONE);
         } else if (boxType.equalsIgnoreCase(DEFAULT)) {
 
-            spStatusInfoIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_info_icon_green));
+            spStatusInfoIcon.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_info_icon_green));
             spKYCStatusLayout.setBackground(getResources().getDrawable(R.drawable.sp_bg_rounded_corners_green));
         } else if (boxType.equalsIgnoreCase(WARNING)) {
-            spStatusInfoIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_info_icon_yellow));
+            spStatusInfoIcon.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_info_icon_yellow));
             spKYCStatusLayout.setBackground(getResources().getDrawable(R.drawable.bg_rounded_corner_warning));
         } else if (boxType.equalsIgnoreCase(DANGER)) {
-            spStatusInfoIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_info_icon_red));
+            spStatusInfoIcon.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_info_icon_red));
             spKYCStatusLayout.setBackground(getResources().getDrawable(R.drawable.bg_rounded_corner_danger));
         }
     }
 
-    private void populateAnchorListData(List<GqlAnchorListResponse> anchorList) {
+    private void populateAnchorListData(List<GqlSpAnchorListResponse> anchorList) {
         LayoutInflater layoutInflater = getLayoutInflater();
         spActionListLinearLayout.removeAllViews();
 
@@ -259,7 +262,7 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
         int list_size = anchorList.size();
         for (int i = list_size - 1; i >= 0; i--) {
 
-            GqlAnchorListResponse gqlAnchorListResponse = anchorList.get(i);
+            GqlSpAnchorListResponse gqlAnchorListResponse = anchorList.get(i);
             if (gqlAnchorListResponse != null) {
                 View view = layoutInflater.inflate(R.layout.layout_anchor_list, null);
                 TextView anchorLabel = view.findViewById(R.id.anchor_label);

@@ -2,16 +2,21 @@
   payment(payment_id:%s){
     payment_id
     payment_ref_num
+    fee_amount
     orders{
     	order_id
     	phone
     	item_price
+    	is_fulfillment
     	order_detail{
             order_detail_id
             product{
                 category{
                     category_id
                     category_name
+                    category_name_level1
+                    category_name_level2
+                    category_name_level3
                 }
                 product_id
                 product_name
@@ -41,6 +46,12 @@
           gateway_id
       	}
     }
+    payment_gateway {
+        gateway_name
+        gateway_img_url
+        gateway_id
+        gateway_fee
+    }
     payment_method{
       method
       instant{
@@ -69,10 +80,34 @@
       	}
       }
     }
+    payment_type{
+      metadata
+      types
+    }
     payment_amount
     voucher{
       voucher_code
       voucher_id
+    }
+    stacked_promos{
+      promo_code_id
+      final_benefit_amount
+      final_discount_amount
+      benefits_by_orders{
+        order_id
+        order_level_orders{
+          promo_code
+          type
+          total_discount
+          total_benefit
+        }
+        global_level_orders{
+          promo_code
+          type
+          total_discount
+          total_benefit
+        }
+      }
     }
   }
 }

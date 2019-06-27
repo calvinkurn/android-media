@@ -33,13 +33,16 @@ public class FlightCancellationEstimateRefundUseCase extends UseCase<EstimateRef
         return flightRepository.estimateRefund((FlightEstimateRefundRequest) requestParams.getObject(PARAM_REQUEST));
     }
 
-    public RequestParams createRequestParam(String invoiceId, String userId, List<FlightCancellationViewModel> journeyCancellations){
+    public RequestParams createRequestParam(String invoiceId, String userId, List<FlightCancellationViewModel> journeyCancellations,
+                                            String reason, int reasonType){
         RequestParams requestParams = RequestParams.create();
         FlightEstimateRefundRequest requestBody = new FlightEstimateRefundRequest();
         requestBody.setType(DEFAULT_TYPE);
         FlightEstimateRefundAttribute attribute = new FlightEstimateRefundAttribute();
         attribute.setUserId(Long.parseLong(userId));
         attribute.setInvoiceId(invoiceId);
+        attribute.setReason(reason);
+        attribute.setReasonType(reasonType);
         List<FlightCancellationDetailRequestBody> details = transformIntoDetails(journeyCancellations);
         attribute.setDetails(details);
         requestBody.setAttributes(attribute);

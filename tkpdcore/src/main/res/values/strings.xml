@@ -6,7 +6,6 @@
 
     <!--<string name="GOOGLE_API_KEY">AIzaSyAogz3pv8NZeyGVV4-48IYeHpEhsRDblPE</string>-->
     <string name="GOOGLE_API_KEY">AIzaSyCRkgwGBe8ZxjcK07Cnl3Auf72BpgA6lLo</string>
-    <string name="BRANCH_SDK_KEY">key_live_abhHgIh1DQiuPxdBNg9EXepdDugwwkHr</string>
     <string name="key_moengage">LNCME8HVKUEJIGXE2N0698H0</string>
     <string name="app_id">126665634029576</string>
     <string name="app_name">Tokopedia</string>
@@ -1054,7 +1053,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_confirmed_payment">Pembayaran yang telah dikonfirmasi</string>
     <string name="title_remaining_tokopedia">Saldo tersedia</string>
     <string name="msg_payment_success">Terima kasih, Anda telah sukses mengkonfirmasi dengan menggunakan metode pembayaran</string>
-    <string name="title_activity_people_tx_details">Detil Transaksi</string>
+    <string name="title_activity_people_tx_details">Detail Transaksi</string>
     <string name="title_activity_people_tx_history">Detil Status</string>
     <string name="title_activity_cart_shipment">Ubah Pengiriman</string>
     <string name="title_payment_confirmation">KONFIRMASI</string>
@@ -1073,12 +1072,16 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_shop_name">Nama Toko</string>
     <string name="title_shop_tag">Slogan Toko</string>
     <string name="title_shop_desc">Deskripsi Toko</string>
-    <string name="title_open_shop">Buka Toko</string>
+    <string name="title_open_shop">Buka Toko Gratis</string>
     <string name="title_shop_is_active">Toko Sudah Aktif</string>
     <string name="domain">https://www.tokopedia.com/</string>
     <string name="domain_short">www.tokopedia.com/</string>
-    <string name="title_activity_contact_us">Hubungi Kami</string>
+    <string name="title_activity_contact_us">Pusat Bantuan</string>
+    <string name="shop_address_hint">Tulis nama kota atau kecamatan</string>
     <string name="title_select_city">Pilih Asal Kota</string>
+    <string name="tnc_open_shop">Anda telah menyetujui Syarat dan Ketentuan serta Kebijakan Privasi Tokopedia.</string>
+    <string name="tnc_webview_title">Syarat dan Ketentuan</string>
+    <string name="privacy_policy_webview_title">Kebijakan Privasi</string>
 
 
     <string name="title_activity_create_reso_center">Buat Komplain</string>
@@ -1578,7 +1581,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="error_choose_google_map_location">Mohon pilih lokasi Pickup</string>
     <string name="error_fill_street_address">Mohon isi Alamat Jalan Anda</string>
     <string name="toggle_rpx_next_day_i_drop">RPX Next Day Package dan IDrop tidak dapat dipilih bersamaan</string>
-    <string name="title_delivery_location">Lokasi Pickup (Opsional)</string>
+    <string name="title_delivery_location">Lokasi Pickup</string>
     <string name="title_delivery_location_pickup">Lokasi Pengiriman (Opsional)</string>
     <string name="title_delivery_location_cart">Lokasi Pengiriman</string>
     <string name="desc_delivery_location">Pastikan lokasi yang Anda tandai di peta sesuai dengan alamat yang Anda isi di atas</string>
@@ -2160,10 +2163,7 @@ di Tokopedia Sekarang!</string>
 
     <string name="title_app_referral_howitworks">Info lebih lanjut</string>
 
-    <string name="code_error">Kode error :</string>
-
     <string name="notif_channel_general">Notifikasi</string>
-    <string name="title_hockeyapp_download">Nakama harus menggunakan aplikasi Tokopedia versi beta</string>
     <string name="title_download">Download</string>
     <string name="app_share_explore_btn_label">Dapatkan Cashback-mu</string>
     <string name="app_share_label_desc"><![CDATA[Sudah merasakan berbagai kemudahan dengan aplikasi Tokopedia? Ayo ajak orang-orang terdekatmu untuk ikut menikmati mudahnya beli, bayar ini itu lewat aplikasi Tokopedia]]></string>

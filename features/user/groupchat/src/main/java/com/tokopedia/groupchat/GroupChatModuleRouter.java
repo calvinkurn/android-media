@@ -18,11 +18,6 @@ public interface GroupChatModuleRouter {
 
     Intent getLoginIntent(Context context);
 
-    void generateBranchLink(String channelId, String title, String contentMessage, String imgUrl,
-                            String
-            shareUrl, Activity activity, final ShareListener
-                                    listener);
-
     String getNotificationPreferenceConstant();
 
     public interface ShareListener {
@@ -33,4 +28,7 @@ public interface GroupChatModuleRouter {
                         String shareUrl, String userId, String sharing);
 
     void sendAnalyticsGroupChat(String url, String error);
+
+    boolean isSupportedDelegateDeepLink(String appLinks);
+
 }

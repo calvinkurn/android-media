@@ -26,6 +26,8 @@ public class ButtonCompat extends AppCompatButton {
     public final static int SECONDARY = 2;
     public final static int TRANSACTION = 3;
     public final static int DISABLE = 4;
+    public final static int WHITE_TRANSPARENT = 5;
+    public final static int WHITE = 6;
 
     public final static int BIG = 4;
     public final static int MEDIUM = 5;
@@ -150,6 +152,12 @@ public class ButtonCompat extends AppCompatButton {
                 break;
             case TRANSACTION:
                 initDraw(R.color.white, R.drawable.bg_button_orange);
+                break;
+            case WHITE_TRANSPARENT:
+                initDraw(R.color.white, R.drawable.bg_button_white_transparent);
+                break;
+            case WHITE:
+                initDraw(R.color.grey_button_compat, R.drawable.bg_button_white);
                 break;
             case DISABLE:
                 break;

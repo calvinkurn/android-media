@@ -1,21 +1,27 @@
 package com.tokopedia.promocheckout.detail.view.fragment
 
+import android.app.Activity
 import android.app.ProgressDialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.ProgressBar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.CommonUtils
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.analytics.FROM_CART
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
-import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
-import com.tokopedia.promocheckout.common.di.PromoCheckoutQualifier
-import com.tokopedia.promocheckout.common.domain.model.DataVoucher
+import com.tokopedia.promocheckout.common.data.entity.request.Promo
+import com.tokopedia.promocheckout.common.util.EXTRA_CLASHING_DATA
+import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
+import com.tokopedia.promocheckout.common.util.RESULT_CLASHING
+import com.tokopedia.promocheckout.common.view.model.PromoData
+import com.tokopedia.promocheckout.common.view.model.PromoStackingData
+import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
+import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
+import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailModule
-import com.tokopedia.promocheckout.detail.di.DaggerPromoCheckoutDetailComponent
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailPresenter
+import com.tokopedia.promocheckout.detail.di.DaggerPromoCheckoutDetailComponent
 import javax.inject.Inject
 
 class PromoCheckoutDetailMarketplaceFragment : BasePromoCheckoutDetailFragment() {
@@ -26,15 +32,17 @@ class PromoCheckoutDetailMarketplaceFragment : BasePromoCheckoutDetailFragment()
     lateinit var trackingPromoCheckoutUtil: TrackingPromoCheckoutUtil
 
     private var isOneClickShipment: Boolean = false
-    var pageTracking : Int = 1
-    lateinit var progressDialog : ProgressDialog
+    var pageTracking: Int = 1
+    var promo: Promo? = null
+    lateinit var progressDialog: ProgressDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         codeCoupon = arguments?.getString(EXTRA_KUPON_CODE, "") ?: ""
         isUse = arguments?.getBoolean(EXTRA_IS_USE, false) ?: false
-        isOneClickShipment = arguments?.getBoolean(ONE_CLICK_SHIPMENT, false)?:false
-        pageTracking = arguments?.getInt(PAGE_TRACKING, 1)?:1
+        isOneClickShipment = arguments?.getBoolean(ONE_CLICK_SHIPMENT, false) ?: false
+        pageTracking = arguments?.getInt(PAGE_TRACKING, 1) ?: 1
+        promo = arguments?.getParcelable(CHECK_PROMO_CODE_FIRST_STEP_PARAM)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -45,38 +53,56 @@ class PromoCheckoutDetailMarketplaceFragment : BasePromoCheckoutDetailFragment()
 
     override fun loadData() {
         super.loadData()
-        promoCheckoutDetailPresenter.getDetailPromo(codeCoupon,isOneClickShipment)
+        promoCheckoutDetailPresenter.getDetailPromo(codeCoupon, isOneClickShipment, promo)
     }
 
     override fun onClickUse() {
-        promoCheckoutDetailPresenter.validatePromoUse(codeCoupon, isOneClickShipment,  resources)
+        promoCheckoutDetailPresenter.validatePromoStackingUse(codeCoupon, promo, false)
     }
 
     override fun onClickCancel() {
-        if(pageTracking == FROM_CART) {
+        if (pageTracking == FROM_CART) {
             trackingPromoCheckoutUtil.cartClickCancelPromoCoupon(codeCoupon)
-        }else{
+        } else {
             trackingPromoCheckoutUtil.checkoutClickCancelPromoCoupon(codeCoupon)
         }
-        promoCheckoutDetailPresenter.cancelPromo()
+        promoCheckoutDetailPresenter.cancelPromo(codeCoupon)
     }
 
-    override fun onSuccessValidatePromo(dataVoucher: DataVoucher) {
-        if(pageTracking == FROM_CART) {
-            trackingPromoCheckoutUtil.cartClickUsePromoCouponSuccess(dataVoucher.code?:"")
-        }else{
-            trackingPromoCheckoutUtil.checkoutClickUsePromoCouponSuccess(dataVoucher.code?:"")
+    override fun onSuccessValidatePromoStacking(data: DataUiModel) {
+        if (pageTracking == FROM_CART) {
+            trackingPromoCheckoutUtil.cartClickUsePromoCouponSuccess(data.codes[0])
+        } else {
+            trackingPromoCheckoutUtil.checkoutClickUsePromoCouponSuccess(data.codes[0])
         }
-        super.onSuccessValidatePromo(dataVoucher)
+        super.onSuccessValidatePromoStacking(data)
+    }
+
+    override fun onClashCheckPromo(clasingInfoDetailUiModel: ClashingInfoDetailUiModel) {
+        val intent = Intent()
+        intent.putExtra(EXTRA_CLASHING_DATA, clasingInfoDetailUiModel)
+        activity?.setResult(RESULT_CLASHING, intent)
+        activity?.finish()
+
+        super.onClashCheckPromo(clasingInfoDetailUiModel)
     }
 
     override fun onErrorValidatePromo(e: Throwable) {
-        if(pageTracking == FROM_CART) {
+        if (pageTracking == FROM_CART) {
             trackingPromoCheckoutUtil.cartClickUsePromoCouponFailed()
-        }else{
+        } else {
             trackingPromoCheckoutUtil.checkoutClickUsePromoCouponFailed()
         }
         super.onErrorValidatePromo(e)
+    }
+
+    override fun onErrorValidatePromoStacking(e: Throwable) {
+        if (pageTracking == FROM_CART) {
+            trackingPromoCheckoutUtil.cartClickUsePromoCouponFailed()
+        } else {
+            trackingPromoCheckoutUtil.checkoutClickUsePromoCouponFailed()
+        }
+        super.onErrorValidatePromoStacking(e)
     }
 
     override fun initInjector() {
@@ -93,7 +119,11 @@ class PromoCheckoutDetailMarketplaceFragment : BasePromoCheckoutDetailFragment()
     }
 
     override fun showProgressLoading() {
-        progressDialog?.show()
+        try {
+            progressDialog?.show()
+        } catch (exception: UnsupportedOperationException) {
+            CommonUtils.dumper(exception)
+        }
     }
 
     override fun onDestroy() {
@@ -105,15 +135,18 @@ class PromoCheckoutDetailMarketplaceFragment : BasePromoCheckoutDetailFragment()
         val EXTRA_KUPON_CODE = "EXTRA_KUPON_CODE"
         val EXTRA_IS_USE = "EXTRA_IS_USE"
         val ONE_CLICK_SHIPMENT = "ONE_CLICK_SHIPMENT"
-        val PAGE_TRACKING= "PAGE_TRACKING"
+        val PAGE_TRACKING = "PAGE_TRACKING"
+        val CHECK_PROMO_CODE_FIRST_STEP_PARAM = "CHECK_PROMO_CODE_FIRST_STEP_PARAM"
 
-        fun createInstance(codeCoupon: String, isUse: Boolean, oneClickShipment: Boolean, pageTracking : Int): PromoCheckoutDetailMarketplaceFragment {
+        fun createInstance(codeCoupon: String, isUse: Boolean, oneClickShipment: Boolean, pageTracking: Int,
+                           promo: Promo): PromoCheckoutDetailMarketplaceFragment {
             val promoCheckoutDetailFragment = PromoCheckoutDetailMarketplaceFragment()
             val bundle = Bundle()
             bundle.putString(EXTRA_KUPON_CODE, codeCoupon)
             bundle.putBoolean(EXTRA_IS_USE, isUse)
             bundle.putBoolean(ONE_CLICK_SHIPMENT, oneClickShipment)
             bundle.putInt(PAGE_TRACKING, pageTracking)
+            bundle.putParcelable(CHECK_PROMO_CODE_FIRST_STEP_PARAM, promo)
             promoCheckoutDetailFragment.arguments = bundle
             return promoCheckoutDetailFragment
         }

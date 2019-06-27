@@ -8,9 +8,8 @@ import android.support.annotation.Nullable;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 
 import java.util.concurrent.TimeUnit;
 
@@ -29,24 +28,13 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     private SharedPreferences sharedPrefs;
 
     public FirebaseRemoteConfigImpl(Context context) {
-        this.firebaseRemoteConfig = getInstance(context);
+        try {
+            this.firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        } catch (Exception ignored) { } // FirebaseApp is not intialized, ignoring the error and handle it with default value
 
         if(GlobalConfig.isAllowDebuggingTools() && context != null) {
             this.sharedPrefs = context.getSharedPreferences(CACHE_NAME, Context.MODE_PRIVATE);
             this.editor = sharedPrefs.edit();
-        }
-    }
-
-    private FirebaseRemoteConfig getInstance(Context context) {
-        try {
-            if (FirebaseApp.getInstance() == null) {
-                FirebaseApp.initializeApp(context);
-            }
-
-            return FirebaseRemoteConfig.getInstance();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
         }
     }
 
@@ -124,7 +112,7 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
     public String getString(String key, String defaultValue) {
         if (isDebug()) {
             String cacheValue = sharedPrefs.getString(key, defaultValue);
-            if (!cacheValue.equalsIgnoreCase(defaultValue) && !cacheValue.isEmpty()) {
+            if (!cacheValue.isEmpty() && !cacheValue.equalsIgnoreCase(defaultValue)) {
                 return cacheValue;
             }
         }

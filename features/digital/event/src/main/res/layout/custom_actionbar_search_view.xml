@@ -19,12 +19,13 @@
         android:layout_alignBottom="@+id/search_input_view"
         android:layout_alignParentRight="true"
         android:layout_alignTop="@+id/search_input_view"
-
-        android:background="@color/green_btn"
+        android:background="@color/digital_event_green"
         android:gravity="center"
         android:paddingLeft="@dimen/dp_20"
         android:paddingRight="@dimen/dp_20"
         android:text="@string/cari"
         android:textColor="@color/white" />
+
+
 
 </RelativeLayout>

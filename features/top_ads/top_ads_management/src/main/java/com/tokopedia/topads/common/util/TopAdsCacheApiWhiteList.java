@@ -1,7 +1,6 @@
 package com.tokopedia.topads.common.util;
 
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 

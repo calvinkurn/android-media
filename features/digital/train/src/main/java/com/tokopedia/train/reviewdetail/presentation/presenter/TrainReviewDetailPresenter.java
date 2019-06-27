@@ -209,6 +209,9 @@ public class TrainReviewDetailPresenter extends BaseDaggerPresenter<TrainReviewD
                     @Override
                     public void onError(Throwable e) {
                         Log.d(TAG, e.getMessage());
+                        if (isViewAttached()) {
+                            getView().stopTrace();
+                        }
                     }
 
                     @Override
@@ -216,6 +219,7 @@ public class TrainReviewDetailPresenter extends BaseDaggerPresenter<TrainReviewD
                         getView().showScheduleTripsPrice(pairScheduleDetail.first, pairScheduleDetail.second);
                         getView().startCountdown(TrainDateUtil.stringToDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                                 getView().getExpireDate()));
+                        getView().stopTrace();
                     }
                 });
     }

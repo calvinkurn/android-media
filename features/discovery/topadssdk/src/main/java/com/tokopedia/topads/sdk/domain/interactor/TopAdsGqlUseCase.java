@@ -37,7 +37,7 @@ public class TopAdsGqlUseCase extends UseCase<TopAdsModel> {
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.get_topads_query),
                 TopAdsGqlResponse.class,
-                requestParams.getParameters());
+                requestParams.getParameters(), false);
         graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(graphqlRequest);
         return graphqlUseCase.getExecuteObservable(requestParams).map(new Func1<GraphqlResponse, TopAdsModel>() {

@@ -98,14 +98,15 @@ public class FlightBookingActivity extends BaseFlightActivity implements HasComp
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getComponent().inject(this);
+        deleteAllPassengerList(false);
     }
 
     @Override
     public void onBackPressed() {
-        deleteAllPassengerList();
+        deleteAllPassengerList(true);
     }
 
-    private void deleteAllPassengerList() {
+    private void deleteAllPassengerList(boolean shouldBackPress) {
         flightPassengerDeleteAllListUseCase.execute(
                 flightPassengerDeleteAllListUseCase.createEmptyRequestParams(),
                 new Subscriber<Boolean>() {
@@ -117,12 +118,16 @@ public class FlightBookingActivity extends BaseFlightActivity implements HasComp
                     @Override
                     public void onError(Throwable throwable) {
                         throwable.printStackTrace();
-                        FlightBookingActivity.super.onBackPressed();
+                        if (shouldBackPress) {
+                            FlightBookingActivity.super.onBackPressed();
+                        }
                     }
 
                     @Override
                     public void onNext(Boolean aBoolean) {
-                        FlightBookingActivity.super.onBackPressed();
+                        if (shouldBackPress) {
+                            FlightBookingActivity.super.onBackPressed();
+                        }
                     }
                 }
         );

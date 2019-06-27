@@ -8,7 +8,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.saldodetails.R;
-import com.tokopedia.saldodetails.response.model.GqlDepositSummaryResponse;
+import com.tokopedia.saldodetails.response.model.GqlAllDepositSummaryResponse;
 
 import java.util.Map;
 
@@ -44,10 +44,13 @@ public class GetDepositSummaryUseCase {
         graphqlUseCase.clearRequest();
         setRequesting(true);
 
-        GraphqlRequest graphqlRequest = new GraphqlRequest(
-                GraphqlHelper.loadRawString(context.getResources(), R.raw.query_deposit_details),
-                GqlDepositSummaryResponse.class,
-                variables, GET_SUMMARY_DEPOSIT);
+        String query;
+        GraphqlRequest graphqlRequest;
+        query = GraphqlHelper.loadRawString(context.getResources(),
+                R.raw.query_deposit_details_for_all);
+
+        graphqlRequest = new GraphqlRequest( query, GqlAllDepositSummaryResponse.class,
+                variables, GET_SUMMARY_DEPOSIT, false);
 
         graphqlUseCase.addRequest(graphqlRequest);
         graphqlUseCase.execute(subscriber);
@@ -60,4 +63,5 @@ public class GetDepositSummaryUseCase {
     public void setRequesting(boolean isRequesting) {
         this.isRequesting = isRequesting;
     }
+
 }

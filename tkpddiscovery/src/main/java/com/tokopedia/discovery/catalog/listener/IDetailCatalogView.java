@@ -1,11 +1,14 @@
 package com.tokopedia.discovery.catalog.listener;
 
+import android.content.Context;
+
 import com.tokopedia.discovery.catalog.model.CatalogImage;
 import com.tokopedia.discovery.catalog.model.CatalogInfo;
 import com.tokopedia.discovery.catalog.model.CatalogReview;
 import com.tokopedia.discovery.catalog.model.CatalogSpec;
 import com.tokopedia.core.product.listener.ViewListener;
 import com.tokopedia.core.model.share.ShareData;
+import com.tokopedia.linker.model.LinkerData;
 
 import java.util.List;
 
@@ -60,7 +63,7 @@ public interface IDetailCatalogView extends ViewListener {
      *
      * @param shareData share data object
      */
-    void renderCatalogShareData(ShareData shareData);
+    void renderCatalogShareData(LinkerData shareData);
 
     /**
      * render data jika saat terjadi error
@@ -98,4 +101,6 @@ public interface IDetailCatalogView extends ViewListener {
      * hide semua holder view
      */
     void cleanAllContent();
+
+    Context getContext();
 }

@@ -30,5 +30,5 @@
     <string name="without_promo_code">Tanpa Kode Promo</string>
     <string name="with_promo_code">Kode Promo</string>
     <string name="title_activity_promo">Promo</string>
-    <string name="activity_title_tokopoints">Tokopoints</string>
+    <string name="activity_title_tokopoints">TokoPoints</string>
 </resources>

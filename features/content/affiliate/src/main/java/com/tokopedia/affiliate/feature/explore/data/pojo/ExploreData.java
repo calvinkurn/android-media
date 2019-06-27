@@ -7,16 +7,15 @@ import com.google.gson.annotations.SerializedName;
  * @author by yfsx on 12/10/18.
  */
 public class ExploreData {
-
     @SerializedName("topadsExploreAffiliateProduct")
     @Expose
-    private ExploreQuery exploreProduct;
+    private ExploreProduct exploreProduct;
 
-    public ExploreQuery getExploreProduct() {
+    public ExploreProduct getExploreProduct() {
         return exploreProduct;
     }
 
-    public void setExploreProduct(ExploreQuery exploreProduct) {
+    public void setExploreProduct(ExploreProduct exploreProduct) {
         this.exploreProduct = exploreProduct;
     }
 }

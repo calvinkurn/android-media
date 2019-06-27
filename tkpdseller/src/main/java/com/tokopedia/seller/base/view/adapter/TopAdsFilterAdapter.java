@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Created by Nathaniel on 12/2/2016.
  */
-
+@Deprecated
 public class TopAdsFilterAdapter extends BaseLinearRecyclerViewAdapter {
 
     public interface Callback {

@@ -1,0 +1,14 @@
+package com.tkpd.library.kirisame.network.entity;
+
+/**
+ * Created by YuujiSakakibara on 2015/09/05.
+ */
+@Deprecated
+public enum NetError {
+    TIMEOUT,
+    NO_CONNECTION,
+    SERVER_ERROR,
+    AUTH_FAILURE,
+    PARSE_ERROR,
+    UNKNOWN,
+}

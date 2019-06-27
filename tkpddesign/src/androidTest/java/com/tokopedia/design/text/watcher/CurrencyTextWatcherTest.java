@@ -21,28 +21,28 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-@SmallTest
-@RunWith(AndroidJUnit4.class)
-public class CurrencyTextWatcherTest {
-    private CurrencyTextWatcher currencyTextWatcher;
-    private CurrencyTextWatcher.OnNumberChangeListener onNumberChangeListener;
+// @SmallTest
+// @RunWith(AndroidJUnit4.class)
+// public class CurrencyTextWatcherTest {
+//     private CurrencyTextWatcher currencyTextWatcher;
+//     private CurrencyTextWatcher.OnNumberChangeListener onNumberChangeListener;
 
-    @Before
-    public void setup() {
-        final EditText editText = mock(EditText.class);
-        currencyTextWatcher = new CurrencyTextWatcher(editText);
-        onNumberChangeListener = mock(CurrencyTextWatcher.OnNumberChangeListener.class);
-        currencyTextWatcher.setOnNumberChangeListener(onNumberChangeListener);
-    }
+//     @Before
+//     public void setup() {
+//         final EditText editText = mock(EditText.class);
+//         currencyTextWatcher = new CurrencyTextWatcher(editText);
+//         onNumberChangeListener = mock(CurrencyTextWatcher.OnNumberChangeListener.class);
+//         currencyTextWatcher.setOnNumberChangeListener(onNumberChangeListener);
+//     }
 
-    @Test
-    public void testOnTextChanged_callsProcess() {
-        final Editable editable = mock(Editable.class);
-        when(editable.toString()).thenReturn("1,000");
-        currencyTextWatcher.afterTextChanged(editable);
+//     @Test
+//     public void testOnTextChanged_callsProcess() {
+//         final Editable editable = mock(Editable.class);
+//         when(editable.toString()).thenReturn("1,000");
+//         currencyTextWatcher.afterTextChanged(editable);
 
-        verify(onNumberChangeListener, times(1)).onNumberChanged(eq(1000D));
+//         verify(onNumberChangeListener, times(1)).onNumberChanged(eq(1000D));
 
-    }
+//     }
 
-}
+// }

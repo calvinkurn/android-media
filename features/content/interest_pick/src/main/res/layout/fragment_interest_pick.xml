@@ -5,74 +5,66 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v4.widget.NestedScrollView
+    <LinearLayout
         android:id="@+id/mainView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        tools:visibility="visible">
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/mainLayout"
+        <TextView
+            android:id="@+id/titleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_24"
+            android:fontFamily="sans-serif"
+            android:text="@string/interest_what_do_you_like"
+            android:textColor="@color/font_black_primary_70"
+            android:textSize="@dimen/sp_16"
+            android:textStyle="bold"
+            tools:text="Kamu Suka Apa? Aku suka kamu hehe xD Kalau kamu gimana? Yang bener dong" />
+
+        <TextView
+            android:id="@+id/subtitleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_4"
+            android:fontFamily="sans-serif"
+            android:text="@string/interest_change"
+            android:textColor="@color/font_black_secondary_54"
+            android:textSize="@dimen/sp_12"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/interestList"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginBottom="@dimen/dp_24"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_marginStart="@dimen/dp_5"
+            android:layout_marginTop="@dimen/dp_24"
+            app:layoutManager="android.support.v7.widget.GridLayoutManager"
+            app:reverseLayout="false"
+            app:spanCount="3"
+            tools:listitem="@layout/item_interest_pick" />
 
-            <TextView
-                android:id="@+id/titleTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_24"
-                android:fontFamily="sans-serif"
-                android:text="@string/interest_what_do_you_like"
-                android:textColor="@color/font_black_primary_70"
-                android:textSize="@dimen/sp_16"
-                android:textStyle="bold"
-                tools:text="Kamu Suka Apa? Aku suka kamu hehe xD Kalau kamu gimana? Yang bener dong" />
-
-            <TextView
-                android:id="@+id/subtitleTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_4"
-                android:fontFamily="sans-serif"
-                android:text="@string/interest_change"
-                android:textColor="@color/font_black_secondary_54"
-                android:textSize="@dimen/sp_12"
-                android:visibility="gone"
-                tools:visibility="visible" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/interestList"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_24"
-                android:layout_marginLeft="@dimen/dp_5"
-                android:layout_marginStart="@dimen/dp_5"
-                android:layout_marginTop="@dimen/dp_24"
-                app:layoutManager="android.support.v7.widget.GridLayoutManager"
-                app:reverseLayout="false"
-                app:spanCount="3"
-                tools:listitem="@layout/item_interest_pick" />
-
-            <com.tokopedia.design.component.ButtonCompat
-                android:id="@+id/saveInterest"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:text="@string/interest_select_one"
-                android:textAllCaps="false"
-                app:buttonCompatSize="medium"
-                app:buttonCompatType="primary" />
-        </LinearLayout>
-
-    </android.support.v4.widget.NestedScrollView>
+        <com.tokopedia.design.component.ButtonCompat
+            android:id="@+id/saveInterest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:text="@string/interest_select_one"
+            android:textAllCaps="false"
+            app:buttonCompatSize="medium"
+            app:buttonCompatType="primary" />
+    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/loadingView"

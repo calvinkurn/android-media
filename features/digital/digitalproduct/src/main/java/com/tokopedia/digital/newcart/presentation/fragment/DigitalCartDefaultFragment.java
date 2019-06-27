@@ -16,7 +16,7 @@ import android.widget.RelativeLayout;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.cart.di.DigitalCartComponent;
+import com.tokopedia.digital.newcart.di.DigitalCartComponent;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalCartDefaultContract;
 import com.tokopedia.digital.newcart.presentation.presenter.DigitalCartDefaultPresenter;
 
@@ -35,6 +35,8 @@ public class DigitalCartDefaultFragment extends DigitalBaseCartFragment implemen
 
     public interface InteractionListener {
         void inflateDealsPage(CartDigitalInfoData cartDigitalInfoData, DigitalCheckoutPassData passData);
+
+        void inflateMyBillsSubscriptionPage(CartDigitalInfoData cartDigitalInfoData, DigitalCheckoutPassData cartPassData);
     }
 
     @Inject
@@ -114,6 +116,14 @@ public class DigitalCartDefaultFragment extends DigitalBaseCartFragment implemen
     public void inflateDealsPage(CartDigitalInfoData cartDigitalInfoData, DigitalCheckoutPassData cartPassData) {
         if (interactionListener != null)
             interactionListener.inflateDealsPage(cartDigitalInfoData, cartPassData);
+    }
+
+
+    @Override
+    public void inflateMyBillsSubscriptionPage(CartDigitalInfoData cartDigitalInfoData,
+                                               DigitalCheckoutPassData cartPassData) {
+        if (interactionListener != null)
+            interactionListener.inflateMyBillsSubscriptionPage(cartDigitalInfoData, cartPassData);
     }
 
     @Override

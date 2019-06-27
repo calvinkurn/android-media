@@ -13,7 +13,8 @@ import android.widget.ProgressBar;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
-import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
@@ -23,22 +24,23 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragment;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenter;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragmentPresenter;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionGeneralAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.CatalogAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.factory.CatalogAdapterTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.factory.CatalogTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.factory.CatalogListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.presenter.CatalogFragmentContract;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.presenter.CatalogPresenter;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.base.adapter.Item;
@@ -47,6 +49,7 @@ import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -58,8 +61,9 @@ import javax.inject.Inject;
 
 public class CategoryCatalogFragment extends BrowseSectionFragment implements
         CatalogFragmentContract.View, CatalogListener, TopAdsItemClickListener,
-        TopAdsListener, SearchSectionGeneralAdapter.OnItemChangeView {
+        TopAdsListener, BrowseSectionGeneralAdapter.OnItemChangeView {
 
+    public static final String SCREEN_SEARCH_PAGE_CATALOG_TAB = "Search result - Catalog tab";
     public static final String SOURCE = BrowseApi.DEFAULT_VALUE_SOURCE_CATALOG;
 
     private static final String EXTRA_DEPARTMENT_ID = "EXTRA_DEPARTMENT_ID";
@@ -132,7 +136,7 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
 
     @Override
     public String getScreenNameId() {
-        return AppScreen.SCREEN_SEARCH_PAGE_CATALOG_TAB;
+        return SCREEN_SEARCH_PAGE_CATALOG_TAB;
     }
 
     @Override
@@ -209,6 +213,12 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
                 }
             }
         });
+        topAdsRecyclerAdapter.setAdsImpressionListener(new TopAdsItemImpressionListener() {
+            @Override
+            public void onImpressionProductAdsItem(int position, Product product) {
+                TopAdsGtmTracker.eventCategoryProductView(getContext(), getQueryKey(), product, position);
+            }
+        });
     }
 
     private boolean isAllowLoadMore() {
@@ -262,7 +272,13 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
 
     @Override
     public void onEmptyButtonClicked() {
+        SearchTracking.eventUserClickNewSearchOnEmptySearch(getContext(), getScreenName());
         showSearchInputView();
+    }
+
+    @Override
+    public List<Option> getSelectedFilterAsOptionList() {
+        return null;
     }
 
     protected void setupAdapter() {
@@ -517,16 +533,16 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
 
     @Override
     public void onProductItemClicked(int position, Product product) {
-        ProductItem data = new ProductItem();
-        data.setId(product.getId());
-        data.setName(product.getName());
-        data.setPrice(product.getPriceFormat());
-        data.setImgUri(product.getImage().getM_ecs());
-        Bundle bundle = new Bundle();
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());
-        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
-        intent.putExtras(bundle);
+        Intent intent = getProductIntent(product.getId());
         startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL);
+    }
+
+    private Intent getProductIntent(String productId){
+        if (getContext() != null) {
+            return RouteManager.getIntent(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -541,12 +557,12 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
     }
 
     @Override
-    protected SearchSectionGeneralAdapter getAdapter() {
+    protected BrowseSectionGeneralAdapter getAdapter() {
         return catalogAdapter;
     }
 
     @Override
-    protected SearchSectionFragmentPresenter getPresenter() {
+    protected BrowseSectionFragmentPresenter getPresenter() {
         return presenter;
     }
 
@@ -590,5 +606,10 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
     @Override
     protected String getScreenName() {
         return getScreenNameId();
+    }
+
+    @Override
+    public SearchParameter getSearchParameter() {
+        return new SearchParameter();
     }
 }

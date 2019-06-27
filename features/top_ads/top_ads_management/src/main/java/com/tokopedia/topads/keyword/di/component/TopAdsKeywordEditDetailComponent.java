@@ -1,6 +1,5 @@
 package com.tokopedia.topads.keyword.di.component;
 
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.keyword.di.module.TopAdsKeywordEditDetailModule;
 import com.tokopedia.topads.keyword.di.scope.TopAdsKeywordScope;

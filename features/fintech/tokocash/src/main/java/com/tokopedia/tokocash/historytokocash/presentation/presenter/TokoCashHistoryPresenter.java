@@ -1,11 +1,11 @@
 package com.tokopedia.tokocash.historytokocash.presentation.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.tokocash.historytokocash.domain.GetHistoryDataUseCase;
 import com.tokopedia.tokocash.historytokocash.presentation.contract.TokoCashHistoryContract;
 import com.tokopedia.tokocash.historytokocash.presentation.model.TokoCashHistoryData;
 import com.tokopedia.tokocash.network.exception.UserInactivateTokoCashException;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -18,12 +18,12 @@ import rx.Subscriber;
 public class TokoCashHistoryPresenter extends BaseDaggerPresenter<TokoCashHistoryContract.View> implements TokoCashHistoryContract.Presenter {
 
     private final GetHistoryDataUseCase getHistoryDataUseCase;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
     private int page = 1;
 
     @Inject
     public TokoCashHistoryPresenter(GetHistoryDataUseCase getHistoryDataUseCase,
-                                    UserSession userSession) {
+                                    UserSessionInterface userSession) {
         this.getHistoryDataUseCase = getHistoryDataUseCase;
         this.userSession = userSession;
     }

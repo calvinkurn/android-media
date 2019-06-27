@@ -2,15 +2,9 @@ package com.tokopedia.flight.dashboard.view.fragment;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.widget.NestedScrollView;
@@ -30,11 +24,13 @@ import android.widget.ProgressBar;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.common.travel.ticker.TravelTickerUtils;
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
 import com.tokopedia.design.banner.BannerView;
+import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.airport.service.GetAirportListJobService;
-import com.tokopedia.flight.airport.service.GetAirportListService;
 import com.tokopedia.flight.airport.view.activity.FlightAirportPickerActivity;
 import com.tokopedia.flight.airport.view.fragment.FlightAirportPickerFragment;
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
@@ -53,8 +49,13 @@ import com.tokopedia.flight.dashboard.view.presenter.FlightDashboardContract;
 import com.tokopedia.flight.dashboard.view.presenter.FlightDashboardPresenter;
 import com.tokopedia.flight.dashboard.view.widget.TextInputView;
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
-import com.tokopedia.flight.search.presentation.activity.FlightSearchActivity;
-import com.tokopedia.travelcalendar.view.TravelCalendarActivity;
+import com.tokopedia.flight.searchV3.presentation.activity.FlightSearchActivity;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -76,14 +77,16 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     private static final String EXTRA_ADULT = "EXTRA_ADULT";
     private static final String EXTRA_CHILD = "EXTRA_CHILD";
     private static final String EXTRA_INFANT = "EXTRA_INFANT";
+    private static final String TAG_DEPARTURE_CALENDAR = "flightCalendarDeparture";
+    private static final String TAG_RETURN_CALENDAR = "flightCalendarReturn";
+    private static final String FLIGHT_TRACE = "tr_flight";
     private static final int REQUEST_CODE_AIRPORT_DEPARTURE = 1;
     private static final int REQUEST_CODE_AIRPORT_ARRIVAL = 2;
     private static final int REQUEST_CODE_AIRPORT_PASSENGER = 3;
     private static final int REQUEST_CODE_AIRPORT_CLASSES = 4;
     private static final int REQUEST_CODE_SEARCH = 5;
     private static final int REQUEST_CODE_LOGIN = 6;
-    private static final int REQUEST_CODE_DATE_PICKER_DEPARTURE = 7;
-    private static final int REQUEST_CODE_DATE_PICKER_RETURN = 8;
+
     AppCompatImageView reverseAirportImageView;
     LinearLayout airportDepartureLayout;
     AppCompatTextView airportDepartureTextInputView;
@@ -100,12 +103,17 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     View returnDateSeparatorView;
     View bannerLayout;
     BannerView bannerView;
+    TickerView tickerView;
     List<BannerDetail> bannerList;
 
     @Inject
     FlightDashboardPresenter presenter;
     private FlightDashboardViewModel viewModel;
     private FlightDashboardPassDataViewModel passData;
+
+    private RemoteConfig remoteConfig;
+    private PerformanceMonitoring performanceMonitoring;
+    private boolean isTraceStop = false;
 
     public static FlightDashboardFragment getInstance() {
         return new FlightDashboardFragment();
@@ -126,6 +134,13 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     @Override
     protected void initInjector() {
         getComponent(FlightDashboardComponent.class).inject(this);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        performanceMonitoring = PerformanceMonitoring.start(FLIGHT_TRACE);
+        remoteConfig = new FirebaseRemoteConfigImpl(getContext());
     }
 
     @Nullable
@@ -149,6 +164,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         bannerView = view.findViewById(R.id.banner);
         progressBar = view.findViewById(R.id.progress_bar);
         formContainerLayout = view.findViewById(R.id.dashboard_container);
+        tickerView = view.findViewById(R.id.flight_ticker_view);
 
         oneWayTripAppCompatButton.setSelected(true);
         oneWayTripAppCompatButton.setOnClickListener(new View.OnClickListener() {
@@ -272,10 +288,14 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        stopTrace();
+
         passData = new FlightDashboardPassDataViewModel();
         presenter.attachView(this);
         presenter.initialize();
         KeyboardHandler.hideSoftKeyboard(getActivity());
+
+        presenter.fetchTickerData();
     }
 
     @Override
@@ -336,28 +356,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     @Override
     public void showFormContainer() {
         formContainerLayout.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void startAirportSyncInBackground(long airportVersion) {
-        if (getActivity() != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                JobScheduler jobScheduler =
-                        (JobScheduler) getActivity().getSystemService(Context.JOB_SCHEDULER_SERVICE);
-                if (jobScheduler == null) return;
-
-                PersistableBundle bundle = new PersistableBundle();
-                bundle.putLong(GetAirportListJobService.AIRPORT_VERSION, airportVersion);
-
-                jobScheduler.schedule(new JobInfo.Builder(101,
-                        new ComponentName(getActivity(), GetAirportListJobService.class))
-                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                        .setExtras(bundle)
-                        .build());
-            } else {
-                GetAirportListService.startService(getActivity(), airportVersion);
-            }
-        }
     }
 
     @Override
@@ -440,18 +438,38 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public void showDepartureCalendarDatePicker(Date selectedDate, Date minDate, Date maxDate) {
-        startActivityForResult(TravelCalendarActivity
-                        .newInstance(getActivity(), selectedDate, minDate, maxDate,
-                                TravelCalendarActivity.DEPARTURE_TYPE),
-                REQUEST_CODE_DATE_PICKER_DEPARTURE);
+        setCalendarDatePicker(selectedDate, minDate, maxDate, getActivity().getString(R.string.travel_calendar_label_choose_departure_trip_date), TAG_DEPARTURE_CALENDAR);
     }
 
     @Override
     public void showReturnCalendarDatePicker(Date selectedDate, Date minDate, Date maxDate) {
-        startActivityForResult(TravelCalendarActivity
-                        .newInstance(getActivity(), selectedDate, minDate, maxDate,
-                                TravelCalendarActivity.RETURN_TYPE),
-                REQUEST_CODE_DATE_PICKER_RETURN);
+        setCalendarDatePicker(selectedDate, minDate, maxDate, getActivity().getString(R.string.travel_calendar_label_choose_return_trip_date), TAG_RETURN_CALENDAR);
+    }
+
+    private void setCalendarDatePicker(Date selectedDate, Date minDate, Date maxDate, String title,
+                                       String tagFragment) {
+        TravelCalendarBottomSheet travelCalendarBottomSheet = new TravelCalendarBottomSheet.Builder()
+                .setMinDate(minDate)
+                .setMaxDate(maxDate)
+                .setSelectedDate(selectedDate)
+                .setShowHoliday(true)
+                .setTitle(title)
+                .build();
+        travelCalendarBottomSheet.setListener(new TravelCalendarBottomSheet.ActionListener() {
+            @Override
+            public void onClickDate(@NotNull Date dateSelected) {
+                Calendar calendarSelected = Calendar.getInstance();
+                calendarSelected.setTime(dateSelected);
+                if (tagFragment.equals(TAG_DEPARTURE_CALENDAR)) {
+                    presenter.onDepartureDateChange(calendarSelected.get(Calendar.YEAR),
+                            calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE), true);
+                } else {
+                    presenter.onReturnDateChange(calendarSelected.get(Calendar.YEAR),
+                            calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE), true);
+                }
+            }
+        });
+        travelCalendarBottomSheet.show(getActivity().getSupportFragmentManager(), tagFragment);
     }
 
     @Override
@@ -529,6 +547,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     public void navigateToLoginPage() {
         if (getActivity().getApplication() instanceof FlightModuleRouter
                 && ((FlightModuleRouter) getActivity().getApplication()).getLoginIntent() != null) {
+            stopTrace();
             startActivityForResult(((FlightModuleRouter) getActivity().getApplication()).getLoginIntent(), REQUEST_CODE_LOGIN);
         }
     }
@@ -561,6 +580,11 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
+    public void renderTickerView(TravelTickerViewModel travelTickerViewModel) {
+        TravelTickerUtils.INSTANCE.buildTravelTicker(getContext(), travelTickerViewModel, tickerView);
+    }
+
+    @Override
     public void navigateToSearchPage(FlightDashboardViewModel currentDashboardViewModel) {
         FlightSearchPassDataViewModel passDataViewModel = new FlightSearchPassDataViewModel.Builder()
                 .setFlightPassengerViewModel(currentDashboardViewModel.getFlightPassengerViewModel())
@@ -571,7 +595,14 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                 .setIsOneWay(currentDashboardViewModel.isOneWay())
                 .setReturnDate(currentDashboardViewModel.getReturnDate())
                 .build();
-        startActivityForResult(FlightSearchActivity.getCallingIntent(getActivity(), passDataViewModel), REQUEST_CODE_SEARCH);
+
+        if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_FLIGHT_NEW_SEARCH_FLOW)) {
+            startActivityForResult(FlightSearchActivity.Companion.getCallingIntent(
+                    getActivity(), passDataViewModel), REQUEST_CODE_SEARCH);
+        } else {
+            startActivityForResult(com.tokopedia.flight.search.presentation.activity.
+                    FlightSearchActivity.getCallingIntent(getActivity(), passDataViewModel), REQUEST_CODE_SEARCH);
+        }
     }
 
     @Override
@@ -604,23 +635,17 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                 case REQUEST_CODE_LOGIN:
                     presenter.onLoginResultReceived();
                     break;
-                case REQUEST_CODE_DATE_PICKER_DEPARTURE:
-                    Date dateString = (Date) data.getSerializableExtra(TravelCalendarActivity.DATE_SELECTED);
-                    Calendar calendarSelected = Calendar.getInstance();
-                    calendarSelected.setTime(dateString);
-                    presenter.onDepartureDateChange(calendarSelected.get(Calendar.YEAR),
-                            calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE), true);
-                    break;
-                case REQUEST_CODE_DATE_PICKER_RETURN:
-                    dateString = (Date) data.getSerializableExtra(TravelCalendarActivity.DATE_SELECTED);
-                    calendarSelected = Calendar.getInstance();
-                    calendarSelected.setTime(dateString);
-                    presenter.onReturnDateChange(calendarSelected.get(Calendar.YEAR),
-                            calendarSelected.get(Calendar.MONTH), calendarSelected.get(Calendar.DATE), true);
-                    break;
             }
         } else if (resultCode == Activity.RESULT_CANCELED && requestCode == REQUEST_CODE_LOGIN) {
             presenter.onLoginResultReceived();
+        }
+    }
+
+    @Override
+    public void stopTrace() {
+        if (!isTraceStop) {
+            performanceMonitoring.stopTrace();
+            isTraceStop = true;
         }
     }
 

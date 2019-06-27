@@ -54,6 +54,7 @@ import com.tokopedia.tokopoints.view.presenter.CatalogListingPresenter;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 import com.tokopedia.tokopoints.view.util.TabUtil;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 import java.util.List;
 import java.util.Locale;
@@ -122,6 +123,12 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         if (item.getItemId() == R.id.filter_menu_item) {
             if (filtersBottomSheet != null) {
                 filtersBottomSheet.show(getChildFragmentManager(), "Filters");
+
+                AnalyticsTrackerUtil.sendEvent(getActivity(),
+                        AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
+                        AnalyticsTrackerUtil.ActionKeys.CLICK_FILTER,
+                        "");
             }
             return true;
         }
@@ -134,6 +141,8 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         mPresenter.attachView(this);
         mTvFlashTimer = view.findViewById(R.id.tv_flash_time);
         mTvFlashTimerLabel = view.findViewById(R.id.tv_timer_label);
+        mTvFlashTimerLabel.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                (getActivity(), R.drawable.ic_tp_flash_green), null, null , null);
         mProgressFlash = view.findViewById(R.id.progress_timer);
         mContainerFlashTimer = view.findViewById(R.id.cl_flash_container);
         initListener();
@@ -161,6 +170,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     @Override
     public void onResume() {
         super.onResume();
+        AnalyticsTrackerUtil.sendScreenEvent(getActivity(), getScreenName());
     }
 
     @Override
@@ -245,7 +255,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
                 || filters.getCategories() == null
                 || filters.getCategories().isEmpty()) {
             //To ensure get data loaded for very first time for first fragment(Providing a small to ensure fragment get displayed).
-            mViewPagerAdapter = new CatalogSortTypePagerAdapter(getChildFragmentManager(), null);
+            mViewPagerAdapter = new CatalogSortTypePagerAdapter(getChildFragmentManager(), filters.getCategories().get(0).getId(), null);
             mViewPagerAdapter.setPointsAvailable(isPointsAvailable);
             //TODO please replace with
             mPresenter.setCurrentCategoryId(0);
@@ -254,7 +264,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
             mTabSortType.setVisibility(View.GONE);
         } else if (filters.getCategories().get(0) != null
                 && (filters.getCategories().get(0).isHideSubCategory() || filters.getCategories().get(0).getSubCategory() == null || filters.getCategories().get(0).getSubCategory().isEmpty())) {
-            mViewPagerAdapter = new CatalogSortTypePagerAdapter(getChildFragmentManager(), null);
+            mViewPagerAdapter = new CatalogSortTypePagerAdapter(getChildFragmentManager(), filters.getCategories().get(0).getId(), null);
             mViewPagerAdapter.setPointsAvailable(isPointsAvailable);
             mPagerSortType.setAdapter(mViewPagerAdapter);
             mTabSortType.setupWithViewPager(mPagerSortType);
@@ -271,7 +281,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
                 && filters.getCategories().get(0).getSubCategory() != null) {
             mTabSortType.setVisibility(View.VISIBLE);
             updateToolbarTitle(filters.getCategories().get(0).getName());
-            mViewPagerAdapter = new CatalogSortTypePagerAdapter(getChildFragmentManager(), filters.getCategories().get(0).getSubCategory());
+            mViewPagerAdapter = new CatalogSortTypePagerAdapter(getChildFragmentManager(), filters.getCategories().get(0).getId(), filters.getCategories().get(0).getSubCategory());
             mViewPagerAdapter.setPointsAvailable(isPointsAvailable);
             mPagerSortType.setAdapter(mViewPagerAdapter);
             mTabSortType.setupWithViewPager(mPagerSortType);
@@ -285,9 +295,9 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
                 public void onPageSelected(int position) {
                     AnalyticsTrackerUtil.sendEvent(getContext(),
                             AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
                             "click " + filters.getCategories().get(0).getSubCategory().get(position).getName(),
-                            filters.getCategories().get(0).getSubCategory().get(position).getName());
+                            "");
 
                     CatalogListItemFragment fragment = (CatalogListItemFragment) mViewPagerAdapter.getRegisteredFragment(position);
 
@@ -368,6 +378,12 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
     @Override
     public void gotoMyCoupons() {
         startActivity(MyCouponListingActivity.getCallingIntent(getContext()));
+
+        AnalyticsTrackerUtil.sendEvent(getActivityContext(),
+                AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
+                AnalyticsTrackerUtil.ActionKeys.CLICK_SELL_ALL_COUPON,
+                "");
     }
 
     @Override
@@ -384,7 +400,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
 
     @Override
     protected String getScreenName() {
-        return null;
+        return AnalyticsTrackerUtil.ScreenKeys.CATALOG_LISTING_SCREEN_NAME;
     }
 
     @Override
@@ -431,6 +447,12 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         } else if (source.getId() == R.id.text_membership_label
                 || source.getId() == R.id.bottom_view_membership) {
             ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.MEMBERSHIP, getString(R.string.tp_label_membership));
+
+            AnalyticsTrackerUtil.sendEvent(source.getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                    AnalyticsTrackerUtil.CategoryKeys.PENUKARAN_POINT,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_MEM_BOTTOM,
+                    "");
         } else if (source.getId() == R.id.view_point_saya
                 || source.getId() == R.id.text_my_points_value_bottom) {
             ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.HISTORY, getString(R.string.tp_history));
@@ -446,9 +468,9 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         bottomViewMembership = view.findViewById(R.id.bottom_view_membership);
         mContainerPointDetail = view.findViewById(R.id.container_point_detail);
         containerEgg = view.findViewById(R.id.container_fab_egg_token);
-        mTextMembershipValueBottom = view.findViewById(R.id.text_membership_value_bottom);
+        mTextMembershipValueBottom = view.findViewById(R.id.text_loyalty_value_bottom);
         mTextPointsBottom = view.findViewById(R.id.text_my_points_value_bottom);
-        mImgEggBottom = view.findViewById(R.id.img_egg_bottom);
+        mImgEggBottom = view.findViewById(R.id.img_loyalty_stack_bottom);
         mAppBarHeader = view.findViewById(R.id.app_bar_header);
         if (getArguments() != null && getArguments().getInt(CommonConstant.EXTRA_COUPON_COUNT) <= 0) {
             view.findViewById(R.id.text_my_coupon).setVisibility(View.GONE);

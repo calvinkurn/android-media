@@ -12,6 +12,7 @@ import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.autocomplete.OnScrollListenerAutocomplete;
 import com.tokopedia.discovery.autocomplete.TabAutoCompleteCallback;
 import com.tokopedia.discovery.catalog.analytics.AppScreen;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
@@ -125,6 +126,7 @@ public class SearchResultFragment extends TkpdBaseV4Fragment {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setHasFixedSize(true);
+        recyclerView.addOnScrollListener(new OnScrollListenerAutocomplete(view.getContext(), view));
     }
 
     public void clearData() {

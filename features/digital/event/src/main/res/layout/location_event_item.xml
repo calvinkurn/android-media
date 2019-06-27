@@ -18,8 +18,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:background="@drawable/ic_placeholder" />
+            android:layout_marginRight="12dp" />
 
         <TextView
             android:id="@+id/tv_distance"
@@ -67,6 +66,6 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="@dimen/dp_8"
-            android:background="@color/grey" />
+            android:background="@color/digital_event_grey" />
     </LinearLayout>
 </RelativeLayout>

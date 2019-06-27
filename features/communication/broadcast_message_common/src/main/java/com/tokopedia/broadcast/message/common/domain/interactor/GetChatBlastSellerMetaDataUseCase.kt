@@ -19,7 +19,7 @@ class GetChatBlastSellerMetaDataUseCase (private val graphqlUseCase: GraphqlUseC
 
     override fun createObservable(requestParams: RequestParams): Observable<TopChatBlastSellerMetaData> {
         val query = GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_metadata)
-        val graphqlRequest = GraphqlRequest(query, TopChatBlastSellerMetaData.Response::class.java)
+        val graphqlRequest = GraphqlRequest(query, TopChatBlastSellerMetaData.Response::class.java, false)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(null).flatMap { graphqlResponse ->

@@ -6,7 +6,7 @@
             android:thickness="@dimen/dp_1">
             <stroke
                 android:width="@dimen/dp_1"
-                android:color="@color/white_four"/>
+                android:color="@color/white_two"/>
 
             <solid android:color="@color/white"/>
             <corners android:radius="@dimen/dp_3"/>

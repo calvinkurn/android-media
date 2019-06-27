@@ -17,6 +17,8 @@ public class DisplayMetricUtils {
     public static final String XHDPI = "xhdpi";
     public static final String XXHDPI = "xxhdpi";
     public static final String XXXHDPI = "xxxhdpi";
+    private static final int DEFAULT_STATUS_BAR_HEIGHT = 24;
+    private static final String STATUS_BAR_HEIGHT_ID = "status_bar_height";
 
     /**
      * Get screen density information of the display
@@ -41,4 +43,12 @@ public class DisplayMetricUtils {
         }
     }
 
+    public static int getStatusBarHeight(Context context) {
+        int result = (int) (DEFAULT_STATUS_BAR_HEIGHT * context.getResources().getDisplayMetrics().density + 0.5f);
+        int resourceId = context.getResources().getIdentifier(STATUS_BAR_HEIGHT_ID, "dimen", "android");
+        if (resourceId > 0) {
+            result = context.getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
 }

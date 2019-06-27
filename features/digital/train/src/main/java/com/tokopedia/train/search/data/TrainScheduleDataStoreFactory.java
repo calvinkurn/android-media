@@ -1,11 +1,11 @@
 package com.tokopedia.train.search.data;
 
-import com.tokopedia.train.common.specification.AndDbFlowSpecification;
-import com.tokopedia.train.common.specification.DbFlowSpecification;
+import android.arch.persistence.db.SimpleSQLiteQuery;
+
+import com.tokopedia.train.common.specification.AndRoomSpecification;
+import com.tokopedia.train.common.specification.RoomSpecification;
 import com.tokopedia.train.common.specification.Specification;
-import com.tokopedia.train.search.data.entity.AvailabilityEntity;
-import com.tokopedia.train.search.data.entity.ScheduleEntity;
-import com.tokopedia.train.search.data.specification.TrainAvailabilitySpecification;
+import com.tokopedia.train.search.data.database.TrainScheduleDao;
 import com.tokopedia.train.search.data.specification.TrainScheduleClassFilterSpecification;
 import com.tokopedia.train.search.data.specification.TrainScheduleDepartureTimeFilterSpecification;
 import com.tokopedia.train.search.data.specification.TrainScheduleNameFilterSpecification;
@@ -14,7 +14,7 @@ import com.tokopedia.train.search.data.specification.TrainScheduleSortSpecificat
 import com.tokopedia.train.search.data.specification.TrainSearchScheduleSpecification;
 import com.tokopedia.train.search.data.typedef.TrainScheduleTypeDef;
 import com.tokopedia.train.search.domain.FilterParam;
-import com.tokopedia.train.search.domain.mapper.AvailabilityKeysMapper;
+import com.tokopedia.train.search.domain.mapper.TrainScheduleMapper;
 import com.tokopedia.train.search.presentation.model.AvailabilityKeySchedule;
 import com.tokopedia.train.search.presentation.model.FilterSearchData;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
@@ -22,120 +22,98 @@ import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
 import java.util.List;
 
 import rx.Observable;
-import rx.functions.Func1;
 
 /**
- * Created by nabilla on 3/9/18.
+ * Created by nabillasabbaha on 01/02/19.
  */
-
 public class TrainScheduleDataStoreFactory {
 
-    private TrainScheduleDbDataStore dbDataStore;
-    private TrainScheduleCacheDataStore cacheDataStore;
+    private TrainScheduleDao trainScheduleDao;
     private TrainScheduleCloudDataStore cloudDataStore;
+    private TrainScheduleMapper scheduleMapper;
 
-    public TrainScheduleDataStoreFactory(TrainScheduleDbDataStore dbDataStore,
-                                         TrainScheduleCacheDataStore cacheDataStore,
-                                         TrainScheduleCloudDataStore cloudDataStore) {
-        this.dbDataStore = dbDataStore;
-        this.cacheDataStore = cacheDataStore;
+    public TrainScheduleDataStoreFactory(TrainScheduleDao trainScheduleDao,
+                                         TrainScheduleCloudDataStore cloudDataStore,
+                                         TrainScheduleMapper scheduleMapper) {
+        this.trainScheduleDao = trainScheduleDao;
         this.cloudDataStore = cloudDataStore;
+        this.scheduleMapper = scheduleMapper;
     }
 
-    public Observable<List<AvailabilityKeySchedule>> getScheduleTrain(final Specification specification,
-                                                                      final int scheduleVariant) {
+    public Observable<List<AvailabilityKeySchedule>> getSchedules(Specification specification, int scheduleVariant) {
         if (scheduleVariant == TrainScheduleTypeDef.RETURN_SCHEDULE) {
             return getDataFromCloud(specification, scheduleVariant);
         } else if (scheduleVariant == TrainScheduleTypeDef.DEPARTURE_SCHEDULE) {
-            return dbDataStore.deleteAll().flatMap(new Func1<Boolean, Observable<List<AvailabilityKeySchedule>>>() {
-                @Override
-                public Observable<List<AvailabilityKeySchedule>> call(Boolean isSuccessDelete) {
-                    if (isSuccessDelete) {
-                        return getDataFromCloud(specification, scheduleVariant);
-                    } else {
-                        return Observable.empty();
-                    }
-                }
-            });
+            return Observable.just(true)
+                    .map(it -> trainScheduleDao.deleteAll())
+                    .flatMap(it -> getDataFromCloud(specification, scheduleVariant));
         }
-        return null;
+        return Observable.empty();
     }
 
-    private Observable<List<AvailabilityKeySchedule>> getDataFromCloud(Specification specification, final int scheduleVariant) {
+    private Observable<List<AvailabilityKeySchedule>> getDataFromCloud(Specification specification, int scheduleVariant) {
         return cloudDataStore.getDatasSchedule(specification)
-                .flatMap(new Func1<List<ScheduleEntity>, Observable<List<AvailabilityKeySchedule>>>() {
-                    @Override
-                    public Observable<List<AvailabilityKeySchedule>> call(final List<ScheduleEntity> scheduleEntities) {
-                        return dbDataStore.insertAllData(scheduleEntities, scheduleVariant)
-                                .flatMap(new Func1<Boolean, Observable<List<AvailabilityKeySchedule>>>() {
-                                    @Override
-                                    public Observable<List<AvailabilityKeySchedule>> call(Boolean isSuccessSaveData) {
-                                        if (!isSuccessSaveData) {
-                                            return Observable.empty();
-                                        } else {
-                                            return Observable.just(scheduleEntities)
-                                                    .map(new AvailabilityKeysMapper());
-                                        }
-                                    }
-                                });
-                    }
+                .flatMap(scheduleEntities -> {
+                    return Observable.just(scheduleMapper.transformToTable(scheduleEntities, scheduleVariant))
+                            .map(it -> trainScheduleDao.insertAll(it))
+                            .map(it -> trainScheduleDao.findCheapestSchedules())
+                            .map(it -> trainScheduleDao.updateCheapestFlag(it))
+                            .map(it -> trainScheduleDao.findFastestSchedules())
+                            .map(it -> trainScheduleDao.updateFastestFlag(it))
+                            .map(it -> scheduleMapper.transformToAvailabilityKey(scheduleEntities));
                 });
     }
 
     public Observable<List<TrainScheduleViewModel>> getAvailabilitySchedule(Specification specification) {
         return cloudDataStore.getDatasAvailability(specification)
-                .flatMap(new Func1<List<AvailabilityEntity>, Observable<List<TrainScheduleViewModel>>>() {
-                    @Override
-                    public Observable<List<TrainScheduleViewModel>> call(final List<AvailabilityEntity> scheduleAvailabilityEntities) {
-                        return dbDataStore.updateDataAvailability(scheduleAvailabilityEntities)
-                                .flatMap(new Func1<Boolean, Observable<List<TrainScheduleViewModel>>>() {
-                                    @Override
-                                    public Observable<List<TrainScheduleViewModel>> call(Boolean isSuccessSavedData) {
-                                        if (!isSuccessSavedData) {
-                                            return Observable.empty();
-                                        } else {
-                                            return dbDataStore.getDatas(new TrainAvailabilitySpecification(scheduleAvailabilityEntities));
-                                        }
-                                    }
-                                });
-                    }
-                });
+                .flatMap(it -> Observable.from(it))
+                .map(it -> trainScheduleDao.updateAvailableSeat(it.getId(), it.getAvailable()))
+                .toList()
+                .map(it -> trainScheduleDao.findSchedules())
+                .map(it -> scheduleMapper.transformToModel(it));
     }
 
     public Observable<List<TrainScheduleViewModel>> getFilteredAndSortedSchedule(FilterParam filterParam, int sortOptionId, int scheduleVariant) {
-        DbFlowSpecification specification = new TrainSchedulePriceFilterSpecification(filterParam.getMinPrice(), filterParam.getMaxPrice());
+        RoomSpecification specification = new TrainSchedulePriceFilterSpecification(filterParam.getMinPrice(), filterParam.getMaxPrice());
         if (!filterParam.getTrainClass().isEmpty()) {
-            specification = new AndDbFlowSpecification(specification,
+            specification = new AndRoomSpecification(specification,
                     new TrainScheduleClassFilterSpecification(filterParam.getTrainClass()));
         }
         if (!filterParam.getTrains().isEmpty()) {
-            specification = new AndDbFlowSpecification(specification,
+            specification = new AndRoomSpecification(specification,
                     new TrainScheduleNameFilterSpecification(filterParam.getTrains()));
         }
         if (!filterParam.getDepartureTimeList().isEmpty()) {
-            specification = new AndDbFlowSpecification(specification,
+            specification = new AndRoomSpecification(specification,
                     new TrainScheduleDepartureTimeFilterSpecification(filterParam.getDepartureTimeList()));
         }
-        specification = new AndDbFlowSpecification(specification,
+        specification = new AndRoomSpecification(specification,
                 new TrainSearchScheduleSpecification(filterParam.getScheduleVariant(), filterParam.getArrivalTimestampSelected()));
 
-        specification = new AndDbFlowSpecification(specification, new TrainScheduleSortSpecification(sortOptionId, scheduleVariant));
-        return dbDataStore.getDatas(specification);
+        specification = new AndRoomSpecification(specification, new TrainScheduleSortSpecification(sortOptionId, scheduleVariant));
+        String query = "SELECT * FROM TrainScheduleTable WHERE " + specification.query();
+        SimpleSQLiteQuery newQuery = new SimpleSQLiteQuery(query, specification.getArgs().toArray());
+        return Observable.just(newQuery)
+                .map(it -> trainScheduleDao.findSchedules(it))
+                .map(it -> scheduleMapper.transformToModel(it));
     }
 
     public Observable<Integer> getCountSchedule(FilterSearchData filterSearchData, int scheduleVariant,
                                                 String arrivalTimestampSelected) {
-        DbFlowSpecification specification = getSpecificationPrice(filterSearchData);
-        specification = new AndDbFlowSpecification(specification, getSpecificationTrainClass(filterSearchData));
-        specification = new AndDbFlowSpecification(specification, getSpecificationTrainName(filterSearchData));
-        specification = new AndDbFlowSpecification(specification, getSpecificationTrainDeparture(filterSearchData));
-        specification = new AndDbFlowSpecification(specification,
+        RoomSpecification specification = getSpecificationPrice(filterSearchData);
+        specification = new AndRoomSpecification(specification, getSpecificationTrainClass(filterSearchData));
+        specification = new AndRoomSpecification(specification, getSpecificationTrainName(filterSearchData));
+        specification = new AndRoomSpecification(specification, getSpecificationTrainDeparture(filterSearchData));
+        specification = new AndRoomSpecification(specification,
                 new TrainSearchScheduleSpecification(scheduleVariant, arrivalTimestampSelected));
-
-        return dbDataStore.getCount(specification);
+        String query = "SELECT * FROM TrainScheduleTable WHERE " + specification.query();
+        SimpleSQLiteQuery newQuery = new SimpleSQLiteQuery(query, specification.getArgs().toArray());
+        return Observable.just(newQuery)
+                .map(it -> trainScheduleDao.findSchedules(newQuery))
+                .map(it -> it.size());
     }
 
-    private DbFlowSpecification getSpecificationPrice(FilterSearchData filterSearchData) {
+    private RoomSpecification getSpecificationPrice(FilterSearchData filterSearchData) {
         long minPrice;
         long maxPrice;
         if (filterSearchData.getSelectedMinPrice() > 0) {
@@ -151,7 +129,7 @@ public class TrainScheduleDataStoreFactory {
         return new TrainSchedulePriceFilterSpecification(minPrice, maxPrice);
     }
 
-    private DbFlowSpecification getSpecificationTrainClass(FilterSearchData filterSearchData) {
+    private RoomSpecification getSpecificationTrainClass(FilterSearchData filterSearchData) {
         if (filterSearchData.getSelectedTrainClass() != null && !filterSearchData.getSelectedTrainClass().isEmpty()) {
             return new TrainScheduleClassFilterSpecification(filterSearchData.getSelectedTrainClass());
         } else {
@@ -159,7 +137,7 @@ public class TrainScheduleDataStoreFactory {
         }
     }
 
-    private DbFlowSpecification getSpecificationTrainName(FilterSearchData filterSearchData) {
+    private RoomSpecification getSpecificationTrainName(FilterSearchData filterSearchData) {
         if (filterSearchData.getSelectedTrains() != null && !filterSearchData.getSelectedTrains().isEmpty()) {
             return new TrainScheduleNameFilterSpecification(filterSearchData.getSelectedTrains());
         } else {
@@ -167,7 +145,7 @@ public class TrainScheduleDataStoreFactory {
         }
     }
 
-    private DbFlowSpecification getSpecificationTrainDeparture(FilterSearchData filterSearchData) {
+    private RoomSpecification getSpecificationTrainDeparture(FilterSearchData filterSearchData) {
         if (filterSearchData.getSelectedDepartureTimeList() != null && !filterSearchData.getSelectedDepartureTimeList().isEmpty()) {
             return new TrainScheduleDepartureTimeFilterSpecification(filterSearchData.getSelectedDepartureTimeList());
         } else {
@@ -175,7 +153,9 @@ public class TrainScheduleDataStoreFactory {
         }
     }
 
-    public Observable<TrainScheduleViewModel> getDetailScheduleById(Specification specification) {
-        return dbDataStore.getData(specification);
+    public Observable<TrainScheduleViewModel> getDetailScheduleById(String idSchedule) {
+        return Observable.just(idSchedule)
+                .map(it -> trainScheduleDao.getScheduleById(it))
+                .map(it -> scheduleMapper.transform(it));
     }
 }

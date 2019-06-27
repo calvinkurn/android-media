@@ -19,6 +19,8 @@ public interface TrainSeatContract {
 
         void hideLoading();
 
+        void stopTrace();
+
         void renderWagon(List<TrainWagonViewModel> trainWagonViewModels, int i);
 
         void hidePage();

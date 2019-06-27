@@ -13,10 +13,10 @@ import java.util.List;
 @Dao
 public interface FlightComboDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(List<FlightComboTable> flightComboTable);
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(FlightComboTable flightComboTable);
 
     @Query("SELECT * FROM FlightComboTable WHERE FlightComboTable.onwardJourneyId = :onwardJourneyId")
@@ -24,6 +24,9 @@ public interface FlightComboDao {
 
     @Query("SELECT * FROM FlightComboTable WHERE FlightComboTable.returnJourneyId = :returnJourneyId")
     List<FlightComboTable> findCombosByReturnJourneyId(String returnJourneyId);
+
+    @Query("SELECT * FROM FlightComboTable WHERE FlightComboTable.returnJourneyId = :returnJourneyId AND FlightComboTable.onwardJourneyId = :onwardJourneyId")
+    List<FlightComboTable> findCombosByOnwardAndReturnJourneyId(String onwardJourneyId, String returnJourneyId);
 
     @Query("SELECT * FROM FlightComboTable")
     List<FlightComboTable> findAllCombos();

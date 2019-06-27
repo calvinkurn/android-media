@@ -3,7 +3,9 @@ package com.tokopedia.topads.sdk.view.adapter.viewholder.discovery;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.LayoutRes;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -15,6 +17,7 @@ import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
+import com.tokopedia.topads.sdk.listener.PositionChangeListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.view.ImpressedImageView;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductCarouselListViewModel;
@@ -24,7 +27,7 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductCarousel
  */
 
 public class ProductCarouselListViewHolder extends AbstractViewHolder<ProductCarouselListViewModel> implements
-        View.OnClickListener {
+        View.OnClickListener, PositionChangeListener {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_ads_carousel_item;
@@ -41,17 +44,16 @@ public class ProductCarouselListViewHolder extends AbstractViewHolder<ProductCar
     private RelativeLayout wishlistBtnContainer;
     private ImageView btnWishList;
     public ImpressedImageView productImage;
-    private int clickPosition;
+    private int clickPosition = RecyclerView.NO_POSITION;
     private int offset;
 
 
-    public ProductCarouselListViewHolder(View itemView, LocalAdsClickListener itemClickListener, int clickPosition,
+    public ProductCarouselListViewHolder(View itemView, LocalAdsClickListener itemClickListener,
                                          TopAdsItemImpressionListener impressionListener,
                                          boolean enableWishlist, int offset) {
         super(itemView);
         itemView.findViewById(R.id.container).setOnClickListener(this);
         this.itemClickListener = itemClickListener;
-        this.clickPosition = clickPosition;
         this.impressionListener = impressionListener;
         this.offset = offset;
         btnWishList = itemView.findViewById(R.id.wishlist_button);
@@ -76,7 +78,7 @@ public class ProductCarouselListViewHolder extends AbstractViewHolder<ProductCar
     @Override
     public void bind(ProductCarouselListViewModel element) {
         data = element.getData();
-        if (data.getProduct() != null) {
+        if (data.getProduct() != null && !TextUtils.isEmpty(data.getProduct().getId())) {
             bindProduct(data.getProduct(), offset);
         }
     }
@@ -114,4 +116,8 @@ public class ProductCarouselListViewHolder extends AbstractViewHolder<ProductCar
         }
     }
 
+    @Override
+    public void onPositionChange(int position) {
+        this.clickPosition = position;
+    }
 }

@@ -8,7 +8,10 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.digital_deals.view.customview.WrapContentHeightViewPager;
 import com.tokopedia.digital_deals.view.model.Brand;
+import com.tokopedia.digital_deals.view.model.CategoriesModel;
 import com.tokopedia.digital_deals.view.model.CategoryItem;
+import com.tokopedia.digital_deals.view.model.Location;
+import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -23,9 +26,17 @@ public class DealsContract {
 
         void navigateToActivity(Intent intent);
 
-        void renderCategoryList(List<CategoryItem> categoryList, CategoryItem carousel, CategoryItem top);
+        void renderCategoryList(List<CategoryItem> categoryList, List<CategoriesModel> categoriesModels);
+
+        void renderTopDeals(CategoryItem topDeals);
+
+        void renderCarousels(CategoryItem carousels);
 
         void renderBrandList(List<Brand> brandList);
+
+        void renderCuratedDealsList(List<CategoryItem> categoryItems);
+
+        void renderAllTrendingDeals(List<ProductItem> items, String title);
 
         void addDealsToCards(CategoryItem categoryItemsViewModels);
 
@@ -56,6 +67,12 @@ public class DealsContract {
         void startOrderListActivity();
 
         int getRequestCode();
+
+        void startLocationFragment(List<Location> locationList, boolean isTopLocations);
+
+        void startDealsCategoryFragment(List<CategoryItem> categoryItems, List<CategoriesModel> categoriesModels);
+
+        String getSearchInputText();
     }
 
     public interface Presenter extends CustomerPresenter<View> {

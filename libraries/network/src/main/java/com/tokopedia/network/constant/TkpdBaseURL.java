@@ -44,6 +44,7 @@ public class TkpdBaseURL {
     public static String GOLD_MERCHANT_STAGING_DOMAIN = "http://goldmerchant-staging.tokopedia.com";
     public static String WEB_DOMAIN = "https://www.tokopedia.com/";
     public static String MOBILE_DOMAIN = "https://m.tokopedia.com/";
+    public static String CHAT_REPORT_URL = MOBILE_DOMAIN + "chat/report/";
     public static String BASE_CONTACT_US = WEB_DOMAIN + "contact-us";
     public static String TOKOPEDIA_CART_DOMAIN = "https://fs.tokopedia.net/tkpdcart";
     public static String BASE_ACTION = BASE_DOMAIN + "v4/action/";
@@ -750,6 +751,8 @@ public class TkpdBaseURL {
         public static final String PATH_CHECK_VOUCHER = "voucher/check";
         public static final String PATH_CANCEL_VOUCHER = "voucher/cancel";
         public static final String PATH_USSD = "ussd/balance";
+        public static final String PATH_SMARTCARD_INQUIRY = "smartcard/inquiry";
+        public static final String PATH_SMARTCARD_COMMAND = "smartcard/command";
     }
 
     public static class DigitalWebsite {
@@ -757,6 +760,7 @@ public class TkpdBaseURL {
         public static final String PATH_PRODUCT_LIST = "products/";
         public static final String PATH_SUBSCRIPTIONS = "subscribe/";
         public static final String PATH_FAVORITE_NUMBER = "favorite-list/";
+        public static final String PATH_MY_BILLS = "mybills/";
     }
 
     public static class HadesCategory {

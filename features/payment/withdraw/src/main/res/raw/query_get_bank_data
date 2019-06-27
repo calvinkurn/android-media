@@ -1,0 +1,15 @@
+query {
+  bankAccount{
+    error
+    accounts{
+      bank_id
+      acc_id
+      acc_name
+      branch
+      bank_name
+      acc_number
+      type
+      bank_image_url
+    }
+  }
+}

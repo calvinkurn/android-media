@@ -1,0 +1,188 @@
+{
+  "getPDPInfo":{
+    "basic":{
+      "id":271198783,
+      "shopID":137266,
+      "name":"Xiaomi Mi 300Mbps WiFi Amplifier 2 Wireless Network Repeater",
+      "alias":"xiaomi-mi-300mbps-wifi-amplifier-2-wireless-network-repeater",
+      "price":72000,
+      "priceCurrency":"IDR",
+      "lastUpdatePrice":"30-01-2019, 04:53 WIB",
+      "description":"This Xiaomi Mi Wi-Fi Amplifier 2 is proud of its connectivity to any device that has USB port, which means a possibility to hitch up the amplifier to different devices of different-brand routers, TV-sets, laptops or even power strips with a necessary USB port.\n\nApp Control\n\nOnly need two steps, you can add the Xiaomi Mi Wi-Fi Amplifier 2 into the smartphone APP to achieve easy control of the Amplifier, such as it can achieve signal detection.\n\nSpecifications\n\nName\tXiaomi Mi Wi-Fi Amplifier 2\nBrand\tXiaomi\nType\tWi-Fi Amplifier\nMaterial\tABS\nColor\tWhite\nAntenna\tBuilt-in\nOperating Frequency\t2.5 GHz\nConnectivity\tUSB\nTransmission Rate\t300Mbps\nPower Supply\t5 V/0.5 A ~ 5 V/2 A\nBrand Compatibility\tXiaomi and Other\nProduct Size\t120 x 30 x 9 mm\nPackage Size\t13.5 x 5 x 5 cm\nProduct Weight\t30g\nPackage Contents\t1 x Xiaomi Mi Wi-Fi Amplifier 2, 1 x Manual",
+      "minOrder":1,
+      "maxOrder":0,
+      "status":"WAREHOUSE",
+      "weight":1000,
+      "weightUnit":"GRAM",
+      "condition":"UNKNOWN",
+      "url":"https://www.tokopedia.com/beststereo/xiaomi-mi-300mbps-wifi-amplifier-2-wireless-network-repeater",
+      "sku":"",
+      "gtin":"",
+      "isKreasiLokal":true,
+      "isMustInsurance":false,
+      "isEligibleCOD":true,
+      "catalogID":123
+    },
+    "brand":{
+      "brandID":"23",
+      "isActive":true,
+      "brandStatus":0,
+      "name":"xiaomi"
+    },
+    "menu":{
+      "menuID":"7599048",
+      "name":"dining apa ya",
+      "url":""
+    },
+    "category":{
+      "id":"284",
+      "name":"Handphone & Tablet - Aksesoris Tablet - Connection Kit",
+      "title":"Handphone & Tablet - Aksesoris Tablet - Connection Kit",
+      "breadcrumbURL":"https://www.tokopedia.com/p/handphone-tablet/aksesoris-tablet/connection-kit",
+      "detail":[
+        {
+          "id":"65",
+          "name":"Handphone & Tablet",
+          "breadcrumbURL":"https://www.tokopedia.com/p/handphone-tablet"
+        },
+        {
+          "id":"277",
+          "name":"Aksesoris Tablet",
+          "breadcrumbURL":"https://www.tokopedia.com/p/handphone-tablet/aksesoris-tablet"
+        },
+        {
+          "id":"284",
+          "name":"Connection Kit",
+          "breadcrumbURL":"https://www.tokopedia.com/p/handphone-tablet/aksesoris-tablet/connection-kit"
+        }
+      ]
+    },
+    "pictures":[
+      {
+        "picID":"289144834",
+        "fileName":"664240_1307277c-0f57-40a5-9ce9-fe91eee6d80c_900_900.jpg",
+        "filePath":"product-1/2017/2/21/664240",
+        "description":"",
+        "isFromIG":false,
+        "width":900,
+        "height":900,
+        "urlOriginal":"https://ecs7.tokopedia.net/img/cache/700/product-1/2017/2/21/664240/664240_1307277c-0f57-40a5-9ce9-fe91eee6d80c_900_900.jpg",
+        "urlThumbnail":"https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/2/21/664240/664240_1307277c-0f57-40a5-9ce9-fe91eee6d80c_900_900.jpg",
+        "url300":"",
+        "status":2
+      },
+      {
+        "picID":"289144835",
+        "fileName":"664240_b4f1560e-6250-4345-bb09-d669793cf067_557_500.png",
+        "filePath":"product-1/2017/2/21/664240",
+        "description":"",
+        "isFromIG":false,
+        "width":557,
+        "height":500,
+        "urlOriginal":"https://ecs7.tokopedia.net/img/cache/700/product-1/2017/2/21/664240/664240_b4f1560e-6250-4345-bb09-d669793cf067_557_500.png",
+        "urlThumbnail":"https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/2/21/664240/664240_b4f1560e-6250-4345-bb09-d669793cf067_557_500.png",
+        "url300":"",
+        "status":1
+      },
+      {
+        "picID":"289144836",
+        "fileName":"664240_0fc63f2d-b438-47f4-9338-c065206c2597_1000_680.jpg",
+        "filePath":"product-1/2017/2/21/664240",
+        "description":"",
+        "isFromIG":false,
+        "width":1000,
+        "height":680,
+        "urlOriginal":"https://ecs7.tokopedia.net/img/cache/700/product-1/2017/2/21/664240/664240_0fc63f2d-b438-47f4-9338-c065206c2597_1000_680.jpg",
+        "urlThumbnail":"https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/2/21/664240/664240_0fc63f2d-b438-47f4-9338-c065206c2597_1000_680.jpg",
+        "url300":"",
+        "status":1
+      },
+      {
+        "picID":"289144837",
+        "fileName":"664240_9200511e-354e-40e7-96bd-44023509c328_900_716.jpg",
+        "filePath":"product-1/2017/2/21/664240",
+        "description":"",
+        "isFromIG":false,
+        "width":900,
+        "height":716,
+        "urlOriginal":"https://ecs7.tokopedia.net/img/cache/700/product-1/2017/2/21/664240/664240_9200511e-354e-40e7-96bd-44023509c328_900_716.jpg",
+        "urlThumbnail":"https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/2/21/664240/664240_9200511e-354e-40e7-96bd-44023509c328_900_716.jpg",
+        "url300":"",
+        "status":1
+      },
+      {
+        "picID":"289144838",
+        "fileName":"664240_d124dd6b-794a-4623-887d-2440723a0fdc_500_325.jpg",
+        "filePath":"product-1/2017/2/21/664240",
+        "description":"",
+        "isFromIG":false,
+        "width":500,
+        "height":325,
+        "urlOriginal":"https://ecs7.tokopedia.net/img/cache/700/product-1/2017/2/21/664240/664240_d124dd6b-794a-4623-887d-2440723a0fdc_500_325.jpg",
+        "urlThumbnail":"https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/2/21/664240/664240_d124dd6b-794a-4623-887d-2440723a0fdc_500_325.jpg",
+        "url300":"",
+        "status":1
+      }
+    ],
+    "preorder":{
+      "isActive":true,
+      "duration":3,
+      "timeUnit":"UNKNOWN"
+    },
+    "wholesale":[
+      {
+        "minQty":100,
+        "maxQty":10000,
+        "price":69000
+      }
+    ],
+    "videos":[
+      {
+        "source":"youtube",
+        "url":"XSPsGJ440JU"
+      },
+      {
+        "source":"youtube",
+        "url":"XSPsGJ440JU"
+      }
+    ],
+    "campaign":{
+      "campaignID":"6",
+      "campaignType":7,
+      "isActive":true,
+      "isAppsOnly":true,
+      "campaignTypeName":"flash sale",
+      "originalPrice":100000,
+      "discountedPrice":80000,
+      "percentageAmount":20,
+      "startDate":"2018-10-24T10:00:00+07:00Z",
+      "endDate":"2018-10-24T10:00:00+07:00Z",
+      "stock": 5,
+      "appLinks": "www.tokopedia.com",
+      "endDateUnix": 1548996712
+    },
+    "cashback":{
+      "percentage": 5
+    },
+    "stats":{
+      "countView":19000,
+      "countReview":415,
+      "countTalk":391,
+      "rating":361
+    },
+    "txStats":{
+      "txSuccess":1100,
+      "txReject":14,
+      "itemSold":1
+    },
+    "variant": {
+      "parentID": "0",
+      "isVariant": false
+    },
+    "stock": {
+      "useStock": false,
+      "value": 0,
+      "stockWording": "Stok tersedia"
+    }
+  }
+}

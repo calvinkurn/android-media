@@ -3,6 +3,7 @@ package com.tokopedia.user_identification_common.pojo;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,11 +13,11 @@ public class KycStatusPojo {
 
     @Expose
     @SerializedName("Message")
-    private List<String> message;
+    private List<String> message = new ArrayList<>();
 
     @Expose
     @SerializedName("Detail")
-    private KycStatusDetailPojo kycStatusDetailPojo;
+    private KycStatusDetailPojo kycStatusDetailPojo = new KycStatusDetailPojo();
 
     public List<String> getMessage() {
         return message;

@@ -4,11 +4,14 @@ import android.app.Activity;
 import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.trackingoptimizer.TrackingQueue;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,11 +36,13 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_READ_NO
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_REQUEST_OPEN_SHOP;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_REVIEW;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHARE_BUTTON;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_MANAGE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_PAGE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SORT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SORT_BY;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_TAB;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_VIEW_ALL;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.ECOMMERCE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_ADD_PRODUCT_FROM_ZERO_PRODUCT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_HOW_TO_ACTIVATE_SHOP;
@@ -57,6 +62,7 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH_BAR;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH_RESULT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEE_ALL;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_INFO;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_BUYER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SELLER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOP_SECTION;
@@ -66,25 +72,34 @@ import static com.tokopedia.shop.analytic.model.ListTitleTypeDef.HIGHLIGHTED;
 
 public class ShopPageTrackingUser {
     public static final String SHOPPAGE = "/shoppage";
-    protected final AbstractionRouter shopTrackingRouter;
+    protected final TrackingQueue trackingQueue;
 
-    public ShopPageTrackingUser(AbstractionRouter router) {
-        this.shopTrackingRouter = router;
+    public ShopPageTrackingUser(
+                                TrackingQueue trackingQueue) {
+        this.trackingQueue = trackingQueue;
     }
 
     private void sendScreenName(Activity activity, String screenName, CustomDimensionShopPage customDimensionShopPage) {
-        shopTrackingRouter.getAnalyticTracker().sendCustomScreen(activity, screenName,
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName,
                 customDimensionShopPage.shopId, customDimensionShopPage.shopType, SHOPPAGE, null);
     }
 
     protected void sendDataLayerEvent(Map<String, Object> eventTracking) {
-        shopTrackingRouter.getAnalyticTracker().sendEventTracking(eventTracking);
+        if (eventTracking.containsKey(ECOMMERCE)) {
+            trackingQueue.putEETracking((HashMap<String, Object>) eventTracking);
+        } else {
+            TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(eventTracking);
+        }
     }
 
     protected void sendEvent(String event, String category, String action, String label,
                              CustomDimensionShopPage customDimensionShopPage) {
         HashMap<String, Object> eventMap = createMap(event, category, action, label, customDimensionShopPage);
-        shopTrackingRouter.getAnalyticTracker().sendEventTracking(eventMap);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(eventMap);
+    }
+
+    public void sendAllTrackingQueue() {
+        trackingQueue.sendAll();
     }
 
     private HashMap<String, Object> createMvcImpressionMap(String event, String category, String action, String label,
@@ -198,6 +213,15 @@ public class ShopPageTrackingUser {
                 joinDash(MANAGE_SHOP, CLICK),
                 CLICK_ADD_PRODUCT,
                 customDimensionShopPage);
+    }
+
+    public void sendOpenShop() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                "clickManageShop",
+                "Manage Shop",
+                "Click",
+                "Shop Info"
+        );
     }
 
     public void clickFollowerList(boolean isOwner,
@@ -436,4 +460,26 @@ public class ShopPageTrackingUser {
         }
     }
 
+    public void sendGeneralManageShop() {
+        TrackApp.getInstance().getGTM()
+                .sendGeneralEvent(CLICK_SHOP_MANAGE, "Manage Shop", CLICK, SHOP_INFO);
+    }
+
+    public void clickReviewMore(@NotNull String shopId, boolean myShop) {
+        HashMap<String, Object> eventMap = new HashMap<>();
+        eventMap.put("event", "clickOfficialStore");
+        eventMap.put("eventCategory", getEventReputationCategory(myShop));
+        eventMap.put("eventAction", "Ulasan - bottom navigation - click");
+        eventMap.put("eventLabel", "click see more");
+        eventMap.put("shop_id", shopId);
+        TrackApp.getInstance().getGTM().sendGeneralEvent(eventMap);
+    }
+
+    private String getEventReputationCategory(boolean myShop) {
+        if(myShop){
+            return "official store shop page - buyer";
+        }else{
+            return "official store shop page - brand";
+        }
+    }
 }

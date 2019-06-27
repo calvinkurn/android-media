@@ -44,7 +44,7 @@ public class CheckNumberOvoUseCase extends UseCase<CheckPhoneOvoModel> {
                         String query = GraphqlHelper.loadRawString(context.getResources(), R.raw.wallet_check_phone_query);
 
                         if (!TextUtils.isEmpty(query)) {
-                            GraphqlRequest request = new GraphqlRequest(query, ResponseCheckPhoneEntity.class);
+                            GraphqlRequest request = new GraphqlRequest(query, ResponseCheckPhoneEntity.class, false);
                             graphqlUseCase.clearRequest();
                             graphqlUseCase.addRequest(request);
                             return graphqlUseCase.createObservable(null);

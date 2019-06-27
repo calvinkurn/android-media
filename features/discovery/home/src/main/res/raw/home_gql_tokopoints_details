@@ -1,0 +1,20 @@
+{
+    tokopointsDrawer{
+        offFlag
+        iconImageURL
+        redirectURL
+        redirectAppLink
+        sectionContent{
+            type
+            textAttributes{
+                text
+                color
+                isBold
+            }
+            tagAttributes{
+                text
+                backgroundColor
+            }
+        }
+    }
+}

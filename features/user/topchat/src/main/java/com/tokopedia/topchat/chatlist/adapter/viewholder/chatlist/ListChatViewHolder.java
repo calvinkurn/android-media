@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatlist.adapter.viewholder.chatlist;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -10,8 +11,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatlist.listener.InboxChatContract;
@@ -24,6 +25,7 @@ import com.tokopedia.topchat.common.util.ChatTimeConverter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * Created by stevenfredian on 10/25/17.
@@ -58,6 +60,10 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
     @LayoutRes
     public static final int LAYOUT = R.layout.message_item_topchat;
 
+    public static final String PAYLOAD_SHOW_TYPING = "payload_show_typing";
+    public static final String PAYLOAD_REMOVE_TYPING = "payload_remove_typing";
+
+
     public ListChatViewHolder(View itemView, InboxChatContract.View viewListener, InboxChatPresenter presenter) {
         super(itemView);
 
@@ -80,23 +86,9 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
     public void bind(ChatListViewModel element) {
 
         if (element.isTyping()) {
-            userName.setText(element.getName());
-            message.setText("sedang mengetik...");
-            message.setTypeface(null, Typeface.ITALIC);
-            message.setTextColor(MethodChecker.getColor(message.getContext(), R.color.medium_green));
+            showTypingView(element);
         } else {
-            if (element.getSpanMode() == ChatListViewModel.SPANNED_MESSAGE) {
-                message.setText(highlight(message.getContext(), element.getSpan(), viewListener.getKeyword()));
-                userName.setText(element.getName());
-            } else if (element.getSpanMode() == ChatListViewModel.SPANNED_CONTACT) {
-                userName.setText(highlight(message.getContext(), element.getSpan(), viewListener.getKeyword()));
-                message.setText(MethodChecker.fromHtml(element.getMessage().trim()));
-            } else {
-                message.setText(MethodChecker.fromHtml(element.getMessage().trim()));
-                userName.setText(element.getName());
-            }
-            message.setTypeface(null, Typeface.NORMAL);
-            message.setTextColor(MethodChecker.getColor(message.getContext(), R.color.black_54));
+            showNotTypingView(element);
         }
 
         if (element.isHaveTitle()) {
@@ -115,7 +107,7 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(unixdate * 1000);
             System.out.println("Formatted Date:" + formatter.format(calendar.getTime()));
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             e.printStackTrace();
         }
         setTime(element, getAdapterPosition());
@@ -134,6 +126,42 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
         avatar.setOnLongClickListener(onLongClickListener(element));
     }
 
+    @Override
+    public void bind(ChatListViewModel element, @NonNull List<Object> payloads) {
+        if (payloads.isEmpty()) {
+            bind(element);
+            return;
+        }
+
+        Object payload = payloads.get(0);
+        if (payload == PAYLOAD_SHOW_TYPING) {
+            showTypingView(element);
+        } else if (payload == PAYLOAD_REMOVE_TYPING) {
+            showNotTypingView(element);
+        }
+    }
+
+    private void showTypingView(ChatListViewModel element) {
+        userName.setText(element.getName());
+        message.setText(R.string.is_typing);
+        message.setTypeface(null, Typeface.ITALIC);
+        message.setTextColor(MethodChecker.getColor(message.getContext(), R.color.medium_green));
+    }
+
+    private void showNotTypingView(ChatListViewModel element) {
+        if (element.getSpanMode() == ChatListViewModel.SPANNED_MESSAGE) {
+            message.setText(highlight(message.getContext(), element.getSpan(), viewListener.getKeyword()));
+            userName.setText(element.getName());
+        } else if (element.getSpanMode() == ChatListViewModel.SPANNED_CONTACT) {
+            userName.setText(highlight(message.getContext(), element.getSpan(), viewListener.getKeyword()));
+            message.setText(MethodChecker.fromHtml(element.getMessage().trim()));
+        } else {
+            message.setText(MethodChecker.fromHtml(element.getMessage().trim()));
+            userName.setText(element.getName());
+        }
+        message.setTypeface(null, Typeface.NORMAL);
+        message.setTextColor(MethodChecker.getColor(message.getContext(), R.color.black_54));
+    }
 
     private SpannableString highlight(Context context, Spanned span, String keyword) {
 
@@ -170,11 +198,10 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
         if (labelS != null && labelS.length() > 0 && !labelS.equals(InboxChatConstant.USER_TAG)) {
             label.setVisibility(View.VISIBLE);
             label.setText(labelS);
-            if(labelS.equals(InboxChatConstant.SELLER_TAG)){
+            if (labelS.equals(InboxChatConstant.SELLER_TAG)) {
                 label.setBackgroundResource(R.drawable.topchat_seller_label);
                 label.setTextColor(itemView.getContext().getResources().getColor(R.color.medium_green));
-            }
-            else {
+            } else {
                 label.setBackgroundResource(R.drawable.topchat_admin_label);
                 label.setTextColor(itemView.getContext().getResources().getColor(R.color.topchat_admin_label_text_color));
             }
@@ -193,7 +220,7 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
         return new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if(element.getSpanMode() == ChatListViewModel.NO_SPAN){
+                if (element.getSpanMode() == ChatListViewModel.NO_SPAN) {
                     int position = getAdapterPosition();
                     if (element.isChecked()) {
                         setReadState();
@@ -213,7 +240,7 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (presenter.isInActionMode()){
+                if (presenter.isInActionMode()) {
                     if (element.isChecked()) {
                         setReadState();
                         presenter.onDeselect(position);
@@ -221,7 +248,7 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
                         setSelectedState();
                         presenter.onSelected(position);
                     }
-                }else {
+                } else {
                     if (presenter.getSelected() == 0) {
                         presenter.goToDetailMessage(mainView.getContext(), position, element);
                     } else if (element.isChecked()) {
@@ -241,11 +268,11 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
             @Override
             public void onClick(View v) {
 
-                if(messageItem == null){
+                if (messageItem == null) {
                     return;
                 }
 
-                if (presenter.isInActionMode()){
+                if (presenter.isInActionMode()) {
                     if (messageItem.isChecked()) {
                         setReadState();
                         presenter.onDeselect(position);
@@ -253,7 +280,7 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
                         setSelectedState();
                         presenter.onSelected(position);
                     }
-                }else {
+                } else {
                     if (messageItem.getLabel() != null
                             && !messageItem.getLabel().equals(InboxChatConstant.ADMIN_TAG)
                             && !messageItem.getLabel().equals(InboxChatConstant.OFFICIAL_TAG)

@@ -1,7 +1,6 @@
 package com.tokopedia.flight.cancellation.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationRequestEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.EstimateRefundResultEntity;
@@ -12,6 +11,7 @@ import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttach
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.Iterator;
 import java.util.List;
@@ -29,12 +29,12 @@ public class FlightCancellationReviewPresenter extends BaseDaggerPresenter<Fligh
 
     private FlightCancellationRequestUseCase flightCancellationRequestUseCase;
     private FlightCancellationEstimateRefundUseCase flightCancellationEstimateRefundUseCase;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
 
     @Inject
     public FlightCancellationReviewPresenter(FlightCancellationRequestUseCase flightCancellationRequestUseCase,
                                              FlightCancellationEstimateRefundUseCase flightCancellationEstimateRefundUseCase,
-                                             UserSession userSession) {
+                                             UserSessionInterface userSession) {
         this.flightCancellationRequestUseCase = flightCancellationRequestUseCase;
         this.flightCancellationEstimateRefundUseCase = flightCancellationEstimateRefundUseCase;
         this.userSession = userSession;
@@ -99,11 +99,7 @@ public class FlightCancellationReviewPresenter extends BaseDaggerPresenter<Fligh
                     @Override
                     public void onNext(CancellationRequestEntity cancellationRequestEntity) {
                         getView().hideLoading();
-                        if (isRefundable()) {
-                            getView().showSuccessDialog(R.string.flight_cancellation_review_dialog_refundable_success_description);
-                        } else {
-                            getView().showSuccessDialog(R.string.flight_cancellation_review_dialog_non_refundable_success_description);
-                        }
+                        getView().showSuccessDialog(R.string.flight_cancellation_review_dialog_non_refundable_success_description);
                     }
                 }
         );
@@ -140,11 +136,20 @@ public class FlightCancellationReviewPresenter extends BaseDaggerPresenter<Fligh
     private void actionFetchEstimateRefund() {
         getView().showLoading();
 
+        FlightCancellationWrapperViewModel viewModel = getView().getCancellationWrapperViewModel();
+
+        String reason = (viewModel.getCancellationReasonAndAttachment() != null) ?
+                viewModel.getCancellationReasonAndAttachment().getReason() : null;
+        String reasonId = (viewModel.getCancellationReasonAndAttachment() != null) ?
+                viewModel.getCancellationReasonAndAttachment().getReasonId() : null;
+
         flightCancellationEstimateRefundUseCase.execute(
                 flightCancellationEstimateRefundUseCase.createRequestParam(
                         getView().getCancellationWrapperViewModel().getInvoice(),
                         userSession.getUserId(),
-                        getView().getCancellationWrapperViewModel().getGetCancellations()
+                        getView().getCancellationWrapperViewModel().getGetCancellations(),
+                        reason,
+                        Integer.parseInt(reasonId)
                 ),
                 new Subscriber<EstimateRefundResultEntity>() {
                     @Override

@@ -11,7 +11,7 @@ public class DataResponse<T> {
 
     @SerializedName("header")
     @Expose
-    private Header header;
+    private Header header = new Header();
     @SerializedName(value="data")
     @Expose
     private T data;

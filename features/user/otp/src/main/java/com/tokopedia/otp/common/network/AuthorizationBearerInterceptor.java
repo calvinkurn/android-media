@@ -1,7 +1,6 @@
 package com.tokopedia.otp.common.network;
 
 
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.IOException;
@@ -28,7 +27,6 @@ public class AuthorizationBearerInterceptor implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         Request.Builder newRequest = chain.request().newBuilder();
         newRequest = addAccountsAuthorizationHeader(newRequest);
-
         return chain.proceed(newRequest.build());
     }
 

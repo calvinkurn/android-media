@@ -22,6 +22,7 @@ public class ShippingParamsPostModel implements Parcelable {
     private String uploadHost;
     private String postKey;
     private String token;
+    private Integer userId;
     private boolean statusInputShipping;
 
     public String getResolutionID() {
@@ -62,6 +63,14 @@ public class ShippingParamsPostModel implements Parcelable {
 
     public void setAttachmentList(List<AttachmentResCenterVersion2DB> attachmentList) {
         this.attachmentList = attachmentList;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public String getServerID() {

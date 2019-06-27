@@ -8,52 +8,52 @@ public class ShopStats {
 
     @SerializedName("shop_service_rate")
     @Expose
-    private String shopServiceRate;
+    private String shopServiceRate = "";
     @SerializedName("shop_speed_rate")
     @Expose
-    private String shopSpeedRate;
+    private String shopSpeedRate = "";
     @SerializedName("shop_total_transaction")
     @Expose
-    private String shopTotalTransaction;
+    private String shopTotalTransaction = "";
     @SerializedName("shop_speed_description")
     @Expose
-    private String shopSpeedDescription;
+    private String shopSpeedDescription = "";
     @SerializedName("shop_badge_level")
     @Expose
-    private ShopBadgeLevel shopBadgeLevel;
+    private ShopBadgeLevel shopBadgeLevel = new ShopBadgeLevel();
     @SerializedName("shop_last_one_month")
     @Expose
-    private ShopLastOneMonth shopLastOneMonth;
+    private ShopLastOneMonth shopLastOneMonth = new ShopLastOneMonth();
     @SerializedName("shop_total_product")
     @Expose
-    private String shopTotalProduct;
+    private String shopTotalProduct = "";
     @SerializedName("shop_reputation_score")
     @Expose
-    private String shopReputationScore;
+    private String shopReputationScore = "";
     @SerializedName("shop_total_transaction_canceled")
     @Expose
-    private String shopTotalTransactionCanceled;
+    private String shopTotalTransactionCanceled = "";
     @SerializedName("shop_last_six_months")
     @Expose
-    private ShopLastSixMonths shopLastSixMonths;
+    private ShopLastSixMonths shopLastSixMonths = new ShopLastSixMonths();
     @SerializedName("shop_total_etalase")
     @Expose
-    private String shopTotalEtalase;
+    private String shopTotalEtalase = "";
     @SerializedName("shop_service_description")
     @Expose
-    private String shopServiceDescription;
+    private String shopServiceDescription = "";
     @SerializedName("shop_item_sold")
     @Expose
-    private String shopItemSold;
+    private String shopItemSold = "";
     @SerializedName("shop_last_twelve_months")
     @Expose
-    private ShopLastTwelveMonths shopLastTwelveMonths;
+    private ShopLastTwelveMonths shopLastTwelveMonths = new ShopLastTwelveMonths();
     @SerializedName("shop_accuracy_rate")
     @Expose
-    private String shopAccuracyRate;
+    private String shopAccuracyRate = "";
     @SerializedName("shop_accuracy_description")
     @Expose
-    private String shopAccuracyDescription;
+    private String shopAccuracyDescription = "";
 
     public String getShopServiceRate() {
         return shopServiceRate;

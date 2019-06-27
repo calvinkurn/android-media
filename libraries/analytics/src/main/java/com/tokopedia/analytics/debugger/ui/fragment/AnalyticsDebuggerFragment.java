@@ -4,10 +4,14 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -33,11 +37,21 @@ public class AnalyticsDebuggerFragment
 
     public static final String TAG = AnalyticsDebuggerFragment.class.getSimpleName();
 
+    private Button buttonSearch;
+
     @Inject
     AnalyticsDebugger.Presenter presenter;
 
     public static Fragment newInstance() {
         return new AnalyticsDebuggerFragment();
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_analytics_debugger, container, false);
+        buttonSearch = view.findViewById(R.id.button_search);
+        return view;
     }
 
     @Override
@@ -49,6 +63,13 @@ public class AnalyticsDebuggerFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        buttonSearch.setOnClickListener(v -> {
+            if(TextUtils.isEmpty(searchInputView.getSearchText())) {
+                presenter.reloadData();
+            } else {
+                presenter.search(searchInputView.getSearchText());
+            }
+        });
         searchInputView.setSearchHint("Cari");
     }
 

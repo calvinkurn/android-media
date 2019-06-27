@@ -1,24 +1,24 @@
 package com.tokopedia.digital_deals.view.presenter;
 
 
-import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.digital_deals.R;
+import com.tokopedia.digital_deals.domain.getusecase.GetLocationListRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetSearchDealsListRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetSearchNextUseCase;
 import com.tokopedia.digital_deals.view.TopDealsCacheHandler;
-import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
-import com.tokopedia.digital_deals.view.activity.DealsLocationActivity;
 import com.tokopedia.digital_deals.view.contractor.DealsSearchContract;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.model.ProductItem;
+import com.tokopedia.digital_deals.view.model.response.LocationResponse;
 import com.tokopedia.digital_deals.view.model.response.SearchResponse;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
@@ -37,29 +37,31 @@ public class DealsSearchPresenter
         implements DealsSearchContract.Presenter {
 
     private GetSearchDealsListRequestUseCase getSearchDealsListRequestUseCase;
+    private GetLocationListRequestUseCase getSearchLocationListRequestUseCase;
     private GetSearchNextUseCase getSearchNextUseCase;
     private List<ProductItem> mTopDeals;
     private SearchResponse mSearchData;
     private String highlight;
     private boolean isLoading;
     private boolean isLastPage;
+    private List<Location> mTopLocations;
     private RequestParams searchNextParams = RequestParams.create();
 
     @Inject
     public DealsSearchPresenter(GetSearchDealsListRequestUseCase getSearchDealsListRequestUseCase,
-                                GetSearchNextUseCase searchNextUseCase) {
+                                GetLocationListRequestUseCase getLocationListRequestUseCase, GetSearchNextUseCase searchNextUseCase) {
         this.getSearchDealsListRequestUseCase = getSearchDealsListRequestUseCase;
+        this.getSearchLocationListRequestUseCase = getLocationListRequestUseCase;
         this.getSearchNextUseCase = searchNextUseCase;
     }
 
     @Override
     public void getDealsListBySearch(final String searchText) {
+        if (getView() == null) {
+            return;
+        }
         highlight = searchText;
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putString(getSearchDealsListRequestUseCase.TAG, searchText);
-        Location location = Utils.getSingletonInstance().getLocation(getView().getActivity());
-        requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, location.getId());
-        getSearchDealsListRequestUseCase.setRequestParams(requestParams);
+        getSearchDealsListRequestUseCase.setRequestParams(getView().getParams());
         getSearchDealsListRequestUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
@@ -74,11 +76,15 @@ public class DealsSearchPresenter
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                if (getView() == null) {
+                    return;
+                }
                 Type token = new TypeToken<DataResponse<SearchResponse>>() {
                 }.getType();
                 RestResponse restResponse = typeRestResponseMap.get(token);
                 DataResponse dataResponse = restResponse.getData();
                 SearchResponse searchResponse = (SearchResponse) dataResponse.getData();
+                getView().setSuggestedBrands(searchResponse.getBrandList(), searchResponse.getBrandCount());
                 getView().setTrendingDealsOrSuggestions(processSearchResponse(searchResponse), false, highlight, searchResponse.getCount());
                 checkIfToLoad(getView().getLayoutManager());
                 CommonUtils.dumper("enter onNext");
@@ -88,10 +94,9 @@ public class DealsSearchPresenter
 
     @Override
     public void initialize() {
-//        mTopDeals = getView().getActivity().getIntent().getParcelableArrayListExtra("TOPDEALS");
         mTopDeals = TopDealsCacheHandler.init().getTopDeals();
         if (mTopDeals != null && mTopDeals.size() > 0) {
-            getView().setTrendingDealsOrSuggestions(mTopDeals, true, null, mTopDeals.size());
+            getView().showSuggestedDeals(mTopDeals, true);
         }
     }
 
@@ -99,37 +104,34 @@ public class DealsSearchPresenter
     public void onDestroy() {
         getSearchDealsListRequestUseCase.unsubscribe();
         getSearchNextUseCase.unsubscribe();
+        if (getSearchLocationListRequestUseCase != null) {
+            getSearchLocationListRequestUseCase.unsubscribe();
+        }
     }
 
     @Override
     public void searchTextChanged(String searchText) {
-        if (!TextUtils.isEmpty(searchText)) {
-            if (searchText.length() > 2) {
-                getDealsListBySearch(searchText);
-            } else {
-                getSearchDealsListRequestUseCase.unsubscribe();
-                getSearchNextUseCase.unsubscribe();
-                getView().setTrendingDealsOrSuggestions(mTopDeals, true, null, mTopDeals.size());
-            }
+        if (!TextUtils.isEmpty(searchText.trim())) {
+            getDealsListBySearch(searchText);
+
         } else {
             getSearchDealsListRequestUseCase.unsubscribe();
             getSearchNextUseCase.unsubscribe();
-            getView().setTrendingDealsOrSuggestions(mTopDeals, true, null, mTopDeals.size());
+            if (mTopDeals != null && mTopDeals.size() > 0) {
+                getView().showSuggestedDeals(mTopDeals, true);
+            }
         }
     }
 
     @Override
-    public void searchSubmitted(String searchText) {
-        if (searchText.length() > 2) {
-            getView().renderFromSearchResults();
-        }
+    public void searchSubmitted() {
+        getView().renderFromSearchResults();
     }
 
     @Override
     public boolean onItemClick(int id) {
-        if (id == R.id.tv_change_city) {
-            getView().navigateToActivityRequest(new Intent(getView().getActivity(), DealsLocationActivity.class), DealsHomeActivity.REQUEST_CODE_DEALSLOCATIONACTIVITY);
-            getView().getActivity().overridePendingTransition(R.anim.slide_in_up, R.anim.hold);
+        if (id == R.id.tv_location) {
+            getLocations(false);
         } else if (id == R.id.imageViewBack) {
             getView().goBack();
         }
@@ -197,6 +199,40 @@ public class DealsSearchPresenter
             isLastPage = true;
         }
         return searchResponse.getDeals();
+    }
+
+
+    private void getLocations(boolean isForFirstime) {
+        getSearchLocationListRequestUseCase.setRequestParams(RequestParams.EMPTY);
+        getSearchLocationListRequestUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+                CommonUtils.dumper("enter onCompleted");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                CommonUtils.dumper("enter error");
+                e.printStackTrace();
+                NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        getLocations(false);
+                    }
+                });
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                Type token = new TypeToken<DataResponse<LocationResponse>>() {
+                }.getType();
+                RestResponse restResponse = typeRestResponseMap.get(token);
+                DataResponse dataResponse = restResponse.getData();
+                LocationResponse locationResponse = (LocationResponse) dataResponse.getData();
+                mTopLocations = locationResponse.getLocations();
+                getView().startLocationFragment(mTopLocations, isForFirstime);
+            }
+        });
     }
 
 }

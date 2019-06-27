@@ -2,11 +2,14 @@ package com.tokopedia.checkout.view.feature.cartlist;
 
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
+import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
+import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
+import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
-import com.tokopedia.promocheckout.common.view.model.PromoData;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,15 +22,17 @@ public interface ICartListPresenter {
 
     void detachView();
 
-    void processInitialGetCartData(boolean initialLoad);
+    void processInitialGetCartData(String cartId, boolean initialLoad);
 
     void processDeleteCart(CartItemData cartItemData, boolean addWishList);
 
-    void processDeleteAndRefreshCart(List<CartItemData> removedCartItems, boolean addWishList, boolean isLastItem);
+    void processDeleteAndRefreshCart(List<CartItemData> allCartItemData, List<CartItemData> removedCartItems, ArrayList<String> appliedPromocodeList, boolean addWishList);
 
-    void processToUpdateCartData(List<CartItemData> cartItemDataList);
+    void processToUpdateCartData(List<CartItemData> cartItemDataList, List<CartShopHolderData> cartShopHolderDataList);
 
-    void processUpdateCartDataPromo(List<CartItemData> cartItemDataList, PromoData promoData, int goToDetail);
+    void processUpdateCartDataPromoMerchant(List<CartItemData> cartItemDataList, ShopGroupData shopGroupData);
+
+    void processUpdateCartDataPromoStacking(List<CartItemData> cartItemDataList, PromoStackingData promoStackingData, int goToDetail);
 
     void processToUpdateAndReloadCartData();
 
@@ -38,6 +43,12 @@ public interface ICartListPresenter {
     void processResetAndRefreshCartData();
 
     void processCancelAutoApply();
+
+    void processCancelAutoApplyPromoStack(int shopIndex, ArrayList<String> promoCodeList, boolean ignoreAPIResponse);
+
+    void processCancelAutoApplyPromoStackAfterClash(ArrayList<String> oldPromoList, ArrayList<ClashingVoucherOrderUiModel> newPromoList, String type);
+
+    void processApplyPromoStackAfterClash(ArrayList<ClashingVoucherOrderUiModel> newPromoList, String type);
 
     Map<String, Object> generateCartDataAnalytics(CartItemData removedCartItem, String enhancedECommerceAction);
 

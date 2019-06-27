@@ -69,7 +69,7 @@ public class TickerAdapter extends RecyclerView.Adapter<TickerAdapter.ViewHolder
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(
-                LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_ticker, parent, false));
+                LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_ticker_home, parent, false));
     }
 
     @Override

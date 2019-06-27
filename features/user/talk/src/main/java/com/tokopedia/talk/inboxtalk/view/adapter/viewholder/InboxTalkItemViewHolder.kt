@@ -217,7 +217,7 @@ open class InboxTalkItemViewHolder(val v: View,
         }
     }
 
-    fun onViewRecycled() {
+    override fun onViewRecycled() {
         ImageHandler.clearImage(profileAvatar)
         ImageHandler.clearImage(productAvatar)
     }

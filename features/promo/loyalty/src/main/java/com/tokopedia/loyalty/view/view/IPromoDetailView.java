@@ -18,4 +18,5 @@ public interface IPromoDetailView extends IMvpView {
 
     void renderErrorHttpGetPromoDetail(String message);
 
+    void stopPerformanceMonitoring();
 }

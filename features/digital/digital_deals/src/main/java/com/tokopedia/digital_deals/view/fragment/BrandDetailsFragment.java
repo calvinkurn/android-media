@@ -26,10 +26,8 @@ import android.widget.ProgressBar;
 
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DealsComponent;
@@ -43,6 +41,8 @@ import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.List;
 
@@ -52,6 +52,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDetailsContract.View, DealsCategoryAdapter.INavigateToActivityRequest {
     private final boolean isShortLayout = true;
+    private static final String SCREEN_NAME = "/digital/deals/pdp brand";
 
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private AppBarLayout appBarLayout;
@@ -133,6 +134,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerViewDeals.setLayoutManager(layoutManager);
         dealsAdapter = new DealsCategoryAdapter(null, DealsCategoryAdapter.BRAND_PAGE, this, !isShortLayout, true);
+        dealsAdapter.setDealType(DealsAnalytics.BRAND_DEALS);
         recyclerViewDeals.setAdapter(dealsAdapter);
 
     }
@@ -152,6 +154,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
 
     @Override
     public void renderBrandDetails(List<ProductItem> productItems, Brand brand, int count) {
+        dealsAnalytics.sendScreenNameEvent(getScreenName());
         collapsingToolbarLayout.setTitle(brand.getTitle());
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         if (location != null) {
@@ -302,7 +305,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
                 break;
             case DealsHomeActivity.REQUEST_CODE_LOGIN:
                 if (resultCode == RESULT_OK) {
-                    UserSession userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
+                    UserSessionInterface userSession = new UserSession(getActivity());
                     if (userSession.isLoggedIn()) {
                         if (adapterPosition != -1) {
                             if (dealsAdapter != null)
@@ -325,7 +328,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
 
     @Override
     protected String getScreenName() {
-        return null;
+        return SCREEN_NAME;
     }
 
     @Override

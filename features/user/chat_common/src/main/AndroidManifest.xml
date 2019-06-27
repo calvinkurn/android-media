@@ -1,0 +1,16 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.chat_common">
+
+    <application android:label="@string/app_name">
+
+        <activity
+            android:name="com.tokopedia.chat_common.BaseChatToolbarActivity"
+            android:label="@string/title_ok"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
+    </application>
+
+
+</manifest>

@@ -3,15 +3,15 @@
     android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/padding_prod"
-    android:paddingTop="@dimen/padding_prod">
+    android:paddingBottom="@dimen/dp_5"
+    android:paddingTop="@dimen/dp_5">
 
     <RelativeLayout
         android:id="@+id/rl_holder_check_balance_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:padding="@dimen/padding_detail"
+        android:padding="@dimen/dp_15"
         android:visibility="visible">
 
         <RelativeLayout
@@ -28,8 +28,8 @@
                 android:focusableInTouchMode="true"
                 android:maxLines="1"
                 android:padding="@dimen/dp_5"
-                android:text="@string/title_check_credit_balance"
-                android:textSize="@dimen/fonts" />
+                android:text="@string/digital_check_remain_balance"
+                android:textSize="@dimen/sp_14" />
 
             <TextView
                 android:id="@+id/tv_label_check_credit"
@@ -53,12 +53,12 @@
                 android:background="@drawable/green_button"
                 android:gravity="center"
                 android:paddingBottom="@dimen/dp_10"
-                android:paddingLeft="@dimen/padding_detail"
-                android:paddingRight="@dimen/padding_detail"
+                android:paddingLeft="@dimen/dp_15"
+                android:paddingRight="@dimen/dp_15"
                 android:paddingTop="@dimen/dp_10"
-                android:text="@string/lable_button_check_balance"
+                android:text="@string/digital_check_balance"
                 android:textColor="@color/white"
-                android:textSize="@dimen/text_size_small" />
+                android:textSize="@dimen/sp_12" />
 
             <TextView
                 android:id="@+id/tv_error_operator"
@@ -68,7 +68,7 @@
                 android:layout_alignLeft="@+id/tv_label_check_credit"
                 android:textColor="@color/bright_red"
                 android:padding="@dimen/dp_5"
-                android:textSize="@dimen/fontvs"
+                android:textSize="@dimen/sp_12"
                 android:visibility="visible" />
         </RelativeLayout>
 
@@ -79,8 +79,8 @@
             android:background="@color/white"
             android:gravity="center"
             android:orientation="horizontal"
-            android:paddingBottom="@dimen/padding_detail"
-            android:paddingTop="@dimen/padding_detail"
+            android:paddingBottom="@dimen/dp_15"
+            android:paddingTop="@dimen/dp_15"
             android:visibility="invisible">
 
             <ProgressBar
@@ -93,9 +93,9 @@
                 android:id="@+id/tv_loading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/padding_detail"
+                android:paddingLeft="@dimen/dp_15"
                 android:text="@string/title_loading"
-                android:textSize="@dimen/font_medium"
+                android:textSize="@dimen/sp_16"
                 android:visibility="visible" />
 
         </LinearLayout>

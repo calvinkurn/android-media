@@ -1,7 +1,6 @@
 package com.tokopedia.product.manage.item.main.add.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils;
 import com.tokopedia.product.manage.item.common.util.ViewUtils;
 import com.tokopedia.product.manage.item.main.add.view.listener.ProductAddView;
@@ -12,6 +11,7 @@ import com.tokopedia.product.manage.item.variant.domain.FetchProductVariantByCat
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.List;
 
@@ -26,11 +26,11 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends BaseDagge
     private final SaveDraftProductUseCase saveDraftProductUseCase;
     private final GetShopInfoUseCase getShopInfoUseCase;
     protected final FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
 
     public ProductAddPresenterImpl(SaveDraftProductUseCase saveDraftProductUseCase,
                                    GetShopInfoUseCase getShopInfoUseCase,
-                                   UserSession userSession,
+                                   UserSessionInterface userSession,
                                    FetchProductVariantByCatUseCase fetchProductVariantByCatUseCase) {
         this.saveDraftProductUseCase = saveDraftProductUseCase;
         this.getShopInfoUseCase = getShopInfoUseCase;
@@ -101,9 +101,11 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends BaseDagge
     private class SaveDraftSubscriber extends Subscriber<Long> {
 
         boolean isUploading;
+
         SaveDraftSubscriber(boolean isUploading) {
             this.isUploading = isUploading;
         }
+
         @Override
         public void onCompleted() {
 
@@ -133,7 +135,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends BaseDagge
                 isUploading);
     }
 
-    private long getProductDraftId(){
+    private long getProductDraftId() {
         return getView().getProductDraftId();
     }
 

@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,49 +17,49 @@ public class TokoCashData implements Parcelable {
 
     @SerializedName("action")
     @Expose
-    private Action mAction;
+    private Action mAction = new Action();
     @SerializedName("balance")
     @Expose
-    private String mBalance;
+    private String mBalance = "";
     @SerializedName("redirect_url")
     @Expose
-    private String mRedirectUrl;
+    private String mRedirectUrl = "";
     @SerializedName("applinks")
     @Expose
-    private String mAppLinks;
+    private String mAppLinks = "";
     @SerializedName("text")
     @Expose
-    private String mText;
+    private String mText = "";
     @SerializedName("wallet_id")
     @Expose
-    private Long mWalletId;
+    private Long mWalletId = 0L;
     @SerializedName("link")
     @Expose
-    private int link;
+    private int link = 0;
     @SerializedName("ab_tags")
     @Expose
-    private List<String> abTags;
+    private List<String> abTags = new ArrayList<>();
     @SerializedName("raw_balance")
     @Expose
-    private long raw_balance;
+    private long raw_balance = 0L;
     @SerializedName("total_balance")
     @Expose
-    private String totalBalance;
+    private String totalBalance = "";
     @SerializedName("raw_total_balance")
     @Expose
-    private long rawTotalBalance;
+    private long rawTotalBalance = 0L;
     @SerializedName("hold_balance")
     @Expose
-    private String holdBalance;
+    private String holdBalance = "";
     @SerializedName("raw_hold_balance")
     @Expose
-    private long rawHoldBalance;
+    private long rawHoldBalance = 0L;
     @SerializedName("raw_threshold")
     @Expose
-    private long rawThreshold;
+    private long rawThreshold = 0L;
     @SerializedName("threshold")
     @Expose
-    private String threshold;
+    private String threshold = "";
 
     protected TokoCashData(Parcel in) {
         mAction = in.readParcelable(Action.class.getClassLoader());

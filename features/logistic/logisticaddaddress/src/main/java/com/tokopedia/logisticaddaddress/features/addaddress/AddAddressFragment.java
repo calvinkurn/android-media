@@ -3,7 +3,6 @@ package com.tokopedia.logisticaddaddress.features.addaddress;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,19 +20,17 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.logisticaddaddress.R;
@@ -46,6 +43,7 @@ import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticdata.data.module.qualifier.LogisticUserSessionQualifier;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsMultipleAddress;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactionanalytics.listener.ITransactionAnalyticsAddAddress;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -57,10 +55,18 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
+import rx.subscriptions.CompositeSubscription;
+
 import static com.tokopedia.logisticaddaddress.AddressConstants.EDIT_PARAM;
 import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_ADDRESS;
-import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST;
+import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_INSTANCE_TYPE;
 import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_PLATFORM_PAGE;
+import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_ADD_ADDRESS_FROM_MULTIPLE_CHECKOUT;
+import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT;
+import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT_EMPTY_DEFAULT_ADDRESS;
+import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_DEFAULT;
+import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_EDIT_ADDRESS_FROM_MULTIPLE_CHECKOUT;
+import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_EDIT_ADDRESS_FROM_SINGLE_CHECKOUT;
 import static com.tokopedia.logisticaddaddress.AddressConstants.IS_DISTRICT_RECOMMENDATION;
 import static com.tokopedia.logisticaddaddress.AddressConstants.IS_EDIT;
 import static com.tokopedia.logisticaddaddress.AddressConstants.KERO_TOKEN;
@@ -75,15 +81,16 @@ public class AddAddressFragment extends BaseDaggerFragment
 
     public static final int ERROR_RESULT_CODE = 999;
     private static final String EXTRA_EXISTING_LOCATION = "EXTRA_EXISTING_LOCATION";
-    private static final String EXTRA_HASH_LOCATION = "EXTRA_HASH_LOCATION";
     private static final int DISTRICT_RECOMMENDATION_REQUEST_CODE = 418;
     private static final String ADDRESS = "district_recommendation_address";
     private static final double MONAS_LATITUDE = -6.175794;
     private static final double MONAS_LONGITUDE = 106.826457;
     private static final int ADDRESS_MAX_CHARACTER = 175;
-    private static final int ADDRESS_MIN_CHARACTER = 20;
+    private static final int ADDRESS_MIN_CHARACTER = 5;
     private static final String ADDRESS_WATCHER_STRING = "%1$d karakter lagi diperlukan";
     private static final String ADDRESS_WATCHER_STRING2 = "%1$d karakter tersisa";
+
+    private static final String FIREBASE_PERFORMANCE_MONITORING_TRACE_MP_SUBMIT_ADD_ADDRESS = "mp_submit_add_address";
 
     private TextInputLayout receiverNameLayout;
     private EditText receiverNameEditText;
@@ -95,8 +102,6 @@ public class AddAddressFragment extends BaseDaggerFragment
     private EditText receiverPhoneEditText;
     private View chooseLocation;
     private EditText locationEditText;
-    private TextInputLayout passwordLayout;
-    private EditText passwordEditText;
     private TextView saveButton;
     private TextView addressLabel;
     private TextInputLayout districtLayout;
@@ -105,15 +110,10 @@ public class AddAddressFragment extends BaseDaggerFragment
     private AutoCompleteTextView zipCodeTextView;
     private TextInputLayout postCodeLayout;
     private EditText postCodeEditText;
-    private LinearLayout addressSpinerLayout;
     private Spinner spinnerProvince;
     private TextView provinceError;
-    private TextView regencyTitle;
-    private ProgressBar progressRegency;
     private Spinner spinnerRegency;
     private TextView regencyError;
-    private TextView districtTitle;
-    private ProgressBar progressDistrict;
     private Spinner spinnerSubDistrict;
     private TextView subDistrictError;
     private ProgressBar mProgressBar;
@@ -122,12 +122,19 @@ public class AddAddressFragment extends BaseDaggerFragment
     private Token token;
     private Destination address;
 
+    private CheckoutAnalyticsMultipleAddress checkoutAnalyticsMultipleAddress;
     private CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
-    private String extraPlatformPage;
-    private boolean isFromMarketPlaceCartEmptyAddressFirst;
 
-    @Inject AddAddressContract.Presenter mPresenter;
-    @Inject @LogisticUserSessionQualifier UserSessionInterface userSession;
+    @Inject
+    AddAddressContract.Presenter mPresenter;
+    @Inject
+    @LogisticUserSessionQualifier
+    UserSessionInterface userSession;
+    @Inject
+    PerformanceMonitoring performanceMonitoring;
+
+    private int instanceType;
+    private CompositeSubscription compositeSubscription;
 
     public static AddAddressFragment newInstance(Bundle extras) {
         Bundle bundle = new Bundle(extras);
@@ -146,13 +153,16 @@ public class AddAddressFragment extends BaseDaggerFragment
             Bundle arguments = getArguments();
             this.token = arguments.getParcelable(KERO_TOKEN);
             this.address = arguments.getParcelable(EDIT_PARAM);
-            this.extraPlatformPage = arguments.getString(EXTRA_PLATFORM_PAGE, "");
-            this.isFromMarketPlaceCartEmptyAddressFirst = arguments.getBoolean(EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST, false);
+            this.instanceType = arguments.getInt(EXTRA_INSTANCE_TYPE, INSTANCE_TYPE_DEFAULT);
         }
 
-        if (token == null) {
+        checkoutAnalyticsChangeAddress = new CheckoutAnalyticsChangeAddress();
+
+        if (token == null && getActivity() != null) {
             getActivity().setResult(ERROR_RESULT_CODE);
             getActivity().finish();
+        } else {
+            if (!isEdit()) sendAnalyticsScreenName(getScreenName());
         }
     }
 
@@ -173,7 +183,6 @@ public class AddAddressFragment extends BaseDaggerFragment
     @Override
     public void onStart() {
         super.onStart();
-        sendAnalyticsScreenName(getScreenName());
     }
 
     @Override
@@ -185,6 +194,7 @@ public class AddAddressFragment extends BaseDaggerFragment
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        compositeSubscription.unsubscribe();
         mPresenter.detachView();
     }
 
@@ -248,6 +258,7 @@ public class AddAddressFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
+        compositeSubscription = new CompositeSubscription();
         BaseAppComponent appComponent = ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent();
         DaggerAddressComponent.builder()
                 .baseAppComponent(appComponent)
@@ -261,8 +272,13 @@ public class AddAddressFragment extends BaseDaggerFragment
     }
 
     @Override
-    public Context context() {
-        return getActivity();
+    public void stopPerformaceMonitoring() {
+        performanceMonitoring.stopTrace();
+    }
+
+    @Override
+    public CompositeSubscription getCompositeSubscription() {
+        return compositeSubscription;
     }
 
     @Override
@@ -277,13 +293,14 @@ public class AddAddressFragment extends BaseDaggerFragment
 
     @Override
     public void finishLoading() {
+        saveButton.setEnabled(true);
         mProgressBar.setVisibility(View.GONE);
     }
 
     @Override
     public void finishActivity() {
         Intent intent = getActivity().getIntent();
-        intent.putExtra(EXTRA_ADDRESS, address);
+            intent.putExtra(EXTRA_ADDRESS, address);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }
@@ -302,27 +319,14 @@ public class AddAddressFragment extends BaseDaggerFragment
     }
 
     @Override
-    public String getPassword() {
-        return passwordEditText.getText().toString();
-    }
-
-    @Override
     public void showLoading() {
+        saveButton.setEnabled(false);
         mProgressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public boolean isValidAddress() {
         boolean isValid = true;
-
-        // Check password validity
-        if (isEdit() && getPassword().length() == 0) {
-            String errorMessage = getString(R.string.error_field_required);
-            passwordLayout.setError(errorMessage);
-            passwordLayout.requestFocus();
-            isValid = false;
-            sendAnalyticsOnValidationErrorSaveAddress(errorMessage);
-        }
 
         // Check receiver phone validity
         int phoneLength = receiverPhoneEditText.getText().length();
@@ -344,8 +348,8 @@ public class AddAddressFragment extends BaseDaggerFragment
 
         // Check address validity
         int addressLength = addressEditText.getText().length();
-        if (addressLength < 20) {
-            String errorMessage = getString(R.string.error_min_address);
+        if (addressLength < ADDRESS_MIN_CHARACTER) {
+            String errorMessage = getString(R.string.error_min_5_address);
 
             if (addressLength == 0) {
                 errorMessage = getString(R.string.error_field_required);
@@ -577,11 +581,23 @@ public class AddAddressFragment extends BaseDaggerFragment
     @Override
     public void sendAnalyticsOnSaveAddressButtonWithoutErrorValidation(boolean success) {
         if (success) {
-            // checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressClickTambahFromTambahAlamatBaruSuccess();
             checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahSuccess();
+            if (instanceType == INSTANCE_TYPE_ADD_ADDRESS_FROM_MULTIPLE_CHECKOUT) {
+                checkoutAnalyticsMultipleAddress.eventClickAddressCartMultipleAddressClickButtonSimpanSuccess();
+            } else if (instanceType == INSTANCE_TYPE_EDIT_ADDRESS_FROM_MULTIPLE_CHECKOUT) {
+                checkoutAnalyticsMultipleAddress.eventClickAddressCartMultipleAddressClickButtonSimpanFromEditSuccess();
+            } else if (instanceType == INSTANCE_TYPE_EDIT_ADDRESS_FROM_SINGLE_CHECKOUT) {
+                checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressClickButtonSimpanFromEditSuccess();
+            }
         } else {
-            // checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressClickTambahFromTambahAlamatBaruFailed();
             checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahNotSuccess();
+            if (instanceType == INSTANCE_TYPE_ADD_ADDRESS_FROM_MULTIPLE_CHECKOUT) {
+                checkoutAnalyticsMultipleAddress.eventClickAddressCartMultipleAddressClickButtonSimpanNotSuccess();
+            } else if (instanceType == INSTANCE_TYPE_EDIT_ADDRESS_FROM_MULTIPLE_CHECKOUT) {
+                checkoutAnalyticsMultipleAddress.eventClickAddressCartMultipleAddressClickButtonSimpanFromEditNotSuccess();
+            } else if (instanceType == INSTANCE_TYPE_EDIT_ADDRESS_FROM_SINGLE_CHECKOUT) {
+                checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressClickButtonSimpanFromEditNotSuccess();
+            }
         }
     }
 
@@ -659,6 +675,7 @@ public class AddAddressFragment extends BaseDaggerFragment
         saveButton.setOnClickListener(view -> {
             if (isValidAddress()) {
                 updateAddress();
+                performanceMonitoring.startTrace(FIREBASE_PERFORMANCE_MONITORING_TRACE_MP_SUBMIT_ADD_ADDRESS);
                 mPresenter.saveAddress();
             }
         });
@@ -675,8 +692,6 @@ public class AddAddressFragment extends BaseDaggerFragment
         receiverPhoneEditText = view.findViewById(R.id.receiver_phone);
         chooseLocation = view.findViewById(R.id.layout_value_location);
         locationEditText = view.findViewById(R.id.value_location);
-        passwordLayout = view.findViewById(R.id.password_layout);
-        passwordEditText = view.findViewById(R.id.password);
         saveButton = view.findViewById(R.id.save_button);
         addressLabel = view.findViewById(R.id.address_label_watcher);
 
@@ -687,15 +702,10 @@ public class AddAddressFragment extends BaseDaggerFragment
 
         postCodeLayout = view.findViewById(R.id.post_code_layout);
         postCodeEditText = view.findViewById(R.id.post_code);
-        addressSpinerLayout = view.findViewById(R.id.address_spinner_layout);
         spinnerProvince = view.findViewById(R.id.provinsi);
         provinceError = view.findViewById(R.id.province_error);
-        regencyTitle = view.findViewById(R.id.regency_title);
-        progressRegency = view.findViewById(R.id.regency_progress);
         spinnerRegency = view.findViewById(R.id.regency);
         regencyError = view.findViewById(R.id.regency_error);
-        districtTitle = view.findViewById(R.id.district_title);
-        progressDistrict = view.findViewById(R.id.district_progress);
         spinnerSubDistrict = view.findViewById(R.id.sub_district);
         subDistrictError = view.findViewById(R.id.sub_district_error);
 
@@ -707,15 +717,11 @@ public class AddAddressFragment extends BaseDaggerFragment
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         mProgressBar = view.findViewById(R.id.logistic_spinner);
-
-        passwordLayout.setVisibility(isEdit() ? View.VISIBLE : View.GONE);
     }
 
     protected void initialVar() {
-        if (getActivity().getApplication() instanceof AbstractionRouter) {
-            AnalyticTracker analyticTracker = ((AbstractionRouter) getActivity().getApplication()).getAnalyticTracker();
-            checkoutAnalyticsChangeAddress = new CheckoutAnalyticsChangeAddress(analyticTracker);
-        }
+
+        checkoutAnalyticsMultipleAddress = new CheckoutAnalyticsMultipleAddress();
         if (isEdit() && address != null) {
             receiverNameEditText.setText(address.getReceiverName());
             addressTypeEditText.setText(address.getAddressName());
@@ -741,7 +747,6 @@ public class AddAddressFragment extends BaseDaggerFragment
         addressEditText.addTextChangedListener(characterWatcher(addressLabel));
         addressTypeEditText.addTextChangedListener(watcher(addressTypeLayout));
         receiverPhoneEditText.addTextChangedListener(watcher(receiverPhoneLayout));
-        passwordEditText.addTextChangedListener(watcher(passwordLayout));
 
         districtEditText.addTextChangedListener(watcher(districtLayout));
         zipCodeTextView.addTextChangedListener(watcher(zipCodeLayout));
@@ -876,7 +881,7 @@ public class AddAddressFragment extends BaseDaggerFragment
                 address.getLongitude() != null &&
                 !address.getLatitude().equals("") &&
                 !address.getLongitude().equals("")
-                ) {
+        ) {
             mPresenter.requestReverseGeoCode(getContext(), address);
         }
     }
@@ -926,10 +931,10 @@ public class AddAddressFragment extends BaseDaggerFragment
     }
 
     private boolean isAddAddressFromCartCheckoutMarketplace() {
-        return extraPlatformPage.equalsIgnoreCase(PLATFORM_MARKETPLACE_CART);
+        return (instanceType >= 10 && instanceType < 30);
     }
 
     private boolean isFromMarketPlaceCartEmptyAddressFirst() {
-        return isFromMarketPlaceCartEmptyAddressFirst;
+        return instanceType == INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT_EMPTY_DEFAULT_ADDRESS;
     }
 }

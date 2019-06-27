@@ -24,11 +24,13 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
 
     private ImageView imageProfileProgress;
     private ImageView imageProfileCompleted;
+    private ImageView icByme;
     private TextView textUsername;
     private TextView textProfileCompletion;
     private TextView textTokopointAmount;
     private TextView textCouponAmount;
     private ProgressBar progressBar;
+    private View byMeButton;
     private View nameHolder;
     private View tokopointHolder;
     private View couponHolder;
@@ -51,6 +53,7 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
 
     private void init() {
         View view = inflate(getContext(), R.layout.view_buyer_card, this);
+        icByme = view.findViewById(R.id.ic_affiliate_byme);
         imageProfileProgress = view.findViewById(R.id.image_profile_progress);
         imageProfileCompleted = view.findViewById(R.id.image_profile_completed);
         textUsername = view.findViewById(R.id.text_username);
@@ -58,6 +61,7 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
         textTokopointAmount = view.findViewById(R.id.text_tokopoint_amount);
         textCouponAmount = view.findViewById(R.id.text_voucher_amount);
         progressBar = view.findViewById(R.id.circular_progress_bar);
+        byMeButton = view.findViewById(R.id.by_me_button);
         nameHolder = view.findViewById(R.id.holder_title);
         tokopointHolder = view.findViewById(R.id.holder_tokopoint);
         couponHolder = view.findViewById(R.id.holder_coupon);
@@ -95,7 +99,7 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
     }
 
     @Override
-    public void setCoupon(int coupons) {
+    public void setCoupon(String coupons) {
         textCouponAmount.setText(String.format(getContext().getString(R.string.label_total_coupon), coupons));
     }
 
@@ -129,6 +133,11 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
         textProfileCompletion.setTextColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
     }
 
+    @Override
+    public void showBymeIcon() {
+        icByme.setVisibility(VISIBLE);
+    }
+
     public void setOnClickProfile(View.OnClickListener listener) {
         nameHolder.setOnClickListener(listener);
     }
@@ -143,5 +152,9 @@ public class BuyerCardView extends BaseCustomView implements BuyerCardContract.V
 
     public void setOnClickVoucher(View.OnClickListener listener) {
         couponHolder.setOnClickListener(listener);
+    }
+
+    public void setOnClickByMe(View.OnClickListener listener) {
+        byMeButton.setOnClickListener(listener);
     }
 }

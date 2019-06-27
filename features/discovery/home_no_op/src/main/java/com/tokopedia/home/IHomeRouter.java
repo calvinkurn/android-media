@@ -34,11 +34,5 @@ public interface IHomeRouter {
 
     void sendIndexScreen(Activity activity, String screeName);
 
-    Intent getTopAdsProductDetailIntentForHome(Context context,
-                                               String id,
-                                               String name,
-                                               String priceFormat,
-                                               String imageMUrl);
-
     Observable<TokopointHomeDrawerData> getTokopointUseCaseForHome();
 }

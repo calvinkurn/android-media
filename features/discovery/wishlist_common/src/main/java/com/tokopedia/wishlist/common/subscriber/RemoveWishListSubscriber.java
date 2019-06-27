@@ -45,13 +45,13 @@ public class RemoveWishListSubscriber extends Subscriber<GraphqlResponse> {
                 viewListener.onSuccessRemoveWishlist(productId);
             } else {
                 viewListener.onErrorRemoveWishlist(
-                        viewListener.getString(R.string.default_request_error_unknown),
+                        context.getString(R.string.default_request_error_unknown),
                         productId);
             }
 
         } else {
             viewListener.onErrorRemoveWishlist(
-                    viewListener.getString(R.string.default_request_error_unknown),
+                    context.getString(R.string.default_request_error_unknown),
                     productId);
         }
 

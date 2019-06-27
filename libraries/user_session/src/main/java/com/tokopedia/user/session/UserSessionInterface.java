@@ -45,6 +45,13 @@ public interface UserSessionInterface {
 
     boolean hasShop();
 
+    boolean hasPassword();
+
+    String getGCToken();
+
+    String getShopAvatar();
+
+    String getAutofillUserData();
 
         /**
          * SETTER METHOD
@@ -71,6 +78,8 @@ public interface UserSessionInterface {
     void setTempLoginName(String fullName);
 
     void setTempUserId(String userId);
+
+    void setIsAffiliateStatus(boolean isAffiliate);
 
     void setTempPhoneNumber(String userPhone);
 
@@ -100,4 +109,11 @@ public interface UserSessionInterface {
 
     void setSaldoWithdrawalWaring(boolean value);
 
+    void setSaldoIntroPageStatus(boolean value);
+
+    void setGCToken(String gcToken);
+
+    void setShopAvatar(String shopAvatar);
+
+    void setAutofillUserData(String autofillUserData);
 }

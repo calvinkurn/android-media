@@ -42,7 +42,7 @@ import static org.powermock.api.support.membermodification.MemberMatcher.method;
  */
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 21)
+@Config( sdk = 21)
 @PrepareForTest(TkpdHintTextInputLayout.class)
 @PowerMockIgnore({"org.mockito.*", "org.robolectric.*", "android.*"})
 public class TkpdHintTextInputLayoutUnitTest {

@@ -18,7 +18,7 @@ import com.tokopedia.home.beranda.presentation.view.compoundview.HeaderHomeView;
 public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.layout_item_header_home;
+    public static final int LAYOUT = R.layout.layout_item_widget_ovo_tokopoint;
     private final HomeCategoryListener listener;
     private LinearLayout mainContainer;
 

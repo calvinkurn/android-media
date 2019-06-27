@@ -1,0 +1,530 @@
+{
+  "header":{
+    "process_time":4320.179673000001,
+    "messages":[
+    ],
+    "reason":"",
+    "error_code":"200"
+  },
+  "data":{
+    "errors":[
+    ],
+    "error_code":0,
+    "success":1,
+    "max_quantity":10000,
+    "max_char_note":144,
+    "messages":{
+      "ErrorFieldBetween":"Jumlah harus diisi antara 1 -{{value}}",
+      "ErrorFieldMaxChar":"Catatan terlalu panjang, maksimum{{value}} karakter.",
+      "ErrorFieldRequired":"Jumlah harus diisi",
+      "ErrorProductAvailableStock":"Stok tersedia:{{value}}",
+      "ErrorProductAvailableStockDetail":"Harap kurangi jumlah barang",
+      "ErrorProductMaxQuantity":"Maksimal pembelian produk iniadalah {{value}} barang",
+      "ErrorProductMinQuantity":"Minimal pembelian produk iniadalah {{value}} barang"
+    },
+    "cart":{
+      "errors":[
+      ],
+      "group_shop":[
+        {
+          "errors":[
+          ],
+          "shop":{
+            "shop_id":479824,
+            "user_id":5511683,
+            "admin_ids":[
+              5512153
+            ],
+            "shop_name":"linda delapan",
+            "shop_image":"https://cdn-staging.tokopedia.com/img/cache/215-square/shops-1/2017/6/15/5511683/5511683_d6a6a501-7bca-4bde-9cea-94d62a22574e.jpg",
+            "shop_url":"https://staging.tokopedia.com/lindadelapan",
+            "shop_status":1,
+            "is_gold":1,
+            "is_gold_badge":false,
+            "is_official":0,
+            "is_free_returns":1,
+            "gold_merchant":{
+              "is_gold":1,
+              "is_gold_badge":false,
+              "gold_merchant_logo_url":"https://ecs7.tokopedia.net/img/newtkpd/gold-new/gold_merchant_logo.png"
+            },
+            "official_store":{
+              "is_official":0,
+              "os_logo_url":"https://ecs7.tokopedia.net/img/official_store/badge_os.png"
+            },
+            "address_id":2270,
+            "postal_code":"12930",
+            "latitude":"-6.221372091485628",
+            "longitude":"106.81937363943939",
+            "district_id":2270,
+            "district_name":"Setiabudi",
+            "origin":2270,
+            "address_street":"Jalan Professor DoktorSatrio, Kecamatan Setiabudi, 12930",
+            "province_id":13,
+            "city_id":175,
+            "city_name":"DKI Jakarta",
+            "province_name":"",
+            "country_name":""
+          },
+          "shipping_id":0,
+          "sp_id":0,
+          "rates_id":0,
+          "dropshipper":{
+            "name":"",
+            "telp_no":""
+          },
+          "is_insurance":false,
+          "shop_shipments":[
+            {
+              "ship_id":13,
+              "ship_name":"Grab",
+              "ship_code":"grab",
+              "ship_logo":"kurir-grab.png",
+              "ship_prods":[
+                {
+                  "ship_prod_id":24,
+                  "ship_prod_name":"Same Day",
+                  "ship_group_name":"sameday",
+                  "ship_group_id":1002,
+                  "additional_fee":0,
+                  "minimum_weight":0
+                },
+                {
+                  "ship_prod_id":37,
+                  "ship_prod_name":"Instant",
+                  "ship_group_name":"instant",
+                  "ship_group_id":1000,
+                  "additional_fee":0,
+                  "minimum_weight":0
+                }
+              ],
+              "is_dropship_enabled":0
+            },
+            {
+              "ship_id":13,
+              "ship_name":"Grab",
+              "ship_code":"grab",
+              "ship_logo":"kurir-grab.png",
+              "ship_prods":[
+                {
+                  "ship_prod_id":24,
+                  "ship_prod_name":"Same Day",
+                  "ship_group_name":"sameday",
+                  "ship_group_id":1002,
+                  "additional_fee":0,
+                  "minimum_weight":0
+                },
+                {
+                  "ship_prod_id":37,
+                  "ship_prod_name":"Instant",
+                  "ship_group_name":"instant",
+                  "ship_group_id":1000,
+                  "additional_fee":0,
+                  "minimum_weight":0
+                }
+              ],
+              "is_dropship_enabled":0
+            },
+            {
+              "ship_id":13,
+              "ship_name":"Grab",
+              "ship_code":"grab",
+              "ship_logo":"kurir-grab.png",
+              "ship_prods":[
+                {
+                  "ship_prod_id":24,
+                  "ship_prod_name":"Same Day",
+                  "ship_group_name":"sameday",
+                  "ship_group_id":1002,
+                  "additional_fee":0,
+                  "minimum_weight":0
+                },
+                {
+                  "ship_prod_id":37,
+                  "ship_prod_name":"Instant",
+                  "ship_group_name":"instant",
+                  "ship_group_id":1000,
+                  "additional_fee":0,
+                  "minimum_weight":0
+                }
+              ],
+              "is_dropship_enabled":0
+            },
+            {
+              "ship_id":13,
+              "ship_name":"Grab",
+              "ship_code":"grab",
+              "ship_logo":"kurir-grab.png",
+              "ship_prods":[
+                {
+                  "ship_prod_id":24,
+                  "ship_prod_name":"Same Day",
+                  "ship_group_name":"sameday",
+                  "ship_group_id":1002,
+                  "additional_fee":0,
+                  "minimum_weight":0
+                },
+                {
+                  "ship_prod_id":37,
+                  "ship_prod_name":"Instant",
+                  "ship_group_name":"instant",
+                  "ship_group_id":1000,
+                  "additional_fee":0,
+                  "minimum_weight":0
+                }
+              ],
+              "is_dropship_enabled":0
+            },
+            {
+              "ship_id":13,
+              "ship_name":"Grab",
+              "ship_code":"grab",
+              "ship_logo":"kurir-grab.png",
+              "ship_prods":[
+                {
+                  "ship_prod_id":24,
+                  "ship_prod_name":"Same Day",
+                  "ship_group_name":"sameday",
+                  "ship_group_id":1002,
+                  "additional_fee":0,
+                  "minimum_weight":0
+                },
+                {
+                  "ship_prod_id":37,
+                  "ship_prod_name":"Instant",
+                  "ship_group_name":"instant",
+                  "ship_group_id":1000,
+                  "additional_fee":0,
+                  "minimum_weight":0
+                }
+              ],
+              "is_dropship_enabled":0
+            }
+          ],
+          "products":[
+            {
+              "errors":[
+              ],
+              "cart_id":15435488953594,
+              "product_id":15223035,
+              "sku":"",
+              "campaign_id":0,
+              "product_name":"Produk Varian",
+              "product_price_fmt":"Rp 2.000",
+              "product_price":2000,
+              "product_original_price":2000,
+              "is_slash_price":false,
+              "product_wholesale_price":2000,
+              "product_wholesale_price_fmt":"Rp 2.000",
+              "product_weight_fmt":"150gr",
+              "product_weight":150,
+              "product_condition":1,
+              "product_url":"https://staging.tokopedia.com/lindadelapan/produk-varian-putih",
+              "product_returnable":3,
+              "product_is_free_returns":1,
+              "free_returns":{
+                "is_freereturns":1,
+                "free_returns_logo":"https://ecs7.tokopedia.net/img/icon-frs.png"
+              },
+              "product_is_preorder":1,
+              "product_preorder":{
+                "duration_text":"3 Hari",
+                "duration_day":3,
+                "duration_unit_code":1,
+                "duration_unit_text":"Day",
+                "duration_value":3
+              },
+              "product_cashback":"",
+              "product_min_order":6,
+              "product_invenage_value":0,
+              "product_switch_invenage":0,
+              "currency_rate":1,
+              "product_price_currency":1,
+              "product_image_src_200_square":"https://cdn-staging.tokopedia.com/img/cache/200-square/product-1/2018/3/6/5511683/5511683_a5bf47ca-de81-4c76-be51-373ce3bb3c6b_1000_1000.jpg",
+              "product_all_images":"[{\"file_path\":\"product-1/2018/3/6/5511683\",\"file_name\":\"5511683_a5bf47ca-de81-4c76-be51-373ce3bb3c6b_1000_1000.jpg\",\"status\":2},{\"file_path\":\"product-1/2018/3/6/5511683\",\"file_name\":\"5511683_90e63816-8e5d-4825-97e5-faf751961540_1500_1500.jpg\",\"status\":1}]",
+              "product_notes":"barang linda delapan",
+              "product_quantity":6,
+              "product_menu_id":1404053,
+              "product_finsurance":0,
+              "product_fcancel_partial":0,
+              "product_shipment":null,
+              "product_shipment_mapping":null,
+              "product_cat_id":1769,
+              "product_catalog_id":0,
+              "product_status":1,
+              "product_tracker_data":{
+                "attribution":"",
+                "tracker_list_name":""
+              },
+              "ProductCategory":"Fashion Wanita / Atasan/ Kaos",
+              "product_total_weight":900,
+              "product_total_weight_fmt":"900 gr",
+              "purchase_protection_plan_data":{
+                "protection_available":false,
+                "protection_type_id":0,
+                "protection_price_per_product":0,
+                "protection_price":0,
+                "protection_title":"",
+                "protection_subtitle":"",
+                "protection_link_text":"",
+                "protection_link_url":"",
+                "protection_opt_in":false
+              },
+              "product_variants":[
+                {
+                  "parent_id":15223034,
+                  "default_child":15223042,
+                  "variant":[
+                    {
+                      "product_variant_id":8980,
+                      "variant_name":"warna",
+                      "identifier":"colour",
+                      "position":1,
+                      "options":[
+                        {
+                          "id":28510,
+                          "value":"Putih",
+                          "hex":"#ffffff"
+                        },
+                        {
+                          "id":28511,
+                          "value":"Navy",
+                          "hex":"#05056b"
+                        }
+                      ]
+                    },
+                    {
+                      "product_variant_id":8981,
+                      "variant_name":"ukuran",
+                      "identifier":"size",
+                      "position":2,
+                      "options":[
+                        {
+                          "id":28515,
+                          "value":"S"
+                        },
+                        {
+                          "id":28516,
+                          "value":"M"
+                        }
+                      ]
+                    },
+                    {
+                      "product_variant_id":8982,
+                      "variant_name":"jenis kelamin",
+                      "identifier":"gender",
+                      "position":3,
+                      "options":[
+                        {
+                          "id":28520,
+                          "value":"Man"
+                        },
+                        {
+                          "id":28521,
+                          "value":"Woman"
+                        }
+                      ]
+                    }
+                  ],
+                  "children":[
+                    {
+                      "product_id":15223035,
+                      "price":1000,
+                      "stock":0,
+                      "min_order":6,
+                      "max_order":0,
+                      "sku":"",
+                      "option_ids":[
+                        28510, 28515, 28520
+                      ],
+                      "is_enabled":false,
+                      "name":"Produk Varian - Putih - S - Man",
+                      "url":"https://staging.tokopedia.com/lindadelapan/produk-varian-putih",
+                      "is_buyable":false,
+                      "stock_wording":"StokTersedia",
+                      "stock_wording_html":"StokTersedia",
+                      "other_variant_stock":"available"
+                    },
+                    {
+                      "product_id":15223036,
+                      "price":1000,
+                      "stock":0,
+                      "min_order":6,
+                      "max_order":0,
+                      "sku":"",
+                      "option_ids":[
+                        28510, 28515, 28521
+                      ],
+                      "is_enabled":false,
+                      "name":"Produk Varian - Putih - S - Woman",
+                      "url":"https://staging.tokopedia.com/lindadelapan/produk-varian-putih",
+                      "is_buyable":false,
+                      "stock_wording":"TersediaUntuk Varian Lain",
+                      "stock_wording_html":"Tersedia Untuk Varian Lain",
+                      "other_variant_stock":"available"
+                    },
+                    {
+                      "product_id":15223037,
+                      "price":2000,
+                      "stock":0,
+                      "min_order":6,
+                      "max_order":0,
+                      "sku":"",
+                      "option_ids":[
+                        28510, 28516, 28520
+                      ],
+                      "is_enabled":true,
+                      "name":"Produk Varian - Putih - M - Man",
+                      "url":"https://staging.tokopedia.com/lindadelapan/produk-varian-navy",
+                      "is_buyable":true,
+                      "stock_wording":"StokTersedia",
+                      "stock_wording_html":"StokTersedia",
+                      "other_variant_stock":"available"
+                    },
+                    {
+                      "product_id":15223038,
+                      "price":2000,
+                      "stock":0,
+                      "min_order":6,
+                      "max_order":0,
+                      "sku":"",
+                      "option_ids":[
+                        28510, 28516, 28521
+                      ],
+                      "is_enabled":true,
+                      "name":"Produk Varian - Putih - M - Woman",
+                      "url":"https://staging.tokopedia.com/lindadelapan/produk-varian-navy",
+                      "is_buyable":true,
+                      "stock_wording":"StokTersedia",
+                      "stock_wording_html":"StokTersedia",
+                      "other_variant_stock":"available"
+                    },
+                    {
+                      "product_id":15223039,
+                      "price":3000,
+                      "stock":0,
+                      "min_order":6,
+                      "max_order":0,
+                      "sku":"",
+                      "option_ids":[
+                        28511, 28515, 28520
+                      ],
+                      "is_enabled":true,
+                      "name":"Produk Varian - Navy - S - Man",
+                      "url":"https://staging.tokopedia.com/lindadelapan/produk-varian-maroon",
+                      "is_buyable":true,
+                      "stock_wording":"StokTersedia",
+                      "stock_wording_html":"StokTersedia",
+                      "other_variant_stock":"available"
+                    },
+                    {
+                      "product_id":15223040,
+                      "price":3000,
+                      "stock":0,
+                      "min_order":6,
+                      "max_order":0,
+                      "sku":"",
+                      "option_ids":[
+                        28511, 28515, 28521
+                      ],
+                      "is_enabled":false,
+                      "name":"Produk Varian - Navy - S - Woman",
+                      "url":"https://staging.tokopedia.com/lindadelapan/produk-varian-maroon",
+                      "is_buyable":false,
+                      "stock_wording":"TersediaUntuk Varian Lain",
+                      "stock_wording_html":"Tersedia Untuk Varian Lain",
+                      "other_variant_stock":"not available"
+                    },
+                    {
+                      "product_id":15223041,
+                      "price":4000,
+                      "stock":0,
+                      "min_order":6,
+                      "max_order":0,
+                      "sku":"",
+                      "option_ids":[
+                        28511, 28516, 28520
+                      ],
+                      "is_enabled":true,
+                      "name":"Produk Varian - Navy - M - Man",
+                      "url":"https://staging.tokopedia.com/lindadelapan/produk-varian-hitam",
+                      "is_buyable":true,
+                      "stock_wording":"StokTersedia",
+                      "stock_wording_html":"StokTersedia",
+                      "other_variant_stock":"available"
+                    },
+                    {
+                      "product_id":15223042,
+                      "price":4000,
+                      "stock":0,
+                      "min_order":6,
+                      "max_order":0,
+                      "sku":"",
+                      "option_ids":[
+                        28511, 28516, 28521
+                      ],
+                      "is_enabled":true,
+                      "name":"Produk Varian - Navy - M - Woman",
+                      "url":"https://staging.tokopedia.com/lindadelapan/produk-varian-hitam",
+                      "is_buyable":true,
+                      "stock_wording":"StokTersedia",
+                      "stock_wording_html":"StokTersedia",
+                      "other_variant_stock":"available"
+                    }
+                  ],
+                  "is_enabled":false,
+                  "stock":0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "is_coupon_active":1,
+    "kero_token":"Tokopedia+Kero:CQxiJltUx0r1zWYBeZurJFfNvFA=",
+    "kero_discom_token":"Tokopedia+Kero:w6a7GbJaZ6Z3exNSra+44vhLWLE=",
+    "kero_unix_time":1543548897,
+    "enable_partial_cancel":false,
+    "donation":{
+      "Title":"TopDonasi100",
+      "Nominal":100,
+      "Description":"Donasi yang terkumpul hingga 24 Desember2018 akan disalurkan oleh Yayasan Pembinaan Anak Cacat (YPAC) untukmendukung kemandirian anak berkebutuhan khusus lewat pendidikan."
+    },
+    "promo_suggestion":{
+      "cta":"",
+      "cta_color":"",
+      "is_visible":0,
+      "promo_code":"",
+      "text":""
+    },
+    "autoapply":{
+      "success":false,
+      "code":"",
+      "is_coupon":0,
+      "discount_amount":0,
+      "title_description":"",
+      "message_success":"",
+      "promo_id":0
+    },
+    "user_profile_default":{
+      "profile_id":2509,
+      "status":1,
+      "address_id":1111,
+      "address_name":"Rumah",
+      "receiver_name":"Hendra P",
+      "address_street":"Tokopedia Tower Jl. Satrio Karet KuninganJakarta Selatan 12940",
+      "district_name":"Setiabudi",
+      "city_name":"Jakarta Selatan",
+      "province_name":"DKI Jakarta",
+      "phone_no":"0812-4449-401",
+      "gateway_code":"TOKOPEDIACENTER",
+      "checkout_param":"",
+      "image":"https://ecs7.tokopedia.net/img/toppay/sprites/tokopedia-center.png",
+      "description":"Tokopedia Center",
+      "url":"",
+      "service_id":10003
+    }
+  },
+  "status":"OK"
+}

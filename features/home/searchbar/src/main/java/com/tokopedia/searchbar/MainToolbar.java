@@ -7,26 +7,31 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.Gravity;
-import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.badge.BadgeView;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 /**
  * Created by meta on 22/06/18.
  */
 public class MainToolbar extends Toolbar {
 
-    private ImageButton btnNotification;
-    private ImageButton btnWishlist;
-    private BadgeView badgeView;
+    protected ImageView btnNotification;
+    protected ImageView btnWishlist;
+    protected ImageView btnInbox;
+    private BadgeView badgeViewInbox;
+    private BadgeView badgeViewNotification;
 
-    private SearchBarAnalytics searchBarAnalytics;
-    private UserSession userSession;
+    protected SearchBarAnalytics searchBarAnalytics;
+    protected UserSessionInterface userSession;
 
-    private String screenName = "";
+    protected String screenName = "";
 
     public MainToolbar(Context context) {
         super(context);
@@ -45,25 +50,37 @@ public class MainToolbar extends Toolbar {
 
     public void setNotificationNumber(int badgeNumber) {
         if (btnNotification != null) {
-            if (badgeView == null)
-                badgeView = new BadgeView(getContext());
+            if (badgeViewNotification == null)
+                badgeViewNotification = new BadgeView(getContext());
 
-            badgeView.bindTarget(btnNotification);
-            badgeView.setBadgeGravity(Gravity.END | Gravity.TOP);
-            badgeView.setBadgeNumber(badgeNumber);
+            badgeViewNotification.bindTarget(btnNotification);
+            badgeViewNotification.setBadgeGravity(Gravity.END | Gravity.TOP);
+            badgeViewNotification.setBadgeNumber(badgeNumber);
         }
     }
 
-    private void init(Context context, @Nullable AttributeSet attrs) {
+    public void setInboxNumber(int badgeNumber) {
+        if (btnInbox != null) {
+            if (badgeViewInbox == null)
+                badgeViewInbox = new BadgeView(getContext());
 
-        userSession = ((AbstractionRouter) this.getContext().getApplicationContext()).getSession();
+            badgeViewInbox.bindTarget(btnInbox);
+            badgeViewInbox.setBadgeGravity(Gravity.END | Gravity.TOP);
+            badgeViewInbox.setBadgeNumber(badgeNumber);
+        }
+    }
+
+    protected void init(Context context, @Nullable AttributeSet attrs) {
+
+        userSession = new UserSession(context);
         searchBarAnalytics = new SearchBarAnalytics(this.getContext());
 
-        inflate(context, R.layout.main_toolbar, this);
+        inflateResource(context);
         ImageButton btnQrCode = findViewById(R.id.btn_qrcode);
         btnNotification = findViewById(R.id.btn_notification);
+        btnInbox = findViewById(R.id.btn_inbox);
         btnWishlist = findViewById(R.id.btn_wishlist);
-        EditText editTextSearch = findViewById(R.id.et_search);
+        TextView editTextSearch = findViewById(R.id.et_search);
 
         if (attrs != null) {
             TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.MainToolbar, 0, 0);
@@ -80,45 +97,58 @@ public class MainToolbar extends Toolbar {
             editTextSearch.setTextSize(18);
         }
 
-        btnQrCode.setOnClickListener(v -> {
-            searchBarAnalytics.eventTrackingSqanQr();
-            getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
-                    .gotoQrScannerPage());
-        });
+        if (btnQrCode != null) {
+            btnQrCode.setOnClickListener(v -> {
+                searchBarAnalytics.eventTrackingSqanQr();
+                getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
+                        .gotoQrScannerPage(false));
+            });
+        }
 
         btnWishlist.setOnClickListener(v -> {
-            searchBarAnalytics.eventTrackingWishlist(screenName);
             if (userSession.isLoggedIn()) {
-                getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
-                        .gotoWishlistPage(getContext()));
+                searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.WISHLIST, screenName);
+                RouteManager.route(context, ApplinkConst.WISHLIST);
             } else {
-                getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
-                        .getLoginIntent(getContext()));
+                searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.WISHLIST, screenName);
+                RouteManager.route(context, ApplinkConst.LOGIN);
+            }
+        });
+
+        btnInbox.setOnClickListener(v -> {
+            if (userSession.isLoggedIn()) {
+                searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.INBOX, screenName);
+                RouteManager.route(context, ApplinkConst.INBOX);
+            } else {
+                searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.INBOX, screenName);
+                RouteManager.route(context, ApplinkConst.LOGIN);
             }
         });
 
         editTextSearch.setOnClickListener(v -> {
-            getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
-                    .gotoSearchPage(getContext()));
+            searchBarAnalytics.eventTrackingSearchBar();
+            RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE);
         });
 
         btnNotification.setOnClickListener(v -> {
             searchBarAnalytics.eventTrackingNotification(screenName);
             if (userSession.isLoggedIn()) {
-                getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
-                        .gotoNotificationPage(getContext()));
+                RouteManager.route(context, ApplinkConst.NOTIFICATION);
             } else {
-                getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
-                        .getLoginIntent(getContext()));
+                RouteManager.route(context, ApplinkConst.LOGIN);
             }
         });
     }
 
-    public ImageButton getBtnNotification() {
+    public void inflateResource(Context context) {
+        inflate(context, R.layout.main_toolbar, this);
+    }
+
+    public ImageView getBtnNotification() {
         return btnNotification;
     }
 
-    public ImageButton getBtnWishlist() {
+    public ImageView getBtnWishlist() {
         return btnWishlist;
     }
 }

@@ -5,6 +5,7 @@
               android:layout_height="wrap_content"
               android:layout_margin="@dimen/dp_16"
               android:orientation="vertical"
+              android:background="@color/white"
               android:paddingTop="@dimen/dp_16"
               android:paddingLeft="@dimen/dp_16"
               android:paddingRight="@dimen/dp_16">
@@ -16,6 +17,7 @@
         android:layout_marginBottom="@dimen/dp_16"
         android:lineSpacingExtra="@dimen/dp_6"
         android:textSize="@dimen/sp_16"
+        android:textStyle="bold"
         android:textColor="@color/font_black_primary_70"
         tools:text="Title Goes Here"/>
 
@@ -45,6 +47,7 @@
             android:textColor="@color/font_black_secondary_54"
             android:textSize="@dimen/sp_14"
             android:padding="@dimen/dp_8"
+            android:textStyle="bold"
             tools:text="CTA Here"/>
 
         <TextView
@@ -55,6 +58,7 @@
             android:textAllCaps="false"
             android:textColor="@color/tkpd_main_green"
             android:textSize="@dimen/sp_14"
+            android:textStyle="bold"
             android:padding="@dimen/dp_8"
             tools:text="CTA Here"/>
 

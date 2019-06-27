@@ -7,15 +7,19 @@ import com.tokopedia.tokocash.activation.presentation.fragment.RequestOTPWalletF
 import com.tokopedia.tokocash.activation.presentation.fragment.SuccessActivateFragment;
 import com.tokopedia.tokocash.autosweepmf.view.fragment.AutoSweepHomeFragment;
 import com.tokopedia.tokocash.autosweepmf.view.fragment.SetAutoSweepLimitFragment;
+import com.tokopedia.tokocash.balance.domain.GetBalanceTokoCashUseCase;
 import com.tokopedia.tokocash.historytokocash.presentation.fragment.HistoryTokoCashFragment;
 import com.tokopedia.tokocash.historytokocash.presentation.fragment.HomeTokoCashFragment;
 import com.tokopedia.tokocash.historytokocash.presentation.fragment.MoveToSaldoFragment;
 import com.tokopedia.tokocash.ovoactivation.view.ActivationOvoFragment;
 import com.tokopedia.tokocash.ovoactivation.view.IntroOvoFragment;
 import com.tokopedia.tokocash.pendingcashback.domain.GetPendingCasbackUseCase;
-import com.tokopedia.tokocash.balance.domain.GetBalanceTokoCashUseCase;
 import com.tokopedia.tokocash.qrpayment.presentation.activity.NominalQrPaymentActivity;
 import com.tokopedia.tokocash.qrpayment.presentation.activity.SuccessPaymentQRActivity;
+
+import com.tokopedia.tokocash.balance.domain.GetBalanceTokoCashUseCase;
+import com.tokopedia.tokocash.pendingcashback.domain.GetPendingCasbackUseCase;
+import com.tokopedia.tokocash.qrpayment.domain.GetInfoQrTokoCashUseCase;
 
 import dagger.Component;
 
@@ -29,6 +33,8 @@ public interface TokoCashComponent {
     GetBalanceTokoCashUseCase getBalanceTokoCashUseCase();
 
     GetPendingCasbackUseCase getPendingCasbackUseCase();
+
+    GetInfoQrTokoCashUseCase getInfoQrTokocashUseCase();
 
     void inject(NominalQrPaymentActivity nominalQrPaymentActivity);
 

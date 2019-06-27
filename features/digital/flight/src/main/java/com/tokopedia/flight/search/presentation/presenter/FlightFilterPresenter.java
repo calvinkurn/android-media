@@ -56,9 +56,10 @@ public class FlightFilterPresenter extends BaseDaggerPresenter<FlightFilterCount
         };
     }
 
-    public void getFilterStatisticData() {
+    public void getFilterStatisticData(boolean isReturning) {
         getView().showGetFilterStatisticLoading();
         FlightFilterModel flightFilterModel = new FlightFilterModel();
+        flightFilterModel.setReturn(isReturning);
         flightSearchStatisticUseCase.execute(flightSearchStatisticUseCase.createRequestParams(flightFilterModel),
                 getSubscriberSearchStatisticFlight());
     }

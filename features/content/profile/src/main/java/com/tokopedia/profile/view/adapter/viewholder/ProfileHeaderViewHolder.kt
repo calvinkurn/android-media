@@ -36,8 +36,9 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileEmptyContrac
         ImageHandler.loadImageCircle2(itemView.context, itemView.avatar, element.avatar)
         itemView.name.text = element.name
 
-        if (element.isKol) {
-            itemView.kolBadge.visibility = View.VISIBLE
+        if (element.isKol || element.isAffiliate) {
+            itemView.kolBadge.visibility = if (element.isKol) View.VISIBLE else View.GONE
+
             itemView.followers.visibility =
                     if (getFollowersText(element).length > TEXT_LENGTH_MIN) View.VISIBLE
                     else View.GONE
@@ -45,10 +46,6 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileEmptyContrac
             itemView.followers.movementMethod = LinkMovementMethod.getInstance()
 
             if (!element.isOwner && GlobalConfig.isCustomerApp()) {
-                itemView.followBtn.visibility = View.VISIBLE
-                itemView.followBtn.setOnClickListener {
-                    viewListener.followUnfollowUser(element.userId, !element.isFollowed)
-                }
                 updateButtonState(element.isFollowed)
             } else {
                 itemView.followBtn.visibility = View.GONE
@@ -101,7 +98,9 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileEmptyContrac
                 if (element.following != ProfileHeaderViewModel.ZERO)
                     String.format(getString(R.string.profile_following_number), element.following)
                 else ""
-        spannableString = if (element.isKol && element.followers != ProfileHeaderViewModel.ZERO) {
+        spannableString = if ((element.isKol || element.isAffiliate)
+                && element.followers != ProfileHeaderViewModel.ZERO) {
+
             val followers = String.format(
                     getString(R.string.profile_followers_number),
                     element.followers
@@ -114,6 +113,7 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileEmptyContrac
                     )
                     else followers
             SpannableString(followersAndFollowing)
+
         } else {
             SpannableString(following)
         }

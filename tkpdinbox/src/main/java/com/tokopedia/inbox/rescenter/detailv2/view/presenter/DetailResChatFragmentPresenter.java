@@ -236,20 +236,10 @@ public class DetailResChatFragmentPresenter
     }
 
     private void postReply(String message, List<AttachmentViewModel> attachmentList) {
-
-        if (TrackingUtils.getGtmString(context, AppEventTracking.GTM.RESOLUTION_CENTER_UPLOAD_VIDEO).equals("true")) {
-            sendDiscussionV2UseCase.execute(
-                    SendDiscussionV2UseCase
-                            .getSendReplyParams(resolutionId, message, attachmentList),
-                    new ReplyDiscussionSubscriber(mainView));
-        } else {
-            sendDiscussionUseCase.execute(
-                    SendDiscussionUseCase.getSendReplyParams(
-                            resolutionId,
-                            message,
-                            attachmentList),
-                    new ReplyDiscussionSubscriber(mainView));
-        }
+        sendDiscussionV2UseCase.execute(
+                SendDiscussionV2UseCase
+                        .getSendReplyParams(resolutionId, message, attachmentList),
+                new ReplyDiscussionSubscriber(mainView));
     }
 
     @Override
@@ -259,10 +249,10 @@ public class DetailResChatFragmentPresenter
             if (imageUrlOrPathList != null && imageUrlOrPathList.size() > 0) {
                 onAddImageAttachment(imageUrlOrPathList.get(0),
                         AttachmentViewModel.FILE_IMAGE);
-            }else{
+            } else {
                 onFailedAddAttachment();
             }
-        }else{
+        } else {
             onFailedAddAttachment();
         }
     }
@@ -274,18 +264,18 @@ public class DetailResChatFragmentPresenter
             ArrayList<String> videoPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
             if (videoPathList != null && videoPathList.size() > 0) {
                 String videoPath = videoPathList.get(0);
-                if (checkAttachmentVideo(videoPath)){
+                if (checkAttachmentVideo(videoPath)) {
                     onAddImageAttachment(videoPath, AttachmentViewModel.FILE_VIDEO);
                 }
-            }else{
+            } else {
                 onFailedAddAttachment();
             }
-        }else{
+        } else {
             onFailedAddAttachment();
         }
     }
 
-    public boolean isDeviceSupportVideo(){
+    public boolean isDeviceSupportVideo() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             mainView.showSnackBar(context.getString(R.string.error_reply_discussion_resolution_version_minimum));
             return false;
@@ -293,7 +283,7 @@ public class DetailResChatFragmentPresenter
         return true;
     }
 
-    public boolean isAllowToAddMoreVideo(){
+    public boolean isAllowToAddMoreVideo() {
         int countVideoAlreadyAdded = 0;
         for (AttachmentViewModel model : mainView.getAttachmentListFromAdapter()) {
             if (model.isVideo()) {

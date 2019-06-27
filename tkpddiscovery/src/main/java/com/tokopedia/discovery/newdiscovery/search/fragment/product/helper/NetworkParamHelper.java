@@ -17,14 +17,18 @@ public class NetworkParamHelper {
             String[] params = paramString.split("&");
             for (String param : params) {
                 String[] val = param.split("=");
-                if (val.length > 0 && val.length <= 2) {
+                if (val.length == 2) {
                     String name = val[0];
                     String value = val[1];
-                    map.put(name, value);
+                    map.put(name, omitNewlineAndPlusSign(value));
                 }
             }
         }
         return map;
+    }
+
+    private static String omitNewlineAndPlusSign(String text) {
+        return text.replace("\n", "").replace("+", " ");
     }
 
     public static String getQueryValue(String paramString) {

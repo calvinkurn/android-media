@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.notifcenter.domain.pojo.NotifCenterError
 import com.tokopedia.notifcenter.domain.pojo.NotifCenterPojo
+import com.tokopedia.notifcenter.domain.pojo.NotifCenterSinglePojo
 import com.tokopedia.notifcenter.domain.pojo.UserNotification
 import com.tokopedia.notifcenter.view.listener.NotifCenterContract
 import com.tokopedia.notifcenter.view.util.NotifCenterDateUtil
@@ -16,7 +17,8 @@ import rx.Subscriber
 /**
  * @author by milhamj on 31/08/18.
  */
-class NotifCenterSubscriber(val view: NotifCenterContract.View, val dateUtil: NotifCenterDateUtil)
+class NotifCenterSubscriber(val view: NotifCenterContract.View, val dateUtil: NotifCenterDateUtil,
+                            val isListPojo: Boolean)
     : Subscriber<GraphqlResponse>() {
 
     override fun onError(e: Throwable?) {
@@ -43,11 +45,20 @@ class NotifCenterSubscriber(val view: NotifCenterContract.View, val dateUtil: No
                 throw RuntimeException()
             }
 
-            val notifCenterPojo : NotifCenterPojo = it.getData(NotifCenterPojo::class.java)
-            val list : List<UserNotification> = notifCenterPojo.notifCenterList.list
+            val list: List<UserNotification>
+            val hasNext: Boolean
+            if (isListPojo) {
+                val notifCenterPojo : NotifCenterPojo = it.getData(NotifCenterPojo::class.java)
+                list = notifCenterPojo.notifCenterList.list
+                hasNext = notifCenterPojo.notifCenterList.paging.hasNext
+            } else {
+                val notifCenterPojo : NotifCenterSinglePojo = it.getData(NotifCenterSinglePojo::class.java)
+                list = notifCenterPojo.notifCenterList.list
+                hasNext = notifCenterPojo.notifCenterList.paging.hasNext
+            }
             view.onSuccessFetchData(
                     convertToViewModels(list),
-                    notifCenterPojo.notifCenterList.paging.hasNext
+                    hasNext
             )
         }
     }
@@ -69,7 +80,8 @@ class NotifCenterSubscriber(val view: NotifCenterContract.View, val dateUtil: No
                             notification.readStatus,
                             notification.userId,
                             notification.shopId,
-                            (!TextUtils.equals(lastPrettyDate, prettyDate) || visitables.isEmpty())
+                            (!TextUtils.equals(lastPrettyDate, prettyDate) || visitables.isEmpty()),
+                            notification.templateKey
                     )
             )
             lastPrettyDate = prettyDate

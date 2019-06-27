@@ -134,7 +134,7 @@ public class PinEditText extends AppCompatEditText {
         mLinesPaint.setStrokeWidth(mLineStroke);
 
         TypedValue outValue = new TypedValue();
-        context.getTheme().resolveAttribute(R.attr.colorControlActivated,
+        context.getTheme().resolveAttribute(android.R.attr.colorControlActivated,
                 outValue, true);
         int colorSelected = outValue.data;
         mColors[0] = colorSelected;

@@ -57,6 +57,7 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
                     getView().hideLoading();
                     getView().showPage();
                     getView().showErrorGetSeatMaps(e.getMessage());
+                    getView().stopTrace();
                 }
             }
 
@@ -68,6 +69,7 @@ public class TrainSeatPresenter extends BaseDaggerPresenter<TrainSeatContract.Vi
                 if (getView().getExpireDate() != null && !getView().getExpireDate().isEmpty()) {
                     getView().renderExpireDateCountdown(TrainDateUtil.stringToDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, getView().getExpireDate()));
                 }
+                getView().stopTrace();
             }
         });
     }

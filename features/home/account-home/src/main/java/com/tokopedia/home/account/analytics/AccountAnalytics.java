@@ -2,11 +2,14 @@ package com.tokopedia.home.account.analytics;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.analytics.data.model.UserAttributeData;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.track.interfaces.Analytics;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.user_identification_common.KYCConstant;
 
 import java.util.HashMap;
@@ -16,6 +19,7 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.ACCOUNT;
 import static com.tokopedia.home.account.AccountConstants.Analytics.AKUN_SAYA;
 import static com.tokopedia.home.account.AccountConstants.Analytics.APPLICATION;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK;
+import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK_FINTECH_MICROSITE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK_HOME_PAGE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EMAIL;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT;
@@ -35,179 +39,179 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.USER;
  */
 public class AccountAnalytics {
 
-    private AnalyticTracker analyticTracker;
-    private Context context;
+    private final Context context;
+    private UserSessionInterface userSessionInterface;
 
     public AccountAnalytics(Context context) {
-        if (context == null)
-            return;
-
         this.context = context;
+        userSessionInterface = new UserSession(context);
+    }
 
-        if (context.getApplicationContext() instanceof AbstractionRouter) {
-            analyticTracker = ((AbstractionRouter) context.getApplicationContext())
-                    .getAnalyticTracker();
+    public void eventClickAccount(String title, String section, String item, boolean withUserId) {
+        Analytics analytics = TrackApp.getInstance().getGTM();
+
+        if (withUserId) {
+
+            analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                    CLICK_HOME_PAGE,
+                    String.format("%s %s", AKUN_SAYA, title),
+                    String.format("%s - %s - %s", CLICK, section, item),
+                    userSessionInterface.getUserId()
+            ));
+        } else {
+            analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                    CLICK_HOME_PAGE,
+                    String.format("%s %s", AKUN_SAYA, title),
+                    String.format("%s - %s - %s", CLICK, section, item),
+                    ""
+            ));
         }
     }
 
-    public void eventClickAccount(String title, String section, String item) {
-        if (analyticTracker == null)
-            return;
-
-        analyticTracker.sendEventTracking(
-                CLICK_HOME_PAGE,
-                String.format("%s %s", AKUN_SAYA, title),
-                String.format("%s - %s - %s", CLICK, section, item),
-                ""
-        );
-    }
-
     public void eventClickOVOPayLater(String category, String action, String label) {
-        if (analyticTracker == null)
-            return;
 
-        analyticTracker.sendEventTracking(
-                "",
+        Analytics analytics = TrackApp.getInstance().getGTM();
+
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                CLICK_FINTECH_MICROSITE,
                 category,
                 action,
                 label
-        );
+        ));
     }
 
     public void eventClickSetting(String item) {
-        if (analyticTracker == null)
-            return;
 
-        analyticTracker.sendEventTracking(
+        Analytics analytics = TrackApp.getInstance().getGTM();
+
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
                 AccountConstants.Analytics.CLICK_HOME_PAGE,
                 String.format("%s %s", USER, SETTING),
                 String.format("%s %s", CLICK, item),
                 ""
-        );
+        ));
     }
 
     public void eventClickAccountSetting(String item) {
-        if (analyticTracker == null)
-            return;
+        Analytics analytics = TrackApp.getInstance().getGTM();
 
-        analyticTracker.sendEventTracking(
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
                 AccountConstants.Analytics.CLICK_HOME_PAGE,
                 String.format("%s %s", ACCOUNT, SETTING),
                 String.format("%s %s", CLICK, item),
                 ""
-        );
+        ));
     }
 
     public void eventClickShopSetting(String item) {
-        if (analyticTracker == null)
-            return;
 
-        analyticTracker.sendEventTracking(
+        Analytics analytics = TrackApp.getInstance().getGTM();
+
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
                 AccountConstants.Analytics.CLICK_HOME_PAGE,
                 String.format("%s %s", SHOP, SETTING),
                 String.format("%s %s", CLICK, item),
                 ""
-        );
+        ));
     }
 
     public void eventClickPaymentSetting(String item) {
-        if (analyticTracker == null)
-            return;
 
-        analyticTracker.sendEventTracking(
+        Analytics analytics = TrackApp.getInstance().getGTM();
+
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
                 AccountConstants.Analytics.CLICK_HOME_PAGE,
                 String.format("%s %s", SHOP, SETTING),
                 String.format("%s %s", CLICK, item),
                 ""
-        );
+        ));
     }
 
     public void eventClickNotificationSetting(String item) {
-        if (analyticTracker == null)
-            return;
 
-        analyticTracker.sendEventTracking(
+        Analytics analytics = TrackApp.getInstance().getGTM();
+
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
                 AccountConstants.Analytics.CLICK_HOME_PAGE,
                 String.format("%s %s", NOTIFICATION, SETTING),
                 String.format("%s %s", CLICK, item),
                 ""
-        );
+        ));
     }
 
 
     public void eventClickApplicationSetting(String item) {
-        if (analyticTracker == null)
-            return;
 
-        analyticTracker.sendEventTracking(
+        Analytics analytics = TrackApp.getInstance().getGTM();
+
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
                 AccountConstants.Analytics.CLICK_HOME_PAGE,
                 String.format("%s %s", APPLICATION, SETTING),
                 String.format("%s %s", CLICK, item),
                 ""
-        );
+        ));
     }
 
     public void eventClickEmailSetting(String item) {
-        if (analyticTracker == null)
-            return;
 
-        analyticTracker.sendEventTracking(
+        Analytics analytics = TrackApp.getInstance().getGTM();
+
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
                 AccountConstants.Analytics.CLICK_HOME_PAGE,
                 String.format("%s %s", EMAIL, SETTING),
                 String.format("%s %s", CLICK, item),
                 ""
-        );
+        ));
     }
 
     public void eventClickKycSetting() {
-        if (analyticTracker == null)
-            return;
 
-        analyticTracker.sendEventTracking(
+        Analytics analytics = TrackApp.getInstance().getGTM();
+
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
                 AccountConstants.Analytics.CLICK_ACCOUNT,
                 String.format("%s %s", ACCOUNT, SETTING),
                 AccountConstants.Analytics.CLICK_KYC_SETTING,
                 ""
-        );
+        ));
     }
 
     public void eventClickKYCSellerAccountPage(int status) {
-        if (analyticTracker == null) {
-            return;
-        }
 
-        switch (status){
+        final Analytics analytics = TrackApp.getInstance().getGTM();
+        switch (status) {
             case KYCConstant.STATUS_REJECTED:
-                analyticTracker.sendEventTracking(
+
+                analytics.sendGeneralEvent(TrackAppUtils.gtmData(
                         AccountConstants.Analytics.CLICK_ACCOUNT,
                         String.format("%s %s", ACCOUNT, SETTING),
                         AccountConstants.Analytics.CLICK_KYC_REJECTED,
                         ""
-                );
+                ));
                 break;
             case KYCConstant.STATUS_EXPIRED:
-                analyticTracker.sendEventTracking(
+                analytics.sendGeneralEvent(TrackAppUtils.gtmData(
                         AccountConstants.Analytics.CLICK_ACCOUNT,
                         String.format("%s %s", ACCOUNT, SETTING),
                         AccountConstants.Analytics.CLICK_KYC_REJECTED,
                         ""
-                );
+                ));
                 break;
             case KYCConstant.STATUS_PENDING:
-                analyticTracker.sendEventTracking(
+                analytics.sendGeneralEvent(TrackAppUtils.gtmData(
                         AccountConstants.Analytics.CLICK_ACCOUNT,
                         String.format("%s %s", ACCOUNT, SETTING),
                         AccountConstants.Analytics.CLICK_KYC_PENDING,
                         ""
-                );
+                ));
                 break;
             case KYCConstant.STATUS_NOT_VERIFIED:
-                analyticTracker.sendEventTracking(
+                analytics.sendGeneralEvent(TrackAppUtils.gtmData(
                         AccountConstants.Analytics.CLICK_ACCOUNT,
                         String.format("%s %s", ACCOUNT, SETTING),
                         AccountConstants.Analytics.CLICK_KYC_NOT_VERIFIED,
                         ""
-                );
+                ));
                 break;
             default:
                 break;
@@ -215,15 +219,18 @@ public class AccountAnalytics {
     }
 
     public void eventClickActivationOvoMyAccount() {
-        analyticTracker.sendEventTracking(
+        final Analytics analytics = TrackApp.getInstance().getGTM();
+
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
                 AccountConstants.Analytics.EVENT_SALDO_OVO,
                 AccountConstants.Analytics.MY_ACCOUNT,
-                AccountConstants.Analytics.CLICK_MY_ACCOUNT_ACTIVATION_OVO, "");
+                AccountConstants.Analytics.CLICK_MY_ACCOUNT_ACTIVATION_OVO,
+                ""
+        ));
     }
 
     public void eventTrackingNotification() {
-        if (analyticTracker == null)
-            return;
+        final Analytics analytics = TrackApp.getInstance().getGTM();
 
         Map<String, Object> eventTracking = new HashMap<>();
         eventTracking.put(SCREEN_NAME, SCREEN_NAME_ACCOUNT);
@@ -232,26 +239,34 @@ public class AccountAnalytics {
         eventTracking.put(EVENT_ACTION, String.format("%s %s", CLICK, NOTIFICATION));
         eventTracking.put(EVENT_LABEL, "");
 
-        analyticTracker.sendEventTracking(eventTracking);
+        analytics.sendGeneralEvent(eventTracking);
     }
 
     public void eventClickTokopediaCornerSetting() {
-        if (analyticTracker == null)
-            return;
 
-        analyticTracker.sendEventTracking(
+        Analytics analytics = TrackApp.getInstance().getGTM();
+
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
                 AccountConstants.Analytics.EVENT_CLICK_SAMPAI,
                 AccountConstants.Analytics.EVENT_CATEGORY_SAMPAI,
                 AccountConstants.Analytics.EVENT_ACTION_SAMPAI,
                 ""
-        );
+        ));
     }
 
     public void setUserAttributes(UserAttributeData data) {
-        ((AccountHomeRouter) context.getApplicationContext()).sendAnalyticsUserAttribute(data);
+        if (null != context && context.getApplicationContext() instanceof AccountHomeRouter)
+            ((AccountHomeRouter) context.getApplicationContext()).sendAnalyticsUserAttribute(data);
     }
 
     public void setPromoPushPreference(Boolean newValue) {
-        ((AccountHomeRouter) context.getApplicationContext()).setPromoPushPreference(newValue);
+        if (null != context && context.getApplicationContext() instanceof AccountHomeRouter)
+            ((AccountHomeRouter) context.getApplicationContext()).setPromoPushPreference(newValue);
     }
+
+    public void setNewsletterEmailPref(Boolean newValue) {
+        if (null != context && context.getApplicationContext() instanceof AccountHomeRouter)
+            ((AccountHomeRouter) context.getApplicationContext()).setNewsletterEmailPref(newValue);
+    }
+
 }

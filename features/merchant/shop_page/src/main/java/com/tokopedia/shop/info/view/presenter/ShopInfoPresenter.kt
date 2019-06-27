@@ -1,7 +1,6 @@
 package com.tokopedia.shop.info.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeedV2
 import com.tokopedia.reputation.common.domain.interactor.GetReputationSpeedDailyUseCase
 import com.tokopedia.reputation.common.domain.interactor.GetReputationSpeedUseCase
@@ -9,13 +8,15 @@ import com.tokopedia.shop.extension.transformToVisitable
 import com.tokopedia.shop.info.view.listener.ShopInfoView
 import com.tokopedia.shop.note.data.source.cloud.model.ShopNote
 import com.tokopedia.shop.note.domain.interactor.GetShopNoteListUseCase
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import javax.inject.Inject
 
 class ShopInfoPresenter
     @Inject constructor(private val getShopNoteListUseCase: GetShopNoteListUseCase,
                         private val getReputationSpeedDailyUseCase: GetReputationSpeedDailyUseCase,
-                        private val userSession: UserSession): BaseDaggerPresenter<ShopInfoView>(){
+                        private val userSession: UserSessionInterface): BaseDaggerPresenter<ShopInfoView>(){
 
     fun isMyshop(shopId: String) = userSession.shopId == shopId
 

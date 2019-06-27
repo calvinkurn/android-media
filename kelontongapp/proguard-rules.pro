@@ -23,8 +23,15 @@
 -keep public class com.google.firebase.iid.FirebaseInstanceId {
     public *;
 }
+-dontwarn public class com.google.firebase.iid.FirebaseInstanceId {
+    public *;
+}
 -keep public class com.google.android.gms.ads.identifier.** { public protected *;
 }
+
+-keep class com.google.android.gms.**
+-dontwarn com.google.android.gms.**
+
 -keep class com.google.android.gms.** { *; }
 -keepclasseswithmembers class * {
     @com.google.android.gms.** *;
@@ -32,3 +39,4 @@
 -keepclassmembers class * {
     @com.google.android.gms.** *;
 }
+-dontwarn com.android.installreferrer

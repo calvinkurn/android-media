@@ -1,7 +1,17 @@
-[{
-    "query": "query rechargeFavoriteRecommendationList($device_id: Int!) {\n   rechargeFavoriteRecommendationList(device_id: $device_id) {\n   title\n   recommendations\n   {\n   iconUrl\n   title\n   clientNumber\n   appLink\n   webLink\n   position\n   categoryName\n   categoryId\n   productName\n   type\n   }\n   }\n   }\n",
-    "variables": {
-        "device_id": %s
-    },
-    "operationName": "rechargeFavoriteRecommendationList"
-}]
+query rechargeFavoriteRecommendationList($device_id: Int!) {
+	rechargeFavoriteRecommendationList(device_id: $device_id) {
+		title
+		recommendations{
+			iconUrl
+			title
+			clientNumber
+			appLink
+			webLink
+			position
+			categoryName
+			categoryId
+			productName
+			type
+		}
+	}
+}

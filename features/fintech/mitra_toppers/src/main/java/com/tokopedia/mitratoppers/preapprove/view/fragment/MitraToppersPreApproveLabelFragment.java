@@ -10,16 +10,18 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.mitratoppers.MitraToppersComponentInstance;
 import com.tokopedia.mitratoppers.MitraToppersRouter;
 import com.tokopedia.mitratoppers.R;
-import com.tokopedia.mitratoppers.preapprove.data.model.response.preapprove.ResponsePreApprove;
 import com.tokopedia.mitratoppers.common.di.component.MitraToppersComponent;
+import com.tokopedia.mitratoppers.preapprove.data.model.response.preapprove.ResponsePreApprove;
 import com.tokopedia.mitratoppers.preapprove.view.activity.MitraToppersPreApproveWebViewActivity;
 import com.tokopedia.mitratoppers.preapprove.view.listener.MitraToppersPreApproveView;
 import com.tokopedia.mitratoppers.preapprove.view.presenter.MitraToppersPreApprovePresenter;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -31,12 +33,13 @@ import static com.tokopedia.mitratoppers.common.constant.MitraToppersTrackingCon
 
 public class MitraToppersPreApproveLabelFragment extends BaseDaggerFragment implements MitraToppersPreApproveView {
 
+    public static final String GOLD_MERCHANT = "gold_merchant";
+    public static final String OFFICIAL_STORE = "official_store";
+    public static final String REGULAR = "regular";
     @Inject
     public MitraToppersPreApprovePresenter mitraToppersPreApprovePresenter;
 
-    @Inject
-    UserSession userSession;
-
+    private UserSessionInterface userSession;
     private View rootView;
     private LabelView labelView;
 
@@ -50,6 +53,7 @@ public class MitraToppersPreApproveLabelFragment extends BaseDaggerFragment impl
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        userSession = new UserSession(getActivity());
     }
 
     @Override
@@ -114,18 +118,22 @@ public class MitraToppersPreApproveLabelFragment extends BaseDaggerFragment impl
             labelView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ((MitraToppersRouter) getActivity().getApplication()).sendEventTrackingWithShopInfo(EVENT_FINTECH,
+                    TrackApp.getInstance().getGTM().sendGTMGeneralEvent(EVENT_FINTECH,
                             CATEGORY_PREAPPROVED, ACTION_PREAPPROVED_CLICK, LABEL_CLICK + " - " + amountIntegerString,
-                            userSession.getShopId(), isGoldMerchant, isOfficialStore);
+                            userSession.getShopId(),
+                            isGoldMerchant? GOLD_MERCHANT : isOfficialStore? OFFICIAL_STORE : REGULAR,
+                            userSession.getUserId(),null);
                     Intent intent = MitraToppersPreApproveWebViewActivity.getIntent(getContext(),
                             preApproveUrl);
                     startActivity(intent);
                 }
             });
         }
-        ((MitraToppersRouter) getActivity().getApplication()).sendEventTrackingWithShopInfo(EVENT_FINTECH,
-                CATEGORY_PREAPPROVED, ACTION_PREAPPROVED, amountIntegerString,
-                userSession.getShopId(), isGoldMerchant, isOfficialStore);
+        TrackApp.getInstance().getGTM().sendGTMGeneralEvent(EVENT_FINTECH,
+                        CATEGORY_PREAPPROVED, ACTION_PREAPPROVED, amountIntegerString,
+                        userSession.getShopId(),
+                        isGoldMerchant? GOLD_MERCHANT : isOfficialStore? OFFICIAL_STORE : REGULAR,
+                        userSession.getUserId(),null);
         rootView.setVisibility(View.VISIBLE);
     }
 

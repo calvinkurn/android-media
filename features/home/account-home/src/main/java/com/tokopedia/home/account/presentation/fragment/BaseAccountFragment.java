@@ -3,12 +3,10 @@ package com.tokopedia.home.account.presentation.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.webkit.URLUtil;
 
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analytics.TrackAnalytics;
 import com.tokopedia.analytics.firebase.FirebaseEvent;
 import com.tokopedia.applink.ApplinkConst;
@@ -23,20 +21,26 @@ import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
 import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
+import com.tokopedia.home.account.presentation.util.AccountByMeHelper;
 import com.tokopedia.home.account.presentation.view.SeeAllView;
 import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.SellerSaldoViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user_identification_common.KycCommonUrl;
 
 import java.util.HashMap;
 
 import static com.tokopedia.home.account.AccountConstants.Analytics.AKUN_SAYA;
+import static com.tokopedia.home.account.AccountConstants.Analytics.BY_ME_CURATION;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK;
 import static com.tokopedia.home.account.AccountConstants.Analytics.MY_COUPON;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
@@ -44,6 +48,7 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.PENJUAL;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PROFILE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.TOKOPOINTS;
 import static com.tokopedia.home.account.AccountConstants.TOP_SELLER_APPLICATION_PACKAGE;
+import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
 
 /**
  * @author okasurya on 7/26/18.
@@ -52,19 +57,23 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
         AccountItemListener {
     public static final String PARAM_USER_ID = "{user_id}";
     public static final String PARAM_SHOP_ID = "{shop_id}";
+    public static final int OPEN_SHOP_SUCCESS = 100;
+    public static final int REQUEST_PHONE_VERIFICATION = 123;
     public static final String OVO = "OVO";
-    private static final String KEY_PROFILE_BUYER = "KEY_PROFILE_BUYER";
-    private static final String KEY_AFFILIATE_FIRSTTIME = "KEY_AFFILIATE_FIRSTTIME";
-    public static final String BROADCAST_ACCOUNT = "BROADCAST_ACCOUNT";
-    public static final String PARAM_BROADCAST_ACCOUNT_AFFILIATE_CLICKED = "PARAM_BROADCAST_ACCOUNT_AFFILIATE_CLICKED";
+    public Boolean isOpenShop = false;
 
     private SeeAllView seeAllView;
     private AccountAnalytics accountAnalytics;
+    private RemoteConfig remoteConfig;
+    UserSession userSession;
+
+    abstract void notifyItemChanged(int position);
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         accountAnalytics = new AccountAnalytics(getActivity());
+        userSession = new UserSession(getContext());
     }
 
     protected void openApplink(String applink) {
@@ -72,7 +81,6 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
             RouteManager.route(getContext(), applink);
         }
     }
-
 
     private boolean isApplink(String applink) {
         if (RouteManager.isSupportApplink(getContext(), applink)) {
@@ -128,6 +136,12 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     }
 
     @Override
+    public void onByMeClicked() {
+        sendTracking(PEMBELI, BY_ME_CURATION, "", true);
+        openApplink(ApplinkConst.AFFILIATE_EXPLORE);
+    }
+
+    @Override
     public void onTokopediaPayLinkClicked() {
         if (getActivity() != null) {
             sendTracking(PEMBELI,
@@ -150,7 +164,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     }
 
     @Override
-    public void onInfoCardClicked(InfoCardViewModel item) {
+    public void onInfoCardClicked(InfoCardViewModel item, int adapterPosition) {
 
         if (getContext() != null && getContext().getString(R.string.title_menu_loan)
                 .equalsIgnoreCase(item.getMainText())) {
@@ -158,11 +172,25 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
                     new HashMap<>(), getContext());
         }
 
-        if (item.getMainText().equals(getActivity().getResources().getString(R.string.title_menu_affiliate))) {
-            handleChangeStateAffiliateItem();
+        if (getContext() != null
+                && item.getMainText().equals(
+                getContext().getResources().getString(R.string.title_menu_affiliate))) {
+            item.setIconRes(R.drawable.ic_byme_card);
+            notifyItemChanged(adapterPosition);
+            AccountByMeHelper.setFirstTimeByme(getContext());
+            sendTracking(
+                    item.getTitleTrack(),
+                    item.getSectionTrack(),
+                    !TextUtils.isEmpty(item.getItemTrack()) ? item.getItemTrack() : item.getMainText(),
+                    true
+            );
+        } else {
+            sendTracking(
+                    item.getTitleTrack(),
+                    item.getSectionTrack(),
+                    !TextUtils.isEmpty(item.getItemTrack()) ? item.getItemTrack() : item.getMainText()
+            );
         }
-        sendTracking(item.getTitleTrack(), item.getSectionTrack(),
-                item.getItemTrack() != null && !item.getItemTrack().isEmpty() ? item.getItemTrack() : item.getMainText());
         openApplink(item.getApplink());
 
     }
@@ -213,7 +241,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     }
 
     @Override
-    public void onTokopediaPayRightItemClicked(String label, String vccStatus, String applink, TokopediaPayBSModel bsData) {
+    public void onTokopediaPayRightItemClicked(boolean isRightSaldo, String label, String vccStatus, String applink, TokopediaPayBSModel bsData) {
 
         sendTracking(PEMBELI, getString(R.string.label_tokopedia_pay_title), label);
         if (bsData != null) {
@@ -226,7 +254,11 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
                     ApplinkConst.WEBVIEW,
                     applink));
         } else if (applink != null && applink.startsWith("tokopedia")) {
-            openApplink(applink);
+            if (isRightSaldo) {
+                openSladoPage(applink);
+            } else {
+                openApplink(applink);
+            }
         } else {
             if (getContext() == null
                     || bsData == null
@@ -255,9 +287,24 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
         }
     }
 
+    private void openSladoPage(String applink) {
+        remoteConfig = new FirebaseRemoteConfigImpl(getContext());
+        if (remoteConfig.getBoolean(APP_ENABLE_SALDO_SPLIT, false)) {
+            if (userSession.hasShownSaldoIntroScreen()) {
+                openApplink(applink);
+            } else {
+                userSession.setSaldoIntroPageStatus(true);
+                openApplink(ApplinkConst.SALDO_INTRO);
+            }
+        } else {
+            RouteManager.route(getContext(), String.format("%s?url=%s", ApplinkConst.WEBVIEW,
+                    ApplinkConst.WebViewUrl.SALDO_DETAIL));
+        }
+    }
+
     @Override
-    public void onDepositClicked(ShopCardViewModel element) {
-        openApplink(ApplinkConst.DEPOSIT);
+    public void onDepositClicked(SellerSaldoViewModel element) {
+        openSladoPage(ApplinkConst.DEPOSIT);
     }
 
     @Override
@@ -281,9 +328,19 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
 
     @Override
     public void onOpenShopClicked() {
+        if (userSession.isMsisdnVerified()){
+            moveToCreateShop();
+        } else {
+            startActivityForResult(RouteManager.getIntent(getContext(), ApplinkConst.PHONE_VERIFICATION), REQUEST_PHONE_VERIFICATION);
+        }
+    }
+
+
+    protected void moveToCreateShop(){
+        isOpenShop = true;
         if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
-            startActivity(((AccountHomeRouter) getContext().getApplicationContext()).
-                    getIntentCreateShop(getContext()));
+            startActivityForResult(((AccountHomeRouter) getContext().getApplicationContext()).
+                    getIntentCreateShop(getContext()),OPEN_SHOP_SUCCESS);
         }
     }
 
@@ -291,7 +348,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     public void onLearnMoreSellerClicked() {
         openApplink(String.format("%s?url=%s",
                 ApplinkConst.WEBVIEW,
-                AccountHomeUrl.MORE_SELLER));
+                AccountHomeUrl.EDU_MORE_SELLER));
     }
 
     @Override
@@ -327,6 +384,10 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     }
 
     private void sendTracking(String title, String section, String item) {
+        sendTracking(title, section, item, false);
+    }
+
+    private void sendTracking(String title, String section, String item, boolean withUserId) {
         if (accountAnalytics == null)
             return;
 
@@ -336,7 +397,9 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
         accountAnalytics.eventClickAccount(
                 title.toLowerCase(),
                 section.toLowerCase(),
-                item.toLowerCase());
+                item.toLowerCase(),
+                withUserId
+        );
     }
 
     private void sendTrackingOvoActivation() {
@@ -364,14 +427,4 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
         RouteManager.route(getActivity(), KycCommonUrl.APPLINK_TERMS_AND_CONDITION);
     }
 
-    private void handleChangeStateAffiliateItem() {
-        LocalCacheHandler cache = new LocalCacheHandler(getActivity().getApplicationContext(), KEY_PROFILE_BUYER);
-        if (cache.getBoolean(KEY_AFFILIATE_FIRSTTIME, true)) {
-            cache.putBoolean(KEY_AFFILIATE_FIRSTTIME, false);
-            cache.applyEditor();
-            Intent intent = new Intent(BROADCAST_ACCOUNT);
-            intent.putExtra(PARAM_BROADCAST_ACCOUNT_AFFILIATE_CLICKED, true);
-            LocalBroadcastManager.getInstance(getActivity().getApplicationContext()).sendBroadcast(intent);
-        }
-    }
 }

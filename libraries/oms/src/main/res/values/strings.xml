@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">oms</string>
     <string name="pembayaran">Pembayaran</string>
+    <string name="app_android">App Android</string>
 </resources>

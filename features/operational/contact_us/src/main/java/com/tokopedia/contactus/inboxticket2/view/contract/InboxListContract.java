@@ -32,7 +32,7 @@ public interface InboxListContract {
 
         void setFilter(int position);
 
-        void onClickTicket(int index);
+        void onClickTicket(int index, boolean isOfficialStore);
 
         void scrollList();
 

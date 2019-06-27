@@ -40,7 +40,7 @@ public class GetApprovalStatusUseCase {
                 .query_get_kyc_approval_status);
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(query,
-                GetApprovalStatusPojo.class, requestParams);
+                GetApprovalStatusPojo.class, requestParams, false);
 
         graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(graphqlRequest);

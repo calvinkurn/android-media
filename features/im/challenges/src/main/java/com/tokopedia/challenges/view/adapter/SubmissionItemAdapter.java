@@ -14,10 +14,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.challenges.view.activity.ChallengeDetailsActivity;
 import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponentInstance;
-import com.tokopedia.challenges.view.activity.ChallengeDetailActivity;
 import com.tokopedia.challenges.view.activity.SubmitDetailActivity;
 import com.tokopedia.challenges.view.contractor.SubmissionAdapterContract;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
@@ -25,6 +25,7 @@ import com.tokopedia.challenges.view.presenter.SubmissionAdapterPresenter;
 import com.tokopedia.challenges.view.share.ShareBottomSheet;
 import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +66,7 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         this.context = parent.getContext();
-        analytics = new ChallengesGaAnalyticsTracker(context);
+        analytics = new ChallengesGaAnalyticsTracker();
         LayoutInflater inflater = LayoutInflater.from(
                 parent.getContext());
         RecyclerView.ViewHolder holder = null;
@@ -73,6 +74,7 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         switch (viewType) {
             case ITEM:
                 v = inflater.inflate(R.layout.submission_item, parent, false);
+                v.findViewById(R.id.tv_winner_number).setBackground(MethodChecker.getDrawable(v.getContext(), R.drawable.ic_winner_badge));
                 holder = new ItemViewHolder(v);
                 break;
             case FOOTER:
@@ -245,9 +247,9 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             if (categoryItems.get(getIndex()).getMe() != null) {
                 categoryItems.get(getIndex()).getMe().setLiked(isLiked);
                 if (isLiked) {
-                    ivFavourite.setImageResource(R.drawable.ic_wishlist_checked);
+                    ivFavourite.setImageDrawable(MethodChecker.getDrawable(context,R.drawable.ic_wishlist_checked));
                 } else {
-                    ivFavourite.setImageResource(R.drawable.ic_wishlist_unchecked);
+                    ivFavourite.setImageDrawable(MethodChecker.getDrawable(context,R.drawable.ic_wishlist_unchecked));
                 }
             }
         }
@@ -289,7 +291,7 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 Intent detailsIntent = new Intent(context, SubmitDetailActivity.class);
                 detailsIntent.putExtra(Utils.QUERY_PARAM_SUBMISSION_RESULT, categoryItems.get(getIndex()));
                 detailsIntent.putExtra(Utils.QUERY_PARAM_IS_PAST_CHALLENGE, isPastChallenge);
-                navigateToActivityRequest.onNavigateToActivityRequest(detailsIntent, ChallengeDetailActivity.REQUEST_CODE_SUBMISSIONDETAILACTIVITY, getIndex());
+                navigateToActivityRequest.onNavigateToActivityRequest(detailsIntent, ChallengeDetailsActivity.REQUEST_CODE_SUBMISSIONDETAILACTIVITY, getIndex());
             }
         }
     }

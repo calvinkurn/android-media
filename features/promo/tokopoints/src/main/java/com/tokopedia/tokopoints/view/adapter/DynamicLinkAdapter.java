@@ -18,9 +18,14 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.tokopoints.R;
+import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.model.LinksItemEntity;
+import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DynamicLinkAdapter extends RecyclerView.Adapter<DynamicLinkAdapter.ViewHolder> {
 
@@ -53,6 +58,7 @@ public class DynamicLinkAdapter extends RecyclerView.Adapter<DynamicLinkAdapter.
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView tvDynamicText;
         private ImageView ivBack;
+        public boolean isVisited = false;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -91,8 +97,35 @@ public class DynamicLinkAdapter extends RecyclerView.Adapter<DynamicLinkAdapter.
                             ApplinkConst.WEBVIEW,
                             linksItemEntity.getUrl()));
                 }
+
+                AnalyticsTrackerUtil.sendEvent(itemView.getContext(),
+                        AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_TOKOPOINT,
+                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                        AnalyticsTrackerUtil.ActionKeys.CLICK_DYNAMIC_CAT,
+                        linksItemEntity.getText()
+                );
             });
 
+        }
+    }
+
+    @Override
+    public void onViewAttachedToWindow(@NonNull ViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+
+        LinksItemEntity data = linksList.get(holder.getAdapterPosition());
+        if (data == null || holder.itemView == null) {
+            return;
+        }
+
+        if (!holder.isVisited) {
+            AnalyticsTrackerUtil.sendEvent(holder.itemView.getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_TOKOPOINT,
+                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                    AnalyticsTrackerUtil.ActionKeys.VIEW_DYNAMIC_CAT,
+                    data.getText());
+
+            holder.isVisited = true;
         }
     }
 }

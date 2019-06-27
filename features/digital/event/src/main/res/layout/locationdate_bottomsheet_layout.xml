@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_16"
             android:text="@string/ubah_lokasi"
-            android:textSize="@dimen/font_medium" />
+            android:textSize="@dimen/sp_16" />
     </LinearLayout>
 
     <View

@@ -24,10 +24,25 @@ public class ShopGroup {
     private int sortKey;
     @SerializedName("shop")
     @Expose
-    private Shop shop;
+    private Shop shop = new Shop();
+    @SerializedName("is_fulfillment_service")
+    @Expose
+    private boolean isFulFillment;
+    @SerializedName("warehouse")
+    @Expose
+    private Warehouse warehouse;
+    @SerializedName("cart_string")
+    @Expose
+    private String cartString = "";
     @SerializedName("cart_details")
     @Expose
     private List<CartDetail> cartDetails = new ArrayList<>();
+    @SerializedName("has_promo_list")
+    @Expose
+    private boolean hasPromoList;
+    @SerializedName("checkbox_state")
+    @Expose
+    private boolean checkboxState;
 
     public int getUserAddressId() {
         return userAddressId;
@@ -45,7 +60,23 @@ public class ShopGroup {
         return shop;
     }
 
+    public boolean isFulFillment() {
+        return isFulFillment;
+    }
+
+    public Warehouse getWarehouse() {
+        return warehouse;
+    }
+
     public List<CartDetail> getCartDetails() {
         return cartDetails;
+    }
+
+    public String getCartString() { return cartString; }
+
+    public boolean getHasPromoList() { return hasPromoList; }
+
+    public boolean isCheckboxState() {
+        return checkboxState;
     }
 }

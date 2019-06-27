@@ -1,7 +1,7 @@
 package com.tokopedia.flight.review.data;
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -16,10 +16,10 @@ import rx.functions.Func1;
 public class FlightCancelVoucherDataSource {
 
     private final FlightApi flightApi;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
 
     @Inject
-    public FlightCancelVoucherDataSource(FlightApi flightApi, UserSession userSession) {
+    public FlightCancelVoucherDataSource(FlightApi flightApi, UserSessionInterface userSession) {
         this.flightApi = flightApi;
         this.userSession = userSession;
     }

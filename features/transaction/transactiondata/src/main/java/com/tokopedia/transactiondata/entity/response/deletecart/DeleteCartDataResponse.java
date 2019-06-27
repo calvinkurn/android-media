@@ -14,7 +14,7 @@ public class DeleteCartDataResponse {
     private int success;
     @SerializedName("message")
     @Expose
-    private String message;
+    private String message = "";
 
     public int getSuccess() {
         return success;

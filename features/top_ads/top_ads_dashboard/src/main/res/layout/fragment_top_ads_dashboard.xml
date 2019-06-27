@@ -97,13 +97,6 @@
                                     app:lv_image="@drawable/ic_top_ads_keyword"
                                     app:lv_title="@string/label_top_ads_keyword"/>
 
-                                <com.tokopedia.design.label.LabelView
-                                    android:id="@+id/label_view_shop"
-                                    style="@style/LabelLayout.TopAdsLabelView"
-                                    android:layout_height="@dimen/dp_64"
-                                    app:lv_image="@drawable/ic_top_ads_toko"
-                                    app:lv_title="@string/title_top_ads_store"/>
-
                             </LinearLayout>
                         </LinearLayout>
 

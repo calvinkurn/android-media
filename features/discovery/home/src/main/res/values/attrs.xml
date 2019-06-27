@@ -9,4 +9,8 @@
         <attr name="floating_background_color" format="reference|color" />
         <attr name="floating_title_allcaps" format="boolean|reference" />
     </declare-styleable>
+
+    <declare-styleable name="ExpandingLineView">
+        <attr name="lineColor" format="color" />
+    </declare-styleable>
 </resources>

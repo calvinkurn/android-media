@@ -1,15 +1,18 @@
 package com.tokopedia.affiliate.feature.explore.view.listener;
 
+import android.app.Activity;
 import android.content.Context;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
+import com.tokopedia.affiliate.common.viewmodel.ExploreCardViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.AutoCompleteViewModel;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreBannerChildViewModel;
 import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreParams;
-import com.tokopedia.affiliate.feature.explore.view.viewmodel.ExploreViewModel;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.PopularProfileChildViewModel;
+import com.tokopedia.affiliate.feature.explore.view.viewmodel.SortViewModel;
 
 import java.util.List;
 
@@ -19,25 +22,44 @@ import java.util.List;
 public interface ExploreContract {
     interface View extends CustomerView {
 
+        Activity getActivity();
+
         Context getContext();
 
         AffiliateAnalytics getAffiliateAnalytics();
 
         void showLoading();
 
+        void showLoadingScreen();
+
         void hideLoading();
 
-        void onSuccessGetFirstData(List<Visitable> itemList, String cursor, boolean isSearch);
+        void onSuccessGetFirstData(List<Visitable<?>> sections,
+                                   List<Visitable<?>> products,
+                                   String cursor,
+                                   boolean isSearch,
+                                   boolean isPullToRefresh,
+                                   List<SortViewModel> sortViewModel);
 
         void onErrorGetFirstData(String error);
 
-        void onSuccessGetMoreData(List<Visitable> itemList, String cursor);
+        void onSuccessGetData(List<Visitable<?>> products,
+                              String cursor,
+                              boolean isSearch);
+
+        void onErrorGetData(String error);
+
+        void onSuccessGetMoreData(List<Visitable<?>> itemList, String cursor);
 
         void onErrorGetMoreData(String error);
 
-        void onBymeClicked(ExploreViewModel model);
+        void onBymeClicked(ExploreCardViewModel model);
 
-        void onProductClicked(ExploreViewModel model);
+        void onProductClicked(ExploreCardViewModel model, int adapterPosition);
+
+        void onBannerClicked(ExploreBannerChildViewModel model);
+
+        void onProfileClicked(PopularProfileChildViewModel model);
 
         void dropKeyboard();
 
@@ -45,9 +67,7 @@ public interface ExploreContract {
 
         void onEmptySearchResult();
 
-        void onSuccessCheckAffiliate(boolean isAffiliate, String productId, String adId);
-
-        void onErrorCheckAffiliate(String error, String productId, String adId);
+        void onEmptyProduct();
 
         void onSuccessCheckQuota(String productId, String adId);
 
@@ -61,15 +81,22 @@ public interface ExploreContract {
 
         void onSuccessGetAutoComplete(List<AutoCompleteViewModel> modelList);
 
+        void stopTrace();
+
+        void unsubscribeAutoComplete();
+
+        boolean shouldBackPressed();
+
+        void refresh();
     }
 
     interface Presenter extends CustomerPresenter<View> {
 
         void getFirstData(ExploreParams exploreParams, boolean isPullToRefresh);
 
-        void loadMoreData(ExploreParams exploreParams);
+        void getData(ExploreParams exploreParams);
 
-        void checkIsAffiliate(String productId, String adId);
+        void loadMoreData(ExploreParams exploreParams);
 
         void checkAffiliateQuota(String productId, String adId);
 

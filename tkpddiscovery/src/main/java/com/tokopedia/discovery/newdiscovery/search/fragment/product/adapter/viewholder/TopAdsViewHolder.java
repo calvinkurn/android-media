@@ -10,6 +10,9 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.var.ProductItem;
@@ -17,10 +20,12 @@ import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ProductListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.TopAdsSwitcher;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.TopAdsViewModel;
+import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.widget.TopAdsWidgetView;
 
@@ -32,6 +37,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
     private TopAdsWidgetView adsWidgetView;
     private Context context;
     private ProductListener itemClickListener;
+    private String keyword = "";
 
     public TopAdsViewHolder(View itemView, ProductListener itemClickListener) {
         super(itemView);
@@ -39,6 +45,12 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
         this.itemClickListener = itemClickListener;
         adsWidgetView = itemView.findViewById(R.id.topads_view);
         adsWidgetView.setItemClickListener(this);
+        adsWidgetView.setImpressionListener(new TopAdsItemImpressionListener() {
+            @Override
+            public void onImpressionProductAdsItem(int position, Product product) {
+                TopAdsGtmTracker.getInstance().addSearchResultProductViewImpressions(product, position);
+            }
+        });
         adsWidgetView.setDisplayMode(DisplayMode.GRID);
         adsWidgetView.setItemDecoration(new RecyclerView.ItemDecoration() {
 
@@ -73,23 +85,25 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
     @Override
     public void bind(TopAdsViewModel element) {
         adsWidgetView.setAdapterPosition(getAdapterPosition());
-        adsWidgetView.setData(element.getDataList());
+//        adsWidgetView.setData(element.getTopadsData());
+        this.keyword = element.getQuery();
     }
 
     @Override
     public void onProductItemClicked(int position, Product product) {
         if(context instanceof Activity) {
             Activity activity = (Activity) context;
-            ProductItem data = new ProductItem();
-            data.setId(product.getId());
-            data.setName(product.getName());
-            data.setPrice(product.getPriceFormat());
-            data.setImgUri(product.getImage().getM_ecs());
-            Bundle bundle = new Bundle();
-            Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(activity);
-            bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
-            intent.putExtras(bundle);
+            Intent intent = getProductIntent(product.getId());
             activity.startActivity(intent);
+            TopAdsGtmTracker.eventSearchResultProductClick(context, keyword, product, position);
+        }
+    }
+
+    private Intent getProductIntent(String productId){
+        if (context != null) {
+            return RouteManager.getIntent(context,ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+        } else {
+            return null;
         }
     }
 

@@ -1,5 +1,6 @@
 package com.tokopedia.topads.dashboard.view.fragment
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -31,6 +32,7 @@ import com.tokopedia.design.utils.DateLabelUtils
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.datepicker.range.view.activity.DatePickerActivity
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
+import com.tokopedia.design.component.Tooltip
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.topads.common.TopAdsMenuBottomSheets
 import com.tokopedia.topads.common.constant.TopAdsAddingOption
@@ -51,10 +53,13 @@ import com.tokopedia.topads.dashboard.data.utils.TopAdsDatePeriodUtil
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.activity.SellerCenterActivity
 import com.tokopedia.topads.dashboard.view.activity.TopAdsAddCreditActivity
+import com.tokopedia.topads.credit.history.view.activity.TopAdsCreditHistoryActivity
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsStatisticPagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsTabAdapter
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardView
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
+import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
+import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAutoTopUpActivity
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import kotlinx.android.synthetic.main.fragment_top_ads_dashboard.*
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
@@ -72,6 +77,7 @@ import javax.inject.Inject
 
 class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
     internal var isShowAutoAddPromo = false
+    internal var isAutoTopUpActive = false
 
     val shopInfoLayout: View?
         get() = view_group_deposit
@@ -110,7 +116,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
     internal var dataStatistic: DataStatistic? = null
 
     @TopAdsStatisticsType
-    internal var selectedStatisticType: Int = 0
+    internal var selectedStatisticType: Int = TopAdsStatisticsType.PRODUCT_ADS
 
     private var totalProductAd: Int = 0
     private var totalGroupAd: Int = 0
@@ -163,7 +169,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         super.onViewCreated(view, savedInstanceState)
         topAdsDashboardPresenter.attachView(this)
         topAdsDashboardPresenter.resetDate()
-        selectedStatisticType = TopAdsStatisticsType.ALL_ADS
+        selectedStatisticType = TopAdsStatisticsType.PRODUCT_ADS
         totalProductAd = Integer.MIN_VALUE
         val refresh = RefreshHandler(activity, swipe_refresh_layout, RefreshHandler.OnRefreshHandlerListener {
             topAdsDashboardPresenter.clearStatisticsCache()
@@ -186,6 +192,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
                         router?.openTopAdsDashboardApplink(it)
                     }
                 }}}
+
         snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(activity) { loadData() }
         snackbarRetry?.setColorActionRetry(ContextCompat.getColor(activity!!, R.color.green_400))
         setHasOptionsMenu(true)
@@ -216,7 +223,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
     }
 
     private fun initStatisticComponent() {
-        label_view_statistics.setOnClickListener { showBottomSheetStatisticTypeOptions() }
+        //label_view_statistics.setOnClickListener { showBottomSheetStatisticTypeOptions() }
         val tabLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         recyclerview_tabLayout.layoutManager = tabLayoutManager
         topAdsTabAdapter?.setListener(object : TopAdsTabAdapter.OnRecyclerTabItemClick {
@@ -281,21 +288,6 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         label_view_group_summary.setOnClickListener { onSummaryGroupClicked() }
         label_view_item_summary.setOnClickListener { onSummaryProductClicked() }
         label_view_keyword.setOnClickListener { onSummaryKeywordClicked() }
-        label_view_shop.setOnClickListener { onStoreClicked() }
-    }
-
-    private fun onStoreClicked() {
-        topAdsDashboardPresenter.saveSourceTagging(TopAdsSourceOption.SA_MANAGE_SHOP)
-        activity?.let {
-            if (GlobalConfig.isSellerApp()){
-                val intent = router?.getTopAdsDetailShopIntent(it)?.apply {
-                    putExtra(TopAdsDashboardConstant.EXTRA_IS_ENOUGH_DEPOSIT, true)
-                }
-                startActivityForResult(intent, REQUEST_CODE_AD_STATUS)
-            } else {
-                router?.openTopAdsDashboardApplink(it)
-            }
-        }
     }
 
     private fun onSummaryKeywordClicked() {
@@ -353,6 +345,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
     private fun loadData() {
         ticker_view.clearMessage()
         swipe_refresh_layout.isRefreshing = true
+        topAdsDashboardPresenter.getAutoTopUpStatus(GraphqlHelper.loadRawString(resources, R.raw.gql_query_get_status_auto_topup))
         topAdsDashboardPresenter.getPopulateDashboardData(GraphqlHelper.loadRawString(resources, R.raw.gql_get_deposit))
         topAdsDashboardPresenter.getShopInfo()
         topAdsDashboardPresenter.getTickerTopAds(resources)
@@ -378,6 +371,13 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
     private fun initShopInfoComponent() {
         text_view_add_deposit.setOnClickListener { goToAddCredit() }
         date_label_view.setOnClickListener { onDateLayoutClicked() }
+        text_view_credit_history.setOnClickListener { goToCreditHistory() }
+    }
+
+    private fun goToCreditHistory(isFromSelection: Boolean = false) {
+        context?.let {
+            startActivityForResult(TopAdsCreditHistoryActivity.createInstance(it, isFromSelection), REQUEST_CODE_SET_AUTO_TOPUP)
+        }
     }
 
     private fun onDateLayoutClicked() {
@@ -437,7 +437,6 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
             if (data != null) {
                 val option = data.getIntExtra(TopAdsDashboardConstant.EXTRA_SELECTED_OPTION, -1)
                 when (option) {
-                    TopAdsAddingOption.SHOP_OPT -> onStoreClicked()
                     TopAdsAddingOption.GROUP_OPT -> onSummaryGroupClicked()
                     TopAdsAddingOption.PRODUCT_OPT -> gotoCreateProductAd()
                     TopAdsAddingOption.KEYWORDS_OPT -> gotoCreateKeyword()
@@ -451,6 +450,11 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         } else if (requestCode == REQUEST_CODE_ADD_KEYWORD && data != null) {
             checkAdChanged(data)
             onSummaryKeywordClicked()
+        } else if (requestCode == REQUEST_CODE_SET_AUTO_TOPUP && resultCode == Activity.RESULT_OK){
+            topAdsDashboardPresenter.getAutoTopUpStatus(GraphqlHelper
+                    .loadRawString(resources, R.raw.gql_query_get_status_auto_topup))
+            if (data?.getBooleanExtra("no_redirect", false) != true)
+                goToCreditHistory(true)
         }
     }
 
@@ -614,6 +618,28 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
 
     override fun onErrorGetTicker(e: Throwable) {}
 
+    override fun onSuccessGetAutoTopUpStatus(data: AutoTopUpStatus) {
+        isAutoTopUpActive = (data.status.toIntOrNull() ?: 0) != TopAdsDashboardConstant.AUTO_TOPUP_INACTIVE
+        text_view_deposit_desc.setDrawableRight(if (isAutoTopUpActive) R.drawable.ic_repeat_green else R.drawable.ic_repeat_grey)
+        text_view_deposit_desc.setOnClickListener {
+            Tooltip(it.context).apply {
+                setTitle(getString(R.string.label_topads_automatic_topup) + ": " + data.statusDesc)
+                setDesc(getString(R.string.tooltip_auto_topup_descr))
+                setWithIcon(false)
+                setTextButton(getString(R.string.label_manage))
+                btnAction.setOnClickListener { gotoAutoTopup(); dismiss() }
+            }.show()
+        }
+    }
+
+    private fun gotoAutoTopup() {
+        activity?.let {
+            startActivityForResult(TopAdsAutoTopUpActivity.createInstance(it), REQUEST_CODE_SET_AUTO_TOPUP)
+        }
+    }
+
+    override fun onErrorGetAutoTopUpStatus(throwable: Throwable) {}
+
     private fun getTotalAd(totalAd: TotalAd): Int {
         return totalAd.totalShopAd + totalAd.totalKeyword + totalAd.totalProductAd + totalAd.totalProductGroupAd
     }
@@ -763,6 +789,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         val REQUEST_CODE_AD_OPTION = 3
         val REQUEST_CODE_ADD_PRODUCT = 4
         val REQUEST_CODE_ADD_KEYWORD = 5
+        private const val REQUEST_CODE_SET_AUTO_TOPUP = 6
 
         fun createInstance(): TopAdsDashboardFragment {
             return TopAdsDashboardFragment()

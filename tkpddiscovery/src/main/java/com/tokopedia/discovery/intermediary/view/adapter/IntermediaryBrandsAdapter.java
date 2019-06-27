@@ -19,7 +19,7 @@ import java.util.List;
  */
 
 public class IntermediaryBrandsAdapter extends
-        RecyclerView.Adapter<RecyclerView.ViewHolder>  {
+        RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private int brandWidth;
     private List<BrandModel> brandModels;
@@ -42,14 +42,14 @@ public class IntermediaryBrandsAdapter extends
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, final  int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         IntermediaryBrandsAdapter.ItemRowHolder itemRowHolder = (IntermediaryBrandsAdapter.ItemRowHolder) holder;
         itemRowHolder.container.getLayoutParams().width = brandWidth;
-        ImageHandler.LoadImage(itemRowHolder.thumbnail,brandModels.get(position).getImageUrl());
+        ImageHandler.LoadImage(itemRowHolder.thumbnail, brandModels.get(position).getImageUrl());
         itemRowHolder.container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                brandListener.onBrandClick(brandModels.get(position));
+                brandListener.onBrandClick(brandModels.get(position), position);
             }
         });
     }
@@ -76,7 +76,9 @@ public class IntermediaryBrandsAdapter extends
     }
 
     public interface BrandListener {
-        void onBrandClick(BrandModel brandModel);
+        void onBrandClick(BrandModel brandModel, int position);
+
+        void sendBrandImpressionEvent(BrandModel model, int pos);
     }
 
 }

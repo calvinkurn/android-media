@@ -1,0 +1,37 @@
+query getCampaignPostProductList($cid: Int!, $source: String!,
+                      $rows: Int,
+                      $start: Int,
+                      $shop_id: String,
+                      $q: String,
+                      $ss: Int,
+                      $mas: String){
+   getCampaignPostProductList(
+     params:{cid:$cid, source:$source,
+       shop_id:$shop_id, rows:$rows, start:$start, q:$q, ss:$ss, mas:$mas}
+   ){
+   header {
+     total_data
+   }
+    data{
+        products{
+         id
+         name
+         image_url
+         price_float
+         department_id
+         campaign{
+           campaign_id
+           original_price_float
+           discount_percentage
+           discounted_price_float
+           custom_stock
+           original_custom_stock
+           stock_sold_percentage
+           status_id
+           admin_status
+           max_order
+         }
+       }
+    }
+   }
+}

@@ -181,7 +181,7 @@
 
             </LinearLayout>
 
-            <com.tkpd.library.ui.expandablelayout.ExpandableRelativeLayout
+            <com.tokopedia.design.widget.ExpandableView.ExpandableRelativeLayout
                 android:id="@+id/seeDetailToggleDesc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -196,7 +196,7 @@
                     android:lineSpacingExtra="@dimen/sp_5"
                     android:text="@string/top_ads_see_detail_info_keyword_phrase"/>
 
-            </com.tkpd.library.ui.expandablelayout.ExpandableRelativeLayout>
+            </com.tokopedia.design.widget.ExpandableView.ExpandableRelativeLayout>
 
         </LinearLayout>
 

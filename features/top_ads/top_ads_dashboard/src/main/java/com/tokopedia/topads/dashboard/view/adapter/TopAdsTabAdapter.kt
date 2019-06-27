@@ -24,7 +24,7 @@ class TopAdsTabAdapter(private val context: Context) : RecyclerView.Adapter<TabL
         private set
     private var listener: OnRecyclerTabItemClick? = null
     @TopAdsStatisticsType
-    private var selectedStatisticType = TopAdsStatisticsType.ALL_ADS
+    private var selectedStatisticType = TopAdsStatisticsType.PRODUCT_ADS
 
     private val tabMenus: MutableList<TabMenu> = mutableListOf()
 

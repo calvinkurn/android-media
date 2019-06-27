@@ -216,6 +216,7 @@ public class CartRemoveProductAdapter extends RecyclerView.Adapter<RecyclerView.
             }
 
             if (cartItemModel.getOriginData().isPreOrder()) {
+                mTvPreOrder.setText(cartItemModel.getOriginData().getPreOrderInfo());
                 mTvPreOrder.setVisibility(View.VISIBLE);
             } else {
                 mTvPreOrder.setVisibility(View.GONE);

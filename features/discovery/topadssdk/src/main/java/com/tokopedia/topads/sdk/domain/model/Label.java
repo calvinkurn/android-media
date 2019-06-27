@@ -3,6 +3,7 @@ package com.tokopedia.topads.sdk.domain.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.json.JSONException;
@@ -17,9 +18,12 @@ public class Label implements Parcelable {
     public static final String KEY_COLOR = "color";
 
     @SerializedName(KEY_TITLE)
-    private String title;
+    @Expose
+    private String title = "";
+
     @SerializedName(KEY_COLOR)
-    private String color;
+    @Expose
+    private String color = "";
 
     public Label(JSONObject object) throws JSONException {
         if(!object.isNull(KEY_TITLE)) {

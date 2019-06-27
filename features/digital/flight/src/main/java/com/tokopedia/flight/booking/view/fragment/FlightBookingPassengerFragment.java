@@ -197,30 +197,40 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                 presenter.onSaveButtonClicked();
             }
         });
+        etBirthDate.setClickable(true);
+        etBirthDate.setFocusable(false);
         etBirthDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 presenter.onBirthdateClicked();
             }
         });
+        etSavedPassenger.setClickable(true);
+        etSavedPassenger.setFocusable(false);
         etSavedPassenger.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 presenter.onSavedPassengerClicked();
             }
         });
+        etPassportExpired.setClickable(true);
+        etPassportExpired.setFocusable(false);
         etPassportExpired.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 presenter.onPassportExpiredClicked();
             }
         });
+        etPassportNationality.setClickable(true);
+        etPassportNationality.setFocusable(false);
         etPassportNationality.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 navigateToChooseNationality();
             }
         });
+        etPassportIssuerCountry.setClickable(true);
+        etPassportIssuerCountry.setFocusable(false);
         etPassportIssuerCountry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -472,6 +482,11 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     @Override
     public void showPassengerPassportNumberShouldAlphaNumericError(int resId) {
         showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public String getMissTitle() {
+        return getString(R.string.miss);
     }
 
     @Override

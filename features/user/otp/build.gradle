@@ -1,5 +1,7 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
@@ -16,20 +18,20 @@ buildscript {
 }
 
 dependencies {
+
+
     implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.network)
-    implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.applink)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.userSession)
-
-    implementation rootProject.ext.miscDependencies.multiDex
-
-    implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    annotationProcessor rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+    implementation project(rootProject.ext.libraries.track)
 
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger
-    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    kapt rootProject.ext.miscDependencies.daggerCompiler
 
     implementation(rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
@@ -37,7 +39,10 @@ dependencies {
         exclude group: 'com.android.support'
     }
 
+    implementation rootProject.ext.playServicesDependencies.phone
     api (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
+
+
 }

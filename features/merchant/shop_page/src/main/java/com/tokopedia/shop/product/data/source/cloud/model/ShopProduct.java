@@ -65,9 +65,20 @@ public class ShopProduct {
     @SerializedName("product_name")
     @Expose
     private String productName;
+    @SerializedName("rating")
+    @Expose
+    private double rating;
     @SerializedName("sold_out_status")
     @Expose
     private boolean soldOutStatus;
+
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
 
     public long getShopLucky() {
         return shopLucky;

@@ -10,14 +10,24 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 public class TopAdsWishlistItem extends RecyclerViewItem {
 
     private TopAdsModel topAdsModel;
+    private String query = "";
 
     public TopAdsWishlistItem() {
         setType(TkpdState.RecyclerView.VIEW_TOP_ADS_LIST);
     }
 
-    public TopAdsWishlistItem(TopAdsModel topAdsModel) {
+    public TopAdsWishlistItem(TopAdsModel topAdsModel, String query) {
         this.topAdsModel = topAdsModel;
+        this.query = query;
         setType(TkpdState.RecyclerView.VIEW_TOP_ADS_LIST);
+    }
+
+    public String getQuery() {
+        return query;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
     }
 
     public TopAdsModel getTopAdsModel() {

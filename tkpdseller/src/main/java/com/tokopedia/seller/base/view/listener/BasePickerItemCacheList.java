@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Created by nathan on 8/3/17.
  */
-
+@Deprecated
 public interface BasePickerItemCacheList<T> {
 
     void addItem(T t);

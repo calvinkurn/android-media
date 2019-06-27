@@ -8,13 +8,13 @@ public class ProfileData {
 
     @SerializedName("shop_stats")
     @Expose
-    private ShopStats shopStats;
+    private ShopStats shopStats = new ShopStats();
     @SerializedName("shop_info")
     @Expose
-    private ShopInfo shopInfo;
+    private ShopInfo shopInfo = new ShopInfo();
     @SerializedName("user_info")
     @Expose
-    private UserInfo userInfo;
+    private UserInfo userInfo = new UserInfo();
 
     public ShopStats getShopStats() {
         return shopStats;

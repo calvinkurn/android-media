@@ -3,7 +3,6 @@ package com.tokopedia.mitratoppers.common.data.interceptor;
 import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.mitratoppers.common.constant.MitraToppersBaseURL;
@@ -17,9 +16,8 @@ public class MitraToppersAuthInterceptor extends TkpdAuthInterceptor {
 
     @Inject
     public MitraToppersAuthInterceptor(@ApplicationContext Context context,
-                               AbstractionRouter abstractionRouter,
-                               UserSession userSession) {
-        super(context, abstractionRouter, userSession);
+                               AbstractionRouter abstractionRouter) {
+        super(context, abstractionRouter);
     }
 
     protected Map<String, String> getHeaderMap(String path, String strParam,

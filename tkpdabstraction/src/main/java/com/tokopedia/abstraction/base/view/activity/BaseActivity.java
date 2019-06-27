@@ -1,6 +1,8 @@
 package com.tokopedia.abstraction.base.view.activity;
 
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
@@ -14,13 +16,13 @@ import android.view.View;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.R;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.abstraction.common.utils.HockeyAppHelper;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.receiver.ErrorNetworkReceiver;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.DialogForceLogout;
+import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
+import com.tokopedia.track.TrackApp;
 
 
 /**
@@ -33,18 +35,24 @@ public abstract class BaseActivity extends AppCompatActivity implements
     public static final String FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
     public static final String SERVER_ERROR = "com.tokopedia.tkpd.SERVER_ERROR";
     public static final String TIMEZONE_ERROR = "com.tokopedia.tkpd.TIMEZONE_ERROR";
+    public static final String INAPP_UPDATE = "inappupdate";
 
     private static final long DISMISS_TIME = 10000;
 
     private ErrorNetworkReceiver logoutNetworkReceiver;
+    private BroadcastReceiver inappReceiver;
     private LocalCacheHandler cache;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         logoutNetworkReceiver = new ErrorNetworkReceiver();
-        HockeyAppHelper.handleLogin(this);
-        HockeyAppHelper.checkForUpdate(this);
+        inappReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                AppUpdateManagerWrapper.showSnackBarComplete(BaseActivity.this);
+            }
+        };
         initShake();
     }
 
@@ -52,7 +60,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     protected void onPause() {
         super.onPause();
         unregisterForceLogoutReceiver();
-        HockeyAppHelper.unregisterManager();
+        unregisterInAppReceiver();
         unregisterShake();
 
     }
@@ -64,6 +72,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
         sendScreenAnalytics();
 
         registerForceLogoutReceiver();
+        registerInAppReceiver();
         checkIfForceLogoutMustShow();
         registerShake();
     }
@@ -91,16 +100,12 @@ public abstract class BaseActivity extends AppCompatActivity implements
     }
 
     protected void sendScreenAnalytics() {
-        if (getApplication() instanceof AbstractionRouter) {
-            AnalyticTracker analyticTracker = ((AbstractionRouter) getApplication()).getAnalyticTracker();
-            analyticTracker.sendScreen(this, getScreenName());
-        }
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated( getScreenName());
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        HockeyAppHelper.unregisterManager();
         cache = null;
     }
 
@@ -113,9 +118,19 @@ public abstract class BaseActivity extends AppCompatActivity implements
         LocalBroadcastManager.getInstance(this).registerReceiver(logoutNetworkReceiver, filter);
     }
 
+    private void registerInAppReceiver() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(INAPP_UPDATE);
+        LocalBroadcastManager.getInstance(this).registerReceiver(inappReceiver, filter);
+    }
+
     private void unregisterForceLogoutReceiver() {
         logoutNetworkReceiver.setReceiver(null);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(logoutNetworkReceiver);
+    }
+
+    private void unregisterInAppReceiver() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(inappReceiver);
     }
 
     @Override
@@ -157,7 +172,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     }
 
     public void showForceLogoutDialog() {
-        DialogForceLogout.createShow(this,
+        DialogForceLogout.createShow(this, getScreenName(),
                 new DialogForceLogout.ActionListener() {
                     @Override
                     public void onDialogClicked() {
@@ -186,7 +201,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        ((AbstractionRouter) getApplication()).instabugCaptureUserStep(this, ev);
         return super.dispatchTouchEvent(ev);
     }
 }

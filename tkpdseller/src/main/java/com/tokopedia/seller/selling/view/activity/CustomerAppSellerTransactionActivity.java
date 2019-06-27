@@ -27,12 +27,9 @@ import android.widget.Toast;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
-import com.tokopedia.abstraction.common.utils.toolargetool.TooLargeTool;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.container.GTMContainer;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
@@ -201,6 +198,7 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
     private void setView() {
         sellerTickerView = findViewById(com.tokopedia.design.R.id.ticker);
         sellerTickerView.setMovementMethod(new ScrollingMovementMethod());
+        sellerTickerView.setVisibility(View.GONE);
         mViewPager = findViewById(com.tokopedia.design.R.id.pager);
         indicator = findViewById(com.tokopedia.design.R.id.indicator);
 
@@ -215,22 +213,9 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    private void initSellerTicker() {
-        GTMContainer gtmContainer = GTMContainer.newInstance(this);
-
-        if (gtmContainer.getString("is_show_ticker_sales").equalsIgnoreCase("true")) {
-            String message = gtmContainer.getString("ticker_text_sales_rich");
-            showTickerGTM(message);
-        } else {
-            showTickerGTM(null);
-        }
-
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
-        initSellerTicker();
     }
 
     protected void makeLinkClickable(SpannableStringBuilder strBuilder, final URLSpan span) {
@@ -334,7 +319,6 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
                     UnifyTracking.eventShopTabSelected(CustomerAppSellerTransactionActivity.this,
                             indicator.getTabAt(position).getText().toString());
                 }
-                initSellerTicker();
             }
 
             @Override

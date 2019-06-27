@@ -29,7 +29,16 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
         <activity
+            android:name=".searchV3.presentation.activity.FlightSearchActivity"
+            android:label="@string/search_flight"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight" />
+        <activity
             android:name=".search.presentation.activity.FlightSearchReturnActivity"
+            android:label="@string/search_flight"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight" />
+        <activity android:name=".searchV3.presentation.activity.FlightSearchReturnActivity"
             android:label="@string/search_flight"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
@@ -49,6 +58,11 @@
             android:theme="@style/Theme.White.Flight" />
         <activity
             android:name=".booking.view.activity.FlightBookingActivity"
+            android:label="@string/flight_booking_toolbar_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight" />
+
+        <activity android:name=".bookingV2.presentation.activity.FlightBookingActivity"
             android:label="@string/flight_booking_toolbar_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
@@ -140,7 +154,8 @@
             android:label="@string/flight_cancellation_list_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
-        <activity android:name=".cancellation.view.activity.FlightCancellationChooseReasonActivity"
+        <activity
+            android:name=".cancellation.view.activity.FlightCancellationChooseReasonActivity"
             android:label="@string/flight_cancellation_reason_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
@@ -155,13 +170,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
 
-        <service
-            android:name=".airport.service.GetAirportListService"
-            android:exported="false" />
-        <service
-            android:name=".airport.service.GetAirportListJobService"
-            android:exported="true"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 
 </manifest>

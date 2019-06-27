@@ -18,7 +18,6 @@ import com.tokopedia.common_digital.product.presentation.model.RenderOperatorMod
 import com.tokopedia.common_digital.product.presentation.model.RenderProductModel;
 import com.tokopedia.digital.R;
 
-
 import java.util.ArrayList;
 import java.util.List;
 

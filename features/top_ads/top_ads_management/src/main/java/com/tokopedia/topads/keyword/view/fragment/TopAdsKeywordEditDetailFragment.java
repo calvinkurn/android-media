@@ -17,7 +17,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.product.manage.item.common.util.CurrencyIdrTextWatcher;

@@ -1,8 +1,8 @@
 package com.tokopedia.digital.newcart.data;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.digital.newcart.data.entity.DealCategoryEntity;
-import com.tokopedia.digital.newcart.data.entity.DealProductsResponse;
+import com.tokopedia.digital.newcart.data.entity.response.deal.DealCategoryEntity;
+import com.tokopedia.digital.newcart.data.entity.response.deal.DealProductsResponse;
 
 import java.util.List;
 import java.util.Map;

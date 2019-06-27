@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_merchant_voucher"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/merchant_voucher_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:descendantFocusability="beforeDescendants"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_16">
+
+            <com.tokopedia.design.text.TkpdHintTextInputLayout
+                android:id="@+id/textInputLayoutCoupon"
+                style="@style/HintTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/buttonUse"
+                android:hint="@string/label_ketik_promo_merchant_code"
+                app:hintEnabled="true">
+
+                <EditText
+                    android:id="@+id/textInputCoupon"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_promo_code"
+                    android:inputType="text"
+                    android:textColor="#ae31353b" />
+
+            </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+            <TextView
+                android:id="@+id/buttonUse"
+                style="@style/TextView.Micro.WhitePrimary"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:background="@drawable/green_button_rounded"
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingTop="@dimen/dp_8"
+                android:paddingRight="@dimen/dp_16"
+                android:paddingBottom="@dimen/dp_8"
+                android:text="@string/use_promo_label_button" />
+
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/holder_item_cart_divider"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginLeft="@dimen/dp_14"
+            android:layout_marginRight="@dimen/dp_14"
+            android:background="@color/separator_color" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/dp_8"
+            android:paddingRight="@dimen/dp_2">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rvVoucherList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingTop="@dimen/dp_8"
+                android:paddingBottom="@dimen/dp_8" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/error_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone" />
+
+    <ProgressBar
+        android:id="@+id/pb_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:paddingTop="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_16"
+        android:visibility="gone" />
+
+</android.support.design.widget.CoordinatorLayout>

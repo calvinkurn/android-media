@@ -40,7 +40,7 @@ public class ChangeBankAccountPresenter extends BaseDaggerPresenter<ChangeBankAc
         variables.put(Constant.BANK_ID, destbank);
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.edit_account_detail), DataEditTransfer.class, variables);
+                R.raw.edit_account_detail), DataEditTransfer.class, variables, false);
         saveDetailAccountUseCase.clearRequest();
         saveDetailAccountUseCase.setRequest(graphqlRequest);
         saveDetailAccountUseCase.execute(RequestParams.create(), new Subscriber<GraphqlResponse>() {

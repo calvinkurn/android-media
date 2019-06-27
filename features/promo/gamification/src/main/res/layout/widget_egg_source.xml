@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/gf_redeem_from_background"
+    android:orientation="horizontal"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingTop="@dimen/dp_10"
+    android:paddingRight="@dimen/dp_16"
+    android:paddingBottom="@dimen/dp_10">
+
+
+    <ImageView
+        android:id="@+id/image_egg_source"
+        android:layout_width="@dimen/dp_32"
+        android:layout_height="@dimen/dp_32"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/dp_16"
+        tools:src="@drawable/ic_hand" />
+
+
+    <TextView
+        android:id="@+id/text_egg_source"
+        android:textStyle="bold"
+        android:textSize="@dimen/sp_12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:textColor="@android:color/white"
+        tools:text="Ada 3 Lucky Egg siap dipecahkan" />
+
+</LinearLayout>

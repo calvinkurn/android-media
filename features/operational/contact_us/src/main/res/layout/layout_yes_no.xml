@@ -45,7 +45,7 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_22"
-        android:background="@drawable/rounded_rectangle_grey_border"
+        android:background="@drawable/white_grey_border"
         android:gravity="center"
         android:paddingLeft="@dimen/dp_22"
         android:paddingRight="@dimen/dp_22"

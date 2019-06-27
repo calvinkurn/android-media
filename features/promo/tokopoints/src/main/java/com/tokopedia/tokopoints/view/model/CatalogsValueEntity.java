@@ -2,11 +2,12 @@ package com.tokopedia.tokopoints.view.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.library.baseadapter.BaseItem;
 
 import java.io.Serializable;
 import java.util.List;
 
-public class CatalogsValueEntity implements Serializable {
+public class CatalogsValueEntity extends BaseItem implements Serializable {
     @Expose
     @SerializedName("baseCode")
     private String baseCode;
@@ -133,6 +134,17 @@ public class CatalogsValueEntity implements Serializable {
     @Expose
     @SerializedName("isShowTukarButton")
     private boolean isShowTukarButton;
+
+    @SerializedName("quotaPercentage")
+    private Integer quotaPercentage;
+
+    public Integer getQuotaPercentage() {
+        return quotaPercentage;
+    }
+
+    public void setQuotaPercentage(Integer quotaPercentage) {
+        this.quotaPercentage = quotaPercentage;
+    }
 
     public boolean isShowTukarButton() {
         return isShowTukarButton;
@@ -424,6 +436,8 @@ public class CatalogsValueEntity implements Serializable {
                 ", overview='" + overview + '\'' +
                 ", tnc='" + tnc + '\'' +
                 ", cta='" + cta + '\'' +
+                ", isShowTukarButton=" + isShowTukarButton +
+                ", quotaPercentage=" + quotaPercentage +
                 '}';
     }
 }

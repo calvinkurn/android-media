@@ -1,5 +1,8 @@
 package com.tokopedia.gamification.data.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -7,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by nabillasabbaha on 4/9/18.
  */
 
-public class TokenEmptyStateEntity {
+public class TokenEmptyStateEntity implements Parcelable {
 
     @SerializedName("title")
     @Expose
@@ -36,6 +39,53 @@ public class TokenEmptyStateEntity {
     @SerializedName("version")
     @Expose
     private Integer version;
+
+    protected TokenEmptyStateEntity(Parcel in) {
+        title = in.readString();
+        buttonText = in.readString();
+        buttonApplink = in.readString();
+        buttonURL = in.readString();
+        backgroundImgUrl = in.readString();
+        imageUrl = in.readString();
+        if (in.readByte() == 0) {
+            version = null;
+        } else {
+            version = in.readInt();
+        }
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeString(buttonText);
+        dest.writeString(buttonApplink);
+        dest.writeString(buttonURL);
+        dest.writeString(backgroundImgUrl);
+        dest.writeString(imageUrl);
+        if (version == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(version);
+        }
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<TokenEmptyStateEntity> CREATOR = new Creator<TokenEmptyStateEntity>() {
+        @Override
+        public TokenEmptyStateEntity createFromParcel(Parcel in) {
+            return new TokenEmptyStateEntity(in);
+        }
+
+        @Override
+        public TokenEmptyStateEntity[] newArray(int size) {
+            return new TokenEmptyStateEntity[size];
+        }
+    };
 
     public void setTitle(String title) {
         this.title = title;

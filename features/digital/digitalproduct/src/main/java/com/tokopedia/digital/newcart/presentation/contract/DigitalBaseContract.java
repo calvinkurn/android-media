@@ -13,7 +13,7 @@ import com.tokopedia.common_digital.cart.view.model.cart.CartItemDigital;
 import com.tokopedia.common_digital.cart.view.model.cart.UserInputPriceDigital;
 import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
 import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData;
-import com.tokopedia.digital.cart.presentation.model.CheckoutDigitalData;
+import com.tokopedia.digital.newcart.domain.model.CheckoutDigitalData;
 
 import java.util.List;
 import java.util.Map;
@@ -103,9 +103,6 @@ public interface DigitalBaseContract {
 
         String getString(@StringRes int resId);
 
-        void inflateDealsPage(CartDigitalInfoData cartDigitalInfoData,
-                              DigitalCheckoutPassData cartPassData);
-
         void setCheckoutParameter(CheckoutDataParameter.Builder builder);
 
         boolean isAlreadyShowPostPaid();
@@ -114,6 +111,10 @@ public interface DigitalBaseContract {
                                 String content,
                                 String confirmButtonTitle,
                                 String userId);
+
+        void startPerfomanceMonitoringTrace();
+
+        void stopPerfomanceMonitoringTrace();
     }
 
     interface Presenter<T extends View> extends CustomerPresenter<T>{

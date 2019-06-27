@@ -18,13 +18,12 @@ public interface NetworkRouter {
 
     void showMaintenancePage();
 
-    void showForceLogoutDialog(Response response);
+    void sendForceLogoutAnalytics(Response response, boolean isInvalidToken,
+                                  boolean isRequestDenied);
 
     void showForceLogoutTokenDialog(String response);
 
     void showServerError(Response response);
-
-    void showForceHockeyAppDialog();
 
     void logInvalidGrant(Response response);
 

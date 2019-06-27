@@ -2,6 +2,7 @@ package com.tokopedia.flight.booking.view.presenter;
 
 import android.support.annotation.StringRes;
 
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel;
@@ -11,8 +12,8 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightInsuranceViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel;
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
 
 import java.util.Date;
 import java.util.List;
@@ -131,6 +132,9 @@ public interface FlightBookingContract {
         void hideInsuranceLayout();
 
         void renderInsurance(List<FlightInsuranceViewModel> insurances);
+
+        void renderTickerView(TravelTickerViewModel travelTickerViewModel);
+
     }
 
     interface Presenter extends FlightBaseBookingContact.Presenter<View> {
@@ -176,5 +180,7 @@ public interface FlightBookingContract {
         void onMoreInsuranceInfoClicked();
 
         void onInsuranceBenefitExpanded();
+
+        void fetchTickerData();
     }
 }

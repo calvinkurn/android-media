@@ -20,6 +20,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.auth.api.phone.SmsRetriever;
+import com.google.android.gms.auth.api.phone.SmsRetrieverClient;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
@@ -27,13 +29,15 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.otp.OtpModuleRouter;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.otp.R;
 import com.tokopedia.otp.common.OTPAnalytics;
 import com.tokopedia.otp.common.design.PinInputEditText;
 import com.tokopedia.otp.common.di.DaggerOtpComponent;
 import com.tokopedia.otp.common.di.OtpComponent;
-import com.tokopedia.otp.common.util.IncomingSmsReceiver;
+import com.tokopedia.otp.common.util.SmsBroadcastReceiver;
 import com.tokopedia.otp.cotp.di.DaggerCotpComponent;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.cotp.view.presenter.VerificationPresenter;
@@ -41,16 +45,19 @@ import com.tokopedia.otp.cotp.view.viewlistener.Verification;
 import com.tokopedia.otp.cotp.view.viewmodel.MethodItem;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationViewModel;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER;
 
 /**
  * @author by nisie on 11/30/17.
  */
 
-public class VerificationFragment extends BaseDaggerFragment implements Verification.View,
-        IncomingSmsReceiver.ReceiveSMSListener {
+public class VerificationFragment extends BaseDaggerFragment implements Verification.View {
 
     protected static final String ARGS_DATA = "ARGS_DATA";
     protected static final String ARGS_PASS_DATA = "pass_data";
@@ -82,15 +89,16 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     private boolean isRunningTimer = false;
     protected LocalCacheHandler cacheHandler;
     protected VerificationViewModel viewModel;
+    private SmsRetrieverClient smsRetrieverClient;
 
     @Inject
     VerificationPresenter presenter;
 
-//    @Inject
-//    IncomingSmsReceiver smsReceiver;
-
     @Inject
     OTPAnalytics analytics;
+
+    @Inject
+    SmsBroadcastReceiver smsBroadcastReceiver;
 
     public static Fragment createInstance(VerificationViewModel passModel) {
         Fragment fragment = new VerificationFragment();
@@ -126,64 +134,35 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         }
 
         cacheHandler = new LocalCacheHandler(getActivity(), CACHE_OTP);
-//        smsReceiver.setListener(this);
+        smsRetrieverClient = SmsRetriever.getClient(getActivity());
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
-//        if (viewModel != null
-//                && viewModel.getType().equals(RequestOtpUseCase.MODE_SMS)) {
-//            smsReceiver.registerSmsReceiver(getActivity());
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                showCheckSMSPermission();
-//            }
-//        }
+        if (getActivity() != null) {
+            smsBroadcastReceiver.register(getActivity(), getOTPReceiverListener());
+        }
     }
+
+    private SmsBroadcastReceiver.ReceiveSMSListener getOTPReceiverListener() {
+        return new SmsBroadcastReceiver.ReceiveSMSListener() {
+            @Override
+            public void onReceiveOTP(@NotNull String otpCode) {
+                processOTPSMS(otpCode);
+            }
+        };
+    }
+
 
     @Override
     public void onPause() {
         super.onPause();
-//        if (smsReceiver != null
-//                && viewModel != null
-//                && viewModel.getType().equals(RequestOtpUseCase.MODE_SMS)) {
-//            getActivity().unregisterReceiver(smsReceiver);
-//        }
+        if (getActivity() != null && smsBroadcastReceiver != null) {
+            getActivity().unregisterReceiver(smsBroadcastReceiver);
+        }
     }
-
-//    @RequiresApi(api = Build.VERSION_CODES.M)
-//    @TargetApi(Build.VERSION_CODES.M)
-//    private void showCheckSMSPermission() {
-//        if (ContextCompat.checkSelfPermission(getActivity(),
-//                Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_DENIED
-//                && !getActivity().shouldShowRequestPermissionRationale(Manifest.permission.RECEIVE_SMS)) {
-//            new android.support.v7.app.AlertDialog.Builder(getActivity())
-//                    .setMessage(
-//                            RequestPermissionUtil
-//                                    .getNeedPermissionMessage(Manifest.permission.RECEIVE_SMS)
-//                    )
-//                    .setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            VerificationFragmentPermissionsDispatcher
-//                                    .checkSmsPermissionWithCheck(VerificationFragment.this);
-//
-//                        }
-//                    })
-//                    .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            dialog.dismiss();
-//                            RequestPermissionUtil.onPermissionDenied(getActivity(),
-//                                    Manifest.permission.RECEIVE_SMS);
-//                        }
-//                    })
-//                    .show();
-//        } else if (getActivity().shouldShowRequestPermissionRationale(Manifest.permission.RECEIVE_SMS)) {
-//            VerificationFragmentPermissionsDispatcher
-//                    .checkSmsPermissionWithCheck(VerificationFragment.this);
-//        }
-//    }
 
     private VerificationViewModel parseViewModel(Bundle bundle) {
         viewModel = bundle.getParcelable(ARGS_PASS_DATA);
@@ -275,6 +254,9 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         verifyButton.setOnClickListener(v -> {
             if (analytics != null && viewModel != null) {
                 analytics.eventClickVerifyButton(viewModel.getOtpType());
+                if(viewModel.getOtpType() == OTP_TYPE_REGISTER_PHONE_NUMBER){
+                    analytics.eventClickVerificationButton();
+                }
             }
             verifyOtp();
         });
@@ -311,6 +293,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         super.onViewCreated(view, savedInstanceState);
         initData();
         updateViewFromServer();
+        smsRetrieverClient.startSmsRetriever();
         requestOtp();
     }
 
@@ -341,25 +324,41 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
     @Override
     public void onSuccessGetOTP(String message) {
+        if(viewModel.getOtpType() == OTP_TYPE_REGISTER_PHONE_NUMBER){
+            analytics.trackSuccessClickResendPhoneOtpButton();
+        }
         NetworkErrorHelper.showSnackbar(getActivity(), message);
         startTimer();
     }
 
     @Override
-    public void onSuccessVerifyOTP() {
+    public void onSuccessVerifyOTP(String uuid, String msisdn) {
+
         removeErrorOtp();
         resetCountDown();
-        getActivity().setResult(Activity.RESULT_OK);
-        getActivity().finish();
+
+        if (getActivity() != null) {
+
+            if(viewModel.getOtpType() == OTP_TYPE_REGISTER_PHONE_NUMBER){
+                analytics.eventSuccessClickVerificationButton();
+            }
+
+            Intent intent = new Intent();
+            Bundle bundle = new Bundle();
+            bundle.putString(ApplinkConstInternalGlobal.PARAM_UUID, uuid);
+            bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, msisdn);
+            intent.putExtras(bundle);
+            getActivity().setResult(Activity.RESULT_OK, intent);
+            getActivity().finish();
+        }
 
     }
 
     @Override
     public void onGoToPhoneVerification() {
-        if (getActivity().getApplicationContext() instanceof OtpModuleRouter) {
+        if (getActivity() != null) {
             getActivity().setResult(Activity.RESULT_OK);
-            Intent intent = ((OtpModuleRouter) getActivity().getApplicationContext())
-                    .getPhoneVerificationActivationIntent(getActivity());
+            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.PHONE_VERIFICATION);
             startActivity(intent);
             getActivity().finish();
         }
@@ -372,6 +371,9 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
     @Override
     public void onErrorGetOTP(String errorMessage) {
+        if(viewModel.getOtpType() == OTP_TYPE_REGISTER_PHONE_NUMBER){
+            analytics.trackFailedClickResendPhoneOtpButton(errorMessage);
+        }
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
         setFinishedCountdownText();
     }
@@ -395,6 +397,11 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     @Override
     public void onErrorVerifyOtpCode(String errorMessage) {
         if (errorMessage.contains(VERIFICATION_CODE)) {
+
+            if(viewModel.getOtpType() == OTP_TYPE_REGISTER_PHONE_NUMBER){
+                analytics.eventFailedClickVerificationButton(errorMessage);
+            }
+
             inputOtp.setError(true);
             inputOtp.setFocusableInTouchMode(true);
             inputOtp.post(new Runnable() {
@@ -426,6 +433,9 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     public void trackOnBackPressed() {
         if (analytics != null && viewModel != null) {
             analytics.eventClickBackOTPPage(viewModel.getOtpType());
+            if(viewModel.getOtpType() == OTP_TYPE_REGISTER_PHONE_NUMBER){
+                analytics.eventClickBackRegisterOTPPage();
+            }
         }
 
     }
@@ -460,9 +470,11 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         if (!isRunningTimer) {
             countDownTimer = new CountDownTimer(cacheHandler.getRemainingTime() * INTERVAL, INTERVAL) {
                 public void onTick(long millisUntilFinished) {
-                    isRunningTimer = true;
-                    setRunningCountdownText(String.valueOf(TimeUnit.MILLISECONDS.toSeconds
-                            (millisUntilFinished)));
+                    if(isAdded()){
+                        isRunningTimer = true;
+                        setRunningCountdownText(String.valueOf(TimeUnit.MILLISECONDS.toSeconds
+                                (millisUntilFinished)));
+                    }
                 }
 
                 public void onFinish() {
@@ -486,6 +498,9 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
             public void onClick(View v) {
                 if (analytics != null && viewModel != null) {
                     analytics.eventClickResendOtp(viewModel.getOtpType());
+                    if(viewModel.getOtpType() == OTP_TYPE_REGISTER_PHONE_NUMBER){
+                        analytics.eventClickResendPhoneOtpButton();
+                    }
                 }
                 inputOtp.setText("");
                 removeErrorOtp();
@@ -582,59 +597,16 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     }
 
     @Override
-    public void onReceiveOTP(String otpCode) {
-//        processOTPSMS(otpCode);
-    }
-
-    @Override
     public void onSuccessGetModelFromServer(MethodItem methodItem) {
         this.viewModel.setImageUrl(methodItem.getImageUrl());
         this.viewModel.setMessage(methodItem.getVerificationText());
         setData();
     }
 
-//    @NeedsPermission(Manifest.permission.RECEIVE_SMS)
-//    public void processOTPSMS(String otpCode) {
-//        if (inputOtp != null)
-//            inputOtp.setText(otpCode);
-//        verifyOtp();
-//    }
-//
-//    @NeedsPermission(Manifest.permission.RECEIVE_SMS)
-//    public void checkSmsPermission() {
-//
-//    }
-//
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        VerificationFragmentPermissionsDispatcher.onRequestPermissionsResult(
-//                VerificationFragment.this, requestCode, grantResults);
-//    }
-//
-//    @OnShowRationale(Manifest.permission.RECEIVE_SMS)
-//    void showRationaleForReadSms(final PermissionRequest request) {
-//        RequestPermissionUtil.onShowRationale(getActivity(), new RequestPermissionUtil.PermissionRequestListener() {
-//            @Override
-//            public void onProceed() {
-//                request.proceed();
-//            }
-//
-//            @Override
-//            public void onCancel() {
-//                request.cancel();
-//            }
-//        }, Manifest.permission.RECEIVE_SMS);
-//    }
-//
-//    @OnPermissionDenied(Manifest.permission.RECEIVE_SMS)
-//    void showDeniedForReadSms() {
-//        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.RECEIVE_SMS);
-//    }
-//
-//    @OnNeverAskAgain(Manifest.permission.RECEIVE_SMS)
-//    void showNeverAskForReadSms() {
-//        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.RECEIVE_SMS);
-//    }
+    public void processOTPSMS(String otpCode) {
+        if (inputOtp != null)
+            inputOtp.setText(otpCode);
+        verifyOtp();
+    }
 
 }

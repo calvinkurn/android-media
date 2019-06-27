@@ -27,6 +27,9 @@ import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel;
 import com.tokopedia.navigation_common.model.VccUserStatus;
 import com.tokopedia.navigation_common.model.WalletModel;
 import com.tokopedia.navigation_common.model.WalletPref;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +40,7 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.ACCOUNT_BANK
 import static com.tokopedia.home.account.AccountConstants.Analytics.BALANCE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CREDIT_CARD;
 import static com.tokopedia.home.account.AccountConstants.Analytics.TOKOCASH;
+import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
 
 public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
 
@@ -46,6 +50,7 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
 
     private AccountAnalytics accountAnalytics;
     private VccUserStatus vccUserStatus;
+    private UserSession pvtUserSession;
 
     public static Fragment createInstance() {
         return new TkpdPaySettingFragment();
@@ -57,6 +62,7 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         accountAnalytics = new AccountAnalytics(getActivity());
+        pvtUserSession = new UserSession(getContext());
     }
 
     @Nullable
@@ -86,7 +92,7 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
         }
 
         vccUserStatus = walletPref.retrieveVccUserStatus();
-        if(vccUserStatus != null && vccUserStatus.getTitle() != null && !vccUserStatus.getTitle().isEmpty()) {
+        if (vccUserStatus != null && vccUserStatus.getTitle() != null && !vccUserStatus.getTitle().isEmpty()) {
             settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_OVO_PAY_LATER_ID,
                     vccUserStatus.getTitle()));
         }
@@ -113,7 +119,7 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
             switch (settingId) {
                 case SettingConstant.SETTING_BANK_ACCOUNT_ID:
                     accountAnalytics.eventClickPaymentSetting(ACCOUNT_BANK);
-                    if (userSession.isHasPassword()) {
+                    if (userSession.hasPassword()) {
                         startActivity(router.getSettingBankIntent(getActivity()));
                     } else {
                         showNoPasswordDialog();
@@ -136,7 +142,18 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
                     break;
                 case SettingConstant.SETTING_SALDO_ID:
                     accountAnalytics.eventClickPaymentSetting(BALANCE);
-                    router.goToSaldo(getActivity());
+                    RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
+                    if (remoteConfig.getBoolean(APP_ENABLE_SALDO_SPLIT, false)) {
+                        if (pvtUserSession.hasShownSaldoIntroScreen()) {
+                            router.goToSaldo(getActivity());
+                        } else {
+                            pvtUserSession.setSaldoIntroPageStatus(true);
+                            RouteManager.route(getContext(), ApplinkConst.SALDO_INTRO);
+                        }
+                    } else {
+                        RouteManager.route(getActivity(), String.format("%s?url=%s", ApplinkConst.WEBVIEW,
+                                ApplinkConst.WebViewUrl.SALDO_DETAIL));
+                    }
                     break;
                 case SettingConstant.SETTING_OVO_PAY_LATER_ID:
                     accountAnalytics.eventClickOVOPayLater(AccountConstants.Analytics.OVO_PAY_LATER_CATEGORY,

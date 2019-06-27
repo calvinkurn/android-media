@@ -58,7 +58,8 @@ public class TrackingPageMapper implements ITrackingPageMapper {
                 TrackingHistoryViewModel historyViewModel = new TrackingHistoryViewModel();
                 historyViewModel.setCity(order.getTrackHistory().get(i).getCity());
                 historyViewModel.setStatus(order.getTrackHistory().get(i).getStatus());
-                historyViewModel.setTime(order.getTrackHistory().get(i).getDate());
+                historyViewModel.setDate(order.getTrackHistory().get(i).getDate());
+                historyViewModel.setTime(order.getTrackHistory().get(i).getTime());
                 splitDate(historyViewModel, order, i);
                 historyViewModel.setTitle(order.getTrackHistory().get(i).getStatus());
                 trackingHistoryViewModels.add(historyViewModel);

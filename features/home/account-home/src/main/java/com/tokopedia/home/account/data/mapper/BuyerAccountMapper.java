@@ -55,7 +55,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         BuyerViewModel model = new BuyerViewModel();
         List<ParcelableViewModel> items = new ArrayList<>();
 
-        if(accountModel.getProfile() != null) {
+        if (accountModel.getProfile() != null) {
             items.add(getBuyerProfileMenu(accountModel));
         }
 
@@ -66,7 +66,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         }
 
         TokopediaPayViewModel tokopediaPayViewModel = new TokopediaPayViewModel();
-        if(accountModel.getWallet() != null) {
+        if (accountModel.getWallet() != null) {
             tokopediaPayViewModel.setLinked(accountModel.getWallet().isLinked());
             tokopediaPayViewModel.setWalletType(accountModel.getWallet().getWalletType());
             if (accountModel.getWallet().getWalletType().equals(OVO)) {
@@ -78,7 +78,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
                         tokopediaPayViewModel.setLabelLeft(accountModel.getWallet().getText());
                     }
 
-                    if(accountModel.getWallet().getAction() != null) {
+                    if (accountModel.getWallet().getAction() != null) {
                         tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getAction().getText());
                         tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getAction().getApplink());
                     }
@@ -91,7 +91,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
                 tokopediaPayViewModel.setIconUrlLeft(cdnUrl + AccountHomeUrl.ImageUrl.TOKOCASH_IMG);
                 if (!accountModel.getWallet().isLinked()) {
                     tokopediaPayViewModel.setLabelLeft(accountModel.getWallet().getText());
-                    if(accountModel.getWallet().getAction() != null) {
+                    if (accountModel.getWallet().getAction() != null) {
                         tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getAction().getText());
                         tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getAction().getApplink());
                     }
@@ -103,19 +103,25 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
             }
         }
 
-        if (!((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig("mainapp_android_enable_tokocard", false)
-                || accountModel.getVccUserStatus() == null
-                || accountModel.getVccUserStatus().getStatus() == null
-                || accountModel.getVccUserStatus().getStatus().equalsIgnoreCase(AccountConstants.VccStatus.NOT_FOUND)
-                || accountModel.getVccUserStatus().getStatus().equalsIgnoreCase(AccountConstants.VccStatus.NOT_ELIGIBLE)) {
-            tokopediaPayViewModel.setIconUrlRight(cdnUrl+AccountHomeUrl.ImageUrl.SALDO_IMG);
+        if ((accountModel.getSaldoModel() != null &&
+                accountModel.getSaldoModel().getSaldo() != null &&
+                accountModel.getSaldoModel().getSaldo().getDepositLong() > 10000) ||
+                (accountModel.getVccUserStatus() != null && accountModel.getVccUserStatus().getStatus() != null &&
+                        accountModel.getVccUserStatus().getStatus().equalsIgnoreCase((AccountConstants.VccStatus.REJECTED)))) {
+
+            tokopediaPayViewModel.setIconUrlRight(cdnUrl + AccountHomeUrl.ImageUrl.SALDO_IMG);
             tokopediaPayViewModel.setLabelRight(context.getString(R.string.label_tokopedia_pay_deposit));
-            tokopediaPayViewModel.setAmountRight(accountModel.getDeposit().getDepositFmt());
+            tokopediaPayViewModel.setRightSaldo(true);
+            tokopediaPayViewModel.setAmountRight(CurrencyFormatUtil.convertPriceValueToIdrFormat
+                    (accountModel.getSaldoModel().getSaldo().getDepositLong(), false));
+
             tokopediaPayViewModel.setApplinkRight(ApplinkConst.DEPOSIT);
             items.add(tokopediaPayViewModel);
+
         } else {
             TokopediaPayBSModel bsDataRight = new TokopediaPayBSModel();
             tokopediaPayViewModel.setLabelRight(accountModel.getVccUserStatus().getTitle());
+            tokopediaPayViewModel.setRightSaldo(false);
             tokopediaPayViewModel.setIconUrlRight(accountModel.getVccUserStatus().getIcon());
             tokopediaPayViewModel.setVccUserStatus(accountModel.getVccUserStatus().getStatus());
             if (accountModel.getVccUserStatus().getStatus().equalsIgnoreCase(AccountConstants.VccStatus.ACTIVE)) {
@@ -156,7 +162,6 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
             items.add(tokopediaPayViewModel);
         }
 
-
         MenuTitleViewModel menuTitle = new MenuTitleViewModel();
         menuTitle.setTitle(context.getString(R.string.title_menu_transaction));
         items.add(menuTitle);
@@ -179,28 +184,42 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         menuGrid.setLinkText(context.getString(R.string.label_menu_show_history));
         menuGrid.setTitleTrack(PEMBELI);
         menuGrid.setSectionTrack(context.getString(R.string.title_menu_transaction));
-        menuGrid.setApplinkUrl(ApplinkConst.PURCHASE_HISTORY);
+        menuGrid.setApplinkUrl(ApplinkConst.MARKETPLACE_ORDER);
+        if (((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig(RemoteConfigKey.APP_GLOBAL_NAV_NEW_DESIGN, true)) {
+            menuGrid.setItems(getMarketPlaceOrderMenu(
+                    accountModel.getNotifications() != null && accountModel.getNotifications().getBuyerOrder() != null,
+                    accountModel
+            ));
+        } else {
 
-        menuGrid.setItems(getBuyerOrderMenu(
-            accountModel.getNotifications() != null && accountModel.getNotifications().getBuyerOrder() != null,
-            accountModel
-        ));
-        items.add(menuGrid);
+            menuGrid.setItems(getBuyerOrderMenu(
+                    accountModel.getNotifications() != null && accountModel.getNotifications().getBuyerOrder() != null,
+                    accountModel
+            ));
+        }
 
-
-        items.add(getBuyerResolutionMenu(accountModel));
 
         menuGrid = new MenuGridViewModel();
-        menuGrid.setTitle(context.getString(R.string.title_menu_other_transaction));
+        menuGrid.setTitle(context.getString(R.string.title_menu_other_transaction_1));
         menuGrid.setItems(getDigitalOrderMenu());
         items.add(menuGrid);
+
+        menuList = new MenuListViewModel();
+        menuList.setMenu(context.getString(R.string.ulasan));
+        menuList.setMenuDescription(context.getString(R.string.ulasan_desc));
+        menuList.setApplink(ApplinkConst.REPUTATION);
+        menuList.setTitleTrack(PEMBELI);
+        menuList.setSectionTrack(context.getString(R.string.title_menu_transaction));
+        items.add(menuList);
+
+        items.add(getBuyerResolutionMenu(accountModel));
 
         menuTitle = new MenuTitleViewModel();
         menuTitle.setTitle(context.getString(R.string.title_menu_favorites));
         items.add(menuTitle);
 
         if (context.getApplicationContext() instanceof AccountHomeRouter
-                && ((AccountHomeRouter) context.getApplicationContext()).isEnableInterestPick()){
+                && ((AccountHomeRouter) context.getApplicationContext()).isEnableInterestPick()) {
             menuList = new MenuListViewModel();
             menuList.setMenu(context.getString(R.string.title_menu_favorite_topic));
             menuList.setMenuDescription(context.getString(R.string.label_menu_favorite_topic));
@@ -245,8 +264,8 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         items.add(menuList);
 
         if (((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig("app_show_referral_button", false)) {
-           String title=((AccountHomeRouter) context.getApplicationContext()).getStringRemoteConfig("app_referral_title", context.getString(R.string.title_menu_wallet_referral));
-            String subTitle=((AccountHomeRouter) context.getApplicationContext()).getStringRemoteConfig("app_referral_subtitle", context.getString(R.string.label_menu_wallet_referral));
+            String title = ((AccountHomeRouter) context.getApplicationContext()).getStringRemoteConfig("app_referral_title", context.getString(R.string.title_menu_wallet_referral));
+            String subTitle = ((AccountHomeRouter) context.getApplicationContext()).getStringRemoteConfig("app_referral_subtitle", context.getString(R.string.label_menu_wallet_referral));
             InfoCardViewModel infoCard = new InfoCardViewModel();
             infoCard.setIconRes(R.drawable.ic_tokocash_big);
             infoCard.setMainText(title);
@@ -265,17 +284,9 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
             infoCard.setApplink(ApplinkConst.CHALLENGE);
             infoCard.setTitleTrack(PEMBELI);
             infoCard.setSectionTrack(CLICK_CHALLENGE);
-            infoCard.setNewTxtVisiblle(View.VISIBLE);
-            items.add(infoCard);
-        }
-
-        if (((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig(RemoteConfigKey.APP_ENABLE_ACCOUNT_AFFILIATE, true)) {
-            InfoCardViewModel infoCard = new InfoCardViewModel();
-            infoCard.setIconRes(R.drawable.ic_byme_notif);
-            infoCard.setMainText(context.getString(R.string.title_menu_affiliate));
-            infoCard.setSecondaryText(context.getString(R.string.label_menu_affiliate));
-            infoCard.setApplink(ApplinkConst.AFFILIATE_EXPLORE);
-            infoCard.setTitleTrack(PEMBELI);
+            if (context.getApplicationContext() instanceof AccountHomeRouter
+                    && ((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig(RemoteConfigKey.APP_ENTRY_CHALLENGE_BARU, true))
+                infoCard.setNewTxtVisiblle(View.VISIBLE);
             items.add(infoCard);
         }
 
@@ -301,20 +312,21 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         buyerCardViewModel.setUserId(accountModel.getProfile().getUserId());
         buyerCardViewModel.setName(accountModel.getProfile().getFullName());
 
-        if(accountModel.getTokopoints() != null
+        if (accountModel.getTokopoints() != null
                 && accountModel.getTokopoints().getStatus() != null
                 && accountModel.getTokopoints().getStatus().getPoints() != null) {
             buyerCardViewModel.setTokopoint(accountModel.getTokopoints().getStatus().getPoints().getRewardStr());
         }
 
-        if(accountModel.getTokopointsSumCoupon() != null) {
-            buyerCardViewModel.setCoupons(accountModel.getTokopointsSumCoupon().getSumCoupon());
+        if (accountModel.getTokopointsSumCoupon() != null) {
+            buyerCardViewModel.setCoupons(accountModel.getTokopointsSumCoupon().getSumCouponStr());
         }
 
         buyerCardViewModel.setImageUrl(accountModel.getProfile().getProfilePicture());
-        if(accountModel.getProfile().getCompletion() != null) {
+        if (accountModel.getProfile().getCompletion() != null) {
             buyerCardViewModel.setProgress(accountModel.getProfile().getCompletion());
         }
+        buyerCardViewModel.setAffiliate(accountModel.isAffiliate());
 
         return buyerCardViewModel;
     }
@@ -362,11 +374,54 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         return menuGridItems;
     }
 
+    private List<MenuGridItemViewModel> getMarketPlaceOrderMenu(Boolean isNotNull, AccountModel accountModel) {
+        List<MenuGridItemViewModel> menuGridItems = new ArrayList<>();
+        MenuGridItemViewModel gridItem = new MenuGridItemViewModel(
+                R.drawable.ic_waiting_for_confirmation,
+                context.getString(R.string.label_menu_waiting_confirmation),
+                ApplinkConst.MARKETPLACE_WAITING_CONFIRMATION,
+                isNotNull ? accountModel.getNotifications().getBuyerOrder().getConfirmed() : 0,
+                PEMBELI,
+                context.getString(R.string.title_menu_transaction));
+        menuGridItems.add(gridItem);
+
+        gridItem = new MenuGridItemViewModel(
+                R.drawable.ic_order_processed,
+                context.getString(R.string.label_menu_order_processed),
+                ApplinkConst.MARKETPLACE_ORDER_PROCESSED,
+                isNotNull ? accountModel.getNotifications().getBuyerOrder().getProcessed() : 0,
+                PEMBELI,
+                context.getString(R.string.title_menu_transaction)
+        );
+        menuGridItems.add(gridItem);
+
+        gridItem = new MenuGridItemViewModel(
+                R.drawable.ic_shipped,
+                context.getString(R.string.label_menu_shipping),
+                ApplinkConst.MARKETPLACE_SENT,
+                isNotNull ? accountModel.getNotifications().getBuyerOrder().getShipped() : 0,
+                PEMBELI,
+                context.getString(R.string.title_menu_transaction)
+        );
+        menuGridItems.add(gridItem);
+
+        gridItem = new MenuGridItemViewModel(
+                R.drawable.ic_delivered,
+                context.getString(R.string.label_menu_delivered),
+                ApplinkConst.MARKETPLACE_DELIVERED,
+                isNotNull ? accountModel.getNotifications().getBuyerOrder().getArriveAtDestination() : 0,
+                PEMBELI,
+                context.getString(R.string.title_menu_transaction)
+        );
+        menuGridItems.add(gridItem);
+        return menuGridItems;
+    }
+
     private ParcelableViewModel getBuyerResolutionMenu(AccountModel accountModel) {
         MenuListViewModel menuList = new MenuListViewModel();
         menuList.setMenu(context.getString(R.string.title_menu_buyer_complain));
         menuList.setMenuDescription(context.getString(R.string.label_menu_buyer_complain));
-        if(accountModel.getNotifications() != null && accountModel.getNotifications().getResolution() != null) {
+        if (accountModel.getNotifications() != null && accountModel.getNotifications().getResolution() != null) {
             menuList.setCount(accountModel.getNotifications().getResolution().getBuyer());
         }
         menuList.setApplink(ApplinkConst.RESCENTER_BUYER);
@@ -378,7 +433,31 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
 
     private List<MenuGridItemViewModel> getDigitalOrderMenu() {
         List<MenuGridItemViewModel> menuGridItems = new ArrayList<>();
-        MenuGridItemViewModel gridItem = new MenuGridItemViewModel(
+        MenuGridItemViewModel gridItem = null;
+        if (((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig(RemoteConfigKey.APP_GLOBAL_NAV_NEW_DESIGN, true)) {
+            gridItem = new MenuGridItemViewModel(
+                    R.drawable.ic_belanja,
+                    context.getString(R.string.title_menu_market_place),
+                    ApplinkConst.MARKETPLACE_ORDER,
+                    0,
+                    PEMBELI,
+                    context.getString(R.string.title_menu_transaction)
+            );
+        } else {
+
+            gridItem = new MenuGridItemViewModel(
+                    R.drawable.ic_belanja,
+                    context.getString(R.string.title_menu_market_place),
+                    ApplinkConst.PURCHASE_HISTORY,
+                    0,
+                    PEMBELI,
+                    context.getString(R.string.title_menu_transaction)
+            );
+        }
+
+
+        menuGridItems.add(gridItem);
+        gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_top_up_bill,
                 context.getString(R.string.title_menu_top_up_bill),
                 ApplinkConst.DIGITAL_ORDER,
@@ -391,16 +470,6 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
                 R.drawable.ic_flight,
                 context.getString(R.string.title_menu_flight),
                 ApplinkConst.FLIGHT_ORDER,
-                0,
-                PEMBELI,
-                context.getString(R.string.title_menu_transaction)
-        );
-        menuGridItems.add(gridItem);
-
-        gridItem = new MenuGridItemViewModel(
-                R.drawable.ic_train,
-                context.getString(R.string.title_menu_train),
-                AccountConstants.Navigation.TRAIN_ORDER_LIST,
                 0,
                 PEMBELI,
                 context.getString(R.string.title_menu_transaction)

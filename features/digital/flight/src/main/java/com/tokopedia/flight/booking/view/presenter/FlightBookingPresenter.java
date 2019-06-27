@@ -4,7 +4,10 @@ package com.tokopedia.flight.booking.view.presenter;
 import android.support.annotation.NonNull;
 import android.util.Patterns;
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.common.travel.ticker.TravelTickerFlightPage;
+import com.tokopedia.common.travel.ticker.TravelTickerInstanceId;
+import com.tokopedia.common.travel.ticker.domain.TravelTickerUseCase;
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
@@ -36,6 +39,7 @@ import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel;
 import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel;
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -69,7 +73,8 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     private FlightSearchJourneyByIdUseCase flightSearchJourneyByIdUseCase;
     private CompositeSubscription compositeSubscription;
     private FlightAnalytics flightAnalytics;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
+    private TravelTickerUseCase travelTickerUseCase;
 
     private static final int GENDER_MAN = 1;
     private static final int GENDER_WOMAN = 2;
@@ -81,8 +86,9 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                                   FlightBookingCartDataMapper flightBookingCartDataMapper,
                                   FlightBookingGetPhoneCodeUseCase flightBookingGetPhoneCodeUseCase,
                                   FlightAnalytics flightAnalytics,
-                                  UserSession userSession,
-                                  FlightSearchJourneyByIdUseCase flightSearchJourneyByIdUseCase) {
+                                  UserSessionInterface userSession,
+                                  FlightSearchJourneyByIdUseCase flightSearchJourneyByIdUseCase,
+                                  TravelTickerUseCase travelTickerUseCase) {
         super(flightAddToCartUseCase, flightBookingCartDataMapper);
         this.flightAddToCartUseCase = flightAddToCartUseCase;
         this.flightBookingCartDataMapper = flightBookingCartDataMapper;
@@ -90,6 +96,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         this.flightAnalytics = flightAnalytics;
         this.userSession = userSession;
         this.flightSearchJourneyByIdUseCase = flightSearchJourneyByIdUseCase;
+        this.travelTickerUseCase = travelTickerUseCase;
         this.compositeSubscription = new CompositeSubscription();
     }
 
@@ -188,13 +195,17 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                         int newAdultPrice = newFarePrice.getFare().getAdultNumeric() / 2;
                         int newChildPrice = newFarePrice.getFare().getChildNumeric() / 2;
                         int newInfantPrice = newFarePrice.getFare().getInfantNumeric() / 2;
+
                         flightBookingCartData.getDepartureTrip().setAdultNumericPrice(newAdultPrice);
                         flightBookingCartData.getDepartureTrip().setChildNumericPrice(newChildPrice);
                         flightBookingCartData.getDepartureTrip().setInfantNumericPrice(newInfantPrice);
 
-                        flightBookingCartData.getReturnTrip().setAdultNumericPrice(newAdultPrice);
-                        flightBookingCartData.getReturnTrip().setChildNumericPrice(newChildPrice);
-                        flightBookingCartData.getReturnTrip().setInfantNumericPrice(newInfantPrice);
+                        flightBookingCartData.getReturnTrip().setAdultNumericPrice(
+                                newFarePrice.getFare().getAdultNumeric() - newAdultPrice);
+                        flightBookingCartData.getReturnTrip().setChildNumericPrice(
+                                newFarePrice.getFare().getChildNumeric() - newChildPrice);
+                        flightBookingCartData.getReturnTrip().setInfantNumericPrice(
+                                newFarePrice.getFare().getInfantNumeric() - newInfantPrice);
                     }
                 }
                 int newTotalPrice = actionCalculateCurrentTotalPrice(flightBookingCartData.getDepartureTrip(), flightBookingCartData.getReturnTrip());
@@ -324,7 +335,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
 
     @Override
     public void onReturnInfoClicked() {
-        flightAnalytics.eventDetailClick(getView().getCurrentCartPassData().getDepartureTrip());
+        flightAnalytics.eventDetailClick(getView().getCurrentCartPassData().getReturnTrip());
         getView().navigateToDetailTrip(getView().getCurrentCartPassData().getReturnTrip());
     }
 
@@ -649,6 +660,10 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         if (compositeSubscription != null && compositeSubscription.hasSubscriptions()) {
             compositeSubscription.unsubscribe();
         }
+        travelTickerUseCase.unsubscribe();
+        flightAddToCartUseCase.unsubscribe();
+        flightBookingGetPhoneCodeUseCase.unsubscribe();
+        flightSearchJourneyByIdUseCase.unsubscribe();
         detachView();
     }
 
@@ -1020,5 +1035,29 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     @Override
     public void onInsuranceBenefitExpanded() {
         flightAnalytics.eventInsuranceAnotherBenefit();
+    }
+
+    @Override
+    public void fetchTickerData() {
+        travelTickerUseCase.execute(travelTickerUseCase.createRequestParams(
+                TravelTickerInstanceId.Companion.getFLIGHT(), TravelTickerFlightPage.Companion.getBOOK()),
+                new Subscriber<TravelTickerViewModel>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(TravelTickerViewModel travelTickerViewModel) {
+                        if (travelTickerViewModel.getMessage().length() > 0) {
+                            getView().renderTickerView(travelTickerViewModel);
+                        }
+                    }
+                });
     }
 }

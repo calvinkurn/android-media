@@ -14,31 +14,18 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.tokopoints.notification.model.PopupNotification;
+import com.tokopedia.tokopoints.notification.utils.AnalyticsTrackerUtil;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class TokoPointsPopupNotificationBottomSheet extends BottomSheets {
 
     PopupNotification mData;
+    private String couponTitle;
 
     @Override
     public int getLayoutResourceId() {
         return R.layout.tp_layout_popup_notification;
     }
-
-    @Override
-    public void setupDialog(Dialog dialog, int style) {
-        super.setupDialog(dialog, style);
-
-        if (getActivity() == null) {
-            return;
-        }
-
-        DisplayMetrics displaymetrics = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-        int screenHeight = displaymetrics.heightPixels;
-        if (getBottomSheetBehavior() != null)
-            getBottomSheetBehavior().setPeekHeight(screenHeight / 2);
-    }
-
 
     @Override
     public void initView(View view) {
@@ -49,15 +36,17 @@ public class TokoPointsPopupNotificationBottomSheet extends BottomSheets {
         TextView sender = view.findViewById(R.id.text_sender);
         ImageView banner = view.findViewById(R.id.img_banner);
         Button action = view.findViewById(R.id.button_action);
+        count.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                (count.getContext(), R.drawable.ic_tp_flash), null, null , null);
 
         action.setText(mData.getButtonText());
-
-        if (mData.getCatalog() == null || mData.getCatalog().getTitle() == null) {
-            title.setText(mData.getTitle());
+        if (mData.getCatalog() == null || TextUtils.isEmpty(mData.getCatalog().getTitle())) {
+            couponTitle=mData.getTitle();
             title.setGravity(Gravity.CENTER_HORIZONTAL);
         } else {
-            title.setText(mData.getCatalog().getTitle() + " " + mData.getCatalog().getSubTitle());
+            couponTitle=mData.getCatalog().getTitle() + " " + mData.getCatalog().getSubTitle();
         }
+        title.setText(couponTitle);
 
         if (!TextUtils.isEmpty(mData.getText())) {
             desc.setVisibility(View.VISIBLE);
@@ -96,7 +85,13 @@ public class TokoPointsPopupNotificationBottomSheet extends BottomSheets {
         action.setOnClickListener(view1 -> {
             RouteManager.route(action.getContext(), mData.getAppLink());
             dismiss();
+            AnalyticsTrackerUtil.sendEvent(getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                    AnalyticsTrackerUtil.CategoryKeys.POPUP_TERIMA_HADIAH,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_GUNAKAN_KUPON,
+                    couponTitle);
         });
+        updateHeight();
     }
 
     @Override
@@ -111,5 +106,10 @@ public class TokoPointsPopupNotificationBottomSheet extends BottomSheets {
     @Override
     protected void onCloseButtonClick() {
         super.onCloseButtonClick();
+        AnalyticsTrackerUtil.sendEvent(getContext(),
+                AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                AnalyticsTrackerUtil.CategoryKeys.POPUP_TERIMA_HADIAH,
+                AnalyticsTrackerUtil.ActionKeys.CLICK_CLOSE_BUTTON,
+                couponTitle);
     }
 }

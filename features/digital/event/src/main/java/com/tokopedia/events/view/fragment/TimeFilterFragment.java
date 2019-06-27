@@ -1,7 +1,6 @@
 package com.tokopedia.events.view.fragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -14,7 +13,9 @@ import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
 import com.tokopedia.events.view.contractor.ICloseFragement;
 import com.tokopedia.events.view.utils.Utils;
-import com.tokopedia.travelcalendar.view.TravelCalendarActivity;
+import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -24,16 +25,14 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.events.view.contractor.EventFilterContract.EVERYDAY;
-import static com.tokopedia.events.view.contractor.EventFilterContract.REQ_OPEN_CALENDAR;
 import static com.tokopedia.events.view.contractor.EventFilterContract.TIME_ID;
-import static com.tokopedia.travelcalendar.view.TravelCalendarActivity.DATE_SELECTED;
 import static okhttp3.internal.Util.UTC;
 
 public class TimeFilterFragment extends Fragment {
     private static final String ARG_TIMERAMGE = "timerange";
     private static final String STARTDATE = "startdate";
+    private static final String TAG_CALENDAR = "calendarTimeFilter";
     @BindView(R2.id.tv_today)
     TextView tvToday;
     @BindView(R2.id.tv_tomorrow)
@@ -141,10 +140,7 @@ public class TimeFilterFragment extends Fragment {
             timeRange = EVERYDAY;
             resetStartDate();
         } else if (id == R.id.tv_from_date) {
-            Calendar now = Calendar.getInstance();
-            now.add(Calendar.DAY_OF_MONTH, 90);
-            Intent calendarIntent = TravelCalendarActivity.newInstance(getContext(), new Date(), new Date(), now.getTime(), TravelCalendarActivity.DEFAULT_TYPE);
-            startActivityForResult(calendarIntent, REQ_OPEN_CALENDAR);
+            showCalendar();
         } else if (id == R.id.iv_close_filter) {
             closeSelf.closeFragmentSelf();
         } else if (id == R.id.tv_reset) {
@@ -173,6 +169,28 @@ public class TimeFilterFragment extends Fragment {
         }
     }
 
+    private void showCalendar() {
+        TravelCalendarBottomSheet travelCalendarBottomSheet = new TravelCalendarBottomSheet.Builder()
+                .setShowHoliday(false)
+                .setTitle(getActivity().getString(R.string.travel_calendar_label_choose_date))
+                .build();
+        travelCalendarBottomSheet.setListener(new TravelCalendarBottomSheet.ActionListener() {
+            @Override
+            public void onClickDate(@NotNull Date dateSelected) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeZone(UTC);
+                calendar.setTime(dateSelected);
+                calendar.set(Calendar.HOUR_OF_DAY, 0);
+                calendar.set(Calendar.MINUTE, 0);
+                calendar.set(Calendar.SECOND, 0);
+                calendar.set(Calendar.MILLISECOND, 0);
+                long timeMillis = calendar.getTimeInMillis();
+                setSelectedDate(timeMillis);
+            }
+        });
+        travelCalendarBottomSheet.show(getActivity().getSupportFragmentManager(), TAG_CALENDAR);
+    }
+
     @Override
     public void onDetach() {
         super.onDetach();
@@ -196,25 +214,6 @@ public class TimeFilterFragment extends Fragment {
         if (v != null) {
             v.setTextColor(getResources().getColor(R.color.black_56));
             v.setBackgroundResource(R.drawable.ellipse_white_grey_br);
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQ_OPEN_CALENDAR) {
-            if (resultCode == RESULT_OK) {
-                Date inDate = (Date) data.getSerializableExtra(DATE_SELECTED);
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTimeZone(UTC);
-                calendar.setTime(inDate);
-                calendar.set(Calendar.HOUR_OF_DAY, 0);
-                calendar.set(Calendar.MINUTE, 0);
-                calendar.set(Calendar.SECOND, 0);
-                calendar.set(Calendar.MILLISECOND, 0);
-                long timeMillis = calendar.getTimeInMillis();
-                setSelectedDate(timeMillis);
-            }
         }
     }
 

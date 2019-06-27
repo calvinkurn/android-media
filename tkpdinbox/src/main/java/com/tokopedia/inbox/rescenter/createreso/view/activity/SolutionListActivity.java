@@ -12,6 +12,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.fragment.SolutionListFragme
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.EditAppealSolutionModel;
 import com.tokopedia.inbox.util.analytics.InboxAnalytics;
+import com.tokopedia.track.TrackApp;
 
 /**
  * Created by yoasfs on 24/08/17.
@@ -102,11 +103,11 @@ public class SolutionListActivity extends BaseSimpleActivity {
     public void onBackPressed() {
         if (!isCreateReso) {
             if (isEditFromChatReso(editAppealSolutionModel)) {
-                UnifyTracking.eventTracking(this,InboxAnalytics.eventResoChatClickCloseEditPage(
-                        editAppealSolutionModel.resolutionId));
+                TrackApp.getInstance().getGTM().sendGeneralEvent(InboxAnalytics.eventResoChatClickCloseEditPage(
+                        editAppealSolutionModel.resolutionId).getEvent());
             } else {
-                UnifyTracking.eventTracking(this,InboxAnalytics.eventResoChatClickCloseAppealPage(
-                        editAppealSolutionModel.resolutionId));
+                TrackApp.getInstance().getGTM().sendGeneralEvent(InboxAnalytics.eventResoChatClickCloseAppealPage(
+                        editAppealSolutionModel.resolutionId).getEvent());
             }
         }
         super.onBackPressed();

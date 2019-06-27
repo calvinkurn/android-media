@@ -22,13 +22,13 @@ interface NotifCenterContract {
 
         fun hideLoading()
 
-        fun openRedirectUrl(url: String)
+        fun openRedirectUrl(url: String, notifId: String)
     }
 
     interface Presenter : CustomerPresenter<View> {
         fun fetchData()
 
-        fun fetchDataWithoutCache()
+        fun fetchSingleData(it: String)
 
         fun updatePage(lastNotifId: String)
 

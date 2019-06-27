@@ -12,8 +12,8 @@ import retrofit2.http.QueryMap;
 import rx.Observable;
 
 public interface BrowseApi {
-    @GET(DiscoveryBaseURL.Ace.PATH_UNIVERSE_SEARCH_V8)
-    Observable<Response<SearchResponse>> getUniverseAutoCompleteV8(
+    @GET(DiscoveryBaseURL.Ace.PATH_UNIVERSE_SEARCH)
+    Observable<Response<SearchResponse>> getUniverseAutoComplete(
             @QueryMap HashMap<String, Object> param
     );
 

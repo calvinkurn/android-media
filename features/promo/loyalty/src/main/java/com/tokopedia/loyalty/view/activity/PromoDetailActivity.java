@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -65,15 +66,16 @@ public class PromoDetailActivity extends BaseSimpleActivity implements HasCompon
     @Override
     protected Fragment getNewFragment() {
         PromoData promoData = getIntent().getParcelableExtra(EXTRA_PROMO_DATA);
-
-        if (promoData == null) {
-            String slug = getIntent().getStringExtra(EXTRA_PROMO_SLUG);
+        String slug = getIntent().getStringExtra(EXTRA_PROMO_SLUG);
+        if (!TextUtils.isEmpty(slug)) {
             return PromoDetailFragment.newInstance(slug);
-        } else {
+        } else if (promoData != null) {
             int position = getIntent().getIntExtra(EXTRA_PROMO_POSITION, 0);
             int page = getIntent().getIntExtra(EXTRA_PROMO_PAGE, 0);
             return PromoDetailFragment.newInstance(promoData, page, position);
         }
+        finish();
+        return null;
     }
 
     @Override

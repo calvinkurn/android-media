@@ -37,6 +37,11 @@ public interface ConstantTransactionAnalytics {
         String PRODUCT_VIEW = "productView";
         String CLICK_PDP = "clickPDP";
         String PURCHASE_PROTECTION = "fintechppandroid";
+        String VIEW_CART = "viewCart";
+        String CLICK_REGISTER = "clickRegister";
+        String VIEW_REGISTER = "viewRegister";
+        String CLICK_CHECKOUT_EXPRESS = "clickCheckoutExpress";
+        String VIEW_CHECKOUT_EXPRESS = "viewCheckoutExpress";
     }
 
     interface EventCategory {
@@ -48,10 +53,15 @@ public interface ConstantTransactionAnalytics {
         String ORDER_TRACKING = "order tracking";
         String PRODUCT_DETAIL_PAGE = "product detail page";
         String PURCHASE_PROTECTION = "fin - mp checkout";
+        String CORNER_ADDRES = "tokopedia corner address";
+        String EXPRESS_CHECKOUT = "express checkout";
+        String COURIER_SELECTION_TRADE_IN = "courier selection trade in";
     }
 
     interface EventAction {
         String CLICK_GUNAKAN_KODE_PROMO_ATAU_KUPON = "click gunakan kode promo atau kupon";
+        String CLICK_GUNAKAN_KODE_PROMO = "click gunakan kode promo";
+        String CLICK_GUNAKAN_KUPON = "click gunakan kupon";
         String CLICK_HAPUS_ON_TOP_RIGHT_CORNER = "click hapus on top right corner";
         String CLICK_SHOP_NAME = "click shop name";
         String CLICK_PRODUCT_NAME = "click product name";
@@ -157,6 +167,8 @@ public interface ConstantTransactionAnalytics {
         String CLICK_TELEPON_PADA_TAMBAH_ADDRESS = "click telepon pada + address";
         String CLICK_ALAMAT_PADA_TAMBAH_ADDRESS = "click alamat pada + address";
         String CLICK_CEK_KERANJANG = "click - cek keranjang";
+        String VIEW_CART_LIST = "view cart list";
+        String VIEW_CHECKOUT_PAGE = "view checkout page";
 
         String VALIDATION_ERROR_ALAMAT_SEBAGAI_PADA_TAMBAH_ADDRESS = "validation error alamat sebagai pada + address";
         String VALIDATION_ERROR_NAMA_PADA_TAMBAH_ADDRESS = "validation error nama pada + address";
@@ -210,10 +222,52 @@ public interface ConstantTransactionAnalytics {
         String CLICK_PELAJARI = "pp - pelajari click";
         String CLICK_PURCHASE_PROTECTION_PAY = "pp - bayar click";
         String IMPRESSION_PELAJARI = "pp - pelajari impression";
+
+        //TOKOPEDIA CORNER
+        String CHOOSE_LOCATION_CORNER = "click pilih lokasi tokopedia corner";
+        String CLICK_CORNER_ADDRESS = "click alamat tokopedia corner";
+        String VIEW_CORNER_ERROR = "view tokopedia corner not available";
+        String VIEW_CORNER_PO_ERROR = "view error pre order tokopedia corner";
+
+        //EXPRESS CHECKOUT
+        String VIEW_EXPRESS_CHECKOUT = "view express checkout";
+        String CLICK_LANJUTKAN_TANPA_TEMPLATE = "click lanjutkan tanpa template";
+        String CLICK_X = "click x";
+        String VIEW_ERROR_METODE_PEMBAYARAN = "view error metode pembayaran";
+
+        String CLICK_PLUS_FROM_MULTIPLE = "click + from multiple";
+        String CLICK_BUTTON_SIMPAN = "click button simpan";
+        String CLICK_BUTTON_SIMPAN_FROM_EDIT = "click button simpan from edit";
+
+        //TRADEIN
+        String VIEW_CHECKOUYT_PAGE_TRADE_IN = "view checkout page trade in";
+        String CLICK_GANTI_NOMOR = "click ganti nomor";
+        String CLICK_BUTTON_PILIH_DURASI = "click button pilih durasi";
+        String CLICK_KURIR_TRADE_IN = "click kurir trade in";
+
+        //PROMO STACKING
+        String CLICK_PILIH_MERCHANT_VOUCHER = "click pilih merchant voucher";
+        String CLICK_PAKAI_MERCHANT_VOUCHER_MANUAL_INPUT = "click pakai merchant voucher manual input";
+        String CLICK_PAKAI_MERCHANT_VOUCHER = "click pakai merchant voucher";
+        String CLICK_DETAIL_MERCHANT_VOUCHER = "click detail merchant voucher";
+        String CLICK_TICKER_MERCHANT_VOUCHER = "click ticker merchant voucher";
+        String CLICK_HAPUS_PROMO_X_ON_TICKER = "click hapus promo (x) on ticker";
+        String VIEW_DETAIL_MERCHANT_VOUCHER = "view detail merchant voucher";
+        String CLICK_LIHAT_PROMO_LAINNYA_ON_VOUCHER_DETAIL = "click lihat promo lainnya on voucher detail";
+        String CLICK_BATALKAN_PROMO_ON_VOUCHER_DETAIL = "click batalkan promo on voucher detail";
+        String CLICK_CARA_PAKAI_ON_VOUCHER_DETAIL = "click cara pakai on voucher detail";
+        String CLICK_KETENTUAN_ON_VOUCHER_DETAIL = "click ketentuan on voucher detail";
+        String SELECT_PROMO_PROMO_KONFLIK = "select promo - promo konflik";
+        String CLICK_SUBMIT_PROMO_CONFLICT = "click submit promo konflik";
+        String VIEW_POPUP_PROMO_DISABLE = "view popup promo disable";
+        String CLICK_PROMO_LOGISTIC_TICKER = "click promo logistic ticker";
+        String CLICK_LANJUTKAN_TERAPKAN_PROMO = "click lanjutkan di pop up terapkan promo";
+        String CLICK_BATAL_TERAPKAN_PROMO = "click batal di pop up terapkan promo";
     }
 
     interface EventLabel {
         String SUCCESS = "success";
+        String ERROR = "error";
         String NOT_SUCCESS = "not success";
         String COURIER_NOT_COMPLETE = "courier not complete";
         String KUOTA_PENUKARAN = "kuota penukaran";
@@ -228,6 +282,12 @@ public interface ConstantTransactionAnalytics {
         String CHECKOUT_SUCCESS_PARTIAL_PRODUCT = "success - partial product";
         String CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT = "success - partial shop and product";
 
+        String CHECKOUT_SUCCESS_DEFAULT_ELIGIBLE_COD = "success - default - cod";
+        String CHECKOUT_SUCCESS_CHECK_ALL_ELIGIBLE_COD = "success - check all - cod";
+        String CHECKOUT_SUCCESS_PARTIAL_SHOP_ELIGIBLE_COD = "success - partial shop - cod";
+        String CHECKOUT_SUCCESS_PARTIAL_PRODUCT_ELIGIBLE_COD = "success - partial product - cod";
+        String CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT_ELIGIBLE_COD = "success - partial shop and product - cod";
+
         String CHECKOUT_COUPON_AUTO_APPLY = "coupon autoapply";
         String CHECKOUT_COUPON_OR_PROMO_MANUAL_APPLY = "%s manual apply";
 
@@ -238,11 +298,20 @@ public interface ConstantTransactionAnalytics {
         String SUCCESS_TICKED_PPP = "success - yes";
         String SUCCESS_UNTICKED_PPP = "success - no";
         String APPEAR = "appear";
+
+        String SUCCESS_DEFAULT = "success - default";
+        String SUCCESS_NOT_DEFAULT = "success - not default";
+
+        String SEPARATOR = " - ";
+        String PROMO = "promo";
+        String NON_PROMO = "non promo";
+        String COD = "cod";
     }
 
     interface ScreenName {
         String CART = "/cart";
         String CHECKOUT = "/cart/shipment";
+        String ONE_CLICK_SHIPMENT = "/cart/shipment/ocs";
         String SELECT_COURIER = "/selectcourier";
         String PROMO_PAGE_FROM_CART_TAB_PROMO = "/cart#voucher";
         String PROMO_PAGE_FROM_CART_TAB_COUPON = "/cart#coupon";
@@ -254,6 +323,7 @@ public interface ConstantTransactionAnalytics {
         String ADD_NEW_ADDRESS_PAGE = "/cart/address/create";
         String ADD_NEW_ADDRESS_PAGE_FROM_EMPTY_ADDRESS_CART = "/user/address/create/cart";
         String ADD_NEW_ADDRESS_PAGE_USER = "/user/address/create";
+        String EXPRESS_CHECKOUT = "/express-checkout";
     }
 
     interface CustomDimension {

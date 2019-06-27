@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * Created by herdimac on 6/15/16.
  */
-public class GTMCart extends BaseGTMModel {
+public class GTMCart {
 
     public static final String ADD_ACTION = "add";
     public static final String REMOVE_ACTION = "remove";

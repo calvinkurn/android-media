@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 
 /**
  * Created by nabillasabbaha on 17/12/18.
+ * dont forget to change the db room version if something change in this table
  */
 @Entity
 public class TravelPassengerTable {

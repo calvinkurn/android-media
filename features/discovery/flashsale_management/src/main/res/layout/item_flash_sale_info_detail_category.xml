@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="@dimen/dp_4"
+    app:cardElevation="@dimen/dp_3"
+    app:cardPreventCornerOverlap="false"
+    android:layout_marginTop="@dimen/dp_4"
+    android:layout_marginBottom="@dimen/dp_4"
+    android:layout_marginLeft="@dimen/dp_16"
+    android:layout_marginStart="@dimen/dp_16"
+    android:layout_marginRight="@dimen/dp_16"
+    android:layout_marginEnd="@dimen/dp_16"
+    android:focusable="true">
+
+    <com.tokopedia.expandable.ExpandableOptionArrow
+        android:id="@+id/expandable_arrow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:eo_title="@string/label_product_list"
+        app:eo_use_rotate_animation="true"
+        app:eo_image_arrow_down="@drawable/ic_arrow_down_grey"
+        app:eo_checked="false"
+        app:eo_theme="@style/ExpandableStyleArrow">
+
+        <include layout="@layout/partial_criteria_detail"/>
+
+    </com.tokopedia.expandable.ExpandableOptionArrow>
+
+</android.support.v7.widget.CardView>

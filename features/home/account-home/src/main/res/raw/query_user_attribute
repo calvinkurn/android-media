@@ -55,10 +55,6 @@ query BuyerUserAttribute($userID: Int!) {
       visibility
     }
   }
-  saldo {
-    deposit_fmt
-    deposit
-  }
   paymentAdminProfile {
     is_purchased_marketplace
     is_purchased_digital

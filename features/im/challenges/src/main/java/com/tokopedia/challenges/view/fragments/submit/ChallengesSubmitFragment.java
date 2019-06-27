@@ -128,7 +128,7 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
             @Override
             public void onClick(View v) {
                 analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_CHALLENGES,
-                        ChallengesGaAnalyticsTracker.EVENT_CATEGORY_SUBMIT_POST,
+                        ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES_SUBMIT_POST,
                         ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK,
                         ChallengesGaAnalyticsTracker.EVENT_SUBMIT);
                 presenter.onSubmitButtonClick();
@@ -139,7 +139,7 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
             @Override
             public void onClick(View v) {
                 analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_CHALLENGES,
-                        ChallengesGaAnalyticsTracker.EVENT_CATEGORY_SUBMIT_POST,
+                        ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES_SUBMIT_POST,
                         ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK,
                         ChallengesGaAnalyticsTracker.EVENT_CANCEL);
                 presenter.onCancelButtonClick();

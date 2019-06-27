@@ -8,37 +8,37 @@ public class ShopInfo {
 
     @SerializedName("shop_open_since")
     @Expose
-    private String shopOpenSince;
+    private String shopOpenSince = "";
     @SerializedName("shop_location")
     @Expose
-    private String shopLocation;
+    private String shopLocation = "";
     @SerializedName("shop_id")
     @Expose
-    private String shopId;
+    private String shopId = "";
     @SerializedName("shop_tagline")
     @Expose
-    private String shopTagline;
+    private String shopTagline = "";
     @SerializedName("shop_url")
     @Expose
-    private String shopUrl;
+    private String shopUrl = "";
     @SerializedName("shop_name")
     @Expose
-    private String shopName;
+    private String shopName = "";
     @SerializedName("shop_owner_id")
     @Expose
-    private Integer shopOwnerId;
+    private Integer shopOwnerId = 0;
     @SerializedName("shop_description")
     @Expose
-    private String shopDescription;
+    private String shopDescription = "";
     @SerializedName("shop_cover")
     @Expose
-    private String shopCover;
+    private String shopCover = "";
     @SerializedName("shop_avatar")
     @Expose
-    private String shopAvatar;
+    private String shopAvatar = "";
     @SerializedName("shop_domain")
     @Expose
-    private String shopDomain;
+    private String shopDomain = "";
 
     public String getShopOpenSince() {
         return shopOpenSince;

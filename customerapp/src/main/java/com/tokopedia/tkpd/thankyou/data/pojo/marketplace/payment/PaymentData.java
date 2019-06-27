@@ -28,6 +28,18 @@ public class PaymentData {
     @SerializedName("voucher")
     @Expose
     private Voucher voucher;
+    @SerializedName("fee_amount")
+    @Expose
+    private float feeAmount;
+    @SerializedName("payment_gateway")
+    @Expose
+    private PaymentGateway paymentGateway;
+    @SerializedName("payment_type")
+    @Expose
+    private PaymentType paymentType;
+    @SerializedName("stacked_promos")
+    @Expose
+    private StackedPromos stackedPromos;
 
     public int getPaymentId() {
         return paymentId;
@@ -75,5 +87,33 @@ public class PaymentData {
 
     public void setVoucher(Voucher voucher) {
         this.voucher = voucher;
+    }
+
+    public float getFeeAmount() {
+        return feeAmount;
+    }
+
+    public void setFeeAmount(float feeAmount) {
+        this.feeAmount = feeAmount;
+    }
+
+    public PaymentGateway getPaymentGateway() {
+        return paymentGateway;
+    }
+
+    public void setPaymentGateway(PaymentGateway paymentGateway) {
+        this.paymentGateway = paymentGateway;
+    }
+
+    public PaymentType getPaymentType() {
+        return paymentType;
+    }
+
+    public void setPaymentType(PaymentType paymentType) {
+        this.paymentType = paymentType;
+    }
+
+    public StackedPromos getStackedPromos() {
+        return stackedPromos;
     }
 }

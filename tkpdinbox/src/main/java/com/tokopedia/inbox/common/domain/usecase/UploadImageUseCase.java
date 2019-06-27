@@ -41,7 +41,7 @@ public class UploadImageUseCase extends UseCase<UploadDomain> {
     private static final String PARAM_OS_TYPE = "os_type";
     private static final String PARAM_TIMESTAMP = "device_time";
 
-    protected static final String HTTP = "http://";
+    protected static final String HTTP = "https://";
     private static final String UPLOAD_ATTACHMENT = "/upload/attachment";
 
     protected ResolutionCommonSource resolutionCommonSource;

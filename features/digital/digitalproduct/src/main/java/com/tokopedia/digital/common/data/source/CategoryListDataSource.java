@@ -3,19 +3,18 @@ package com.tokopedia.digital.common.data.source;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.network.CacheUtil;
-
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse;
 import com.tokopedia.digital.common.constant.DigitalCache;
-import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
+import com.tokopedia.digital.common.data.apiservice.DigitalRestApi;
 import com.tokopedia.digital.widget.data.entity.category.CategoryEntity;
 import com.tokopedia.digital.widget.view.model.category.Category;
 import com.tokopedia.digital.widget.view.model.mapper.CategoryMapper;
 
+import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Response;
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -27,11 +26,11 @@ public class CategoryListDataSource {
     private final static String KEY_CATEGORY_LIST = "RECHARGE_CATEGORY_LIST";
     private static final long DEFAULT_EXPIRED_TIME = 0;
 
-    private DigitalEndpointService digitalEndpointService;
+    private DigitalRestApi digitalEndpointService;
     private CacheManager cacheManager;
     private CategoryMapper categoryMapper;
 
-    public CategoryListDataSource(DigitalEndpointService digitalEndpointService,
+    public CategoryListDataSource(DigitalRestApi digitalEndpointService,
                                   CacheManager cacheManager,
                                   CategoryMapper categoryMapper) {
         this.cacheManager = cacheManager;
@@ -39,14 +38,14 @@ public class CategoryListDataSource {
         this.categoryMapper = categoryMapper;
     }
 
-    public Observable<List<Category>> getCategoryList() {
-        return Observable.concat(getDataFromDb(), getDataFromCloud())
+    public Observable<List<Category>> getCategoryList(HashMap<String, Object> parameters) {
+        return Observable.concat(getDataFromDb(), getDataFromCloud(parameters))
                 .first(categoryEntities -> categoryEntities != null)
                 .map(categoryMapper);
     }
 
-    private Observable<List<CategoryEntity>> getDataFromCloud() {
-        return digitalEndpointService.getApi().getCategoryList()
+    private Observable<List<CategoryEntity>> getDataFromCloud(HashMap<String, Object> parameters) {
+        return digitalEndpointService.getCategoryList(parameters)
                 .map(getFuncTransformCategoryEntityList())
                 .doOnNext(categoryEntities -> {
                     deleteCache(categoryEntities);

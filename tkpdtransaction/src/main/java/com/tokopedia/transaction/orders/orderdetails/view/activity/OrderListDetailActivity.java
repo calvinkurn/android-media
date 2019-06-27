@@ -17,6 +17,7 @@ import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.applink.TransactionAppLink;
 import com.tokopedia.transaction.orders.orderdetails.di.DaggerOrderDetailsComponent;
 import com.tokopedia.transaction.orders.orderdetails.di.OrderDetailsComponent;
+import com.tokopedia.transaction.orders.orderdetails.view.fragment.MarketPlaceDetailFragment;
 import com.tokopedia.transaction.orders.orderdetails.view.fragment.OmsDetailFragment;
 import com.tokopedia.transaction.orders.orderdetails.view.fragment.OrderListDetailFragment;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
@@ -38,7 +39,7 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
     String category = null;
 
 
-    @DeepLink({TransactionAppLink.ORDER_DETAIL, TransactionAppLink.ORDER_OMS_DETAIL})
+    @DeepLink({TransactionAppLink.ORDER_DETAIL, TransactionAppLink.ORDER_OMS_DETAIL, TransactionAppLink.ORDER_MARKETPLACE_DETAIL})
     public static Intent getOrderDetailIntent(Context context, Bundle bundle) {
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, OrderListDetailActivity.class)
@@ -53,7 +54,9 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
 
             if (category.contains(OrderCategory.DIGITAL)) {
                 return OrderListDetailFragment.getInstance(orderId, OrderCategory.DIGITAL);
-            } else if (category.contains("")) {
+            } else if (category.contains(OrderCategory.MARKETPLACE)) {
+                return MarketPlaceDetailFragment.getInstance(orderId, OrderCategory.MARKETPLACE);
+            } else if(category.contains("")) {
                 return OmsDetailFragment.getInstance(orderId, "", fromPayment);
             }
         }
@@ -101,23 +104,26 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
-            category = getIntent().getStringExtra((DeepLink.URI));
+        if (requestCode == REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                category = getIntent().getStringExtra((DeepLink.URI));
 
-            if (category != null) {
-                category = category.toUpperCase();
+                if (category != null) {
+                    category = category.toUpperCase();
 
-                if (category.contains(OrderCategory.DIGITAL)) {
-                    getSupportFragmentManager().beginTransaction()
-                            .add(R.id.parent_view, OrderListDetailFragment.getInstance(orderId, OrderCategory.DIGITAL)).commit();
+                    if (category.contains(OrderCategory.DIGITAL)) {
+                        getSupportFragmentManager().beginTransaction()
+                                .add(R.id.parent_view, OrderListDetailFragment.getInstance(orderId, OrderCategory.DIGITAL)).commit();
 
-                } else if (category.contains("")) {
-                    getSupportFragmentManager().beginTransaction()
-                            .add(R.id.parent_view, OmsDetailFragment.getInstance(orderId, "", fromPayment)).commit();
+                    } else if (category.contains("")) {
+                        getSupportFragmentManager().beginTransaction()
+                                .add(R.id.parent_view, OmsDetailFragment.getInstance(orderId, "", fromPayment)).commit();
+                    }
                 }
+            } else {
+                finish();
             }
-        } else {
-            finish();
         }
     }
+
 }

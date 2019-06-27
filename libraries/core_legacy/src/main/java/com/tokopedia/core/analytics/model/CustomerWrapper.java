@@ -7,8 +7,9 @@ import java.util.Map;
  *
  * Modified by : Hafizh Herdi
  *
+ * use map
  */
-
+@Deprecated
 public class CustomerWrapper extends BaseAnalyticsModel {
     private String mCustomerId;
     private String mFirstName;

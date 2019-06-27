@@ -1,10 +1,10 @@
 package com.tokopedia.seller.common.logout;
 
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.common.logout.di.component.DaggerTkpdSellerLogoutComponent;
 import com.tokopedia.seller.common.logout.di.component.TkpdSellerLogoutComponent;
 import com.tokopedia.seller.common.logout.di.module.TkpdSellerLogoutModule;
+import com.tokopedia.usecase.RequestParams;
 
 import rx.Subscriber;
 

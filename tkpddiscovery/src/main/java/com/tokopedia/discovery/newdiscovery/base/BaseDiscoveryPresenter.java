@@ -1,8 +1,12 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
+import android.content.Context;
+
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 
 /**
  * Created by hangnadi on 10/3/17.
@@ -17,6 +21,10 @@ public class BaseDiscoveryPresenter<T extends CustomerView, D extends BaseDiscov
 
     public BaseDiscoveryPresenter() {
 
+    }
+
+    public AppComponent getComponent(Context context) {
+        return ((MainApplication) context).getAppComponent();
     }
 
     @Override
@@ -35,7 +43,7 @@ public class BaseDiscoveryPresenter<T extends CustomerView, D extends BaseDiscov
     }
 
     @Override
-    public void requestProduct(SearchParameter searchParameter, boolean forceSearch, boolean requestOfficialStoreBanner) {
+    public void initiateSearch(SearchParameter searchParameter, InitiateSearchListener initiateSearchListener) {
         checkDiscoveryViewAttached();
     }
 

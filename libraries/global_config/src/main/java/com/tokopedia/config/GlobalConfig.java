@@ -18,6 +18,18 @@ public class GlobalConfig {
     public static String PACKAGE_APPLICATION = PACKAGE_CONSUMER_APP;
     public static Boolean DEBUG = false;
     public static boolean ENABLE_DISTRIBUTION = false;
+    public static boolean IS_PREINSTALL = false;
+    public static String PREINSTALL_NAME = "";
+    public static String PREINSTALL_DESC = "";
+    public static String PREINSTALL_SITE = "";
+    public static String APPLICATION_ID = "";
+
+    // use to set default root Activity for incoming deeplink
+    public static String HOME_ACTIVITY_CLASS_NAME = "";
+    // if the deeplink can be handled by multiple activities, this DeeplinkHandlerActivity and DeeplinkActivity
+    // should be the least priority
+    public static String DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME = "";
+    public static String DEEPLINK_ACTIVITY_CLASS_NAME = "";
 
     public static boolean isSellerApp(){
         return APPLICATION_TYPE == SELLER_APPLICATION;

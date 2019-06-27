@@ -127,7 +127,7 @@ public class CloudFavoriteShopDataSource {
                             = new GlobalCacheManager().getValueString(TkpdCache.Key.TOP_ADS_SHOP);
                     TopAdsHome topAdsResponse = gson.fromJson(valueString, TopAdsHome.class);
                     for (TopAdsHome.Data data : topAdsResponse.getData()) {
-                        if (data.shop.id.equalsIgnoreCase(shopId)) {
+                        if (data.getHeadline().getShop().getId().equalsIgnoreCase(shopId)) {
                             data.isSelected = true;
                         }
                     }

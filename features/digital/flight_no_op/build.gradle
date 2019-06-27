@@ -13,6 +13,8 @@ buildscript {
 }
 
 dependencies {
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }

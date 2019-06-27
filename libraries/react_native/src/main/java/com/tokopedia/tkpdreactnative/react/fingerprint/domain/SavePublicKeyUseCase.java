@@ -1,10 +1,10 @@
 package com.tokopedia.tkpdreactnative.react.fingerprint.domain;
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -19,10 +19,10 @@ public class SavePublicKeyUseCase extends UseCase<Boolean> {
     public static final String USER_ID = "user_id";
     public static final String PUBLIC_KEY = "public_key";
     private FingerprintRepository fingerprintRepository;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
 
     @Inject
-    public SavePublicKeyUseCase(FingerprintRepository fingerprintRepository, UserSession userSession) {
+    public SavePublicKeyUseCase(FingerprintRepository fingerprintRepository, UserSessionInterface userSession) {
         this.fingerprintRepository = fingerprintRepository;
         this.userSession = userSession;
     }

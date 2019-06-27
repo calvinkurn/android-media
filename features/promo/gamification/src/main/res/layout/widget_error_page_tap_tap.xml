@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:id="@+id/main_retry"
+    android:background="#ae31353b"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/image_error"
+                android:layout_width="@dimen/dp_160"
+                android:layout_height="@dimen/dp_160"
+                android:layout_centerInParent="true"
+                android:visibility="visible"
+                tools:visibility="visible" />
+
+            <TextView
+                android:id="@+id/text_error"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/image_error"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:shadowColor="#40000000"
+                android:shadowDy="2"
+                android:shadowRadius="4"
+                android:textColor="#ffffff"
+                android:gravity="center_horizontal"
+                android:textSize="14sp"
+                tools:text="Maaf, sepertinya kamu kehilangan koneksi internet!" />
+
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/container_text_reward"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/dp_16"
+            android:paddingBottom="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_24"
+            android:visibility="visible"
+            tools:visibility="visible">
+
+
+            <Button
+                android:id="@+id/button_retry"
+                style="@style/Button.Submit.Green.Rounded"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:paddingLeft="@dimen/dp_8"
+                android:paddingRight="@dimen/dp_8"
+                android:textSize="@dimen/sp_16"
+                android:text="@string/try_again_btn" />
+
+            <Button
+                android:id="@+id/button_home"
+                android:layout_width="match_parent"
+                style="@style/Button.Submit.GreyRounded"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:gravity="center"
+                android:textColor="@color/black_40"
+                android:textSize="@dimen/sp_16"
+                android:text="@string/return_to_home" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

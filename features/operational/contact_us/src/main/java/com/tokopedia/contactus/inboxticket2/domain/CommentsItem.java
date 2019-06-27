@@ -34,6 +34,16 @@ public class CommentsItem {
 
     private String shortTime;
 
+    private boolean isCollapsed = true;
+
+    public boolean isCollapsed() {
+        return isCollapsed;
+    }
+
+    public void setCollapsed(boolean collapsed) {
+        isCollapsed = collapsed;
+    }
+
     public String getShortTime() {
         return shortTime;
     }

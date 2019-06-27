@@ -36,6 +36,7 @@ class CommentTalkViewHolder(val v: View,
 
     }
 
+    private val reportTitle: TextView = itemView.reportTitle
     private val profileAvatar: ImageView = itemView.prof_pict
     private val profileName: TextView = itemView.username
     private val datetime: TextView = itemView.timestamp
@@ -57,6 +58,10 @@ class CommentTalkViewHolder(val v: View,
         val LAYOUT = R.layout.talk_item
     }
 
+    init {
+        reportTitle.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(reportTitle.getContext(),
+                R.drawable.ic_warning_alert), null, null, null)
+    }
 
     override fun bind(element: ProductTalkItemViewModel?) {
         element?.run {
@@ -178,7 +183,7 @@ class CommentTalkViewHolder(val v: View,
         }
     }
 
-    fun onViewRecycled() {
+    override fun onViewRecycled() {
         ImageHandler.clearImage(profileAvatar)
     }
 

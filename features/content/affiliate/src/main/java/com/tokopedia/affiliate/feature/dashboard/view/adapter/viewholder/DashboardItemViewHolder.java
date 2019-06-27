@@ -4,6 +4,7 @@ import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
@@ -25,7 +26,8 @@ public class DashboardItemViewHolder extends AbstractViewHolder<DashboardItemVie
 
     private ImageView ivItem;
     private FrameLayout layoutStatus;
-    private TextView tvStatus, tvName, tvCommission, tvBuyCount, tvClickCount;
+    private TextView tvStatus, tvName, tvCommission, tvBuyCount, tvClickCount, tvProductCommission;
+    private LinearLayout layoutActive, layoutInactive;
 
     public DashboardItemViewHolder(View itemView, DashboardContract.View mainView) {
         super(itemView);
@@ -37,6 +39,9 @@ public class DashboardItemViewHolder extends AbstractViewHolder<DashboardItemVie
         tvCommission = (TextView) itemView.findViewById(R.id.tv_commission);
         tvBuyCount = (TextView) itemView.findViewById(R.id.tv_buy_count);
         tvClickCount = (TextView) itemView.findViewById(R.id.tv_click_count);
+        tvProductCommission = (TextView) itemView.findViewById(R.id.tv_product_commission);
+        layoutActive = (LinearLayout) itemView.findViewById(R.id.layout_active);
+        layoutInactive = (LinearLayout) itemView.findViewById(R.id.layout_inactive);
     }
 
     @Override
@@ -47,7 +52,15 @@ public class DashboardItemViewHolder extends AbstractViewHolder<DashboardItemVie
     private void initView(DashboardItemViewModel element) {
         ImageHandler.loadImageRounded2(ivItem.getContext(), ivItem, element.getImageUrl(), 6.0f);
         tvName.setText(MethodChecker.fromHtml(element.getTitle()));
-        tvCommission.setText(element.getValue());
+        if (element.isActive() && !element.getProductCommission().isEmpty()) {
+            layoutInactive.setVisibility(View.GONE);
+            layoutActive.setVisibility(View.VISIBLE);
+            tvProductCommission.setText(element.getProductCommission());
+        } else {
+            layoutInactive.setVisibility(View.VISIBLE);
+            layoutActive.setVisibility(View.GONE);
+            tvCommission.setText(element.getValue());
+        }
         tvClickCount.setText(element.getItemClicked());
         tvBuyCount.setText(element.getItemSold());
         layoutStatus.setBackground(MethodChecker.getDrawable(

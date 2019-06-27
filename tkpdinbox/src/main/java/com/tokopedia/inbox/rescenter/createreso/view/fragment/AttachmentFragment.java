@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -42,6 +43,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.presenter.AttachmentFragmen
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.attachment.Attachment;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.attachment.AttachmentViewModel;
+import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -282,36 +284,40 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
             @Override
             public void onClick(View view) {
                 presenter.btnContinueClicked();
-                UnifyTracking.eventCreateResoStep3Continue(getActivity());
+                eventCreateResoStep3Continue();
             }
         });
+    }
+
+    private void eventCreateResoStep3Continue(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                "clickResolution",
+                "resolution center",
+                "click bukti & keterangan",
+                "solution - continue");
     }
 
     @Override
     public void onAddAttachmentClicked() {
         if (adapter.getList().size() < COUNT_MAX_ATTACHMENT) {
-            if (TrackingUtils.getGtmString(getActivity(), AppEventTracking.GTM.RESOLUTION_CENTER_UPLOAD_VIDEO).equals("true")) {
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setMessage(getActivity().getString(R.string.dialog_upload_option));
-                builder.setPositiveButton(getActivity().getString(R.string.title_video), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        actionVideoPicker();
-                    }
-                }).setNegativeButton(getActivity().getString(R.string.title_image), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        openImagePicker();
-                    }
-                });
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(getActivity().getString(R.string.dialog_upload_option));
+            builder.setPositiveButton(getActivity().getString(R.string.title_video), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    actionVideoPicker();
+                }
+            }).setNegativeButton(getActivity().getString(R.string.title_image), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    openImagePicker();
+                }
+            });
 
-                Dialog dialog = builder.create();
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.show();
-            } else {
-                openImagePicker();
-            }
+            Dialog dialog = builder.create();
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.show();
         } else {
             NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.max_upload_detail_res_center));
         }

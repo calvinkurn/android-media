@@ -1,41 +1,42 @@
 package com.tokopedia.digital_deals.view.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;;
 import com.tokopedia.digital_deals.R;
-import com.tokopedia.digital_deals.view.activity.CategoryDetailActivity;
 import com.tokopedia.digital_deals.view.model.CategoriesModel;
 import com.tokopedia.digital_deals.view.model.CategoryItem;
+import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
-import com.tokopedia.digital_deals.view.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 public class DealsCategoryItemAdapter extends RecyclerView.Adapter<DealsCategoryItemAdapter.ViewHolder> {
 
     private List<CategoryItem> categoryItems;
     private Context context;
     DealsAnalytics dealsAnalytics;
+    CategorySelected categorySelected;
+    private List<CategoriesModel> categoriesModels;
 
-    public DealsCategoryItemAdapter(List<CategoryItem> categoryItems) {
+    public DealsCategoryItemAdapter(List<CategoryItem> categoryItems, List<CategoriesModel> categoriesModels, CategorySelected categorySelected) {
         this.categoryItems = new ArrayList<>();
         this.categoryItems = categoryItems;
-
+        this.categoriesModels = categoriesModels;
+        this.categorySelected = categorySelected;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private View itemView;
+        private LinearLayout mainContent;
         private ImageView imageViewCatItem;
         private TextView textViewCatItem;
         private int index;
@@ -43,6 +44,7 @@ public class DealsCategoryItemAdapter extends RecyclerView.Adapter<DealsCategory
         public ViewHolder(View itemView) {
             super(itemView);
             this.itemView = itemView;
+            mainContent = itemView.findViewById(R.id.container);
             imageViewCatItem = itemView.findViewById(R.id.iv_category);
             textViewCatItem = itemView.findViewById(R.id.tv_category);
         }
@@ -51,7 +53,6 @@ public class DealsCategoryItemAdapter extends RecyclerView.Adapter<DealsCategory
             textViewCatItem.setText(categoryItem.getTitle());
             itemView.setOnClickListener(this);
             ImageHandler.loadImage(context, imageViewCatItem, categoryItem.getMediaUrl(), R.color.grey_1100, R.color.grey_1100);
-
         }
 
         public void setIndex(int position) {
@@ -73,11 +74,12 @@ public class DealsCategoryItemAdapter extends RecyclerView.Adapter<DealsCategory
             categoriesModel.setCategoryUrl(categoryItems.get(getIndex()).getCategoryUrl());
             categoriesModel.setCategoryId(categoryItems.get(getIndex()).getCategoryId());
             categoriesModel.setPosition(getIndex() + 1);
-            Intent detailsIntent = new Intent(context, CategoryDetailActivity.class);
-            detailsIntent.putExtra(CategoryDetailActivity.CATEGORIES_DATA, categoriesModel);
-            detailsIntent.putExtra(CategoryDetailActivity.CATEGORY_NAME, categoriesModel.getTitle());
-            context.startActivity(detailsIntent);
+            categorySelected.openCategoryDetail(categoriesModel, categoriesModels);
         }
+    }
+
+    public interface CategorySelected {
+        void openCategoryDetail(CategoriesModel categoriesModel, List<CategoriesModel> categoriesModels);
     }
 
     @Override
@@ -88,7 +90,7 @@ public class DealsCategoryItemAdapter extends RecyclerView.Adapter<DealsCategory
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         this.context = parent.getContext();
-        dealsAnalytics=new DealsAnalytics(context.getApplicationContext());
+        dealsAnalytics=new DealsAnalytics();
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.category_item, parent, false);
 

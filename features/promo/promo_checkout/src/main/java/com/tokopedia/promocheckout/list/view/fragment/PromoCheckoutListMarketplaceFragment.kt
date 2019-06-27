@@ -13,19 +13,19 @@ import com.tokopedia.abstraction.constant.IRouterConstant
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.analytics.FROM_CART
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
+import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException
-import com.tokopedia.promocheckout.common.domain.model.DataVoucher
-import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
-import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
-import com.tokopedia.promocheckout.common.view.model.PromoData
-import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
+import com.tokopedia.promocheckout.common.util.*
+import com.tokopedia.promocheckout.common.view.model.PromoStackingData
+import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
+import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailMarketplaceActivity
-import com.tokopedia.promocheckout.list.di.DaggerPromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListModule
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListMarketplaceContract
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListMarketplacePresenter
 import kotlinx.android.synthetic.main.fragment_promo_checkout_list.*
+import com.tokopedia.promocheckout.list.di.DaggerPromoCheckoutListComponent
 import javax.inject.Inject
 
 class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), PromoCheckoutListMarketplaceContract.View {
@@ -39,6 +39,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
     private var isOneClickShipment: Boolean = false
     lateinit var progressDialog: ProgressDialog
     var pageTracking: Int = 1
+    private var promo: Promo? = null
 
     override var serviceId: String = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING
 
@@ -47,6 +48,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
         promoCode = arguments?.getString(PROMO_CODE) ?: ""
         isOneClickShipment = arguments?.getBoolean(ONE_CLICK_SHIPMENT) ?: false
         pageTracking = arguments?.getInt(PAGE_TRACKING) ?: 1
+        promo = arguments?.getParcelable(CHECK_PROMO_FIRST_STEP_PARAM)
         super.onCreate(savedInstanceState)
         promoCheckoutListMarketplacePresenter.attachView(this)
     }
@@ -64,11 +66,12 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
         } else {
             trackingPromoCheckoutUtil.checkoutClickCoupon(promoCheckoutListModel?.code ?: "")
         }
-        startActivityForResult(PromoCheckoutDetailMarketplaceActivity.createIntent(activity, promoCheckoutListModel?.code, oneClickShipment = isOneClickShipment, pageTracking = pageTracking), REQUEST_CODE_DETAIL_PROMO)
+        startActivityForResult(PromoCheckoutDetailMarketplaceActivity.createIntent(
+                activity, promoCheckoutListModel?.code, oneClickShipment = isOneClickShipment, pageTracking = pageTracking, promo = promo), REQUEST_CODE_DETAIL_PROMO)
     }
 
     override fun onPromoCodeUse(promoCode: String) {
-        promoCheckoutListMarketplacePresenter.checkPromoCode(promoCode, isOneClickShipment)
+        promoCheckoutListMarketplacePresenter.checkPromoStackingCode(promoCode, isOneClickShipment, promo)
     }
 
     override fun showProgressLoading() {
@@ -93,23 +96,30 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
     }
 
     override fun onErrorEmptyPromoCode() {
-        textInputLayoutCoupon.error = getString(R.string.promo_checkout_label_error_empty_voucher_code)
+        textInputLayoutCoupon.error = getString(R.string.promostacking_checkout_label_error_empty_voucher_code)
     }
 
-    override fun onSuccessCheckPromoCode(dataVoucher: DataVoucher) {
+    override fun onSuccessCheckPromoStackingCode(data: DataUiModel) {
         if (pageTracking == FROM_CART) {
-            trackingPromoCheckoutUtil.cartClickUsePromoCodeSuccess(dataVoucher.code ?: "")
+            trackingPromoCheckoutUtil.cartClickUsePromoCodeSuccess(data.codes[0])
         } else {
-            trackingPromoCheckoutUtil.checkoutClickUsePromoCodeSuccess(dataVoucher.code ?: "")
+            trackingPromoCheckoutUtil.checkoutClickUsePromoCodeSuccess(data.codes[0])
         }
         val intent = Intent()
-        val typePromo = if (dataVoucher.isCoupon == PromoData.VALUE_COUPON) PromoData.TYPE_COUPON else PromoData.TYPE_VOUCHER
-        val promoData = PromoData(typePromo, dataVoucher.code ?: "",
-                dataVoucher.message?.text ?: "", dataVoucher.titleDescription ?: "",
-                dataVoucher.cashbackAmount, dataVoucher.message?.state?.mapToStatePromoCheckout()
-                ?: TickerCheckoutView.State.EMPTY)
-        intent.putExtra(EXTRA_PROMO_DATA, promoData)
+        val typePromo = if (data.isCoupon == PromoStackingData.VALUE_COUPON) PromoStackingData.TYPE_COUPON else PromoStackingData.TYPE_VOUCHER
+        val promoStackingData = PromoStackingData(typePromo, data.codes[0],
+                data.message.text, data.titleDescription, "",
+                data.cashbackWalletAmount, data.message.state.mapToStatePromoStackingCheckout())
+        intent.putExtra(EXTRA_PROMO_DATA, promoStackingData)
+        intent.putExtra(EXTRA_INPUT_TYPE, INPUT_TYPE_PROMO_CODE)
         activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
+    }
+
+    override fun onClashCheckPromo(clasingInfoDetailUiModel: ClashingInfoDetailUiModel) {
+        val intent = Intent()
+        intent.putExtra(EXTRA_CLASHING_DATA, clasingInfoDetailUiModel)
+        activity?.setResult(RESULT_CLASHING, intent)
         activity?.finish()
     }
 
@@ -122,9 +132,21 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_DETAIL_PROMO) {
-            activity?.setResult(Activity.RESULT_OK, data)
-            activity?.finish()
+        if (requestCode == REQUEST_CODE_DETAIL_PROMO) {
+            if (resultCode == Activity.RESULT_OK) {
+                activity?.setResult(Activity.RESULT_OK, data)
+                activity?.finish()
+            } else {
+                val intent = Intent()
+                val bundle = data?.getExtras()
+                val clashingInfoDetailUiModel: ClashingInfoDetailUiModel? = bundle?.getParcelable(EXTRA_CLASHING_DATA);
+                intent.putExtra(EXTRA_CLASHING_DATA, clashingInfoDetailUiModel)
+                activity?.setResult(RESULT_CLASHING, intent)
+
+                if (clashingInfoDetailUiModel != null) {
+                    activity?.finish()
+                }
+            }
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
@@ -149,14 +171,17 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
         val PROMO_CODE = "PROMO_CODE"
         val ONE_CLICK_SHIPMENT = "ONE_CLICK_SHIPMENT"
         val PAGE_TRACKING = "PAGE_TRACKING"
+        val CHECK_PROMO_FIRST_STEP_PARAM = "CHECK_PROMO_FIRST_STEP_PARAM"
 
-        fun createInstance(isCouponActive: Boolean?, promoCode: String?, oneClickShipment: Boolean?, pageTracking: Int): PromoCheckoutListMarketplaceFragment {
+        fun createInstance(isCouponActive: Boolean?, promoCode: String?, oneClickShipment: Boolean?, pageTracking: Int,
+                           promo: Promo): PromoCheckoutListMarketplaceFragment {
             val promoCheckoutListMarketplaceFragment = PromoCheckoutListMarketplaceFragment()
             val bundle = Bundle()
             bundle.putBoolean(IS_COUPON_ACTIVE, isCouponActive ?: true)
             bundle.putString(PROMO_CODE, promoCode ?: "")
             bundle.putBoolean(ONE_CLICK_SHIPMENT, oneClickShipment ?: false)
             bundle.putInt(PAGE_TRACKING, pageTracking)
+            bundle.putParcelable(CHECK_PROMO_FIRST_STEP_PARAM, promo)
             promoCheckoutListMarketplaceFragment.arguments = bundle
             return promoCheckoutListMarketplaceFragment
         }

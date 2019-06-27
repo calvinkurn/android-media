@@ -5,9 +5,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.useridentification.KycUrl;
 import com.tokopedia.useridentification.R;
 import com.tokopedia.useridentification.view.activity.UserIdentificationCameraActivity;
@@ -15,8 +18,7 @@ import com.tokopedia.useridentification.view.activity.UserIdentificationFormActi
 import com.tokopedia.useridentification.view.viewmodel.UserIdentificationStepperModel;
 
 import static com.tokopedia.user_identification_common.KYCConstant.REQUEST_CODE_CAMERA_KTP;
-import static com.tokopedia.useridentification.view.fragment.UserIdentificationCameraFragment
-        .PARAM_VIEW_MODE_KTP;
+import static com.tokopedia.useridentification.view.fragment.UserIdentificationCameraFragment.PARAM_VIEW_MODE_KTP;
 
 /**
  * @author by alvinatin on 02/11/18.
@@ -26,11 +28,19 @@ public class UserIdentificationFormKtpFragment extends
         BaseUserIdentificationStepperFragment<UserIdentificationStepperModel>
         implements UserIdentificationFormActivity.Listener {
 
+    protected TextView subtitleBody;
+
     public static Fragment createInstance() {
         Fragment fragment = new UserIdentificationFormKtpFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    protected void initView(View view) {
+        super.initView(view);
+        subtitleBody = view.findViewById(R.id.subtitle_body);
     }
 
     @Override
@@ -47,7 +57,10 @@ public class UserIdentificationFormKtpFragment extends
     @Override
     protected void setContentView() {
         title.setText(R.string.ktp_title);
-        subtitle.setText(R.string.ktp_subtitle);
+        subtitle.setText(MethodChecker.fromHtml(getString(R.string.ktp_subtitle)));
+        subtitle.setGravity(Gravity.LEFT);
+        subtitleBody.setText(MethodChecker.fromHtml(getString(R.string.ktp_body)));
+        subtitleBody.setVisibility(View.VISIBLE);
         button.setText(R.string.ktp_button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,6 +68,7 @@ public class UserIdentificationFormKtpFragment extends
                 analytics.eventClickNextKtpPage();
                 Intent intent = UserIdentificationCameraActivity.createIntent(getContext(),
                         PARAM_VIEW_MODE_KTP);
+                intent.putExtra(UserIdentificationFormActivity.PARAM_PROJECTID_TRADEIN, projectId);
                 startActivityForResult(intent, REQUEST_CODE_CAMERA_KTP);
             }
         });

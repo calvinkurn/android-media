@@ -1,0 +1,18 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.tokopedia.chatbot">
+
+
+    <application android:label="@string/app_name">
+        <activity
+            android:name=".view.activity.ChatbotActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
+
+        <activity
+            android:name=".attachinvoice.view.activity.AttachInvoiceActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
+    </application>
+</manifest>

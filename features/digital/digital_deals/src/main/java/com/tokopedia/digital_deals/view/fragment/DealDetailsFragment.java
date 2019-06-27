@@ -31,17 +31,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;;
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
@@ -68,6 +65,8 @@ import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,6 +78,7 @@ import static com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter.PA
 
 public class DealDetailsFragment extends BaseDaggerFragment implements DealDetailsContract.View, View.OnClickListener, DealCategoryAdapterContract.View, DealsCategoryAdapter.INavigateToActivityRequest {
 
+    private static final String SCREEN_NAME = "/digital/deals/product";
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private TextView tvExpandableDesc;
     private TextView tvExpandableTC;
@@ -238,7 +238,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
     @Override
     protected String getScreenName() {
-        return null;
+        return SCREEN_NAME;
     }
 
 
@@ -249,6 +249,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
     @Override
     public void renderDealDetails(DealsDetailsResponse detailsViewModel) {
+        dealsAnalytics.sendScreenNameEvent(getScreenName());
         this.dealDetail = detailsViewModel;
         collapsingToolbarLayout.setTitle(detailsViewModel.getDisplayName());
         tvDealDetails.setText(detailsViewModel.getDisplayName());
@@ -648,7 +649,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
             sendEvent(DealsAnalytics.EVENT_CLICK_CHECK_LOCATION_PRODUCT_DETAIL);
             fragmentCallbacks.replaceFragment(mPresenter.getAllOutlets(), 0);
         } else if (Id == R.id.ll_buynow) {
-            sendEvent(DealsAnalytics.EVENT_CLICK_BELI);
+            dealsAnalytics.sendBuyNowClickEvent(dealDetail, DealsAnalytics.EVENT_CLICK_BELI);
             fragmentCallbacks.replaceFragment(dealDetail, 1);
         } else if (Id == R.id.tv_view_map) {
             Utils.getSingletonInstance().openGoogleMapsActivity(getContext(), latLng);
@@ -694,7 +695,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         if (getActivity() == null)
             return;
         if (requestCode == LIKE_REQUEST_CODE) {
-            UserSession userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
+            UserSessionInterface userSession = new UserSession(getActivity());
             if (userSession.isLoggedIn()) {
                 mPresenter2.setDealLike(dealDetail.getId(), dealDetail.getIsLiked(), 0, dealDetail.getLikes());
                 if (dealDetail.getIsLiked()) {

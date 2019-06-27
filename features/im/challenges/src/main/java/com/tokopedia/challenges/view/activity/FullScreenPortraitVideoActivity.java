@@ -13,7 +13,7 @@ import android.widget.VideoView;
 
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.view.customview.CustomMediaController;
-import com.tokopedia.challenges.view.fragments.ChallegeneSubmissionFragment;
+import com.tokopedia.challenges.view.fragments.ChallengeDetailsFragment;
 
 public class FullScreenPortraitVideoActivity extends ChallengesBaseActivity implements CustomMediaController.ICurrentPos {
 
@@ -47,10 +47,10 @@ public class FullScreenPortraitVideoActivity extends ChallengesBaseActivity impl
     @Override
     public void onResume() {
         super.onResume();
-        if (ChallegeneSubmissionFragment.VIDEO_POS != -1) {
+        if (ChallengeDetailsFragment.VIDEO_POS != -1) {
             if (videoView != null) {
-                videoView.seekTo(ChallegeneSubmissionFragment.VIDEO_POS);
-                if (ChallegeneSubmissionFragment.isVideoPlaying)
+                videoView.seekTo(ChallengeDetailsFragment.VIDEO_POS);
+                if (ChallengeDetailsFragment.isVideoPlaying)
                     videoView.start();
             }
         }
@@ -59,8 +59,8 @@ public class FullScreenPortraitVideoActivity extends ChallengesBaseActivity impl
     @Override
     public void onPause() {
         if (videoView != null) {
-            ChallegeneSubmissionFragment.VIDEO_POS = getPosition();
-            ChallegeneSubmissionFragment.isVideoPlaying = false;
+            ChallengeDetailsFragment.VIDEO_POS = getPosition();
+            ChallengeDetailsFragment.isVideoPlaying = false;
         }
         super.onPause();
     }
@@ -82,7 +82,7 @@ public class FullScreenPortraitVideoActivity extends ChallengesBaseActivity impl
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
                 Log.d("dhgsudghs", "" + mediaPlayer.getDuration() + "  " + videoView.getDuration());
-                ChallegeneSubmissionFragment.VIDEO_POS = mediaPlayer.getDuration();
+                ChallengeDetailsFragment.VIDEO_POS = mediaPlayer.getDuration();
                 finish();
             }
         });
@@ -106,8 +106,8 @@ public class FullScreenPortraitVideoActivity extends ChallengesBaseActivity impl
     @Override
     public void onBackPressed() {
         if (videoView != null) {
-            ChallegeneSubmissionFragment.VIDEO_POS = getPosition();
-            ChallegeneSubmissionFragment.isVideoPlaying = isVideoPlaying();
+            ChallengeDetailsFragment.VIDEO_POS = getPosition();
+            ChallengeDetailsFragment.isVideoPlaying = isVideoPlaying();
         }
         super.onBackPressed();
     }

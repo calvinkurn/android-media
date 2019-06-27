@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHolder;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.common.travel.constant.TravelSortOption;
 import com.tokopedia.common.travel.presentation.dialog.TravelSearchSortBottomSheet;
 import com.tokopedia.design.button.BottomActionView;
@@ -62,6 +63,7 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     private static final String TAG = TrainSearchFragment.class.getSimpleName();
 
     private static final String SELECTED_SORT = "selected_sort";
+    private static final String TRAIN_SEARCH_TRACE = "tr_train_search";
     private static final int EMPTY_MARGIN = 0;
     private static final float DEFAULT_DIMENS_MULTIPLIER = 0.5f;
     private static final int PADDING_SEARCH_LIST = 60;
@@ -88,6 +90,8 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     private List<String> trains;
     private List<String> trainClass;
     private List<String> departureTrains;
+    private PerformanceMonitoring performanceMonitoring;
+    private boolean traceStop;
 
     //this is for save departure trip - arrival timestamp schedule
     protected String arrivalScheduleSelected;
@@ -105,6 +109,12 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
 
     public TrainSearchFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        performanceMonitoring = PerformanceMonitoring.start(TRAIN_SEARCH_TRACE);
     }
 
     @Override
@@ -546,6 +556,14 @@ public abstract class TrainSearchFragment extends BaseListFragment<TrainSchedule
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         listener = (ActionListener) activity;
+    }
+
+    @Override
+    public void stopTrace() {
+        if (!traceStop) {
+            performanceMonitoring.stopTrace();
+            traceStop = true;
+        }
     }
 
     public interface ActionListener {

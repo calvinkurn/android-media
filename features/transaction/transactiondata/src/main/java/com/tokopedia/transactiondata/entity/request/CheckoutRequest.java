@@ -1,5 +1,8 @@
 package com.tokopedia.transactiondata.entity.request;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -10,7 +13,7 @@ import java.util.List;
  * @author anggaprasetiyo on 05/03/18.
  */
 
-public class CheckoutRequest {
+public class CheckoutRequest implements Parcelable {
 
     @SerializedName("promo_code")
     @Expose
@@ -18,9 +21,62 @@ public class CheckoutRequest {
     @SerializedName("is_donation")
     @Expose
     public int isDonation;
+    @SerializedName("egold_data")
+    @Expose
+    public EgoldData egoldData;
     @SerializedName("data")
     @Expose
     public List<DataCheckoutRequest> data = new ArrayList<>();
+    @SerializedName("tokopedia_corner_data")
+    @Expose
+    public TokopediaCornerData cornerData;
+    @SerializedName("has_promo_stacking")
+    @Expose
+    public boolean hasPromoStacking;
+    @SerializedName("promo_codes")
+    @Expose
+    public ArrayList<String> promoCodes;
+
+    public CheckoutRequest() {
+    }
+
+    protected CheckoutRequest(Parcel in) {
+        promoCode = in.readString();
+        isDonation = in.readInt();
+        egoldData = in.readParcelable(EgoldData.class.getClassLoader());
+        data = in.createTypedArrayList(DataCheckoutRequest.CREATOR);
+        cornerData = in.readParcelable(TokopediaCornerData.class.getClassLoader());
+        hasPromoStacking = in.readByte() != 0;
+        promoCodes = in.createStringArrayList();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(promoCode);
+        dest.writeInt(isDonation);
+        dest.writeParcelable(egoldData, flags);
+        dest.writeTypedList(data);
+        dest.writeParcelable(cornerData, flags);
+        dest.writeByte((byte) (hasPromoStacking ? 1 : 0));
+        dest.writeStringList(promoCodes);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<CheckoutRequest> CREATOR = new Creator<CheckoutRequest>() {
+        @Override
+        public CheckoutRequest createFromParcel(Parcel in) {
+            return new CheckoutRequest(in);
+        }
+
+        @Override
+        public CheckoutRequest[] newArray(int size) {
+            return new CheckoutRequest[size];
+        }
+    };
 
     public boolean isHavingPurchaseProtectionEnabled() {
         for (DataCheckoutRequest datum : data) {
@@ -39,13 +95,21 @@ public class CheckoutRequest {
         promoCode = builder.promoCode;
         isDonation = builder.isDonation;
         data = builder.data;
+        egoldData = builder.egoldData;
+        cornerData = builder.cornerData;
+        hasPromoStacking = builder.hasPromoStacking;
+        promoCodes = builder.promoCodes;
     }
 
 
     public static final class Builder {
         private String promoCode;
         private int isDonation;
+        private EgoldData egoldData;
         private List<DataCheckoutRequest> data;
+        private TokopediaCornerData cornerData;
+        private boolean hasPromoStacking;
+        private ArrayList<String> promoCodes;
 
         public Builder() {
         }
@@ -60,8 +124,28 @@ public class CheckoutRequest {
             return this;
         }
 
+        public Builder cornerData(TokopediaCornerData val) {
+            cornerData = val;
+            return this;
+        }
+
         public Builder data(List<DataCheckoutRequest> val) {
             data = val;
+            return this;
+        }
+
+        public Builder egoldData(EgoldData val) {
+            egoldData = val;
+            return this;
+        }
+
+        public Builder hasPromoStacking(boolean val) {
+            hasPromoStacking = val;
+            return this;
+        }
+
+        public Builder promoCodes(ArrayList<String> val){
+            promoCodes = val;
             return this;
         }
 

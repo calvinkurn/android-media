@@ -15,10 +15,6 @@ import com.tokopedia.datepicker.range.domain.interactor.FetchDatePickerUseCase;
 import com.tokopedia.datepicker.range.domain.interactor.SaveDatePickerUseCase;
 import com.tokopedia.datepicker.range.view.presenter.DatePickerPresenter;
 import com.tokopedia.datepicker.range.view.presenter.DatePickerPresenterImpl;
-import com.tokopedia.gm.cashback.data.repository.GmCashbackRepositoryImpl;
-import com.tokopedia.gm.cashback.data.source.CashbackApi;
-import com.tokopedia.gm.cashback.data.source.GMCashbackDataSource;
-import com.tokopedia.gm.cashback.domain.GMCashbackRepository;
 import com.tokopedia.gm.common.di.scope.GMScope;
 import com.tokopedia.gm.featured.data.GMFeaturedProductDataSource;
 import com.tokopedia.gm.featured.data.cloud.api.GMFeaturedProductApi;
@@ -90,22 +86,11 @@ public class GMModule {
     TomeProductApi provideTomeApi(@TomeQualifier Retrofit retrofit){
         return retrofit.create(TomeProductApi.class);
     }
+
     @Provides
     @GMScope
     public ShopApi provideShopApi(@WsV4QualifierWithErrorHander Retrofit retrofit){
         return retrofit.create(ShopApi.class);
-    }
-
-    @Provides
-    @GMScope
-    public GMCashbackRepository provideCashbackRepository(GMCashbackDataSource gmCashbackDataSource){
-        return new GmCashbackRepositoryImpl(gmCashbackDataSource);
-    }
-
-    @Provides
-    @GMScope
-    public CashbackApi cashbackApi(@GoldMerchantQualifier Retrofit retrofit){
-        return retrofit.create(CashbackApi.class);
     }
 
 }

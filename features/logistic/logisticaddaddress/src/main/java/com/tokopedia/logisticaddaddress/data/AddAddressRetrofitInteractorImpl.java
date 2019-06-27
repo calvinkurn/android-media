@@ -43,7 +43,7 @@ public class AddAddressRetrofitInteractorImpl implements AddressRepository {
     }
 
     @Override
-    public void addAddress(@NonNull Context context, @NonNull Map<String, String> params, @NonNull final AddAddressListener listener) {
+    public void addAddress(@NonNull Map<String, String> params, @NonNull final AddAddressListener listener) {
         Observable<Response<TokopediaWsV4Response>> observable = peopleActService
                 .addAddress(params);
 
@@ -89,7 +89,7 @@ public class AddAddressRetrofitInteractorImpl implements AddressRepository {
     }
 
     @Override
-    public void editAddress(@NonNull Context context, @NonNull Map<String, String> params, @NonNull final AddAddressListener listener) {
+    public void editAddress(@NonNull Map<String, String> params, @NonNull final AddAddressListener listener) {
         Observable<Response<TokopediaWsV4Response>> observable = peopleActService
                 .editAddAddress(params);
 

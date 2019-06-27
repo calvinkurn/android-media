@@ -45,8 +45,6 @@ class DigitalBrowseServiceViewHolder(itemView: View, private val categoryListene
             setItemView()
 
             itemView.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-
-            categoryListener.sendImpressionAnalytics(element, adapterPosition)
         }
 
         tvProduct.text = element.name
@@ -66,8 +64,6 @@ class DigitalBrowseServiceViewHolder(itemView: View, private val categoryListene
         itemView.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
 
         tvProduct.text = element.name
-
-        categoryListener.sendImpressionAnalytics(element, adapterPosition)
     }
 
     private fun setItemView() {
@@ -89,7 +85,7 @@ class DigitalBrowseServiceViewHolder(itemView: View, private val categoryListene
     interface CategoryListener {
         fun onCategoryItemClicked(viewModel: DigitalBrowseServiceCategoryViewModel?, itemPosition: Int)
 
-        fun sendImpressionAnalytics(viewModel: DigitalBrowseServiceCategoryViewModel, itemPosition: Int)
+        fun sendImpressionAnalytics(viewModels: List<DigitalBrowseServiceCategoryViewModel>)
     }
 
     companion object {

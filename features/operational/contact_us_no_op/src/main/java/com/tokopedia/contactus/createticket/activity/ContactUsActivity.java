@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 public class ContactUsActivity extends Activity {
     public static String PARAM_TOOLBAR_TITLE = "test";
+    public static final String EXTRAS_PARAM_TOOLBAR_TITLE = "EXTRAS_PARAM_TOOLBAR_TITLE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

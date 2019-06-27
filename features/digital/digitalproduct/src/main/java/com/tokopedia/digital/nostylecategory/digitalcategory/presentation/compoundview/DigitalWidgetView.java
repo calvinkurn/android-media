@@ -16,10 +16,10 @@ import com.tokopedia.common_digital.product.presentation.model.AdditionalButton;
 import com.tokopedia.common_digital.product.presentation.model.BaseWidgetItem;
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
 import com.tokopedia.common_digital.product.presentation.model.InputFieldModel;
+import com.tokopedia.common_digital.product.presentation.model.InputFieldType;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.nostylecategory.digitalcategory.presentation.adapter.WidgetItemAdapter;
-
 
 import java.util.List;
 
@@ -93,18 +93,18 @@ public class DigitalWidgetView extends FrameLayout {
 
     public void renderWidget(InputFieldModel inputFieldModel, List<BaseWidgetItem> items, String defaultId) {
         switch (inputFieldModel.getType()) {
-            case InputFieldModel.TYPE_TEL:
-            case InputFieldModel.TYPE_NUMERIC:
-            case InputFieldModel.TYPE_TEXT:
+            case InputFieldType.TYPE_TEL:
+            case InputFieldType.TYPE_NUMERIC:
+            case InputFieldType.TYPE_TEXT:
                 showClientNumber(transformInputFieldToClientNumber(inputFieldModel), items);
                 break;
-            case InputFieldModel.TYPE_SELECT:
+            case InputFieldType.TYPE_SELECT:
                 showDropdown(items, inputFieldModel, defaultId);
                 break;
-            case InputFieldModel.TYPE_RADIO:
+            case InputFieldType.TYPE_RADIO:
                 showRadio(items, inputFieldModel, defaultId);
                 break;
-            case InputFieldModel.TYPE_SELECT_LIST:
+            case InputFieldType.TYPE_SELECT_LIST:
                 showList(items, defaultId);
                 break;
         }

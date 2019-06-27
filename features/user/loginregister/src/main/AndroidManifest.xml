@@ -37,10 +37,6 @@
             android:theme="@style/AppTheme.Dialog"/>
 
         <activity
-            android:name=".loginthirdparty.google.GoogleSignInActivity"
-            android:theme="@style/AppTheme.Dialog"/>
-
-        <activity
             android:name=".activation.view.activity.ChangeEmailActivity"
             android:label="@string/button_change_email"
             android:screenOrientation="portrait"

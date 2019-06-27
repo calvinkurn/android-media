@@ -9,12 +9,11 @@
         <item>Ditutup</item>
     </string-array>
     <string-array name="bad_reason_array">
-        <item>Respons tidak cepat</item>
-        <item>Solusi tidak menyelesaikan masalah</item>
-        <item>CS tidak memahami keluhan/pertanyaan</item>
-        <item>CS tidak ramah</item>
-        <item>CS tidak kooperatif</item>
+        <item>Tidak paham masalah</item>
+        <item>Respons lambat</item>
+        <item>Tidak kooperatif</item>
         <item>Jawaban terlalu kaku</item>
+        <item>Kurang ramah</item>
         <item>Lainnya</item>
     </string-array>
 </resources>

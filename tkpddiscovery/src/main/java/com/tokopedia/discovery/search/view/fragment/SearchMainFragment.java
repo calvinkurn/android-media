@@ -14,26 +14,27 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
-import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.autocomplete.DefaultAutoCompleteViewModel;
 import com.tokopedia.discovery.autocomplete.HostAutoCompleteAdapter;
 import com.tokopedia.discovery.autocomplete.HostAutoCompleteFactory;
 import com.tokopedia.discovery.autocomplete.HostAutoCompleteTypeFactory;
-import com.tokopedia.discovery.autocomplete.DefaultAutoCompleteViewModel;
 import com.tokopedia.discovery.autocomplete.TabAutoCompleteViewModel;
-import com.tokopedia.discovery.autocomplete.di.DaggerAutoCompleteComponent;
 import com.tokopedia.discovery.autocomplete.di.AutoCompleteComponent;
+import com.tokopedia.discovery.autocomplete.di.DaggerAutoCompleteComponent;
 import com.tokopedia.discovery.catalog.analytics.AppScreen;
+import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.search.SearchPresenter;
 import com.tokopedia.discovery.search.view.SearchContract;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -48,7 +49,8 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
 
     public static final String FRAGMENT_TAG = "SearchHistoryFragment";
     public static final String INIT_QUERY = "INIT_QUERY";
-    private static final String SEARCH_INIT_KEY = "SEARCH_INIT_KEY";
+    private static final String SEARCH_PARAMETER = "SEARCH_PARAMETER";
+    private static final String MP_SEARCH_AUTOCOMPLETE = "mp_search_autocomplete";
 
     private RecyclerView recyclerView;
     private LinearLayoutManager layoutManager;
@@ -57,14 +59,16 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     SearchPresenter presenter;
 
     private HostAutoCompleteAdapter adapter;
-    private String mSearch = "";
     private String networkErrorMessage;
     private boolean onTabShop;
 
+    private SearchParameter searchParameter;
+    private PerformanceMonitoring performanceMonitoring;
+
     public static SearchMainFragment newInstance() {
-        
+
         Bundle args = new Bundle();
-        
+
         SearchMainFragment fragment = new SearchMainFragment();
         fragment.setArguments(args);
         return fragment;
@@ -157,6 +161,7 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     @Override
     public void showAutoCompleteResult(DefaultAutoCompleteViewModel defaultAutoCompleteViewModel,
                                        TabAutoCompleteViewModel tabAutoCompleteViewModel) {
+        stopTracePerformanceMonitoring();
         adapter.setDefaultViewModel(defaultAutoCompleteViewModel);
         adapter.setSuggestionViewModel(tabAutoCompleteViewModel);
         if (defaultAutoCompleteViewModel.getList().isEmpty()) {
@@ -174,21 +179,24 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        if(savedInstanceState!=null) {
-            mSearch = savedInstanceState.getString(SEARCH_INIT_KEY);
-            presenter.search(mSearch);
+
+        if(savedInstanceState != null) {
+            searchParameter = savedInstanceState.getParcelable(SEARCH_PARAMETER);
+            if(searchParameter != null) {
+                presenter.search(searchParameter);
+            }
         }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(SEARCH_INIT_KEY, mSearch);
+        outState.putParcelable(SEARCH_PARAMETER, searchParameter);
     }
 
-    public void search(String query){
-        this.mSearch = query;
-        presenter.search(mSearch);
+    public void search(SearchParameter searchParameter){
+        performanceMonitoring = PerformanceMonitoring.start(MP_SEARCH_AUTOCOMPLETE);
+        presenter.search(searchParameter);
     }
 
     public void deleteAllRecentSearch(){
@@ -209,38 +217,75 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     public void onItemClicked(String applink, String webUrl) {
         dropKeyBoard();
 
-        if (getActivity() != null
-                && getActivity().getApplicationContext() instanceof ApplinkRouter) {
-            ApplinkRouter router = ((ApplinkRouter) getActivity().getApplicationContext());
-            if (router.isSupportApplink(applink)) {
-                getActivity().finish();
-                router.goToApplinkActivity(getActivity(), applink);
-            } else {
-                openWebViewURL(webUrl, getActivity());
-                getActivity().finish();
-            }
-        } else {
-            openWebViewURL(webUrl, getActivity());
-            getActivity().finish();
+        Intent intent = getIntentForItemClicked(applink, webUrl);
+
+        if(isActivityCalledForResult()) {
+            setAutoCompleteActivityResult(intent);
+        }
+        else {
+            startActivityFromAutoComplete(intent);
         }
     }
 
-    public void openWebViewURL(String url, Context context) {
-        if (!TextUtils.isEmpty(url) && context != null) {
-            Intent intent = new Intent(context, BannerWebView.class);
-            intent.putExtra("url", url);
-            startActivity(intent);
+    private Intent getIntentForItemClicked(String applink, String webUrl) {
+        if(getActivity() == null || getActivity().getApplicationContext() == null) return null;
+
+        Intent intent;
+
+        if(isActivityAnApplinkRouter()) {
+            intent = createIntentForApplinkIfSupported(applink, webUrl);
         }
+        else {
+            intent = createIntentForWebView(webUrl);
+        }
+
+        return intent;
     }
 
-    @Override
-    public void onItemSearchClicked(String keyword, String categoryId) {
-        dropKeyBoard();
-        if (!TextUtils.isEmpty(categoryId)) {
-            ((DiscoveryActivity) getActivity()).onSuggestionProductClick(keyword, categoryId);
+    private boolean isActivityAnApplinkRouter() {
+        return getActivity() != null && getActivity().getApplicationContext() instanceof ApplinkRouter;
+    }
+
+    private Intent createIntentForApplinkIfSupported(String applink, String webUrl) {
+        Intent intent;
+
+        ApplinkRouter router = ((ApplinkRouter) getActivity().getApplicationContext());
+
+        if (router.isSupportApplink(applink)) {
+            intent = RouteManager.getIntent(getActivity(), applink);
         } else {
-            ((DiscoveryActivity) getActivity()).onSuggestionProductClick(keyword);
+            intent = createIntentForWebView(webUrl);
         }
+
+        return intent;
+    }
+
+    private Intent createIntentForWebView(String webUrl) {
+        if (!TextUtils.isEmpty(webUrl)) {
+            Intent intent = new Intent(getActivity(), BannerWebView.class);
+            intent.putExtra("url", webUrl);
+        }
+
+        return null;
+    }
+
+    private boolean isActivityCalledForResult() {
+        return getActivity() != null
+                && getActivity().getCallingActivity() != null;
+    }
+
+    private void setAutoCompleteActivityResult(Intent intent) {
+        if(intent == null || getActivity() == null) return;
+
+        getActivity().setResult(SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_START_ACTIVITY, intent);
+        getActivity().finish();
+    }
+
+    private void startActivityFromAutoComplete(Intent intent) {
+        if(intent == null || getActivity() == null) return;
+
+        getActivity().finish();
+        startActivity(intent);
     }
 
     @Override
@@ -265,5 +310,15 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
 
     public boolean isOnTabShop() {
         return onTabShop;
+    }
+
+    public void setSearchParameter(SearchParameter searchParameter) {
+        this.searchParameter = searchParameter;
+    }
+
+    private void stopTracePerformanceMonitoring() {
+        if (performanceMonitoring != null) {
+            performanceMonitoring.stopTrace();
+        }
     }
 }

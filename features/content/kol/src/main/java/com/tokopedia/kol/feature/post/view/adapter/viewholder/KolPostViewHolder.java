@@ -13,7 +13,6 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.affiliatecommon.view.adapter.PostImageAdapter;
 import com.tokopedia.kol.R;
@@ -24,6 +23,8 @@ import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.kol.feature.post.view.widget.BaseKolView;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +50,6 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
     private static final int COUNT_SINGLE = 1;
 
     private final KolPostListener.View.ViewHolder viewListener;
-    private final AnalyticTracker analyticTracker;
     private final Context context;
     private PostImageAdapter adapter;
     private BaseKolView baseKolView;
@@ -68,7 +68,6 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
         super(itemView);
         this.viewListener = viewListener;
         this.type = type;
-        analyticTracker = viewListener.getAbstractionRouter().getAnalyticTracker();
         context = itemView.getContext();
         containerView = itemView.findViewById(R.id.container_view);
 
@@ -92,6 +91,8 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
             containerView.setBackgroundColor(
                     MethodChecker.getColor(context, R.color.white)
             );
+
+            element.setReviewExpanded(true);
         } else {
             containerView.setBackground(
                     MethodChecker.getDrawable(context, R.drawable.card_shadow_top_bottom)
@@ -113,7 +114,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
             info.setText(element.getInfo());
         }
 
-        addImageBtn.setVisibility(element.isEditable() ? View.VISIBLE : View.GONE);
+        addImageBtn.setVisibility(View.GONE);
 
         if (TextUtils.isEmpty(element.getReview())) {
             bottomSpace.setVisibility(View.VISIBLE);
@@ -144,6 +145,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
         }
     }
 
+    @Override
     public void onViewRecycled() {
         baseKolView.onViewRecycled();
     }
@@ -166,23 +168,23 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
     public void onFollowButtonClickListener(BaseKolViewModel element) {
         if (element.isFollowed()) {
             if (type == Type.FEED) {
-                analyticTracker.sendEventTracking(
+                TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                         KolEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                         KolEventTracking.Category.HOMEPAGE,
                         KolEventTracking.Action.FEED_UNFOLLOW_CONTENT,
                         generateKolEventLabel(true, element.getCardType())
-                );
+                ));
             }
 
             viewListener.onUnfollowKolClicked(getAdapterPosition(), element.getUserId());
         } else {
             if (type == Type.FEED) {
-                analyticTracker.sendEventTracking(
+                TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                         KolEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                         KolEventTracking.Category.HOMEPAGE,
                         KolEventTracking.Action.FEED_FOLLOW_CONTENT,
                         generateKolEventLabel(false, element.getCardType())
-                );
+                ));
             }
 
             viewListener.onFollowKolClicked(getAdapterPosition(), element.getUserId());
@@ -192,12 +194,12 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
     @Override
     public void onDescriptionClickListener(BaseKolViewModel element) {
         if (type == Type.FEED) {
-            analyticTracker.sendEventTracking(
+            TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                     KolEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                     KolEventTracking.Category.HOMEPAGE,
                     KolEventTracking.Action.FEED_EXPAND_CONTENT,
                     generateKolEventLabel(element.isFollowed(), element.getCardType())
-            );
+            ));
         }
     }
 
@@ -205,12 +207,12 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
     public void onLikeButtonClickListener(BaseKolViewModel element) {
         if (element.isLiked()) {
             if (type == Type.FEED) {
-                analyticTracker.sendEventTracking(
+                TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                         KolEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                         KolEventTracking.Category.HOMEPAGE,
                         KolEventTracking.Action.FEED_UNLIKE_CONTENT,
                         generateKolEventLabel(element.isFollowed(), element.getCardType())
-                );
+                ));
             }
 
             viewListener.onUnlikeKolClicked(
@@ -221,12 +223,12 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
             );
         } else {
             if (type == Type.FEED) {
-                analyticTracker.sendEventTracking(
+                TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                         KolEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                         KolEventTracking.Category.HOMEPAGE,
                         KolEventTracking.Action.FEED_LIKE_CONTENT,
                         generateKolEventLabel(element.isFollowed(), element.getCardType())
-                );
+                ));
             }
             viewListener.onLikeKolClicked(
                     getAdapterPosition(),
@@ -240,12 +242,12 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
     @Override
     public void onCommentClickListener(BaseKolViewModel element) {
         if (type == Type.FEED) {
-            analyticTracker.sendEventTracking(
+            TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                     KolEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                     KolEventTracking.Category.HOMEPAGE,
                     KolEventTracking.Action.FEED_CLICK_CONTENT_COMMENT,
                     generateKolEventLabel(element.isFollowed(), element.getCardType())
-            );
+            ));
         }
 
         viewListener.onGoToKolComment(
@@ -301,12 +303,12 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
     }
 
     private void goToProfile(final BaseKolViewModel element) {
-        analyticTracker.sendEventTracking(
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 KolEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 KolEventTracking.Category.HOMEPAGE,
                 KolEventTracking.Action.FEED_CLICK_CONTENT_WRITER_NAME,
                 generateKolEventLabel(element.isFollowed(), element.getCardType())
-        );
+        ));
 
         if (element.getUserId() > 0) {
             viewListener.onGoToKolProfile(getAdapterPosition(),
@@ -324,12 +326,12 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
     private void tooltipAreaClicked(KolPostViewModel element) {
         List<KolEnhancedTracking.Promotion> promotionList = new ArrayList<>();
         if (type == Type.FEED) {
-            analyticTracker.sendEventTracking(
+            TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                     KolEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                     KolEventTracking.Category.HOMEPAGE,
                     KolEventTracking.Action.FEED_CLICK_CONTENT_CTA,
                     generateKolEventLabel(element.isFollowed(), element.getCardType())
-            );
+            ));
 
             promotionList.add(new KolEnhancedTracking.Promotion(
                     element.getContentId(),
@@ -348,19 +350,19 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
                             viewListener.getUserSession().getUserId() : "0")
             ));
 
-            analyticTracker.sendEnhancedEcommerce(
+            TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                     KolEnhancedTracking.getKolClickTracking(promotionList)
             );
 
         } else if (type == Type.SHOP_PAGE) {
-            analyticTracker.sendEventTracking(
+            TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                     KolEventTracking.Event.EVENT_SHOP_PAGE,
                     KolEventTracking.Category.SHOP_PAGE_FEED,
                     KolEventTracking.Action.SHOP_ITEM_CLICK_DYNAMIC
                             .replace(PARAM_COUNT, element.getImageList().size() == COUNT_SINGLE ? SINGLE : MULTIPLE)
                             .replace(PARAM_TYPE, element.getTagsType()),
                     String.valueOf(element.getContentId())
-            );
+            ));
         }
 
         viewListener.onOpenKolTooltip(

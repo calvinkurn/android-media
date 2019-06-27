@@ -10,16 +10,16 @@ import com.google.gson.annotations.SerializedName;
 public class ProductImage {
     @SerializedName("image_src")
     @Expose
-    private String imageSrc;
+    private String imageSrc = "";
     @SerializedName("image_src_200_square")
     @Expose
-    private String imageSrc200Square;
+    private String imageSrc200Square = "";
     @SerializedName("image_src_300")
     @Expose
-    private String imageSrc300;
+    private String imageSrc300 = "";
     @SerializedName("image_src_square")
     @Expose
-    private String imageSrcSquare;
+    private String imageSrcSquare = "";
 
     public String getImageSrc() {
         return imageSrc;

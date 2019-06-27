@@ -1,10 +1,6 @@
 package com.tokopedia.loyalty.di.module;
 
-import android.content.Context;
-
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.loyalty.di.PromoDetailScope;
 import com.tokopedia.loyalty.domain.repository.IPromoRepository;
 import com.tokopedia.loyalty.view.interactor.IPromoInteractor;
@@ -25,15 +21,6 @@ public class PromoDetailModule {
 
     @Provides
     @PromoDetailScope
-    public AnalyticTracker provideAnalyticTracker(@ApplicationContext Context context) {
-        if (context instanceof AbstractionRouter) {
-            return ((AbstractionRouter) context).getAnalyticTracker();
-        }
-        throw new RuntimeException("App should implement " + AbstractionRouter.class.getSimpleName());
-    }
-
-    @Provides
-    @PromoDetailScope
     CompositeSubscription provideCompositeSubscription() {
         return new CompositeSubscription();
     }
@@ -49,5 +36,11 @@ public class PromoDetailModule {
     @PromoDetailScope
     IPromoDetailPresenter providePromoDetailPresenter(IPromoInteractor promoInteractor) {
         return new PromoDetailPresenter(promoInteractor);
+    }
+
+    @Provides
+    @PromoDetailScope
+    PerformanceMonitoring providePerformanceMonitoring(){
+        return new PerformanceMonitoring();
     }
 }

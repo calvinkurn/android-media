@@ -4,15 +4,15 @@ import android.support.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.checkout.domain.datamodel.recentview.RecentView;
-import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.GetRecentViewUseCase;
-import com.tokopedia.checkout.view.feature.emptycart.subscriber.CancelAutoApplySubscriber;
+import com.tokopedia.checkout.view.feature.emptycart.subscriber.ClearAutoApplySubscriber;
 import com.tokopedia.checkout.view.feature.emptycart.subscriber.GetCartListSubscriber;
 import com.tokopedia.checkout.view.feature.emptycart.subscriber.GetRecentViewSubscriber;
 import com.tokopedia.checkout.view.feature.emptycart.subscriber.GetWishlistSubscriber;
 import com.tokopedia.checkout.view.feature.emptycart.viewmodel.RecentViewViewModel;
 import com.tokopedia.checkout.view.feature.emptycart.viewmodel.WishlistViewModel;
+import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ProductFeedViewModel;
@@ -22,6 +22,7 @@ import com.tokopedia.transactionanalytics.data.emptycart.EnhancedECommerceEmptyC
 import com.tokopedia.transactionanalytics.data.emptycart.EnhancedECommerceEmptyCartProductData;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist;
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase;
 
@@ -49,9 +50,10 @@ public class EmptyCartPresenter extends BaseDaggerPresenter<EmptyCartContract.Vi
     private final GetCartListUseCase getCartListUseCase;
     private final GetWishlistUseCase getWishlistUseCase;
     private final GetRecentViewUseCase getRecentViewUseCase;
-    private final CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase;
+    private final ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase;
     private final CartApiRequestParamGenerator cartApiRequestParamGenerator;
     private final CompositeSubscription compositeSubscription;
+    private final UserSessionInterface userSessionInterface;
     private List<WishlistViewModel> wishlistViewModels = new ArrayList<>();
     private List<RecentViewViewModel> recentViewViewModels = new ArrayList<>();
     private List<Product> recommendationViewModels = new ArrayList<>();
@@ -61,15 +63,17 @@ public class EmptyCartPresenter extends BaseDaggerPresenter<EmptyCartContract.Vi
     public EmptyCartPresenter(GetCartListUseCase getCartListUseCase,
                               GetWishlistUseCase getWishlistUseCase,
                               GetRecentViewUseCase getRecentViewUseCase,
-                              CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase,
+                              ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase,
                               CartApiRequestParamGenerator cartApiRequestParamGenerator,
-                              CompositeSubscription compositeSubscription) {
+                              CompositeSubscription compositeSubscription,
+                              UserSessionInterface userSessionInterface) {
         this.getCartListUseCase = getCartListUseCase;
         this.getWishlistUseCase = getWishlistUseCase;
         this.getRecentViewUseCase = getRecentViewUseCase;
-        this.cancelAutoApplyCouponUseCase = cancelAutoApplyCouponUseCase;
+        this.clearCacheAutoApplyStackUseCase = clearCacheAutoApplyStackUseCase;
         this.cartApiRequestParamGenerator = cartApiRequestParamGenerator;
         this.compositeSubscription = compositeSubscription;
+        this.userSessionInterface = userSessionInterface;
     }
 
     @Override
@@ -83,6 +87,7 @@ public class EmptyCartPresenter extends BaseDaggerPresenter<EmptyCartContract.Vi
         compositeSubscription.unsubscribe();
         getWishlistUseCase.unsubscribe();
         getRecentViewUseCase.unsubscribe();
+        clearCacheAutoApplyStackUseCase.unsubscribe();
     }
 
     @Override
@@ -112,14 +117,12 @@ public class EmptyCartPresenter extends BaseDaggerPresenter<EmptyCartContract.Vi
     }
 
     @Override
-    public void processCancelAutoApply() {
-        compositeSubscription.add(cancelAutoApplyCouponUseCase.createObservable(RequestParams.create())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.io())
-                .subscribe(new CancelAutoApplySubscriber(getView()))
-        );
-
+    public void processCancelAutoApply(String promoCode) {
+        getView().showLoadingDialog();
+        ArrayList<String> promoCodes = new ArrayList<>();
+        promoCodes.add(promoCode);
+        clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), promoCodes);
+        clearCacheAutoApplyStackUseCase.execute(RequestParams.create(), new ClearAutoApplySubscriber(getView()));
     }
 
     @Override

@@ -95,6 +95,8 @@ public interface FlightSearchContract {
         void onSuccessDeleteFlightCache();
 
         FlightFilterModel getFilterModel();
+
+        void traceStop();
     }
 
     interface Presenter {
@@ -128,6 +130,8 @@ public interface FlightSearchContract {
         boolean isDoneLoadData();
 
         void resetCounterCall();
+
+        void unsubscribeAll();
     }
 
 }

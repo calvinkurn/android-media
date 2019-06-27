@@ -1,13 +1,10 @@
 package com.tokopedia.topchat.chatlist.data.mapper;
 
-import android.text.TextUtils;
-
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.topchat.R;
+import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatListViewModel;
+
+import javax.inject.Inject;
 
 import retrofit2.Response;
 import rx.functions.Func1;
@@ -16,31 +13,22 @@ import rx.functions.Func1;
  * Created by stevenfredian on 10/24/17.
  */
 
-public class DeleteMessageMapper implements Func1<Response<TkpdResponse>, DeleteChatListViewModel> {
+public class DeleteMessageMapper implements Func1<Response<DataResponse<DeleteChatListViewModel>>, DeleteChatListViewModel> {
+
+    @Inject
+    public DeleteMessageMapper() {
+    }
+
     @Override
-    public DeleteChatListViewModel call(Response<TkpdResponse> response) {
-        if (response.isSuccessful()) {
-            if ((!response.body().isNullData()
-                    && response.body().getErrorMessageJoined().equals(""))
-                    || !response.body().isNullData() && response.body().getErrorMessages() == null) {
-                DeleteChatListViewModel data = response.body().convertDataObj(DeleteChatListViewModel.class);
-                return data;
-            } else {
-                if (response.body().getErrorMessages() != null
-                        && !response.body().getErrorMessages().isEmpty()) {
-                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
-                } else {
-                    throw new ErrorMessageException(MainApplication.getAppContext().getString
-                            (R.string.default_request_error_unknown));
-                }
-            }
+    public DeleteChatListViewModel call(Response<DataResponse<DeleteChatListViewModel>> response) {
+        if (response.isSuccessful() &&
+                response.body().getHeader() == null ||
+                (response.body().getHeader() != null && response.body().getHeader().getMessages().isEmpty()
+                ) || (response.body().getHeader() != null && response.body().getHeader().getMessages().get(0).equals(""))) {
+            DeleteChatListViewModel data = response.body().getData();
+            return data;
         } else {
-            String messageError = ErrorHandler.getErrorMessage(response);
-            if (!TextUtils.isEmpty(messageError)) {
-                throw new ErrorMessageException(messageError);
-            } else {
-                throw new RuntimeException(String.valueOf(response.code()));
-            }
+            throw new RuntimeException(String.valueOf(response.code()));
         }
     }
 }

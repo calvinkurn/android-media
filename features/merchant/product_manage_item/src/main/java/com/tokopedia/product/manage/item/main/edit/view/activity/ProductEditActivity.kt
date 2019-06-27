@@ -9,11 +9,20 @@ import com.tokopedia.product.manage.item.common.di.component.ProductComponent
 import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddActivity
 import com.tokopedia.product.manage.item.main.edit.view.fragment.ProductEditFragment
 import com.tokopedia.product.manage.item.main.edit.view.fragment.ProductEditFragment.Companion.EDIT_PRODUCT_ID
-import com.tokopedia.product.manage.item.utils.ProductEditModuleRouter
+import com.tokopedia.product.manage.item.utils.ProductEditItemComponentInstance
 
+/**
+ * For navigating
+ * use ApplinkConstInternalMarketplace.PRODUCT_EDIT
+ */
 class ProductEditActivity : ProductAddActivity(), HasComponent<ProductComponent> {
     override fun getNewFragment(): Fragment {
-        val productId = intent.getStringExtra(EDIT_PRODUCT_ID)
+        val uri = intent.data
+        val productId = if (uri != null){
+            val pathSegments = uri.pathSegments
+            pathSegments[pathSegments.size - 1]
+        } else
+            intent.getStringExtra(EDIT_PRODUCT_ID)
         return ProductEditFragment.createInstance(productId)
     }
 
@@ -25,7 +34,7 @@ class ProductEditActivity : ProductAddActivity(), HasComponent<ProductComponent>
             }
     }
 
-    override fun getComponent() = (application as ProductEditModuleRouter).getProductComponent()
+    override fun getComponent() = ProductEditItemComponentInstance.getComponent(application)
 
     override fun getCancelMessageRes() = R.string.product_draft_dialog_edit_cancel_message
 }

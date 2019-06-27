@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.affiliatecommon.domain.CheckAffiliateUseCase;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.data.mapper.BuyerAccountMapper;
@@ -38,14 +39,22 @@ public class BuyerAccountModule {
                                                          GraphqlUseCase graphqlUseCase,
                                                          BuyerAccountMapper buyerAccountMapper,
                                                          WalletPref walletPref,
-                                                         UserSession userSession) {
+                                                         UserSession userSession,
+                                                         CheckAffiliateUseCase checkAffiliateUseCase) {
         return new GetBuyerAccountUseCase(
                 graphqlUseCase,
                 ((AccountHomeRouter) context).getTokoCashAccountBalance(),
                 buyerAccountMapper,
                 walletPref,
-                userSession
+                userSession,
+                checkAffiliateUseCase
         );
+    }
+
+    @Provides
+    CheckAffiliateUseCase provideCheckAffiliateUseCase(@ApplicationContext Context context,
+                                                       GraphqlUseCase graphqlUseCase) {
+        return new CheckAffiliateUseCase(context, graphqlUseCase);
     }
 
     @Provides

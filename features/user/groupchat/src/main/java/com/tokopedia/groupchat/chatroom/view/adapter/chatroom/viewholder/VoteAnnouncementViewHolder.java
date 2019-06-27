@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.chatroom.view.listener.ChatroomContract;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.VoteAnnouncementViewModel;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * @author by nisie on 2/27/18.
@@ -28,9 +29,9 @@ public class VoteAnnouncementViewHolder extends BaseChatViewHolder<VoteAnnouncem
     TextView voteQuestion;
     View voteLayout;
     Context context;
-    private final ChatroomContract.View.VoteAnnouncementViewHolderListener listener;
+    private final ChatroomContract.ChatItem.VoteAnnouncementViewHolderListener listener;
 
-    public VoteAnnouncementViewHolder(View itemView, ChatroomContract.View.VoteAnnouncementViewHolderListener imageListener) {
+    public VoteAnnouncementViewHolder(View itemView, ChatroomContract.ChatItem.VoteAnnouncementViewHolderListener imageListener) {
         super(itemView);
         voteIcon = itemView.findViewById(R.id.vote_icon);
         voteTitle = itemView.findViewById(R.id.vote_title);
@@ -63,7 +64,7 @@ public class VoteAnnouncementViewHolder extends BaseChatViewHolder<VoteAnnouncem
         voteLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onVoteComponentClicked("vote", element.getMessage());
+                listener.onVoteComponentClicked("vote", element.getMessage(), "");
             }
         });
     }
@@ -72,7 +73,7 @@ public class VoteAnnouncementViewHolder extends BaseChatViewHolder<VoteAnnouncem
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             ImageHandler.loadImageWithIdWithoutPlaceholder(voteIcon, R.drawable.ic_vote_inactive);
         } else {
-            voteIcon.setImageResource(R.drawable.ic_vote_inactive);
+            voteIcon.setImageDrawable(MethodChecker.getDrawable(voteIcon.getContext(),R.drawable.ic_vote_inactive));
         }
 
         voteTitle.setText(R.string.title_poll_finished);
@@ -82,9 +83,9 @@ public class VoteAnnouncementViewHolder extends BaseChatViewHolder<VoteAnnouncem
     private void setVoteStarted(VoteAnnouncementViewModel element) {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            ImageHandler.loadImageWithIdWithoutPlaceholder(voteIcon, R.drawable.ic_vote);
+            ImageHandler.loadImageWithIdWithoutPlaceholder(voteIcon, R.drawable.ic_play_dynamic_icon);
         } else {
-            voteIcon.setImageResource(R.drawable.ic_vote);
+            voteIcon.setImageDrawable(MethodChecker.getDrawable( voteIcon.getContext(),R.drawable.ic_play_dynamic_icon));
         }
         voteTitle.setText(R.string.title_poll_started);
         voteTitle.setTextColor(MethodChecker.getColor(voteTitle.getContext(), R.color.medium_green));

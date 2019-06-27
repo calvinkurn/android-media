@@ -10,7 +10,7 @@ public class LePreapproveModel {
 
     @SerializedName("fieldData")
     @Expose
-    private FieldDataModel fieldData;
+    private FieldDataModel fieldData = new FieldDataModel();
 
     public FieldDataModel getFieldData() {
         return fieldData;

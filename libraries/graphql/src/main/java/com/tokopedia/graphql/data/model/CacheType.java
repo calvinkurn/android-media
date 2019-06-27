@@ -16,4 +16,7 @@ public enum CacheType {
 
     /* Partially Caching will perform (Data lookup will be try from server always, however it will be saved the data into disk as well)*/
     ALWAYS_CLOUD,
+
+    /* Same as ALWAYS_CLOUD. If failed when try from server, data lookup will be try from disk*/
+    CLOUD_THEN_CACHE,
 }

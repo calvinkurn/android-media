@@ -1,0 +1,10 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+
+dependencies {
+    implementation project(rootProject.ext.libraries.permissionchecker)
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+
+    implementation rootProject.ext.playServicesDependencies.location
+
+}

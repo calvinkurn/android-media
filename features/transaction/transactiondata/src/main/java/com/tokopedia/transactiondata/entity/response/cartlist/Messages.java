@@ -11,28 +11,28 @@ public class Messages {
 
     @SerializedName("ErrorCheckoutPriceLimit")
     @Expose
-    private String errorCheckoutPriceLimit;
+    private String errorCheckoutPriceLimit = "";
     @SerializedName("ErrorFieldBetween")
     @Expose
-    private String errorFieldBetween;
+    private String errorFieldBetween = "";
     @SerializedName("ErrorFieldMaxChar")
     @Expose
-    private String errorFieldMaxChar;
+    private String errorFieldMaxChar = "";
     @SerializedName("ErrorFieldRequired")
     @Expose
-    private String errorFieldRequired;
+    private String errorFieldRequired = "";
     @SerializedName("ErrorProductAvailableStock")
     @Expose
-    private String errorProductAvailableStock;
+    private String errorProductAvailableStock = "";
     @SerializedName("ErrorProductAvailableStockDetail")
     @Expose
-    private String errorProductAvailableStockDetail;
+    private String errorProductAvailableStockDetail = "";
     @SerializedName("ErrorProductMaxQuantity")
     @Expose
-    private String errorProductMaxQuantity;
+    private String errorProductMaxQuantity = "";
     @SerializedName("ErrorProductMinQuantity")
     @Expose
-    private String errorProductMinQuantity;
+    private String errorProductMinQuantity = "";
 
     public String getErrorCheckoutPriceLimit() {
         return errorCheckoutPriceLimit;

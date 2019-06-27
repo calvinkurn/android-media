@@ -12,7 +12,9 @@ import android.widget.MediaController;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.view.activity.FullScreenLandscapeActivity;
 import com.tokopedia.challenges.view.activity.FullScreenPortraitVideoActivity;
-import com.tokopedia.challenges.view.fragments.ChallegeneSubmissionFragment;
+import com.tokopedia.challenges.view.fragments.ChallengeDetailsFragment;
+//import com.tokopedia.challenges.view.fragments.ChallegeneSubmissionFragment;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class CustomMediaController extends MediaController {
 
@@ -44,10 +46,10 @@ public class CustomMediaController extends MediaController {
         params.topMargin = 40;
         if (isFullScreen) {
             params.rightMargin = 80;
-            fullScreen.setImageResource(R.drawable.ic_close_default);
+            fullScreen.setImageDrawable(MethodChecker.getDrawable(fullScreen.getContext(), R.drawable.ic_close_default));
         } else {
             params.rightMargin = 40;
-            fullScreen.setImageResource(R.drawable.fullscreen_icon);
+            fullScreen.setImageDrawable(MethodChecker.getDrawable(fullScreen.getContext(), R.drawable.fullscreen_icon));
         }
         addView(fullScreen, params);
         if (videoOrientation.equalsIgnoreCase("portrait")) {
@@ -55,8 +57,8 @@ public class CustomMediaController extends MediaController {
                 @Override
                 public void onClick(View v) {
                     if (isFullScreen) {
-                        ChallegeneSubmissionFragment.VIDEO_POS = iCurrentPos.getPosition();
-                        ChallegeneSubmissionFragment.isVideoPlaying = iCurrentPos.isVideoPlaying();
+                        ChallengeDetailsFragment.VIDEO_POS = iCurrentPos.getPosition();
+                        ChallengeDetailsFragment.isVideoPlaying = iCurrentPos.isVideoPlaying();
                         ((Activity) getContext()).finish();
                     } else {
                         Intent intent = new Intent(getContext(), FullScreenPortraitVideoActivity.class);
@@ -73,8 +75,8 @@ public class CustomMediaController extends MediaController {
                 @Override
                 public void onClick(View v) {
                     if (isFullScreen) {
-                        ChallegeneSubmissionFragment.VIDEO_POS = iCurrentPos.getPosition();
-                        ChallegeneSubmissionFragment.isVideoPlaying = iCurrentPos.isVideoPlaying();
+                        ChallengeDetailsFragment.VIDEO_POS = iCurrentPos.getPosition();
+                        ChallengeDetailsFragment.isVideoPlaying = iCurrentPos.isVideoPlaying();
                         ((Activity) getContext()).finish();
                     } else {
                         Intent intent = new Intent(getContext(), FullScreenLandscapeActivity.class);

@@ -32,6 +32,12 @@ public class SeeAllCommentsViewHolder extends AbstractViewHolder<SeeAllCommentsV
 
     @Override
     public void bind(SeeAllCommentsViewModel element) {
+        if (element.isShowSeeMore()) {
+            seeAllComment.setVisibility(View.VISIBLE);
+        } else {
+            seeAllComment.setVisibility(View.GONE);
+        }
+
         seeAllComment.setText(
                 String.format(
                         context.getString(R.string.see_all_comment),

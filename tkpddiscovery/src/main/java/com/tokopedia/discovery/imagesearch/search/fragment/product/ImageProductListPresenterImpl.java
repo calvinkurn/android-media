@@ -2,20 +2,24 @@ package com.tokopedia.discovery.imagesearch.search.fragment.product;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.DefaultSubscriber;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
+import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
+import com.tokopedia.discovery.newdiscovery.domain.usecase.ProductWishlistUrlUseCase;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.ProductViewModelHelper;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
-import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -26,12 +30,16 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Subscriber;
+
 /**
  * Created by sachinbansal on 4/13/18.
  */
 
 public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProductListFragmentView> implements ImageProductListPresenter {
 
+    @Inject
+    ProductWishlistUrlUseCase wishlistUrlUseCase;
     @Inject
     GetProductUseCase getProductUseCase;
     @Inject
@@ -60,7 +68,7 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
 
     @Override
     public void loadMoreData(final SearchParameter searchParameter, HashMap<String, String> additionalParams) {
-        RequestParams requestParams = GetProductUseCase.createInitializeSearchParam(searchParameter, false);
+        RequestParams requestParams = GetProductUseCase.createInitializeSearchParam(searchParameter);
         removeDefaultCategoryParam(requestParams);
 
         getProductUseCase.execute(requestParams,
@@ -103,7 +111,7 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
                     public void onError(Throwable e) {
                         if (isViewAttached()) {
                             getView().hideRefreshLayout();
-                            getView().showNetworkError(searchParameter.getStartRow());
+                            getView().showNetworkError(searchParameter.getInteger(SearchApiConst.START));
                         }
                     }
                 });
@@ -114,14 +122,49 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
     public void handleWishlistButtonClicked(ProductItem productItem) {
         if (getView().isUserHasLogin()) {
             getView().disableWishlistButton(productItem.getProductID());
-            if (productItem.isWishlisted()) {
-                removeWishlist(productItem.getProductID(), getView().getUserId());
+            if (productItem.isTopAds()) {
+                com.tokopedia.usecase.RequestParams params = com.tokopedia.usecase.RequestParams.create();
+                params.putString(ProductWishlistUrlUseCase.PRODUCT_WISHLIST_URL,
+                        productItem.getProductWishlistUrl());
+                wishlistUrlUseCase.execute(params, getWishlistSubscriber(productItem));
             } else {
-                addWishlist(productItem.getProductID(), getView().getUserId());
+                if (productItem.isWishlisted()) {
+                    removeWishlist(productItem.getProductID(), getView().getUserId());
+                } else {
+                    addWishlist(productItem.getProductID(), getView().getUserId());
+                }
             }
         } else {
             launchLoginActivity(productItem.getProductID());
         }
+    }
+
+    @NonNull
+    protected Subscriber<Boolean> getWishlistSubscriber(final ProductItem productItem) {
+        return new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (isViewAttached()) {
+                    wishListActionListener.onErrorRemoveWishlist(context.getString(
+                            R.string.default_request_error_unknown), productItem.getProductID());
+                }
+            }
+
+            @Override
+            public void onNext(Boolean result) {
+                if (isViewAttached()) {
+                    if (result) {
+                        wishListActionListener.onSuccessAddWishlist(productItem.getProductID());
+                    } else
+                        wishListActionListener.onErrorRemoveWishlist(context.getString(
+                                R.string.default_request_error_unknown), productItem.getProductID());
+                }
+            }
+        };
     }
 
     private void launchLoginActivity(String productId) {

@@ -39,6 +39,7 @@ public class ConsumerAppBaseUrl {
     public static final String PAYMENT_DOMAIN = "https://payment-staging.tokopedia.com/";
     public static final String GALADRIEL = "https://galadriel-staging.tokopedia.com/";
     public static final String CHAT_DOMAIN = "https://chat-staging.tokopedia.com";
+    public static final String PLAY_DOMAIN = "https://groupchat-staging.tokopedia.com";
     public static final String CHAT_WEBSOCKET_DOMAIN = "wss://chat-staging.tokopedia.com";
     public static final String GROUP_CHAT_WEBSOCKET_DOMAIN = "wss://groupchat-staging.tokopedia.com";
     public static final String MAPS_DOMAIN = "https://api-staging.tokopedia.com/";
@@ -50,7 +51,6 @@ public class ConsumerAppBaseUrl {
     public static final String TOPPROFILE_DOMAIN = "https://18-feature-m-staging.tokopedia.com/graphql/";
     public static final String CHATBOT_DOMAIN = BASE_API_DOMAIN;
     public static final String GAMIFICATION_BASE_URL = "https://gql-staging.tokopedia.com/";
-    public static final String TRAVEL_CALENDAR_BASE_URL = "https://gql-staging.tokopedia.com/";
     public static final String ACCOUNTS_DOMAIN = "https://accounts-staging.tokopedia.com";
     public static final String TOP_PAY_DOMAIN = "https://pay-staging.tokopedia.id";
     public static final String OMS_DOMAIN = "https://omscart-staging.tokopedia.com/";
@@ -62,6 +62,6 @@ public class ConsumerAppBaseUrl {
     public static final String LOGISTIC_BASE_DOMAIN = "https://gw-staging.tokopedia.com/";
     public static final String CART_BASE_DOMAIN = "https://api-staging.tokopedia.com/";
     public static final String TRANSACTION_BASE_DOMAIN = "https://ws-staging.tokopedia.com/";
-    public static final String CAMPAIGN_MANAGEMENT_DOMAIN = "https://notifier-staging.tokopedia.com/imt/";
+    public static final String LAKU6_BASE_URL = "http://wst.laku6.com";
 
 }

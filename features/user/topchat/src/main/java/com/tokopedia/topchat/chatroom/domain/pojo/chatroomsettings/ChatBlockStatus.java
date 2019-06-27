@@ -20,6 +20,12 @@ public class ChatBlockStatus implements Parcelable {
     @Expose
     private String validDate;
 
+    public ChatBlockStatus(boolean isBlocked, boolean isPromoBlocked, String blockedUntil) {
+        this.isBlocked = isBlocked;
+        this.isPromoBlocked = isPromoBlocked;
+        this.validDate = blockedUntil;
+    }
+
     protected ChatBlockStatus(Parcel in) {
         isBlocked = in.readByte() != 0;
         isPromoBlocked = in.readByte() != 0;

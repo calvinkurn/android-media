@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatlist.viewmodel;
 import android.text.Spanned;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.topchat.chatlist.adapter.InboxChatTypeFactory;
 import com.tokopedia.topchat.chatlist.domain.pojo.message.Contact;
 
@@ -15,8 +16,6 @@ public class ChatListViewModel implements Visitable<InboxChatTypeFactory> {
     public static final int NO_SPAN = 0;
     public static final int SPANNED_CONTACT = 1;
     public static final int SPANNED_MESSAGE = 2;
-
-    public static final String IS_TYPING = "sedang mengetik ...";
 
     String name;
     String message;
@@ -38,6 +37,15 @@ public class ChatListViewModel implements Visitable<InboxChatTypeFactory> {
     public ChatListViewModel() {
         spanMode = NO_SPAN;
         haveTitle = false;
+        name = "";
+        message = "";
+        image = "";
+        time = "";
+        id = "";
+        senderId = "";
+        label = "";
+        span = MethodChecker.fromHtml("");
+        role = "";
     }
 
     private boolean isChecked;
@@ -47,7 +55,9 @@ public class ChatListViewModel implements Visitable<InboxChatTypeFactory> {
     }
 
     public void setName(String name) {
-        this.name = name;
+        if (name != null) {
+            this.name = name;
+        }
     }
 
     public String getMessage() {
@@ -55,7 +65,9 @@ public class ChatListViewModel implements Visitable<InboxChatTypeFactory> {
     }
 
     public void setMessage(String message) {
-        this.message = message;
+        if (message != null) {
+            this.message = message;
+        }
     }
 
     public String getImage() {
@@ -63,7 +75,9 @@ public class ChatListViewModel implements Visitable<InboxChatTypeFactory> {
     }
 
     public void setImage(String image) {
-        this.image = image;
+        if (image != null) {
+            this.image = image;
+        }
     }
 
     public String getTime() {
@@ -71,7 +85,9 @@ public class ChatListViewModel implements Visitable<InboxChatTypeFactory> {
     }
 
     public void setTime(String time) {
-        this.time = time;
+        if (time != null) {
+            this.time = time;
+        }
     }
 
     public String getId() {
@@ -79,7 +95,9 @@ public class ChatListViewModel implements Visitable<InboxChatTypeFactory> {
     }
 
     public void setId(String id) {
-        this.id = id;
+        if (id != null) {
+            this.id = id;
+        }
     }
 
     public String getLabel() {
@@ -87,7 +105,9 @@ public class ChatListViewModel implements Visitable<InboxChatTypeFactory> {
     }
 
     public void setLabel(String label) {
-        this.label = label;
+        if (label != null) {
+            this.label = label;
+        }
     }
 
     public int getReadStatus() {
@@ -119,7 +139,9 @@ public class ChatListViewModel implements Visitable<InboxChatTypeFactory> {
     }
 
     public void setSenderId(String senderId) {
-        this.senderId = senderId;
+        if (senderId != null) {
+            this.senderId = senderId;
+        }
     }
 
     public Spanned getSpan() {
@@ -159,7 +181,9 @@ public class ChatListViewModel implements Visitable<InboxChatTypeFactory> {
     }
 
     public void setRole(String role) {
-        this.role = role;
+        if (role != null) {
+            this.role = role;
+        }
     }
 
     public boolean isTyping() {

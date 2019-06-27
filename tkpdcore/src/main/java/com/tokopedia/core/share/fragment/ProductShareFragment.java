@@ -37,6 +37,7 @@ import com.tokopedia.core.share.listener.ShareView;
 import com.tokopedia.core.share.presenter.ProductSharePresenter;
 import com.tokopedia.core.share.presenter.ProductSharePresenterImpl;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.linker.model.LinkerData;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -52,7 +53,7 @@ public class ProductShareFragment extends BasePresenterFragmentV4<ProductSharePr
     private static final String ARGS_SHARE_DATA = "ARGS_SHARE_DATA";
 
 
-    private ShareData shareData;
+    private LinkerData shareData;
     @BindView(R2.id.text_line)
     TextView tvTitle;
 
@@ -102,7 +103,7 @@ public class ProductShareFragment extends BasePresenterFragmentV4<ProductSharePr
     private CallbackManager callbackManager;
     private ShareDialog shareDialog;
 
-    public static ProductShareFragment newInstance(@NonNull ShareData shareData, boolean isAddingProduct) {
+    public static ProductShareFragment newInstance(@NonNull LinkerData shareData, boolean isAddingProduct) {
         ProductShareFragment fragment = new ProductShareFragment();
         Bundle args = new Bundle();
         args.putParcelable(ARGS_SHARE_DATA, shareData);
@@ -186,33 +187,33 @@ public class ProductShareFragment extends BasePresenterFragmentV4<ProductSharePr
             if (shareData.getType() != null) {
                 subtitle.setText(R.string.product_share_subtitle);
                 switch (shareData.getType()) {
-                    case ShareData.CATALOG_TYPE:
+                    case LinkerData.CATALOG_TYPE:
                         tvTitle.setText(R.string.product_share_catalog);
                         break;
-                    case ShareData.SHOP_TYPE:
+                    case LinkerData.SHOP_TYPE:
                         tvTitle.setText(R.string.product_share_shop);
                         break;
-                    case ShareData.HOTLIST_TYPE:
+                    case LinkerData.HOTLIST_TYPE:
                         tvTitle.setText(R.string.product_share_hotlist);
                         break;
-                    case ShareData.DISCOVERY_TYPE:
+                    case LinkerData.DISCOVERY_TYPE:
                         tvTitle.setText(R.string.product_share_search);
                         break;
-                    case ShareData.PRODUCT_TYPE:
+                    case LinkerData.PRODUCT_TYPE:
                         tvTitle.setText(R.string.product_share_product);
                         break;
-                    case ShareData.RIDE_TYPE:
+                    case LinkerData.RIDE_TYPE:
                         tvTitle.setText(R.string.product_share_ride_trip);
                         break;
-                    case ShareData.APP_SHARE_TYPE:
+                    case LinkerData.APP_SHARE_TYPE:
                         tvTitle.setText(R.string.product_share_app);
                         subtitle.setText(R.string.product_share_app_subtitle);
                         break;
-                    case ShareData.REFERRAL_TYPE:
+                    case LinkerData.REFERRAL_TYPE:
                         tvTitle.setText(R.string.product_share_app);
                         subtitle.setText(R.string.product_share_app_subtitle);
                         break;
-                    case ShareData.PROMO_TYPE:
+                    case LinkerData.PROMO_TYPE:
                         tvTitle.setText(R.string.promo_share_detail);
                         subtitle.setText(R.string.product_share_app_subtitle);
                 }
@@ -262,8 +263,8 @@ public class ProductShareFragment extends BasePresenterFragmentV4<ProductSharePr
     }
 
     public void setData(Bundle data) {
-        shareData = new ShareData();
-        shareData.setType(ShareData.PRODUCT_TYPE);
+        shareData = new LinkerData();
+        shareData.setType(LinkerData.PRODUCT_TYPE);
         String productName = data.getString(TkpdState.ProductService.PRODUCT_NAME);
         if (StringUtils.isNotBlank(productName)) {
             shareData.setName(productName);
@@ -438,8 +439,8 @@ public class ProductShareFragment extends BasePresenterFragmentV4<ProductSharePr
                 if (!TextUtils.isEmpty(shareData.getName())) {
                     linkBuilder.setContentTitle(shareData.getName());
                 }
-                if (!TextUtils.isEmpty(shareData.getTextContent(getActivity()))) {
-                    linkBuilder.setContentDescription(shareData.getTextContent(getActivity()));
+                if (!TextUtils.isEmpty(shareData.getTextContent())) {
+                    linkBuilder.setContentDescription(shareData.getTextContent());
                 }
                 if (!TextUtils.isEmpty(shareData.getDescription())) {
                     linkBuilder.setQuote(shareData.getDescription());

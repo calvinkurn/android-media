@@ -21,7 +21,7 @@ public class BaseDaggerPresenter<T extends CustomerView> implements CustomerPres
     }
 
     public void checkViewAttached() {
-        if (!isViewAttached()) {
+        if (isViewNotAttached()) {
             throw new CustomerViewNotAttachedException();
         }
     }
@@ -40,5 +40,9 @@ public class BaseDaggerPresenter<T extends CustomerView> implements CustomerPres
 
     public boolean isViewAttached() {
         return view != null;
+    }
+
+    public boolean isViewNotAttached() {
+        return view == null;
     }
 }

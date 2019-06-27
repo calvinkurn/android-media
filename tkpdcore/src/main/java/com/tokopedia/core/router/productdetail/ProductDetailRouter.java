@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.RouterUtils;
+import com.tokopedia.linker.model.LinkerData;
 
 /**
  * @author anggaprasetiyo on 12/22/16.
@@ -29,19 +30,6 @@ public class ProductDetailRouter {
     public static final String WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition";
     public static final String WIHSLIST_STATUS_IS_WISHLIST = "isWishlist";
 
-    public static Intent createInstanceProductDetailInfoActivity(Context context, ProductPass data) {
-        Intent intent = RouterUtils.getActivityIntent(context, PRODUCT_DETAIL_INFO_ACTIVITY);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
-        intent.putExtra(EXTRA_PRODUCT_PASS, data);
-        return intent;
-    }
-
-    public static Intent createInstanceProductDetailInfoActivity(Context context, String productId) {
-        Intent intent = RouterUtils.getActivityIntent(context, PRODUCT_DETAIL_INFO_ACTIVITY);
-        intent.putExtra(EXTRA_PRODUCT_ID, productId);
-        return intent;
-    }
-
     public static Intent createInstanceProductDetailInfoActivity(Context context) {
         Intent intent = RouterUtils.getActivityIntent(context, PRODUCT_DETAIL_INFO_ACTIVITY);
         return intent;
@@ -56,7 +44,7 @@ public class ProductDetailRouter {
     }
 
     public static Intent createInstanceProductDetailInfoActivity(
-            Context context, ShareData shareData) {
+            Context context, LinkerData shareData) {
         Intent intent = RouterUtils.getActivityIntent(context, PRODUCT_DETAIL_INFO_ACTIVITY);
         Bundle bundle = new Bundle();
         bundle.putParcelable(SHARE_DATA, shareData);

@@ -13,8 +13,9 @@ public class BuyerCardViewModel implements ParcelableViewModel<AccountTypeFactor
     private String name;
     private String imageUrl;
     private String tokopoint;
-    private int coupons;
+    private String coupons;
     private int progress;
+    private boolean isAffiliate;
 
     public BuyerCardViewModel() {
     }
@@ -56,11 +57,11 @@ public class BuyerCardViewModel implements ParcelableViewModel<AccountTypeFactor
         this.tokopoint = tokopoint;
     }
 
-    public int getCoupons() {
+    public String getCoupons() {
         return coupons;
     }
 
-    public void setCoupons(int coupons) {
+    public void setCoupons(String coupons) {
         this.coupons = coupons;
     }
 
@@ -70,6 +71,14 @@ public class BuyerCardViewModel implements ParcelableViewModel<AccountTypeFactor
 
     public void setProgress(int progress) {
         this.progress = progress;
+    }
+
+    public boolean isAffiliate() {
+        return isAffiliate;
+    }
+
+    public void setAffiliate(boolean affiliate) {
+        isAffiliate = affiliate;
     }
 
     @Override
@@ -83,8 +92,9 @@ public class BuyerCardViewModel implements ParcelableViewModel<AccountTypeFactor
         dest.writeString(this.name);
         dest.writeString(this.imageUrl);
         dest.writeString(this.tokopoint);
-        dest.writeInt(this.coupons);
+        dest.writeString(this.coupons);
         dest.writeInt(this.progress);
+        dest.writeByte(this.isAffiliate ? (byte) 1 : (byte) 0);
     }
 
     protected BuyerCardViewModel(Parcel in) {
@@ -92,8 +102,9 @@ public class BuyerCardViewModel implements ParcelableViewModel<AccountTypeFactor
         this.name = in.readString();
         this.imageUrl = in.readString();
         this.tokopoint = in.readString();
-        this.coupons = in.readInt();
+        this.coupons = in.readString();
         this.progress = in.readInt();
+        this.isAffiliate = in.readByte() != 0;
     }
 
     public static final Creator<BuyerCardViewModel> CREATOR = new Creator<BuyerCardViewModel>() {

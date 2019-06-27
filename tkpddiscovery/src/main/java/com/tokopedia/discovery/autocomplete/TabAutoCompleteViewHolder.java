@@ -4,6 +4,7 @@ import android.support.annotation.LayoutRes;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -13,9 +14,12 @@ import com.tokopedia.discovery.autocomplete.viewmodel.AutoCompleteSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.BaseItemAutoCompleteSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.CategorySearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.DigitalSearch;
+import com.tokopedia.discovery.autocomplete.viewmodel.HotlistSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.InCategorySearch;
+import com.tokopedia.discovery.autocomplete.viewmodel.ProfileSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.ShopSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.TitleSearch;
+import com.tokopedia.discovery.autocomplete.viewmodel.TopProfileSearch;
 import com.tokopedia.discovery.search.domain.model.SearchData;
 import com.tokopedia.discovery.search.domain.model.SearchItem;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
@@ -114,6 +118,10 @@ public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoComplet
                     productFragment.addBulkSearchResult(list);
                     continue;
                 case SearchData.AUTOCOMPLETE_HOTLIST:
+                    list = prepareHotlistSearch(searchData, element.getSearchTerm());
+                    list = insertTitle(list, searchData.getName());
+                    allFragmentList.addAll(list);
+                    allFragment.addBulkSearchResult(list);
                     continue;
                 case SearchData.AUTOCOMPLETE_IN_CATEGORY:
                     list = prepareInCategorySearch(searchData, element.getSearchTerm());
@@ -127,6 +135,17 @@ public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoComplet
                     shopFragmentList.addAll(list);
                     shopFragment.addBulkSearchResult(list);
                     list = insertTitle(list, searchData.getName());
+                    allFragmentList.addAll(list);
+                    allFragment.addBulkSearchResult(list);
+                    continue;
+                case SearchData.AUTOCOMPLETE_PROFILE:
+                    list = prepareProfileSearch(searchData, element.getSearchTerm());
+                    list = insertTitle(list, searchData.getName());
+                    allFragmentList.addAll(list);
+                    allFragment.addBulkSearchResult(list);
+                    continue;
+                case SearchData.AUTOCOMPLETE_TOP_PROFILE:
+                    list = prepareTopProfileSearch(searchData, element.getSearchTerm());
                     allFragmentList.addAll(list);
                     allFragment.addBulkSearchResult(list);
                     continue;
@@ -187,6 +206,7 @@ public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoComplet
             model.setApplink(item.getApplink());
             model.setRecom(item.getRecom());
             model.setCategoryId(item.getSc());
+            model.setIsOfficial(item.isOfficial());
             list.add(model);
         }
         return list;
@@ -202,6 +222,25 @@ public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoComplet
             model.setUrl(item.getUrl());
             model.setKeyword(item.getKeyword());
             model.setSearchTerm(searchTerm);
+            model.setIsOfficial(item.isOfficial());
+            list.add(model);
+        }
+        return list;
+    }
+
+    private List<Visitable> prepareHotlistSearch(SearchData searchData, String searchTerm) {
+        List<Visitable> list = new ArrayList<>();
+        for (SearchItem item : searchData.getItems()) {
+            HotlistSearch model = new HotlistSearch();
+            model.setEventId(searchData.getId());
+            model.setEventName(searchData.getName());
+            model.setApplink(item.getApplink());
+            model.setUrl(item.getUrl());
+            model.setKeyword(item.getKeyword());
+            model.setSearchTerm(searchTerm);
+            model.setImageUrl(item.getImageURI());
+            model.setSearchTerm(searchTerm);
+            model.setCategoryId(item.getSc());
             list.add(model);
         }
         return list;
@@ -222,6 +261,7 @@ public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoComplet
             model.setKeyword(item.getKeyword());
             model.setCategoryId(item.getSc());
             model.setSearchTerm(searchTerm);
+            model.setIsOfficial(item.isOfficial());
             childList.add(model);
         }
         categorySearch.setList(childList);
@@ -241,7 +281,53 @@ public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoComplet
             model.setImageUrl(item.getImageURI());
             model.setKeyword(item.getKeyword());
             model.setSearchTerm(searchTerm);
+            model.setIsOfficial(item.isOfficial());
             list.add(model);
+        }
+        return list;
+    }
+
+    private List<Visitable> prepareProfileSearch(SearchData searchData, String searchTerm) {
+        List<Visitable> list = new ArrayList<>();
+        int positionOfProfileSearch = 1;
+        for(SearchItem item : searchData.getItems()) {
+            ProfileSearch model = new ProfileSearch();
+            model.setKeyword(item.getKeyword());
+            model.setUrl(item.getUrl());
+            model.setApplink(item.getApplink());
+            model.setImageUrl(item.getImageURI());
+            model.setPeopleId(item.getItemId());
+            model.setAffiliateUserName(!TextUtils.isEmpty(item.getAffiliateUserName()) ? item.getAffiliateUserName() : "");
+            model.setKOL(item.isKOL());
+            model.setPostCount(item.getPostCount());
+            model.setSearchTerm(searchTerm);
+            model.setPositionOfType(positionOfProfileSearch);
+            list.add(model);
+
+            positionOfProfileSearch += 1;
+        }
+        return list;
+    }
+
+    private List<Visitable> prepareTopProfileSearch(SearchData searchData, String searchTerm) {
+        List<Visitable> list = new ArrayList<>();
+        int positionOfTopProfileSearch = 1;
+
+        for(SearchItem item : searchData.getItems()) {
+            TopProfileSearch model = new TopProfileSearch();
+            model.setKeyword(item.getKeyword());
+            model.setUrl(item.getUrl());
+            model.setApplink(item.getApplink());
+            model.setImageUrl(item.getImageURI());
+            model.setPeopleId(item.getItemId());
+            model.setAffiliateUserName(!TextUtils.isEmpty(item.getAffiliateUserName()) ? item.getAffiliateUserName() : "");
+            model.setKOL(item.isKOL());
+            model.setPostCount(item.getPostCount());
+            model.setSearchTerm(searchTerm);
+            model.setPositionOfType(positionOfTopProfileSearch);
+            list.add(model);
+
+            positionOfTopProfileSearch += 1;
         }
         return list;
     }

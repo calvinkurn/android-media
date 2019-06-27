@@ -1,18 +1,15 @@
 package com.tokopedia.transactionanalytics;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 
 import java.util.Map;
 
-import javax.inject.Inject;
-
+import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.CustomDimension;
 import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventAction;
 import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventCategory;
 import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventLabel;
 import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventName;
 import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.Key;
-import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.CustomDimension;
 
 
 /**
@@ -20,9 +17,8 @@ import static com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.Cu
  */
 public class CheckoutAnalyticsCart extends TransactionAnalytics {
 
-    @Inject
-    public CheckoutAnalyticsCart(AnalyticTracker analyticTracker) {
-        super(analyticTracker);
+    public CheckoutAnalyticsCart() {
+
     }
 
     @Deprecated
@@ -357,6 +353,32 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         flushEnhancedECommerceGoToCheckoutStep1();
     }
 
+
+    public void enhancedECommerceGoToCheckoutStep1SuccessDefaultEligibleCod(Map<String, Object> cartMap) {
+        enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_DEFAULT_ELIGIBLE_COD);
+        flushEnhancedECommerceGoToCheckoutStep1();
+    }
+
+    public void enhancedECommerceGoToCheckoutStep1SuccessCheckAllEligibleCod(Map<String, Object> cartMap) {
+        enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_CHECK_ALL_ELIGIBLE_COD);
+        flushEnhancedECommerceGoToCheckoutStep1();
+    }
+
+    public void enhancedECommerceGoToCheckoutStep1SuccessPartialShopEligibleCod(Map<String, Object> cartMap) {
+        enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_ELIGIBLE_COD);
+        flushEnhancedECommerceGoToCheckoutStep1();
+    }
+
+    public void enhancedECommerceGoToCheckoutStep1SuccessPartialProductEligibleCod(Map<String, Object> cartMap) {
+        enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_PRODUCT_ELIGIBLE_COD);
+        flushEnhancedECommerceGoToCheckoutStep1();
+    }
+
+    public void enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProductEligibleCod(Map<String, Object> cartMap) {
+        enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT_ELIGIBLE_COD);
+        flushEnhancedECommerceGoToCheckoutStep1();
+    }
+
     //PHASE 2
     public void eventClickCheckoutCartClickCheckoutFailed() {
         sendEventCategoryActionLabel(
@@ -531,6 +553,159 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
                 Key.E_COMMERCE, cartMap
         );
         sendEnhancedEcommerce(dataLayer);
+    }
+
+    public void eventViewCartListFinishRender() {
+        sendEventCategoryAction(
+                EventName.VIEW_CART,
+                EventCategory.CART,
+                EventAction.VIEW_CART_LIST
+        );
+    }
+
+    // PROMO STACKING
+    public void eventClickPilihMerchantVoucher() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_PILIH_MERCHANT_VOUCHER,
+                ""
+        );
+    }
+
+    public void eventClickPakaiMerchantVoucherManualInputSuccess(String promoCode) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_PAKAI_MERCHANT_VOUCHER_MANUAL_INPUT,
+                "success - " + promoCode
+        );
+    }
+
+    public void eventClickPakaiMerchantVoucherManualInputFailed(String errorMessage) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_PAKAI_MERCHANT_VOUCHER_MANUAL_INPUT,
+                "error - " + errorMessage
+        );
+    }
+
+    public void eventClickPakaiMerchantVoucherSuccess(String promoCode) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_PAKAI_MERCHANT_VOUCHER,
+                "success - " + promoCode
+        );
+    }
+
+    public void eventClickPakaiMerchantVoucherFailed(String errorMessage) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_PAKAI_MERCHANT_VOUCHER,
+                "failed - " + errorMessage
+        );
+    }
+
+    public void eventClickDetailMerchantVoucher(String promoCode) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_DETAIL_MERCHANT_VOUCHER,
+                promoCode
+        );
+    }
+
+    public void eventClickTickerMerchantVoucher(String promoCode) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_TICKER_MERCHANT_VOUCHER,
+                promoCode
+        );
+    }
+
+    public void eventClickHapusPromoXOnTicker(String promoCode) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_HAPUS_PROMO_X_ON_TICKER,
+                promoCode
+        );
+    }
+
+    public void eventViewDetailMerchantVoucher(String promoCode) {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_ATC,
+                EventCategory.CART,
+                EventAction.VIEW_DETAIL_MERCHANT_VOUCHER,
+                promoCode
+        );
+    }
+
+    public void eventClickLihatPromoLainnyaOnVoucherDetail(String promoCode) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_LIHAT_PROMO_LAINNYA_ON_VOUCHER_DETAIL,
+                promoCode
+        );
+    }
+
+    public void eventClickBatalkanPromoOnVoucherDetail(String promoCode) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_BATALKAN_PROMO_ON_VOUCHER_DETAIL,
+                promoCode
+        );
+    }
+
+    public void eventClickCaraPakaiOnVoucherDetail(String promoCode) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_CARA_PAKAI_ON_VOUCHER_DETAIL,
+                promoCode
+        );
+    }
+
+    public void eventClickKetentuanOnVoucherDetail(String promoCode) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_KETENTUAN_ON_VOUCHER_DETAIL,
+                promoCode
+        );
+    }
+
+    public void eventSelectPromoPromoKonflik(String promoCode) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.SELECT_PROMO_PROMO_KONFLIK,
+                promoCode
+        );
+    }
+
+    public void eventClickSubmitPromoKonflik(String promoCode) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_SUBMIT_PROMO_CONFLICT,
+                promoCode
+        );
+    }
+
+    public void eventViewPopupPromoDisable() {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_SUBMIT_PROMO_CONFLICT,
+                ""
+        );
     }
 
 }

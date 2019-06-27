@@ -3,7 +3,6 @@ package com.tokopedia.tkpd.tkpdreputation.review.shop.view.presenter;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.DeleteReviewResponseUseCase;
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.LikeDislikeReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain;
@@ -11,6 +10,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.DeleteRe
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewShop;
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.ReviewProductListMapper;
 import com.tokopedia.tkpd.tkpdreputation.review.shop.domain.ReviewShopUseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -26,14 +26,14 @@ public class ReviewShopPresenter extends BaseDaggerPresenter<ReviewShopContract.
     private final LikeDislikeReviewUseCase likeDislikeReviewUseCase;
     private final DeleteReviewResponseUseCase deleteReviewResponseUseCase;
     protected final ReviewProductListMapper productReviewListMapper;
-    protected final UserSession userSession;
+    protected final UserSessionInterface userSession;
 
     @Inject
     public ReviewShopPresenter(ReviewShopUseCase shopReviewUseCase,
                                LikeDislikeReviewUseCase likeDislikeReviewUseCase,
                                DeleteReviewResponseUseCase deleteReviewResponseUseCase,
                                ReviewProductListMapper productReviewListMapper,
-                               UserSession userSession) {
+                               UserSessionInterface userSession) {
         this.shopReviewUseCase = shopReviewUseCase;
         this.likeDislikeReviewUseCase = likeDislikeReviewUseCase;
         this.deleteReviewResponseUseCase = deleteReviewResponseUseCase;

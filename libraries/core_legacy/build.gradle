@@ -1,23 +1,22 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.fabric'
-apply plugin: 'com.jakewharton.butterknife'
 apply plugin: 'io.hansel.preprocessor.module'
 
 buildscript {
     repositories {
+        maven {
+            url "https://maven.google.com"
+        }
+        google()
         maven { url 'https://maven.fabric.io/public' }
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
         jcenter()
         maven { url 'https://hansel.io/maven' }
     }
     dependencies {
-        classpath 'io.fabric.tools:gradle:1.+'
-        classpath ('com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT'){
-            exclude group: 'com.android.tools.build', module: 'gradle'
-        }
-        classpath 'com.google.gms:google-services:3.0.0'
+        classpath rootProject.ext.gradlePlugin.googleServices
+        classpath rootProject.ext.gradlePlugin.crashlytics
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
@@ -41,40 +40,45 @@ project.ext {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(rootProject.ext.libraries.track)
+    
     api (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
 
     implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.userSession)
     implementation rootProject.ext.playServicesDependencies.plus
     implementation rootProject.ext.playServicesDependencies.base
-    implementation rootProject.ext.playServicesDependencies.appIndexing
-    implementation rootProject.ext.playServicesDependencies.analytics
-    implementation rootProject.ext.playServicesDependencies.firebase
+    implementation rootProject.ext.firebase.appIndexing
+    implementation rootProject.ext.firebase.core
+    implementation rootProject.ext.firebase.messaging
     implementation rootProject.ext.playServicesDependencies.location
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.playServicesDependencies.auth
     implementation rootProject.ext.playServicesDependencies.places
-    implementation rootProject.ext.playServicesDependencies.perfMon
+    implementation rootProject.ext.playServicesDependencies.tagManagerImpl
+    implementation rootProject.ext.firebase.performance
     implementation rootProject.ext.analyticsDependencies.appsflyer
     implementation rootProject.ext.analyticsDependencies.installRef
+    implementation rootProject.ext.analyticsDependencies.moengageFirebase
     implementation (rootProject.ext.analyticsDependencies.moengage) {
         exclude group: 'com.moengage', module: 'moe-push-gcm'
     }
     implementation (rootProject.ext.analyticsDependencies.moengageMSG) {
         exclude group: 'com.android.support'
     }
-    implementation (rootProject.ext.analyticsDependencies.branch) {
-        exclude module: 'answers-shim'
-    }
     implementation rootProject.ext.analyticsDependencies.logentries
 
     implementation project(rootProject.ext.libraries.analytics)
 
     implementation project(rootProject.ext.features.transactionanalytics)
-    implementation project(rootProject.ext.libraries.useCase)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.abstraction)
-    implementation rootProject.ext.playServicesDependencies.remoteConfig
+    implementation project(rootProject.ext.libraries.config)
+    implementation project(rootProject.ext.libraries.iris)
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+    implementation rootProject.ext.firebase.config
 
     annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
     implementation rootProject.ext.dbDependencies.dbFlowCore
@@ -87,7 +91,13 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-
+    implementation "com.moengage:moengagesdk:3.3.00"
+    implementation "com.moengage:pushbase:3.2.00"
+    implementation "com.moengage:moe-push-firebase:3.2.00"
+    implementation "com.moengage:inapp:3.2.02"
+    implementation "com.moengage:moe-location-lib:5.2.02"
+    implementation "com.moengage:addon-realtime-trigger:2.2.00"
+    implementation "com.moengage:integration-verifier:1.0.00"
 }
 
 apply plugin: 'com.google.gms.google-services'

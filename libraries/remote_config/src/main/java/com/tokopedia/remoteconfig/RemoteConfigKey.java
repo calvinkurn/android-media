@@ -27,7 +27,7 @@ public class RemoteConfigKey {
     public static final String APP_SHOW_RECOMENDATION_BUTTON = "mainapp_show_recomendation_button";
     public static final String APP_SHOW_TOKOPOINT_NATIVE = "app_enable_tokopoint_native";
     public static final String APP_SHARE_DEFAULT_MESSAGE = "app_share_default_message";
-    public static final String REFERRAL_WELCOME_MESSAGE = "referral_welcome_message";
+    public static final String REFERRAL_WELCOME_MESSAGE = "referral_welcome_message_new";
     public static final String REFFERAL_TERMS = "referral_terms";
     public static final String REFERRAL_TITLE_DESC = "app_refferal_content";
 
@@ -41,6 +41,8 @@ public class RemoteConfigKey {
     public static final String MAINAPP_NATIVE_PROMO_LIST = "mainapp_native_promo_list";
     public static final String SHOW_NEARBY_CABS = "app_uber_show_nearby_cabs";
     public static final String MAINAPP_FLIGHT_TRANSACTION_MENU = "mainapp_flight_transaction_menu";
+    public static final String MAINAPP_FLIGHT_NEW_SEARCH_FLOW = "mainapp_flight_new_search_flow";
+    public static final String ANDROID_CUSTOMER_FLIGHT_BOOKING_NEW_FLOW = "android_customer_flight_booking_new_flow";
     public static final String SHOW_IMAGE_SEARCH = "enable_image_search";
     public static final String IMAGE_SEARCH_ONBOARD_DESC = "app_image_search_showcase_message";
 
@@ -61,6 +63,54 @@ public class RemoteConfigKey {
     public static final String REFERRAL_HELP_LINK_CONTENT_SUBTITLE= "app_apa_itu_tokocash_referral_content_subtitle";
     public static final String MAIN_APP_ENABLE_BUY_AGAIN = "main_app_enable_buy_again";
     public static final String PINJAMAN_MODAL_AKUN_PAGE_POSITION_TOP = "app_widget_pinjamin_show_on_top";
+    public static final String SELLER_ACCOUNT_TICKER_MSG = "android_seller_account_ticker_msg";
 
     public static final String APP_ENABLE_ACCOUNT_AFFILIATE = "app_enable_account_affiliate";
+    public static final String AFFILIATE_PROFILE_SHARE_ALL = "android_customer_enable_profile_share_allow_all";
+    public static final String AFFILIATE_PROFILE_SHARE_RULES = "android_customer_enable_profile_share_rules";
+
+    public static final String fireBaseShareMsgKey = "app_referral_product_share_format";
+    public static final String fireBaseGuestShareMsgKey = "app_pdp_share_msg_guest";
+    public static final String LOGIN_REVAMP_UI = "mainapp_enable_login_revamp_phone";
+    public static final String APP_GLOBAL_NAV_NEW_DESIGN = "app_global_nav_new_design";
+
+    public static final String IRIS_GTM_ENABLED_TOGGLE = "app_iris_gtm_enabled";
+    public static final String IRIS_GTM_CONFIG_TOGGLE = "android_customer_iris_config";
+
+    public static final String APP_WEBVIEW_RESO_ENABLED_TOGGLE = "android_webview_resolution_enabled";
+
+    public static final String APP_ENTRY_CHALLENGE_BARU = "app_entry_challenges_baru";
+
+    public static final String CHECKOUT_TEMPLATE_SETTING_TOGGLE = "android_customer_enable_express_checkout_template_setting";
+
+    public static final String APP_ENABLE_SALDO_SPLIT = "app_enable_saldo_split";
+    public static final String SHOP_ETALASE_TOGGLE = "android_shop_etalase_toggle";
+
+    public static final String MAIN_APP_DISABLE_NEW_PRODUCT_DETAIL = "main_app_disable_new_product_detail";
+    public static final String APP_ENABLE_MERCHANT_CREDIT_LINE = "app_enable_merchant_credit_line";
+
+    public static final String NONB1_TTL = "app_nonb_1_ttl";
+    public static final String NONB1_DESC = "app_nonb_1_dsc";
+    public static final String NONB2_TTL = "app_nonb_2_ttl";
+    public static final String NONB2_DESC = "app_nonb_2_dsc";
+    public static final String NONB3_TTL = "app_nonb_3_ttl";
+    public static final String NONB3_DESC = "app_nonb_3_dsc";
+    public static final String NONB4_TTL = "app_nonb_4_ttl";
+    public static final String NONB4_DESC = "app_nonb_4_dsc";
+    public static final String NONB5_TTL = "app_nonb_5_ttl";
+    public static final String NONB5_DESC = "app_nonb_5_dsc";
+    public static final String OVO_ENABLE_FLAG = "app_enable_ovo_pay_by_qr";
+    public static final String OVO_QR_MIN_AMOUNT = "app_ovo_min_balance";
+    public static final String OVO_QR_MAX_AMOUNT = "app_ovo_max_balance";
+    public static final String OVO_TNC_LINK = "app_ovo_tnc_link";
+    public static final String APP_SHOW_CATEGORY_QUICK_FILTERS = "app_show_category_quick_filters";
+
+    public static final String ENABLE_GLOBAL_NAV_WIDGET = "android_customer_enable_global_nav_widget";
+
+    public static final String APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP = "app_enable_saldo_split_for_seller_app";
+
+    public static final String APP_CATEGORY_BROWSE_V1 = "app_category_browse_v1";
+  
+    public static final String SHOP_SHARE_MSG = "app_shop_shr_msg";
+    public static final String HOTLIST_SHARE_MSG = "app_hotlist_shr_msg";
 }

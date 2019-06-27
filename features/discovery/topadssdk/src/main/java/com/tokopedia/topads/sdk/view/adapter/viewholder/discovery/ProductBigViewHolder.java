@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Build;
 import android.support.annotation.LayoutRes;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,10 +19,11 @@ import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
+import com.tokopedia.topads.sdk.listener.PositionChangeListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.view.ImpressedImageView;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductBigViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductGridViewModel;
 
 import java.util.List;
 
@@ -30,7 +32,7 @@ import java.util.List;
  */
 
 public class ProductBigViewHolder extends AbstractViewHolder<ProductBigViewModel> implements
-        View.OnClickListener {
+        View.OnClickListener, PositionChangeListener {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_ads_product_list_big;
@@ -53,16 +55,18 @@ public class ProductBigViewHolder extends AbstractViewHolder<ProductBigViewModel
     private ImageView btnWishList;
     private int clickPosition;
     private RelativeLayout wishlistBtnContainer;
+    private TopAdsItemImpressionListener impressionListener;
 
 
     public ProductBigViewHolder(View itemView, ImageLoader imageLoader,
                                 LocalAdsClickListener itemClickListener,
-                                int clickPosition,
+                                TopAdsItemImpressionListener itemImpressionListener,
                                 boolean enableWishlist) {
         super(itemView);
         itemView.findViewById(R.id.container).setOnClickListener(this);
         itemView.findViewById(R.id.wishlist_button_container).setOnClickListener(this);
         this.itemClickListener = itemClickListener;
+        this.impressionListener = itemImpressionListener;
         this.imageLoader = imageLoader;
         this.clickPosition = clickPosition;
         context = itemView.getContext();
@@ -86,10 +90,10 @@ public class ProductBigViewHolder extends AbstractViewHolder<ProductBigViewModel
     @Override
     public void bind(ProductBigViewModel element) {
         data = element.getData();
-        if (data.getProduct() != null) {
+        if (data.getProduct() != null && !TextUtils.isEmpty(data.getProduct().getId())) {
             bindProduct(data.getProduct());
         }
-        if (data.getShop() != null) {
+        if (data.getShop() != null && !TextUtils.isEmpty(data.getShop().getId())) {
             bindShop(data.getShop());
         }
     }
@@ -113,6 +117,15 @@ public class ProductBigViewHolder extends AbstractViewHolder<ProductBigViewModel
 
     private void bindProduct(final Product product) {
         productImage.setImage(product.getImage());
+        productImage.setViewHintListener(new ImpressedImageView.ViewHintListener() {
+            @Override
+            public void onViewHint() {
+                if(impressionListener!=null){
+                    impressionListener.onImpressionProductAdsItem((clickPosition < 0 ?
+                            getAdapterPosition() : clickPosition), product);
+                }
+            }
+        });
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             productName.setText(Html.fromHtml(product.getName(),
                     Html.FROM_HTML_MODE_LEGACY));
@@ -196,4 +209,8 @@ public class ProductBigViewHolder extends AbstractViewHolder<ProductBigViewModel
         return false;
     }
 
+    @Override
+    public void onPositionChange(int position) {
+        this.clickPosition = position;
+    }
 }

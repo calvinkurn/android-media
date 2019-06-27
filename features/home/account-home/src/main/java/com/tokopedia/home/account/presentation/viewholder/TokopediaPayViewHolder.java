@@ -1,15 +1,19 @@
 package com.tokopedia.home.account.presentation.viewholder;
 
+import android.graphics.Color;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.view.View;
-import android.webkit.URLUtil;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.view.TokopediaPayCardView;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayViewModel;
+import com.tokopedia.showcase.ShowCaseContentPosition;
+import com.tokopedia.showcase.ShowCaseObject;
+
+import java.util.ArrayList;
 
 /**
  * @author okasurya on 7/19/18.
@@ -30,7 +34,7 @@ public class TokopediaPayViewHolder extends AbstractViewHolder<TokopediaPayViewM
     @Override
     public void bind(TokopediaPayViewModel element) {
         tokopediaPayCardView.setTextAmountLeft(element.getAmountLeft());
-        if(element.isLinked()) {
+        if (element.isLinked()) {
             tokopediaPayCardView.setAmountColorLeft(android.R.color.primary_text_light);
         } else {
             tokopediaPayCardView.setAmountColorLeft(com.tokopedia.design.R.color.tkpd_main_green);
@@ -49,6 +53,7 @@ public class TokopediaPayViewHolder extends AbstractViewHolder<TokopediaPayViewM
                 element.isLinked(),
                 element.getWalletType()));
         tokopediaPayCardView.setRightItemClickListener(v -> listener.onTokopediaPayRightItemClicked(
+                element.isRightSaldo(),
                 element.getLabelRight(),
                 element.getVccUserStatus(),
                 element.getApplinkRight(),

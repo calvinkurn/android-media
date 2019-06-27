@@ -11,6 +11,7 @@ import com.tokopedia.flight.search.data.api.single.request.FlightSearchSingleReq
 import com.tokopedia.flight.search.data.api.single.response.FlightDataResponse;
 import com.tokopedia.flight.search.data.api.single.response.FlightSearchData;
 import com.tokopedia.flight.search.data.api.single.response.Meta;
+import com.tokopedia.flight.search.data.cache.FlightSearchDataCacheSource;
 import com.tokopedia.flight.search.presentation.model.FlightSearchApiRequestModel;
 import com.tokopedia.flight.search.util.FlightSearchParamUtil;
 
@@ -28,12 +29,15 @@ public class FlightSearchDataCloudSource extends DataCloudSource<FlightDataRespo
 
     private FlightApi flightApi;
     private Gson gsonWithDeserializer;
+    private FlightSearchDataCacheSource flightSearchDataCacheSource;
 
     @Inject
-    public FlightSearchDataCloudSource(FlightApi flightApi, FlightSearchJsonDeserializer flightSearchJsonDeserializer) {
+    public FlightSearchDataCloudSource(FlightApi flightApi, FlightSearchJsonDeserializer flightSearchJsonDeserializer,
+                                       FlightSearchDataCacheSource flightSearchDataCacheSource) {
         this.flightApi = flightApi;
         Type type = new TypeToken<FlightDataResponse<List<FlightSearchData>>>(){}.getType();
         this.gsonWithDeserializer = new GsonBuilder().registerTypeAdapter(type, flightSearchJsonDeserializer).create();
+        this.flightSearchDataCacheSource = flightSearchDataCacheSource;
     }
 
     @Override
@@ -58,6 +62,7 @@ public class FlightSearchDataCloudSource extends DataCloudSource<FlightDataRespo
                                 meta.setArrivalAirport(attribute.getArrival());
                                 meta.setDepartureAirport(attribute.getDeparture());
                                 meta.setTime(attribute.getDate());
+                                flightSearchDataCacheSource.saveCache(meta.getSpecialTag());
                                 return flightDataResponseResponse;
                             } else {
                                 return null;

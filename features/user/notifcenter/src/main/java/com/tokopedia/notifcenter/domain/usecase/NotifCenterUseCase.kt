@@ -11,6 +11,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.domain.pojo.NotifCenterPojo
+import com.tokopedia.notifcenter.domain.pojo.NotifCenterSinglePojo
 import rx.Subscriber
 import javax.inject.Inject
 
@@ -24,12 +25,12 @@ class NotifCenterUseCase @Inject constructor(@ApplicationContext val context: Co
                                              val graphqlUseCase: GraphqlUseCase) {
 
     fun execute(variables: HashMap<String, Any>, subscriber: Subscriber<GraphqlResponse>) {
-        val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+        val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
                 .setExpiryTime(GraphqlConstant.ExpiryTimes.HOUR.`val`())
                 .setSessionIncluded(true)
                 .build()
         val query = GraphqlHelper.loadRawString(context.resources, R.raw.query_notif_center)
-        val graphqlRequest = GraphqlRequest(query, NotifCenterPojo::class.java, variables)
+        val graphqlRequest = GraphqlRequest(query, NotifCenterPojo::class.java, variables, false)
 
         graphqlUseCase.setCacheStrategy(graphqlCacheStrategy)
         graphqlUseCase.clearRequest()
@@ -37,13 +38,14 @@ class NotifCenterUseCase @Inject constructor(@ApplicationContext val context: Co
         graphqlUseCase.execute(subscriber)
     }
 
-    fun executeNoCache(variables: HashMap<String, Any>, subscriber: Subscriber<GraphqlResponse>) {
-        val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD)
-                .setExpiryTime(MINUTE_5)
+
+    fun executeSingle(variables: HashMap<String, Any>, subscriber: Subscriber<GraphqlResponse>) {
+        val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
+                .setExpiryTime(GraphqlConstant.ExpiryTimes.HOUR.`val`())
                 .setSessionIncluded(true)
                 .build()
-        val query = GraphqlHelper.loadRawString(context.resources, R.raw.query_notif_center)
-        val graphqlRequest = GraphqlRequest(query, NotifCenterPojo::class.java, variables)
+        val query = GraphqlHelper.loadRawString(context.resources, R.raw.query_notif_center_single)
+        val graphqlRequest = GraphqlRequest(query, NotifCenterSinglePojo::class.java, variables, false)
 
         graphqlUseCase.setCacheStrategy(graphqlCacheStrategy)
         graphqlUseCase.clearRequest()
@@ -58,6 +60,7 @@ class NotifCenterUseCase @Inject constructor(@ApplicationContext val context: Co
         const val PARAM_NOTIF_LANG = "notifLang"
         const val NOTIF_LANG_DEFAULT = "id"
         const val PARAM_LAST_ID = "lastNotifId"
+        const val PARAM_NOTIF_ID = "notifId"
         const val MINUTE_5 = 5 * GraphqlConstant.MINUTE_MS
 
         fun getRequestParams(filterId: Int, lastNotifId: String): HashMap<String, Any> {
@@ -65,6 +68,14 @@ class NotifCenterUseCase @Inject constructor(@ApplicationContext val context: Co
             variables.put(PARAM_FILTER_ID, filterId)
             variables.put(PARAM_NOTIF_LANG, NOTIF_LANG_DEFAULT)
             variables.put(PARAM_LAST_ID, lastNotifId)
+            return variables
+        }
+
+
+        fun getRequestParamsSingle(notifId: String): HashMap<String, Any> {
+            val variables: HashMap<String, Any> = HashMap()
+            variables.put(PARAM_NOTIF_ID, notifId)
+            variables.put(PARAM_NOTIF_LANG, NOTIF_LANG_DEFAULT)
             return variables
         }
     }

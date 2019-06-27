@@ -18,7 +18,7 @@ class SettingListPaymentPresenter(val userSession: UserSession) : BaseDaggerPres
 
     override fun getCreditCardList(resources : Resources) {
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.credit_card_list_query), DataCreditCardList::class.java, null)
+                R.raw.credit_card_list_query), DataCreditCardList::class.java, null, false)
         getCCListUseCase.clearRequest()
         getCCListUseCase.addRequest(graphqlRequest)
         getCCListUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {

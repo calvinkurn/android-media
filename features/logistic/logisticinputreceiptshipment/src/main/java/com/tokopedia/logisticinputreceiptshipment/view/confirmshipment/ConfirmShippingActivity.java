@@ -3,10 +3,12 @@ package com.tokopedia.logisticinputreceiptshipment.view.confirmshipment;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -25,27 +27,25 @@ import com.tokopedia.logisticanalytics.SalesShippingAnalytics;
 import com.tokopedia.logisticanalytics.listener.IConfirmShippingAnalyticsActionListener;
 import com.tokopedia.logisticcommon.base.BaseSimpleLogisticActivity;
 import com.tokopedia.logisticinputreceiptshipment.R;
-import com.tokopedia.logisticcommon.utils.TkpdProgressDialog;
-import com.tokopedia.logisticinputreceiptshipment.view.barcodescanner.ReceiptShipmentBarcodeScannerActivity;
 import com.tokopedia.logisticinputreceiptshipment.di.DaggerOrderCourierComponent;
 import com.tokopedia.logisticinputreceiptshipment.di.OrderCourierComponent;
+import com.tokopedia.logisticinputreceiptshipment.view.barcodescanner.ReceiptShipmentBarcodeScannerActivity;
 import com.tokopedia.logisticinputreceiptshipment.view.data.CourierSelectionModel;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.transaction.common.data.order.ListCourierViewModel;
 import com.tokopedia.transaction.common.data.order.OrderDetailData;
 import com.tokopedia.transaction.common.data.order.OrderDetailShipmentModel;
 import com.tokopedia.transaction.common.data.order.OrderShipmentTypeDef;
 import com.tokopedia.transaction.common.listener.ToolbarChangeListener;
 
-import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.RuntimePermissions;
+import javax.inject.Inject;
 
 /**
  * Created by kris on 1/3/18. Tokopedia
  */
 
-@RuntimePermissions
 public class ConfirmShippingActivity extends BaseSimpleLogisticActivity
         implements ConfirmShippingView,
         ServiceSelectionFragment.ServiceSelectionListener,
@@ -59,13 +59,13 @@ public class ConfirmShippingActivity extends BaseSimpleLogisticActivity
     public static final int CONFIRM_SHIPMENT_MODE = 1;
     public static final int CHANGE_COURIER_MODE = 2;
 
+    private final String[] permissionList = {Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE};
     private OrderDetailShipmentModel editableModel;
 
     private TextView courierName;
-
-    private TkpdProgressDialog progressDialog;
-
     private EditText barcodeEditText;
+    private ProgressDialog progressDialog;
+    private PermissionCheckerHelper permissionCheckerHelper = new PermissionCheckerHelper();
 
     @Inject
     OrderCourierPresenterImpl presenter;
@@ -124,23 +124,20 @@ public class ConfirmShippingActivity extends BaseSimpleLogisticActivity
         finish();
     }
 
-    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     public void onScanBarcode() {
         requestBarcodeScanner(this, ReceiptShipmentBarcodeScannerActivity.class);
     }
 
     @Override
     public void showLoading() {
-        if (!isFinishing()) {
-            progressDialog.showDialog();
-        }
+        if (!isFinishing() && progressDialog != null && !progressDialog.isShowing())
+            progressDialog.show();
     }
 
     @Override
     public void hideLoading() {
-        if (!isFinishing()) {
+        if (!isFinishing() && progressDialog != null && progressDialog.isShowing())
             progressDialog.dismiss();
-        }
     }
 
     @Override
@@ -202,9 +199,31 @@ public class ConfirmShippingActivity extends BaseSimpleLogisticActivity
     private View.OnClickListener onBarcodeScanClickedListener() {
         return view -> {
             sendAnalyticsOnClickButtonScan();
-            ConfirmShippingActivityPermissionsDispatcher
-                    .onScanBarcodeWithCheck(ConfirmShippingActivity.this);
+            permissionCheckerHelper.checkPermissions(this, permissionList, new PermissionCheckerHelper.PermissionCheckListener() {
+                @Override
+                public void onPermissionDenied(@NotNull String permissionText) {
+                    Toast.makeText(ConfirmShippingActivity.this, R.string.permission_denied, Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onNeverAskAgain(@NotNull String permissionText) {
+                    // no op
+                }
+
+                @Override
+                public void onPermissionGranted() {
+                    onScanBarcode();
+                }
+            }, getString(R.string.rationale_barcode_permission));
         };
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            permissionCheckerHelper.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
+        }
     }
 
     public void initInjector() {
@@ -223,6 +242,12 @@ public class ConfirmShippingActivity extends BaseSimpleLogisticActivity
     @Override
     protected void setupBundlePass(Bundle extras) {
         orderDetailData = extras.getParcelable(EXTRA_ORDER_DETAIL_DATA);
+    }
+
+    @Override
+    protected void onDestroy() {
+        presenter.detachView();
+        super.onDestroy();
     }
 
     @SuppressLint("SetTextI18n")
@@ -246,7 +271,10 @@ public class ConfirmShippingActivity extends BaseSimpleLogisticActivity
         FrameLayout frameLayout = findViewById(R.id.parent_view);
         LayoutInflater.from(this).inflate(R.layout.activity_confirm_shipping_logistic_module, frameLayout);
 
-        progressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(getString(R.string.title_loading));
+        progressDialog.setCancelable(false);
+
         courierName = findViewById(R.id.courier_name);
         barcodeEditText = findViewById(R.id.barcode_edit_text);
         ImageView barcodeScanner = findViewById(R.id.icon_scan);

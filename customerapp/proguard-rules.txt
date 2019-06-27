@@ -349,10 +349,31 @@
 -keep class com.tokopedia.core.network.exception.model.** { *; }
 -keep class com.tokopedia.events.data.entity.response.** { *; }
 
+#tradein
+-keep class viewmodel.** { *; }
+
 #image search
 -keep class com.tokopedia.discovery.imagesearch.domain.model.** { *; }
 
 #Sendbird
 -dontwarn com.sendbird.android.shadow.**
--keep class kotlinx.coroutines.experimental.android.AndroidExceptionPreHandler { *; }
--keep class kotlinx.coroutines.experimental.JobSupport { *; }
+-keep class kotlinx.coroutines.android.AndroidExceptionPreHandler { *; }
+-keep class kotlinx.coroutines.JobSupport { *; }
+
+-keep class com.tokopedia.track.** { *; }
+-keep class com.tokopedia.track.interfaces.** { *; }
+-keep class * extends com.tokopedia.track.interfaces.ContextAnalytics { *; }
+
+# Every class that extends exception
+-keep class * extends java.lang.Exception
+
+# -- Coroutines --
+-keepclassmembernames class kotlinx.** {
+    volatile <fields>;
+}
+
+-keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
+-keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
+
+# -- App indexing
+-dontwarn com.google.firebase.appindexing.**

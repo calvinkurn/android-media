@@ -10,6 +10,7 @@
     <string name="title_account_setting">Akun</string>
     <string name="account_home_title_shop_setting">Toko</string>
     <string name="title_tkpd_pay_setting">Pembayaran</string>
+    <string name="title_tkpd_template_setting">Template Pembelian</string>
     <string name="title_notification_setting">Notifikasi</string>
     <string name="title_touch_id_setting">Touch ID</string>
     <string name="title_tnc_setting">Syarat dan Ketentuan</string>
@@ -17,6 +18,7 @@
     <string name="title_help_center_setting">Pusat Bantuan</string>
     <string name="subtitle_account_setting">Data Diri, Alamat, dan Keamanan Akun</string>
     <string name="account_home_subtitle_shop_setting">Lokasi, Etalase, Pengiriman, dan lainnya</string>
+    <string name="subtitle_template_setting">Nikmati Transaksi Mudah dan Cepat</string>
     <string name="subtitle_tkpd_pay_setting">Kartu Kredit, dan Metode lainnya</string>
     <string name="subtitle_notification_setting">Aplikasi, Chat, Diskusi, dan lainnya</string>
     <string name="account_home_label_logout">Keluar dari Tokopedia</string>
@@ -101,7 +103,8 @@
     <string name="label_menu_buyer_complain">Lihat status komplain</string>
     <string name="title_menu_seller_complain">Komplain Sebagai Penjual</string>
     <string name="label_menu_seller_complain">Lihat status komplain</string>
-    <string name="title_menu_other_transaction">Transaksi Lainnya</string>
+    <string name="title_menu_other_transaction">Detail Transaksi</string>
+    <string name="title_menu_other_transaction_1">Daftar Transaksi</string>
     <string name="title_menu_favorites">Favorit Saya</string>
     <string name="title_menu_favorite_topic">Topik Favorit</string>
     <string name="label_menu_favorite_topic">Atur topik favorit Anda</string>
@@ -109,7 +112,7 @@
     <string name="label_menu_last_seen">Cek Produk terakhir yang dilihat</string>
     <string name="title_menu_favorite_shops">Toko Favorit</string>
     <string name="label_menu_favorite_shops">Lihat Toko yang sudah Anda favoritkan</string>
-    <string name="title_menu_mybills"><![CDATA[MyBills]]></string>
+    <string name="title_menu_mybills"><![CDATA[Langganan]]></string>
     <string name="label_menu_mybills"><![CDATA[Atur & bayar tagihan dalam satu tempat]]></string>
     <string name="title_menu_top_up_bill_subscription"><![CDATA[Langganan Top-up & Tagihan]]></string>
     <string name="label_menu_top_up_bill_subscription"><![CDATA[Lihat langganan Top-up & Tagihan]]></string>
@@ -121,6 +124,7 @@
     <string name="title_menu_resolution_center">Pusat Bantuan</string>
     <string name="label_menu_resolution_center">Lihat solusi terbaik atau hubungi kami</string>
     <string name="title_menu_top_up_bill"><![CDATA[Top-up & Tagihan]]></string>
+    <string name="title_menu_market_place">Belanja</string>
     <string name="title_menu_deals">Deals</string>
     <string name="title_menu_train">Kereta</string>
     <string name="title_menu_flight">Pesawat</string>
@@ -128,6 +132,8 @@
     <string name="title_menu_event">Event</string>
     <string name="title_menu_gold">Emas</string>
     <string name="title_menu_gift_card">Gift Card</string>
+    <string name="title_menu_insurance">Asuransi</string>
+    <string name="title_menu_modal_toko">Modal Toko</string>
     <string name="title_menu_zakat">Zakat</string>
     <string name="title_menu_donation">Donasi</string>
     <string name="title_menu_show_all">Lihat\nSemua</string>
@@ -137,7 +143,7 @@
     <string name="label_menu_shipped">Sedang Dikirim</string>
     <string name="label_menu_arrive_at_destination">Sampai Tujuan</string>
     <string name="title_menu_product">Produk</string>
-    <string name="title_menu_product_list">Pengaturan Produk</string>
+    <string name="title_menu_product_list">Produk Anda</string>
     <string name="label_menu_product_list">Lihat dan atur semua Produk</string>
     <string name="title_menu_product_feature">Produk Unggulan</string>
     <string name="label_menu_product_feature">Tampilkan 5 Produk terbaik Toko Anda</string>
@@ -167,7 +173,7 @@
     <string name="label_wallet_activation">Aktivasi TokoCash</string>
 
 
-    <string name="msg_has_no_shop">Anda belum memiliki Toko</string>
+    <string name="msg_has_no_shop">Mulai dengan Tokopedia!</string>
     <string name="msg_desc_has_no_shop">Buka Toko di Tokopedia, Sekarang! <b>Mudah, Aman,</b> dan
         <b>Menguntungkan</b>.</string>
     <string name="top_features">Top Features</string>
@@ -177,14 +183,30 @@
     <string name="seller_center_desc">Potensi pinjaman senilai Rp. 1.000.000</string>
     <string name="open_shop">Buka Toko</string>
     <string name="learn_more">Pelajari Selengkapnya</string>
+    <string name="know_more">Mau Tahu Caranya?</string>
     <string name="message_success_change_password">Kata sandi berhasil diubah</string>
     <string name="verified_account">Verified Account</string>
     <string name="error_no_internet_connection">Tidak ada koneksi internet</string>
-    <string name="label_total_coupon">%1$d Kupon</string>
+    <string name="label_total_coupon">%1$s Kupon</string>
 
     <string name="title_menu_challenge">Tokopedia Challenge</string>
     <string name="label_menu_challenge">Ikuti tantangan dan dapatkan hadiah!</string>
     <string name="title_menu_affiliate">Raih Komisi di By Me</string>
     <string name="label_menu_affiliate">Ajak teman beli produk pilihanmu!</string>
+    <string name="curate_product_by_me">Post Rekomendasi By Me</string>
+    <string name="selesai">Selesai</string>
+    <string name="title_seller_saldo">Saldo</string>
+
+
+
+    <string name="start_with_tokopedia">Mulai Dengan Tokopedia!</string>
+    <string name="no_shop_sub">Punya toko sendiri tak cuma mimpi! \nTokopedia dukung wujudkan mimpimu \ndengan 3 keunggulan ini</string>
+    <string name="no_shop_sub_1">Buka Toko gratis tanpa syarat</string>
+    <string name="no_shop_sub_2">Jangkauan luas &amp; kurir lengkap</string>
+    <string name="no_shop_sub_3">Fitur ekslusif untuk bisnismu</string>
+    <string name="open_shop_free">Buka Toko Gratis</string>
+
+    <string name="ulasan">Ulasan</string>
+    <string name="ulasan_desc">Berikan penilaian dan ulasan Produk</string>
 
 </resources>

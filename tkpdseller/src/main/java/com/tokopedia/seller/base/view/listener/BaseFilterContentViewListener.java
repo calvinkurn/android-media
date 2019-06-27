@@ -9,6 +9,7 @@ import com.tokopedia.seller.base.view.fragment.BaseFilterContentFragment;
  * Created by normansyahputa on 5/29/17.
  */
 
+@Deprecated
 public interface BaseFilterContentViewListener {
     String getTitle(Context context);
 

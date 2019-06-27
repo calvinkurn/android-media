@@ -20,7 +20,7 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.fcm.notification.TopAdsBelow20kNotification;
 import com.tokopedia.sellerapp.fcm.notification.TopAdsTopupSuccessNotification;
-import com.tokopedia.topchat.chatroom.view.listener.ChatNotifInterface;
+import com.tokopedia.topchat.chatlist.view.ChatNotifInterface;
 
 import java.util.Map;
 

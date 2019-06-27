@@ -18,6 +18,9 @@ public class CheckPromoCodeCartShipmentRequest {
     @SerializedName("data")
     @Expose
     private List<Data> data = new ArrayList<>();
+    @SerializedName("tokopedia_corner_data")
+    @Expose
+    private TokopediaCornerData tokopediaCornerData;
 
     public void setPromoCode(String promoCode) {
         this.promoCode = promoCode;
@@ -26,6 +29,7 @@ public class CheckPromoCodeCartShipmentRequest {
     private CheckPromoCodeCartShipmentRequest(Builder builder) {
         promoCode = builder.promoCode;
         data = builder.data;
+        tokopediaCornerData = builder.cornerData;
     }
 
     public static class Data {
@@ -280,6 +284,7 @@ public class CheckPromoCodeCartShipmentRequest {
     public static final class Builder {
         private String promoCode;
         private List<Data> data;
+        private TokopediaCornerData cornerData;
 
         public Builder() {
         }
@@ -291,6 +296,11 @@ public class CheckPromoCodeCartShipmentRequest {
 
         public Builder data(List<Data> val) {
             data = val;
+            return this;
+        }
+
+        public Builder cornerData(TokopediaCornerData val) {
+            cornerData = val;
             return this;
         }
 

@@ -9,6 +9,7 @@ public class Notification {
     private Integer totalNotif;
     private Integer totalCart;
     private Boolean isHaveNewFeed;
+    private Boolean shouldOsAppear;
 
     public Integer getTotalInbox() {
         return totalInbox;
@@ -40,5 +41,13 @@ public class Notification {
 
     public void setHaveNewFeed(Boolean haveNewFeed) {
         isHaveNewFeed = haveNewFeed;
+    }
+
+    public Boolean getShouldOsAppear() {
+        return shouldOsAppear;
+    }
+
+    public void setShouldOsAppear(Boolean shouldOsAppear) {
+        this.shouldOsAppear = shouldOsAppear;
     }
 }

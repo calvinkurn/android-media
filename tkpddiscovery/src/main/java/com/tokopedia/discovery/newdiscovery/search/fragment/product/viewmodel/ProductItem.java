@@ -9,15 +9,15 @@ import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
+import com.tokopedia.topads.sdk.domain.model.ImpressHolder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by henrypriyono on 10/9/17.
  */
 
-public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory> {
+public class ProductItem extends ImpressHolder implements Parcelable, Visitable<ProductListTypeFactory> {
     private String productID;
     private String productName;
     private String imageUrl;
@@ -45,6 +45,51 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
     private int categoryID;
     private String categoryName;
     private String categoryBreadcrumb;
+    private boolean isTopAds;
+    private String topadsImpressionUrl;
+    private String topadsClickUrl;
+    private String topadsWishlistUrl;
+    private boolean isNew;
+
+    public boolean isTopAds() {
+        return isTopAds;
+    }
+
+    public void setTopAds(boolean topAds) {
+        isTopAds = topAds;
+    }
+
+    public String getTopadsImpressionUrl() {
+        return topadsImpressionUrl;
+    }
+
+    public void setTopadsImpressionUrl(String topadsImpressionUrl) {
+        this.topadsImpressionUrl = topadsImpressionUrl;
+    }
+
+    public String getTopadsClickUrl() {
+        return topadsClickUrl;
+    }
+
+    public void setTopadsClickUrl(String topadsClickUrl) {
+        this.topadsClickUrl = topadsClickUrl;
+    }
+
+    public String getTopadsWishlistUrl() {
+        return topadsWishlistUrl;
+    }
+
+    public void setTopadsWishlistUrl(String topadsWishlistUrl) {
+        this.topadsWishlistUrl = topadsWishlistUrl;
+    }
+
+    public boolean isNew() {
+        return isNew;
+    }
+
+    public void setNew(boolean aNew) {
+        isNew = aNew;
+    }
 
     public void setProductID(String productID) {
         this.productID = productID;
@@ -266,29 +311,24 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
         return typeFactory.type(this);
     }
 
-    public Object getProductAsObjectDataLayer(String userId) {
+    public Object getProductAsObjectDataLayerForImageSearchImpression() {
         return DataLayer.mapOf(
                 "name", getProductName(),
                 "id", getProductID(),
                 "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(getPrice())),
-                "brand", "none / other",
                 "category", getCategoryBreadcrumb(),
-                "variant", "none / other",
-                "list", SearchTracking.getActionFieldString(getPageNumber()),
-                "position", Integer.toString(getPosition()),
-                "userId", userId
+                "list", SearchTracking.ACTION_IMAGE_SEARCH,
+                "position", Integer.toString(getPosition())
         );
     }
 
-    public Object getProductAsObjectDataLayerForImageSearch(String userId) {
+    public Object getProductAsObjectDataLayerForImageSearchClick() {
         return DataLayer.mapOf(
                 "name", getProductName(),
                 "id", getProductID(),
                 "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(getPrice())),
                 "category", "",
-                "list", String.format(SearchTracking.imageClick, getPosition()),
-                "position", Integer.toString(getPosition()),
-                "userId", userId
+                "position", Integer.toString(getPosition())
         );
     }
 
@@ -334,6 +374,11 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
         dest.writeInt(this.categoryID);
         dest.writeString(this.categoryName);
         dest.writeString(this.categoryBreadcrumb);
+        dest.writeByte(this.isTopAds ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isNew ? (byte) 1 : (byte) 0);
+        dest.writeString(this.topadsImpressionUrl);
+        dest.writeString(this.topadsClickUrl);
+        dest.writeString(this.topadsWishlistUrl);
     }
 
     protected ProductItem(Parcel in) {
@@ -364,6 +409,11 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
         this.categoryID = in.readInt();
         this.categoryName = in.readString();
         this.categoryBreadcrumb = in.readString();
+        this.isTopAds = in.readByte() != 0;
+        this.isNew = in.readByte() != 0;
+        this.topadsImpressionUrl = in.readString();
+        this.topadsClickUrl = in.readString();
+        this.topadsWishlistUrl = in.readString();
     }
 
     public static final Creator<ProductItem> CREATOR = new Creator<ProductItem>() {

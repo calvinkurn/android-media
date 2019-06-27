@@ -1,7 +1,5 @@
 package com.tokopedia.tkpd;
 
-import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
-
 /**
  * Created by hangnadi on 1/24/17.
  */
@@ -40,6 +38,7 @@ public class ConsumerAppBaseUrl {
     public static final String PAYMENT_DOMAIN = "https://payment.tokopedia.com/";
     public static final String GALADRIEL = "https://galadriel.tokopedia.com/";
     public static final String CHAT_DOMAIN = "https://chat.tokopedia.com";
+    public static final String PLAY_DOMAIN = "https://groupchat.tokopedia.com";
     public static final String CHAT_WEBSOCKET_DOMAIN = "wss://chat.tokopedia.com";
     public static final String GROUP_CHAT_WEBSOCKET_DOMAIN = "wss://groupchat.tokopedia.com";
     public static final String MAPS_DOMAIN = "https://gw.tokopedia.com/";
@@ -51,7 +50,6 @@ public class ConsumerAppBaseUrl {
     public static final String TOPPROFILE_DOMAIN = GRAPHQL_DOMAIN;
     public static final String CHATBOT_DOMAIN = BASE_API_DOMAIN;
     public static final String GAMIFICATION_BASE_URL = "https://gql.tokopedia.com/";
-    public static final String TRAVEL_CALENDAR_BASE_URL = "https://gql.tokopedia.com/";
     public static final String ACCOUNTS_DOMAIN = "https://accounts.tokopedia.com";
     public static final String TOP_PAY_DOMAIN = "https://pay.tokopedia.id";
     public static final String OMS_DOMAIN = "https://omscart.tokopedia.com/";
@@ -62,6 +60,6 @@ public class ConsumerAppBaseUrl {
     public static final String LOGISTIC_BASE_DOMAIN = "https://gw.tokopedia.com/";
     public static final String CART_BASE_DOMAIN = "https://api.tokopedia.com/";
     public static final String TRANSACTION_BASE_DOMAIN = "https://ws.tokopedia.com/";
-    public static final String CAMPAIGN_MANAGEMENT_DOMAIN = "https://imt.tokopedia.com/";
+    public static final String LAKU6_BASE_URL = "https://www.laku6.com";
 
 }

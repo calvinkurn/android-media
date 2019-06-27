@@ -2,7 +2,7 @@ package com.tokopedia.digital.newcart.presentation.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.common.util.DigitalAnalytics;
+import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.newcart.domain.DigitalDealsGetCategoriesUseCase;
 import com.tokopedia.digital.newcart.domain.model.DealCategoryViewModel;
 import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;

@@ -41,6 +41,7 @@ public class Purchase {
     private String paymentStatus;
     private String eventCategory;
     private String eventLabel;
+    private String eventAction;
     private String shopType;
     private String coupon;
     private String currentSite;
@@ -143,6 +144,10 @@ public class Purchase {
         ActionField.put("affiliation", aff);
     }
 
+    public void setTax(Object tax) {
+        ActionField.put("tax", tax);
+    }
+
     public void setRevenue(Object revenue) {
         ActionField.put(REVENUE_KEY, revenue);
     }
@@ -179,6 +184,14 @@ public class Purchase {
 
     public List<Object> getListProduct(){
         return ListProduct;
+    }
+
+    public String getEventAction() {
+        return eventAction;
+    }
+
+    public void setEventAction(String eventAction) {
+        this.eventAction = eventAction;
     }
 
     public void setCurrency(String currency) {

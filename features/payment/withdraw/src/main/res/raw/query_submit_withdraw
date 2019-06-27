@@ -1,0 +1,6 @@
+mutation withdrawSaldoMutation($action: String!, $withdrawalType: Int!, $deviceType: String!, $userEmail: String!, $withdrawalAmount: String!, $destination: String!, $password: String!, $lang: String!, $selectOtp: String, $isSeller: Boolean) {
+        submitWithdrawal(input: { action: $action, withdrawalType: $withdrawalType, deviceType: $deviceType, userEmail: $userEmail, withdrawalAmount: $withdrawalAmount, destination: $destination, password: $password, lang: $lang, selectOtp: $selectOtp, isSeller: $isSeller }){
+        status
+        message_error
+  }
+}

@@ -1,10 +1,10 @@
 package com.tokopedia.payment.fingerprint.domain;
 
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,10 +21,10 @@ public class GetPostDataOtpUseCase extends UseCase<HashMap<String, String>> {
 
     public static final String TRANSACTION_ID = "transaction_id";
     private FingerprintRepository fingerprintRepository;
-    private UserSession userSession;
+    private UserSessionInterface userSession;
 
     @Inject
-    public GetPostDataOtpUseCase(FingerprintRepository fingerprintRepository, UserSession userSession) {
+    public GetPostDataOtpUseCase(FingerprintRepository fingerprintRepository, UserSessionInterface userSession) {
         this.fingerprintRepository = fingerprintRepository;
         this.userSession = userSession;
     }

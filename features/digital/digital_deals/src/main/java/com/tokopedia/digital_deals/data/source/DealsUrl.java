@@ -12,6 +12,8 @@ public class DealsUrl {
         String DEALS_CATEGORY = "v1/api/h/deal/c/";
         String DEALS_LIKES = "v1/api/deal/rating";
         String DEALS_LIKES_PRODUCT = "v1/api/deal/rating/product";
+        String DEALS_BRAND = "v1/api/b/";
+        String DEALS_CATEGORIES = "v1/api/c/deal/children";
     }
 
     public interface WebUrl{
@@ -26,5 +28,7 @@ public class DealsUrl {
         String DIGITAL_DEALS = "tokopedia://deals";
         String DIGITAL_DEALS_DETAILS = "tokopedia://deals/{slug}";
         String DIGITAL_DEALS_CATEGORY="tokopedia://deals/category/page";
+        String DIGITAL_DEALS_BRAND = "tokopedia://deals/brand/{slug}";
+        String DIGITAL_DEALS_ALL_BRAND = "tokopedia://deals/allbrands/{isVoucher}";
     }
 }

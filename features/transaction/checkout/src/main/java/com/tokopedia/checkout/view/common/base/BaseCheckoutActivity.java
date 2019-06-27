@@ -10,8 +10,6 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 
-import butterknife.ButterKnife;
-
 /**
  * @author anggaprasetiyo on 18/04/18.
  */
@@ -34,7 +32,6 @@ public abstract class BaseCheckoutActivity extends BaseSimpleActivity implements
         }
         initInjector();
         super.onCreate(savedInstanceState);
-        initViews();
         initView();
         initVar();
         setViewListener();
@@ -48,10 +45,6 @@ public abstract class BaseCheckoutActivity extends BaseSimpleActivity implements
     protected abstract void initInjector();
 
     protected void setupVar(Bundle savedInstanceState) { /*leave empty*/ }
-
-    protected void initViews() {
-        ButterKnife.bind(this);
-    }
 
     protected void setupVar() { /*leave empty*/ }
 

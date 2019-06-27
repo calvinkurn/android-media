@@ -27,7 +27,7 @@ class FlightSearchStatisticsUseCase @Inject constructor(
         val filterModel = requestParams.getObject(PARAM_FILTER_MODEL) as FlightFilterModel
 
         return flightSearchRepository.getSearchFilter(TravelSortOption.CHEAPEST, filterModel)
-                .map { mapToFlightSearchStatisticsModel(it) }
+                .map { mapToFlightSearchStatisticsModel(it.journeyAndRoutes) }
     }
 
     private fun mapToFlightSearchStatisticsModel(journeyAndRoutesList: List<JourneyAndRoutes>):

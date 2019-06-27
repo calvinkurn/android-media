@@ -38,7 +38,6 @@ public class LoginThirdPartySubscriber extends LoginCommonSubscriber<LoginEmailD
                 view.onGoToAddName();
             } else if (loginEmailDomain.getLoginResult() != null
                     && !isGoToSecurityQuestion(loginEmailDomain.getLoginResult())) {
-                view.setSmartLock();
                 view.onSuccessLoginSosmed(loginMethodName);
             } else {
                 view.dismissLoadingLogin();

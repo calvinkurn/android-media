@@ -18,16 +18,21 @@ public class PromoPagerAdapter extends FragmentStatePagerAdapter {
 
     private final String autoSelectCategoryId;
     private List<PromoMenuData> promoMenuDataList;
+    private PromoListFragment.OnFragmentInteractionListener promoListActionListener;
 
-    public PromoPagerAdapter(FragmentManager fm, List<PromoMenuData> promoMenuDataList, String autoSelectedCategoryId) {
+    public PromoPagerAdapter(PromoListFragment.OnFragmentInteractionListener promoListActionListener,
+                             FragmentManager fm, List<PromoMenuData> promoMenuDataList,
+                             String autoSelectedCategoryId) {
         super(fm);
+        this.promoListActionListener = promoListActionListener;
         this.promoMenuDataList = promoMenuDataList;
         this.autoSelectCategoryId = autoSelectedCategoryId;
     }
 
     @Override
     public Fragment getItem(int position) {
-        return PromoListFragment.newInstance(promoMenuDataList.get(position), autoSelectCategoryId);
+        return PromoListFragment.newInstance(promoListActionListener,
+                promoMenuDataList.get(position), autoSelectCategoryId);
     }
 
     /**

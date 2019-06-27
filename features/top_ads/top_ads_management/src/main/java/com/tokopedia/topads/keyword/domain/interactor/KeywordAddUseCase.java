@@ -1,14 +1,12 @@
 package com.tokopedia.topads.keyword.domain.interactor;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
 import com.tokopedia.topads.keyword.constant.KeywordTypeDef;
 import com.tokopedia.topads.keyword.domain.TopAdsKeywordRepository;
 import com.tokopedia.topads.keyword.domain.model.keywordadd.AddKeywordDomainModel;
 import com.tokopedia.topads.keyword.domain.model.keywordadd.AddKeywordDomainModelDatum;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,13 +28,8 @@ public class KeywordAddUseCase extends UseCase<AddKeywordDomainModel> {
     private ShopInfoRepository shopInfoRepository;
 
     @Inject
-    public KeywordAddUseCase(
-            ThreadExecutor threadExecutor,
-            PostExecutionThread postExecutionThread,
-            TopAdsKeywordRepository topAdsKeywordRepository,
-            ShopInfoRepository shopInfoRepository
-    ) {
-        super(threadExecutor, postExecutionThread);
+    public KeywordAddUseCase(TopAdsKeywordRepository topAdsKeywordRepository, ShopInfoRepository shopInfoRepository) {
+        super();
         this.topAdsKeywordRepository = topAdsKeywordRepository;
         this.shopInfoRepository = shopInfoRepository;
     }

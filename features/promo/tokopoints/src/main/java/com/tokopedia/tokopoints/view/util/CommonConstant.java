@@ -11,8 +11,8 @@ public interface CommonConstant {
     String ARGS_SLUG_SUB_CATEGORY = "slug_sub_category";
     String ARGS_SORT_TYPE = "sort_type";
     int DEVICE_ID_BANNER = 256;
-    int PAGE_SIZE = 100;
-    int HOMEPAGE_PAGE_SIZE = 5;
+    int PAGE_SIZE = 10;
+    int HOMEPAGE_PAGE_SIZE = 10;
     int TAB_SETUP_DELAY_MS = 150;
     int HOMEPAGE_TAB_COUNT = 2;
     int DEFAULT_SORT_TYPE = 1;
@@ -22,6 +22,8 @@ public interface CommonConstant {
     int MY_COUPON_TAB = 1;
     int PIN_COUNT = 4;
     String TOKOPOINTS_CATALOG_STATUS_AUTO_REFRESH_S = "tokopoints_catalog_status_auto_refresh_s";
+    String TOKOPOINTS_NEW_HOME = "tokopoints_homepage_new_ui";
+    String TOKOPOINTS_NEW_COUPON_LISTING = "tokopoints_coupon_stack_new_ui";
     String EXTRA_COUPON_COUNT = "extra_coupon_count";
     String EXTRA_COUPON_CODE = "coupon_code";
     String EXTRA_CATALOG_CODE = "catalog_code";
@@ -66,6 +68,7 @@ public interface CommonConstant {
         String GIFT_EMAIL = "gift_email";
         String NOTES = "notes";
         String PIN = "pin";
+        String STACK_ID = "stackID";
     }
 
     interface TickerMapKeys {
@@ -88,5 +91,27 @@ public interface CommonConstant {
         String MEMBERSHIP = WEB_DOMAIN_MOBILE + "tokopoints/mobile/membership";
         String HISTORY = WEB_DOMAIN_MOBILE + "tokopoints/mobile/history";
         String INFO = WEB_DOMAIN_MOBILE + "tokopoints/info";
+        String LEADERBOARD = WEB_DOMAIN_MOBILE + "tokopoints/leaderboard";
+    }
+
+    interface SectionLayoutType {
+        String CATEGORY = "category";
+        String TICKER = "ticker";
+        String TAB = "tab";
+        String COUPON = "coupon";
+        String CATALOG = "catalog";
+        String BANNER = "banner";
+    }
+
+    interface BannerType {
+        String BANNER_1_1 = "full_width_1:1";
+        String BANNER_2_1 = "full_width_2:1";
+        String BANNER_3_1 = "full_width_3:1";
+        String CAROUSEL_1_1 = "carousel_1:1";
+        String CAROUSEL_2_1 = "carousel_2:1";
+        String CAROUSEL_3_1 = "carousel_3:1";
+        String COLUMN_3_1_BY_1 = "3_column_1:1";
+        String COLUMN_2_1_BY_1 = "2_column_1:1";
+        String COLUMN_2_3_BY_4 = "2_column_3:4";
     }
 }

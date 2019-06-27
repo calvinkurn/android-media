@@ -1,0 +1,69 @@
+query getProductVariant($productID:String!){
+    getProductVariant(productID: $productID){
+    parentID
+    defaultChild
+    sizeChart
+    alwaysAvailable
+    stock
+    variant {
+      name
+      identifier
+      unitName
+      position
+      variantID
+      variantUnitID
+      productVariantID
+      option {
+        value
+        hex
+        productVariantOptionID
+        variantUnitValueID
+        picture {
+          url
+          url200
+        }
+      }
+    }
+    children {
+      productID
+      price
+      priceFmt
+      sku
+      optionID
+      productName
+      productURL
+      isCOD
+      isWishlist
+      campaignInfo{
+        campaignID
+        isActive
+        originalPrice
+        originalPriceFmt
+        discountPercentage
+        discountPrice
+        discountPriceFmt
+        campaignType
+        campaignTypeName
+        startDate
+        endDate
+        stock
+        appLinks
+        isAppsOnly
+      }
+      stock {
+        isLimitedStock
+        stockWording
+        stockWordingHTML
+        otherVariantStock
+        minimumOrder
+        maximumOrder
+        isBuyable
+        alwaysAvailable
+      }
+      picture {
+        url
+        url200
+      }
+    }
+  }
+}

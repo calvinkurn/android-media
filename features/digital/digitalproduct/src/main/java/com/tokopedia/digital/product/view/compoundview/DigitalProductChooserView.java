@@ -101,16 +101,13 @@ public class DigitalProductChooserView extends BaseDigitalChooserView<Product> {
     private void invalidateContentView() {
         if (dataSelected != null) {
             tvNameProduct.setText(dataSelected.getDesc());
-            switch (dataSelected.getStatus()) {
-                case Product.STATUS_OUT_OF_STOCK:
-                    tvErrorProduct.setVisibility(VISIBLE);
-                    tvErrorProduct.setText(
-                            R.string.error_message_product_out_of_stock_digital_module
-                    );
-                    break;
-                default:
-                    tvErrorProduct.setVisibility(GONE);
-                    break;
+            if (dataSelected.getStatus() == Product.Companion.getSTATUS_OUT_OF_STOCK()) {
+                tvErrorProduct.setVisibility(VISIBLE);
+                tvErrorProduct.setText(
+                        R.string.error_message_product_out_of_stock_digital_module
+                );
+            } else {
+                tvErrorProduct.setVisibility(GONE);
             }
         }
     }

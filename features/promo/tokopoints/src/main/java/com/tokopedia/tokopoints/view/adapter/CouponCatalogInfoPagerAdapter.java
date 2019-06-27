@@ -24,19 +24,26 @@ public class CouponCatalogInfoPagerAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        View view = mLayoutInflater.inflate(R.layout.tp_layout_info, container, false);
-        WebView browser = view.findViewById(R.id.text_content);
-        browser.getSettings().setJavaScriptEnabled(true);
+        try {
 
-        if (position == 0) {
-            browser.loadData(getFormattedHtml(mTnC), "text/html", "UTF-8");
-        } else {
-            browser.loadData(getFormattedHtml(mInfo), "text/html", "UTF-8");
+            View view = mLayoutInflater.inflate(R.layout.tp_layout_info, container, false);
+            WebView browser = view.findViewById(R.id.text_content);
+            browser.getSettings().setJavaScriptEnabled(true);
+
+            if (position == 0) {
+                browser.loadData(getFormattedHtml(mTnC), "text/html", "UTF-8");
+            } else {
+                browser.loadData(getFormattedHtml(mInfo), "text/html", "UTF-8");
+            }
+            view.setTag(position);
+            container.addView(view);
+
+            return view;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        view.setTag(position);
-        container.addView(view);
 
-        return view;
+        return null;
     }
 
     @Override

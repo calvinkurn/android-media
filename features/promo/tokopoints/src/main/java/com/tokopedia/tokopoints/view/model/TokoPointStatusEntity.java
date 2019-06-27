@@ -13,6 +13,17 @@ public class TokoPointStatusEntity {
     @SerializedName("points")
     TokoPointStatusPointsEntity points;
 
+    @SerializedName("fullName")
+    private String userName;
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
     public TokoPointStatusTierEntity getTier() {
         return tier;
     }

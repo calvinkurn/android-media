@@ -1,15 +1,19 @@
 package com.tokopedia.digital.product.view.fragment;
 
-import android.app.Activity;
-import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.common_digital.product.presentation.model.Product;
-import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.di.DigitalProductComponentInstance;
 import com.tokopedia.digital.product.view.adapter.ProductChooserAdapter;
@@ -26,7 +30,7 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * @author anggaprasetiyo on 5/8/17.
  */
-public class DigitalChooserProductFragment extends BasePresenterFragment<ProductChooserContract.Presenter>
+public class DigitalChooserProductFragment extends BaseDaggerFragment
         implements ProductChooserAdapter.ActionListener, ProductChooserContract.View {
 
     private static final String ARG_PARAM_EXTRA_CATEGORY_ID = "ARG_PARAM_EXTRA_CATEGORY_ID";
@@ -69,87 +73,65 @@ public class DigitalChooserProductFragment extends BasePresenterFragment<Product
     }
 
     @Override
-    protected boolean isRetainInstance() {
-        return false;
-    }
-
-    @Override
-    protected void onFirstTimeLaunched() {
-        presenter.getProductsByCategoryIdAndOperatorId(categoryId, operatorId);
-    }
-
-    @Override
-    public void onSaveState(Bundle state) {
-        state.putString(EXTRA_STATE_PRODUCT_STYLE_VIEW, productStyleView);
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-        productStyleView = savedState.getString(EXTRA_STATE_PRODUCT_STYLE_VIEW);
-    }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(EXTRA_STATE_PRODUCT_STYLE_VIEW, productStyleView);
     }
 
     @Override
     protected void initInjector() {
-        super.initInjector();
-
         DigitalProductComponentInstance.getDigitalProductComponent(getActivity().getApplication())
                 .inject(this);
     }
 
-    @Override
-    protected void initialPresenter() {
-        if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
 
-        presenter.attachView(this);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        View view = inflater.inflate(R.layout.fragment_chooser_operator_digital_module, container, false);
+        initView(view);
+        initialVar();
+        return view;
     }
 
     @Override
-    protected void initialListener(Activity activity) {
-        actionListener = (ActionListener) activity;
+    protected String getScreenName() {
+        return null;
     }
 
     @Override
-    protected void setupArguments(Bundle arguments) {
+    protected void onAttachActivity(Context context) {
+        super.onAttachActivity(context);
+        actionListener = (ActionListener) context;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Bundle arguments = getArguments();
         categoryId = arguments.getString(ARG_PARAM_EXTRA_CATEGORY_ID);
         operatorId = arguments.getString(ARG_PARAM_EXTRA_OPERATOR_ID);
         productStyleView = arguments.getString(ARG_PARAM_EXTRA_PRODUCT_STYLE_VIEW);
+        if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
+        if (savedInstanceState != null){
+            productStyleView = savedInstanceState.getString(EXTRA_STATE_PRODUCT_STYLE_VIEW);
+        }
+        presenter.attachView(this);
+        presenter.getProductsByCategoryIdAndOperatorId(categoryId, operatorId);
     }
 
-    @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_chooser_operator_digital_module;
-    }
-
-    @Override
     protected void initView(View view) {
         rvProductList = view.findViewById(R.id.rv_list_chooser);
         pbMainLoading = view.findViewById(R.id.pb_main_loading);
 
         rvProductList.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initialVar() {
+    private void initialVar() {
         productChooserAdapter = new ProductChooserAdapter(
                 this, productListData, this
         );
 
         rvProductList.setAdapter(productChooserAdapter);
-    }
-
-    @Override
-    protected void setActionVar() {
-
     }
 
     @Override

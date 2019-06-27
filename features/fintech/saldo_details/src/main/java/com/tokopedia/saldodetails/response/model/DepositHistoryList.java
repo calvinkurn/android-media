@@ -12,7 +12,7 @@ public class DepositHistoryList implements ParcelableViewModel<SaldoDetailTransa
     private String note;
 
     @SerializedName("amount")
-    private int amount;
+    private float amount;
 
     @SerializedName("class")
     private String transactionClass;
@@ -25,7 +25,7 @@ public class DepositHistoryList implements ParcelableViewModel<SaldoDetailTransa
 
     protected DepositHistoryList(Parcel in) {
         note = in.readString();
-        amount = in.readInt();
+        amount = in.readFloat();
         transactionClass = in.readString();
         imageURL = in.readString();
         createTime = in.readString();
@@ -34,7 +34,7 @@ public class DepositHistoryList implements ParcelableViewModel<SaldoDetailTransa
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(note);
-        parcel.writeInt(amount);
+        parcel.writeFloat(amount);
         parcel.writeString(transactionClass);
         parcel.writeString(imageURL);
         parcel.writeString(createTime);
@@ -61,11 +61,11 @@ public class DepositHistoryList implements ParcelableViewModel<SaldoDetailTransa
         this.note = note;
     }
 
-    public int getAmount() {
+    public float getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(float amount) {
         this.amount = amount;
     }
 

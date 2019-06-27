@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">tkpdtransaction-common</string>
+    <string name="label_hardcoded_shipping_duration_info">Durasi dihitung sejak barang diserahkan ke kurir</string>
+
+    <string name="title_bottomsheet_insurance">Asuransi Pengiriman</string>
+    <string name="label_button_bottomsheet_close">Tutup</string>
+    <string name="bottomsheet_title_global_error">Terjadi kendala teknis</string>
+    <string name="bottomsheet_message_global_error">Transaksi dengan Template Pembelian sedang tidak dapat dilakukan. Coba beberapa saat lagi</string>
+    <string name="bottomsheet_action_global_error">Lanjutkan Tanpa Template</string>
+    <string name="error_note_empty">Catatan harus diisi</string>
+    <string name="cancel_search_replacement">Batalkan Pencarian</string>
+    <string name="title_replacement_cancellation">Pilih Alasan Pembatalan: </string>
+    <string name="title_replacement_reason_1">Saya hanya berbelanja dari toko yang saya percaya</string>
+    <string name="title_replacement_reason_2">Pencarian toko pengganti memakan waktu yang lama</string>
+    <string name="title_replacement_reason_3">Saya sudah menemukan barang dari toko lain</string>
+    <string name="title_other_reason">Lainnya</string>
+    <string name="button_order_detail_confirm">Konfirmasi</string>
 </resources>

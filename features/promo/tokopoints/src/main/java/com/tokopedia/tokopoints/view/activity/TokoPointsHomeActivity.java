@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -21,6 +22,7 @@ import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.DaggerTokoPointComponent;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.fragment.HomepageFragment;
+import com.tokopedia.tokopoints.view.fragment.TokoPointsHomeFragmentNew;
 import com.tokopedia.tokopoints.view.interfaces.onAppBarCollapseListener;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
@@ -42,7 +44,15 @@ public class TokoPointsHomeActivity extends BaseSimpleActivity implements HasCom
     @Override
     protected Fragment getNewFragment() {
         if (mUserSession.isLoggedIn()) {
-            return HomepageFragment.newInstance();
+            if (getApplicationContext() instanceof TokopointRouter
+                    && ((TokopointRouter) getApplicationContext())
+                    .getBooleanRemoteConfig(CommonConstant.TOKOPOINTS_NEW_HOME, false)) {
+                finish();
+                startActivity(new Intent(this, TokoPointsHomeNewActivity.class));
+                return null;
+            } else {
+                return HomepageFragment.newInstance();
+            }
         } else {
             startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);
             return null;
@@ -87,7 +97,7 @@ public class TokoPointsHomeActivity extends BaseSimpleActivity implements HasCom
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_help) {
-            ((TokopointRouter) getApplicationContext()).openTokoPoint(getApplicationContext(), CommonConstant.WebLink.INFO);
+            ((TokopointRouter) getApplicationContext()).openTokoPoint(this, CommonConstant.WebLink.INFO);
 
             AnalyticsTrackerUtil.sendEvent(this,
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,

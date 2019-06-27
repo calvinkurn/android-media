@@ -43,8 +43,6 @@ import com.tokopedia.tokocash.common.di.TokoCashComponent;
 
 import javax.inject.Inject;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
-
 /**
  * Landing page for auto sweep features which can be added into any activity or fragment
  * It will taking the current tokocash balance as an argument param
@@ -300,7 +298,7 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
                 getArguments().getString(CommonConstant.EXTRA_AVAILABLE_TOKOCASH,
                         CommonConstant.NOT_AVAILABLE));
         extras.putLong(CommonConstant.EXTRA_AUTO_SWEEP_LIMIT, mValueAutoSweepLimit);
-        startActivity(SetAutoSweepLimitActivity.getCallingIntent(getApplicationContext(),
+        startActivity(SetAutoSweepLimitActivity.getCallingIntent(getActivityContext(),
                 extras));
     }
 
@@ -357,7 +355,7 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
 
     @Override
     public Context getAppContext() {
-        return getApplicationContext();
+        return getActivityContext();
     }
 
     @Override

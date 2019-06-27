@@ -5,16 +5,14 @@ import android.content.Context;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
-import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
-import com.tokopedia.otp.common.network.AccountsAuthorizationInterceptor;
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.otp.common.network.AuthorizationBearerInterceptor;
 import com.tokopedia.otp.common.network.OtpErrorInterceptor;
 import com.tokopedia.otp.common.network.OtpErrorResponse;
 import com.tokopedia.otp.common.network.WSErrorResponse;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
@@ -32,15 +30,22 @@ public class OtpNetModule {
 
     @OtpScope
     @Provides
-    public OtpErrorInterceptor provideStreamErrorInterceptor() {
-        return new OtpErrorInterceptor(OtpErrorResponse.class);
+    public NetworkRouter provideNetworkRouter(@ApplicationContext Context context) {
+        return (NetworkRouter) context;
     }
 
     @OtpScope
     @Provides
-    public AccountsAuthorizationInterceptor provideAccountsAuthorizationInterceptor(UserSessionInterface
-                                                                                            userSession) {
-        return new AccountsAuthorizationInterceptor(userSession);
+    public TkpdAuthInterceptor provideTkpdAuthInterceptor(@ApplicationContext Context context,
+                                                          NetworkRouter networkRouter,
+                                                          UserSessionInterface userSessionInterface) {
+        return new TkpdAuthInterceptor(context, networkRouter, userSessionInterface);
+    }
+
+    @OtpScope
+    @Provides
+    public OtpErrorInterceptor provideStreamErrorInterceptor() {
+        return new OtpErrorInterceptor(OtpErrorResponse.class);
     }
 
     @OtpScope
@@ -52,7 +57,7 @@ public class OtpNetModule {
     @OtpScope
     @Provides
     public FingerprintInterceptor provideFingerprintInterceptor(@ApplicationContext Context context,
-                                                                UserSession userSession) {
+                                                                UserSessionInterface userSession) {
         return new FingerprintInterceptor((NetworkRouter) context, userSession);
     }
 
@@ -73,10 +78,10 @@ public class OtpNetModule {
                                             TkpdAuthInterceptor tkpdAuthInterceptor) {
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(new ErrorResponseInterceptor(OtpErrorResponse.class))
                 .addInterceptor(new ErrorResponseInterceptor(WSErrorResponse.class))
                 .addInterceptor(tkpdAuthInterceptor)
+                .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(authorizationBearerInterceptor);
 
         if (GlobalConfig.isAllowDebuggingTools()) {
@@ -94,9 +99,9 @@ public class OtpNetModule {
                                                       TkpdAuthInterceptor tkpdAuthInterceptor) {
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(new ErrorResponseInterceptor(OtpErrorResponse.class))
-                .addInterceptor(tkpdAuthInterceptor);
+                .addInterceptor(tkpdAuthInterceptor)
+                .addInterceptor(fingerprintInterceptor);
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(chuckInterceptor).addInterceptor(httpLoggingInterceptor);

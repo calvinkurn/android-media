@@ -1,6 +1,5 @@
 package com.tokopedia.transactionanalytics;
 
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventAction;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventCategory;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventLabel;
@@ -11,14 +10,7 @@ import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics.EventName
  */
 public class CheckoutAnalyticsPurchaseProtection extends TransactionAnalytics {
 
-    public enum Event {
-        CLICK_PELAJARI,
-        CLICK_BAYAR,
-        IMPRESSION_PELAJARI
-    }
-
-    public CheckoutAnalyticsPurchaseProtection(AnalyticTracker analyticTracker) {
-        super(analyticTracker);
+    public CheckoutAnalyticsPurchaseProtection() {
     }
 
     /**

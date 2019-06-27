@@ -100,10 +100,11 @@
             android:id="@+id/ivBadge"
             android:layout_width="@dimen/dp_14"
             android:layout_height="@dimen/dp_14"
-            app:layout_constraintBottom_toBottomOf="@+id/ivProfile"
+            app:layout_constraintBottom_toBottomOf="@+id/tvName"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="@+id/tvDescription"
+            app:layout_constraintTop_toTopOf="@+id/tvName"
             tools:ignore="ContentDescription"
             tools:src="@tools:sample/avatars"
             tools:visibility="visible" />
