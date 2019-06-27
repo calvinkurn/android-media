@@ -29,7 +29,10 @@ class OtherProductAdapter(private val products: List<ProductOther>): RecyclerVie
             with(itemView){
                 tv_name.text = MethodChecker.fromHtml(product.name)
                 tv_price.text = product.price.getCurrencyFormatted()
-                ImageHandler.loadImage(context, iv_pic, product.imageUrl300, -1)
+                try {
+                    ImageHandler.loadImage(context, iv_pic, product.imageUrl300, -1)
+                } catch (e: Throwable){}
+
                 setOnClickListener {
                     context.startActivity(ProductDetailActivity.createIntent(context, product.id))
                 }
