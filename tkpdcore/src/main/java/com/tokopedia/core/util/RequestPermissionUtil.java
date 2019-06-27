@@ -142,6 +142,7 @@ public class RequestPermissionUtil {
 
     }
 
+    @Deprecated
     public static void onShowRationale(Context context, final PermissionRequest request,
                                        String permission) {
         new android.support.v7.app.AlertDialog.Builder(context)
@@ -161,6 +162,8 @@ public class RequestPermissionUtil {
                 .show();
     }
 
+
+    @Deprecated
     public static void onShowRationale(Context context, final PermissionRequest request,
                                        List<String> permission) {
         new android.support.v7.app.AlertDialog.Builder(context)

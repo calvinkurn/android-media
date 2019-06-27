@@ -30,6 +30,7 @@
     <string name="path_product_report" translatable="false">/product/.*\\/report</string>
     <string name="path_store_setting" translatable="false">/store-setting</string>
     <string name="path_qr_scanner" translatable="false">/qr-scanner</string>
+    <string name="path_global_home_recommendation_domain" translatable="false">/rekomendasi/.*\\/</string>
     <string name="path_shop_open" translatable="false">/shop-open</string>
     <string name="path_onboarding" translatable="false">/onboarding</string>
 

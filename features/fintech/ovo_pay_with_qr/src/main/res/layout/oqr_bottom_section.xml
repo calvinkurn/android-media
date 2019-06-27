@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_36"
     android:background="@color/grey_background"
@@ -11,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_4"
         android:layout_marginRight="@dimen/dp_4"
-        android:src="@drawable/ic_lock" />
+        app:srcCompat="@drawable/ic_lock" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -24,5 +25,5 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_ovo_logo_purple" />
+        app:srcCompat="@drawable/ic_ovo_logo_purple" />
 </LinearLayout>

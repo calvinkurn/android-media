@@ -39,7 +39,7 @@
     </style>
 
     <style name="DefaultValueText" parent="Normal">
-        <item name="android:textSize">@dimen/il_text_size_regular</item>
+        <item name="android:textSize">@dimen/il_text_size_small</item>
         <item name="android:textColor">@color/black_70</item>
         <item name="android:lineSpacingExtra">9sp</item>
         <item name="android:textStyle">normal</item>
@@ -63,4 +63,11 @@
         <item name="android:textSize">@dimen/il_text_size_regular</item>
         <item name="android:textColor">@color/black_70</item>
     </style>
+
+    <declare-styleable name="WidgetAddRemove">
+        <attr name="war_btnDisableTintColor" format="reference|color"/>
+        <attr name="war_btnEnableTintColor" format="reference|color"/>
+        <attr name="war_minQuantity" format="reference|integer"/>
+        <attr name="war_maxQuantity" format="reference|integer"/>
+    </declare-styleable>
 </resources>

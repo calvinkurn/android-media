@@ -74,7 +74,6 @@
                         android:layout_alignParentRight="true"
                         android:layout_marginEnd="@dimen/dp_16"
                         android:layout_marginRight="@dimen/dp_16"
-                        android:background="@drawable/ic_winner_badge"
                         android:gravity="center_horizontal"
                         android:textSize="@dimen/sp_10"
                         android:visibility="gone" />
@@ -123,7 +122,7 @@
                     android:layout_marginLeft="@dimen/dp_20"
                     android:layout_marginStart="@dimen/dp_20"
                     android:layout_marginTop="@dimen/dp_16"
-                    android:src="@drawable/ic_buzz_points"
+                    app:srcCompat="@drawable/ic_buzz_points"
                    android:layout_alignParentLeft="true"
                    android:layout_alignParentStart="true"
                     android:layout_below="@+id/challenge_title" />
@@ -147,7 +146,7 @@
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginStart="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_16"
-                    android:src="@drawable/ic_wishlist_unchecked"
+                    app:srcCompat="@drawable/ic_wishlist_unchecked"
                     android:layout_toRightOf="@+id/tv_points"
                     android:layout_toEndOf="@+id/tv_points"
                     android:layout_below="@+id/challenge_title" />
@@ -203,7 +202,7 @@
                     <ImageView
                         android:layout_width="@dimen/dp_24"
                         android:layout_height="@dimen/dp_24"
-                        android:src="@drawable/ic_info_black"
+                        app:srcCompat="@drawable/ic_info_black"
                         android:tint="#999999" />
 
 

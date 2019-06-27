@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd.deeplink;
 
-import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -36,8 +35,6 @@ import com.tokopedia.checkout.applink.CheckoutAppLinkModuleLoader;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModuleLoader;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
 import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
@@ -70,6 +67,8 @@ import com.tokopedia.home.account.applink.AccountHomeApplinkModule;
 import com.tokopedia.home.account.applink.AccountHomeApplinkModuleLoader;
 import com.tokopedia.home.applink.HomeApplinkModule;
 import com.tokopedia.home.applink.HomeApplinkModuleLoader;
+import com.tokopedia.home_recom.deeplink.RecommendationDeeplinkModule;
+import com.tokopedia.home_recom.deeplink.RecommendationDeeplinkModuleLoader;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModule;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModuleLoader;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
@@ -209,7 +208,8 @@ import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleL
         ChatbotApplinkModule.class,
         HomeCreditAppLinkModule.class,
         OfficialStoreApplinkModule.class,
-        OvoPayWithQrApplinkModule.class
+        OvoPayWithQrApplinkModule.class,
+        RecommendationDeeplinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity implements DefferedDeeplinkCallback {
@@ -276,7 +276,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new ChatbotApplinkModuleLoader(),
                     new HomeCreditAppLinkModuleLoader(),
                     new OfficialStoreApplinkModuleLoader(),
-                    new OvoPayWithQrApplinkModuleLoader()
+                    new OvoPayWithQrApplinkModuleLoader(),
+                    new RecommendationDeeplinkModuleLoader()
             );
         }
 
@@ -301,23 +302,9 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
             //map applink to internal if any
             String mappedDeeplink = DeeplinkMapper.getRegisteredNavigation(this, applinkString);
             if (!TextUtils.isEmpty(mappedDeeplink)) {
-                RouteManager.route(this, mappedDeeplink);
+                routeApplink(deepLinkDelegate, mappedDeeplink);
             } else {
-                if (deepLinkDelegate.supportsUri(mappedDeeplink)) {
-                    routeFromApplink(applink);
-                } else {
-                    Intent intent = RouteManager.getIntentNoFallback(this, applinkString);
-                    if (intent == null) {
-                        Intent homeIntent = HomeRouter.getHomeActivityInterfaceRouter(this);
-                        homeIntent.putExtra(HomeRouter.EXTRA_APPLINK_UNSUPPORTED, true);
-                        if (getIntent() != null && getIntent().getExtras() != null)
-                            homeIntent.putExtras(getIntent().getExtras());
-                        homeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(homeIntent);
-                    } else {
-                        startActivity(intent);
-                    }
-                }
+                routeApplink(deepLinkDelegate, applinkString);
             }
 
             if (getIntent().getExtras() != null) {
@@ -329,16 +316,16 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     int notificationId = bundle.getInt(Constant.EXTRA_NOTIFICATION_ID, 0);
 
                     if (notificationId == 0) {
-                        HistoryNotification.clearAllHistoryNotification(notificationType);
+                        HistoryNotification.clearAllHistoryNotification(this, notificationType);
                     } else {
-                        HistoryNotification.clearHistoryNotification(notificationType, notificationId);
+                        HistoryNotification.clearHistoryNotification(this, notificationType, notificationId);
                     }
 
                     NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
                     notificationManagerCompat.cancel(notificationId);
 
                     //clear summary notification if group notification only have 1 left
-                    if (notificationId != 0 && HistoryNotification.isSingleNotification(notificationType)) {
+                    if (notificationId != 0 && HistoryNotification.isSingleNotification(this, notificationType)) {
                         notificationManagerCompat.cancel(notificationType);
                     }
 
@@ -348,6 +335,24 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
             }
         }
         finish();
+    }
+
+    private void routeApplink(ApplinkDelegate deepLinkDelegate, String applinkString) {
+        if (deepLinkDelegate.supportsUri(applinkString)) {
+            routeFromApplink(Uri.parse(applinkString));
+        } else {
+            Intent intent = RouteManager.getIntent(this, applinkString);
+            startActivity(intent);
+        }
+    }
+
+    private void goToHome() {
+        Intent homeIntent = HomeRouter.getHomeActivityInterfaceRouter(this);
+        homeIntent.putExtra(HomeRouter.EXTRA_APPLINK_UNSUPPORTED, true);
+        if (getIntent() != null && getIntent().getExtras() != null)
+            homeIntent.putExtras(getIntent().getExtras());
+        homeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(homeIntent);
     }
 
     public void eventPersonalizedClicked(String label) {
