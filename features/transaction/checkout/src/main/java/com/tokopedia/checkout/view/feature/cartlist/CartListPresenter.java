@@ -229,6 +229,7 @@ public class CartListPresenter implements ICartListPresenter {
     public void processDeleteCartItem(List<CartItemData> allCartItemData, List<CartItemData> removedCartItems,
                                       ArrayList<String> appliedPromoOnDeletedProductList, boolean addWishList) {
         view.showProgressLoading();
+        boolean removeAllItem = allCartItemData.size() == removedCartItems.size();
 
         List<Integer> toBeDeletedCartIds = new ArrayList<>();
         for (CartItemData cartItemData : removedCartItems) {
@@ -244,14 +245,14 @@ public class CartListPresenter implements ICartListPresenter {
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(DeleteCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING_DELETE_CART,
                 view.getGeneratedAuthParamNetwork(paramDelete));
-        requestParams.putBoolean(DeleteCartListUseCase.PARAM_IS_DELETE_ALL_DATA, allCartItemData.size() == removedCartItems.size());
+        requestParams.putBoolean(DeleteCartListUseCase.PARAM_IS_DELETE_ALL_DATA, removeAllItem);
         requestParams.putObject(DeleteCartListUseCase.PARAM_TO_BE_REMOVED_PROMO_CODES, appliedPromoOnDeletedProductList);
 
         compositeSubscription.add(deleteCartListUseCase.createObservable(requestParams)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
-                .subscribe(getSubscriberDeleteAndRefreshCart(toBeDeletedCartIds)));
+                .subscribe(getSubscriberDeleteAndRefreshCart(toBeDeletedCartIds, removeAllItem)));
     }
 
     @Override
@@ -725,7 +726,8 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @NonNull
-    private Subscriber<DeleteAndRefreshCartListData> getSubscriberDeleteAndRefreshCart(List<Integer> toBeDeletedCartIds) {
+    private Subscriber<DeleteAndRefreshCartListData> getSubscriberDeleteAndRefreshCart(List<Integer> toBeDeletedCartIds,
+                                                                                       boolean removeAllItems) {
         return new Subscriber<DeleteAndRefreshCartListData>() {
             @Override
             public void onCompleted() {
@@ -751,7 +753,11 @@ public class CartListPresenter implements ICartListPresenter {
                     view.hideProgressLoading();
                     view.renderLoadGetCartDataFinish();
                     if (deleteAndRefreshCartListData.getDeleteCartData().isSuccess()) {
-                        view.onDeleteCartDataSuccess(toBeDeletedCartIds);
+                        if (removeAllItems) {
+                            processInitialGetCartData(view.getCartId(), false);
+                        } else {
+                            view.onDeleteCartDataSuccess(toBeDeletedCartIds);
+                        }
                     } else {
                         view.showToastMessageRed(
                                 deleteAndRefreshCartListData.getDeleteCartData().getMessage()
