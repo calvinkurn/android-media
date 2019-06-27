@@ -18,19 +18,17 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
-import android.media.Image;
 import android.os.Build;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
-import android.support.transition.Transition;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.content.res.AppCompatResources;
 import android.text.TextUtils;
-import android.util.TypedValue;
 import android.util.Base64;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.Window;
 import android.webkit.URLUtil;
@@ -64,43 +62,6 @@ public class ImageHandler {
 
     public static final int IMAGE_WIDTH_HD = 1280;
     public static final int IMAGE_WIDTH_MIN = 480;
-
-    public static Bitmap ResizeBitmap(Bitmap bitmap, float bounding) {
-        int width = bitmap.getWidth();
-        int height = bitmap.getHeight();
-        float xScale = bounding / width;
-        float yScale = bounding / height;
-        float scale = (xScale <= yScale) ? xScale : yScale;
-        Matrix matrix = new Matrix();
-        matrix.postScale(scale, scale);
-        Bitmap scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
-
-        return scaledBitmap;
-    }
-
-    /**
-     * rotate bitmap if only jpeg, not for other extension
-     *
-     * @param bitmap
-     * @param file
-     * @return
-     * @throws IOException
-     */
-    public static Bitmap rotatedBitmap(Bitmap bitmap, String file) throws IOException {
-        ExifInterface exif = new ExifInterface(file);
-        String orientString = exif.getAttribute(ExifInterface.TAG_ORIENTATION);
-        int orientation = orientString != null ? Integer.parseInt(orientString) : ExifInterface.ORIENTATION_NORMAL;
-        int rotationAngle = 0;
-        if (orientation == ExifInterface.ORIENTATION_ROTATE_90) rotationAngle = 90;
-        if (orientation == ExifInterface.ORIENTATION_ROTATE_180) rotationAngle = 180;
-        if (orientation == ExifInterface.ORIENTATION_ROTATE_270) rotationAngle = 270;
-        if (rotationAngle == 0) {
-            return bitmap;
-        }
-        Matrix matrix = new Matrix();
-        matrix.setRotate(rotationAngle, (float) bitmap.getWidth() / 2, (float) bitmap.getHeight() / 2);
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-    }
 
     public static Bitmap flip(Bitmap bitmap, boolean horizontal, boolean vertical) {
         Matrix matrix = new Matrix();
@@ -165,23 +126,6 @@ public class ImageHandler {
         }
     }
 
-    public static void loadImageWithPlaceholder(ImageView imageview, String url, int resId) {
-        if (url != null && !TextUtils.isEmpty(url)) {
-            Glide.with(imageview.getContext())
-                    .load(url)
-                    .placeholder(resId)
-                    .dontAnimate()
-                    .error(resId)
-                    .into(imageview);
-        } else {
-            Glide.with(imageview.getContext())
-                    .load(url)
-                    .placeholder(resId)
-                    .error(resId)
-                    .into(imageview);
-        }
-    }
-
     public static int calculateInSampleSize(BitmapFactory.Options options) {
         final int height = options.outHeight;
         final int width = options.outWidth;
@@ -241,16 +185,7 @@ public class ImageHandler {
                 .into(imageview);
     }
 
-    public static void loadImage(Context context, ImageView imageview, String url, int placeholder) {
-        Glide.with(context)
-                .load(url)
-                .dontAnimate()
-                .placeholder(placeholder)
-                .error(R.drawable.error_drawable)
-                .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .into(imageview);
-    }
+
 
     public static void loadImage(Context context, ImageView imageview, String url, ColorDrawable colorDrawable) {
         Glide.with(context)
@@ -259,17 +194,6 @@ public class ImageHandler {
                 .placeholder(colorDrawable)
                 .error(colorDrawable)
                 .crossFade()
-                .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .into(imageview);
-    }
-
-    public static void loadImage(Context context, ImageView imageview, String url, int placeholder, int error_image) {
-        Glide.with(context)
-                .load(url)
-                .dontAnimate()
-                .placeholder(placeholder)
-                .error(error_image)
                 .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(imageview);
@@ -650,6 +574,22 @@ public class ImageHandler {
         };
     }
 
+    public static String encodeToBase64(String imagePath) {
+        Bitmap bm = BitmapFactory.decodeFile(imagePath);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] b = baos.toByteArray();
+        return Base64.encodeToString(b, Base64.DEFAULT);
+    }
+
+    public static String encodeToBase64(String imagePath, Bitmap.CompressFormat compressFormat) {
+        Bitmap bm = BitmapFactory.decodeFile(imagePath);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bm.compress(compressFormat, 100, baos);
+        byte[] b = baos.toByteArray();
+        return Base64.encodeToString(b, Base64.DEFAULT);
+    }
+
     public static BitmapImageViewTarget getRoundedCornerWithBorderViewTarget(ImageView imageView,
                                                                              Context context,
                                                                              int cornerRadius,
@@ -732,17 +672,44 @@ public class ImageHandler {
     }
 
     public static void loadGif(ImageView imageView, int gifDrawable, int placeholder) {
+        Drawable drawable = AppCompatResources.getDrawable(imageView.getContext(), placeholder);
         Glide.with(imageView.getContext()).load(gifDrawable)
                 .asGif()
-                .placeholder(placeholder)
+                .placeholder(drawable)
                 .into(imageView);
     }
 
     public static void loadGifFromUrl(ImageView imageView, String url, int placeholder) {
+        Drawable drawable = AppCompatResources.getDrawable(imageView.getContext(), placeholder);
         Glide.with(imageView.getContext()).load(url)
                 .asGif()
-                .placeholder(placeholder)
+                .placeholder(drawable)
                 .into(imageView);
+    }
+
+    public static void loadImage(Context context, ImageView imageview, String url, int placeholder) {
+        Drawable drawable = AppCompatResources.getDrawable(imageview.getContext(), placeholder);
+        Glide.with(context)
+                .load(url)
+                .dontAnimate()
+                .placeholder(drawable)
+                .error(R.drawable.error_drawable)
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .into(imageview);
+    }
+
+    public static void loadImage(Context context, ImageView imageview, String url, int placeholder, int error_image) {
+        Drawable drawable = AppCompatResources.getDrawable(imageview.getContext(), placeholder);
+        Drawable errorDrawable = AppCompatResources.getDrawable(imageview.getContext(), error_image);
+        Glide.with(context)
+                .load(url)
+                .dontAnimate()
+                .placeholder(drawable)
+                .error(errorDrawable)
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .into(imageview);
     }
 
     public static void loadImageFit2(Context context, ImageView imageView, File file) {
@@ -908,22 +875,6 @@ public class ImageHandler {
         if (imageView != null) {
             Glide.clear(imageView);
         }
-    }
-
-    public static String encodeToBase64(String imagePath) {
-        Bitmap bm = BitmapFactory.decodeFile(imagePath);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bm.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] b = baos.toByteArray();
-        return Base64.encodeToString(b, Base64.DEFAULT);
-    }
-
-    public static String encodeToBase64(String imagePath, Bitmap.CompressFormat compressFormat) {
-        Bitmap bm = BitmapFactory.decodeFile(imagePath);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bm.compress(compressFormat, 100, baos);
-        byte[] b = baos.toByteArray();
-        return Base64.encodeToString(b, Base64.DEFAULT);
     }
 
     public static void loadImageBlurredWithListener(ImageView imageView, String url, int

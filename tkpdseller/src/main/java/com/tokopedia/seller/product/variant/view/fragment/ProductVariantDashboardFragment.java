@@ -50,6 +50,7 @@ import java.util.List;
 
 import static com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity.EXTRA_HAS_ORIGINAL_VARIANT_LV1;
 import static com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity.EXTRA_HAS_ORIGINAL_VARIANT_LV2;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * Created by hendry on 4/3/17.
@@ -373,7 +374,7 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
     @Override
     public void refreshImageView() {
         if (productSizeChart == null || TextUtils.isEmpty(productSizeChart.getUriOrPath())) {
-            ivSizeChart.setImageResource(R.drawable.ic_add_product);
+            ivSizeChart.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_add_product));
         } else {
             ImageHandler.LoadImage(ivSizeChart, productSizeChart.getUriOrPath());
         }
