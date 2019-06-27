@@ -466,14 +466,6 @@ public class AddAddressFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void sendAnalyticsOnSubmitSaveAddressClicked() {
-        if (isAddAddressFromCartCheckoutMarketplace()) {
-            checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickSimpanFromTambahAlamat();
-            checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickTambahAlamatFromTambah();
-        }
-    }
-
-    @Override
     public void sendAnalyticsOnDistrictSelectionClicked() {
         if (isAddAddressFromCartCheckoutMarketplace()) {
             checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickKotaAtauKecamatanPadaTambahAddress();
@@ -585,10 +577,10 @@ public class AddAddressFragment extends BaseDaggerFragment
     @Override
     public void sendAnalyticsOnSaveAddressButtonWithoutErrorValidation(boolean success) {
         if (success) {
-            checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressClickTambahFromTambahAlamatBaruSuccess();
+            // checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressClickTambahFromTambahAlamatBaruSuccess();
             checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahSuccess();
         } else {
-            checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressClickTambahFromTambahAlamatBaruFailed();
+            // checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressClickTambahFromTambahAlamatBaruFailed();
             checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahNotSuccess();
         }
     }
@@ -665,7 +657,6 @@ public class AddAddressFragment extends BaseDaggerFragment
 
 
         saveButton.setOnClickListener(view -> {
-            sendAnalyticsOnSubmitSaveAddressClicked();
             if (isValidAddress()) {
                 updateAddress();
                 mPresenter.saveAddress();
