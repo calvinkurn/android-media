@@ -237,6 +237,7 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
     private fun setTextSenderAmountWatcher(){
         trnsfrAmtEdtxtv.addTextChangedListener(object: TextWatcher{
             override fun afterTextChanged(s: Editable?) {
+                trnsfrAmtEdtxtv.removeTextChangedListener(this)
                 var enteredAmt: Long = 0
                 if(!TextUtils.isEmpty(s.toString())) {
                     enteredAmt = OvoP2pUtil.extractNumbersFromString(s.toString()).toLong()
@@ -262,8 +263,10 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
                 }else{
                     amtErrorTxtv.visibility = View.GONE
                 }
-                val thousandString = CurrencyFormatUtil.getThousandSeparatorString(
-                        enteredAmt.toDouble(), false, 0)
+                val rpFormattedString = CurrencyFormatUtil.getThousandSeparatorString(enteredAmt.toDouble(), false, 0)
+                trnsfrAmtEdtxtv.setText(rpFormattedString.formattedString)
+                trnsfrAmtEdtxtv.setSelection(rpFormattedString.selection)
+                trnsfrAmtEdtxtv.addTextChangedListener(this)
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {

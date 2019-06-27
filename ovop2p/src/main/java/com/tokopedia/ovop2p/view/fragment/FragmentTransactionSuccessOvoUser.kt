@@ -35,6 +35,7 @@ class FragmentTransactionSuccessOvoUser : BaseDaggerFragment(), View.OnClickList
     private lateinit var infoIcon: ImageView
     private var transferId: String = ""
     private lateinit var txnThankYouPageVM: OvoP2pTxnThankYouOvoUsrVM
+    private lateinit var thankYouDataCntnr: OvoP2pTransferThankyouBase
 
     override fun initInjector() {
         getComponent<OvoP2pTransferComponent>(OvoP2pTransferComponent::class.java).inject(this)
@@ -122,8 +123,10 @@ class FragmentTransactionSuccessOvoUser : BaseDaggerFragment(), View.OnClickList
     }
 
     private fun assignThankYouData(thankYouData: OvoP2pTransferThankyouBase) {
+        thankYouDataCntnr = thankYouData
         date.text = thankYouData.ovoP2pTransferThankyou.trnsfrDate
-        trnsfrAmt.text = thankYouData.ovoP2pTransferThankyou.amt.toString()
+        val rpFormattedString = CurrencyFormatUtil.getThousandSeparatorString(thankYouData.ovoP2pTransferThankyou.amt, false, 0)
+        trnsfrAmt.text =    rpFormattedString
         rcvrName.text = thankYouData.ovoP2pTransferThankyou.source.name
         rcvrNum.text = thankYouData.ovoP2pTransferThankyou.source.phone
         setSenderUserData()
@@ -136,7 +139,8 @@ class FragmentTransactionSuccessOvoUser : BaseDaggerFragment(), View.OnClickList
                 R.id.see_dtl -> {
                     //go to see detail fragment
                     var bundle = Bundle()
-                    (activity as ActivityListener).addReplaceFragment(FragmentTransactionDetails.newInstance(), true,
+                    bundle.putSerializable(Constants.Keys.THANKYOU_ARGS, thankYouDataCntnr)
+                    (activity as ActivityListener).addReplaceFragment(FragmentTransactionDetails.newInstance(bundle), true,
                             FragmentTransactionDetails.TAG)
                 }
                 R.id.back_to_app -> {
