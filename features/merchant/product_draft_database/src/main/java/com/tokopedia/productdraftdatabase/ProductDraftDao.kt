@@ -23,11 +23,11 @@ interface ProductDraftDao {
     @Query("DELETE FROM ${DBMetaData.DB_TABLE} WHERE 'shopId' LIKE :shopID")
     fun deleteMyDrafts(shopID: String)
 
-    @Query("UPDATE FROM ${DBMetaData.DB_TABLE} SET ${ProductDraft.COLUMN_IS_UPLOADING} " +
+    @Query("UPDATE ${DBMetaData.DB_TABLE} SET ${ProductDraft.COLUMN_IS_UPLOADING} " +
             "= :inverseIsUploading WHERE ${ProductDraft.COLUMN_IS_UPLOADING} = :isUploading")
     fun updateLoadingForAll(isUploading: Boolean, inverseIsUploading: Boolean = !isUploading)
 
-    @Query("UPDATE FROM ${DBMetaData.DB_TABLE} SET 'shopId' = :shopID WHERE 'shopId' IS NULL")
+    @Query("UPDATE ${DBMetaData.DB_TABLE} SET 'shopId' = :shopID WHERE 'shopId' IS NULL")
     fun updateShopIdFromNullShopId(shopID: String)
 
     @Delete
