@@ -40,6 +40,7 @@ import com.tokopedia.hotel.common.presentation.widget.RatingStarView
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -104,7 +105,11 @@ class HotelBookingFragment : HotelBaseFragment() {
                     }
                 }
                 is Fail -> {
-                    NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))
+                    val message = when(it.throwable is MessageErrorException) {
+                        true -> it.throwable.message ?: ""
+                        false -> ErrorHandler.getErrorMessage(activity, it.throwable)
+                    }
+                    NetworkErrorHelper.showRedSnackbar(activity, message)
                 }
             }
         })
