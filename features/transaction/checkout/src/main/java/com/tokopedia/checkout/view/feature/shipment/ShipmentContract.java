@@ -155,8 +155,6 @@ public interface ShipmentContract {
     }
 
     interface AnalyticsActionListener {
-        void sendAnalyticsChoosePaymentMethodSuccess();
-
         void sendAnalyticsChoosePaymentMethodFailed(String errorMessage);
 
         @Deprecated
