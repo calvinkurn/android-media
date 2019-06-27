@@ -8,8 +8,7 @@ import com.tokopedia.product.manage.item.main.add.di.ProductAddScope;
 import com.tokopedia.product.manage.item.main.draft.data.repository.ProductDraftRepositoryImpl;
 import com.tokopedia.product.manage.item.main.draft.data.source.ProductDraftDataSource;
 import com.tokopedia.product.manage.item.main.draft.domain.ProductDraftRepository;
-import com.tokopedia.productdraftdatabase.ProductDraftDBCreation;
-import com.tokopedia.productdraftdatabase.ProductDraftDao;
+import com.tokopedia.productdraftdatabase.ProductDraftDB;
 import com.tokopedia.seller.product.draft.domain.interactor.SaveBulkDraftProductUseCase;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftSaveBulkPresenter;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftSaveBulkPresenterImpl;
@@ -38,8 +37,8 @@ public class ProductDraftSaveBulkModule extends ProductAddModule {
 
     @ProductAddScope
     @Provides
-    ProductDraftDao provideProductDraftDao(@ApplicationContext Context context){
-        return ProductDraftDBCreation.getProductDraftDao(context);
+    ProductDraftDB provideProductDraftDb(@ApplicationContext Context context){
+        return ProductDraftDB.getInstance(context);
     }
 }
 

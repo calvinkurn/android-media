@@ -38,8 +38,7 @@ import com.tokopedia.product.manage.item.variant.data.repository.ProductVariantR
 import com.tokopedia.product.manage.item.variant.data.repository.ProductVariantRepositoryImpl;
 import com.tokopedia.product.manage.item.variant.data.source.ProductVariantDataSource;
 import com.tokopedia.product.manage.item.video.data.source.FetchVideoEditProductDataSource;
-import com.tokopedia.productdraftdatabase.ProductDraftDBCreation;
-import com.tokopedia.productdraftdatabase.ProductDraftDao;
+import com.tokopedia.productdraftdatabase.ProductDraftDB;
 
 import dagger.Module;
 import dagger.Provides;
@@ -138,7 +137,7 @@ public class AddProductserviceModule {
 
     @AddProductServiceScope
     @Provides
-    ProductDraftDao provideProductDraftDao(@ApplicationContext Context context){
-        return ProductDraftDBCreation.getProductDraftDao(context);
+    ProductDraftDB provideProductDraftDb(@ApplicationContext Context context){
+        return ProductDraftDB.getInstance(context);
     }
 }

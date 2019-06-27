@@ -3,7 +3,7 @@ package com.tokopedia.product.manage.item.main.draft.data.source;
 import com.tokopedia.product.manage.item.common.util.DraftNotFoundException;
 import com.tokopedia.productdraftdatabase.DBMetaData;
 import com.tokopedia.productdraftdatabase.ProductDraft;
-import com.tokopedia.productdraftdatabase.ProductDraftDao;
+import com.tokopedia.productdraftdatabase.ProductDraftDB;
 
 import java.util.List;
 
@@ -17,11 +17,11 @@ import rx.Observable;
 
 public class ProductDraftDataManager {
 
-    private ProductDraftDao productDraftDao;
+    private ProductDraftDB productDraftDb;
 
     @Inject
-    public ProductDraftDataManager(ProductDraftDao productDraftDao) {
-        this.productDraftDao = productDraftDao;
+    public ProductDraftDataManager(ProductDraftDB productDraftDb) {
+        this.productDraftDb = productDraftDb;
     }
 
     public Observable<Long> saveDraft(String json, boolean isUploading, String shopId){
@@ -31,13 +31,13 @@ public class ProductDraftDataManager {
             productDraft.setUploading(isUploading);
             productDraft.setShopId(shopId);
             productDraft.setVersion(DBMetaData.DB_VERSION);
-            return productDraftDao.insertSingle(productDraft);
+            return productDraftDb.getProductDraftDao().insertSingle(productDraft);
         });
     }
 
     public Observable<ProductDraft> getDraft(long productId) {
         return Observable.fromCallable(()->{
-            ProductDraft draft = productDraftDao.getSingleDraft(productId);
+            ProductDraft draft = productDraftDb.getProductDraftDao().getSingleDraft(productId);
             if (draft == null){
                 throw new DraftNotFoundException();
             }
@@ -46,17 +46,17 @@ public class ProductDraftDataManager {
     }
 
     public Observable<List<ProductDraft>> getAllDraft(String userId) {
-        return Observable.fromCallable(()-> productDraftDao.getMyDrafts(userId));
+        return Observable.fromCallable(()-> productDraftDb.getProductDraftDao().getMyDrafts(userId));
     }
 
     public Observable<Long> getAllDraftCount(String userId) {
-        return Observable.fromCallable(()-> productDraftDao.getMyDraftsCount(userId))
+        return Observable.fromCallable(()-> productDraftDb.getProductDraftDao().getMyDraftsCount(userId))
                 .map(Integer::longValue);
     }
 
     public Observable<Boolean> clearAllDraft(String userId){
         return Observable.fromCallable(()-> {
-            productDraftDao.deleteMyDrafts(userId);
+            productDraftDb.getProductDraftDao().deleteMyDrafts(userId);
             return true;
         });
     }
@@ -65,7 +65,7 @@ public class ProductDraftDataManager {
         return Observable.fromCallable(() -> {
             ProductDraft draft = new ProductDraft();
             draft.setId(productId);
-            productDraftDao.deleteDraft(draft);
+            productDraftDb.getProductDraftDao().deleteDraft(draft);
             return true;
         });
     }
@@ -76,7 +76,7 @@ public class ProductDraftDataManager {
             productDraft.setVersion(DBMetaData.DB_VERSION);
             return productDraft;
         }).map(productDraft -> {
-            long id = productDraftDao.updateSingle(productDraft);
+            long id = productDraftDb.getProductDraftDao().updateSingle(productDraft);
             if (id < 1) throw new DraftNotFoundException();
             return id;
         });
@@ -89,7 +89,7 @@ public class ProductDraftDataManager {
             productDraft.setVersion(DBMetaData.DB_VERSION);
             return productDraft;
         }).map(productDraft -> {
-            long id = productDraftDao.updateSingle(productDraft);
+            long id = productDraftDb.getProductDraftDao().updateSingle(productDraft);
             if (id < 1) throw new DraftNotFoundException();
             return id;
         });
@@ -103,12 +103,12 @@ public class ProductDraftDataManager {
                            if (productDraft == null)
                                throw new DraftNotFoundException();
                            productDraft.setUploading(isUploading);
-                           productDraftDao.updateSingle(productDraft);
+                           productDraftDb.getProductDraftDao().updateSingle(productDraft);
                            return true;
                         });
                     } else {
                         return Observable.fromCallable(() -> {
-                            productDraftDao.updateLoadingForAll(!isUploading, isUploading);
+                            productDraftDb.getProductDraftDao().updateLoadingForAll(!isUploading, isUploading);
                             return true;
                         });
                     }
@@ -117,7 +117,7 @@ public class ProductDraftDataManager {
 
     public Observable<Boolean> updateBlankShopIdDraft(String shopId) {
         return Observable.fromCallable(() -> {
-            productDraftDao.updateShopIdFromNullShopId(shopId);
+            productDraftDb.getProductDraftDao().updateShopIdFromNullShopId(shopId);
             return true;
         });
     }

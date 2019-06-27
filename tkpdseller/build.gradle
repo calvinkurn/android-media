@@ -125,6 +125,10 @@ dependencies {
     
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.permissionchecker)
+
+    implementation rootProject.ext.dbDependencies.dbRoomRuntime
+    annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler
+    androidTestApi rootProject.ext.dbDependencies.dbRoomTesting
 }
 
 apply from: '../publish_local.gradle'
