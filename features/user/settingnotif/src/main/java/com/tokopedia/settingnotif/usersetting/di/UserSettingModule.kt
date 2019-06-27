@@ -1,5 +1,7 @@
 package com.tokopedia.settingnotif.usersetting.di
 
+import android.content.Context
+import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.settingnotif.usersetting.domain.usecase.GetUserSettingUseCase
 import com.tokopedia.settingnotif.usersetting.presenter.SettingFieldPresenter
 import com.tokopedia.settingnotif.usersetting.view.listener.SettingFieldContract
@@ -9,7 +11,7 @@ import dagger.Provides
 
 @UserSettingScope
 @Module
-class UserSettingModule {
+class UserSettingModule(var context: Context?) {
 
     @UserSettingScope
     @Provides
@@ -19,8 +21,14 @@ class UserSettingModule {
 
     @UserSettingScope
     @Provides
-    fun providesGetUserSettingUseCase(): GetUserSettingUseCase {
-        return GetUserSettingUseCase()
+    fun providesGetUserSettingUseCase(gqlUserCase: GraphqlUseCase): GetUserSettingUseCase {
+        return GetUserSettingUseCase(context, gqlUserCase)
+    }
+
+    @UserSettingScope
+    @Provides
+    fun providesGqlUseCase(): GraphqlUseCase {
+        return GraphqlUseCase()
     }
 
 }

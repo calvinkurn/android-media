@@ -1,6 +1,7 @@
 package com.tokopedia.settingnotif.usersetting.view.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
@@ -13,6 +14,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.settingnotif.usersetting.di.DaggerUserSettingComponent
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+import com.tokopedia.settingnotif.usersetting.di.UserSettingModule
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldAdapter
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldTypeFactory
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldTypeFactoryImpl
@@ -29,8 +31,10 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>, BaseAdapter
 
     override fun initInjector() {
         if (activity != null && (activity as Activity).application != null) {
-            val userSettingComponent = DaggerUserSettingComponent.builder().baseAppComponent(
-                    ((activity as Activity).application as BaseMainApplication).baseAppComponent)
+            val baseAppComponent = ((activity as Activity).application as BaseMainApplication).baseAppComponent
+            val userSettingComponent = DaggerUserSettingComponent.builder()
+                    .baseAppComponent(baseAppComponent)
+                    .userSettingModule(UserSettingModule(context))
                     .build()
 
             userSettingComponent.inject(this)
