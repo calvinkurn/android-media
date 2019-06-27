@@ -188,9 +188,14 @@ class ReportFormAdapter(private val item: ProductReportReason,
             return if (minChar == -1 && maxChar == -1) true
             else {
                 val input = itemView.edit_text_report.text.toString()
-                itemView.textInputLayoutReport.error = if (input.length < minChar){
-                    itemView.context.getString(R.string.product_hint_product_report, minChar.toString())
-                } else null
+                with(itemView.textInputLayoutReport){
+                    if (input.length in minChar..maxChar){
+                        error = null
+                        isErrorEnabled = false
+                    } else {
+                        error = context.getString(R.string.product_hint_product_report, minChar.toString())
+                    }
+                }
                 input.isNotBlank() && input.length in minChar..maxChar
             }
         }
