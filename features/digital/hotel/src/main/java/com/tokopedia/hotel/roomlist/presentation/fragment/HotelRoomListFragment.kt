@@ -1,5 +1,6 @@
 package com.tokopedia.hotel.roomlist.presentation.fragment
 
+import android.app.ProgressDialog
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.graphics.Rect
@@ -69,6 +70,8 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
 
     var firstTime = true
 
+    lateinit var progressDialog: ProgressDialog
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -116,9 +119,10 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         })
 
         roomListViewModel.addCartResponseResult.observe(this, android.arch.lifecycle.Observer {
+            progressDialog.dismiss()
             when (it) {
                 is Success -> {
-                    startActivity(HotelBookingActivity.getCallingIntent(context!!,it.data.cartId))
+                    startActivity(HotelBookingActivity.getCallingIntent(context!!,it.data.response.cartId))
                 }
                 is Fail -> {
                     NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))
@@ -145,6 +149,9 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         renderDate()
 
         loadInitialData()
+
+        progressDialog = ProgressDialog(activity)
+        progressDialog.setCancelable(false)
     }
 
     override fun hasInitialSwipeRefresh(): Boolean = true
@@ -362,7 +369,8 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     }
 
     override fun onClickBookListener(room: HotelRoom) {
-//        trackingHotelUtil.hotelChooseRoom(room, roomList)
+        progressDialog.show()
+        trackingHotelUtil.hotelChooseRoom(room, roomList.indexOf(room))
         if (userSessionInterface.isLoggedIn) {
             roomListViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart),
                     mapToAddCartParam(hotelRoomListPageModel, room))

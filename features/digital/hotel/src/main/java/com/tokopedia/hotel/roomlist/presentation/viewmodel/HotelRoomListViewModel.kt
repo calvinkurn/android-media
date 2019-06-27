@@ -23,7 +23,7 @@ class HotelRoomListViewModel @Inject constructor(
 
     var roomList: List<HotelRoom> = listOf()
     val roomListResult = MutableLiveData<Result<MutableList<HotelRoom>>>()
-    val addCartResponseResult = MutableLiveData<Result<HotelAddCartResponse>>()
+    val addCartResponseResult = MutableLiveData<Result<HotelAddCartData.Response>>()
 
     var filterFreeBreakfast = false
     var filterFreeCancelable = false

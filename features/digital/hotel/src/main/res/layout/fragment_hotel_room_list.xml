@@ -1,48 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <include
-        android:id="@+id/hotel_date_and_guest"
-        layout="@layout/layout_sticky_hotel_date_and_guest" />
-
-
-    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-        android:id="@+id/swipe_refresh_layout"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:background="@color/white"
+        android:orientation="vertical">
 
-        <android.support.v4.widget.NestedScrollView
+        <include
+            android:id="@+id/hotel_date_and_guest"
+            layout="@layout/layout_sticky_hotel_date_and_guest"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+            android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
-            android:layout_height="fill_parent"
-            android:fillViewport="true">
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:layout_constraintTop_toBottomOf="@id/hotel_date_and_guest">
 
-            <LinearLayout
+            <android.support.v4.widget.NestedScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="fill_parent"
+                android:fillViewport="true">
 
-
-                <com.tokopedia.hotel.roomlist.widget.FilterChipRecyclerView
-                    android:id="@+id/filter_recycler_view"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recycler_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_marginTop="@dimen/dp_8"
-                    android:nestedScrollingEnabled="false" />
+                    <com.tokopedia.hotel.roomlist.widget.FilterChipRecyclerView
+                        android:id="@+id/filter_recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
 
-            </LinearLayout>
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_marginTop="@dimen/dp_8"
+                        android:nestedScrollingEnabled="false" />
 
-        </android.support.v4.widget.NestedScrollView>
-    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+                </LinearLayout>
 
-</LinearLayout>
+            </android.support.v4.widget.NestedScrollView>
+        </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

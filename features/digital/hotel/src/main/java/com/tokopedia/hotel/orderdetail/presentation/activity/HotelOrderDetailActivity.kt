@@ -18,13 +18,12 @@ import com.tokopedia.hotel.orderdetail.presentation.fragment.HotelOrderDetailFra
 
 class HotelOrderDetailActivity : HotelBaseActivity(), HasComponent<HotelOrderDetailComponent> {
 
+    lateinit var orderId: String
+
     override fun shouldShowOptionMenu(): Boolean = false
 
     override fun getNewFragment(): Fragment =
-            with(intent) {
-                HotelOrderDetailFragment.getInstance(getStringExtra(KEY_ORDER_ID),
-                        getStringExtra(KEY_ORDER_CATEGORY))
-            }
+            HotelOrderDetailFragment.getInstance(orderId, HOTEL_ORDER_CATEGORY)
 
     override fun getComponent(): HotelOrderDetailComponent =
             DaggerHotelOrderDetailComponent.builder()
@@ -32,6 +31,13 @@ class HotelOrderDetailActivity : HotelBaseActivity(), HasComponent<HotelOrderDet
                     .build()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val uri = intent.data
+        if (uri != null) {
+            orderId = uri.lastPathSegment
+        } else if (intent.extras.containsKey(KEY_ORDER_ID)) {
+            orderId = intent.getStringExtra(KEY_ORDER_ID)
+        }
+
         super.onCreate(savedInstanceState)
         updateTitle(getString(R.string.hotel_order_detail_title))
     }
@@ -41,20 +47,10 @@ class HotelOrderDetailActivity : HotelBaseActivity(), HasComponent<HotelOrderDet
                              orderId: String): Intent =
                 Intent(context, HotelOrderDetailActivity::class.java)
                         .putExtra(KEY_ORDER_ID, orderId)
-                        .putExtra(KEY_ORDER_CATEGORY, HOTEL_ORDER_CATEGORY)
 
         const val HOTEL_ORDER_CATEGORY = "HOTELS"
 
-        val KEY_ORDER_ID = "OrderId"
-        val KEY_ORDER_CATEGORY = "OrderCategory"
+        const val KEY_ORDER_ID = "OrderId"
+        const val KEY_ORDER_CATEGORY = "OrderCategory"
     }
 }
-
-/*
-@DeepLink(ApplinkConstant.HOTEL_ORDER_DETAIL)
-fun getCallingIntent(context: Context, extras: Bundle): Intent {
-    val uri: Uri.Builder = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
-    return HotelOrderDetailActivity.getCallingIntent(context,
-            extras.getString("order_id"))
-            .setData(uri.build())
-}*/

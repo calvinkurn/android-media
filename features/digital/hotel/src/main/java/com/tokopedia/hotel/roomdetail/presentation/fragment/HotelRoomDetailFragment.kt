@@ -1,5 +1,6 @@
 package com.tokopedia.hotel.roomdetail.presentation.fragment
 
+import android.app.ProgressDialog
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.graphics.PorterDuff
@@ -15,8 +16,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -62,6 +63,8 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
 
     lateinit var saveInstanceCacheManager: SaveInstanceCacheManager
 
+    lateinit var progressDialog: ProgressDialog
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -83,15 +86,17 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         super.onActivityCreated(savedInstanceState)
 
         roomDetailViewModel.addCartResponseResult.observe(this, android.arch.lifecycle.Observer {
+            progressDialog.dismiss()
             when (it) {
                 is Success -> {
-                    val cartId = it.data.cartId
+                    val cartId = it.data.response.cartId
                     startActivity(HotelBookingActivity.getCallingIntent(context!!, cartId))
                 }
                 is Fail -> {
                     NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))
                 }
             }
+            room_detail_button.isEnabled = true
         })
     }
 
@@ -101,6 +106,8 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
+        progressDialog = ProgressDialog(activity)
+        progressDialog.setCancelable(false)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -312,7 +319,9 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         tv_room_detail_price.text = hotelRoom.roomPrice.roomPrice
         room_detail_button.text = getString(R.string.hotel_room_list_choose_room_button)
         room_detail_button.setOnClickListener {
-//            trackingHotelUtil.hotelChooseRoomDetails(hotelRoom)
+            progressDialog.show()
+            room_detail_button.isEnabled = false
+            trackingHotelUtil.hotelChooseRoomDetails(hotelRoom)
             if (userSessionInterface.isLoggedIn) {
                 roomDetailViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart), addToCartParam)
             } else {

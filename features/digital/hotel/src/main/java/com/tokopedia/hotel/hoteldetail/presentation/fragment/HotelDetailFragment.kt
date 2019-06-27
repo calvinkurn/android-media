@@ -77,15 +77,18 @@ class HotelDetailFragment : HotelBaseFragment() {
 
         arguments?.let {
             hotelHomepageModel.locId = it.getInt(HotelDetailActivity.EXTRA_PROPERTY_ID)
-            hotelHomepageModel.checkInDate = it.getString(HotelDetailActivity.EXTRA_CHECK_IN_DATE,
-                    TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.addTimeToSpesificDate(
-                            TravelDateUtil.getCurrentCalendar().time, Calendar.DATE, 1)))
-            hotelHomepageModel.checkOutDate = it.getString(HotelDetailActivity.EXTRA_CHECK_OUT_DATE,
-                    TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.addTimeToSpesificDate(
-                            TravelDateUtil.getCurrentCalendar().time, Calendar.DATE, 2)))
-            hotelHomepageModel.roomCount = it.getInt(HotelDetailActivity.EXTRA_ROOM_COUNT)
-            hotelHomepageModel.adultCount = it.getInt(HotelDetailActivity.EXTRA_ADULT_COUNT, 1)
-            isButtonEnabled = it.getBoolean(HotelDetailActivity.EXTRA_ENABLE_BUTTON, true)
+
+            if (it.getString(HotelDetailActivity.EXTRA_CHECK_IN_DATE).isNotEmpty()) {
+                hotelHomepageModel.checkInDate = it.getString(HotelDetailActivity.EXTRA_CHECK_IN_DATE,
+                        TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.addTimeToSpesificDate(
+                                TravelDateUtil.getCurrentCalendar().time, Calendar.DATE, 1)))
+                hotelHomepageModel.checkOutDate = it.getString(HotelDetailActivity.EXTRA_CHECK_OUT_DATE,
+                        TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.addTimeToSpesificDate(
+                                TravelDateUtil.getCurrentCalendar().time, Calendar.DATE, 2)))
+                hotelHomepageModel.roomCount = it.getInt(HotelDetailActivity.EXTRA_ROOM_COUNT)
+                hotelHomepageModel.adultCount = it.getInt(HotelDetailActivity.EXTRA_ADULT_COUNT, 1)
+            }
+            isButtonEnabled = hotelHomepageModel.checkInDate.isNotEmpty()
         }
     }
 
@@ -97,16 +100,24 @@ class HotelDetailFragment : HotelBaseFragment() {
 
         if (savedInstanceState != null && savedInstanceState.containsKey(SAVED_SEARCH_PARAMETER)) {
             hotelHomepageModel = savedInstanceState.getParcelable(SAVED_SEARCH_PARAMETER)!!
+            isButtonEnabled = savedInstanceState.getBoolean(SAVED_ENABLE_BUTTON)
         }
 
         showLoadingLayout()
 
-        detailViewModel.getHotelDetailData(
-                GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_info),
-                GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_room_list),
-                GraphqlHelper.loadRawString(resources, R.raw.gql_get_hotel_review),
-                hotelHomepageModel.locId,
-                hotelHomepageModel)
+        if (isButtonEnabled) {
+            detailViewModel.getHotelDetailData(
+                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_info),
+                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_room_list),
+                    GraphqlHelper.loadRawString(resources, R.raw.gql_get_hotel_review),
+                    hotelHomepageModel.locId,
+                    hotelHomepageModel)
+        } else {
+            detailViewModel.getHotelDetailDataWithoutRoom(
+                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_info),
+                    GraphqlHelper.loadRawString(resources, R.raw.gql_get_hotel_review),
+                    hotelHomepageModel.locId)
+        }
 
     }
 
@@ -212,6 +223,11 @@ class HotelDetailFragment : HotelBaseFragment() {
         btn_hotel_detail_show.setOnClickListener {
             startActivity(HotelDetailMapActivity.getCallingIntent(context!!, data.property.name,
                     data.property.latitude, data.property.longitude, data.property.address))
+        }
+
+        if (!isButtonEnabled) {
+            container_shimmering_bottom.visibility = View.GONE
+            container_bottom.visibility = View.GONE
         }
     }
 
@@ -399,7 +415,7 @@ class HotelDetailFragment : HotelBaseFragment() {
         container_bottom.visibility = View.VISIBLE
 
         if (data.isNotEmpty()) {
-            trackingHotelUtil.hotelViewDetails(hotelId, true, data[0].roomPrice.priceAmount.toInt(), data[0].additionalPropertyInfo.isDirectPayment)
+            trackingHotelUtil.hotelViewDetails(hotelName, hotelId, true, data[0].roomPrice.priceAmount.toInt(), data[0].additionalPropertyInfo.isDirectPayment)
             roomPrice = data[0].roomPrice.roomPrice
             tv_hotel_price.text = roomPrice
 
@@ -416,7 +432,7 @@ class HotelDetailFragment : HotelBaseFragment() {
                 }
             }
         } else {
-            trackingHotelUtil.hotelViewDetails(hotelId, false, 0, false)
+            trackingHotelUtil.hotelViewDetails(hotelName, hotelId, false, 0, false)
             tv_hotel_price_subtitle.visibility = View.GONE
             tv_hotel_price.text = getString(R.string.hotel_detail_room_full_text)
             tv_hotel_price.setTextColor(ContextCompat.getColor(context!!, com.tokopedia.design.R.color.light_disabled))
@@ -426,6 +442,11 @@ class HotelDetailFragment : HotelBaseFragment() {
                 activity!!.finish()
             }
         }
+
+        if (!isButtonEnabled) {
+            btn_see_room.isEnabled = false
+            btn_see_room.buttonCompatType = ButtonCompat.DISABLE
+        }
     }
 
     private fun openImagePreview(index: Int) {
@@ -433,12 +454,19 @@ class HotelDetailFragment : HotelBaseFragment() {
     }
 
     override fun onErrorRetryClicked() {
-        detailViewModel.getHotelDetailData(
-                GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_info),
-                GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_room_list),
-                GraphqlHelper.loadRawString(resources, R.raw.gql_get_hotel_review),
-                hotelHomepageModel.locId,
-                hotelHomepageModel)
+        if (isButtonEnabled) {
+            detailViewModel.getHotelDetailData(
+                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_info),
+                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_room_list),
+                    GraphqlHelper.loadRawString(resources, R.raw.gql_get_hotel_review),
+                    hotelHomepageModel.locId,
+                    hotelHomepageModel)
+        } else {
+            detailViewModel.getHotelDetailDataWithoutRoom(
+                    GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_info),
+                    GraphqlHelper.loadRawString(resources, R.raw.gql_get_hotel_review),
+                    hotelHomepageModel.locId)
+        }
     }
 
     companion object {
@@ -450,7 +478,7 @@ class HotelDetailFragment : HotelBaseFragment() {
         const val RESULT_REVIEW = 102
 
         fun getInstance(checkInDate: String, checkOutDate: String, propertyId: Int, roomCount: Int,
-                        adultCount: Int, enableButton: Boolean = true): HotelDetailFragment =
+                        adultCount: Int): HotelDetailFragment =
                 HotelDetailFragment().also {
                     it.arguments = Bundle().apply {
                         putString(HotelDetailActivity.EXTRA_CHECK_IN_DATE, checkInDate)
@@ -458,7 +486,6 @@ class HotelDetailFragment : HotelBaseFragment() {
                         putInt(HotelDetailActivity.EXTRA_PROPERTY_ID, propertyId)
                         putInt(HotelDetailActivity.EXTRA_ROOM_COUNT, roomCount)
                         putInt(HotelDetailActivity.EXTRA_ADULT_COUNT, adultCount)
-                        putBoolean(HotelDetailActivity.EXTRA_ENABLE_BUTTON, enableButton)
                     }
                 }
 

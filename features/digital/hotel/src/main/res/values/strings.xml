@@ -58,13 +58,14 @@
     <string name="hotel_destination_recent_search_delete_all">Hapus Semua</string>
     <string name="hotel_destination_popular_search_title">Tujuan populer</string>
     <string name="hotel_destination_popular_search_hotel_count">%1$s+ hotel</string>
-    <string name="hotel_destination_need_permission">Need Permission</string>
+    <string name="hotel_destination_need_permission">Akses lokasi dibutuhkan untuk melihat hotel dekat lokasimu. Perbolehkan?</string>
     <string name="hotel_destination_empty_view_holder_title">Nggak ada hasil yang cocok</string>
     <string name="hotel_destination_empty_view_holder_subtitle">Coba cari ulang pakai kata kunci lain.</string>
     <string name="hotel_destination_toolbar_title">Tujuan</string>
     <string name="hotel_important_info_title">Informasi Penting</string>
     <string name="hotel_read_more_title">Baca Selengkapnya</string>
     <string name="hotel_description_title">Deskripsi</string>
+    <string name="hotel_destination_error_get_location">Gagal memuat lokasi Anda. Silahkan coba lagi.</string>
 
     <string name="hotel_room_list_check_in_check_out_date">%1$s - %2$s</string>
     <string name="hotel_room_list_filter_pay_in_hotel">Bayar di Hotel</string>
@@ -198,4 +199,7 @@
     <string name="hotel_error_no_internet_connection_subtitle">"Kamu bisa pindah tempat atau cek paket data / jaringan Wi-Fi."</string>
     <string name="hotel_error_server_error_title">Ada gangguan di rumah Toped</string>
     <string name="hotel_error_server_error_subtitle">Kami akan bereskan secepatnya. Klik tombol di bawah atau balik lagi nanti.</string>
+    <string name="hotel_e_voucher_powered_by">Powered by:</string>
+    <string name="hotel_e_voucher_local_time">* Mengikuti waktu setempat.</string>
+    <string name="hotel_e_voucher_cancellation_policy_title">KETENTUAN PEMBATALAN</string>
 </resources>
