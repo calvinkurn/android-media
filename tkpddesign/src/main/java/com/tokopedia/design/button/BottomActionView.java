@@ -3,7 +3,10 @@ package com.tokopedia.design.button;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.annotation.DrawableRes;
+import android.support.v7.content.res.AppCompatResources;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -72,6 +75,13 @@ public class BottomActionView extends BaseCustomView {
         init();
     }
 
+    public Drawable getDrawable(Context context, int resId) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1)
+            return context.getResources().getDrawable(resId, context.getApplicationContext().getTheme());
+        else
+            return AppCompatResources.getDrawable(context, resId);
+    }
+
     private void init() {
         View view = inflate(getContext(), getLayout(), this);
         linearLayoutButton1 = view.findViewById(R.id.linear_layout_button_1);
@@ -86,11 +96,11 @@ public class BottomActionView extends BaseCustomView {
         TextView label2textView = (TextView) linearLayoutButton2.findViewById(R.id.text_view_label_2);
         vMark2 = linearLayoutButton2.findViewById(R.id.v_mark_2);
 
-        icon1ImageView.setImageResource(icon1Res);
+        setFirstImageDrawable(icon1Res);
         if (!TextUtils.isEmpty(label1)) {
             label1textView.setText(label1);
         }
-        icon2ImageView.setImageResource(icon2Res);
+        setSecondImageDrawable(icon2Res);
         if (!TextUtils.isEmpty(label2)) {
             label2textView.setText(label2);
         }
@@ -129,11 +139,11 @@ public class BottomActionView extends BaseCustomView {
     }
 
     public void setSecondImageDrawable(@DrawableRes int secondImageDrawable) {
-        icon2ImageView.setImageResource(secondImageDrawable);
+        icon2ImageView.setImageDrawable(getDrawable(icon2ImageView.getContext(),secondImageDrawable));
     }
 
     public void setFirstImageDrawable(@DrawableRes int secondImageDrawable) {
-        icon1ImageView.setImageResource(secondImageDrawable);
+        icon1ImageView.setImageDrawable(getDrawable(icon1ImageView.getContext(),secondImageDrawable));
     }
 
     public void setMarkLeft(boolean isVisible) {

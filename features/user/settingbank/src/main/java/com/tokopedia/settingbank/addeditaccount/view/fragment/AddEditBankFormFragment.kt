@@ -100,7 +100,8 @@ class AddEditBankFormFragment : AddEditBankContract.View,
                 presenter.validateBank(bankFormModel)
             }
         })
-
+        bank_name_et.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                MethodChecker.getDrawable(activity, R.drawable.ic_arrow_down_grey), null);
         bank_name_et.setOnClickListener({
             goToAddBank()
         })

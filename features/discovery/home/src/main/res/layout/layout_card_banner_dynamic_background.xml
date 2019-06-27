@@ -36,7 +36,6 @@
             android:id="@+id/overlay_round"
             android:layout_width="match_parent"
             android:layout_height="@dimen/banner_background_overlay_size"
-            android:background="@drawable/background_banner_image_mask"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
     </FrameLayout>

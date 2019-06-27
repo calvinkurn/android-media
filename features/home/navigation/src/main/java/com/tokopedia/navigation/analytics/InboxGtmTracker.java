@@ -63,7 +63,7 @@ public class InboxGtmTracker {
                 "varian", "none/other",
                 "category", recommendationItem.getDepartmentId(),
                 "list", "/inbox - rekomendasi untuk anda - "+recommendationItem.getRecommendationType(),
-                "position", position));
+                "position", String.valueOf(position)));
     }
 
     public void eventInboxProductClick(Context context, RecommendationItem recommendationItem, int position) {
@@ -77,14 +77,14 @@ public class InboxGtmTracker {
                     "ecommerce", DataLayer.mapOf(
                             "click", DataLayer.mapOf("actionField",
                                     DataLayer.mapOf("list", "/inbox - rekomendasi untuk anda - "+recommendationItem.getRecommendationType()),
-                                    "product", DataLayer.listOf(DataLayer.mapOf(
+                                    "products", DataLayer.listOf(DataLayer.mapOf(
                                             "name", recommendationItem.getName(),
                                             "id", recommendationItem.getProductId(),
                                             "price", recommendationItem.getPrice().replaceAll("[^0-9]", ""),
                                             "brand", "none/other",
-                                            "category", recommendationItem.getDepartmentId(),
+                                            "category", recommendationItem.getCategoryBreadcrumbs(),
                                             "varian", "none/other",
-                                            "position", position))))
+                                            "position", String.valueOf(position)))))
             );
             tracker.sendEnhanceEcommerceEvent(map);
         }

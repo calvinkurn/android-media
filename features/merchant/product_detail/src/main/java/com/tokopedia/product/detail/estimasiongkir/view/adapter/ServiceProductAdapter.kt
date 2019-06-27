@@ -31,14 +31,7 @@ class ServiceProductAdapter : RecyclerView.Adapter<ServiceProductAdapter.Service
     inner class ServiceProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun bind(product: ServiceProduct) {
-            if(product.texts.etd.isBlank()){
-                itemView.label_view.title = product.name
-            } else {
-                itemView.label_view.title = product.name
-                itemView.label_view.setSubTitle(itemView.context.getString(R.string.shipping_etd_text,
-                        if (product.status == 200) product.texts.etd else product.error.message))
-            }
-
+            itemView.label_view.title = product.name
             itemView.label_view.setContent(product.price.priceFmt)
         }
     }

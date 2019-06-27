@@ -28,6 +28,7 @@ public class GroupShop implements Parcelable {
     private boolean useInsurance;
     private String cartString;
     private boolean hasPromoList;
+    private boolean saveStateFlag;
 
     private boolean isFulfillment;
     private int fulfillmentId;
@@ -164,6 +165,14 @@ public class GroupShop implements Parcelable {
     public GroupShop() {
     }
 
+    public boolean isSaveStateFlag() {
+        return saveStateFlag;
+    }
+
+    public void setSaveStateFlag(boolean saveStateFlag) {
+        this.saveStateFlag = saveStateFlag;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -188,6 +197,7 @@ public class GroupShop implements Parcelable {
         dest.writeString(this.fulfillmentName);
         dest.writeString(cartString);
         dest.writeByte(this.hasPromoList ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.saveStateFlag ? (byte) 1 : (byte) 0);
     }
 
     protected GroupShop(Parcel in) {
@@ -208,6 +218,7 @@ public class GroupShop implements Parcelable {
         this.fulfillmentName = in.readString();
         this.cartString = in.readString();
         this.hasPromoList = in.readByte() != 0;
+        this.saveStateFlag = in.readByte() != 0;
     }
 
     public static final Creator<GroupShop> CREATOR = new Creator<GroupShop>() {

@@ -23,5 +23,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.userSession)
     implementation rootProject.ext.miscDependencies.dagger
+
     kapt rootProject.ext.miscDependencies.daggerCompiler
 }

@@ -135,14 +135,19 @@ class PlayPresenter @Inject constructor(
         )
     }
 
-    override fun openWebSocket(userSession: UserSessionInterface, channelId: String, groupChatToken: String, settingGroupChat: SettingGroupChat?) {
+    override fun openWebSocket(
+            userSession: UserSessionInterface,
+            channelId: String,
+            groupChatToken: String,
+            settingGroupChat: SettingGroupChat?,
+            refreshInfo: Boolean
+    ) {
         var settings = settingGroupChat ?: SettingGroupChat()
         processUrl(userSession, channelId, groupChatToken, settings)
-        connectWebSocket(userSession.userId, userSession.deviceId, userSession.accessToken, settings, groupChatToken)
-        Log.d("connectev", groupChatToken)
+        connectWebSocket(userSession.accessToken, settings, refreshInfo)
     }
 
-    private fun connectWebSocket(userId: String?, deviceId: String?, accessToken: String, settings: SettingGroupChat, groupChatToken: String) {
+    private fun connectWebSocket(accessToken: String, settings: SettingGroupChat, refreshInfo: Boolean) {
 
         mSubscription?.clear()
         if (mSubscription == null || mSubscription!!.isUnsubscribed) {
@@ -157,7 +162,7 @@ class PlayPresenter @Inject constructor(
                     Log.d("RxWebSocket Presenter", " on WebSocket open")
 //                    showDummy("onOpened $webSocketUrlWithToken", "logger open")
                 }
-                view.onOpenWebSocket()
+                view.onOpenWebSocket(refreshInfo)
             }
 
             override fun onMessage(text: String) {

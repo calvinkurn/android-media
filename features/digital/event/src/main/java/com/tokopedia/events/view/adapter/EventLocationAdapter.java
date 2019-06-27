@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.tokopedia.events.R;
 import com.tokopedia.events.view.viewmodel.EventLocationViewModel;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +56,8 @@ public class EventLocationAdapter extends RecyclerView.Adapter<EventLocationAdap
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.location_event_item, parent, false);
-
+        view.findViewById(R.id.indicator)
+                .setBackground(MethodChecker.getDrawable(view.getContext(), R.drawable.ic_placeholder));
         return new ViewHolder(view);
     }
 
