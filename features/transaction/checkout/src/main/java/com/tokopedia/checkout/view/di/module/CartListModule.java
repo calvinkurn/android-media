@@ -5,6 +5,8 @@ import android.support.v7.widget.RecyclerView;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
@@ -38,6 +40,8 @@ import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
+
+import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
@@ -123,9 +127,17 @@ public class CartListModule {
     }
 
     @Provides
+    @Named("recommendationQuery")
+    String provideRecommendationRawQuery(@ApplicationContext Context context) {
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.query_recommendation_widget);
+    }
+
+    @Provides
     @CartListScope
-    GetRecommendationUseCase provideGetRecommendationUseCase(GraphqlUseCase graphqlUseCase, UserSessionInterface userSessionInterface) {
-        return new GetRecommendationUseCase(cartListView.getActivity(), graphqlUseCase, userSessionInterface);
+    GetRecommendationUseCase provideGetRecommendationUseCase(@Named("recommendationQuery") String recomQuery,
+                                                             GraphqlUseCase graphqlUseCase,
+                                                             UserSessionInterface userSessionInterface) {
+        return new GetRecommendationUseCase(recomQuery, graphqlUseCase, userSessionInterface);
     }
 
     @Provides
