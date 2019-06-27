@@ -65,8 +65,7 @@ class RecommendationCardView : ProductCardView {
 
     override fun setRatingReviewCount(rating: Int, reviewCount: Int) {
         if (rating in 1..5) {
-            ratingView.visibility = View.VISIBLE
-            reviewCountView.visibility = View.VISIBLE
+            setRatingVisible()
             ratingView.setImageResource(getRatingDrawable(rating))
             reviewCountView.text = reviewCount.toString()
         } else {
@@ -78,6 +77,12 @@ class RecommendationCardView : ProductCardView {
                 reviewCountView.visibility = View.GONE
             }
         }
+    }
+
+    private fun setRatingVisible(){
+        ratingView.visibility = View.VISIBLE
+        reviewCountView.visibility = View.VISIBLE
+        ratingContainer.visibility = View.VISIBLE
     }
 
     interface TrackingListener {

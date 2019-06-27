@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -27,6 +28,7 @@ public class ProductCardView extends BaseCustomView {
     protected View wishlistButton;
     protected ImageView ratingView;
     protected TextView reviewCountView;
+    protected LinearLayout ratingContainer;
     protected int layout;
     protected boolean fixedHeight = false;
 
@@ -73,6 +75,7 @@ public class ProductCardView extends BaseCustomView {
         wishlistButton = view.findViewById(R.id.btn_wishlist);
         ratingView = view.findViewById(R.id.rating);
         reviewCountView = view.findViewById(R.id.review_count);
+        ratingContainer = view.findViewById(R.id.rating_review_container);
     }
 
     public void setTitle(String title) {
