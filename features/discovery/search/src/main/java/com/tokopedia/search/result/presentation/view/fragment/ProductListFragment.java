@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -961,7 +960,7 @@ public class ProductListFragment
                 if (itemView != null) {
                     showCaseList.add(
                             new ShowCaseObject(
-                                    itemView.findViewById(R.id.container),
+                                    itemView.findViewById(R.id.productCardView),
                                     getString(R.string.view_similar_item),
                                     getString(R.string.press_to_see_similar),
                                     ShowCaseContentPosition.BOTTOM));
