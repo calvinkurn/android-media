@@ -1,5 +1,6 @@
 package com.tokopedia.hotel.evoucher.presentation.fragment
 
+import android.app.ProgressDialog
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
@@ -36,7 +37,7 @@ import javax.inject.Inject
 /**
  * @author by furqan on 14/05/19
  */
-class HotelEVoucherFragment : HotelBaseFragment() {
+class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.SharePdfBottomSheetsListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -44,6 +45,8 @@ class HotelEVoucherFragment : HotelBaseFragment() {
 
     lateinit var orderId: String
     lateinit var cancellationPoliciesAdapter: HotelEVoucherCancellationPoliciesAdapter
+
+    lateinit var progressDialog: ProgressDialog
 
     override fun getScreenName(): String = ""
 
@@ -54,6 +57,9 @@ class HotelEVoucherFragment : HotelBaseFragment() {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             eVoucherViewModel = viewModelProvider.get(HotelEVoucherViewModel::class.java)
         }
+
+        progressDialog = ProgressDialog(context)
+        progressDialog.setCancelable(false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -67,6 +73,10 @@ class HotelEVoucherFragment : HotelBaseFragment() {
                 is Fail -> {
                 }
             }
+        })
+
+        eVoucherViewModel.sharePdfData.observe(this, Observer {
+            progressDialog.dismiss()
         })
     }
 
@@ -143,6 +153,7 @@ class HotelEVoucherFragment : HotelBaseFragment() {
 
     fun shareAsPdf() {
         val shareAsPdfBottomSheets = HotelSharePdfBottomSheets()
+        shareAsPdfBottomSheets.listener = this
         shareAsPdfBottomSheets.show(activity!!.supportFragmentManager, TAG_SHARE_AS_PDF)
     }
 
@@ -214,6 +225,12 @@ class HotelEVoucherFragment : HotelBaseFragment() {
     override fun onErrorRetryClicked() {
         eVoucherViewModel.getOrderDetail(GraphqlHelper.loadRawString(resources,
                 R.raw.gql_query_hotel_order_list_detail), orderId)
+    }
+
+    override fun sendPdf(emailList: MutableList<String>) {
+        progressDialog.show()
+        eVoucherViewModel.sendPdf(GraphqlHelper.loadRawString(resources,
+                R.raw.gql_mutation_hotel_share_pdf), emailList, orderId)
     }
 
     companion object {
