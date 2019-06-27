@@ -197,17 +197,17 @@
             android:label="@string/title_detail_feed"
             android:screenOrientation="portrait" />
 
-        <!--Init Firebase manually in Application class-->
-        <provider
-            android:name="com.google.firebase.provider.FirebaseInitProvider"
-            android:authorities="com.tokopedia.tkpd.firebaseinitprovider"
-            tools:node="remove" />
+        <!--&lt;!&ndash;Init Firebase manually in Application class&ndash;&gt;-->
+        <!--<provider-->
+            <!--android:name="com.google.firebase.provider.FirebaseInitProvider"-->
+            <!--android:authorities="com.tokopedia.tkpd.firebaseinitprovider"-->
+            <!--tools:node="remove" />-->
 
-        <!--Init Facebook manually in Application class-->
-        <provider
-            android:name="com.facebook.internal.FacebookInitProvider"
-            android:authorities="com.tokopedia.tkpd.FacebookInitProvider"
-            tools:node="remove" />
+        <!--&lt;!&ndash;Init Facebook manually in Application class&ndash;&gt;-->
+        <!--<provider-->
+            <!--android:name="com.facebook.internal.FacebookInitProvider"-->
+            <!--android:authorities="com.tokopedia.tkpd.FacebookInitProvider"-->
+            <!--tools:node="remove" />-->
 
         <provider
             android:name="com.facebook.FacebookContentProvider"

@@ -17,9 +17,10 @@ import android.support.v4.content.LocalBroadcastManager;
 
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.crashlytics.android.Crashlytics;
-import com.facebook.FacebookSdk;
+//import com.facebook.FacebookSdk;
 import com.facebook.soloader.SoLoader;
 import com.github.anrwatchdog.ANRWatchDog;
+//import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseApp;
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
@@ -146,7 +147,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         setVersionCode();
 
         FirebaseApp.initializeApp(this);
-        FacebookSdk.sdkInitialize(this);
+//        FacebookSdk.sdkInitialize(this);
 //        FirebaseApp.initializeApp(this);
 //        FacebookSdk.sdkInitialize(this);
 
