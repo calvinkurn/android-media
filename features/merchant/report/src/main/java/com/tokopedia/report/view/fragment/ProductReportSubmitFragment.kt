@@ -103,8 +103,8 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
         tracking.eventReportLaporDisclaimer(adapter.trackingReasonLabel, isSuccess)
         loading_view?.gone()
         if (!isSuccess){
-            view?.let {
-                Toaster.showRedWithAction(it, getString(R.string.fail_to_report),
+            activity?.let {
+                Toaster.showErrorWithAction(it, getString(R.string.fail_to_report),
                         Snackbar.LENGTH_LONG, getString(R.string.OK), View.OnClickListener {})
             }
         } else {
@@ -122,8 +122,8 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
     private fun onFailSubmit(throwable: Throwable?){
         loading_view?.gone()
         tracking.eventReportLaporDisclaimer(adapter.trackingReasonLabel, false)
-        view?.let {
-            Toaster.showRedWithAction(it, ErrorHandler.getErrorMessage(it.context, throwable),
+        activity?.let {
+            Toaster.showErrorWithAction(it, ErrorHandler.getErrorMessage(it, throwable),
                     Snackbar.LENGTH_LONG, getString(R.string.OK), View.OnClickListener {})
         }
     }

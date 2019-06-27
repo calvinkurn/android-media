@@ -1392,7 +1392,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun showToastSuccessReport() {
         activity?.run {
-            Toaster.showGreen(findViewById(android.R.id.content),
+            Toaster.showNormal(this,
                     getString(R.string.success_to_report), Snackbar.LENGTH_LONG)
         }
     }
