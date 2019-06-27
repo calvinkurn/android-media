@@ -1,4 +1,4 @@
-package com.tokopedia.productcard;
+package com.tokopedia.productcard.v2;
 
 import android.content.Context;
 import android.graphics.Paint;
@@ -18,11 +18,12 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.base.BaseCustomView;
+import com.tokopedia.productcard.R;
 import com.tokopedia.topads.sdk.domain.model.ImpressHolder;
 import com.tokopedia.topads.sdk.view.ImpressedImageView;
 import com.tokopedia.unifycomponents.Label;
 
-public abstract class ProductCardViewSearch extends BaseCustomView {
+public abstract class ProductCardView extends BaseCustomView {
 
     protected static final String LIGHT_GREY = "lightGrey";
     protected static final String LIGHT_BLUE = "lightBlue";
@@ -52,17 +53,17 @@ public abstract class ProductCardViewSearch extends BaseCustomView {
     protected TextView textShopName;
     protected Label offersLabel;
 
-    public ProductCardViewSearch(@NonNull Context context) {
+    public ProductCardView(@NonNull Context context) {
         super(context);
         init();
     }
 
-    public ProductCardViewSearch(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public ProductCardView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public ProductCardViewSearch(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ProductCardView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
@@ -89,14 +90,6 @@ public abstract class ProductCardViewSearch extends BaseCustomView {
 
         textName.setLineSpacing(0f, 1f);
     }
-
-//    protected int getLayout() {
-//        return 0;
-//    }
-//
-//    public void realignLayout() {
-//
-//    }
 
     protected abstract int getLayout();
 
