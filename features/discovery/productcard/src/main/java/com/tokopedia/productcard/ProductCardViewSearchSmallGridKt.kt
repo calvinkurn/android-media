@@ -4,7 +4,7 @@ import android.content.Context
 import android.support.annotation.LayoutRes
 import android.util.AttributeSet
 
-class ProductCardViewSearchSmallGrid : ProductCardViewSearch {
+class ProductCardViewSearchSmallGridKt : ProductCardViewSearch {
 
     constructor(context: Context): super(context)
 

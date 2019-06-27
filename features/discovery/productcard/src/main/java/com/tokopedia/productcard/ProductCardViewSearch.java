@@ -90,6 +90,14 @@ public abstract class ProductCardViewSearch extends BaseCustomView {
         textName.setLineSpacing(0f, 1f);
     }
 
+//    protected int getLayout() {
+//        return 0;
+//    }
+//
+//    public void realignLayout() {
+//
+//    }
+
     protected abstract int getLayout();
 
     public abstract void realignLayout();
