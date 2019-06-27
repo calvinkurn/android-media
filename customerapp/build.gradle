@@ -102,6 +102,9 @@ buildscript {
         mavenCentral()
         jcenter()
         maven { url 'https://hansel.io/maven' }
+        maven {
+            url 'https://jitpack.io'
+        }
         flatDir {
             dirs project(rootProject.ext.libraries.inappupdate).file('libs')
         }
@@ -551,7 +554,7 @@ dependencies {
     implementation project(rootProject.ext.features.referral)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation project(rootProject.ext.features.kyc)
-    implementation 'com.github.markzhai:blockcanary-android:1.5.0'
+    implementation 'com.github.okasurya:AndroidPerformanceMonitor:1.4.3'
 }
 
 
