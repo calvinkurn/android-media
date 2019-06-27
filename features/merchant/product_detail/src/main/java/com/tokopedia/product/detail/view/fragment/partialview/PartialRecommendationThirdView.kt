@@ -22,7 +22,6 @@ class PartialRecommendationThirdView private constructor(private val view: View,
 
     override fun getView(): View = view.base_recom_3
 
-
     override fun getRecyclerView(): RecyclerView = view.product_recom_3
 
     override fun getLayoutProgress(): ProgressBar = view.loading_recom_3
