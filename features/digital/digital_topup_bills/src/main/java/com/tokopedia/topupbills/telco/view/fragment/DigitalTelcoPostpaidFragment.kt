@@ -2,16 +2,21 @@ package com.tokopedia.topupbills.telco.view.fragment
 
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
-import android.widget.Toast
+import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topupbills.R
+import com.tokopedia.topupbills.generateRechargeCheckoutToken
 import com.tokopedia.topupbills.telco.data.*
+import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.view.activity.DigitalSearchNumberActivity
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
@@ -21,6 +26,7 @@ import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoEnquiryViewMode
 import com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
 import com.tokopedia.topupbills.telco.view.widget.DigitalPostpaidClientNumberWidget
 import com.tokopedia.topupbills.telco.view.widget.DigitalTelcoBuyWidget
+import com.tokopedia.unifycomponents.Toaster
 
 /**
  * Created by nabillasabbaha on 06/05/19.
@@ -152,12 +158,16 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
             postpaidClientNumberWidget.setIconOperator(operatorSelected.operator.attributes.imageUrl)
 
         } catch (exception: Exception) {
-            Toast.makeText(activity, "error exception", Toast.LENGTH_SHORT).show()
+            view?.run {
+                Toaster.showRed(this, ErrorHandler.getErrorMessage(activity, exception), Snackbar.LENGTH_LONG)
+            }
         }
     }
 
     override fun onErrorCustomData(throwable: Throwable) {
-        Toast.makeText(activity, "input filter " + throwable.message, Toast.LENGTH_SHORT).show()
+        view?.run {
+            Toaster.showRed(this, ErrorHandler.getErrorMessage(activity, throwable), Snackbar.LENGTH_LONG)
+        }
     }
 
     override fun onLoadingMenuDetail(showLoading: Boolean) {
@@ -176,12 +186,20 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         postpaidClientNumberWidget.showEnquiryResultPostpaid(telcoEnquiryData)
         recentNumbersView.visibility = View.GONE
         promoListView.visibility = View.GONE
+
         buyWidget.setTotalPrice(telcoEnquiryData.enquiry.attributes.price)
         buyWidget.setVisibilityLayout(true)
+        buyWidget.setListener(object : DigitalTelcoBuyWidget.ActionListener {
+            override fun onClickNextBuyButton() {
+                processToCart()
+            }
+        })
     }
 
     fun onErrorEnquiry(throwable: Throwable) {
-        Toast.makeText(activity, "enquiry " + throwable.message, Toast.LENGTH_SHORT).show()
+        view?.run {
+            Toaster.showRed(this, ErrorHandler.getErrorMessage(activity, throwable), Snackbar.LENGTH_LONG)
+        }
     }
 
     override fun setInputNumberFromContact(contactNumber: String) {
@@ -217,6 +235,12 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         favNumberList.addAll(data.favNumber.favNumberList)
     }
 
+    override fun showErrorCartDigital(message: String) {
+        view?.run {
+            Toaster.showRed(this, message, Snackbar.LENGTH_LONG)
+        }
+    }
+
     override fun onDestroy() {
         enquiryViewModel.clear()
         super.onDestroy()
@@ -225,6 +249,22 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     override fun onResume() {
         super.onResume()
         postpaidClientNumberWidget.clearFocus()
+
+        checkoutPassData = DigitalCheckoutPassData.Builder()
+                .action(DigitalCheckoutPassData.DEFAULT_ACTION)
+                .categoryId(TelcoCategoryType.CATEGORY_PASCABAYAR.toString())
+                .clientNumber(postpaidClientNumberWidget.getInputNumber())
+                .instantCheckout("0")
+                .isPromo("0")
+                .operatorId(operatorSelected.operator.id)
+                .productId(operatorSelected.operator.attributes.defaultProductId.toString())
+                .utmCampaign(TelcoCategoryType.CATEGORY_PASCABAYAR.toString())
+                .utmContent(GlobalConfig.VERSION_NAME)
+                .idemPotencyKey(userSession.userId.generateRechargeCheckoutToken())
+                .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
+                .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
+                .voucherCodeCopied("")
+                .build()
     }
 
     companion object {

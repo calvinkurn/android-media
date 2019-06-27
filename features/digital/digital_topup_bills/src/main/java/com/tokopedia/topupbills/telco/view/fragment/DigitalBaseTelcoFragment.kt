@@ -9,12 +9,18 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.provider.ContactsContract
 import android.support.v4.widget.NestedScrollView
+import android.text.TextUtils
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.design.component.ticker.TickerView
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
@@ -27,6 +33,7 @@ import com.tokopedia.topupbills.telco.view.viewmodel.TelcoCatalogMenuDetailViewM
 import com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
 import com.tokopedia.topupbills.telco.view.widget.DigitalPromoListWidget
 import com.tokopedia.topupbills.telco.view.widget.DigitalRecentTransactionWidget
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
@@ -38,9 +45,12 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
     protected lateinit var tickerView: TickerView
     protected lateinit var recentNumbersView: DigitalRecentTransactionWidget
     protected lateinit var promoListView: DigitalPromoListWidget
+    protected lateinit var checkoutPassData: DigitalCheckoutPassData
     private lateinit var customViewModel: DigitalTelcoCustomViewModel
     private lateinit var catalogMenuDetailViewModel: TelcoCatalogMenuDetailViewModel
 
+    @Inject
+    lateinit var userSession: UserSessionInterface
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
     @Inject
@@ -173,6 +183,21 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
         }
     }
 
+    fun processToCart() {
+        if (userSession.isLoggedIn) {
+            navigateToCart()
+        } else {
+            val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
+            startActivityForResult(intent, REQUEST_CODE_LOGIN)
+        }
+    }
+
+    fun navigateToCart() {
+        val intent = RouteManager.getIntent(activity, ApplinkConsInternalDigital.CART_DIGITAL)
+        intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, checkoutPassData)
+        startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL)
+    }
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         context?.run {
@@ -197,10 +222,23 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
                     } else {
                         handleCallbackSearchNumberCancel()
                     }
+                } else if (requestCode == REQUEST_CODE_CART_DIGITAL) {
+                    if (data.hasExtra(DigitalExtraParam.EXTRA_MESSAGE)) {
+                        val message = data.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE)
+                        if (!TextUtils.isEmpty(message)) {
+                            showErrorCartDigital(message)
+                        }
+                    }
+                } else if (requestCode == REQUEST_CODE_LOGIN) {
+                    if (userSession.isLoggedIn && ::checkoutPassData.isInitialized) {
+                        navigateToCart()
+                    }
                 }
             }
         }
     }
+
+    protected abstract fun showErrorCartDigital(message: String)
 
     protected abstract fun handleCallbackSearchNumber(orderClientNumber: TelcoFavNumber)
 
@@ -250,5 +288,7 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
     companion object {
         val REQUEST_CODE_DIGITAL_SEARCH_NUMBER = 77
         val REQUEST_CODE_CONTACT_PICKER = 78
+        val REQUEST_CODE_LOGIN = 1010
+        val REQUEST_CODE_CART_DIGITAL = 1090
     }
 }
