@@ -400,8 +400,6 @@ public class ViewEngine {
     }
 
     private float getPXtoDP(float dip) {
-        appContext.p
-
         return dip * ((float) appContext.getResources().getDisplayMetrics().densityDpi
                 / DisplayMetrics.DENSITY_DEFAULT);
 
