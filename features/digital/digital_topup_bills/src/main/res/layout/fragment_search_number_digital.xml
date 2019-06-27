@@ -23,7 +23,7 @@
 
 
             <EditText
-                android:id="@+id/edittext_search_number"
+                android:id="@+id/editTextSearchNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@null"
@@ -37,7 +37,7 @@
                 android:textSize="@dimen/sp_14" />
 
             <Button
-                android:id="@+id/btn_clear_number_telco"
+                android:id="@+id/btnClearNumber"
                 android:layout_width="@dimen/dp_25"
                 android:layout_height="@dimen/dp_25"
                 android:layout_gravity="end|center"
@@ -49,7 +49,7 @@
         </FrameLayout>
 
         <LinearLayout
-            android:id="@+id/contact_picker_layout"
+            android:id="@+id/btnContactPicker"
             android:layout_width="0dp"
             android:layout_height="@dimen/dp_44"
             android:layout_gravity="bottom"
@@ -74,7 +74,7 @@
         android:background="#f3f4f5"/>
     
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerview_number_list"
+        android:id="@+id/rvNumberList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"

@@ -9,7 +9,6 @@ import android.os.Parcelable
 import android.provider.ContactsContract
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.text.InputType
 import android.text.TextUtils
@@ -19,8 +18,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.Button
-import android.widget.EditText
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -32,15 +29,12 @@ import com.tokopedia.topupbills.telco.data.constant.TelcoFavNumberType
 import com.tokopedia.topupbills.telco.view.adapter.NumberListAdapter
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
 import com.tokopedia.topupbills.telco.view.model.DigitalFavNumber
+import kotlinx.android.synthetic.main.fragment_search_number_digital.*
 import java.util.*
 import javax.inject.Inject
 
 class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnClientNumberClickListener {
 
-    private lateinit var rvNumberList: RecyclerView
-    private lateinit var editTextSearchNumber: EditText
-    private lateinit var btnClearNumber: Button
-    private lateinit var btnContactPicker: Button
     private lateinit var callback: OnClientNumberClickListener
     private lateinit var numberListAdapter: NumberListAdapter
     private lateinit var clientNumbers: List<TelcoFavNumber>
@@ -89,11 +83,6 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnCl
     }
 
     private fun initView(view: View) {
-        rvNumberList = view.findViewById(R.id.recyclerview_number_list)
-        editTextSearchNumber = view.findViewById(R.id.edittext_search_number)
-        btnClearNumber = view.findViewById(R.id.btn_clear_number_telco)
-        btnContactPicker = view.findViewById(R.id.btn_contact_picker_telco)
-
         setClientNumberInputType()
 
         if (TextUtils.isEmpty(number)) {
