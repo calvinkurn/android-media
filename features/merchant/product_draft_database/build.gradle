@@ -1,8 +1,15 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 android {
+    configurations {
+        all {
+            resolutionStrategy {
+                force "android.arch.core:runtime:1.1.1"
+            }
+        }
+    }
     defaultConfig {
         javaCompileOptions {
             annotationProcessorOptions {
@@ -30,9 +37,9 @@ buildscript {
 }
 
 dependencies {
-    annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
-    implementation rootProject.ext.dbDependencies.dbFlowCore
-    implementation rootProject.ext.dbDependencies.dbFlow
+    implementation rootProject.ext.dbDependencies.dbRoomRuntime
+    kapt rootProject.ext.dbDependencies.dbRoomCompiler
+    androidTestApi rootProject.ext.dbDependencies.dbRoomTesting
 }
 
 apply from: '../../../publish_local.gradle'

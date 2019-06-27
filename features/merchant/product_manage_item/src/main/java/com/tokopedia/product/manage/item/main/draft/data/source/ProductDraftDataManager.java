@@ -1,12 +1,9 @@
 package com.tokopedia.product.manage.item.main.draft.data.source;
 
-import com.raizlabs.android.dbflow.sql.language.Delete;
-import com.raizlabs.android.dbflow.sql.language.Method;
-import com.raizlabs.android.dbflow.sql.language.Select;
-import com.raizlabs.android.dbflow.sql.language.Update;
 import com.tokopedia.product.manage.item.common.util.DraftNotFoundException;
-import com.tokopedia.productdraftdatabase.ProductDraftDataBase;
-import com.tokopedia.productdraftdatabase.ProductDraftDataBase_Table;
+import com.tokopedia.productdraftdatabase.DBMetaData;
+import com.tokopedia.productdraftdatabase.ProductDraft;
+import com.tokopedia.productdraftdatabase.ProductDraftDao;
 
 import java.util.List;
 
@@ -20,126 +17,109 @@ import rx.Observable;
 
 public class ProductDraftDataManager {
 
+    private ProductDraftDao productDraftDao;
+
     @Inject
-    public ProductDraftDataManager() {
+    public ProductDraftDataManager(ProductDraftDao productDraftDao) {
+        this.productDraftDao = productDraftDao;
     }
 
     public Observable<Long> saveDraft(String json, boolean isUploading, String shopId){
-        ProductDraftDataBase productDraftDataBase = new ProductDraftDataBase();
-        productDraftDataBase.setData(json);
-        productDraftDataBase.setUploading(isUploading);
-        productDraftDataBase.setShopId(shopId);
-        productDraftDataBase.setVersion(ProductDraftDataBase.CURRENT_VERSION);
-        productDraftDataBase.save();
-        return Observable.just(productDraftDataBase.getId());
+        return Observable.fromCallable(() ->{
+            ProductDraft productDraft = new ProductDraft();
+            productDraft.setData(json);
+            productDraft.setUploading(isUploading);
+            productDraft.setShopId(shopId);
+            productDraft.setVersion(DBMetaData.DB_VERSION);
+            return productDraftDao.insertSingle(productDraft);
+        });
     }
 
-    public Observable<ProductDraftDataBase> getDraft(long productId) {
-        ProductDraftDataBase productDraftDatabase =
-                new Select()
-                        .from(ProductDraftDataBase.class)
-                        .where(ProductDraftDataBase_Table.id.is(productId))
-                        .querySingle();
-        if (productDraftDatabase == null){
-            return Observable.error(new DraftNotFoundException());
-        } else {
-            return Observable.just(productDraftDatabase);
-        }
+    public Observable<ProductDraft> getDraft(long productId) {
+        return Observable.fromCallable(()->{
+            ProductDraft draft = productDraftDao.getSingleDraft(productId);
+            if (draft == null){
+                throw new DraftNotFoundException();
+            }
+            return draft;
+        });
     }
 
-    public Observable<List<ProductDraftDataBase>> getAllDraft(String userId) {
-        return Observable.just( new Select()
-                .from(ProductDraftDataBase.class)
-                .where(ProductDraftDataBase_Table.is_uploading.is(false))
-                .and(ProductDraftDataBase_Table.shopId.is(userId))
-                .queryList());
+    public Observable<List<ProductDraft>> getAllDraft(String userId) {
+        return Observable.fromCallable(()-> productDraftDao.getMyDrafts(userId));
     }
 
     public Observable<Long> getAllDraftCount(String userId) {
-        return Observable.just( new Select(Method.count())
-                .from(ProductDraftDataBase.class)
-                .where(ProductDraftDataBase_Table.is_uploading.is(false))
-                .and(ProductDraftDataBase_Table.shopId.is(userId))
-                .count());
+        return Observable.fromCallable(()-> productDraftDao.getMyDraftsCount(userId))
+                .map(Integer::longValue);
     }
 
     public Observable<Boolean> clearAllDraft(String userId){
-        new Delete().from(ProductDraftDataBase.class)
-                .where(ProductDraftDataBase_Table.shopId.is(userId)).execute();
-        return Observable.just(true);
+        return Observable.fromCallable(()-> {
+            productDraftDao.deleteMyDrafts(userId);
+            return true;
+        });
     }
 
     public Observable<Boolean> deleteDeraft(long productId) {
-        ProductDraftDataBase productDraftDataBase = new Select()
-                .from(ProductDraftDataBase.class)
-                .where(ProductDraftDataBase_Table.id.is(productId))
-                .querySingle();
-        if (productDraftDataBase != null) {
-            productDraftDataBase.delete();
-            return Observable.just(true);
-        }
-        return Observable.just(false);
+        return Observable.fromCallable(() -> {
+            ProductDraft draft = new ProductDraft();
+            draft.setId(productId);
+            productDraftDao.deleteDraft(draft);
+            return true;
+        });
     }
 
     public Observable<Long> updateDraft(long productId, String draftData) {
-        ProductDraftDataBase productDraftDataBase = new Select()
-                .from(ProductDraftDataBase.class)
-                .where(ProductDraftDataBase_Table.id.is(productId))
-                .querySingle();
-        if (productDraftDataBase != null){
-            productDraftDataBase.setData(draftData);
-            productDraftDataBase.setVersion(ProductDraftDataBase.CURRENT_VERSION);
-            productDraftDataBase.save();
-            return Observable.just(productDraftDataBase.getId());
-        } else {
-            return Observable.error(new DraftNotFoundException());
-        }
+        return getDraft(productId).map(productDraft -> {
+            productDraft.setData(draftData);
+            productDraft.setVersion(DBMetaData.DB_VERSION);
+            return productDraft;
+        }).map(productDraft -> {
+            long id = productDraftDao.updateSingle(productDraft);
+            if (id < 1) throw new DraftNotFoundException();
+            return id;
+        });
     }
 
     public Observable<Long> updateDraft(long draftProductId, String draftData, boolean isUploading) {
-        ProductDraftDataBase productDraftDataBase = new Select()
-                .from(ProductDraftDataBase.class)
-                .where(ProductDraftDataBase_Table.id.is(draftProductId))
-                .querySingle();
-        if (productDraftDataBase != null){
-            productDraftDataBase.setData(draftData);
-            productDraftDataBase.setUploading(isUploading);
-            productDraftDataBase.setVersion(ProductDraftDataBase.CURRENT_VERSION);
-            productDraftDataBase.save();
-            return Observable.just(productDraftDataBase.getId());
-        } else {
-            return Observable.error(new DraftNotFoundException());
-        }
+        return getDraft(draftProductId).map(productDraft -> {
+            productDraft.setData(draftData);
+            productDraft.setUploading(isUploading);
+            productDraft.setVersion(DBMetaData.DB_VERSION);
+            return productDraft;
+        }).map(productDraft -> {
+            long id = productDraftDao.updateSingle(productDraft);
+            if (id < 1) throw new DraftNotFoundException();
+            return id;
+        });
     }
 
     public Observable<Boolean> updateUploadingStatusDraft(long productId, boolean isUploading) {
-        if (productId != 0){
-            ProductDraftDataBase productDraftDataBase = new Select()
-                    .from(ProductDraftDataBase.class)
-                    .where(ProductDraftDataBase_Table.id.is(productId))
-                    .querySingle();
-            if (productDraftDataBase != null){
-                productDraftDataBase.setUploading(isUploading);
-                productDraftDataBase.save();
-                return Observable.just(true);
-            } else {
-                return Observable.error(new DraftNotFoundException());
-            }
-        } else { // update all isUploading
-            new Update<>(ProductDraftDataBase.class)
-                    .set(ProductDraftDataBase_Table.is_uploading.eq(isUploading))
-                    .where(ProductDraftDataBase_Table.is_uploading.is(!isUploading))
-                    .execute();
-            return Observable.just(true);
-        }
+        return Observable.just(productId)
+                .switchMap(pid -> {
+                    if (pid > 0){
+                        return getDraft(productId).map(productDraft -> {
+                           if (productDraft == null)
+                               throw new DraftNotFoundException();
+                           productDraft.setUploading(isUploading);
+                           productDraftDao.updateSingle(productDraft);
+                           return true;
+                        });
+                    } else {
+                        return Observable.fromCallable(() -> {
+                            productDraftDao.updateLoadingForAll(!isUploading, isUploading);
+                            return true;
+                        });
+                    }
+                });
     }
 
     public Observable<Boolean> updateBlankShopIdDraft(String shopId) {
-        new Update<>(ProductDraftDataBase.class)
-                .set(ProductDraftDataBase_Table.shopId.eq(shopId))
-                .where(ProductDraftDataBase_Table.shopId.isNull())
-                .execute();
-        return Observable.just(true);
+        return Observable.fromCallable(() -> {
+            productDraftDao.updateShopIdFromNullShopId(shopId);
+            return true;
+        });
     }
 
 }

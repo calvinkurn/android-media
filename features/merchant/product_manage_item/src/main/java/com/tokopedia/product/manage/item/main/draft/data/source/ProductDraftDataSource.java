@@ -1,6 +1,6 @@
 package com.tokopedia.product.manage.item.main.draft.data.source;
 
-import com.tokopedia.productdraftdatabase.ProductDraftDataBase;
+import com.tokopedia.productdraftdatabase.ProductDraft;
 
 import java.util.List;
 
@@ -25,11 +25,11 @@ public class ProductDraftDataSource {
         return productDraftDataManager.saveDraft(productDraftDataBase, isUploading, shopId);
     }
 
-    public Observable<ProductDraftDataBase> getDraft(long productId) {
+    public Observable<ProductDraft> getDraft(long productId) {
         return productDraftDataManager.getDraft(productId);
     }
 
-    public Observable<List<ProductDraftDataBase>> getAllDraft(String shopId) {
+    public Observable<List<ProductDraft>> getAllDraft(String shopId) {
         updateBlankShopId(shopId);
         return productDraftDataManager.getAllDraft(shopId);
     }

@@ -38,6 +38,8 @@ import com.tokopedia.product.manage.item.variant.data.repository.ProductVariantR
 import com.tokopedia.product.manage.item.variant.data.repository.ProductVariantRepositoryImpl;
 import com.tokopedia.product.manage.item.variant.data.source.ProductVariantDataSource;
 import com.tokopedia.product.manage.item.video.data.source.FetchVideoEditProductDataSource;
+import com.tokopedia.productdraftdatabase.ProductDraftDBCreation;
+import com.tokopedia.productdraftdatabase.ProductDraftDao;
 
 import dagger.Module;
 import dagger.Provides;
@@ -132,5 +134,11 @@ public class AddProductserviceModule {
     @Provides
     FetchDraftProductUseCase provideFetchDraftProductUseCase(ProductDraftRepository productDraftRepository) {
         return new FetchDraftProductUseCase(productDraftRepository);
+    }
+
+    @AddProductServiceScope
+    @Provides
+    ProductDraftDao provideProductDraftDao(@ApplicationContext Context context){
+        return ProductDraftDBCreation.getProductDraftDao(context);
     }
 }

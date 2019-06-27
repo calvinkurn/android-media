@@ -7,12 +7,12 @@ import com.tokopedia.product.manage.item.main.draft.data.repository.ProductDraft
 import com.tokopedia.product.manage.item.main.draft.data.source.ProductDraftDataSource;
 import com.tokopedia.product.manage.item.main.draft.domain.ProductDraftRepository;
 import com.tokopedia.product.manage.item.main.draft.domain.UpdateUploadingDraftProductUseCase;
+import com.tokopedia.productdraftdatabase.ProductDraftDBCreation;
+import com.tokopedia.productdraftdatabase.ProductDraftDao;
 import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductCountUseCase;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListCountPresenter;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListCountPresenterImpl;
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -37,5 +37,11 @@ public class ProductDraftListCountModule{
                                                          UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase){
         return new ProductDraftListCountPresenterImpl(fetchAllDraftProductCountUseCase,
                 clearAllDraftProductUseCase, updateUploadingDraftProductUseCase);
+    }
+
+    @ProductManageScope
+    @Provides
+    ProductDraftDao provideProductDraftDao(@ApplicationContext Context context){
+        return ProductDraftDBCreation.getProductDraftDao(context);
     }
 }

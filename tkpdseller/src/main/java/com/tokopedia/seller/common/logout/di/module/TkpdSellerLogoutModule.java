@@ -17,6 +17,8 @@ import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.product.manage.item.main.draft.data.repository.ProductDraftRepositoryImpl;
 import com.tokopedia.product.manage.item.main.draft.data.source.ProductDraftDataSource;
 import com.tokopedia.product.manage.item.main.draft.domain.ProductDraftRepository;
+import com.tokopedia.productdraftdatabase.ProductDraftDBCreation;
+import com.tokopedia.productdraftdatabase.ProductDraftDao;
 import com.tokopedia.seller.common.logout.di.scope.TkpdSellerLogoutScope;
 import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
 import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepositoryImpl;
@@ -52,6 +54,12 @@ public class TkpdSellerLogoutModule {
     @Provides
     ProductDraftRepository provideProductDraftRepository(ProductDraftDataSource dataSource, @ApplicationContext Context context){
         return new ProductDraftRepositoryImpl(dataSource, context);
+    }
+
+    @TkpdSellerLogoutScope
+    @Provides
+    ProductDraftDao provideProductDraftDao(@ApplicationContext Context context){
+        return ProductDraftDBCreation.getProductDraftDao(context);
     }
 
     @TkpdSellerLogoutScope
