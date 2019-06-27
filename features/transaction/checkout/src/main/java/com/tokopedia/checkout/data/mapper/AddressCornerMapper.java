@@ -86,26 +86,4 @@ public class AddressCornerMapper implements Func1<AddressCornerResponse, PeopleA
         return result;
     }
 
-    public static RecipientAddressModel converToCartModel(CornerAddressModel cornerModel, String defaultId) {
-        return new RecipientAddressModel.Builder()
-                .id(defaultId)
-                .cornerId(String.valueOf(cornerModel.getCornerId()))
-                .addressName(ADDRESS_NAME_SAMPAI)
-                .cityName(cornerModel.getDistrictName())
-                .street(cornerModel.getCornerBranchName())
-                .recipientName(cornerModel.getRecipientFullName())
-                .destinationDistrictName(cornerModel.getCornerName())
-                .recipientPhoneNumber("")
-                .provinceName(cornerModel.getCityName())
-                .cityId(cornerModel.getCityId())
-                .destinationDistrictId(cornerModel.getDistrictId())
-                .provinceId(cornerModel.getProvinceId())
-                .postalCode(cornerModel.getPostalCode())
-                .latitude(cornerModel.getLatitude())
-                .longitude(cornerModel.getLongitude())
-                .userCornerId(cornerModel.getUserCornerId())
-                .isCornerAddress(true)
-                .isDisableMultipleAddress(true)
-                .build();
-    }
 }

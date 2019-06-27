@@ -51,8 +51,8 @@ class AddressListPresenter
     }
 
     override fun loadMore() {
-//         Always true until has_next property is ready from backend, still works fine
-//         if (!mHasNext) return
+        // Always true until has_next property is ready from backend, still works fine
+        // if (!mHasNext) return
         usecase.loadMore(mCurrentQuery, mCurrentPage + 1)
                 .doOnSubscribe { mView?.showLoading() }
                 .doOnTerminate {
