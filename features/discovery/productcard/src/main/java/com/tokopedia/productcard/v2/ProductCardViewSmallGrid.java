@@ -37,53 +37,53 @@ public class ProductCardViewSmallGrid extends ProductCardView {
 
     private void setTitleMarginTop() {
         int marginTopPixel =
-                isViewVisible(textShopName)
+                isViewVisible(textViewShopName)
                         ? getDimensionPixelSize(R.dimen.dp_2)
                         : getDimensionPixelSize(R.dimen.dp_8);
 
-        setMarginsToView(textName, -1, marginTopPixel, -1, -1);
+        setMarginsToView(textViewProductName, -1, marginTopPixel, -1, -1);
     }
 
 
     private void setPriceMarginTop() {
         int marginTopPixel =
-                isViewVisible(textShopName)
+                isViewVisible(textViewShopName)
                         ? getDimensionPixelSize(R.dimen.dp_2)
                         : getDimensionPixelSize(R.dimen.dp_4);
 
-        setMarginsToView(textPrice, -1, marginTopPixel, -1, -1);
+        setMarginsToView(textViewPrice, -1, marginTopPixel, -1, -1);
     }
 
     private void setLocationMarginLeft() {
         int marginLeftPixel =
-            isViewVisible(shopBadgesContainer)
+            isViewVisible(linearLayoutShopBadges)
                     ? getDimensionPixelSize(R.dimen.dp_4)
                     : getDimensionPixelSize(R.dimen.dp_8);
 
-        setMarginsToView(textLocation, marginLeftPixel, -1, -1, -1);
+        setMarginsToView(textViewShopLocation, marginLeftPixel, -1, -1, -1);
     }
 
     private void setReviewCountMarginLeft() {
         int marginLeftPixel =
-            isViewVisible(reviewCountView)
+            isViewVisible(textViewReviewCount)
                     ? getDimensionPixelSize(R.dimen.dp_4)
                     : getDimensionPixelSize(R.dimen.dp_8);
 
-        setMarginsToView(reviewCountView, marginLeftPixel, -1, -1, -1);
+        setMarginsToView(textViewReviewCount, marginLeftPixel, -1, -1, -1);
     }
 
     private void setOffersLabelConstraint() {
-        if(isViewVisible(credibilityLabel)) {
-            setViewConstraintTopToBottomOf(offersLabel.getId(), credibilityLabel.getId(), R.dimen.dp_4);
+        if(isViewVisible(labelCredibility)) {
+            setViewConstraintTopToBottomOf(labelOffers.getId(), labelCredibility.getId(), R.dimen.dp_4);
         }
-        else if(isViewVisible(ratingView)) {
-            setViewConstraintTopToBottomOf(offersLabel.getId(), ratingView.getId(), R.dimen.dp_4);
+        else if(isViewVisible(imageRating)) {
+            setViewConstraintTopToBottomOf(labelOffers.getId(), imageRating.getId(), R.dimen.dp_4);
         }
-        else if(isViewVisible(reviewCountView)) {
-            setViewConstraintTopToBottomOf(offersLabel.getId(), reviewCountView.getId(), R.dimen.dp_4);
+        else if(isViewVisible(textViewReviewCount)) {
+            setViewConstraintTopToBottomOf(labelOffers.getId(), textViewReviewCount.getId(), R.dimen.dp_4);
         }
         else {
-            setViewConstraintTopToBottomOf(offersLabel.getId(), textLocation.getId(), R.dimen.dp_4);
+            setViewConstraintTopToBottomOf(labelOffers.getId(), textViewShopLocation.getId(), R.dimen.dp_4);
         }
     }
 }

@@ -22,6 +22,7 @@ import com.tokopedia.productcard.R;
 import com.tokopedia.topads.sdk.domain.model.ImpressHolder;
 import com.tokopedia.topads.sdk.view.ImpressedImageView;
 import com.tokopedia.unifycomponents.Label;
+import com.tokopedia.unifyprinciples.Typography;
 
 public abstract class ProductCardView extends BaseCustomView {
 
@@ -36,22 +37,22 @@ public abstract class ProductCardView extends BaseCustomView {
     protected static final String DARK_RED = "darkRed";
     protected static final String DARK_ORANGE = "darkOrange";
 
-    protected ConstraintLayout productCardConstraintLayout;
-    protected TextView textName;
-    protected TextView textPrice;
-    protected TextView textDiscount;
-    protected TextView textSlashedPrice;
-    protected ImpressedImageView imageView;
-    protected Label promoLabel;
-    protected ImageView topAdsIcon;
-    protected ImageView wishlistButton;
-    protected ImageView ratingView;
-    protected TextView reviewCountView;
-    protected Label credibilityLabel;
-    protected LinearLayout shopBadgesContainer;
-    protected TextView textLocation;
-    protected TextView textShopName;
-    protected Label offersLabel;
+    protected ConstraintLayout constraintLayoutProductCard;
+    protected ImpressedImageView imageProduct;
+    protected ImageView buttonWishlist;
+    protected Label labelPromo;
+    protected Typography textViewShopName;
+    protected Typography textViewProductName;
+    protected Label labelDiscount;
+    protected Typography textViewSlashedPrice;
+    protected TextView textViewPrice;
+    protected LinearLayout linearLayoutShopBadges;
+    protected Typography textViewShopLocation;
+    protected ImageView imageRating;
+    protected TextView textViewReviewCount;
+    protected Label labelCredibility;
+    protected Label labelOffers;
+    protected ImageView imageTopAds;
 
     public ProductCardView(@NonNull Context context) {
         super(context);
@@ -71,104 +72,142 @@ public abstract class ProductCardView extends BaseCustomView {
     protected void init() {
         final View view = inflate(getContext(), getLayout(), this);
 
-        textName = view.findViewById(R.id.textName);
-        textPrice = view.findViewById(R.id.textPrice);
-        textDiscount = view.findViewById(R.id.textDiscount);
-        textSlashedPrice = view.findViewById(R.id.textSlashedPrice);
-        imageView = view.findViewById(R.id.image);
-        promoLabel = view.findViewById(R.id.promoLabel);
-        topAdsIcon = view.findViewById(R.id.topAdsIcon);
-        wishlistButton = view.findViewById(R.id.btnWishlist);
-        ratingView = view.findViewById(R.id.rating);
-        reviewCountView = view.findViewById(R.id.reviewCount);
-        credibilityLabel = view.findViewById(R.id.credibilityLabel);
-        shopBadgesContainer = view.findViewById(R.id.shopBadgesContainer);
-        textLocation = view.findViewById(R.id.textLocation);
-        textShopName = view.findViewById(R.id.textShopName);
-        offersLabel = view.findViewById(R.id.offersLabel);
-        productCardConstraintLayout = view.findViewById(R.id.productCardConstraintLayout);
+        constraintLayoutProductCard = view.findViewById(R.id.constraintLayoutProductCard);
+        imageProduct = view.findViewById(R.id.imageProduct);
+        buttonWishlist = view.findViewById(R.id.buttonWishlist);
+        labelPromo = view.findViewById(R.id.labelPromo);
+        textViewShopName = view.findViewById(R.id.textViewShopName);
+        textViewProductName = view.findViewById(R.id.textViewProductName);
+        labelDiscount = view.findViewById(R.id.labelDiscount);
+        textViewSlashedPrice = view.findViewById(R.id.textViewSlashedPrice);
+        textViewPrice = view.findViewById(R.id.textViewPrice);
+        linearLayoutShopBadges = view.findViewById(R.id.linearLayoutShopBadges);
+        textViewShopLocation = view.findViewById(R.id.textViewShopLocation);
+        imageRating = view.findViewById(R.id.imageRating);
+        textViewReviewCount = view.findViewById(R.id.textViewReviewCount);
+        labelCredibility = view.findViewById(R.id.labelCredibility);
+        labelOffers = view.findViewById(R.id.labelOffers);
+        imageTopAds = view.findViewById(R.id.imageTopAds);
 
-        textName.setLineSpacing(0f, 1f);
+
+        textViewProductName.setLineSpacing(0f, 1f);
     }
 
     protected abstract int getLayout();
 
     public abstract void realignLayout();
 
-    public void setTitle(String title) {
-        textName.setText(MethodChecker.fromHtml(title));
+    public void setImageProductVisible(boolean isVisible) {
+        imageProduct.setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
 
-    public void setDiscount(int discount) {
-        if (discount > 0) {
-            String discountText = Integer.toString(discount) + "%";
-            textDiscount.setText(discountText);
-            textDiscount.setVisibility(View.VISIBLE);
-            textSlashedPrice.setVisibility(View.VISIBLE);
-        } else {
-            textDiscount.setVisibility(View.GONE);
-            textSlashedPrice.setVisibility(View.GONE);
+    public void setImageProductUrl(String imageUrl) {
+        ImageHandler.loadImageFitCenter(getContext(), imageProduct, imageUrl);
+    }
+
+    public void setImageProductViewHintListener(ImpressHolder holder, ImpressedImageView.ViewHintListener listener) {
+        imageProduct.setViewHintListener(holder, listener);
+    }
+
+    public void setButtonWishlistVisible(boolean isVisible) {
+        buttonWishlist.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+    }
+
+    public void setButtonWishlistImage(boolean isWishlisted) {
+        if(isWishlisted) {
+            buttonWishlist.setImageResource(R.drawable.product_card_ic_wishlist_red);
+        }
+        else {
+            buttonWishlist.setImageResource(R.drawable.product_card_ic_wishlist);
         }
     }
 
-    public void setSlashedPrice(String slashedPrice) {
-        textSlashedPrice.setText(slashedPrice);
-        textSlashedPrice.setPaintFlags(
-                textSlashedPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
+    public void setButtonWishlistOnClickListener(View.OnClickListener onClickListener) {
+        buttonWishlist.setOnClickListener(onClickListener);
+    }
+
+    public void setLabelPromoVisible(boolean isVisible) {
+        labelPromo.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+    }
+
+    public void setLabelPromoText(String promoLabelText) {
+        labelPromo.setText(MethodChecker.fromHtml(promoLabelText));
+    }
+
+    public void setLabelPromoType(String promoLabelType) {
+        labelPromo.setLabelType(getLabelTypeFromString(promoLabelType));
+    }
+
+    public void setShopNameVisible(boolean isVisible) {
+        textViewShopName.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+    }
+
+    public void setShopNameText(String shopName) {
+        textViewShopName.setText(MethodChecker.fromHtml(shopName));
+    }
+
+    public void setProductNameVisible(boolean isVisible) {
+        textViewProductName.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+    }
+
+    public void setProductNameText(String title) {
+        textViewProductName.setText(MethodChecker.fromHtml(title));
+    }
+
+    public void setLabelDiscountVisible(boolean isVisible) {
+        labelDiscount.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+    }
+
+    public void setLabelDiscountText(int discount) {
+        String discountText = Integer.toString(discount) + "%";
+        labelDiscount.setText(discountText);
+    }
+
+    public void setSlashedPriceVisible(boolean isVisible) {
+        textViewSlashedPrice.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+    }
+
+    public void setSlashedPriceText(String slashedPrice) {
+        textViewSlashedPrice.setText(slashedPrice);
+        textViewSlashedPrice.setPaintFlags(
+                textViewSlashedPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
         );
     }
 
-    public void setPrice(String price) {
-        textPrice.setText(price);
+    public void setPriceVisible(boolean isVisible) {
+        textViewPrice.setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
 
-    public void setImageUrl(String imageUrl) {
-        ImageHandler.loadImageFitCenter(getContext(), imageView, imageUrl);
+    public void setPriceText(String price) {
+        textViewPrice.setText(price);
     }
 
-    public void setTopAdsVisible(boolean isVisible) {
-        topAdsIcon.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+    public void setShopBadgesVisible(boolean isVisible) {
+        linearLayoutShopBadges.setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
 
-    public void setWishlistButtonVisible(boolean isVisible) {
-        wishlistButton.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+    public void removeAllShopBadges() {
+        linearLayoutShopBadges.removeAllViews();
     }
 
-    public void setWishlistButtonImage(boolean isWishlisted) {
-        if(isWishlisted) {
-            wishlistButton.setImageResource(R.drawable.ic_wishlist_red_product_card);
-        }
-        else {
-            wishlistButton.setImageResource(R.drawable.ic_wishlist_product_card);
-        }
+    public void addShopBadge(View view) {
+        linearLayoutShopBadges.addView(view);
     }
 
-    public void setWishlistButtonOnClickListener(View.OnClickListener onClickListener) {
-        wishlistButton.setOnClickListener(onClickListener);
+    public void setShopLocationVisible(boolean isVisible) {
+        textViewShopLocation.setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
 
-    public void setRatingVisible(boolean isVisible) {
-        ratingView.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+    public void setShopLocationText(String location) {
+        textViewShopLocation.setText(MethodChecker.fromHtml(location));
     }
 
-    public void setReviewVisible(boolean isVisible) {
-        reviewCountView.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+    public void setImageRatingVisible(boolean isVisible) {
+        imageRating.setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
 
     public void setRating(int rating) {
-        ratingView.setImageResource(getRatingDrawable(rating));
-    }
-
-    public void setReviewCount(int reviewCount) {
-        reviewCountView.setText(getReviewCountFormattedAsText(reviewCount));
-    }
-
-    public String getReviewCountFormattedAsText(int reviewCount) {
-        return "(" + reviewCount + ")";
-    }
-
-    public void setImageViewHintListener(ImpressHolder holder, ImpressedImageView.ViewHintListener listener) {
-        imageView.setViewHintListener(holder, listener);
+        imageRating.setImageResource(getRatingDrawable(rating));
     }
 
     protected int getRatingDrawable(int param) {
@@ -190,25 +229,49 @@ public abstract class ProductCardView extends BaseCustomView {
         }
     }
 
-    public void setShopBadgesVisible(boolean isVisible) {
-        shopBadgesContainer.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+    public void setReviewCountVisible(boolean isVisible) {
+        textViewReviewCount.setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
 
-    public void clearShopBadgesContainer() {
-        shopBadgesContainer.removeAllViews();
+    public void setReviewCount(int reviewCount) {
+        textViewReviewCount.setText(getReviewCountFormattedAsText(reviewCount));
     }
 
-    public void addShopBadge(View view) {
-        shopBadgesContainer.addView(view);
+    public String getReviewCountFormattedAsText(int reviewCount) {
+        return "(" + reviewCount + ")";
     }
 
-    public void setTextLocationVisible(boolean isVisible) {
-        textLocation.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+    public void setLabelCredibilityVisible(boolean isVisible) {
+        labelCredibility.setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
 
-    public void setTextLocation(String location) {
-        textLocation.setText(MethodChecker.fromHtml(location));
+    public void setLabelCredibilityText(String credibilityLabelText) {
+        labelCredibility.setText(MethodChecker.fromHtml(credibilityLabelText));
     }
+
+    public void setLabelCredibilityType(String credibilityLabelType) {
+        labelCredibility.setLabelType(getLabelTypeFromString(credibilityLabelType));
+    }
+
+    public void setLabelOffersVisible(boolean isVisible) {
+        labelOffers.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+    }
+
+    public void setLabelOffersText(String offersLabelText) {
+        labelOffers.setText(MethodChecker.fromHtml(offersLabelText));
+    }
+
+    public void setLabelOffersType(String offersLabelType) {
+        labelOffers.setLabelType(getLabelTypeFromString(offersLabelType));
+    }
+
+    public void setImageTopAdsVisible(boolean isVisible) {
+        imageTopAds.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+    }
+
+
+
+
 
     protected void setMarginsToView(View view, int leftPixel, int topPixel, int rightPixel, int bottomPixel) {
         if(view.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
@@ -223,50 +286,6 @@ public abstract class ProductCardView extends BaseCustomView {
 
             view.setLayoutParams(layoutParams);
         }
-    }
-
-    public void setTextShopNameVisible(boolean isVisible) {
-        textShopName.setVisibility(isVisible ? View.VISIBLE : View.GONE);
-    }
-
-    public void setTextShopName(String shopName) {
-        textShopName.setText(MethodChecker.fromHtml(shopName));
-    }
-
-    public void setPromoLabelVisible(boolean isVisible) {
-        promoLabel.setVisibility(isVisible ? View.VISIBLE : View.GONE);
-    }
-
-    public void setPromoLabelText(String promoLabelText) {
-        promoLabel.setText(MethodChecker.fromHtml(promoLabelText));
-    }
-
-    public void setPromoLabelType(String promoLabelType) {
-        promoLabel.setLabelType(getLabelTypeFromString(promoLabelType));
-    }
-
-    public void setCredibilityLabelVisible(boolean isVisible) {
-        credibilityLabel.setVisibility(isVisible ? View.VISIBLE : View.GONE);
-    }
-
-    public void setCredibilityLabelText(String credibilityLabelText) {
-        credibilityLabel.setText(MethodChecker.fromHtml(credibilityLabelText));
-    }
-
-    public void setCredibilityLabelType(String credibilityLabelType) {
-        credibilityLabel.setLabelType(getLabelTypeFromString(credibilityLabelType));
-    }
-
-    public void setOffersLabelVisible(boolean isVisible) {
-        offersLabel.setVisibility(isVisible ? View.VISIBLE : View.GONE);
-    }
-
-    public void setOffersLabelText(String offersLabelText) {
-        offersLabel.setText(MethodChecker.fromHtml(offersLabelText));
-    }
-
-    public void setOffersLabelType(String offersLabelType) {
-        offersLabel.setLabelType(getLabelTypeFromString(offersLabelType));
     }
 
     protected int getLabelTypeFromString(String labelType) {
@@ -297,14 +316,14 @@ public abstract class ProductCardView extends BaseCustomView {
     }
 
     protected void setViewConstraintTopToBottomOf(@IdRes int viewLayoutId, @IdRes int bottomOfLayoutId, @DimenRes int topMarginDp) {
-        if (productCardConstraintLayout != null) {
+        if (constraintLayoutProductCard != null) {
             ConstraintSet constraintSet = new ConstraintSet();
-            constraintSet.clone(productCardConstraintLayout);
+            constraintSet.clone(constraintLayoutProductCard);
 
             int topMarginPixel = getDimensionPixelSize(topMarginDp);
             constraintSet.connect(viewLayoutId, ConstraintSet.TOP, bottomOfLayoutId, ConstraintSet.BOTTOM, topMarginPixel);
 
-            constraintSet.applyTo(productCardConstraintLayout);
+            constraintSet.applyTo(constraintLayoutProductCard);
         }
     }
 

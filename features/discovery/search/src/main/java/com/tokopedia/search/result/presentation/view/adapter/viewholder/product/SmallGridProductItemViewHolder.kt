@@ -45,7 +45,7 @@ open class SmallGridProductCardViewHolder(
         initPromoLabel(productItem)
         initShopName(productItem)
         initTitleTextView(productItem)
-        initSlashPrice(productItem)
+        initSlashedPriceSection(productItem)
         initPriceTextView(productItem)
         initShopBadge(productItem)
         initLocationTextView(productItem)
@@ -68,17 +68,19 @@ open class SmallGridProductCardViewHolder(
     }
 
     private fun initProductImage(productItem: ProductItemViewModel) {
-        itemView.productCardView?.setImageUrl(productItem.imageUrl)
+        itemView.productCardView?.setImageProductVisible(true)
 
-        itemView.productCardView?.setImageViewHintListener(productItem){
+        itemView.productCardView?.setImageProductUrl(productItem.imageUrl)
+
+        itemView.productCardView?.setImageProductViewHintListener(productItem){
             productListener.onProductImpressed(productItem, adapterPosition)
         }
     }
 
     private fun initWishlistButton(productItem: ProductItemViewModel) {
-        itemView.productCardView?.setWishlistButtonVisible(productItem.isWishlistButtonEnabled)
-        itemView.productCardView?.setWishlistButtonImage(productItem.isWishlisted)
-        itemView.productCardView?.setWishlistButtonOnClickListener {
+        itemView.productCardView?.setButtonWishlistVisible(productItem.isWishlistButtonEnabled)
+        itemView.productCardView?.setButtonWishlistImage(productItem.isWishlisted)
+        itemView.productCardView?.setButtonWishlistOnClickListener {
             if (productItem.isWishlistButtonEnabled) {
                 productListener.onWishlistButtonClicked(productItem)
             }
@@ -89,12 +91,12 @@ open class SmallGridProductCardViewHolder(
         val promoLabelViewModel : LabelGroupViewModel? = getFirstLabelGroupOfPosition(productItem, LABEL_GROUP_POSITION_PROMO)
 
         if(promoLabelViewModel != null) {
-            itemView.productCardView?.setPromoLabelVisible(true)
-            itemView.productCardView?.setPromoLabelType(promoLabelViewModel.type)
-            itemView.productCardView?.setPromoLabelText(promoLabelViewModel.title)
+            itemView.productCardView?.setLabelPromoVisible(true)
+            itemView.productCardView?.setLabelPromoType(promoLabelViewModel.type)
+            itemView.productCardView?.setLabelPromoText(promoLabelViewModel.title)
         }
         else {
-            itemView.productCardView?.setPromoLabelVisible(false)
+            itemView.productCardView?.setLabelPromoVisible(false)
         }
     }
 
@@ -112,10 +114,10 @@ open class SmallGridProductCardViewHolder(
 
     private fun initShopName(productItem: ProductItemViewModel) {
         val isShopNameShown = isShopNameShown(productItem)
-        itemView.productCardView?.setTextShopNameVisible(isShopNameShown)
+        itemView.productCardView?.setShopNameVisible(isShopNameShown)
 
         if(isShopNameShown) {
-            itemView.productCardView?.setTextShopName(productItem.shopName)
+            itemView.productCardView?.setShopNameText(productItem.shopName)
         }
     }
 
@@ -124,16 +126,29 @@ open class SmallGridProductCardViewHolder(
     }
 
     private fun initTitleTextView(productItem: ProductItemViewModel) {
-        itemView.productCardView?.setTitle(productItem.productName)
+        itemView.productCardView?.setProductNameVisible(true)
+        itemView.productCardView?.setProductNameText(productItem.productName)
     }
 
-    private fun initSlashPrice(productItem: ProductItemViewModel) {
-        itemView.productCardView?.setDiscount(productItem.discountPercentage)
-        itemView.productCardView?.setSlashedPrice(productItem.originalPrice)
+    private fun initSlashedPriceSection(productItem: ProductItemViewModel) {
+        val isLabelDiscountVisible = isLabelDiscountVisible(productItem)
+
+        itemView.productCardView?.setLabelDiscountVisible(isLabelDiscountVisible)
+        itemView.productCardView?.setSlashedPriceVisible(isLabelDiscountVisible)
+
+        if (isLabelDiscountVisible) {
+            itemView.productCardView?.setLabelDiscountText(productItem.discountPercentage)
+            itemView.productCardView?.setSlashedPriceText(productItem.originalPrice)
+        }
+    }
+
+    private fun isLabelDiscountVisible(productItem: ProductItemViewModel): Boolean {
+        return productItem.discountPercentage > 0
     }
 
     private fun initPriceTextView(productItem: ProductItemViewModel) {
-        itemView.productCardView?.setPrice(getPriceText(productItem))
+        itemView.productCardView?.setPriceVisible(true)
+        itemView.productCardView?.setPriceText(getPriceText(productItem))
     }
 
     private fun getPriceText(productItem: ProductItemViewModel) : String {
@@ -142,12 +157,11 @@ open class SmallGridProductCardViewHolder(
     }
 
     private fun initShopBadge(productItem: ProductItemViewModel) {
-        itemView.productCardView?.clearShopBadgesContainer()
-
         val hasAnyBadgesShown = hasAnyBadgesShown(productItem)
         itemView.productCardView?.setShopBadgesVisible(hasAnyBadgesShown)
 
         if(hasAnyBadgesShown) {
+            itemView.productCardView?.removeAllShopBadges()
             loopBadgesListToLoadShopBadgeIcon(productItem.badgesList)
         }
     }
@@ -198,15 +212,15 @@ open class SmallGridProductCardViewHolder(
     }
 
     private fun initLocationTextView(productItem: ProductItemViewModel) {
-        val isShopCityShown = isShopCityShown(productItem)
-        itemView.productCardView?.setTextLocationVisible(isShopCityShown)
+        val isShopLocationShown = isShopLocationShown(productItem)
+        itemView.productCardView?.setShopLocationVisible(isShopLocationShown)
 
-        if(isShopCityShown) {
-            itemView.productCardView?.setTextLocation(productItem.shopCity)
+        if(isShopLocationShown) {
+            itemView.productCardView?.setShopLocationText(productItem.shopCity)
         }
     }
 
-    private fun isShopCityShown(productItem: ProductItemViewModel) : Boolean {
+    private fun isShopLocationShown(productItem: ProductItemViewModel) : Boolean {
         return !TextUtils.isEmpty(productItem.shopCity)
     }
 
@@ -221,16 +235,16 @@ open class SmallGridProductCardViewHolder(
     }
 
     private fun initRatingView(productItem: ProductItemViewModel) {
-        val isRatingViewVisible = isRatingViewVisible(productItem)
+        val isImageRatingVisible = isImageRatingVisible(productItem)
 
-        itemView.productCardView?.setRatingVisible(isRatingViewVisible)
+        itemView.productCardView?.setImageRatingVisible(isImageRatingVisible)
 
-        if(isRatingViewVisible) {
+        if(isImageRatingVisible) {
             itemView.productCardView?.setRating(getStarCount(productItem))
         }
     }
 
-    private fun isRatingViewVisible(productItem: ProductItemViewModel): Boolean {
+    private fun isImageRatingVisible(productItem: ProductItemViewModel): Boolean {
         return productItem.rating != 0
     }
 
@@ -243,7 +257,7 @@ open class SmallGridProductCardViewHolder(
 
     private fun initReviewCount(productItem: ProductItemViewModel) {
         val isReviewCountVisible = isReviewCountVisible(productItem)
-        itemView.productCardView?.setReviewVisible(isReviewCountVisible)
+        itemView.productCardView?.setReviewCountVisible(isReviewCountVisible)
 
         if(isReviewCountVisible) {
             itemView.productCardView?.setReviewCount(productItem.countReview)
@@ -256,14 +270,14 @@ open class SmallGridProductCardViewHolder(
 
     private fun initCredibilityLabel(productItem: ProductItemViewModel) {
         val isCredibilityLabelVisible = isCredibilityLabelVisible(productItem)
-        itemView.productCardView?.setCredibilityLabelVisible(isCredibilityLabelVisible)
+        itemView.productCardView?.setLabelCredibilityVisible(isCredibilityLabelVisible)
 
         if (isCredibilityLabelVisible) {
             val credibilityLabelViewModel : LabelGroupViewModel =
                 getFirstLabelGroupOfPosition(productItem, LABEL_GROUP_POSITION_CREDIBILITY)!!
 
-            itemView.productCardView?.setCredibilityLabelType(credibilityLabelViewModel.type)
-            itemView.productCardView?.setCredibilityLabelText(credibilityLabelViewModel.title)
+            itemView.productCardView?.setLabelCredibilityType(credibilityLabelViewModel.type)
+            itemView.productCardView?.setLabelCredibilityText(credibilityLabelViewModel.title)
         }
     }
 
@@ -273,7 +287,7 @@ open class SmallGridProductCardViewHolder(
     }
 
     private fun isRatingAndReviewNotVisible(productItem: ProductItemViewModel): Boolean {
-        return !isRatingViewVisible(productItem) && !isReviewCountVisible(productItem)
+        return !isImageRatingVisible(productItem) && !isReviewCountVisible(productItem)
     }
 
     private fun isCredibilityLabelExists(productItem: ProductItemViewModel): Boolean {
@@ -283,7 +297,7 @@ open class SmallGridProductCardViewHolder(
     private fun initOffersLabel(productItem: ProductItemViewModel) {
         val offersLabelViewModel = getFirstLabelGroupOfPosition(productItem, LABEL_GROUP_POSITION_OFFERS)
 
-        itemView.productCardView?.setOffersLabelVisible(offersLabelViewModel != null)
+        itemView.productCardView?.setLabelOffersVisible(offersLabelViewModel != null)
 
         if(offersLabelViewModel != null) {
             setOffersLabelContent(offersLabelViewModel)
@@ -291,12 +305,11 @@ open class SmallGridProductCardViewHolder(
     }
 
     private fun setOffersLabelContent(offersLabelViewModel: LabelGroupViewModel) {
-        itemView.productCardView?.setOffersLabelVisible(true)
-        itemView.productCardView?.setOffersLabelType(offersLabelViewModel.type)
-        itemView.productCardView?.setOffersLabelText(offersLabelViewModel.title)
+        itemView.productCardView?.setLabelOffersType(offersLabelViewModel.type)
+        itemView.productCardView?.setLabelOffersText(offersLabelViewModel.title)
     }
 
     private fun initTopAdsIcon(productItem: ProductItemViewModel) {
-        itemView.productCardView?.setTopAdsVisible(productItem.isTopAds)
+        itemView.productCardView?.setImageTopAdsVisible(productItem.isTopAds)
     }
 }
