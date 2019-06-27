@@ -88,7 +88,7 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
             val data = it!!.get(0)
             var budget = data.minDailyBudget
             val status = arguments!!.getInt(KEY_AUTOADS_STATUS, 0)
-            if (status == AutoAdsStatus.STATUS_ACTIVE) {
+            if (status == AutoAdsStatus.STATUS_ACTIVE || status == AutoAdsStatus.STATUS_NOT_DELIVERED) {
                 budget = arguments!!.getInt(KEY_DAILY_BUDGET, 0)
             }
             estimateImpression(data, budget)
