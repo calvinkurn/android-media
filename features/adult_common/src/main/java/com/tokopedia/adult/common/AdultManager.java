@@ -7,7 +7,6 @@ import com.tokopedia.unifycomponents.Toaster;
 
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
-import com.tokopedia.adult.common.R;
 
 public class AdultManager {
 
@@ -39,7 +38,7 @@ public class AdultManager {
                 Toaster.Companion.showNormalWithAction(activity,
                         message,
                         Snackbar.LENGTH_INDEFINITE,
-                        activity.getString(R.string.adult_common_label_ok), (v) -> {
+                        "Ok", (v) -> {
                         });
             } else {
                 activity.finish();
