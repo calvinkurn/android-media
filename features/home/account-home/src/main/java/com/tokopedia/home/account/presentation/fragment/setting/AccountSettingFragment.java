@@ -190,6 +190,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
                     }
                     break;
                 case SettingConstant.SETTING_PIN:
+                    accountAnalytics.eventClickPinSetting();
                     String PIN_ADDRESS = String.format("%s%s", TkpdBaseURL.MOBILE_DOMAIN, "user/pin");
                     RouteManager.route(getActivity(),
                             String.format("%s?url=%s", ApplinkConst.WEBVIEW, PIN_ADDRESS));
