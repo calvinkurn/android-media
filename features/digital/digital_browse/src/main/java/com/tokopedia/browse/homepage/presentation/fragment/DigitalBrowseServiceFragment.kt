@@ -149,7 +149,7 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
                 if (tab.text != "") {
                     digitalBrowseAnalytics.eventClickHeaderTabLayanan(tab.text!!.toString())
 
-                    rvCategory.removeOnScrollListener(scrollSelected!!)
+                    scrollSelected?.let { rvCategory.removeOnScrollListener(it) }
 
                     currentScrollIndex = viewModel.titleMap!![tab.text]!!.indexPositionInList
                     currentTitlePosition = currentScrollIndex

@@ -204,7 +204,7 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
             Intent intent = RouteManager.getIntent(this, ApplinkConstInternalCategory.INSTANCE.getAGE_RESTRICTION());
             intent.putExtra("ORIGIN", 1);
             intent.putExtra("DESTINATION_GTM", productViewModel.getCategoryHeaderModel().getDepartementId());
-            startActivityForResult(intent, 5838);
+            startActivityForResult(intent, ApplinkConstInternalCategory.AGE_RESTRICTION_REQUEST_CODE);
         }
         List<CategorySectionItem> categorySectionItems = new ArrayList<>();
         if (!TextUtils.isEmpty(categoryUrl)) {
@@ -301,12 +301,12 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
         if (resultCode == CategoryNavigationActivity.DESTROY_BROWSE_PARENT) {
             setResult(CategoryNavigationActivity.DESTROY_INTERMEDIARY);
             finish();
-        } else if (requestCode == 5838) {
+        } else if (requestCode == ApplinkConstInternalCategory.AGE_RESTRICTION_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 //todo something when user logged in and preverified
-            } else if (resultCode == 980) {
+            } else if (resultCode == ApplinkConstInternalCategory.RESULT_CODE_DOB_VERIFICATION_SUCCESS) {
                 //User DOb verfied succesfully
-                String message = data.getStringExtra("VERIFICATION_SUCCESS");
+                String message = data.getStringExtra(ApplinkConstInternalCategory.PARAM_EXTRA_SUCCESS);
                 Toaster.Companion.showNormalWithAction(this,
                         message,
                         Snackbar.LENGTH_INDEFINITE,

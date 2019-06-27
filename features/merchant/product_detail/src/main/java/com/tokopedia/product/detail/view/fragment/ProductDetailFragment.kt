@@ -954,15 +954,19 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             REQUEST_CODE_LOGIN_THEN_BUY_EXPRESS -> {
                 doBuy()
             }
-            5838 -> {
+            ApplinkConstInternalCategory.AGE_RESTRICTION_REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
 //Todo something here
-                } else if (resultCode == 980) {
-                    val message = data!!.getStringExtra("VERIFICATION_SUCCESS")
-                    Toaster.showNormalWithAction(activity!!,
-                            message,
-                            Snackbar.LENGTH_INDEFINITE,
-                            getString(R.string.general_label_ok), View.OnClickListener { v -> })
+                } else if (resultCode == ApplinkConstInternalCategory.RESULT_CODE_DOB_VERIFICATION_SUCCESS) {
+                    val message = data?.getStringExtra(ApplinkConstInternalCategory.PARAM_EXTRA_SUCCESS)
+                    message?.let {
+                        activity?.let { it1 ->
+                            Toaster.showNormalWithAction(it1,
+                                    it,
+                                    Snackbar.LENGTH_INDEFINITE,
+                                    getString(R.string.general_label_ok), View.OnClickListener { })
+                        }
+                    }
                 } else {
                     activity?.finish()
                 }
@@ -1278,7 +1282,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 val intent = RouteManager.getIntent(activity, ApplinkConstInternalCategory.AGE_RESTRICTION)
                 intent.putExtra("ORIGIN",2)
                 intent.putExtra("DESTINATION_GTM", productInfoP1.productInfo.category.id)
-                startActivityForResult(intent, 5838)
+                startActivityForResult(intent, ApplinkConstInternalCategory.AGE_RESTRICTION_REQUEST_CODE)
             }
         }
 

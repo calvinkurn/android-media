@@ -10,6 +10,7 @@ import com.tokopedia.age_restriction.R
 import com.tokopedia.age_restriction.viewmodel.ARHomeViewModel
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory
 import com.tokopedia.tradein_common.IAccessRequestListener
 import com.tokopedia.tradein_common.viewmodel.BaseViewModel
 import com.tokopedia.unifycomponents.Toaster
@@ -38,10 +39,10 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
                 sendGeneralEvent(eventClick,
                         event,
                         "click - adult pop up - kembali",
-                        "not eligible - - $event/$destinationUrlGtm")
+                        "not eligible - $event/$destinationUrlGtm")
                 startActivity(RouteManager.getIntent(this, ApplinkConst.HOME)
                         .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                        .putExtra("VERIFICATION_SUCCESS", getString(R.string.ar_text_age_not_adult)))
+                        .putExtra(ApplinkConstInternalCategory.PARAM_EXTRA_SUCCESS, getString(R.string.ar_text_age_not_adult)))
                 selection = 0
             }
 
@@ -205,7 +206,7 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
                 arHomeViewModel.fetchUserDOB()
             }
             VERIFICATION_REQUEST -> if (resultCode == RESULT_IS_ADULT) {
-                setResult(RESULT_IS_ADULT, Intent().putExtra("VERIFICATION_SUCCESS", getString(R.string.ar_text_verification_success)))
+                setResult(RESULT_IS_ADULT, Intent().putExtra(ApplinkConstInternalCategory.PARAM_EXTRA_SUCCESS, getString(R.string.ar_text_verification_success)))
                 Toaster.showNormalWithAction(this,
                         getString(R.string.ar_text_verification_success),
                         Snackbar.LENGTH_INDEFINITE,

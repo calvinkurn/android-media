@@ -22,6 +22,6 @@
             android:name=".viewcontroller.VerifyDOBActivity"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:label="Tanggal Lahir" />
+            android:label="@string/label_dob" />
     </application>
 </manifest>

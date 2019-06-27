@@ -71,10 +71,6 @@ public class AccessRequestFragment extends DialogFragment {
         AccessRequestClickListener clickListener = new AccessRequestClickListener();
         buttonAccept.setOnClickListener(clickListener);
         buttonDeny.setOnClickListener(clickListener);
-//        if (!TextUtils.isEmpty(this.buttonAccept + this.body + this.title)
-//                || !TextUtils.isEmpty(this.buttonDeny)) {
-//            setCustomText(dialog);
-//        }
         return dialog;
     }
 

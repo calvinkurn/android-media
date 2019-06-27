@@ -19,4 +19,5 @@
     <string name="ar_label_back">Kembali</string>
     <string name="ar_text_age_not_adult">Verifikasi berhasil, usia belum cukup untuk akses konten dewasa.</string>
     <string name="ar_text_verification_success">Verifikasi tanggal lahir berhasil.</string>
+    <string name="label_dob">Tanggal Lahir</string>
 </resources>
