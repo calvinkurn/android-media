@@ -1,6 +1,7 @@
 package com.tokopedia.settingnotif.usersetting.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.settingnotif.usersetting.domain.pojo.UserNotificationResponse
 import com.tokopedia.settingnotif.usersetting.domain.usecase.GetUserSettingUseCase
 import com.tokopedia.settingnotif.usersetting.view.listener.SettingFieldContract
 import com.tokopedia.settingnotif.usersetting.view.viewmodel.UserSettingViewModel
@@ -12,10 +13,10 @@ class SettingFieldPresenter @Inject constructor(
 ) : BaseDaggerPresenter<SettingFieldContract.View>(), SettingFieldContract.Presenter {
 
     override fun getDummyData() {
-        return getUserSettingUseCase.execute(object : Subscriber<UserSettingViewModel>() {
-            override fun onNext(data: UserSettingViewModel?) {
+        return getUserSettingUseCase.execute(object : Subscriber<UserNotificationResponse>() {
+            override fun onNext(data: UserNotificationResponse?) {
                 if (data == null) return
-                view?.onSuccessGetUserSetting(data)
+//                view?.onSuccessGetUserSetting(data)
             }
 
             override fun onCompleted() {

@@ -3,6 +3,7 @@ package com.tokopedia.settingnotif.usersetting.view.fragment
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
+import android.support.annotation.RawRes
 import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
@@ -34,13 +35,16 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>, BaseAdapter
             val baseAppComponent = ((activity as Activity).application as BaseMainApplication).baseAppComponent
             val userSettingComponent = DaggerUserSettingComponent.builder()
                     .baseAppComponent(baseAppComponent)
-                    .userSettingModule(UserSettingModule(context))
+                    .userSettingModule(UserSettingModule(context, getGqlRawQuery()))
                     .build()
 
             userSettingComponent.inject(this)
             presenter.attachView(this)
         }
     }
+
+    @RawRes
+    abstract fun getGqlRawQuery(): Int
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return super.onCreateView(inflater, container, savedInstanceState).also {
