@@ -34,7 +34,6 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
     companion object {
         fun mappingToRecommendationModel(recommendations: List<RecomendationEntity.RecomendationData>): List<RecommendationWidget> {
             val recommendationWidgetList = arrayListOf<RecommendationWidget>()
-            val itemList = arrayListOf<RecommendationItem>()
 
             recommendationWidgetList.addAll(
                     recommendations.map { convertToRecommendationWidget(it) }
@@ -84,7 +83,12 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
                     data.slashedPrice?:"",
                     data.slashedPriceInt,
                     data.discountPercentage,
-                    position
+                    position,
+                    data.shop?.id ?: -1,
+                    "",
+                    data.shop?.name ?: "",
+                    -1,
+                    1
             )
 
         }
