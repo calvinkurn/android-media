@@ -42,7 +42,7 @@ class CMPushNotificationManager : CoroutineScope {
         get() = (applicationContext as CMRouter).getBooleanRemoteConfig("app_cm_token_capture_foreground_enable", true)
 
     private val isPushEnable: Boolean
-        get() = (applicationContext as CMRouter).getBooleanRemoteConfig("app_cm_push_enable", false)
+        get() = (applicationContext as CMRouter).getBooleanRemoteConfig("app_cm_push_enable", false) || BuildConfig.DEBUG
 
     /**
      * initialization of push notification library

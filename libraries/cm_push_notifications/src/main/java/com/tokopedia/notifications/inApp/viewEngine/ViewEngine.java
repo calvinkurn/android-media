@@ -17,6 +17,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,6 +52,13 @@ public class ViewEngine {
     private static ViewEngine instance;
 
     private static final Object lock = new Object();
+
+
+    private int resCmClose = R.id.iv_close;
+    private int resCmImage = R.id.iv_cmImage;
+    private int resCmTitle = R.id.tv_cmTitle;
+    private int resCmMessage = R.id.tv_cmMessage;
+    private int buttonContainer = R.id.ll_buttonContainer;
 
     public static ViewEngine getInstance(Context context) {
         synchronized (lock) {
@@ -101,7 +109,7 @@ public class ViewEngine {
             }
 
             setDrawable(innerContainer, cmLayout.getForeground());
-            setCmInAppImage(view, cmLayout);
+            setCmInAppImage(view, cmLayout, (ConstraintLayout) innerContainer);
             handleBackPress(view);
             return cmInApp;
         } catch (Exception e) {
@@ -133,17 +141,17 @@ public class ViewEngine {
             case CmInAppConstant.TYPE_BORDER_BOTTOM:
                 innerLayoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 innerLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-                changeConstraintToBorderView((ConstraintLayout) innerContainer);
+                changeConstraintToBorderView((ConstraintLayout) innerContainer, cmInApp);
                 break;
             case CmInAppConstant.TYPE_BORDER_TOP:
                 innerLayoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 innerLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
-                changeConstraintToBorderView((ConstraintLayout) innerContainer);
+                changeConstraintToBorderView((ConstraintLayout) innerContainer, cmInApp);
                 break;
             case CmInAppConstant.TYPE_ALERT:
                 innerLayoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 innerLayoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
-                changeConstraintToBorderView((ConstraintLayout) innerContainer);
+                changeConstraintToBorderView((ConstraintLayout) innerContainer, cmInApp);
                 margins[0] = margins[0] + (int) getPXtoDP(40F);
                 margins[1] = margins[1] + (int) getPXtoDP(40F);
                 margins[2] = margins[2] + (int) getPXtoDP(40F);
@@ -182,9 +190,9 @@ public class ViewEngine {
                     .parseColor("#88000000"));
     }
 
-    private void setCmInAppImage(View view, CMLayout cmLayout) {
+    private void setCmInAppImage(View view, CMLayout cmLayout, ConstraintLayout constraintLayout) {
+        ImageView imageView = view.findViewById(resCmImage);
         String imageUrlStr = cmLayout.getImg();
-        ImageView imageView = view.findViewById(R.id.iv_cmImage);
         if (!TextUtils.isEmpty(imageUrlStr)) {
             Glide.with(mActivity)
                     .load(imageUrlStr)
@@ -392,69 +400,155 @@ public class ViewEngine {
     }
 
     private float getPXtoDP(float dip) {
+        appContext.p
+
         return dip * ((float) appContext.getResources().getDisplayMetrics().densityDpi
                 / DisplayMetrics.DENSITY_DEFAULT);
+
+
     }
 
-    private void changeConstraintToBorderView(ConstraintLayout constraintLayout) {
-        View closeButton = constraintLayout.findViewById(R.id.iv_close);
-        boolean isVisible = false;
-        if (closeButton.getVisibility() == View.VISIBLE)
-            isVisible = true;
+    private void changeConstraintToBorderView(ConstraintLayout constraintLayout, CMInApp cmInApp) {
+        boolean isCLoseButtonVisible = false;
+        if (cmInApp.isCancelable()) {
+            isCLoseButtonVisible = true;
+        }else {
+            constraintLayout.findViewById(resCmClose).setVisibility(View.GONE);
+        }
 
-        ((ConstraintLayout.LayoutParams) (constraintLayout.findViewById(R.id.iv_cmImage).getLayoutParams()))
-                .setMargins(0, 0, 0, 0);
+        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) constraintLayout
+                .findViewById(resCmImage).getLayoutParams();
+        params.setMargins(0, 0, 0, 0);
+        constraintLayout.findViewById(resCmImage).setLayoutParams(params);
 
-        ((ConstraintLayout.LayoutParams) (constraintLayout.findViewById(R.id.tv_cmTitle).getLayoutParams()))
-                .setMargins(0, 0, 0, 0);
+        params = (ConstraintLayout.LayoutParams) constraintLayout
+                .findViewById(resCmTitle).getLayoutParams();
+        params.setMargins(0, 0, 0, 0);
+        constraintLayout.findViewById(resCmTitle).setLayoutParams(params);
 
-        ((ConstraintLayout.LayoutParams) (constraintLayout.findViewById(R.id.tv_cmMessage).getLayoutParams()))
-                .setMargins(0, 0, 0, 0);
+        params = (ConstraintLayout.LayoutParams) constraintLayout
+                .findViewById(resCmMessage).getLayoutParams();
+        params.setMargins(0, 0, 0, 0);
+        constraintLayout.findViewById(resCmMessage).setLayoutParams(params);
+
+        params = (ConstraintLayout.LayoutParams) constraintLayout
+                .findViewById(buttonContainer).getLayoutParams();
+        params.setMargins(0, 0, 0, 0);
+
+        constraintLayout.findViewById(buttonContainer).setLayoutParams(params);
+
+        params = (ConstraintLayout.LayoutParams) constraintLayout
+                .findViewById(resCmClose).getLayoutParams();
+        params.setMargins(0, 0, 0, 0);
+        constraintLayout.findViewById(resCmClose).setLayoutParams(params);
+
 
         ConstraintSet constraintSet = new ConstraintSet();
         constraintSet.clone(constraintLayout);
+        constraintSet.clear(resCmTitle);
+        constraintSet.clear(resCmImage);
+        constraintSet.clear(resCmMessage);
 
-        constraintSet.constrainHeight(R.id.iv_cmImage, (int) getPXtoDP(80));
-        constraintSet.constrainWidth(R.id.iv_cmImage, (int) getPXtoDP(80));
-
-        constraintSet.clear(R.id.iv_cmImage, ConstraintSet.END);
-        constraintSet.clear(R.id.iv_cmImage, ConstraintSet.RIGHT);
-
-        if (isVisible) {
-            constraintSet.connect(R.id.iv_cmImage, ConstraintSet.TOP,
-                    R.id.iv_close, ConstraintSet.BOTTOM);
-            constraintSet.setVerticalBias(R.id.iv_cmImage, 0);
+        if (!TextUtils.isEmpty(cmInApp.cmLayout.img)) {
+            constraintSet.constrainHeight(resCmImage, (int) getPXtoDP(80));
+            constraintSet.constrainWidth(resCmImage, (int) getPXtoDP(80));
+            if (isCLoseButtonVisible)
+                constraintSet.connect(resCmImage, ConstraintSet.TOP,
+                        resCmClose, ConstraintSet.BOTTOM);
+            else
+                constraintSet.connect(resCmImage, ConstraintSet.TOP,
+                        ConstraintSet.PARENT_ID, ConstraintSet.TOP);
+            constraintSet.connect(resCmImage, ConstraintSet.START,
+                    ConstraintSet.PARENT_ID, ConstraintSet.START);
+        } else {
+            constraintLayout.findViewById(resCmImage).setVisibility(View.GONE);
         }
 
-        constraintSet.connect(R.id.iv_cmImage, ConstraintSet.BOTTOM,
-                R.id.ll_buttonContainer, ConstraintSet.BOTTOM);
-
+        /*title*/
         constraintSet.constrainWidth(R.id.tv_cmTitle, ConstraintSet.WRAP_CONTENT);
-        constraintSet.connect(R.id.tv_cmTitle, ConstraintSet.TOP,
-                R.id.iv_cmImage, ConstraintSet.TOP);
 
-        constraintSet.connect(R.id.tv_cmTitle, ConstraintSet.START,
-                R.id.iv_cmImage, ConstraintSet.END);
-        constraintSet.setHorizontalBias(R.id.tv_cmTitle, 0);
+        if (isCLoseButtonVisible)
+            constraintSet.connect(resCmTitle, ConstraintSet.TOP,
+                    resCmClose, ConstraintSet.BOTTOM);
+        else
+            constraintSet.connect(resCmTitle, ConstraintSet.TOP,
+                    ConstraintSet.PARENT_ID, ConstraintSet.TOP);
 
-        constraintSet.constrainWidth(R.id.tv_cmMessage, ConstraintSet.WRAP_CONTENT);
-        constraintSet.connect(R.id.tv_cmMessage, ConstraintSet.TOP,
-                R.id.tv_cmTitle, ConstraintSet.BOTTOM);
-        constraintSet.connect(R.id.tv_cmMessage, ConstraintSet.START,
-                R.id.iv_cmImage, ConstraintSet.END);
+        constraintSet.connect(resCmTitle, ConstraintSet.END,
+                ConstraintSet.PARENT_ID, ConstraintSet.END);
 
-        constraintSet.setHorizontalBias(R.id.tv_cmMessage, 0);
-        constraintSet.setVerticalBias(R.id.tv_cmMessage, 0);
+        /*message*/
+        constraintSet.constrainWidth(resCmMessage, ConstraintSet.WRAP_CONTENT);
+        constraintSet.constrainHeight(resCmMessage, 0);
+        constraintSet.connect(resCmMessage, ConstraintSet.TOP,
+                resCmTitle, ConstraintSet.BOTTOM);
+        constraintSet.connect(resCmMessage, ConstraintSet.END,
+                ConstraintSet.PARENT_ID, ConstraintSet.END);
 
-        constraintSet.connect(R.id.ll_buttonContainer, ConstraintSet.TOP,
-                R.id.iv_cmImage, ConstraintSet.BOTTOM);
+        /*button Container*/
+        constraintSet.connect(buttonContainer, ConstraintSet.BOTTOM,
+                ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM);
+        constraintSet.connect(buttonContainer, ConstraintSet.START,
+                ConstraintSet.PARENT_ID, ConstraintSet.START);
+        constraintSet.connect(buttonContainer, ConstraintSet.END,
+                ConstraintSet.PARENT_ID, ConstraintSet.END);
+
+
+        if (TextUtils.isEmpty(cmInApp.cmLayout.img)) {
+
+            /*title*/
+            constraintSet.connect(resCmTitle, ConstraintSet.START,
+                    ConstraintSet.PARENT_ID, ConstraintSet.START);
+
+            /*message*/
+            constraintSet.connect(resCmMessage, ConstraintSet.START,
+                    ConstraintSet.PARENT_ID, ConstraintSet.START);
+
+            /*button container*/
+            constraintSet.connect(buttonContainer, ConstraintSet.TOP,
+                    resCmMessage, ConstraintSet.BOTTOM);
+
+
+            constraintSet.setMargin(resCmTitle, ConstraintSet.START, 0);
+            constraintSet.setMargin(resCmMessage, ConstraintSet.START, 0);
+            constraintSet.setMargin(buttonContainer, ConstraintSet.TOP, (int) getPXtoDP(10));
+
+        } else {
+
+            /*title*/
+            constraintSet.connect(resCmTitle, ConstraintSet.START,
+                    resCmImage, ConstraintSet.END);
+            /*message*/
+            constraintSet.connect(resCmMessage, ConstraintSet.START,
+                    resCmImage, ConstraintSet.END);
+            /*button container*/
+            constraintSet.connect(buttonContainer, ConstraintSet.TOP,
+                    resCmImage, ConstraintSet.BOTTOM);
+
+            constraintSet.setMargin(resCmTitle, ConstraintSet.START, (int) getPXtoDP(8));
+            constraintSet.setMargin(resCmMessage, ConstraintSet.START, (int) getPXtoDP(8));
+            constraintSet.setMargin(buttonContainer, ConstraintSet.TOP, (int) getPXtoDP(8));
+
+        }
+
+
+        constraintSet.setHorizontalBias(resCmTitle, 0);
+        constraintSet.setHorizontalBias(resCmMessage, 0);
+        constraintSet.setVerticalBias(resCmMessage, 0);
+
+        constraintLayout.setPadding((int) getPXtoDP(16),
+                (int) getPXtoDP(16),
+                (int) getPXtoDP(16),
+                (int) getPXtoDP(16));
+
+
+        constraintSet.setMargin(resCmMessage, ConstraintSet.TOP, (int) getPXtoDP(3));
 
         constraintSet.applyTo(constraintLayout);
-        if (isVisible) {
-            constraintLayout.setPadding(0, 0, 0, 0);
-        } else {
-            constraintLayout.setPadding(0, (int) getPXtoDP(16), 0, 0);
-        }
+
+        ((TextView) constraintLayout.findViewById(resCmTitle)).setGravity(Gravity.START);
+        ((TextView) constraintLayout.findViewById(resCmMessage)).setGravity(Gravity.START);
+
     }
 
     private void changeToImageOnly(ConstraintLayout constraintLayout) {
@@ -489,6 +583,7 @@ public class ViewEngine {
         constraintSet.applyTo(constraintLayout);
 
         setImageAspectRatio(constraintLayout, constraintLayout.findViewById(R.id.iv_cmImage), "2:1");
+
     }
 
     private static Spanned getSpannedTextFromStr(String str) {
@@ -508,7 +603,8 @@ public class ViewEngine {
     private void setImageAspectRatio(ConstraintLayout mLayout, View mView, String imageRatio) {
         ConstraintSet set = new ConstraintSet();
         set.clone(mLayout);
-        set.setDimensionRatio(mView.getId(), imageRatio);
+        //set.setDimensionRatio(mView.getId(), imageRatio);
+        set.setDimensionRatio(mView.getId(), null);
         set.applyTo(mLayout);
     }
 }
