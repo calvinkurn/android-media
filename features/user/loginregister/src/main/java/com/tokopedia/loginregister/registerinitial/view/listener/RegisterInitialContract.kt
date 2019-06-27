@@ -49,8 +49,6 @@ interface RegisterInitialContract {
 
         fun setTempPhoneNumber(maskedPhoneNumber: String)
 
-        fun onGoToAddName()
-
         fun onBackPressed()
 
         fun onErrorLoginFacebook(email: String): (e: Throwable) -> Unit
@@ -65,7 +63,7 @@ interface RegisterInitialContract {
 
         fun onErrorGetUserInfo(): (e: Throwable) -> Unit
 
-        fun onGoToCreatePassword(): (fullName: String, userId: String) -> Unit
+        fun onGoToCreatePassword(shouldGoToCreatePassword: Boolean): (fullName: String, userId: String) -> Unit
 
         fun onGoToPhoneVerification(): () -> Unit
 
@@ -91,7 +89,7 @@ interface RegisterInitialContract {
 
         fun validateRegister(id: String)
 
-        fun getUserInfo()
+        fun getUserInfo(shouldGoToCreatePassword : Boolean = true)
 
         fun getTickerInfo()
     }

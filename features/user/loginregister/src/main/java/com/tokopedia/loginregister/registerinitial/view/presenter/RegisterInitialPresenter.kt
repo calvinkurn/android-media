@@ -143,11 +143,11 @@ class RegisterInitialPresenter @Inject constructor(
                         view.onGoToSecurityQuestion(email)))
     }
 
-    override fun getUserInfo() {
+    override fun getUserInfo(shouldGoToCreatePassword : Boolean) {
         getProfileUseCase.execute(GetProfileSubscriber(userSession,
                 view.onSuccessGetUserInfo(),
                 view.onErrorGetUserInfo(),
-                view.onGoToCreatePassword(),
+                view.onGoToCreatePassword(shouldGoToCreatePassword),
                 view.onGoToPhoneVerification()))
     }
 

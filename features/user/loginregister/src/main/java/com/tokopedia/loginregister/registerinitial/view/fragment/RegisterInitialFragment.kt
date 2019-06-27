@@ -83,7 +83,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         private val REQUEST_ADD_NAME_REGISTER_PHONE = 107
         private val REQUEST_VERIFY_PHONE_TOKOCASH = 108
         private val REQUEST_CHOOSE_ACCOUNT = 109
-        private val REQUEST_ADD_NAME = 111
+        private val REQUEST_CHANGE_NAME = 111
         private val REQUEST_LOGIN_GOOGLE = 112
 
         private val FACEBOOK = "facebook"
@@ -155,7 +155,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
     override fun onStart() {
         super.onStart()
-        activity?.run{
+        activity?.run {
             analytics.trackScreen(this, screenName)
         }
     }
@@ -370,7 +370,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
                     handleGoogleSignInResult(task)
                 }
             } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity.RESULT_OK) {
-                onSuccessRegister()
+                presenter.getUserInfo()
             } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity
                             .RESULT_CANCELED) {
                 dismissProgressBar()
@@ -401,14 +401,13 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
                 dismissProgressBar()
                 it.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
-                onSuccessRegister()
+                presenter.getUserInfo(false)
             } else if (requestCode == REQUEST_WELCOME_PAGE) {
                 if (resultCode == Activity.RESULT_OK) {
                     goToProfileCompletionPage()
-                } else {
-                    it.setResult(Activity.RESULT_OK)
-                    it.finish()
                 }
+                it.setResult(Activity.RESULT_OK)
+                it.finish()
             } else if (requestCode == REQUEST_VERIFY_PHONE_TOKOCASH
                     && resultCode == Activity.RESULT_OK
                     && data != null
@@ -420,9 +419,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
             } else if (requestCode == REQUEST_CHOOSE_ACCOUNT && resultCode == Activity.RESULT_OK) {
                 it.setResult(Activity.RESULT_OK)
                 it.finish()
-            } else if (requestCode == REQUEST_ADD_NAME && resultCode == Activity.RESULT_OK) {
-               presenter.getUserInfo()
-            } else if (requestCode == REQUEST_ADD_NAME && resultCode == Activity.RESULT_CANCELED) {
+            } else if (requestCode == REQUEST_CHANGE_NAME && resultCode == Activity.RESULT_OK) {
+                presenter.getUserInfo()
+            } else if (requestCode == REQUEST_CHANGE_NAME && resultCode == Activity.RESULT_CANCELED) {
                 userSession.logoutSession()
                 dismissProgressBar()
                 it.setResult(Activity.RESULT_CANCELED)
@@ -445,11 +444,11 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
                 val email = account?.email ?: ""
                 presenter.registerGoogle(accessToken, email)
             } catch (e: NullPointerException) {
-                onErrorRegister( ErrorHandlerSession.getDefaultErrorCodeMessage(
+                onErrorRegister(ErrorHandlerSession.getDefaultErrorCodeMessage(
                         ErrorHandlerSession.ErrorCode.GOOGLE_FAILED_ACCESS_TOKEN,
                         context))
             } catch (e: ApiException) {
-                onErrorRegister( String.format(getString(R.string.loginregister_failed_login_google),
+                onErrorRegister(String.format(getString(R.string.loginregister_failed_login_google),
                         e.statusCode.toString()))
             }
         }
@@ -581,23 +580,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         loginButton.visibility = View.VISIBLE
     }
 
-   fun onErrorRegister(errorMessage : String){
+    fun onErrorRegister(errorMessage: String) {
         NetworkErrorHelper.showSnackbar(activity, errorMessage)
         registerAnalytics.trackErrorRegister(errorMessage, userSession.loginMethod)
-    }
-
-//    override fun onSuccessRegisterSosmed(methodName: String) {
-//
-//        analytics.eventSuccessRegisterSosmed(methodName)
-//        startActivityForResult(WelcomePageActivity.newInstance(activity),
-//                REQUEST_WELCOME_PAGE)
-//    }
-
-    override fun onGoToAddName() {
-        activity?.let {
-            val intent = (it.applicationContext as ApplinkRouter).getApplinkIntent(activity, ApplinkConst.ADD_NAME_PROFILE)
-            startActivityForResult(intent, REQUEST_ADD_NAME)
-        }
     }
 
     override fun showRegisteredEmailDialog(email: String) {
@@ -757,7 +742,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
     override fun onGoToChangeName() {
         activity?.let {
             val intent = (it.applicationContext as ApplinkRouter).getApplinkIntent(activity, ApplinkConst.ADD_NAME_PROFILE)
-            startActivityForResult(intent, REQUEST_ADD_NAME)
+            startActivityForResult(intent, REQUEST_CHANGE_NAME)
         }
     }
 
@@ -772,13 +757,18 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         }
     }
 
-    override fun onGoToCreatePassword(): (fullName: String, userId: String) -> Unit {
+    override fun onGoToCreatePassword(shouldGoToCreatePassword: Boolean): (fullName: String, userId: String) -> Unit {
         return { fullName: String, userId: String ->
-            activity?.let {
-                val intent = (it.applicationContext as ApplinkRouter).getApplinkIntent(activity, ApplinkConst.CREATE_PASSWORD)
-                intent.putExtra("name", fullName)
-                intent.putExtra("user_id", userId)
-                startActivityForResult(intent, REQUEST_CREATE_PASSWORD)
+
+            if (shouldGoToCreatePassword) {
+                activity?.let {
+                    val intent = (it.applicationContext as ApplinkRouter).getApplinkIntent(activity, ApplinkConst.CREATE_PASSWORD)
+                    intent.putExtra("name", fullName)
+                    intent.putExtra("user_id", userId)
+                    startActivityForResult(intent, REQUEST_CREATE_PASSWORD)
+                }
+            } else {
+                onSuccessRegister()
             }
         }
     }
@@ -794,9 +784,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
 
     override fun onSuccessGetTickerInfo(listTickerInfo: List<TickerInfoPojo>) {
-        if(listTickerInfo.isNotEmpty()){
+        if (listTickerInfo.isNotEmpty()) {
             tickerAnnouncement.visibility = View.VISIBLE
-            if(listTickerInfo.size > 1){
+            if (listTickerInfo.size > 1) {
                 val mockData = arrayListOf<TickerData>()
                 listTickerInfo.forEach {
                     mockData.add(TickerData(it.title, it.message, getTickerType(it.color), true))
@@ -813,8 +803,8 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
                     }
 
                 })
-                tickerAnnouncement.addPagerView( adapter, mockData)
-            }else {
+                tickerAnnouncement.addPagerView(adapter, mockData)
+            } else {
                 listTickerInfo.first().let {
                     tickerAnnouncement.tickerTitle = it.title
                     tickerAnnouncement.setHtmlDescription(it.message)
@@ -833,7 +823,8 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
                 })
             }
             tickerAnnouncement.setOnClickListener { v ->
-                registerAnalytics.trackClickTicker() }
+                registerAnalytics.trackClickTicker()
+            }
 
         }
     }
