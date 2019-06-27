@@ -862,7 +862,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        AdultManager.handleActivityResult(this!!, requestCode!!, resultCode!!, data!!)
+        if (activity != null) {
+            AdultManager.handleActivityResult(activity!!, requestCode, resultCode, data)
+        }
         when (requestCode) {
             REQUEST_CODE_ETALASE -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
@@ -1261,8 +1263,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             open_shop.gone()
         }
 
-        if (data.category.isAdult) {
-            AdultManager.showAdultPopUp(this!!, AdultManager.ORIGIN_PDP, productId ?: "")
+        if (data.category.isAdult && activity != null) {
+            AdultManager.showAdultPopUp(activity!!, AdultManager.ORIGIN_PDP, productId ?: "")
         }
 
         var isHandPhone = false

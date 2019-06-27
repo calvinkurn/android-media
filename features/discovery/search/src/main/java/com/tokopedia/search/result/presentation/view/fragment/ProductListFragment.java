@@ -454,7 +454,9 @@ public class ProductListFragment
             updateWishlistFromPDP(position, isWishlist);
 
         }
-        AdultManager.handleActivityResult(getActivity(), requestCode, resultCode, data);
+        if (getActivity() != null) {
+            AdultManager.handleActivityResult(getActivity(), requestCode, resultCode, data);
+        }
     }
 
     private void updateWishlistFromPDP(int position, boolean isWishlist) {
@@ -1050,6 +1052,8 @@ public class ProductListFragment
 
     @Override
     public void showAdultRestriction() {
-        AdultManager.showAdultPopUp(getActivity(), AdultManager.ORIGIN_SEARCH_PAGE, getQueryKey());
+        if (getActivity() != null) {
+            AdultManager.showAdultPopUp(getActivity(), AdultManager.ORIGIN_SEARCH_PAGE, getQueryKey());
+        }
     }
 }

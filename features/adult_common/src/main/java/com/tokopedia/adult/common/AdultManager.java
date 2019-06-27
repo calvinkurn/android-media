@@ -8,6 +8,8 @@ import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 
+import javax.annotation.Nullable;
+
 public class AdultManager {
 
     public static final String EXTRA_ORIGIN = "ORIGIN";
@@ -29,11 +31,11 @@ public class AdultManager {
         activity.startActivityForResult(intent, REQUEST_CODE);
     }
 
-    public static void handleActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
+    public static void handleActivityResult(Activity activity, int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 //todo something when user logged in and preverified
-            } else if (resultCode == RESULT_CODE_DOB_VERIFICATION_SUCCESS) {
+            } else if (resultCode == RESULT_CODE_DOB_VERIFICATION_SUCCESS && data != null) {
                 String message = data.getStringExtra(EXTRA_VERIFICATION_SUCCESS);
                 Toaster.Companion.showNormalWithAction(activity,
                         message,
