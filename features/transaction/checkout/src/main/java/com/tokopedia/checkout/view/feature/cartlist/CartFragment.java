@@ -1387,7 +1387,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         if (refreshHandler.isRefreshing()) {
             refreshHandler.setRefreshing(false);
         }
-        cartAdapter.resetData();
         showMainContainer();
         onContentAvailabilityChanged(true);
     }
