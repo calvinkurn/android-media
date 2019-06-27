@@ -12,6 +12,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
+import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.common.ColorPojo
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
@@ -66,6 +67,7 @@ class PostTagAdapter(private val itemList: List<PostTagItem>,
         private lateinit var productPrice: TextView
         private lateinit var productName: TextView
         private lateinit var productTag: TextView
+        private lateinit var btnBuy: ButtonCompat
         private lateinit var productNameSection: LinearLayout
         private lateinit var productTagBackground: RelativeLayout
 
@@ -91,6 +93,7 @@ class PostTagAdapter(private val itemList: List<PostTagItem>,
             )
 
             if (layoutType.equals(TYPE_LIST)) {
+                btnBuy = itemView.findViewById(R.id.btnProductBuy)
                 productNameSection = itemView.findViewById(R.id.productNameSection)
                 productName = itemView.findViewById(R.id.productName)
                 productName.text = item.text
