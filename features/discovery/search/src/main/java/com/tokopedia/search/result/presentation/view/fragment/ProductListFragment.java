@@ -454,7 +454,7 @@ public class ProductListFragment
             updateWishlistFromPDP(position, isWishlist);
 
         }
-        AdultManager.handleActivityResult(this, requestCode, resultCode, data);
+        AdultManager.handleActivityResult(getActivity(), requestCode, resultCode, data);
     }
 
     private void updateWishlistFromPDP(int position, boolean isWishlist) {
@@ -1050,6 +1050,6 @@ public class ProductListFragment
 
     @Override
     public void showAdultRestriction() {
-        AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_SEARCH_PAGE, getQueryKey());
+        AdultManager.showAdultPopUp(getActivity(), AdultManager.ORIGIN_SEARCH_PAGE, getQueryKey());
     }
 }
