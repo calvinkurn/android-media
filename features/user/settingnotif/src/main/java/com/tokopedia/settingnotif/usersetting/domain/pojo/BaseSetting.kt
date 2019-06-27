@@ -13,9 +13,4 @@ abstract class BaseSetting (
     var key: String = "",
     @SerializedName("status")
     var status: Boolean = false
-
-//    var name: String,
-//    var icon: String,
-//    var key: String,
-//    var status: Boolean
 ) : Visitable<SettingFieldTypeFactory>

@@ -9,7 +9,7 @@ class ChildSetting(
         key: String,
         status: Boolean
 ) : BaseSetting(name, icon, key, status) {
-    override fun type(typeFactory: SettingFieldTypeFactory?): Int {
-        return 1
+    override fun type(typeFactory: SettingFieldTypeFactory): Int {
+        return typeFactory.type(this)
     }
 }

@@ -7,7 +7,7 @@ class SmsFieldFragment: SettingFieldFragment() {
     override fun getScreenName(): String = "SMS"
 
     override fun getGqlRawQuery(): Int {
-        return R.raw.query_push_notif_setting
+        return R.raw.query_sms_setting
     }
 
 }

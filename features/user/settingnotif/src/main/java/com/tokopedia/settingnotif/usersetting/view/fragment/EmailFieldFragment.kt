@@ -7,7 +7,7 @@ class EmailFieldFragment: SettingFieldFragment() {
     override fun getScreenName(): String = "Email"
 
     override fun getGqlRawQuery(): Int {
-        return R.raw.query_push_notif_setting
+        return R.raw.query_email_setting
     }
 
 }

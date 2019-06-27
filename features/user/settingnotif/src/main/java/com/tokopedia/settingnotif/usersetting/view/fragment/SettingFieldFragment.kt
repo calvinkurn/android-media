@@ -1,7 +1,6 @@
 package com.tokopedia.settingnotif.usersetting.view.fragment
 
 import android.app.Activity
-import android.content.Context
 import android.os.Bundle
 import android.support.annotation.RawRes
 import android.support.v7.app.AppCompatActivity
@@ -83,7 +82,7 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>, BaseAdapter
 
     override fun loadData(page: Int) {
         if (page != defaultInitialPage) return
-        presenter.getDummyData()
+        presenter.loadUserSettings()
     }
 
     override fun isLoadMoreEnabledByDefault(): Boolean {

@@ -3,9 +3,7 @@ package com.tokopedia.settingnotif.usersetting.view.adapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.settingnotif.usersetting.domain.pojo.ChildSettingPojo
-import com.tokopedia.settingnotif.usersetting.domain.pojo.ParentSettingPojo
-import com.tokopedia.settingnotif.usersetting.domain.pojo.SettingSectionsPojo
+import com.tokopedia.settingnotif.usersetting.domain.pojo.*
 import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.ChildSettingViewHolder
 import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.ParentSettingViewHolder
 import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SettingSectionViewHolder
@@ -13,15 +11,15 @@ import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SettingVie
 
 class SettingFieldTypeFactoryImpl : BaseAdapterTypeFactory(), SettingFieldTypeFactory {
 
-    override fun type(settingSectionsPojo: SettingSectionsPojo): Int {
+    override fun type(settingSections: SettingSections): Int {
         return SettingSectionViewHolder.LAYOUT
     }
 
-    override fun type(parentSettingPojo: ParentSettingPojo): Int {
+    override fun type(parentSetting: ParentSetting): Int {
         return ParentSettingViewHolder.LAYOUT
     }
 
-    override fun type(childSettingPojo: ChildSettingPojo): Int {
+    override fun type(childSetting: ChildSetting): Int {
         return ChildSettingViewHolder.LAYOUT
     }
 

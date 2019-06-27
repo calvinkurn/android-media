@@ -4,42 +4,42 @@ import android.support.annotation.LayoutRes
 import android.view.View
 import android.widget.Switch
 import com.tokopedia.settingnotif.R
-import com.tokopedia.settingnotif.usersetting.domain.pojo.ChildSettingPojo
+import com.tokopedia.settingnotif.usersetting.domain.pojo.ChildSetting
 
 class ChildSettingViewHolder(
         itemView: View?,
         settingListener: SettingListener
-) : SettingViewHolder<ChildSettingPojo>(itemView, settingListener) {
+) : SettingViewHolder<ChildSetting>(itemView, settingListener) {
 
     override fun getSwitchView(itemView: View?): Switch? {
         return itemView?.findViewById(R.id.sw_setting)
     }
 
-    override fun bind(element: ChildSettingPojo?) {
+    override fun bind(element: ChildSetting?) {
         super.bind(element)
 
         settingSwitch?.text = element?.name
     }
 
-    override fun updateSiblingAndChild(element: ChildSettingPojo, checked: Boolean) {
+    override fun updateSiblingAndChild(element: ChildSetting, checked: Boolean) {
         val childAdapterPosition = adapterPosition
-        val pairParentAndIndex = settingListener.getParentSettingPojo(childAdapterPosition)
+        val pairParentAndIndex = settingListener.getParentSetting(childAdapterPosition)
                 ?: return
 
-        val parentSettingPojo = pairParentAndIndex.first
-        val parentSettingPojoIndex = pairParentAndIndex.second
-        val childArrayIndex = childAdapterPosition - parentSettingPojoIndex - 1
+        val parentSetting = pairParentAndIndex.first
+        val parentSettingIndex = pairParentAndIndex.second
+        val childArrayIndex = childAdapterPosition - parentSettingIndex - 1
 
         var allSiblingHasSameCheckedStatus = true
-        parentSettingPojo.childSettings.forEachIndexed { index, childSetting ->
-            if (index != childArrayIndex && childSetting.status != checked) {
+        parentSetting.childSettings.forEachIndexed { index, childSetting ->
+            if (index != childArrayIndex && childSetting?.status != checked) {
                 allSiblingHasSameCheckedStatus = false
             }
         }
 
-        if (allSiblingHasSameCheckedStatus && parentSettingPojo.status != checked) {
-            parentSettingPojo.status = checked
-            settingListener.updateSettingView(arrayListOf(parentSettingPojoIndex))
+        if (allSiblingHasSameCheckedStatus && parentSetting.status != checked) {
+            parentSetting.status = checked
+            settingListener.updateSettingView(arrayListOf(parentSettingIndex))
         }
     }
 

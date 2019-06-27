@@ -15,8 +15,8 @@ class ParentSetting(
         var childSettings: List<ChildSetting?> = emptyList()
 ) : BaseSetting(name, icon, key, status) {
 
-    override fun type(typeFactory: SettingFieldTypeFactory?): Int {
-        return 1
+    override fun type(typeFactory: SettingFieldTypeFactory): Int {
+        return typeFactory.type(this)
     }
 
     fun hasDescription(): Boolean = description.isNotEmpty()

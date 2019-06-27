@@ -3,10 +3,10 @@ package com.tokopedia.settingnotif.usersetting.view.adapter.viewholder
 import android.view.View
 import android.widget.Switch
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.settingnotif.usersetting.domain.pojo.ParentSettingPojo
-import com.tokopedia.settingnotif.usersetting.domain.pojo.Setting
+import com.tokopedia.settingnotif.usersetting.domain.pojo.BaseSetting
+import com.tokopedia.settingnotif.usersetting.domain.pojo.ParentSetting
 
-abstract class SettingViewHolder<T : Setting>(
+abstract class SettingViewHolder<T : BaseSetting>(
         itemView: View?,
         val settingListener: SettingListener
 ) : AbstractViewHolder<T>(itemView) {
@@ -17,7 +17,7 @@ abstract class SettingViewHolder<T : Setting>(
 
     interface SettingListener {
         fun updateSettingView(positions: List<Int>)
-        fun getParentSettingPojo(childAdapterPosition: Int): Pair<ParentSettingPojo, Int>?
+        fun getParentSetting(childAdapterPosition: Int): Pair<ParentSetting, Int>?
     }
 
     override fun bind(element: T?) {

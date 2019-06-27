@@ -4,7 +4,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.settingnotif.usersetting.domain.pojo.ParentSettingPojo
+import com.tokopedia.settingnotif.usersetting.domain.pojo.ParentSetting
 import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SettingViewHolder
 
 class SettingFieldAdapter<T : Visitable<SettingFieldTypeFactory>>(
@@ -24,11 +24,11 @@ class SettingFieldAdapter<T : Visitable<SettingFieldTypeFactory>>(
         }
     }
 
-    override fun getParentSettingPojo(childAdapterPosition: Int): Pair<ParentSettingPojo, Int>? {
+    override fun getParentSetting(childAdapterPosition: Int): Pair<ParentSetting, Int>? {
         for (index in (childAdapterPosition - 1) downTo 0) {
-            if (visitables[index] is ParentSettingPojo) {
-                val parentSettingPojo = visitables[index] as ParentSettingPojo
-                return Pair(parentSettingPojo, index)
+            if (visitables[index] is ParentSetting) {
+                val parentSetting = visitables[index] as ParentSetting
+                return Pair(parentSetting, index)
             }
         }
         return null
