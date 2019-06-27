@@ -1,9 +1,12 @@
 package com.tokopedia.adult.common;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+
 import com.tokopedia.unifycomponents.Toaster;
 
 import com.tokopedia.applink.RouteManager;
@@ -23,11 +26,19 @@ public class AdultManager {
 
     private static final int REQUEST_CODE = 5838;
 
+    public static void showAdultPopUp(Fragment fragment, int origin, String destinationGtm) {
+        fragment.startActivityForResult(buildIntent(fragment.getContext(), origin, destinationGtm), REQUEST_CODE);
+    }
+
     public static void showAdultPopUp(Activity activity, int origin, String destinationGtm) {
-        Intent intent = RouteManager.getIntent(activity, ApplinkConstInternalCategory.INSTANCE.getAGE_RESTRICTION());
+        activity.startActivityForResult(buildIntent(activity, origin, destinationGtm), REQUEST_CODE);
+    }
+
+    private static Intent buildIntent(Context context, int origin, String destinationGtm) {
+        Intent intent = RouteManager.getIntent(context, ApplinkConstInternalCategory.INSTANCE.getAGE_RESTRICTION());
         intent.putExtra(EXTRA_ORIGIN, origin);
         intent.putExtra(EXTRA_DESTINATION_GTM, destinationGtm);
-        activity.startActivityForResult(intent, REQUEST_CODE);
+        return intent;
     }
 
     public static void handleActivityResult(Activity activity, int requestCode, int resultCode, @Nullable Intent data) {

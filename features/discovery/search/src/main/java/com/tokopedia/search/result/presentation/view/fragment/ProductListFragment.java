@@ -1052,8 +1052,6 @@ public class ProductListFragment
 
     @Override
     public void showAdultRestriction() {
-        if (getActivity() != null) {
-            AdultManager.showAdultPopUp(getActivity(), AdultManager.ORIGIN_SEARCH_PAGE, getQueryKey());
-        }
+        AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_SEARCH_PAGE, getQueryKey());
     }
 }

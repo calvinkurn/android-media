@@ -1263,8 +1263,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             open_shop.gone()
         }
 
-        if (data.category.isAdult && activity != null) {
-            AdultManager.showAdultPopUp(activity!!, AdultManager.ORIGIN_PDP, productId ?: "")
+        if (data.category.isAdult) {
+            AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_PDP, productId ?: "")
         }
 
         var isHandPhone = false
