@@ -403,6 +403,15 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
+    public void eventClickBuyPromoRedState() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_BUY,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
+                EventLabel.NOT_SUCCESS + " - " + EventLabel.PROMO_RED_STATE
+        );
+    }
+
     public void eventClickBuyCourierSelectionClickBayarFailedDropshipper() {
         sendEventCategoryActionLabel(
                 EventName.CLICK_BUY,

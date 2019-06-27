@@ -272,6 +272,7 @@ public interface ConstantTransactionAnalytics {
         String ERROR = "error";
         String NOT_SUCCESS = "not success";
         String COURIER_NOT_COMPLETE = "courier not complete";
+        String PROMO_RED_STATE = "promo red state";
         String KUOTA_PENUKARAN = "kuota penukaran";
         String FAILED = "failed";
         String CHECKLIST = "checklist";

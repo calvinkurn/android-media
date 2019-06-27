@@ -1458,6 +1458,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
+    public void sendAnalyticsPromoRedState() {
+        checkoutAnalyticsCourierSelection.eventClickBuyPromoRedState();
+    }
+
+    @Override
     public void sendAnalyticsDropshipperNotComplete() {
         checkoutAnalyticsCourierSelection.eventClickBuyCourierSelectionClickBayarFailedDropshipper();
     }
@@ -1659,6 +1664,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         shipmentAdapter.getPromoGlobalStackData().getState() == TickerPromoStackingCheckoutView.State.FAILED) {
                     rvShipment.smoothScrollToPosition(0);
                     showToastError(shipmentAdapter.getPromoGlobalStackData().getDescription());
+                    sendAnalyticsPromoRedState();
                 } else {
                     doCheckout(requestCode);
                 }

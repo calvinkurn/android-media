@@ -193,6 +193,8 @@ public interface ShipmentContract {
 
         void sendAnalyticsCourierNotComplete();
 
+        void sendAnalyticsPromoRedState();
+
         void sendAnalyticsDropshipperNotComplete();
 
         void sendAnalyticsOnCourierChanged(String agent, String service);
