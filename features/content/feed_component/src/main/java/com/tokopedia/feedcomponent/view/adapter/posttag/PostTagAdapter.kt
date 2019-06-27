@@ -1,13 +1,12 @@
 package com.tokopedia.feedcomponent.view.adapter.posttag
 
+import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
+import android.os.Build
 import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
@@ -19,15 +18,22 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItemTag
 import com.tokopedia.feedcomponent.data.pojo.track.Tracking
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder.Companion.SOURCE_DETAIL
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder.Companion.SOURCE_FEEDS
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
+import android.util.DisplayMetrics
+import android.view.*
+
+
 
 /**
  * @author by yfsx on 22/03/19.
  */
 class PostTagAdapter(private val itemList: List<PostTagItem>,
                      private val listener: DynamicPostViewHolder.DynamicPostListener,
-                     private val positionInFeed: Int)
+                     private val positionInFeed: Int,
+                     private val feedType: String)
     : RecyclerView.Adapter<PostTagAdapter.Holder>() {
 
     companion object {
@@ -39,8 +45,8 @@ class PostTagAdapter(private val itemList: List<PostTagItem>,
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         var layoutRes = 0
-        when(itemList.size) {
-            1 -> {
+        when(feedType) {
+            SOURCE_FEEDS, SOURCE_DETAIL -> {
                 layoutRes = R.layout.item_producttag_list
                 layoutType = TYPE_LIST
             }
@@ -58,7 +64,7 @@ class PostTagAdapter(private val itemList: List<PostTagItem>,
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
         val item: PostTagItem = itemList.get(position)
-        holder.bind(item, layoutType, listener, positionInFeed, position)
+        holder.bind(item, layoutType, listener, positionInFeed, position, feedType, itemList.size != 1)
     }
 
     class Holder(itemView: View): RecyclerView.ViewHolder(itemView) {
@@ -70,11 +76,14 @@ class PostTagAdapter(private val itemList: List<PostTagItem>,
         private lateinit var btnBuy: ButtonCompat
         private lateinit var productNameSection: LinearLayout
         private lateinit var productTagBackground: RelativeLayout
+        private lateinit var container: CardView
 
         fun bind(item: PostTagItem, layoutType: String,
                  listener: DynamicPostViewHolder.DynamicPostListener,
                  positionInFeed: Int,
-                 itemPosition: Int) {
+                 itemPosition: Int,
+                 feedType: String,
+                 needToResize: Boolean) {
             productLayout = itemView.findViewById(R.id.productLayout)
             productImage = itemView.findViewById(R.id.productImage)
             productPrice = itemView.findViewById(R.id.productPrice)
@@ -99,7 +108,30 @@ class PostTagAdapter(private val itemList: List<PostTagItem>,
                 productName.text = item.text
                 productNameSection.setOnClickListener(
                         getItemClickNavigationListener(listener, positionInFeed, item, itemPosition))
+
+                if (feedType.equals(SOURCE_FEEDS) && needToResize) {
+                    container = itemView.findViewById(R.id.container)
+                    container.viewTreeObserver.addOnGlobalLayoutListener(
+                            object : ViewTreeObserver.OnGlobalLayoutListener {
+                                override fun onGlobalLayout() {
+                                    val viewTreeObserver = container.viewTreeObserver
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                                        viewTreeObserver.removeOnGlobalLayoutListener(this)
+                                    } else {
+                                        @Suppress("DEPRECATION")
+                                        viewTreeObserver.removeGlobalOnLayoutListener(this)
+                                    }
+                                    val displayMetrics = DisplayMetrics()
+                                    val windowmanager = itemView.context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+                                    windowmanager.getDefaultDisplay().getMetrics(displayMetrics)
+                                    container.layoutParams.width = (displayMetrics.widthPixels * 0.75).toInt()
+                                    container.requestLayout()
+                                }
+                            }
+                    )
+                }
             }
+
         }
 
         private fun getItemClickNavigationListener(listener: DynamicPostViewHolder.DynamicPostListener,
