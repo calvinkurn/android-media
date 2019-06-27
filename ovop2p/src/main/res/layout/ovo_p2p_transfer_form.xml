@@ -1,205 +1,210 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="match_parent"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="wrap_content">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:id="@+id/search_no_header"
-        android:text="Masukkan  nama atau nomor ponsel"
-        app:layout_constraintStart_toStartOf="@+id/search_no"
-        app:layout_constraintBottom_toTopOf="@+id/search_no"/>
-
-    <SearchView
-        android:id="@+id/search_no"
-        android:layout_width="320dp"
-        android:searchIcon="@null"
-        android:iconifiedByDefault="false"
-        android:layout_height="wrap_content"
-        android:theme="@style/SearchViewStyle"
-        android:layout_marginTop="@dimen/dp_40"
-        android:inputType="number"
-        android:closeIcon="@drawable/ic_clear_small"
-        android:queryHint="@string/entr_name_num"
-        app:layout_constraintEnd_toStartOf="@+id/iv_contact"
-        app:layout_constraintHorizontal_chainStyle="spread"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
-
-    <ImageView
-        android:id="@+id/iv_contact"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_contact"
-        app:layout_constraintBottom_toBottomOf="@+id/search_no"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/search_no"
-        app:layout_constraintTop_toTopOf="@+id/search_no" />
-
-    <TextView
-        android:id="@+id/src_fnd"
-        app:layout_constraintTop_toBottomOf="@id/search_no"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="12sp"
-        android:textColor="#6b767e"
-        app:layout_constraintStart_toStartOf="@id/search_no"
-        android:lineSpacingExtra="2sp"
-        android:layout_marginTop="24dp"
-        tools:text="Sumber Dana" />
-
-    <ImageView
-        android:id="@+id/ovo_logo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_group"
-        app:layout_constraintTop_toTopOf="@+id/ovo_cash"
-        app:layout_constraintBottom_toBottomOf="@+id/saldo"
-        app:layout_constraintStart_toStartOf="@+id/src_fnd"
-        android:layout_marginLeft="@dimen/dp_10" />
-
-    <TextView
-        android:id="@+id/ovo_cash"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:textColor="#2d263b"
-        android:layout_marginTop="@dimen/dp_24"
-        app:layout_constraintStart_toEndOf="@id/ovo_logo"
-        android:text="OVO Cash"
-        app:layout_constraintTop_toBottomOf="@+id/src_fnd"/>
-
-    <TextView
-        android:id="@+id/saldo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="12sp"
-        android:textColor="#8c949b"
-        android:paddingTop="@dimen/dp_2"
-        android:layout_marginLeft="@dimen/dp_16"
-        app:layout_constraintStart_toEndOf="@+id/ovo_logo"
-        app:layout_constraintTop_toBottomOf="@+id/ovo_cash"
-        android:lineSpacingExtra="6sp"
-        android:text="Saldo " />
-
-    <View
-        android:id="@+id/cntnr_vw"
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_72"
-        android:layout_marginLeft="@dimen/dp_26"
-        android:layout_marginRight="@dimen/dp_26"
-        android:background="@drawable/border_transparent_inside"
-        app:layout_constraintBottom_toBottomOf="@+id/saldo"
-        app:layout_constraintTop_toTopOf="@+id/ovo_cash" />
+        android:layout_height="wrap_content">
 
-    <View
-        android:id="@+id/cntnr_vw_amt"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_110"
-        android:layout_marginLeft="@dimen/dp_26"
-        android:layout_marginRight="@dimen/dp_26"
-        android:layout_marginTop="@dimen/dp_40"
-        android:background="@color/clr_f8f8f8"
-        app:layout_constraintTop_toBottomOf="@+id/cntnr_vw" />
+        <TextView
+            android:id="@+id/search_no_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Masukkan  nama atau nomor ponsel"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/search_no"
+            app:layout_constraintStart_toStartOf="@+id/search_no" />
 
-    <TextView
-        android:id="@+id/nmnl_trnsfr"
-        app:layout_constraintTop_toTopOf="@+id/cntnr_vw_amt"
-        app:layout_constraintStart_toStartOf="@+id/search_no"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="12sp"
-        android:paddingTop="@dimen/dp_16"
-        android:textColor="#6b767e"
-        android:lineSpacingExtra="2sp"
-        android:text="Nominal Transfer" />
+        <SearchView
+            android:id="@+id/search_no"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_40"
+            android:closeIcon="@drawable/ic_clear_small"
+            android:iconifiedByDefault="false"
+            android:inputType="number"
+            android:queryHint="@string/entr_name_num"
+            android:searchIcon="@null"
+            android:theme="@style/SearchViewStyle"
+            app:layout_constraintEnd_toStartOf="@+id/iv_contact"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/rp_symbl"
-        android:text="Rp"
-        android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="@+id/search_no"
-        app:layout_constraintTop_toBottomOf="@+id/nmnl_trnsfr"
-        android:textColor="#2d263b"
-        android:paddingTop="@dimen/dp_10"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <ImageView
+            android:id="@+id/iv_contact"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_contact"
+            app:layout_constraintBottom_toBottomOf="@+id/search_no"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/search_no"
+            app:layout_constraintTop_toTopOf="@+id/search_no" />
 
-    <EditText
-        android:id="@+id/trnsfr_amt_edtv"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textSize="24sp"
-        android:textColor="#2d263b"
-        android:theme="@style/editTextTheme"
-        android:inputType="number"
-        android:maxLength="18"
-        android:hint="0"
-        android:paddingTop="@dimen/dp_10"
-        android:paddingBottom="@dimen/dp_16"
-        app:layout_constraintEnd_toEndOf="@+id/cntnr_vw"
-        app:layout_constraintStart_toEndOf="@+id/rp_symbl"
-        app:layout_constraintTop_toBottomOf="@+id/nmnl_trnsfr"/>
+        <TextView
+            android:id="@+id/src_fnd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:lineSpacingExtra="2sp"
+            android:textColor="#6b767e"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="@id/search_no"
+            app:layout_constraintTop_toBottomOf="@id/search_no"
+            tools:text="Sumber Dana" />
 
-    <TextView
-        android:id="@+id/amt_err_txtv"
-        app:layout_constraintTop_toBottomOf="@+id/trnsfr_amt_edtv"
-        app:layout_constraintStart_toStartOf="@+id/search_no"
-        android:layout_width="wrap_content"
-        android:text=""
-        android:visibility="gone"
-        android:textSize="12sp"
-        android:textColor="@color/red_600"
-        android:layout_height="wrap_content" />
+        <ImageView
+            android:id="@+id/ovo_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:src="@drawable/ic_group"
+            app:layout_constraintBottom_toBottomOf="@+id/saldo"
+            app:layout_constraintStart_toStartOf="@+id/src_fnd"
+            app:layout_constraintTop_toTopOf="@+id/ovo_cash" />
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/msg"
-        android:layout_width="360dp"
-        app:layout_constraintTop_toBottomOf="@+id/cntnr_vw_amt"
-        app:layout_constraintStart_toStartOf="@+id/search_no"
-        android:layout_height="wrap_content"
-        app:counterEnabled="true"
-        app:counterMaxLength="25">
+        <TextView
+            android:id="@+id/ovo_cash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_24"
+            android:text="OVO Cash"
+            android:textColor="#2d263b"
+            android:textSize="14sp"
+            app:layout_constraintStart_toEndOf="@id/ovo_logo"
+            app:layout_constraintTop_toBottomOf="@+id/src_fnd" />
+
+        <TextView
+            android:id="@+id/saldo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:lineSpacingExtra="6sp"
+            android:paddingTop="@dimen/dp_2"
+            android:text="Saldo "
+            android:textColor="#8c949b"
+            android:textSize="12sp"
+            app:layout_constraintStart_toEndOf="@+id/ovo_logo"
+            app:layout_constraintTop_toBottomOf="@+id/ovo_cash" />
+
+        <View
+            android:id="@+id/cntnr_vw"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_72"
+            android:layout_marginLeft="@dimen/dp_26"
+            android:layout_marginRight="@dimen/dp_26"
+            android:background="@drawable/border_transparent_inside"
+            app:layout_constraintBottom_toBottomOf="@+id/saldo"
+            app:layout_constraintTop_toTopOf="@+id/ovo_cash" />
+
+        <View
+            android:id="@+id/cntnr_vw_amt"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_110"
+            android:layout_marginLeft="@dimen/dp_26"
+            android:layout_marginTop="@dimen/dp_40"
+            android:layout_marginRight="@dimen/dp_26"
+            android:background="@color/clr_f8f8f8"
+            app:layout_constraintTop_toBottomOf="@+id/cntnr_vw" />
+
+        <TextView
+            android:id="@+id/nmnl_trnsfr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="2sp"
+            android:paddingTop="@dimen/dp_16"
+            android:text="Nominal Transfer"
+            android:textColor="#6b767e"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="@+id/search_no"
+            app:layout_constraintTop_toTopOf="@+id/cntnr_vw_amt" />
+
+        <TextView
+            android:id="@+id/rp_symbl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/dp_10"
+            android:text="Rp"
+            android:textColor="#2d263b"
+            android:textSize="24sp"
+            app:layout_constraintStart_toStartOf="@+id/search_no"
+            app:layout_constraintTop_toBottomOf="@+id/nmnl_trnsfr" />
 
         <EditText
-            android:id="@+id/msg_edtxt"
+            android:id="@+id/trnsfr_amt_edtv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="0"
+            android:inputType="number"
+            android:maxLength="18"
+            android:paddingTop="@dimen/dp_10"
+            android:paddingBottom="@dimen/dp_16"
+            android:textColor="#2d263b"
+            android:textSize="24sp"
+            android:theme="@style/editTextTheme"
+            app:layout_constraintEnd_toEndOf="@+id/cntnr_vw"
+            app:layout_constraintStart_toEndOf="@+id/rp_symbl"
+            app:layout_constraintTop_toBottomOf="@+id/nmnl_trnsfr" />
+
+        <TextView
+            android:id="@+id/amt_err_txtv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="@color/red_600"
+            android:textSize="12sp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@+id/search_no"
+            app:layout_constraintTop_toBottomOf="@+id/trnsfr_amt_edtv" />
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/msg"
+            android:layout_width="360dp"
+            android:layout_height="wrap_content"
+            app:counterEnabled="true"
+            app:counterMaxLength="25"
+            app:layout_constraintStart_toStartOf="@+id/search_no"
+            app:layout_constraintTop_toBottomOf="@+id/cntnr_vw_amt">
+
+            <EditText
+                android:id="@+id/msg_edtxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Pesan (opsional)"
+                android:maxLength="25"
+                android:textColor="#6b767e"
+                android:textSize="16sp"
+                android:theme="@style/msgEditTextTheme" />
+        </android.support.design.widget.TextInputLayout>
+
+        <Button
+            android:id="@+id/proceed"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLength="25"
-            android:theme="@style/msgEditTextTheme"
-            android:hint="Pesan (opsional)"
-            android:textColor="#6b767e"
-            android:textSize="16sp" />
-    </android.support.design.widget.TextInputLayout>
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="@dimen/dp_30"
+            android:layout_marginTop="@dimen/dp_56"
+            android:layout_marginRight="@dimen/dp_30"
+            android:layout_marginBottom="@dimen/dp_50"
+            android:background="@drawable/btn_bg_rounded_corners"
+            android:enabled="false"
+            android:gravity="center"
+            android:text="@string/lnjktn"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_14"
+            app:layout_constraintTop_toBottomOf="@+id/msg" />
 
-    <Button
-        android:id="@+id/proceed"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="@dimen/dp_30"
-        android:layout_marginTop="@dimen/dp_56"
-        android:layout_marginRight="@dimen/dp_30"
-        android:layout_marginBottom="@dimen/dp_50"
-        android:background="@drawable/btn_bg_rounded_corners"
-        android:enabled="false"
-        android:gravity="center"
-        app:layout_constraintTop_toBottomOf="@+id/msg"
-        android:text="@string/lnjktn"
-        android:textColor="@color/white"
-        android:textSize="@dimen/sp_14" />
+        <include
+            layout="@layout/branding_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
-    <include
-        layout="@layout/branding_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-
-</android.support.constraint.ConstraintLayout>
+    </android.support.constraint.ConstraintLayout>
+</ScrollView>

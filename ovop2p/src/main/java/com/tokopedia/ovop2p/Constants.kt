@@ -51,6 +51,7 @@ class Constants {
                 "Terima kasih telah menggunakan OVO."
         val MINIMAL_TRNSFR_MSG = "Minimal transfer Rp10.000"
         val AMT_MORE_THN_BAL = "Saldo Anda Tidak cukup"
+        val NON_OVO_USER_MESSAGE = "Nomor ponsel penerima tidak terdaftar sebagai pengguna OVO."
     }
 
     object Thresholds{

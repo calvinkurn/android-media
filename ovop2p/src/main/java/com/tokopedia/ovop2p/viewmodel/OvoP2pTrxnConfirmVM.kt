@@ -16,9 +16,6 @@ class OvoP2pTrxnConfirmVM(application: Application) : AndroidViewModel(applicati
     var txnConfirmMutableLiveData = MutableLiveData<OvoP2pTransferConfirmBase>()
     private var transferConfirmSubscriber: Subscriber<GraphqlResponse>? = null
 
-
-    var ovoP2pTransferConfirmBaseMutableLiveData: MutableLiveData<OvoP2pTransferConfirmBase>? = null
-
     fun makeTransferConfirmCall(context: Context, transferReqMap: HashMap<String, Any>) {
         OvoP2pUtil.executeOvoP2pTransferConfirm(context, getTransferConfirmSubscriber(), transferReqMap)
     }
@@ -33,18 +30,15 @@ class OvoP2pTrxnConfirmVM(application: Application) : AndroidViewModel(applicati
     fun getTransferConfirmSubscriber(): Subscriber<GraphqlResponse> {
         transferConfirmSubscriber = object : Subscriber<GraphqlResponse>() {
             override fun onCompleted() {
-
             }
 
             override fun onError(e: Throwable) {
-                //stop loading
-                //show error
             }
 
             override fun onNext(graphqlResponse: GraphqlResponse) {
-                val ovoP2pTransferConfirmBase = graphqlResponse.getData<OvoP2pTransferConfirmBase>(OvoP2pTransferRequestBase::class.java)
-                if (ovoP2pTransferConfirmBase != null && ovoP2pTransferConfirmBase.ovoP2pTransferConfirm != null) {
-                    ovoP2pTransferConfirmBaseMutableLiveData!!.value = ovoP2pTransferConfirmBase
+                val ovoP2pTransferConfirmBase = graphqlResponse.getData<OvoP2pTransferConfirmBase>(OvoP2pTransferConfirmBase::class.java)
+                if (ovoP2pTransferConfirmBase?.ovoP2pTransferConfirm != null) {
+                    txnConfirmMutableLiveData!!.value = ovoP2pTransferConfirmBase
                 }
             }
         }

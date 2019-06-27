@@ -56,11 +56,12 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
     private var sndrAmt: Long = 0
     private var rcvrMsg: String = ""
     private var rcvrName: String = ""
+    private var nonOvoUsr: Boolean = false
 
     override fun onClick(v: View?) {
         var id: Int = v?.id ?: -1
-        if(id != -1){
-            when(id){
+        if (id != -1) {
+            when (id) {
                 R.id.proceed -> {
                     //make request call
                     rcvrMsg = msgEdtxtv.text.toString()
@@ -79,8 +80,9 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
                 R.id.cancel -> {
                     alertDialog.dismiss()
                 }
-                R.id.close->{
+                R.id.close -> {
                     alertDialog.dismiss()
+                    nonOvoUsr = false
                 }
                 R.id.proceed_dlg -> {
                     //make transfer confirm request
@@ -92,8 +94,8 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
         }
     }
 
-    fun createOvoP2pTransferReqMap(key: String, value: Any){
-        if(!::trnsfrReqDataMap.isInitialized){
+    fun createOvoP2pTransferReqMap(key: String, value: Any) {
+        if (!::trnsfrReqDataMap.isInitialized) {
             trnsfrReqDataMap = HashMap()
         }
         trnsfrReqDataMap.put(key, value)
@@ -108,7 +110,7 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var view: View = inflater.inflate(R.layout.ovo_p2p_transfer_form, container,false)
+        var view: View = inflater.inflate(R.layout.ovo_p2p_transfer_form, container, false)
         searchView = view.findViewById(R.id.search_no)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             searchView.setOnQueryTextListener(this)
@@ -131,15 +133,15 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
         return view
     }
 
-    private fun createAndSusbcribeToWalletBalVM(){
-        if(!::walletBalanceViewModel.isInitialized){
-            if(activity != null) {
+    private fun createAndSusbcribeToWalletBalVM() {
+        if (!::walletBalanceViewModel.isInitialized) {
+            if (activity != null) {
                 walletBalanceViewModel = ViewModelProviders.of(this.activity!!).get(GetWalletBalanceViewModel::class.java)
-                walletBalanceViewModel.walletLiveData?.observe(this, Observer <WalletDataBase>{
-                    if(it != null){
+                walletBalanceViewModel.walletLiveData?.observe(this, Observer<WalletDataBase> {
+                    if (it != null) {
                         (activity as LoaderUiListener).hideProgressDialog()
                         saldoTextView.text = it.wallet?.cashBalance ?: ""
-                        if(!TextUtils.isEmpty(saldoTextView.text)){
+                        if (!TextUtils.isEmpty(saldoTextView.text)) {
                             sndrAmt = it.wallet?.rawCashBalance?.toLong() ?: 0
                         }
                     }
@@ -148,26 +150,31 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
         }
     }
 
-    private fun createAndSubscribeTransferRequestVM(){
-        if(!::ovoP2pTransferRequestViewModel.isInitialized){
-            if(activity != null){
+    private fun createAndSubscribeTransferRequestVM() {
+        if (!::ovoP2pTransferRequestViewModel.isInitialized) {
+            if (activity != null) {
                 ovoP2pTransferRequestViewModel = ViewModelProviders.of(this.activity!!).get(OvoP2pTransferRequestViewModel::class.java)
-                ovoP2pTransferRequestViewModel.ovoP2pTransferRequestBaseMutableLiveData?.observe(this, Observer <OvoP2pTransferRequestBase>{
-                    if(it != null){
+                ovoP2pTransferRequestViewModel.ovoP2pTransferRequestBaseMutableLiveData?.observe(this, Observer<OvoP2pTransferRequestBase> {
+                    if (it != null) {
                         (activity as LoaderUiListener).hideProgressDialog()
-                        if(it.ovoP2pTransferRequest.errors != null && (it.ovoP2pTransferRequest.errors!!.isNotEmpty())){
-                            it.ovoP2pTransferRequest.errors?.let {
-                                it1 -> it1[0][Constants.Keys.MESSAGE]?.let {
-                                it2 -> gotoErrorPage(it2)
+                        if (it.ovoP2pTransferRequest.errors != null && (it.ovoP2pTransferRequest.errors!!.isNotEmpty())) {
+                            it.ovoP2pTransferRequest.errors?.let { it1 ->
+                                it1[0][Constants.Keys.MESSAGE]?.let { it2 ->
+                                    if (it2.contentEquals(Constants.Messages.NON_OVO_USER_MESSAGE)) {
+                                        //show non ovo user confirmation dialog
+                                        showNonOvoUserConfirmDialog()
+                                    } else {
+                                        gotoErrorPage(it2)
+                                    }
                                 }
                             }
-                        }
-                        else if(TextUtils.isEmpty(it.ovoP2pTransferRequest.dstAccName)){
-                            //show non ovo user confirmation dialog
-                            showNonOvoUserConfirmDialog()
-                        }
-                        else{
+                        } else {
                             //show ovo user confirmation dialog
+                            var dstAccName = it.ovoP2pTransferRequest.dstAccName
+                            if (!TextUtils.isEmpty(dstAccName)) {
+                                rcvrName = dstAccName
+                                createOvoP2pTransferReqMap(Constants.Keys.NAME, rcvrName)
+                            }
                             showOvoUserConfirmationDialog()
                         }
                     }
@@ -176,40 +183,35 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
         }
     }
 
-    private fun createAndSubscribeTransferConfirmVM(){
-        if(!::ovoP2pTransferConfirmViewModel.isInitialized){
-            if(activity != null){
+    private fun createAndSubscribeTransferConfirmVM() {
+        if (!::ovoP2pTransferConfirmViewModel.isInitialized) {
+            if (activity != null) {
                 ovoP2pTransferConfirmViewModel = ViewModelProviders.of(this.activity!!).get(OvoP2pTrxnConfirmVM::class.java)
-                ovoP2pTransferConfirmViewModel.txnConfirmMutableLiveData?.observe(this.activity!!, Observer <OvoP2pTransferConfirmBase>{
-                    if(it != null){
+                ovoP2pTransferConfirmViewModel.txnConfirmMutableLiveData?.observe(this, Observer<OvoP2pTransferConfirmBase> {
+                    if (it != null) {
                         (activity as LoaderUiListener).hideProgressDialog()
-                        if(it.ovoP2pTransferConfirm!!.errors != null &&
-                                it.ovoP2pTransferConfirm!!.errors?.size ?: 0 > 0){
+                        if (it.ovoP2pTransferConfirm!!.errors != null &&
+                                it.ovoP2pTransferConfirm!!.errors?.size ?: 0 > 0) {
                             //show error page
-                            it.ovoP2pTransferConfirm!!.errors?.let {
-                                it1 -> it1[0][Constants.Keys.MESSAGE]?.let {
-                                it2 -> gotoErrorPage(it2)
+                            it.ovoP2pTransferConfirm!!.errors?.let { it1 ->
+                                it1[0][Constants.Keys.MESSAGE]?.let { it2 ->
+                                    gotoErrorPage(it2)
                                 }
                             }
-                        }
-                        else if(!it.ovoP2pTransferConfirm!!.rcvrLink){
+                        } else if (nonOvoUsr) {
                             //show non ovo success page
                             gotoThankYouActivity(it.ovoP2pTransferConfirm!!.transferId, true)
-                        }
-                        else if(it.ovoP2pTransferConfirm!!.rcvrLink){
-                            if(!TextUtils.isEmpty(it.ovoP2pTransferConfirm!!.pinUrl)) {
-                                //launch web view
-                                if(context != null) {
-                                    var intent: Intent = OvoP2pWebViewActivity.getWebViewIntent(context!!, it.ovoP2pTransferConfirm!!.pinUrl,
-                                            Constants.Headers.TRANSFER_FORM_HEADER)
-                                    activity?.startActivity(intent)
-                                }
+                        } else if (!TextUtils.isEmpty(it.ovoP2pTransferConfirm!!.pinUrl)) {
+                            //launch web view
+                            if (context != null) {
+                                var intent: Intent = OvoP2pWebViewActivity.getWebViewIntent(context!!, it.ovoP2pTransferConfirm!!.pinUrl,
+                                        Constants.Headers.TRANSFER_FORM_HEADER)
+                                activity?.startActivity(intent)
                             }
-                            else{
-                                it.ovoP2pTransferConfirm!!.transferId
-                                // go to thankyou activity
-                                gotoThankYouActivity(it.ovoP2pTransferConfirm!!.transferId, false)
-                            }
+                        } else {
+                            it.ovoP2pTransferConfirm!!.transferId
+                            // go to thankyou activity
+                            gotoThankYouActivity(it.ovoP2pTransferConfirm!!.transferId, false)
                         }
                     }
                 })
@@ -217,7 +219,7 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
         }
     }
 
-    private fun gotoErrorPage(errMsg: String){
+    private fun gotoErrorPage(errMsg: String) {
         var fragment: BaseDaggerFragment = FragmentTransferError.createInstance()
         var bundle = Bundle()
         bundle.putString(Constants.Keys.ERR_MSG_ARG, errMsg)
@@ -225,7 +227,7 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
         (activity as ActivityListener).addReplaceFragment(fragment, true, FragmentTransferError.TAG)
     }
 
-    private fun gotoThankYouActivity(transferId: String, nonOvo: Boolean){
+    private fun gotoThankYouActivity(transferId: String, nonOvo: Boolean) {
         var intent = Intent(activity, OVOP2PThankyouActivity::class.java)
         intent.putExtra(Constants.PlaceHolders.TRNSFER_ID_PLCHLDR, transferId)
         intent.putExtra(Constants.Keys.NON_OVO_SUCS, nonOvo)
@@ -233,33 +235,31 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
         activity?.finish()
     }
 
-    private fun setTextSenderAmountWatcher(){
-        trnsfrAmtEdtxtv.addTextChangedListener(object: TextWatcher{
+    private fun setTextSenderAmountWatcher() {
+        trnsfrAmtEdtxtv.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 trnsfrAmtEdtxtv.removeTextChangedListener(this)
                 var enteredAmt: Long = 0
-                if(!TextUtils.isEmpty(s.toString())) {
+                if (!TextUtils.isEmpty(s.toString())) {
                     enteredAmt = OvoP2pUtil.extractNumbersFromString(s.toString()).toLong()
-                    if(enteredAmt < Constants.Thresholds.MIN_TRANSFER_LIMIT){
+                    if (enteredAmt < Constants.Thresholds.MIN_TRANSFER_LIMIT) {
                         amtErrorTxtv.text = Constants.Messages.MINIMAL_TRNSFR_MSG
                         amtErrorTxtv.visibility = View.VISIBLE
                         proceedBtn.isEnabled = false
-                    }
-                    else if(enteredAmt > sndrAmt){
+                    } else if (enteredAmt > sndrAmt) {
                         amtErrorTxtv.text = Constants.Messages.AMT_MORE_THN_BAL
                         amtErrorTxtv.visibility = View.VISIBLE
                         proceedBtn.isEnabled = false
-                    }
-                    else{
+                    } else {
                         rcvrAmt = enteredAmt
-                        if(!TextUtils.isEmpty(searchView.query)){
+                        if (!TextUtils.isEmpty(searchView.query)) {
                             rcvrPhnNo = OvoP2pUtil.checkValidRcvrPhoneEntry(searchView.query.toString(), rcvrPhnNo)
                             rcvrPhnNo = OvoP2pUtil.extractNumbersFromString(rcvrPhnNo)
                             proceedBtn.isEnabled = true
                             amtErrorTxtv.visibility = View.GONE
                         }
                     }
-                }else{
+                } else {
                     amtErrorTxtv.visibility = View.GONE
                 }
                 val rpFormattedString = CurrencyFormatUtil.getThousandSeparatorString(enteredAmt.toDouble(), false, 0)
@@ -277,7 +277,7 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
         })
     }
 
-    companion object{
+    companion object {
         fun newInstance(): OvoFormFragment {
             return OvoFormFragment()
         }
@@ -296,24 +296,29 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
     override fun onQueryTextChange(newText: String?): Boolean {
         setSearchViewHeader(!TextUtils.isEmpty(newText))
         val contacts = context?.let { newText?.let { it1 -> getPartialMatchContact(it, it1) } }
-        val cursorAdapter = context?.let { newText?.let { it1 -> contacts?.let { it2 -> ContactsCursorAdapter(it, it2, it1,
-                ::setContactsData) } } }
+        val cursorAdapter = context?.let {
+            newText?.let { it1 ->
+                contacts?.let { it2 ->
+                    ContactsCursorAdapter(it, it2, it1,
+                            ::setContactsData)
+                }
+            }
+        }
         searchView.suggestionsAdapter = cursorAdapter
         return true
     }
 
-    private fun setSearchViewHeader(showheader: Boolean){
-        if(showheader){
+    private fun setSearchViewHeader(showheader: Boolean) {
+        if (showheader) {
             searchNoHeader.visibility = View.VISIBLE
-        }
-        else{
+        } else {
             searchNoHeader.visibility = View.GONE
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if(activity != null){
+        if (activity != null) {
             (activity as LoaderUiListener).setHeaderTitle(Constants.Headers.TRANSFER_FORM_HEADER)
         }
     }
@@ -334,17 +339,19 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
         createOvoP2pTransferReqMap(Constants.Keys.RECIEVER_NAME, rcvrName)
         alertDialog = OvoP2pUtil.getOvoUserTransferConfirmSubmitAlertDialog(activity, this, trnsfrReqDataMap).create()
         alertDialog.show()
+        nonOvoUsr = false
     }
 
-    fun setContactsData(rcvrName: String, rcvrPhone: String){
+    fun setContactsData(rcvrName: String, rcvrPhone: String) {
         this.rcvrName = rcvrName
         this.rcvrPhnNo = OvoP2pUtil.extractNumbersFromString(rcvrPhone)
         setSearchViewQuery()
     }
 
-    private fun showNonOvoUserConfirmDialog(){
+    private fun showNonOvoUserConfirmDialog() {
         alertDialog = OvoP2pUtil.getNonOvoUserConfirmationDailog(activity, this).create()
         alertDialog.show()
+        nonOvoUsr = true
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -356,7 +363,7 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
         }
     }
 
-    private fun setSearchViewQuery(){
+    private fun setSearchViewQuery() {
         val searchViewStr = "$rcvrPhnNo - $rcvrName"
         searchView.setQuery(searchViewStr, false)
     }
