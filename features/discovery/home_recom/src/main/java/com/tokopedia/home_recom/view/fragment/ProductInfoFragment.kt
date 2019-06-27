@@ -154,11 +154,14 @@ class ProductInfoFragment : BaseDaggerFragment() {
                 pb_add_to_cart.show()
                 addToCart(
                         success = { result ->
+                            recommendationItem.cartId = (result["cartId"] as String).toInt()
+                            RecommendationPageTracking.eventUserClickAddToCart(recommendationItem)
                             pb_add_to_cart.hide()
                             if(result.containsKey(CART_ID) && result[CART_ID].toString().isEmpty()){
                                 showToastError(Throwable(result[MESSAGE].toString()))
                             }else{
                                 showToastSuccessWithAction(result[MESSAGE].toString(), getString(R.string.recom_see_cart)){
+                                    RecommendationPageTracking.eventUserClickSeeToCart()
                                     goToCart()
                                 }
                             }
@@ -170,6 +173,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
                 )
             } else {
                 context?.let {
+                    RecommendationPageTracking.eventUserAddToCartNonLogin()
                     startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
                             REQUEST_CODE_LOGIN)
                 }
@@ -376,7 +380,12 @@ class ProductInfoFragment : BaseDaggerFragment() {
             wishlistUrl = productDataModel.productDetailData.wishlistUrl,
             slashedPrice = productDataModel.productDetailData.slashedPrice,
             discountPercentage = productDataModel.productDetailData.discountPercentage,
-            slashedPriceInt = productDataModel.productDetailData.slashedPriceInt
+            slashedPriceInt = productDataModel.productDetailData.slashedPriceInt,
+            cartId = -1,
+            shopId = productDataModel.productDetailData.shop.id,
+            shopName = productDataModel.productDetailData.shop.name,
+            shopType = if(productDataModel.productDetailData.shop.isGold) "gold_merchant" else "reguler",
+            quantity = productDataModel.productDetailData.minOrder
     )
 
     private fun handleDiscount(){

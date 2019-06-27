@@ -27,6 +27,7 @@ class RecommendationPageTracking {
         private const val FIELD_PRODUCT_VARIANT = "variant"
         private const val FIELD_PRODUCT_CATEGORY = "category"
         private const val FIELD_PRODUCT_LIST = "list"
+        private const val FIELD_PRODUCT_QUANTITY = "quantity"
         private const val FIELD_PRODUCT_POSITION = "position"
         private const val FIELD_ACTION_FIELD = "actionField"
         private const val FIELD_CATEGORY_ID = "category_id"
@@ -90,7 +91,7 @@ class RecommendationPageTracking {
             return DataLayer.mapOf(
                     FIELD_PRODUCT_NAME, item.name,
                     FIELD_PRODUCT_ID, item.productId,
-                    FIELD_PRODUCT_PRICE, item.priceInt,
+                    FIELD_PRODUCT_PRICE, item.getPriceIntFromString(),
                     FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
                     FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
                     FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
@@ -126,7 +127,7 @@ class RecommendationPageTracking {
             return DataLayer.mapOf(
                     FIELD_PRODUCT_NAME, item.name,
                     FIELD_PRODUCT_ID, item.productId,
-                    FIELD_PRODUCT_PRICE, item.priceInt,
+                    FIELD_PRODUCT_PRICE, item.getPriceIntFromString(),
                     FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
                     FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
                     FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
@@ -146,7 +147,7 @@ class RecommendationPageTracking {
                     DataLayer.mapOf(
                             FIELD_PRODUCT_NAME, item.name,
                             FIELD_PRODUCT_ID, item.productId,
-                            FIELD_PRODUCT_PRICE, item.priceInt,
+                            FIELD_PRODUCT_PRICE, item.getPriceIntFromString(),
                             FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
                             FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
                             FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
@@ -178,27 +179,28 @@ class RecommendationPageTracking {
         }
 
         // TODO: COMPLETE THIS WITH OBJECT, ACTUALLY DATA FROM API ISN'T READY
-        fun convertProductToDataClickAddToCart(item: RecommendationItem,
+        private fun convertProductToDataClickAddToCart(item: RecommendationItem,
                                                list: String): Any {
             return DataLayer.mapOf(
                     FIELD_ACTION_FIELD, DataLayer.mapOf(
-                    FIELD_PRODUCT_LIST, list
-            ),
+                        FIELD_PRODUCT_LIST, list
+                    ),
                     FIELD_PRODUCTS, DataLayer.listOf(
-                    DataLayer.mapOf(
-                            FIELD_PRODUCT_NAME, item.name,
-                            FIELD_PRODUCT_ID, item.productId,
-                            FIELD_PRODUCT_PRICE, item.priceInt,
-                            FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
-                            FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
-                            FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
-                            FIELD_SHOP_ID, VALUE_EMPTY,
-                            FIELD_SHOP_TYPE, VALUE_EMPTY,
-                            FIELD_SHOP_NAME, VALUE_EMPTY,
-                            FIELD_CATEGORY_ID, VALUE_EMPTY,
-                            FIELD_DIMENSION_42, VALUE_EMPTY
+                        DataLayer.mapOf(
+                                FIELD_PRODUCT_NAME, item.name,
+                                FIELD_PRODUCT_ID, item.productId.toString(),
+                                FIELD_PRODUCT_PRICE, item.getPriceIntFromString(),
+                                FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
+                                FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
+                                FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
+                                FIELD_PRODUCT_QUANTITY, item.quantity.toString(),
+                                FIELD_SHOP_ID, item.shopId.toString(),
+                                FIELD_SHOP_TYPE, item.shopType,
+                                FIELD_SHOP_NAME, item.shopName,
+                                FIELD_CATEGORY_ID, item.departmentId.toString(),
+                                FIELD_DIMENSION_42, item.cartId.toString()
+                        )
                     )
-            )
             )
         }
 
@@ -562,9 +564,9 @@ class RecommendationPageTracking {
                     EVENT_ACTION, EVENT_ACTION_ADD_TO_CART,
                     EVENT_LABEL, VALUE_EMPTY,
                     ECOMMERCE, DataLayer.mapOf(
-                    ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
-                    ECOMMERCE_ADD, convertProductToDataClickAddToCart(recommendationItem, VALUE_LIST_PRIMARY_PRODUCT_RECOMMENDATION)
-            )
+                        ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
+                        ECOMMERCE_ADD, convertProductToDataClickAddToCart(recommendationItem, VALUE_LIST_PRIMARY_PRODUCT_RECOMMENDATION)
+                    )
             )
             tracker.sendEnhanceEcommerceEvent(data)
         }
