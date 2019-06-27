@@ -386,13 +386,11 @@ open class DynamicPostViewHolder(v: View,
                     itemView.rvPosttag.onFlingListener = null
                 }
                 val layoutManager: RecyclerView.LayoutManager = when (feedType) {
-
-                    SOURCE_FEEDS -> feedType.let{
+                    SOURCE_DETAIL -> LinearLayoutManager(itemView.context)
+                    else -> feedType.let{
                         snapHelper.attachToRecyclerView(itemView.rvPosttag)
                         LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
                     }
-                    SOURCE_DETAIL -> LinearLayoutManager(itemView.context)
-                    else -> GridLayoutManager(itemView.context, 3)
                 }
                 itemView.rvPosttag.layoutManager = layoutManager
                 itemView.rvPosttag.adapter = PostTagAdapter(postTag.items, listener, adapterPosition, feedType)

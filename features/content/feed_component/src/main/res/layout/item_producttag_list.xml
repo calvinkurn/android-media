@@ -110,6 +110,12 @@
                     android:paddingRight="@dimen/dp_8"
                     android:gravity="center"/>
             </RelativeLayout>
+
+            <com.tokopedia.feedcomponent.view.widget.RatingBarReview
+                android:id="@+id/widgetRating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_6"/>
         </LinearLayout>
 
         <com.tokopedia.design.component.ButtonCompat
