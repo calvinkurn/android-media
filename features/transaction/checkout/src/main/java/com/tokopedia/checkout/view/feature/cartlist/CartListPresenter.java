@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.view.feature.cartlist;
 
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
@@ -55,10 +56,13 @@ import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapDa
 import com.tokopedia.transactiondata.apiservice.CartResponseErrorException;
 import com.tokopedia.transactiondata.entity.request.RemoveCartRequest;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
+import com.tokopedia.transactiondata.insurance.entity.request.RemoveInsuranceData;
 import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartGqlResponse;
+import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShopItems;
 import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShops;
-import com.tokopedia.transactiondata.insurance.usecase.DeleteInsuranceProductUsecase;
+import com.tokopedia.transactiondata.insurance.entity.response.RemoveInsuranceProductGqlResponse;
 import com.tokopedia.transactiondata.insurance.usecase.GetInsuranceCartUseCase;
+import com.tokopedia.transactiondata.insurance.usecase.RemoveInsuranceProductUsecase;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -124,7 +128,7 @@ public class CartListPresenter implements ICartListPresenter {
     private final TopAdsGqlUseCase topAdsUseCase;
     private final ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase;
     private final GetInsuranceCartUseCase getInsuranceCartUseCase;
-    private final DeleteInsuranceProductUsecase deleteInsuranceProductUsecase;
+    private final RemoveInsuranceProductUsecase removeInsuranceProductUsecase;
     private final UserSessionInterface userSessionInterface;
     private CartListData cartListData;
     private boolean hasPerformChecklistChange;
@@ -149,7 +153,7 @@ public class CartListPresenter implements ICartListPresenter {
                              TopAdsGqlUseCase topAdsUseCase,
                              ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase,
                              GetInsuranceCartUseCase getInsuranceCartUseCase,
-                             DeleteInsuranceProductUsecase deleteInsuranceProductUsecase) {
+                             RemoveInsuranceProductUsecase removeInsuranceProductUsecase) {
         this.getCartListUseCase = getCartListUseCase;
         this.compositeSubscription = compositeSubscription;
         this.deleteCartUseCase = deleteCartUseCase;
@@ -168,7 +172,7 @@ public class CartListPresenter implements ICartListPresenter {
         this.topAdsUseCase = topAdsUseCase;
         this.clearCacheAutoApplyStackUseCase = clearCacheAutoApplyStackUseCase;
         this.getInsuranceCartUseCase = getInsuranceCartUseCase;
-        this.deleteInsuranceProductUsecase = deleteInsuranceProductUsecase;
+        this.removeInsuranceProductUsecase = removeInsuranceProductUsecase;
     }
 
     @Override
@@ -299,7 +303,22 @@ public class CartListPresenter implements ICartListPresenter {
 
     @Override
     public void processDeleteCartInsurance(InsuranceCartShops insuranceCartShops) {
-        // TODO: 19/6/19 delete insurance
+        view.showProgressLoading();
+        ArrayList<String> cartIdList = new ArrayList<>();
+        ArrayList<RemoveInsuranceData> removeInsuranceDataArrayList = new ArrayList<>();
+
+        Long shopid = insuranceCartShops.getShopId();
+
+        for (InsuranceCartShopItems insuranceCartShopItems : insuranceCartShops.getShopIemsList()) {
+            Long productId = insuranceCartShopItems.getProductId();
+            Long cartId = insuranceCartShopItems.getDigitalProductList().get(0).getCartItemId();
+            cartIdList.add(String.valueOf(cartId));
+            RemoveInsuranceData removeInsuranceData = new RemoveInsuranceData(cartId, shopid, productId);
+            removeInsuranceDataArrayList.add(removeInsuranceData);
+        }
+
+        removeInsuranceProductUsecase.setRequestParams(removeInsuranceDataArrayList, "cart", String.valueOf(Build.VERSION.SDK_INT), cartIdList);
+        removeInsuranceProductUsecase.execute(getSubscriberRemoveInsuranceProduct());
     }
 
     @Override
@@ -864,14 +883,46 @@ public class CartListPresenter implements ICartListPresenter {
                         graphqlResponse.getData(InsuranceCartGqlResponse.class) != null) {
                     insuranceCartGqlResponse =
                             graphqlResponse.getData(InsuranceCartGqlResponse.class);
-//                    view.renderInsuranceCartData(insuranceCartGqlResponse);
+                    view.renderInsuranceCartData(insuranceCartGqlResponse);
                 } else {
                     /*
                       Do Nothing is insureTech cart service fails
                      */
                     view.showToastMessageRed("Cart Fail");
                 }
-                view.renderInsuranceCartData(insuranceCartGqlResponse);
+//                view.renderInsuranceCartData(insuranceCartGqlResponse);
+            }
+        };
+    }
+
+    @NonNull
+    private Subscriber<GraphqlResponse> getSubscriberRemoveInsuranceProduct() {
+        return new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                view.hideProgressLoading();
+                // TODO: 27/6/19 error case handling
+            }
+
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+                RemoveInsuranceProductGqlResponse removeInsuranceProductGqlResponse;
+                if (graphqlResponse != null &&
+                        graphqlResponse.getData(RemoveInsuranceProductGqlResponse.class) != null) {
+                    removeInsuranceProductGqlResponse = graphqlResponse.getData(RemoveInsuranceProductGqlResponse.class);
+                    if (removeInsuranceProductGqlResponse.getResponse().getRemoveTransactional().getStatus()) {
+                        getInsuranceTechCart();
+                    } else {
+                        view.showToastMessageRed(
+                                removeInsuranceProductGqlResponse.getResponse().getRemoveTransactional().getErrorMessage());
+                    }
+                }
+                view.hideProgressLoading();
             }
         };
     }

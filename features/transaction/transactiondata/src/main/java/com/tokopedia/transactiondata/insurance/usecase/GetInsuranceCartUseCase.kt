@@ -16,6 +16,7 @@ import javax.inject.Inject
 
 class GetInsuranceCartUseCase @Inject constructor(@ApplicationContext val context: Context) {
     var graphqlUseCase: GraphqlUseCase = GraphqlUseCase()
+
     fun execute(subscriber: Subscriber<GraphqlResponse>) {
         graphqlUseCase.clearRequest()
 
