@@ -36,6 +36,10 @@ class CMBroadcastReceiver : BroadcastReceiver() {
                         handleActionButtonClick(context, intent, notificationId)
                         sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, campaignId, notificationId)
                     }
+                    CMConstant.ReceiverAction.ACTION_PRODUCT_CLICK -> {
+                        handleProductClick(context, intent, notificationId)
+                        sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, campaignId, notificationId)
+                    }
                     CMConstant.ReceiverAction.ACTION_PERSISTENT_CLICK -> {
                         handlePersistentClick(context, intent)
                         sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, campaignId, notificationId)
@@ -66,6 +70,15 @@ class CMBroadcastReceiver : BroadcastReceiver() {
             }
         } catch (e: Exception) {
         }
+    }
+
+    private fun handleProductClick(context: Context, intent: Intent, notificationId: Int) {
+        val appLinks = intent.getStringExtra(CMConstant.ReceiverExtraData.ACTION_APP_LINK)
+        val appLinkIntent = RouteManager.getIntent(context.applicationContext, appLinks)
+        appLinkIntent.putExtras(intent.extras!!)
+        startActivity(context, appLinkIntent)
+        context.applicationContext.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
+        NotificationManagerCompat.from(context).cancel(notificationId)
     }
 
     private fun handleGridNotificationClick(context: Context, intent: Intent, notificationId: Int) {

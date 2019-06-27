@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/status_bar_latest_event_content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:tag="bigPicture">
+
+    <include layout="@layout/layout_collapsed" />
+
+    <LinearLayout
+        android:id="@+id/ll_expandedProductView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="64dp"
+        android:orientation="horizontal"
+        android:weightSum="10">
+
+        <RelativeLayout
+            android:id="@+id/ll_productImage"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:background="#D9D9D9">
+
+            <ImageView
+                android:id="@+id/iv_productImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_weight="5">
+
+            <TextView
+                android:id="@+id/tv_productTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textColor="#F631353B"
+                android:textSize="14sp"
+                tools:text="Lorem ipsum dolor sit amet" />
+
+            <LinearLayout
+                android:id="@+id/ll_oldPriceAndDiscount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_productTitle"
+                android:layout_marginTop="@dimen/dp_5"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_discountPercent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/cm_background_discount"
+                    android:paddingLeft="@dimen/dp_5"
+                    android:paddingTop="@dimen/dp_2"
+                    android:paddingRight="@dimen/dp_5"
+                    android:paddingBottom="@dimen/dp_2"
+                    android:textColor="#ef144a"
+                    android:textSize="12sp"
+                    tools:text="20%" />
+
+                <TextView
+                    android:id="@+id/tv_oldPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:textColor="#8432343B"
+                    android:textSize="12sp"
+                    tools:text="Rp1500000" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_currentPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ll_oldPriceAndDiscount"
+                android:layout_marginTop="@dimen/dp_5"
+                android:textColor="#fa591d"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                tools:text="Rp1500000" />
+
+            <TextView
+                android:id="@+id/tv_productMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_currentPrice"
+                android:layout_marginTop="@dimen/dp_5"
+                android:textColor="#fa591d"
+                android:textSize="12sp"
+                tools:text="Stok sisa 2" />
+
+            <TextView
+                android:id="@+id/tv_productButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/cm_background_buy"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                android:paddingTop="@dimen/dp_5"
+                android:paddingBottom="@dimen/dp_5"
+                tools:text="Beli Sekarang" />
+
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+</FrameLayout>

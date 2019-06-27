@@ -29,6 +29,7 @@ public interface CMConstant {
         String CAROUSEL_NOTIFICATION = "Carousel";
         String SILENT_PUSH = "Silent";
         String VISUAL_NOTIIFICATION = "Visual";
+        String PRODUCT_NOTIIFICATION = "Product";
     }
 
 
@@ -74,6 +75,7 @@ public interface CMConstant {
         String CAMPAIGN_ID = "campaignId";
         String PD_ACTION = "pdAction";
         String NOTIFICATION_PRIORITY = "priorityPreOreo";
+        String PRODUCT_INFO = "product";
     }
 
     interface ReceiverExtraData {
@@ -108,6 +110,7 @@ public interface CMConstant {
         String ACTION_LEFT_ARROW_CLICK = "com.tokopedia.notification.ACTION_LEFT_ARROW_CLICK";
         String ACTION_CAROUSEL_IMAGE_CLICK = "com.tokopedia.notification.ACTION_CAROUSEL_IMAGE_CLICK";
         String ACTION_GRID_CLICK = "com.tokopedia.notification.GRID_CLICK";
+        String ACTION_PRODUCT_CLICK = "com.tokopedia.notification.PRODUCT_CLICK";
     }
 
     interface CouponCodeExtra {

@@ -23,6 +23,7 @@ import com.tokopedia.notifications.model.Carousel;
 import com.tokopedia.notifications.model.Grid;
 import com.tokopedia.notifications.model.Media;
 import com.tokopedia.notifications.model.PersistentButton;
+import com.tokopedia.notifications.model.ProductInfo;
 
 import org.json.JSONObject;
 
@@ -74,6 +75,8 @@ public class CMNotificationFactory {
                     return (new CarouselNotification(context.getApplicationContext(), baseNotificationModel));
                 case CMConstant.NotificationType.VISUAL_NOTIIFICATION:
                     return new VisualNotification(context.getApplicationContext(), baseNotificationModel);
+                case CMConstant.NotificationType.PRODUCT_NOTIIFICATION:
+                    return new ProductNotification(context.getApplicationContext(), baseNotificationModel);
             }
         }
         return null;
@@ -135,6 +138,7 @@ public class CMNotificationFactory {
         List<Grid> gridList = getGridList(data);
         if (gridList != null)
             model.setGridList(gridList);
+        model.setProductInfo(getProductInfo(data));
         model.setSubText(data.getString(CMConstant.PayloadKeys.SUB_TEXT));
         model.setVisualCollapsedImageUrl(data.getString(CMConstant.PayloadKeys.VISUAL_COLLAPSED_IMAGE));
         model.setVisualExpandedImageUrl(data.getString(CMConstant.PayloadKeys.VISUAL_EXPANDED_IMAGE));
@@ -195,6 +199,20 @@ public class CMNotificationFactory {
         } catch (Exception e) {
 
             Log.e(TAG, "CM-getPersistentNotificationData", e);
+        }
+        return null;
+    }
+
+
+    private static ProductInfo getProductInfo(Bundle bundle){
+        String productInfoStr = bundle.getString(CMConstant.PayloadKeys.PRODUCT_INFO);
+        if (TextUtils.isEmpty(productInfoStr)) {
+            return null;
+        }
+        try {
+            return new Gson().fromJson(productInfoStr, ProductInfo.class);
+        } catch (Exception e) {
+            Log.e(TAG, "CM-getProductInfo", e);
         }
         return null;
     }

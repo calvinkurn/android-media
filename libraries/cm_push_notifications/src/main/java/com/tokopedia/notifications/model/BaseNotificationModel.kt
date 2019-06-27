@@ -35,6 +35,9 @@ class BaseNotificationModel {
     var carouselList: List<Carousel> = ArrayList()
 
     var gridList: List<Grid> = ArrayList()
+
+    var productInfo : ProductInfo? = null
+
     var subText: String? = null
 
     var visualCollapsedImageUrl: String? = null
