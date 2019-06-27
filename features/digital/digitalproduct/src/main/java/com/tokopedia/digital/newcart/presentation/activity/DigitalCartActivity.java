@@ -12,7 +12,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
-import com.tokopedia.common_digital.common.constant.DigitalCartExtraParam;
+import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.applink.DigitalApplinkConstant;
 import com.tokopedia.digital.newcart.di.DigitalCartComponent;
@@ -32,7 +32,7 @@ public class DigitalCartActivity extends BaseSimpleActivity implements HasCompon
 
     public static Intent newInstance(Context context, DigitalCheckoutPassData passData) {
         return new Intent(context, DigitalCartActivity.class)
-                .putExtra(DigitalCartExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, passData);
+                .putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, passData);
     }
 
     public static Intent newInstance(Context context, Bundle bundle) {
@@ -58,7 +58,7 @@ public class DigitalCartActivity extends BaseSimpleActivity implements HasCompon
             );
         }
         return new Intent(context, DigitalCartActivity.class)
-                .putExtra(DigitalCartExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, passData);
+                .putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, passData);
     }
 
     private static String generateATokenRechargeCheckout(Context context) {
@@ -84,7 +84,7 @@ public class DigitalCartActivity extends BaseSimpleActivity implements HasCompon
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        cartPassData = getIntent().getParcelableExtra(DigitalCartExtraParam.EXTRA_PASS_DIGITAL_CART_DATA);
+        cartPassData = getIntent().getParcelableExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA);
         super.onCreate(savedInstanceState);
     }
 
