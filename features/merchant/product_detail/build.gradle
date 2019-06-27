@@ -54,6 +54,7 @@ dependencies {
     implementation project(rootProject.ext.features.tradeIn)
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.features.productCard)
+    implementation project(rootProject.ext.features.adultCommon)
 
 
     implementation rootProject.ext.miscDependencies.dagger

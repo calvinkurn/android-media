@@ -130,6 +130,7 @@ import model.TradeInParams
 import view.customview.TradeInTextView
 import viewmodel.TradeInBroadcastReceiver
 import javax.inject.Inject
+import com.tokopedia.adult.common.AdultManager
 
 class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter.UserActiveListener {
     private var productId: String? = null
@@ -861,6 +862,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        AdultManager.handleActivityResult(this!!, requestCode!!, resultCode!!, data!!)
         when (requestCode) {
             REQUEST_CODE_ETALASE -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
@@ -953,19 +955,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             }
             REQUEST_CODE_LOGIN_THEN_BUY_EXPRESS -> {
                 doBuy()
-            }
-            5838 -> {
-                if (resultCode == Activity.RESULT_OK) {
-//Todo something here
-                } else if (resultCode == 980) {
-                    val message = data!!.getStringExtra("VERIFICATION_SUCCESS")
-                    Toaster.showNormalWithAction(activity!!,
-                            message,
-                            Snackbar.LENGTH_INDEFINITE,
-                            getString(R.string.general_label_ok), View.OnClickListener { v -> })
-                } else {
-                    activity?.finish()
-                }
             }
             else ->
                 super.onActivityResult(requestCode, resultCode, data)
@@ -1273,13 +1262,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
 
         if (data.category.isAdult) {
-            val intent = Intent()
-            activity?.let {
-                val intent = RouteManager.getIntent(activity, ApplinkConstInternalCategory.AGE_RESTRICTION)
-                intent.putExtra("ORIGIN",2)
-                intent.putExtra("DESTINATION_GTM", productInfoP1.productInfo.category.id)
-                startActivityForResult(intent, 5838)
-            }
+            AdultManager.showAdultPopUp(this!!, AdultManager.ORIGIN_PDP, productId ?: "")
         }
 
         var isHandPhone = false
