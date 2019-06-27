@@ -11,9 +11,9 @@ android {
         }
     }
     defaultConfig {
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = ['targetModuleName': 'ProductDraft']
+        kapt {
+            arguments{
+                arg('targetModuleName', 'ProductDraft')
             }
         }
     }
