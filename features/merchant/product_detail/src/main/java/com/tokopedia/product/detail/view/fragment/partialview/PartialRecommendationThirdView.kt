@@ -20,7 +20,8 @@ class PartialRecommendationThirdView private constructor(private val view: View,
 
     override fun getLayoutTitle(): TextView = view.title_recom_3
 
-    override fun getView(): View = view.product_recom_3
+    override fun getView(): View = view.base_recom_3
+
 
     override fun getRecyclerView(): RecyclerView = view.product_recom_3
 

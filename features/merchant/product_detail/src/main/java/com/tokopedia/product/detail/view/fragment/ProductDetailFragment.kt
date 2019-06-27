@@ -359,9 +359,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     private fun renderRecommendationData(result: List<RecommendationWidget>) {
-        recommendationThirdView.renderData(result[2])
         recommendationTopFirstView.renderData(result[0])
         recommendationProductView.renderData(result[1])
+        recommendationThirdView.renderData(result[2])
         recommendationFourthView.renderData(result[3])
     }
 
