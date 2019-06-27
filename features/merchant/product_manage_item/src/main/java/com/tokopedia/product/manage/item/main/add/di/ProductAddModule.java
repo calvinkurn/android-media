@@ -35,6 +35,7 @@ import com.tokopedia.product.manage.item.variant.data.repository.ProductVariantR
 import com.tokopedia.product.manage.item.variant.data.source.ProductVariantDataSource;
 import com.tokopedia.product.manage.item.variant.domain.FetchProductVariantByCatUseCase;
 import com.tokopedia.productdraftdatabase.ProductDraftDB;
+import com.tokopedia.productdraftdatabase.ProductDraftDao;
 import com.tokopedia.shop.common.di.ShopCommonModule;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -109,8 +110,8 @@ public class ProductAddModule {
 
     @ProductAddScope
     @Provides
-    ProductDraftDB provideProductDraftDb(@ApplicationContext Context context){
-        return ProductDraftDB.getInstance(context);
+    ProductDraftDao provideProductDraftDao(@ApplicationContext Context context){
+        return ProductDraftDB.getInstance(context).getProductDraftDao();
     }
 
 

@@ -18,6 +18,7 @@ import com.tokopedia.product.manage.item.main.draft.data.repository.ProductDraft
 import com.tokopedia.product.manage.item.main.draft.data.source.ProductDraftDataSource;
 import com.tokopedia.product.manage.item.main.draft.domain.ProductDraftRepository;
 import com.tokopedia.productdraftdatabase.ProductDraftDB;
+import com.tokopedia.productdraftdatabase.ProductDraftDao;
 import com.tokopedia.seller.common.logout.di.scope.TkpdSellerLogoutScope;
 import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
 import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepositoryImpl;
@@ -57,8 +58,8 @@ public class TkpdSellerLogoutModule {
 
     @TkpdSellerLogoutScope
     @Provides
-    ProductDraftDB provideProductDraftDb(@ApplicationContext Context context){
-        return ProductDraftDB.getInstance(context);
+    ProductDraftDao provideProductDraftDao(@ApplicationContext Context context){
+        return ProductDraftDB.getInstance(context).getProductDraftDao();
     }
 
     @TkpdSellerLogoutScope

@@ -8,6 +8,7 @@ import com.tokopedia.product.manage.item.main.draft.data.source.ProductDraftData
 import com.tokopedia.product.manage.item.main.draft.domain.ProductDraftRepository;
 import com.tokopedia.product.manage.item.main.draft.domain.UpdateUploadingDraftProductUseCase;
 import com.tokopedia.productdraftdatabase.ProductDraftDB;
+import com.tokopedia.productdraftdatabase.ProductDraftDao;
 import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductCountUseCase;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListCountPresenter;
@@ -40,7 +41,7 @@ public class ProductDraftListCountModule{
 
     @ProductManageScope
     @Provides
-    ProductDraftDB provideProductDraftDb(@ApplicationContext Context context){
-        return ProductDraftDB.getInstance(context);
+    ProductDraftDao provideProductDraftDao(@ApplicationContext Context context){
+        return ProductDraftDB.getInstance(context).getProductDraftDao();
     }
 }

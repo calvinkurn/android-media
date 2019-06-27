@@ -11,6 +11,7 @@ import com.tokopedia.product.manage.item.main.draft.domain.DeleteSingleDraftProd
 import com.tokopedia.product.manage.item.main.draft.domain.ProductDraftRepository;
 import com.tokopedia.product.manage.item.main.draft.domain.UpdateUploadingDraftProductUseCase;
 import com.tokopedia.productdraftdatabase.ProductDraftDB;
+import com.tokopedia.productdraftdatabase.ProductDraftDao;
 import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductUseCase;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListPresenter;
@@ -44,8 +45,8 @@ public class ProductDraftListModule extends ProductAddModule {
 
     @ProductAddScope
     @Provides
-    ProductDraftDB provideProductDraftDb(@ApplicationContext Context context){
-        return ProductDraftDB.getInstance(context);
+    ProductDraftDao provideProductDraftDao(@ApplicationContext Context context){
+        return ProductDraftDB.getInstance(context).getProductDraftDao();
     }
 
 }

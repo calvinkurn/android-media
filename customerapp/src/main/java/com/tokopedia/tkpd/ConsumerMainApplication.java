@@ -77,7 +77,6 @@ import com.tokopedia.payment.setting.util.PaymentSettingUrlKt;
 import com.tokopedia.phoneverification.PhoneVerificationConst;
 import com.tokopedia.product.detail.data.util.ProductDetailConstant;
 import com.tokopedia.product.manage.item.imagepicker.util.CatalogConstant;
-import com.tokopedia.productdraftdatabase.ProductDraftDBCreation;
 import com.tokopedia.recentview.data.api.RecentViewUrl;
 import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
 import com.tokopedia.sessioncommon.data.SessionCommonUrl;
@@ -377,7 +376,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     }
 
     public void initializeDatabase() {
-        ProductDraftDBCreation.init(getApplicationContext());
         CategoryDbFlow.initDatabase(getApplicationContext());
     }
 
