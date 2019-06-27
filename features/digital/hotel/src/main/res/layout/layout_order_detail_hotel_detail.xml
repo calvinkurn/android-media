@@ -183,7 +183,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_16"
-                    app:layout_constraintTop_toBottomOf="@id/room_amenities" />
+                    app:layout_constraintTop_toBottomOf="@+id/room_amenities"/>
+                    <!--app:layout_constraintTop_toBottomOf="@id/refund_ticker" -->
 
                 <com.tokopedia.design.component.TextViewCompat
                     android:id="@+id/special_notes"
