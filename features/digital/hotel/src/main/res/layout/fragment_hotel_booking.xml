@@ -166,21 +166,15 @@
                     app:fontSize="micro"
                     app:textViewTheme="lightSecondary" />
 
-                <android.support.v7.widget.CardView
+                <com.tokopedia.unifycomponents.ticker.Ticker
+                    android:id="@+id/cancellation_policy_ticker"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cardCornerRadius="@dimen/dp_2">
-
-                    <com.tokopedia.hotel.common.presentation.widget.InfoTextView
-                        android:id="@+id/tv_cancellation_policy_ticker"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="@dimen/dp_8"
-                        android:paddingBottom="@dimen/dp_8"
-                        android:paddingLeft="@dimen/dp_16"
-                        android:paddingRight="@dimen/dp_16"/>
-
-                </android.support.v7.widget.CardView>
+                    app:tickerType="announcement"
+                    app:closeButtonVisibility="gone"
+                    app:tickerShapeType="loose"
+                    tools:titleText="@string/hotel_room_list_filter_free_cancelable"
+                    tools:descriptionText="Jika melakukan pembatalan, kartu kredit tidak akan dipotong biaya apa pun."/>
 
             </LinearLayout>
 

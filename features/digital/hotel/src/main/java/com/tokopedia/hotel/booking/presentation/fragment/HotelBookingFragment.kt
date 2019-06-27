@@ -40,6 +40,7 @@ import com.tokopedia.hotel.common.presentation.widget.RatingStarView
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_booking.*
@@ -199,25 +200,25 @@ class HotelBookingFragment : HotelBaseFragment() {
             if (!property.rooms[0].isBreakFastIncluded) tv_booking_room_info_breakfast.visibility = View.GONE
 
             val cancellationPolicy = property.rooms[0].cancellationPolicies
-            tv_cancellation_policy_ticker.info_title.setFontSize(TextViewCompat.FontSize.MICRO)
+            cancellation_policy_ticker.info_title.setFontSize(TextViewCompat.FontSize.MICRO)
 
             var cancellationDesc: CharSequence = cancellationPolicy.content
             if (cancellationPolicy.isClickable) {
                 val moreInfoString = getString(R.string.hotel_booking_cancellation_policy_more_info)
                 val spannableString = SpannableString("$cancellationDesc $moreInfoString")
-                val moreInfoSpan = object : ClickableSpan() {
-                    override fun onClick(textView: View) {
-                        onCancellationPolicyClicked(property)
-                    }
-                }
-                spannableString.setSpan(moreInfoSpan,spannableString.length - moreInfoString.length, spannableString.length,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(context!!, R.color.green_200)),
                         spannableString.length - moreInfoString.length, spannableString.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 cancellationDesc = spannableString
             }
-            tv_cancellation_policy_ticker.setTitleAndDescription(cancellationPolicy.title, cancellationDesc)
-            tv_cancellation_policy_ticker.info_desc.movementMethod = LinkMovementMethod.getInstance()
+            cancellation_policy_ticker.tickerTitle = cancellationPolicy.title
+            cancellation_policy_ticker.setTextDescription(cancellationDesc)
+            cancellation_policy_ticker.setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(p0: CharSequence?) {
+                    onCancellationPolicyClicked(property)
+                }
+
+                override fun onDismiss() {}
+            })
         }
     }
 

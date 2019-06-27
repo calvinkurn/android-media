@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.common.travel.di.CommonTravelComponent
-import com.tokopedia.common.travel.di.DaggerCommonTravelComponent
 import com.tokopedia.common.travel.presentation.fragment.TravelContactDataFragment
 import com.tokopedia.common.travel.presentation.model.TravelContactData
 import com.tokopedia.common.travel.utils.CommonTravelUtils

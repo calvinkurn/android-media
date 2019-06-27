@@ -58,6 +58,10 @@ dependencies {
     implementation rootProject.ext.libraries.unifyComponents
     implementation rootProject.ext.libraries.unifyPrinciples
 
+    implementation rootProject.ext.libraries.unifyComponents
+    implementation rootProject.ext.libraries.unifyIcon
+    implementation rootProject.ext.libraries.unifyPrinciples
+
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     implementation rootProject.ext.miscDependencies.multiDex
