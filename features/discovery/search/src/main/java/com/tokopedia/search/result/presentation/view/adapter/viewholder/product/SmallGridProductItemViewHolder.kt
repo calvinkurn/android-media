@@ -7,7 +7,7 @@ import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import kotlinx.android.synthetic.main.search_small_grid_product_card.view.*
 
-class SmallGridProductCardViewHolder(
+class SmallGridProductItemViewHolder(
     itemView: View,
     productListener: ProductListener
 ) : ProductItemViewHolder(itemView, productListener) {
@@ -20,5 +20,9 @@ class SmallGridProductCardViewHolder(
 
     override fun getProductCardView(): ProductCardView? {
         return itemView.productCardView ?: null
+    }
+
+    override fun isUsingBigImageUrl(): Boolean {
+        return false
     }
 }

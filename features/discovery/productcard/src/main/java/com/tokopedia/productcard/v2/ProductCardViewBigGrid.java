@@ -7,23 +7,23 @@ import android.util.AttributeSet;
 
 import com.tokopedia.productcard.R;
 
-public class ProductCardViewSmallGrid extends ProductCardView {
+public class ProductCardViewBigGrid extends ProductCardView {
 
-    public ProductCardViewSmallGrid(@NonNull Context context) {
+    public ProductCardViewBigGrid(@NonNull Context context) {
         super(context);
     }
 
-    public ProductCardViewSmallGrid(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public ProductCardViewBigGrid(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public ProductCardViewSmallGrid(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ProductCardViewBigGrid(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @Override
     protected int getLayout() {
-        return R.layout.product_card_layout_v2_small_grid;
+        return R.layout.product_card_layout_v2_big_grid;
     }
 
     @Override
@@ -55,18 +55,18 @@ public class ProductCardViewSmallGrid extends ProductCardView {
 
     private void setLocationMarginLeft() {
         int marginLeftPixel =
-            isViewVisible(linearLayoutShopBadges)
-                    ? getDimensionPixelSize(R.dimen.dp_4)
-                    : getDimensionPixelSize(R.dimen.dp_8);
+                isViewVisible(linearLayoutShopBadges)
+                        ? getDimensionPixelSize(R.dimen.dp_4)
+                        : getDimensionPixelSize(R.dimen.dp_8);
 
         setMarginsToView(textViewShopLocation, marginLeftPixel, -1, -1, -1);
     }
 
     private void setReviewCountMarginLeft() {
         int marginLeftPixel =
-            isViewVisible(imageRating)
-                    ? getDimensionPixelSize(R.dimen.dp_4)
-                    : getDimensionPixelSize(R.dimen.dp_8);
+                isViewVisible(imageRating)
+                        ? getDimensionPixelSize(R.dimen.dp_4)
+                        : getDimensionPixelSize(R.dimen.dp_8);
 
         setMarginsToView(textViewReviewCount, marginLeftPixel, -1, -1, -1);
     }

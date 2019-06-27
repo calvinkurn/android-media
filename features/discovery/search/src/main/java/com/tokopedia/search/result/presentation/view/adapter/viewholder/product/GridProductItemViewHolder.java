@@ -29,6 +29,7 @@ import java.util.List;
  * Created by henrypriyono on 10/11/17.
  */
 
+@Deprecated
 public class GridProductItemViewHolder extends AbstractViewHolder<ProductItemViewModel> {
 
     @LayoutRes

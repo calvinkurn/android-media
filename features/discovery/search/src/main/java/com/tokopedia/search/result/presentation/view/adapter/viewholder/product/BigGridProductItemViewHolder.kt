@@ -21,4 +21,8 @@ class BigGridProductItemViewHolder(
     override fun getProductCardView(): ProductCardView? {
         return itemView.productCardView ?: null
     }
+
+    override fun isUsingBigImageUrl(): Boolean {
+        return true
+    }
 }

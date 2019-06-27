@@ -51,7 +51,9 @@ abstract class ProductItemViewHolder(
 
     protected abstract fun getProductCardView(): ProductCardView?
 
-    protected fun initProductCardContainer(productItem: ProductItemViewModel) {
+    protected abstract fun isUsingBigImageUrl(): Boolean
+
+    private fun initProductCardContainer(productItem: ProductItemViewModel) {
         getProductCardView()?.setOnLongClickListener {
             productListener.onLongClick(productItem, adapterPosition)
             true
@@ -62,17 +64,23 @@ abstract class ProductItemViewHolder(
         }
     }
 
-    protected fun initProductImage(productItem: ProductItemViewModel) {
+    private fun initProductImage(productItem: ProductItemViewModel) {
         getProductCardView()?.setImageProductVisible(true)
 
-        getProductCardView()?.setImageProductUrl(productItem.imageUrl)
+        setImageProductUrl(productItem)
 
         getProductCardView()?.setImageProductViewHintListener(productItem){
             productListener.onProductImpressed(productItem, adapterPosition)
         }
     }
 
-    protected fun initWishlistButton(productItem: ProductItemViewModel) {
+    private fun setImageProductUrl(productItem: ProductItemViewModel) {
+        val imageUrl = if (isUsingBigImageUrl()) productItem.imageUrl else productItem.imageUrl700
+
+        getProductCardView()?.setImageProductUrl(imageUrl)
+    }
+
+    private fun initWishlistButton(productItem: ProductItemViewModel) {
         getProductCardView()?.setButtonWishlistVisible(productItem.isWishlistButtonEnabled)
         getProductCardView()?.setButtonWishlistImage(productItem.isWishlisted)
         getProductCardView()?.setButtonWishlistOnClickListener {
@@ -82,7 +90,7 @@ abstract class ProductItemViewHolder(
         }
     }
 
-    protected fun initPromoLabel(productItem: ProductItemViewModel) {
+    private fun initPromoLabel(productItem: ProductItemViewModel) {
         val promoLabelViewModel : LabelGroupViewModel? = getFirstLabelGroupOfPosition(productItem, LABEL_GROUP_POSITION_PROMO)
 
         if(promoLabelViewModel != null) {
@@ -96,18 +104,18 @@ abstract class ProductItemViewHolder(
     }
 
     @Nullable
-    protected fun getFirstLabelGroupOfPosition(productItem: ProductItemViewModel, position: String): LabelGroupViewModel? {
+    private fun getFirstLabelGroupOfPosition(productItem: ProductItemViewModel, position: String): LabelGroupViewModel? {
         val labelGroupOfPosition = getLabelGroupOfPosition(productItem, position)
 
         return if(labelGroupOfPosition != null && labelGroupOfPosition.isNotEmpty()) labelGroupOfPosition[0] else null
     }
 
     @Nullable
-    protected fun getLabelGroupOfPosition(productItem: ProductItemViewModel, position: String): List<LabelGroupViewModel>? {
+    private fun getLabelGroupOfPosition(productItem: ProductItemViewModel, position: String): List<LabelGroupViewModel>? {
         return productItem.labelGroupList.filter { labelGroup -> labelGroup.position == position }
     }
 
-    protected fun initShopName(productItem: ProductItemViewModel) {
+    private fun initShopName(productItem: ProductItemViewModel) {
         val isShopNameShown = isShopNameShown(productItem)
         getProductCardView()?.setShopNameVisible(isShopNameShown)
 
@@ -116,16 +124,16 @@ abstract class ProductItemViewHolder(
         }
     }
 
-    protected fun isShopNameShown(productItem: ProductItemViewModel): Boolean {
+    private fun isShopNameShown(productItem: ProductItemViewModel): Boolean {
         return productItem.isShopOfficialStore
     }
 
-    protected fun initTitleTextView(productItem: ProductItemViewModel) {
+    private fun initTitleTextView(productItem: ProductItemViewModel) {
         getProductCardView()?.setProductNameVisible(true)
         getProductCardView()?.setProductNameText(productItem.productName)
     }
 
-    protected fun initSlashedPriceSection(productItem: ProductItemViewModel) {
+    private fun initSlashedPriceSection(productItem: ProductItemViewModel) {
         val isLabelDiscountVisible = isLabelDiscountVisible(productItem)
 
         getProductCardView()?.setLabelDiscountVisible(isLabelDiscountVisible)
@@ -137,21 +145,21 @@ abstract class ProductItemViewHolder(
         }
     }
 
-    protected fun isLabelDiscountVisible(productItem: ProductItemViewModel): Boolean {
+    private fun isLabelDiscountVisible(productItem: ProductItemViewModel): Boolean {
         return productItem.discountPercentage > 0
     }
 
-    protected fun initPriceTextView(productItem: ProductItemViewModel) {
+    private fun initPriceTextView(productItem: ProductItemViewModel) {
         getProductCardView()?.setPriceVisible(true)
         getProductCardView()?.setPriceText(getPriceText(productItem))
     }
 
-    protected fun getPriceText(productItem: ProductItemViewModel) : String {
+    private fun getPriceText(productItem: ProductItemViewModel) : String {
         return if(!TextUtils.isEmpty(productItem.priceRange)) productItem.priceRange
         else productItem.price
     }
 
-    protected fun initShopBadge(productItem: ProductItemViewModel) {
+    private fun initShopBadge(productItem: ProductItemViewModel) {
         val hasAnyBadgesShown = hasAnyBadgesShown(productItem)
         getProductCardView()?.setShopBadgesVisible(hasAnyBadgesShown)
 
@@ -161,11 +169,11 @@ abstract class ProductItemViewHolder(
         }
     }
 
-    protected fun hasAnyBadgesShown(productItem: ProductItemViewModel): Boolean {
+    private fun hasAnyBadgesShown(productItem: ProductItemViewModel): Boolean {
         return productItem.badgesList.any { badge -> badge.isShown }
     }
 
-    protected fun loopBadgesListToLoadShopBadgeIcon(badgesList: List<BadgeItemViewModel>) {
+    private fun loopBadgesListToLoadShopBadgeIcon(badgesList: List<BadgeItemViewModel>) {
         for (badgeItem in badgesList) {
             if (badgeItem.isShown) {
                 loadShopBadgesIcon(badgeItem.imageUrl ?: "")
@@ -173,7 +181,7 @@ abstract class ProductItemViewHolder(
         }
     }
 
-    protected fun loadShopBadgesIcon(url: String) {
+    private fun loadShopBadgesIcon(url: String) {
         if(!TextUtils.isEmpty(url)) {
             val view = LayoutInflater.from(context).inflate(R.layout.search_product_card_badge_layout, null)
 
@@ -190,7 +198,7 @@ abstract class ProductItemViewHolder(
         }
     }
 
-    protected fun loadShopBadgeSuccess(view: View, bitmap: Bitmap) {
+    private fun loadShopBadgeSuccess(view: View, bitmap: Bitmap) {
         val image = view.findViewById<ImageView>(R.id.badge)
 
         if (bitmap.height <= 1 && bitmap.width <= 1) {
@@ -202,11 +210,11 @@ abstract class ProductItemViewHolder(
         }
     }
 
-    protected fun loadShopBadgeFailed(view: View) {
+    private fun loadShopBadgeFailed(view: View) {
         view.visibility = View.GONE
     }
 
-    protected fun initLocationTextView(productItem: ProductItemViewModel) {
+    private fun initLocationTextView(productItem: ProductItemViewModel) {
         val isShopLocationShown = isShopLocationShown(productItem)
         getProductCardView()?.setShopLocationVisible(isShopLocationShown)
 
@@ -215,21 +223,21 @@ abstract class ProductItemViewHolder(
         }
     }
 
-    protected fun isShopLocationShown(productItem: ProductItemViewModel) : Boolean {
+    private fun isShopLocationShown(productItem: ProductItemViewModel) : Boolean {
         return !TextUtils.isEmpty(productItem.shopCity)
     }
 
-    protected fun initCredibilitySection(productItem: ProductItemViewModel) {
+    private fun initCredibilitySection(productItem: ProductItemViewModel) {
         initRatingAndReview(productItem)
         initCredibilityLabel(productItem)
     }
 
-    protected fun initRatingAndReview(productItem: ProductItemViewModel) {
+    private fun initRatingAndReview(productItem: ProductItemViewModel) {
         initRatingView(productItem)
         initReviewCount(productItem)
     }
 
-    protected fun initRatingView(productItem: ProductItemViewModel) {
+    private fun initRatingView(productItem: ProductItemViewModel) {
         val isImageRatingVisible = isImageRatingVisible(productItem)
 
         getProductCardView()?.setImageRatingVisible(isImageRatingVisible)
@@ -239,18 +247,18 @@ abstract class ProductItemViewHolder(
         }
     }
 
-    protected fun isImageRatingVisible(productItem: ProductItemViewModel): Boolean {
+    private fun isImageRatingVisible(productItem: ProductItemViewModel): Boolean {
         return productItem.rating != 0
     }
 
-    protected fun getStarCount(productItem: ProductItemViewModel): Int {
+    private fun getStarCount(productItem: ProductItemViewModel): Int {
         return if (productItem.isTopAds)
             Math.round(productItem.rating / 20f)
         else
             Math.round(productItem.rating.toFloat())
     }
 
-    protected fun initReviewCount(productItem: ProductItemViewModel) {
+    private fun initReviewCount(productItem: ProductItemViewModel) {
         val isReviewCountVisible = isReviewCountVisible(productItem)
         getProductCardView()?.setReviewCountVisible(isReviewCountVisible)
 
@@ -259,11 +267,11 @@ abstract class ProductItemViewHolder(
         }
     }
 
-    protected fun isReviewCountVisible(productItem: ProductItemViewModel): Boolean {
+    private fun isReviewCountVisible(productItem: ProductItemViewModel): Boolean {
         return productItem.countReview != 0
     }
 
-    protected fun initCredibilityLabel(productItem: ProductItemViewModel) {
+    private fun initCredibilityLabel(productItem: ProductItemViewModel) {
         val isCredibilityLabelVisible = isCredibilityLabelVisible(productItem)
         getProductCardView()?.setLabelCredibilityVisible(isCredibilityLabelVisible)
 
@@ -276,20 +284,20 @@ abstract class ProductItemViewHolder(
         }
     }
 
-    protected fun isCredibilityLabelVisible(productItem: ProductItemViewModel): Boolean {
+    private fun isCredibilityLabelVisible(productItem: ProductItemViewModel): Boolean {
         return isRatingAndReviewNotVisible(productItem)
                 && isCredibilityLabelExists(productItem)
     }
 
-    protected fun isRatingAndReviewNotVisible(productItem: ProductItemViewModel): Boolean {
+    private fun isRatingAndReviewNotVisible(productItem: ProductItemViewModel): Boolean {
         return !isImageRatingVisible(productItem) && !isReviewCountVisible(productItem)
     }
 
-    protected fun isCredibilityLabelExists(productItem: ProductItemViewModel): Boolean {
+    private fun isCredibilityLabelExists(productItem: ProductItemViewModel): Boolean {
         return getFirstLabelGroupOfPosition(productItem, LABEL_GROUP_POSITION_CREDIBILITY) != null
     }
 
-    protected fun initOffersLabel(productItem: ProductItemViewModel) {
+    private fun initOffersLabel(productItem: ProductItemViewModel) {
         val offersLabelViewModel = getFirstLabelGroupOfPosition(productItem, LABEL_GROUP_POSITION_OFFERS)
 
         getProductCardView()?.setLabelOffersVisible(offersLabelViewModel != null)
@@ -299,16 +307,16 @@ abstract class ProductItemViewHolder(
         }
     }
 
-    protected fun setOffersLabelContent(offersLabelViewModel: LabelGroupViewModel) {
+    private fun setOffersLabelContent(offersLabelViewModel: LabelGroupViewModel) {
         getProductCardView()?.setLabelOffersType(offersLabelViewModel.type)
         getProductCardView()?.setLabelOffersText(offersLabelViewModel.title)
     }
 
-    protected fun initTopAdsIcon(productItem: ProductItemViewModel) {
+    private fun initTopAdsIcon(productItem: ProductItemViewModel) {
         getProductCardView()?.setImageTopAdsVisible(productItem.isTopAds)
     }
 
-    protected fun finishBindViewHolder() {
+    private fun finishBindViewHolder() {
         getProductCardView()?.realignLayout()
     }
 }

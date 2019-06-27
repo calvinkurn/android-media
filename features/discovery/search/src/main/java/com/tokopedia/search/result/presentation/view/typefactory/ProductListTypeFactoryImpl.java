@@ -11,11 +11,10 @@ import com.tokopedia.search.result.presentation.model.RelatedSearchViewModel;
 import com.tokopedia.search.result.presentation.model.TopAdsViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BigGridProductItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.EmptySearchViewHolder;
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.GridProductItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.HeaderViewHolder;
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ListProductItemViewHolder;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ListProductItemViewHolderDeprecated;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RelatedSearchViewHolder;
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridProductCardViewHolder;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridProductItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.TopAdsViewHolder;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
@@ -69,12 +68,12 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
     public int type(ProductItemViewModel productItem) {
         switch (getRecyclerViewItem()) {
             case SearchConstant.RecyclerView.VIEW_PRODUCT:
-                return ListProductItemViewHolder.LAYOUT;
+                return ListProductItemViewHolderDeprecated.LAYOUT;
             case SearchConstant.RecyclerView.VIEW_PRODUCT_GRID_1:
                 return BigGridProductItemViewHolder.LAYOUT;
             case SearchConstant.RecyclerView.VIEW_PRODUCT_GRID_2:
             default:
-                return SmallGridProductCardViewHolder.LAYOUT;
+                return SmallGridProductItemViewHolder.LAYOUT;
         }
     }
 
@@ -97,12 +96,10 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
     public AbstractViewHolder createViewHolder(View view, int type) {
         AbstractViewHolder viewHolder;
 
-        if (type == ListProductItemViewHolder.LAYOUT) {
-            viewHolder = new ListProductItemViewHolder(view, productListener);
-        } else if(type == SmallGridProductCardViewHolder.LAYOUT) {
-            viewHolder = new SmallGridProductCardViewHolder(view, productListener);
-        } else if (type == GridProductItemViewHolder.LAYOUT) {
-            viewHolder = new GridProductItemViewHolder(view, productListener);
+        if (type == ListProductItemViewHolderDeprecated.LAYOUT) {
+            viewHolder = new ListProductItemViewHolderDeprecated(view, productListener);
+        } else if(type == SmallGridProductItemViewHolder.LAYOUT) {
+            viewHolder = new SmallGridProductItemViewHolder(view, productListener);
         } else if (type == BigGridProductItemViewHolder.LAYOUT) {
             viewHolder = new BigGridProductItemViewHolder(view, productListener);
         } else if(type == HeaderViewHolder.LAYOUT){
