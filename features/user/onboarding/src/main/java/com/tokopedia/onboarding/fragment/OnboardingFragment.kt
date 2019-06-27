@@ -13,6 +13,7 @@ import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.util.getParamInt
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.onboarding.OnboardingActivity
@@ -135,11 +136,8 @@ OnboardingFragment : BaseDaggerFragment(),
             lottieAnimationView = defaultView.findViewById(R.id.animation_view)
             if (lottieAsset.isNotBlank()) {
                 lottieAnimationView.setAnimation(lottieAsset, LottieAnimationView.CacheStrategy.Strong)
-            } else {
-                var crashlytics: Crashlytics? = Crashlytics.getInstance()
-                if (crashlytics != null) {
-                    Crashlytics.log("Lottie Asset Is Blank")
-                }
+            } else if (!GlobalConfig.DEBUG) {
+                Crashlytics.log("Lottie Asset Is Blank")
             }
         } catch (e: Exception) {
             e.printStackTrace()
