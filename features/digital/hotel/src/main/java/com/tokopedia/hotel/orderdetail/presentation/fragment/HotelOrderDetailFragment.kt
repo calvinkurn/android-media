@@ -170,7 +170,8 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
     fun renderTransactionDetail(orderDetail: HotelOrderDetail) {
 
         transaction_status.text = orderDetail.status.statusText
-        transaction_status.setTextColor(Color.parseColor(orderDetail.status.textColor))
+        if (orderDetail.status.textColor.isNotEmpty())
+            transaction_status.setTextColor(Color.parseColor(orderDetail.status.textColor))
 
         var transactionDetailAdapter = TitleTextAdapter(TitleTextAdapter.HORIZONTAL_LAYOUT)
         transaction_detail_title_recycler_view.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
