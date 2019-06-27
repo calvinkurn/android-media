@@ -40,16 +40,13 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
-import com.tokopedia.design.widget.ObservableNestedScrollView
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListenerWithRetry
 import com.tokopedia.gallery.ImageReviewGalleryActivity
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.imagepreview.ImagePreviewActivity
-import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
@@ -362,9 +359,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     private fun renderRecommendationData(result: List<RecommendationWidget>) {
+        recommendationThirdView.renderData(result[2])
         recommendationTopFirstView.renderData(result[0])
         recommendationProductView.renderData(result[1])
-        recommendationThirdView.renderData(result[2])
         recommendationFourthView.renderData(result[3])
     }
 
@@ -386,6 +383,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
         initializePartialView(view)
         initView()
+        tv_trade_in_promo.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(activity, R.drawable.tradein_white), null, null, null)
         refreshLayout = view.findViewById(R.id.swipeRefresh)
 
         tradeInBroadcastReceiver = TradeInBroadcastReceiver()
@@ -421,13 +419,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             actionButtonView.gone()
             base_btn_affiliate.visible()
             loadingAffiliate.visible()
-        }
-
-        nested_scroll.listener = object : ObservableNestedScrollView.ScrollViewListener {
-            override fun onScrollEnded(scrollView: ObservableNestedScrollView, x: Int, y: Int, oldX: Int, oldY: Int) {
-                scrollView.startLoad()
-                productInfoViewModel.loadMore()
-            }
         }
 
         merchantVoucherListWidget.setOnMerchantVoucherListWidgetListener(object : MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener {
@@ -624,6 +615,15 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
     }
 
+    private fun addLoadMoreImpression(view:View){
+        val impressionHolder = ImpressHolder()
+        view.addOnImpressionListener(impressionHolder, object : ViewHintListener {
+            override fun onViewHint() {
+                productInfoViewModel.loadMore()
+            }
+        })
+    }
+
     private fun showSnackbarClose(string: String) {
         Snackbar.make(coordinator, string, Snackbar.LENGTH_LONG).apply {
             setAction(getString(R.string.close)) { dismiss() }
@@ -646,6 +646,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
         if (!::productDescrView.isInitialized) {
             productDescrView = PartialProductDescrFullView.build(base_info_and_description, activity)
+            addLoadMoreImpression(title_product_desc_label)
         }
 
         if (!::actionButtonView.isInitialized) {
@@ -741,6 +742,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     private fun initView() {
+
         collapsing_toolbar.title = ""
         toolbar.title = ""
         activity?.let {
@@ -755,7 +757,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     AppBarState.EXPANDED -> {
                         isAppBarCollapsed = false
                         expandedAppBar()
-                        nested_scroll.completeLoad()
                     }
                     AppBarState.COLLAPSED -> {
                         isAppBarCollapsed = true

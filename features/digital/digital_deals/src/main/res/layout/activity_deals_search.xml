@@ -39,7 +39,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="@dimen/dp_16"
-                        android:src="@drawable/toolbar_back_black" />
+                        app:srcCompat="@drawable/toolbar_back_black" />
 
 
                     <com.tokopedia.digital_deals.view.customview.SearchInputView
@@ -90,7 +90,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_16"
-                        android:drawableRight="@drawable/location_arrow_down"
                         android:layout_marginRight="@dimen/dp_16"
                         android:drawablePadding="@dimen/dp_4"
                         android:textColor="@color/clr_f531353b"
@@ -239,7 +238,7 @@
                     android:layout_width="@dimen/dp_121"
                     android:layout_height="@dimen/dp_85"
                     android:layout_gravity="center_horizontal"
-                    android:src="@drawable/empty_search_illustration_big" />
+                    app:srcCompat="@drawable/empty_search_illustration_big" />
 
                 <TextView
                     style="@style/TextView.Medium.FontMedium.BlackPrimary"

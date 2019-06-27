@@ -19,8 +19,6 @@
             android:text="@string/promo_title"
             android:id="@+id/promo_title"
             android:drawablePadding="@dimen/dp_4"
-            android:drawableRight="@drawable/info_icon"
-            android:drawableEnd="@drawable/info_icon"
             android:gravity="center_vertical"/>
 
         <android.support.v7.widget.CardView
