@@ -2,13 +2,12 @@ package com.tokopedia.adult.common;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import com.tokopedia.unifycomponents.Toaster;
 
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
-
-import javax.annotation.Nullable;
 
 public class AdultManager {
 
