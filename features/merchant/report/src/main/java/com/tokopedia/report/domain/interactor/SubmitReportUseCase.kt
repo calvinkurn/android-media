@@ -13,12 +13,14 @@ import okhttp3.MediaType
 import okhttp3.RequestBody
 import rx.Observable
 import rx.schedulers.Schedulers
+import javax.inject.Inject
+import javax.inject.Named
 
 @Suppress("UNCHECKED_CAST")
-class SubmitReportUseCase (private val userSession: UserSessionInterface,
-                           private val gqlMutationQuery: String,
-                           private val graphqlUseCase: GraphqlUseCase,
-                           private val uploadImageUseCase: UploadImageUseCase<ImageAttachment.Data>): UseCase<Boolean>() {
+class SubmitReportUseCase @Inject constructor(private val userSession: UserSessionInterface,
+                                              @Named("product_report_submit") private val gqlMutationQuery: String,
+                                              private val graphqlUseCase: GraphqlUseCase,
+                                              private val uploadImageUseCase: UploadImageUseCase<ImageAttachment.Data>): UseCase<Boolean>() {
 
     override fun createObservable(requestParams: RequestParams?): Observable<Boolean> {
         if (requestParams == null) return Observable.error(Throwable("Invalid Params"))

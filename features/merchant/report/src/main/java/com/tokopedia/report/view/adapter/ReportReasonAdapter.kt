@@ -9,6 +9,8 @@ import android.text.style.URLSpan
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.text.style.WebViewURLSpan
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
@@ -17,7 +19,6 @@ import com.tokopedia.report.R
 import com.tokopedia.report.data.constant.GeneralConstant
 import com.tokopedia.report.data.model.ProductReportReason
 import com.tokopedia.report.data.util.MerchantReportTracking
-import com.tokopedia.webview.BaseSimpleWebViewActivity
 import kotlinx.android.synthetic.main.item_footer.view.title as titleFooter
 import kotlinx.android.synthetic.main.item_header.view.title as titleHeader
 import kotlinx.android.synthetic.main.item_report_type.view.*
@@ -108,9 +109,7 @@ class ReportReasonAdapter(private val listener: OnReasonClick,
                         listener = object : WebViewURLSpan.OnClickListener {
                             override fun onClick(url: String) {
                                 tracking.eventReportLearnMore()
-                                itemView.context.startActivity(BaseSimpleWebViewActivity.getStartIntent(
-                                        itemView.context, GeneralConstant.URL_REPORT_TYPE
-                                ))
+                                RouteManager.route(itemView.context, "${ApplinkConst.WEBVIEW}?url=${GeneralConstant.URL_REPORT_TYPE}")
                             }
 
                             override fun showUnderline() = false

@@ -40,18 +40,15 @@ class ReportInputDetailFragment : BaseDaggerFragment() {
             input.filters = arrayOf(InputFilter.LengthFilter(maxChar))
 
         btn_cont.setOnClickListener {
-            val inputText = input.text.toString()
-            val intent = Intent().putExtra(INPUT_VALUE, inputText)
-                    .putExtra(VALID_VALUE, inputText.length in minChar..maxChar)
-            activity?.run {
-                setResult(Activity.RESULT_OK, intent)
-                finish()
-            }
+            sendInputResult()
+            activity?.finish()
         }
     }
 
     fun sendInputResult() {
-        val intent = Intent().putExtra(INPUT_VALUE, input.text.toString())
+        val inputText = input.text.toString()
+        val intent = Intent().putExtra(INPUT_VALUE, inputText)
+                .putExtra(VALID_VALUE, inputText.length in minChar..maxChar)
         activity?.run {
             setResult(Activity.RESULT_OK, intent)
         }

@@ -1670,7 +1670,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             if (productInfoViewModel.isUserSessionActive()) {
                 context?.let {
                     val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.REPORT_PRODUCT,
-                            productInfo!!.basic.id.toString())
+                            basic.id.toString())
                     startActivityForResult(intent, REQUEST_CODE_REPORT)
                 }
 

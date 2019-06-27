@@ -18,10 +18,7 @@ class ReportInputDetailActivity : BaseSimpleActivity() {
         return fragment
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        supportActionBar?.setHomeAsUpIndicator(ContextCompat.getDrawable(this, R.drawable.ic_close_default))
-    }
+    override fun isShowCloseButton(): Boolean = true
 
     companion object{
         private const val ARG_MIN_CHAR = "arg_min_char"

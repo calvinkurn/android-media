@@ -55,12 +55,6 @@ class MerchantReportModule {
     fun getProductReportSubmitMutation(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_mutation_submit_report)
 
-    @MerchantReportScope
-    @Provides
-    @Named("dummy_response")
-    fun getDummyStringJson(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.dummy)
-
     @Provides
     fun provideUploadImageUseCase(
             @ImageUploaderQualifier uploadImageRepository: UploadImageRepository,
@@ -70,12 +64,4 @@ class MerchantReportModule {
             @ImageUploaderQualifier imageUploaderUtils: ImageUploaderUtils): UploadImageUseCase<ImageAttachment.Data> {
         return UploadImageUseCase(uploadImageRepository, generateHostRepository, gson, userSession, ImageAttachment.Data::class.java, imageUploaderUtils)
     }
-
-    @MerchantReportScope
-    @Provides
-    fun provideSubmitReportUseCase(userSession: UserSessionInterface,
-                                   graphqlUseCase: GraphqlUseCase,
-                                   @Named("product_report_submit") mutationQuery: String,
-                                   uploadImageUseCase: UploadImageUseCase<ImageAttachment.Data>) =
-            SubmitReportUseCase(userSession, mutationQuery, graphqlUseCase, uploadImageUseCase)
 }

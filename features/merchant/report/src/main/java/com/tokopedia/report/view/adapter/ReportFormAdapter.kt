@@ -12,6 +12,8 @@ import android.text.style.URLSpan
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.text.style.WebViewURLSpan
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
@@ -21,7 +23,6 @@ import com.tokopedia.report.data.constant.GeneralConstant
 import com.tokopedia.report.data.model.ProductReportReason
 import com.tokopedia.report.data.util.MerchantReportTracking
 import com.tokopedia.report.view.util.SpaceItemDecoration
-import com.tokopedia.webview.BaseSimpleWebViewActivity
 import kotlinx.android.synthetic.main.item_header_form.view.*
 import kotlinx.android.synthetic.main.item_link_form.view.*
 import kotlinx.android.synthetic.main.item_photo_form.view.*
@@ -45,7 +46,8 @@ class ReportFormAdapter(private val item: ProductReportReason,
 
     init {
         items.addAll(item.additionalInfo.map { it.type to it })
-        items.addAll(item.additionalFields.asSequence().filterNot { it.type == "popup" || it.type == "text"}
+        items.addAll(item.additionalFields.asSequence()
+                .filterNot { it.type == GeneralConstant.TYPE_POPUP || it.type == GeneralConstant.TYPE_TEXT}
                 .map { it.type to it }.toList())
     }
 
@@ -73,11 +75,6 @@ class ReportFormAdapter(private val item: ProductReportReason,
                 holder.bindLink(field.label, field.value)
             } else if (holder is TextAreaViewHolder && field is ProductReportReason.AdditionalField){
                 holder.bind(field)
-                with(holder.itemView.edit_text_report){
-                    setOnClickListener {
-                        inputDetailListener.invoke(field.key, text.toString(), field.min, field.max)
-                    }
-                }
             } else if (holder is UploadPhotoViewHolder && field is ProductReportReason.AdditionalField){
                 holder.bind(field)
             }
@@ -89,9 +86,9 @@ class ReportFormAdapter(private val item: ProductReportReason,
             0 -> TYPE_HEADER
             itemCount - 1 -> TYPE_SUBMIT
             else -> when(items[position -1].first){
-                "link" -> TYPE_LINK
-                "textarea" -> TYPE_TEXTAREA
-                "file" -> TYPE_PHOTO
+                GeneralConstant.TYPE_LINK -> TYPE_LINK
+                GeneralConstant.TYPE_TEXTAREA -> TYPE_TEXTAREA
+                GeneralConstant.TYPE_FILE -> TYPE_PHOTO
                 else -> super.getItemViewType(position)
             }
         }
@@ -137,9 +134,7 @@ class ReportFormAdapter(private val item: ProductReportReason,
                         listener = object : WebViewURLSpan.OnClickListener {
                             override fun onClick(url: String) {
                                 tracking.eventReportLearnMore(item.value.toLowerCase())
-                                itemView.context.startActivity(BaseSimpleWebViewActivity.getStartIntent(
-                                        itemView.context, GeneralConstant.URL_REPORT_TYPE
-                                ))
+                                RouteManager.route(itemView.context, "${ApplinkConst.WEBVIEW}?url=${GeneralConstant.URL_REPORT_TYPE}")
                             }
 
                             override fun showUnderline() = false
@@ -174,7 +169,7 @@ class ReportFormAdapter(private val item: ProductReportReason,
                 link.text = text
                 link.setOnClickListener {
                     tracking.eventReportClickLink(text, trackingReasonLabel)
-                    context.startActivity(BaseSimpleWebViewActivity.getStartIntent(context, url))
+                    RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=$url")
                 }
             }
         }
@@ -214,6 +209,10 @@ class ReportFormAdapter(private val item: ProductReportReason,
                 edit_text_report.setText(input)
                 if (inputs[field.key] != null)
                     validate()
+
+                edit_text_report.setOnClickListener {
+                    inputDetailListener.invoke(field.key, edit_text_report.text.toString(), field.min, field.max)
+                }
             }
         }
     }

@@ -33,9 +33,7 @@ class ProductReportFragment : BaseDaggerFragment(), ReportReasonAdapter.OnReason
     private var productId = "-1"
     private val tracking by lazy { MerchantReportTracking() }
 
-    override fun scrollToTop() {
-        //smoothScroller.targetPosition = 0
-    }
+    override fun scrollToTop() {}
 
     override fun gotoForm(reason: ProductReportReason) {
         tracking.eventReportReason(reason.strLabel)
