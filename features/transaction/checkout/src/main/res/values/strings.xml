@@ -43,7 +43,7 @@
     <string name="label_shipment_counter">Pengiriman #</string>
     <string name="label_item_count">Jumlah</string>
     <string name="label_item_count_summary_with_format">Total Harga (%d Barang)</string>
-    <string name="label_item_count_purchase_protection">Proteksi Gadget (%d Barang)</string>
+    <string name="label_item_count_purchase_protection">Proteksi Produk (%d Barang)</string>
     <string name="label_item_count_with_format">Harga (%d Barang)</string>
     <string name="label_item_count_without_format">Jumlah Barang</string>
     <string name="label_error_choose_address">Pilih alamat pengiriman</string>
@@ -237,9 +237,9 @@
     <string name="text_tos_agreement">syarat dan ketentuan asuransi</string>
     <string name="title_activity_cart">Keranjang</string>
     <string name="ppp_more">Pelajari</string>
-    <string name="error_dropshipper">Fitur dropshipper tidak dapat digunakan ketika menggunakan Proteksi Gadget</string>
-    <string name="checkout_ppp_label">Proteksi Gadget (3 Barang)</string>
-    <string name="title_activity_checkout_webview">Proteksi Gadget</string>
+    <string name="error_dropshipper">Fitur dropshipper tidak dapat digunakan ketika menggunakan Proteksi Produk</string>
+    <string name="checkout_ppp_label">Proteksi Produk (3 Barang)</string>
+    <string name="title_activity_checkout_webview">Proteksi Produk</string>
     <string name="title_activity_checkout_tnc_webview">Syarat dan Ketentuan</string>
     <string name="recomendasi_untuk_anda" tools:ignore="ExtraTranslation">Rekomendasi untuk Anda</string>
     <string name="label_cod">Bayar di Tempat</string>

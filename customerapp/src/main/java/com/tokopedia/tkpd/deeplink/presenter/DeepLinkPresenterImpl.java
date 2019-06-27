@@ -45,6 +45,7 @@ import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
 import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
+import com.tokopedia.home_recom.HomeRecommendationActivity;
 import com.tokopedia.loyalty.LoyaltyRouter;
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo;
 import com.tokopedia.referral.view.activity.ReferralActivity;
@@ -189,6 +190,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     }
                     screenName = AppScreen.SCREEN_LOGIN;
                     break;
+                case DeepLinkChecker.RECOMMENDATION:
+                    openHomeRecommendation(linkSegment, uriData);
+                    screenName = AppScreen.SCREEN_RECOMMENDATION;
+                    break;
                 case DeepLinkChecker.OTHER:
                     prepareOpenWebView(uriData);
                     screenName = AppScreen.SCREEN_DEEP_LINK;
@@ -304,9 +309,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         } else {
             intent = router.getPromoDetailIntent(context, linkSegment.get(1));
         }
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         context.startActivity(intent);
         context.finish();
@@ -508,6 +510,14 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 }
             }
         });
+    }
+
+    private void openHomeRecommendation(final List<String> linkSegment, final Uri uriData) {
+        if (linkSegment != null && linkSegment.size() > 0) {
+            Intent intent = RouteManager.getIntent(context  , ApplinkConstInternalMarketplace.HOME_RECOMMENDATION, linkSegment.get(1));
+            context.startActivity(intent);
+            context.finish();
+        }
     }
 
     private void openProduct(final List<String> linkSegment, final Uri uriData) {

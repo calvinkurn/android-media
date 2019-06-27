@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ll_shop_container"
     android:layout_width="match_parent"
@@ -73,7 +75,7 @@
                     android:layout_marginStart="@dimen/dp_4"
                     android:layout_marginLeft="@dimen/dp_4"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/ic_logistic_logistic_fulfillment_normal_16" />
+                    app:srcCompat="@drawable/ic_logistic_logistic_fulfillment_normal_16" />
             </LinearLayout>
 
             <TextView

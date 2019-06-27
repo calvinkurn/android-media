@@ -498,7 +498,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     private View.OnClickListener getOnClickButtonToShipmentListener(String message) {
         return view -> {
             if (message == null || message.equals("")) {
-                dPresenter.processToUpdateCartData(getSelectedCartDataList());
+                dPresenter.processToUpdateCartData(getSelectedCartDataList(), cartAdapter.getSelectedCartShopHolderData());
             } else {
                 showToastMessageRed(message);
                 sendAnalyticsOnButtonCheckoutClickedFailed();
@@ -716,7 +716,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public Promo generateCheckPromoFirstStepParam() {
         List<ShopGroupData> shopGroupDataList = cartListData.getShopGroupDataList();
-        PromoStackingData promoStackingGlobalData = cartAdapter.getPromoStackingGlobaldata();
+        PromoStackingData promoStackingGlobalData = cartAdapter.getPromoStackingGlobalData();
         ArrayList<Order> orders = new ArrayList<>();
         for (ShopGroupData shopGroupData : shopGroupDataList) {
             Order order = new Order();
@@ -1210,7 +1210,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         boolean isAutoApplyPromoStackCodeApplied = dPresenter.getCartListData() != null &&
                 dPresenter.getCartListData().getAutoApplyStackData() != null &&
                 dPresenter.getCartListData().getAutoApplyStackData().isSuccess();
-        Intent intent = ShipmentActivity.createInstance(getActivity(), cartAdapter.getPromoStackingGlobaldata(),
+        Intent intent = ShipmentActivity.createInstance(getActivity(), cartAdapter.getPromoStackingGlobalData(),
                 cartListData.getCartPromoSuggestion(), cartListData.getDefaultPromoDialogTab(),
                 isAutoApplyPromoStackCodeApplied
         );
@@ -1773,10 +1773,15 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
+    public void onSuccessCheckPromoMerchantFirstStep(@NotNull ResponseGetPromoStackUiModel promoData) {
+        onSuccessCheckPromoFirstStep(promoData);
+    }
+
+    @Override
     public void onSuccessCheckPromoFirstStep(@NonNull ResponseGetPromoStackUiModel responseGetPromoStackUiModel) {
         // Update global promo state
         if (responseGetPromoStackUiModel.getData().getCodes().size() > 0) {
-            PromoStackingData promoStackingGlobalData = cartAdapter.getPromoStackingGlobaldata();
+            PromoStackingData promoStackingGlobalData = cartAdapter.getPromoStackingGlobalData();
             int typePromo;
             if (responseGetPromoStackUiModel.getData().isCoupon() == PromoStackingData.CREATOR.getVALUE_COUPON()) {
                 typePromo = PromoStackingData.CREATOR.getTYPE_COUPON();
@@ -1834,7 +1839,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             if (cartListData.getShopGroupDataList().isEmpty()) {
                 cartAdapter.removePromoStackingVoucherData();
             } else {
-                PromoStackingData promoStackingData = cartAdapter.getPromoStackingGlobaldata();
+                PromoStackingData promoStackingData = cartAdapter.getPromoStackingGlobalData();
                 promoStackingData.setState(TickerPromoStackingCheckoutView.State.EMPTY);
                 promoStackingData.setAmount(0);
                 promoStackingData.setPromoCode("");
@@ -1855,7 +1860,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void onSuccessClearPromoStackAfterClash() {
         // Reset global promo
-        PromoStackingData promoStackingData = cartAdapter.getPromoStackingGlobaldata();
+        PromoStackingData promoStackingData = cartAdapter.getPromoStackingGlobalData();
         promoStackingData.setState(TickerPromoStackingCheckoutView.State.EMPTY);
         promoStackingData.setAmount(0);
         promoStackingData.setPromoCode("");
@@ -1893,6 +1898,11 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             return getArguments().getString(CartActivity.EXTRA_CART_ID);
         }
         return "0";
+    }
+
+    @Override
+    public PromoStackingData getPromoStackingGlobalData() {
+        return cartAdapter.getPromoStackingGlobalData();
     }
 
     @Override

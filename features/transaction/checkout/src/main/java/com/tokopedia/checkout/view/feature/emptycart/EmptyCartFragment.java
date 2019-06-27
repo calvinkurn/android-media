@@ -67,8 +67,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.transaction.common.constant.CartConstant.TOPADS_CART_SRC;
-
 /**
  * Created by Irfan Khoirul on 14/09/18.
  */
@@ -87,6 +85,7 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     private static final String ARG_AUTO_APPLY_STATE = "ARG_AUTO_APPLY_STATE";
     private static final String ARG_AUTO_APPLY_TITLE = "ARG_AUTO_APPLY_TITLE";
     private static final String ARG_AUTO_APPLY_PROMO_CODE = "ARG_AUTO_APPLY_PROMO_CODE";
+    private static final String TOPADS_CART_SRC = "empty_cart";
 
     private View toolbar;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -625,9 +624,9 @@ public class EmptyCartFragment extends BaseCheckoutFragment
         startActivityForResult(getProductIntent(wishlist.getId()), REQUEST_CODE_ROUTE_WISHLIST);
     }
 
-    private Intent getProductIntent(String productId){
+    private Intent getProductIntent(String productId) {
         if (getContext() != null) {
-            return RouteManager.getIntent(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+            return RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
         } else {
             return null;
         }

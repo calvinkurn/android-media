@@ -727,7 +727,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             }
             if (cartItemCounter == shipmentCartItemModelList.size()) {
-                RequestData requestData = getRequestData(null, null);
+                RequestData requestData = getRequestData(null, null, false);
                 if (!passCheckShipmentFromPaymentClick) {
                     shipmentAdapterActionListener.onFinishChoosingShipment(requestData.getPromoRequestData());
                 }
@@ -1077,7 +1077,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    public RequestData getRequestData(RecipientAddressModel recipientAddressModel, List<ShipmentCartItemModel> shipmentCartItemModelList) {
+    public RequestData getRequestData(RecipientAddressModel recipientAddressModel,
+                                      List<ShipmentCartItemModel> shipmentCartItemModelList,
+                                      boolean isAnalyticsPurpose) {
         RecipientAddressModel addressModel;
         if (recipientAddressModel != null) {
             addressModel = recipientAddressModel;
@@ -1087,7 +1089,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (shipmentCartItemModelList != null) {
             this.shipmentCartItemModelList = shipmentCartItemModelList;
         }
-        return shipmentDataRequestConverter.generateRequestData(this.shipmentCartItemModelList, addressModel);
+        return shipmentDataRequestConverter.generateRequestData(this.shipmentCartItemModelList, addressModel, isAnalyticsPurpose);
     }
 
     public ShipmentCartItemModel getShipmentCartItemModelByIndex(int index) {

@@ -56,7 +56,6 @@
         android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_8"
-        android:background="@drawable/ic_check"
         android:visibility="gone"/>
 
 </RelativeLayout>

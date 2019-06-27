@@ -90,6 +90,8 @@ public interface ICartListView extends IBaseView {
 
     String getCartId();
 
+    PromoStackingData getPromoStackingGlobalData();
+
     void renderRecentView(List<RecentView> recentViewList);
 
     void renderWishlist(List<Wishlist> wishlist);
