@@ -29,6 +29,7 @@ import com.tokopedia.home.account.data.model.AccountSettingConfig;
 import com.tokopedia.home.account.di.component.AccountSettingComponent;
 import com.tokopedia.home.account.di.component.DaggerAccountSettingComponent;
 import com.tokopedia.home.account.presentation.AccountSetting;
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -50,6 +51,8 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     private View personalDataMenu;
     private View addressMenu;
     private View passwordMenu;
+    private View pinSeparator;
+    private View pinMenu;
     private View kycSeparator;
     private View kycMenu;
     private View sampaiMenu;
@@ -79,6 +82,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
         personalDataMenu = view.findViewById(R.id.label_view_identity);
         addressMenu = view.findViewById(R.id.label_view_address);
         passwordMenu = view.findViewById(R.id.label_view_password);
+        pinMenu = view.findViewById(R.id.label_view_password);
         kycMenu = view.findViewById(R.id.label_view_kyc);
         sampaiMenu = view.findViewById(R.id.label_view_sampai);
         sampaiSeparator = view.findViewById(R.id.separator_sampai);
@@ -152,6 +156,8 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
                 onItemClicked(SettingConstant.SETTING_ACCOUNT_ADDRESS_ID));
         passwordMenu.setOnClickListener(view1 ->
                 onItemClicked(SettingConstant.SETTING_ACCOUNT_PASS_ID));
+        pinMenu.setOnClickListener(view1 ->
+                onItemClicked(SettingConstant.SETTING_PIN));
         kycMenu.setOnClickListener(view1 ->
                 onItemClicked(SettingConstant.SETTING_ACCOUNT_KYC_ID));
         sampaiMenu.setOnClickListener(view1 ->
@@ -182,6 +188,11 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
                     } else {
                         intentToAddPassword();
                     }
+                    break;
+                case SettingConstant.SETTING_PIN:
+                    RouteManager.route(getActivity(),
+                            String.format("%s?url=%s", ApplinkConst.WEBVIEW,
+                                    );
                     break;
                 case SettingConstant.SETTING_ACCOUNT_ADDRESS_ID:
                     accountAnalytics.eventClickAccountSetting(ADDRESS_LIST);
@@ -247,6 +258,10 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
                 .isAddressEnabled() ? View.VISIBLE : View.GONE);
         passwordMenu.setVisibility(accountSettingConfig.getAccountSettingConfig()
                 .isPasswordEnabled() ? View.VISIBLE : View.GONE);
+        pinSeparator.setVisibility(accountSettingConfig.getAccountSettingConfig()
+                .isIdentityEnabled() ? View.VISIBLE : View.GONE);
+        pinMenu.setVisibility(accountSettingConfig.getAccountSettingConfig()
+                .isIdentityEnabled() ? View.VISIBLE : View.GONE);
         kycSeparator.setVisibility(accountSettingConfig.getAccountSettingConfig()
                 .isIdentityEnabled() ? View.VISIBLE : View.GONE);
         kycMenu.setVisibility(accountSettingConfig.getAccountSettingConfig()
