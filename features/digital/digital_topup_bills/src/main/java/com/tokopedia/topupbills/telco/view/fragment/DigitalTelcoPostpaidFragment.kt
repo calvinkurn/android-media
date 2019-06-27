@@ -250,21 +250,23 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         super.onResume()
         postpaidClientNumberWidget.clearFocus()
 
-        checkoutPassData = DigitalCheckoutPassData.Builder()
-                .action(DigitalCheckoutPassData.DEFAULT_ACTION)
-                .categoryId(TelcoCategoryType.CATEGORY_PASCABAYAR.toString())
-                .clientNumber(postpaidClientNumberWidget.getInputNumber())
-                .instantCheckout("0")
-                .isPromo("0")
-                .operatorId(operatorSelected.operator.id)
-                .productId(operatorSelected.operator.attributes.defaultProductId.toString())
-                .utmCampaign(TelcoCategoryType.CATEGORY_PASCABAYAR.toString())
-                .utmContent(GlobalConfig.VERSION_NAME)
-                .idemPotencyKey(userSession.userId.generateRechargeCheckoutToken())
-                .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
-                .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
-                .voucherCodeCopied("")
-                .build()
+        if (::operatorSelected.isInitialized) {
+            checkoutPassData = DigitalCheckoutPassData.Builder()
+                    .action(DigitalCheckoutPassData.DEFAULT_ACTION)
+                    .categoryId(TelcoCategoryType.CATEGORY_PASCABAYAR.toString())
+                    .clientNumber(postpaidClientNumberWidget.getInputNumber())
+                    .instantCheckout("0")
+                    .isPromo("0")
+                    .operatorId(operatorSelected.operator.id)
+                    .productId(operatorSelected.operator.attributes.defaultProductId.toString())
+                    .utmCampaign(TelcoCategoryType.CATEGORY_PASCABAYAR.toString())
+                    .utmContent(GlobalConfig.VERSION_NAME)
+                    .idemPotencyKey(userSession.userId.generateRechargeCheckoutToken())
+                    .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
+                    .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
+                    .voucherCodeCopied("")
+                    .build()
+        }
     }
 
     companion object {
