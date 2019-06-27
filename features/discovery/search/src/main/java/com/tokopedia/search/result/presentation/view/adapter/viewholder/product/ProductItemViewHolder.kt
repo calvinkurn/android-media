@@ -75,7 +75,7 @@ abstract class ProductItemViewHolder(
     }
 
     private fun setImageProductUrl(productItem: ProductItemViewModel) {
-        val imageUrl = if (isUsingBigImageUrl()) productItem.imageUrl else productItem.imageUrl700
+        val imageUrl = if (isUsingBigImageUrl()) productItem.imageUrl700 else productItem.imageUrl
 
         getProductCardView()?.setImageProductUrl(imageUrl)
     }
