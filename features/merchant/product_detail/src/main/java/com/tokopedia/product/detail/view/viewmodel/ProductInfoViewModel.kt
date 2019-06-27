@@ -22,10 +22,7 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_PRO
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_PRODUCT_KEY
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_SHOP_DOMAIN
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_SHOP_ID
-import com.tokopedia.product.detail.common.data.model.product.ProductInfo
-import com.tokopedia.product.detail.common.data.model.product.ProductParams
-import com.tokopedia.product.detail.common.data.model.product.Rating
-import com.tokopedia.product.detail.common.data.model.product.WishlistCount
+import com.tokopedia.product.detail.common.data.model.product.*
 import com.tokopedia.product.detail.common.data.model.variant.ProductDetailVariantResponse
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
