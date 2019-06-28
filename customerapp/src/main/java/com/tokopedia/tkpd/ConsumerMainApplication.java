@@ -165,6 +165,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, AppsflyerAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
         TrackApp.getInstance().initializeAllApis();
+
         PersistentCacheManager.init(this);
 
         super.onCreate();
@@ -564,4 +565,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     public boolean isEnable() {
         return getBooleanRemoteConfig("android_customer_typing_tracker_enabled", false);
     }
+
+
 }
