@@ -18,8 +18,6 @@ class OvoP2pTransferThankyou : Serializable{
     var trnsfrDate: String = ""
     @SerializedName("source")
     lateinit var source: OvoP2pTransferSource
-//    @SerializedName("source")
-//    lateinit var soure1: OvoP2pTransferSource
     @SerializedName("message")
     var msg: String = ""
     @SerializedName("reference_number")

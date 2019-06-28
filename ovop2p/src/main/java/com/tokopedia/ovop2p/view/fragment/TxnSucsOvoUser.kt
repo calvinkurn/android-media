@@ -70,7 +70,7 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
         return view
     }
 
-    private fun setRcvrUserData(){
+    private fun setRcvrUserData() {
         rcvrName.text = arguments?.getString(Constants.Keys.RECIEVER_NAME) ?: ""
         rcvrNum.text = "Ovo - " + arguments?.getString(Constants.Keys.RECIEVER_PHONE)
     }
@@ -78,7 +78,7 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         updateHeader()
-        if(!TextUtils.isEmpty(transferId)) {
+        if (!TextUtils.isEmpty(transferId)) {
             var dataMap: HashMap<String, Any> = HashMap()
             dataMap.put(Constants.Keys.TRANSFER_ID, transferId.toInt())
             context?.let {
@@ -97,17 +97,15 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
             if (activity != null) {
                 txnThankYouPageVM = ViewModelProviders.of(this.activity!!).get(OvoP2pTxnThankYouOvoUsrVM::class.java)
                 txnThankYouPageVM.ovoP2pTransferThankyouBaseMutableLiveData?.observe(this, Observer<OvoP2pTransferThankyouBase> {
-                    if(it != null){
+                    if (it != null) {
                         (activity as LoaderUiListener).hideProgressDialog()
-                        if(it.ovoP2pTransferThankyou.errors?.isEmpty()!!){
+                        if (it.ovoP2pTransferThankyou.errors?.isEmpty()!!) {
                             assignThankYouData(it)
-                        }
-                        else{
+                        } else {
                             var errMsg = it.ovoP2pTransferThankyou.errors!!.get(0).get(Constants.Keys.MESSAGE)
                             errMsg?.let { it1 -> gotoErrorPage(it1) }
                         }
-                    }
-                    else{
+                    } else {
                         showErrorSnackBar()
                     }
                 })
@@ -115,7 +113,7 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
         }
     }
 
-    private fun gotoErrorPage(errMsg: String){
+    private fun gotoErrorPage(errMsg: String) {
         var fragment: BaseDaggerFragment = TransferError.createInstance()
         var bundle = Bundle()
         bundle.putString(Constants.Keys.ERR_MSG_ARG, errMsg)
@@ -123,7 +121,7 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
         (activity as ActivityListener).addReplaceFragment(fragment, false, TransferError.TAG)
     }
 
-    private fun updateHeader(){
+    private fun updateHeader() {
         (activity as LoaderUiListener).setHeaderTitle(Constants.Headers.TRANSFER_SUCCESS)
     }
 
@@ -131,9 +129,16 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
         thankYouDataCntnr = thankYouData
         date.text = thankYouData.ovoP2pTransferThankyou.trnsfrDate
         val rpFormattedString = CurrencyFormatUtil.getThousandSeparatorString(thankYouData.ovoP2pTransferThankyou.amt.toDouble(), false, 0)
-        trnsfrAmt.text =    rpFormattedString.formattedString
-        sndrName.text = thankYouData.ovoP2pTransferThankyou.source.name
-        sndrNum.text = "Ovo - "+thankYouData.ovoP2pTransferThankyou.source.phone
+        trnsfrAmt.text = rpFormattedString.formattedString
+        var sourceName = thankYouData.ovoP2pTransferThankyou.source.name
+        if (TextUtils.isEmpty(sourceName)) {
+            sourceName = context?.let {
+                OvoP2pUtil.getUserName(it)
+            }.toString()
+            thankYouDataCntnr.ovoP2pTransferThankyou.source.name = sourceName
+        }
+        sndrName.text = sourceName
+        sndrNum.text = "Ovo - " + thankYouData.ovoP2pTransferThankyou.source.phone
         setRcvrUserData()
     }
 
@@ -145,6 +150,8 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
                     //go to see detail fragment
                     var bundle = Bundle()
                     bundle.putSerializable(Constants.Keys.THANKYOU_ARGS, thankYouDataCntnr)
+                    bundle.putString(Constants.Keys.RECIEVER_NAME, rcvrName.text.toString())
+                    bundle.putSerializable(Constants.Keys.RECIEVER_PHONE, rcvrNum.text.toString())
                     (activity as ActivityListener).addReplaceFragment(TxnDetails.newInstance(bundle), true,
                             TxnDetails.TAG)
                 }

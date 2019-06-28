@@ -20,6 +20,7 @@ import com.tokopedia.ovop2p.model.OvoP2pTransferConfirmBase
 import com.tokopedia.ovop2p.model.OvoP2pTransferRequestBase
 import com.tokopedia.ovop2p.model.OvoP2pTransferThankyouBase
 import com.tokopedia.ovop2p.model.WalletDataBase
+import com.tokopedia.user.session.UserSession
 import rx.Subscriber
 import java.util.HashMap
 import java.util.regex.Pattern
@@ -122,5 +123,10 @@ object OvoP2pUtil {
         if (!TextUtils.isEmpty(errorMsg)) (snackView.findViewById<View>(R.id.error_msg) as TextView).text = errorMsg
         layout.addView(snackView, 0)
         return snackbar
+    }
+
+    fun getUserName(context: Context): String{
+        var userSession = UserSession(context)
+        return userSession.name
     }
 }

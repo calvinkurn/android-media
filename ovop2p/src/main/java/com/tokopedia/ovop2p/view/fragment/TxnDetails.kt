@@ -53,14 +53,18 @@ class TxnDetails : BaseDaggerFragment(){
     fun setViewData(){
         if(::ovoP2pTransferThankyouBase.isInitialized) {
             date.text = ovoP2pTransferThankyouBase.ovoP2pTransferThankyou.trnsfrDate
-            rcvrName.text = ovoP2pTransferThankyouBase.ovoP2pTransferThankyou.source.name
-            rcvrNum.text = "Ovo - "+ovoP2pTransferThankyouBase.ovoP2pTransferThankyou.source.phone
             txtMsgTxn.text = ovoP2pTransferThankyouBase.ovoP2pTransferThankyou.msg
             val rpFormattedString = CurrencyFormatUtil.getThousandSeparatorString(ovoP2pTransferThankyouBase.ovoP2pTransferThankyou.amt.toDouble(), false, 0)
             amt.text = "-Rp" + rpFormattedString.formattedString
             txnNo.text = "Ref - " + ovoP2pTransferThankyouBase.ovoP2pTransferThankyou.refNum
             setSenderUserData()
+            setRcvrUserData()
         }
+    }
+
+    private fun setRcvrUserData(){
+        rcvrName.text = arguments?.getString(Constants.Keys.RECIEVER_NAME) ?: ""
+        rcvrNum.text = arguments?.getString(Constants.Keys.RECIEVER_PHONE)
     }
 
     companion object{
@@ -84,8 +88,7 @@ class TxnDetails : BaseDaggerFragment(){
     }
 
     private fun setSenderUserData(){
-        var userSession = UserSession(context)
-        senderName.text = userSession.name
-        senderNumber.text = "Ovo - "+userSession.phoneNumber
+        senderName.text = ovoP2pTransferThankyouBase.ovoP2pTransferThankyou.source.name
+        senderNumber.text = "Ovo - "+ovoP2pTransferThankyouBase.ovoP2pTransferThankyou.source.phone
     }
 }

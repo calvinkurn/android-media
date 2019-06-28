@@ -58,7 +58,7 @@ class OVOP2PThankyouActivity : BaseSimpleActivity(),LoaderUiListener, ActivityLi
             transferId = intent.extras.getString(Constants.Keys.TRANSFER_ID)
             var fragBundle = Bundle()
             fragBundle.putString(Constants.Keys.RECIEVER_NAME, PersistentCacheManager.instance.get(Constants.Keys.RECIEVER_NAME, String::class.java))
-            fragBundle.putString(Constants.Keys.RECIEVER_PHONE, PersistentCacheManager.instance.get(Constants.Keys.RECIEVER_NAME, String::class.java))
+            fragBundle.putString(Constants.Keys.RECIEVER_PHONE, PersistentCacheManager.instance.get(Constants.Keys.RECIEVER_PHONE, String::class.java))
             if(nonOvoUser){
                 return TxnSucsNonOvoUsr.newInstance(fragBundle)
             }
