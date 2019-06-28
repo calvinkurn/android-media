@@ -12,6 +12,7 @@ import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUse
 import com.tokopedia.product.manage.list.domain.DeleteProductUseCase;
 import com.tokopedia.product.manage.list.domain.EditPriceProductUseCase;
 import com.tokopedia.product.manage.list.domain.MultipleDeleteProductUseCase;
+import com.tokopedia.product.manage.list.domain.PopupManagerAddProductUseCase;
 import com.tokopedia.product.manage.list.domain.model.MultipleDeleteProductModel;
 import com.tokopedia.product.manage.list.view.listener.ProductManageView;
 import com.tokopedia.product.manage.list.view.mapper.GetProductListManageMapperView;
@@ -50,6 +51,8 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
     private final GetFeatureProductListUseCase getFeatureProductListUseCase;
     private SetCashbackUseCase setCashbackUseCase;
     private final UserSessionInterface userSession;
+    private final PopupManagerAddProductUseCase popupManagerAddProductUseCase;
+    public static final String GQL_POPUP_NAME = "gql_popup";
 
     public ProductManagePresenterImpl(GetShopInfoUseCase getShopInfoUseCase,
                                       GetProductListSellingUseCase getProductListSellingUseCase,
@@ -61,7 +64,8 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
                                       TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase,
                                       TopAdsGetShopDepositGraphQLUseCase topAdsGetShopDepositGraphQLUseCase,
                                       GetFeatureProductListUseCase getFeatureProductListUseCase,
-                                      SetCashbackUseCase setCashbackUseCase) {
+                                      SetCashbackUseCase setCashbackUseCase,
+                                      PopupManagerAddProductUseCase popupManagerAddProductUseCase) {
         this.getShopInfoUseCase = getShopInfoUseCase;
         this.getProductListSellingUseCase = getProductListSellingUseCase;
         this.editPriceProductUseCase = editPriceProductUseCase;
@@ -73,6 +77,7 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
         this.topAdsGetShopDepositGraphQLUseCase = topAdsGetShopDepositGraphQLUseCase;
         this.getFeatureProductListUseCase = getFeatureProductListUseCase;
         this.setCashbackUseCase = setCashbackUseCase;
+        this.popupManagerAddProductUseCase = popupManagerAddProductUseCase;
     }
 
     @Override
@@ -210,6 +215,44 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
                 }
             }
         });
+    }
+
+    @Override
+    public void getPopupsInfo(String productId) {
+        int shopId = getShopIdInteger();
+        popupManagerAddProductUseCase.execute(PopupManagerAddProductUseCase.createRequestParams(shopId),
+                getPopupsInfoSubscriber(productId));
+    }
+
+    private Subscriber<Boolean> getPopupsInfoSubscriber(String productId) {
+        return new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (!isViewAttached()) {
+                    return;
+                }
+                getView().onErrorGetPopUp(e);
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+                getView().onSuccessGetPopUp(aBoolean, productId);
+            }
+        };
+    }
+
+    private int getShopIdInteger() {
+        try {
+            return Integer.parseInt(userSession.getShopId());
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 
     @Override

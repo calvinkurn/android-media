@@ -26,6 +26,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.AccessToken;
@@ -62,6 +63,7 @@ import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialCompo
 import com.tokopedia.loginregister.registerinitial.view.customview.PartialRegisterInputView;
 import com.tokopedia.loginregister.registerinitial.view.listener.RegisterInitialContract;
 import com.tokopedia.loginregister.registerinitial.view.presenter.RegisterInitialPresenter;
+import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo;
 import com.tokopedia.loginregister.welcomepage.WelcomePageActivity;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
@@ -73,9 +75,15 @@ import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.sessioncommon.view.LoginSuccessRouter;
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.unifycomponents.ticker.Ticker;
+import com.tokopedia.unifycomponents.ticker.TickerCallback;
+import com.tokopedia.unifycomponents.ticker.TickerData;
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -116,6 +124,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     private TextView loginButton;
     private ScrollView container;
     private RelativeLayout progressBar;
+    private Ticker tickerAnnouncement;
 
     private String phoneNumber = "";
 
@@ -207,6 +216,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         loginButton = view.findViewById(R.id.login_button);
         container = view.findViewById(R.id.container);
         progressBar = view.findViewById(R.id.progress_bar);
+        tickerAnnouncement = view.findViewById(R.id.ticker_announcement);
         prepareView();
         setViewListener();
         presenter.attachView(this);
@@ -260,6 +270,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     private void initData() {
         presenter.getProvider();
         partialRegisterInputView.setListener(this);
+        presenter.getTickerInfo();
     }
 
     protected void prepareView() {
@@ -962,6 +973,78 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         //we need unmasked phone number (without dash) to be provided to backend
         this.phoneNumber = partialRegisterInputView.getTextValue();
     }
+
+    @Override
+    public void onSuccessGetTickerInfo(List<TickerInfoPojo> listTickerInfo) {
+        if(!listTickerInfo.isEmpty()){
+            tickerAnnouncement.setVisibility(View.VISIBLE);
+            if(listTickerInfo.size() > 1){
+                List<TickerData> mockData = new ArrayList<>();
+                for (TickerInfoPojo tickerInfo :listTickerInfo) {
+                    int type = getTickerType(tickerInfo.getColor());
+                    mockData.add(new TickerData(tickerInfo.getTitle(), tickerInfo.getMessage(), type, true));
+                }
+                if(getActivity() != null){
+                    TickerPagerAdapter adapter = new TickerPagerAdapter(getActivity(), mockData);
+                    adapter.setDescriptionClickEvent(new TickerCallback() {
+                        @Override
+                        public void onDescriptionViewClick(CharSequence link) {
+                            registerAnalytics.trackClickLinkTicker(link.toString());
+                            RouteManager.route(getContext(), String.format("%s?url=%s", ApplinkConst.WEBVIEW, link));
+                        }
+
+                        @Override
+                        public void onDismiss() {
+                            registerAnalytics.trackClickCloseTickerButton();
+                        }
+                    });
+                    tickerAnnouncement.addPagerView(adapter, mockData);
+                }
+            }else {
+                TickerInfoPojo tickerInfo = listTickerInfo.get(0);
+                int type = getTickerType(tickerInfo.getColor());
+                tickerAnnouncement.setTickerTitle(tickerInfo.getTitle());
+                tickerAnnouncement.setHtmlDescription(tickerInfo.getMessage());
+                tickerAnnouncement.setTickerType(type);
+            }
+            tickerAnnouncement.setOnClickListener(v ->
+                    registerAnalytics.trackClickTicker());
+            tickerAnnouncement.setDescriptionClickEvent(new TickerCallback() {
+                @Override
+                public void onDescriptionViewClick(CharSequence link) {
+                    registerAnalytics.trackClickLinkTicker(link.toString());
+                    RouteManager.route(getContext(), ApplinkConst.WEBVIEW, String.format("%s?url=%s", ApplinkConst.WEBVIEW, link));
+                }
+
+                @Override
+                public void onDismiss() {
+                    registerAnalytics.trackClickCloseTickerButton();
+                }
+            });
+        }
+    }
+
+    private int getTickerType(String hexColor){
+        int type;
+        switch (hexColor) {
+            case "#cde4c3": {
+                type = Ticker.TYPE_ANNOUNCEMENT;
+                break;
+            }
+            case "#ecdb77": {
+                type = Ticker.TYPE_WARNING;
+                break;
+            }
+            default: {
+                type = Ticker.TYPE_ANNOUNCEMENT;
+                break;
+            }
+        }
+        return type;
+    }
+
+    @Override
+    public void onErrorGetTickerInfo(String error) {}
 
     @Override
     public void onDestroy() {

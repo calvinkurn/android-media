@@ -5,7 +5,7 @@ import android.view.View
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.view.adapter.RecommendationProductAdapter
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationModel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import kotlinx.android.synthetic.main.partial_product_recommendation.view.*
 
 class PartialRecommendationProductView private constructor(private val view: View,
@@ -23,7 +23,7 @@ class PartialRecommendationProductView private constructor(private val view: Vie
         }
     }
 
-    fun renderData(products: RecommendationModel) {
+    fun renderData(products: RecommendationWidget) {
         with(view) {
             loading_recommen_product.gone()
             if (products.recommendationItemList.isEmpty())

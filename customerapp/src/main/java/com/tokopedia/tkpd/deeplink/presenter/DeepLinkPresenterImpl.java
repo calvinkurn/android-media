@@ -45,6 +45,7 @@ import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
 import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
+import com.tokopedia.home_recom.HomeRecommendationActivity;
 import com.tokopedia.loyalty.LoyaltyRouter;
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo;
 import com.tokopedia.referral.view.activity.ReferralActivity;
@@ -177,6 +178,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openProduct(linkSegment, uriData);
                     screenName = AppScreen.SCREEN_PRODUCT_INFO;
                     break;
+                case DeepLinkChecker.ETALASE:
                 case DeepLinkChecker.SHOP:
                     openShopInfo(linkSegment, uriData);
                     screenName = AppScreen.SCREEN_SHOP_INFO;
@@ -188,6 +190,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                         context.finish();
                     }
                     screenName = AppScreen.SCREEN_LOGIN;
+                    break;
+                case DeepLinkChecker.RECOMMENDATION:
+                    openHomeRecommendation(linkSegment, uriData);
+                    screenName = AppScreen.SCREEN_RECOMMENDATION;
                     break;
                 case DeepLinkChecker.OTHER:
                     prepareOpenWebView(uriData);
@@ -304,9 +310,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         } else {
             intent = router.getPromoDetailIntent(context, linkSegment.get(1));
         }
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         context.startActivity(intent);
         context.finish();
@@ -497,8 +500,13 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             public void onNext(ShopInfo shopInfo) {
                 viewListener.finishLoading();
                 if (shopInfo != null && shopInfo.getInfo() != null) {
-                    Intent intent = ((TkpdCoreRouter) context.getApplication()).getShopPageIntent(context, shopInfo.getInfo().getShopId());
-                    context.startActivity(intent);
+                    if (linkSegment.size() == 3){
+                        RouteManager.route(context, ApplinkConst.SHOP_ETALASE, shopInfo.getInfo().getShopId(), linkSegment.get(2));
+                    } else {
+                        Intent intent = ((TkpdCoreRouter) context.getApplication()).getShopPageIntent(context, shopInfo.getInfo().getShopId());
+                        context.startActivity(intent);
+                    }
+
                     context.finish();
                 } else {
                     if (!GlobalConfig.DEBUG) {
@@ -508,6 +516,12 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 }
             }
         });
+    }
+
+    private void openHomeRecommendation(final List<String> linkSegment, final Uri uriData) {
+        Intent intent = RouteManager.getIntent(context  , ApplinkConstInternalMarketplace.HOME_RECOMMENDATION, linkSegment.size() > 1 ? linkSegment.get(1) : "");
+        context.startActivity(intent);
+        context.finish();
     }
 
     private void openProduct(final List<String> linkSegment, final Uri uriData) {
