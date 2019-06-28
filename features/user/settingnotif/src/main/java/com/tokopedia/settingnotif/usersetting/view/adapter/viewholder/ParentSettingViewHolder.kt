@@ -60,6 +60,16 @@ class ParentSettingViewHolder(
         settingListener.updateSettingView(adapterChildPosition)
     }
 
+    override fun getUpdatedSettingIds(element: ParentSetting, checked: Boolean): Map<String, Boolean> {
+        val settingToChange = HashMap<String, Boolean>()
+        element.childSettings.forEach { childSetting ->
+            if (childSetting != null) {
+                settingToChange[childSetting.key] = checked
+            }
+        }
+        return settingToChange
+    }
+
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_parent_setting

@@ -24,7 +24,7 @@ abstract class SettingViewHolder<T : BaseSetting>(
         if (element == null) return
 
         settingSwitch?.isChecked = element.status
-        settingSwitch?.setOnCheckedChangeListener { buttonView, isChecked ->
+        settingSwitch?.setOnCheckedChangeListener { _, isChecked ->
             if (element.status != isChecked) {
                 element.status = isChecked
                 updateSiblingAndChild(element, isChecked)
@@ -45,8 +45,10 @@ abstract class SettingViewHolder<T : BaseSetting>(
     abstract fun updateSiblingAndChild(element: T, checked: Boolean)
 
     private fun updateUserSetting(element: T, checked: Boolean) {
-
+        val updatedSettingId: Map<String, Boolean> = getUpdatedSettingIds(element, checked)
     }
+
+    abstract fun getUpdatedSettingIds(element: T, checked: Boolean): Map<String, Boolean>
 
     companion object {
         val PAYLOAD_SWITCH = "payload_switch"

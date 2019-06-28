@@ -35,8 +35,6 @@ class GetUserSettingUseCase @Inject constructor(
                     gqlResponse.getData<UserNotificationResponse>(UserNotificationResponse::class.java)
                 }
                 .map(UserSettingFieldMapper())
-
-//        return Observable.just(SettingHelper.createDummyResponse()).map(UserSettingFieldMapper())
     }
 
 }

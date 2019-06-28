@@ -43,6 +43,12 @@ class ChildSettingViewHolder(
         }
     }
 
+    override fun getUpdatedSettingIds(element: ChildSetting, checked: Boolean): Map<String, Boolean> {
+        return HashMap<String, Boolean>().apply {
+            put(element.key, checked)
+        }
+    }
+
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_child_setting
