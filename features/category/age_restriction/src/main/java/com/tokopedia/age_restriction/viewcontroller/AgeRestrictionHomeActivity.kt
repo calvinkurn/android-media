@@ -41,8 +41,7 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
                         "click - adult pop up - kembali",
                         "not eligible - $event/$destinationUrlGtm")
                 startActivity(RouteManager.getIntent(this, ApplinkConst.HOME)
-                        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                        .putExtra(ApplinkConstInternalCategory.PARAM_EXTRA_SUCCESS, getString(R.string.ar_text_age_not_adult)))
+                        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
                 selection = 0
             }
 
@@ -207,14 +206,11 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
             }
             VERIFICATION_REQUEST -> if (resultCode == RESULT_IS_ADULT) {
                 setResult(RESULT_IS_ADULT, Intent().putExtra(ApplinkConstInternalCategory.PARAM_EXTRA_SUCCESS, getString(R.string.ar_text_verification_success)))
-                Toaster.showNormalWithAction(this,
-                        getString(R.string.ar_text_verification_success),
-                        Snackbar.LENGTH_INDEFINITE,
-                        getString(R.string.general_label_ok), View.OnClickListener { })
                 finish()
             } else if (resultCode == RESULT_IS_NOT_ADULT) {
-                selection = notAdult
-                clickAccept()
+                startActivity(RouteManager.getIntent(this, ApplinkConst.HOME)
+                        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        .putExtra(ApplinkConstInternalCategory.PARAM_EXTRA_SUCCESS, getString(R.string.ar_text_age_not_adult)))
             }
         }
     }
