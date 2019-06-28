@@ -161,13 +161,12 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                 it.itemId == android.R.id.home -> {
                     backPress()
                     true
-                }
-                it.itemId == R.id.action_info -> {
-                    onInfoClicked()
+                }it.itemId == R.id.action_share -> {
+                    shareChannel()
                     true
                 }
-                it.itemId == R.id.action_share -> {
-                    shareChannel()
+                it.itemId == R.id.action_overflow -> {
+                    onOverflowMenuClicked()
                     true
                 }
                 else -> super.onOptionsItemSelected(item)
@@ -179,8 +178,8 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-        menu.findItem(R.id.action_info).isEnabled = optionsMenuEnable
         menu.findItem(R.id.action_share).isEnabled = optionsMenuEnable
+        menu.findItem(R.id.action_overflow).isEnabled = optionsMenuEnable
     }
 
     private fun onGetNotif(data: Bundle) {
@@ -195,9 +194,9 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         }
     }
 
-    private fun onInfoClicked() {
+    private fun onOverflowMenuClicked() {
         if (::viewState.isInitialized) {
-            viewState.onInfoMenuClicked()
+            viewState.onOverflowMenuClicked()
         }
     }
 

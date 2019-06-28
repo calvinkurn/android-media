@@ -12,13 +12,13 @@ class VideoStreamPojo {
     @Expose
     var orientation: String = ""
 
-    @SerializedName("ingest_rtmp")
+    @SerializedName("stream_rtmp_sd")
     @Expose
-    var streamRtmp: String = ""
+    var streamRtmpStandard: String = ""
 
-    @SerializedName("stream_hls_original")
+    @SerializedName("stream_rtmp_hd")
     @Expose
-    var streamHlsOriginal: String = ""
+    var streamRtmpHigh: String = ""
 
     @SerializedName("stream_hls_sd")
     @Expose
@@ -31,4 +31,8 @@ class VideoStreamPojo {
     @SerializedName("is_active")
     @Expose
     var isActive: Boolean = false
+
+    @SerializedName("is_live")
+    @Expose
+    var isLive: Boolean = false
 }

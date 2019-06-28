@@ -9,14 +9,16 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
  */
 
 class VideoStreamViewModel constructor(var isActive: Boolean = false,
+                                       var isLive: Boolean = false,
                                        var orientation: String = ORIENTATION_VERTICAL,
-                                       var ingestRtmp: String = "",
-                                       var hlsOriginal: String = "",
+                                       var rtmpStandard: String = "",
+                                       var rtmpHigh: String = "",
                                        var hlsStandard: String = "",
                                        var hlsHigh: String = "")
     : Visitable<Any>, Parcelable {
 
     constructor(parcel: Parcel) : this(
+            parcel.readByte() != 0.toByte(),
             parcel.readByte() != 0.toByte(),
             parcel.readString(),
             parcel.readString(),
@@ -43,8 +45,9 @@ class VideoStreamViewModel constructor(var isActive: Boolean = false,
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeByte(if (isActive) 1 else 0)
-        parcel.writeString(ingestRtmp)
-        parcel.writeString(hlsOriginal)
+        parcel.writeByte(if (isLive) 1 else 0)
+        parcel.writeString(rtmpStandard)
+        parcel.writeString(rtmpHigh)
         parcel.writeString(hlsStandard)
         parcel.writeString(hlsHigh)
     }

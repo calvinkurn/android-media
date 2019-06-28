@@ -41,7 +41,6 @@ interface PlayViewState {
     fun getChannelInfo(): ChannelInfoViewModel?
     fun onDynamicButtonUpdated(it: DynamicButtonsViewModel)
     fun onErrorGetDynamicButtons()
-    fun onInfoMenuClicked()
     fun onReceiveGamificationNotif(model: GroupChatPointsViewModel)
     fun onBackgroundUpdated(it: BackgroundViewModel)
     fun getDurationWatchVideo(): String?
@@ -61,4 +60,5 @@ interface PlayViewState {
     fun onNoInternetConnection()
     fun onInteractiveButtonClicked(anchorView: LottieAnimationView)
     fun onInteractiveButtonViewed(anchorView: LottieAnimationView)
+    fun onOverflowMenuClicked()
 }

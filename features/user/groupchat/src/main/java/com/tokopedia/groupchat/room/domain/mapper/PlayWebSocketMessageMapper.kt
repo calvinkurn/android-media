@@ -95,9 +95,10 @@ class PlayWebSocketMessageMapper @Inject constructor() {
         val pojo = gson.fromJson(data, VideoStreamPojo::class.java)
         return VideoStreamViewModel(
                 pojo.isActive,
+                pojo.isLive,
                 pojo.orientation,
-                pojo.streamRtmp,
-                pojo.streamHlsOriginal,
+                pojo.streamRtmpStandard,
+                pojo.streamRtmpHigh,
                 pojo.streamHlsStandard,
                 pojo.streamHlsHigh
         )

@@ -58,7 +58,6 @@ import com.tokopedia.groupchat.room.view.fragment.PlayWebviewDialogFragment
 import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
-import com.tokopedia.groupchat.room.view.viewmodel.InteractiveButton
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -124,6 +123,8 @@ open class PlayViewStateImpl(
     private var showVideoToggle: View = view.findViewById(R.id.show_video_toggle)
     private var spaceChatVideo: View = view.findViewById(R.id.top_space_guideline)
     private var interactionGuideline = view.findViewById<FrameLayout>(R.id.interaction_button_guideline)
+    private var bufferContainer = view.findViewById<View>(R.id.video_buffer_container)
+    private var bufferDimContainer = view.findViewById<View>(R.id.dim_video_vertical)
 
     private lateinit var overlayDialog: CloseableBottomSheetDialog
     private lateinit var pinnedMessageDialog: CloseableBottomSheetDialog
@@ -150,6 +151,9 @@ open class PlayViewStateImpl(
             "default", "default1", "default2", "default3")
 
     private var interactionAnimationHelper: InteractionAnimationHelper
+    private var overflowMenuHelper: OverflowMenuHelper
+    private var videoBufferHelper: VideoBufferHelper
+    private var videoHorizontalHelper: VideoHorizontalHelper
 
     init {
         val groupChatTypeFactory = GroupChatTypeFactoryImpl(
@@ -263,6 +267,10 @@ open class PlayViewStateImpl(
         errorView.setOnClickListener {  }
 
         interactionAnimationHelper = InteractionAnimationHelper(interactionGuideline)
+        overflowMenuHelper = OverflowMenuHelper(activity, onInfoMenuClicked())
+        videoBufferHelper = VideoBufferHelper(bufferContainer, bufferDimContainer)
+        videoHorizontalHelper = VideoHorizontalHelper()
+        videoBufferHelper.showRetryOnly()
 
         errorView.setOnClickListener {  }
     }
@@ -660,6 +668,7 @@ open class PlayViewStateImpl(
 
     }
 
+
     private fun createOverlayView(channelInfoViewModel: ChannelInfoViewModel): View {
         val overlayView = activity.layoutInflater.inflate(R.layout.layout_interupt_page, null)
         val interruptViewModel = channelInfoViewModel.overlayViewModel.interuptViewModel
@@ -1028,7 +1037,6 @@ open class PlayViewStateImpl(
 
         if (!webviewDialog.isAdded)
             webviewDialog.show(activity.supportFragmentManager, "Webview Bottom Sheet")
-
     }
 
     override fun onBackPressed(): Boolean {
@@ -1101,9 +1109,17 @@ open class PlayViewStateImpl(
         replyEditText.text.clear()
     }
 
-    override fun onInfoMenuClicked() {
+    private fun onInfoMenuClicked(): ()-> Unit{
+        return {
+            viewModel?.run {
+                showWebviewBottomSheet(infoUrl)
+            }
+        }
+    }
+
+    override fun onOverflowMenuClicked() {
         viewModel?.run {
-            showWebviewBottomSheet(infoUrl)
+            overflowMenuHelper.showOverflowMenuBottomSheet()
         }
     }
 
