@@ -5,7 +5,7 @@ import android.view.View
 import com.tokopedia.productcard.v2.ProductCardView
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
-import kotlinx.android.synthetic.main.search_small_grid_product_card.view.*
+import kotlinx.android.synthetic.main.search_product_card_small_grid.view.*
 
 class SmallGridProductItemViewHolder(
     itemView: View,
@@ -15,7 +15,7 @@ class SmallGridProductItemViewHolder(
     companion object {
         @LayoutRes
         @JvmField
-        val LAYOUT = R.layout.search_small_grid_product_card
+        val LAYOUT = R.layout.search_product_card_small_grid
     }
 
     override fun getProductCardView(): ProductCardView? {

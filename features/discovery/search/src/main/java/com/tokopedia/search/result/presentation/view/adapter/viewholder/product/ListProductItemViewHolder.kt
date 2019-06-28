@@ -5,6 +5,7 @@ import android.view.View
 import com.tokopedia.productcard.v2.ProductCardView
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
+import kotlinx.android.synthetic.main.search_product_card_list.view.*
 
 class ListProductItemViewHolder(
     itemView: View,
@@ -14,14 +15,14 @@ class ListProductItemViewHolder(
     companion object {
         @LayoutRes
         @JvmField
-        val LAYOUT = R.layout.search_big_grid_product_card
+        val LAYOUT = R.layout.search_product_card_list
     }
 
     override fun getProductCardView(): ProductCardView? {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return itemView.productCardView ?: null
     }
 
     override fun isUsingBigImageUrl(): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return false
     }
 }

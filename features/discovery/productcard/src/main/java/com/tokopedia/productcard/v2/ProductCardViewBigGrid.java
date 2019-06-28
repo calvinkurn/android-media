@@ -73,16 +73,16 @@ public class ProductCardViewBigGrid extends ProductCardView {
 
     private void setOffersLabelConstraint() {
         if(isViewVisible(labelCredibility)) {
-            setViewConstraintTopToBottomOf(labelOffers.getId(), labelCredibility.getId(), R.dimen.dp_4);
+            setViewConstraintTopToBottomOf(labelOffers.getId(), labelCredibility.getId(), R.dimen.dp_8);
         }
         else if(isViewVisible(imageRating)) {
-            setViewConstraintTopToBottomOf(labelOffers.getId(), imageRating.getId(), R.dimen.dp_4);
+            setViewConstraintTopToBottomOf(labelOffers.getId(), imageRating.getId(), R.dimen.dp_8);
         }
         else if(isViewVisible(textViewReviewCount)) {
-            setViewConstraintTopToBottomOf(labelOffers.getId(), textViewReviewCount.getId(), R.dimen.dp_4);
+            setViewConstraintTopToBottomOf(labelOffers.getId(), textViewReviewCount.getId(), R.dimen.dp_8);
         }
         else {
-            setViewConstraintTopToBottomOf(labelOffers.getId(), textViewShopLocation.getId(), R.dimen.dp_4);
+            setViewConstraintTopToBottomOf(labelOffers.getId(), textViewShopLocation.getId(), R.dimen.dp_8);
         }
     }
 }

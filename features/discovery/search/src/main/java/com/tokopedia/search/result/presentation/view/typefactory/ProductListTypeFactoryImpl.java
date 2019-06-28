@@ -12,7 +12,7 @@ import com.tokopedia.search.result.presentation.model.TopAdsViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BigGridProductItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.EmptySearchViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.HeaderViewHolder;
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ListProductItemViewHolderDeprecated;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ListProductItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RelatedSearchViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridProductItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.TopAdsViewHolder;
@@ -68,7 +68,7 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
     public int type(ProductItemViewModel productItem) {
         switch (getRecyclerViewItem()) {
             case SearchConstant.RecyclerView.VIEW_PRODUCT:
-                return ListProductItemViewHolderDeprecated.LAYOUT;
+                return ListProductItemViewHolder.LAYOUT;
             case SearchConstant.RecyclerView.VIEW_PRODUCT_GRID_1:
                 return BigGridProductItemViewHolder.LAYOUT;
             case SearchConstant.RecyclerView.VIEW_PRODUCT_GRID_2:
@@ -96,8 +96,8 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
     public AbstractViewHolder createViewHolder(View view, int type) {
         AbstractViewHolder viewHolder;
 
-        if (type == ListProductItemViewHolderDeprecated.LAYOUT) {
-            viewHolder = new ListProductItemViewHolderDeprecated(view, productListener);
+        if (type == ListProductItemViewHolder.LAYOUT) {
+            viewHolder = new ListProductItemViewHolder(view, productListener);
         } else if(type == SmallGridProductItemViewHolder.LAYOUT) {
             viewHolder = new SmallGridProductItemViewHolder(view, productListener);
         } else if (type == BigGridProductItemViewHolder.LAYOUT) {
