@@ -1,12 +1,16 @@
 package com.tokopedia.pushnotif;
 
 import android.content.Context;
+import android.os.AsyncTask;
 
 import com.tokopedia.pushnotif.db.PushNotificationDB;
 import com.tokopedia.pushnotif.db.model.HistoryNotificationDB;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.schedulers.Schedulers;
 
 /**
  * @author ricoharisin .
