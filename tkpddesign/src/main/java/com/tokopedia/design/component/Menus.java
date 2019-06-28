@@ -1,9 +1,12 @@
 package com.tokopedia.design.component;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.annotation.ArrayRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
+import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -200,13 +203,13 @@ public class Menus extends BaseBottomSheetView {
                 final ItemMenus itemMenus = itemMenusList.get(i - headerCount());
                 final ViewHolder holder = (ViewHolder) viewHolder;
                  if (itemMenus.icon > 0) {
-                    holder.icon.setImageResource(itemMenus.icon);
+                    holder.icon.setImageDrawable(getDrawable(holder.icon.getContext(),itemMenus.icon));
                     holder.icon.setVisibility(View.VISIBLE);
                 } else {
                     holder.icon.setVisibility(View.GONE);
                 }
                 if (itemMenus.iconEnd > 0) {
-                    holder.iconEnd.setImageResource(itemMenus.iconEnd);
+                    holder.iconEnd.setImageDrawable(getDrawable(holder.iconEnd.getContext(),itemMenus.iconEnd));
                     holder.iconEnd.setVisibility(View.VISIBLE);
                 } else {
                     holder.iconEnd.setVisibility(View.GONE);
@@ -221,6 +224,13 @@ public class Menus extends BaseBottomSheetView {
                     }
                 });
             }
+        }
+
+        public Drawable getDrawable(Context context, int resId) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1)
+                return context.getResources().getDrawable(resId, context.getApplicationContext().getTheme());
+            else
+                return AppCompatResources.getDrawable(context, resId);
         }
 
         private void setButtonActionText(String btnActionText) {

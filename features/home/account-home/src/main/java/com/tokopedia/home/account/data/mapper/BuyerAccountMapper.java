@@ -204,6 +204,14 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         menuGrid.setItems(getDigitalOrderMenu());
         items.add(menuGrid);
 
+        menuList = new MenuListViewModel();
+        menuList.setMenu(context.getString(R.string.ulasan));
+        menuList.setMenuDescription(context.getString(R.string.ulasan_desc));
+        menuList.setApplink(ApplinkConst.REPUTATION);
+        menuList.setTitleTrack(PEMBELI);
+        menuList.setSectionTrack(context.getString(R.string.title_menu_transaction));
+        items.add(menuList);
+
         items.add(getBuyerResolutionMenu(accountModel));
 
         menuTitle = new MenuTitleViewModel();

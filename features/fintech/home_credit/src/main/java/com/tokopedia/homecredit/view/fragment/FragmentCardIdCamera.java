@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.otaliastudios.cameraview.Facing;
+import com.tokopedia.cameraview.Facing;
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.Actions.interfaces.ActionDataProvider;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -22,6 +22,7 @@ import com.tokopedia.homecredit.R;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class FragmentCardIdCamera extends HomeCreditKTPFragment{
     private ActionCreator actionCreator;
@@ -42,7 +43,7 @@ public class FragmentCardIdCamera extends HomeCreditKTPFragment{
         String imagePath = imgFile.getAbsolutePath();
         boolean toBeFlipped = false;
         hideLoading();
-        cameraView.stop();//always call this method if you do not want awkward issues
+        cameraView.close();//always call this method if you do not want awkward issues
         getActivity().getSupportFragmentManager().popBackStack();
         if(!TextUtils.isEmpty(imagePath) && actionCreator != null){
             if (cameraView.getFacing().ordinal() == Facing.FRONT.ordinal()){
@@ -77,7 +78,7 @@ public class FragmentCardIdCamera extends HomeCreditKTPFragment{
     @Override
     public void onDestroy() {
         hideLoading();
-        cameraView.stop();
+        cameraView.close();
         super.onDestroy();
     }
 

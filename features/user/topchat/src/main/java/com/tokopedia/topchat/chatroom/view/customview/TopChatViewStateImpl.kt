@@ -482,7 +482,7 @@ class TopChatViewStateImpl(
     }
 
     override fun sendAnalyticsClickBuyNow(element: ProductAttachmentViewModel) {
-        analytics.eventClickAddToCartProductAttachment(
+        analytics.eventClickBuyProductAttachment(
                 element.blastId.toString(),
                 element.productName,
                 element.productId.toString(),

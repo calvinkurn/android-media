@@ -195,6 +195,9 @@ public class ProductListFragment
         initTopAdsParams();
         setupAdapter();
         setupListener();
+        if (getUserVisibleHint()) {
+            setupSearchNavigation();
+        }
     }
 
     @Override
@@ -846,6 +849,7 @@ public class ProductListFragment
 
     @Override
     public void removeLoading() {
+        redirectionListener.onProductLoadingFinished();
         adapter.removeLoading();
     }
 

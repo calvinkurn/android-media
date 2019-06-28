@@ -14,8 +14,10 @@ import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.orderdetails.di.DaggerOrderDetailsComponent;
 import com.tokopedia.transaction.orders.orderdetails.di.OrderDetailsComponent;
 import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
-import com.tokopedia.transaction.purchase.detail.fragment.CancelSearchFragment;
-import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderBuyerRequest;
+import com.tokopedia.transaction.common.fragment.CancelSearchFragment;
+import com.tokopedia.transaction.common.fragment.RejectOrderBuyerRequest;
+
+import java.util.Map;
 
 import static com.tokopedia.transaction.orders.orderdetails.view.fragment.MarketPlaceDetailFragment.ACTION_BUTTON_URL;
 import static com.tokopedia.transaction.orders.orderdetails.view.fragment.MarketPlaceDetailFragment.CANCEL_BUYER_REQUEST;
@@ -87,7 +89,7 @@ public class RequestCancelActivity extends BaseSimpleActivity implements HasComp
     }
 
     @Override
-    public void rejectOrderBuyerRequest(TKPDMapParam<String, String> rejectParam) {
+    public void rejectOrderBuyerRequest(Map<String, String> rejectParam) {
         Intent intent = new Intent();
         intent.putExtra(OrderListContants.REASON,rejectParam.get(OrderListContants.REASON));
         intent.putExtra(OrderListContants.REASON_CODE, 1);
