@@ -54,7 +54,7 @@ class VerifyDOBActivity : BaseARActivity<VerifyDOBViewModel>() {
 
                 verifyDobModel.updateUserDoB(getMeGQlString(R.raw.gql_user_profile_dob_update),
                         calendar.get(Calendar.DATE).toString(),
-                        (calendar.get(Calendar.MONTH)+1).toString(),
+                        (calendar.get(Calendar.MONTH) + 1).toString(),
                         calendar.get(Calendar.YEAR).toString())
             } else {
                 showMessage("Silakan pilih tanggal yang valid")
@@ -140,7 +140,7 @@ class VerifyDOBActivity : BaseARActivity<VerifyDOBViewModel>() {
                     .build()
             travelCalenderSheet?.setListener(object : TravelCalendarBottomSheet.ActionListener {
                 override fun onClickDate(dateSelected: Date) {
-                    ed_edit_dob.text = SimpleDateFormat("dd MMMMM YYYY",Locale("in","ID")).format(dateSelected)
+                    ed_edit_dob.text = SimpleDateFormat("dd MMMMM YYYY", Locale("in", "ID")).format(dateSelected)
                     selectedDate = dateSelected
                     hideProgressBar()
                     ed_edit_dob.isClickable = true
