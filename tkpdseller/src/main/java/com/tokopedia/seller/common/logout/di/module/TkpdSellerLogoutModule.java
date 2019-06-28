@@ -10,6 +10,8 @@ import com.tokopedia.core.common.category.data.source.CategoryDataSource;
 import com.tokopedia.core.common.category.data.source.CategoryVersionDataSource;
 import com.tokopedia.core.common.category.data.source.FetchCategoryDataSource;
 import com.tokopedia.core.common.category.data.source.cloud.api.HadesCategoryApi;
+import com.tokopedia.core.common.category.data.source.db.CategoryDB;
+import com.tokopedia.core.common.category.data.source.db.CategoryDao;
 import com.tokopedia.core.common.category.domain.CategoryRepository;
 import com.tokopedia.core.common.category.domain.interactor.ClearCategoryCacheUseCase;
 import com.tokopedia.core.network.di.qualifier.HadesQualifier;
@@ -66,6 +68,12 @@ public class TkpdSellerLogoutModule {
     @Provides
     ProductDraftDao provideProductDraftDao(ProductDraftDB productDraftDB){
         return productDraftDB.getProductDraftDao();
+    }
+
+    @TkpdSellerLogoutScope
+    @Provides
+    CategoryDao provideCategoryDao(@ApplicationContext Context context){
+        return CategoryDB.getInstance(context).getCategoryDao();
     }
 
     @TkpdSellerLogoutScope

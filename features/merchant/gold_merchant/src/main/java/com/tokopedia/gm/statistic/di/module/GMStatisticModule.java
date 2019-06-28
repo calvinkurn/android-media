@@ -9,6 +9,8 @@ import com.tokopedia.core.common.category.data.source.CategoryDataSource;
 import com.tokopedia.core.common.category.data.source.CategoryVersionDataSource;
 import com.tokopedia.core.common.category.data.source.FetchCategoryDataSource;
 import com.tokopedia.core.common.category.data.source.cloud.api.HadesCategoryApi;
+import com.tokopedia.core.common.category.data.source.db.CategoryDao;
+import com.tokopedia.core.common.category.data.source.db.CategoryDbCreation;
 import com.tokopedia.core.common.category.domain.CategoryRepository;
 import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
 import com.tokopedia.core.network.di.qualifier.HadesQualifier;
@@ -119,6 +121,12 @@ public class GMStatisticModule {
     @Provides
     public AssetManager provideAssetManager(@ApplicationContext Context context) {
         return context.getAssets();
+    }
+
+    @GMStatisticScope
+    @Provides
+    public CategoryDao provideCategoryDao(@ApplicationContext Context context){
+        return CategoryDbCreation.getCategoryDao(context);
     }
 
     @GMStatisticScope

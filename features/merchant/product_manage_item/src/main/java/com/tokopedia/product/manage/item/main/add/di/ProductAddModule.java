@@ -10,6 +10,8 @@ import com.tokopedia.core.common.category.data.source.CategoryDataSource;
 import com.tokopedia.core.common.category.data.source.CategoryVersionDataSource;
 import com.tokopedia.core.common.category.data.source.FetchCategoryDataSource;
 import com.tokopedia.core.common.category.data.source.cloud.api.HadesCategoryApi;
+import com.tokopedia.core.common.category.data.source.db.CategoryDB;
+import com.tokopedia.core.common.category.data.source.db.CategoryDao;
 import com.tokopedia.core.common.category.domain.CategoryRepository;
 import com.tokopedia.core.network.di.qualifier.AceQualifier;
 import com.tokopedia.core.network.di.qualifier.HadesQualifier;
@@ -86,6 +88,12 @@ public class ProductAddModule {
     @Provides
     Context context(@ApplicationContext Context context){
         return context;
+    }
+
+    @ProductAddScope
+    @Provides
+    CategoryDao provideCategoryDao(@ApplicationContext Context context){
+        return CategoryDB.getInstance(context).getCategoryDao();
     }
 
     @ProductAddScope

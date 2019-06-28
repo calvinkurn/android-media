@@ -1,5 +1,10 @@
 package com.tokopedia.core.common.category.di.module;
 
+import android.content.Context;
+
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
+import com.tokopedia.core.common.category.data.source.db.CategoryDB;
+import com.tokopedia.core.common.category.data.source.db.CategoryDao;
 import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.common.category.data.repository.CategoryRepositoryImpl;
 import com.tokopedia.core.common.category.data.source.CategoryDataSource;
@@ -46,6 +51,12 @@ public class CategoryPickerModule {
             FetchCategoryFromSelectedUseCase fetchCategoryFromSelectedUseCase
     ){
         return new CategoryPickerPresenterImpl(fetchCategoryChildUseCase, fetchCategoryFromSelectedUseCase);
+    }
+
+    @CategoryPickerScope
+    @Provides
+    CategoryDao provideCategoryDao(@ApplicationContext Context context){
+        return CategoryDB.getInstance(context).getCategoryDao();
     }
 
 }

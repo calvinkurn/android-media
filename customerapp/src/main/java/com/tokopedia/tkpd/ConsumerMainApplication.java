@@ -38,7 +38,6 @@ import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
-import com.tokopedia.core.common.category.CategoryDbFlow;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -158,7 +157,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         generateConsumerAppBaseUrl();
         generateConsumerAppNetworkKeys();
 
-        initializeDatabase();
         TrackApp.initTrackApp(this);
 
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
@@ -378,10 +376,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         AuthUtil.KEY.ZEUS_WHITELIST = ConsumerAppNetworkKeys.ZEUS_WHITELIST;
         WalletUrl.KeyHmac.HMAC_PENDING_CASHBACK = ConsumerAppNetworkKeys.HMAC_PENDING_CASHBACK;
 
-    }
-
-    public void initializeDatabase() {
-        CategoryDbFlow.initDatabase(getApplicationContext());
     }
 
     @Override
