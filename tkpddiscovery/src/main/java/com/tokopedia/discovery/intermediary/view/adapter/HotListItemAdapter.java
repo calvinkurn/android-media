@@ -114,22 +114,6 @@ public class HotListItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         super.onViewAttachedToWindow(holder);
     }
 
-    private void moveToSearchActivity(String url, Context context) {
-        Uri uriData = Uri.parse(url);
-        Bundle bundle = new Bundle();
-
-        String departmentId = uriData.getQueryParameter("sc");
-        String searchQuery = uriData.getQueryParameter("q");
-
-        bundle.putString(BrowseProductRouter.DEPARTMENT_ID, departmentId);
-        bundle.putString(BrowseProductRouter.EXTRAS_SEARCH_TERM, searchQuery);
-
-        Intent intent = BrowseProductRouter.getSearchProductIntent(context);
-        intent.putExtras(bundle);
-
-        context.startActivity(intent);
-    }
-
     public void registerListener(HotlistItemListener listener) {
         if (listener != null) {
             hotlistItemListener = listener;

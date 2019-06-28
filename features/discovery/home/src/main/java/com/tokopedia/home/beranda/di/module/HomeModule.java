@@ -18,9 +18,10 @@ import com.tokopedia.home.beranda.data.repository.HomeRepository;
 import com.tokopedia.home.beranda.data.repository.HomeRepositoryImpl;
 import com.tokopedia.home.beranda.data.source.HomeDataSource;
 import com.tokopedia.home.beranda.di.HomeScope;
-import com.tokopedia.home.beranda.domain.interactor.GetFeedTabUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetHomeDataUseCase;
+import com.tokopedia.home.beranda.domain.interactor.GetFeedTabUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetHomeFeedUseCase;
+import com.tokopedia.home.beranda.domain.interactor.GetKeywordSearchUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetLocalHomeDataUseCase;
 import com.tokopedia.home.beranda.presentation.presenter.HomeFeedPresenter;
 import com.tokopedia.home.beranda.presentation.presenter.HomePresenter;
@@ -33,8 +34,8 @@ import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
-import kotlinx.coroutines.experimental.CoroutineDispatcher;
-import kotlinx.coroutines.experimental.Dispatchers;
+import kotlinx.coroutines.CoroutineDispatcher;
+import kotlinx.coroutines.Dispatchers;
 
 /**
  * @author by errysuprayogi on 11/28/17.
@@ -131,6 +132,12 @@ public class HomeModule {
     @Provides
     protected GetLocalHomeDataUseCase getLocalHomeDataUseCase(HomeRepository repository){
         return new GetLocalHomeDataUseCase(repository);
+    }
+
+    @HomeScope
+    @Provides
+    protected GetKeywordSearchUseCase getKeywordSearchUseCase(@ApplicationContext Context context){
+        return new GetKeywordSearchUseCase(context);
     }
 
     @HomeScope

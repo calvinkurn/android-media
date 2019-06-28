@@ -8,6 +8,7 @@ import com.tokopedia.shop.settings.basicinfo.view.fragment.ShopSettingsInfoFragm
 
 /**
  * Created by Zulfikar on 5/19/2016.
+ * deeplink: SHOP_SETTING_INFO
  */
 class ShopSettingsInfoActivity : BaseSimpleActivity() {
 

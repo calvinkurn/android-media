@@ -24,7 +24,7 @@ interface MerchantVoucherListBottomsheetContract {
 
         fun onSuccessCheckPromoFirstStep(model: ResponseGetPromoStackUiModel, promoCode: String, isFromList: Boolean)
 
-        fun onClashCheckPromoFirstStep(model: ClashingInfoDetailUiModel)
+        fun onClashCheckPromoFirstStep(model: ClashingInfoDetailUiModel, type: String)
 
         fun showLoadingDialog()
 

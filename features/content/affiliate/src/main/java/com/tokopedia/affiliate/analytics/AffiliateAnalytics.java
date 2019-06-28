@@ -71,7 +71,7 @@ public class AffiliateAnalytics {
         ecommerceItem.put("name", productName);
         ecommerceItem.put("id", productId);
         ecommerceItem.put("price", productComission);
-        ecommerceItem.put("list", String.format("/explore page byme - %s", sectionName));
+        ecommerceItem.put("list", String.format("/affiliate explore - %s", sectionName));
         ecommerceItem.put("position", position);
 
         ArrayList<Object> listEcommerce = new ArrayList<>();
@@ -86,7 +86,7 @@ public class AffiliateAnalytics {
     private HashMap<String, Object> getEnhancedEcommerceClick(
             String productName, String productId, int productComission, String sectionName,
             int position) {
-        String list = String.format("/explore page byme - %s", sectionName);
+        String list = String.format("/affiliate explore - %s", sectionName);
 
         HashMap<String, Object> productItem = new HashMap<>();
         productItem.put("name", productName);
@@ -98,8 +98,11 @@ public class AffiliateAnalytics {
         ArrayList<Object> products = new ArrayList<>();
         products.add(productItem);
 
+        HashMap<String, Object> actionField = new HashMap<>();
+        actionField.put("list", list);
+
         HashMap<String, Object> click = new HashMap<>();
-        click.put("actionField", list);
+        click.put("actionField", actionField);
         click.put("products", products);
 
         HashMap<String, Object> ecommerce = new HashMap<>();
@@ -180,7 +183,7 @@ public class AffiliateAnalytics {
                 AffiliateEventTracking.Event.PRODUCT_VIEW,
                 AffiliateEventTracking.Category.BYME_EXPLORE,
                 "impression product affiliate",
-                String.format("%s-%s", sectionName, productName)
+                String.format("%s-%s", sectionName, productId)
         );
         data.put(
                 "ecommerce",
@@ -201,7 +204,7 @@ public class AffiliateAnalytics {
                 AffiliateEventTracking.Event.PRODUCT_CLICK,
                 AffiliateEventTracking.Category.BYME_EXPLORE,
                 "click product affiliate",
-                String.format("%s-%s", sectionName, productName)
+                String.format("%s-%s", sectionName, productId)
         );
         data.put(
                 "ecommerce",

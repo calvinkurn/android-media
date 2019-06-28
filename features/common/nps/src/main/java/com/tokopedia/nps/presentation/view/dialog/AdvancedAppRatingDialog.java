@@ -3,10 +3,12 @@ package com.tokopedia.nps.presentation.view.dialog;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.nps.R;
 import com.tokopedia.nps.presentation.widget.AppRatingView;
 import com.tokopedia.nps.presentation.view.activity.FeedbackActivity;
@@ -29,7 +31,7 @@ public class AdvancedAppRatingDialog extends AppRatingDialog {
     private static final String LABEL_CANCEL_ADVANCED_APP_RATING = "CancelAdvancedAppRating";
     private static final String HIDE_ADVANCED_APP_RATING = "HideAdvancedAppRating";
     private static final String DEFAULT_VALUE = "1";
-    private static final long EXPIRED_TIME = TimeUnit.DAYS.toSeconds(7);
+    private static final long EXPIRED_TIME = TimeUnit.DAYS.toMillis(7);
 
     private AlertDialog dialog;
     private AppRatingView appRatingView;
@@ -85,7 +87,7 @@ public class AdvancedAppRatingDialog extends AppRatingDialog {
     }
 
     private void hideDialog() {
-        globalCacheManager.save(HIDE_ADVANCED_APP_RATING, DEFAULT_VALUE, EXPIRED_TIME);
+        PersistentCacheManager.instance.put(HIDE_ADVANCED_APP_RATING, DEFAULT_VALUE, EXPIRED_TIME);
     }
 
     private void saveVersionCodeForState() {
@@ -113,7 +115,7 @@ public class AdvancedAppRatingDialog extends AppRatingDialog {
     @Override
     protected boolean isDialogNeedToBeShown() {
         if (remoteConfig.getBoolean(getRemoteConfigKey(), false)
-                && globalCacheManager.isExpired(HIDE_ADVANCED_APP_RATING)) {
+                && PersistentCacheManager.instance.isExpired(HIDE_ADVANCED_APP_RATING)) {
             Integer appRatingVersion = cacheHandler.getInt(getLocalKey());
             Integer rating = cacheHandler.getInt(KEY_RATING);
             if (appRatingVersion == null || appRatingVersion == -1 || appRatingVersion < GlobalConfig.VERSION_CODE) {

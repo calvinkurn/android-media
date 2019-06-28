@@ -57,7 +57,10 @@ public class HomeFeedPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         Object o = super.instantiateItem(container, position);
-        registeredFragments.put(position, (HomeFeedFragment) o);
+        HomeFeedFragment homeFeedFragment = (HomeFeedFragment) o;
+        homeFeedFragment.setListener(homeEggListener, homeTabFeedListener);
+        homeFeedFragment.setHomeTrackingQueue(homeTrackingQueue);
+        registeredFragments.put(position, homeFeedFragment);
         return o;
     }
 

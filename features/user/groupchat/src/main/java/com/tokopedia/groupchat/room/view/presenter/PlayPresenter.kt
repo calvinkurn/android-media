@@ -30,6 +30,7 @@ import okhttp3.WebSocket
 import okio.ByteString
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 /**
@@ -52,7 +53,8 @@ class PlayPresenter @Inject constructor(
     }
 
     override fun getPlayInfo(channelId: String?, onSuccessGetInfo: (ChannelInfoViewModel) -> Unit,
-                             onErrorGetInfo: (String) -> Unit) {
+                             onErrorGetInfo: (String) -> Unit,
+                             onNoInternetConnection: () -> Unit) {
         getPlayInfoUseCase.execute(
                 GetPlayInfoUseCase.createParams(channelId),
                 object : Subscriber<ChannelInfoViewModel>() {
@@ -71,11 +73,13 @@ class PlayPresenter @Inject constructor(
                         val errorMessage = GroupChatErrorHandler.getErrorMessage(view.context, e, false)
                         val defaultMessage = view.context.getString(R.string.default_request_error_unknown)
                         val internalServerErrorMessage = "Internal Server Error"
-                        if (GlobalConfig.isAllowDebuggingTools()) {
+                        if(e is UnknownHostException){
+                            onNoInternetConnection()
+                        } else if (GlobalConfig.isAllowDebuggingTools()) {
                             onErrorGetInfo(e.toString())
                         } else if (errorMessage == defaultMessage || errorMessage.equals
                                 (internalServerErrorMessage, ignoreCase = true)) {
-                            onErrorGetInfo(view.context.getString(R.string.default_error_enter_channel))
+                            onErrorGetInfo(view.context.getString(R.string.try_channel_later, "channelName"))
                         } else {
                             onErrorGetInfo(errorMessage)
                         }
@@ -131,14 +135,19 @@ class PlayPresenter @Inject constructor(
         )
     }
 
-    override fun openWebSocket(userSession: UserSessionInterface, channelId: String, groupChatToken: String, settingGroupChat: SettingGroupChat?) {
+    override fun openWebSocket(
+            userSession: UserSessionInterface,
+            channelId: String,
+            groupChatToken: String,
+            settingGroupChat: SettingGroupChat?,
+            refreshInfo: Boolean
+    ) {
         var settings = settingGroupChat ?: SettingGroupChat()
         processUrl(userSession, channelId, groupChatToken, settings)
-        connectWebSocket(userSession.userId, userSession.deviceId, userSession.accessToken, settings, groupChatToken)
-        Log.d("connectev", groupChatToken)
+        connectWebSocket(userSession.accessToken, settings, refreshInfo)
     }
 
-    private fun connectWebSocket(userId: String?, deviceId: String?, accessToken: String, settings: SettingGroupChat, groupChatToken: String) {
+    private fun connectWebSocket(accessToken: String, settings: SettingGroupChat, refreshInfo: Boolean) {
 
         mSubscription?.clear()
         if (mSubscription == null || mSubscription!!.isUnsubscribed) {
@@ -153,7 +162,7 @@ class PlayPresenter @Inject constructor(
                     Log.d("RxWebSocket Presenter", " on WebSocket open")
 //                    showDummy("onOpened $webSocketUrlWithToken", "logger open")
                 }
-                view.onOpenWebSocket()
+                view.onOpenWebSocket(refreshInfo)
             }
 
             override fun onMessage(text: String) {

@@ -108,8 +108,7 @@ public class CartListModule {
                                                  UserSessionInterface userSessionInterface,
                                                  TopAdsGqlUseCase topAdsGqlUseCase,
                                                  ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase) {
-        return new CartListPresenter(
-                cartListView, getCartListUseCase, deleteCartUseCase, deleteCartGetCartListUseCase,
+        return new CartListPresenter(getCartListUseCase, deleteCartUseCase, deleteCartGetCartListUseCase,
                 updateCartUseCase, resetCartGetCartListUseCase, checkPromoStackingCodeUseCase,
                 checkPromoStackingCodeMapper, checkPromoCodeCartListUseCase, compositeSubscription,
                 cartApiRequestParamGenerator, cancelAutoApplyCouponUseCase, addWishListUseCase,

@@ -62,7 +62,7 @@ public class Spotlight {
                 SpotlightItem item = spotlights.get(i);
                 list.add(
                         DataLayer.mapOf(
-                                "id", item.getId(),
+                                "id", String.valueOf(item.getId()),
                                 "name", promoName,
                                 "creative", item.getTitle(),
                                 "creative_url", item.getBackgroundImageUrl(),

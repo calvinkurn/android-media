@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:tools="http://schemas.android.com/tools" xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/transparent"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="170dp"
         android:layout_height="104dp"
         android:layout_marginTop="@dimen/dp_20"
@@ -28,67 +27,84 @@
             android:letterSpacing="0.02"
             android:layout_gravity="end"
             android:visibility="gone"
-            tools:text="PAKET DATA"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="PULSA"
             tools:visibility="visible"
             />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
+        <include
+            android:id="@+id/footer"
+            layout="@layout/layout_template_footer_business"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_12"
-            android:layout_marginBottom="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_8">
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="@dimen/dp_8"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/subtitle" />
 
-            <include layout="@layout/layout_template_footer_business"
-                android:id="@+id/footer"
-                android:layout_alignParentBottom="true"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content" />
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/charcoal_grey_88"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/productName"
+            tools:text="Tour Les Jours"
+            tools:visibility="visible" />
 
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:textSize="@dimen/sp_12"
-                android:textColor="@color/charcoal_grey_88"
-                android:textStyle="bold"
-                android:visibility="gone"
-                tools:text="BRONET 4G OWS"
-                tools:visibility="visible"
-                />
+        <TextView
+            android:id="@+id/subtitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/footer"
+            android:layout_below="@id/title"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_2"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:ellipsize="end"
+            android:lineSpacingExtra="@dimen/sp_6"
+            android:maxLines="1"
+            android:textColor="@color/font_title_bu_widget"
+            android:textSize="@dimen/sp_10"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/footer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/title"
+            tools:text="Voucher Tous Les Jours Rp 100.000,-"
+            tools:visibility="visible" />
 
-            <TextView
-                android:id="@+id/subtitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/title"
-                android:layout_above="@id/footer"
-                android:layout_marginTop="@dimen/dp_2"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:textSize="@dimen/sp_10"
-                android:textColor="@color/font_title_bu_widget"
-                android:lineSpacingExtra="@dimen/sp_6"
-                android:visibility="gone"
-                tools:text="081234567890"
-                tools:visibility="visible"
-                />
-
-        </RelativeLayout>
-
-    </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
 
     <include layout="@layout/layout_template_icon_business_widget"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_4"
-        android:layout_marginLeft="@dimen/dp_4"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_8"
         />
 
 </FrameLayout>
+

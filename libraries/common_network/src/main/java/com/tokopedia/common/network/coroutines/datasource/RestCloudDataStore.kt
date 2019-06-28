@@ -5,10 +5,10 @@ import com.google.gson.Gson
 import com.tokopedia.common.network.data.model.*
 import com.tokopedia.common.network.data.source.cloud.api.RestApi
 import com.tokopedia.common.network.util.*
-import kotlinx.coroutines.experimental.Deferred
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.coroutineScope
-import kotlinx.coroutines.experimental.withContext
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 import okhttp3.*
 import retrofit2.Response
 import java.io.File

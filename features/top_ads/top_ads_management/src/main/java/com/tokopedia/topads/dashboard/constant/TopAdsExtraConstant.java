@@ -8,6 +8,7 @@ public class TopAdsExtraConstant {
 
     public static final String EXTRA_AD = "EXTRA_AD";
     public static final String EXTRA_AD_ID = "EXTRA_AD_ID";
+    public static final String EXTRA_PRODUCT_ID = "EXTRA_PRODUCT_ID";
     public static final String EXTRA_GROUP_ID = "EXTRA_GROUP_ID";
     public static final String EXTRA_GROUP = "EXTRA_GROUP";
     public static final String EXTRA_NAME = "EXTRA_NAME";

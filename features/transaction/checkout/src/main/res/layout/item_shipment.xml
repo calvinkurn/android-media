@@ -16,40 +16,54 @@
         layout="@layout/item_shipment_seller_info"
         tools:visibility="visible" />
 
-    <include
-        layout="@layout/item_promo_merchant"
-        tools:visibility="gone" />
+    <FrameLayout
+        android:id="@+id/fl_disable_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <include
-        layout="@layout/item_cart_product"
-        tools:visibility="visible" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <include
-        layout="@layout/item_shipment_other_product"
-        tools:visibility="visible" />
+            <include
+                layout="@layout/item_promo_merchant"
+                tools:visibility="gone" />
 
-    <include
-        layout="@layout/item_shipment_address"
-        tools:visibility="visible" />
+            <include
+                layout="@layout/item_cart_product"
+                tools:visibility="visible" />
 
-    <include
-        layout="@layout/item_shipment_courier"
-        tools:visibility="visible" />
+            <include
+                layout="@layout/item_shipment_other_product"
+                tools:visibility="visible" />
 
-    <include
-        layout="@layout/item_shipment_courier_recommendation"
-        tools:visibility="visible" />
+            <include
+                layout="@layout/item_shipment_address"
+                tools:visibility="visible" />
 
-    <include
-        layout="@layout/item_shipment_courier_blackbox"
-        tools:visibility="visible" />
+            <include
+                layout="@layout/item_shipment_courier"
+                tools:visibility="visible" />
 
-    <include
-        layout="@layout/item_shipment_shipping_options"
-        tools:visibility="visible" />
+            <include
+                layout="@layout/item_shipment_courier_recommendation"
+                tools:visibility="visible" />
 
-    <include
-        layout="@layout/item_shipment_subtotal"
-        tools:visibility="visible" />
+            <include
+                layout="@layout/item_shipment_courier_blackbox"
+                tools:visibility="visible" />
+
+            <include
+                layout="@layout/item_shipment_shipping_options"
+                tools:visibility="visible" />
+
+            <include
+                layout="@layout/item_shipment_subtotal"
+                tools:visibility="visible" />
+
+        </LinearLayout>
+
+    </FrameLayout>
 
 </LinearLayout>

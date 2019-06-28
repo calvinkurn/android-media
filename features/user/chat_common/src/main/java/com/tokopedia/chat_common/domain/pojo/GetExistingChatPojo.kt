@@ -68,6 +68,9 @@ data class Status(
         @SerializedName("timestamp")
         val timestamp: Long = 0,
         @Expose
+        @SerializedName("timestampStr")
+        val timestampStr: String = "",
+        @Expose
         @SerializedName("isOnline")
         val isOnline: Boolean = false
 )

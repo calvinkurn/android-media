@@ -10,10 +10,10 @@ data class BenefitSummaryInfoUiModel(
 		var summaries: List<SummariesUiModel> = emptyList()
 ) : Parcelable {
 	constructor(parcel: Parcel) : this(
-			parcel.readString(),
-			parcel.readString(),
+			parcel.readString() ?: "",
+			parcel.readString() ?: "",
 			parcel.readInt(),
-			parcel.createTypedArrayList(SummariesUiModel)) {
+			parcel.createTypedArrayList(SummariesUiModel) ?: emptyList()) {
 	}
 
 	override fun writeToParcel(parcel: Parcel, flags: Int) {

@@ -5,7 +5,6 @@ import android.text.TextUtils;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
-import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.checkout.BuildConfig;
@@ -34,16 +33,16 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.XcartParam;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
-import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.kotlin.util.ContainNullException;
 import com.tokopedia.kotlin.util.NullCheckerKt;
 import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.promocheckout.common.data.entity.request.CurrentApplyCode;
 import com.tokopedia.promocheckout.common.data.entity.request.Order;
 import com.tokopedia.promocheckout.common.data.entity.request.Promo;
-import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException;
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper;
+import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -53,12 +52,9 @@ import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCheckout;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapData;
-import com.tokopedia.transactiondata.apiservice.CartHttpErrorException;
-import com.tokopedia.transactiondata.apiservice.CartResponseDataNullException;
 import com.tokopedia.transactiondata.apiservice.CartResponseErrorException;
 import com.tokopedia.transactiondata.entity.request.RemoveCartRequest;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
-import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -69,9 +65,6 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -98,6 +91,8 @@ public class CartListPresenter implements ICartListPresenter {
     private static final String PARAM_PARAMS = "params";
     private static final String PARAM_LANG = "lang";
     private static final String PARAM_STEP = "step";
+    private static final String PARAM_GLOBAL = "global";
+    private static final String PARAM_MERCHANT = "merchant";
 
     public static final int ITEM_CHECKED_ALL_WITHOUT_CHANGES = 0;
     public static final int ITEM_CHECKED_ALL_WITH_CHANGES = 1;
@@ -107,7 +102,7 @@ public class CartListPresenter implements ICartListPresenter {
     public static final String CART_SRC = "cart";
     public static final String ITEM_REQUEST = "5";
 
-    private final ICartListView view;
+    private ICartListView view;
     private final GetCartListUseCase getCartListUseCase;
     private final CompositeSubscription compositeSubscription;
     private final DeleteCartUseCase deleteCartUseCase;
@@ -130,8 +125,7 @@ public class CartListPresenter implements ICartListPresenter {
     private Map<Integer, Boolean> lastCheckedItem = new HashMap<>();
 
     @Inject
-    public CartListPresenter(ICartListView cartListView,
-                             GetCartListUseCase getCartListUseCase,
+    public CartListPresenter(GetCartListUseCase getCartListUseCase,
                              DeleteCartUseCase deleteCartUseCase,
                              DeleteCartGetCartListUseCase deleteCartGetCartListUseCase,
                              UpdateCartUseCase updateCartUseCase,
@@ -148,7 +142,6 @@ public class CartListPresenter implements ICartListPresenter {
                              UserSessionInterface userSessionInterface,
                              TopAdsGqlUseCase topAdsUseCase,
                              ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase) {
-        this.view = cartListView;
         this.getCartListUseCase = getCartListUseCase;
         this.compositeSubscription = compositeSubscription;
         this.deleteCartUseCase = deleteCartUseCase;
@@ -170,7 +163,7 @@ public class CartListPresenter implements ICartListPresenter {
 
     @Override
     public void attachView(ICartListView view) {
-
+        this.view = view;
     }
 
     @Override
@@ -188,6 +181,7 @@ public class CartListPresenter implements ICartListPresenter {
         if (checkPromoStackingCodeUseCase != null) {
             checkPromoStackingCodeUseCase.unsubscribe();
         }
+        view = null;
     }
 
     @Override
@@ -201,7 +195,7 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public void processInitialGetCartData(boolean initialLoad) {
+    public void processInitialGetCartData(String cartId, boolean initialLoad) {
         if (initialLoad) {
             view.renderLoadGetCartData();
         }
@@ -211,6 +205,8 @@ public class CartListPresenter implements ICartListPresenter {
                 GetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING,
                 view.getGeneratedAuthParamNetwork(cartApiRequestParamGenerator.generateParamMapGetCartList(null))
         );
+        requestParams.putString(GetCartListUseCase.PARAM_SELECTED_CART_ID, cartId);
+
         compositeSubscription.add(getCartListUseCase.createObservable(requestParams)
                 .flatMap(new Func1<CartListData, Observable<CartListData>>() {
                     @Override
@@ -354,7 +350,7 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public void processToUpdateCartData(List<CartItemData> cartItemDataList) {
+    public void processToUpdateCartData(List<CartItemData> cartItemDataList, List<CartShopHolderData> cartShopHolderDataList) {
         view.showProgressLoading();
         List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
         for (CartItemData data : cartItemDataList) {
@@ -376,7 +372,7 @@ public class CartListPresenter implements ICartListPresenter {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.io())
-                        .subscribe(getSubscriberToShipmentSingleAddress(cartItemDataList))
+                        .subscribe(getSubscriberToShipmentSingleAddress(cartItemDataList, cartShopHolderDataList))
         );
     }
 
@@ -446,8 +442,12 @@ public class CartListPresenter implements ICartListPresenter {
                 e.printStackTrace();
                 if (view != null) {
                     view.hideProgressLoading();
-                    view.showToastMessageRed(ErrorHandler.getErrorMessage(view.getActivity(), e));
-                    processInitialGetCartData(cartListData == null);
+                    String errorMessage = e.getMessage();
+                    if (!(e instanceof CartResponseErrorException)) {
+                        errorMessage = ErrorHandler.getErrorMessage(view.getActivity(), e);
+                    }
+                    view.showToastMessageRed(errorMessage);
+                    processInitialGetCartData(view.getCartId(), cartListData == null);
                 }
             }
 
@@ -475,23 +475,29 @@ public class CartListPresenter implements ICartListPresenter {
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                view.hideProgressLoading();
-                view.showToastMessageRed(
-                        ErrorHandler.getErrorMessage(view.getActivity(), e)
-                );
-                processInitialGetCartData(cartListData == null);
+                if (view != null) {
+                    view.hideProgressLoading();
+                    String errorMessage = e.getMessage();
+                    if (!(e instanceof CartResponseErrorException)) {
+                        errorMessage = ErrorHandler.getErrorMessage(view.getActivity(), e);
+                    }
+                    view.showToastMessageRed(errorMessage);
+                    processInitialGetCartData(view.getCartId(), cartListData == null);
+                }
             }
 
             @Override
             public void onNext(UpdateCartData data) {
-                view.hideProgressLoading();
-                if (!data.isSuccess()) {
-                    view.showToastMessageRed(data.getMessage());
-                } else {
-                    if (stateGoTo == CartFragment.GO_TO_LIST) {
-                        view.goToCouponList();
+                if (view != null) {
+                    view.hideProgressLoading();
+                    if (!data.isSuccess()) {
+                        view.showToastMessageRed(data.getMessage());
                     } else {
-                        view.goToDetailPromoStacking(promoStackingData);
+                        if (stateGoTo == CartFragment.GO_TO_LIST) {
+                            view.goToCouponList();
+                        } else {
+                            view.goToDetailPromoStacking(promoStackingData);
+                        }
                     }
                 }
             }
@@ -533,21 +539,28 @@ public class CartListPresenter implements ICartListPresenter {
 
                             @Override
                             public void onError(Throwable e) {
-                                view.hideProgressLoading();
-                                String message = ErrorHandler.getErrorMessage(view.getActivity(), e);
-                                view.showToastMessageRed(message);
+                                if (view != null) {
+                                    view.hideProgressLoading();
+                                    String errorMessage = e.getMessage();
+                                    if (!(e instanceof CartResponseErrorException)) {
+                                        errorMessage = ErrorHandler.getErrorMessage(view.getActivity(), e);
+                                    }
+                                    view.showToastMessageRed(errorMessage);
+                                }
                             }
 
                             @Override
                             public void onNext(UpdateAndRefreshCartListData updateAndRefreshCartListData) {
-                                view.hideProgressLoading();
-                                if (updateAndRefreshCartListData.getCartListData() != null) {
-                                    CartListPresenter.this.cartListData = updateAndRefreshCartListData.getCartListData();
-                                    view.renderLoadGetCartDataFinish();
-                                    if (cartListData.getShopGroupDataList().isEmpty()) {
-                                        view.renderEmptyCartData(cartListData);
-                                    } else {
-                                        view.renderInitialGetCartListDataSuccess(cartListData);
+                                if (view != null) {
+                                    view.hideProgressLoading();
+                                    if (updateAndRefreshCartListData.getCartListData() != null) {
+                                        CartListPresenter.this.cartListData = updateAndRefreshCartListData.getCartListData();
+                                        view.renderLoadGetCartDataFinish();
+                                        if (cartListData.getShopGroupDataList().isEmpty()) {
+                                            view.renderEmptyCartData(cartListData);
+                                        } else {
+                                            view.renderInitialGetCartListDataSuccess(cartListData);
+                                        }
                                     }
                                 }
                             }
@@ -781,68 +794,32 @@ public class CartListPresenter implements ICartListPresenter {
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                view.renderLoadGetCartDataFinish();
-                handleErrorinitCartList(e);
-                view.stopTrace();
+                if (view != null) {
+                    view.renderLoadGetCartDataFinish();
+                    String errorMessage = e.getMessage();
+                    if (!(e instanceof CartResponseErrorException)) {
+                        errorMessage = ErrorHandler.getErrorMessage(view.getActivity(), e);
+                    }
+                    view.renderErrorInitialGetCartListData(errorMessage);
+                    view.stopTrace();
+                }
             }
 
             @Override
             public void onNext(CartListData cartListData) {
-                CartListPresenter.this.cartListData = cartListData;
-                view.renderLoadGetCartDataFinish();
-                if (cartListData.getShopGroupDataList().isEmpty()) {
-                    view.stopTrace();
-                    view.renderEmptyCartData(cartListData);
-                } else {
-                    view.renderInitialGetCartListDataSuccess(cartListData);
-                    view.stopTrace();
+                if (view != null) {
+                    CartListPresenter.this.cartListData = cartListData;
+                    view.renderLoadGetCartDataFinish();
+                    if (cartListData.getShopGroupDataList().isEmpty()) {
+                        view.stopTrace();
+                        view.renderEmptyCartData(cartListData);
+                    } else {
+                        view.renderInitialGetCartListDataSuccess(cartListData);
+                        view.stopTrace();
+                    }
                 }
             }
         };
-    }
-
-    private void handleErrorinitCartList(Throwable e) {
-        if (e instanceof UnknownHostException) {
-            view.renderErrorNoConnectionInitialGetCartListData(
-                    ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-            );
-        } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-            view.renderErrorTimeoutConnectionInitialGetCartListData(
-                    ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-            );
-        } else if (e instanceof CartResponseErrorException) {
-            view.renderErrorInitialGetCartListData(e.getMessage());
-        } else if (e instanceof CartResponseDataNullException) {
-            view.renderErrorInitialGetCartListData(e.getMessage());
-        } else if (e instanceof CartHttpErrorException) {
-            view.renderErrorHttpInitialGetCartListData(e.getMessage());
-        } else if (e instanceof ResponseCartApiErrorException) {
-            view.renderErrorInitialGetCartListData(e.getMessage());
-        } else {
-            view.renderErrorHttpInitialGetCartListData(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-        }
-    }
-
-    private void handleErrorCartList(Throwable e) {
-        if (e instanceof UnknownHostException) {
-            view.renderErrorNoConnectionActionDeleteCartData(
-                    ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-            );
-        } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-            view.renderErrorTimeoutConnectionActionDeleteCartData(
-                    ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-            );
-        } else if (e instanceof CartResponseErrorException) {
-            view.renderErrorActionDeleteCartData(e.getMessage());
-        } else if (e instanceof CartResponseDataNullException) {
-            view.renderErrorActionDeleteCartData(e.getMessage());
-        } else if (e instanceof CartHttpErrorException) {
-            view.renderErrorHttpActionDeleteCartData(e.getMessage());
-        } else if (e instanceof ResponseCartApiErrorException) {
-            view.renderErrorActionDeleteCartData(e.getMessage());
-        } else {
-            view.renderErrorHttpActionDeleteCartData(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-        }
     }
 
     @NonNull
@@ -855,20 +832,28 @@ public class CartListPresenter implements ICartListPresenter {
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
-                view.hideProgressLoading();
-                handleErrorCartList(e);
+                if (view != null) {
+                    e.printStackTrace();
+                    view.hideProgressLoading();
+                    String errorMessage = e.getMessage();
+                    if (!(e instanceof CartResponseErrorException)) {
+                        errorMessage = ErrorHandler.getErrorMessage(view.getActivity(), e);
+                    }
+                    view.showToastMessageRed(errorMessage);
+                }
             }
 
             @Override
             public void onNext(DeleteCartData deleteCartData) {
-                view.hideProgressLoading();
-                if (deleteCartData.isSuccess())
-                    view.renderActionDeleteCartDataSuccess(
-                            cartItemData, deleteCartData.getMessage(), addWishList
-                    );
-                else
-                    view.renderErrorActionDeleteCartData(deleteCartData.getMessage());
+                if (view != null) {
+                    view.hideProgressLoading();
+                    if (deleteCartData.isSuccess())
+                        view.renderActionDeleteCartDataSuccess(
+                                cartItemData, deleteCartData.getMessage(), addWishList
+                        );
+                    else
+                        view.showToastMessageRed(deleteCartData.getMessage());
+                }
             }
         };
     }
@@ -883,43 +868,51 @@ public class CartListPresenter implements ICartListPresenter {
 
             @Override
             public void onError(Throwable e) {
-                view.hideProgressLoading();
-                e.printStackTrace();
-                if (!removeAllItem) {
-                    handleErrorCartList(e);
-                } else {
-                    processInitialGetCartData(cartListData == null);
+                if (view != null) {
+                    view.hideProgressLoading();
+                    e.printStackTrace();
+                    if (!removeAllItem) {
+                        String errorMessage = e.getMessage();
+                        if (!(e instanceof CartResponseErrorException)) {
+                            errorMessage = ErrorHandler.getErrorMessage(view.getActivity(), e);
+                        }
+                        view.showToastMessageRed(errorMessage);
+                    } else {
+                        processInitialGetCartData(view.getCartId(), cartListData == null);
+                    }
                 }
             }
 
             @Override
             public void onNext(DeleteAndRefreshCartListData deleteAndRefreshCartListData) {
-                view.hideProgressLoading();
-                view.renderLoadGetCartDataFinish();
-                if (!removeAllItem) {
-                    if (deleteAndRefreshCartListData.getDeleteCartData().isSuccess()
-                            && deleteAndRefreshCartListData.getCartListData() != null) {
-                        if (deleteAndRefreshCartListData.getCartListData().getShopGroupDataList().isEmpty()) {
-                            processInitialGetCartData(cartListData == null);
+                if (view != null) {
+                    view.hideProgressLoading();
+                    view.renderLoadGetCartDataFinish();
+                    if (!removeAllItem) {
+                        if (deleteAndRefreshCartListData.getDeleteCartData().isSuccess()
+                                && deleteAndRefreshCartListData.getCartListData() != null) {
+                            if (deleteAndRefreshCartListData.getCartListData().getShopGroupDataList().isEmpty()) {
+                                processInitialGetCartData(view.getCartId(), cartListData == null);
+                            } else {
+                                CartListPresenter.this.cartListData = deleteAndRefreshCartListData.getCartListData();
+                                view.renderInitialGetCartListDataSuccess(deleteAndRefreshCartListData.getCartListData());
+                                view.onDeleteCartDataSuccess();
+                            }
                         } else {
-                            CartListPresenter.this.cartListData = deleteAndRefreshCartListData.getCartListData();
-                            view.renderInitialGetCartListDataSuccess(deleteAndRefreshCartListData.getCartListData());
-                            view.onDeleteCartDataSuccess();
+                            view.showToastMessageRed(
+                                    deleteAndRefreshCartListData.getDeleteCartData().getMessage()
+                            );
                         }
                     } else {
-                        view.renderErrorActionDeleteCartData(
-                                deleteAndRefreshCartListData.getDeleteCartData().getMessage()
-                        );
+                        processInitialGetCartData(view.getCartId(), cartListData == null);
                     }
-                } else {
-                    processInitialGetCartData(cartListData == null);
                 }
             }
         };
     }
 
     @NonNull
-    private Subscriber<UpdateCartData> getSubscriberToShipmentSingleAddress(List<CartItemData> cartItemDataList) {
+    private Subscriber<UpdateCartData> getSubscriberToShipmentSingleAddress(List<CartItemData> cartItemDataList, List<CartShopHolderData> cartShopHolderDataList) {
         return new Subscriber<UpdateCartData>() {
             @Override
             public void onCompleted() {
@@ -928,25 +921,31 @@ public class CartListPresenter implements ICartListPresenter {
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
-                view.hideProgressLoading();
-                view.showToastMessageRed(
-                        ErrorHandler.getErrorMessage(view.getActivity(), e)
-                );
-                processInitialGetCartData(cartListData == null);
+                if (view != null) {
+                    e.printStackTrace();
+                    view.hideProgressLoading();
+                    String errorMessage = e.getMessage();
+                    if (!(e instanceof CartResponseErrorException)) {
+                        errorMessage = ErrorHandler.getErrorMessage(view.getActivity(), e);
+                    }
+                    view.showToastMessageRed(errorMessage);
+                    processInitialGetCartData(view.getCartId(), cartListData == null);
+                }
             }
 
             @Override
             public void onNext(UpdateCartData data) {
-                view.hideProgressLoading();
-                if (!data.isSuccess()) {
-                    view.renderErrorToShipmentForm(data.getMessage());
-                } else {
-                    int checklistCondition = getChecklistCondition();
-                    view.renderToShipmentFormSuccess(
-                            generateCheckoutDataAnalytics(cartItemDataList),
-                            isCheckoutProductEligibleForCashOnDelivery(cartItemDataList),
-                            checklistCondition);
+                if (view != null) {
+                    view.hideProgressLoading();
+                    if (!data.isSuccess()) {
+                        view.renderErrorToShipmentForm(data.getMessage());
+                    } else {
+                        int checklistCondition = getChecklistCondition();
+                        view.renderToShipmentFormSuccess(
+                                generateCheckoutDataAnalytics(cartItemDataList, cartShopHolderDataList),
+                                isCheckoutProductEligibleForCashOnDelivery(cartItemDataList),
+                                checklistCondition);
+                    }
                 }
             }
         };
@@ -1017,27 +1016,35 @@ public class CartListPresenter implements ICartListPresenter {
 
             @Override
             public void onError(Throwable e) {
-                view.hideProgressLoading();
-                e.printStackTrace();
-                view.renderLoadGetCartDataFinish();
-                handleErrorinitCartList(e);
-                view.stopTrace();
+                if (view != null) {
+                    view.hideProgressLoading();
+                    e.printStackTrace();
+                    view.renderLoadGetCartDataFinish();
+                    String errorMessage = e.getMessage();
+                    if (!(e instanceof CartResponseErrorException)) {
+                        errorMessage = ErrorHandler.getErrorMessage(view.getActivity(), e);
+                    }
+                    view.renderErrorInitialGetCartListData(errorMessage);
+                    view.stopTrace();
+                }
             }
 
             @Override
             public void onNext(ResetAndRefreshCartListData resetAndRefreshCartListData) {
-                view.hideProgressLoading();
-                view.renderLoadGetCartDataFinish();
-                if (resetAndRefreshCartListData.getCartListData() == null) {
-                    view.renderErrorInitialGetCartListData(resetAndRefreshCartListData.getResetCartData().getMessage());
-                    view.stopTrace();
-                } else {
-                    if (resetAndRefreshCartListData.getCartListData().getShopGroupDataList().isEmpty()) {
+                if (view != null) {
+                    view.hideProgressLoading();
+                    view.renderLoadGetCartDataFinish();
+                    if (resetAndRefreshCartListData.getCartListData() == null) {
+                        view.renderErrorInitialGetCartListData(resetAndRefreshCartListData.getResetCartData().getMessage());
                         view.stopTrace();
-                        view.renderEmptyCartData(resetAndRefreshCartListData.getCartListData());
                     } else {
-                        view.renderInitialGetCartListDataSuccess(resetAndRefreshCartListData.getCartListData());
-                        view.stopTrace();
+                        if (resetAndRefreshCartListData.getCartListData().getShopGroupDataList().isEmpty()) {
+                            view.stopTrace();
+                            view.renderEmptyCartData(resetAndRefreshCartListData.getCartListData());
+                        } else {
+                            view.renderInitialGetCartListDataSuccess(resetAndRefreshCartListData.getCartListData());
+                            view.stopTrace();
+                        }
                     }
                 }
             }
@@ -1055,20 +1062,26 @@ public class CartListPresenter implements ICartListPresenter {
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                view.hideProgressLoading();
-                view.renderErrorCheckPromoCodeFromSuggestedPromo(
-                        ErrorHandler.getErrorMessage(view.getActivity(), e)
-                );
+                if (view != null) {
+                    view.hideProgressLoading();
+                    String errorMessage = e.getMessage();
+                    if (!(e instanceof CartResponseErrorException)) {
+                        errorMessage = ErrorHandler.getErrorMessage(view.getActivity(), e);
+                    }
+                    view.showToastMessageRed(errorMessage);
+                }
             }
 
             @Override
             public void onNext(PromoCodeCartListData promoCodeCartListData) {
-                view.hideProgressLoading();
-                view.renderCheckPromoCodeFromSuggestedPromoSuccess(promoCodeCartListData);
-                if (!promoCodeCartListData.isError())
+                if (view != null) {
+                    view.hideProgressLoading();
                     view.renderCheckPromoCodeFromSuggestedPromoSuccess(promoCodeCartListData);
-                else if (!isAutoApply)
-                    view.renderErrorCheckPromoCodeFromSuggestedPromo(promoCodeCartListData.getErrorMessage());
+                    if (!promoCodeCartListData.isError())
+                        view.renderCheckPromoCodeFromSuggestedPromoSuccess(promoCodeCartListData);
+                    else if (!isAutoApply)
+                        view.showToastMessageRed(promoCodeCartListData.getErrorMessage());
+                }
             }
         };
     }
@@ -1085,14 +1098,14 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public void processCancelAutoApplyPromoStackAfterClash(ArrayList<String> oldPromoList, ArrayList<ClashingVoucherOrderUiModel> newPromoList) {
+    public void processCancelAutoApplyPromoStackAfterClash(ArrayList<String> oldPromoList, ArrayList<ClashingVoucherOrderUiModel> newPromoList, String type) {
         view.showProgressLoading();
         clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), oldPromoList);
-        clearCacheAutoApplyStackUseCase.execute(RequestParams.create(), new ClearCacheAutoApplyAfterClashSubscriber(view, this, newPromoList));
+        clearCacheAutoApplyStackUseCase.execute(RequestParams.create(), new ClearCacheAutoApplyAfterClashSubscriber(view, this, newPromoList, type));
     }
 
     @Override
-    public void processApplyPromoStackAfterClash(ArrayList<ClashingVoucherOrderUiModel> newPromoList) {
+    public void processApplyPromoStackAfterClash(ArrayList<ClashingVoucherOrderUiModel> newPromoList, String type) {
         Promo promo = view.generateCheckPromoFirstStepParam();
         promo.setCodes(new ArrayList<>());
         if (promo.getOrders() != null) {
@@ -1109,14 +1122,28 @@ public class CartListPresenter implements ICartListPresenter {
                 ArrayList<String> codes = new ArrayList<>();
                 codes.add(model.getCode());
                 promo.setCodes(codes);
+
+                CurrentApplyCode currentApplyCode = new CurrentApplyCode();
+                if (!model.getCode().isEmpty()) {
+                    currentApplyCode.setCode(model.getCode());
+                    currentApplyCode.setType(PARAM_GLOBAL);
+                }
+                promo.setCurrentApplyCode(currentApplyCode);
             } else {
-                // This promo is merchant promo
+                // This promo is merchant/logistic promo
                 if (promo.getOrders() != null) {
                     for (Order order : promo.getOrders()) {
                         if (model.getUniqueId().equals(order.getUniqueId())) {
                             ArrayList<String> codes = new ArrayList<>();
                             codes.add(model.getCode());
                             order.setCodes(codes);
+
+                            CurrentApplyCode currentApplyCode = new CurrentApplyCode();
+                            if (!model.getCode().isEmpty()) {
+                                currentApplyCode.setCode(model.getCode());
+                                currentApplyCode.setType(type);
+                            }
+                            promo.setCurrentApplyCode(currentApplyCode);
                             break;
                         }
                     }
@@ -1125,7 +1152,7 @@ public class CartListPresenter implements ICartListPresenter {
             view.showProgressLoading();
             checkPromoStackingCodeUseCase.setParams(promo);
             checkPromoStackingCodeUseCase.execute(RequestParams.create(),
-                    new CheckPromoFirstStepAfterClashSubscriber(view, this, checkPromoStackingCodeMapper));
+                    new CheckPromoFirstStepAfterClashSubscriber(view, this, checkPromoStackingCodeMapper, type));
         }
     }
 
@@ -1150,32 +1177,36 @@ public class CartListPresenter implements ICartListPresenter {
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-                        view.renderCancelAutoApplyCouponError();
+                        if (view != null) {
+                            view.renderCancelAutoApplyCouponError();
+                        }
                     }
 
                     @Override
                     public void onNext(String stringResponse) {
-                        boolean resultSuccess = false;
-                        try {
-                            JSONObject jsonObject = new JSONObject(stringResponse);
-                            NullCheckerKt.isContainNull(jsonObject, s -> {
-                                ContainNullException exception = new ContainNullException("Found " + s + " on " + CartListPresenter.class.getSimpleName());
-                                if (!BuildConfig.DEBUG) {
-                                    Crashlytics.logException(exception);
-                                }
-                                return Unit.INSTANCE;
-                            });
+                        if (view != null) {
+                            boolean resultSuccess = false;
+                            try {
+                                JSONObject jsonObject = new JSONObject(stringResponse);
+                                NullCheckerKt.isContainNull(jsonObject, s -> {
+                                    ContainNullException exception = new ContainNullException("Found " + s + " on " + CartListPresenter.class.getSimpleName());
+                                    if (!BuildConfig.DEBUG) {
+                                        Crashlytics.logException(exception);
+                                    }
+                                    return Unit.INSTANCE;
+                                });
 
-                            resultSuccess = jsonObject.getJSONObject(CancelAutoApplyCouponUseCase.RESPONSE_DATA)
-                                    .getBoolean(CancelAutoApplyCouponUseCase.RESPONSE_SUCCESS);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                                resultSuccess = jsonObject.getJSONObject(CancelAutoApplyCouponUseCase.RESPONSE_DATA)
+                                        .getBoolean(CancelAutoApplyCouponUseCase.RESPONSE_SUCCESS);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
 
-                        if (resultSuccess) {
-                            view.renderCancelAutoApplyCouponSuccess();
-                        } else {
-                            view.renderCancelAutoApplyCouponError();
+                            if (resultSuccess) {
+                                view.renderCancelAutoApplyCouponSuccess();
+                            } else {
+                                view.renderCancelAutoApplyCouponError();
+                            }
                         }
                     }
                 })
@@ -1258,7 +1289,7 @@ public class CartListPresenter implements ICartListPresenter {
         return enhancedECommerceProductCartMapData;
     }
 
-    private EnhancedECommerceProductCartMapData getCheckoutEnhancedECommerceProductCartMapData(CartItemData cartItemData) {
+    private EnhancedECommerceProductCartMapData getCheckoutEnhancedECommerceProductCartMapData(CartItemData cartItemData, CartShopHolderData cartShopHolderData) {
         EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData =
                 new EnhancedECommerceProductCartMapData();
         enhancedECommerceProductCartMapData.setDimension80(
@@ -1267,6 +1298,7 @@ public class CartListPresenter implements ICartListPresenter {
                         : cartItemData.getOriginData().getTrackerAttribution()
         );
         enhancedECommerceProductCartMapData.setDimension45(String.valueOf(cartItemData.getOriginData().getCartId()));
+        enhancedECommerceProductCartMapData.setDimension54(cartItemData.isFulfillment());
         enhancedECommerceProductCartMapData.setProductName(cartItemData.getOriginData().getProductName());
         enhancedECommerceProductCartMapData.setProductID(String.valueOf(cartItemData.getOriginData().getProductId()));
         enhancedECommerceProductCartMapData.setPrice(String.valueOf(cartItemData.getOriginData().getPricePlanInt()));
@@ -1280,19 +1312,51 @@ public class CartListPresenter implements ICartListPresenter {
         enhancedECommerceProductCartMapData.setShopType(cartItemData.getOriginData().getShopType());
         enhancedECommerceProductCartMapData.setShopName(cartItemData.getOriginData().getShopName());
         enhancedECommerceProductCartMapData.setCategoryId(cartItemData.getOriginData().getCategoryId());
+        enhancedECommerceProductCartMapData.setWarehouseId(String.valueOf(cartItemData.getOriginData().getWarehouseId()));
+        enhancedECommerceProductCartMapData.setProductWeight(String.valueOf(cartItemData.getOriginData().getWeightPlan()));
+        enhancedECommerceProductCartMapData.setCartId(String.valueOf(cartItemData.getOriginData().getCartId()));
+
+        StringBuilder promoCodes = new StringBuilder();
+        StringBuilder promoDetails = new StringBuilder();
+        PromoStackingData promoStackingGlobalData = view.getPromoStackingGlobalData();
+        if (promoStackingGlobalData != null && !TextUtils.isEmpty(promoStackingGlobalData.getPromoCode())) {
+            promoCodes.append(promoStackingGlobalData.getPromoCode());
+            promoDetails.append(TickerCheckoutUtilKt.revertMapToStatePromoStackingCheckout(promoStackingGlobalData.getState()));
+        }
+        if (cartShopHolderData != null && cartShopHolderData.getShopGroupData().getVoucherOrdersItemData() != null &&
+                !TextUtils.isEmpty(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getCode()) &&
+                cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getMessageData() != null) {
+            if (!TextUtils.isEmpty(promoCodes)) {
+                promoCodes.append("|");
+            }
+            promoCodes.append(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getCode());
+            if (!TextUtils.isEmpty(promoDetails)) {
+                promoDetails.append("|");
+            }
+            promoDetails.append(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getMessageData().getState());
+        }
+        enhancedECommerceProductCartMapData.setPromoCode(promoCodes.toString());
+        enhancedECommerceProductCartMapData.setPromoDetails(promoDetails.toString());
         return enhancedECommerceProductCartMapData;
     }
 
-    private Map<String, Object> generateCheckoutDataAnalytics(List<CartItemData> cartItemDataList) {
+    private Map<String, Object> generateCheckoutDataAnalytics(List<CartItemData> cartItemDataList, List<CartShopHolderData> cartShopHolderDataList) {
         Map<String, Object> checkoutMapData = new HashMap<>();
         EnhancedECommerceActionField enhancedECommerceActionField = new EnhancedECommerceActionField();
         enhancedECommerceActionField.setStep(EnhancedECommerceActionField.STEP_1);
-        enhancedECommerceActionField.setOption(EnhancedECommerceActionField.OPTION_CART_PAGE_LOADED);
+        enhancedECommerceActionField.setOption(EnhancedECommerceActionField.STEP_1_OPTION_CART_PAGE_LOADED);
 
         EnhancedECommerceCheckout enhancedECommerceCheckout = new EnhancedECommerceCheckout();
         for (CartItemData cartItemData : cartItemDataList) {
+            CartShopHolderData selectedCartShopHolderData = null;
+            for (CartShopHolderData cartShopHolderData : cartShopHolderDataList) {
+                if (cartShopHolderData.getShopGroupData().getCartString().equalsIgnoreCase(cartItemData.getOriginData().getCartString())) {
+                    selectedCartShopHolderData = cartShopHolderData;
+                    break;
+                }
+            }
             EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData
-                    = getCheckoutEnhancedECommerceProductCartMapData(cartItemData);
+                    = getCheckoutEnhancedECommerceProductCartMapData(cartItemData, selectedCartShopHolderData);
             enhancedECommerceCheckout.addProduct(enhancedECommerceProductCartMapData.getProduct());
         }
         enhancedECommerceCheckout.setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR);

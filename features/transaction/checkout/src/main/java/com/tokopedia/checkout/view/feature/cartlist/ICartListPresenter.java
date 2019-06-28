@@ -22,13 +22,13 @@ public interface ICartListPresenter {
 
     void detachView();
 
-    void processInitialGetCartData(boolean initialLoad);
+    void processInitialGetCartData(String cartId, boolean initialLoad);
 
     void processDeleteCart(CartItemData cartItemData, boolean addWishList);
 
     void processDeleteAndRefreshCart(List<CartItemData> allCartItemData, List<CartItemData> removedCartItems, ArrayList<String> appliedPromocodeList, boolean addWishList);
 
-    void processToUpdateCartData(List<CartItemData> cartItemDataList);
+    void processToUpdateCartData(List<CartItemData> cartItemDataList, List<CartShopHolderData> cartShopHolderDataList);
 
     void processUpdateCartDataPromoMerchant(List<CartItemData> cartItemDataList, ShopGroupData shopGroupData);
 
@@ -46,9 +46,9 @@ public interface ICartListPresenter {
 
     void processCancelAutoApplyPromoStack(int shopIndex, ArrayList<String> promoCodeList, boolean ignoreAPIResponse);
 
-    void processCancelAutoApplyPromoStackAfterClash(ArrayList<String> oldPromoList, ArrayList<ClashingVoucherOrderUiModel> newPromoList);
+    void processCancelAutoApplyPromoStackAfterClash(ArrayList<String> oldPromoList, ArrayList<ClashingVoucherOrderUiModel> newPromoList, String type);
 
-    void processApplyPromoStackAfterClash(ArrayList<ClashingVoucherOrderUiModel> newPromoList);
+    void processApplyPromoStackAfterClash(ArrayList<ClashingVoucherOrderUiModel> newPromoList, String type);
 
     Map<String, Object> generateCartDataAnalytics(CartItemData removedCartItem, String enhancedECommerceAction);
 

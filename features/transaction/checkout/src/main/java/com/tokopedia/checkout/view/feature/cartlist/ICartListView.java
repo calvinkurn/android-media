@@ -30,21 +30,7 @@ public interface ICartListView extends IBaseView {
 
     void renderErrorInitialGetCartListData(String message);
 
-    void renderErrorHttpInitialGetCartListData(String message);
-
-    void renderErrorNoConnectionInitialGetCartListData(String message);
-
-    void renderErrorTimeoutConnectionInitialGetCartListData(String message);
-
     void renderActionDeleteCartDataSuccess(CartItemData cartItemData, String message, boolean addWishList);
-
-    void renderErrorActionDeleteCartData(String message);
-
-    void renderErrorHttpActionDeleteCartData(String message);
-
-    void renderErrorNoConnectionActionDeleteCartData(String message);
-
-    void renderErrorTimeoutConnectionActionDeleteCartData(String message);
 
     void renderNoRecipientAddressShipmentForm(CartShipmentAddressFormData shipmentAddressFormData);
 
@@ -55,31 +41,9 @@ public interface ICartListView extends IBaseView {
 
     void renderErrorToShipmentForm(String message);
 
-    void renderErrorHttpToShipmentForm(String message);
-
-    void renderErrorNoConnectionToShipmentForm(String message);
-
-    void renderErrorTimeoutConnectionToShipmentForm(String message);
-
-    void renderErrorToShipmentMultipleAddress(String message);
-
-    void renderErrorHttpToShipmentMultipleAddress(String message);
-
-    void renderErrorNoConnectionToShipmentMultipleAddress(String message);
-
-    void renderErrorTimeoutConnectionToShipmentMultipleAddress(String message);
-
     void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData);
 
     void renderCheckPromoStackingCodeFromSuggestedPromoSuccess(ResponseFirstStep responseFirstStep);
-
-    void renderErrorCheckPromoCodeFromSuggestedPromo(String message);
-
-    void renderErrorHttpCheckPromoCodeFromSuggestedPromo(String message);
-
-    void renderErrorNoConnectionCheckPromoCodeFromSuggestedPromo(String message);
-
-    void renderErrorTimeoutConnectionCheckPromoCodeFromSuggestedPromo(String message);
 
     void renderEmptyCartData(CartListData cartListData);
 
@@ -141,7 +105,11 @@ public interface ICartListView extends IBaseView {
 
     void showMerchantVoucherListBottomsheet(ShopGroupData shopGroupData);
 
-    void onClashCheckPromo(ClashingInfoDetailUiModel clashingInfoDetailUiModel);
+    void onClashCheckPromo(ClashingInfoDetailUiModel clashingInfoDetailUiModel, String type);
 
-    void onSuccessClearPromoStachAfterClash();
+    void onSuccessClearPromoStackAfterClash();
+
+    String getCartId();
+
+    PromoStackingData getPromoStackingGlobalData();
 }

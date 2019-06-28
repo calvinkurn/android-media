@@ -48,6 +48,12 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
               thumbnail
               thumbnailLarge
             }
+            tracking {
+              clickURL
+              viewURL
+              type
+              source
+            }
           }
         }
         cardbanner {
@@ -75,6 +81,12 @@ query FeedV2Query($userID: String!, $limit: Int!, $cursor: String, $source: Stri
               webLink
               thumbnail
               thumbnailLarge
+              tracking {
+                clickURL
+                viewURL
+                type
+                source
+              }
             }
           }
         }

@@ -6,8 +6,10 @@ import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel;
-import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel;
+import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton;
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,8 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
-import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
 
 /**
  * @author by StevenFredian on 05/03/18.
@@ -67,8 +67,11 @@ public class GroupChatAnalytics {
     private static final String EVENT_ACTION_CLICK_HIDE_VIDEO = "click hide video";
     private static final String EVENT_ACTION_CLICK_SHOW_VIDEO = "click show video";
     private static final String EVENT_ACTION_CLICK_PAUSE_VIDEO = "click on pause video";
+    private static final String EVENT_ACTION_CLICK_INTERACTION_BUTTON = "click on love button";
+    private static final String EVENT_ACTION_VIEW_INTERACTION_BUTTON = "view on love button";
 
     private static final String EVENT_NAME_CLICK_GROUPCHAT = "clickGroupChat";
+    private static final String EVENT_NAME_VIEW_GROUPCHAT = "viewGroupChat";
     private static final String EVENT_NAME_CLICK_SHARE = "clickShare";
     public static final String EVENT_NAME_CLICK_NAVIGATION_DRAWER = "clickNavigationDrawer";
     private static final String EVENT_NAME_PROMO_CLICK = "promoClick";
@@ -543,7 +546,7 @@ public class GroupChatAnalytics {
 
     //#34
     public void eventViewProminentButton(ChannelInfoViewModel channelInfoViewModel,
-                                         DynamicButtonsViewModel.Button prominentButton) {
+                                         DynamicButton prominentButton) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_VIEW_GROUP_CHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
@@ -554,7 +557,7 @@ public class GroupChatAnalytics {
 
     //#35
     public void eventClickProminentButton(ChannelInfoViewModel channelInfoViewModel,
-                                          DynamicButtonsViewModel.Button prominentButton) {
+                                          DynamicButton prominentButton) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
@@ -565,12 +568,12 @@ public class GroupChatAnalytics {
 
     //#36
     public void eventViewDynamicButtons(ChannelInfoViewModel viewModel,
-                                        @NotNull ArrayList<DynamicButtonsViewModel.Button> listDynamicButton) {
+                                        @NotNull ArrayList<DynamicButton> listDynamicButton) {
 
         StringBuilder buttonNames= new StringBuilder();
 
         ArrayList<EEPromotion> list = new ArrayList<>();
-        for(DynamicButtonsViewModel.Button button : listDynamicButton) {
+        for(DynamicButton button : listDynamicButton) {
             list.add(new EEPromotion(button.getButtonId(),
                     EEPromotion.NAME_GROUPCHAT + "-dynamicbuttons",
                     GroupChatAnalytics.DEFAULT_EE_POSITION,
@@ -596,7 +599,7 @@ public class GroupChatAnalytics {
 
     //#36
     public void eventClickDynamicButtons(ChannelInfoViewModel viewModel,
-                                         DynamicButtonsViewModel.Button button) {
+                                         DynamicButton button) {
 
         ArrayList<EEPromotion> list = new ArrayList<>();
             list.add(new EEPromotion(button.getButtonId(),
@@ -835,6 +838,22 @@ public class GroupChatAnalytics {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION_CLICK_PAUSE_VIDEO,
+                channelId
+        ));
+    }
+
+    public void eventClickInteractionButton(@Nullable String channelId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
+                EVENT_ACTION_CLICK_INTERACTION_BUTTON,
+                channelId
+        ));
+    }
+
+    public void eventViewInteractionButton(@Nullable String channelId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_VIEW_GROUPCHAT,
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
+                EVENT_ACTION_VIEW_INTERACTION_BUTTON,
                 channelId
         ));
     }

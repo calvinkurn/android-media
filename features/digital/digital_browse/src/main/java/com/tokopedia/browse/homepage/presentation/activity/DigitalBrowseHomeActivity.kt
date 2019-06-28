@@ -21,10 +21,11 @@ import com.tokopedia.browse.homepage.di.DigitalBrowseHomeComponent
 import com.tokopedia.browse.homepage.presentation.fragment.DigitalBrowseMarketplaceFragment
 import com.tokopedia.browse.homepage.presentation.fragment.DigitalBrowseServiceFragment
 import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.browse.common.DigitalBrowseRouter
 import com.tokopedia.browse.R
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.browse.categoryNavigation.view.BaseCategoryBrowseActivity
+import com.tokopedia.browse.categoryNavigation.view.CategoryBrowseActivity
 import javax.inject.Inject
 
 class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<DigitalBrowseHomeComponent> {
@@ -32,6 +33,12 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
     @Inject lateinit var digitalBrowseAnalytics: DigitalBrowseAnalytics
 
     private var fragmentDigital: Fragment? = null
+
+    private var autocompleteParam = ""
+
+    private val AUTOCOMPLETE_BELANJA = "belanja"
+
+    private val AUTOCOMPLETE_LAYANAN = "homenav"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,10 +64,11 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
     }
 
     override fun getNewFragment(): Fragment? {
-
         if (Integer.parseInt(intent.getStringExtra(EXTRA_TYPE)) == TYPE_BELANJA) {
+            autocompleteParam = AUTOCOMPLETE_BELANJA
             fragmentDigital = DigitalBrowseMarketplaceFragment.fragmentInstance
         } else if (Integer.parseInt(intent.getStringExtra(EXTRA_TYPE)) == TYPE_LAYANAN) {
+            autocompleteParam = AUTOCOMPLETE_LAYANAN
             fragmentDigital = if (intent.hasExtra(EXTRA_TAB)) {
                 DigitalBrowseServiceFragment.getFragmentInstance(
                         Integer.parseInt(intent.getStringExtra(EXTRA_TAB)))
@@ -73,7 +81,7 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        getMenuInflater().inflate(R.menu.menu_search, menu)
+        getMenuInflater().inflate(R.menu.menu_digital_browse_search, menu)
         return true
     }
 
@@ -86,7 +94,8 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
     }
 
     fun onSearchClicked() {
-        startActivity(RouteManager.getIntent(this!!, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE_WITH_SOURCE, "belanja"))
+        digitalBrowseAnalytics.eventClickOnSearchTopNav(screenName)
+        RouteManager.route(this, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE_WITH_NAVSOURCE, autocompleteParam)
     }
 
     private fun setupToolbar() {
@@ -137,15 +146,21 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
 
 }
 
+
 @DeepLink(ApplinkConstant.DIGITAL_BROWSE)
 fun getCallingIntent(context: Context, extras: Bundle): Intent {
     val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
-    val intent = Intent(context, DigitalBrowseHomeActivity::class.java)
+    var intent = Intent(context, DigitalBrowseHomeActivity::class.java)
 
     if (!extras.containsKey(DigitalBrowseHomeActivity.EXTRA_TITLE)) {
         if (Integer.parseInt(extras.getString(DigitalBrowseHomeActivity.EXTRA_TYPE)) == DigitalBrowseHomeActivity.TYPE_BELANJA) {
-            extras.putString(DigitalBrowseHomeActivity.EXTRA_TITLE, DigitalBrowseHomeActivity.TITLE_BELANJA)
+            if(BaseCategoryBrowseActivity.isNewCategoryEnabled(context)) {
+                intent = BaseCategoryBrowseActivity.newIntent(context)
+            }else {
+                extras.putString(DigitalBrowseHomeActivity.EXTRA_TITLE, DigitalBrowseHomeActivity.TITLE_BELANJA)
+            }
         } else if (Integer.parseInt(extras.getString(DigitalBrowseHomeActivity.EXTRA_TYPE)) == DigitalBrowseHomeActivity.TYPE_LAYANAN) {
+            intent = Intent(context, DigitalBrowseHomeActivity::class.java)
             extras.putString(DigitalBrowseHomeActivity.EXTRA_TITLE, DigitalBrowseHomeActivity.TITLE_LAYANAN)
         }
     }

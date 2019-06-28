@@ -24,7 +24,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.userSession)
 
     implementation rootProject.ext.networkDependencies.glide
-    implementation rootProject.ext.networkDependencies.volley
     implementation rootProject.ext.firebase.performance
     implementation rootProject.ext.testDependencies.androidAnnotation
 

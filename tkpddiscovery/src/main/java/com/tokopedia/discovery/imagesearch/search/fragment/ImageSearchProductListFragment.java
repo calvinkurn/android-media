@@ -12,14 +12,13 @@ import android.view.ViewGroup;
 
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
@@ -35,11 +34,12 @@ import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionGeneralAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.ProductItemDecoration;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ProductListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.NetworkParamHelper;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GlobalNavViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
@@ -75,7 +75,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_
  */
 
 public class ImageSearchProductListFragment extends BaseDaggerFragment implements
-        SearchSectionGeneralAdapter.OnItemChangeView, ImageProductListFragmentView,
+        BrowseSectionGeneralAdapter.OnItemChangeView, ImageProductListFragmentView,
         ProductListener, WishListActionListener, TopAdsItemClickListener, TopAdsListener {
 
     public static final String SCREEN_IMAGE_SEARCH_TAB = "Image Search result - Image tab";
@@ -416,7 +416,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     private void sendImageTrackingDataInChunks(List<Visitable> list) {
         if (list != null && list.size() > 0) {
-            String userId = generateUserId();
             List<Object> dataLayerList = new ArrayList<>();
             for (int j = 0; j < list.size(); ) {
                 int count = 0;
@@ -424,7 +423,8 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
                 while (count < MAXIMUM_PRODUCT_COUNT_FOR_ONE_EVENT && j < list.size()) {
                     count++;
                     if (list.get(j) instanceof ProductItem) {
-                        dataLayerList.add(((ProductItem) list.get(j)).getProductAsObjectDataLayer(userId));
+                        ProductItem productItem = (ProductItem)list.get(j);
+                        dataLayerList.add(productItem.getProductAsObjectDataLayerForImageSearchImpression());
                     }
                     j++;
                 }
@@ -628,6 +628,16 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     }
 
+    @Override
+    public void onGlobalNavWidgetClicked(GlobalNavViewModel.Item item, String keyword) {
+
+    }
+
+    @Override
+    public void onGlobalNavWidgetClickSeeAll(String applink, String url) {
+
+    }
+
     public void onLongClick(ProductItem item, int adapterPosition) {
         SimilarSearchManager.getInstance(getContext()).startSimilarSearchIfEnable(getQueryKey(),item);
     }
@@ -646,12 +656,12 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public void onSearchGuideClicked(String keyword) {
+    public void onSearchGuideClicked(String queryParams) {
 
     }
 
     @Override
-    public void onRelatedSearchClicked(String keyword) {
+    public void onRelatedSearchClicked(String queryParams, String keyword) {
 
     }
 
@@ -671,10 +681,9 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     private void sendItemClickTrackingEvent(ProductItem item) {
-        String userId = generateUserId();
-
         SearchTracking.trackEventClickImageSearchResultProduct(
-                getActivity(), item.getProductAsObjectDataLayerForImageSearch(userId), (item.getPosition() + 1) / 2);
+                item.getProductAsObjectDataLayerForImageSearchClick()
+        );
     }
 
     @Override

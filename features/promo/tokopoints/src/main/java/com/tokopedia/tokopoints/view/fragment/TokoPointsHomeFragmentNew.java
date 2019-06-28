@@ -370,7 +370,9 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
             mPresenter.getTokoPointDetail();
         } else if (source.getId() == R.id.container_fab_egg_token) {
             if (mSumToken <= 0) {
-                mStartPurchaseBottomSheet.show(getChildFragmentManager(), StartPurchaseBottomSheet.class.getName());
+                if(mStartPurchaseBottomSheet!=null) {
+                    mStartPurchaseBottomSheet.show(getChildFragmentManager(), StartPurchaseBottomSheet.class.getName());
+                }
             } else {
                 if (getActivity() != null) {
                     RouteManager.route(getActivity(), ApplinkConstant.GAMIFICATION);
@@ -389,6 +391,8 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         coordinatorLayout = view.findViewById(R.id.container);
         mContainerMain = view.findViewById(R.id.container_main);
         mTextMembershipValue = view.findViewById(R.id.text_membership_value);
+        mTextMembershipValue.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable
+                (getActivity(), R.drawable.ic_arrow_right_grey), null);
         mTextMembershipLabel = view.findViewById(R.id.text_membership_label);
         mTextPoints = view.findViewById(R.id.text_my_points_value);
         mTextLoyalty = view.findViewById(R.id.text_loyalty_value);
@@ -960,17 +964,6 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
 
             }
         });
-
-        if (couponSection == null
-                || couponSection.getLayoutCouponAttr() == null
-                || couponSection.getLayoutCouponAttr().getCouponList() == null
-                || couponSection.getLayoutCouponAttr().getCouponList().isEmpty()) {
-            mPresenter.setPagerSelectedItem(TAB_CATALOG);
-        } else {
-            mPresenter.setPagerSelectedItem(TAB_COUPON);
-        }
-
-        mPagerPromos.setCurrentItem(mPresenter.getPagerSelectedItem());
 
     }
 

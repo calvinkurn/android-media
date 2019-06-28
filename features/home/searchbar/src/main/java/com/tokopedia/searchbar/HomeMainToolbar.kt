@@ -8,18 +8,20 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
 import android.os.Build
+import android.support.graphics.drawable.VectorDrawableCompat
 import android.support.v4.content.ContextCompat
+import android.support.v4.graphics.drawable.DrawableCompat
+import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
+import android.widget.TextView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.searchbar.helper.ViewHelper
 import kotlinx.android.synthetic.main.home_main_toolbar.view.*
-import android.support.v4.graphics.drawable.DrawableCompat
 
 
 class HomeMainToolbar : MainToolbar {
-
     var toolbarType: Int = 0
 
     var shadowApplied: Boolean = false
@@ -30,17 +32,17 @@ class HomeMainToolbar : MainToolbar {
 
     private lateinit var inboxCrossfader: TransitionDrawable
 
-    lateinit var wishlistBitmapWhite: BitmapDrawable
+    lateinit var wishlistBitmapWhite: Drawable
 
-    lateinit var notifBitmapWhite: BitmapDrawable
+    lateinit var notifBitmapWhite: Drawable
 
-    lateinit var inboxBitmapWhite: BitmapDrawable
+    lateinit var inboxBitmapWhite: Drawable
 
-    lateinit var wishlistBitmapGrey: BitmapDrawable
+    lateinit var wishlistBitmapGrey: Drawable
 
-    lateinit var notifBitmapGrey: BitmapDrawable
+    lateinit var notifBitmapGrey: Drawable
 
-    lateinit var inboxBitmapGrey: BitmapDrawable
+    lateinit var inboxBitmapGrey: Drawable
 
     constructor(context: Context) : super(context) {}
 
@@ -60,16 +62,6 @@ class HomeMainToolbar : MainToolbar {
         initToolbarIcon()
 
         switchToLightToolbar()
-
-        btnInbox.setOnClickListener { v ->
-            if (userSession.isLoggedIn) {
-                searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.INBOX, screenName)
-                getContext().startActivity((this.context.applicationContext as SearchBarRouter)
-                        .gotoInboxMainPage(getContext()))
-            } else {
-                RouteManager.route(context, ApplinkConst.LOGIN)
-            }
-        }
     }
 
     private fun initToolbarIcon() {
@@ -146,9 +138,9 @@ class HomeMainToolbar : MainToolbar {
         }
     }
 
-    fun getBitmapDrawableFromVectorDrawable(context: Context, drawableId: Int): BitmapDrawable {
+    fun getBitmapDrawableFromVectorDrawable(context: Context, drawableId: Int): Drawable {
         return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            ContextCompat.getDrawable(context, drawableId) as BitmapDrawable
+            ContextCompat.getDrawable(context, drawableId) as Drawable
         } else BitmapDrawable(context.resources, getBitmapFromVectorDrawable(context, drawableId))
     }
 
@@ -181,8 +173,24 @@ class HomeMainToolbar : MainToolbar {
         return shadowApplied
     }
 
+    fun setHint(placeholder: String, keyword: String){
+        val editTextSearch = findViewById<TextView>(R.id.et_search)
+        editTextSearch.hint = if(placeholder.isEmpty()) context.getString(R.string.search_tokopedia) else placeholder
+        editTextSearch.setSingleLine()
+        editTextSearch.ellipsize = TextUtils.TruncateAt.END
+        editTextSearch.setOnClickListener {
+            searchBarAnalytics.eventTrackingSearchBar()
+            if(placeholder.isEmpty()){
+                RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
+            }else{
+                RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE_WITH_NAVSOURCE_AND_HINT, HOME_SOURCE, keyword)
+            }
+        }
+    }
+
     companion object {
         val TOOLBAR_LIGHT_TYPE = 0
         val TOOLBAR_DARK_TYPE = 1
+        private const val HOME_SOURCE = "home"
     }
 }

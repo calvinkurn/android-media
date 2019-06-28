@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import com.tokopedia.base.list.seller.R;
 import com.tokopedia.base.list.seller.view.old.DataBindAdapter;
 import com.tokopedia.base.list.seller.view.old.RetryDataBinder;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * Created by Nisie on 2/26/16.
@@ -31,7 +32,7 @@ public class BaseRetryDataBinder extends RetryDataBinder {
     @Override
     public RetryDataBinder.ViewHolder newViewHolder(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_base_network_error, null);
-        ((ImageView) view.findViewById(R.id.image_error)).setImageResource(errorDrawableRes);
+        ((ImageView) view.findViewById(R.id.image_error)).setImageDrawable(MethodChecker.getDrawable(parent.getContext(),errorDrawableRes));
         if (parent.getMeasuredHeight() < parent.getMeasuredWidth()) {
             view.setLayoutParams(new AbsListView.LayoutParams(-1, parent.getMeasuredWidth()));
         } else {

@@ -5,20 +5,23 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.support.v4.app.JobIntentService
+import android.support.v4.content.LocalBroadcastManager
 import android.text.TextUtils
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.feature.createpost.*
-import com.tokopedia.affiliate.feature.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.affiliate.feature.createpost.di.CreatePostModule
+import com.tokopedia.affiliate.feature.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.affiliate.feature.createpost.domain.usecase.SubmitPostUseCase
 import com.tokopedia.affiliate.feature.createpost.view.util.SubmitPostNotificationManager
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.MediaType
+import com.tokopedia.affiliatecommon.BROADCAST_SUBMIT_POST
+import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.SubmitPostData
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.cachemanager.PersistentCacheManager
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import java.util.*
@@ -55,7 +58,7 @@ class SubmitPostService : JobIntentService() {
 
     override fun onHandleWork(intent: Intent) {
         val id: String = intent.getStringExtra(DRAFT_ID) ?: return
-        val cacheManager = PersistentCacheManager(baseContext, id)
+        val cacheManager = SaveInstanceCacheManager(baseContext, id)
         val viewModel: CreatePostViewModel = cacheManager.get(
                 CreatePostViewModel.TAG,
                 CreatePostViewModel::class.java
@@ -172,6 +175,7 @@ class SubmitPostService : JobIntentService() {
                     return
                 }
                 notificationManager?.onSuccessPost()
+                sendBroadcast()
             }
 
             override fun onCompleted() {
@@ -182,6 +186,12 @@ class SubmitPostService : JobIntentService() {
                         this@SubmitPostService,
                         e
                 ))
+            }
+
+            private fun sendBroadcast() {
+                val intent = Intent(BROADCAST_SUBMIT_POST)
+                intent.putExtra(SUBMIT_POST_SUCCESS, true)
+                LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
             }
         }
     }
