@@ -106,7 +106,7 @@ class AddTalkFragment : BaseDaggerFragment(),
 
             if (parent.getChildAdapterPosition(view) == 0) {
                 outRect.left = space
-            } else if (parent.getChildAdapterPosition(view) == parent.adapter?.itemCount!! - 1) {
+            } else if (parent.getChildAdapterPosition(view) == parent.adapter?.itemCount?.minus(1) ?: -1) {
                 outRect.right = space
             }
             outRect.top = view.context.resources.getDimension(R.dimen.dp_8).toInt()

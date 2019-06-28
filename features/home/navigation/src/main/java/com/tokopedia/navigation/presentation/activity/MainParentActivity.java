@@ -49,6 +49,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.component.BottomNavigation;
 import com.tokopedia.graphql.data.GraphqlClient;
@@ -376,9 +377,9 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void checkAgeVerificationExtra(Intent intent) {
-        if (intent.hasExtra("VERIFICATION_SUCCESS")) {
+        if (intent.hasExtra(ApplinkConstInternalCategory.PARAM_EXTRA_SUCCESS)) {
             Toaster.Companion.showErrorWithAction(this,
-                    intent.getStringExtra("VERIFICATION_SUCCESS"),
+                    intent.getStringExtra(ApplinkConstInternalCategory.PARAM_EXTRA_SUCCESS),
                     Snackbar.LENGTH_INDEFINITE,
                     getString(R.string.general_label_ok), (v) -> {
                     });

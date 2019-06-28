@@ -19,15 +19,18 @@ class GalleryItemDecoration(private val spacing: Int) : RecyclerView.ItemDecorat
         outRect.top = if (isTopProductItem(position, totalSpanCount)) spacing * 2 else spacing / 2
         outRect.left = spacing / 2
         outRect.right = spacing / 2
-        outRect.bottom = if (isBottomProductItem(position, totalSpanCount, totalItem!!)) spacing * 2 else spacing / 2
+        outRect.bottom = if (isBottomProductItem(position, totalSpanCount, totalItem)) spacing * 2 else spacing / 2
     }
 
     private fun isTopProductItem(position: Int, totalSpanCount: Int): Boolean {
         return position < totalSpanCount
     }
 
-    private fun isBottomProductItem(position: Int, totalSpanCount: Int, totalItem: Int): Boolean {
-        return position + totalSpanCount - position % totalSpanCount > totalItem - 1
+    private fun isBottomProductItem(position: Int, totalSpanCount: Int, totalItem: Int?): Boolean {
+        return if (totalItem != null) {
+            position + totalSpanCount - position % totalSpanCount > totalItem - 1
+        } else
+            false
     }
 
     private fun isFirstInRow(relativePos: Int, spanCount: Int): Boolean {

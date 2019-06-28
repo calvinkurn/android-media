@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.otaliastudios.cameraview.Facing;
+import com.tokopedia.cameraview.Facing;
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.Actions.interfaces.ActionDataProvider;
 import com.tokopedia.homecredit.R;
@@ -39,7 +39,7 @@ public class FragmentSelfieIdCamera extends HomeCreditSelfieFragment{
         String imagePath = imgFile.getAbsolutePath();
         boolean toBeFlipped = false;
         hideLoading();
-        cameraView.stop();//always call this method if you do not want awkward issues
+        cameraView.close();//always call this method if you do not want awkward issues
         getActivity().getSupportFragmentManager().popBackStack();
         if(!TextUtils.isEmpty(imagePath) && actionCreator != null){
             if (cameraView.getFacing().ordinal() == Facing.FRONT.ordinal()){
@@ -67,7 +67,7 @@ public class FragmentSelfieIdCamera extends HomeCreditSelfieFragment{
     @Override
     public void onDestroy() {
         hideLoading();
-        cameraView.stop();
+        cameraView.close();
         super.onDestroy();
     }
 }

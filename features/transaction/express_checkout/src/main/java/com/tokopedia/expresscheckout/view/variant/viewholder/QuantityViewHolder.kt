@@ -92,7 +92,9 @@ class QuantityViewHolder(view: View, listener: CheckoutVariantActionListener) : 
 
     fun updateQuantityText(element: QuantityViewModel) {
         itemView.et_qty.setText(element.orderQuantity.toString())
-        itemView.et_qty.setSelection(itemView.et_qty.text!!.length)
+        itemView.et_qty.text?.let {
+            itemView.et_qty.setSelection(it.length)
+        }
         setupMinButton(element)
         setupPlusButton(element)
     }

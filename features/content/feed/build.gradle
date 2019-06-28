@@ -86,9 +86,6 @@ dependencies {
 
     implementation rootProject.ext.viewDependencies.appIntro
 
-    implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    kapt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
-
     implementation rootProject.ext.networkDependencies.glide
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
