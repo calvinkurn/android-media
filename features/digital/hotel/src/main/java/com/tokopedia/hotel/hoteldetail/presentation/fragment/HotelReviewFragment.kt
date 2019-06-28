@@ -158,8 +158,15 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
     override fun getEmptyDataViewModel(): Visitable<*> {
         var emptyModel = EmptyModel()
         emptyModel.iconRes = R.drawable.ic_no_indonesian_review
-        emptyModel.title = getString(R.string.hotel_review_indonesia_not_found_title)
-        emptyModel.content = getString(R.string.hotel_review_indonesia_not_found_subtitle)
+
+        if (indonesia_review_switch.isChecked) {
+            emptyModel.title = getString(R.string.hotel_review_indonesia_not_found_title)
+            emptyModel.content = getString(R.string.hotel_review_indonesia_not_found_subtitle)
+        } else {
+            emptyModel.title = getString(R.string.hotel_review_filter_review_not_found_title)
+            emptyModel.content = getString(R.string.hotel_review_filter_review_not_found_subtitle)
+        }
+
         return emptyModel
     }
 

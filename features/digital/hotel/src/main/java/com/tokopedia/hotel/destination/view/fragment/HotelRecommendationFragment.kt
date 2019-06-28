@@ -19,6 +19,8 @@ import com.google.android.gms.location.LocationServices
 import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
@@ -151,7 +153,9 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
 
         destinationViewModel.longLat.observe(this, android.arch.lifecycle.Observer {when (it) {
             is Success -> onClickCurrentLocation(lang = it.data.first, lat = it.data.second)
-            is Fail -> { }
+            is Fail -> {
+                NetworkErrorHelper.showRedSnackbar(activity, getString(R.string.hotel_destination_error_get_location))
+            }
         }
         })
 

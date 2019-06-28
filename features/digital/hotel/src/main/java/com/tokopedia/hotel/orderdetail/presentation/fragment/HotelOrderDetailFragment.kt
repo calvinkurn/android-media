@@ -148,18 +148,19 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
 
     fun renderCancellationInfo(hotelTransportDetail: HotelTransportDetail) {
 
-//        if (hotelTransportDetail.cancellation.title.isEmpty()) {
-//            refund_ticker.visibility = View.GONE
-//        } else {
-//            refund_ticker.visibility = View.VISIBLE
-//            refund_ticker.tickerTitle = hotelTransportDetail.cancellation.title
-//            refund_ticker.setHtmlDescription(hotelTransportDetail.cancellation.content)
-//
-//            refund_ticker.setOnClickListener {
-//                if (hotelTransportDetail.cancellation.isClickable)
-//                    showRefundInfo(hotelTransportDetail.cancellation.cancellationPolicies)
-//            }
-//        }
+        if (hotelTransportDetail.cancellation.title.isEmpty()) {
+            refund_ticker.visibility = View.GONE
+        } else {
+            refund_ticker.visibility = View.VISIBLE
+            refund_ticker.tickerTitle = hotelTransportDetail.cancellation.title
+            refund_ticker.setHtmlDescription(hotelTransportDetail.cancellation.content)
+            refund_ticker.closeButtonVisibility = View.GONE
+
+            refund_ticker.setOnClickListener {
+                if (hotelTransportDetail.cancellation.isClickable)
+                    showRefundInfo(hotelTransportDetail.cancellation.cancellationPolicies)
+            }
+        }
 
         if (hotelTransportDetail.contactInfo.isNotEmpty()) {
             call_hotel_layout.setOnClickListener { showCallButtonSheet(hotelTransportDetail.contactInfo) }
@@ -170,7 +171,8 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
     fun renderTransactionDetail(orderDetail: HotelOrderDetail) {
 
         transaction_status.text = orderDetail.status.statusText
-        transaction_status.setTextColor(Color.parseColor(orderDetail.status.textColor))
+        if (orderDetail.status.textColor.isNotEmpty())
+            transaction_status.setTextColor(Color.parseColor(orderDetail.status.textColor))
 
         var transactionDetailAdapter = TitleTextAdapter(TitleTextAdapter.HORIZONTAL_LAYOUT)
         transaction_detail_title_recycler_view.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
