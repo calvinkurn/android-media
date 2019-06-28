@@ -26,6 +26,7 @@ import com.tokopedia.topads.common.constant.TopAdsAddingOption
 import com.tokopedia.topads.common.data.util.ApplinkUtil
 import javax.inject.Inject
 
+@DeepLink(ApplinkConst.SellerApp.TOPADS_AUTOADS)
 class AutoAdsRouteActivity : AutoAdsBaseActivity() {
 
     @Inject
@@ -84,7 +85,8 @@ class AutoAdsRouteActivity : AutoAdsBaseActivity() {
     }
 
     private fun autoAds() {
-        startActivity((application as TopAdsAutoRouter).getTopAdsDashboardIntent(this@AutoAdsRouteActivity))
+//        startActivity((application as TopAdsAutoRouter).getTopAdsDashboardIntent(this@AutoAdsRouteActivity))
+        (application as TopAdsAutoRouter).openTopAdsDashboardApplink(this@AutoAdsRouteActivity)
     }
 
     private fun noProduct() {
@@ -96,7 +98,7 @@ class AutoAdsRouteActivity : AutoAdsBaseActivity() {
     }
 
     private fun manualAds() {
-        startActivity((application as TopAdsAutoRouter).getTopAdsDashboardIntent(this@AutoAdsRouteActivity))
+        (application as TopAdsAutoRouter).openTopAdsDashboardApplink(this@AutoAdsRouteActivity)
     }
 
     companion object {
@@ -107,15 +109,18 @@ class AutoAdsRouteActivity : AutoAdsBaseActivity() {
         }
     }
 
-    object DeeplinkIntent {
-        @DeepLink(ApplinkConst.SellerApp.TOPADS_AUTOADS)
-        @JvmStatic
-        fun getCallingApplinkIntent(context: Context, extras: Bundle): Intent {
-            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
-            val intent = Intent(context, AutoAdsRouteActivity::class.java)
-            return intent
-                    .setData(uri.build())
-                    .putExtras(extras)
-        }
-    }
+//    object DeepLinkIntents {
+//        @DeepLink(ApplinkConst.SellerApp.TOPADS_AUTOADS)
+//        @JvmStatic
+//        fun getCallingApplinkIntent(context: Context, extras: Bundle): Intent {
+//            if (GlobalConfig.isSellerApp()) {
+//                val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
+//                return getCallingIntent(context)
+//                        .setData(uri.build())
+//                        .putExtras(extras)
+//            } else {
+//                return ApplinkUtil.getSellerAppApplinkIntent(context, extras)
+//            }
+//        }
+//    }
 }

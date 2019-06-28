@@ -15,12 +15,15 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.applink.ApplinkConst
 
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.di.AutoAdsComponent
 import com.tokopedia.topads.auto.internal.AutoAdsStatus
 import com.tokopedia.topads.auto.view.activity.SettingBudgetAdsActivity
 import com.tokopedia.topads.auto.di.DaggerAutoAdsComponent
+import com.tokopedia.topads.auto.router.TopAdsAutoRouter
 import com.tokopedia.topads.auto.view.activity.DailyBudgetActivity
 import com.tokopedia.topads.auto.view.factory.AutoAdsWidgetViewModelFactory
 import com.tokopedia.topads.auto.view.fragment.DailyBudgetFragment
@@ -122,10 +125,14 @@ class AutoAdsWidgetView : CardView {
         btnArrow.visibility = View.VISIBLE
         activeListener?.onActive()
         statusAdsContainer.setOnClickListener {
-            val intent = Intent(context, SettingBudgetAdsActivity::class.java)
-            intent.putExtra(DailyBudgetFragment.KEY_DAILY_BUDGET, budget)
-            intent.putExtra(DailyBudgetFragment.KEY_AUTOADS_STATUS, status)
-            (context as FragmentActivity).startActivityForResult(intent, REQUEST_KEY_AUTOADS_WIDGET)
+            if (GlobalConfig.isSellerApp()) {
+                val intent = Intent(context, SettingBudgetAdsActivity::class.java)
+                intent.putExtra(DailyBudgetFragment.KEY_DAILY_BUDGET, budget)
+                intent.putExtra(DailyBudgetFragment.KEY_AUTOADS_STATUS, status)
+                (context as FragmentActivity).startActivityForResult(intent, REQUEST_KEY_AUTOADS_WIDGET)
+            } else {
+                openAutoAdsRouteActivityLink()
+            }
         }
     }
 
@@ -152,10 +159,14 @@ class AutoAdsWidgetView : CardView {
         activeListener?.onInActive()
         statusAdsContainer.setOnClickListener(null)
         startAdsBtn.setOnClickListener {
-            val intent = Intent(context, DailyBudgetActivity::class.java)
-            intent.putExtra(DailyBudgetFragment.KEY_DAILY_BUDGET, budget)
-            intent.putExtra(DailyBudgetFragment.KEY_AUTOADS_STATUS, status)
-            context.startActivity(intent)
+            if (GlobalConfig.isSellerApp()) {
+                val intent = Intent(context, DailyBudgetActivity::class.java)
+                intent.putExtra(DailyBudgetFragment.KEY_DAILY_BUDGET, budget)
+                intent.putExtra(DailyBudgetFragment.KEY_AUTOADS_STATUS, status)
+                context.startActivity(intent)
+            } else {
+                openAutoAdsRouteActivityLink()
+            }
         }
     }
 
@@ -169,11 +180,19 @@ class AutoAdsWidgetView : CardView {
         btnArrow.visibility = View.VISIBLE
         activeListener?.onActive()
         statusAdsContainer.setOnClickListener {
-            val intent = Intent(context, SettingBudgetAdsActivity::class.java)
-            intent.putExtra(DailyBudgetFragment.KEY_DAILY_BUDGET, budget)
-            intent.putExtra(DailyBudgetFragment.KEY_AUTOADS_STATUS, status)
-            (context as FragmentActivity).startActivityForResult(intent, REQUEST_KEY_AUTOADS_WIDGET)
+            if (GlobalConfig.isSellerApp()) {
+                val intent = Intent(context, SettingBudgetAdsActivity::class.java)
+                intent.putExtra(DailyBudgetFragment.KEY_DAILY_BUDGET, budget)
+                intent.putExtra(DailyBudgetFragment.KEY_AUTOADS_STATUS, status)
+                (context as FragmentActivity).startActivityForResult(intent, REQUEST_KEY_AUTOADS_WIDGET)
+            } else {
+                openAutoAdsRouteActivityLink()
+            }
         }
+    }
+
+    private fun openAutoAdsRouteActivityLink() {
+        (context.applicationContext as TopAdsAutoRouter).goToApplinkActivity(context, ApplinkConst.SellerApp.TOPADS_AUTOADS)
     }
 
     fun setActiveListener(activeListener: ActiveListener) {

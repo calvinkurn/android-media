@@ -8,6 +8,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
+import com.tokopedia.abstraction.common.utils.GlobalConfig
 
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.internal.TopAdsUserStatusInfo
@@ -69,9 +70,13 @@ class InitialBudgetFragment : DailyBudgetFragment(), View.OnClickListener, Manua
     }
 
     override fun onManualAdsClicked() {
-        val intent = (activity!!.application as TopAdsAutoRouter)
-                .getTopAdsAddingPromoOptionIntent(activity!!)
-        startActivityForResult(intent, REQUEST_CODE_AD_OPTION)
+        if(GlobalConfig.isSellerApp()) {
+            val intent = (activity!!.application as TopAdsAutoRouter)
+                    .getTopAdsAddingPromoOptionIntent(activity!!)
+            startActivityForResult(intent, REQUEST_CODE_AD_OPTION)
+        } else {
+            (activity!!.application as TopAdsAutoRouter).openTopAdsDashboardApplink(context!!)
+        }
     }
 
     override fun onAutoAdsClicked() {

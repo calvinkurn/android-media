@@ -419,11 +419,12 @@ import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokocash.qrpayment.presentation.activity.NominalQrPaymentActivity;
 import com.tokopedia.tokocash.qrpayment.presentation.model.InfoQrTokoCash;
 import com.tokopedia.tokopoints.TokopointRouter;
+import com.tokopedia.tokopoints.view.activity.TokoPointsHomeActivity;
 import com.tokopedia.topads.auto.router.TopAdsAutoRouter;
-import com.tokopedia.topads.auto.view.activity.AutoAdsRouteActivity;
 import com.tokopedia.topads.common.TopAdsWebViewRouter;
 import com.tokopedia.topads.dashboard.TopAdsDashboardInternalRouter;
 import com.tokopedia.topads.dashboard.TopAdsDashboardRouter;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.topads.sdk.base.TopAdsRouter;
 import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
@@ -466,7 +467,6 @@ import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.useridentification.view.activity.UserIdentificationFormActivity;
 import com.tokopedia.withdraw.WithdrawRouter;
 import com.tokopedia.withdraw.view.activity.WithdrawActivity;
-import com.tokopedia.topads.TopAdsManagementInternalRouter;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -580,7 +580,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         NpsRouter,
         DigitalRouter,
         TopAdsRouter,
-        TopAdsAutoRouter,
         CMRouter,
         ReferralRouter,
         SaldoDetailsRouter,
@@ -593,6 +592,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TradeInRouter,
         com.tokopedia.product.detail.ProductDetailRouter,
         OvoPayWithQrRouter,
+        TopAdsAutoRouter,
         KYCRouter{
 
 
@@ -2729,7 +2729,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void gotoTopAdsDashboard(Context context) {
-        Intent intent = new Intent(context, AutoAdsRouteActivity.class);
+        Intent intent = new Intent(context, TopAdsDashboardActivity.class);
         context.startActivity(intent);
     }
 
@@ -3433,7 +3433,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     @NonNull
     public Intent getTopAdsAddingPromoOptionIntent(@NonNull Context context) {
-        return TopAdsManagementInternalRouter.getTopAdsAddingPromoOptionIntent(context);
+        return new Intent();
     }
 
     @Override
