@@ -104,7 +104,9 @@
 
     <string name="hotel_review_title">Ulasan</string>
     <string name="hotel_review_indonesia_not_found_title">Belum ada ulasan dari Indonesia</string>
-    <string name="hotel_review_indonesia_not_found_subtitle">Kamu bisa jadi yang pertama ngasih ulasan kalau nginep di sini. Pesan kamarnya, yuk!</string>
+    <string name="hotel_review_indonesia_not_found_subtitle">Kamu bisa jadi yang pertama ngasih ulasan kalau nginep di sini. Pesan kamarnya, yuk!</string>hot
+    <string name="hotel_review_filter_review_not_found_title">Belum ada ulasan untuk akomodasi ini</string>
+    <string name="hotel_review_filter_review_not_found_subtitle">Coba cek lagi di lain waktu, ya!</string>
     <string name="hotel_review_total_review">%1$s Ulasan</string>
     <string name="hotel_review_filter_first_rank">Memuaskan (Rating 7+)</string>
     <string name="hotel_review_filter_second_rank">Baik (Rating 5&#8211;7)</string>
