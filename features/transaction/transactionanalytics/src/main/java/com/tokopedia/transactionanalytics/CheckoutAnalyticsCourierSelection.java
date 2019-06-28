@@ -1,5 +1,7 @@
 package com.tokopedia.transactionanalytics;
 
+import android.text.TextUtils;
+
 import com.google.android.gms.tagmanager.DataLayer;
 
 import java.util.Map;
@@ -307,7 +309,11 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
     }
 
 
-    public void enhancedECommerceGoToCheckoutStep2(Map<String, Object> cartMap, String transactionId, boolean isTradeIn) {
+    public void sendEnhancedECommerceCheckout(Map<String, Object> cartMap,
+                                              String transactionId,
+                                              boolean isTradeIn,
+                                              String eventAction,
+                                              String eventLabel) {
         String eventCategory = EventCategory.COURIER_SELECTION;
         if (isTradeIn) {
             eventCategory = EventCategory.COURIER_SELECTION_TRADE_IN;
@@ -315,16 +321,18 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         Map<String, Object> dataLayer = DataLayer.mapOf(
                 ConstantTransactionAnalytics.Key.EVENT, EventName.CHECKOUT,
                 ConstantTransactionAnalytics.Key.EVENT_CATEGORY, eventCategory,
-                ConstantTransactionAnalytics.Key.EVENT_ACTION, EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
-                ConstantTransactionAnalytics.Key.EVENT_LABEL, EventLabel.SUCCESS,
-                ConstantTransactionAnalytics.Key.PAYMENT_ID, transactionId,
+                ConstantTransactionAnalytics.Key.EVENT_ACTION, eventAction,
+                ConstantTransactionAnalytics.Key.EVENT_LABEL, eventLabel,
                 ConstantTransactionAnalytics.Key.E_COMMERCE, cartMap,
                 ConstantTransactionAnalytics.Key.CURRENT_SITE, ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
         );
+        if (!TextUtils.isEmpty(transactionId)) {
+            dataLayer.put(ConstantTransactionAnalytics.Key.PAYMENT_ID, transactionId);
+        }
         sendEnhancedEcommerce(dataLayer);
     }
 
-    public void flushEnhancedECommerceGoToCheckoutStep2() {
+    public void flushEnhancedECommerceCheckout() {
         Map<String, Object> dataLayer = DataLayer.mapOf(
                 ConstantTransactionAnalytics.Key.E_COMMERCE, null,
                 ConstantTransactionAnalytics.Key.CURRENT_SITE, null

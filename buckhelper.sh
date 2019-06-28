@@ -9,7 +9,7 @@ initOkBuck( ) {
         if [ ! -f gradlew ]; then
             echo "please install gradle!"
         fi
-        ./gradlew okbuck
+        ./gradlew :buckWrapper
     fi
 
     if [ -f .buckconfig ]; then
@@ -21,10 +21,6 @@ initOkBuck( ) {
     fi
 
     touch .buckconfig
-    echo "[cache]" >> .buckconfig
-    echo "mode = http" >> .buckconfig
-    echo "http_url = http://jenkins.tkpd:6457" >> .buckconfig
-    echo "http_mode = read" >> .buckconfig
     echo "[android]" >> .buckconfig
     echo "sdk_path = $1" >> .buckconfig
 

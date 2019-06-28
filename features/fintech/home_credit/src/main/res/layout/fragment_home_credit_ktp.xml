@@ -12,21 +12,14 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/camera_controls">
 
-        <com.otaliastudios.cameraview.CameraView
+        <com.tokopedia.cameraview.CameraView
             android:id="@+id/camera"
+            android:keepScreenOn="true"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:keepScreenOn="true"
-            app:cameraAudio="on"
-            app:cameraGestureLongTap="none"
-            app:cameraGesturePinch="zoom"
-            app:cameraGestureScrollHorizontal="exposureCorrection"
-            app:cameraGestureScrollVertical="none"
-            app:cameraGestureTap="focusWithMarker"
-            app:cameraGrid="off"
-            app:cameraPlaySounds="true"
-            app:cameraSessionType="picture" />
+            app:cameraPlaySounds="true"/>
+
         <ImageView
             android:id="@+id/img_cutout"
             android:layout_width="match_parent"
@@ -67,7 +60,7 @@
             android:layout_height="@dimen/dp_28"
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
-            android:src="@drawable/ic_close_white" />
+            app:srcCompat="@drawable/ic_close_white" />
 
         <TextView
             android:id="@+id/desc_1"
