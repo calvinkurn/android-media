@@ -177,21 +177,17 @@ class ProductInfoFragment : BaseDaggerFragment() {
     }
 
     private fun showToastError(throwable: Throwable) {
-        activity?.run {
-            Toaster.showError(
-                    findViewById(android.R.id.content),
-                    RecommendationPageErrorHandler.getErrorMessage(this, throwable),
-                    Snackbar.LENGTH_LONG)
-        }
+        Toaster.showError(
+                findViewById(android.R.id.content),
+                RecommendationPageErrorHandler.getErrorMessage(this, throwable),
+                Snackbar.LENGTH_LONG)
     }
 
     private fun showToastSuccess(message: String) {
-        activity?.run {
-            Toaster.showNormal(
-                    findViewById(android.R.id.content),
-                    message,
-                    Snackbar.LENGTH_LONG)
-        }
+        Toaster.showNormal(
+                findViewById(android.R.id.content),
+                message,
+                Snackbar.LENGTH_LONG)
     }
 
     private fun setRatingReviewCount(ratingValue: Int, review: Int){
