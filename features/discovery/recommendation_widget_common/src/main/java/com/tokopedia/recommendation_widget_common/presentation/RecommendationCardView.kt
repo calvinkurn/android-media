@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.ProductCardView
+import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 
@@ -68,8 +69,10 @@ class RecommendationCardView : ProductCardView {
         if (rating in 1..5) {
             ratingView.setImageResource(getRatingDrawable(rating))
             reviewCountView.text = "($reviewCount)"
-            ratingView.show()
-            reviewCountView.show()
+            if (fixedHeight) {
+                ratingView.visibility = View.VISIBLE
+                reviewCountView.visibility = View.VISIBLE
+            }
         } else {
             if (fixedHeight) {
                 ratingView.visibility = View.INVISIBLE
