@@ -26,6 +26,8 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.base.list.seller.view.fragment.BasePresenterFragment;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -296,12 +298,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
             buttonSubmit.setEnabled(false);
             return;
         }
-        showSubmitLoading();
-        String shopName = editTextInputShopName.getText().toString().trim();
-        String shopDomain = editTextInputDomainName.getTextWithoutPrefix().trim();
-        Integer districtId = openShopAddressViewHolder.getDistrictId();
-        Integer postalCodeId = Integer.valueOf(postalCode);
-        shopOpenDomainPresenter.onSubmitCreateShop(shopName, shopDomain, districtId, postalCodeId);
+        submitCreatingShop();
     }
 
     @Override
@@ -480,7 +477,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
                         isPostalCodeChoosen = true;
                         openShopAddressViewHolder.updatePostalCodeView(postalCode);
                     }
-                }
+                } break;
             case REQUEST_CODE__EDIT_ADDRESS:
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     Address address = data.getParcelableExtra(DistrictRecommendationContract.Constant.INTENT_DATA_ADDRESS);
@@ -488,15 +485,27 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
                         isDistrictChoosen = true;
                         clearFocus();
                         openShopAddressViewHolder.setDistrictId(address.getDistrictId());
+                        isPostalCodeChoosen = false;
+                        openShopAddressViewHolder.updatePostalCodeView(null);
                         openShopAddressViewHolder.initPostalCode(address.getZipCodes());
                         openShopAddressViewHolder.updateLocationView(
                                 address.getProvinceName(),
                                 address.getCityName(),
                                 address.getDistrictName()
                         );
+                        openShopAddressViewHolder.updatePostalCodeView("");
                     }
-                }
+                } break;
         }
+    }
+
+    private void submitCreatingShop() {
+        showSubmitLoading();
+        String shopName = editTextInputShopName.getText().toString().trim();
+        String shopDomain = editTextInputDomainName.getTextWithoutPrefix().trim();
+        Integer districtId = openShopAddressViewHolder.getDistrictId();
+        Integer postalCodeId = Integer.valueOf(postalCode);
+        shopOpenDomainPresenter.onSubmitCreateShop(shopName, shopDomain, districtId, postalCodeId);
     }
 
     public void clearFocus() {

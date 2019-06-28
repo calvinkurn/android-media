@@ -121,7 +121,6 @@ import com.tokopedia.core.router.loyaltytokopoint.ILoyaltyRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
-import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.share.DefaultShare;
@@ -310,6 +309,7 @@ import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
+import com.tokopedia.seller.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
@@ -397,11 +397,8 @@ import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transaction.others.CreditCardFingerPrintUseCase;
-import com.tokopedia.transaction.purchase.activity.PurchaseActivity;
-import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
-import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
+import com.tokopedia.seller.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
-import com.tokopedia.transaction.wallet.WalletActivity;
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.response.addtocart.AddToCartDataResponse;
 import com.tokopedia.transactiondata.entity.response.cod.Data;
@@ -429,7 +426,6 @@ import javax.inject.Inject;
 import io.hansel.hanselsdk.Hansel;
 import okhttp3.Interceptor;
 import okhttp3.Response;
-import permissions.dispatcher.PermissionRequest;
 import retrofit2.Converter;
 import rx.Observable;
 import rx.functions.Func1;
@@ -838,15 +834,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goToWallet(Context context, String url) {
-        Bundle bundle = new Bundle();
-        bundle.putString(WalletActivity.EXTRA_URL, url);
-        Intent intent = new Intent(context, WalletActivity.class);
-        intent.putExtras(bundle);
-        context.startActivity(intent);
-    }
-
-    @Override
     public void goToCreateMerchantRedirect(Context context) {
         Intent intent = RedirectCreateShopActivity.getCallingIntent(context);
         context.startActivity(intent);
@@ -1040,6 +1027,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent getOrderHistoryIntent(Context context, String orderId) {
+        return OrderHistoryActivity.createInstance(context, orderId, 1);
+    }
+
+    @Override
     public Intent getBrandsWebViewIntent(Context context, String url) {
         return BrandsWebViewActivity.newInstance(context, url);
     }
@@ -1223,12 +1215,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void goToUserPaymentList(Activity activity) {
         activity.startActivity(PaymentSettingInternalRouter.getSettingListPaymentActivityIntent(activity));
-    }
-
-    @Override
-    public void goToOrderHistory(Context context, String orderId, int userMode) {
-        Intent intent = OrderHistoryActivity.createInstance(context, orderId, userMode);
-        context.startActivity(intent);
     }
 
     @Override
@@ -1940,11 +1926,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent checkoutModuleRouterGetTransactionSummaryIntent() {
-        return TransactionPurchaseRouter.createIntentTxSummary(getAppContext());
-    }
-
-    @Override
     public void checkoutModuleRouterResetBadgeCart() {
         CartBadgeNotificationReceiver.resetBadgeCart(getAppContext());
     }
@@ -1981,14 +1962,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goToPurchasePage(Activity activity) {
-        activity.startActivity(PurchaseActivity.newInstance(activity));
-        if (!(activity instanceof MainParentActivity)) {
-            activity.finish();
-        }
-    }
-
-    @Override
     public boolean checkoutModuleRouterGetEnableFingerprintPayment() {
         return getEnableFingerprintPayment();
     }
@@ -2019,6 +1992,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .setType(LinkerData.SHOP_TYPE)
                 .setName(getString(R.string.message_share_shop))
                 .setTextContent(shareLabel)
+                .setCustMsg(shareLabel)
                 .setUri(shopUrl)
                 .setId(shopId)
                 .build();
@@ -2868,7 +2842,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 CLICK_PDP,
                 PRODUCT_DETAIL_PAGE,
-                "click - review gallery on review list",
+                "click - review gallery on rating list",
                 String.format(
                         "product_id: %s - review_id : %s",
                         productId,
@@ -2906,10 +2880,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     public void onAppsFlyerInit() {
         TkpdAppsFlyerMapper.getInstance(this).mapAnalytics();
-    }
-
-    public void instabugCaptureUserStep(Activity activity, MotionEvent me) {
-        InstabugInitalize.dispatchTouchEvent(activity, me);
     }
 
     @Override
@@ -3167,4 +3137,5 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         }
         return baseDaggerFragment;
     }
+
 }

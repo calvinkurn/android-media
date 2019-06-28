@@ -256,7 +256,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         }
     }
 
-    private fun onSuccessGetInfo(): (ChannelInfoViewModel) -> Unit {
+    private fun onSuccessGetInfoFirstTime(): (ChannelInfoViewModel) -> Unit {
         return {
             performanceMonitoring.stopTrace()
             onToolbarEnabled(true)
@@ -269,9 +269,23 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
             viewState.onSuccessGetInfoFirstTime(it, childFragmentManager)
             saveGCTokenToCache(it.groupChatToken)
             channelInfoViewModel = it
-            presenter.openWebSocket(userSession, it.channelId, it.groupChatToken, it.settingGroupChat)
+            presenter.openWebSocket(userSession, it.channelId, it.groupChatToken, it.settingGroupChat, false)
             setExitDialog(it.exitMessage)
 
+        }
+    }
+
+    private fun onSuccessGetInfo(): (ChannelInfoViewModel) -> Unit {
+        return {
+            presenter.getDynamicButtons(channelInfoViewModel.channelId, onSuccessGetDynamicButtons(),
+                    onErrorGetDynamicButtons())
+            presenter.getStickyComponents(channelInfoViewModel.channelId,
+                    onSuccessGetStickyComponent(), onErrorGetStickyComponent())
+
+            viewState.onSuccessGetInfo(it, childFragmentManager)
+            saveGCTokenToCache(it.groupChatToken)
+            channelInfoViewModel = it
+            setExitDialog(it.exitMessage)
         }
     }
 
@@ -305,7 +319,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun onRetryGetInfo() {
-        presenter.getPlayInfo(channelInfoViewModel.channelId, onSuccessGetInfo(), onErrorGetInfo(), onNoInternetConnection())
+        presenter.getPlayInfo(channelInfoViewModel.channelId, onSuccessGetInfoFirstTime(), onErrorGetInfo(), onNoInternetConnection())
     }
 
     private fun setExitDialog(exitMessage: ExitMessage?) {
@@ -455,8 +469,11 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         return (activity?.applicationContext as GroupChatModuleRouter).getInboxChannelsIntent(activity)
     }
 
-    override fun onOpenWebSocket() {
+    override fun onOpenWebSocket(needRefreshInfo: Boolean) {
         snackBarWebSocket?.dismiss()
+        if(needRefreshInfo) {
+            refreshInfo()
+        }
     }
 
     override fun onTotalViewChanged(participantViewModel: ParticipantViewModel) {
@@ -567,7 +584,8 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                                 userSession,
                                 channelInfo.channelId,
                                 channelInfo.groupChatToken,
-                                channelInfo.settingGroupChat
+                                channelInfo.settingGroupChat,
+                                true
                         )
                         setSnackBarConnectingWebSocket()
                     }
@@ -584,6 +602,10 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     private fun loadFirstTime() {
+        presenter.getPlayInfo(channelInfoViewModel.channelId, onSuccessGetInfoFirstTime(), onErrorGetInfo(), onNoInternetConnection())
+    }
+
+    private fun refreshInfo() {
         presenter.getPlayInfo(channelInfoViewModel.channelId, onSuccessGetInfo(), onErrorGetInfo(), onNoInternetConnection())
     }
 
@@ -654,7 +676,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         viewState.autoAddSprintSale()
 
         viewState.getChannelInfo()?.let {
-            presenter.openWebSocket(userSession, it.channelId, it.groupChatToken, it.settingGroupChat)
+            presenter.openWebSocket(userSession, it.channelId, it.groupChatToken, it.settingGroupChat, true)
         }
 
         viewState.autoPlayVideo()
