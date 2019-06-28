@@ -190,7 +190,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
                             pb_buy_now.hide()
                             if(result.containsKey(CART_ID) && result[CART_ID].toString().isEmpty()){
                                 showToastError(Throwable(result[MESSAGE].toString()))
-                            }else{
+                            }else if(result.containsKey(CART_ID) && result[CART_ID].toString().isNotEmpty()){
                                 goToCart()
                             }
                         },
