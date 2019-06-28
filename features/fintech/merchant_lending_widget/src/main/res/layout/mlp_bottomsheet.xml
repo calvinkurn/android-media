@@ -1,64 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="320dp"
-    android:layout_height="205dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/iv_cancel"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/ic_action_x"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
         android:layout_marginLeft="@dimen/dp_20"
-        />
+        android:layout_marginTop="@dimen/dp_16"
+        android:src="@drawable/ic_action_x"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_title_bottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:textColor="#f531353b"
-        android:lineSpacingExtra="6sp"
-        android:layout_marginLeft="12dp"
+        android:layout_marginLeft="@dimen/dp_12"
+        android:lineSpacingExtra="@dimen/sp_6"
         android:text="Menunggu Proses Verifikasi"
-        app:layout_constraintStart_toEndOf="@id/iv_cancel"
-        app:layout_constraintTop_toTopOf="@id/iv_cancel"
+        android:textColor="#f531353b"
+        android:textSize="@dimen/dp_18"
         app:layout_constraintBottom_toBottomOf="@id/iv_cancel"
-        />
+        app:layout_constraintStart_toEndOf="@id/iv_cancel"
+        app:layout_constraintTop_toTopOf="@id/iv_cancel" />
+
     <TextView
         android:id="@+id/tv_detail_bottom"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:textColor="#ae31353b"
-        android:lineSpacingExtra="6sp"
-        app:layout_constraintTop_toBottomOf="@id/iv_cancel"
-        app:layout_constraintStart_toStartOf="@id/iv_cancel"
-        android:layout_marginTop="21dp"
+        android:layout_marginTop="@dimen/dp_16"
+        android:lineSpacingExtra="@dimen/sp_6"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_20"
         android:text="Pengajuan sedang kami proses. Lama proses verifikasi maksimum 1x24 jam sejak dokumen dikirim"
-        />
+        android:textColor="#ae31353b"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintStart_toStartOf="@id/iv_cancel"
+        app:layout_constraintTop_toBottomOf="@id/tv_title_bottom" />
 
-        <Button
-            android:id="@+id/button_bottomsheet"
-            android:layout_marginTop="@dimen/dp_24"
-            android:layout_width="288dp"
-            android:layout_height="40dp"
-            android:text="Saya Yakin"
-            android:layout_weight="1"
-            android:padding="@dimen/dp_11"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_detail_bottom"
-            android:background="@drawable/bg_button_green"
-            android:layout_marginRight="@dimen/dp_16"
-            android:textColor="@color/white"
-            android:layout_marginBottom="28dp"
-            />
+    <Button
+        android:id="@+id/button_bottomsheet"
+        android:layout_width="288dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginRight="@dimen/dp_16"
+        android:background="@drawable/bg_button_green"
+        android:layout_marginBottom="@dimen/dp_20"
+        android:text="Saya Yakin"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_detail_bottom" />
 
 
 </android.support.constraint.ConstraintLayout>

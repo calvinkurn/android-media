@@ -36,5 +36,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+
     testImplementation rootProject.ext.testDependencies.assertJ
 }

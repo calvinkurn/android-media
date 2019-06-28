@@ -4,8 +4,8 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
-import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +20,9 @@ import com.tokopedia.mlp.di.MerchantLendingUseCaseModule
 import com.tokopedia.mlp.merchantViewModel.MerchantLendingViewModel
 import kotlinx.android.synthetic.main.mlp_widget_container.*
 import javax.inject.Inject
+import android.support.v7.widget.SimpleItemAnimator
+import android.transition.TransitionManager
+
 
 class MerchantLendingFragment : BaseDaggerFragment() {
 
@@ -33,8 +36,9 @@ class MerchantLendingFragment : BaseDaggerFragment() {
     @Inject
     lateinit var merchantLendingViewModel: MerchantLendingViewModel
 
-    private var widgetList = ArrayList<WidgetsItem>()
+    private val widgetList=ArrayList<WidgetsItem>()
 
+    private var isExpanded: Boolean = false
 
     override fun getScreenName(): String {
         return "MerchantLendingFragment"
@@ -55,39 +59,62 @@ class MerchantLendingFragment : BaseDaggerFragment() {
 
         super.onViewCreated(view, savedInstanceState)
         initViewContainer()
-        //   initView()
         initViewModel()
         observeData()
+        checkExpanded()
 
     }
 
-    private fun initViewContainer() {
-        val linearLayoutmanager = LinearLayoutManager(context)
+    private fun checkExpanded() {
+        iv_collapsewidget.setOnClickListener {
 
-        val boxAdapter = MLPWidgetAdapter(widgetList, this.context!!)
-        widget_container.layoutManager = linearLayoutmanager
+            isExpanded = !isExpanded;
+            if (isExpanded) {
+                iv_collapsewidget.animate().rotation(180f).duration = 300
+               if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    TransitionManager.beginDelayedTransition(widget_container)
+                }
+
+            } else {
+                iv_collapsewidget.animate().rotation(0f).duration = 300
+            }
+
+
+            val mlpadapter = widget_container.adapter as MLPWidgetAdapter
+            mlpadapter.isexpanded = isExpanded
+            widget_container.adapter.notifyDataSetChanged()
+        }
+    }
+
+    private fun initViewContainer() {
+        (widget_container.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = true
+
+        val linearLayoutManager = LinearLayoutManager(context)
+        val boxAdapter = MLPWidgetAdapter(widgetList, this.context!!, isExpanded)
+        widget_container.layoutManager = linearLayoutManager
         widget_container.adapter = boxAdapter
     }
 
     fun initViewModel() {
         merchantLendingViewModel = ViewModelProviders.of(this, viewModelFactory).get(MerchantLendingViewModel::class.java)
-        merchantLendingViewModel.bound()
+        merchantLendingViewModel.executeUseCase()
     }
 
     fun observeData() {
-        merchantLendingViewModel.getCategoryList().observe(this, Observer<LeWidgetData> {
+        merchantLendingViewModel.getCategoryList().observe(this, Observer{leWidgetData->
 
-            val lengthDataLeWidget: Int = it?.leWidget?.widgets?.size!!
+            leWidgetData?.leWidget?.widgets?.let{
+                val lengthDataLeWidget: Int = it.size
 
-            for (widgetNo in 0 until lengthDataLeWidget) {
+                for (widgetNo in 0 until lengthDataLeWidget) {
 
-                it.leWidget.widgets.let {
-                    widgetList.clear()
-                    widgetList.addAll(it as ArrayList<WidgetsItem>)
-                    widget_container.adapter.notifyDataSetChanged()
+                           widgetList.clear()
+                           widgetList.addAll(it as List<WidgetsItem>)
+                           widget_container.adapter.notifyDataSetChanged()
 
-                }
-            }
+                       }
+
+                    }
         })
     }
 

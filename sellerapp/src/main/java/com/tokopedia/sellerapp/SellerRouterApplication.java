@@ -118,6 +118,7 @@ import com.tokopedia.logisticuploadawb.ILogisticUploadAwbRouter;
 import com.tokopedia.merchantvoucher.MerchantVoucherModuleRouter;
 import com.tokopedia.mitratoppers.MitraToppersRouter;
 import com.tokopedia.mitratoppers.MitraToppersRouterInternal;
+import com.tokopedia.mlp.router.MLPRouter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.service.AccountsService;
@@ -270,6 +271,7 @@ public abstract class SellerRouterApplication extends MainApplication
         LinkerRouter,
         CharacterPerMinuteInterface,
         ResolutionRouter,
+        MLPRouter,
         IAddressRouter {
 
     protected RemoteConfig remoteConfig;
@@ -1045,6 +1047,12 @@ public abstract class SellerRouterApplication extends MainApplication
         } else {
             context.startActivity(SellerappWebViewActivity.createIntent(context, ApplinkConst.WebViewUrl.SALDO_DETAIL));
         }
+    }
+
+    @NotNull
+    @Override
+    public void startMLPWebViewActivity(Context context, String url) {
+        context.startActivity(SellerappWebViewActivity.createIntent(context, url));
     }
 
     @Override

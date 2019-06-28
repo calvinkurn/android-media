@@ -1,16 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-  >
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/widget_container"
-        android:layout_width="match_parent"
+    android:background="@color/white">
+
+
+    <TextView
+        android:id="@+id/tv_title_widget"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:text="Layanan Finansial"
+        android:textSize="17sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-    </android.support.v7.widget.RecyclerView>
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+
+        android:id="@+id/iv_collapsewidget"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginRight="@dimen/dp_24"
+        android:padding="@dimen/dp_4"
+        android:src="@drawable/ic_arrow_down_grey"
+        app:layout_constraintBottom_toBottomOf="@id/tv_title_widget"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_title_widget" />
+
+    <LinearLayout
+        android:id="@+id/ll_recyclercontainer"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title_widget">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/widget_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </android.support.v7.widget.RecyclerView>
+
+    </LinearLayout>
+
 
 </android.support.constraint.ConstraintLayout>

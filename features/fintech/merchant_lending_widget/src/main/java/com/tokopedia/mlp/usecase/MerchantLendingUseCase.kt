@@ -13,26 +13,14 @@ import rx.Observable
 import javax.inject.Inject
 
 class MerchantLendingUseCase @Inject constructor(private val context: Context,
-                                                 private val graphqlUseCase: GraphqlUseCase/*,
-                                                 private val rawQueries: Map<String, String>*/)
-    : UseCase<LeWidgetData>() {
+                                                 private val graphqlUseCase: GraphqlUseCase
+) : UseCase<LeWidgetData?>() {
 
 
-/*
-
-    fun createRequestParams(merchantID: Int): RequestParams {
-        val requestParams = RequestParams.create()
-        requestParams.putInt("merchantID", merchantID)
-        return requestParams
-    }
-
-*/
-
-
-    override fun createObservable(requestParams: RequestParams?): Observable<LeWidgetData> {
+    override fun createObservable(requestParams: RequestParams?): Observable<LeWidgetData?> {
 
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
-                R.raw.merchant_lending_query_contract)/*rawQueries[BrowseRawQueryKeyConstant.CATEGORY_LIST]*/, LeWidgetData::class.java, false)
+                R.raw.merchant_lending_query_contract), LeWidgetData::class.java, false)
         graphqlUseCase.clearRequest()
 
         graphqlUseCase.addRequest(graphqlRequest)
