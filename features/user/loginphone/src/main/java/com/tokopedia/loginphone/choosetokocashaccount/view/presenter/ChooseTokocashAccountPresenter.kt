@@ -74,6 +74,7 @@ constructor(private val getAccountsListUseCase: GetAccountsListUseCase,
                 view.onSuccessGetUserInfo(),
                 view.onErrorGetUserInfo(),
                 view.onGoToCreatePassword(),
-                view.onGoToPhoneVerification()))
+                view.onGoToPhoneVerification(),
+                false))
     }
 }

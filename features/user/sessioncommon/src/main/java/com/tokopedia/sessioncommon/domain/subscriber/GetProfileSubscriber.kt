@@ -2,8 +2,6 @@ package com.tokopedia.sessioncommon.domain.subscriber
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.network.refreshtoken.EncoderDecoder
-import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
@@ -15,7 +13,8 @@ class GetProfileSubscriber(val userSession: UserSessionInterface,
                            val onSuccessGetProfile: (pojo: ProfilePojo) -> Unit,
                            val onErrorGetProfile: (e: Throwable) -> Unit,
                            val onGoToCreatePassword: (fullName : String, userId : String) -> Unit,
-                           val onGoToPhoneVerification : () -> Unit) :
+                           val onGoToPhoneVerification : () -> Unit,
+                           private val canGoToCreatePassword : Boolean = true) :
         Subscriber<GraphqlResponse>() {
 
     override fun onNext(response: GraphqlResponse) {
@@ -26,7 +25,7 @@ class GetProfileSubscriber(val userSession: UserSessionInterface,
                 && pojo.profileInfo.userId!= "0") {
             saveProfileData(pojo)
             when{
-                shouldGoToCreatePassword(pojo) -> onGoToCreatePassword(pojo.profileInfo.fullName, pojo.profileInfo.userId)
+                shouldGoToCreatePassword(pojo, canGoToCreatePassword) -> onGoToCreatePassword(pojo.profileInfo.fullName, pojo.profileInfo.userId)
                 shouldGoToPhoneVerification(pojo) -> onGoToPhoneVerification()
                 else -> onSuccessGetProfile(pojo)
             }
@@ -44,9 +43,9 @@ class GetProfileSubscriber(val userSession: UserSessionInterface,
         return false
     }
 
-    private fun shouldGoToCreatePassword(pojo: ProfilePojo?): Boolean {
+    private fun shouldGoToCreatePassword(pojo: ProfilePojo?, canGoToCreatePassword: Boolean): Boolean {
         pojo?.run{
-           return !profileInfo.isCreatedPassword
+           return canGoToCreatePassword && !profileInfo.isCreatedPassword
         }
         return false
     }

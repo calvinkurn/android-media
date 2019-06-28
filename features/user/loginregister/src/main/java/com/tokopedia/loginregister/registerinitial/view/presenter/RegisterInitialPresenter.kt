@@ -147,8 +147,9 @@ class RegisterInitialPresenter @Inject constructor(
         getProfileUseCase.execute(GetProfileSubscriber(userSession,
                 view.onSuccessGetUserInfo(),
                 view.onErrorGetUserInfo(),
-                view.onGoToCreatePassword(shouldGoToCreatePassword),
-                view.onGoToPhoneVerification()))
+                view.onGoToCreatePassword(),
+                view.onGoToPhoneVerification(),
+                shouldGoToCreatePassword))
     }
 
     override fun getTickerInfo() {

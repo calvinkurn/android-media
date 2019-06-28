@@ -63,7 +63,7 @@ interface RegisterInitialContract {
 
         fun onErrorGetUserInfo(): (e: Throwable) -> Unit
 
-        fun onGoToCreatePassword(shouldGoToCreatePassword: Boolean): (fullName: String, userId: String) -> Unit
+        fun onGoToCreatePassword(): (fullName: String, userId: String) -> Unit
 
         fun onGoToPhoneVerification(): () -> Unit
 

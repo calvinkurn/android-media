@@ -757,19 +757,16 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         }
     }
 
-    override fun onGoToCreatePassword(shouldGoToCreatePassword: Boolean): (fullName: String, userId: String) -> Unit {
+    override fun onGoToCreatePassword(): (fullName: String, userId: String) -> Unit {
         return { fullName: String, userId: String ->
 
-            if (shouldGoToCreatePassword) {
                 activity?.let {
                     val intent = (it.applicationContext as ApplinkRouter).getApplinkIntent(activity, ApplinkConst.CREATE_PASSWORD)
                     intent.putExtra("name", fullName)
                     intent.putExtra("user_id", userId)
                     startActivityForResult(intent, REQUEST_CREATE_PASSWORD)
                 }
-            } else {
-                onSuccessRegister()
-            }
+
         }
     }
 
