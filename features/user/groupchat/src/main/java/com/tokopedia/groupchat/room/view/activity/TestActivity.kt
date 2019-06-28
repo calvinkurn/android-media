@@ -20,7 +20,7 @@ class TestActivity: AppCompatActivity() {
         setContentView(R.layout.activity_test)
 
         sendViewToBack(playerView)
-        val sourceMedia = "https://scontent-sin6-2.cdninstagram.com/vp/23547017e19e62618f3ae1cf42ba4e41/5D14312A/t50.12441-16/50237559_1201746266639073_6724633886427853004_n.mp4?_nc_ht=scontent-sin6-2.cdninstagram.com"
+        val sourceMedia = "https://scontent-sin6-1.cdninstagram.com/vp/00403782e5ccf549a41bb927b23d1d6b/5D188F35/t50.12441-16/30925297_2055884587986768_3284506524561943004_n.mp4?_nc_ht=scontent-sin6-1.cdninstagram.com"
         Toast.makeText(this, intent?.extras?.getString(EXTRA_CHANNEL_URL), Toast.LENGTH_LONG).show()
         TkpdVideoPlayer.Builder()
                 .transaction(R.id.playerView, supportFragmentManager)
