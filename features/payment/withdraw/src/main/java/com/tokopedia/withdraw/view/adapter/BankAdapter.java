@@ -18,7 +18,6 @@ import com.tokopedia.withdraw.view.listener.WithdrawContract;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 
 /**
@@ -98,8 +97,10 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
         public ViewHolder(View itemView) {
             super(itemView);
             text = itemView.findViewById(R.id.text);
-            text.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
-                    (text.getContext(), R.drawable.ic_add_round), null, null , null);
+            if (text != null) {
+                text.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                        (itemView.getContext(), R.drawable.ic_add_round), null, null, null);
+            }
         }
     }
 
