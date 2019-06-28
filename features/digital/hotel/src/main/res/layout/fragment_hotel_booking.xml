@@ -165,16 +165,16 @@
                     app:fontSize="micro"
                     app:textViewTheme="lightSecondary" />
 
-                <!--<com.tokopedia.unifycomponents.ticker.Ticker-->
-                    <!--android:id="@+id/cancellation_policy_ticker"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_marginTop="@dimen/dp_16"-->
-                    <!--app:tickerType="announcement"-->
-                    <!--app:closeButtonVisibility="gone"-->
-                    <!--app:tickerShapeType="loose"-->
-                    <!--tools:titleText="@string/hotel_room_list_filter_free_cancelable"-->
-                    <!--tools:descriptionText="Jika melakukan pembatalan, kartu kredit tidak akan dipotong biaya apa pun."/>-->
+                <com.tokopedia.unifycomponents.ticker.Ticker
+                    android:id="@+id/cancellation_policy_ticker"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_16"
+                    app:tickerType="announcement"
+                    app:closeButtonVisibility="gone"
+                    app:tickerShapeType="loose"
+                    tools:titleText="@string/hotel_room_list_filter_free_cancelable"
+                    tools:descriptionText="Jika melakukan pembatalan, kartu kredit tidak akan dipotong biaya apa pun."/>
 
             </LinearLayout>
 
