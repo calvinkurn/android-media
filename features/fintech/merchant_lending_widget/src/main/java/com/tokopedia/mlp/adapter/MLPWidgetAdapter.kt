@@ -24,7 +24,7 @@ import kotlinx.android.synthetic.main.mlp_row_info.view.*
 class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Context, var isexpanded: Boolean) : RecyclerView.Adapter<MLPWidgetAdapter.ViewHolder>() {
 
 
-    var checkBottomSheetOpenState=false
+    var checkBottomSheetOpenState = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MLPWidgetAdapter.ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.fragment_merchant_lending, parent, false))
@@ -90,11 +90,6 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
 
         private fun renderSideToggleHeader(headerContent: Header, position: Int) {
 
-
-            /*itemView.flip_switch.visibility = View.VISIBLE
-            itemView.flip_switch.displayedChild = 0*/
-
-
             itemView.switch_enable.visibility = View.VISIBLE
 
             itemView.switch_enable.setOnCheckedChangeListener { _, isChecked ->
@@ -102,7 +97,7 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
                     headerContent.sideToggle?.url?.let {
 
                         if (!isChecked) {
-                            itemView.switch_enable.isChecked=false
+                            itemView.switch_enable.isChecked = false
                             openWebViewOrOpenBottomSheet(it, position, 2)
                         }
                     }
@@ -113,8 +108,6 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
 
         private fun renderSideTextHeader(headerContent: Header, position: Int) {
 
-            /*itemView.flip_switch.visibility = View.VISIBLE
-            itemView.flip_switch.displayedChild = 1*/
             itemView.text_side.setTextAndCheckShow(headerContent.sideText?.text)
             itemView.text_side.setOnClickListener {
 
@@ -188,9 +181,8 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
 
                         myView.text_body_title.setTextAndCheckShow(boxTitle)
 
-                        if ((!myView.text_body_title.isVisible))
-                        {
-                            myView.text_body_content.setPadding(0,8,0,8)
+                        if ((!myView.text_body_title.isVisible)) {
+                            myView.text_body_content.setPadding(0, 8, 0, 8)
                         }
                         myView.text_body_content.setTextAndCheckShow(boxContent)
                         myView.viewbody_background.visibility = View.VISIBLE
@@ -233,7 +225,7 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
             }
             closeableBottomSheetDialog.setContentView(view)
             closeableBottomSheetDialog.show()
-            checkBottomSheetOpenState=true
+            checkBottomSheetOpenState = true
             closeableBottomSheetDialog.setCanceledOnTouchOutside(true)
 
         }
@@ -274,7 +266,7 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
             } else {
 
                 val bottomSheetLength: Int = boxList[position].bottomSheet?.size!!
-                val bottomSheetItem=boxList[position].bottomSheet
+                val bottomSheetItem = boxList[position].bottomSheet
 
                 when (type) {
 

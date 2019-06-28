@@ -36,7 +36,7 @@ class MerchantLendingFragment : BaseDaggerFragment() {
     @Inject
     lateinit var merchantLendingViewModel: MerchantLendingViewModel
 
-    private val widgetList=ArrayList<WidgetsItem>()
+    private val widgetList = ArrayList<WidgetsItem>()
 
     private var isExpanded: Boolean = false
 
@@ -71,7 +71,7 @@ class MerchantLendingFragment : BaseDaggerFragment() {
             isExpanded = !isExpanded;
             if (isExpanded) {
                 iv_collapsewidget.animate().rotation(180f).duration = 300
-               if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                     TransitionManager.beginDelayedTransition(widget_container)
                 }
 
@@ -101,20 +101,20 @@ class MerchantLendingFragment : BaseDaggerFragment() {
     }
 
     fun observeData() {
-        merchantLendingViewModel.getCategoryList().observe(this, Observer{leWidgetData->
+        merchantLendingViewModel.getCategoryList().observe(this, Observer { leWidgetData ->
 
-            leWidgetData?.leWidget?.widgets?.let{
+            leWidgetData?.leWidget?.widgets?.let {
                 val lengthDataLeWidget: Int = it.size
 
                 for (widgetNo in 0 until lengthDataLeWidget) {
 
-                           widgetList.clear()
-                           widgetList.addAll(it as List<WidgetsItem>)
-                           widget_container.adapter.notifyDataSetChanged()
+                    widgetList.clear()
+                    widgetList.addAll(it as List<WidgetsItem>)
+                    widget_container.adapter.notifyDataSetChanged()
 
-                       }
+                }
 
-                    }
+            }
         })
     }
 

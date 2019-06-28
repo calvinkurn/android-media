@@ -2,6 +2,6 @@ package com.tokopedia.mlp.router
 
 import android.content.Context
 
-interface MLPRouter{
+interface MLPRouter {
     fun startMLPWebViewActivity(context: Context, url: String)
 }
