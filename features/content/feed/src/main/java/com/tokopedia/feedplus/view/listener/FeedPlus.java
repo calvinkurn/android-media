@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain;
 import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -74,7 +75,7 @@ public interface FeedPlus {
 
         void onInfoClicked();
 
-        void onSuccessGetFeedFirstPage(ArrayList<Visitable> listFeed);
+        void onSuccessGetFeedFirstPage(ArrayList<Visitable> listFeed, WhitelistViewModel whitelistViewModel);
 
         void onErrorGetFeedFirstPage(String errorMessage);
 

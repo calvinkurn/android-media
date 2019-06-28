@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rl_item_duration_container"
     android:layout_width="match_parent"
@@ -107,7 +108,7 @@
             android:layout_alignBaseline="@+id/tv_duration"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:src="@drawable/ic_check" />
+            app:srcCompat="@drawable/ic_check" />
 
     </RelativeLayout>
 

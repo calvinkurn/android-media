@@ -29,14 +29,16 @@ import com.tokopedia.transaction.orders.orderdetails.data.DataResponseCommon;
 import com.tokopedia.transaction.orders.orderdetails.data.DetailsData;
 import com.tokopedia.transaction.orders.orderdetails.data.Flags;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
+import com.tokopedia.transaction.orders.orderdetails.data.MetaDataInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.OrderDetails;
 import com.tokopedia.transaction.orders.orderdetails.data.PayMethod;
 import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
 import com.tokopedia.transaction.orders.orderdetails.domain.FinishOrderUseCase;
 import com.tokopedia.transaction.orders.orderdetails.domain.PostCancelReasonUseCase;
+import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
 import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
-import com.tokopedia.transaction.purchase.detail.model.buyagain.ResponseBuyAgain;
+import com.tokopedia.transaction.common.sharedata.buyagain.ResponseBuyAgain;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 
@@ -72,6 +74,10 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     OrderListDetailContract.ActionInterface view;
     String orderCategory;
     OrderDetails orderDetails;
+    @Inject
+    OrderListAnalytics orderListAnalytics;
+    String fromPayment = null;
+    String orderId;
 
     private String Insurance_File_Name = "E-policy Asuransi";
     public String pdfUri = " ";
@@ -87,6 +93,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             return;
 
         this.orderCategory = orderCategory;
+        this.fromPayment = fromPayment;
+        this.orderId = orderId;
         getView().showProgressBar();
         GraphqlRequest graphqlRequest;
         Map<String, Object> variables = new HashMap<>();
@@ -499,5 +507,11 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
         request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, Insurance_File_Name+".pdf");
         downloadManager.enqueue(request);
+    }
+
+    public void sendThankYouEvent(MetaDataInfo metaDataInfo) {
+        if ("true".equalsIgnoreCase(this.fromPayment)) {
+            orderListAnalytics.sendThankYouEvent(metaDataInfo.getEntityProductId(), metaDataInfo.getEntityProductName(), metaDataInfo.getTotalTicketPrice(), metaDataInfo.getTotalTicketCount(), orderId);
+        }
     }
 }
