@@ -35,7 +35,6 @@ class PostTagAdapter(private val itemList: List<PostTagItem>,
                      private val feedType: String)
     : RecyclerView.Adapter<PostTagAdapter.Holder>() {
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         return Holder(LayoutInflater.from(parent.context).inflate(R.layout.item_producttag_list, parent, false))
     }
@@ -50,6 +49,9 @@ class PostTagAdapter(private val itemList: List<PostTagItem>,
     }
 
     class Holder(itemView: View): RecyclerView.ViewHolder(itemView) {
+
+        private val VALUE_CARD_SIZE = 0.75
+
         private lateinit var productLayout: CardView
         private lateinit var productImage: ImageView
         private lateinit var productPrice: TextView
@@ -76,7 +78,7 @@ class PostTagAdapter(private val itemList: List<PostTagItem>,
             productNameSection = itemView.findViewById(R.id.productNameSection)
             productName = itemView.findViewById(R.id.productName)
             widgetRating = itemView.findViewById(R.id.widgetRating)
-            productImage.loadImageRounded(item.thumbnail, 8f)
+            productImage.loadImageRounded(item.thumbnail, 10f)
             productPrice.text = item.price
             productTag.visibility = View.GONE
             productTagBackground.visibility = View.GONE
@@ -87,7 +89,11 @@ class PostTagAdapter(private val itemList: List<PostTagItem>,
             productName.text = item.text
             productNameSection.setOnClickListener(
                     getItemClickNavigationListener(listener, positionInFeed, item, itemPosition))
-            widgetRating.rating = (item.rating / 20)
+            if (item.rating == 0) {
+                widgetRating.visibility = View.GONE
+            } else {
+                widgetRating.rating = (item.rating / 20).toInt()
+            }
             if (!feedType.equals(SOURCE_DETAIL) && needToResize) {
                 container = itemView.findViewById(R.id.container)
                 container.viewTreeObserver.addOnGlobalLayoutListener(
@@ -103,7 +109,7 @@ class PostTagAdapter(private val itemList: List<PostTagItem>,
                                 val displayMetrics = DisplayMetrics()
                                 val windowmanager = itemView.context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
                                 windowmanager.getDefaultDisplay().getMetrics(displayMetrics)
-                                container.layoutParams.width = (displayMetrics.widthPixels * 0.75).toInt()
+                                container.layoutParams.width = (displayMetrics.widthPixels * VALUE_CARD_SIZE).toInt()
                                 container.requestLayout()
                             }
                         }
