@@ -115,6 +115,7 @@
     <TextView
         android:id="@+id/from"
         android:layout_marginTop="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="12sp"
@@ -137,6 +138,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="16sp"
+        android:paddingLeft="@dimen/dp_10"
         android:textStyle="bold"
         android:textColor="#2d263b"
         app:layout_constraintStart_toEndOf="@+id/ic_ovo"
@@ -146,6 +148,7 @@
         android:id="@+id/num_sender"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/dp_10"
         android:textSize="14sp"
         android:textColor="#2d263b"
         app:layout_constraintStart_toEndOf="@+id/ic_ovo"
@@ -158,6 +161,7 @@
         android:layout_height="wrap_content"
         android:textSize="12sp"
         android:textColor="#6b767e"
+        android:paddingBottom="@dimen/dp_6"
         android:text="Transfer ke"
         android:layout_marginLeft="@dimen/dp_26"
         app:layout_constraintStart_toStartOf="parent"
@@ -174,6 +178,7 @@
     <TextView
         android:id="@+id/name_rcvr"
         android:textStyle="bold"
+        android:paddingLeft="@dimen/dp_10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="16sp"
@@ -184,6 +189,7 @@
     <TextView
         android:id="@+id/num_rcvr"
         android:layout_width="wrap_content"
+        android:paddingLeft="@dimen/dp_10"
         android:layout_height="wrap_content"
         android:textSize="14sp"
         android:textColor="#2d263b"
