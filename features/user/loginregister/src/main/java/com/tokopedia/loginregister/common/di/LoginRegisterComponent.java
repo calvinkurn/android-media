@@ -2,6 +2,7 @@ package com.tokopedia.loginregister.common.di;
 
 import android.content.Context;
 
+import android.content.res.Resources;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
@@ -27,7 +28,7 @@ import retrofit2.Retrofit;
  */
 @LoginRegisterScope
 @SessionCommonScope
-@Component(modules = {LoginRegisterModule.class, SessionModule.class}, dependencies = BaseAppComponent.class)
+@Component(modules = {LoginRegisterModule.class, SessionModule.class}, dependencies = {BaseAppComponent.class})
 public interface LoginRegisterComponent {
 
     @ApplicationContext
@@ -65,5 +66,7 @@ public interface LoginRegisterComponent {
     LoginRegisterAnalytics provideLoginRegisterAnalytics();
 
     RegisterAnalytics provideRegisterAnalytics();
+
+    Resources provideResources();
 
 }

@@ -15,7 +15,6 @@ import com.moengage.pushbase.push.PushMessageListener;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.tkpd.R;
 
-
 public class CustomPushListener extends PushMessageListener {
 
     static final String EXTRA_NOTIFICATION_ID = "extra_delete_notification_id";

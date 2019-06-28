@@ -121,7 +121,7 @@ class OnboardingActivity : BaseActivity() {
 
             override fun onPageSelected(position: Int) {
                 setIndicator(position)
-                currentPosition = position + 1
+                currentPosition = position
                 analytics.sendScreen(position)
 
             }
@@ -138,7 +138,7 @@ class OnboardingActivity : BaseActivity() {
         }
 
         skipButton.setOnClickListener {
-            analytics.eventOnboardingSkip(applicationContext, viewPager.currentItem + 1)
+            analytics.eventOnboardingSkip(applicationContext, viewPager.currentItem)
             finishOnboarding()
             RouteManager.route(this, ApplinkConst.HOME)
         }
@@ -261,7 +261,7 @@ class OnboardingActivity : BaseActivity() {
     private fun fetchFromRemoteConfig() {
         remoteConfig = FirebaseRemoteConfigImpl(this)
         remoteConfig.fetch(object : RemoteConfig.Listener {
-            override fun onComplete() {
+            override fun onComplete(rc: RemoteConfig?) {
                 if (slideCallBackList != null && slideCallBackList.isNotEmpty()) {
                     for (slideCallback in slideCallBackList) {
                         slideCallback.onResponse(remoteConfig)

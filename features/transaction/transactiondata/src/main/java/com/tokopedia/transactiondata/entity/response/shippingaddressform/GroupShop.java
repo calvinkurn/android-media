@@ -50,6 +50,9 @@ public class GroupShop {
     @SerializedName("has_promo_list")
     @Expose
     private boolean hasPromoList;
+    @SerializedName("save_state_flag")
+    @Expose
+    private boolean saveStateFlag;
 
     public List<String> getErrors() {
         return errors;
@@ -98,4 +101,8 @@ public class GroupShop {
     public String getCartString() { return cartString; }
 
     public boolean isHasPromoList() { return hasPromoList; }
+
+    public boolean isSaveStateFlag() {
+        return saveStateFlag;
+    }
 }

@@ -143,7 +143,7 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
                                     firebaseRemoteConfig.activateFetched();
                                 }
                                 if (listener != null) {
-                                    listener.onComplete();
+                                    listener.onComplete(FirebaseRemoteConfigImpl.this);
                                 }
                             }
                         })

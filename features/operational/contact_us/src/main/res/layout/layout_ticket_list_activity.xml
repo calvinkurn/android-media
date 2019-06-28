@@ -141,11 +141,10 @@
         app:layout_behavior="com.tokopedia.contactus.inboxticket2.view.behaviour.QuickHideBehaviour">
 
         <TextView
+            android:id="@+id/btn_filter_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_filter_list"
             android:drawablePadding="@dimen/dp_10"
-            android:drawableStart="@drawable/ic_filter_list"
             android:text="Filter"
             android:textColor="@color/black_70"
             android:textSize="@dimen/sp_13" />
