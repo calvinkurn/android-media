@@ -5,13 +5,8 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringGridViewHolder
-import com.tokopedia.home_recom.model.datamodel.TitleDataModel
-import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
-import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselItemDataModel
-import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselDataModel
-import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
+import com.tokopedia.home_recom.model.datamodel.*
 import com.tokopedia.home_recom.view.viewholder.ProductInfoViewHolder
-import com.tokopedia.home_recom.view.viewholder.RecommendationCarouselItemViewHolder
 import com.tokopedia.home_recom.view.viewholder.RecommendationCarouselViewHolder
 import com.tokopedia.home_recom.view.viewholder.RecommendationItemViewHolder
 import com.tokopedia.home_recom.view.viewholder.TitleViewHolder
