@@ -3,11 +3,11 @@ package com.tokopedia.topupbills.telco.view.fragment
 import android.app.Activity
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
-import android.content.ActivityNotFoundException
-import android.content.Intent
+import android.content.*
 import android.os.Bundle
 import android.os.Parcelable
 import android.provider.ContactsContract
+import android.support.design.widget.Snackbar
 import android.support.v4.widget.NestedScrollView
 import android.text.TextUtils
 import android.view.View
@@ -33,6 +33,7 @@ import com.tokopedia.topupbills.telco.view.viewmodel.TelcoCatalogMenuDetailViewM
 import com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
 import com.tokopedia.topupbills.telco.view.widget.DigitalPromoListWidget
 import com.tokopedia.topupbills.telco.view.widget.DigitalRecentTransactionWidget
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -265,11 +266,21 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
             promoListView.visibility = View.VISIBLE
             promoListView.setListener(object : DigitalPromoListWidget.ActionListener {
                 override fun onCopiedPromoCode(voucherCode: String) {
-                    Toast.makeText(activity, "Kode voucher telah di copy ke clipboard", Toast.LENGTH_LONG).show()
+                    val clipboard = activity!!.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    val clip = ClipData.newPlainText(
+                            CLIP_DATA_VOUCHER_CODE_DIGITAL, voucherCode
+                    )
+                    clipboard.primaryClip = clip
+                    view?.run {
+                        Toaster.showGreen(this,
+                                getString(R.string.digital_voucher_code_already_copied), Snackbar.LENGTH_LONG)
+                    }
                 }
 
                 override fun onClickItemPromo(telcoPromo: TelcoPromo) {
-                    //TODO route manager to item
+                    if (!TextUtils.isEmpty(telcoPromo.urlBannerPromo)) {
+                        RouteManager.route(activity, telcoPromo.urlBannerPromo)
+                    }
                 }
             })
             promoListView.setPromoList(promos)
@@ -290,5 +301,6 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
         val REQUEST_CODE_CONTACT_PICKER = 78
         val REQUEST_CODE_LOGIN = 1010
         val REQUEST_CODE_CART_DIGITAL = 1090
+        val CLIP_DATA_VOUCHER_CODE_DIGITAL = "digital_telco_clip_data_promo"
     }
 }
