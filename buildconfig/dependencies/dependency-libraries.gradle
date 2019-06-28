@@ -19,7 +19,7 @@ ext {
     tkpdBaseAdapterlVersion = '2.22'
     tkpdGraphViewVersion = '2.22'
 
-    unifyIconVersion = '0.0.2'
+    unifyIconVersion = '0.0.4'
     unifyPrinciplesVersion = '0.0.2'
     unifyComponentsVersion = '0.0.4'
 
