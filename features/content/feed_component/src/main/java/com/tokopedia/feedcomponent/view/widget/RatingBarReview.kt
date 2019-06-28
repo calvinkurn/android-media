@@ -17,7 +17,7 @@ import com.tokopedia.feedcomponent.R
 
 class RatingBarReview : BaseCustomView {
     private var numstars: Int = 0
-    private var rating: Int = 0
+    var rating: Int = 0
 
     private var ratingBar: RatingBar? = null
 
@@ -47,7 +47,7 @@ class RatingBarReview : BaseCustomView {
     override fun onFinishInflate() {
         super.onFinishInflate()
         setNumstars(numstars)
-        setRating(rating)
+        updateRating(rating)
     }
 
     private fun init() {
@@ -64,11 +64,7 @@ class RatingBarReview : BaseCustomView {
         ratingBar!!.numStars = numstars
     }
 
-    fun getRating(): Int {
-        return rating
-    }
-
-    fun setRating(rating: Int) {
+    fun updateRating(rating: Int) {
         this.rating = rating
         ratingBar!!.rating = rating.toFloat()
     }
