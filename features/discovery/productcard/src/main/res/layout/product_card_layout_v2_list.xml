@@ -111,7 +111,6 @@
             android:id="@+id/textViewSlashedPrice"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
-            android:layout_marginTop="@dimen/dp_4"
             android:layout_marginLeft="@dimen/dp_4"
             android:layout_marginStart="@dimen/dp_4"
             android:textColor="@color/product_card_slashed_price_text_color"
@@ -151,7 +150,6 @@
             android:layout_marginStart="@dimen/dp_8"
             android:visibility="gone"
             app:layout_constraintLeft_toRightOf="@id/imageProduct"
-            app:layout_constraintRight_toLeftOf="@id/buttonWishlist"
             app:layout_constraintTop_toBottomOf="@id/textViewPrice"
             android:orientation="horizontal" />
 
