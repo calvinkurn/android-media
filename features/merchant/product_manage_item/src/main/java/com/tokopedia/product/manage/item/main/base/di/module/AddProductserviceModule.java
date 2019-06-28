@@ -138,7 +138,13 @@ public class AddProductserviceModule {
 
     @AddProductServiceScope
     @Provides
-    ProductDraftDao provideProductDraftDao(@ApplicationContext Context context){
-        return ProductDraftDB.getInstance(context).getProductDraftDao();
+    ProductDraftDB provideProductDraftDb(@ApplicationContext Context context){
+        return ProductDraftDB.getInstance(context);
+    }
+
+    @AddProductServiceScope
+    @Provides
+    ProductDraftDao provideProductDraftDao(ProductDraftDB productDraftDB){
+        return productDraftDB.getProductDraftDao();
     }
 }

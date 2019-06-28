@@ -38,8 +38,14 @@ public class ProductDraftSaveBulkModule extends ProductAddModule {
 
     @ProductAddScope
     @Provides
-    ProductDraftDao provideProductDraftDao(@ApplicationContext Context context){
-        return ProductDraftDB.getInstance(context).getProductDraftDao();
+    ProductDraftDB provideProductDraftDb(@ApplicationContext Context context){
+        return ProductDraftDB.getInstance(context);
+    }
+
+    @ProductAddScope
+    @Provides
+    ProductDraftDao provideProductDraftDao(ProductDraftDB productDraftDB){
+        return productDraftDB.getProductDraftDao();
     }
 }
 

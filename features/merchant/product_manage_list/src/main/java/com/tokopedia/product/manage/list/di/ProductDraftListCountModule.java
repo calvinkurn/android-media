@@ -41,7 +41,13 @@ public class ProductDraftListCountModule{
 
     @ProductManageScope
     @Provides
-    ProductDraftDao provideProductDraftDao(@ApplicationContext Context context){
-        return ProductDraftDB.getInstance(context).getProductDraftDao();
+    ProductDraftDB provideProductDraftDb(@ApplicationContext Context context){
+        return ProductDraftDB.getInstance(context);
+    }
+
+    @ProductManageScope
+    @Provides
+    ProductDraftDao provideProductDraftDao(ProductDraftDB productDraftDB){
+        return productDraftDB.getProductDraftDao();
     }
 }

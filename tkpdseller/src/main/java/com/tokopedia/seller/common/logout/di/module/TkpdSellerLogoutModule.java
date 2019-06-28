@@ -58,8 +58,14 @@ public class TkpdSellerLogoutModule {
 
     @TkpdSellerLogoutScope
     @Provides
-    ProductDraftDao provideProductDraftDao(@ApplicationContext Context context){
-        return ProductDraftDB.getInstance(context).getProductDraftDao();
+    ProductDraftDB provideProductDraftDb(@ApplicationContext Context context){
+        return ProductDraftDB.getInstance(context);
+    }
+
+    @TkpdSellerLogoutScope
+    @Provides
+    ProductDraftDao provideProductDraftDao(ProductDraftDB productDraftDB){
+        return productDraftDB.getProductDraftDao();
     }
 
     @TkpdSellerLogoutScope
