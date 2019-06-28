@@ -95,5 +95,4 @@ internal class ProductNotification(applicationContext: Context, baseNotification
         )
     }
 
-
 }
