@@ -158,7 +158,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
                             RecommendationPageTracking.eventUserClickAddToCart(recommendationItem)
                             pb_add_to_cart.hide()
                             if(result.containsKey(STATUS) && !(result[STATUS] as Boolean)){
-                                showToastError(Throwable(result[MESSAGE].toString()))
+                                showToastError(MessageErrorException(result[MESSAGE].toString()))
                             }else{
                                 showToastSuccessWithAction(result[MESSAGE].toString(), getString(R.string.recom_see_cart)){
                                     RecommendationPageTracking.eventUserClickSeeToCart()
@@ -189,7 +189,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
                         success = { result ->
                             pb_buy_now.hide()
                             if(result.containsKey(STATUS) && !(result[STATUS] as Boolean)){
-                                showToastError(Throwable(result[MESSAGE].toString()))
+                                showToastError(MessageErrorException(result[MESSAGE].toString()))
                             }else if(result.containsKey(CART_ID) && result[CART_ID].toString().isNotEmpty()){
                                 goToCart()
                             }
