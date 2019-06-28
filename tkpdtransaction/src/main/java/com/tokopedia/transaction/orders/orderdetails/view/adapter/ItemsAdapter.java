@@ -144,7 +144,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                presenter.downloadPdf(url);
             }
         };
     }
@@ -267,10 +267,10 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
 
                 if (itemType == ITEM_EVENTS) {
-                    if (!TextUtils.isEmpty(metaDataInfo.getEntityPackages().get(0).getCity())) {
+                    if (metaDataInfo.getEntityPackages() != null && !TextUtils.isEmpty(metaDataInfo.getEntityPackages().get(0).getCity())) {
                         eventCity.setText(metaDataInfo.getEntityPackages().get(0).getCity());
                     }
-                    if (!TextUtils.isEmpty(metaDataInfo.getEntityPackages().get(0).getAddress())) {
+                    if (metaDataInfo.getEntityPackages() != null && !TextUtils.isEmpty(metaDataInfo.getEntityPackages().get(0).getAddress())) {
                         eventAddress.setText(metaDataInfo.getEntityPackages().get(0).getAddress());
                     }
 
@@ -497,6 +497,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         void openShowQRFragment(ActionButton actionButton, Items item);
 
         void setDetailTitle(String title);
+
     }
 
 }

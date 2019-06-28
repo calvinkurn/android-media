@@ -79,7 +79,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     String fromPayment = null;
     String orderId;
 
-    private String Insurance_File_Name = "E-policy Asuransi";
+    private String Insurance_File_Name = "Invoice";
     public String pdfUri = " ";
 
     @Inject
