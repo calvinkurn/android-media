@@ -35,7 +35,9 @@ android {
 }
 
 dependencies {
-    implementation rootProject.ext.analyticsDependencies.rapid7
+    implementation (rootProject.ext.analyticsDependencies.rapid7){
+        exclude group: 'com.jetbrains', module: 'annotations'
+    }
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.config)
 }
