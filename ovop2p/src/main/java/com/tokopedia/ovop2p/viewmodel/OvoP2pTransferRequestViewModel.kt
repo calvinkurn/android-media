@@ -30,14 +30,13 @@ class OvoP2pTransferRequestViewModel(application: Application) : AndroidViewMode
 
             override fun onError(e: Throwable) {
                 //stop loading
-                //show error
+                ovoP2pTransferRequestBaseMutableLiveData.value = null
             }
 
             override fun onNext(graphqlResponse: GraphqlResponse) {
                 val ovoP2pTransferRequestBase = graphqlResponse.getData<OvoP2pTransferRequestBase>(OvoP2pTransferRequestBase::class.java)
                 if (ovoP2pTransferRequestBase?.ovoP2pTransferRequest != null) {
                     ovoP2pTransferRequestBaseMutableLiveData.value = ovoP2pTransferRequestBase
-
                 }
             }
         }

@@ -33,6 +33,7 @@ class OvoP2pTrxnConfirmVM(application: Application) : AndroidViewModel(applicati
             }
 
             override fun onError(e: Throwable) {
+                txnConfirmMutableLiveData!!.value = null
             }
 
             override fun onNext(graphqlResponse: GraphqlResponse) {

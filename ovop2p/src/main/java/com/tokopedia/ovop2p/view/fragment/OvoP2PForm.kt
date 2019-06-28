@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.support.design.widget.Snackbar
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -18,7 +19,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.design.text.watcher.CurrencyTextWatcher
+import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.ovop2p.di.OvoP2pTransferComponent
 import com.tokopedia.ovop2p.model.OvoP2pTransferConfirmBase
@@ -29,34 +30,36 @@ import com.tokopedia.ovop2p.view.activity.AllContactsActivity
 import com.tokopedia.ovop2p.view.activity.OVOP2PThankyouActivity
 import com.tokopedia.ovop2p.view.activity.OvoP2pWebViewActivity
 import com.tokopedia.ovop2p.view.adapters.ContactsCursorAdapter
-import com.tokopedia.ovop2p.view.fragment.FragmentTransferError
+import com.tokopedia.ovop2p.view.fragment.TransferError
 import com.tokopedia.ovop2p.view.interfaces.ActivityListener
 import com.tokopedia.ovop2p.view.interfaces.LoaderUiListener
 import com.tokopedia.ovop2p.viewmodel.GetWalletBalanceViewModel
 import com.tokopedia.ovop2p.viewmodel.OvoP2pTransferRequestViewModel
 import com.tokopedia.ovop2p.viewmodel.OvoP2pTrxnConfirmVM
 
-class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQueryTextListener {
+class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQueryTextListener {
 
-    lateinit var searchView: SearchView
-    lateinit var saldoTextView: TextView
-    lateinit var trnsfrAmtEdtxtv: EditText
-    lateinit var msgEdtxtv: EditText
-    lateinit var proceedBtn: Button
-    lateinit var contactsImageView: ImageView
-    lateinit var searchNoHeader: TextView
-    lateinit var walletBalanceViewModel: GetWalletBalanceViewModel
-    lateinit var alertDialog: AlertDialog
-    lateinit var ovoP2pTransferRequestViewModel: OvoP2pTransferRequestViewModel
-    lateinit var ovoP2pTransferConfirmViewModel: OvoP2pTrxnConfirmVM
-    lateinit var trnsfrReqDataMap: HashMap<String, Any>
-    lateinit var amtErrorTxtv: TextView
-    private var rcvrPhnNo: String = ""
+    private lateinit var searchView: SearchView
+    private lateinit var saldoTextView: TextView
+    private lateinit var trnsfrAmtEdtxtv: EditText
+    private lateinit var msgEdtxtv: EditText
+    private lateinit var proceedBtn: Button
+    private lateinit var contactsImageView: ImageView
+    private lateinit var searchNoHeader: TextView
+    private lateinit var walletBalanceViewModel: GetWalletBalanceViewModel
+    private lateinit var alertDialog: AlertDialog
+    private lateinit var ovoP2pTransferRequestViewModel: OvoP2pTransferRequestViewModel
+    private lateinit var ovoP2pTransferConfirmViewModel: OvoP2pTrxnConfirmVM
+    private lateinit var trnsfrReqDataMap: HashMap<String, Any>
+    private lateinit var amtErrorTxtv: TextView
+    private var rcvrPhnNo: String = "9582820386"
     private var rcvrAmt: Long = 0
     private var sndrAmt: Long = 0
     private var rcvrMsg: String = ""
-    private var rcvrName: String = ""
+    private var rcvrName: String = "Varun"
     private var nonOvoUsr: Boolean = false
+    private lateinit var errorSnackbar: Snackbar
+
 
     override fun onClick(v: View?) {
         var id: Int = v?.id ?: -1
@@ -89,6 +92,11 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
                     alertDialog.dismiss()
                     (activity as LoaderUiListener).showProgressDialog()
                     context?.let { ovoP2pTransferConfirmViewModel.makeTransferConfirmCall(it, trnsfrReqDataMap) }
+                }
+                R.id.btn_ok -> {
+                    errorSnackbar.let {
+                        if (it.isShownOrQueued) it.dismiss()
+                    }
                 }
             }
         }
@@ -144,6 +152,8 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
                         if (!TextUtils.isEmpty(saldoTextView.text)) {
                             sndrAmt = it.wallet?.rawCashBalance?.toLong() ?: 0
                         }
+                    } else {
+                        showErrorSnackBar()
                     }
                 })
             }
@@ -160,7 +170,7 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
                         if (it.ovoP2pTransferRequest.errors != null && (it.ovoP2pTransferRequest.errors!!.isNotEmpty())) {
                             it.ovoP2pTransferRequest.errors?.let { it1 ->
                                 it1[0][Constants.Keys.MESSAGE]?.let { it2 ->
-                                    if (it2.contentEquals(Constants.Messages.NON_OVO_USER_MESSAGE)) {
+                                    if (it2.contentEquals(Constants.Messages.NON_OVO_USER)) {
                                         //show non ovo user confirmation dialog
                                         showNonOvoUserConfirmDialog()
                                     } else {
@@ -177,6 +187,8 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
                             }
                             showOvoUserConfirmationDialog()
                         }
+                    } else {
+                        showErrorSnackBar()
                     }
                 })
             }
@@ -198,38 +210,49 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
                                     gotoErrorPage(it2)
                                 }
                             }
-                        } else if (nonOvoUsr) {
-                            //show non ovo success page
-                            gotoThankYouActivity(it.ovoP2pTransferConfirm!!.transferId, true)
-                        } else if (!TextUtils.isEmpty(it.ovoP2pTransferConfirm!!.pinUrl)) {
-                            //launch web view
-                            if (context != null) {
-                                var intent: Intent = OvoP2pWebViewActivity.getWebViewIntent(context!!, it.ovoP2pTransferConfirm!!.pinUrl,
-                                        Constants.Headers.TRANSFER_FORM_HEADER)
-                                activity?.startActivity(intent)
-                            }
                         } else {
-                            it.ovoP2pTransferConfirm!!.transferId
-                            // go to thankyou activity
-                            gotoThankYouActivity(it.ovoP2pTransferConfirm!!.transferId, false)
+                            saveRcvrData()
+                            if (nonOvoUsr) {
+                                //show non ovo success page
+                                gotoThankYouActivity(it.ovoP2pTransferConfirm!!.transferId, true)
+                            } else if (!TextUtils.isEmpty(it.ovoP2pTransferConfirm!!.pinUrl)) {
+                                //launch web view
+                                if (context != null) {
+                                    var intent: Intent = OvoP2pWebViewActivity.getWebViewIntent(context!!, it.ovoP2pTransferConfirm!!.pinUrl,
+                                            Constants.Headers.TRANSFER_FORM_HEADER)
+                                    activity?.startActivity(intent)
+                                }
+                            } else {
+                                it.ovoP2pTransferConfirm!!.transferId
+                                // go to thankyou activity
+                                gotoThankYouActivity(it.ovoP2pTransferConfirm!!.transferId, false)
+                            }
                         }
+                    } else {
+                        showErrorSnackBar()
                     }
                 })
             }
         }
     }
 
+    private fun saveRcvrData() {
+        PersistentCacheManager.instance.put(Constants.Keys.RECIEVER_PHONE, rcvrPhnNo)
+        PersistentCacheManager.instance.put(Constants.Keys.RECIEVER_NAME, rcvrName)
+    }
+
+
     private fun gotoErrorPage(errMsg: String) {
-        var fragment: BaseDaggerFragment = FragmentTransferError.createInstance()
+        var fragment: BaseDaggerFragment = TransferError.createInstance()
         var bundle = Bundle()
         bundle.putString(Constants.Keys.ERR_MSG_ARG, errMsg)
         fragment.arguments = bundle
-        (activity as ActivityListener).addReplaceFragment(fragment, true, FragmentTransferError.TAG)
+        (activity as ActivityListener).addReplaceFragment(fragment, true, TransferError.TAG)
     }
 
     private fun gotoThankYouActivity(transferId: String, nonOvo: Boolean) {
         var intent = Intent(activity, OVOP2PThankyouActivity::class.java)
-        intent.putExtra(Constants.PlaceHolders.TRNSFER_ID_PLCHLDR, transferId)
+        intent.putExtra(Constants.Keys.TRANSFER_ID, transferId)
         intent.putExtra(Constants.Keys.NON_OVO_SUCS, nonOvo)
         activity?.startActivity(intent)
         activity?.finish()
@@ -243,7 +266,7 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
                 if (!TextUtils.isEmpty(s.toString())) {
                     enteredAmt = OvoP2pUtil.extractNumbersFromString(s.toString()).toLong()
                     if (enteredAmt < Constants.Thresholds.MIN_TRANSFER_LIMIT) {
-                        amtErrorTxtv.text = Constants.Messages.MINIMAL_TRNSFR_MSG
+                        amtErrorTxtv.text = Constants.Messages.MINIMAL_TRNSFR
                         amtErrorTxtv.visibility = View.VISIBLE
                         proceedBtn.isEnabled = false
                     } else if (enteredAmt > sndrAmt) {
@@ -278,11 +301,11 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
     }
 
     companion object {
-        fun newInstance(): OvoFormFragment {
-            return OvoFormFragment()
+        fun newInstance(): OvoP2PForm {
+            return OvoP2PForm()
         }
 
-        fun newInstance(bundle: Bundle): OvoFormFragment {
+        fun newInstance(bundle: Bundle): OvoP2PForm {
             val fragmentOVOP2PForm = newInstance()
             fragmentOVOP2PForm.arguments = bundle
             return fragmentOVOP2PForm
@@ -321,6 +344,7 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
         if (activity != null) {
             (activity as LoaderUiListener).setHeaderTitle(Constants.Headers.TRANSFER_FORM_HEADER)
         }
+        saveRcvrData()
     }
 
     private fun getPartialMatchContact(context: Context, partial: String): Cursor? {
@@ -366,6 +390,13 @@ class OvoFormFragment : BaseDaggerFragment(), View.OnClickListener, SearchView.O
     private fun setSearchViewQuery() {
         val searchViewStr = "$rcvrPhnNo - $rcvrName"
         searchView.setQuery(searchViewStr, false)
+    }
+
+    private fun showErrorSnackBar() {
+        activity?.let {
+            errorSnackbar = OvoP2pUtil.createErrorSnackBar(it, this, Constants.Messages.GENERAL_ERROR)
+            errorSnackbar.show()
+        }
     }
 
 }

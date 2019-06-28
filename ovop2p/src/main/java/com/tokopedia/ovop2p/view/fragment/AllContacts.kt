@@ -19,7 +19,7 @@ import com.tokopedia.ovop2p.R
 import com.tokopedia.ovop2p.di.OvoP2pTransferComponent
 import com.tokopedia.ovop2p.view.adapters.AllContactsListCursorAdapter
 
-class AllContactsFragment  : BaseDaggerFragment(), View.OnClickListener{
+class AllContacts  : BaseDaggerFragment(), View.OnClickListener{
 
     lateinit var contactsListView: ListView
     lateinit var scanQRImgvw: ImageView
@@ -34,11 +34,11 @@ class AllContactsFragment  : BaseDaggerFragment(), View.OnClickListener{
     }
 
     companion object{
-        fun newInstance(): AllContactsFragment {
-            return AllContactsFragment()
+        fun newInstance(): AllContacts {
+            return AllContacts()
         }
 
-        fun newInstance(bundle: Bundle): AllContactsFragment {
+        fun newInstance(bundle: Bundle): AllContacts {
             val allContactsFragment = newInstance()
             allContactsFragment.setArguments(bundle)
             return allContactsFragment

@@ -70,6 +70,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="16sp"
+        android:textStyle="bold"
         android:textColor="#2d263b"
         android:paddingLeft="@dimen/dp_10"
         app:layout_constraintStart_toEndOf="@+id/ic_ovo"
@@ -113,6 +114,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/dp_10"
         android:textSize="16sp"
+        android:textStyle="bold"
         android:textColor="#2d263b"
         app:layout_constraintStart_toEndOf="@+id/ic_ovo_to"
         app:layout_constraintTop_toTopOf="@+id/ic_ovo_to"/>

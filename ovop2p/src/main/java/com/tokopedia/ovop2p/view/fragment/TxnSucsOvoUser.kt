@@ -3,6 +3,7 @@ package com.tokopedia.ovop2p.view.fragment
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -16,13 +17,12 @@ import com.tokopedia.ovop2p.Constants
 import com.tokopedia.ovop2p.R
 import com.tokopedia.ovop2p.di.OvoP2pTransferComponent
 import com.tokopedia.ovop2p.model.OvoP2pTransferThankyouBase
+import com.tokopedia.ovop2p.util.OvoP2pUtil
 import com.tokopedia.ovop2p.view.interfaces.ActivityListener
 import com.tokopedia.ovop2p.view.interfaces.LoaderUiListener
 import com.tokopedia.ovop2p.viewmodel.OvoP2pTxnThankYouOvoUsrVM
-import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
 
-class FragmentTransactionSuccessOvoUser : BaseDaggerFragment(), View.OnClickListener {
+class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
 
     private lateinit var date: TextView
     private lateinit var trnsfrAmt: TextView
@@ -37,6 +37,8 @@ class FragmentTransactionSuccessOvoUser : BaseDaggerFragment(), View.OnClickList
     private var transferId: String = ""
     private lateinit var txnThankYouPageVM: OvoP2pTxnThankYouOvoUsrVM
     private lateinit var thankYouDataCntnr: OvoP2pTransferThankyouBase
+    private lateinit var errorSnackbar: Snackbar
+
 
     override fun initInjector() {
         getComponent<OvoP2pTransferComponent>(OvoP2pTransferComponent::class.java).inject(this)
@@ -68,10 +70,9 @@ class FragmentTransactionSuccessOvoUser : BaseDaggerFragment(), View.OnClickList
         return view
     }
 
-    private fun setSenderUserData(){
-        var userSession = UserSession(context)
-        sndrName.text = userSession.name
-        sndrNum.text = "Ovo - "+userSession.phoneNumber
+    private fun setRcvrUserData(){
+        rcvrName.text = arguments?.getString(Constants.Keys.RECIEVER_NAME) ?: ""
+        rcvrNum.text = "Ovo - " + arguments?.getString(Constants.Keys.RECIEVER_PHONE)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -106,17 +107,20 @@ class FragmentTransactionSuccessOvoUser : BaseDaggerFragment(), View.OnClickList
                             errMsg?.let { it1 -> gotoErrorPage(it1) }
                         }
                     }
+                    else{
+                        showErrorSnackBar()
+                    }
                 })
             }
         }
     }
 
     private fun gotoErrorPage(errMsg: String){
-        var fragment: BaseDaggerFragment = FragmentTransferError.createInstance()
+        var fragment: BaseDaggerFragment = TransferError.createInstance()
         var bundle = Bundle()
         bundle.putString(Constants.Keys.ERR_MSG_ARG, errMsg)
         fragment.arguments = bundle
-        (activity as ActivityListener).addReplaceFragment(fragment, true, FragmentTransferError.TAG)
+        (activity as ActivityListener).addReplaceFragment(fragment, false, TransferError.TAG)
     }
 
     private fun updateHeader(){
@@ -128,9 +132,9 @@ class FragmentTransactionSuccessOvoUser : BaseDaggerFragment(), View.OnClickList
         date.text = thankYouData.ovoP2pTransferThankyou.trnsfrDate
         val rpFormattedString = CurrencyFormatUtil.getThousandSeparatorString(thankYouData.ovoP2pTransferThankyou.amt.toDouble(), false, 0)
         trnsfrAmt.text =    rpFormattedString.formattedString
-        rcvrName.text = thankYouData.ovoP2pTransferThankyou.source.name
-        rcvrNum.text = "Ovo - "+thankYouData.ovoP2pTransferThankyou.source.phone
-        setSenderUserData()
+        sndrName.text = thankYouData.ovoP2pTransferThankyou.source.name
+        sndrNum.text = "Ovo - "+thankYouData.ovoP2pTransferThankyou.source.phone
+        setRcvrUserData()
     }
 
     override fun onClick(v: View?) {
@@ -141,25 +145,37 @@ class FragmentTransactionSuccessOvoUser : BaseDaggerFragment(), View.OnClickList
                     //go to see detail fragment
                     var bundle = Bundle()
                     bundle.putSerializable(Constants.Keys.THANKYOU_ARGS, thankYouDataCntnr)
-                    (activity as ActivityListener).addReplaceFragment(FragmentTransactionDetails.newInstance(bundle), true,
-                            FragmentTransactionDetails.TAG)
+                    (activity as ActivityListener).addReplaceFragment(TxnDetails.newInstance(bundle), true,
+                            TxnDetails.TAG)
                 }
                 R.id.back_to_app -> {
                     activity?.finish()
+                }
+                R.id.btn_ok -> {
+                    errorSnackbar.let {
+                        if (it.isShownOrQueued) it.dismiss()
+                    }
                 }
             }
         }
     }
 
     companion object {
-        fun newInstance(): FragmentTransactionSuccessOvoUser {
-            return FragmentTransactionSuccessOvoUser()
+        fun newInstance(): TxnSucsOvoUser {
+            return TxnSucsOvoUser()
         }
 
-        fun newInstance(bundle: Bundle): FragmentTransactionSuccessOvoUser {
+        fun newInstance(bundle: Bundle): TxnSucsOvoUser {
             val fragmentSucsOvoUsr = newInstance()
             fragmentSucsOvoUsr.setArguments(bundle)
             return fragmentSucsOvoUsr
+        }
+    }
+
+    private fun showErrorSnackBar() {
+        activity?.let {
+            errorSnackbar = OvoP2pUtil.createErrorSnackBar(it, this, Constants.Messages.GENERAL_ERROR)
+            errorSnackbar.show()
         }
     }
 }

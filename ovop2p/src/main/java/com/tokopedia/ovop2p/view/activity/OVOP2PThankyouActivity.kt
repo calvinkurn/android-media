@@ -12,12 +12,13 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.ovop2p.Constants
 import com.tokopedia.ovop2p.R
 import com.tokopedia.ovop2p.di.DaggerOvoP2pTransferComponent
 import com.tokopedia.ovop2p.di.OvoP2pTransferComponent
-import com.tokopedia.ovop2p.view.fragment.FragmentTransactionSuccessNonOvoUser
-import com.tokopedia.ovop2p.view.fragment.FragmentTransactionSuccessOvoUser
+import com.tokopedia.ovop2p.view.fragment.TxnSucsNonOvoUsr
+import com.tokopedia.ovop2p.view.fragment.TxnSucsOvoUser
 import com.tokopedia.ovop2p.view.interfaces.ActivityListener
 import com.tokopedia.ovop2p.view.interfaces.LoaderUiListener
 
@@ -52,17 +53,19 @@ class OVOP2PThankyouActivity : BaseSimpleActivity(),LoaderUiListener, ActivityLi
     }
 
     override fun getNewFragment(): Fragment {
-        if(intent != null){
+        if(intent != null && intent.extras != null){
             nonOvoUser = intent.extras.getBoolean(Constants.Keys.NON_OVO_SUCS)
-            transferId = intent.extras.getString(Constants.PlaceHolders.TRNSFER_ID_PLCHLDR)
+            transferId = intent.extras.getString(Constants.Keys.TRANSFER_ID)
+            var fragBundle = Bundle()
+            fragBundle.putString(Constants.Keys.RECIEVER_NAME, PersistentCacheManager.instance.get(Constants.Keys.RECIEVER_NAME, String::class.java))
+            fragBundle.putString(Constants.Keys.RECIEVER_PHONE, PersistentCacheManager.instance.get(Constants.Keys.RECIEVER_NAME, String::class.java))
             if(nonOvoUser){
-                return FragmentTransactionSuccessNonOvoUser.newInstance()
+                return TxnSucsNonOvoUsr.newInstance(fragBundle)
             }
             else{
                 if(!TextUtils.isEmpty(transferId)){
-                    var fragBundle: Bundle = Bundle()
                     fragBundle.putString(Constants.Keys.TRANSFER_ID, transferId)
-                    return FragmentTransactionSuccessOvoUser.newInstance(fragBundle)
+                    return TxnSucsOvoUser.newInstance(fragBundle)
                 }
             }
         }

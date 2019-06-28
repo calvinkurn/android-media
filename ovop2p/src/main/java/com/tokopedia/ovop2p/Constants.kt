@@ -17,8 +17,7 @@ class Constants {
         val NON_OVO_SUCS = "Non ovo sucs"
         val THANKYOU_ARGS = "Thankyou Args"
         val ERR_MSG_ARG = "Error Message Arg"
-        val SENDER_NAME = "Sender Name"
-        val SENDER_PHONE = "Sender Phone"
+        val RECIEVER_PHONE = "Reciever Phone"
         val RECIEVER_NAME = "Reciever Name"
     }
     object AppLinks {
@@ -47,11 +46,12 @@ class Constants {
     }
 
     object Messages{
-        val NONOVO_USR_SUCS_MSG = "Undangan berhasil dikirim ke {{num_plchldr}}.\n" +
+        val NONOVO_USR_SUCS = "Undangan berhasil dikirim ke {{num_plchldr}}.\n" +
                 "Terima kasih telah menggunakan OVO."
-        val MINIMAL_TRNSFR_MSG = "Minimal transfer Rp10.000"
+        val MINIMAL_TRNSFR = "Minimal transfer Rp10.000"
         val AMT_MORE_THN_BAL = "Saldo Anda Tidak cukup"
-        val NON_OVO_USER_MESSAGE = "Nomor ponsel penerima tidak terdaftar sebagai pengguna OVO."
+        val NON_OVO_USER = "Nomor ponsel penerima tidak terdaftar sebagai pengguna OVO."
+        val GENERAL_ERROR = "Ada yang salah. Silakan coba lagi."
     }
 
     object Thresholds{

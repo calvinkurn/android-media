@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.ovop2p.di.DaggerOvoP2pTransferComponent
 import com.tokopedia.ovop2p.di.OvoP2pTransferComponent
-import com.tokopedia.ovop2p.view.fragment.AllContactsFragment
+import com.tokopedia.ovop2p.view.fragment.AllContacts
 
 class AllContactsActivity : BaseSimpleActivity(), HasComponent<OvoP2pTransferComponent> {
     private lateinit var ovoP2pTransferComponent: OvoP2pTransferComponent
@@ -24,6 +24,6 @@ class AllContactsActivity : BaseSimpleActivity(), HasComponent<OvoP2pTransferCom
     }
 
     override fun getNewFragment(): Fragment {
-        return AllContactsFragment()
+        return AllContacts()
     }
 }

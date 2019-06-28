@@ -12,7 +12,7 @@ import com.tokopedia.ovop2p.R
 import com.tokopedia.ovop2p.di.OvoP2pTransferComponent
 import com.tokopedia.ovop2p.view.activity.OvoP2PFormActivity
 
-class FragmentTransactionSuccessNonOvoUser: BaseDaggerFragment(), View.OnClickListener {
+class TxnSucsNonOvoUsr: BaseDaggerFragment(), View.OnClickListener {
 
     private lateinit var txtvSucs: TextView
     private lateinit var tryAgn: TextView
@@ -36,7 +36,7 @@ class FragmentTransactionSuccessNonOvoUser: BaseDaggerFragment(), View.OnClickLi
         bckToApp = view.findViewById(R.id.back_to_app)
         bckToApp.setOnClickListener(this)
         sucsMsg = view.findViewById(R.id.sucs_msg)
-        phnNo = arguments?.getString(Constants.Keys.TO_PHN_NO, "") ?: ""
+        phnNo = arguments?.getString(Constants.Keys.RECIEVER_PHONE, "") ?: ""
         createSucsMsg()
         return view
     }
@@ -59,15 +59,15 @@ class FragmentTransactionSuccessNonOvoUser: BaseDaggerFragment(), View.OnClickLi
     }
 
     private fun createSucsMsg(){
-        sucsMsg.text = Constants.Messages.NONOVO_USR_SUCS_MSG.replace(Constants.PlaceHolders.PHONE_NO_PLCHLDR, phnNo)
+        sucsMsg.text = Constants.Messages.NONOVO_USR_SUCS.replace(Constants.PlaceHolders.PHONE_NO_PLCHLDR, phnNo)
     }
 
     companion object{
-        fun newInstance(): FragmentTransactionSuccessNonOvoUser {
-            return FragmentTransactionSuccessNonOvoUser()
+        fun newInstance(): TxnSucsNonOvoUsr {
+            return TxnSucsNonOvoUsr()
         }
 
-        fun newInstance(bundle: Bundle): FragmentTransactionSuccessNonOvoUser {
+        fun newInstance(bundle: Bundle): TxnSucsNonOvoUsr {
             val fragmentSucsNonOvo = newInstance()
             fragmentSucsNonOvo.setArguments(bundle)
             return fragmentSucsNonOvo

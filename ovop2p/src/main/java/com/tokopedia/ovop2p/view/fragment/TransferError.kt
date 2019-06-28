@@ -11,7 +11,7 @@ import com.tokopedia.ovop2p.Constants
 import com.tokopedia.ovop2p.R
 import com.tokopedia.ovop2p.di.OvoP2pTransferComponent
 
-class FragmentTransferError : BaseDaggerFragment(), View.OnClickListener {
+class TransferError : BaseDaggerFragment(), View.OnClickListener {
 
     private lateinit var errorMsg: TextView
     private lateinit var tryAgain: TextView
@@ -58,8 +58,8 @@ class FragmentTransferError : BaseDaggerFragment(), View.OnClickListener {
 
         var TAG = "Error Fragment"
 
-        fun createInstance() : FragmentTransferError{
-            return FragmentTransferError()
+        fun createInstance() : TransferError{
+            return TransferError()
         }
     }
 }

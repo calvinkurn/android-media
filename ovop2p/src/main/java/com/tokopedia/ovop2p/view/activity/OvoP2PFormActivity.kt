@@ -2,7 +2,6 @@ package com.tokopedia.ovop2p.view.activity
 
 import android.Manifest
 import android.app.ProgressDialog
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -11,16 +10,14 @@ import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
-import android.widget.ProgressBar
 
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.ovop2p.Constants
 import com.tokopedia.ovop2p.Constants.AppLinks.OVOP2PTRANSFER
-import com.tokopedia.ovop2p.OvoFormFragment
+import com.tokopedia.ovop2p.OvoP2PForm
 import com.tokopedia.ovop2p.R
 import com.tokopedia.ovop2p.di.DaggerOvoP2pTransferComponent
 import com.tokopedia.ovop2p.di.OvoP2pTransferComponent
@@ -38,7 +35,7 @@ class OvoP2PFormActivity : BaseSimpleActivity(), HasComponent<OvoP2pTransferComp
 
 
     override fun getNewFragment(): Fragment {
-        return OvoFormFragment.newInstance()
+        return OvoP2PForm.newInstance()
     }
 
     object DeeplinkIntents {

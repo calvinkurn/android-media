@@ -3,7 +3,10 @@ package com.tokopedia.ovop2p.util
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
+import android.graphics.Color
+import android.support.design.widget.Snackbar
 import android.text.TextUtils
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -28,14 +31,14 @@ object OvoP2pUtil {
         val dialogBuilder = AlertDialog.Builder(context)
         val inflater = context?.layoutInflater
         val dialogView = inflater?.inflate(R.layout.ovo_p2p_confirmation_dlg, null)
-        if(dialogView != null) {
+        if (dialogView != null) {
             var rcvrName = dataMap[Constants.Keys.NAME].toString()
-            if(!TextUtils.isEmpty(rcvrName)) {
+            if (!TextUtils.isEmpty(rcvrName)) {
                 dialogView.findViewById<TextView>(R.id.rcvr_name).text = rcvrName
                 dialogView.findViewById<TextView>(R.id.rcvr_name).visibility = View.VISIBLE
             }
             dialogView.findViewById<TextView>(R.id.rcvr_no).text = dataMap[Constants.Keys.TO_PHN_NO].toString()
-            dialogView.findViewById<TextView>(R.id.trnsfr_amt).text = "Rp"+dataMap[Constants.Keys.FORMATTED_AMOUNT].toString()
+            dialogView.findViewById<TextView>(R.id.trnsfr_amt).text = "Rp" + dataMap[Constants.Keys.FORMATTED_AMOUNT].toString()
             dialogView.findViewById<TextView>(R.id.msg).text = dataMap[Constants.Keys.MESSAGE].toString()
         }
         dialogView?.findViewById<View>(R.id.proceed_dlg)?.setOnClickListener(onClickListener)
@@ -68,7 +71,7 @@ object OvoP2pUtil {
         ovoP2pTransferThankyouUseCase.execute(subscriber)
     }
 
-    fun executeOvoGetWalletData(context: Context, subscriber: Subscriber<GraphqlResponse>){
+    fun executeOvoGetWalletData(context: Context, subscriber: Subscriber<GraphqlResponse>) {
         var ovoWalletDataUseCase = GraphqlUseCase()
         val graphqlRequest = GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.oqr_wallet_detail),
@@ -78,7 +81,7 @@ object OvoP2pUtil {
 
     }
 
-    fun extractNumbersFromString(srcStr: String): String{
+    fun extractNumbersFromString(srcStr: String): String {
         val p = Pattern.compile("\\d+")
         val m = p.matcher(srcStr)
         var result = ""
@@ -88,7 +91,7 @@ object OvoP2pUtil {
         return result
     }
 
-    fun getNonOvoUserConfirmationDailog(context: Activity?, onClickListener: View.OnClickListener): AlertDialog.Builder{
+    fun getNonOvoUserConfirmationDailog(context: Activity?, onClickListener: View.OnClickListener): AlertDialog.Builder {
         val dialogBuilder = AlertDialog.Builder(context)
         val inflater = context?.layoutInflater
         val dialogView = inflater?.inflate(R.layout.non_ovo_user_confirmation_dialog, null)
@@ -98,12 +101,26 @@ object OvoP2pUtil {
         return dialogBuilder
     }
 
-    fun checkValidRcvrPhoneEntry(svQuery: String, rcvrPhnNo: String): String{
-        return if(!TextUtils.isEmpty(rcvrPhnNo) && svQuery.contains(rcvrPhnNo)){
+    fun checkValidRcvrPhoneEntry(svQuery: String, rcvrPhnNo: String): String {
+        return if (!TextUtils.isEmpty(rcvrPhnNo) && svQuery.contains(rcvrPhnNo)) {
             rcvrPhnNo
-        }
-        else{
+        } else {
             svQuery
         }
+    }
+
+    fun createErrorSnackBar(activity: Activity,
+                            onClickListener: View.OnClickListener,
+                            errorMsg: String): Snackbar {
+        val snackbar = Snackbar.make(activity.findViewById(
+                android.R.id.content), "", Snackbar.LENGTH_LONG)
+        val layout = snackbar.view as Snackbar.SnackbarLayout
+        snackbar.view.setBackgroundColor(Color.TRANSPARENT)
+        val inflater = activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val snackView = inflater.inflate(R.layout.error_snackbar_layout, null)
+        snackView.findViewById<View>(R.id.btn_ok).setOnClickListener(onClickListener)
+        if (!TextUtils.isEmpty(errorMsg)) (snackView.findViewById<View>(R.id.error_msg) as TextView).text = errorMsg
+        layout.addView(snackView, 0)
+        return snackbar
     }
 }

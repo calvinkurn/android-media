@@ -35,7 +35,7 @@ class GetWalletBalanceViewModel(application: Application) : AndroidViewModel(app
             }
 
             override fun onError(e: Throwable) {
-
+                walletLiveData?.value = null
             }
 
             override fun onNext(graphqlResponse: GraphqlResponse) {

@@ -32,7 +32,9 @@ class OvoP2pTxnThankYouOvoUsrVM(application: Application) : AndroidViewModel(app
             }
 
             override fun onError(e: Throwable?) {
+                ovoP2pTransferThankyouBaseMutableLiveData?.value = null
             }
+
             override fun onNext(graphqlResponse: GraphqlResponse?) {
                 val ovoP2pTransferConfirmBase = graphqlResponse?.getData<OvoP2pTransferThankyouBase>(OvoP2pTransferThankyouBase::class.java)
                 if(ovoP2pTransferConfirmBase != null){

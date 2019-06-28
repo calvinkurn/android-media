@@ -1,12 +1,9 @@
 package com.tokopedia.ovop2p.view.fragment
 
-import android.media.Image
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.TextureView
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.design.utils.CurrencyFormatUtil
@@ -16,7 +13,7 @@ import com.tokopedia.ovop2p.di.OvoP2pTransferComponent
 import com.tokopedia.ovop2p.model.OvoP2pTransferThankyouBase
 import com.tokopedia.user.session.UserSession
 
-class FragmentTransactionDetails : BaseDaggerFragment(){
+class TxnDetails : BaseDaggerFragment(){
     private lateinit var sucsMsg: TextView
     private lateinit var date: TextView
     private lateinit var senderName: TextView
@@ -68,10 +65,10 @@ class FragmentTransactionDetails : BaseDaggerFragment(){
 
     companion object{
         var TAG: String = "TXN_DTL_FRAG"
-        fun newInstance() : FragmentTransactionDetails{
-            return FragmentTransactionDetails()
+        fun newInstance() : TxnDetails{
+            return TxnDetails()
         }
-        fun newInstance(bundle: Bundle): FragmentTransactionDetails {
+        fun newInstance(bundle: Bundle): TxnDetails {
             val fragmentTxnDetails = newInstance()
             fragmentTxnDetails.setArguments(bundle)
             return fragmentTxnDetails
