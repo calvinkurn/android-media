@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -45,11 +44,11 @@ public abstract class ProductCardView extends BaseCustomView {
     protected Typography textViewProductName;
     protected Label labelDiscount;
     protected Typography textViewSlashedPrice;
-    protected TextView textViewPrice;
+    protected Typography textViewPrice;
     protected LinearLayout linearLayoutShopBadges;
     protected Typography textViewShopLocation;
     protected ImageView imageRating;
-    protected TextView textViewReviewCount;
+    protected Typography textViewReviewCount;
     protected Label labelCredibility;
     protected Label labelOffers;
     protected ImageView imageTopAds;
