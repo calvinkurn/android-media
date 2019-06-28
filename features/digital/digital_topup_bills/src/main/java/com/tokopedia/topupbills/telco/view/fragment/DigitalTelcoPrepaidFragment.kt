@@ -84,6 +84,22 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             it?.run {
                 productSelected = it
                 buyWidget.setTotalPrice(it.product.attributes.price)
+
+                checkoutPassData = DigitalCheckoutPassData.Builder()
+                        .action(DigitalCheckoutPassData.DEFAULT_ACTION)
+                        .categoryId(it.product.attributes.categoryId.toString())
+                        .clientNumber(telcoClientNumberWidget.getInputNumber())
+                        .instantCheckout("0")
+                        .isPromo(if (it.product.attributes.productPromo != null) "1" else "0")
+                        .operatorId(it.product.attributes.operatorId.toString())
+                        .productId(it.product.id)
+                        .utmCampaign(it.product.attributes.categoryId.toString())
+                        .utmContent(GlobalConfig.VERSION_NAME)
+                        .idemPotencyKey(userSession.userId.generateRechargeCheckoutToken())
+                        .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
+                        .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
+                        .voucherCodeCopied("")
+                        .build()
             }
         })
         sharedModel.showTotalPrice.observe(this, Observer {
