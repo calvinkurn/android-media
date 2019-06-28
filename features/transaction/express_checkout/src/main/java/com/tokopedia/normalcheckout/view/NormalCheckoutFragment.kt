@@ -769,7 +769,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
     fun showLoadingDialog(onCancelClicked: (() -> Unit)? = null) {
         if (loadingProgressDialog == null) {
-            this@NormalCheckoutFragment.activity?.createDefaultProgressDialog(
+            loadingProgressDialog = activity?.createDefaultProgressDialog(
                 getString(R.string.title_loading),
                 cancelable = true,
                 onCancelClicked = {
@@ -784,7 +784,10 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     fun hideLoadingDialog() {
-        loadingProgressDialog?.dismiss()
+        loadingProgressDialog?.run{
+            if(isShowing)
+                dismiss()
+        }
     }
 
     override fun onAttach(context: Context?) {

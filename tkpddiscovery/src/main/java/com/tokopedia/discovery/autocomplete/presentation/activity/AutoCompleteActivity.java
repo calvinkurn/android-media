@@ -40,7 +40,6 @@ import org.jetbrains.annotations.NotNull;
 import javax.inject.Inject;
 
 import static com.tokopedia.discovery.common.constants.SearchConstant.DEEP_LINK_URI;
-import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_IS_AUTOCOMPLETE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_SEARCH_PARAMETER_MODEL;
 import static com.tokopedia.discovery.common.constants.SearchConstant.FROM_APP_SHORTCUTS;
 
@@ -48,23 +47,12 @@ public class AutoCompleteActivity extends DiscoveryActivity
         implements AutoCompleteContract.View {
 
     public static Intent newInstance(Context context) {
-        Intent intent = new Intent(context, AutoCompleteActivity.class);
-        intent.putExtra(EXTRA_IS_AUTOCOMPLETE, true);
-
-        return intent;
-    }
-
-    @DeepLink(ApplinkConst.DISCOVERY_SEARCH)
-    public static Intent getCallingApplinkSearchIntent(Context context, Bundle bundle) {
-        return createIntentToAutoCompleteActivityFromBundle(context, bundle);
+        return new Intent(context, AutoCompleteActivity.class);
     }
 
     @DeepLink(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
     public static Intent getCallingApplinkAutoCompleteSearchIntent(Context context, Bundle bundle) {
-        Intent intent = createIntentToAutoCompleteActivityFromBundle(context, bundle);
-        intent.putExtra(EXTRA_IS_AUTOCOMPLETE, true);
-
-        return intent;
+        return createIntentToAutoCompleteActivityFromBundle(context, bundle);
     }
 
     private static Intent createIntentToAutoCompleteActivityFromBundle(Context context, Bundle bundle) {
@@ -120,14 +108,9 @@ public class AutoCompleteActivity extends DiscoveryActivity
     private void handleIntent(Intent intent) {
         initPresenter();
 
-        boolean isAutoComplete = intent.getBooleanExtra(EXTRA_IS_AUTOCOMPLETE, false);
         SearchParameter searchParameter = getSearchParameterFromIntent(intent);
 
-        if (isAutoComplete) {
-            handleIntentAutoComplete(searchParameter);
-        } else {
-            handleIntentInitiateSearch(searchParameter);
-        }
+        handleIntentAutoComplete(searchParameter);
 
         if (intent.getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
             searchTracking.eventSearchShortcut();
@@ -198,11 +181,6 @@ public class AutoCompleteActivity extends DiscoveryActivity
                 return false;
             }
         };
-    }
-
-    private void handleIntentInitiateSearch(SearchParameter searchParameter) {
-        this.searchParameter = searchParameter;
-        onProductQuerySubmit();
     }
 
     private void handleImageUri(Intent intent) {

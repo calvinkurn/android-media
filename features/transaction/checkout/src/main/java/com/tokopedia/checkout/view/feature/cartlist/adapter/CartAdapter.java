@@ -200,6 +200,23 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return cartItemDataList;
     }
 
+    public List<CartShopHolderData> getSelectedCartShopHolderData() {
+        List<CartShopHolderData> cartShopHolderDataList = new ArrayList<>();
+        if (cartDataList != null) {
+            for (Object data : cartDataList) {
+                if (data instanceof CartShopHolderData) {
+                    CartShopHolderData cartShopHolderData = (CartShopHolderData) data;
+                    if ((cartShopHolderData.isPartialSelected() || cartShopHolderData.isAllSelected()) &&
+                            cartShopHolderData.getShopGroupData().getCartItemDataList() != null) {
+                        cartShopHolderDataList.add(cartShopHolderData);
+                    }
+                }
+            }
+        }
+
+        return cartShopHolderDataList;
+    }
+
     public List<CartItemData> getAllCartItemData() {
         List<CartItemData> cartItemDataList = new ArrayList<>();
         if (cartDataList != null) {
@@ -558,7 +575,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return null;
     }
 
-    public PromoStackingData getPromoStackingGlobaldata() {
+    public PromoStackingData getPromoStackingGlobalData() {
         for (int i = 0; i < cartDataList.size(); i++) {
             if (cartDataList.get(i) instanceof PromoStackingData) {
                 return (PromoStackingData) cartDataList.get(i);
