@@ -1,6 +1,7 @@
 package com.tokopedia.loginphone.choosetokocashaccount.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.loginphone.choosetokocashaccount.data.AccountList
 import com.tokopedia.loginphone.choosetokocashaccount.data.UserDetail
 import com.tokopedia.loginphone.choosetokocashaccount.domain.GetAccountsListUseCase
@@ -59,16 +60,20 @@ constructor(private val getAccountsListUseCase: GetAccountsListUseCase,
                     }
 
                     override fun onNext(accountList: AccountList) {
-                        view.onSuccessGetAccountList(accountList)
+                        if (accountList.accountListPojo.errors.isEmpty()) {
+                            view.onSuccessGetAccountList(accountList)
+                        } else {
+                            view.onErrorGetAccountList(MessageErrorException(accountList.accountListPojo.errors[0].message))
+                        }
                     }
                 })
     }
 
     override fun getUserInfo() {
-                getProfileUseCase.execute( GetProfileSubscriber(userSessionInterface,
-                        view.onSuccessGetUserInfo(),
-                        view.onErrorGetUserInfo(),
-                        view.onGoToCreatePassword(),
-                        view.onGoToPhoneVerification()))
+        getProfileUseCase.execute(GetProfileSubscriber(userSessionInterface,
+                view.onSuccessGetUserInfo(),
+                view.onErrorGetUserInfo(),
+                view.onGoToCreatePassword(),
+                view.onGoToPhoneVerification()))
     }
 }
