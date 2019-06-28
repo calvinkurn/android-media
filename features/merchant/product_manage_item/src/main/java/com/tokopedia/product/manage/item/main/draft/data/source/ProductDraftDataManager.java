@@ -50,7 +50,7 @@ public class ProductDraftDataManager {
     }
 
     public Observable<Long> getAllDraftCount(String userId) {
-        return Observable.just(productDraftDao.getMyDraftsCount(userId))
+        return Observable.fromCallable(()-> productDraftDao.getMyDraftsCount(userId))
                 .map(Integer::longValue);
     }
 
