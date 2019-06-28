@@ -19,6 +19,9 @@
             android:id="@+id/imageProduct"
             android:layout_width="@dimen/dp_96"
             android:layout_height="@dimen/dp_96"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
             android:adjustViewBounds="true"
             android:visibility="gone"
             app:corner_radius="@dimen/dp_8"
@@ -78,7 +81,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewProductName"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"

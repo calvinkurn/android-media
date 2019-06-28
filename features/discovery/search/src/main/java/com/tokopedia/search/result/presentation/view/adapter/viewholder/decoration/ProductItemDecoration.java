@@ -48,12 +48,7 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
 
             outRect.top = isTopProductItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : spacing / 2;
             outRect.left = isFirstInRow(relativePos, totalSpanCount) ? spacing : spacing / 2;
-            if (parent.getLayoutManager() instanceof GridLayoutManager
-                || parent.getLayoutManager() instanceof StaggeredGridLayoutManager) {
-                outRect.right = isLastInRow(relativePos, totalSpanCount) ? spacing : spacing / 2;
-            } else {
-                outRect.right = 0;
-            }
+            outRect.right = isLastInRow(relativePos, totalSpanCount) ? spacing : spacing / 2;
             outRect.bottom = isBottomProductItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : spacing / 2;
         }
     }
