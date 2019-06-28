@@ -312,7 +312,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_cart_new;
+        return R.layout.fragment_cart;
     }
 
     @Override
