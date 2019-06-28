@@ -17,7 +17,7 @@
 
         <com.tokopedia.topads.sdk.view.ImpressedImageView
             android:id="@+id/imageProduct"
-            android:layout_width="match_parent"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:visibility="gone"
@@ -73,7 +73,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewProductName"
-            android:layout_width="match_parent"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
@@ -84,9 +84,9 @@
             android:maxLines="2"
             android:textColor="@color/product_card_product_name_text_color"
             android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/imageProduct"
-            app:layout_constraintTop_toBottomOf="@+id/textViewShopName"
+            app:layout_constraintEnd_toEndOf="@id/imageProduct"
+            app:layout_constraintStart_toStartOf="@id/imageProduct"
+            app:layout_constraintTop_toBottomOf="@id/textViewShopName"
             app:typographyType="heading_5"
             tools:text="Nama" />
 
