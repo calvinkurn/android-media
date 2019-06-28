@@ -69,9 +69,6 @@
                     android:layout_margin="@dimen/dp_8"
                     android:layout_toStartOf="@+id/btn_wishlist"
                     android:layout_toLeftOf="@+id/btn_wishlist"
-                    android:layout_toEndOf="@+id/btn_qrcode"
-                    android:layout_toRightOf="@+id/btn_qrcode"
-                    android:background="@drawable/bg_corner"
                     android:orientation="horizontal"
                     android:padding="@dimen/dp_4">
 
