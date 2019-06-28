@@ -29,7 +29,7 @@ import com.tokopedia.topupbills.telco.data.constant.TelcoFavNumberType
 import com.tokopedia.topupbills.telco.view.adapter.NumberListAdapter
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
 import com.tokopedia.topupbills.telco.view.model.DigitalFavNumber
-import kotlinx.android.synthetic.main.fragment_search_number_digital.*
+import kotlinx.android.synthetic.main.fragment_search_number_telco.*
 import java.util.*
 import javax.inject.Inject
 
@@ -71,7 +71,7 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnCl
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
-        val view = inflater.inflate(R.layout.fragment_search_number_digital, container, false)
+        val view = inflater.inflate(R.layout.fragment_search_number_telco, container, false)
         initView(view)
         setViewListener()
         return view
