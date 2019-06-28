@@ -186,10 +186,12 @@ class ProductInfoFragment : BaseDaggerFragment() {
     }
 
     private fun showToastSuccess(message: String) {
-        Toaster.showNormal(
-                findViewById(android.R.id.content),
-                message,
-                Snackbar.LENGTH_LONG)
+        activity?.run {
+            Toaster.showNormal(
+                    findViewById(android.R.id.content),
+                    message,
+                    Snackbar.LENGTH_LONG)
+        }
     }
 
     private fun setRatingReviewCount(ratingValue: Int, review: Int){
