@@ -64,6 +64,8 @@ class ProfileAnalytics @Inject constructor(private val userSessionInterface: Use
         const val CLICK_FOLLOWING = "click following"
         const val CLICK_FOLLOW = "click follow"
         const val CLICK_UNFOLLOW = "click unfollow"
+        const val CLICK_LIKE_ATTEMPT = "click like"
+        const val CLICK_COMMENT_ATTEMPT = "click comment"
         const val CLICK_SHARE_THIS_PROFILE = "click share profil ini"
         const val CLICK_SHARE_THIS_POST = "click share post ini"
         const val CLICK_SEE_DETAIL = "click lihat detail"
@@ -165,6 +167,34 @@ class ProfileAnalytics @Inject constructor(private val userSessionInterface: Use
                         Event.EVENT_CLICK_SOCIAL_COMMERCE,
                         category,
                         Action.CLICK_UNFOLLOW,
+                        profileId
+                )
+        )
+    }
+
+    fun eventClickLike(isOwner: Boolean, profileId: String) {
+        val screen = if (isOwner) Screen.MY_PROFILE else Screen.PROFILE
+        val category = if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                getDefaultData(
+                        screen,
+                        Event.EVENT_CLICK_SOCIAL_COMMERCE,
+                        category,
+                        Action.CLICK_LIKE_ATTEMPT,
+                        profileId
+                )
+        )
+    }
+
+    fun eventClickComment(isOwner: Boolean, profileId: String) {
+        val screen = if (isOwner) Screen.MY_PROFILE else Screen.PROFILE
+        val category = if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                getDefaultData(
+                        screen,
+                        Event.EVENT_CLICK_SOCIAL_COMMERCE,
+                        category,
+                        Action.CLICK_COMMENT_ATTEMPT,
                         profileId
                 )
         )
