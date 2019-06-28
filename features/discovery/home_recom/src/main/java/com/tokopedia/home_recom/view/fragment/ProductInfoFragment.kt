@@ -177,16 +177,16 @@ class ProductInfoFragment : BaseDaggerFragment() {
     }
 
     private fun showToastError(throwable: Throwable) {
-        activity?.run {
+        view?.run {
             Toaster.showError(
                     this,
-                    RecommendationPageErrorHandler.getErrorMessage(this, throwable),
+                    RecommendationPageErrorHandler.getErrorMessage(context, throwable),
                     Snackbar.LENGTH_LONG)
         }
     }
 
     private fun showToastSuccess(message: String) {
-        activity?.run {
+        view?.run {
             Toaster.showNormal(
                     this,
                     message,
