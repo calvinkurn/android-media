@@ -5,7 +5,6 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.topupbills.telco.data.TelcoCustomComponentData
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -28,11 +27,7 @@ class DigitalTelcoCustomViewModel @Inject constructor(private val graphqlReposit
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<TelcoCustomComponentData>()
 
-            if (data.rechargeCustomData.customDataCollections.isNotEmpty()) {
-                onSuccess(data)
-            } else {
-                onError(ResponseErrorException())
-            }
+            onSuccess(data)
         }) {
             onError(it)
         }

@@ -5,7 +5,6 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.topupbills.telco.data.TelcoCatalogMenuDetailData
 import com.tokopedia.topupbills.telco.data.TelcoRechargeFavNumberData
 import kotlinx.coroutines.CoroutineDispatcher
@@ -32,11 +31,7 @@ class TelcoCatalogMenuDetailViewModel @Inject constructor(private val graphqlRep
             }.getSuccessData<TelcoCatalogMenuDetailData>()
 
             onLoading(false)
-            if (data.catalogMenuDetailData != null) {
-                onSuccess(data)
-            } else {
-                onError(ResponseErrorException())
-            }
+            onSuccess(data)
         }) {
             onLoading(false)
             onError(it)
@@ -52,11 +47,7 @@ class TelcoCatalogMenuDetailViewModel @Inject constructor(private val graphqlRep
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<TelcoRechargeFavNumberData>()
 
-            if (data.favNumber.favNumberList.isNotEmpty()) {
-                onSuccess(data)
-            } else {
-                onError(ResponseErrorException())
-            }
+            onSuccess(data)
         }) {
             onError(it)
         }
