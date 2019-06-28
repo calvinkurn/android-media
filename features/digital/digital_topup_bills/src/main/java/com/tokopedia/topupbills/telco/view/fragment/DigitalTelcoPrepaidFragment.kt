@@ -7,6 +7,7 @@ import android.support.design.widget.Snackbar
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -145,19 +146,22 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     fun renderProductFromCustomData() {
-        val prefixClientNumber = telcoClientNumberWidget.getInputNumber().substring(0, 4)
         try {
-            val operatorSelected = this.operatorData.rechargeCustomData.customDataCollections.filter {
-                it.value.equals(prefixClientNumber)
-            }.single()
+            if (telcoClientNumberWidget.getInputNumber().isNotEmpty()) {
+                val prefixClientNumber = telcoClientNumberWidget.getInputNumber().substring(0, 4)
 
-            renderViewPager(operatorSelected.operator.id)
-            telcoClientNumberWidget.setIconOperator(operatorSelected.operator.attributes.imageUrl)
+                val operatorSelected = this.operatorData.rechargeCustomData.customDataCollections.filter {
+                    it.value.equals(prefixClientNumber)
+                }.single()
 
-            recentNumbersView.visibility = View.GONE
-            promoListView.visibility = View.GONE
-            tabLayout.visibility = View.VISIBLE
-            viewPager.visibility = View.VISIBLE
+                renderViewPager(operatorSelected.operator.id)
+                telcoClientNumberWidget.setIconOperator(operatorSelected.operator.attributes.imageUrl)
+
+                recentNumbersView.visibility = View.GONE
+                promoListView.visibility = View.GONE
+                tabLayout.visibility = View.VISIBLE
+                viewPager.visibility = View.VISIBLE
+            }
         } catch (exception: Exception) {
             view?.run {
                 Toaster.showRed(this, getErrorMessage(activity, exception), Snackbar.LENGTH_LONG)

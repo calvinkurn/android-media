@@ -10,7 +10,7 @@ class TelcoPromo(
         @SerializedName("id")
         @Expose
         val id: Int,
-        @SerializedName("filename")
+        @SerializedName("img_url")
         @Expose
         val urlBannerPromo: String,
         @SerializedName("title")

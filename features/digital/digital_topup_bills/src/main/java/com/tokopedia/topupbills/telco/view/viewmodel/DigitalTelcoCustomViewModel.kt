@@ -18,7 +18,7 @@ class DigitalTelcoCustomViewModel @Inject constructor(private val graphqlReposit
                                                       val dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 
-    fun getCustomData(rawQuery: String, mapParam: Map<String, kotlin.Any>,
+    fun getCustomData(rawQuery: String, mapParam: Map<String, Any>,
                       onSuccess: (TelcoCustomComponentData) -> Unit,
                       onError: (Throwable) -> Unit) {
         launchCatchError(block = {

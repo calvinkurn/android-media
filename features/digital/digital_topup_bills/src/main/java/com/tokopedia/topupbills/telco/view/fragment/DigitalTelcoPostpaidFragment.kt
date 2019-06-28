@@ -149,14 +149,16 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     }
 
     fun renderProductFromCustomData() {
-        val prefixClientNumber = postpaidClientNumberWidget.getInputNumber().substring(0, 4)
         try {
-            operatorSelected = this.operatorData.rechargeCustomData.customDataCollections.filter {
-                it.value.equals(prefixClientNumber)
-            }.single()
+            if (postpaidClientNumberWidget.getInputNumber().isNotEmpty()) {
+                val prefixClientNumber = postpaidClientNumberWidget.getInputNumber().substring(0, 4)
 
-            postpaidClientNumberWidget.setIconOperator(operatorSelected.operator.attributes.imageUrl)
+                operatorSelected = this.operatorData.rechargeCustomData.customDataCollections.filter {
+                    it.value.equals(prefixClientNumber)
+                }.single()
 
+                postpaidClientNumberWidget.setIconOperator(operatorSelected.operator.attributes.imageUrl)
+            }
         } catch (exception: Exception) {
             view?.run {
                 Toaster.showRed(this, ErrorHandler.getErrorMessage(activity, exception), Snackbar.LENGTH_LONG)
