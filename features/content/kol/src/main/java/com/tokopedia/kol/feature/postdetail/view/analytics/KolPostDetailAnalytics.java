@@ -1,6 +1,7 @@
 package com.tokopedia.kol.feature.postdetail.view.analytics;
 
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -8,6 +9,13 @@ import javax.inject.Inject;
  * @author by yoasfs on 2019-06-28
  */
 public class KolPostDetailAnalytics {
+
+    private UserSessionInterface userSession;
+
+    @Inject
+    public KolPostDetailAnalytics(UserSessionInterface userSession) {
+        this.userSession = userSession;
+    }
 
     private static final String EVENT_CLICK_FEED = "clickFeed";
     private static final String EVENT_NAME = "event";
