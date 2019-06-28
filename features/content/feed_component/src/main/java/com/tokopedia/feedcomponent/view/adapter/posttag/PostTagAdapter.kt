@@ -140,39 +140,5 @@ class PostTagAdapter(private val itemList: List<PostTagItem>,
             }
             return trackList
         }
-
-        private fun renderTag(textView: TextView, tag: PostTagItemTag) {
-            textView.text = tag.text
-            if (tag.bgColor.hex.isEmpty() || tag.bgColor.opacity.isEmpty()) {
-                tag.bgColor = getDefaultBackgroundColor()
-            }
-            if (tag.textColor.hex.isEmpty() || tag.textColor.opacity.isEmpty()) {
-                tag.textColor = getDefaultTextColor()
-            }
-            textView.setTextColor(Color.parseColor(tag.textColor.hex))
-            textView.background = renderDrawable(tag.bgColor.hex, tag.bgColor.opacity)
-        }
-
-        private fun renderDrawable(hex: String, opacity: String): Drawable {
-            val drawable = GradientDrawable()
-            drawable.shape = GradientDrawable.RECTANGLE
-            drawable.cornerRadii = floatArrayOf(30f, 30f, 30f ,30f , 30f, 30f, 30f, 30f)
-            drawable.setColor(Color.parseColor(hex))
-            drawable.alpha = calculateBackgroundAlpha(opacity)
-            return drawable
-        }
-
-        private fun calculateBackgroundAlpha(opacityString: String) : Int {
-            val floatValue = opacityString.toFloat()
-            return (floatValue*100).toInt()
-        }
-
-        private fun getDefaultBackgroundColor() : ColorPojo {
-            return ColorPojo("#000", "0.7")
-        }
-
-        private fun getDefaultTextColor() : ColorPojo {
-            return ColorPojo("#fff", "1")
-        }
     }
 }
