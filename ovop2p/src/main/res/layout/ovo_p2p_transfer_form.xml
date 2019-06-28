@@ -3,17 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="none"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        android:scrollbars="none">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dp_30"
+            android:paddingRight="@dimen/dp_30">
 
             <TextView
                 android:id="@+id/search_no_header"
@@ -26,12 +28,13 @@
 
             <SearchView
                 android:id="@+id/search_no"
-                android:layout_width="320dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_40"
                 android:closeIcon="@drawable/ic_clear_small"
                 android:iconifiedByDefault="false"
                 android:inputType="number"
+                android:paddingLeft="-16dp"
                 android:queryHint="@string/entr_name_num"
                 android:searchIcon="@null"
                 android:theme="@style/SearchViewStyle"
@@ -101,8 +104,6 @@
                 android:id="@+id/cntnr_vw"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_72"
-                android:layout_marginLeft="@dimen/dp_26"
-                android:layout_marginRight="@dimen/dp_26"
                 android:background="@drawable/border_transparent_inside"
                 app:layout_constraintBottom_toBottomOf="@+id/saldo"
                 app:layout_constraintTop_toTopOf="@+id/ovo_cash" />
@@ -110,12 +111,13 @@
             <View
                 android:id="@+id/cntnr_vw_amt"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_110"
+                android:layout_height="0dp"
                 android:layout_marginLeft="@dimen/dp_26"
                 android:layout_marginTop="@dimen/dp_40"
                 android:layout_marginRight="@dimen/dp_26"
                 android:background="@color/clr_f8f8f8"
-                app:layout_constraintTop_toBottomOf="@+id/cntnr_vw" />
+                app:layout_constraintTop_toBottomOf="@+id/cntnr_vw"
+                app:layout_constraintBottom_toBottomOf="@+id/amt_err_txtv"/>
 
             <TextView
                 android:id="@+id/nmnl_trnsfr"
@@ -124,6 +126,7 @@
                 android:lineSpacingExtra="2sp"
                 android:paddingTop="@dimen/dp_16"
                 android:text="Nominal Transfer"
+                android:paddingLeft="@dimen/dp_10"
                 android:textColor="#6b767e"
                 android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="@+id/search_no"
@@ -135,6 +138,7 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/dp_10"
                 android:text="Rp"
+                android:paddingLeft="@dimen/dp_10"
                 android:textColor="#2d263b"
                 android:textSize="24sp"
                 app:layout_constraintStart_toStartOf="@+id/search_no"
@@ -161,7 +165,8 @@
                 android:id="@+id/amt_err_txtv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=""
+                android:text="Error"
+                android:paddingLeft="@dimen/dp_10"
                 android:textColor="@color/red_600"
                 android:textSize="12sp"
                 android:visibility="gone"
@@ -170,9 +175,10 @@
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/msg"
-                android:layout_width="360dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:counterEnabled="true"
+                android:layout_marginTop="@dimen/dp_40"
                 app:counterMaxLength="25"
                 app:layout_constraintStart_toStartOf="@+id/search_no"
                 app:layout_constraintTop_toBottomOf="@+id/cntnr_vw_amt">
@@ -194,9 +200,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:layout_marginLeft="@dimen/dp_30"
                 android:layout_marginTop="@dimen/dp_56"
-                android:layout_marginRight="@dimen/dp_30"
                 android:layout_marginBottom="@dimen/dp_50"
                 android:background="@drawable/btn_bg_rounded_corners"
                 android:enabled="false"

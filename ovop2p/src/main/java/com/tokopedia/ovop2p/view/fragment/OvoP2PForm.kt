@@ -274,12 +274,12 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
                         amtErrorTxtv.visibility = View.VISIBLE
                         proceedBtn.isEnabled = false
                     } else {
+                        amtErrorTxtv.visibility = View.GONE
                         rcvrAmt = enteredAmt
                         if (!TextUtils.isEmpty(searchView.query)) {
                             rcvrPhnNo = OvoP2pUtil.checkValidRcvrPhoneEntry(searchView.query.toString(), rcvrPhnNo)
                             rcvrPhnNo = OvoP2pUtil.extractNumbersFromString(rcvrPhnNo)
                             proceedBtn.isEnabled = true
-                            amtErrorTxtv.visibility = View.GONE
                         }
                     }
                 } else {
