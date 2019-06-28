@@ -20,13 +20,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_UNIQUE_ID;
-import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_BDAY;
-import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_EMAIL;
-import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_FIRST_NAME;
-import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_GENDER;
-import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_MOBILE;
-import static com.moe.pushlibrary.utils.MoEHelperConstants.USER_ATTRIBUTE_USER_NAME;
+import static com.moe.pushlibrary.utils.MoEHelperConstants.*;
 import static com.tokopedia.core.analytics.AppEventTracking.MOENGAGE.IS_GOLD_MERCHANT;
 import static com.tokopedia.core.analytics.AppEventTracking.MOENGAGE.SHOP_ID;
 import static com.tokopedia.core.analytics.AppEventTracking.MOENGAGE.SHOP_NAME;
@@ -119,7 +113,6 @@ public class MoengageAnalytics extends ContextAnalytics {
     /**
      * will be eliminate soon
      * refer to setUserProfile(String... customerWrapper)
-     *
      * @param customerWrapper
      */
     @Deprecated
