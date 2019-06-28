@@ -300,7 +300,17 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
             setResult(CategoryNavigationActivity.DESTROY_INTERMEDIARY);
             finish();
         }
-        AdultManager.handleActivityResult(this, requestCode, resultCode, data);
+        AdultManager.handleActivityResult(this, requestCode, resultCode, data, new AdultManager.Callback() {
+            @Override
+            public void onFail() {
+
+            }
+
+            @Override
+            public void onSuccess() {
+
+            }
+        });
     }
 
     @Override

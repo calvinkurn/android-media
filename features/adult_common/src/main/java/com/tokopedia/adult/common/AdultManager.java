@@ -41,10 +41,16 @@ public class AdultManager {
         return intent;
     }
 
-    public static void handleActivityResult(Activity activity, int requestCode, int resultCode, @Nullable Intent data) {
+    public static void handleActivityResult(Activity activity, int requestCode, int resultCode,
+                                            @Nullable Intent data) {
+       handleActivityResult(activity, requestCode, resultCode, data, null);
+    }
+
+    public static void handleActivityResult(Activity activity, int requestCode, int resultCode,
+                                            @Nullable Intent data, Callback callback) {
         if (requestCode == REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
-                //todo something when user logged in and preverified
+                if (callback != null) callback.onSuccess();
             } else if (resultCode == RESULT_CODE_DOB_VERIFICATION_SUCCESS && data != null) {
                 String message = data.getStringExtra(EXTRA_VERIFICATION_SUCCESS);
                 Toaster.Companion.showNormalWithAction(activity,
@@ -52,9 +58,16 @@ public class AdultManager {
                         Snackbar.LENGTH_INDEFINITE,
                         "Ok", (v) -> {
                         });
+                if (callback != null) callback.onSuccess();
             } else {
+                if (callback != null) callback.onFail();
                 activity.finish();
             }
         }
+    }
+
+    public interface Callback {
+        void onFail();
+        void onSuccess();
     }
 }
