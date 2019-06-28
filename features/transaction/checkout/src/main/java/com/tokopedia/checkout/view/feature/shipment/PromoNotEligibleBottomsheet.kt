@@ -51,6 +51,8 @@ class PromoNotEligibleBottomsheet : BottomSheets() {
         val linearLayoutManager = LinearLayoutManager(activity)
         rvPromoList.layoutManager = linearLayoutManager
         rvPromoList.adapter = adapter
+
+        actionListener.onShow()
     }
 
     override fun title(): String {
