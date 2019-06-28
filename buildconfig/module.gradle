@@ -55,7 +55,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
 
     implementation (rootProject.ext.debugToolsDependencies.timber){
-        exclude group: 'com.jetbrains', module: 'annotations'
+        exclude group: 'org.jetbrains', module: 'annotations'
     }
 
     implementation rootProject.ext.miscDependencies.rxAndroid
