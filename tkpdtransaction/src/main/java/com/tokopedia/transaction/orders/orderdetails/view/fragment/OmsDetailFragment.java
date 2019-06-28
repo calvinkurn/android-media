@@ -367,7 +367,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
             }
         }
         if (itemsList.size() > 0) {
-            recyclerView.setAdapter(new ItemsAdapter(getContext(), items, false, presenter));
+            recyclerView.setAdapter(new ItemsAdapter(getContext(), items, false, presenter, getArguments().getString(KEY_ORDER_ID)));
         } else {
             detailsLayout.setVisibility(View.GONE);
         }

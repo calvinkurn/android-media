@@ -74,6 +74,7 @@ import com.tokopedia.sessioncommon.view.LoginSuccessRouter;
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 import java.util.ArrayList;
 

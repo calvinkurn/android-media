@@ -1981,7 +1981,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onLogisticPromoChosen(List<ShippingCourierViewModel> shippingCourierViewModels, CourierItemData courierData, RecipientAddressModel recipientAddressModel, int cartPosition, int selectedServiceId, ServiceData serviceData, boolean flagNeedToSetPinpoint, String promoCode) {
-        onShippingDurationChoosen(shippingCourierViewModels, courierData, recipientAddressModel, cartPosition, selectedServiceId, serviceData, flagNeedToSetPinpoint, false);
+        onShippingDurationChoosen(shippingCourierViewModels, courierData, recipientAddressModel, cartPosition, selectedServiceId, serviceData, flagNeedToSetPinpoint, false, false);
         String cartString = shipmentAdapter.getShipmentCartItemModelByIndex(cartPosition).getCartString();
         if (!flagNeedToSetPinpoint)
             shipmentPresenter.processCheckPromoStackingLogisticPromo(cartPosition, cartString, promoCode);
@@ -1991,8 +1991,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onShippingDurationChoosen(List<ShippingCourierViewModel> shippingCourierViewModels,
                                           CourierItemData recommendedCourier,
                                           RecipientAddressModel recipientAddressModel,
-                                          int cartItemPosition, int selectedServiceId, ServiceData serviceData, boolean flagNeedToSetPinpoint,
-                                          boolean isClearPromo) {
+                                          int cartItemPosition, int selectedServiceId,
+                                          ServiceData serviceData, boolean flagNeedToSetPinpoint,
+                                          boolean isDurationClick, boolean isClearPromo) {
         if (isTradeIn()) {
             checkoutAnalyticsCourierSelection.eventClickKurirTradeIn(serviceData.getServiceName());
         }
@@ -2046,7 +2047,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentAdapter.setSelectedCourier(cartItemPosition, recommendedCourier);
                 shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
                 shipmentAdapter.setShippingCourierViewModels(shippingCourierViewModels, recommendedCourier, cartItemPosition);
-                if (!TextUtils.isEmpty(recommendedCourier.getPromoCode())) {
+                if (!TextUtils.isEmpty(recommendedCourier.getPromoCode()) && isDurationClick) {
                     checkCourierPromo(recommendedCourier, cartItemPosition);
                 }
                 List<DataCheckoutRequest> dataCheckoutRequestsShipping = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(

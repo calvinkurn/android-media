@@ -68,7 +68,6 @@ dependencies {
     implementation (rootProject.ext.analyticsDependencies.moengageMSG) {
         exclude group: 'com.android.support'
     }
-    implementation rootProject.ext.analyticsDependencies.logentries
 
     implementation project(rootProject.ext.libraries.analytics)
 
@@ -91,10 +90,10 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-    implementation "com.moengage:moengagesdk:3.3.00"
-    implementation "com.moengage:pushbase:3.2.00"
+    implementation rootProject.ext.analyticsDependencies.moengageSdk
+    implementation rootProject.ext.analyticsDependencies.moengagePushbase
+    implementation rootProject.ext.analyticsDependencies.moengageInapp
     implementation "com.moengage:moe-push-firebase:3.2.00"
-    implementation "com.moengage:inapp:3.2.02"
     implementation "com.moengage:moe-location-lib:5.2.02"
     implementation "com.moengage:addon-realtime-trigger:2.2.00"
     implementation "com.moengage:integration-verifier:1.0.00"

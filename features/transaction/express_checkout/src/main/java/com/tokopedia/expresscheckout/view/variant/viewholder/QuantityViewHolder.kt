@@ -99,17 +99,21 @@ class QuantityViewHolder(view: View, listener: CheckoutVariantActionListener) : 
 
     private fun setupMinButton(element: QuantityViewModel) {
         if (element.orderQuantity > element.minOrderQuantity && element.orderQuantity > 0) {
-            itemView.btn_qty_min.setImageResource(R.drawable.bg_button_counter_minus_enabled)
+            itemView.btn_qty_min.setImageDrawable(MethodChecker
+                    .getDrawable(itemView.btn_qty_min.getContext(),R.drawable.bg_button_counter_minus_enabled))
         } else {
-            itemView.btn_qty_min.setImageResource(R.drawable.bg_button_counter_minus_disabled)
+            itemView.btn_qty_min.setImageDrawable(MethodChecker
+                    .getDrawable(itemView.btn_qty_min.getContext(),R.drawable.bg_button_counter_minus_disabled))
         }
     }
 
     private fun setupPlusButton(element: QuantityViewModel) {
         if (element.orderQuantity < element.maxOrderQuantity) {
-            itemView.btn_qty_plus.setImageResource(R.drawable.bg_button_counter_plus_enabled)
+            itemView.btn_qty_plus.setImageDrawable(MethodChecker
+                    .getDrawable(itemView.btn_qty_plus.getContext(),R.drawable.bg_button_counter_plus_enabled))
         } else {
-            itemView.btn_qty_plus.setImageResource(R.drawable.bg_button_counter_plus_disabled)
+            itemView.btn_qty_plus.setImageDrawable(MethodChecker
+                    .getDrawable(itemView.btn_qty_plus.getContext(),R.drawable.bg_button_counter_plus_disabled))
         }
     }
 
