@@ -21,7 +21,7 @@ ext {
 
     unifyIconVersion = '0.0.2-SNAPSHOT'
     unifyPrinciplesVersion = '0.0.1-SNAPSHOT'
-    unifyComponentsVersion = '0.0.3-SNAPSHOT'
+    unifyComponentsVersion = '0.0.4'
 
     // Sort alphabetically by package name
     tkpdInternalLibDependencies = [
