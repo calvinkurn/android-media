@@ -1,9 +1,12 @@
 package com.tokopedia.transaction.orders.orderdetails.view.adapter;
 
 import android.app.Activity;
+import android.app.DownloadManager;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
+import android.os.Environment;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -18,6 +21,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
@@ -33,6 +37,8 @@ import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDet
 import org.w3c.dom.Text;
 
 import java.util.List;
+
+import static android.content.Context.DOWNLOAD_SERVICE;
 
 public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements OrderListDetailContract.ActionInterface, RedeemVoucherView.SetTapActionDeals {
 
@@ -54,6 +60,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     SetEventDetails setEventDetails;
     private int position;
     private String orderId;
+    private PermissionCheckerHelper permissionCheckerHelper;
 
 
     public ItemsAdapter(Context context, List<Items> itemsList, boolean isShortLayout, OrderListDetailPresenter presenter, SetEventDetails setEventDetails, String orderId) {
@@ -133,14 +140,23 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         notifyItemChanged(position);
     }
 
-    private View.OnClickListener getActionButtonClickListener(final String uri) {
+    private View.OnClickListener getActionButtonClickListener(final String url) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((UnifiedOrderListRouter) context.getApplicationContext())
-                        .actionOpenGeneralWebView((Activity) context, uri);
+
             }
         };
+    }
+
+    private void downloadFile (String url) {
+        DownloadManager.Request request = new DownloadManager.Request(
+                Uri.parse(url));
+        request.allowScanningByMediaScanner();
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, url.substring(url.lastIndexOf("/") + 1));
+        DownloadManager dm = (DownloadManager) context.getSystemService(DOWNLOAD_SERVICE);
+        dm.enqueue(request);
     }
 
     @Override
