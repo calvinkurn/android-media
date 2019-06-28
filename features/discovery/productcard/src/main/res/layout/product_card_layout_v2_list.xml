@@ -56,8 +56,8 @@
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/constraintLayoutProductCardContent"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_0"
             android:layout_marginTop="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
