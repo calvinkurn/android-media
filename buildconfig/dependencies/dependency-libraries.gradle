@@ -20,7 +20,7 @@ ext {
     tkpdGraphViewVersion = '2.22'
 
     unifyIconVersion = '0.0.2'
-    unifyPrinciplesVersion = '0.0.1'
+    unifyPrinciplesVersion = '0.0.2'
     unifyComponentsVersion = '0.0.4'
 
     // Sort alphabetically by package name
