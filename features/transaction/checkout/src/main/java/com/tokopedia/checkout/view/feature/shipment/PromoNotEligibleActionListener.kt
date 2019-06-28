@@ -6,6 +6,8 @@ package com.tokopedia.checkout.view.feature.shipment
 
 interface PromoNotEligibleActionListener {
 
+    fun onShow();
+
     fun onButtonContinueClicked(checkoutType: Int);
 
 }

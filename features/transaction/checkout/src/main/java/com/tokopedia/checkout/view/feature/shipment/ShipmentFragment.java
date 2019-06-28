@@ -1793,7 +1793,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }
 
                 if (globalPromoRedState) {
-                    if(merchantIndex > 0) {
+                    if (merchantIndex > 0) {
                         rvShipment.smoothScrollToPosition(merchantIndex);
                     }
                     showToastError(shipmentAdapter.getPromoGlobalStackData().getDescription());
@@ -2678,6 +2678,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (getActivity() != null && promoNotEligibleBottomsheet == null) {
             promoNotEligibleBottomsheet = PromoNotEligibleBottomsheet.Companion.createInstance();
             promoNotEligibleBottomsheet.setActionListener(this);
+            promoNotEligibleBottomsheet
             promoNotEligibleBottomsheet.setDismissListener(() -> checkoutAnalyticsCourierSelection.eventClickBatalOnErrorPromoConfirmation());
         }
         promoNotEligibleBottomsheet.setNotEligiblePromoHolderDataList(notEligiblePromoHolderdataList);
@@ -2693,6 +2694,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataArrayList = promoNotEligibleBottomsheet.getNotEligiblePromoHolderDataList();
             promoNotEligibleBottomsheet.dismiss();
             shipmentPresenter.cancelNotEligiblePromo(notEligiblePromoHolderdataArrayList, checkoutType);
+        }
+    }
+
+    @Override
+    public void onShow() {
+        if (promoNotEligibleBottomsheet != null) {
+            promoNotEligibleBottomsheet.getBottomSheetBehavior().setPeekHeight(200);
         }
     }
 
