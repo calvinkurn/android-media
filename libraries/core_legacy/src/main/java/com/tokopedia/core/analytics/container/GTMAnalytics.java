@@ -104,12 +104,13 @@ public class GTMAnalytics extends ContextAnalytics {
 
             pResult.setResultCallback(cHolder -> {
                 ContainerHolderSingleton.setContainerHolder(cHolder);
-                cHolder.setContainerAvailableListener((containerHolder, s) -> {
-                    if (isAllowRefreshDefault(containerHolder)) {
-                        Log.i("GTM TKPD", "Refreshed Container ");
-                        containerHolder.refresh();
-                    }
-                });
+
+                if (isAllowRefreshDefault(cHolder)) {
+                    Log.i("GTM TKPD", "Refreshed Container ");
+                    cHolder.refresh();
+                }
+                //cHolder.setContainerAvailableListener((containerHolder, s) -> {
+                //});
             }, 2, TimeUnit.SECONDS);
         } catch (Exception e) {
             eventError(getContext().getClass().toString(), e.toString());
