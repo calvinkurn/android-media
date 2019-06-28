@@ -207,7 +207,9 @@ dependencies {
     implementation project(rootProject.ext.features.shopSettings)
 
     implementation project(rootProject.ext.libraries.logger)
-    implementation rootProject.ext.debugToolsDependencies.timber
+    implementation (rootProject.ext.debugToolsDependencies.timber){
+        exclude group: 'com.jetbrains', module: 'annotations'
+    }
 }
 
 repositories {
