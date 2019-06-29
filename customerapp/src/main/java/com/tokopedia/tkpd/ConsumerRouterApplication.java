@@ -2842,7 +2842,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 CLICK_PDP,
                 PRODUCT_DETAIL_PAGE,
-                "click - review gallery on review list",
+                "click - review gallery on rating list",
                 String.format(
                         "product_id: %s - review_id : %s",
                         productId,
