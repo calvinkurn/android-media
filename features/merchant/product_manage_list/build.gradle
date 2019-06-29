@@ -27,7 +27,6 @@ dependencies {
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.topAdsSourceTagging)
     implementation project(rootProject.ext.features.topAdsFreeClaim)
-    implementation project(rootProject.ext.features.productDraftDatabase)
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.seller)
     implementation project(rootProject.ext.features.productShare)

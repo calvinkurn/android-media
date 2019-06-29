@@ -56,7 +56,6 @@ dependencies {
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.productManageItem)
-    implementation project(rootProject.ext.features.productDraftDatabase)
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.transactioncommon)
     implementation project(rootProject.ext.features.categoryCommon)

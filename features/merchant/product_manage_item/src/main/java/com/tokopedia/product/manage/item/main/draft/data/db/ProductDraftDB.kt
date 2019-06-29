@@ -1,4 +1,4 @@
-package com.tokopedia.productdraftdatabase
+package com.tokopedia.product.manage.item.main.draft.data.db
 
 import android.arch.persistence.db.SupportSQLiteDatabase
 import android.arch.persistence.room.Database
@@ -15,9 +15,11 @@ abstract class ProductDraftDB : RoomDatabase(){
         @Volatile private var INSTANCE: ProductDraftDB? = null
 
         @JvmStatic
-        fun getInstance(context: Context): ProductDraftDB{
-            return INSTANCE ?: synchronized(this){
-                INSTANCE ?: buildDatabase(context).also{ INSTANCE = it}
+        fun getInstance(context: Context): ProductDraftDB {
+            return INSTANCE
+                    ?: synchronized(this){
+                INSTANCE
+                        ?: buildDatabase(context).also{ INSTANCE = it}
             }
         }
 

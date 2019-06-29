@@ -38,8 +38,8 @@ import com.tokopedia.product.manage.item.variant.data.repository.ProductVariantR
 import com.tokopedia.product.manage.item.variant.data.repository.ProductVariantRepositoryImpl;
 import com.tokopedia.product.manage.item.variant.data.source.ProductVariantDataSource;
 import com.tokopedia.product.manage.item.video.data.source.FetchVideoEditProductDataSource;
-import com.tokopedia.productdraftdatabase.ProductDraftDB;
-import com.tokopedia.productdraftdatabase.ProductDraftDao;
+import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDB;
+import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDao;
 
 import dagger.Module;
 import dagger.Provides;

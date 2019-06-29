@@ -36,8 +36,8 @@ import com.tokopedia.product.manage.item.variant.data.repository.ProductVariantR
 import com.tokopedia.product.manage.item.variant.data.repository.ProductVariantRepositoryImpl;
 import com.tokopedia.product.manage.item.variant.data.source.ProductVariantDataSource;
 import com.tokopedia.product.manage.item.variant.domain.FetchProductVariantByCatUseCase;
-import com.tokopedia.productdraftdatabase.ProductDraftDB;
-import com.tokopedia.productdraftdatabase.ProductDraftDao;
+import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDB;
+import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDao;
 import com.tokopedia.shop.common.di.ShopCommonModule;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.user.session.UserSessionInterface;

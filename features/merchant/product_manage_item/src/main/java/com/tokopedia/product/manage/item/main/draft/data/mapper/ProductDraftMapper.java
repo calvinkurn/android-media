@@ -27,7 +27,7 @@ import com.tokopedia.product.manage.item.variant.data.model.variantsubmit.Produc
 import com.tokopedia.product.manage.item.variant.data.model.variantsubmit.ProductVariantDataSubmit;
 import com.tokopedia.product.manage.item.variant.data.model.variantsubmit.ProductVariantOptionSubmit;
 import com.tokopedia.product.manage.item.variant.data.model.variantsubmit.ProductVariantUnitSubmit;
-import com.tokopedia.productdraftdatabase.ProductDraft;
+import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraft;
 import com.tokopedia.product.manage.item.common.util.FreeReturnTypeDef;
 import com.tokopedia.product.manage.item.common.util.ProductInsuranceValueTypeDef;
 

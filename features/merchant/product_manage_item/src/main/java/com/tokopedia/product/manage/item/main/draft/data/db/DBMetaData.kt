@@ -1,4 +1,4 @@
-package com.tokopedia.productdraftdatabase
+package com.tokopedia.product.manage.item.main.draft.data.db
 
 object DBMetaData {
     const val DB_NAME = "tkpd_seller.db"

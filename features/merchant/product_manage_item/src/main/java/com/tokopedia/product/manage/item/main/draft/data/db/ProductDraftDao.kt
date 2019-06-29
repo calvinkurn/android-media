@@ -1,4 +1,4 @@
-package com.tokopedia.productdraftdatabase
+package com.tokopedia.product.manage.item.main.draft.data.db
 
 import android.arch.persistence.room.*
 

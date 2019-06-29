@@ -1,9 +1,9 @@
 package com.tokopedia.product.manage.item.main.draft.data.source;
 
 import com.tokopedia.product.manage.item.common.util.DraftNotFoundException;
-import com.tokopedia.productdraftdatabase.DBMetaData;
-import com.tokopedia.productdraftdatabase.ProductDraft;
-import com.tokopedia.productdraftdatabase.ProductDraftDao;
+import com.tokopedia.product.manage.item.main.draft.data.db.DBMetaData;
+import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraft;
+import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDao;
 
 import java.util.List;
 
