@@ -212,6 +212,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
                         }
                 )
             } else {
+                RecommendationPageTracking.eventUserClickBuyNonLogin()
                 context?.let {
                     startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
                             REQUEST_CODE_LOGIN)
