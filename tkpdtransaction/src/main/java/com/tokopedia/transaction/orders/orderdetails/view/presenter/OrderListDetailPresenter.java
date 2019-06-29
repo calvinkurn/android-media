@@ -1,10 +1,8 @@
 package com.tokopedia.transaction.orders.orderdetails.view.presenter;
 
-import android.app.DownloadManager;
-import android.content.Context;
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.res.Resources;
-import android.net.Uri;
-import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -20,8 +18,10 @@ import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.kotlin.util.DownloadHelper;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.opportunity.data.pojo.CancelReplacementPojo;
+import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButtonList;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
@@ -46,9 +46,12 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
+import kotlin.jvm.functions.Function0;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -486,27 +489,28 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         super.detachView();
     }
 
-    public void downloadPdf(String uri) {
+    public void onClick(String uri) {
         pdfUri = uri;
-        getView().askPermission();
+        if (isdownloadable(uri)) {
+            getView().askPermission();
+        } else {
+            ((UnifiedOrderListRouter) getView().getAppContext().getApplicationContext()).actionOpenGeneralWebView((Activity) getView().getAppContext(), uri);
+        }
     }
 
-    public void permissionGrantedContinueDownload(){
-        download(pdfUri);
+    @SuppressLint("MissingPermission")
+    public void permissionGrantedContinueDownload() {
+        DownloadHelper downloadHelper = new DownloadHelper(getView().getAppContext(), pdfUri, Insurance_File_Name, () -> {
+            // download success call back
+
+        });
+        downloadHelper.downloadFile(this::isdownloadable);
     }
 
-    private void download(String uri) {
-        Uri Download_Uri = Uri.parse(uri);
-        DownloadManager downloadManager = (DownloadManager) getView().getAppContext().getSystemService(Context.DOWNLOAD_SERVICE);
-        DownloadManager.Request request = new DownloadManager.Request(Download_Uri);
-        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
-        request.setAllowedOverRoaming(true);
-        request.setTitle(Insurance_File_Name+".pdf");
-        request.setDescription(Insurance_File_Name+".pdf");
-        request.setVisibleInDownloadsUi(true);
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, Insurance_File_Name+".pdf");
-        downloadManager.enqueue(request);
+    private Boolean isdownloadable(String uri ){
+        Pattern pattern = Pattern.compile("^.+\\.([pP][dD][fF])$");
+        Matcher matcher = pattern.matcher(uri);
+        return matcher.find();
     }
 
     public void sendThankYouEvent(MetaDataInfo metaDataInfo) {

@@ -149,6 +149,8 @@ import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModul
 import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModuleLoader;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModule;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleLoader;
+import com.tokopedia.webview.WebViewApplinkModule;
+import com.tokopedia.webview.WebViewApplinkModuleLoader;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -215,6 +217,7 @@ import rx.schedulers.Schedulers;
         HomeCreditAppLinkModule.class,
         OfficialStoreApplinkModule.class,
         OvoPayWithQrApplinkModule.class,
+        WebViewApplinkModule.class,
         RecommendationDeeplinkModule.class
 })
 
@@ -284,6 +287,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new HomeCreditAppLinkModuleLoader(),
                     new OfficialStoreApplinkModuleLoader(),
                     new OvoPayWithQrApplinkModuleLoader(),
+                    new WebViewApplinkModuleLoader(),
                     new RecommendationDeeplinkModuleLoader()
             );
         }
