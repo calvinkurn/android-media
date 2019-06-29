@@ -14,6 +14,7 @@ import com.tokopedia.attachproduct.view.fragment.AttachProductFragment;
 import com.tokopedia.attachproduct.view.presenter.AttachProductContract;
 
 import java.util.ArrayList;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * Created by Hendri on 13/02/18.
@@ -60,7 +61,7 @@ public class AttachProductActivity extends BaseSimpleActivity implements AttachP
             getSupportActionBar().setBackgroundDrawable(
                     getResources().getDrawable(R.drawable.bg_white_toolbar_drop_shadow));
             getSupportActionBar().setHomeAsUpIndicator(
-                    getResources().getDrawable(R.drawable.ic_close_default));
+                    MethodChecker.getDrawable(this,R.drawable.ic_close_default));
         }
         if (getIntent().getStringExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY) != null) {
             shopName = getIntent().getStringExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY);

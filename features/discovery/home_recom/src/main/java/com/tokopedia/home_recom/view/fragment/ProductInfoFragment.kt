@@ -22,7 +22,6 @@ import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
 import com.tokopedia.home_recom.router.HomeRecommendationRouter
 import com.tokopedia.home_recom.util.RecommendationPageErrorHandler
-import com.tokopedia.home_recom.view.customview.Toaster
 import com.tokopedia.home_recom.viewmodel.PrimaryProductViewModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -31,6 +30,18 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.Toaster
+import kotlinx.android.synthetic.main.fragment_product_info.product_name
+import kotlinx.android.synthetic.main.fragment_product_info.badge
+import kotlinx.android.synthetic.main.fragment_product_info.fab_detail
+import kotlinx.android.synthetic.main.fragment_product_info.product_price
+import kotlinx.android.synthetic.main.fragment_product_info.location
+import kotlinx.android.synthetic.main.fragment_product_info.product_image
+import kotlinx.android.synthetic.main.fragment_product_info.product_card
+import kotlinx.android.synthetic.main.fragment_product_info.rating
+import kotlinx.android.synthetic.main.fragment_product_info.review_count
+import kotlinx.android.synthetic.main.fragment_product_info.product_slashed_price
+import kotlinx.android.synthetic.main.fragment_product_info.product_discount
 import kotlinx.android.synthetic.main.fragment_product_info.*
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -314,7 +325,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
 
     private fun showToastSuccess(message: String) {
         activity?.run {
-            Toaster.showGreen(
+            Toaster.showNormal(
                     findViewById(android.R.id.content),
                     message,
                     Snackbar.LENGTH_LONG)

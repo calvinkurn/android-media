@@ -130,6 +130,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:src="@drawable/ic_close_border_24" />
+        app:srcCompat="@drawable/ic_close_border_24" />
 
 </FrameLayout>

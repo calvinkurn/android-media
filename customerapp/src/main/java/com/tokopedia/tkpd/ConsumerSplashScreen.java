@@ -30,6 +30,7 @@ import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
+import com.tokopedia.tkpd.timber.TimberWrapper;
 
 /**
  * Created by ricoharisin on 11/22/16.
@@ -155,5 +156,20 @@ public class ConsumerSplashScreen extends SplashScreen {
                         super.onLoadStarted(placeholder);
                     }
                 });
+    }
+
+    @Override
+    protected RemoteConfig.Listener getRemoteConfigListener() {
+        return new RemoteConfig.Listener() {
+            @Override
+            public void onComplete(RemoteConfig remoteConfig) {
+                TimberWrapper.initByConfig(remoteConfig);
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        };
     }
 }

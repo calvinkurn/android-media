@@ -34,10 +34,12 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation rootProject.ext.libraries.unifyComponents
+    implementation project(rootProject.ext.libraries.graphql)
 
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.sessioncommon)
+
+    implementation rootProject.ext.unifyDependencies.components
 
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler

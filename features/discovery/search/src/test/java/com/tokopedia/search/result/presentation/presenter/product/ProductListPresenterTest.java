@@ -9,10 +9,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import rx.Observable;
 import rx.Subscriber;
 
-import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -22,26 +20,11 @@ import static org.mockito.Mockito.verify;
 // TODO:: See ShopListPresenterTest for comparison
 public class ProductListPresenterTest {
 
-    private static class MockSearchProductModelUseCase extends UseCase<SearchProductModel> {
-        @Override
-        public Observable<SearchProductModel> createObservable(RequestParams requestParams) {
-            return null;
-        }
-    }
+    private static abstract class MockSearchProductUseCase extends UseCase<SearchProductModel> { }
+    private static abstract class MockSearchProductSubscriber extends Subscriber<SearchProductModel> { }
 
-    private static class MockSearchProductModelSubscriber extends Subscriber<SearchProductModel> {
-        @Override
-        public void onCompleted() { }
-
-        @Override
-        public void onError(Throwable e) { }
-
-        @Override
-        public void onNext(SearchProductModel searchProductModel) { }
-    }
-
-    private UseCase<SearchProductModel> searchProductFirstPageUseCase = mock(MockSearchProductModelUseCase.class);
-    private UseCase<SearchProductModel> searchProductLoadMoreUseCase = mock(MockSearchProductModelUseCase.class);
+    private UseCase<SearchProductModel> searchProductFirstPageUseCase = mock(MockSearchProductUseCase.class);
+    private UseCase<SearchProductModel> searchProductLoadMoreUseCase = mock(MockSearchProductUseCase.class);
     private ProductListPresenter productListPresenter;
 
     @Before
@@ -57,14 +40,23 @@ public class ProductListPresenterTest {
     public void loadMoreData_givenNulls_shouldNotExecuteUseCase() {
         productListPresenter.loadMoreData(null, null);
 
-        verify(searchProductLoadMoreUseCase, never()).execute(any(RequestParams.class), any(ProductListPresenterTest.MockSearchProductModelSubscriber.class));
+        verify(searchProductLoadMoreUseCase, never()).execute(any(RequestParams.class), any(MockSearchProductSubscriber.class));
     }
 
     @Test
     public void loadData_givenNulls_shouldNotExecuteUseCase() {
         productListPresenter.loadData(null, null, false);
 
-        verify(searchProductFirstPageUseCase, never()).execute(any(RequestParams.class), any(ProductListPresenterTest.MockSearchProductModelSubscriber.class));
+        verify(searchProductFirstPageUseCase, never()).execute(any(RequestParams.class), any(MockSearchProductSubscriber.class));
+    }
+
+    @Test
+    public void detachView_AfterInjectUseCase_ShouldUnsubscribeAllUseCases() {
+        productListPresenter.detachView();
+
+        assert productListPresenter.getView() == null;
+        verify(searchProductFirstPageUseCase).unsubscribe();
+        verify(searchProductLoadMoreUseCase).unsubscribe();
     }
 
     @After

@@ -21,6 +21,14 @@
             android:layout_alignParentTop="true"
             android:orientation="vertical">
 
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/ticker_announcement"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:tickerType="announcement"
+                app:tickerShapeType="full" />
+
             <com.tokopedia.loginregister.registerinitial.view.customview.PartialRegisterInputView
                 android:id="@+id/register_input_view"
                 android:layout_width="wrap_content"

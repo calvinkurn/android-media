@@ -17,6 +17,7 @@ import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewMod
 interface PlayViewState {
 
     fun onSuccessGetInfoFirstTime(it: ChannelInfoViewModel, childFragmentManager: FragmentManager)
+    fun onSuccessGetInfo(it: ChannelInfoViewModel, childFragmentManager: FragmentManager)
 
     fun loadImageChannelBanner(context: Context, bannerUrl: String?, blurredBannerUrl: String?)
     fun setToolbarData(title: String?, bannerUrl: String?, totalView: String?, blurredBannerUrl: String?)
@@ -61,4 +62,5 @@ interface PlayViewState {
     fun onNoInternetConnection()
     fun onInteractiveButtonClicked(anchorView: LottieAnimationView)
     fun onInteractiveButtonViewed(anchorView: LottieAnimationView)
+
 }

@@ -42,6 +42,8 @@ public class PromoAdapter extends RecyclerView.Adapter<PromoAdapter.PromosViewHo
 
     @Override
     public void onBindViewHolder(@NonNull PromosViewHolder holder, int position) {
+        holder.setShown(productItems.get(position).isTrack());
+        holder.setIndex(position);
         holder.bindData(productItems.get(position), position);
     }
 
@@ -50,19 +52,49 @@ public class PromoAdapter extends RecyclerView.Adapter<PromoAdapter.PromosViewHo
         return productItems.size();
     }
 
+    @Override
+    public void onViewAttachedToWindow(@NonNull PromosViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+
+        if (!holder.isShown()) {
+            holder.setShown(true);
+            productItems.get(holder.getAdapterPosition()).setTrack(true);
+            dealsAnalytics.sendPromoImpressionEvent(productItems.get(holder.getIndex()), holder.getIndex());
+        }
+
+    }
+
     public class PromosViewHolder extends RecyclerView.ViewHolder {
         private ImageView promoImage;
+        private boolean isShown;
+        private int index;
 
         public PromosViewHolder(View itemView) {
             super(itemView);
             promoImage = itemView.findViewById(R.id.banner_item);
         }
 
+        boolean isShown() {
+            return isShown;
+        }
+
+        void setShown(boolean isShown) {
+            this.isShown = isShown;
+        }
+
+        void setIndex(int index) {
+            this.index = index;
+        }
+
+        public int getIndex() {
+            return this.index;
+        }
+
         void bindData(ProductItem item, int position) {
             ImageHandler.loadImage(context, promoImage, item.getImageWeb(), R.color.grey_1100, R.color.grey_1100);
             promoImage.setOnClickListener(view -> {
-                mPresenter.sendEventEcommerce(item.getId(), position, item.getDisplayName(), DealsAnalytics.EVENT_PROMO_CLICK
-                        , DealsAnalytics.EVENT_CLICK_PROMO_BANNER, DealsAnalytics.LIST_DEALS_TOP_BANNER);
+                mPresenter.sendEventEcommerce(item, position, item.getDisplayName(), DealsAnalytics.EVENT_PROMO_CLICK
+                        , DealsAnalytics.EVENT_CLICK_PROMO_BANNER, DealsAnalytics.LIST_SUGGESTED_DEALS);
                 mPresenter.onClickBanner(item);
             });
         }
