@@ -6,7 +6,6 @@ include "libraries:base_adapter"
 include "libraries:base_list_seller"
 include "libraries:bottom_sheet_builder"
 include "libraries:cache_api"
-include "libraries:camera_view"
 include "libraries:cameraview"
 include "libraries:cm_push_notifications"
 include "libraries:common_network"
@@ -24,6 +23,7 @@ include 'libraries:imageuploader'
 include "libraries:inappupdate"
 include "libraries:kotlin_extensions"
 include 'libraries:locationmanager'
+include "libraries:logger"
 include 'libraries:iris'
 //include 'libraries:iris_no_op'
 include "libraries:network"

@@ -26,18 +26,17 @@ class PinpointMapActivity : BaseSimpleActivity() {
     var SCREEN_NAME = "PinpointMapActivity"
 
     companion object {
-        val defaultLat: Double by lazy { -6.175794 }
-        val defaultLong: Double by lazy { 106.826457 }
-
-        fun newInstance(context: Context, lat: Double?, long: Double?, token: Token?, isPolygon: Boolean, districtId: Int?,
-                        isMismatchSolved: Boolean, saveAddressDataModel: SaveAddressDataModel?, isChangesRequested: Boolean): Intent =
+        @JvmStatic
+        fun newInstance(context: Context, lat: Double?, long: Double?, isShowAutoComplete: Boolean, token: Token?, isPolygon: Boolean, districtId: Int?,
+                        isMismatchSolved: Boolean, isMismatch: Boolean, saveAddressDataModel: SaveAddressDataModel?, isChangesRequested: Boolean): Intent =
                 Intent(context, PinpointMapActivity::class.java).apply {
                     putExtra(KERO_TOKEN, token)
                     putExtra(EXTRA_LAT, lat)
                     putExtra(EXTRA_LONG, long)
-                    putExtra(EXTRA_SHOW_AUTOCOMPLETE, false)
+                    putExtra(EXTRA_SHOW_AUTOCOMPLETE, isShowAutoComplete)
                     putExtra(EXTRA_IS_POLYGON, isPolygon)
                     putExtra(EXTRA_DISTRICT_ID, districtId)
+                    putExtra(EXTRA_IS_MISMATCH, isMismatch)
                     putExtra(EXTRA_IS_MISMATCH_SOLVED, isMismatchSolved)
                     putExtra(EXTRA_SAVE_DATA_UI_MODEL, saveAddressDataModel)
                     putExtra(EXTRA_IS_CHANGES_REQUESTED, isChangesRequested)

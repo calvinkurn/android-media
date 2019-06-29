@@ -231,7 +231,7 @@ class ProductDetailTracking() {
                         KEY_ACTION, ProductTrackingConstant.Action.TOPADS_IMPRESSION +
                         (if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN}" else ""),
                         KEY_LABEL, "",
-                        KEY_ECOMMERCE, DataLayer.mapOf("currencyCode", "IDR", "impression",
+                        KEY_ECOMMERCE, DataLayer.mapOf("currencyCode", "IDR", "impressions",
                         DataLayer.listOf(
                                 DataLayer.mapOf(PROMO_NAME, product.name,
                                         ID, product.productId.toString(), PRICE, removeCurrencyPrice(product.price),

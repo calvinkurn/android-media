@@ -21,6 +21,7 @@ import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class BottomSheetButtonsFragment extends InboxBottomSheetFragment {
     @BindView(R2.id.tv_bad_reason_1)

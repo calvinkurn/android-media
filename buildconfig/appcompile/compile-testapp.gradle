@@ -23,6 +23,7 @@ include 'libraries:imageuploader'
 include "libraries:inappupdate"
 include "libraries:kotlin_extensions"
 //include 'libraries:locationmanager'
+include "libraries:logger"
 //include 'libraries:iris'
 include 'libraries:iris_no_op'
 include "libraries:network"
@@ -54,12 +55,7 @@ include "libraries:collapsing_tab_layout"
 
 include "libraries:videouploader"
 
-include "libraries:unify:unify_icon"
-include "libraries:unify:unify_principles"
-include "libraries:unify:unify_components"
-include "libraries:unify:unify_compositions:coach_mark"
 include "libraries:unify:unify_compositions:banner"
-
 
 include 'tkpddesign'
 include 'tkpdabstraction'

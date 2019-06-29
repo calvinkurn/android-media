@@ -18,8 +18,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:background="@drawable/ic_placeholder" />
+            android:layout_marginRight="12dp" />
 
         <TextView
             android:id="@+id/tv_distance"
