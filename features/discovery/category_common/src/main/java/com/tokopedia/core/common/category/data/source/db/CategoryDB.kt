@@ -29,7 +29,18 @@ abstract class CategoryDB : RoomDatabase(){
         }
 
         private val migration_15_16 = object : Migration(15, DBMetaData.DB_VERSION) {
-            override fun migrate(database: SupportSQLiteDatabase) {}
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("CREATE TABLE ${DBMetaData.DB_TABLE}2(" +
+                        "id INTEGER PRIMARY KEY," +
+                        "name TEXT NOT NULL," +
+                        "identifier TEXT NOT NULL," +
+                        "weight INTEGER NOT NULL," +
+                        "parentId INTEGER," +
+                        "hasChild INTEGER NOT NULL)")
+                database.execSQL("INSERT INTO ${DBMetaData.DB_TABLE}2 SELECT * FROM ${DBMetaData.DB_TABLE}")
+                database.execSQL("DROP TABLE ${DBMetaData.DB_TABLE}")
+                database.execSQL("ALTER TABLE ${DBMetaData.DB_TABLE}2 RENAME TO ${DBMetaData.DB_TABLE}")
+            }
         }
     }
 }
