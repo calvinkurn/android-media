@@ -2,6 +2,6 @@ package com.tokopedia.core.common.category.data.source.db
 
 object DBMetaData {
     const val DB_NAME = "tkpdcategory.db"
-    const val DB_VERSION = 15
+    const val DB_VERSION = 16
     const val DB_TABLE = "CategoryDataBase"
 }
