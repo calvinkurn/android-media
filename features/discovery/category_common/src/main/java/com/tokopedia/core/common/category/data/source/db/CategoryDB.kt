@@ -21,7 +21,6 @@ abstract class CategoryDB : RoomDatabase(){
 
         private fun buildDatabase(context: Context): CategoryDB {
             return Room.databaseBuilder(context, CategoryDB::class.java, DBMetaData.DB_NAME)
-                    .fallbackToDestructiveMigration()
                     .allowMainThreadQueries()
                     .build()
         }

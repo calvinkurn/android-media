@@ -21,7 +21,6 @@ abstract class ProductDraftDB : RoomDatabase(){
 
         private fun buildDatabase(context: Context): ProductDraftDB {
             return Room.databaseBuilder(context, ProductDraftDB::class.java, DBMetaData.DB_NAME)
-                    .fallbackToDestructiveMigration()
                     .allowMainThreadQueries()
                     .build()
         }
