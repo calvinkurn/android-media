@@ -73,7 +73,8 @@ class RecommendationPageTracking {
         private const val EVENT_ACTION_IMPRESSION_PRODUCT_WISHLIST_NON_LOGIN = "click add wishlist on primary product - non login"
         private const val EVENT_ACTION_IMPRESSION_PRODUCT_WISHLIST = "click %s wishlist on primary product"
         private const val EVENT_ACTION_CLICK_ICON_SHARE = "click icon share"
-        private const val EVENT_ACTION_ADD_TO_CART = "click add to cart"
+        private const val EVENT_ACTION_ADD_TO_CART = "click add to cart on primary product"
+        private const val EVENT_ACTION_BUY = "click buy on primary product"
         private const val EVENT_ACTION_CLICK_BACK = "click back"
         private const val EVENT_ACTION_CLICK_SEE_CART = "click see cart"
         private const val EVENT_ACTION_CLICK_PRIMARY_PRODUCT = "click primary product"
@@ -553,7 +554,7 @@ class RecommendationPageTracking {
             tracker.sendEnhanceEcommerceEvent(data)
         }
 
-        // No 15 Almost Done (Just wait with complete Data)
+        // No 15 Done
         fun eventUserClickAddToCart(
                 recommendationItem: RecommendationItem
         ){
@@ -703,6 +704,23 @@ class RecommendationPageTracking {
                     EVENT_CATEGORY, EVENT_CATEGORY_RECOMMENDATION_PAGE,
                     EVENT_ACTION, EVENT_ACTION_CLICK_SEE_CART,
                     EVENT_LABEL, VALUE_EMPTY
+            )
+            tracker.sendEnhanceEcommerceEvent(data)
+        }
+
+        fun eventUserClickBuy(
+                recommendationItem: RecommendationItem
+        ){
+            val tracker = getTracker()
+            val data = DataLayer.mapOf(
+                    EVENT, EVENT_ADD_TO_CART,
+                    EVENT_CATEGORY, EVENT_CATEGORY_RECOMMENDATION_PAGE,
+                    EVENT_ACTION, EVENT_ACTION_BUY,
+                    EVENT_LABEL, VALUE_EMPTY,
+                    ECOMMERCE, DataLayer.mapOf(
+                    ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
+                    ECOMMERCE_ADD, convertProductToDataClickAddToCart(recommendationItem, VALUE_LIST_PRIMARY_PRODUCT_RECOMMENDATION)
+            )
             )
             tracker.sendEnhanceEcommerceEvent(data)
         }

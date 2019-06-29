@@ -191,6 +191,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
                             if(result.containsKey(STATUS) && !(result[STATUS] as Boolean)){
                                 showToastError(MessageErrorException(result[MESSAGE].toString()))
                             }else if(result.containsKey(CART_ID) && result[CART_ID].toString().isNotEmpty()){
+                                RecommendationPageTracking.eventUserClickBuy(recommendationItem)
                                 goToCart()
                             }
                         },
