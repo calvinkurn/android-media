@@ -4,13 +4,9 @@ import com.crashlytics.android.Crashlytics
 import com.tokopedia.kotlin.util.ContainNullException
 import com.tokopedia.kotlin.util.isContainNull
 import com.tokopedia.recommendation_widget_common.BuildConfig
-
 import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-
-import java.util.ArrayList
-
 import rx.functions.Func1
 
 /**
@@ -45,7 +41,7 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
         private fun convertToRecommendationWidget(recomendationData: RecomendationEntity.RecomendationData): RecommendationWidget {
             val recommendationItemList = arrayListOf<RecommendationItem>()
             recommendationItemList.addAll(
-                    recomendationData.recommendation?.mapIndexed { index, recommendation -> convertToRecommendationItem(recommendation, index + 1) } ?: emptyList())
+                    recomendationData.recommendation?.mapIndexed { index, recommendation -> convertToRecommendationItem(recommendation, recomendationData.title ?: "", index + 1) } ?: emptyList())
             return RecommendationWidget(
                     recommendationItemList,
                     recomendationData.title ?: "",
@@ -61,7 +57,7 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
                     recomendationData.pageName?:"")
         }
 
-        private fun convertToRecommendationItem(data: RecomendationEntity.Recommendation, position: Int): RecommendationItem {
+        private fun convertToRecommendationItem(data: RecomendationEntity.Recommendation, title: String, position: Int): RecommendationItem {
             return RecommendationItem(
                     data.id,
                     data.name ?: "",
@@ -88,7 +84,9 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
                     "",
                     data.shop?.name ?: "",
                     -1,
-                    1
+                    1,
+                    title
+
             )
 
         }

@@ -13,7 +13,11 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.analytics.RecommendationPageTracking
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
-import com.tokopedia.home_recom.model.datamodel.*
+import com.tokopedia.home_recom.model.datamodel.TitleDataModel
+import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
+import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselDataModel
+import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
+import com.tokopedia.home_recom.model.datamodel.HomeRecommendationDataModel
 import com.tokopedia.home_recom.model.entity.ProductDetailData
 import com.tokopedia.home_recom.view.adapter.HomeRecommendationAdapter
 import com.tokopedia.home_recom.view.adapter.HomeRecommendationTypeFactoryImpl
@@ -32,7 +36,6 @@ import com.tokopedia.recommendation_widget_common.presentation.RecommendationCar
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, HomeRecommendationTypeFactoryImpl>(), RecommendationCardView.TrackingListener {
@@ -242,6 +245,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     }
 
     private fun getHeaderName(item: RecommendationItem): String{
+        if(item.header.isNotBlank()) return item.header
         var header = ""
         val data = adapter.data
         val itemFoundAtStaggeredGridLayoutManager = data.any { it is RecommendationItemDataModel && it.productItem.productId == item.productId }
