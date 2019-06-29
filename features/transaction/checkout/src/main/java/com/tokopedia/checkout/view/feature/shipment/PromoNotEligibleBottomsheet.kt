@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.view.feature.shipment
 
+import android.app.Dialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
@@ -51,7 +52,10 @@ class PromoNotEligibleBottomsheet : BottomSheets() {
         val linearLayoutManager = LinearLayoutManager(activity)
         rvPromoList.layoutManager = linearLayoutManager
         rvPromoList.adapter = adapter
+    }
 
+    override fun setupDialog(dialog: Dialog?, style: Int) {
+        super.setupDialog(dialog, style)
         actionListener.onShow()
     }
 
