@@ -8,8 +8,8 @@ import com.tokopedia.product.detail.view.adapter.RecommendationProductAdapter
 import kotlinx.android.synthetic.main.partial_product_recom_4.view.*
 
 class PartialRecommendationFourthView private constructor(private val view: View,
-                                                         private val userActiveListener: RecommendationProductAdapter.UserActiveListener)
-    : BaseRecommendationView() {
+                                                          private val userActiveListener: RecommendationProductAdapter.UserActiveListener)
+    : BaseRecommendationView(view.context) {
 
     companion object {
         fun build(_view:View,_userActiveListener: RecommendationProductAdapter.UserActiveListener) =

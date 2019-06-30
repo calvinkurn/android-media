@@ -199,7 +199,7 @@ class ProductDetailTracking() {
             id.toString())
     }
 
-    fun eventRecommendationClick(product: RecommendationItem, position: Int, isSessionActive: Boolean) {
+    fun eventRecommendationClick(product: RecommendationItem, position: Int, isSessionActive: Boolean,pageName: String) {
         val listValue = LIST_DEFAULT + product.recommendationType + (if (product.isTopAds) " - product topads" else "")
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
@@ -215,6 +215,7 @@ class ProductDetailTracking() {
                                         ID, product.productId.toString(), PRICE, removeCurrencyPrice(product.price),
                                         BRAND, DEFAULT_VALUE,
                                         VARIANT, DEFAULT_VALUE,
+                                        "page_name", pageName,
                                         CATEGORY, product.categoryBreadcrumbs.toLowerCase(),
                                         PROMO_POSITION, position + 1)
                         ))

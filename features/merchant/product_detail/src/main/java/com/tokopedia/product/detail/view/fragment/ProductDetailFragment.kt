@@ -117,10 +117,10 @@ import kotlinx.android.synthetic.main.partial_product_full_descr.*
 import kotlinx.android.synthetic.main.partial_product_image_review.*
 import kotlinx.android.synthetic.main.partial_product_latest_talk.*
 import kotlinx.android.synthetic.main.partial_product_rating_talk_courier.*
+import kotlinx.android.synthetic.main.partial_product_recom_1.*
+import kotlinx.android.synthetic.main.partial_product_recom_2.*
 import kotlinx.android.synthetic.main.partial_product_recom_3.*
 import kotlinx.android.synthetic.main.partial_product_recom_4.*
-import kotlinx.android.synthetic.main.partial_product_recom_top_1.*
-import kotlinx.android.synthetic.main.partial_product_recommendation.*
 import kotlinx.android.synthetic.main.partial_product_shop_info.*
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
 import model.TradeInParams
@@ -148,8 +148,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     lateinit var imageReviewViewView: PartialImageReviewView
     lateinit var mostHelpfulReviewView: PartialMostHelpfulReviewView
     lateinit var latestTalkView: PartialLatestTalkView
-    lateinit var recommendationProductView: PartialRecommendationProductView
-    lateinit var recommendationTopFirstView: PartialRecommendationTopFirstView
+    lateinit var recommendationSecondView: PartialRecommendationSecondView
+    lateinit var recommendationFirstView: PartialRecommendationFirstView
     lateinit var recommendationThirdView: PartialRecommendationThirdView
     lateinit var recommendationFourthView: PartialRecommendationFourthView
 
@@ -345,22 +345,22 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     private fun hideRecommendationView(){
-        recommendationProductView.hideView()
-        recommendationTopFirstView.hideView()
+        recommendationSecondView.hideView()
+        recommendationFirstView.hideView()
         recommendationThirdView.hideView()
         recommendationFourthView.hideView()
     }
 
     private fun loadingRecommendationView() {
-        recommendationProductView.startLoading()
-        recommendationTopFirstView.startLoading()
+        recommendationSecondView.startLoading()
+        recommendationFirstView.startLoading()
         recommendationThirdView.startLoading()
         recommendationFourthView.startLoading()
     }
 
     private fun renderRecommendationData(result: List<RecommendationWidget>) {
-        recommendationTopFirstView.renderData(result[0])
-        recommendationProductView.renderData(result[1])
+        recommendationFirstView.renderData(result[0])
+        recommendationSecondView.renderData(result[1])
         recommendationThirdView.renderData(result[2])
         recommendationFourthView.renderData(result[3])
     }
@@ -673,12 +673,12 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         if (!::latestTalkView.isInitialized)
             latestTalkView = PartialLatestTalkView.build(base_latest_talk)
 
-        if (!::recommendationProductView.isInitialized) {
-            recommendationProductView = PartialRecommendationProductView.build(base_recommen_product, this)
+        if (!::recommendationSecondView.isInitialized) {
+            recommendationSecondView = PartialRecommendationSecondView.build(base_recom_2, this)
         }
 
-        if (!::recommendationTopFirstView.isInitialized) {
-            recommendationTopFirstView = PartialRecommendationTopFirstView.build(base_recom_1, this)
+        if (!::recommendationFirstView.isInitialized) {
+            recommendationFirstView = PartialRecommendationFirstView.build(base_recom_1, this)
         }
 
         if (!::recommendationThirdView.isInitialized) {

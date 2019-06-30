@@ -6,17 +6,17 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.view.adapter.RecommendationProductAdapter
-import kotlinx.android.synthetic.main.partial_product_recom_top_1.view.*
+import kotlinx.android.synthetic.main.partial_product_recom_1.view.*
 
 
-class PartialRecommendationTopFirstView private constructor(private val view: View,
-                                                            private val userActiveListener: RecommendationProductAdapter.UserActiveListener)
-    : BaseRecommendationView() {
+class PartialRecommendationFirstView private constructor(private val view: View,
+                                                         private val userActiveListener: RecommendationProductAdapter.UserActiveListener)
+    : BaseRecommendationView(view.context) {
 
 
     companion object {
         fun build(_view: View, _userActiveListener: RecommendationProductAdapter.UserActiveListener) =
-                PartialRecommendationTopFirstView(_view, _userActiveListener)
+                PartialRecommendationFirstView(_view, _userActiveListener)
     }
 
     override fun getLayoutTitle(): TextView = view.findViewById(R.id.title_recom_1)

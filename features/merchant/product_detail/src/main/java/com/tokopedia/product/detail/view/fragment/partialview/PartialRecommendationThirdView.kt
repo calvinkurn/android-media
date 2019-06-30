@@ -9,7 +9,7 @@ import kotlinx.android.synthetic.main.partial_product_recom_3.view.*
 
 class PartialRecommendationThirdView private constructor(private val view: View,
                                                          private val userActiveListener: RecommendationProductAdapter.UserActiveListener)
-    :BaseRecommendationView(){
+    :BaseRecommendationView(view.context){
 
     companion object{
         fun build(_view:View,_userActiveListener: RecommendationProductAdapter.UserActiveListener) =
