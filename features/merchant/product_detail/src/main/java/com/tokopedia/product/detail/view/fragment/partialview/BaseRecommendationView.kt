@@ -14,6 +14,10 @@ import com.tokopedia.product.detail.data.util.ProductTrackingConstant.PageNameRe
 import com.tokopedia.product.detail.data.util.ProductTrackingConstant.PageNameRecommendation.PDP_4
 import com.tokopedia.product.detail.view.adapter.RecommendationProductAdapter
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import kotlinx.android.synthetic.main.partial_product_recom_1.view.*
+import kotlinx.android.synthetic.main.partial_product_recom_2.view.*
+import kotlinx.android.synthetic.main.partial_product_recom_3.view.*
+import kotlinx.android.synthetic.main.partial_product_recom_4.view.*
 
 abstract class BaseRecommendationView(context: Context) : View(context) {
 
@@ -23,35 +27,31 @@ abstract class BaseRecommendationView(context: Context) : View(context) {
 
     fun renderData(product: RecommendationWidget) {
         with(getView()) {
-            var pageName = ""
             getLayoutProgress().gone()
             if (product.recommendationItemList.isEmpty())
                 gone()
             else {
                 getLayoutTitle().text = product.title
-                getRecyclerView().layoutManager = LinearLayoutManager(context,
-                        LinearLayoutManager.HORIZONTAL, false)
-                when (getView()) {
-                    is PartialRecommendationFirstView -> {
-                        pageName = PDP_1
-                    }
-                    is PartialRecommendationSecondView -> {
-                        pageName = PDP_2
-                    }
-                    is PartialRecommendationThirdView -> {
-                        pageName = PDP_3
-                    }
-                    is PartialRecommendationFourthView -> {
-                        pageName = PDP_4
-                    }
-
-                }
-
-                getRecyclerView().adapter = RecommendationProductAdapter(product, getListener(), pageName)
+                initAdapter(product)
                 getRecyclerView().visible()
                 visible()
             }
         }
+    }
+
+    private fun initAdapter(product: RecommendationWidget) {
+        var pageName = ""
+        getRecyclerView().layoutManager = LinearLayoutManager(context,
+                LinearLayoutManager.HORIZONTAL, false)
+
+        when (getView()) {
+            base_recom_1 -> pageName = PDP_1
+            base_recom_2 -> pageName = PDP_2
+            base_recom_3 -> pageName = PDP_3
+            base_recom_4 -> pageName = PDP_4
+        }
+        getRecyclerView().adapter = RecommendationProductAdapter(product, getListener(), pageName)
+
     }
 
     fun startLoading() {
