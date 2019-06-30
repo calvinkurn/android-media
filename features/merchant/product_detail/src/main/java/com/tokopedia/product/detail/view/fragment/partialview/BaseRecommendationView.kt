@@ -45,10 +45,10 @@ abstract class BaseRecommendationView(context: Context) : View(context) {
                 LinearLayoutManager.HORIZONTAL, false)
 
         when (getView()) {
-            base_recom_1 -> pageName = PDP_1
-            base_recom_2 -> pageName = PDP_2
-            base_recom_3 -> pageName = PDP_3
-            base_recom_4 -> pageName = PDP_4
+            getView().base_recom_1 -> pageName = PDP_1
+            getView().base_recom_2 -> pageName = PDP_2
+            getView().base_recom_3 -> pageName = PDP_3
+            getView().base_recom_4 -> pageName = PDP_4
         }
         getRecyclerView().adapter = RecommendationProductAdapter(product, getListener(), pageName)
 
@@ -67,6 +67,5 @@ abstract class BaseRecommendationView(context: Context) : View(context) {
     abstract fun getView(): View
     abstract fun getRecyclerView(): RecyclerView
     abstract fun getLayoutProgress(): ProgressBar
-
 
 }
