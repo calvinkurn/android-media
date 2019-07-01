@@ -37,7 +37,7 @@ public interface ICartListPresenter {
 
     void processToUpdateAndReloadCartData();
 
-    void reCalculateSubTotal(List<CartShopHolderData> dataList);
+    void reCalculateSubTotal(List<CartShopHolderData> dataList, InsuranceCartShops insuranceCartShops);
 
     void processCheckPromoCodeFromSuggestedPromo(String promoCode, boolean isAutoApply);
 
@@ -74,4 +74,6 @@ public interface ICartListPresenter {
     void getInsuranceTechCart();
 
     void processDeleteCartInsurance(InsuranceCartShops insuranceCartShops);
+
+    void setAllInsuranceProductsChecked(InsuranceCartShops insuranceCartShops, boolean isChecked);
 }

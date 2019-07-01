@@ -4,132 +4,132 @@ import com.google.gson.annotations.SerializedName
 
 data class InsuranceCartGqlResponse(
         @SerializedName("cart_list_transactional")
-        val data: InsuranceCartResponse
+        var data: InsuranceCartResponse
 )
 
 data class InsuranceCartResponse(
         @SerializedName("shops")
-        val cartShopsList: ArrayList<InsuranceCartShops>
+        var cartShopsList: ArrayList<InsuranceCartShops>
 )
 
 data class InsuranceCartShops(
         @SerializedName("shop_id")
-        val shopId: Long,
+        var shopId: Long,
 
         @SerializedName("items")
-        val shopIemsList: ArrayList<InsuranceCartShopItems>
+        var shopIemsList: ArrayList<InsuranceCartShopItems>
 )
 
 data class InsuranceCartShopItems(
         @SerializedName("product_id")
-        val productId: Long,
+        var productId: Long,
 
         @SerializedName("digital_product")
-        val digitalProductList: ArrayList<InsuranceCartDigitalProduct>
+        var digitalProductList: ArrayList<InsuranceCartDigitalProduct>
 )
 
 data class InsuranceCartDigitalProduct(
         @SerializedName("digital_product_id")
-        val digitalProductId: Long,
+        var digitalProductId: Long,
 
         @SerializedName("cart_item_id")
-        val cartItemId: Long,
+        var cartItemId: Long,
 
         @SerializedName("type_id")
-        val typeId: Long,
+        var typeId: Long,
 
         @SerializedName("price_per_product")
-        val pricePerProduct: Long,
+        var pricePerProduct: Long,
 
         @SerializedName("total_price")
-        val totalPrice: Long,
+        var totalPrice: Long,
 
         @SerializedName("opt_in")
-        val optIn: Boolean,
+        var optIn: Boolean,
 
         @SerializedName("is_product_level")
-        val isProductLevel: Boolean,
+        var isProductLevel: Boolean,
 
         @SerializedName("is_seller_money")
-        val isSellerMoney: Boolean,
+        var isSellerMoney: Boolean,
 
         @SerializedName("is_application_needed")
-        val isApplicationNeeded: Boolean,
+        var isApplicationNeeded: Boolean,
 
         @SerializedName("is_new")
-        val isNew: Boolean,
+        var isNew: Boolean,
 
         @SerializedName("product_info")
-        val productInfo: InsuranceCartProductInfo,
+        var productInfo: InsuranceCartProductInfo,
 
         @SerializedName("application_details")
-        val applicationDetails: ArrayList<InsuranceProductApplicationDetails>
+        var applicationDetails: ArrayList<InsuranceProductApplicationDetails>
 )
 
 data class InsuranceCartProductInfo(
         @SerializedName("title")
-        val title: String,
+        var title: String,
 
         @SerializedName("sub_title")
-        val subTitle: String,
+        var subTitle: String,
 
         @SerializedName("link_detail_info_title")
-        val linkDetailInfoTitle: String,
+        var linkDetailInfoTitle: String,
 
         @SerializedName("description")
-        val description: String,
+        var description: String,
 
         @SerializedName("icon_url")
-        val iconUrl: String,
+        var iconUrl: String,
 
         @SerializedName("web_link_html")
-        val webLinkHtml: String,
+        var webLinkHtml: String,
 
         @SerializedName("ticker_text")
-        val tickerText: String
+        var tickerText: String
 )
 
 data class InsuranceProductApplicationDetails(
         @SerializedName("id")
-        val id: Int,
+        var id: Int,
 
         @SerializedName("label")
-        val label: String,
+        var label: String,
 
         @SerializedName("place_holder")
-        val placeHolder: String,
+        var placeHolder: String,
 
         @SerializedName("required")
-        val isRequired: Boolean,
+        var isRequired: Boolean,
 
         @SerializedName("value")
-        val value: String,
+        var value: String,
 
         @SerializedName("values")
-        val valuesList: ArrayList<InsuranceApplicationValue>,
+        var valuesList: ArrayList<InsuranceApplicationValue>,
 
         @SerializedName("validations")
-        val validationsList: ArrayList<InsuranceApplicationValidation>
+        var validationsList: ArrayList<InsuranceApplicationValidation>
 )
 
 data class InsuranceApplicationValue(
         @SerializedName("id")
-        val valuesId: Int,
+        var valuesId: Int,
 
         @SerializedName("value")
-        val value: String
+        var value: String
 )
 
 data class InsuranceApplicationValidation(
         @SerializedName("id")
-        val validationId: Int,
+        var validationId: Int,
 
         @SerializedName("type")
-        val type: String,
+        var type: String,
 
         @SerializedName("value")
-        val validationValue: String,
+        var validationValue: String,
 
         @SerializedName("error_message")
-        val validationErrorMessage: String
+        var validationErrorMessage: String
 )

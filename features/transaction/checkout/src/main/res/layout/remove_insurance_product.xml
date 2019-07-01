@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/dp_20">
+
+
+    <TextView
+        android:id="@+id/tv_heading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:letterSpacing="0.01"
+        android:lineSpacingExtra="2sp"
+        android:text="Hapus Produk Asuransi"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/sp_18" />
+
+    <TextView
+        android:id="@+id/tv_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_heading"
+        android:layout_marginTop="@dimen/dp_18"
+        android:lineSpacingExtra="@dimen/sp_6"
+        android:text="Kamu akan menghapus asuransi demam berdarah. Apa kamu yakin?"
+        android:textColor="@color/font_black_secondary_54"
+        android:textSize="@dimen/sp_12" />
+
+    <TextView
+        android:id="@+id/button_positive"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_desc"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="@dimen/dp_18"
+        android:gravity="center_horizontal"
+        android:paddingStart="@dimen/dp_6"
+        android:paddingLeft="@dimen/dp_6"
+        android:text="Ya, Hapus Produk"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/sp_12" />
+
+    <TextView
+        android:id="@+id/button_negative"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_desc"
+        android:layout_marginTop="@dimen/dp_18"
+        android:layout_marginRight="@dimen/dp_12"
+        android:layout_toStartOf="@+id/button_positive"
+        android:layout_toLeftOf="@+id/button_positive"
+        android:gravity="center_horizontal"
+        android:text="Kembali"
+        android:textColor="@color/black_38"
+        android:textSize="@dimen/sp_12" />
+
+</RelativeLayout>

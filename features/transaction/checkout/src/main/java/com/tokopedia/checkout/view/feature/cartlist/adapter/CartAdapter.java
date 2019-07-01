@@ -53,6 +53,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private CompositeSubscription compositeSubscription;
     private RecyclerView.RecycledViewPool viewPool;
     private Map<Integer, Boolean> checkedItemState;
+    private InsuranceCartShops insuranceCartShops;
 
     @Inject
     public CartAdapter(CartAdapter.ActionListener cartActionListener,
@@ -394,10 +395,15 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         checkForShipmentForm();
     }
 
-    public void addInsuranceDataList(InsuranceCartShops shopIemsList) {
-        cartDataList.add(shopIemsList);
+    public void addInsuranceDataList(InsuranceCartShops insuranceCartShops) {
+        this.insuranceCartShops = insuranceCartShops;
+        cartDataList.add(insuranceCartShops);
         notifyDataSetChanged();
         // TODO: 19/6/19 check if need to call checkForShipmentForm()
+    }
+
+    public InsuranceCartShops getInsuranceCartShops() {
+        return insuranceCartShops;
     }
 
     public void resetData() {
@@ -612,8 +618,10 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
 
-    public interface InsuranceItemActionlistener extends CartAdapterActionListener{
+    public interface InsuranceItemActionlistener extends CartAdapterActionListener {
         void deleteInsurance(InsuranceCartShops insuranceCartShops);
+
+        void onInsuranceSelectStateChanges(InsuranceCartShops insuranceCartShops, boolean isChecked);
 
         // TODO: 19/6/19 add methods according to insurance items usecase ex: opening bottom sheet for application details
     }

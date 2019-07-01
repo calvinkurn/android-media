@@ -8,13 +8,13 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartDigitalProduct;
 import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShops;
-import com.tokopedia.transactiondata.insurance.entity.response.InsuranceProductApplicationDetails;
 
 public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
 
@@ -60,6 +60,10 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
             tvInsuranceTitle.setText("Produk Asuransi");
         }
 
+        if (!TextUtils.isEmpty(insuranceCartDigitalProduct.getProductInfo().getIconUrl())) {
+            ImageHandler.loadImage(ivInsuranceIcon.getContext(), ivInsuranceIcon, insuranceCartDigitalProduct.getProductInfo().getIconUrl(), R.drawable.ic_modal_toko);
+        }
+
         if (TextUtils.isEmpty(insuranceCartDigitalProduct.getProductInfo().getLinkDetailInfoTitle())) {
             tvInsuranceInfo.setVisibility(View.GONE);
         } else {
@@ -78,9 +82,14 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
         if (!insuranceCartDigitalProduct.getApplicationDetails().isEmpty()) {
 
             StringBuilder applicationDetails = new StringBuilder();
-            for (InsuranceProductApplicationDetails insuranceProductApplicationDetails : insuranceCartDigitalProduct.getApplicationDetails()) {
-                if (!TextUtils.isEmpty(insuranceProductApplicationDetails.getValue())) {
-                    applicationDetails.append(insuranceProductApplicationDetails.getValue()).append(" | ");
+            for (int i = 0; i < insuranceCartDigitalProduct.getApplicationDetails().size(); i++) {//InsuranceProductApplicationDetails insuranceProductApplicationDetails : insuranceCartDigitalProduct.getApplicationDetails()) {
+
+                if (!TextUtils.isEmpty(insuranceCartDigitalProduct.getApplicationDetails().get(i).getValue())) {
+                    applicationDetails.append(insuranceCartDigitalProduct.getApplicationDetails().get(i).getValue());
+                }
+
+                if (i < insuranceCartDigitalProduct.getApplicationDetails().size() - 1) {
+                    applicationDetails.append(" | ");
                 }
             }
 
@@ -92,6 +101,11 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
                 tvChangeInsuranceApplicationDetails.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
+                        CloseableBottomSheetDialog closeableBottomSheetDialog =
+                                CloseableBottomSheetDialog.createInstanceRounded(tvChangeInsuranceApplicationDetails.getContext());
+
+
                         // TODO: 19/6/19 open bottom sheet to change application details
                     }
                 });
@@ -111,16 +125,15 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
         cbSelectInsurance.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
+                insuranceCartShops.getShopIemsList().get(0).getDigitalProductList().get(0).setOptIn(isChecked);
+                insuranceItemActionlistener.onInsuranceSelectStateChanges(insuranceCartShops, isChecked);
             }
         });
 
         ivDeleteInsurance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 insuranceItemActionlistener.deleteInsurance(insuranceCartShops);
-
             }
         });
     }

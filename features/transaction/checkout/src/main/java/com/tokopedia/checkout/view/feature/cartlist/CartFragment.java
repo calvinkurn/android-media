@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -472,8 +473,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             cbSelectAll.setChecked(checked);
             cartAdapter.setAllShopSelected(checked);
             dPresenter.setCheckedCartItemState(cartAdapter.getAllCartItemHolderData());
+            dPresenter.setAllInsuranceProductsChecked(cartAdapter.getInsuranceCartShops(), checked);
             cartAdapter.notifyDataSetChanged();
-            dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
+            dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList(), cartAdapter.getInsuranceCartShops());
         };
     }
 
@@ -626,7 +628,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         dPresenter.setHasPerformChecklistChange();
         cartAdapter.setShopSelected(itemPosition, checked);
         cartAdapter.notifyDataSetChanged();
-        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
+        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList(), cartAdapter.getInsuranceCartShops());
         cartAdapter.checkForShipmentForm();
     }
 
@@ -858,7 +860,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     public boolean onCartItemCheckChanged(int position, int parentPosition, boolean checked) {
         dPresenter.setCheckedCartItemState(cartAdapter.getAllCartItemHolderData());
         dPresenter.setHasPerformChecklistChange();
-        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
+        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList(), cartAdapter.getInsuranceCartShops());
         cartAdapter.checkForShipmentForm();
         return cartAdapter.setItemSelected(position, parentPosition, checked);
     }
@@ -886,7 +888,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void onNeedToRecalculate() {
-        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
+        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList(), cartAdapter.getInsuranceCartShops());
     }
 
     @Override
@@ -1329,7 +1331,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void updateCashback(double cashback) {
-        cartAdapter.updateShipmentSellerCashback(cashback);
+        cartRecyclerView.getHandler().post(() -> cartAdapter.updateShipmentSellerCashback(cashback));
+
     }
 
     @Deprecated
@@ -1867,7 +1870,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         if (cartListData.getAdsModel() != null) {
             cartAdapter.mappingTopAdsModel(cartListData.getAdsModel());
         }
-        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
+        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList(), cartAdapter.getInsuranceCartShops());
         if (cbSelectAll != null) {
             cbSelectAll.setChecked(cartListData.isAllSelected());
         }
@@ -2007,7 +2010,30 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void deleteInsurance(InsuranceCartShops insuranceCartShops) {
+        View view = getLayoutInflater().inflate(R.layout.remove_insurance_product, null, false);
+        AlertDialog alertDialog = new AlertDialog.Builder(getContext())
+                .setView(view)
+                .setCancelable(true)
+                .show();
 
-        dPresenter.processDeleteCartInsurance(insuranceCartShops);
+        view.findViewById(R.id.button_positive).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dPresenter.processDeleteCartInsurance(insuranceCartShops);
+                alertDialog.dismiss();
+            }
+        });
+
+        view.findViewById(R.id.button_negative).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+    }
+
+    @Override
+    public void onInsuranceSelectStateChanges(InsuranceCartShops insuranceCartShops, boolean isChecked) {
+        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList(), insuranceCartShops);
     }
 }

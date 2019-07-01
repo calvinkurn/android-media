@@ -57,6 +57,7 @@ import com.tokopedia.transactiondata.apiservice.CartResponseErrorException;
 import com.tokopedia.transactiondata.entity.request.RemoveCartRequest;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
 import com.tokopedia.transactiondata.insurance.entity.request.RemoveInsuranceData;
+import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartDigitalProduct;
 import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartGqlResponse;
 import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShopItems;
 import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShops;
@@ -133,6 +134,7 @@ public class CartListPresenter implements ICartListPresenter {
     private CartListData cartListData;
     private boolean hasPerformChecklistChange;
     private Map<Integer, Boolean> lastCheckedItem = new HashMap<>();
+    private boolean insuranceChecked = true;
 
     @Inject
     public CartListPresenter(GetCartListUseCase getCartListUseCase,
@@ -299,6 +301,20 @@ public class CartListPresenter implements ICartListPresenter {
     @Override
     public void getInsuranceTechCart() {
         getInsuranceCartUseCase.execute(getSubscriberInsuranceCart());
+    }
+
+    @Override
+    public void setAllInsuranceProductsChecked(InsuranceCartShops insuranceCartShops, boolean isChecked) {
+
+        if (insuranceCartShops != null &&
+                insuranceCartShops.getShopIemsList() != null &&
+                insuranceCartShops.getShopIemsList().get(0) != null &&
+                insuranceCartShops.getShopIemsList().get(0).getDigitalProductList() != null &&
+                insuranceCartShops.getShopIemsList().get(0).getDigitalProductList().get(0) != null) {
+
+            insuranceCartShops.getShopIemsList().get(0).getDigitalProductList().get(0).setOptIn(isChecked);
+        }
+
     }
 
     @Override
@@ -609,7 +625,7 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public void reCalculateSubTotal(List<CartShopHolderData> dataList) {
+    public void reCalculateSubTotal(List<CartShopHolderData> dataList, InsuranceCartShops insuranceCartShops) {
         double totalCashback = 0;
         double totalPrice = 0;
         int totalItemQty = 0;
@@ -749,13 +765,31 @@ public class CartListPresenter implements ICartListPresenter {
             }
         }
 
+
+        if (insuranceCartShops != null &&
+                insuranceCartShops.getShopIemsList() != null &&
+                insuranceCartShops.getShopIemsList().get(0) != null &&
+                insuranceCartShops.getShopIemsList().get(0).getDigitalProductList().get(0) != null) {
+
+            InsuranceCartDigitalProduct insuranceCartDigitalProduct = insuranceCartShops.getShopIemsList().get(0).getDigitalProductList().get(0);
+
+            if (insuranceCartDigitalProduct.getOptIn()) {
+                totalPrice += insuranceCartDigitalProduct.getPricePerProduct();
+                totalItemQty += 1;
+                insuranceChecked = true;
+            } else {
+                insuranceChecked = false;
+            }
+
+        }
+
         String totalPriceString = "-";
         if (totalPrice > 0) {
             totalPriceString = CurrencyFormatUtil.convertPriceValueToIdrFormat(((long) totalPrice), false);
         }
         view.updateCashback(totalCashback);
         boolean selectAllItem = view.getAllCartDataList().size() == allCartItemDataList.size() + errorProductCount &&
-                allCartItemDataList.size() > 0;
+                allCartItemDataList.size() > 0 && insuranceChecked;
         view.renderDetailInfoSubTotal(String.valueOf(totalItemQty), totalPriceString, selectAllItem);
 
     }
