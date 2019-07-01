@@ -42,7 +42,10 @@ import kotlinx.android.synthetic.main.fragment_product_info.rating
 import kotlinx.android.synthetic.main.fragment_product_info.review_count
 import kotlinx.android.synthetic.main.fragment_product_info.product_slashed_price
 import kotlinx.android.synthetic.main.fragment_product_info.product_discount
-import kotlinx.android.synthetic.main.fragment_product_info.*
+import kotlinx.android.synthetic.main.fragment_product_info.buy_now
+import kotlinx.android.synthetic.main.fragment_product_info.pb_buy_now
+import kotlinx.android.synthetic.main.fragment_product_info.add_to_cart
+import kotlinx.android.synthetic.main.fragment_product_info.pb_add_to_cart
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import javax.inject.Inject
