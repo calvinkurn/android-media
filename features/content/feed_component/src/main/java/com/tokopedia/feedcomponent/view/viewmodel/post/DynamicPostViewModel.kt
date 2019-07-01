@@ -19,7 +19,8 @@ data class DynamicPostViewModel(
         var contentList: MutableList<BasePostViewModel> = ArrayList(),
         val template: Template = Template(),
         val trackingPostModel: TrackingPostModel = TrackingPostModel(),
-        val tracking: MutableList<TrackingViewModel> = ArrayList()
+        val tracking: MutableList<TrackingViewModel> = ArrayList(),
+        val feedType: String = ""
 
 ) : Visitable<DynamicFeedTypeFactory> {
     

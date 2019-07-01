@@ -68,6 +68,7 @@ public class ShipmentMapper implements IShipmentMapper {
         dataResult.setError(!mapperUtil.isEmpty(shipmentAddressFormDataResponse.getErrors()));
         dataResult.setErrorMessage(mapperUtil.convertToString(shipmentAddressFormDataResponse.getErrors()));
         dataResult.setShowOnboarding(shipmentAddressFormDataResponse.isShowOnboarding());
+        dataResult.setIneligbilePromoDialogEnabled(shipmentAddressFormDataResponse.isIneligbilePromoDialogEnabled());
 
         if (shipmentAddressFormDataResponse.getPromoSuggestion() != null) {
             CartPromoSuggestion cartPromoSuggestion = new CartPromoSuggestion();
