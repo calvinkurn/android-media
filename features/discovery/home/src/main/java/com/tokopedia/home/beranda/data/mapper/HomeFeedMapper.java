@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.data.mapper;
 
 import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.home.beranda.domain.gql.feed.Badge;
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedContentGqlResponse;
 import com.tokopedia.home.beranda.domain.gql.feed.Product;
 import com.tokopedia.home.beranda.domain.gql.feed.RecommendationProduct;
@@ -55,10 +56,19 @@ public class HomeFeedMapper implements Func1<GraphqlResponse, HomeFeedListModel>
                     product.getPriceInt(),
                     product.getIsTopads(),
                     (position+1),
-                    product.getImageUrl(),
+                    getBadge(product.getBadges()),
                     product.getShop().getCity()
                     ));
         }
         return homeFeedViewModels;
+    }
+
+    private String getBadge(List<Badge> badges){
+        for (Badge badge : badges){
+            if(badge.getTitle().toLowerCase().equals("official store") || badge.getTitle().toLowerCase().equals("power merchant")){
+                return badge.getImageUrl();
+            }
+        }
+        return "";
     }
 }
