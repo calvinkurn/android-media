@@ -152,9 +152,9 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
                 startActivityForResult(intent,
                         LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);*/
 
-                startActivityForResult(PinpointMapActivity.Companion.newInstance(this,
-                        AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, token,
-                        false, 0, false, null,
+                startActivityForResult(PinpointMapActivity.newInstance(this,
+                        AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
+                        false, 0, false, false, null,
                         false), LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT);
 
                 break;

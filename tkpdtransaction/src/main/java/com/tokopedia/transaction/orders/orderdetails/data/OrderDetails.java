@@ -72,9 +72,13 @@ public class OrderDetails {
     @Expose
     private ShopInfo shopInfo;
 
+    @SerializedName("helpLink")
+    @Expose
+    private String helpLink;
 
 
-    public OrderDetails(Status status, ConditionalInfo conditionalInfo, List<Title> title, Invoice invoice, OrderToken orderToken, List<Detail> detail, List<AdditionalInfo> additionalInfo, List<Pricing> pricing, PaymentMethod paymentMethod, List<PayMethod> payMethods, PaymentData paymentData, ContactUs contactUs, List<ActionButton> actionButtons, List<Items> items, DriverDetails driverDetails, DropShipper dropShipper, ShopInfo shopInfo) {
+
+    public OrderDetails(Status status, ConditionalInfo conditionalInfo, List<Title> title, Invoice invoice, OrderToken orderToken, List<Detail> detail, List<AdditionalInfo> additionalInfo, List<Pricing> pricing, PaymentMethod paymentMethod, List<PayMethod> payMethods, PaymentData paymentData, ContactUs contactUs, List<ActionButton> actionButtons, List<Items> items, DriverDetails driverDetails, DropShipper dropShipper, ShopInfo shopInfo,String helpLink) {
         this.status = status;
         this.conditionalInfo = conditionalInfo;
         this.title = title;
@@ -92,6 +96,7 @@ public class OrderDetails {
         this.driverDetails = driverDetails;
         this.dropShipper = dropShipper;
         this.shopInfo = shopInfo;
+        this.helpLink = helpLink;
     }
 
     public Status status() {
@@ -170,6 +175,10 @@ public class OrderDetails {
         this.flags = flags;
     }
 
+    public String getHelpLink() {
+        return helpLink;
+    }
+
     @Override
     public String toString() {
         return "[OrderDetails:{"
@@ -189,7 +198,8 @@ public class OrderDetails {
                 + "items="+items + ","
                 + "driverDetails="+driverDetails +","
                 + "dropShipper="+dropShipper + ","
-                + "shopInfo="+shopInfo
+                + "shopInfo="+shopInfo + ","
+                + "helpLink="+helpLink
                 + "}]";
     }
 }

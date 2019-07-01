@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.historytokocash.presentation.model.WalletToDepositThanksData;
 import com.tokopedia.tokocash.historytokocash.presentation.model.WalletToDepositThanksPassData;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * Created by nabillasabbaha on 2/26/18.
@@ -113,9 +114,9 @@ public class ThankYouMoveToSaldoFragment extends BaseDaggerFragment {
         ivIcon.setVisibility(View.VISIBLE);
         tvAdditionalInfo.setVisibility(View.GONE);
 
-        ivIcon.setImageResource(
+        ivIcon.setImageDrawable(MethodChecker.getDrawable(ivIcon.getContext(),
                 stateWalletToDepositThanksPassData.getWalletToDepositThanksData().getIconResId()
-        );
+        ));
 
         tvSubTitle.setText(
                 stateWalletToDepositThanksPassData.getWalletToDepositThanksData().getSubTitle()
@@ -152,9 +153,9 @@ public class ThankYouMoveToSaldoFragment extends BaseDaggerFragment {
         ivIcon.setVisibility(View.VISIBLE);
         tvAdditionalInfo.setVisibility(View.VISIBLE);
 
-        ivIcon.setImageResource(
+        ivIcon.setImageDrawable(MethodChecker.getDrawable(ivIcon.getContext(),
                 stateWalletToDepositThanksPassData.getWalletToDepositThanksData().getIconResId()
-        );
+        ));
 
         tvSubTitle.setText(
                 stateWalletToDepositThanksPassData.getWalletToDepositThanksData().getSubTitle()
