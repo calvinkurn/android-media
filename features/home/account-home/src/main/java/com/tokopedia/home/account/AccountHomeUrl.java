@@ -8,7 +8,7 @@ import com.tokopedia.config.url.TokopediaUrl;
  */
 public class AccountHomeUrl {
 
-    public static String BASE_SELLER_URL = TokopediaUrl.Companion.getInstance().getSELLER()"";
+    public static String BASE_SELLER_URL = TokopediaUrl.Companion.getInstance().getSELLER();
     public static String WEB_DOMAIN = TokopediaUrl.Companion.getInstance().getWEB();
 
     public static String CDN_URL = "https://ecs7.tokopedia.net";
