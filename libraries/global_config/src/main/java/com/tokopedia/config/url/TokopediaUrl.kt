@@ -22,7 +22,7 @@ class TokopediaUrl {
         }
 
         fun getInstance() : Url {
-            return tokopediaUrl?: staging
+            return tokopediaUrl?: live
         }
 
         fun deleteInstance() {
@@ -34,7 +34,7 @@ class TokopediaUrl {
         private fun getEnvironment(context: Context) : Url {
             val sharedPreferences = context.getSharedPreferences(KEY_ENV_PREFERENCES,
                     Context.MODE_PRIVATE)
-            return selectInstance(sharedPreferences.getString(KEY_ENV, Env.LIVE.value));
+            return selectInstance(sharedPreferences.getString(KEY_ENV, Env.LIVE.value))
         }
 
         fun selectInstance(env: String?): Url {
