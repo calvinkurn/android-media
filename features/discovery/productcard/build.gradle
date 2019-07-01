@@ -13,9 +13,9 @@ buildscript {
 dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
-    implementation rootProject.ext.supportLibDependencies.cardViewV7
     implementation project(rootProject.ext.features.topAdsSdk)
+    implementation rootProject.ext.supportLibDependencies.cardViewV7
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.libraries.unifyComponents
-    implementation rootProject.ext.libraries.unifyPrinciples
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.principles
 }

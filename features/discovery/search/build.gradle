@@ -94,7 +94,6 @@ dependencies {
     }
 
     implementation project(rootProject.ext.features.kolCommon)
-    implementation rootProject.ext.libraries.unifyPrinciples
     implementation project(rootProject.ext.features.productCard)
 }
 
