@@ -12,6 +12,7 @@ import android.view.View
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.promocheckout.common.R
 import kotlinx.android.synthetic.main.layout_checkout_ticker_promostacking.view.*
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 
 
 class TickerPromoStackingCheckoutView @JvmOverloads constructor(
@@ -126,8 +127,10 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
         val drawableBackground = layoutTickerFrameGlobal.background.current.mutate() as GradientDrawable
         drawableBackground.setColor(ContextCompat.getColor(context, R.color.red_error_coupon))
 
-        bg_active_up.setImageResource(R.drawable.background_checkout_ticker_error_up)
-        bg_active_down.setImageResource(R.drawable.background_checkout_ticker_error_down)
+        bg_active_up.setImageDrawable(
+                MethodChecker.getDrawable(getContext(),R.drawable.background_checkout_ticker_error_up))
+        bg_active_down.setImageDrawable(
+                MethodChecker.getDrawable(getContext(),R.drawable.background_checkout_ticker_error_down))
     }
 
     private fun setViewActive() {
@@ -135,8 +138,10 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
         val drawableBackground = layoutTickerFrameGlobal.background.current.mutate() as GradientDrawable
         drawableBackground.setColor(ContextCompat.getColor(context, R.color.green_active_coupon))
 
-        bg_active_up.setImageResource(R.drawable.background_checkout_ticker_active_up)
-        bg_active_down.setImageResource(R.drawable.background_checkout_ticker_active_down)
+        bg_active_up.setImageDrawable(
+                MethodChecker.getDrawable(getContext(),R.drawable.background_checkout_ticker_active_up))
+        bg_active_down.setImageDrawable(
+                        MethodChecker.getDrawable(getContext(),R.drawable.background_checkout_ticker_active_down))
     }
 
     private fun setViewInactive() {
@@ -144,8 +149,10 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
         val drawableBackground = layoutTickerFrameGlobal.background.current.mutate() as GradientDrawable
         drawableBackground.setColor(ContextCompat.getColor(context, R.color.orange_halfactive_coupon))
 
-        bg_active_up.setImageResource(R.drawable.background_checkout_ticker_inactive_up)
-        bg_active_down.setImageResource(R.drawable.background_checkout_ticker_inactive_down)
+        bg_active_up.setImageDrawable(
+                MethodChecker.getDrawable(getContext(),R.drawable.background_checkout_ticker_inactive_up))
+        bg_active_down.setImageDrawable(
+                MethodChecker.getDrawable(getContext(),R.drawable.background_checkout_ticker_inactive_down))
     }
 
     private fun setViewGlobal() {

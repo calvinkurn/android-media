@@ -35,19 +35,21 @@ public class CuratedDealsView extends LinearLayout implements DealsCategoryAdapt
     DealsCategoryAdapter.INavigateToActivityRequest listener;
     DealsHomeFragment.OpenTrendingDeals openTrendingDeals;
     DealsHomePresenter mPresenter;
+    int homePosition;
 
     public CuratedDealsView(Context context) {
         super(context);
         initView();
     }
 
-    public CuratedDealsView(Context context, CategoryItem categoryItem, DealsCategoryAdapter.INavigateToActivityRequest listener, DealsHomeFragment.OpenTrendingDeals openTrendingDeals, String addView, DealsHomePresenter mPresenter) {
+    public CuratedDealsView(Context context, CategoryItem categoryItem, DealsCategoryAdapter.INavigateToActivityRequest listener, DealsHomeFragment.OpenTrendingDeals openTrendingDeals, String addView, DealsHomePresenter mPresenter, int homePosition) {
         super(context);
         this.context = context;
         this.categoryItem = categoryItem;
         this.listener = listener;
         this.openTrendingDeals = openTrendingDeals;
         this.mPresenter = mPresenter;
+        this.homePosition = homePosition;
         initView();
     }
 
@@ -86,6 +88,8 @@ public class CuratedDealsView extends LinearLayout implements DealsCategoryAdapt
             curatedDealsRecyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
             categoryAdapter = new DealsCategoryAdapter(categoryItem.getItems(), DealsCategoryAdapter.HOME_PAGE, this, IS_SHORT_LAYOUT);
             categoryAdapter.setDealsHomeLayout(true);
+            categoryAdapter.setDealType(DealsAnalytics.CURATED_DEALS);
+            categoryAdapter.setHomePosition(homePosition);
             curatedDealsRecyclerView.setAdapter(categoryAdapter);
         }
 
