@@ -300,22 +300,7 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
             setResult(CategoryNavigationActivity.DESTROY_INTERMEDIARY);
             finish();
         }
-        AdultManager.handleActivityResult(this, requestCode, resultCode, data, new AdultManager.Callback() {
-            @Override
-            public void onFail() {
-
-            }
-
-            @Override
-            public void onVerificationSuccess(String message) {
-
-            }
-
-            @Override
-            public void onLoginPreverified() {
-
-            }
-        });
+        AdultManager.handleActivityResult(this, requestCode, resultCode, data);
     }
 
     @Override
