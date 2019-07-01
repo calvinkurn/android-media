@@ -101,7 +101,7 @@ final class ShopListPresenter
     @Override
     public void loadShop(Map<String, Object> searchParameter) {
         loadShopCheckForNulls();
-        unsubscribeUseCases();
+        unsubscribeUseCasesBeforeLoadShop();
 
         RequestParams requestParams = createSearchShopParam(searchParameter);
         searchShopUseCase.execute(requestParams, getSearchShopSubscriber(searchParameter));
@@ -131,7 +131,7 @@ final class ShopListPresenter
         requestParams.putString(SearchApiConst.IMAGE_SQUARE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SQUARE);
     }
 
-    private void unsubscribeUseCases() {
+    private void unsubscribeUseCasesBeforeLoadShop() {
         searchShopUseCase.unsubscribe();
         getDynamicFilterUseCase.unsubscribe();
     }
@@ -216,7 +216,8 @@ final class ShopListPresenter
 
     @Override
     public void detachView() {
-        searchShopUseCase.unsubscribe();
-        getDynamicFilterUseCase.unsubscribe();
+        super.detachView();
+        if(searchShopUseCase != null) searchShopUseCase.unsubscribe();
+        if(toggleFavouriteShopUseCase != null) toggleFavouriteShopUseCase.unsubscribe();
     }
 }

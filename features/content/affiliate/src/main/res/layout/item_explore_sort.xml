@@ -27,7 +27,7 @@
         app:layout_constraintTop_toTopOf="@+id/tv_sort"
         app:layout_constraintBottom_toBottomOf="@+id/tv_sort"
         app:layout_constraintRight_toRightOf="parent"
-        android:src="@drawable/ic_check"/>
+        app:srcCompat="@drawable/ic_check"/>
 
     <View
         android:layout_width="match_parent"

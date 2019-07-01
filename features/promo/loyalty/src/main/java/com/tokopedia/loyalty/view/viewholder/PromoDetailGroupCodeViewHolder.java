@@ -17,6 +17,7 @@ import com.tokopedia.loyalty.view.data.PromoCodeViewModel;
 import com.tokopedia.loyalty.view.data.SingleCodeViewModel;
 
 import java.util.List;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * @author Aghny A. Putra on 26/03/18
@@ -112,7 +113,7 @@ public class PromoDetailGroupCodeViewHolder extends RecyclerView.ViewHolder {
     private void toggleShowLayout() {
         isDetailOpen = !isDetailOpen;
         this.rlDetailGroupCodeLayout.setVisibility(isDetailOpen ? View.VISIBLE : View.GONE);
-        this.ivChevronIcon.setImageResource(isDetailOpen ?
-                R.drawable.ic_arrow_up_grey : R.drawable.ic_arrow_down_grey);
+        this.ivChevronIcon.setImageDrawable(MethodChecker.getDrawable(context,(isDetailOpen ?
+                R.drawable.ic_arrow_up_grey : R.drawable.ic_arrow_down_grey)));
     }
 }

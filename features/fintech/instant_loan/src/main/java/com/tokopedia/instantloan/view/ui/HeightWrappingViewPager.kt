@@ -8,10 +8,6 @@ import android.view.animation.Animation
 import android.view.animation.Interpolator
 import android.view.animation.Transformation
 
-/**
- * Created by sachinbansal on 6/12/18.
- */
-
 class HeightWrappingViewPager : ViewPager, Animation.AnimationListener {
     private var mCurrentView: View? = null
     private val mAnimation = PagerAnimation()
@@ -28,7 +24,6 @@ class HeightWrappingViewPager : ViewPager, Animation.AnimationListener {
 
     public override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         var heightMeasureSpec = heightMeasureSpec
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
 
         if (!mAnimStarted && mCurrentView != null) {
             var height: Int

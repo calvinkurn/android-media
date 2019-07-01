@@ -104,7 +104,7 @@ dependencies {
         exclude group: 'com.android.support'
     }
     implementation project(rootProject.ext.features.kolCommon)
-    implementation project(rootProject.ext.libraries.unifyPrinciples)
+    implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.analyticsDependencies.appsflyer
 }
 

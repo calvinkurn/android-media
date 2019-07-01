@@ -11,9 +11,9 @@ import rx.Observable;
 
 public interface ProductRepository {
 
-    Observable<Boolean> addProductSubmit(ProductViewModel productViewModel);
+    Observable<Integer> addProductSubmit(ProductViewModel productViewModel);
 
-    Observable<Boolean> editProductSubmit(ProductViewModel productViewModel);
+    Observable<Integer> editProductSubmit(ProductViewModel productViewModel);
 
     Observable<ProductViewModel> getProductDetail(String productId);
 
