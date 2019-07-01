@@ -298,10 +298,12 @@
         <key>android_shop_etalase_toggle</key>
         <value>true</value>
     </entry>
+    <!--switch for New category belanja-->
     <entry>
         <key>app_category_browse_v1</key>
         <value>true</value>
     </entry>
+    <!--switch for New category belanja A/B testing-->
     <entry>
         <key>app_category_browse_enable_ab</key>
         <value>true</value>
