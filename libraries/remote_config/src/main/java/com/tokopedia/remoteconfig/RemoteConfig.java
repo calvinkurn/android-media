@@ -93,7 +93,7 @@ public interface RemoteConfig {
     void fetch(Listener listener);
 
     interface Listener {
-        void onComplete();
+        void onComplete(RemoteConfig remoteConfig);
 
         void onError(Exception e);
     }

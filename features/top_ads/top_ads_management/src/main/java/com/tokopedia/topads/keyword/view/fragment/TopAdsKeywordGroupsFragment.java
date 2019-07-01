@@ -47,7 +47,7 @@ public class TopAdsKeywordGroupsFragment extends BaseListFragment<TopAdsKeywordO
 
     protected BaseFilterContentFragment.Callback callback;
     @Inject
-    TopAdsKeywordOldNewChooseGroupPresenter topAdsKeywordOldNewChooseGroupPresenter;
+    TopAdsKeywordOldNewChooseGroupPresenter topAdsKeywordOldNewChooseGroupPresenter;F
     private EditText groupFilterSearch;
     private GroupAd selection;
 
