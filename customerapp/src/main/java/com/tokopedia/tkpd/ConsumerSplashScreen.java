@@ -21,6 +21,7 @@ import com.bumptech.glide.request.target.Target;
 import com.google.firebase.perf.metrics.Trace;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.browse.categoryNavigation.CategoryNavigationConfig;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -85,8 +86,11 @@ public class ConsumerSplashScreen extends SplashScreen {
 
         CMPushNotificationManager.getInstance()
                 .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(this.getApplicationContext()), false);
+        initCategoryConfig();
+    }
 
-
+    private void initCategoryConfig() {
+        CategoryNavigationConfig.INSTANCE.updateCategoryConfig(getApplicationContext());
     }
 
     @Override
