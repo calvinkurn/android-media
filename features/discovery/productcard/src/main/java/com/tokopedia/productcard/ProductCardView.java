@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.topads.sdk.view.ImpressedImageView;
+import com.tokopedia.unifyprinciples.Typography;
 
 public class ProductCardView extends BaseCustomView {
 
@@ -27,6 +28,7 @@ public class ProductCardView extends BaseCustomView {
     protected View wishlistButton;
     protected ImageView ratingView;
     protected TextView reviewCountView;
+    protected Typography textAddTocart;
     protected int layout;
     protected boolean fixedHeight = false;
     protected boolean showAddToCartButton;
@@ -48,6 +50,16 @@ public class ProductCardView extends BaseCustomView {
 
     public void setFixedHeight(boolean fixedHeight) {
         this.fixedHeight = fixedHeight;
+    }
+
+    public void setShowAddToCartButton(boolean showAddToCartButton) {
+        this.showAddToCartButton = showAddToCartButton;
+    }
+
+    public void setAddToCartClickListener(View.OnClickListener onClickListener) {
+        if (showAddToCartButton && textAddTocart != null) {
+            textAddTocart.setOnClickListener(onClickListener);
+        }
     }
 
     protected void init(@Nullable AttributeSet attrs) {
@@ -74,6 +86,13 @@ public class ProductCardView extends BaseCustomView {
         wishlistButton = view.findViewById(R.id.btn_wishlist);
         ratingView = view.findViewById(R.id.rating);
         reviewCountView = view.findViewById(R.id.review_count);
+        textAddTocart = view.findViewById(R.id.tv_atc);
+
+        if (showAddToCartButton) {
+            textAddTocart.setVisibility(View.VISIBLE);
+        } else {
+            textAddTocart.setVisibility(View.GONE);
+        }
     }
 
     public void setTitle(String title) {
@@ -87,7 +106,7 @@ public class ProductCardView extends BaseCustomView {
             textDiscount.setVisibility(View.VISIBLE);
             textSlashedPrice.setVisibility(View.VISIBLE);
         } else {
-            if(fixedHeight) {
+            if (fixedHeight) {
                 textDiscount.setVisibility(View.INVISIBLE);
                 textSlashedPrice.setVisibility(View.INVISIBLE);
             } else {
@@ -125,7 +144,7 @@ public class ProductCardView extends BaseCustomView {
         if (rating > 0 && rating <= 5) {
             ratingView.setImageResource(getRatingDrawable(rating));
         } else {
-            if(fixedHeight) {
+            if (fixedHeight) {
                 ratingView.setVisibility(View.INVISIBLE);
                 reviewCountView.setVisibility(View.INVISIBLE);
             } else {
@@ -160,7 +179,7 @@ public class ProductCardView extends BaseCustomView {
     }
 
     protected int getLayout() {
-        if(fixedHeight) {
+        if (fixedHeight) {
             return R.layout.product_card_layout_fixed_height;
         } else {
             return R.layout.product_card_layout;

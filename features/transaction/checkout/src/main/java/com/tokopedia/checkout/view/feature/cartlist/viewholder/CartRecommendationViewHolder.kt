@@ -25,6 +25,14 @@ class CartRecommendationViewHolder(val view: View, val actionListener: ActionLis
     fun bind(element: CartRecommendationItemHolderData) {
         itemView.productCardView.setRecommendationModel(element.recommendationItem, this)
 
+        itemView.productCardView.setShowAddToCartButton(true)
+        itemView.productCardView.setAddToCartClickListener {
+            actionListener.onButtonAddToCartClicked(
+                    element.recommendationItem.productId.toString(),
+                    element.recommendationItem.shopId.toString(),
+                    element.recommendationItem.minOrder)
+        }
+
         if (element.rightPosition) {
             itemView.setPadding(padding14, 0, padding2, 0)
         } else {

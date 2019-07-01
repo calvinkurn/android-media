@@ -23,7 +23,9 @@ class RecommendationItem(val productId: Int,
                          val slashedPrice: String,
                          val slashedPriceInt: Int,
                          val discountPercentage: Int,
-                         val position: Int) : ImpressHolder(){
+                         val position: Int,
+                         val shopId: Int,
+                         val minOrder: Int) : ImpressHolder(){
 
     fun getPriceIntFromString() = CurrencyFormatHelper.convertRupiahToInt(price)
 }
