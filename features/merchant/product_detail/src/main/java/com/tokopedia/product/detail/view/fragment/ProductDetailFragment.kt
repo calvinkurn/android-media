@@ -350,7 +350,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         })
     }
 
-    private fun hideRecommendationView(){
+    private fun hideRecommendationView() {
         recommendationSecondView.hideView()
         recommendationFirstView.hideView()
         recommendationThirdView.hideView()
@@ -365,10 +365,21 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     private fun renderRecommendationData(result: List<RecommendationWidget>) {
-        recommendationFirstView.renderData(result[0])
-        recommendationSecondView.renderData(result[1])
-        recommendationThirdView.renderData(result[2])
-        recommendationFourthView.renderData(result[3])
+        result.getOrNull(0)?.let {
+            recommendationFirstView.renderData(it)
+        }
+
+        result.getOrNull(1)?.let {
+            recommendationSecondView.renderData(it)
+        }
+
+        result.getOrNull(2)?.let {
+            recommendationThirdView.renderData(it)
+        }
+
+        result.getOrNull(3)?.let {
+            recommendationFourthView.renderData(it)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
