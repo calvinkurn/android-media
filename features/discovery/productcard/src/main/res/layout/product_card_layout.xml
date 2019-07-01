@@ -98,8 +98,8 @@
                 android:layout_marginLeft="@dimen/dp_8"
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_4"
-                android:layout_width="@dimen/dp_32"
-                android:layout_height="@dimen/dp_32"
+                android:layout_width="@dimen/dp_14"
+                android:layout_height="@dimen/dp_14"
                 app:layout_constraintStart_toStartOf="@+id/image"
                 app:layout_constraintTop_toBottomOf="@+id/textPrice"
                 tools:background="@color/red_150"
@@ -108,8 +108,11 @@
                 android:id="@+id/location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_4"
+                android:layout_marginStart="@dimen/dp_4"
+                app:layout_constraintBottom_toBottomOf="@+id/badge"
                 app:layout_constraintStart_toEndOf="@+id/badge"
-                app:layout_constraintTop_toBottomOf="@+id/textPrice"
+                app:layout_constraintTop_toTopOf="@+id/badge"
                 tools:text="Jakarta" />
         <ImageView
                 android:id="@+id/rating"
