@@ -266,7 +266,9 @@ class ProductInfoFragment : BaseDaggerFragment() {
             wishlistUrl = productDataModel.productDetailData.wishlistUrl,
             slashedPrice = productDataModel.productDetailData.slashedPrice,
             discountPercentage = productDataModel.productDetailData.discountPercentage,
-            slashedPriceInt = productDataModel.productDetailData.slashedPriceInt
+            slashedPriceInt = productDataModel.productDetailData.slashedPriceInt,
+            shopId = productDataModel.productDetailData.shop.id,
+            minOrder = productDataModel.productDetailData.minOrder
     )
 
     private fun handleDiscount(){
