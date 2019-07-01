@@ -224,6 +224,10 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return shipmentDataList.size();
     }
 
+    public List<Object> getShipmentDataList() {
+        return shipmentDataList;
+    }
+
     @Override
     public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
         super.onViewRecycled(holder);

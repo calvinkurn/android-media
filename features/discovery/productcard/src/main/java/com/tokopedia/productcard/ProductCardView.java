@@ -29,6 +29,7 @@ public class ProductCardView extends BaseCustomView {
     protected TextView reviewCountView;
     protected int layout;
     protected boolean fixedHeight = false;
+    protected boolean showAddToCartButton;
 
     public ProductCardView(@NonNull Context context) {
         super(context);

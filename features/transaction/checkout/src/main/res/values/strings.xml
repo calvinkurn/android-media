@@ -292,5 +292,9 @@
     <string name="gratis_ongkir_promo_kurir">Gratis Ongkir (Promo Kurir)</string>
     <string name="checkout_module_label_promo_no_item_checked">Silakan pilih item terlebih dahulu</string>
     <string name="logistic_promo_err_msg">Promo pengiriman sedang bermasalah. Silakan ubah pengiriman anda</string>
+    <string name="label_continue_to_payment">Tetap lanjut ke pembayaran?</string>
+    <string name="label_promo_not_eligible_info"><![CDATA[Promo yang tidak memenuhi syarat & ketentuan akan dinon-aktifkan untuk pembayaran ini.]]></string>
+    <string name="label_button_continue">Lanjutkan</string>
+    <string name="label_button_cancel">Batal</string>
 
 </resources>
