@@ -6,16 +6,24 @@
     android:background="@color/white">
 
 
+    <View
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/tv_title_widget"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
         android:text="Layanan Finansial"
         android:textSize="17sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/line" />
 
     <ImageView
 
@@ -30,6 +38,7 @@
         app:layout_constraintTop_toTopOf="@+id/tv_title_widget" />
 
     <LinearLayout
+
         android:id="@+id/ll_recyclercontainer"
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
@@ -46,6 +55,14 @@
         </android.support.v7.widget.RecyclerView>
 
     </LinearLayout>
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_4"
+        android:layout_marginTop="@dimen/dp_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ll_recyclercontainer" />
 
 
 </android.support.constraint.ConstraintLayout>

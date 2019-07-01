@@ -13,11 +13,11 @@
         android:layout_height="wrap_content"
         android:textColor="@color/black_38"
         android:textSize="@dimen/sp_12"
-        tools:visibility="visible"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Limit Tersedia" />
+        tools:text="Limit Tersedia"
+        tools:visibility="visible" />
 
 
     <TextView
@@ -28,9 +28,9 @@
         android:textSize="@dimen/sp_12"
         android:textStyle="bold"
         android:visibility="gone"
-        tools:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Rp 50.000.000" />
+        tools:text="Rp 50.000.000"
+        tools:visibility="visible" />
 
 </android.support.constraint.ConstraintLayout>

@@ -4,6 +4,8 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.support.v7.widget.RecyclerView
+import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,11 +22,9 @@ import com.tokopedia.mlp.router.MLPRouter
 import kotlinx.android.synthetic.main.fragment_merchant_lending.view.*
 import kotlinx.android.synthetic.main.mlp_box_layout.view.*
 import kotlinx.android.synthetic.main.mlp_row_info.view.*
+import kotlinx.android.synthetic.main.switchon_popup.view.*
 
 class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Context, var isexpanded: Boolean) : RecyclerView.Adapter<MLPWidgetAdapter.ViewHolder>() {
-
-
-    var checkBottomSheetOpenState = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MLPWidgetAdapter.ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.fragment_merchant_lending, parent, false))
@@ -41,6 +41,7 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         fun bindData(widgetsItem: WidgetsItem, position: Int) {
+
             if (!boxList[position].firstLoad) {
                 if (isexpanded) {
                     itemView.ll_container.visibility = View.VISIBLE
@@ -97,20 +98,32 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
                     headerContent.sideToggle?.url?.let {
 
                         if (!isChecked) {
-                            itemView.switch_enable.isChecked = false
                             openWebViewOrOpenBottomSheet(it, position, 2)
+                        } else {
+                            val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                            val myView = inflater.inflate(R.layout.switchon_popup, null)
+                            val width = LinearLayout.LayoutParams.WRAP_CONTENT
+                            val height = LinearLayout.LayoutParams.WRAP_CONTENT
+                            val focusable = true
+                            val popupWindow = PopupWindow(myView, width, height, focusable)
+
+                            popupWindow.showAtLocation(myView, Gravity.BOTTOM, 0, 0)
+
+                            myView.tv_dismiss.setOnClickListener {
+                                popupWindow.dismiss()
+                            }
+
                         }
                     }
                 }
-
             }
         }
 
         private fun renderSideTextHeader(headerContent: Header, position: Int) {
 
             itemView.text_side.setTextAndCheckShow(headerContent.sideText?.text)
-            itemView.text_side.setOnClickListener {
 
+            itemView.text_side.setOnClickListener {
                 headerContent.sideText?.url?.let {
                     openWebViewOrOpenBottomSheet(it, position, 1)
                 }
@@ -144,7 +157,6 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
                     itemView.info_container.addView(myView)
                 }
                 itemView.info_container.visibility = View.VISIBLE
-
             }
 
         }
@@ -225,7 +237,6 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
             }
             closeableBottomSheetDialog.setContentView(view)
             closeableBottomSheetDialog.show()
-            checkBottomSheetOpenState = true
             closeableBottomSheetDialog.setCanceledOnTouchOutside(true)
 
         }
