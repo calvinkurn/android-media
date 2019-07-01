@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.WindowManager
 import android.widget.Toast
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.groupchat.R
@@ -27,6 +28,10 @@ class TestActivity: AppCompatActivity() {
                 .videoSource(sourceMedia)
                 .repeatMode(RepeatMode.REPEAT_MODE_ALL)
                 .build()
+
+        btnFirst.setOnClickListener { window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_MODE_CHANGED) }
+        btnSecond.setOnClickListener { window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN) }
+        btnThird.setOnClickListener { window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED) }
     }
 
     companion object {
