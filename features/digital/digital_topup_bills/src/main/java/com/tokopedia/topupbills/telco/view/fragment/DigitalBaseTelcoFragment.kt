@@ -272,7 +272,7 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
                     )
                     clipboard.primaryClip = clip
                     view?.run {
-                        Toaster.showGreen(this,
+                        Toaster.showNormal(this,
                                 getString(R.string.digital_voucher_code_already_copied), Snackbar.LENGTH_LONG)
                     }
                 }

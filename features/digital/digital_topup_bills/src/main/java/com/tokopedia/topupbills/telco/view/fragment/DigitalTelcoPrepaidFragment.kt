@@ -164,14 +164,14 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             }
         } catch (exception: Exception) {
             view?.run {
-                Toaster.showRed(this, getErrorMessage(activity, exception), Snackbar.LENGTH_LONG)
+                Toaster.showError(this, getErrorMessage(activity, exception), Snackbar.LENGTH_LONG)
             }
         }
     }
 
     override fun onErrorCustomData(throwable: Throwable) {
         view?.run {
-            Toaster.showRed(this, getErrorMessage(activity, throwable), Snackbar.LENGTH_LONG)
+            Toaster.showError(this, getErrorMessage(activity, throwable), Snackbar.LENGTH_LONG)
         }
     }
 
@@ -262,7 +262,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     override fun showErrorCartDigital(message: String) {
         view?.run {
-            Toaster.showRed(this, message, Snackbar.LENGTH_LONG)
+            Toaster.showError(this, message, Snackbar.LENGTH_LONG)
         }
     }
 
