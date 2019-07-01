@@ -40,6 +40,7 @@ import com.tokopedia.logisticcommon.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.address.Destination;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsMultipleAddress;
@@ -52,6 +53,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import static com.tokopedia.checkout.view.feature.addressoptions.CartAddressChoiceActivity.EXTRA_CURRENT_ADDRESS;
+import static com.tokopedia.logisticaddaddress.AddressConstants.ENABLE_ADD_NEW_ADDRESS_KEY;
 
 /**
  * @author Aghny A. Putra on 25/01/18
@@ -69,7 +71,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     public static final int ORIGIN_DIRECTION_TYPE_DEFAULT = 0;
     public final int ADD_NEW_ADDRESS_CREATED = 3333;
     public final String EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW";
-    public final String ENABLE_ADD_NEW_ADDRESS_KEY = "android_customer_enable_add_new_address";
 
     private RecyclerView mRvRecipientAddressList;
     private SearchInputView mSvAddressSearchBox;
@@ -91,8 +92,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     private PerformanceMonitoring chooseAddressTracePerformance;
     private boolean isChooseAddressTraceStopped;
-
-    private FirebaseRemoteConfigImpl remoteConfig;
 
     @Inject
     ShipmentAddressListAdapter mShipmentAddressListAdapter;
@@ -208,7 +207,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         chooseAddressTracePerformance = PerformanceMonitoring.start(CHOOSE_ADDRESS_TRACE);
-        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
         if (getArguments() != null) {
             mCurrAddress = getArguments().getParcelable(EXTRA_CURRENT_ADDRESS);
             isDisableCorner = getArguments().getBoolean(ARGUMENT_DISABLE_CORNER, false);
@@ -608,6 +606,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     }
 
     public boolean isAddNewAddressEnabled() {
-        return remoteConfig.getBoolean(ENABLE_ADD_NEW_ADDRESS_KEY, true);
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
+        return remoteConfig.getBoolean(ENABLE_ADD_NEW_ADDRESS_KEY, false);
     }
 }

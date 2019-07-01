@@ -34,11 +34,13 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.Pinpoint
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.logisticaddaddress.AddressConstants.ENABLE_ADD_NEW_ADDRESS_KEY;
 import static com.tokopedia.logisticaddaddress.AddressConstants.REQUEST_CODE_PARAM_CREATE;
 import static com.tokopedia.logisticaddaddress.AddressConstants.REQUEST_CODE_PARAM_EDIT;
 
@@ -53,12 +55,9 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
     private static final String DEFAULT_QUERY_VALUE = "";
 
     private static final String FIREBASE_PERFORMANCE_MONITORING_TRACE_MP_ADDRESS_LIST = "mp_address_list";
-    private static final String ENABLE_ADD_NEW_ADDRESS_KEY = "android_customer_enable_add_new_address";
 
     private boolean IS_EMPTY_ADDRESS = false;
     private MPAddressActivityListener mActivityListener;
-
-    private FirebaseRemoteConfigImpl remoteConfig;
 
     @Inject
     ManageAddressContract.Presenter mPresenter;
@@ -106,7 +105,6 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
         setHasOptionsMenu(true);
         mActivityListener = (MPAddressActivityListener) getActivity();
         performanceMonitoring.startTrace(FIREBASE_PERFORMANCE_MONITORING_TRACE_MP_ADDRESS_LIST);
-        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
     }
 
     @Override
@@ -274,7 +272,8 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
     }
 
     public boolean isAddNewAddressEnabled() {
-        return remoteConfig.getBoolean(ENABLE_ADD_NEW_ADDRESS_KEY, true);
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
+        return remoteConfig.getBoolean(ENABLE_ADD_NEW_ADDRESS_KEY, false);
     }
 
 }

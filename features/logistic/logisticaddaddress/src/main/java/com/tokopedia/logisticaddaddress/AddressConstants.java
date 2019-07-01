@@ -67,4 +67,6 @@ public class AddressConstants {
     public static final String PARAM_RECEIVER_PHONE = "receiver_phone";
     public static final String PARAM_LATITUDE = "latitude";
     public static final String PARAM_LONGITUDE = "longitude";
+
+    public static final String ENABLE_ADD_NEW_ADDRESS_KEY = "android_customer_enable_add_new_address";
 }
