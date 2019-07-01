@@ -54,7 +54,9 @@ public class HomeFeedMapper implements Func1<GraphqlResponse, HomeFeedListModel>
                     product.getDiscountPercentage(),
                     product.getPriceInt(),
                     product.getIsTopads(),
-                    (position+1)
+                    (position+1),
+                    product.getImageUrl(),
+                    product.getShop().getCity()
                     ));
         }
         return homeFeedViewModels;
