@@ -105,7 +105,7 @@ open class PlayActivity : BaseSimpleActivity(), PlayViewListener {
     override fun onPlayerActive(isActive: Boolean) {
         if (isActive) {
             sendViewToBack(playerView)
-            val sourceMedia = "https://scontent-sin6-2.cdninstagram.com/vp/23547017e19e62618f3ae1cf42ba4e41/5D14312A/t50.12441-16/50237559_1201746266639073_6724633886427853004_n.mp4?_nc_ht=scontent-sin6-2.cdninstagram.com"
+            val sourceMedia = "https://scontent-sin6-1.cdninstagram.com/vp/cb4297650b392eab52095d911a1a17dc/5D1C8FA4/t50.12441-16/53306725_332584844027284_3716503313000746737_n.mp4?_nc_ht=scontent-sin6-1.cdninstagram.com"
             TkpdVideoPlayer.Builder()
                     .transaction(R.id.playerView, supportFragmentManager)
                     .videoSource(sourceMedia)
