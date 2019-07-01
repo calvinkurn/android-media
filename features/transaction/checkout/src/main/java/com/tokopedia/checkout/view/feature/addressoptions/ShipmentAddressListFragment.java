@@ -53,7 +53,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import static com.tokopedia.checkout.view.feature.addressoptions.CartAddressChoiceActivity.EXTRA_CURRENT_ADDRESS;
-import static com.tokopedia.logisticaddaddress.AddressConstants.ENABLE_ADD_NEW_ADDRESS_KEY;
+import static com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_ADD_NEW_ADDRESS_KEY;
 
 /**
  * @author Aghny A. Putra on 25/01/18

@@ -40,9 +40,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.logisticaddaddress.AddressConstants.ENABLE_ADD_NEW_ADDRESS_KEY;
 import static com.tokopedia.logisticaddaddress.AddressConstants.REQUEST_CODE_PARAM_CREATE;
 import static com.tokopedia.logisticaddaddress.AddressConstants.REQUEST_CODE_PARAM_EDIT;
+import static com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_ADD_NEW_ADDRESS_KEY;
 
 /**
  * Created by Fajar Ulin Nuha on 13/11/18.

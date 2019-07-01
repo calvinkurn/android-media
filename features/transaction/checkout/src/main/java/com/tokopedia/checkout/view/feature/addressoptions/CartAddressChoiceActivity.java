@@ -21,7 +21,7 @@ import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressMod
 
 import java.util.ArrayList;
 
-import static com.tokopedia.logisticaddaddress.AddressConstants.ENABLE_ADD_NEW_ADDRESS_KEY;
+import static com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_ADD_NEW_ADDRESS_KEY;
 
 /**
  * @author Irfan Khoirul on 05/02/18
