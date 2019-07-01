@@ -271,7 +271,7 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
 
                 if (checkValidFilteredUrl) {
                     val mlpRouter = context.applicationContext as MLPRouter
-                    mlpRouter.startMLPWebViewActivity(context, filteredUrl)
+                    context.startActivity(mlpRouter.getSellerWebViewIntent(context, filteredUrl))
 
                 }
             } else {

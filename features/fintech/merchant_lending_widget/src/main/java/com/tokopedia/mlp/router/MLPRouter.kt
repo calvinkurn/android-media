@@ -1,7 +1,8 @@
 package com.tokopedia.mlp.router
 
 import android.content.Context
+import android.content.Intent
 
 interface MLPRouter {
-    fun startMLPWebViewActivity(context: Context, url: String)
+    fun getSellerWebViewIntent(context: Context, webviewUrl: String): Intent
 }

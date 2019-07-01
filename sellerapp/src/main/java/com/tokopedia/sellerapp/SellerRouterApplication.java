@@ -271,8 +271,8 @@ public abstract class SellerRouterApplication extends MainApplication
         LinkerRouter,
         CharacterPerMinuteInterface,
         ResolutionRouter,
-        MLPRouter,
-        IAddressRouter {
+        IAddressRouter,
+        MLPRouter {
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -1047,12 +1047,6 @@ public abstract class SellerRouterApplication extends MainApplication
         } else {
             context.startActivity(SellerappWebViewActivity.createIntent(context, ApplinkConst.WebViewUrl.SALDO_DETAIL));
         }
-    }
-
-    @NotNull
-    @Override
-    public void startMLPWebViewActivity(Context context, String url) {
-        context.startActivity(SellerappWebViewActivity.createIntent(context, url));
     }
 
     @Override
