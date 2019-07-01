@@ -24,9 +24,7 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.browse.R
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.browse.categoryNavigation.CategoryNavigationConfig
 import com.tokopedia.browse.categoryNavigation.view.BaseCategoryBrowseActivity
-import com.tokopedia.browse.categoryNavigation.view.CategoryBrowseActivity
 import javax.inject.Inject
 
 class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<DigitalBrowseHomeComponent> {
@@ -155,7 +153,7 @@ fun getCallingIntent(context: Context, extras: Bundle): Intent {
 
     if (!extras.containsKey(DigitalBrowseHomeActivity.EXTRA_TITLE)) {
         if (Integer.parseInt(extras.getString(DigitalBrowseHomeActivity.EXTRA_TYPE)) == DigitalBrowseHomeActivity.TYPE_BELANJA) {
-            if(BaseCategoryBrowseActivity.isNewCategoryEnabled(context) && CategoryNavigationConfig.isNewCategoryEnabled) {
+            if(BaseCategoryBrowseActivity.isNewCategoryEnabled(context)) {
                 intent = BaseCategoryBrowseActivity.newIntent(context)
             }else {
                 extras.putString(DigitalBrowseHomeActivity.EXTRA_TITLE, DigitalBrowseHomeActivity.TITLE_BELANJA)

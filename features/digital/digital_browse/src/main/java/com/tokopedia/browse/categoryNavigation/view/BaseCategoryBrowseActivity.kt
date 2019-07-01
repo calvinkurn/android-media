@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.browse.R
+import com.tokopedia.browse.categoryNavigation.CategoryNavigationConfig
 import com.tokopedia.browse.categoryNavigation.analytics.CategoryAnalytics
 import com.tokopedia.browse.categoryNavigation.fragments.CategoryLevelTwoFragment
 import com.tokopedia.browse.categoryNavigation.fragments.CategorylevelOneFragment
@@ -59,7 +60,7 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
 
         fun isNewCategoryEnabled(context: Context): Boolean {
             val remoteConfig = FirebaseRemoteConfigImpl(context)
-            return remoteConfig.getBoolean(APP_CATEGORY_BROWSE_V1, true)
+            return (remoteConfig.getBoolean(APP_CATEGORY_BROWSE_V1, true) && CategoryNavigationConfig.isNewCategoryEnabled)
         }
     }
 
