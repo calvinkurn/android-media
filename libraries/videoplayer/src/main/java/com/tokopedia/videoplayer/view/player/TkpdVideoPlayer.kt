@@ -86,7 +86,7 @@ class TkpdVideoPlayer: Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState
+        super.onViewCreated(view, savedInstanceState)
         sendViewToBack(playerView) //utilities: send playerView in back of any views
 
         //catch video detail properties
