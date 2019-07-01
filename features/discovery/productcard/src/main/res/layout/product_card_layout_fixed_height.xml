@@ -128,7 +128,9 @@
                 android:text="+ Keranjang"
                 android:textAllCaps="false"
                 android:textColor="@color/orange_red"
-                app:typographyType="heading_6" />
+                android:visibility="gone"
+                app:typographyType="heading_6"
+                tools:visibility="visible" />
 
         </LinearLayout>
 

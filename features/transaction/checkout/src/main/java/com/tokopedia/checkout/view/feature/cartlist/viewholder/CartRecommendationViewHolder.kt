@@ -25,7 +25,7 @@ class CartRecommendationViewHolder(val view: View, val actionListener: ActionLis
     fun bind(element: CartRecommendationItemHolderData) {
         itemView.productCardView.setRecommendationModel(element.recommendationItem, this)
 
-        itemView.productCardView.setShowAddToCartButton(true)
+        itemView.productCardView.showAddToCartButton()
         itemView.productCardView.setAddToCartClickListener {
             actionListener.onButtonAddToCartClicked(
                     element.recommendationItem.productId.toString(),

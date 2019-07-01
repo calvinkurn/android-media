@@ -31,7 +31,6 @@ public class ProductCardView extends BaseCustomView {
     protected Typography textAddTocart;
     protected int layout;
     protected boolean fixedHeight = false;
-    protected boolean showAddToCartButton;
 
     public ProductCardView(@NonNull Context context) {
         super(context);
@@ -52,14 +51,16 @@ public class ProductCardView extends BaseCustomView {
         this.fixedHeight = fixedHeight;
     }
 
-    public void setShowAddToCartButton(boolean showAddToCartButton) {
-        this.showAddToCartButton = showAddToCartButton;
+    public void showAddToCartButton() {
+        textAddTocart.setVisibility(View.VISIBLE);
+    }
+
+    public void hideAddToCartButton() {
+        textAddTocart.setVisibility(View.GONE);
     }
 
     public void setAddToCartClickListener(View.OnClickListener onClickListener) {
-        if (showAddToCartButton && textAddTocart != null) {
-            textAddTocart.setOnClickListener(onClickListener);
-        }
+        textAddTocart.setOnClickListener(onClickListener);
     }
 
     protected void init(@Nullable AttributeSet attrs) {
@@ -87,12 +88,6 @@ public class ProductCardView extends BaseCustomView {
         ratingView = view.findViewById(R.id.rating);
         reviewCountView = view.findViewById(R.id.review_count);
         textAddTocart = view.findViewById(R.id.tv_atc);
-
-        if (showAddToCartButton) {
-            textAddTocart.setVisibility(View.VISIBLE);
-        } else {
-            textAddTocart.setVisibility(View.GONE);
-        }
     }
 
     public void setTitle(String title) {

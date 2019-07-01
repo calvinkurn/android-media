@@ -133,9 +133,11 @@
             android:text="+ Keranjang"
             android:textAllCaps="false"
             android:textColor="@color/orange_red"
-            app:layout_constraintTop_toBottomOf="@+id/rating"
+            android:visibility="gone"
             app:layout_constraintStart_toEndOf="parent"
-            app:typographyType="heading_6" />
+            app:layout_constraintTop_toBottomOf="@+id/rating"
+            app:typographyType="heading_6"
+            tools:visibility="visible" />
 
         <ImageView
             android:id="@+id/topAdsIcon"
