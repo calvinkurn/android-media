@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.chatroom.view.listener.ChatroomContract;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.VoteAnnouncementViewModel;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * @author by nisie on 2/27/18.
@@ -72,7 +73,7 @@ public class VoteAnnouncementViewHolder extends BaseChatViewHolder<VoteAnnouncem
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             ImageHandler.loadImageWithIdWithoutPlaceholder(voteIcon, R.drawable.ic_vote_inactive);
         } else {
-            voteIcon.setImageResource(R.drawable.ic_vote_inactive);
+            voteIcon.setImageDrawable(MethodChecker.getDrawable(voteIcon.getContext(),R.drawable.ic_vote_inactive));
         }
 
         voteTitle.setText(R.string.title_poll_finished);
@@ -84,7 +85,7 @@ public class VoteAnnouncementViewHolder extends BaseChatViewHolder<VoteAnnouncem
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             ImageHandler.loadImageWithIdWithoutPlaceholder(voteIcon, R.drawable.ic_play_dynamic_icon);
         } else {
-            voteIcon.setImageResource(R.drawable.ic_play_dynamic_icon);
+            voteIcon.setImageDrawable(MethodChecker.getDrawable( voteIcon.getContext(),R.drawable.ic_play_dynamic_icon));
         }
         voteTitle.setText(R.string.title_poll_started);
         voteTitle.setTextColor(MethodChecker.getColor(voteTitle.getContext(), R.color.medium_green));

@@ -32,6 +32,8 @@ public interface HomeTypeFactory {
 
     int type(TickerViewModel tickerViewModel);
 
+    int type(SearchPlaceholderViewModel searchPlaceholderViewModel);
+
     int type(DigitalsViewModel digitalsViewModel);
 
     int type(BusinessUnitViewModel businessUnitViewModel);

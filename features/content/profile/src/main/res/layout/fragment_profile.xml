@@ -125,9 +125,7 @@
                     android:gravity="center"
                     android:paddingLeft="@dimen/dp_8"
                     android:paddingRight="@dimen/dp_8"
-                    android:visibility="gone"
-                    tools:ignore="UnusedAttribute"
-                    tools:visibility="visible">
+                    tools:ignore="UnusedAttribute">
 
                 <android.support.v7.widget.AppCompatImageView
                         android:layout_width="@dimen/dp_24"
@@ -145,7 +143,7 @@
                         android:visibility="gone"
                         app:fontSize="micro"
                         tools:textSize="@dimen/sp_12"
-                        tools:visibility="visible" />
+                        tools:visibility="visible"/>
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
@@ -212,7 +210,7 @@
                                     android:id="@+id/iv_back_parallax"
                                     android:layout_width="wrap_content"
                                     android:layout_height="match_parent"
-                                    android:src="@drawable/ic_action_back"
+                                    app:srcCompat="@drawable/ic_action_back"
                                     android:layout_gravity="center"
                                     />
 
@@ -274,7 +272,7 @@
                                             android:layout_height="@dimen/dp_16"
                                             android:paddingEnd="@dimen/dp_4"
                                             android:paddingRight="@dimen/dp_4"
-                                            android:src="@drawable/ic_kol_badge"
+                                            app:srcCompat="@drawable/ic_kol_badge"
                                             android:visibility="gone"
                                             tools:ignore="RtlSymmetry"
                                             tools:visibility="visible"
@@ -327,11 +325,11 @@
                             </LinearLayout>
                         </LinearLayout>
 
-                        <View
+                        <ImageView
                             android:layout_gravity="bottom"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/dp_10"
-                            android:background="@drawable/ic_rectangle"/>
+                            app:srcCompat="@drawable/ic_rectangle"/>
 
                     </FrameLayout>
 
@@ -362,7 +360,7 @@
                                 android:id="@+id/iv_back"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
-                                android:src="@drawable/ic_action_back"
+                                app:srcCompat="@drawable/ic_action_back"
                                 android:layout_gravity="center"
                                 android:tint="@color/black_70"
                                 />

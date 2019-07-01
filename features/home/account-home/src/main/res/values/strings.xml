@@ -103,8 +103,7 @@
     <string name="label_menu_buyer_complain">Lihat status komplain</string>
     <string name="title_menu_seller_complain">Komplain Sebagai Penjual</string>
     <string name="label_menu_seller_complain">Lihat status komplain</string>
-    <string name="title_menu_other_transaction">Detail Transaksi</string>
-    <string name="title_menu_other_transaction_1">Daftar Transaksi</string>
+    <string name="title_menu_other_transaction">Daftar Transaksi</string>
     <string name="title_menu_favorites">Favorit Saya</string>
     <string name="title_menu_favorite_topic">Topik Favorit</string>
     <string name="label_menu_favorite_topic">Atur topik favorit Anda</string>
@@ -175,7 +174,7 @@
     <string name="label_wallet_activation">Aktivasi TokoCash</string>
 
 
-    <string name="msg_has_no_shop">Anda belum memiliki Toko</string>
+    <string name="msg_has_no_shop">Mulai dengan Tokopedia!</string>
     <string name="msg_desc_has_no_shop">Buka Toko di Tokopedia, Sekarang! <b>Mudah, Aman,</b> dan
         <b>Menguntungkan</b>.</string>
     <string name="top_features">Top Features</string>
@@ -185,6 +184,7 @@
     <string name="seller_center_desc">Potensi pinjaman senilai Rp. 1.000.000</string>
     <string name="open_shop">Buka Toko</string>
     <string name="learn_more">Pelajari Selengkapnya</string>
+    <string name="know_more">Mau Tahu Caranya?</string>
     <string name="message_success_change_password">Kata sandi berhasil diubah</string>
     <string name="verified_account">Verified Account</string>
     <string name="error_no_internet_connection">Tidak ada koneksi internet</string>

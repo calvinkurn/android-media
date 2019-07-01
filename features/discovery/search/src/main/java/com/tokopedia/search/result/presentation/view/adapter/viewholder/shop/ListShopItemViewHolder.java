@@ -4,7 +4,9 @@ import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ShopListItemDecoration;
 import com.tokopedia.search.result.presentation.view.listener.ShopListener;

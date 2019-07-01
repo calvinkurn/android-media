@@ -16,5 +16,7 @@ data class FeedContentForm(
         @SerializedName("token")
         val token: String = "",
         @SerializedName("type")
-        val type: String = ""
+        val type: String = "",
+        @SerializedName("defaultPlaceholder")
+        val defaultPlaceholder: String = ""
 )

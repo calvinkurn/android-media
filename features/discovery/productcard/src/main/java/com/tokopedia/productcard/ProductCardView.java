@@ -128,6 +128,7 @@ public class ProductCardView extends BaseCustomView {
                 ratingView.setVisibility(View.INVISIBLE);
                 reviewCountView.setVisibility(View.INVISIBLE);
             } else {
+
                 ratingView.setVisibility(View.GONE);
                 reviewCountView.setVisibility(View.GONE);
             }

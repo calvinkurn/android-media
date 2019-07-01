@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.orders.orderdetails.view.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -18,14 +19,16 @@ import com.google.gson.Gson;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.EntityAddress;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
 import com.tokopedia.transaction.orders.orderdetails.data.MetaDataInfo;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailContract;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailPresenter;
-
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements OrderListDetailContract.ActionInterface {
 
@@ -43,13 +46,14 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     OrderListDetailPresenter presenter;
     private String categoryDeals = "deal";
     private String categoryEvents = "event";
+    private String orderId;
 
-
-    public ItemsAdapter(Context context, List<Items> itemsList, boolean isShortLayout, OrderListDetailPresenter presenter) {
+    public ItemsAdapter(Context context, List<Items> itemsList, boolean isShortLayout, OrderListDetailPresenter presenter, String orderId) {
         this.context = context;
         this.itemsList = itemsList;
         this.isShortLayout = isShortLayout;
         this.presenter = presenter;
+        this.orderId = orderId;
     }
 
     @Override
@@ -120,12 +124,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     private View.OnClickListener getActionButtonClickListener(final String uri) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                    presenter.downloadPdf(uri);
-            }
-        };
+        return view -> presenter.onClick(uri);
     }
 
 
@@ -190,6 +189,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 metaDataInfo = gson.fromJson(item.getMetaData(), MetaDataInfo.class);
             }
             if (metaDataInfo != null) {
+                presenter.sendThankYouEvent(metaDataInfo);
                 if (itemType == ITEM_DEALS || itemType == ITEM_DEALS_SHORT) {
                     if (TextUtils.isEmpty(metaDataInfo.getEntityImage())) {
                         ImageHandler.loadImage(context, dealImage, item.getImageUrl(), R.color.grey_1100, R.color.grey_1100);
