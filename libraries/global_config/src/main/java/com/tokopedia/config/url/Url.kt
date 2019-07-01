@@ -40,6 +40,7 @@ data class Url(
         val BOOKING: String,
         val TIKET: String,
         val IMT: String,
-        val LAKU6: String
+        val LAKU6: String,
+        val SELLER: String
 )
 
