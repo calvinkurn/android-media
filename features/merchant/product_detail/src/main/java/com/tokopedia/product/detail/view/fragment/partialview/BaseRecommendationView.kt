@@ -39,15 +39,15 @@ abstract class BaseRecommendationView(context: Context) : View(context) {
     }
 
     private fun initAdapter(product: RecommendationWidget) {
-        var pageName = ""
         getRecyclerView().layoutManager = LinearLayoutManager(context,
                 LinearLayoutManager.HORIZONTAL, false)
 
-        when (getView()) {
-            getView().base_recom_1 -> pageName = PDP_1
-            getView().base_recom_2 -> pageName = PDP_2
-            getView().base_recom_3 -> pageName = PDP_3
-            getView().base_recom_4 -> pageName = PDP_4
+        val pageName = when (getView()) {
+            getView().base_recom_1 -> PDP_1
+            getView().base_recom_2 -> PDP_2
+            getView().base_recom_3 -> PDP_3
+            getView().base_recom_4 -> PDP_4
+            else -> ""
         }
         getRecyclerView().adapter = RecommendationProductAdapter(product, getListener(), pageName)
         getRecyclerView().visible()
