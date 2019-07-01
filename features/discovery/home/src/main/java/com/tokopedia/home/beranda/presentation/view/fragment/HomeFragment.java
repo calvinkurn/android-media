@@ -418,7 +418,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 if (presenter != null) {
                     presenter.getSearchHint();
                     presenter.getHomeData();
-//                    presenter.getHeaderData(true);
+                    presenter.getHeaderData(true);
                 }
             }
         });
@@ -1396,8 +1396,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     public void showNotAllowedGeolocationSnackbar() {
-        Toaster.INSTANCE.showGreenWithAction(
-                root,
+        Toaster.Companion.showNormalWithAction(root,
                 getString(R.string.discovery_home_snackbar_geolocation_declined_permission),
                 Snackbar.LENGTH_LONG,
                 getString(R.string.discovery_home_snackbar_geolocation_setting),
@@ -1407,10 +1406,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                         goToApplicationDetailActivity();
                     }
                 });
+
     }
 
     public void showAllowedGeolocationSnackbar() {
-        Toaster.INSTANCE.showGreen(
+        Toaster.Companion.showNormal(
                 root,
                 getString(R.string.discovery_home_snackbar_geolocation_granted_permission),
                 Snackbar.LENGTH_LONG);
