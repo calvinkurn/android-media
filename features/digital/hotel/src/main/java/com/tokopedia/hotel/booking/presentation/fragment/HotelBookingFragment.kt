@@ -214,15 +214,15 @@ class HotelBookingFragment : HotelBaseFragment() {
                         spannableString.length - moreInfoString.length, spannableString.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 cancellationDesc = spannableString
             }
-//            cancellation_policy_ticker.tickerTitle = cancellationPolicy.title
-//            cancellation_policy_ticker.setTextDescription(cancellationDesc)
-//            cancellation_policy_ticker.setDescriptionClickEvent(object : TickerCallback {
-//                override fun onDescriptionViewClick(p0: CharSequence?) {
-//                    onCancellationPolicyClicked(property)
-//                }
-//
-//                override fun onDismiss() {}
-//            })
+            cancellation_policy_ticker.tickerTitle = cancellationPolicy.title
+            cancellation_policy_ticker.setTextDescription(cancellationDesc)
+            cancellation_policy_ticker.setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(p0: CharSequence?) {
+                    onCancellationPolicyClicked(property)
+                }
+
+                override fun onDismiss() {}
+            })
         }
     }
 
