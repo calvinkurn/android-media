@@ -28,7 +28,6 @@
         android:orientation="horizontal"
         android:layout_marginTop="@dimen/dp_8"
         android:paddingLeft="@dimen/dp_8"
-        android:paddingRight="@dimen/dp_8"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_producttag_grid" />
+        tools:listitem="@layout/item_producttag_list" />
 </LinearLayout>
