@@ -115,7 +115,6 @@ public class DialogLogoutFragment extends DialogFragment {
                                         PersistentCacheManager.instance.delete();
                                         // clear etalase
                                         Router.clearEtalase(getActivity());
-                                        DbManagerImpl.getInstance().removeAllEtalase();
                                         TrackApp.getInstance().getMoEngage().logoutEvent();
                                         SessionHandler.clearUserData(activity);
                                         NotificationModHandler notif = new NotificationModHandler(activity);

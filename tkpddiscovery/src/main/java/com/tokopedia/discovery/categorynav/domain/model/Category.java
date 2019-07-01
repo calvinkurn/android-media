@@ -2,7 +2,6 @@ package com.tokopedia.discovery.categorynav.domain.model;
 
 
 import com.tokopedia.core.discovery.dynamicfilter.adapter.MultiLevelExpIndListAdapter;
-import com.tokopedia.core.discovery.model.DynamicObject;
 
 import java.util.ArrayList;
 import java.util.List;

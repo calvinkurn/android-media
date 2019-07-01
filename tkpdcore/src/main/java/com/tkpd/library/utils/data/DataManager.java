@@ -3,7 +3,6 @@ package com.tkpd.library.utils.data;
 import android.content.Context;
 
 import com.tokopedia.core.database.model.Bank;
-import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.database.model.City;
 import com.tokopedia.core.database.model.District;
 import com.tokopedia.core.database.model.Province;

@@ -7,20 +7,11 @@ import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.tokopedia.core.database.model.Bank;
 import com.tokopedia.core.database.model.Bank_Table;
-import com.tokopedia.core.database.model.CategoryDB;
-import com.tokopedia.core.database.model.CategoryDB_Table;
 import com.tokopedia.core.database.model.City;
 import com.tokopedia.core.database.model.City_Table;
-import com.tokopedia.core.database.model.EtalaseDB;
-import com.tokopedia.core.database.model.EtalaseDB_Table;
-import com.tokopedia.core.database.model.PictureDB;
-import com.tokopedia.core.database.model.PictureDB_Table;
 import com.tokopedia.core.database.model.Province;
 import com.tokopedia.core.database.model.Province_Table;
-import com.tokopedia.core.database.model.WholesalePriceDB;
-import com.tokopedia.core.database.model.WholesalePriceDB_Table;
 import com.tokopedia.core.etalase.EtalaseVariable;
-import com.tokopedia.core.myproduct.model.GetEtalaseModel;
 import com.tokopedia.core.myproduct.model.WholeSaleAdapterModel;
 
 import java.util.List;
@@ -44,54 +35,6 @@ public class DbManagerImpl implements DbManager{
         return dbManager;
     }
 
-    @Override
-    public boolean isEtalaseEmpty(String etalaseName) {
-        List<EtalaseDB> etalaseDBs = new Select().from(EtalaseDB.class)
-                .where(EtalaseDB_Table.etalse_name.like(etalaseName))
-                .queryList();
-
-        if(etalaseDBs != null && etalaseDBs.size() > 0){
-            return false;
-        }else {
-            return true;
-        }
-    }
-
-    @Override
-    public EtalaseDB getEtalase(String etalaseId){
-        int etalaseIdInt = Integer.parseInt(etalaseId);
-        EtalaseDB etalaseDB = new Select().from(EtalaseDB.class)
-                .where(EtalaseDB_Table.etalaseId.is(etalaseIdInt))
-                .querySingle();
-
-        return etalaseDB;
-    }
-
-    public void removeAllEtalase(){
-        new Delete().from(EtalaseDB.class).execute();
-    }
-
-    public PictureDB getGambarById(long photoId){
-        return new Select().from(PictureDB.class).where(PictureDB_Table.Id.is(photoId))
-                .querySingle();
-    }
-
-    public long addHargaGrosir(double min, double max, double price){
-        WholesalePriceDB wholesalePriceDB = new WholesalePriceDB(min, max, price);
-        wholesalePriceDB.save();
-        return wholesalePriceDB.Id;
-    }
-
-    public long addHargaGrosir(WholeSaleAdapterModel wholeSaleAdapterModel){
-        return addHargaGrosir(wholeSaleAdapterModel.getQuantityOne(), wholeSaleAdapterModel.getQuantityTwo(), wholeSaleAdapterModel.getWholeSalePrice());
-    }
-
-    public void removeHargaGrosir(WholeSaleAdapterModel wholeSaleAdapterModel){
-        new Delete().from(WholesalePriceDB.class).where(
-                WholesalePriceDB_Table.Id.is(wholeSaleAdapterModel.getbDid())).
-                execute();
-    }
-
     public List<Bank> getListBankFromDB(String query) {
 
         List<Bank> bankList = new Select()
@@ -100,19 +43,6 @@ public class DbManagerImpl implements DbManager{
                 .queryList();
 
         return bankList;
-    }
-
-    @Override
-    public List<WholesalePriceDB> removeWholeSaleDb(long dbId) {
-        List<WholesalePriceDB> wholesalePriceDBs = new Select()
-                .from(WholesalePriceDB.class)
-                .where(WholesalePriceDB_Table.Id.is(dbId))
-                .queryList();
-        for (WholesalePriceDB wholesalePriceDB : wholesalePriceDBs) {
-            wholesalePriceDB.delete();
-        }
-
-        return wholesalePriceDBs;
     }
 
     public Province getProvinceFromProvinceId(String provinceId){

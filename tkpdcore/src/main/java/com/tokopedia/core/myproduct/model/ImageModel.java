@@ -3,7 +3,6 @@ package com.tokopedia.core.myproduct.model;
 import android.os.Parcelable;
 
 import com.tokopedia.core.database.manager.DbManagerImpl;
-import com.tokopedia.core.database.model.PictureDB;
 import com.tokopedia.core.myproduct.model.constant.ImageModelType;
 
 import org.parceler.Parcel;
@@ -150,10 +149,6 @@ public class ImageModel {
     public void clearAll() {
         if (types != null)
             types.clear();
-    }
-
-    public PictureDB getGambar(){
-        return DbManagerImpl.getInstance().getGambarById(dbId);
     }
 
     @Override

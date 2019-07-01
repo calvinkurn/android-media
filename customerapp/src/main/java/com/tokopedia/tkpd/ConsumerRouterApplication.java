@@ -2688,7 +2688,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         new GlobalCacheManager().deleteAll();
         PersistentCacheManager.instance.delete();
         Router.clearEtalase(activity);
-        DbManagerImpl.getInstance().removeAllEtalase();
         TrackApp.getInstance().getMoEngage().logoutEvent();
         SessionHandler.clearUserData(activity);
         NotificationModHandler notif = new NotificationModHandler(activity);
@@ -2733,7 +2732,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             new GlobalCacheManager().deleteAll();
             PersistentCacheManager.instance.delete();
             Router.clearEtalase(activity);
-            DbManagerImpl.getInstance().removeAllEtalase();
             TrackApp.getInstance().getMoEngage().logoutEvent();
             SessionHandler.clearUserData(activity);
             NotificationModHandler notif = new NotificationModHandler(activity);

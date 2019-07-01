@@ -1158,7 +1158,6 @@ public abstract class SellerRouterApplication extends MainApplication
             new GlobalCacheManager().deleteAll();
             PersistentCacheManager.instance.delete();
             Router.clearEtalase(activity);
-            DbManagerImpl.getInstance().removeAllEtalase();
             try {
                 TrackApp.getInstance().getMoEngage().logoutEvent();
             } catch (Exception ignored) {}

@@ -6,7 +6,6 @@ import android.util.Log;
 
 import com.tokopedia.core2.R;
 import com.tokopedia.core.database.manager.DbManagerImpl;
-import com.tokopedia.core.myproduct.adapter.WholesaleAdapter;
 import com.tokopedia.core.myproduct.model.ImageModel;
 import com.tokopedia.core.myproduct.model.TextDeleteModel;
 import com.tokopedia.core.myproduct.model.WholeSaleAdapterModel;
@@ -22,6 +21,8 @@ import static com.tokopedia.core.myproduct.model.constant.ImageModelType.SELECTE
  * this class is used for {@link com.tokopedia.core.myproduct.fragment.AddProductFragment} to verfy input
  */
 public class VerificationUtils {
+    public static final int WHOLESALE_QTY1 = 0;
+    public static final int WHOLESALE_QTY2 = 1;
     public static final String TAG = VerificationUtils.class.getSimpleName();
     public static final String messageTAG = TAG+" : ";
 
@@ -64,10 +65,6 @@ public class VerificationUtils {
 
         if (etalaseName.trim().length() < 3){
             return new Pair<>(false, context.getString(R.string.etalase_less_than_three_char));
-        }
-
-        if(!DbManagerImpl.getInstance().isEtalaseEmpty(etalaseName)){
-            return new Pair<>(false, context.getString(R.string.error_etalase_exist));
         }
 
         return new Pair<>(true, null);
@@ -215,7 +212,7 @@ public class VerificationUtils {
         boolean resBoolean = false;
         String resString = null;
         switch (index){
-            case WholesaleAdapter.QTY1:
+            case WHOLESALE_QTY1:
                 String quantityOne = data;
                 String quantityTwo = ref;
                 if(quantityOne.length()<=0||quantityOne.equals("")
@@ -250,7 +247,7 @@ public class VerificationUtils {
                 res.setModel1(true);
                 res.setModel2(null);
                 return res;
-            case WholesaleAdapter.QTY2:
+            case WHOLESALE_QTY2:
                 quantityOne = ref;
                 quantityTwo = data;
                 if(quantityOne.length()<=0||quantityOne.equals("")
