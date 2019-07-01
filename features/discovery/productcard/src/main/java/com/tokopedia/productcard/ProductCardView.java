@@ -17,7 +17,6 @@ import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.topads.sdk.view.ImpressedImageView;
 
 public class ProductCardView extends BaseCustomView {
-
     protected TextView textName;
     protected TextView textPrice;
     protected TextView textDiscount;
@@ -29,6 +28,8 @@ public class ProductCardView extends BaseCustomView {
     protected TextView reviewCountView;
     protected int layout;
     protected boolean fixedHeight = false;
+    protected ImageView badgeView;
+    protected TextView textLocation;
 
     public ProductCardView(@NonNull Context context) {
         super(context);
@@ -134,6 +135,14 @@ public class ProductCardView extends BaseCustomView {
                 reviewCountView.setVisibility(View.GONE);
             }
         }
+    }
+
+    public void setBadgeUrl(String url){
+        ImageHandler.loadImageFitCenter(getContext(), badgeView, url);
+    }
+
+    public void setLocation(String location){
+        textLocation.setText(location);
     }
 
     public ImpressedImageView getImageView() {

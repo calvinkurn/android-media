@@ -33,6 +33,8 @@ public class HomeFeedViewModel extends ImpressHolder implements Visitable<HomeFe
     private String trackerImageUrl;
     private int priceNumber;
     private boolean isTopAds;
+    private String badgeUrl;
+    private String location;
 
     public HomeFeedViewModel(String productId,
                              String productName,
@@ -48,7 +50,9 @@ public class HomeFeedViewModel extends ImpressHolder implements Visitable<HomeFe
                              int discountPercentage,
                              int priceNumber,
                              boolean isTopAds,
-                             int position) {
+                             int position,
+                             String badgeUrl,
+                             String location) {
         this.productId = productId;
         this.productName = productName;
         this.categoryBreadcrumbs = categoryBreadcrumbs;
@@ -64,6 +68,8 @@ public class HomeFeedViewModel extends ImpressHolder implements Visitable<HomeFe
         this.priceNumber = priceNumber;
         this.isTopAds = isTopAds;
         this.position = position;
+        this.badgeUrl = badgeUrl;
+        this.location = location;
     }
 
     public String getProductId() {
@@ -136,6 +142,14 @@ public class HomeFeedViewModel extends ImpressHolder implements Visitable<HomeFe
 
     public int getCountReview() {
         return countReview;
+    }
+
+    public String getBadgeUrl() {
+        return badgeUrl;
+    }
+
+    public String getLocation() {
+        return location;
     }
 
     @Override

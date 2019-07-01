@@ -34,6 +34,8 @@ public class HomeFeedViewHolder extends AbstractViewHolder<HomeFeedViewModel> {
         productCardView.setSlashedPrice(element.getSlashedPrice());
         productCardView.setDiscount(element.getDiscountPercentage());
         productCardView.setRatingReviewCount(element.getRating(), element.getCountReview());
+        productCardView.setBadgeUrl(element.getBadgeUrl());
+        productCardView.setLocation(element.getLocation());
         productCardView.getImageView().setViewHintListener(element, new ImpressedImageView.ViewHintListener() {
             @Override
             public void onViewHint() {
