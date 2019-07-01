@@ -268,10 +268,6 @@ public abstract class ProductCardView extends BaseCustomView {
         imageTopAds.setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
 
-
-
-
-
     protected void setMarginsToView(View view, int leftPixel, int topPixel, int rightPixel, int bottomPixel) {
         if(view.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
             ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
@@ -314,13 +310,13 @@ public abstract class ProductCardView extends BaseCustomView {
         }
     }
 
-    protected void setViewConstraintTopToBottomOf(@IdRes int viewLayoutId, @IdRes int bottomOfLayoutId, @DimenRes int topMarginDp) {
+    protected void setViewConstraintInConstraintLayoutProductCard(@IdRes int startLayoutId, int startSide, @IdRes int endLayoutId, int endSide, @DimenRes int marginDp) {
         if (constraintLayoutProductCard != null) {
             ConstraintSet constraintSet = new ConstraintSet();
             constraintSet.clone(constraintLayoutProductCard);
 
-            int topMarginPixel = getDimensionPixelSize(topMarginDp);
-            constraintSet.connect(viewLayoutId, ConstraintSet.TOP, bottomOfLayoutId, ConstraintSet.BOTTOM, topMarginPixel);
+            int marginPixel = getDimensionPixelSize(marginDp);
+            constraintSet.connect(startLayoutId, startSide, endLayoutId, endSide, marginPixel);
 
             constraintSet.applyTo(constraintLayoutProductCard);
         }

@@ -3,6 +3,7 @@ package com.tokopedia.productcard.v2;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintSet;
 import android.util.AttributeSet;
 
 import com.tokopedia.productcard.R;
@@ -73,16 +74,16 @@ public class ProductCardViewBigGrid extends ProductCardView {
 
     private void setOffersLabelConstraint() {
         if(isViewVisible(labelCredibility)) {
-            setViewConstraintTopToBottomOf(labelOffers.getId(), labelCredibility.getId(), R.dimen.dp_8);
+            setViewConstraintInConstraintLayoutProductCard(labelOffers.getId(), ConstraintSet.TOP, labelCredibility.getId(), ConstraintSet.BOTTOM, R.dimen.dp_8);
         }
         else if(isViewVisible(imageRating)) {
-            setViewConstraintTopToBottomOf(labelOffers.getId(), imageRating.getId(), R.dimen.dp_8);
+            setViewConstraintInConstraintLayoutProductCard(labelOffers.getId(), ConstraintSet.TOP, imageRating.getId(), ConstraintSet.BOTTOM, R.dimen.dp_8);
         }
         else if(isViewVisible(textViewReviewCount)) {
-            setViewConstraintTopToBottomOf(labelOffers.getId(), textViewReviewCount.getId(), R.dimen.dp_8);
+            setViewConstraintInConstraintLayoutProductCard(labelOffers.getId(), ConstraintSet.TOP, textViewReviewCount.getId(), ConstraintSet.BOTTOM, R.dimen.dp_8);
         }
         else {
-            setViewConstraintTopToBottomOf(labelOffers.getId(), textViewShopLocation.getId(), R.dimen.dp_8);
+            setViewConstraintInConstraintLayoutProductCard(labelOffers.getId(), ConstraintSet.TOP, textViewShopLocation.getId(), ConstraintSet.BOTTOM, R.dimen.dp_8);
         }
     }
 }
