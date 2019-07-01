@@ -23,6 +23,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.libraries.config)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 

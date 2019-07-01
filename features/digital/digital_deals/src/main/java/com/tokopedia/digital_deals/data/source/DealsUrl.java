@@ -1,8 +1,10 @@
 package com.tokopedia.digital_deals.data.source;
 
+import com.tokopedia.config.url.TokopediaUrl;
+
 public class DealsUrl {
     //Base Url
-    public static String DEALS_DOMAIN = "https://booking.tokopedia.com/";
+    public static String DEALS_DOMAIN = TokopediaUrl.Companion.getInstance().getBOOKING();
 
     public interface HelperUrl {
         String DEALS_LIST = "v1/api/h/deal";

@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.tokopedia.config.url.TokopediaUrl;
 import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.network.apiservices.accounts.apis.AccountsBasicApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -82,7 +83,7 @@ public class AccessTokenRefresh {
     private Retrofit getRetrofit() {
         Gson gson = new Gson();
         return new Retrofit.Builder()
-                .baseUrl(TkpdBaseURL.ACCOUNTS_DOMAIN)
+                .baseUrl(TokopediaUrl.Companion.getInstance().getACCOUNTS())
                 .addConverterFactory(new StringResponseConverter())
                 .client(OkHttpFactory.create().buildBasicAuth())
                 .build();

@@ -1,6 +1,7 @@
 package com.tokopedia.seller.opportunity.common.util;
 
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
+import com.tokopedia.config.url.TokopediaUrl;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.seller.opportunity.data.constant.OpportunityConstant;
 
@@ -27,7 +28,7 @@ public class OpportunityCacheApiWhiteList {
         List<CacheApiWhiteListDomain> cacheApiWhiteList = new ArrayList<>();
 
         // Opportunity category
-        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.BASE_DOMAIN, OpportunityConstant.PATH_GET_CATEGORY, ONE_DAY));
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TokopediaUrl.Companion.getInstance().getWS(), OpportunityConstant.PATH_GET_CATEGORY, ONE_DAY));
 
         return cacheApiWhiteList;
     }

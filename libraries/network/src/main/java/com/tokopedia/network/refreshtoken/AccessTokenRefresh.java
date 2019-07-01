@@ -3,6 +3,7 @@ package com.tokopedia.network.refreshtoken;
 import android.content.Context;
 
 import com.google.gson.GsonBuilder;
+import com.tokopedia.config.url.TokopediaUrl;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.network.converter.StringResponseConverter;
@@ -80,7 +81,7 @@ public class AccessTokenRefresh {
             networkRouter) {
         TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context, new OkHttpClient.Builder());
         return new Retrofit.Builder()
-                .baseUrl(TkpdBaseURL.ACCOUNTS_DOMAIN)
+                .baseUrl(TokopediaUrl.Companion.getInstance().getACCOUNTS())
                 .addConverterFactory(new StringResponseConverter())
                 .client(tkpdOkHttpBuilder.addInterceptor(new AccountsBasicInterceptor(context, networkRouter, userSession))
                         .addInterceptor(new FingerprintInterceptor(networkRouter, userSession))

@@ -1,6 +1,7 @@
 package com.tokopedia.seller.shop.common.utils;
 
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
+import com.tokopedia.config.url.TokopediaUrl;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 
 import java.util.ArrayList;
@@ -26,13 +27,13 @@ public class ShopOpenCacheApiWhiteList {
         List<CacheApiWhiteListDomain> cacheApiWhiteList = new ArrayList<>();
 
         // Shop info
-        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.BASE_DOMAIN,
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TokopediaUrl.Companion.getInstance().getWS(),
                 TkpdBaseURL.Shop.PATH_SHOP + TkpdBaseURL.Shop.PATH_GET_SHOP_INFO, THREE_HOURS));
         // Open Shop form
-        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.BASE_DOMAIN,
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TokopediaUrl.Companion.getInstance().getWS(),
                 TkpdBaseURL.Shop.PATH_MY_SHOP + TkpdBaseURL.Shop.PATH_GET_OPEN_SHOP_FORM, ONE_HOUR));
         // Generate Host
-        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.BASE_DOMAIN,
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TokopediaUrl.Companion.getInstance().getWS(),
                 TkpdBaseURL.Upload.V4_ACTION_GENERATE_HOST + TkpdBaseURL.Upload.PATH_GENERATE_HOST, THREE_HOURS));
 
         return cacheApiWhiteList;

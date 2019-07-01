@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.common;
 
+import com.tokopedia.config.url.TokopediaUrl;
 import com.tokopedia.inbox.BuildConfig;
 
 /**
@@ -7,7 +8,7 @@ import com.tokopedia.inbox.BuildConfig;
  */
 public class ResolutionUrl {
 
-    public static String HOSTNAME =  "https://m.tokopedia.com/";
+    public static String HOSTNAME = TokopediaUrl.Companion.getInstance().getMOBILEWEB();
     private static final String MOBILE =  "/mobile";
 
     public static final String RESO_CREATE = "resolution-center/create/%s" + MOBILE;

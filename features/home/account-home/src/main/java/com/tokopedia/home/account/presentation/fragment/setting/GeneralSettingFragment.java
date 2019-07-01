@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.config.url.TokopediaUrl;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.R;
@@ -185,7 +186,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
                 break;
             case SettingConstant.SETTING_TEMPLATE_ID:
                 if (getActivity() != null) {
-                    String applink = String.format("%s?url=%s", ApplinkConst.WEBVIEW, TkpdBaseURL.MOBILE_DOMAIN + PATH_CHECKOUT_TEMPLATE);
+                    String applink = String.format("%s?url=%s", ApplinkConst.WEBVIEW, TokopediaUrl.Companion.getInstance().getMOBILEWEB() + PATH_CHECKOUT_TEMPLATE);
                     RouteManager.route(getActivity(), applink);
                 }
                 break;

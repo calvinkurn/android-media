@@ -1,5 +1,7 @@
 package com.tokopedia.tokocash.network.api;
 
+import com.tokopedia.config.url.TokopediaUrl;
+
 /**
  * Created by nabillasabbaha on 1/17/18.
  */
@@ -7,16 +9,15 @@ package com.tokopedia.tokocash.network.api;
 public interface WalletUrl {
 
     class BaseUrl {
-        public static String ACCOUNTS_DOMAIN = "https://accounts.tokopedia.com/";
-        public static String WALLET_DOMAIN = "https://www.tokocash.com/";
-        public static String WEB_DOMAIN = "https://www.tokpedia.com/";
-        public static String GQL_TOKOCASH_DOMAIN = "https://gql.tokopedia.com/";
+        public static String ACCOUNTS_DOMAIN = TokopediaUrl.Companion.getInstance().getACCOUNTS();
+        public static String WALLET_DOMAIN = TokopediaUrl.Companion.getInstance().getTOKOCASH();
+        public static String WEB_DOMAIN = TokopediaUrl.Companion.getInstance().getWEB();
+        public static String GQL_TOKOCASH_DOMAIN = TokopediaUrl.Companion.getInstance().getGQL();
     }
 
     class KeyHmac {
         public static String HMAC_PENDING_CASHBACK = "CPAnAGpC3NIg7ZSj";
     }
-
 
     class Account {
         public static final String PATH_CASH_BACK_DOMAIN = "api/v1/me/cashback/balance";

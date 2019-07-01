@@ -9,7 +9,6 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.design.widget.TextInputEditText
 import android.support.v4.app.Fragment
-import android.support.v7.widget.AppCompatImageButton
 import android.text.SpannableString
 import android.text.TextPaint
 import android.text.TextUtils
@@ -36,6 +35,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.loginregister.LoginRegisterRouter
@@ -84,6 +84,7 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter;
 class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.View {
 
     private val ID_ACTION_REGISTER = 111
+    private val ID_ACTION_DEVOPS = 112
     val RC_SIGN_IN_GOOGLE = 7777
 
     private val REQUEST_SMART_LOCK = 101
@@ -202,6 +203,10 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         if (getDraw() != null) {
             menuItem.icon = getDraw()
         }
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            menu.add(Menu.NONE, ID_ACTION_DEVOPS, 1, getString(R.string.developer_options))
+            menu.findItem(ID_ACTION_DEVOPS).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
+        }
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -222,6 +227,12 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
             goToRegisterInitial()
             return true
+        }
+        if (id == ID_ACTION_DEVOPS) {
+            if (GlobalConfig.isAllowDebuggingTools()) {
+                RouteManager.route(activity, ApplinkConst.DEVELOPER_OPTIONS)
+                return true
+            }
         }
         return super.onOptionsItemSelected(item)
     }

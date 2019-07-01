@@ -1,5 +1,6 @@
 package com.tokopedia.core.network.apiservices.transaction;
 
+import com.tokopedia.config.url.TokopediaUrl;
 import com.tokopedia.core.network.apiservices.transaction.apis.OrderDetailApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.services.AuthService;
@@ -21,7 +22,7 @@ public class OrderDetailService extends AuthService<OrderDetailApi>{
 
     @Override
     protected String getBaseUrl() {
-        return TkpdBaseURL.BASE_DOMAIN;
+        return TokopediaUrl.Companion.getInstance().getWS();
     }
 
     @Override

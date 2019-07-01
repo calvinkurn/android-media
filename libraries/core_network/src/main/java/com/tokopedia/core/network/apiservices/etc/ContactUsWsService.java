@@ -1,5 +1,6 @@
 package com.tokopedia.core.network.apiservices.etc;
 
+import com.tokopedia.config.url.TokopediaUrl;
 import com.tokopedia.core.network.apiservices.etc.apis.ContactUsApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.services.AuthService;
@@ -17,7 +18,7 @@ public class ContactUsWsService extends AuthService<ContactUsApi> {
 
     @Override
     protected String getBaseUrl() {
-        return TkpdBaseURL.BASE_DOMAIN;
+        return TokopediaUrl.Companion.getInstance().getWS();
     }
 
     @Override

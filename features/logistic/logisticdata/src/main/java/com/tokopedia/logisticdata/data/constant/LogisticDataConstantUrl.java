@@ -1,14 +1,16 @@
 package com.tokopedia.logisticdata.data.constant;
 
+import com.tokopedia.config.url.TokopediaUrl;
+
 /**
  * @author anggaprasetiyo on 09/05/18.
  */
 public class LogisticDataConstantUrl {
 
-    public static String BASE_DOMAIN = "https://ws.tokopedia.com/";
+    public static String BASE_DOMAIN = TokopediaUrl.Companion.getInstance().getWS();
 
     public static class KeroRates {
-        static public String BASE_URL = "https://gw.tokopedia.com/";
+        static public String BASE_URL = TokopediaUrl.Companion.getInstance().getGW();
 
         public static final String HMAC_KEY = "web_service_v4";
         public static final String VERSION = "v2/";

@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.config.url.TokopediaUrl;
 import com.tokopedia.digital.categorylist.data.cloud.DigitalCategoryListApi;
 import com.tokopedia.digital.categorylist.data.mapper.CategoryDigitalListDataMapper;
 import com.tokopedia.digital.categorylist.data.repository.DigitalCategoryListRepository;
@@ -59,7 +60,7 @@ public class DigitalListModule {
                 .serializeNulls()
                 .create();
         Retrofit.Builder retrofitBuilder = new Retrofit.Builder()
-                .baseUrl(TkpdBaseURL.MOJITO_DOMAIN + TkpdBaseURL.DigitalApi.VERSION)
+                .baseUrl(TokopediaUrl.Companion.getInstance().getMOJITO() + TkpdBaseURL.DigitalApi.VERSION)
                 .addConverterFactory(new StringResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create());

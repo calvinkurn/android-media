@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.data.model.response.DataResponse
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.common.network.domain.RestRequestUseCase
+import com.tokopedia.config.url.TokopediaUrl
 import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.referral.Constants
 import com.tokopedia.referral.data.ReferralCodeEntity
@@ -27,7 +28,7 @@ constructor() : RestRequestUseCase() {
 
     override fun buildRequest(requestParams: RequestParams): List<RestRequest> {
         val tempRequest = ArrayList<RestRequest>()
-        val url = TkpdBaseURL.BASE_DOMAIN + Constants.ReferralApiPath.PATH_GET_REFERRAL_VOUCHER_CODE
+        val url = TokopediaUrl.getInstance().WS + Constants.ReferralApiPath.PATH_GET_REFERRAL_VOUCHER_CODE
         val token = object : TypeToken<DataResponse<ReferralCodeEntity>>() {
 
         }.type

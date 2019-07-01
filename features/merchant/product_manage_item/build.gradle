@@ -33,6 +33,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.libraries.config)
 
     implementation rootProject.ext.networkDependencies.glide
     implementation project(rootProject.ext.features.core)

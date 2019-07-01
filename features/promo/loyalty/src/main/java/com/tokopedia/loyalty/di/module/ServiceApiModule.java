@@ -3,6 +3,7 @@ package com.tokopedia.loyalty.di.module;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.config.url.TokopediaUrl;
 import com.tokopedia.loyalty.di.qualifier.DigitalQualifier;
 import com.tokopedia.loyalty.di.qualifier.LoyaltyModuleQualifier;
 import com.tokopedia.loyalty.di.qualifier.PromoQualifier;
@@ -12,11 +13,11 @@ import com.tokopedia.loyalty.di.qualifier.TxPaymentQualifier;
 import com.tokopedia.loyalty.domain.apiservice.DigitalApi;
 import com.tokopedia.loyalty.domain.apiservice.DigitalHmacAuthInterceptor;
 import com.tokopedia.loyalty.domain.apiservice.PromoApi;
+import com.tokopedia.loyalty.domain.apiservice.RetrofitFactory;
 import com.tokopedia.loyalty.domain.apiservice.TXPaymentVoucherApi;
 import com.tokopedia.loyalty.domain.apiservice.TokoPointApi;
 import com.tokopedia.loyalty.domain.apiservice.TokoPointAuthInterceptor;
 import com.tokopedia.loyalty.domain.apiservice.TokoPointGqlApi;
-import com.tokopedia.loyalty.domain.apiservice.RetrofitFactory;
 import com.tokopedia.loyalty.domain.repository.IPromoRepository;
 import com.tokopedia.loyalty.domain.repository.IPromoResponseMapper;
 import com.tokopedia.loyalty.domain.repository.ITokoPointDBService;
@@ -67,7 +68,7 @@ public class ServiceApiModule {
         tkpdOkHttpBuilder.addInterceptor(new TokoPointAuthInterceptor(context, networkRouter, userSession, TkpdBaseURL.TokoPoint.HMAC_KEY));
         OkHttpClient okHttpClient = tkpdOkHttpBuilder.build();
 
-        return RetrofitFactory.createRetrofitTokoPointConfig(TkpdBaseURL.DEFAULT_TOKOPEDIA_GQL_URL)
+        return RetrofitFactory.createRetrofitTokoPointConfig(TokopediaUrl.Companion.getInstance().getGQL())
                 .client(okHttpClient)
                 .build();
     }
@@ -135,7 +136,7 @@ public class ServiceApiModule {
         tkpdOkHttpBuilder.addInterceptor(new DigitalHmacAuthInterceptor(context, networkRouter, userSession, TkpdBaseURL.DigitalApi.HMAC_KEY));
         OkHttpClient okHttpClient = tkpdOkHttpBuilder.build();
 
-        return RetrofitFactory.createRetrofitDigitalConfig(TkpdBaseURL.DIGITAL_API_DOMAIN)
+        return RetrofitFactory.createRetrofitDigitalConfig(TokopediaUrl.Companion.getInstance().getPULSA_API())
                 .client(okHttpClient)
                 .build();
     }

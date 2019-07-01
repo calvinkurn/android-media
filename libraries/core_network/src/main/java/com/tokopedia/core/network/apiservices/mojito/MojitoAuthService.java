@@ -1,5 +1,6 @@
 package com.tokopedia.core.network.apiservices.mojito;
 
+import com.tokopedia.config.url.TokopediaUrl;
 import com.tokopedia.core.network.apiservices.mojito.apis.MojitoAuthApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.services.GlobalAuthService;
@@ -20,7 +21,7 @@ public class MojitoAuthService extends GlobalAuthService<MojitoAuthApi> {
 
     @Override
     protected String getBaseUrl() {
-        return TkpdBaseURL.MOJITO_DOMAIN;
+        return TokopediaUrl.Companion.getInstance().getMOJITO();
     }
 
     @Override

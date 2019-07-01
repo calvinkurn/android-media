@@ -1,6 +1,6 @@
 package com.tokopedia.network.utils;
 
-import com.tokopedia.network.constant.TkpdBaseURL;
+import com.tokopedia.config.url.TokopediaUrl;
 
 /**
  * Created by ricoharisin on 9/29/15.
@@ -18,7 +18,7 @@ public class URLGenerator {
     }
 
     public static String getBaseUrl() {
-        return TkpdBaseURL.JS_DOMAIN;
+        return TokopediaUrl.Companion.getInstance().getJS();
     }
 
 }

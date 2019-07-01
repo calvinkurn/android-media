@@ -3,6 +3,7 @@ package com.tokopedia.core.network.apiservices.accounts;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.tokopedia.config.url.TokopediaUrl;
 import com.tokopedia.core.network.apiservices.accounts.apis.AccountsApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
@@ -57,9 +58,9 @@ public class AccountsService {
     protected String getBaseUrl(String webService) {
         switch (webService) {
             case WS:
-                return TkpdBaseURL.BASE_DOMAIN;
+                return TokopediaUrl.Companion.getInstance().getWS();
             case ACCOUNTS:
-                return TkpdBaseURL.ACCOUNTS_DOMAIN;
+                return TokopediaUrl.Companion.getInstance().getACCOUNTS();
             default:
                 throw new RuntimeException("unknown Base URL");
         }

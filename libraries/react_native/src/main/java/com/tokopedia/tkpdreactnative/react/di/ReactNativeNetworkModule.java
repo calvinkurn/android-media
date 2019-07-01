@@ -2,6 +2,7 @@ package com.tokopedia.tkpdreactnative.react.di;
 
 import android.content.Context;
 
+import com.tokopedia.config.url.TokopediaUrl;
 import com.tokopedia.core.base.common.service.CommonService;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -66,7 +67,7 @@ public class ReactNativeNetworkModule {
     @Provides
     @ReactNativeNetworkScope
     Retrofit provideRetrofitNoAuth(@ReactNoAuthQualifier OkHttpClient okHttpClient, Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TkpdBaseURL.BASE_DOMAIN)
+        return retrofitBuilder.baseUrl(TokopediaUrl.Companion.getInstance().getWS())
                 .client(okHttpClient)
                 .build();
     }
@@ -75,7 +76,7 @@ public class ReactNativeNetworkModule {
     @Provides
     @ReactNativeNetworkScope
     Retrofit provideRetrofitDefaultAuth(@ReactDefaultAuthQualifier OkHttpClient okHttpClient, Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TkpdBaseURL.BASE_DOMAIN)
+        return retrofitBuilder.baseUrl(TokopediaUrl.Companion.getInstance().getWS())
                 .client(okHttpClient)
                 .build();
     }
@@ -84,7 +85,7 @@ public class ReactNativeNetworkModule {
     @Provides
     @ReactNativeNetworkScope
     Retrofit provideRetrofitDynamicAuth(@ReactDynamicAuthQualifier OkHttpClient okHttpClient, Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TkpdBaseURL.BASE_DOMAIN)
+        return retrofitBuilder.baseUrl(TokopediaUrl.Companion.getInstance().getWS())
                 .client(okHttpClient)
                 .build();
     }

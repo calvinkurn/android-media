@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.common.utils;
 
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
+import com.tokopedia.config.url.TokopediaUrl;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.product.manage.item.common.util.ProductUrl;
 import com.tokopedia.product.manage.item.imagepicker.util.CatalogConstant;
@@ -31,10 +32,10 @@ public class ProductCacheApiWhiteList {
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.MERLIN_DOMAIN,
                 TkpdBaseURL.Merlin.PATH_CATEGORY_RECOMMENDATION, ONE_DAY));
         // Product variant by category
-        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.TOME_DOMAIN,
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TokopediaUrl.Companion.getInstance().getTOME(),
                 ProductUrl.GET_VARIANT_BY_CAT_PATH, ONE_DAY));
         // Product catalog
-        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.ACE_DOMAIN,
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TokopediaUrl.Companion.getInstance().getACE(),
                 TkpdBaseURL.Ace.PATH_SEARCH + TkpdBaseURL.Ace.PATH_CATALOG, ONE_DAY));
         // image catalog on picker image add product
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(CatalogConstant.URL_HADES, CatalogConstant.URL_GET_CATALOG_IMAGE, ONE_HOUR));

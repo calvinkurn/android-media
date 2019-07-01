@@ -48,6 +48,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.text.TextDrawable;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.loginregister.LoginRegisterRouter;

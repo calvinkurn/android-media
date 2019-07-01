@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatlist.data
 
+import com.tokopedia.config.url.TokopediaUrl
 import com.tokopedia.network.constant.TkpdBaseURL
 
 /**
@@ -15,10 +16,10 @@ class TopChatUrl {
                     userId)
         }
 
-        val WEBSOCKET_URL = TkpdBaseURL.CHAT_WEBSOCKET_DOMAIN
+        val WEBSOCKET_URL = TokopediaUrl.getInstance().WS_CHAT
         val CONNECT_WEBSOCKET = "/connect"
-        val BASE_URL = TkpdBaseURL.CHAT_DOMAIN
-        val SECURITY_INFO_URL = TkpdBaseURL.WEB_DOMAIN + "panduan-keamanan"
+        val BASE_URL = TokopediaUrl.getInstance().CHAT
+        val SECURITY_INFO_URL = TokopediaUrl.getInstance().WEB + "panduan-keamanan"
 
     }
 }

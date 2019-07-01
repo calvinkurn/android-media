@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.util.Log;
 
+import com.tokopedia.config.url.TokopediaUrl;
 import com.tokopedia.core2.BuildConfig;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -69,9 +70,9 @@ public class URLGenerator {
         if (BuildConfig.DEBUG) {
             SharedPreferences pref = MainApplication.getAppContext()
                     .getSharedPreferences("DOMAIN_WS_4", Context.MODE_PRIVATE);
-            if (pref.getString("DOMAIN_WS4", TkpdBaseURL.BASE_DOMAIN).contains("alpha")) {
+            if (pref.getString("DOMAIN_WS4", TokopediaUrl.Companion.getInstance().getWS()).contains("alpha")) {
                 baseUrl = TkpdBaseURL.JS_ALPHA_DOMAIN;
-            } else if (pref.getString("DOMAIN_WS4", TkpdBaseURL.BASE_DOMAIN).contains("staging")) {
+            } else if (pref.getString("DOMAIN_WS4", TokopediaUrl.Companion.getInstance().getWS()).contains("staging")) {
                 baseUrl = TkpdBaseURL.JS_STAGING_DOMAIN;
                 ;
             }

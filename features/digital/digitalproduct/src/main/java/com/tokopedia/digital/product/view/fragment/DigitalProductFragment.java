@@ -48,6 +48,7 @@ import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
+import com.tokopedia.config.url.TokopediaUrl;
 import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
@@ -963,7 +964,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
         if (item.getItemId() == R.id.action_menu_product_list_digital) {
             navigateToActivity(
                     digitalModuleRouter.getWebviewActivityWithIntent(
-                            getActivity(), TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
+                            getActivity(), TokopediaUrl.Companion.getInstance().getPULSA()
                                     + TkpdBaseURL.DigitalWebsite.PATH_PRODUCT_LIST
                     )
             );
@@ -971,7 +972,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
         } else if (item.getItemId() == R.id.action_menu_subscription_digital) {
             navigateToActivity(
                     digitalModuleRouter.getWebviewActivityWithIntent(
-                            getActivity(), TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
+                            getActivity(), TokopediaUrl.Companion.getInstance().getPULSA()
                                     + TkpdBaseURL.DigitalWebsite.PATH_SUBSCRIPTIONS
                     )
             );
@@ -982,7 +983,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
             }
             if (GlobalConfig.isSellerApp()) {
                 navigateToActivity(
-                        digitalModuleRouter.getWebviewActivityWithIntent(getActivity(), TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
+                        digitalModuleRouter.getWebviewActivityWithIntent(getActivity(), TokopediaUrl.Companion.getInstance().getPULSA()
                                 + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST)
                 );
             } else {

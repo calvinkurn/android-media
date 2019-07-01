@@ -3,6 +3,7 @@ package com.tokopedia.seller.shop.common.domain.interactor;
 import android.content.Context;
 
 import com.tokopedia.cacheapi.domain.interactor.CacheApiDataDeleteUseCase;
+import com.tokopedia.config.url.TokopediaUrl;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.usecase.RequestParams;
 
@@ -29,7 +30,7 @@ public class DeleteShopInfoUseCase extends CacheApiDataDeleteUseCase {
 
     @Override
     public Observable<Boolean> createObservable(RequestParams requestParams) {
-        RequestParams newRequestParams = CacheApiDataDeleteUseCase.createParams(TkpdBaseURL.BASE_DOMAIN,
+        RequestParams newRequestParams = CacheApiDataDeleteUseCase.createParams(TokopediaUrl.Companion.getInstance().getWS(),
                 TkpdBaseURL.Shop.PATH_SHOP + TkpdBaseURL.Shop.PATH_GET_SHOP_INFO);
         return Observable.zip(super.createObservable(newRequestParams), deleteShopInfoTomeUseCase.createObservable(), new Func2<Boolean, Boolean, Boolean>() {
             @Override
