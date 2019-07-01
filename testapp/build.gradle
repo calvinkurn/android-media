@@ -205,6 +205,11 @@ dependencies {
 
     // TO BE ADDED AS FEATURE REQUIREMENT
     implementation project(rootProject.ext.features.shopSettings)
+
+    implementation project(rootProject.ext.libraries.logger)
+    implementation (rootProject.ext.debugToolsDependencies.timber){
+        exclude group: 'org.jetbrains', module: 'annotations'
+    }
 }
 
 repositories {

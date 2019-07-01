@@ -410,6 +410,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
+    public void triggerSendEnhancedEcommerceCheckoutAnalytics(String step, String eventAction, String eventLabel) {
+        triggerSendEnhancedEcommerceCheckoutAnalytics(dataCheckoutRequestList, step, eventAction, eventLabel);
+    }
+
+    @Override
     public void triggerSendEnhancedEcommerceCheckoutAnalytics(List<DataCheckoutRequest> dataCheckoutRequests,
                                                               String step,
                                                               String eventAction,
@@ -1114,7 +1119,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                         getView().resetCourier(cartPosition);
                                     } else {
                                         mTrackerShipment.eventClickLanjutkanTerapkanPromoSuccess(code);
-                                        getView().onSuccessCheckPromoFirstStep(responseGetPromoStack);
+                                        getView().renderCheckPromoStackLogisticSuccess(responseGetPromoStack, code);
                                     }
                                 }
                             }
@@ -1622,9 +1627,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             getView().showLoading();
             checkPromoStackingCodeUseCase.setParams(promo);
             checkPromoStackingCodeUseCase.execute(RequestParams.create(),
-                    new CheckShipmentPromoFirstStepAfterClashSubscriber(getView(), this,
-                            checkPromoStackingCodeMapper, isFromMultipleAddress, isOneClickShipment,
-                            cornerId, isTradeIn, deviceId, type));
+                    new CheckShipmentPromoFirstStepAfterClashSubscriber(getView(), this, checkPromoStackingCodeMapper, type, newPromoList.get(0).getCode()));
         }
     }
 

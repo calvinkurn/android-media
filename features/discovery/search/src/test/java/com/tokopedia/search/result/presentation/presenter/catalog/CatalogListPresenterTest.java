@@ -28,6 +28,7 @@ import static org.mockito.Mockito.when;
 
 public class CatalogListPresenterTest {
 
+    private static abstract class MockSearchCatalogUseCase extends UseCase<SearchCatalogModel> { }
     private static abstract class MockDynamicFilterModelUseCase extends UseCase<DynamicFilterModel> { }
 
     private CatalogListSectionContract.View catalogListSectionView = mock(CatalogListSectionContract.View.class);
@@ -117,7 +118,7 @@ public class CatalogListPresenterTest {
     }
 
     @Test
-    public void subscribe_GivenRuntimeException_ShouldRenderErrorView() {
+    public void requestCatalogList_GivenRuntimeException_ShouldRenderErrorView() {
         RuntimeException runtimeException = new RuntimeException("Mock Runtime exception, should be handled in Subscriber onError");
         searchCatalogPresenterInitInjector(new TestErrorUseCase<>(runtimeException));
 
@@ -131,7 +132,7 @@ public class CatalogListPresenterTest {
     }
 
     @Test
-    public void subscribe_GivenMessageErrorException_ShouldRenderErrorView() {
+    public void requestCatalogList_GivenMessageErrorException_ShouldRenderErrorView() {
         MessageErrorException messageErrorException = new MessageErrorException("Mock Message Error exception, should be handled in Subscriber onError");
         searchCatalogPresenterInitInjector(new TestErrorUseCase<>(messageErrorException));
 
@@ -145,7 +146,7 @@ public class CatalogListPresenterTest {
     }
 
     @Test
-    public void subscribe_GivenMessageIOException_ShouldRenderRetryInit() {
+    public void requestCatalogList_GivenMessageIOException_ShouldRenderRetryInit() {
         IOException ioException = new IOException("Mock IO exception, should be handled in Subscriber onError");
         searchCatalogPresenterInitInjector(new TestErrorUseCase<>(ioException));
 
@@ -159,7 +160,7 @@ public class CatalogListPresenterTest {
     }
 
     @Test
-    public void subscribe_GivenMessageAnyException_ShouldRenderUnknown() {
+    public void requestCatalogList_GivenMessageAnyException_ShouldRenderUnknown() {
         Exception exception = new Exception("Mock exception, should be handled in Subscriber onError");
         searchCatalogPresenterInitInjector(new TestErrorUseCase<>(exception));
 
@@ -170,5 +171,24 @@ public class CatalogListPresenterTest {
         verifyViewFailing(false, false, true);
         verifyViewFinishing();
         verify(dynamicFilterModelUseCase, never()).execute(any(), any());
+    }
+
+    @Test
+    public void detachView_NotInjected_ShouldNotError() {
+        searchCatalogPresenter.detachView();
+
+        assert searchCatalogPresenter.getView() == null;
+    }
+
+    @Test
+    public void detachView_AfterInjectUseCase_ShouldUnsubscribeAllUseCases() {
+        UseCase<SearchCatalogModel> searchCatalogUseCase = mock(MockSearchCatalogUseCase.class);
+        searchCatalogPresenterInitInjector(searchCatalogUseCase);
+
+        searchCatalogPresenter.detachView();
+
+        assert searchCatalogPresenter.getView() == null;
+        verify(searchCatalogUseCase).unsubscribe();
+        verify(dynamicFilterModelUseCase).unsubscribe();
     }
 }

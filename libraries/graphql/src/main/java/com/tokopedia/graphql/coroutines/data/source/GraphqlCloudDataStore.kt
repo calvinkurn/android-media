@@ -1,5 +1,6 @@
 package com.tokopedia.graphql.coroutines.data.source
 
+import com.google.gson.JsonArray
 import com.tokopedia.graphql.FingerprintManager
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.graphql.GraphqlConstant
@@ -11,6 +12,8 @@ import com.tokopedia.graphql.data.source.cloud.api.GraphqlApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
+import java.net.UnknownHostException
 
 class GraphqlCloudDataStore(private val api: GraphqlApi,
                             private val cacheManager: GraphqlCacheManager,
@@ -19,7 +22,16 @@ class GraphqlCloudDataStore(private val api: GraphqlApi,
 
     override suspend fun getResponse(requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy): GraphqlResponseInternal {
         return withContext(Dispatchers.Default) {
-            val result = api.getResponseDeferred(requests).await()
+            val result: JsonArray
+            try {
+                result = api.getResponseDeferred(requests).await()
+            } catch (e: Throwable) {
+                if (e !is UnknownHostException) {
+                    Timber.e(e, requests.toString())
+                }
+                throw e
+            }
+
             val graphqlResponseInternal = GraphqlResponseInternal(result, false)
 
             launch(Dispatchers.IO) {
@@ -27,9 +39,9 @@ class GraphqlCloudDataStore(private val api: GraphqlApi,
                     CacheType.CACHE_FIRST, CacheType.ALWAYS_CLOUD -> {
                         if (!isError(graphqlResponseInternal)) {
                             cacheManager.save(fingerprintManager.generateFingerPrint(requests.toString(),
-                                    cacheStrategy.isSessionIncluded),
-                                    graphqlResponseInternal.originalResponse.toString(),
-                                    cacheStrategy.expiryTime)
+                                cacheStrategy.isSessionIncluded),
+                                graphqlResponseInternal.originalResponse.toString(),
+                                cacheStrategy.expiryTime)
                         }
                     }
                     else -> {
