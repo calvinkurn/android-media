@@ -129,15 +129,36 @@
                 android:layout_height="wrap_content"
                 app:hintEnabled="false">
 
-                <EditText
-                    android:id="@+id/et_detail_address"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/et_detail_address_hint"
-                    android:inputType="text"
-                    android:textColor="#ae31353b"
-                    android:imeOptions="actionDone"
-                    android:maxLines="1"/>
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/et_detail_address"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/et_detail_address_hint"
+                        android:inputType="text"
+                        android:textColor="#ae31353b"
+                        android:textSize="@dimen/sp_10"
+                        android:imeOptions="actionDone"
+                        android:maxLines="1"/>
+
+                    <ImageView
+                        android:id="@+id/ic_clear_detail"
+                        android:layout_marginLeft="@dimen/dp_10"
+                        android:layout_marginStart="@dimen/dp_10"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/ic_close_btn"
+                        android:contentDescription="@string/kota_kecamatan"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginRight="19dp"
+                        android:layout_marginEnd="19dp"
+                        android:visibility="gone"/>
+
+                </RelativeLayout>
 
             </com.tokopedia.design.text.TkpdHintTextInputLayout>
 

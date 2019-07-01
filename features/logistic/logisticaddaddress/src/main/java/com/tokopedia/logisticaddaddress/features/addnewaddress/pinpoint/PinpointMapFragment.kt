@@ -1,29 +1,20 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint
 
-import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.location.Location
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.CoordinatorLayout
-import android.support.design.widget.Snackbar
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.RelativeLayout
-import android.widget.TextView
 import android.widget.Toast
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.api.GoogleApiClient
-import com.google.android.gms.common.api.ResultCallback
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.CameraPosition
@@ -32,11 +23,7 @@ import com.google.android.gms.maps.model.PolygonOptions
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
-import com.tokopedia.design.text.TkpdHintTextInputLayout
-import com.tokopedia.locationmanager.DeviceLocation
-import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.logisticaddaddress.AddressConstants
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressComponent
@@ -52,11 +39,9 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_distr
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_address.SaveAddressDataModel
 import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress
 import kotlinx.android.synthetic.main.bottomsheet_getdistrict.*
 import kotlinx.android.synthetic.main.bottomsheet_getdistrict.et_detail_address
 import kotlinx.android.synthetic.main.fragment_pinpoint_map.*
-import kotlinx.android.synthetic.main.logistic_item_manage_people_address.*
 import javax.inject.Inject
 
 /**
@@ -176,16 +161,16 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
 
     private fun prepareLayout() {
         bottomSheetBehavior = BottomSheetBehavior.from(bottomsheet_getdistrict?)
-        getdistrict_container.visibility = View.GONE
-        invalid_container.visibility = View.GONE
-        whole_loading_container.visibility = View.VISIBLE
+        getdistrict_container?.visibility = View.GONE
+        invalid_container?.visibility = View.GONE
+        whole_loading_container?.visibility = View.VISIBLE
         isMismatch?.let {
-            if (!it) et_detail_address.setText(saveAddressDataModel?.editDetailAddress)
+            if (!it) et_detail_address?.setText(saveAddressDataModel?.editDetailAddress)
         }
     }
 
     private fun setViewListener() {
-        back_button.setOnClickListener {
+        back_button?.setOnClickListener {
             map_view?.onPause()
             AddNewAddressAnalytics.eventClickBackArrowOnPinPoint()
             activity?.finish()
@@ -210,18 +195,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         this.googleMap?.setOnCameraMoveCanceledListener(this)
 
         moveMap(AddNewAddressUtils.generateLatLng(currentLat, currentLong))
-        if (mapView != null &&
-                    mapView.findViewById(Integer.parseInt("1")) != null) {
-                // Get the button view
-                val locationButton = (mapView.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
-                // and next place it, on bottom right (as Google Maps app)
-                val layoutParams = locationButton.getLayoutParams()
-                // position on right bottom
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-                layoutParams.setMargins(0, 0, 30, 30);
-            }
-
 
         this.isPolygon?.let {
             if (this.isPolygon as Boolean) {
@@ -252,19 +225,15 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             val latTarget = target?.latitude
             val longTarget = target?.longitude
 
-            getdistrict_container.visibility = View.GONE
-            invalid_container.visibility = View.GONE
-            whole_loading_container.visibility = View.VISIBLE
+            getdistrict_container?.visibility = View.GONE
+            invalid_container?.visibility = View.GONE
+            whole_loading_container?.visibility = View.VISIBLE
 
             presenter.clearCacheAutofill()
             presenter.autofill("$latTarget,$longTarget")
         }
         isGetDistrict = false
     }
-
-    /*override fun loadPoiList(lat: Double, long: Double) {
-        autocompleteGeocodeBottomSheetFragment.loadAutocompleteGeocode(lat, long)
-    }*/
 
     override fun showAutoComplete(lat: Double, long: Double) {
         if (isShowingAutocomplete == true) {
@@ -372,36 +341,80 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     private fun updateGetDistrictBottomSheet(saveAddressDataModel: SaveAddressDataModel) {
         this.saveAddressDataModel = saveAddressDataModel
         if (saveAddressDataModel.title.equals(unnamedRoad, true)) {
-            whole_loading_container.visibility = View.GONE
-            getdistrict_container.visibility = View.GONE
-            invalid_container.visibility = View.VISIBLE
+            whole_loading_container?.visibility = View.GONE
+            getdistrict_container?.visibility = View.GONE
+            invalid_container?.visibility = View.VISIBLE
 
-            invalid_title.text = getString(R.string.invalid_title)
-            invalid_desc.text = saveAddressDataModel.formattedAddress
+            invalid_title?.text = getString(R.string.invalid_title)
+            invalid_desc?.text = saveAddressDataModel.formattedAddress
             AddNewAddressAnalytics.eventViewErrorAlamatTidakValid()
 
         } else {
-            invalid_container.visibility = View.GONE
-            whole_loading_container.visibility = View.GONE
-            getdistrict_container.visibility = View.VISIBLE
+            invalid_container?.visibility = View.GONE
+            whole_loading_container?.visibility = View.GONE
+            getdistrict_container?.visibility = View.VISIBLE
 
-            ic_search_btn.setOnClickListener {
-                currentLat?.let { it1 -> currentLong?.let { it2 -> showAutocompleteGeocodeBottomSheet(it1, it2, "") } }
-                AddNewAddressAnalytics.eventClickFieldCariLokasi()
+            ic_search_btn?.setOnClickListener {
+                AddNewAddressAnalytics.eventClickMagnifier()
+                showAutoCompleteBottomSheet("")
             }
 
-            et_detail_address.setOnClickListener {
+            et_detail_address?.apply {
+                setOnClickListener { AddNewAddressAnalytics.eventClickFieldDetailAlamat() }
+                addTextChangedListener(object : TextWatcher {
+                    override fun beforeTextChanged(s: CharSequence, start: Int, count: Int,
+                                                   after: Int) {
+                    }
+
+                    override fun onTextChanged(s: CharSequence, start: Int, before: Int,
+                                               count: Int) {
+                        if (s.isNotEmpty()) {
+                            showClearBtn()
+
+                        } else {
+                            ic_clear_detail?.visibility = View.GONE
+                        }
+                    }
+
+                    override fun afterTextChanged(s: Editable) {
+                    }
+                })
+            }
+
+            et_detail_address?.setOnClickListener {
                 AddNewAddressAnalytics.eventClickFieldDetailAlamat()
             }
 
-            tv_title_getdistrict.text = saveAddressDataModel.title
+            tv_title_getdistrict?.apply {
+                text = saveAddressDataModel.title
+                setOnClickListener {
+                    AddNewAddressAnalytics.eventClickFieldCariLokasi()
+                    showAutoCompleteBottomSheet(saveAddressDataModel.title) }
+            }
 
-            tv_address_getdistrict.text = saveAddressDataModel.formattedAddress
-            btn_choose_location.setOnClickListener {
+            tv_address_getdistrict?.apply {
+                text = saveAddressDataModel.formattedAddress
+                setOnClickListener {
+                    AddNewAddressAnalytics.eventClickFieldCariLokasi()
+                    showAutoCompleteBottomSheet(saveAddressDataModel.title) }
+            }
+
+            btn_choose_location?.setOnClickListener {
                 doLoadAddEdit()
                 AddNewAddressAnalytics.eventClickButtonPilihLokasi()
             }
         }
+    }
+
+    private fun showClearBtn() {
+        ic_clear_detail?.apply {
+            visibility = View.VISIBLE
+            setOnClickListener { et_detail_address.setText("") }
+        }
+    }
+
+    private fun showAutoCompleteBottomSheet(searchStr: String) {
+        currentLat?.let { it1 -> currentLong?.let { it2 -> showAutocompleteGeocodeBottomSheet(it1, it2, searchStr) } }
     }
 
     private fun doLoadAddEdit() {

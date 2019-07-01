@@ -347,10 +347,12 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
 
     private fun doSaveAddress() {
         setSaveAddressModel()
-        presenter.saveAddress(saveAddressDataModel)
 
-        if (isMismatch) AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess()
-        else AddNewAddressAnalytics.eventClickButtonSimpanSuccess()
+        if (isMismatch) {
+            presenter.saveAddress(saveAddressDataModel, ANA_NEGATIVE)
+        } else {
+            presenter.saveAddress(saveAddressDataModel, ANA_POSITIVE)
+        }
     }
 
     private fun validateForm(errorField: String): Boolean {
