@@ -159,6 +159,6 @@ public class ShipmentAddressFormDataResponse {
     }
 
     public boolean isIneligbilePromoDialogEnabled() {
-        return isIneligbilePromoDialogEnabled;
+        return true;
     }
 }
