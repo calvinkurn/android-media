@@ -9,6 +9,10 @@ data class HotelCartData (
     @Expose
     val adult: Int = 0,
 
+    @SerializedName("rooms")
+    @Expose
+    val rooms: List<HotelCartRoom> = listOf(),
+
     @SerializedName("checkIn")
     @Expose
     val checkIn: String = "",

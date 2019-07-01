@@ -200,9 +200,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                 tv_booking_room_info_pay_at_hotel.text = payAtHotelString
             }
 
-            cart.fares.find { it.type == "base_price" }?.let {
-                tv_booking_room_info_occupancy.text = it.description.replace("x", "•")
-            }
+            tv_booking_room_info_occupancy.text = getString(R.string.hotel_booking_room_general_info, cart.rooms[0].numOfRooms, cart.adult)
             if (!property.rooms[0].isBreakFastIncluded) tv_booking_room_info_breakfast.visibility = View.GONE
 
             val cancellationPolicy = property.rooms[0].cancellationPolicies
