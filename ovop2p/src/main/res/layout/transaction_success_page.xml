@@ -6,19 +6,19 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:scrollbars="none"
         android:fillViewport="true">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/dp_15">
 
             <ImageView
                 android:id="@+id/chk_img"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_15"
                 android:src="@drawable/ic_group_4"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -67,7 +67,6 @@
                 android:id="@+id/trnsfr_amt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
                 android:textColor="#2d263b"
                 android:textSize="36sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -220,11 +219,11 @@
                 android:layout_marginTop="@dimen/dp_20"
                 android:layout_marginRight="@dimen/dp_30"
                 android:background="@drawable/btn_bg_rounded_corners"
+                app:layout_constraintTop_toBottomOf="@+id/see_dtl"
                 android:gravity="center"
                 android:text="KEMBALI KE TOKOPEDIA"
                 android:textColor="@color/white"
-                android:textSize="@dimen/sp_14"
-                app:layout_constraintTop_toBottomOf="@+id/see_dtl" />
+                android:textSize="@dimen/sp_14" />
 
         </android.support.constraint.ConstraintLayout>
     </ScrollView>

@@ -3,13 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
         android:fillViewport="true"
-        android:scrollbars="none">
+        android:layout_above="@+id/branding">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -80,7 +81,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_24"
+                android:layout_marginTop="@dimen/dp_7"
+                android:paddingTop="@dimen/dp_16"
                 android:text="OVO Cash"
                 android:textColor="#2d263b"
                 android:textSize="14sp"
@@ -95,6 +97,7 @@
                 android:lineSpacingExtra="6sp"
                 android:paddingTop="@dimen/dp_2"
                 android:text="Saldo "
+                android:paddingBottom="@dimen/dp_16"
                 android:textColor="#8c949b"
                 android:textSize="12sp"
                 app:layout_constraintStart_toEndOf="@+id/ovo_logo"
@@ -103,7 +106,7 @@
             <View
                 android:id="@+id/cntnr_vw"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_72"
+                android:layout_height="0dp"
                 android:background="@drawable/border_transparent_inside"
                 app:layout_constraintBottom_toBottomOf="@+id/saldo"
                 app:layout_constraintTop_toTopOf="@+id/ovo_cash" />
@@ -198,13 +201,9 @@
                 android:id="@+id/proceed"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/dp_56"
-                android:layout_marginBottom="@dimen/dp_50"
                 android:background="@drawable/btn_bg_rounded_corners"
                 android:enabled="false"
-                android:gravity="center"
                 android:text="@string/lnjktn"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_14"
@@ -214,6 +213,7 @@
     </ScrollView>
 
     <include
+        android:id="@+id/branding"
         layout="@layout/branding_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
