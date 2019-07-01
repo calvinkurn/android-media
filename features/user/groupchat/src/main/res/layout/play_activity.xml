@@ -5,22 +5,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
+    <FrameLayout
+        android:id="@+id/playerView"
+        android:fitsSystemWindows="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <FrameLayout
+        android:id="@+id/background_vertical"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"/>
+
+    <LinearLayout
         android:id="@+id/main_content"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <FrameLayout
-            android:id="@+id/background_vertical"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:visibility="gone"/>
-
-        <FrameLayout
-            android:id="@+id/playerView"
-            android:fitsSystemWindows="true"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
 
         <com.tokopedia.groupchat.common.util.NonSwipeableViewPager
             android:id="@+id/view_pager_play"
@@ -28,6 +29,6 @@
             android:layout_height="match_parent"
             android:overScrollMode="never" />
 
-    </RelativeLayout>
+    </LinearLayout>
 
 </RelativeLayout>
