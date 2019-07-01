@@ -85,6 +85,7 @@
             app:tickerType="warning"
             app:closeButtonVisibility="gone"
             app:tickerShapeType="loose"
+            app:titleText=" "
             app:descriptionText="@string/travel_contact_data_notice"/>
 
     </LinearLayout>
