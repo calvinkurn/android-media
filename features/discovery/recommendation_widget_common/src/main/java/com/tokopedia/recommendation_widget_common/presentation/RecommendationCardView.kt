@@ -66,7 +66,7 @@ class RecommendationCardView : ProductCardView {
     override fun setRatingReviewCount(rating: Int, reviewCount: Int) {
         if (rating in 1..5) {
             ratingView.setImageResource(getRatingDrawable(rating))
-            reviewCountView.text = reviewCount.toString()
+            reviewCountView.text = "($reviewCount)"
         } else {
             if (fixedHeight) {
                 ratingView.visibility = View.INVISIBLE

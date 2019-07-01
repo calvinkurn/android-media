@@ -214,7 +214,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
-                app:srcCompat="@drawable/ic_voucher"
+                app:srcCompat="@drawable/ic_account_voucher"
                 app:layout_constraintBottom_toBottomOf="@+id/text_voucher_amount"
                 app:layout_constraintTop_toTopOf="@+id/label_voucher" />
 

@@ -589,9 +589,10 @@ final class ProductListPresenter
     @Override
     public void detachView() {
         super.detachView();
-        searchProductFirstPageUseCase.unsubscribe();
-        searchProductLoadMoreUseCase.unsubscribe();
-        addWishlistActionUseCase.unsubscribe();
-        removeWishlistActionUseCase.unsubscribe();
+        if(searchProductFirstPageUseCase != null) searchProductFirstPageUseCase.unsubscribe();
+        if(searchProductLoadMoreUseCase != null) searchProductLoadMoreUseCase.unsubscribe();
+        if(productWishlistUrlUseCase != null) productWishlistUrlUseCase.unsubscribe();
+        if(addWishlistActionUseCase != null) addWishlistActionUseCase.unsubscribe();
+        if(removeWishlistActionUseCase != null) removeWishlistActionUseCase.unsubscribe();
     }
 }
