@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.text.TextUtils
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.config.url.TokopediaUrl
 import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.webview.download.BaseDownloadAppLinkActivity
 
@@ -24,11 +25,11 @@ class WebViewOrderListActivity : BaseDownloadAppLinkActivity() {
         fun getOrderListIntent(context: Context, extras: Bundle): Intent {
 
             var webUrl = extras.getString(
-                    KEY_APP_LINK_QUERY_URL, TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL
+                    KEY_APP_LINK_QUERY_URL, TokopediaUrl.getInstance().WEB
             )
 
             if (TextUtils.isEmpty(webUrl)) {
-                webUrl = TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL
+                webUrl = TokopediaUrl.getInstance().WEB
             }
 
             return newIntent(context, webUrl, true, getDownlodableExtensions())

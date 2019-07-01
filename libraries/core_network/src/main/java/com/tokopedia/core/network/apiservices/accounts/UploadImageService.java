@@ -1,5 +1,6 @@
 package com.tokopedia.core.network.apiservices.accounts;
 
+import com.tokopedia.config.url.TokopediaUrl;
 import com.tokopedia.core.network.apiservices.accounts.apis.UploadImageApi;
 import com.tokopedia.core.network.retrofit.services.AuthService;
 
@@ -18,7 +19,7 @@ public class UploadImageService extends AuthService<UploadImageApi> {
 
     @Override
     protected String getBaseUrl() {
-        return "https://accounts.tokopedia.com/";
+        return TokopediaUrl.Companion.getInstance().getACCOUNTS();
     }
 
     @Override
