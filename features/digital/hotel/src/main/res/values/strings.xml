@@ -114,7 +114,7 @@
     <string name="hotel_review_country_date">%1$s • %2$s</string>
 
     <string name="hotel_room_detail_header_occupancy">Maksimum: %1$s</string>
-    <string name="hotel_room_detail_header_room_size">%1$d • %2$s</string>
+    <string name="hotel_room_detail_header_room_size">%1$d m² • %2$s</string>
     <string name="hotel_room_detail_header_breakfast">Sarapan Gratis</string>
     <string name="hotel_room_detail_header_refund">Refund Bersyarat</string>
     <string name="hotel_room_detail_pay_at_hotel">Bayar di Hotel</string>

@@ -40,6 +40,8 @@ import com.tokopedia.hotel.common.presentation.widget.RatingStarView
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_booking.*
@@ -103,7 +105,11 @@ class HotelBookingFragment : HotelBaseFragment() {
                     }
                 }
                 is Fail -> {
-                    NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))
+                    val message = when(it.throwable is MessageErrorException) {
+                        true -> it.throwable.message ?: ""
+                        false -> ErrorHandler.getErrorMessage(activity, it.throwable)
+                    }
+                    NetworkErrorHelper.showRedSnackbar(activity, message)
                 }
             }
         })
@@ -189,35 +195,36 @@ class HotelBookingFragment : HotelBaseFragment() {
             if (!property.isDirectPayment) {
                 tv_booking_room_info_pay_at_hotel.visibility = View.VISIBLE
                 tv_booking_room_info_pay_at_hotel.setDrawableLeft(R.drawable.ic_hotel_16)
+                val payAtHotelString = SpannableString(getString(R.string.hotel_booking_pay_at_hotel_label))
+                payAtHotelString.setSpan(StyleSpan(Typeface.BOLD), 1, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                tv_booking_room_info_pay_at_hotel.text = payAtHotelString
             }
-            val spannableString = SpannableString(getString(R.string.hotel_booking_pay_at_hotel_label))
-            spannableString.setSpan(StyleSpan(Typeface.BOLD), 1, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
-            cart.fares.find { it.type == "base_price" }?.let {
-                tv_booking_room_info_occupancy.text = it.description.replace("x", "•")
-            }
+            tv_booking_room_info_occupancy.text = getString(R.string.hotel_booking_room_general_info, cart.rooms[0].numOfRooms, cart.adult)
             if (!property.rooms[0].isBreakFastIncluded) tv_booking_room_info_breakfast.visibility = View.GONE
 
             val cancellationPolicy = property.rooms[0].cancellationPolicies
-            tv_cancellation_policy_ticker.info_title.setFontSize(TextViewCompat.FontSize.MICRO)
-
-            var cancellationDesc: CharSequence = cancellationPolicy.content
-            if (cancellationPolicy.isClickable) {
-                val moreInfoString = getString(R.string.hotel_booking_cancellation_policy_more_info)
-                val spannableString = SpannableString("$cancellationDesc $moreInfoString")
-                val moreInfoSpan = object : ClickableSpan() {
-                    override fun onClick(textView: View) {
+            if (cancellationPolicy.title.isEmpty()) { // Hide cancellation info ticker
+                cancellation_policy_ticker.visibility = View.GONE
+            } else {
+                var cancellationDesc: CharSequence = cancellationPolicy.content
+                if (cancellationPolicy.isClickable) {
+                    val moreInfoString = getString(R.string.hotel_booking_cancellation_policy_more_info)
+                    val spannableString = SpannableString("$cancellationDesc $moreInfoString")
+                    spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(context!!, R.color.green_200)),
+                            spannableString.length - moreInfoString.length, spannableString.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    cancellationDesc = spannableString
+                }
+                cancellation_policy_ticker.tickerTitle = cancellationPolicy.title
+                cancellation_policy_ticker.setTextDescription(cancellationDesc)
+                cancellation_policy_ticker.setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(p0: CharSequence?) {
                         onCancellationPolicyClicked(property)
                     }
-                }
-                spannableString.setSpan(moreInfoSpan,spannableString.length - moreInfoString.length, spannableString.length,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(context!!, R.color.green_200)),
-                        spannableString.length - moreInfoString.length, spannableString.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                cancellationDesc = spannableString
+
+                    override fun onDismiss() {}
+                })
             }
-            tv_cancellation_policy_ticker.setTitleAndDescription(cancellationPolicy.title, cancellationDesc)
-            tv_cancellation_policy_ticker.info_desc.movementMethod = LinkMovementMethod.getInstance()
         }
     }
 
