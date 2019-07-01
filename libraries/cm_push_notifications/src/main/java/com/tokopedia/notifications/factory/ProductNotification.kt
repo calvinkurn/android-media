@@ -70,13 +70,14 @@ internal class ProductNotification(applicationContext: Context, baseNotification
             remoteView.setViewVisibility(R.id.ll_oldPriceAndDiscount, View.GONE)
         } else {
             remoteView.setTextViewText(R.id.tv_oldPrice,
-                    CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.productInfo?.productActualPrice))
+                    CMNotificationUtils.getSpannedTextFromStr("<strike>${baseNotificationModel.productInfo?.productActualPrice}</strike>"))
             remoteView.setTextViewText(R.id.tv_discountPercent,
                     CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.productInfo?.productPriceDroppedPercentage))
         }
         remoteView.setTextViewText(R.id.tv_currentPrice, CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.productInfo?.productCurrentPrice))
         remoteView.setTextViewText(R.id.tv_productMessage, CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.productInfo?.productMessage))
-        remoteView.setTextViewText(R.id.tv_productButton, CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.productInfo?.productButtonMessage))
+        remoteView.setTextViewText(R.id.tv_productButton,
+                CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.productInfo?.productButtonMessage))
         remoteView.setOnClickPendingIntent(R.id.ll_expandedProductView, getPendingIntent(requestCode, baseNotificationModel.productInfo?.appLink!!))
     }
 
