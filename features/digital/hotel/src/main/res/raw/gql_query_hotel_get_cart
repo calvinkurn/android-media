@@ -5,6 +5,10 @@ query PropertyCart($data: PropertyGetCartRequest!) {
       adult
       checkIn
       checkOut
+      rooms {
+        roomID
+        numOfRooms
+      }
       guestName
       specialRequest
       totalPrice
