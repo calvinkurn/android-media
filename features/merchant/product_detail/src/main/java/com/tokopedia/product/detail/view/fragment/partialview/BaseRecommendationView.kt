@@ -25,12 +25,13 @@ abstract class BaseRecommendationView(context: Context) : View(context) {
         getView().gone()
     }
 
-    fun renderData(product: RecommendationWidget) {
+    fun renderData(product: RecommendationWidget?) {
         with(getView()) {
-            getLayoutProgress().gone()
-            if (product.recommendationItemList.isEmpty())
+            if (product == null ) {
                 gone()
-            else {
+            } else if (product.recommendationItemList.isEmpty()){
+                gone()
+            } else {
                 getLayoutTitle().text = product.title
                 initAdapter(product)
                 visible()
