@@ -1,8 +1,8 @@
 package com.tokopedia.hotel.roomlist.usecase
 
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.hotel.common.getSuccessData
 import com.tokopedia.hotel.roomlist.data.model.HotelAddCartData
 import com.tokopedia.hotel.roomlist.data.model.HotelAddCartParam
 import com.tokopedia.hotel.roomlist.util.HotelUtil

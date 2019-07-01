@@ -2,9 +2,9 @@ package com.tokopedia.hotel.evoucher.presentation.viewmodel
 
 import android.arch.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.hotel.common.getSuccessData
 import com.tokopedia.hotel.evoucher.data.entity.SharePdfDataParam
 import com.tokopedia.hotel.evoucher.data.entity.SharePdfDataResponse
 import com.tokopedia.hotel.orderdetail.data.model.HotelOrderDetail

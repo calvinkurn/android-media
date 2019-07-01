@@ -5,7 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.common.travel.presentation.activity.TravelContactDataActivity
+import com.tokopedia.common.travel.presentation.model.TravelContactData
 import com.tokopedia.hotel.HotelComponentInstance
+import com.tokopedia.hotel.booking.presentation.fragment.HotelBookingFragment.Companion.REQUEST_CODE_CONTACT_DATA
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.hotel.homepage.di.DaggerHotelHomepageComponent
 import com.tokopedia.hotel.homepage.di.HotelHomepageComponent
@@ -18,6 +21,8 @@ class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageCom
     private var type: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        startActivityForResult(TravelContactDataActivity.getCallingIntent(this, TravelContactData()), REQUEST_CODE_CONTACT_DATA)
+
         val uri = intent.data
         if (uri != null) {
             if (!uri.getQueryParameter(PARAM_HOTEL_ID).isNullOrEmpty()) {

@@ -1,11 +1,10 @@
 package com.tokopedia.hotel.search.presentation.viewmodel
 
 import android.arch.lifecycle.MutableLiveData
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.hotel.common.getSuccessData
 import com.tokopedia.hotel.search.data.model.Filter
 import com.tokopedia.hotel.search.data.model.PropertySearch
 import com.tokopedia.hotel.search.data.model.Sort

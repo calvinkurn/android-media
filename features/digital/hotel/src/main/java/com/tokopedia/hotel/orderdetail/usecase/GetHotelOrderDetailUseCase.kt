@@ -1,20 +1,15 @@
 package com.tokopedia.hotel.orderdetail.usecase
 
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.hotel.common.getSuccessData
 import com.tokopedia.hotel.orderdetail.data.model.HotelOrderDetail
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 /**
  * @author by jessica on 16/05/19
