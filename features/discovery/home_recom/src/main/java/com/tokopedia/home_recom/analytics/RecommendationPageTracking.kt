@@ -604,7 +604,7 @@ class RecommendationPageTracking {
                         ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
                         ECOMMERCE_CLICK, convertRecommendationItemToDataClickObject(recommendationItem, String.format(
                                 if(recommendationItem.isTopAds) VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_TOP_ADS else VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK,
-                                headerName,
+                                recommendationItem.pageName,
                                 recommendationItem.recommendationType
                         ), position)
                     )
@@ -630,9 +630,9 @@ class RecommendationPageTracking {
                         ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
                         ECOMMERCE_CLICK, convertRecommendationItemToDataClickObject(recommendationItem, String.format(
                             if(recommendationItem.isTopAds) VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_TOP_ADS_NON_LOGIN else VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_NON_LOGIN,
-                            headerName,
+                            recommendationItem.pageName,
                             recommendationItem.recommendationType
-                        ), position.toString())
+                        ), position)
                     )
             )
             tracker.sendEnhanceEcommerceEvent(data)
@@ -656,8 +656,10 @@ class RecommendationPageTracking {
                         ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
                             convertRecommendationItemToDataImpressionObject(recommendationItem,
                                     String.format(
-                                            if(recommendationItem.isTopAds) VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_TOP_ADS else VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK,
-                                            headerName, recommendationItem.recommendationType
+                                            if(recommendationItem.isTopAds)
+                                                VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_TOP_ADS
+                                            else VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK,
+                                            recommendationItem.pageName, recommendationItem.recommendationType
                                     ), position)
                         )
                     )
@@ -666,6 +668,7 @@ class RecommendationPageTracking {
         }
 
         // No 20 Done
+        // Replaced with No 50
         fun eventImpressionProductRecommendationOnHeaderName(
                 trackingQueue: TrackingQueue,
                 headerName: String,
@@ -680,13 +683,13 @@ class RecommendationPageTracking {
                     ECOMMERCE, DataLayer.mapOf(
                     ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
                     ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
-                    convertRecommendationItemToDataImpressionObject(recommendationItem,
-                            String.format(
-                                    if(recommendationItem.isTopAds) VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_TOP_ADS_NON_LOGIN else VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_NON_LOGIN,
-                                    headerName, recommendationItem.recommendationType
-                            ), position)
-            )
-            )
+                            convertRecommendationItemToDataImpressionObject(recommendationItem,
+                                String.format(
+                                        if(recommendationItem.isTopAds) VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_TOP_ADS_NON_LOGIN else VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_NON_LOGIN,
+                                        recommendationItem.pageName, recommendationItem.recommendationType
+                                ), position)
+                        )
+                    )
             )
             trackingQueue.putEETracking(data as HashMap<String, Any>)
         }

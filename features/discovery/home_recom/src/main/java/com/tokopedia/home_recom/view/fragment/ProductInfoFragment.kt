@@ -399,7 +399,8 @@ class ProductInfoFragment : BaseDaggerFragment() {
             shopName = productDataModel.productDetailData.shop.name,
             shopType = if(productDataModel.productDetailData.shop.isGold) "gold_merchant" else "reguler",
             quantity = productDataModel.productDetailData.minOrder,
-            header = ""
+            header = "",
+            pageName = ""
     )
 
     private fun handleDiscount(){

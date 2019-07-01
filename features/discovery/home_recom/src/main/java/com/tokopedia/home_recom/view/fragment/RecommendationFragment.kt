@@ -183,9 +183,9 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
                 .commit()
     }
 
-    private fun mapDataModel(listRecommendationModelDummy: List<RecommendationWidget>): List<HomeRecommendationDataModel>{
+    private fun mapDataModel(listRecommendationModel: List<RecommendationWidget>): List<HomeRecommendationDataModel>{
         val list = ArrayList<HomeRecommendationDataModel>()
-        listRecommendationModelDummy.forEach { recommendationWidget ->
+        listRecommendationModel.forEach { recommendationWidget ->
             when(recommendationWidget.layoutType){
                 TYPE_SCROLL -> {
                     list.add(TitleDataModel(recommendationWidget.title))

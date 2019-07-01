@@ -29,7 +29,8 @@ class RecommendationItem(val productId: Int,
                          val shopName: String,
                          var cartId: Int,
                          val quantity: Int,
-                         val header: String): ImpressHolder(){
+                         val header: String,
+                         val pageName: String): ImpressHolder(){
 
     fun getPriceIntFromString() = CurrencyFormatHelper.convertRupiahToInt(price)
 }
