@@ -69,7 +69,7 @@ ext {
 
     unifyIconVersion = '0.0.4'
     unifyPrinciplesVersion = '0.0.2'
-    unifyComponentsVersion = '0.0.4'
+    unifyComponentsVersion = '0.0.5'
     unifyCoachMarkVersion = '1.0.0'
     unifyCalendarVersion = '0.0.2'
 
@@ -275,5 +275,5 @@ ext {
        components: "com.tokopedia.unify:components:${unifyComponentsVersion}@aar",
        coach_mark: "com.tokopedia.unify.compositions:coach_mark:${unifyCoachMarkVersion}@aar",
        calendar: "com.tokopedia.unify.compositions:calendar:${unifyCalendarVersion}@aar"
-    ]   
+    ]
 }
