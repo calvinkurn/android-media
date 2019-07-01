@@ -69,6 +69,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
@@ -123,7 +124,9 @@ dependencies {
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     
     implementation project(rootProject.ext.libraries.track)
-
+    implementation project(rootProject.ext.libraries.unifyComponents)
+    implementation project(rootProject.ext.libraries.unifyPrinciples)
+    implementation project(rootProject.ext.libraries.unifyIcon)
 }
 
 apply from: '../../../publish_local.gradle'

@@ -22,10 +22,15 @@ import com.tokopedia.home.beranda.domain.interactor.GetFeedTabUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetHomeDataUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetHomeFeedUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetLocalHomeDataUseCase;
+import com.tokopedia.home.beranda.domain.interactor.SendGeolocationInfoUseCase;
 import com.tokopedia.home.beranda.presentation.presenter.HomeFeedPresenter;
 import com.tokopedia.home.beranda.presentation.presenter.HomePresenter;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.ItemTabBusinessViewModel;
+import com.tokopedia.home.common.HomeAceApi;
 import com.tokopedia.home.common.HomeDataApi;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -80,17 +85,24 @@ public class HomeModule {
 
     @Provides
     protected HomeDataSource provideHomeDataSource(HomeDataApi homeDataApi,
+                                                   HomeAceApi homeAceApi,
                                                    HomeMapper homeMapper,
                                                    @ApplicationContext Context context,
                                                    CacheManager cacheManager,
                                                    Gson gson){
-        return new HomeDataSource(homeDataApi, homeMapper, context, cacheManager, gson);
+        return new HomeDataSource(homeDataApi, homeAceApi, homeMapper, context, cacheManager, gson);
     }
 
     @Provides
     protected GetHomeDataUseCase provideGetHomeDataUseCase(HomeRepository homeRepository){
         return new GetHomeDataUseCase(homeRepository);
     }
+
+    @Provides
+    protected SendGeolocationInfoUseCase provideSendGeolocationInfoUseCase(HomeRepository homeRepository){
+        return new SendGeolocationInfoUseCase(homeRepository);
+    }
+
 
     @Provides
     protected GetHomeFeedUseCase provideGetHomeFeedUseCase(@ApplicationContext Context context,
@@ -105,6 +117,8 @@ public class HomeModule {
                                                          FeedTabMapper feedTabMapper){
         return new GetFeedTabUseCase(context, graphqlUseCase, feedTabMapper);
     }
+
+
 
     @Provides
     FeedTabMapper feedTabMapper() {
@@ -161,5 +175,11 @@ public class HomeModule {
     @HomeScope
     protected ItemTabBusinessViewModel provideItemTabBusinessViewModel(GraphqlUseCase graphqlUseCase) {
         return new ItemTabBusinessViewModel(graphqlUseCase);
+    }
+
+    @Provides
+    @HomeScope
+    protected PermissionCheckerHelper providePermissionCheckerHelper() {
+        return new PermissionCheckerHelper();
     }
 }

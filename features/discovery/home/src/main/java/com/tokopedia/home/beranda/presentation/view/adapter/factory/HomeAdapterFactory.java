@@ -17,6 +17,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.DynamicCh
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.DynamicChannelSprintViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.DynamicIconSectionViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.EmptyBlankViewHolder;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.GeolocationPromptViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HeaderViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeRecommendationFeedViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.InspirationHeaderViewHolder;
@@ -37,6 +38,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BusinessUn
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicIconSectionViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.GeolocationPromptViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeRecommendationFeedViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.InspirationHeaderViewModel;
@@ -142,6 +144,11 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
     }
 
     @Override
+    public int type(GeolocationPromptViewModel geolocationPromptViewModel) {
+        return GeolocationPromptViewHolder.Companion.getLAYOUT();
+    }
+
+    @Override
     public int type(DynamicChannelViewModel dynamicChannelViewModel) {
         if (DynamicHomeChannel.Channels.LAYOUT_3_IMAGE.equals(dynamicChannelViewModel.getChannel().getLayout())
                 || DynamicHomeChannel.Channels.LAYOUT_SPRINT.equals(dynamicChannelViewModel.getChannel().getLayout())
@@ -209,9 +216,10 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
             viewHolder = new EmptyBlankViewHolder(view);
         else if (type == InspirationHeaderViewHolder.LAYOUT)
             viewHolder = new InspirationHeaderViewHolder(view);
-        else if (type == HomeRecommendationFeedViewHolder.LAYOUT) {
+        else if (type == HomeRecommendationFeedViewHolder.LAYOUT)
             viewHolder = new HomeRecommendationFeedViewHolder(view, listener);
-        }
+        else if (type == GeolocationPromptViewHolder.Companion.getLAYOUT())
+            viewHolder = new GeolocationPromptViewHolder(view, listener);
         else viewHolder = super.createViewHolder(view, type);
 
         return viewHolder;

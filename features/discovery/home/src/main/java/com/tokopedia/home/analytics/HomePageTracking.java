@@ -802,4 +802,54 @@ public class HomePageTracking {
             );
         }
     }
+
+    //on permission
+    public static void eventClickAllowGeolocation(Context context) {
+        ContextAnalytics tracker = getTracker(context);
+        if (tracker != null) {
+            tracker.sendGeneralEvent(
+                    "",
+                    CATEGORY_HOME_PAGE,
+                    "click on allow geolocation",
+                    ""
+            );
+        }
+    }
+
+    //on permission
+    public static void eventClickNotAllowGeolocation(Context context) {
+        ContextAnalytics tracker = getTracker(context);
+        if (tracker != null) {
+            tracker.sendGeneralEvent(
+                    "",
+                    CATEGORY_HOME_PAGE,
+                    "click on not allow geolocation",
+                    ""
+            );
+        }
+    }
+
+    public static void eventClickGeolocationComponent(Context context) {
+        ContextAnalytics tracker = getTracker(context);
+        if (tracker != null) {
+            tracker.sendGeneralEvent(
+                    "",
+                    CATEGORY_HOME_PAGE,
+                    "click on geolocation component",
+                    ""
+            );
+        }
+    }
+
+    public static void eventClickCloseGeolocationComponent(Context context) {
+        ContextAnalytics tracker = getTracker(context);
+        if (tracker != null) {
+            tracker.sendGeneralEvent(
+                    "",
+                    CATEGORY_HOME_PAGE,
+                    "click close on geolocation component",
+                    ""
+            );
+        }
+    }
 }

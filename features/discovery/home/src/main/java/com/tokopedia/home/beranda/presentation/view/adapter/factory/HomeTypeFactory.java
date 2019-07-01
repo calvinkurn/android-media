@@ -8,6 +8,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BusinessUn
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicIconSectionViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.GeolocationPromptViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeRecommendationFeedViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.InspirationHeaderViewModel;
@@ -56,4 +57,6 @@ public interface HomeTypeFactory {
     int type(SpotlightViewModel spotlightViewModel);
 
     int type(HomeRecommendationFeedViewModel homeRecommendationFeedViewModel);
+
+    int type(GeolocationPromptViewModel geolocationPromptViewModel);
 }
