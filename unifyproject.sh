@@ -4,7 +4,7 @@ help() {
     echo "start              => Start Development"
     echo "commit <message>   => Add + Commit to Unify"
     echo "push               => Push to Unify"
-    echo "publish <project>  => Publish to Artifactory, list project: icon / principles / components"
+    echo "publish <project>  => Publish to Artifactory"
 }
 
 startDev( ) {
@@ -37,17 +37,55 @@ startDev( ) {
 }
 
 commit( ) {
-    echo "Commit !"
-    echo $BRANCH_NAME
+    if [ -z "$1" ]; then
+        echo "Please input commit message"
+        exit 1
+    fi
+
+    git add .
+    git commit -m "$1"
 }
 
 push( ) {
-    echo "Push !"
+    source unifyproject.config
+    branchname="feature/unify/$user_name"
+
+    git push origin $branchname
 }
 
 publish( ) {
-    echo "Publish !"
-    echo "$1"
+
+    if [ -z "$1" ]; then
+        echo "Please specify project:"
+        echo "icon"
+        echo "principle"
+        echo "component"
+        echo "calendar"
+        echo "coachmark"
+        exit 1
+    fi
+
+    if [ $1 = "icon" ];
+    then
+        $projectname = "libraries/unify/unify_icon"
+    elif [ $1 = "principle" ];
+    then
+        $projectname = "libraries/unify/unify_principles"
+    elif [ $1 = "component" ];
+    then
+        $projectname = "libraries/unify/unify_components"
+    elif [ $1 = "calendar" ];
+    then
+        $projectname = "libraries/unify/unify_compositions/calendar"
+    elif [ $1 = "coachmark" ];
+    then
+        $projectname = "libraries/unify/unify_compositions/coach_mark"
+    else
+        echo "This $1 project not available yet. Please contact core-team for help"
+        exit 1
+    fi
+
+    ./gradlew -p $projectname assembleRelease artifactoryPublish
 }
 
 if [ -z "$1" ]; then
