@@ -17,9 +17,6 @@ startDev( ) {
     #else
     #    echo "git checkout feature/unify/dev"
     #fi
-
-    echo $BRANCH_NAME | sed -e "s/\$BATCH_END/$BATCH_END/g"
-
 }
 
 commit( ) {
@@ -43,6 +40,7 @@ fi
 
 if [ $1 = "start" ]; then
     startDev $2
+    BRANCH_NAME=$2
 elif [ $1 = "commit" ]; then
     commit "$2"
 elif [ $1 = "push" ]; then
