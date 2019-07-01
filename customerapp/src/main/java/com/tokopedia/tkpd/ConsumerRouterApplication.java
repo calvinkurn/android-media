@@ -86,7 +86,6 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;

@@ -5,8 +5,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.tokopedia.core2.R;
-import com.tokopedia.core.database.manager.DbManagerImpl;
-import com.tokopedia.core.myproduct.model.ImageModel;
 import com.tokopedia.core.myproduct.model.TextDeleteModel;
 import com.tokopedia.core.myproduct.model.WholeSaleAdapterModel;
 import com.tokopedia.core.util.Pair;
@@ -25,22 +23,6 @@ public class VerificationUtils {
     public static final int WHOLESALE_QTY2 = 1;
     public static final String TAG = VerificationUtils.class.getSimpleName();
     public static final String messageTAG = TAG+" : ";
-
-    public static Pair<Boolean, String> validateAllInstoped(Context context, List<ImageModel> textDeleteModels){
-        boolean isSelect = false;
-        for(ImageModel textDeleteModel : textDeleteModels){
-            boolean contains = textDeleteModel.getTypes().contains(SELECTED.getType());
-            if(!contains){
-                isSelect |= true;
-            }else{
-                isSelect |= false;
-            }
-        }
-        if(isSelect)
-            return new Pair<>(false, context.getString(R.string.error_not_all_instoped));
-
-        return new Pair<>(true, null);
-    }
 
     public static Pair<Boolean, String> validateEtalase(Context context, List<TextDeleteModel> textDeleteModels){
         boolean isSelect = false;
@@ -81,22 +63,6 @@ public class VerificationUtils {
         }
         if(isSelect)
             return new Pair<>(false, context.getString(R.string.error_no_category_selected));
-
-        return new Pair<>(true, null);
-    }
-
-    public static Pair<Boolean, String> validateImages(Context context, List<ImageModel> imageModels){
-        boolean isAllDefaultImage = true;
-        for(ImageModel imageModel : imageModels){
-            if(imageModel.getDbId()==0){
-                isAllDefaultImage &= true;
-            }else{
-                isAllDefaultImage &= false;
-            }
-        }
-
-        if(isAllDefaultImage)
-            return new Pair<>(false, context.getString(R.string.error_no_picture_selected));
 
         return new Pair<>(true, null);
     }

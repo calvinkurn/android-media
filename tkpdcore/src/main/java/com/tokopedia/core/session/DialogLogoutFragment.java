@@ -22,7 +22,6 @@ import com.tokopedia.core.Router;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.network.apiservices.user.SessionService;
