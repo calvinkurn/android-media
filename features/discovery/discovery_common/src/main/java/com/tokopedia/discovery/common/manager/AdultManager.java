@@ -1,4 +1,4 @@
-package com.tokopedia.adult.common;
+package com.tokopedia.discovery.common.manager;
 
 import android.app.Activity;
 import android.content.Context;
@@ -7,10 +7,9 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.unifycomponents.Toaster;
-
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
+import com.tokopedia.unifycomponents.Toaster;
 
 public class AdultManager {
 

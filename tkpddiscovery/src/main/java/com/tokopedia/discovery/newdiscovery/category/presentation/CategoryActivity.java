@@ -32,7 +32,7 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmo
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.util.MoEngageEventTracking;
 import com.tokopedia.unifycomponents.Toaster;
-import com.tokopedia.adult.common.AdultManager;
+import com.tokopedia.discovery.common.manager.AdultManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -72,7 +72,7 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
-import com.tokopedia.adult.common.AdultManager;
+import com.tokopedia.discovery.common.manager.AdultManager;
 
 import org.json.JSONArray;
 

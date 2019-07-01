@@ -216,7 +216,6 @@ ext {
             search                          : ":features:discovery:search",
             topAdsSdk                       : ":features:discovery:topadssdk",
             wishlistCommon                  : ":features:discovery:wishlist_common",
-            adultCommon                     : ":features:adult_common",
             productCard                     : ":features:discovery:productcard",
             recommendationWidgetCommon      : ":features:discovery:recommendation_widget_common",
             homecredit                      : ":features:fintech:home_credit",

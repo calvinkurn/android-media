@@ -127,7 +127,7 @@ import model.TradeInParams
 import view.customview.TradeInTextView
 import viewmodel.TradeInBroadcastReceiver
 import javax.inject.Inject
-import com.tokopedia.adult.common.AdultManager
+import com.tokopedia.discovery.common.manager.AdultManager
 
 class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter.UserActiveListener {
     private var productId: String? = null
