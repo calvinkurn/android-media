@@ -307,7 +307,12 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
             }
 
             @Override
-            public void onSuccess() {
+            public void onVerificationSuccess(String message) {
+
+            }
+
+            @Override
+            public void onLoginPreverified() {
 
             }
         });

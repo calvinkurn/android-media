@@ -50,24 +50,45 @@ public class AdultManager {
                                             @Nullable Intent data, Callback callback) {
         if (requestCode == REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
-                if (callback != null) callback.onSuccess();
+                handleLoginPreverifiedResult(callback);
             } else if (resultCode == RESULT_CODE_DOB_VERIFICATION_SUCCESS && data != null) {
-                String message = data.getStringExtra(EXTRA_VERIFICATION_SUCCESS);
-                Toaster.Companion.showNormalWithAction(activity,
-                        message,
-                        Snackbar.LENGTH_INDEFINITE,
-                        "Ok", (v) -> {
-                        });
-                if (callback != null) callback.onSuccess();
+                handleVerificationSuccessResult(data, callback, activity);
             } else {
-                if (callback != null) callback.onFail();
-                activity.finish();
+                handleFailResult(callback, activity);
             }
+        }
+    }
+
+    private static void handleLoginPreverifiedResult(Callback callback) {
+        if (callback != null) {
+            callback.onLoginPreverified();
+        }
+    }
+
+    private static void handleVerificationSuccessResult(Intent data, Callback callback, Activity activity) {
+        String message = data.getStringExtra(EXTRA_VERIFICATION_SUCCESS);
+        if (callback != null)  {
+            callback.onVerificationSuccess(message);
+        } else {
+            Toaster.Companion.showNormalWithAction(activity,
+                    message,
+                    Snackbar.LENGTH_INDEFINITE,
+                    "Ok", (v) -> {
+                    });
+        }
+    }
+
+    private static void handleFailResult(Callback callback, Activity activity) {
+        if (callback != null) {
+            callback.onFail();
+        } else {
+            activity.finish();
         }
     }
 
     public interface Callback {
         void onFail();
-        void onSuccess();
+        void onVerificationSuccess(String message);
+        void onLoginPreverified();
     }
 }
