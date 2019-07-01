@@ -29,6 +29,7 @@ import android.provider.Settings.Secure.LOCATION_MODE
 import android.content.Context.LOCATION_SERVICE
 import android.location.LocationManager
 import android.provider.Settings
+import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 
 /**
  * Created by fwidjaja on 2019-05-13.
@@ -37,11 +38,14 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
     private var bottomSheetView: View? = null
     private var currentLat: Double? = 0.0
     private var currentLong: Double? = 0.0
+    private var currentSearch: String? = ""
     private val defaultLat: Double by lazy { -6.175794 }
     private val defaultLong: Double by lazy { 106.826457 }
     private lateinit var rlCurrentLocation: RelativeLayout
     private lateinit var rvPoiList: RecyclerView
     private lateinit var llPoi: LinearLayout
+    private lateinit var llLoading: LinearLayout
+    private lateinit var llSubtitle: LinearLayout
     private lateinit var etSearch: EditText
     private lateinit var adapter: AutocompleteBottomSheetAdapter
     private lateinit var actionListener: ActionListener
@@ -58,13 +62,15 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
     companion object {
         private const val CURRENT_LAT = "CURRENT_LAT"
         private const val CURRENT_LONG = "CURRENT_LONG"
+        private const val CURRENT_SEARCH = "CURRENT_SEARCH"
 
         @JvmStatic
-        fun newInstance(currentLat: Double?, currentLong: Double?): AutocompleteBottomSheetFragment {
+        fun newInstance(currentLat: Double?, currentLong: Double?, currentSearch: String?): AutocompleteBottomSheetFragment {
             return AutocompleteBottomSheetFragment().apply {
                 arguments = Bundle().apply {
                     currentLat?.let { putDouble(CURRENT_LAT, it) }
                     currentLong?.let { putDouble(CURRENT_LONG, it) }
+                    currentSearch?.let { putString(CURRENT_SEARCH, it) }
                 }
             }
         }
@@ -80,6 +86,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         if (arguments != null) {
             currentLat = arguments?.getDouble("CURRENT_LAT")
             currentLong = arguments?.getDouble("CURRENT_LONG")
+            currentSearch = arguments?.getString("CURRENT_SEARCH")
         }
     }
 
@@ -108,7 +115,13 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         rlCurrentLocation = view.findViewById(R.id.rl_current_location)
         rvPoiList = view.findViewById(R.id.rv_poi_list)
         llPoi = view.findViewById(R.id.ll_poi)
+        llLoading = view.findViewById(R.id.ll_loading)
+        llSubtitle = view.findViewById(R.id.ll_subtitle_poi)
+
         etSearch = view.findViewById(R.id.et_search)
+        if (currentSearch?.isNotEmpty()!!) etSearch.setText(currentSearch.toString())
+        etSearch.run { setSelection(etSearch.text.length) }
+
         adapter = AutocompleteBottomSheetAdapter(this)
         hideListPointOfInterest()
 
@@ -122,16 +135,17 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         if (currentLat != 0.0 && currentLong != 0.0) {
             doLoadAutocompleteGeocode()
         } else {
-            if (isLocationEnabled()) {
-                if (currentLat == 0.0 && currentLong == 0.0) {
-                    currentLat = defaultLat
-                    currentLong = defaultLong
-                }
-                doLoadAutocompleteGeocode()
-
-            } else {
-                rlCurrentLocation.setOnClickListener {
-                    showLocationInfoBottomSheet()
+            context?.let {
+                if (AddNewAddressUtils.isLocationEnabled(it)) {
+                    if (currentLat == 0.0 && currentLong == 0.0) {
+                        currentLat = defaultLat
+                        currentLong = defaultLong
+                    }
+                    doLoadAutocompleteGeocode()
+                } else {
+                    rlCurrentLocation.setOnClickListener {
+                        showLocationInfoBottomSheet()
+                    }
                 }
             }
         }
@@ -161,22 +175,14 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
     }
 
     private fun doLoadAutocompleteGeocode() {
+        // show loading list, hide result list
+        showLoadingList()
+
+        presenter.clearCacheAutocompleteGeocode()
         presenter.getAutocompleteGeocode(currentLat, currentLong)
         rlCurrentLocation.setOnClickListener {
             actionListener.useCurrentLocation(currentLat, currentLong)
             dismiss()
-        }
-    }
-
-    @TargetApi(Build.VERSION_CODES.KITKAT)
-    private fun isLocationEnabled(): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            val lm = context?.getSystemService(LOCATION_SERVICE) as LocationManager
-            lm.isLocationEnabled
-        } else {
-            val mode = Settings.Secure.getInt(context?.contentResolver, LOCATION_MODE, LOCATION_MODE_OFF)
-            mode != LOCATION_MODE_OFF
-
         }
     }
 
@@ -206,15 +212,27 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
 
     override fun hideListPointOfInterest() {
         llPoi.visibility = View.GONE
+        llLoading.visibility = View.GONE
     }
 
     private fun loadAutocomplete(input: String) {
+        // show loading list, hide result list
+        showLoadingList()
+
         presenter.clearCacheAutocomplete()
         presenter.getAutocomplete(input)
     }
 
+    private fun showLoadingList() {
+        llPoi.visibility = View.GONE
+        llLoading.visibility = View.VISIBLE
+    }
+
     override fun onSuccessGetAutocompleteGeocode(responseAutocompleteGeocodeDataUiModel: AutocompleteGeocodeDataUiModel) {
+        // hide loading list, show subtitle & result list
+        llLoading.visibility = View.GONE
         if (responseAutocompleteGeocodeDataUiModel.results.isNotEmpty()) {
+            llSubtitle.visibility = View.VISIBLE
             llPoi.visibility = View.VISIBLE
             adapter.isAutocompleteGeocode = true
             adapter.dataAutocompleteGeocode = responseAutocompleteGeocodeDataUiModel.results.toMutableList()
@@ -223,6 +241,10 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
     }
 
     override fun onSuccessGetAutocomplete(dataUiModel: AutocompleteDataUiModel) {
+        // hide loading list, show result list
+        // hide subtitle_poi
+        llLoading.visibility = View.GONE
+        llSubtitle.visibility = View.GONE
         if (dataUiModel.listPredictions.isNotEmpty()) {
             llPoi.visibility = View.VISIBLE
             adapter.isAutocompleteGeocode = false

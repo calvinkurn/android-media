@@ -1,6 +1,12 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress
 
+import android.annotation.TargetApi
 import android.app.Activity
+import android.content.Context
+import android.location.LocationManager
+import android.os.Build
+import android.provider.Settings
+import android.provider.Settings.Secure.getInt
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.view.View
@@ -10,7 +16,6 @@ import android.widget.TextView
 import com.google.android.gms.maps.model.LatLng
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.logisticaddaddress.R
-import kotlinx.android.synthetic.main.fragment_add_edit_new_address.*
 
 /**
  * Created by fwidjaja on 2019-06-22.
@@ -48,5 +53,18 @@ object AddNewAddressUtils {
         snackbarActionButton?.setTextColor(ContextCompat.getColor(activity, R.color.font_black_primary_70))
         snackbarTextView?.maxLines = 5
         snackbar.setAction(activity.getString(R.string.label_action_snackbar_close)) { }.show()
+    }
+
+    @JvmStatic
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    fun isLocationEnabled(context: Context): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            val lm = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            lm.isLocationEnabled
+        } else {
+            val mode = getInt(context.contentResolver, Settings.Secure.LOCATION_MODE, Settings.Secure.LOCATION_MODE_OFF)
+            mode != Settings.Secure.LOCATION_MODE_OFF
+
+        }
     }
 }
