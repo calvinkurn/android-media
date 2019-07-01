@@ -166,7 +166,7 @@
                                 android:layout_marginLeft="@dimen/dp_24"
                                 android:paddingLeft="@dimen/dp_8"
                                 android:paddingRight="@dimen/dp_8"
-                                android:src="@drawable/ic_icon_ic_copy" />
+                                app:srcCompat="@drawable/ic_icon_ic_copy" />
                         </LinearLayout>
                     </LinearLayout>
 

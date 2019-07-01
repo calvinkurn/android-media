@@ -230,7 +230,6 @@ public class ShippingDurationBottomsheet extends BottomSheets
 
     @Override
     public void showData(List<ShippingDurationViewModel> shippingDurationViewModelList, LogisticPromoViewModel promoViewModel) {
-        shippingDurationAdapter.setHasCourierPromo(checkHasCourierPromo(shippingDurationViewModelList));
         shippingDurationAdapter.setShippingDurationViewModels(shippingDurationViewModelList, promoViewModel);
         shippingDurationAdapter.initiateShowcase();
         updateHeight();
@@ -281,7 +280,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
 
     @Override
     public void onShippingDurationChoosen(List<ShippingCourierViewModel> shippingCourierViewModels,
-                                          int cartPosition, ServiceData serviceData, boolean hasCourierPromo) {
+                                          int cartPosition, ServiceData serviceData) {
         boolean flagNeedToSetPinpoint = false;
         int selectedServiceId = 0;
         if (isToogleYearEndPromotionOn()) {
@@ -307,14 +306,13 @@ public class ShippingDurationBottomsheet extends BottomSheets
         if (shippingDurationBottomsheetListener != null) {
             shippingDurationBottomsheetListener.onShippingDurationChoosen(
                     shippingCourierViewModels, presenter.getCourierItemData(shippingCourierViewModels),
-                    presenter.getRecipientAddressModel(), cartPosition, selectedServiceId, serviceData.getServiceName(),
-                    flagNeedToSetPinpoint, true);
-        }
-
-        try {
-            dismiss();
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
+                    presenter.getRecipientAddressModel(), cartPosition, selectedServiceId, serviceData,
+                    flagNeedToSetPinpoint, true, true);
+            try {
+                dismiss();
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -359,7 +357,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
                 shippingDurationBottomsheetListener.onLogisticPromoChosen(
                         serviceData.getShippingCourierViewModelList(), courierData,
                         presenter.getRecipientAddressModel(), mCartPosition, data.getServiceId(),
-                        serviceData.getServiceData().getServiceName(), false, data.getPromoCode());
+                        serviceData.getServiceData(), false, data.getPromoCode());
                 tkpdDialog.dismiss();
                 dismiss();
             }

@@ -6,7 +6,6 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.design.countdown.CountDownView;
-import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedTabGqlResponse;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.listener.HomeFeedsListener;
@@ -32,20 +31,21 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.TopAdsVie
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.UseCaseIconSectionViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.inspiration.InspirationViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.widget_business.BusinessUnitViewHolder;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BusinessUnitViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeRecommendationFeedViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BusinessUnitViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicIconSectionViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeRecommendationFeedViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.InspirationHeaderViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SellViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SpotlightViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsDynamicChannelModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.UseCaseIconSectionViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsDynamicChannelModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SpotlightViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SellViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SearchPlaceholderViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.InspirationHeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.RetryModel;
 
@@ -85,6 +85,11 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
     @Override
     public int type(TickerViewModel tickerViewModel) {
         return TickerViewHolder.LAYOUT;
+    }
+
+    @Override
+    public int type(SearchPlaceholderViewModel searchPlaceholderViewModel) {
+        return SearchPlaceholderViewModel.SEARCH_PLACE_HOLDER;
     }
 
     @Override
@@ -211,7 +216,6 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
             viewHolder = new InspirationHeaderViewHolder(view);
         else if (type == HomeRecommendationFeedViewHolder.LAYOUT) {
             viewHolder = new HomeRecommendationFeedViewHolder(view, listener);
-            viewHolder.setIsRecyclable(false);
         }
         else viewHolder = super.createViewHolder(view, type);
 

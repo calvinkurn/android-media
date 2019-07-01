@@ -36,7 +36,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
     public static final String SERVER_ERROR = "com.tokopedia.tkpd.SERVER_ERROR";
     public static final String TIMEZONE_ERROR = "com.tokopedia.tkpd.TIMEZONE_ERROR";
     public static final String INAPP_UPDATE = "inappupdate";
-
     private static final long DISMISS_TIME = 10000;
 
     private ErrorNetworkReceiver logoutNetworkReceiver;
@@ -172,7 +171,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     }
 
     public void showForceLogoutDialog() {
-        DialogForceLogout.createShow(this,
+        DialogForceLogout.createShow(this, getScreenName(),
                 new DialogForceLogout.ActionListener() {
                     @Override
                     public void onDialogClicked() {
@@ -201,7 +200,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        ((AbstractionRouter) getApplication()).instabugCaptureUserStep(this, ev);
         return super.dispatchTouchEvent(ev);
     }
 }

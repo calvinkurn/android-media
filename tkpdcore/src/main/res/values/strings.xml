@@ -1072,12 +1072,16 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_shop_name">Nama Toko</string>
     <string name="title_shop_tag">Slogan Toko</string>
     <string name="title_shop_desc">Deskripsi Toko</string>
-    <string name="title_open_shop">Buka Toko</string>
+    <string name="title_open_shop">Buka Toko Gratis</string>
     <string name="title_shop_is_active">Toko Sudah Aktif</string>
     <string name="domain">https://www.tokopedia.com/</string>
     <string name="domain_short">www.tokopedia.com/</string>
     <string name="title_activity_contact_us">Pusat Bantuan</string>
+    <string name="shop_address_hint">Tulis nama kota atau kecamatan</string>
     <string name="title_select_city">Pilih Asal Kota</string>
+    <string name="tnc_open_shop">Anda telah menyetujui Syarat dan Ketentuan serta Kebijakan Privasi Tokopedia.</string>
+    <string name="tnc_webview_title">Syarat dan Ketentuan</string>
+    <string name="privacy_policy_webview_title">Kebijakan Privasi</string>
 
 
     <string name="title_activity_create_reso_center">Buat Komplain</string>
@@ -1576,7 +1580,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="error_choose_google_map_location">Mohon pilih lokasi Pickup</string>
     <string name="error_fill_street_address">Mohon isi Alamat Jalan Anda</string>
     <string name="toggle_rpx_next_day_i_drop">RPX Next Day Package dan IDrop tidak dapat dipilih bersamaan</string>
-    <string name="title_delivery_location">Lokasi Pickup (Opsional)</string>
+    <string name="title_delivery_location">Lokasi Pickup</string>
     <string name="title_delivery_location_pickup">Lokasi Pengiriman (Opsional)</string>
     <string name="title_delivery_location_cart">Lokasi Pengiriman</string>
     <string name="desc_delivery_location">Pastikan lokasi yang Anda tandai di peta sesuai dengan alamat yang Anda isi di atas</string>

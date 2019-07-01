@@ -21,6 +21,8 @@ import com.tokopedia.loginregister.registerinitial.domain.usecase.RegisterValida
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterValidationPojo;
 import com.tokopedia.loginregister.registerinitial.view.listener.RegisterInitialContract;
 import com.tokopedia.loginregister.registerinitial.view.subscriber.RegisterThirdPartySubscriber;
+import com.tokopedia.loginregister.ticker.domain.usecase.TickerInfoUseCase;
+import com.tokopedia.loginregister.ticker.subscriber.TickerInfoRegisterSubscriber;
 import com.tokopedia.sessioncommon.ErrorHandlerSession;
 
 import javax.inject.Inject;
@@ -48,6 +50,7 @@ public class RegisterInitialPresenter extends BaseDaggerPresenter<RegisterInitia
     private final LoginWithSosmedUseCase loginSosmedUseCase;
     private final LoginWebviewUseCase registerWebviewUseCase;
     private final RegisterValidationUseCase registerValidationUseCase;
+    private final TickerInfoUseCase tickerInfoUseCase;
 
     @Inject
     public RegisterInitialPresenter(
@@ -55,12 +58,14 @@ public class RegisterInitialPresenter extends BaseDaggerPresenter<RegisterInitia
             GetFacebookCredentialUseCase getFacebookCredentialUseCase,
             LoginWithSosmedUseCase loginSosmedUseCase,
             LoginWebviewUseCase registerWebviewUseCase,
-            RegisterValidationUseCase registerValidationUseCase) {
+            RegisterValidationUseCase registerValidationUseCase,
+            TickerInfoUseCase tickerInfoUseCase) {
         this.discoverUseCase = discoverUseCase;
         this.getFacebookCredentialUseCase = getFacebookCredentialUseCase;
         this.loginSosmedUseCase = loginSosmedUseCase;
         this.registerWebviewUseCase = registerWebviewUseCase;
         this.registerValidationUseCase = registerValidationUseCase;
+        this.tickerInfoUseCase = tickerInfoUseCase;
     }
 
     @Override
@@ -216,5 +221,11 @@ public class RegisterInitialPresenter extends BaseDaggerPresenter<RegisterInitia
                         getView().getLoginRouter(), email, getView(),
                         LoginRegisterAnalytics.GOOGLE)
         );
+    }
+
+    @Override
+    public void getTickerInfo(){
+        tickerInfoUseCase.execute(TickerInfoUseCase.createRequestParam(TickerInfoUseCase.REGISTER_PAGE),
+                new TickerInfoRegisterSubscriber(getView()));
     }
 }

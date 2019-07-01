@@ -6,9 +6,11 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.URLUtil;
 import android.widget.ImageView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.model.CatalogBanner;
 import com.tokopedia.tokopoints.view.presenter.CatalogListingPresenter;
@@ -47,7 +49,13 @@ public class CatalogBannerPagerAdapter extends PagerAdapter {
         ImageView banner = (ImageView) mInflater.inflate(R.layout.tp_item_catalog_banner, view, false);
         ImageHandler.loadImageFit2(banner.getContext(), banner, mItems.get(position).getImageUrl());
         banner.setOnClickListener(view1 -> {
-            mPresenter.getView().openWebView(mItems.get(position).getRedirectUrl());
+            if (URLUtil.isValidUrl(mItems.get(position).getRedirectUrl())) {
+                mPresenter.getView().openWebView(mItems.get(position).getRedirectUrl());
+            } else {
+                if (mPresenter.getView().getActivityContext() != null) {
+                    RouteManager.route(mPresenter.getView().getActivityContext(), mItems.get(position).getRedirectUrl());
+                }
+            }
         });
         view.addView(banner);
 

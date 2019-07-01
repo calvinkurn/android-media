@@ -142,8 +142,8 @@ public class LogisticNetworkModule {
 
     @Provides
     @LogisticCacheApiInterceptorQualifier
-    Interceptor provideCacheApiInterceptor() {
-        return new CacheApiInterceptor();
+    Interceptor provideCacheApiInterceptor(@ApplicationContext Context context) {
+        return new CacheApiInterceptor(context);
     }
 
     @Provides

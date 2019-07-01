@@ -5,13 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
+import com.tokopedia.base.list.seller.view.old.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.datepicker.range.R;
 import com.tokopedia.datepicker.range.view.model.PeriodRangeModel;
 import com.tokopedia.datepicker.range.view.widget.DatePeriodView;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**

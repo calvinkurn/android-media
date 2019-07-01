@@ -51,7 +51,6 @@ import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.text.TextDrawable;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
-import com.tokopedia.loginregister.LoginRegisterPhoneRouter;
 import com.tokopedia.loginregister.LoginRegisterRouter;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.activation.view.activity.ActivationActivity;
@@ -76,6 +75,7 @@ import com.tokopedia.sessioncommon.view.LoginSuccessRouter;
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 import java.util.ArrayList;
 
@@ -590,8 +590,6 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
             tv.setOnClickListener(v -> onLoginFacebookClick());
         } else if (discoverItemViewModel.getId().equalsIgnoreCase(GPLUS)) {
             tv.setOnClickListener(v -> onLoginGoogleClick());
-        } else if (discoverItemViewModel.getId().equalsIgnoreCase(PHONE_NUMBER)) {
-            tv.setOnClickListener(v -> onLoginPhoneNumberClick());
         } else {
             tv.setOnClickListener(v -> onLoginWebviewClick(discoverItemViewModel.getName(),
                     discoverItemViewModel.getUrl()));
@@ -614,19 +612,6 @@ public class LoginFragment extends BaseDaggerFragment implements LoginContract.V
                     WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
         }
-    }
-
-    private void onLoginPhoneNumberClick() {
-        if (getActivity() != null && getActivity().getApplicationContext() != null) {
-            actionLoginMethod = LoginRegisterAnalytics.ACTION_LOGIN_PHONE;
-
-            analytics.eventClickLoginPhoneNumber(getActivity().getApplicationContext());
-
-            Intent intent = ((LoginRegisterPhoneRouter) getActivity().getApplicationContext())
-                    .getCheckLoginPhoneNumberIntent(getActivity());
-            startActivityForResult(intent, REQUEST_LOGIN_PHONE_NUMBER);
-        }
-
     }
 
     private void onLoginGoogleClick() {

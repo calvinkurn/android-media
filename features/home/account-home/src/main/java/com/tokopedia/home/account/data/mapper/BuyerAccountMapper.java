@@ -70,7 +70,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
             tokopediaPayViewModel.setLinked(accountModel.getWallet().isLinked());
             tokopediaPayViewModel.setWalletType(accountModel.getWallet().getWalletType());
             if (accountModel.getWallet().getWalletType().equals(OVO)) {
-                tokopediaPayViewModel.setIconUrlLeft(AccountConstants.ImageUrl.OVO_IMG);
+                tokopediaPayViewModel.setIconUrlLeft(cdnUrl + AccountHomeUrl.ImageUrl.OVO_IMG);
                 if (!accountModel.getWallet().isLinked()) {
                     if (accountModel.getWallet().getAmountPendingCashback() > 0) {
                         tokopediaPayViewModel.setLabelLeft("(+" + accountModel.getWallet().getPendingCashback() + ")");
@@ -200,9 +200,17 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
 
 
         menuGrid = new MenuGridViewModel();
-        menuGrid.setTitle(context.getString(R.string.title_menu_other_transaction_1));
+        menuGrid.setTitle(context.getString(R.string.title_menu_other_transaction));
         menuGrid.setItems(getDigitalOrderMenu());
         items.add(menuGrid);
+
+        menuList = new MenuListViewModel();
+        menuList.setMenu(context.getString(R.string.ulasan));
+        menuList.setMenuDescription(context.getString(R.string.ulasan_desc));
+        menuList.setApplink(ApplinkConst.REPUTATION);
+        menuList.setTitleTrack(PEMBELI);
+        menuList.setSectionTrack(context.getString(R.string.title_menu_transaction));
+        items.add(menuList);
 
         items.add(getBuyerResolutionMenu(accountModel));
 
@@ -426,6 +434,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
     private List<MenuGridItemViewModel> getDigitalOrderMenu() {
         List<MenuGridItemViewModel> menuGridItems = new ArrayList<>();
         MenuGridItemViewModel gridItem = null;
+
         if (((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig(RemoteConfigKey.APP_GLOBAL_NAV_NEW_DESIGN, true)) {
             gridItem = new MenuGridItemViewModel(
                     R.drawable.ic_belanja,
@@ -436,7 +445,6 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
                     context.getString(R.string.title_menu_transaction)
             );
         } else {
-
             gridItem = new MenuGridItemViewModel(
                     R.drawable.ic_belanja,
                     context.getString(R.string.title_menu_market_place),
@@ -446,9 +454,8 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
                     context.getString(R.string.title_menu_transaction)
             );
         }
-
-
         menuGridItems.add(gridItem);
+
         gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_top_up_bill,
                 context.getString(R.string.title_menu_top_up_bill),
@@ -458,6 +465,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
                 context.getString(R.string.title_menu_transaction)
         );
         menuGridItems.add(gridItem);
+
         gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_flight,
                 context.getString(R.string.title_menu_flight),

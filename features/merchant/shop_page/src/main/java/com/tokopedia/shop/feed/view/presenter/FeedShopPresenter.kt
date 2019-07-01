@@ -51,11 +51,11 @@ class FeedShopPresenter @Inject constructor(
         trackAffiliateClickUseCase.unsubscribe()
     }
 
-    override fun getFeedFirstPage(shopId: String) {
+    override fun getFeedFirstPage(shopId: String, isPullToRefresh: Boolean) {
         cursor = ""
         if (!getUserId().equals("0")) {
             getDynamicFeedFirstUseCase.execute(
-                    GetDynamicFeedUseCase.createRequestParams(getUserId(), cursor, GetDynamicFeedUseCase.SOURCE_SHOP, shopId),
+                    GetFeedShopFirstUseCase.createRequestParams(getUserId(), shopId, isPullToRefresh),
                     object : Subscriber<DynamicFeedShopDomain>() {
                         override fun onNext(t: DynamicFeedShopDomain?) {
                             t?.let {

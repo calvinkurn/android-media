@@ -104,6 +104,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     val REQUEST_GO_TO_SETTING_TEMPLATE = 113
     val REQUEST_GO_TO_SETTING_CHAT = 114
 
+    var seenAttachedProduct = HashSet<Int>()
+
     companion object {
 
         private const val POST_ID = "{post_id}"
@@ -660,16 +662,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun onClickBuyFromProductAttachment(element: ProductAttachmentViewModel) {
         activity?.let {
             val router = (it.application as TopChatRouter)
-            val shopName = (arguments?.get(ApplinkConst.Chat.PARAM_HEADER) as ChatRoomHeaderViewModel).name
-            analytics.eventClickBuyProductAttachment(
-                    element.blastId.toString(),
-                    element.productName,
-                    element.productId.toString(),
-                    element.productPrice,
-                    1,
-                    element.shopId.toString(),
-                    shopName
-            )
+            (viewState as TopChatViewState)?.sendAnalyticsClickBuyNow(element)
             var shopId = this.shopId
             if(shopId == 0) {
                 shopId = element.shopId
@@ -681,16 +674,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel) {
         activity?.let {
             val router = (it.application as TopChatRouter)
-            val shopName = (arguments?.get(ApplinkConst.Chat.PARAM_HEADER) as ChatRoomHeaderViewModel).name
-            analytics.eventClickAddToCartProductAttachment(
-                    element.blastId.toString(),
-                    element.productName,
-                    element.productId.toString(),
-                    element.productPrice,
-                    1,
-                    element.shopId.toString(),
-                    shopName
-            )
+            (viewState as TopChatViewState)?.sendAnalyticsClickATC(element)
             var shopId = this.shopId
             if(shopId == 0) {
                 shopId = element.shopId
@@ -854,5 +838,11 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
+    }
+
+    override fun trackSeenProduct(element: ProductAttachmentViewModel) {
+        if (seenAttachedProduct.add(element.productId)) {
+            analytics.eventSeenProductAttachment(element)
+        }
     }
 }

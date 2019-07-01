@@ -4,6 +4,7 @@ import android.os.Handler
 import android.support.annotation.LayoutRes
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.PagerSnapHelper
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.View
@@ -50,6 +51,7 @@ open class DynamicPostViewHolder(v: View,
     : AbstractViewHolder<DynamicPostViewModel>(v) {
 
     lateinit var captionTv: TextView
+    val snapHelper: PagerSnapHelper = PagerSnapHelper()
 
     companion object {
         @LayoutRes
@@ -66,6 +68,10 @@ open class DynamicPostViewHolder(v: View,
         const val NEWLINE = "(\r\n|\n)"
 
         const val TYPE_DETAIL = "detail"
+        const val SOURCE_FEEDS = "feeds"
+        const val SOURCE_PROFILE = "profile"
+        const val SOURCE_SHOP = "shop"
+        const val SOURCE_DETAIL = "detail"
     }
 
     init {
@@ -82,7 +88,7 @@ open class DynamicPostViewHolder(v: View,
         bindHeader(element.id, element.header, element.template.cardpost.header)
         bindCaption(element.caption, element.template.cardpost.body)
         bindContentList(element.id, element.contentList, element.template.cardpost.body)
-        bindPostTag(element.postTag, element.template.cardpost.body)
+        bindPostTag(element.postTag, element.template.cardpost.body, element.feedType)
         bindFooter(element.id, element.footer, element.template.cardpost.footer, isPostTagAvailable(element.postTag))
     }
 
@@ -365,7 +371,7 @@ open class DynamicPostViewHolder(v: View,
                 else comment.fmt
     }
 
-    private fun bindPostTag(postTag: PostTag, template: TemplateBody) {
+    private fun bindPostTag(postTag: PostTag, template: TemplateBody, feedType: String) {
         itemView.layoutPostTag.shouldShowWithAction(shouldShowPostTag(postTag, template)) {
             if (postTag.text.isNotEmpty()) {
                 itemView.cardTitlePostTag.text = postTag.text
@@ -375,12 +381,19 @@ open class DynamicPostViewHolder(v: View,
             }
             if (postTag.totalItems > 0) {
                 itemView.rvPosttag.show()
-                val layoutManager: RecyclerView.LayoutManager = when (postTag.totalItems) {
-                    1 -> LinearLayoutManager(itemView.context)
-                    else -> GridLayoutManager(itemView.context, 3)
+                itemView.rvPosttag.setHasFixedSize(true)
+                if (itemView.rvPosttag.onFlingListener != null) {
+                    itemView.rvPosttag.onFlingListener = null
+                }
+                val layoutManager: RecyclerView.LayoutManager = when (feedType) {
+                    SOURCE_DETAIL -> LinearLayoutManager(itemView.context)
+                    else -> feedType.let{
+                        snapHelper.attachToRecyclerView(itemView.rvPosttag)
+                        LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+                    }
                 }
                 itemView.rvPosttag.layoutManager = layoutManager
-                itemView.rvPosttag.adapter = PostTagAdapter(postTag.items, listener, adapterPosition)
+                itemView.rvPosttag.adapter = PostTagAdapter(postTag.items, listener, adapterPosition, feedType)
                 itemView.rvPosttag.adapter.notifyDataSetChanged()
             } else {
                 itemView.rvPosttag.hide()
@@ -415,6 +428,6 @@ open class DynamicPostViewHolder(v: View,
 
         fun onPostTagItemClick(positionInFeed: Int, redirectUrl: String, postTagItem: PostTagItem, itemPosition: Int)
 
-        fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>)
+        fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean)
     }
 }

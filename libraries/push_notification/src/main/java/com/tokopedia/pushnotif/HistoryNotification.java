@@ -2,10 +2,9 @@ package com.tokopedia.pushnotif;
 
 import android.content.Context;
 
-import com.raizlabs.android.dbflow.sql.language.SQLite;
+import com.tokopedia.pushnotif.db.PushNotificationDB;
 import com.tokopedia.pushnotif.db.model.HistoryNotificationDB;
-import com.tokopedia.pushnotif.model.HistoryNotificationModel;
-import com.tokopedia.pushnotif.db.model.HistoryNotificationDB_Table;
+
 import java.util.List;
 
 /**
@@ -16,43 +15,31 @@ public class HistoryNotification {
 
     private static final int HISTORY_NOTIFICATION_LIMIT = 5;
 
-    public static void storeNotification(String senderName, String message, int notificationType, int notificationId) {
-        HistoryNotificationDB historyNotificationDB = new HistoryNotificationDB();
-        historyNotificationDB.setMessage(message);
-        historyNotificationDB.setSenderName(senderName);
-        historyNotificationDB.setNotificationType(notificationType);
-        historyNotificationDB.setNotificationId(notificationId);
-        historyNotificationDB.save();
+    public static void storeNotification(Context context, String senderName, String message, int notificationType, int notificationId) {
+        HistoryNotificationDB data = new HistoryNotificationDB(
+                senderName, message, notificationType, notificationId);
+        PushNotificationDB.Companion.getInstance(context).historyNotificationDao()
+                .storeNotification(data);
     }
 
-    public static List<HistoryNotificationDB> getListHistoryNotification(int notificationType) {
-        return SQLite.select().from(HistoryNotificationDB.class)
-                .where(HistoryNotificationDB_Table.notification_type.eq(notificationType))
-                .orderBy(HistoryNotificationDB_Table.id, false)
-                .limit(HISTORY_NOTIFICATION_LIMIT)
-                .queryList();
-
+    public static List<HistoryNotificationDB> getListHistoryNotification(Context context, int notificationType) {
+        return PushNotificationDB.Companion.getInstance(context).historyNotificationDao()
+                .getListHistoryNotification(notificationType, HISTORY_NOTIFICATION_LIMIT);
     }
 
 
-    public static void clearHistoryNotification(int notificationType, int notificationId) {
-        SQLite.delete().from(HistoryNotificationDB.class)
-                .where(HistoryNotificationDB_Table.notification_type.eq(notificationType))
-                .and(HistoryNotificationDB_Table.notification_id.eq(notificationId))
-                .execute();
+    public static void clearHistoryNotification(Context context, int notificationType, int notificationId) {
+        PushNotificationDB.Companion.getInstance(context).historyNotificationDao()
+                .clearHistoryNotification(notificationType, notificationId);
     }
 
-    public static void clearAllHistoryNotification(int notificationType) {
-        SQLite.delete().from(HistoryNotificationDB.class)
-                .where(HistoryNotificationDB_Table.notification_type.eq(notificationType))
-                .execute();
+    public static void clearAllHistoryNotification(Context context, int notificationType) {
+        PushNotificationDB.Companion.getInstance(context).historyNotificationDao()
+                .clearAllHistoryNotification(notificationType);
     }
 
-    public static Boolean isSingleNotification(int notificationType) {
-        List<HistoryNotificationDB> listHistoryNotification = getListHistoryNotification(notificationType);
-        return listHistoryNotification.size() == 0;
+    public static Boolean isSingleNotification(Context context, int notificationType) {
+        return PushNotificationDB.Companion.getInstance(context).historyNotificationDao()
+                .countNotification(notificationType) == 0;
     }
-
-
-
 }

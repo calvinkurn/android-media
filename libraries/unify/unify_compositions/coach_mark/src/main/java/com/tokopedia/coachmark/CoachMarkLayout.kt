@@ -20,13 +20,7 @@
 package com.tokopedia.coachmark
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Path
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffXfermode
+import android.graphics.*
 import android.os.Build
 import android.support.annotation.RequiresApi
 import android.support.v4.content.ContextCompat
@@ -34,14 +28,9 @@ import android.text.Html
 import android.text.Spanned
 import android.text.TextUtils
 import android.util.AttributeSet
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewTreeObserver
+import android.view.*
 import android.widget.FrameLayout
 import android.widget.TextView
-
 import com.tokopedia.coachmark.util.ViewHelper
 
 class CoachMarkLayout : FrameLayout {
@@ -140,7 +129,7 @@ class CoachMarkLayout : FrameLayout {
     }
 
     fun showTutorial(view: View?,
-                     title: String,
+                     title: String?,
                      text: String,
                      currentTutorIndex: Int,
                      tutorsListSize: Int,
@@ -633,7 +622,7 @@ class CoachMarkLayout : FrameLayout {
         this.viewPaint = null
     }
 
-    private fun fromHtml(html: String): Spanned {
+    private fun fromHtml(html: String?): Spanned {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY)
         } else {

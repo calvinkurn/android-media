@@ -1,10 +1,8 @@
 package com.tokopedia.search.result.presentation;
 
 import com.tokopedia.search.result.presentation.model.ShopViewModel;
-import com.tokopedia.search.result.presentation.view.listener.FavoriteActionListener;
-import com.tokopedia.search.result.presentation.view.listener.RequestDynamicFilterListener;
-import com.tokopedia.search.result.presentation.view.listener.SearchShopListener;
 
+import java.util.List;
 import java.util.Map;
 
 public interface ShopListSectionContract {
@@ -18,14 +16,20 @@ public interface ShopListSectionContract {
 
         void enableFavoriteButton(int adapterPosition);
 
-        String getQueryKey();
+        void onSearchShopSuccess(List<ShopViewModel.ShopViewItem> shopViewItemList, boolean isHasNextPage);
+
+        void onSearchShopFailed();
+
+        void launchLoginActivity(String shopId);
+
+        void onErrorToggleFavorite(Throwable throwable, int adapterPosition);
+
+        void onErrorToggleFavorite(int adapterPosition);
+
+        void onSuccessToggleFavorite(int adapterPosition, boolean targetFavoritedStatus);
     }
 
     interface Presenter extends SearchSectionContract.Presenter<View> {
-        void setFavoriteActionListener(FavoriteActionListener favoriteActionListener);
-
-        void setSearchShopListener(SearchShopListener searchShopListener);
-
         void loadShop(Map<String, Object> searchParameter);
 
         void handleFavoriteButtonClicked(ShopViewModel.ShopViewItem shopItem, int adapterPosition);
