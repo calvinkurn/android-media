@@ -1822,13 +1822,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
                 if (globalPromoRedState) {
                     rvShipment.smoothScrollToPosition(0);
-                    showToastError(merchantPromoRedStateDescription);
+                    showToastError(shipmentAdapter.getPromoGlobalStackData().getDescription());
                     sendAnalyticsPromoRedState();
                 } else if (merchantOrLogisticPromoRedState) {
                     if (merchantIndex > 0) {
                         rvShipment.smoothScrollToPosition(merchantIndex);
                     }
-                    showToastError(shipmentAdapter.getPromoGlobalStackData().getDescription());
+                    showToastError(merchantPromoRedStateDescription);
                     sendAnalyticsPromoRedState();
                 } else {
                     doCheckout(requestCode);
