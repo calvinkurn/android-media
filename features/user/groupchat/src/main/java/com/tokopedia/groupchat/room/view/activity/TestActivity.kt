@@ -29,9 +29,9 @@ class TestActivity: AppCompatActivity() {
                 .repeatMode(RepeatMode.REPEAT_MODE_ALL)
                 .build()
 
-        btnFirst.setOnClickListener { window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_MODE_CHANGED) }
+        btnFirst.setOnClickListener { window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE) }
         btnSecond.setOnClickListener { window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN) }
-        btnThird.setOnClickListener { window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED) }
+        btnThird.setOnClickListener { window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING) }
     }
 
     companion object {

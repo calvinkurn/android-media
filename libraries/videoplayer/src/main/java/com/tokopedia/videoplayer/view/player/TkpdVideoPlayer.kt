@@ -87,8 +87,6 @@ class TkpdVideoPlayer: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
-
         sendViewToBack(playerView) //utilities: send playerView in back of any views
 
         //catch video detail properties
