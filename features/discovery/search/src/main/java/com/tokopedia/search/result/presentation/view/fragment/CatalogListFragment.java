@@ -377,14 +377,9 @@ public class CatalogListFragment extends SearchSectionFragment implements
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        try {
-            super.onRestoreInstanceState(savedInstanceState);
-            catalogAdapter.onRestoreInstanceState(savedInstanceState);
-            setShareUrl(savedInstanceState.getString(EXTRA_SHARE_URL));
-        }
-        catch (Exception e) {
-
-        }
+        super.onRestoreInstanceState(savedInstanceState);
+        catalogAdapter.onRestoreInstanceState(savedInstanceState);
+        setShareUrl(savedInstanceState.getString(EXTRA_SHARE_URL));
     }
 
     @Override
