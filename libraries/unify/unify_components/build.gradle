@@ -58,5 +58,5 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
 
-    implementation rootProject.ext.libraries.unifyPrinciples
+    implementation rootProject.ext.unifyDependencies.principles
 }

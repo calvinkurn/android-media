@@ -136,8 +136,8 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
         super.configView(parentView)
         parentView?.findViewById<View>(R.id.layout_title)?.setOnClickListener(null)
         parentView?.findViewById<View>(R.id.btn_close)?.setOnClickListener {
-            onCloseButtonClick()
             AddNewAddressAnalytics.eventClickBackArrowOnNegativePage()
+            onCloseButtonClick()
         }
     }
 
@@ -147,6 +147,8 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
     }
 
     private fun setViewListener(staticDimen8dp: Int?) {
+        etSearch.isFocusableInTouchMode = true
+        etSearch.requestFocus()
         etSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int,
                                            after: Int) {
