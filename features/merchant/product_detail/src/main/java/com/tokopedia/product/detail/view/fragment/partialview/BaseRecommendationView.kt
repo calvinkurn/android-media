@@ -33,7 +33,6 @@ abstract class BaseRecommendationView(context: Context) : View(context) {
             else {
                 getLayoutTitle().text = product.title
                 initAdapter(product)
-                getRecyclerView().visible()
                 visible()
             }
         }
@@ -51,7 +50,7 @@ abstract class BaseRecommendationView(context: Context) : View(context) {
             getView().base_recom_4 -> pageName = PDP_4
         }
         getRecyclerView().adapter = RecommendationProductAdapter(product, getListener(), pageName)
-
+        getRecyclerView().visible()
     }
 
     fun startLoading() {

@@ -36,11 +36,11 @@ class RecommendationProductAdapter(private var product: RecommendationWidget,
         }
 
         override fun onImpressionTopAds(item: RecommendationItem) {
-            productDetailTracking.eventRecommendationImpression(adapterPosition, item, userActiveListener.isUserSessionActive)
+            productDetailTracking.eventRecommendationImpression(adapterPosition, item, userActiveListener.isUserSessionActive, pageName)
         }
 
         override fun onImpressionOrganic(item: RecommendationItem) {
-            productDetailTracking.eventRecommendationImpression(adapterPosition, item, userActiveListener.isUserSessionActive)
+            productDetailTracking.eventRecommendationImpression(adapterPosition, item, userActiveListener.isUserSessionActive, pageName)
         }
 
         override fun onClickTopAds(item: RecommendationItem) {
