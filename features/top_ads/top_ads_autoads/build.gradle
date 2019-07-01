@@ -1,6 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
@@ -14,12 +12,6 @@ buildscript {
     }
 }
 
-android {
-    dataBinding {
-        enabled = true
-    }
-}
-
 project.ext {
     artifactId = 'top_ads_autoads'
     groupId = 'com.tokopedia.topads.auto'
@@ -28,8 +20,6 @@ project.ext {
 }
 
 dependencies {
-
-    final ARCHITECTURE_COMPONENT_VERSION = '1.1.1'
 
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.applink)
@@ -48,17 +38,13 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
 
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     kapt rootProject.ext.miscDependencies.daggerCompiler
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
-    implementation "android.arch.lifecycle:extensions:$ARCHITECTURE_COMPONENT_VERSION"
-    implementation "android.arch.lifecycle:common-java8:$ARCHITECTURE_COMPONENT_VERSION"
-    implementation "android.arch.lifecycle:reactivestreams:$ARCHITECTURE_COMPONENT_VERSION"
-    annotationProcessor "android.arch.lifecycle:compiler:$ARCHITECTURE_COMPONENT_VERSION"
+    annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
 
 apply from: '../../../publish_local.gradle'
