@@ -504,6 +504,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#ae31353b"
+            android:visibility="gone"
             android:elevation="@dimen/dp_3"/>
 
         <LinearLayout

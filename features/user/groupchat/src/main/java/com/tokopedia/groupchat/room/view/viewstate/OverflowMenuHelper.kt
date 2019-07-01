@@ -72,7 +72,6 @@ class OverflowMenuHelper(
         var videoQualityText = String.format(getStringResource(R.string.menu_video_quality), 480)
         var changeVideoQualityListener:() -> Unit = {createVideoQualityMenu()}
         list.add(OverflowMenuButtonViewModel(videoQualityText, changeVideoQualityListener, R.drawable.ic_menu_quality_video))
-
         list.add(OverflowMenuButtonViewModel(getStringResource(R.string.menu_hide_video), infoClickListener, R.drawable.ic_menu_hide_video))
 
         menuAdapter.setDataList(list)
