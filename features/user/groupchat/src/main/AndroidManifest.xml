@@ -30,7 +30,7 @@
         <activity
             android:name=".room.view.activity.TestActivity"
             android:label="@string/activity_channel"
-            android:windowSoftInputMode="adjustResize"
+            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait"/>
 
         <activity
