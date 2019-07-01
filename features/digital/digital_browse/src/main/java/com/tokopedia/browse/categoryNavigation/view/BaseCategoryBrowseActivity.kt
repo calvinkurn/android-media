@@ -19,6 +19,7 @@ import com.tokopedia.browse.categoryNavigation.analytics.CategoryAnalytics
 import com.tokopedia.browse.categoryNavigation.fragments.CategoryLevelTwoFragment
 import com.tokopedia.browse.categoryNavigation.fragments.CategorylevelOneFragment
 import com.tokopedia.browse.categoryNavigation.fragments.Listener
+import com.tokopedia.browse.homepage.presentation.activity.DigitalBrowseHomeActivity
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey.APP_CATEGORY_BROWSE_V1
 import kotlinx.android.synthetic.main.activity_category_browse.*
@@ -37,9 +38,20 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
     private var deepLinkCategoryName: String? = null
 
     private var TOOLBAR_NAME = "Belanja"
+    val EXTRA_CATEGORY_NAME = "CATEGORY_NAME"
 
 
     companion object {
+        @JvmStatic
+        fun newIntent(context: Context, categoryName: String): Intent {
+            val intent = Intent(context, BaseCategoryBrowseActivity::class.java)
+            val bundle = Bundle()
+            bundle.putString(EXTRA_CATEGORY_NAME, categoryName)
+            intent.putExtras(bundle)
+            return intent
+        }
+        val EXTRA_CATEGORY_NAME = "CATEGORY_NAME"
+
         @JvmStatic
         fun newIntent(context: Context): Intent {
             return Intent(context, BaseCategoryBrowseActivity::class.java)
@@ -57,11 +69,23 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
 
 
     object DeepLinkIntents {
+        val EXTRA_CATEGORY_NAME = "CATEGORY_NAME"
+        val EXTRA_TYPE = "type"
+        val TYPE_BELANJA = "1"
 
         @DeepLink(ApplinkConst.CATEGORY_BELANJA)
         @JvmStatic
-        fun getCtegoryBrowseIntent(context: Context): Intent {
-            return newIntent(context)
+        fun getCtegoryBrowseIntent(context: Context, bundle: Bundle): Intent {
+            if(isNewCategoryEnabled(context)){
+                val deepLinkCategoryName = bundle.getString(EXTRA_CATEGORY_NAME, "0")
+                return newIntent(context, deepLinkCategoryName)
+            }else{
+                val intent = Intent(context, DigitalBrowseHomeActivity::class.java)
+                intent.putExtra(EXTRA_TYPE,TYPE_BELANJA)
+                return intent
+            }
+
+
         }
 
     }
@@ -73,6 +97,9 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        if (intent != null && intent.extras != null && intent.extras.containsKey(EXTRA_CATEGORY_NAME)) {
+            deepLinkCategoryName = intent?.extras?.getString(EXTRA_CATEGORY_NAME)
+        }
         super.onCreate(savedInstanceState)
         setupToolbar(TOOLBAR_NAME)
     }
