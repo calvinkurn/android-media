@@ -25,10 +25,7 @@ import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
-import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.BasePresenterFragmentV4;
 import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -38,9 +35,6 @@ import com.tokopedia.core.share.presenter.ProductSharePresenter;
 import com.tokopedia.core.share.presenter.ProductSharePresenterImpl;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.linker.model.LinkerData;
-
-import butterknife.BindView;
-import butterknife.OnClick;
 
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.IS_ADDING_PRODUCT;
 
@@ -52,52 +46,23 @@ public class ProductShareFragment extends BasePresenterFragmentV4<ProductSharePr
     public static final String TAG = "ProductShareFragment";
     private static final String ARGS_SHARE_DATA = "ARGS_SHARE_DATA";
 
-
     private LinkerData shareData;
-    @BindView(R2.id.text_line)
     TextView tvTitle;
-
-    @BindView(R2.id.image_error)
     ImageView errorImage;
-
-    @BindView(R2.id.progress_bar)
     ProgressBar progressBar;
-
-    @BindView(R2.id.loading_add_product)
     TextView loadingAddProduct;
-
-    @BindView(R2.id.bbm_share)
     TextView bbmShare;
-
-    @BindView(R2.id.whatsapp_share)
     TextView whatsappShare;
-
-    @BindView(R2.id.line_share)
     TextView lineShare;
-
-    @BindView(R2.id.instagram_share)
     TextView instagramShare;
-
-    @BindView(R2.id.facebook_share)
     TextView facebookShare;
-
-    @BindView(R2.id.twitter_share)
     TextView twitterShare;
-
-    @BindView(R2.id.pinterest_share)
     TextView pinterestShare;
-
-    @BindView(R2.id.google_plus_share)
     TextView gplusShare;
-
-    @BindView(R2.id.copy_url)
     TextView copyUrl;
-
-    @BindView(R2.id.more_share)
     TextView moreShare;
-
-    @BindView(R2.id.text_subtitle)
     TextView subtitle;
+
     private BroadcastReceiver addProductReceiver;
     private boolean isAdding = false;
     private CallbackManager callbackManager;
@@ -180,6 +145,94 @@ public class ProductShareFragment extends BasePresenterFragmentV4<ProductSharePr
 
     @Override
     protected void initView(View view) {
+        tvTitle = (TextView) view.findViewById(R.id.text_line);
+        errorImage = (ImageView) view.findViewById(R.id.image_error);
+        progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
+        loadingAddProduct =(TextView) view.findViewById(R.id.loading_add_product);
+        bbmShare = (TextView) view.findViewById(R.id.bbm_share);
+        whatsappShare = (TextView) view.findViewById(R.id.whatsapp_share);
+        lineShare = (TextView) view.findViewById(R.id.line_share);
+        instagramShare = (TextView) view.findViewById(R.id.instagram_share);
+        facebookShare = (TextView) view.findViewById(R.id.facebook_share);
+        twitterShare = (TextView) view.findViewById(R.id.twitter_share);
+        pinterestShare = (TextView) view.findViewById(R.id.pinterest_share);
+        gplusShare = (TextView) view.findViewById(R.id.google_plus_share)
+        copyUrl = (TextView) view.findViewById(R.id.copy_url);
+        moreShare = (TextView) view.findViewById(R.id.more_share);
+        subtitle = (TextView) view.findViewById(R.id.text_subtitle);
+
+
+        bbmShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.shareBBM(shareData);
+            }
+        });
+
+        whatsappShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.shareWhatsApp(shareData);
+            }
+        });
+
+        lineShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.shareLine(shareData);
+            }
+        });
+
+        instagramShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.shareInstagram(shareData);
+            }
+        });
+
+        facebookShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.shareFb(shareData);
+            }
+        });
+
+        twitterShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.shareTwitter(shareData);
+            }
+        });
+
+        pinterestShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.sharePinterest(shareData);
+            }
+        });
+
+        gplusShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.shareGPlus(shareData);
+            }
+        });
+
+        copyUrl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.shareCopy(shareData);
+            }
+        });
+
+        moreShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.shareMore(shareData);
+            }
+        });
+
+
         getActivity().invalidateOptionsMenu();
         progressBar.setVisibility(View.GONE);
         loadingAddProduct.setVisibility(View.GONE);
@@ -346,57 +399,6 @@ public class ProductShareFragment extends BasePresenterFragmentV4<ProductSharePr
     public void onDestroy() {
         super.onDestroy();
     }
-
-    @OnClick(R2.id.bbm_share)
-    void shareBBM() {
-        presenter.shareBBM(shareData);
-    }
-
-    @OnClick(R2.id.whatsapp_share)
-    void shareWhatsApp() {
-        presenter.shareWhatsApp(shareData);
-    }
-
-    @OnClick(R2.id.line_share)
-    void shareLine() {
-        presenter.shareLine(shareData);
-    }
-
-    @OnClick(R2.id.instagram_share)
-    void shareInstagram() {
-        presenter.shareInstagram(shareData);
-    }
-
-    @OnClick(R2.id.facebook_share)
-    void shareFb() {
-        presenter.shareFb(shareData);
-    }
-
-    @OnClick(R2.id.twitter_share)
-    void shareTwitter() {
-        presenter.shareTwitter(shareData);
-    }
-
-    @OnClick(R2.id.pinterest_share)
-    void sharePinterest() {
-        presenter.sharePinterest(shareData);
-    }
-
-    @OnClick(R2.id.google_plus_share)
-    void shareGPlus() {
-        presenter.shareGPlus(shareData);
-    }
-
-    @OnClick(R2.id.copy_url)
-    void shareCopy() {
-        presenter.shareCopy(shareData);
-    }
-
-    @OnClick(R2.id.more_share)
-    void shareMore() {
-        presenter.shareMore(shareData);
-    }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
