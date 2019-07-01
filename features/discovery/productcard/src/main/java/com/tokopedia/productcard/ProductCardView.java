@@ -74,6 +74,8 @@ public class ProductCardView extends BaseCustomView {
         wishlistButton = view.findViewById(R.id.btn_wishlist);
         ratingView = view.findViewById(R.id.rating);
         reviewCountView = view.findViewById(R.id.review_count);
+        badgeView = view.findViewById(R.id.badge);
+        textLocation = view.findViewById(R.id.location);
     }
 
     public void setTitle(String title) {
