@@ -127,6 +127,7 @@ import model.TradeInParams
 import view.customview.TradeInTextView
 import viewmodel.TradeInBroadcastReceiver
 import javax.inject.Inject
+import com.tokopedia.discovery.common.manager.AdultManager
 
 class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter.UserActiveListener {
     private var productId: String? = null
@@ -860,6 +861,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (activity != null) {
+            AdultManager.handleActivityResult(activity!!, requestCode, resultCode, data)
+        }
         when (requestCode) {
             REQUEST_CODE_ETALASE -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
@@ -952,23 +956,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             }
             REQUEST_CODE_LOGIN_THEN_BUY_EXPRESS -> {
                 doBuy()
-            }
-            ApplinkConstInternalCategory.AGE_RESTRICTION_REQUEST_CODE -> {
-                if (resultCode == Activity.RESULT_OK) {
-//Todo something here
-                } else if (resultCode == ApplinkConstInternalCategory.RESULT_CODE_DOB_VERIFICATION_SUCCESS) {
-                    val message = data?.getStringExtra(ApplinkConstInternalCategory.PARAM_EXTRA_SUCCESS)
-                    message?.let {
-                        activity?.let { it1 ->
-                            Toaster.showNormalWithAction(it1,
-                                    it,
-                                    Snackbar.LENGTH_INDEFINITE,
-                                    getString(R.string.general_label_ok), View.OnClickListener { })
-                        }
-                    }
-                } else {
-                    activity?.finish()
-                }
             }
             else ->
                 super.onActivityResult(requestCode, resultCode, data)
@@ -1276,13 +1263,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
 
         if (data.category.isAdult) {
-            val intent = Intent()
-            activity?.let {
-                val intent = RouteManager.getIntent(activity, ApplinkConstInternalCategory.AGE_RESTRICTION)
-                intent.putExtra("ORIGIN",2)
-                intent.putExtra("DESTINATION_GTM", productInfoP1.productInfo.category.id)
-                startActivityForResult(intent, ApplinkConstInternalCategory.AGE_RESTRICTION_REQUEST_CODE)
-            }
+            AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_PDP, productId ?: "")
         }
 
         var isHandPhone = false
