@@ -368,8 +368,6 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
         swipeRefreshLayout.setRefreshing(false);
         hideSnackBarRetry();
-
-       // setShopInfoToLabelFragment(shopModel.info);
         shopPowerMerchantPopup(shopStatusModel);
     }
 
@@ -422,15 +420,6 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     }
 
 
-    public void setShopInfoToLabelFragment(Info shopInfo) {
-      /*  MitraToppersPreApproveLabelFragment mitraToppersPreApproveLabelFragment =
-                (MitraToppersPreApproveLabelFragment) getChildFragmentManager()
-                        .findFragmentById(R.id.fragment_preapprove_label);
-        if (mitraToppersPreApproveLabelFragment != null) {
-            mitraToppersPreApproveLabelFragment.setUserInfo(shopInfo.isOfficialStore(),
-                    shopInfo.isGoldMerchant());
-        }*/
-    }
 
     private void updateReputation(final ShopModel shopModel) {
         reputationLabelLayout.setOnClickListener(new View.OnClickListener() {
