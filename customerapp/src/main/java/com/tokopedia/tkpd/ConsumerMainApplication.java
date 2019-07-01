@@ -68,6 +68,7 @@ import com.tokopedia.imageuploader.data.ImageUploaderUrl;
 import com.tokopedia.inbox.rescenter.network.ResolutionUrl;
 import com.tokopedia.instantloan.network.InstantLoanUrl;
 import com.tokopedia.kol.common.network.KolUrl;
+import com.tokopedia.logger.LogWrapper;
 import com.tokopedia.loginregister.common.data.LoginRegisterUrl;
 import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
 import com.tokopedia.logout.data.LogoutUrl;
@@ -93,6 +94,7 @@ import com.tokopedia.talk.common.data.TalkUrl;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
+import com.tokopedia.tkpd.timber.TimberWrapper;
 import com.tokopedia.tkpd.utils.CacheApiWhiteList;
 import com.tokopedia.tkpd.utils.CustomPushListener;
 import com.tokopedia.tkpdreactnative.react.fingerprint.utils.FingerprintConstantRegister;
@@ -192,6 +194,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             callback = new CharacterPerMinuteActivityLifecycleCallbacks(this);
         }
         registerActivityLifecycleCallbacks(callback);
+
+        LogWrapper.init(this);
+        TimberWrapper.init(this);
     }
 
     CharacterPerMinuteActivityLifecycleCallbacks callback;

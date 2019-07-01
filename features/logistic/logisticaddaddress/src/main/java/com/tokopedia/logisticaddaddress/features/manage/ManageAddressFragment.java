@@ -33,6 +33,7 @@ import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressFragment;
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity;
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 
 import java.util.List;
 
@@ -52,9 +53,12 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
     private static final String DEFAULT_QUERY_VALUE = "";
 
     private static final String FIREBASE_PERFORMANCE_MONITORING_TRACE_MP_ADDRESS_LIST = "mp_address_list";
+    private static final String ENABLE_ADD_NEW_ADDRESS_KEY = "android_customer_enable_add_new_address";
 
     private boolean IS_EMPTY_ADDRESS = false;
     private MPAddressActivityListener mActivityListener;
+
+    private FirebaseRemoteConfigImpl remoteConfig;
 
     @Inject
     ManageAddressContract.Presenter mPresenter;
@@ -102,6 +106,7 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
         setHasOptionsMenu(true);
         mActivityListener = (MPAddressActivityListener) getActivity();
         performanceMonitoring.startTrace(FIREBASE_PERFORMANCE_MONITORING_TRACE_MP_ADDRESS_LIST);
+        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
     }
 
     @Override
@@ -198,26 +203,24 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
     public void openFormAddressView(AddressModel data) {
         Token token = mPresenter.getToken();
         if (data == null) {
-            /*startActivityForResult(
+            if (isAddNewAddressEnabled()) {
+                startActivityForResult(PinpointMapActivity.newInstance(getActivity(),
+                        AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
+                        false, 0, false, false, null,
+                        false), REQUEST_CODE_PARAM_CREATE);
+
+            } else {
+                startActivityForResult(
                     AddAddressActivity.createInstanceAddAddressFromManageAddressWhenDefaultAddressIsEmpty(
                             getActivity(), token
-                    ), REQUEST_CODE_PARAM_CREATE);*/
-
-            startActivityForResult(PinpointMapActivity.Companion.newInstance(getActivity(),
-                    AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, token,
-                    false, 0, false, null,
-                    false), REQUEST_CODE_PARAM_CREATE);
+                    ), REQUEST_CODE_PARAM_CREATE);
+            }
 
         } else {
-            /*startActivityForResult(
-                    AddAddressActivity.createInstanceEditAddressFromManageAddress(
-                            getActivity(), data, token
-                    ), REQUEST_CODE_PARAM_EDIT);*/
-
-            startActivityForResult(PinpointMapActivity.Companion.newInstance(getActivity(),
-                    AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, token,
-                    false, 0, false, null,
-                    false), REQUEST_CODE_PARAM_EDIT);
+            startActivityForResult(
+                AddAddressActivity.createInstanceEditAddressFromManageAddress(
+                        getActivity(), data, token
+                ), REQUEST_CODE_PARAM_EDIT);
         }
     }
 
@@ -268,6 +271,10 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
     @Override
     public void stopPerformanceMonitoring() {
         performanceMonitoring.stopTrace();
+    }
+
+    public boolean isAddNewAddressEnabled() {
+        return remoteConfig.getBoolean(ENABLE_ADD_NEW_ADDRESS_KEY, true);
     }
 
 }

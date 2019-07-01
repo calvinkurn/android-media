@@ -30,7 +30,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation rootProject.ext.libraries.unifyIcon
     implementation project(rootProject.ext.libraries.kotlinExtensions)
 
     implementation rootProject.ext.miscDependencies.multiDex
@@ -58,6 +57,8 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockitorCore
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+
+    implementation rootProject.ext.unifyDependencies.icon
 }
 
 apply from: '../../../publish_local.gradle'
