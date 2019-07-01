@@ -13,7 +13,6 @@ import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
 import android.graphics.Color;
 import android.graphics.drawable.Icon;
-import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -228,9 +227,9 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         try {
-           super.onRestoreInstanceState(savedInstanceState);
+            super.onRestoreInstanceState(savedInstanceState);
         } catch (Exception e) {
-           reloadPage();
+            reloadPage();
         }
     }
 
@@ -272,7 +271,7 @@ public class MainParentActivity extends BaseActivity implements
             switch (tabPosition) {
                 case FEED_MENU:
                     bottomNavigation.getMenu().findItem(R.id.menu_feed).setChecked(true);
-                    startActivity(HotelHomepageActivity.Companion.getCallingIntent(this));
+                    onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_feed));
                     break;
                 case ACCOUNT_MENU:
                     bottomNavigation.getMenu().findItem(R.id.menu_account).setChecked(true);
@@ -340,9 +339,6 @@ public class MainParentActivity extends BaseActivity implements
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-//        startActivity(HotelHomepageActivity.Companion.getCallingIntent(this));
-//        return false;
-
         int position = getPositionFragmentByMenu(item);
         if (!isFirstNavigationImpression) {
             globalNavAnalytics.eventBottomNavigation(item.getTitle().toString()); // push analytics
@@ -355,7 +351,7 @@ public class MainParentActivity extends BaseActivity implements
         }
 
         if (position == OS_MENU && !isNewOfficialStoreEnabled()) {
-            startActivity(HotelHomepageActivity.Companion.getCallingIntent(this));
+            startActivity(((GlobalNavRouter) getApplication()).getOldOfficialStore(this));
             return false;
         }
 
