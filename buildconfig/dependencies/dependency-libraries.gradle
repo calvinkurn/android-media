@@ -19,10 +19,6 @@ ext {
     tkpdBaseAdapterlVersion = '2.22'
     tkpdGraphViewVersion = '2.22'
 
-    unifyIconVersion = '0.0.2'
-    unifyPrinciplesVersion = '0.0.1'
-    unifyComponentsVersion = '0.0.3'
-
     // Sort alphabetically by package name
     tkpdInternalLibDependencies = [
             abstraction           : "com.tokopedia.abstraction:abstraction:${tkpdAbstractionVersion}",
@@ -46,7 +42,6 @@ ext {
             baseListSeller    : ":libraries:base_list_seller",
             bottomSheetBuilder: ":libraries:bottom_sheet_builder",
             cacheApi          : ":libraries:cache_api",
-            cameraView        : ":libraries:camera_view",
             cameraview        : ":libraries:cameraview",
             cmnotification    :":libraries:cm_push_notifications",
             commonNetwork     : ":libraries:common_network",
@@ -62,6 +57,7 @@ ext {
             kotlinExtensions  : ":libraries:kotlin_extensions",
             linker            : ":libraries:linker",
             locationmanager   : ":libraries:locationmanager",
+            logger            : ":libraries:logger",
             network           : ":libraries:network",
             omsApi            : ":libraries:oms",
             pagination        : ":libraries:pagination",
@@ -89,10 +85,6 @@ ext {
 //            iris              : ":libraries:iris_no_op",
             cpm              : ":libraries:cpm",
             banner            : ":libraries:unify:unify_compositions:banner",
-            collapsingTabLayout: ":libraries:collapsing_tab_layout",
-            unifyIcon         : "com.tokopedia.unify:icon:${unifyIconVersion}@aar",
-            unifyPrinciples   : "com.tokopedia.unify:principles:${unifyPrinciplesVersion}@aar",
-            unifyComponents   : "com.tokopedia.unify:components:${unifyComponentsVersion}@aar",
-            coachMark         : ":libraries:unify:unify_compositions:coach_mark"
+            collapsingTabLayout: ":libraries:collapsing_tab_layout"
     ]
 }
