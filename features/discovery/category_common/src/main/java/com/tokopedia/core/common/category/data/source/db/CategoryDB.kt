@@ -28,7 +28,7 @@ abstract class CategoryDB : RoomDatabase(){
                     .build()
         }
 
-        private val migration_15_16 = object : Migration(15, DBMetaData.DB_VERSION) {
+        private val migration_15_16 = object : Migration(DBMetaData.DB_OLD_VERSION, DBMetaData.DB_VERSION) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL("CREATE TABLE ${DBMetaData.DB_TABLE}2(" +
                         "id INTEGER PRIMARY KEY," +

@@ -30,7 +30,7 @@ abstract class ProductDraftDB : RoomDatabase(){
                     .build()
         }
 
-        private val migration_6_7 = object : Migration(6, DBMetaData.DB_VERSION) {
+        private val migration_6_7 = object : Migration(DBMetaData.DB_OLD_VERSION, DBMetaData.DB_VERSION) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL("CREATE TABLE ${DBMetaData.DB_TABLE}2(" +
                         "id INTEGER PRIMARY KEY," +
