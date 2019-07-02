@@ -2,8 +2,10 @@ package com.tokopedia.gm.common.utils
 
 import com.tokopedia.gm.common.constant.GMParamTracker
 import com.tokopedia.track.TrackApp
+import javax.inject.Inject
 
-class PowerMerchantTracking {
+
+class PowerMerchantTracking @Inject constructor() {
 
     fun eventUpgradeShopHome() {
         TrackApp.getInstance()?.gtm?.sendGeneralEvent(
