@@ -81,7 +81,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_2"
             android:layout_marginEnd="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
             android:ellipsize="end"
@@ -115,17 +115,17 @@
             android:id="@+id/textViewSlashedPrice"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
-            android:layout_marginLeft="@dimen/dp_4"
             android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:gravity="center_vertical"
             android:textColor="@color/product_card_slashed_price_text_color"
             android:visibility="gone"
-            android:gravity="center_vertical"
             app:layout_constraintBottom_toBottomOf="@id/labelDiscount"
             app:layout_constraintStart_toEndOf="@id/labelDiscount"
             app:layout_constraintTop_toTopOf="@id/labelDiscount"
             app:typographyType="small"
             tools:text="95000"
-            tools:visibility="visible"/>
+            tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewPrice"
@@ -188,8 +188,8 @@
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="@id/imageProduct"
             app:layout_constraintTop_toBottomOf="@id/textViewShopLocation"
-            tools:background="@drawable/ic_star_five"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            tools:background="@drawable/ic_star_five" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewReviewCount"
@@ -244,6 +244,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/product_card_ic_topads"
             tools:visibility="visible" />
+
     </android.support.constraint.ConstraintLayout>
 
 </android.support.v7.widget.CardView>
