@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.analytics.debugger.GtmLogger;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.config.url.Env;
 import com.tokopedia.config.url.TokopediaUrl;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -82,14 +83,17 @@ public class DeveloperOptionActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_developer_options);
+        if(GlobalConfig.isAllowDebuggingTools()) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_developer_options);
 
-        userSession = new UserSession(this);
+            userSession = new UserSession(this);
 
-        setupView();
-        initListener();
-
+            setupView();
+            initListener();
+        } else {
+            finish();
+        }
     }
 
     private void setupView() {
