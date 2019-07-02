@@ -41,7 +41,7 @@ abstract class ProductItemViewHolder(
         initSlashedPriceSection(productItem)
         initPriceTextView(productItem)
 //        initShopBadge(productItem)
-//        initLocationTextView(productItem)
+        initLocationTextView(productItem)
         initCredibilitySection(productItem)
         initOffersLabel(productItem)
         initTopAdsIcon(productItem)
