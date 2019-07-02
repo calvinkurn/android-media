@@ -156,7 +156,6 @@ class ChooseTokocashAccountFragment : BaseDaggerFragment(), ChooseTokocashAccoun
     private fun getDraw(context: Context?): Drawable {
         val drawable = TextDrawable(context!!)
         drawable.text = resources.getString(R.string.action_logout)
-        drawable.setTextColor(R.color.black_drawable)
         return drawable
     }
 
