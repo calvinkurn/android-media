@@ -40,10 +40,7 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
         final int absolutePos = parent.getChildAdapterPosition(view);
 
         if (isProductItem(parent, absolutePos)) {
-            int firstProductItemPos = absolutePos;
-            while (isProductItem(parent, firstProductItemPos - 1)) firstProductItemPos--;
-            int relativePos = absolutePos - firstProductItemPos;
-
+            final int relativePos = getProductItemRelativePosition(parent, view);
             final int totalSpanCount = getTotalSpanCount(parent);
 
             outRect.top = isTopProductItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : spacing / 2;
@@ -51,6 +48,28 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
             outRect.right = isLastInRow(relativePos, totalSpanCount) ? spacing : spacing / 2;
             outRect.bottom = isBottomProductItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : spacing / 2;
         }
+    }
+
+    private int getProductItemRelativePosition(RecyclerView parent, View view) {
+        if(view.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
+            return getProductItemRelativePositionStaggeredGrid(view);
+        }
+
+        return getProductItemRelativePositionNotStaggeredGrid(parent, view);
+    }
+
+    private int getProductItemRelativePositionStaggeredGrid(View view) {
+        StaggeredGridLayoutManager.LayoutParams staggeredGridLayoutParams =
+                (StaggeredGridLayoutManager.LayoutParams) view.getLayoutParams();
+
+        return staggeredGridLayoutParams.getSpanIndex();
+    }
+
+    private int getProductItemRelativePositionNotStaggeredGrid(RecyclerView parent, View view) {
+        int absolutePos = parent.getChildAdapterPosition(view);
+        int firstProductItemPos = absolutePos;
+        while (isProductItem(parent, firstProductItemPos - 1)) firstProductItemPos--;
+        return absolutePos - firstProductItemPos;
     }
 
     private boolean isTopProductItem(RecyclerView parent, int absolutePos, int relativePos, int totalSpanCount) {
@@ -66,7 +85,7 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     private boolean isLastInRow(int relativePos, int spanCount) {
-        return isFirstInRow(relativePos + 1, spanCount);
+        return relativePos % spanCount == spanCount - 1;
     }
 
     private int getTotalSpanCount(RecyclerView parent) {
