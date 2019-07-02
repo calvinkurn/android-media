@@ -35,12 +35,15 @@ import kotlinx.android.synthetic.main.fragment_hotel_homepage.*
 import java.util.*
 import javax.inject.Inject
 import android.support.v7.widget.RecyclerView
+import android.util.Log
+import com.tokopedia.hotel.homepage.presentation.widget.HotelCalendarDialog
 
 /**
  * @author by furqan on 28/03/19
  */
 class HotelHomepageFragment : HotelBaseFragment(),
-        HotelRoomAndGuestBottomSheets.HotelGuestListener, HotelPromoAdapter.PromoClickListener {
+        HotelRoomAndGuestBottomSheets.HotelGuestListener,
+        HotelPromoAdapter.PromoClickListener{
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -181,60 +184,12 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun configAndRenderCheckInDate() {
-        val minDate = TravelDateUtil.removeTime(TravelDateUtil.addTimeToSpesificDate(
-                TravelDateUtil.getCurrentCalendar().time, Calendar.DATE, 1))
-
-        val maxDate = TravelDateUtil.addTimeToSpesificDate(TravelDateUtil.getCurrentCalendar().time,
-                Calendar.YEAR, 1)
-        val maxDateCalendar = TravelDateUtil.getCurrentCalendar()
-        maxDateCalendar.time = maxDate
-        maxDateCalendar.set(Calendar.HOUR_OF_DAY, DEFAULT_LAST_HOUR_IN_DAY)
-        maxDateCalendar.set(Calendar.MINUTE, DEFAULT_LAST_MIN_SEC_IN_DAY)
-        maxDateCalendar.set(Calendar.SECOND, DEFAULT_LAST_MIN_SEC_IN_DAY)
-
-        val selectedDate = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkInDate)
-
-        renderTravelCalendar(selectedDate, minDate, maxDateCalendar.time, getString(R.string.hotel_check_in_calendar_title), TAG_CALENDAR_CHECK_IN)
+        openCalendarDialog()
     }
 
     private fun configAndRenderCheckOutDate() {
-        val minDate = TravelDateUtil.addTimeToSpesificDate(TravelDateUtil.stringToDate(
-                TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkInDate), Calendar.DATE, 1)
-
-        val maxDate = TravelDateUtil.addTimeToSpesificDate(TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD,
-                hotelHomepageModel.checkInDate), Calendar.DATE, MAX_SELECTION_DATE)
-        val maxDateCalendar = TravelDateUtil.getCurrentCalendar()
-        maxDateCalendar.time = maxDate
-        maxDateCalendar.set(Calendar.HOUR_OF_DAY, DEFAULT_LAST_HOUR_IN_DAY)
-        maxDateCalendar.set(Calendar.MINUTE, DEFAULT_LAST_MIN_SEC_IN_DAY)
-        maxDateCalendar.set(Calendar.SECOND, DEFAULT_LAST_MIN_SEC_IN_DAY)
-
-        val selectedDate = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate)
-
-        renderTravelCalendar(selectedDate, minDate, maxDateCalendar.time, getString(R.string.hotel_check_out_calendar_title), TAG_CALENDAR_CHECK_OUT)
-    }
-
-    private fun renderTravelCalendar(selectedDate: Date, minDate: Date, maxDate: Date, title: String, calendarTag: String) {
-        val travelCalendarBottomSheet = TravelCalendarBottomSheet.Builder()
-                .setMinDate(minDate)
-                .setMaxDate(maxDate)
-                .setSelectedDate(selectedDate)
-                .setShowHoliday(true)
-                .setTitle(title)
-                .build()
-        travelCalendarBottomSheet.setListener(object : TravelCalendarBottomSheet.ActionListener {
-            override fun onClickDate(dateSelected: Date) {
-                val calendarSelected = Calendar.getInstance()
-                calendarSelected.time = dateSelected
-                if (calendarTag == TAG_CALENDAR_CHECK_IN) {
-                    onCheckInDateChanged(dateSelected)
-                    configAndRenderCheckOutDate()
-                } else if (calendarTag == TAG_CALENDAR_CHECK_OUT) {
-                    onCheckOutDateChanged(dateSelected)
-                }
-            }
-        })
-        travelCalendarBottomSheet.show(activity!!.supportFragmentManager, calendarTag)
+        openCalendarDialog(TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD,
+                hotelHomepageModel.checkInDate))
     }
 
     private fun onGuestInfoClicked() {
@@ -354,6 +309,19 @@ class HotelHomepageFragment : HotelBaseFragment(),
         })
     }
 
+    private fun openCalendarDialog(selectedDate: Date? = null) {
+        val hotelCalendarDialog = HotelCalendarDialog()
+        hotelCalendarDialog.listener = object : HotelCalendarDialog.OnDateClickListener{
+            override fun onDateClick(dateIn: Date, dateOut: Date) {
+                onCheckInDateChanged(dateIn)
+                onCheckOutDateChanged(dateOut)
+            }
+
+        }
+        hotelCalendarDialog.selectedDate = selectedDate
+        hotelCalendarDialog.show(fragmentManager, "test")
+    }
+
     private fun showPromoContainer() {
         hotel_container_promo.visibility = View.VISIBLE
     }
@@ -381,8 +349,6 @@ class HotelHomepageFragment : HotelBaseFragment(),
         const val EXTRA_PARAM_NAME = "param_name"
         const val EXTRA_PARAM_TYPE = "param_type"
 
-        const val TAG_CALENDAR_CHECK_IN = "calendarHotelCheckIn"
-        const val TAG_CALENDAR_CHECK_OUT = "calendarHotelCheckOut"
         const val TAG_GUEST_INFO = "guestHotelInfo"
 
         fun getInstance(): HotelHomepageFragment = HotelHomepageFragment()

@@ -54,9 +54,10 @@ dependencies {
     implementation project(rootProject.ext.libraries.locationmanager)
     implementation project(rootProject.ext.libraries.track)
 
-    implementation rootProject.ext.libraries.unifyIcon
-    implementation rootProject.ext.libraries.unifyComponents
-    implementation rootProject.ext.libraries.unifyPrinciples
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.calendar
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.icon
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
