@@ -379,10 +379,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
                 })
             }
 
-            et_detail_address?.setOnClickListener {
-                AddNewAddressAnalytics.eventClickFieldDetailAlamat()
-            }
-
             tv_title_getdistrict?.apply {
                 text = saveAddressDataModel.title
                 setOnClickListener {
