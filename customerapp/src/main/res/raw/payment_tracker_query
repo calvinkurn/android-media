@@ -1,15 +1,14 @@
 {
-  payment(payment_id:%s){
+  payment(payment_id:%1$s){
     payment_id
-    new_buyer_flag
     payment_ref_num
     fee_amount
     orders{
-    	order_id
-    	phone
-    	item_price
-    	is_fulfillment
-    	order_detail{
+        order_id
+        phone
+        item_price
+        is_fulfillment
+        order_detail{
             order_detail_id
             product{
                 category{
@@ -27,25 +26,25 @@
             product_price
             quantity
             subtotal_price
-    	}
-    	shop{
-    	    is_official
-    	    shop_id
-    	    shop_name
-    	}
-    	shipping{
-    	    shipping_id
-    	    shipping_name
-    	}
-    	shipping_price
+        }
+        shop{
+            is_official
+            shop_id
+            shop_name
+        }
+        shipping{
+            shipping_id
+            shipping_name
+        }
+        shipping_price
     }
     partial {
-    	amount
-    	gateway{
-      	  gateway_name
+        amount
+        gateway{
+            gateway_name
           gateway_img_url
           gateway_id
-      	}
+          }
     }
     payment_gateway {
         gateway_name
@@ -57,28 +56,28 @@
       method
       instant{
         gateway{
-      	  gateway_name
+            gateway_name
           gateway_img_url
           gateway_id
-      	}
+          }
       }
       transfer{
-      	destination_name
-      	destination_account
-      	source_account
-      	source_name
-      	gateway{
-      	  gateway_name
+          destination_name
+          destination_account
+          source_account
+          source_name
+          gateway{
+            gateway_name
           gateway_img_url
           gateway_id
-      	}
+          }
       }
       defer{
-      	gateway{
-      	  gateway_name
+          gateway{
+            gateway_name
           gateway_img_url
           gateway_id
-      	}
+          }
       }
     }
     payment_type{
@@ -111,4 +110,5 @@
       }
     }
   }
+  new_buyer_flag(customer_id:%2$s)
 }

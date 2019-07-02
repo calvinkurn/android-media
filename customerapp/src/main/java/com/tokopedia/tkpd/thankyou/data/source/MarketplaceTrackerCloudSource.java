@@ -49,7 +49,7 @@ public class MarketplaceTrackerCloudSource extends ThanksTrackerCloudSource {
     private String getRequestPayload() {
         return String.format(
                 loadRawString(context.getResources(), R.raw.payment_tracker_query),
-                requestParams.getString(ThanksTrackerConst.Key.ID, "0")
+                requestParams.getString(ThanksTrackerConst.Key.ID, "0"), sessionHandler.getLoginID()
         );
     }
 
