@@ -63,7 +63,7 @@
     <string name="af_add_video">Tambah Video</string>
     <string name="af_set_main_image">Tampilkan Pertama</string>
     <string name="af_main_image">Tampil Pertama</string>
-    <string name="af_caption_hint">Tulis caption, yuk!\nContoh: “Promo! Cek produk terbaru kami…”</string>
+    <string name="af_caption_hint">Tulis caption dengan #Hashtag</string>
     <string name="af_caption_hint_affiliate">Kenapa sih kamu suka barang ini?</string>
     <string name="af_related_product">Barang pada Post</string>
     <string name="af_add_product_tag">+ Tambah</string>
@@ -96,5 +96,9 @@
     <string name="af_share_product_buy">Bagikan dan raih Komisi saat produk terbeli</string>
     <string name="af_title_edit">Edit</string>
     <string name="af_duplicate_product">Barangnya udah ada di post kamu. Coba pilih yang lain ya.</string>
+    <string name="label_add_product">Masukan Barang</string>
+    <string name="label_add_sticker">Aa</string>
+    <string name="kol_action_share_to">Share ke:</string>
+    <string name="af_title_header_product_attachment">Barang di post ini</string>
 
 </resources>
