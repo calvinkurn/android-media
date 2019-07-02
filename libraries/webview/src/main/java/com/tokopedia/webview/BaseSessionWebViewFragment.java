@@ -3,10 +3,15 @@ package com.tokopedia.webview;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.webkit.WebView;
 
+import com.tokopedia.applink.DeepLinkChecker;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalOrderDetail;
 import com.tokopedia.network.utils.URLGenerator;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.webview.download.BaseDownloadAppLinkActivity;
 
 public class BaseSessionWebViewFragment extends BaseWebViewFragment {
     public static final String ARGS_URL = "arg_url";
@@ -61,6 +66,15 @@ public class BaseSessionWebViewFragment extends BaseWebViewFragment {
             return userSession.getAccessToken();
         }
         return null;
+    }
+
+    @Override
+    protected boolean shouldOverrideUrlLoading(WebView webView, String url) {
+        if(DeepLinkChecker.getDeepLinkType(getContext(),url) == DeepLinkChecker.ORDER_LIST) {
+            RouteManager.route(getContext(), ApplinkConstInternalOrderDetail.ORDER_LIST_URL,url);
+            return true;
+        }
+        return super.shouldOverrideUrlLoading(webView, url);
     }
 
     protected String getPlainUrl() {

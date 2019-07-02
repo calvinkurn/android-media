@@ -46,6 +46,7 @@ class GetDynamicFeedUseCase @Inject constructor(@ApplicationContext private val 
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
+        dynamicPostMapper.feedType = requestParams?.getString(PARAM_SOURCE,"") ?: ""
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map(dynamicPostMapper)
     }
 

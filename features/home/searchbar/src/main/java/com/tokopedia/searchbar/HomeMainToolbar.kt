@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
 import android.os.Build
+import android.support.graphics.drawable.VectorDrawableCompat
 import android.support.v4.content.ContextCompat
 import android.support.v4.graphics.drawable.DrawableCompat
 import android.text.TextUtils
@@ -31,17 +32,17 @@ class HomeMainToolbar : MainToolbar {
 
     private lateinit var inboxCrossfader: TransitionDrawable
 
-    lateinit var wishlistBitmapWhite: BitmapDrawable
+    lateinit var wishlistBitmapWhite: Drawable
 
-    lateinit var notifBitmapWhite: BitmapDrawable
+    lateinit var notifBitmapWhite: Drawable
 
-    lateinit var inboxBitmapWhite: BitmapDrawable
+    lateinit var inboxBitmapWhite: Drawable
 
-    lateinit var wishlistBitmapGrey: BitmapDrawable
+    lateinit var wishlistBitmapGrey: Drawable
 
-    lateinit var notifBitmapGrey: BitmapDrawable
+    lateinit var notifBitmapGrey: Drawable
 
-    lateinit var inboxBitmapGrey: BitmapDrawable
+    lateinit var inboxBitmapGrey: Drawable
 
     constructor(context: Context) : super(context) {}
 
@@ -137,9 +138,9 @@ class HomeMainToolbar : MainToolbar {
         }
     }
 
-    fun getBitmapDrawableFromVectorDrawable(context: Context, drawableId: Int): BitmapDrawable {
+    fun getBitmapDrawableFromVectorDrawable(context: Context, drawableId: Int): Drawable {
         return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            ContextCompat.getDrawable(context, drawableId) as BitmapDrawable
+            ContextCompat.getDrawable(context, drawableId) as Drawable
         } else BitmapDrawable(context.resources, getBitmapFromVectorDrawable(context, drawableId))
     }
 

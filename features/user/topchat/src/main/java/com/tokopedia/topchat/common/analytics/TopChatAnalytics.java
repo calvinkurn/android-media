@@ -315,15 +315,23 @@ public class TopChatAnalytics {
         ));
     }
 
-    public void eventClickBuyProductAttachment(String blastId, String productName, String productId, String productPrice, int quantity, String shopId, String shopName) {
+    public void eventClickBuyProductAttachment(
+            String blastId,
+            String productName,
+            String productId,
+            String productPrice,
+            int quantity,
+            String shopId,
+            String shopName
+    ) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT_NAME, Name.EVENT_NAME_ATC,
                 EVENT_CATEGORY, Category.CHAT_DETAIL,
                 EVENT_ACTION, Action.CLICK_BUY_PRODUCT_THUMBNAIL,
                 EVENT_LABEL, String.format("%s - %s", getField(blastId), String.valueOf(blastId)),
                 ECOMMERCE, DataLayer.mapOf("currencyCode", "IDR",
-                        "click", DataLayer.mapOf(
-                                "actionField", DataLayer.mapOf("list", String.format("/%s", getField(blastId))),
+                        "add", DataLayer.mapOf(
+                                "actionField", DataLayer.mapOf("list", "/chat"),
                                 "products", DataLayer.listOf(
                                         DataLayer.mapOf(
                                                 "name", productName,

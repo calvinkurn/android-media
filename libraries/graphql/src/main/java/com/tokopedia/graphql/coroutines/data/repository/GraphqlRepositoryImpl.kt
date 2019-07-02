@@ -12,6 +12,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.data.model.GraphqlResponseInternal
 import com.tokopedia.graphql.data.model.GraphqlError
+import timber.log.Timber
 import java.lang.reflect.Type
 import kotlin.Exception
 

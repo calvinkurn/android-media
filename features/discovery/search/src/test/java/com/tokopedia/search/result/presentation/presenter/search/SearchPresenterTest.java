@@ -75,26 +75,6 @@ public class SearchPresenterTest {
     }
 
     @Test
-    public void onPause_NotInjected_ShouldNotError() {
-        UseCase<InitiateSearchModel> initiateSearchModelUseCase = mock(MockInitiateSearchUseCase.class);
-
-        searchPresenter.onPause();
-
-        verify(initiateSearchModelUseCase, never()).execute(any(RequestParams.class), any(MockInitiateSearchSubscriber.class));
-    }
-
-    @Test
-    public void onPause_AfterInjectUseCase_ShouldUnsubscribeAnyUseCase() {
-        UseCase<InitiateSearchModel> initiateSearchModelUseCase = mock(MockInitiateSearchUseCase.class);
-        searchPresenterInjectDependencies(initiateSearchModelUseCase);
-        doNothing().when(initiateSearchModelUseCase).unsubscribe();
-
-        searchPresenter.onPause();
-
-        verify(initiateSearchModelUseCase).unsubscribe();
-    }
-
-    @Test
     public void initiateSearchNull_CallListenerHandleResponseError() {
         searchPresenterInjectDependencies(new TestUseCase<>(null));
 
@@ -201,12 +181,47 @@ public class SearchPresenterTest {
     }
 
     @Test
-    public void onResume() {
+    public void onPause_NotInjected_ShouldNotError() {
+        searchPresenter.onPause();
+    }
+
+    @Test
+    public void onPause_AfterInjectUseCase_ShouldUnsubscribeAnyUseCase() {
+        UseCase<InitiateSearchModel> initiateSearchModelUseCase = mock(MockInitiateSearchUseCase.class);
+        searchPresenterInjectDependencies(initiateSearchModelUseCase);
+        doNothing().when(initiateSearchModelUseCase).unsubscribe();
+
+        searchPresenter.onPause();
+
+        verify(initiateSearchModelUseCase).unsubscribe();
+    }
+
+    @Test
+    public void detachView_NotInjected_ShouldNotError() {
+        searchPresenter.detachView();
+
+        assert searchPresenter.getView() == null;
+    }
+
+    @Test
+    public void detachView_AfterInjectUseCase_ShouldUnsubscribeAllUseCases() {
+        UseCase<InitiateSearchModel> initiateSearchModelUseCase = mock(MockInitiateSearchUseCase.class);
+        searchPresenterInjectDependencies(initiateSearchModelUseCase);
+        doNothing().when(initiateSearchModelUseCase).unsubscribe();
+
+        searchPresenter.detachView();
+
+        assert searchPresenter.getView() == null;
+        verify(initiateSearchModelUseCase).unsubscribe();
+    }
+
+    @Test
+    public void onResume_NotInjected_ShouldNotError() {
         searchPresenter.onResume();
     }
 
     @Test
-    public void onDestroy() {
+    public void onDestroy_NotInjected_ShouldNotError() {
         searchPresenter.onDestroy();
     }
 
