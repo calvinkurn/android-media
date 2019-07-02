@@ -505,22 +505,26 @@ public class SearchTracking {
         );
     }
 
-    public static void eventUserClickSeeAllGlobalNavWidget() {
+    public static void eventUserClickSeeAllGlobalNavWidget(String keyword,
+                                                           String productName,
+                                                           String applink) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 EVENT_CLICK_SEARCH_RESULT,
                 EVENT_CATEGORY_SEARCH_RESULT,
                 EVENT_ACTION_CLICK_SEE_ALL_NAV_WIDGET,
-                ""
+                generateEventLabelGlobalNav(keyword, productName, applink)
         );
     }
 
     public static void trackEventClickGlobalNavWidgetItem(Object item,
-                                                          String keyword) {
+                                                          String keyword,
+                                                          String productName,
+                                                          String applink) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, PROMO_CLICK,
                         EVENT_CATEGORY, EVENT_CATEGORY_SEARCH_RESULT,
                         EVENT_ACTION, EVENT_ACTION_CLICK_WIDGET_DIGITAL_PRODUCT,
-                        EVENT_LABEL, keyword,
+                        EVENT_LABEL, generateEventLabelGlobalNav(keyword, productName, applink),
                         ECOMMERCE, DataLayer.mapOf(
                                 PROMO_CLICK, DataLayer.mapOf(
                                         PROMOTIONS, DataLayer.listOf(item)
@@ -528,6 +532,10 @@ public class SearchTracking {
                         )
                 )
         );
+    }
+
+    private static String generateEventLabelGlobalNav(String keyword, String productName, String applink) {
+        return String.format("keyword: %s - product: %s - applink: %s", keyword, productName, applink);
     }
 
     public static void trackEventImpressionGlobalNavWidgetItem(TrackingQueue trackingQueue,
