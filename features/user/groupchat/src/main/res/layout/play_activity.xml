@@ -7,11 +7,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!--android:overScrollMode="never"-->
+
     <ScrollView
         android:id="@+id/background_video_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:overScrollMode="never"
         android:scrollbars="none">
 
         <LinearLayout
@@ -23,7 +24,6 @@
                 android:id="@+id/playerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:adjustViewBounds="true"
                 android:scaleType="fitXY"/>
 
         </LinearLayout>
