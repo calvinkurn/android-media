@@ -1988,14 +1988,28 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     public void renderRecommendation(@Nullable List<RecommendationItem> recommendationItems) {
         List<CartRecommendationItemHolderData> cartRecommendationItemHolderDataList = new ArrayList<>();
         if (this.recommendationList != null) {
-            cartRecommendationItemHolderDataList.addAll(this.recommendationList);
-        } else if (recommendationItems != null) {
-            int previousItemCount = cartAdapter.getItemCount();
-            for (RecommendationItem recommendationItem : recommendationItems) {
-                boolean rightPosition = ++previousItemCount % 2 == 0;
-                CartRecommendationItemHolderData cartRecommendationItemHolderData =
-                        new CartRecommendationItemHolderData(recommendationItem, rightPosition);
-                cartRecommendationItemHolderDataList.add(cartRecommendationItemHolderData);
+            if (recommendationList.size() == 0) {
+                cartRecommendationItemHolderDataList.addAll(this.recommendationList);
+            } else {
+                if (recommendationItems != null) {
+                    int previousItemCount = cartAdapter.getItemCount();
+                    for (RecommendationItem recommendationItem : recommendationItems) {
+                        boolean rightPosition = previousItemCount % 2 == 0;
+                        CartRecommendationItemHolderData cartRecommendationItemHolderData =
+                                new CartRecommendationItemHolderData(recommendationItem, rightPosition);
+                        cartRecommendationItemHolderDataList.add(cartRecommendationItemHolderData);
+                    }
+                }
+            }
+        } else {
+            if (recommendationItems != null) {
+                int previousItemCount = cartAdapter.getItemCount();
+                for (RecommendationItem recommendationItem : recommendationItems) {
+                    boolean rightPosition = previousItemCount % 2 == 0;
+                    CartRecommendationItemHolderData cartRecommendationItemHolderData =
+                            new CartRecommendationItemHolderData(recommendationItem, rightPosition);
+                    cartRecommendationItemHolderDataList.add(cartRecommendationItemHolderData);
+                }
             }
         }
 
