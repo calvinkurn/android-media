@@ -51,21 +51,22 @@ class ParentSettingViewHolder(
     override fun updateSiblingAndChild(element: ParentSetting, checked: Boolean) {
         if (!element.hasChild()) return
 
-        val childs = element.childSettings
-        val childPosition = arrayListOf<Int>()
-        for (index in 0 until childs.size) {
-            val child = childs[index]
-            if (child?.status != checked) {
-                child?.status = checked
-                childPosition.add(index)
+        val childSettings = element.childSettings
+        val childToChangeIndex = arrayListOf<Int>()
+        childSettings.forEachIndexed { index, childSetting ->
+            childSetting?.let {
+                if (!childSetting.hasSameCheckedStatusWith(checked)) {
+                    childSetting.status = checked
+                    childToChangeIndex.add(index)
+                }
             }
         }
 
-        if (childPosition.isEmpty()) return
+        if (childToChangeIndex.isEmpty()) return
 
-        val dataPosition = adapterPosition
-        val adapterChildPosition = childPosition.map { index -> dataPosition + 1 + index }
-        settingListener.updateSettingView(adapterChildPosition)
+        val currentSettingPosition = adapterPosition
+        val childToChangeAdapterIndex = childToChangeIndex.map { index -> currentSettingPosition + 1 + index }
+        settingListener.updateSettingView(childToChangeAdapterIndex)
     }
 
     override fun getUpdatedSettingIds(element: ParentSetting, checked: Boolean): Map<String, Boolean> {

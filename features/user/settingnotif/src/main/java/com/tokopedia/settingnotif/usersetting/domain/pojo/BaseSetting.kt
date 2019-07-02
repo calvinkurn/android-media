@@ -13,4 +13,10 @@ abstract class BaseSetting (
     var key: String = "",
     @SerializedName("status")
     var status: Boolean = false
-) : Visitable<SettingFieldTypeFactory>
+) : Visitable<SettingFieldTypeFactory> {
+
+    fun hasSameCheckedStatusWith(checked: Boolean) : Boolean {
+        return status == checked
+    }
+
+}
