@@ -56,19 +56,10 @@ public class HomeFeedMapper implements Func1<GraphqlResponse, HomeFeedListModel>
                     product.getPriceInt(),
                     product.getIsTopads(),
                     (position+1),
-                    getBadge(product.getBadges()),
+                    product.getBadges(),
                     product.getShop().getCity()
                     ));
         }
         return homeFeedViewModels;
-    }
-
-    private String getBadge(List<Badge> badges){
-        for (Badge badge : badges){
-            if(badge.getTitle().toLowerCase().equals("official store") || badge.getTitle().toLowerCase().equals("power merchant")){
-                return badge.getImageUrl();
-            }
-        }
-        return "";
     }
 }

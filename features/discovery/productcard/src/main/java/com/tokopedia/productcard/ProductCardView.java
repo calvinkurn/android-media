@@ -6,8 +6,10 @@ import android.graphics.Paint;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -15,6 +17,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.topads.sdk.view.ImpressedImageView;
+
+import java.util.List;
 
 public class ProductCardView extends BaseCustomView {
     protected TextView textName;
@@ -28,7 +32,7 @@ public class ProductCardView extends BaseCustomView {
     protected TextView reviewCountView;
     protected int layout;
     protected boolean fixedHeight = false;
-    protected ImageView badgeView;
+    protected LinearLayout badgesContainerView;
     protected TextView textLocation;
 
     public ProductCardView(@NonNull Context context) {
@@ -74,7 +78,7 @@ public class ProductCardView extends BaseCustomView {
         wishlistButton = view.findViewById(R.id.btn_wishlist);
         ratingView = view.findViewById(R.id.rating);
         reviewCountView = view.findViewById(R.id.review_count);
-        badgeView = view.findViewById(R.id.badge);
+        badgesContainerView = view.findViewById(R.id.badge);
         textLocation = view.findViewById(R.id.location);
     }
 
@@ -139,9 +143,13 @@ public class ProductCardView extends BaseCustomView {
         }
     }
 
-    public void setBadgeUrl(String url){
-        if(!url.isEmpty())  ImageHandler.loadImageFitCenter(getContext(), badgeView, url);
-        else badgeView.setVisibility(View.GONE);
+    public void setBadges(List<String> urls){
+        badgesContainerView.removeAllViews();
+        for(String url: urls){
+            View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_badge, null);
+            ImageHandler.loadImageFitCenter(getContext(), view.findViewById(R.id.badge), url);
+            badgesContainerView.addView(view);
+        }
     }
 
     public void setLocation(String location){
