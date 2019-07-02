@@ -310,7 +310,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         return typeFactory.type(this);
     }
 
-    public Object getProductAsObjectDataLayer(String userId) {
+    public Object getProductAsObjectDataLayer(String userId, String filterSortParams) {
         return DataLayer.mapOf(
                 "name", getProductName(),
                 "id", getProductID(),
@@ -321,7 +321,8 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
                 "list", getActionFieldString(getPageNumber()),
                 "position", Integer.toString(getPosition()),
                 "userId", userId,
-                "shopId", getShopID()
+                "shopId", getShopID(),
+                "dimensionXX", filterSortParams
         );
     }
 
