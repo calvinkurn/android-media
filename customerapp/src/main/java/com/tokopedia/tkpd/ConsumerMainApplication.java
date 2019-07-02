@@ -18,6 +18,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.crashlytics.android.Crashlytics;
 //import com.facebook.FacebookSdk;
+import com.facebook.FacebookSdk;
 import com.facebook.soloader.SoLoader;
 import com.github.anrwatchdog.ANRWatchDog;
 //import com.google.firebase.FirebaseApp;
@@ -146,7 +147,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         com.example.akamai_bot_lib.UtilsKt.initAkamaiBotManager(this);
         setVersionCode();
 
-        FirebaseApp.initializeApp(this);
+        FirebaseApp.initializeApp(getAppContext());
 //        FacebookSdk.sdkInitialize(this);
 //        FirebaseApp.initializeApp(this);
 //        FacebookSdk.sdkInitialize(this);
