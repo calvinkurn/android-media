@@ -127,6 +127,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     private static final int HAS_ELEVATION = 8;
     private static final int NO_ELEVATION = 0;
     private static final String CART_TRACE = "mp_cart";
+    private static final String CART_ALL_TRACE = "mp_cart_all";
     public static final int GO_TO_DETAIL = 2;
     public static final int GO_TO_LIST = 1;
     private boolean FLAG_BEGIN_SHIPMENT_PROCESS = false;
@@ -169,19 +170,19 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     private boolean mIsMenuVisible = false;
     private boolean isToolbarWithBackButton = true;
 
-    private CartListData cartListData;
-
-    private PerformanceMonitoring performanceMonitoring;
-    private boolean isTraceStopped;
-
-    private SaveInstanceCacheManager saveInstanceCacheManager;
+    private PerformanceMonitoring cartPerformanceMonitoring;
+    private boolean isTraceCartStopped;
+    private PerformanceMonitoring cartAllPerformanceMonitoring;
+    private boolean isTraceCartAllStopped;
 
     private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
     private boolean hasLoadRecommendation;
 
-    private List<CartWishlistItemHolderData> wishlist;
+    private SaveInstanceCacheManager saveInstanceCacheManager;
+    private CartListData cartListData;
+    private List<CartWishlistItemHolderData> wishLists;
     private List<CartRecentViewItemHolderData> recentViewList;
-    private List<CartRecommendationItemHolderData> recommendationItems;
+    private List<CartRecommendationItemHolderData> recommendationList;
 
     public static CartFragment newInstance(Bundle bundle, String args) {
         if (bundle == null) {
@@ -200,7 +201,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         }
         userSession = new UserSession(getActivity());
-        performanceMonitoring = PerformanceMonitoring.start(CART_TRACE);
+        cartPerformanceMonitoring = PerformanceMonitoring.start(CART_TRACE);
+        cartAllPerformanceMonitoring = PerformanceMonitoring.start(CART_ALL_TRACE);
 
         if (getActivity() != null) {
             saveInstanceCacheManager = new SaveInstanceCacheManager(getActivity(), savedInstanceState);
@@ -531,7 +533,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             } else {
                 cartListData = saveInstanceCacheManager.get(CartListData.class.getSimpleName(), CartListData.class);
                 renderInitialGetCartListDataSuccess(cartListData);
-                stopTrace();
+                stopCartPerformanceTrace();
             }
         }
     }
@@ -1065,13 +1067,13 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 renderRecentView(null);
             }
 
-            if (wishlist == null) {
+            if (wishLists == null) {
                 dPresenter.processGetWishlistData();
             } else {
                 renderWishlist(null);
             }
 
-            if (recommendationItems == null) {
+            if (recommendationList == null) {
                 dPresenter.processGetRecommendationData(endlessRecyclerViewScrollListener.getCurrentPage());
             } else {
                 renderRecommendation(null);
@@ -1090,10 +1092,17 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void stopTrace() {
-        if (!isTraceStopped) {
-            performanceMonitoring.stopTrace();
-            isTraceStopped = true;
+    public void stopCartPerformanceTrace() {
+        if (!isTraceCartStopped) {
+            cartPerformanceMonitoring.stopTrace();
+            isTraceCartStopped = true;
+        }
+    }
+
+    private void stopAllCartPerformanceTrace() {
+        if (!isTraceCartAllStopped && wishLists != null && recentViewList != null && recommendationList != null) {
+            cartAllPerformanceMonitoring.stopTrace();
+            isTraceCartAllStopped = true;
         }
     }
 
@@ -1935,13 +1944,14 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         cartRecentViewHolderData.setRecentViewList(cartRecentViewItemHolderDataList);
         cartAdapter.addCartRecentViewData(cartSectionHeaderHolderData, cartRecentViewHolderData);
         this.recentViewList = cartRecentViewItemHolderDataList;
+        stopAllCartPerformanceTrace();
     }
 
     @Override
     public void renderWishlist(@Nullable List<Wishlist> wishlist) {
         List<CartWishlistItemHolderData> cartWishlistItemHolderDataList = new ArrayList<>();
-        if (this.wishlist != null) {
-            cartWishlistItemHolderDataList.addAll(this.wishlist);
+        if (this.wishLists != null) {
+            cartWishlistItemHolderDataList.addAll(this.wishLists);
         } else if (wishlist != null) {
             for (Wishlist item : wishlist) {
                 CartWishlistItemHolderData cartWishlistItemHolderData = new CartWishlistItemHolderData();
@@ -1970,14 +1980,15 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         CartWishlistHolderData cartRecentViewHolderData = new CartWishlistHolderData();
         cartRecentViewHolderData.setWishList(cartWishlistItemHolderDataList);
         cartAdapter.addCartWishlistData(cartSectionHeaderHolderData, cartRecentViewHolderData);
-        this.wishlist = cartWishlistItemHolderDataList;
+        this.wishLists = cartWishlistItemHolderDataList;
+        stopAllCartPerformanceTrace();
     }
 
     @Override
     public void renderRecommendation(@Nullable List<RecommendationItem> recommendationItems) {
         List<CartRecommendationItemHolderData> cartRecommendationItemHolderDataList = new ArrayList<>();
-        if (this.recommendationItems != null) {
-            cartRecommendationItemHolderDataList.addAll(this.recommendationItems);
+        if (this.recommendationList != null) {
+            cartRecommendationItemHolderDataList.addAll(this.recommendationList);
         } else if (recommendationItems != null) {
             int previousItemCount = cartAdapter.getItemCount();
             for (RecommendationItem recommendationItem : recommendationItems) {
@@ -1997,7 +2008,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         endlessRecyclerViewScrollListener.updateStateAfterGetData();
         hasLoadRecommendation = true;
         cartAdapter.addCartRecommendationData(cartSectionHeaderHolderData, cartRecommendationItemHolderDataList);
-        this.recommendationItems = cartRecommendationItemHolderDataList;
+        this.recommendationList = cartRecommendationItemHolderDataList;
+        stopAllCartPerformanceTrace();
     }
 
     @Override

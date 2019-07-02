@@ -31,7 +31,10 @@ import com.tokopedia.checkout.view.feature.cartlist.subscriber.GetRecentViewSubs
 import com.tokopedia.checkout.view.feature.cartlist.subscriber.GetRecommendationSubscriber;
 import com.tokopedia.checkout.view.feature.cartlist.subscriber.GetWishlistSubscriber;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartRecentViewItemHolderData;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartRecommendationItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartWishlistItemHolderData;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.promocheckout.common.data.entity.request.CurrentApplyCode;
 import com.tokopedia.promocheckout.common.data.entity.request.Order;
@@ -46,6 +49,7 @@ import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCas
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsGqlUseCase;
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField;
+import com.tokopedia.transactionanalytics.data.EnhancedECommerceAdd;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCheckout;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapData;
@@ -706,7 +710,7 @@ public class CartListPresenter implements ICartListPresenter {
                         errorMessage = ErrorHandler.getErrorMessage(view.getActivity(), e);
                     }
                     view.renderErrorInitialGetCartListData(errorMessage);
-                    view.stopTrace();
+                    view.stopCartPerformanceTrace();
                 }
             }
 
@@ -719,7 +723,7 @@ public class CartListPresenter implements ICartListPresenter {
                     CartListPresenter.this.cartListData = cartListData;
                     view.renderLoadGetCartDataFinish();
                     view.renderInitialGetCartListDataSuccess(cartListData);
-                    view.stopTrace();
+                    view.stopCartPerformanceTrace();
                 }
             }
         };
@@ -882,7 +886,7 @@ public class CartListPresenter implements ICartListPresenter {
                         errorMessage = ErrorHandler.getErrorMessage(view.getActivity(), e);
                     }
                     view.renderErrorInitialGetCartListData(errorMessage);
-                    view.stopTrace();
+                    view.stopCartPerformanceTrace();
                 }
             }
 
@@ -893,10 +897,10 @@ public class CartListPresenter implements ICartListPresenter {
                     view.renderLoadGetCartDataFinish();
                     if (resetAndRefreshCartListData.getCartListData() == null) {
                         view.renderErrorInitialGetCartListData(resetAndRefreshCartListData.getResetCartData().getMessage());
-                        view.stopTrace();
+                        view.stopCartPerformanceTrace();
                     } else {
                         view.renderInitialGetCartListDataSuccess(resetAndRefreshCartListData.getCartListData());
-                        view.stopTrace();
+                        view.stopCartPerformanceTrace();
                     }
                 }
             }
@@ -1224,5 +1228,95 @@ public class CartListPresenter implements ICartListPresenter {
             e.printStackTrace();
             view.hideProgressLoading();
         }
+    }
+
+    @Override
+    public Map<String, Object> generateAddToCartEnhanceEcommerceDataLayer(CartWishlistItemHolderData cartWishlistItemHolderData) {
+        Map<String, Object> stringObjectMap = new HashMap<>();
+        EnhancedECommerceActionField enhancedECommerceActionField = new EnhancedECommerceActionField();
+        enhancedECommerceActionField.setList(EnhancedECommerceActionField.LIST_WISHLIST);
+        EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData = new EnhancedECommerceProductCartMapData();
+        enhancedECommerceProductCartMapData.setProductName(cartWishlistItemHolderData.getName());
+        enhancedECommerceProductCartMapData.setProductID(cartWishlistItemHolderData.getId());
+        enhancedECommerceProductCartMapData.setPrice(cartWishlistItemHolderData.getPrice());
+//        enhancedECommerceProductCartMapData.setBrand();
+//        enhancedECommerceProductCartMapData.setCategory();
+//        enhancedECommerceProductCartMapData.setVariant();
+//        enhancedECommerceProductCartMapData.setQty();
+//        enhancedECommerceProductCartMapData.setShopId();
+//        enhancedECommerceProductCartMapData.setShopType();
+//        enhancedECommerceProductCartMapData.setShopName();
+//        enhancedECommerceProductCartMapData.pictureUrl();
+//        enhancedECommerceProductCartMapData.setUrl();
+//        enhancedECommerceProductCartMapData.setCategoryId();
+//        enhancedECommerceProductCartMapData.setDimension45();
+
+        EnhancedECommerceAdd enhancedECommerceAdd = new EnhancedECommerceAdd();
+        enhancedECommerceAdd.setActionField(enhancedECommerceActionField.getActionFieldMap());
+        enhancedECommerceAdd.addProduct(enhancedECommerceProductCartMapData.getProduct());
+
+        stringObjectMap.put("currencyCode", "IDR");
+        stringObjectMap.put("add", enhancedECommerceAdd.getAddMap());
+        return stringObjectMap;
+    }
+
+    @Override
+    public Map<String, Object> generateAddToCartEnhanceEcommerceDataLayer(CartRecentViewItemHolderData cartRecentViewItemHolderData) {
+        Map<String, Object> stringObjectMap = new HashMap<>();
+        EnhancedECommerceActionField enhancedECommerceActionField = new EnhancedECommerceActionField();
+        enhancedECommerceActionField.setList(EnhancedECommerceActionField.LIST_RECENT_VIEW);
+        EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData = new EnhancedECommerceProductCartMapData();
+//        enhancedECommerceProductCartMapData.setProductName();
+//        enhancedECommerceProductCartMapData.setProductID();
+//        enhancedECommerceProductCartMapData.setPrice();
+//        enhancedECommerceProductCartMapData.setBrand();
+//        enhancedECommerceProductCartMapData.setCategory();
+//        enhancedECommerceProductCartMapData.setVariant();
+//        enhancedECommerceProductCartMapData.setQty();
+//        enhancedECommerceProductCartMapData.setShopId();
+//        enhancedECommerceProductCartMapData.setShopType();
+//        enhancedECommerceProductCartMapData.setShopName();
+//        enhancedECommerceProductCartMapData.pictureUrl();
+//        enhancedECommerceProductCartMapData.setUrl();
+//        enhancedECommerceProductCartMapData.setCategoryId();
+//        enhancedECommerceProductCartMapData.setDimension45();
+
+        EnhancedECommerceAdd enhancedECommerceAdd = new EnhancedECommerceAdd();
+        enhancedECommerceAdd.setActionField(enhancedECommerceActionField.getActionFieldMap());
+        enhancedECommerceAdd.addProduct(enhancedECommerceProductCartMapData.getProduct());
+
+        stringObjectMap.put("currencyCode", "IDR");
+        stringObjectMap.put("add", enhancedECommerceAdd.getAddMap());
+        return stringObjectMap;
+    }
+
+    @Override
+    public Map<String, Object> generateAddToCartEnhanceEcommerceDataLayer(CartRecommendationItemHolderData cartRecommendationItemHolderData) {
+        Map<String, Object> stringObjectMap = new HashMap<>();
+        EnhancedECommerceActionField enhancedECommerceActionField = new EnhancedECommerceActionField();
+        enhancedECommerceActionField.setList(EnhancedECommerceActionField.LIST_RECOMMENDATION);
+        EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData = new EnhancedECommerceProductCartMapData();
+//        enhancedECommerceProductCartMapData.setProductName();
+//        enhancedECommerceProductCartMapData.setProductID();
+//        enhancedECommerceProductCartMapData.setPrice();
+//        enhancedECommerceProductCartMapData.setBrand();
+//        enhancedECommerceProductCartMapData.setCategory();
+//        enhancedECommerceProductCartMapData.setVariant();
+//        enhancedECommerceProductCartMapData.setQty();
+//        enhancedECommerceProductCartMapData.setShopId();
+//        enhancedECommerceProductCartMapData.setShopType();
+//        enhancedECommerceProductCartMapData.setShopName();
+//        enhancedECommerceProductCartMapData.pictureUrl();
+//        enhancedECommerceProductCartMapData.setUrl();
+//        enhancedECommerceProductCartMapData.setCategoryId();
+//        enhancedECommerceProductCartMapData.setDimension45();
+
+        EnhancedECommerceAdd enhancedECommerceAdd = new EnhancedECommerceAdd();
+        enhancedECommerceAdd.setActionField(enhancedECommerceActionField.getActionFieldMap());
+        enhancedECommerceAdd.addProduct(enhancedECommerceProductCartMapData.getProduct());
+
+        stringObjectMap.put("currencyCode", "IDR");
+        stringObjectMap.put("add", enhancedECommerceAdd.getAddMap());
+        return stringObjectMap;
     }
 }

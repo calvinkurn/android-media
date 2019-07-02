@@ -3,8 +3,10 @@ package com.tokopedia.checkout.view.feature.cartlist;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
-import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartRecentViewItemHolderData;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartRecommendationItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartWishlistItemHolderData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
@@ -68,5 +70,11 @@ public interface ICartListPresenter {
     void processGetRecommendationData(int page);
 
     void processAddToCart(String productId, String shopId, int minOrder);
+
+    Map<String, Object> generateAddToCartEnhanceEcommerceDataLayer(CartWishlistItemHolderData cartWishlistItemHolderData);
+
+    Map<String, Object> generateAddToCartEnhanceEcommerceDataLayer(CartRecentViewItemHolderData cartRecentViewItemHolderData);
+
+    Map<String, Object> generateAddToCartEnhanceEcommerceDataLayer(CartRecommendationItemHolderData cartRecommendationItemHolderData);
 
 }

@@ -125,6 +125,7 @@
         android:background="@drawable/bg_button_atc"
         android:foreground="?selectableItemBackground"
         android:gravity="center"
+        android:maxLines="2"
         android:padding="@dimen/dp_8"
         android:text="+ Keranjang"
         android:textAllCaps="false"

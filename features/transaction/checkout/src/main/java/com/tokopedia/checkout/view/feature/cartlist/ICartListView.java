@@ -72,7 +72,7 @@ public interface ICartListView extends IBaseView {
 
     void goToDetailPromoStacking(PromoStackingData promoStackingData);
 
-    void stopTrace();
+    void stopCartPerformanceTrace();
 
     void onSuccessClearPromoStack(int shopIndex);
 
