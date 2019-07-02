@@ -13,6 +13,8 @@
     <color name="black_12">#1e000000</color>
     <color name="grey_hint">#2e000000</color>
 
+    <color name="black_drawable">#b3000000</color>
+
     <array name="green_indicator">
         <item>@color/green_50</item>
         <item>@color/green_60</item>

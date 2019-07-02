@@ -156,7 +156,7 @@ class ChooseTokocashAccountFragment : BaseDaggerFragment(), ChooseTokocashAccoun
     private fun getDraw(context: Context?): Drawable {
         val drawable = TextDrawable(context!!)
         drawable.text = resources.getString(R.string.action_logout)
-        drawable.setTextColor(R.color.black_70)
+        drawable.setTextColor(R.color.black_drawable)
         return drawable
     }
 
@@ -193,6 +193,7 @@ class ChooseTokocashAccountFragment : BaseDaggerFragment(), ChooseTokocashAccoun
 
     override fun onSuccessLogin(userId: String) {
         activity?.let {
+            dismissLoadingProgress()
             analytics.eventSuccessLoginPhoneNumber()
             setTrackingUserId(userId)
             setFCM()
@@ -321,7 +322,6 @@ class ChooseTokocashAccountFragment : BaseDaggerFragment(), ChooseTokocashAccoun
 
     override fun onSuccessGetAccountList(accountList: AccountList) {
         if (activity != null) {
-            dismissLoadingProgress()
             this.viewModel.accountList = accountList
             activity!!.setResult(Activity.RESULT_OK)
 
