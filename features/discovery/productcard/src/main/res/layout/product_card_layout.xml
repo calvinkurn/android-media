@@ -122,7 +122,7 @@
                 android:layout_width="@dimen/dp_52"
                 android:layout_height="@dimen/dp_10"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/badge"
+                app:layout_constraintTop_toBottomOf="@+id/location"
                 tools:background="@color/red_150"
                 tools:layout_height="20dp"/>
 
