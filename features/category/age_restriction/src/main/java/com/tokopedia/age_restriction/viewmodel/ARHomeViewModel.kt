@@ -18,6 +18,7 @@ class ARHomeViewModel : BaseViewModel(), CoroutineScope {
 
     private var userDetailLiveData: UserDOBResponse? = null
     private val askUserLogin = MutableLiveData<Int>()
+    private val USER_DOB_PATH = "https://accounts.tokopedia.com/userapp/api/v1/profile/get-dob"
     val notAdult = MutableLiveData<Int>()
     val notVerified = MutableLiveData<String>()
     val notFilled = MutableLiveData<Int>()
@@ -50,7 +51,7 @@ class ARHomeViewModel : BaseViewModel(), CoroutineScope {
         progBarVisibility.value = true
         launchCatchError(
                 block = {
-                    val response = repository.getRestData("https://accounts.tokopedia.com/userapp/api/v1/profile/get-dob",
+                    val response = repository.getRestData(USER_DOB_PATH,
                             object : TypeToken<DataResponse<UserDOBResponse>>() {}.type,
                             RequestType.GET,
                             RequestParams.EMPTY.parameters)
