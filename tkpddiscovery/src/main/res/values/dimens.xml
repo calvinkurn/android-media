@@ -40,4 +40,6 @@
     <dimen name="arrow_width_show_case">16dp</dimen>
     <dimen name="wishlish_button_size">38dp</dimen>
     <dimen name="card_view_margin">5dp</dimen>
+    <dimen name="search_new_filter_icon_width">28dp</dimen>
+    <dimen name="search_new_filter_icon_height">10dp</dimen>
 </resources>
