@@ -19,7 +19,7 @@ import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.discovery.newdiscovery.search.fragment.GetDynamicFilterSubscriber;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenterImpl;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragmentPresenterImpl;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
@@ -36,7 +36,7 @@ import rx.Subscriber;
  * @author by alifa on 10/26/17.
  */
 
-public class ProductPresenter extends SearchSectionFragmentPresenterImpl<ProductContract.View> implements ProductContract.Presenter {
+public class ProductPresenter extends BrowseSectionFragmentPresenterImpl<ProductContract.View> implements ProductContract.Presenter {
 
     @Inject
     GetProductUseCase getProductUseCase;

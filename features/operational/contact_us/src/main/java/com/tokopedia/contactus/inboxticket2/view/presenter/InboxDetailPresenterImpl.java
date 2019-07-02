@@ -234,6 +234,8 @@ public class InboxDetailPresenterImpl
                             commentsItems.add(topItem);
                         } else {
                             commentsItems.add(0, topItem);
+
+
                         }
                         for (CommentsItem item : commentsItems) {
                             if (userData == null) {
@@ -779,7 +781,7 @@ public class InboxDetailPresenterImpl
     private void addNewLocalComment() {
         CommentsItem newItem = new CommentsItem();
         newItem.setCreatedBy(userData);
-        newItem.setMessagePlaintext(mView.getUserMessage());
+        newItem.setMessage(mView.getUserMessage());
         newItem.setCreateTime(getUtils().getDateTimeCurrent());
         List<ImageUpload> uploadImageList = mView.getImageList();
         List<AttachmentItem> attachmentItems = new ArrayList<>();

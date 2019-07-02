@@ -17,6 +17,7 @@ import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
 import static com.tokopedia.shop.common.constant.ShopPageConstant.ITEM_OFFSET;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * @author by alvarisi on 12/12/17.
@@ -146,7 +147,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
         } else {
             originalPriceTextView.setVisibility(View.GONE);
         }
-        if (!TextUtils.isEmpty(shopProductViewModel.getDiscountPercentage())) {
+        if (!TextUtils.isEmpty(shopProductViewModel.getDiscountPercentage()) && Integer.parseInt(shopProductViewModel.getDiscountPercentage()) > 0) {
             discountPercentageTextView.setVisibility(View.VISIBLE);
             discountPercentageTextView.setText(discountPercentageTextView.getContext().
                     getString(R.string.shop_product_discount_percentage_format, shopProductViewModel.getDiscountPercentage()));
@@ -193,7 +194,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
 
     private void updateDisplayWishList(final ShopProductViewModel shopProductViewModel) {
         wishlistContainer.setVisibility(shopProductViewModel.isShowWishList() ? View.VISIBLE : View.GONE);
-        wishlistImageView.setImageResource(shopProductViewModel.isWishList() ? R.drawable.ic_wishlist_checked : R.drawable.ic_wishlist_unchecked);
+        wishlistImageView.setImageDrawable(MethodChecker.getDrawable(wishlistImageView.getContext(), (shopProductViewModel.isWishList() ? R.drawable.ic_wishlist_checked : R.drawable.ic_wishlist_unchecked)));
         wishlistContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -3,6 +3,7 @@ package com.tokopedia.shop.feed.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
@@ -50,7 +51,7 @@ import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
 import com.tokopedia.shop.R
-import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.feed.di.DaggerFeedShopComponent
 import com.tokopedia.shop.feed.domain.WhitelistDomain
 import com.tokopedia.shop.feed.view.adapter.factory.FeedShopFactoryImpl
@@ -58,7 +59,7 @@ import com.tokopedia.shop.feed.view.contract.FeedShopContract
 import com.tokopedia.shop.feed.view.model.EmptyFeedShopViewModel
 import com.tokopedia.shop.feed.view.model.WhitelistViewModel
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.fragment_feed_shop.*
 import javax.inject.Inject
 
 /**
@@ -131,6 +132,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     private fun initVar() {
+        hideFAB()
         arguments?.let {
             shopId = it.getString(PARAM_SHOP_ID) ?: ""
         }
@@ -209,8 +211,10 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         val dataList = ArrayList<Visitable<*>>()
         isLoading = false
         if (element.isNotEmpty()) {
-            if (shopId.equals(userSession.shopId)) {
-                dataList.add(0, WhitelistViewModel(whitelistDomain))
+            if (shopId.equals(userSession.shopId) && !whitelistDomain.authors.isEmpty()) {
+                showFAB(whitelistDomain)
+            } else {
+                hideFAB()
             }
             dataList.addAll(element)
             renderList(dataList, lastCursor.isNotEmpty())
@@ -218,6 +222,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             dataList.add(getEmptyResultViewModel())
             renderList(dataList)
         }
+        trackImpression(dataList)
+
     }
 
     override fun onSuccessGetFeedNotLoginFirstPage(element: List<Visitable<*>>, lastCursor: String) {
@@ -244,6 +250,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         isLoading = false
         updateCursor(lastCursor)
         renderList(visitables, lastCursor.isNotEmpty())
+        trackImpression(visitables)
     }
 
     override fun updateCursor(cursor: String) {
@@ -429,9 +436,13 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         onGoToLink(redirectUrl)
     }
 
-    override fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>) {
+    override fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean) {
         for (tracking in trackList) {
-            presenter.trackPostClickUrl(tracking.clickURL)
+            if (isClick) {
+                presenter.trackPostClickUrl(tracking.clickURL)
+            } else {
+                presenter.trackPostClickUrl(tracking.viewURL)
+            }
         }
     }
 
@@ -496,8 +507,21 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
+    fun hideFAB() {
+        fab_feed.hide()
+    }
+
+    fun showFAB(whitelistDomain: WhitelistDomain) {
+        fab_feed.show()
+        val author = whitelistDomain.authors.get(0)
+        fab_feed.setOnClickListener {
+            onGoToLink(author.link)
+        }
+
+    }
+
     fun updateShopInfo(shopInfo: ShopInfo) {
-        shopId = shopInfo.info.shopId
+        shopId = shopInfo.shopCore.shopID
         loadInitialData()
     }
 
@@ -587,6 +611,17 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         startActivity(
                 Intent.createChooser(sharingIntent, shareTitle)
         )
+    }
+
+    private fun trackImpression(visitableList: List<Visitable<*>>) {
+        visitableList.forEachIndexed { position, model ->
+            val adapterPosition = adapter.data.size + position
+            when (model) {
+                is DynamicPostViewModel -> {
+                    onAffiliateTrackClicked(model.tracking, false)
+                }
+            }
+        }
     }
 
     private fun showError(message: String) {

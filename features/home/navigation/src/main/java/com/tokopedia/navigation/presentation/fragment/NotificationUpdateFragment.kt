@@ -1,6 +1,7 @@
 package com.tokopedia.navigation.presentation.fragment
 
 import android.animation.LayoutTransition
+import android.content.Context
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
@@ -66,6 +67,17 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     @Inject
     lateinit var analytics: NotificationUpdateAnalytics
 
+    private var notificationUpdateListener: NotificationUpdateListener? = null
+
+    interface NotificationUpdateListener {
+        fun onSuccessLoadNotifUpdate()
+    }
+
+    override fun onAttachActivity(context: Context?) {
+        if (context is NotificationUpdateListener) {
+            notificationUpdateListener = context
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_notification_update, container, false)
@@ -272,7 +284,9 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
 
     private fun onErrorInitiateData(): (Throwable) -> Unit {
         return {
-            SnackbarManager.make(activity, ErrorHandler.getErrorMessage(activity, it), Snackbar.LENGTH_LONG).show()
+            if(activity != null) {
+                SnackbarManager.make(activity, ErrorHandler.getErrorMessage(activity, it), Snackbar.LENGTH_LONG).show()
+            }
         }
     }
 
@@ -281,6 +295,9 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
             var canLoadMore = it.paging.hasNext
             if (canLoadMore && !it.list.isEmpty()) {
                 cursor = (it.list.last().notificationId)
+            }
+            if (swipeToRefresh.isRefreshing) {
+                notificationUpdateListener?.onSuccessLoadNotifUpdate()
             }
             renderList(it.list, canLoadMore)
         }

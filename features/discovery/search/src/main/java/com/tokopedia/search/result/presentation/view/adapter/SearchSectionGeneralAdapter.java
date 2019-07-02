@@ -85,7 +85,11 @@ public abstract class SearchSectionGeneralAdapter extends RecyclerView.Adapter<A
     }
 
     public void clearData() {
+        int itemSizeBeforeCleared = getItemCount();
+
         getItemList().clear();
+
+        notifyItemRangeRemoved(0, itemSizeBeforeCleared);
     }
 
     public boolean isListEmpty() {
