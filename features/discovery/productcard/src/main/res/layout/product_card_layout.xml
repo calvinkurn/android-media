@@ -37,7 +37,7 @@
             android:maxLines="2"
             android:textColor="@color/charcoal_grey_88"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/image"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/image"
             tools:text="Nama" />
 
@@ -59,7 +59,7 @@
             android:textSize="@dimen/sp_10"
             android:textStyle="bold"
             android:visibility="gone"
-            app:layout_constraintStart_toStartOf="@+id/image"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textName"
             tools:text="100%"
             tools:visibility="visible" />
@@ -89,7 +89,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/product_card_price_text_color"
-            app:layout_constraintStart_toStartOf="@+id/image"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textDiscount"
             tools:text="Harga" />
 
@@ -100,7 +100,7 @@
                 android:layout_marginTop="@dimen/dp_4"
                 android:layout_width="@dimen/dp_14"
                 android:layout_height="@dimen/dp_14"
-                app:layout_constraintStart_toStartOf="@+id/image"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textPrice"
                 tools:background="@color/red_150"
                 tools:layout_height="20dp" />
@@ -118,10 +118,10 @@
                 android:id="@+id/rating"
                 android:layout_marginLeft="@dimen/dp_8"
                 android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginTop="@dimen/dp_8"
                 android:layout_width="@dimen/dp_52"
                 android:layout_height="@dimen/dp_10"
-                app:layout_constraintStart_toStartOf="@+id/image"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/badge"
                 tools:background="@color/red_150"
                 tools:layout_height="20dp"/>
