@@ -512,10 +512,14 @@ public class ProductListFragment
     }
 
     private Intent getProductIntent(String productId, String warehouseId){
-        if (getContext() != null) {
+        if (getContext() == null) {
+            return null;
+        }
+        
+        if (!TextUtils.isEmpty(warehouseId)) {
             return RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_WAREHOUSE_ID, productId, warehouseId);
         } else {
-            return null;
+            return RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
         }
     }
 
