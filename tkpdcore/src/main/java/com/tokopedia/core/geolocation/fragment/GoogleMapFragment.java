@@ -34,7 +34,6 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core2.R;
-//import com.tokopedia.core2.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.geolocation.adapter.SuggestionLocationAdapter;
 import com.tokopedia.core.geolocation.domain.IMapsRepository;
@@ -46,8 +45,6 @@ import com.tokopedia.core.geolocation.presenter.GoogleMapPresenterImpl;
 import com.tokopedia.core.network.apiservices.maps.MapService;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
-
-//import butterknife.BindView;
 import rx.subscriptions.CompositeSubscription;
 
 /**
