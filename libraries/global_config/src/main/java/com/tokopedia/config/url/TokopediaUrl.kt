@@ -21,6 +21,7 @@ class TokopediaUrl {
             }
         }
 
+        @JvmStatic
         fun getInstance() : Url {
             return tokopediaUrl?: live
         }
