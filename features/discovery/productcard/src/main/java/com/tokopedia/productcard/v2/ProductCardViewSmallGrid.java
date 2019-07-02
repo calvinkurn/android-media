@@ -32,7 +32,7 @@ public class ProductCardViewSmallGrid extends ProductCardView {
     public void realignLayout() {
         setTitleMarginTop();
         setPriceMarginTop();
-        setLocationConstraintLeft();
+        setLocationMarginLeft();
         setReviewCountMarginLeft();
         setOffersLabelConstraint();
     }
@@ -55,19 +55,13 @@ public class ProductCardViewSmallGrid extends ProductCardView {
         setMarginsToView(textViewPrice, -1, marginTopPixel, -1, -1);
     }
 
-//    private void setLocationMarginLeft() {
-//        int marginLeftPixel =
-//            isViewVisible(linearLayoutShopBadges)
-//                    ? getDimensionPixelSize(R.dimen.dp_4)
-//                    : getDimensionPixelSize(R.dimen.dp_8);
-//
-//        setMarginsToView(textViewShopLocation, marginLeftPixel, -1, -1, -1);
-//    }
+    private void setLocationMarginLeft() {
+        int marginLeftPixel =
+            isViewVisible(linearLayoutShopBadges)
+                    ? getDimensionPixelSize(R.dimen.dp_4)
+                    : getDimensionPixelSize(R.dimen.dp_8);
 
-    private void setLocationConstraintLeft() {
-        if(!isViewVisible(linearLayoutShopBadges)) {
-            setViewConstraintInConstraintLayoutProductCard(textViewShopLocation.getId(), ConstraintSet.LEFT, imageProduct.getId(), ConstraintSet.LEFT, R.dimen.dp_8);
-        }
+        setMarginsToView(textViewShopLocation, marginLeftPixel, -1, -1, -1);
     }
 
     private void setReviewCountMarginLeft() {
