@@ -808,7 +808,7 @@ public class HomePageTracking {
         ContextAnalytics tracker = getTracker(context);
         if (tracker != null) {
             tracker.sendGeneralEvent(
-                    "",
+                    EVENT_CLICK_HOME_PAGE,
                     CATEGORY_HOME_PAGE,
                     "click on allow geolocation",
                     ""
@@ -821,7 +821,7 @@ public class HomePageTracking {
         ContextAnalytics tracker = getTracker(context);
         if (tracker != null) {
             tracker.sendGeneralEvent(
-                    "",
+                    EVENT_CLICK_HOME_PAGE,
                     CATEGORY_HOME_PAGE,
                     "click on not allow geolocation",
                     ""
@@ -833,7 +833,7 @@ public class HomePageTracking {
         ContextAnalytics tracker = getTracker(context);
         if (tracker != null) {
             tracker.sendGeneralEvent(
-                    "",
+                    EVENT_CLICK_HOME_PAGE,
                     CATEGORY_HOME_PAGE,
                     "click on geolocation component",
                     ""
@@ -845,7 +845,7 @@ public class HomePageTracking {
         ContextAnalytics tracker = getTracker(context);
         if (tracker != null) {
             tracker.sendGeneralEvent(
-                    "",
+                    EVENT_CLICK_HOME_PAGE,
                     CATEGORY_HOME_PAGE,
                     "click close on geolocation component",
                     ""

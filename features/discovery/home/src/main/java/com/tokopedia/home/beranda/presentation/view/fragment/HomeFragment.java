@@ -5,8 +5,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -77,6 +80,8 @@ import com.tokopedia.home.constant.BerandaUrl;
 import com.tokopedia.home.constant.ConstantKey;
 import com.tokopedia.home.widget.FloatingTextButton;
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout;
+import com.tokopedia.locationmanager.DeviceLocation;
+import com.tokopedia.locationmanager.LocationDetectorHelper;
 import com.tokopedia.loyalty.view.activity.PromoListActivity;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.navigation_common.listener.AllNotificationListener;
@@ -100,6 +105,10 @@ import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.google.android.gms.location.LocationServices;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 import rx.Observable;
 
 import javax.inject.Inject;
@@ -172,6 +181,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private Visitable feedTabVisitable;
     private boolean scrollToRecommendList;
     private long lastSendScreenTimeMillis;
+    private Snackbar homeSnackbar;
+    private SharedPreferences sharedPrefs;
 
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
@@ -380,6 +391,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         super.onResume();
         sendScreen();
         presenter.onResume();
+
         if (activityStateListener != null) {
             activityStateListener.onResume();
         }
@@ -756,6 +768,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void setItems(List<Visitable> items, HeaderViewModel headerViewModel, int repositoryFlag) {
         if (repositoryFlag == HomePresenter.HomeDataSubscriber.FLAG_FROM_NETWORK) {
             adapter.setItems(items, headerViewModel);
+
             if (needToShowGeolocationComponent()) {
                 adapter.setGeolocationViewModel(new GeolocationPromptViewModel());
             }
@@ -767,11 +780,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private boolean needToShowGeolocationComponent() {
-//        boolean firebaseShowGeolocationComponent =
-//                remoteConfig.getBoolean(RemoteConfigKey.SHOW_HOME_GEOLOCATION_COMPONENT,true);
-//        if (!firebaseShowGeolocationComponent) {
-//            return false;
-//        }
+        boolean firebaseShowGeolocationComponent =
+                remoteConfig.getBoolean(RemoteConfigKey.SHOW_HOME_GEOLOCATION_COMPONENT,true);
+        if (!firebaseShowGeolocationComponent) {
+            return false;
+        }
 
         boolean needToShowGeolocationComponent = true;
 
@@ -785,14 +798,18 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
 
         if (getActivity() != null) {
-            boolean hasGeolocationPermission =
-                    permissionCheckerHelper.hasPermission(getActivity(),
-                    new String[]{PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION});
-            if (hasGeolocationPermission) {
+            if (hasGeolocationPermission()) {
                 needToShowGeolocationComponent = false;
             }
         }
         return needToShowGeolocationComponent;
+    }
+
+    @Override
+    public boolean hasGeolocationPermission() {
+        if (getActivity() == null) return false;
+        return permissionCheckerHelper.hasPermission(getActivity(),
+                new String[]{PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION});
     }
 
     private void promptGeolocationPermission() {
@@ -814,10 +831,44 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     @Override
                     public void onPermissionGranted() {
                         HomePageTracking.eventClickAllowGeolocation(getActivity());
+                        detectAndSendLocation();
                         adapter.removeGeolocationViewModel();
                         showAllowedGeolocationSnackbar();
                     }
                 }, "");
+    }
+
+    @Override
+    public void detectAndSendLocation() {
+        LocationDetectorHelper locationDetectorHelper = new LocationDetectorHelper(
+                permissionCheckerHelper,
+                LocationServices.getFusedLocationProviderClient(getActivity()
+                        .getApplicationContext()),
+                getActivity().getApplicationContext());
+        locationDetectorHelper.getLocation(onGetLocation(), getActivity(),
+                LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                "");
+    }
+
+    private Function1<DeviceLocation, Unit> onGetLocation() {
+        return (deviceLocation) -> {
+            saveLocation(getActivity(), deviceLocation.getLatitude(), deviceLocation.getLongitude());
+            presenter.sendGeolocationData();
+            return null;
+        };
+    }
+
+    public void saveLocation(Context context, double latitude, double longitude){
+        SharedPreferences.Editor editor;
+        if (context != null && !TextUtils.isEmpty(ConstantKey.LocationCache.KEY_LOCATION)) {
+            sharedPrefs = context.getSharedPreferences(ConstantKey.LocationCache.KEY_LOCATION, Context.MODE_PRIVATE);
+            editor = sharedPrefs.edit();
+        } else {
+            return;
+        }
+        editor.putString(ConstantKey.LocationCache.KEY_LOCATION_LAT, String.valueOf(latitude));
+        editor.putString(ConstantKey.LocationCache.KEY_LOCATION_LONG, String.valueOf(longitude));
+        editor.apply();
     }
 
     @Override
@@ -1395,25 +1446,28 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         adapter.removeGeolocationViewModel();
     }
 
+    private Snackbar getSnackbar(String text, int duration) {
+        if (homeSnackbar != null) {
+            homeSnackbar.dismiss();
+        }
+        homeSnackbar = Snackbar.make(root, text, duration);
+        return homeSnackbar;
+    }
+
     public void showNotAllowedGeolocationSnackbar() {
-        Toaster.Companion.showNormalWithAction(root,
-                getString(R.string.discovery_home_snackbar_geolocation_declined_permission),
-                Snackbar.LENGTH_LONG,
-                getString(R.string.discovery_home_snackbar_geolocation_setting),
-                new View.OnClickListener() {
+        getSnackbar(getString(R.string.discovery_home_snackbar_geolocation_declined_permission),
+                Snackbar.LENGTH_LONG)
+                .setAction(getString(R.string.discovery_home_snackbar_geolocation_setting), new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         goToApplicationDetailActivity();
                     }
-                });
-
+                }).show();
     }
 
     public void showAllowedGeolocationSnackbar() {
-        Toaster.Companion.showNormal(
-                root,
-                getString(R.string.discovery_home_snackbar_geolocation_granted_permission),
-                Snackbar.LENGTH_LONG);
+        getSnackbar(getString(R.string.discovery_home_snackbar_geolocation_granted_permission),
+                Snackbar.LENGTH_LONG).show();
     }
 
     private void goToApplicationDetailActivity() {

@@ -82,6 +82,10 @@ public interface HomeContract {
         void onTabFeedLoadSuccess(List<FeedTabModel> feedTabModelList);
 
         void onHomeDataLoadSuccess();
+
+        void detectAndSendLocation();
+
+        boolean hasGeolocationPermission();
     }
 
     interface Presenter extends CustomerPresenter<View> {

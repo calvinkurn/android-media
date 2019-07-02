@@ -30,7 +30,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_8"
-            android:text="@string/discovery_home_title_geolocation_title"
+            android:text="@string/discovery_home_title_geolocation_title_default"
             app:layout_constraintEnd_toStartOf="@+id/img_close"
             app:layout_constraintStart_toEndOf="@+id/img_geolocation"
             app:layout_constraintTop_toTopOf="@+id/img_geolocation"
@@ -41,21 +41,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_8"
-            android:text="@string/discovery_home_title_geolocation_description"
+            android:text="@string/discovery_home_title_geolocation_description_default"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/typography_title"
             app:layout_constraintTop_toBottomOf="@+id/typography_title"
-            app:typographyType="body_3" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/typography_prompt"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_4"
-            android:text="@string/discovery_home_title_geolocation_prompt"
-            android:textColor="@color/Green_G500"
-            app:layout_constraintStart_toEndOf="@+id/typography_description"
-            app:layout_constraintTop_toTopOf="@+id/typography_description"
             app:typographyType="body_3" />
 
         <ImageView

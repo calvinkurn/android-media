@@ -274,7 +274,7 @@ public class AccountAnalytics {
 
         if (analytics != null) {
             analytics.sendGeneralEvent(
-                    "",
+                    "clickHomePage",
                     "homepage",
                     "click toggle on geolocation",
                     ""
@@ -287,7 +287,7 @@ public class AccountAnalytics {
 
         if (analytics != null) {
             analytics.sendGeneralEvent(
-                    "",
+                    "clickHomePage",
                     "homepage",
                     "click toggle off geolocation",
                     ""

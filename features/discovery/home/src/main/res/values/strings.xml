@@ -58,9 +58,8 @@
     <string name="widget_gagal_ditampilkan">Hiks, kontennya nggak mau muncul</string>
     <string name="broadcast_wallet">Broadcast Wallet</string>
 
-    <string name="discovery_home_title_geolocation_title">Lihat produk menarik di dekatmu</string>
-    <string name="discovery_home_title_geolocation_description">Mulai dengan </string>
-    <string name="discovery_home_title_geolocation_prompt">aktifkan lokasi</string>
+    <string name="discovery_home_title_geolocation_title_default">Lihat produk menarik di dekatmu</string>
+    <string name="discovery_home_title_geolocation_description_default">Mulai dengan <a href="/">aktifkan lokasi</a></string>
 
     <string name="discovery_home_snackbar_geolocation_granted_permission">Lokasi aktif. Untuk mengubah izin akses lokasi, buka Pengaturan -> Lokasi di HP-mu</string>
     <string name="discovery_home_snackbar_geolocation_declined_permission">Kamu bisa izinkan akses lokasi di Pengaturan -> Lokasi di HP-mu</string>

@@ -135,29 +135,34 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
             updateHomeData();
         }
 
-        if (needSendGeolocationRequest) {
-            sendGeolocationInfoUseCase.createObservable(RequestParams.EMPTY)
-                    .subscribeOn(Schedulers.io())
-                    .unsubscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<Response<String>>() {
-                        @Override
-                        public void onCompleted() {
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                        }
-
-                        @Override
-                        public void onNext(Response<String> s) {
-                            lastRequestTimeSendGeolocation = System.currentTimeMillis();
-                        }
-                    });
+        if (needSendGeolocationRequest && getView().hasGeolocationPermission()) {
+            getView().detectAndSendLocation();
         }
+
         getTokocashBalance();
         getTokopoint();
         getSearchHint();
+    }
+
+    public void sendGeolocationData() {
+        sendGeolocationInfoUseCase.createObservable(RequestParams.EMPTY)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Response<String>>() {
+                    @Override
+                    public void onCompleted() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                    }
+
+                    @Override
+                    public void onNext(Response<String> s) {
+                        lastRequestTimeSendGeolocation = System.currentTimeMillis();
+                    }
+                });
     }
 
     @Override

@@ -1,11 +1,14 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder
 
+import android.text.Html
 import android.widget.ImageView
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.GeolocationPromptViewModel
 import com.tokopedia.unifyprinciples.Typography
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.design.utils.StripedUnderlineUtil
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -23,25 +26,33 @@ class GeolocationPromptViewHolder(itemView :View, val homeCategoryListener: Home
         val btnClose = itemView.findViewById<ImageView>(R.id.img_close)
         val tvTitle = itemView.findViewById<Typography>(R.id.typography_title)
         val tvDesc = itemView.findViewById<Typography>(R.id.typography_description)
-        val tvPrompt = itemView.findViewById<Typography>(R.id.typography_prompt)
 
-//        val titleValue = remoteConfig.getString(
-//                RemoteConfigKey.HOME_GEOLOCATION_COMPONENT_TITLE,
-//                itemView.context.resources.getString(R.string.discovery_home_title_geolocation_title)
-//        )
-//        val descValue = remoteConfig.getString(
-//                RemoteConfigKey.HOME_GEOLOCATION_COMPONENT_DESCRIPTION,
-//                itemView.context.resources.getString(R.string.discovery_home_title_geolocation_description)
-//        )
-//        val promptValue = remoteConfig.getString(
-//                RemoteConfigKey.HOME_GEOLOCATION_COMPONENT_PROMPT,
-//                itemView.context.resources.getString(R.string.discovery_home_title_geolocation_prompt)
-//        )
-//        tvTitle.text = titleValue
-//        tvDesc.text = descValue
-//        tvPrompt.text = promptValue
+        val titleValue = remoteConfig.getString(
+                RemoteConfigKey.HOME_GEOLOCATION_COMPONENT_TITLE,
+                itemView.context.resources.getString(R.string.discovery_home_title_geolocation_title_default)
+        )
+        if (titleValue.isEmpty()) {
+            val defaultTitle = itemView.context.resources.getText(R.string.discovery_home_title_geolocation_title_default)
+            tvTitle.text = defaultTitle
+        } else {
+            tvTitle.text = MethodChecker.fromHtml(titleValue)
+        }
 
-        tvPrompt.setOnClickListener {
+        val descValue = remoteConfig.getString(
+                RemoteConfigKey.HOME_GEOLOCATION_COMPONENT_DESCRIPTION,
+                itemView.context.resources.getString(R.string.discovery_home_title_geolocation_description_default)
+        )
+        if (descValue.isEmpty()) {
+            val defaultDesc = itemView.context.resources.getText(R.string.discovery_home_title_geolocation_description_default)
+            tvDesc.text = defaultDesc
+        } else {
+            tvDesc.text = MethodChecker.fromHtml(descValue)
+        }
+
+        StripedUnderlineUtil.stripUnderlines(tvTitle)
+        StripedUnderlineUtil.stripUnderlines(tvDesc)
+
+        tvDesc.setOnClickListener {
             HomePageTracking.eventClickGeolocationComponent(itemView.context)
             homeCategoryListener.launchPermissionChecker()
         }

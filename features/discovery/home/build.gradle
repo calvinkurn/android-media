@@ -124,9 +124,11 @@ dependencies {
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     
     implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.locationmanager)
+    implementation rootProject.ext.playServicesDependencies.location
+
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
-
 }
 
 apply from: '../../../publish_local.gradle'
