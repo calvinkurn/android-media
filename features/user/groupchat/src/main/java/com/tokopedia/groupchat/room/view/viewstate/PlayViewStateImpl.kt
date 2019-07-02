@@ -130,7 +130,6 @@ open class PlayViewStateImpl(
 
     private lateinit var overlayDialog: CloseableBottomSheetDialog
     private lateinit var pinnedMessageDialog: CloseableBottomSheetDialog
-    private lateinit var welcomeInfoDialog: CloseableBottomSheetDialog
     private lateinit var webviewDialog: PlayWebviewDialogFragment
 
     private var youtubeRunnable: Handler = Handler()
@@ -157,6 +156,7 @@ open class PlayViewStateImpl(
     private var videoBufferHelper: VideoBufferHelper
     private var videoHorizontalHelper: VideoHorizontalHelper
     private var sponsorHelper: SponsorHelper
+    private var welcomeHelper: PlayWelcomeHelper
 
     init {
         val groupChatTypeFactory = GroupChatTypeFactoryImpl(
@@ -259,6 +259,7 @@ open class PlayViewStateImpl(
         videoBufferHelper = VideoBufferHelper(bufferContainer, bufferDimContainer)
         videoHorizontalHelper = VideoHorizontalHelper(viewModel, hideVideoToggle, showVideoToggle, videoContainer, youTubePlayer, setChatListHasSpaceOnTop(), analytics)
         sponsorHelper = SponsorHelper(viewModel, sponsorLayout, sponsorImage, analytics, listener)
+        welcomeHelper = PlayWelcomeHelper(viewModel, analytics, activity, view)
 
         errorView.setOnClickListener {}
     }
@@ -423,7 +424,6 @@ open class PlayViewStateImpl(
         setToolbarData(it.title, it.bannerUrl, it.totalView, it.blurredBannerUrl)
 
         initVideoFragment(it.videoId, it.isVideoLive)
-        setBottomView()
         showLoginButton(!userSession.isLoggedIn)
         it.settingGroupChat?.maxChar?.let {
             replyEditText.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(it))
@@ -437,6 +437,7 @@ open class PlayViewStateImpl(
         viewModel?.infoUrl = it.infoUrl
         autoAddSprintSale()
 
+        setBottomView()
         videoHorizontalHelper.assignViewModel(it)
         sponsorHelper.assignViewModel(it)
         sponsorHelper.setSponsor()
@@ -468,7 +469,7 @@ open class PlayViewStateImpl(
      * show overlay behind channel info
      */
     private fun showBottomSheetFirstTime(it: ChannelInfoViewModel) {
-        showInfoBottomSheet(it) {
+        welcomeHelper.showInfoBottomSheet(it) {
             if (it.overlayViewModel != null
                     && it.overlayViewModel.interuptViewModel != null
                     && !it.overlayViewModel.interuptViewModel!!.btnLink!!.isBlank())
@@ -1091,10 +1092,12 @@ open class PlayViewStateImpl(
         viewModel = channelInfoViewModel
         viewModel?.let {
             if (userSession.isLoggedIn) {
-                if (::welcomeInfoDialog.isInitialized && welcomeInfoDialog.isShowing) {
-                    welcomeInfoDialog.setOnDismissListener { onDismiss ->
-                        checkShowWhichBottomSheet(channelInfoViewModel)
-                    }
+//                if (::welcomeInfoDialog.isInitialized && welcomeInfoDialog.isShowing) {
+//                    welcomeInfoDialog.setOnDismissListener { onDismiss ->
+//                        checkShowWhichBottomSheet(channelInfoViewModel)
+//                    }
+                if (welcomeHelper.isShowingDialog()) {
+                    welcomeHelper.setOnDismissListener{checkShowWhichBottomSheet(channelInfoViewModel)}
                 } else if (::pinnedMessageDialog.isInitialized && pinnedMessageDialog.isShowing) {
                     pinnedMessageDialog.setOnDismissListener { onDismiss ->
                         checkShowWhichBottomSheet(channelInfoViewModel)
@@ -1129,65 +1132,6 @@ open class PlayViewStateImpl(
         } else if (::webviewDialog.isInitialized && webviewDialog.isVisible) {
             webviewDialog.dismiss()
         }
-    }
-
-    private fun showInfoBottomSheet(channelInfoViewModel: ChannelInfoViewModel,
-                                    onDismiss: () -> Unit) {
-        if (!::welcomeInfoDialog.isInitialized) {
-            welcomeInfoDialog = CloseableBottomSheetDialog.createInstanceRounded(view.context)
-        }
-
-        welcomeInfoDialog.setOnDismissListener {
-            onDismiss()
-            analytics.eventClickJoin(channelInfoViewModel.channelId)
-        }
-
-        val welcomeInfoView = createWelcomeInfoView(welcomeInfoDialog, channelInfoViewModel)
-        welcomeInfoDialog.setOnShowListener() { dialog ->
-            val d = dialog as BottomSheetDialog
-
-            val bottomSheet = d.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
-            if (bottomSheet != null) {
-                BottomSheetBehavior.from(bottomSheet).state = BottomSheetBehavior.STATE_EXPANDED
-            }
-        }
-
-        welcomeInfoDialog.setCustomContentView(welcomeInfoView, "", false)
-        view.setOnClickListener(null)
-        welcomeInfoDialog.show()
-
-    }
-
-    private fun createWelcomeInfoView(welcomeInfoDialog: CloseableBottomSheetDialog,
-                                      channelInfoViewModel: ChannelInfoViewModel): View {
-        val welcomeInfoView = activity.layoutInflater.inflate(R.layout
-                .channel_info_bottom_sheet_dialog, null)
-
-        val image = welcomeInfoView.findViewById<ImageView>(R.id.product_image)
-        val profile = welcomeInfoView.findViewById<ImageView>(R.id.prof_pict)
-        val title = welcomeInfoView.findViewById<TextView>(R.id.title)
-        val subtitle = welcomeInfoView.findViewById<TextView>(R.id.subtitle)
-        val name = welcomeInfoView.findViewById<TextView>(R.id.name)
-        val participant = welcomeInfoView.findViewById<TextView>(R.id.participant)
-        val ctaButton = welcomeInfoView.findViewById<TextView>(R.id.action_button)
-
-        participant.text = TextFormatter.format(channelInfoViewModel.totalView.toString())
-        name.text = channelInfoViewModel.adminName
-        title.text = channelInfoViewModel.title
-        subtitle.text = channelInfoViewModel.description
-
-        ImageHandler.loadImage2(image, channelInfoViewModel.image, R.drawable.loading_page)
-        ImageHandler.loadImageCircle2(profile.context,
-                profile,
-                channelInfoViewModel.adminPicture,
-                R.drawable.loading_page)
-
-        ctaButton.setOnClickListener {
-            welcomeInfoDialog.dismiss()
-            analytics.eventClickJoin(channelInfoViewModel.channelId)
-        }
-
-        return welcomeInfoView
     }
 
     private fun showPinnedMessage(viewModel: ChannelInfoViewModel) {
