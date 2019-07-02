@@ -72,7 +72,7 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
     public static final int REQUEST_CHANGE_NAME = 1002;
 
     public static final int REQUEST_CODE_PROFILE_PICTURE = 1202;
-    
+
     View layoutMain;
     AvatarView avatarSection;
     DetailView detailSection;

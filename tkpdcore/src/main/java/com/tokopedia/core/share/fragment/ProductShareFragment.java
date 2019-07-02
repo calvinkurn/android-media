@@ -156,7 +156,7 @@ public class ProductShareFragment extends BasePresenterFragmentV4<ProductSharePr
         facebookShare = (TextView) view.findViewById(R.id.facebook_share);
         twitterShare = (TextView) view.findViewById(R.id.twitter_share);
         pinterestShare = (TextView) view.findViewById(R.id.pinterest_share);
-        gplusShare = (TextView) view.findViewById(R.id.google_plus_share)
+        gplusShare = (TextView) view.findViewById(R.id.google_plus_share);
         copyUrl = (TextView) view.findViewById(R.id.copy_url);
         moreShare = (TextView) view.findViewById(R.id.more_share);
         subtitle = (TextView) view.findViewById(R.id.text_subtitle);
