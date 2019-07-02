@@ -144,10 +144,12 @@ class ChooseTokocashAccountFragment : BaseDaggerFragment(), ChooseTokocashAccoun
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         if (activity != null) {
-            menu!!.add(Menu.NONE, MENU_ID_LOGOUT, 0, "")
-            val menuItem = menu.findItem(MENU_ID_LOGOUT)
-            menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
-            menuItem.icon = getDraw(activity)
+            menu?.let{
+                it.add(Menu.NONE, MENU_ID_LOGOUT, 0, "")
+                val menuItem = it.findItem(MENU_ID_LOGOUT)
+                menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+                menuItem.icon = getDraw(activity)
+            }
         }
 
         super.onCreateOptionsMenu(menu, inflater)
