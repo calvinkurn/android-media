@@ -56,6 +56,7 @@ import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.design.widget.WarningTickerView;
 import com.tokopedia.gm.common.data.source.cloud.model.ShopScoreResult;
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel;
+import com.tokopedia.gm.common.utils.PowerMerchantTracking;
 import com.tokopedia.mitratoppers.preapprove.view.fragment.MitraToppersPreApproveLabelFragment;
 import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantSuccessBottomSheet;
 import com.tokopedia.product.manage.item.common.util.ViewUtils;
@@ -86,6 +87,7 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.gm.common.constant.GMParamConstant.PM_HOME_NONACTIVE;
 import static com.tokopedia.power_merchant.subscribe.PmSubscribeConstantKt.IMG_URL_BS_SUCCESS;
 import static com.tokopedia.power_merchant.subscribe.PmSubscribeConstantKt.IMG_URL_PM_IDLE;
 import static com.tokopedia.power_merchant.subscribe.PmSubscribeConstantKt.IMG_URL_RM_ILLUSTRATION;
@@ -176,6 +178,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         buttonActivatePowerMerchant.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                PowerMerchantTracking.INSTANCE.eventUpgradeShopHome();
                 RouteManager.route(getContext(), ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE);
             }
         });
@@ -804,7 +807,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                     getString(R.string.pm_popup_regular_title),
                     getString(R.string.pm_popup_regular_desc),
                     IMG_URL_RM_ILLUSTRATION,
-                    getString(R.string.pm_popup_regular_btn)
+                    getString(R.string.pm_popup_regular_btn), ""
             );
             redirectUrl = ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE;
         }
@@ -817,7 +820,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                         getString(R.string.pm_popup_active_title),
                         getString(R.string.pm_popup_active_desc),
                         IMG_URL_BS_SUCCESS,
-                        getString(R.string.pm_popup_active_btn)
+                        getString(R.string.pm_popup_active_btn),""
                 );
                 redirectUrl = "";
 
@@ -828,7 +831,8 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                         getString(R.string.pm_popup_idle_title),
                         getString(R.string.pm_popup_idle_desc),
                         IMG_URL_PM_IDLE,
-                        getString(R.string.pm_popup_idle_btn)
+                        getString(R.string.pm_popup_idle_btn),
+                        PM_HOME_NONACTIVE
                 );
                 redirectUrl = URL_GAINS_SCORE_POINT;
 
@@ -839,7 +843,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                         getString(R.string.pm_popup_deactivated_title),
                         getString(R.string.pm_popup_deactivated_desc),
                         IMG_URL_PM_IDLE,
-                        getString(R.string.pm_popup_deactivated_btn)
+                        getString(R.string.pm_popup_deactivated_btn),""
                 );
                 redirectUrl = ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE;
             }

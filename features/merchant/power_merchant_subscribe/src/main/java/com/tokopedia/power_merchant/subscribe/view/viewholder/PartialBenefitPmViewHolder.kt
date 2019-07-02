@@ -14,6 +14,7 @@ import android.view.View
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.component.TextViewCompat
+import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.URL_LEARN_MORE_BENEFIT
 
@@ -32,6 +33,7 @@ class PartialBenefitPmViewHolder private constructor(private val view: View, pri
 
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(textView: View) {
+                PowerMerchantTracking.eventLearnMorePm()
                 RouteManager.route(view.context, ApplinkConstInternalGlobal.WEBVIEW, URL_LEARN_MORE_BENEFIT)
             }
 

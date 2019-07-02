@@ -8,6 +8,7 @@ import android.widget.FrameLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.design.component.TextViewCompat
+import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.R
 
 class PowerMerchantCancelBottomSheet : BottomSheets() {
@@ -69,6 +70,7 @@ class PowerMerchantCancelBottomSheet : BottomSheets() {
         }
 
         buttonCancel.setOnClickListener {
+            PowerMerchantTracking.eventCancelMembershipBottomSheet()
             listener?.onclickButton()
         }
     }

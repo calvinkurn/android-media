@@ -33,9 +33,9 @@ import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.design.utils.StringUtils
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
+import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.power_merchant.subscribe.URL_GAINS_SCORE_POINT
-import com.tokopedia.power_merchant.subscribe.URL_LEARN_MORE_BENEFIT
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.R
@@ -335,6 +335,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         tv_ticker_info.text = getString(R.string.regular_merchant_learn_more)
         button_activate.visibility = View.VISIBLE
         button_activate.setOnClickListener {
+            PowerMerchantTracking.eventUpgradeShopSetting()
             navigateToPMSubscribe()
         }
     }

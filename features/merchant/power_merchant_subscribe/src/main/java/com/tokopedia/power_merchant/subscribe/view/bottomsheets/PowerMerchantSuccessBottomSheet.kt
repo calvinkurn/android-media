@@ -10,6 +10,9 @@ import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.design.component.TextViewCompat
+import com.tokopedia.gm.common.constant.GMParamConstant.PM_HOME_NONACTIVE
+import com.tokopedia.gm.common.constant.GMParamConstant.PM_SUBSCRIBE_SUCCESS
+import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.power_merchant.subscribe.R
 
@@ -56,6 +59,10 @@ class PowerMerchantSuccessBottomSheet : BottomSheets() {
 
         buttonSubmit.text = model.btnTitle
         buttonSubmit.setOnClickListener {
+            when (model.trackingFlag) {
+                PM_HOME_NONACTIVE -> PowerMerchantTracking.eventIncreaseScoreBottomSheet()
+                PM_SUBSCRIBE_SUCCESS -> PowerMerchantTracking.eventLearnMoreSuccessPopUp()
+            }
             listener?.onButtonClicked()
         }
     }
@@ -82,13 +89,15 @@ class PowerMerchantSuccessBottomSheet : BottomSheets() {
             val title: String = "",
             val desc: String = "",
             val imageUrl: String = "",
-            val btnTitle: String = ""
+            val btnTitle: String = "",
+            val trackingFlag: String = ""
     ) : Parcelable {
         constructor(source: Parcel) : this(
                 source.readString() ?: "",
                 source.readString() ?: "",
                 source.readString() ?: "",
-                source.readString() ?: ""
+                source.readString() ?: "",
+                source.readString() ?:""
         )
 
         override fun describeContents() = 0
@@ -98,6 +107,7 @@ class PowerMerchantSuccessBottomSheet : BottomSheets() {
             writeString(desc)
             writeString(imageUrl)
             writeString(btnTitle)
+            writeString(trackingFlag)
         }
 
         companion object {
