@@ -19,8 +19,6 @@ import android.support.v7.app.AppCompatDelegate;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.soloader.SoLoader;
 import com.github.anrwatchdog.ANRWatchDog;
-import com.github.moduth.blockcanary.BlockCanary;
-import com.github.moduth.blockcanary.BlockCanaryContext;
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
 import com.moengage.inapp.InAppTracker;
@@ -53,9 +51,8 @@ import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 import com.tokopedia.tkpd.timber.TimberWrapper;
 import com.tokopedia.tkpd.utils.CacheApiWhiteList;
 import com.tokopedia.tkpd.utils.CustomPushListener;
-import com.tokopedia.tkpdreactnative.react.fingerprint.utils.FingerprintConstantRegister;
+import com.tokopedia.tkpd.utils.UIBlockDebugger;
 import com.tokopedia.tokocash.network.api.WalletUrl;
-import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.track.TrackApp;
 
 import java.io.ByteArrayInputStream;
@@ -89,7 +86,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @Override
     public void onCreate() {
-        BlockCanary.install(this, new BlockCanaryContext()).start();
+        UIBlockDebugger.init(this);
         com.example.akamai_bot_lib.UtilsKt.initAkamaiBotManager(this);
         setVersionCode();
         GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;

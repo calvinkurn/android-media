@@ -253,7 +253,7 @@ ext {
             chcukNoOp   : "com.readystatesoftware.chuck:library-no-op:1.0.3",
             toolargetool: "com.gu.android:toolargetool:0.1.3@aar",
             timber      : "com.jakewharton.timber:timber:4.7.1",
-            performanceMonitor: "com.github.okasurya:AndroidPerformanceMonitor:1.4.3"
+            blockCanary : "com.github.okasurya:AndroidPerformanceMonitor:1.4.3"
     ]
 
     tkpdLibDependencies = [
