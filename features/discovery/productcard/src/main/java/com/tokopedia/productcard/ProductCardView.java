@@ -145,6 +145,7 @@ public class ProductCardView extends BaseCustomView {
 
     public void setBadges(List<String> urls){
         badgesContainerView.removeAllViews();
+        ((LinearLayout.LayoutParams) textLocation.getLayoutParams() ).setMargins((int) getResources().getDimension(urls.isEmpty() ? R.dimen.dp_0 : R.dimen.dp_4), (int) getResources().getDimension(R.dimen.dp_4), (int) getResources().getDimension(R.dimen.dp_0),(int) getResources().getDimension(R.dimen.dp_0));
         for(String url: urls){
             View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_badge, null);
             ImageHandler.loadImageFitCenter(getContext(), view.findViewById(R.id.badge), url);
