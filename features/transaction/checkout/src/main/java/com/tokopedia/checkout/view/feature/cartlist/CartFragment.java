@@ -1996,7 +1996,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 if (recommendationItems != null) {
                     int previousItemCount = cartAdapter.getItemCount();
                     for (RecommendationItem recommendationItem : recommendationItems) {
-                        boolean rightPosition = previousItemCount % 2 == 0;
+                        boolean rightPosition = previousItemCount % 2 == 1;
                         CartRecommendationItemHolderData cartRecommendationItemHolderData =
                                 new CartRecommendationItemHolderData(recommendationItem, rightPosition);
                         cartRecommendationItemHolderDataList.add(cartRecommendationItemHolderData);
@@ -2007,7 +2007,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             if (recommendationItems != null) {
                 int previousItemCount = cartAdapter.getItemCount();
                 for (RecommendationItem recommendationItem : recommendationItems) {
-                    boolean rightPosition = previousItemCount % 2 == 0;
+                    boolean rightPosition = previousItemCount % 2 == 1;
                     CartRecommendationItemHolderData cartRecommendationItemHolderData =
                             new CartRecommendationItemHolderData(recommendationItem, rightPosition);
                     cartRecommendationItemHolderDataList.add(cartRecommendationItemHolderData);
