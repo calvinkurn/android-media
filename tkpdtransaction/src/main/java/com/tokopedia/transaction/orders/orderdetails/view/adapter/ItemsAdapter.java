@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.net.Uri;
-import android.os.Environment;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -33,13 +31,7 @@ import com.tokopedia.transaction.orders.orderdetails.view.customview.RedeemVouch
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailContract;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailPresenter;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static android.content.Context.DOWNLOAD_SERVICE;
 
 public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements OrderListDetailContract.ActionInterface, RedeemVoucherView.SetTapActionDeals {
 
@@ -402,8 +394,10 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 if (!actionButton.getBody().equals("") && !actionButton.getBody().getAppURL().equals("")) {
                     if (view == null)
                         RouteManager.route(context, actionButton.getBody().getAppURL());
-                    else
+                    else {
+                        presenter.setDownloadableFlag(true);
                         view.setOnClickListener(getActionButtonClickListener(actionButton.getBody().getAppURL()));
+                    }
                 }
             } else if (actionButton.getControl().equalsIgnoreCase(KEY_QRCODE)) {
                 if (totalTicketCount > 0) {

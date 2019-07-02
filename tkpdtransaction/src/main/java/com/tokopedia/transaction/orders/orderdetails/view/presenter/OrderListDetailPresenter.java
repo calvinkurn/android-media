@@ -84,6 +84,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
     private String Insurance_File_Name = "Invoice";
     public String pdfUri = " ";
+    public boolean isdownloadable = false;
 
     @Inject
     public OrderListDetailPresenter(GraphqlUseCase orderDetailsUseCase) {
@@ -517,12 +518,22 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     private Boolean isdownloadable(String uri ) {
         Pattern pattern = Pattern.compile("^.+\\.([pP][dD][fF])$");
         Matcher matcher = pattern.matcher(uri);
-        return matcher.find();
+        return (matcher.find() || this.isdownloadable);
     }
 
     public void sendThankYouEvent(MetaDataInfo metaDataInfo) {
         if ("true".equalsIgnoreCase(this.fromPayment)) {
             orderListAnalytics.sendThankYouEvent(metaDataInfo.getEntityProductId(), metaDataInfo.getEntityProductName(), metaDataInfo.getTotalTicketPrice(), metaDataInfo.getTotalTicketCount(), orderId);
+        }
+    }
+
+    public void setDownloadableFlag(boolean isdownloadable) {
+        this.isdownloadable = isdownloadable;
+    }
+
+    public void setDownloadableFileName(String fileName) {
+        if (!TextUtils.isEmpty(fileName)) {
+            Insurance_File_Name = fileName;
         }
     }
 }

@@ -549,10 +549,10 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                 public void onClick(View v) {
                     if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
                         if (!TextUtils.isEmpty(item.getCategory()) && "Deal".equalsIgnoreCase(item.getCategory())) {
-                            Toaster.Companion.showNormalWithAction((Activity) getContext(), String.format("%s %s", "Berhasil! Silakan cek voucher di", metaDataInfo.getEntityaddress().getEmail()), Snackbar.LENGTH_LONG, "Ok", v1 -> {
+                            Toaster.Companion.showNormalWithAction(mainView, String.format("%s %s", "Berhasil! Silakan cek voucher di", metaDataInfo.getEntityaddress().getEmail()), Snackbar.LENGTH_LONG, "Ok", v1 -> {
                             });
                         } else {
-                            Toaster.Companion.showNormalWithAction((Activity) getContext(), String.format("%s %s", "Berhasil! Silakan cek e-tiket di", metaDataInfo.getEntityaddress().getEmail()), Snackbar.LENGTH_LONG, "Ok", v1 -> {
+                            Toaster.Companion.showNormalWithAction(mainView, String.format("%s %s", "Berhasil! Silakan cek e-tiket di", metaDataInfo.getEntityaddress().getEmail()), Snackbar.LENGTH_LONG, "Ok", v1 -> {
                             });
                         }
                         presenter.setActionButton(item.getActionButtons(), null, 0, false);

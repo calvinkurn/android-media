@@ -68,7 +68,7 @@ public class BookingCodeView extends RelativeLayout {
                 ClipboardManager myClipboard = (ClipboardManager) getContext().getSystemService(CLIPBOARD_SERVICE);
                 myClip = ClipData.newPlainText("text", bookingCode);
                 myClipboard.setPrimaryClip(myClip);
-                Toaster.Companion.showNormalWithAction((Activity)context, "Kode booking telah disalin", Snackbar.LENGTH_LONG, "Ok", v1 -> {});
+                Toaster.Companion.showNormalWithAction(view, "Kode booking telah disalin", Snackbar.LENGTH_LONG, "Ok", v1 -> {});
 //                ToasterNormal.showClose((Activity)context, "Kode booking telah disalin");
 
             }
