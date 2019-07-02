@@ -31,9 +31,24 @@
             android:contentDescription="@string/pointer"
             android:src="@drawable/ic_green_pointer" />
 
-    </RelativeLayout>
+        <include
+            android:id="@+id/bottomsheet_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            layout="@layout/bottomsheet_getdistrict" />
 
-    <include layout="@layout/bottomsheet_getdistrict" />
+        <ImageView
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
+            android:src="@drawable/ic_gps_enable"
+            android:layout_above="@id/bottomsheet_layout"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_16"/>
+
+    </RelativeLayout>
 
     <ImageButton
         android:id="@+id/back_button"

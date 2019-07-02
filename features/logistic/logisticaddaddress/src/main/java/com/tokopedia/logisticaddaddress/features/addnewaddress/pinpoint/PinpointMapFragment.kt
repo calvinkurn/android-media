@@ -3,7 +3,7 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.location.Location
+import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -12,10 +12,7 @@ import android.support.design.widget.CoordinatorLayout
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.RelativeLayout
@@ -167,6 +164,11 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         isMismatch?.let {
             if (!it) et_detail_address?.setText(saveAddressDataModel?.editDetailAddress)
         }
+
+        if (Build.VERSION.SDK_INT >= 19) {
+            val decorView = activity?.window?.decorView
+            decorView?.viewTreeObserver?.addOnGlobalLayoutListener(onGlobalLayoutListener)
+        }
     }
 
     private fun setViewListener() {
@@ -190,7 +192,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     override fun onMapReady(googleMap: GoogleMap?) {
         this.googleMap = googleMap
         this.googleMap?.uiSettings?.isMapToolbarEnabled = false
-        this.googleMap?.uiSettings?.isMyLocationButtonEnabled = true
+        this.googleMap?.uiSettings?.isMyLocationButtonEnabled = false
         this.googleMap?.setMinZoomPreference(16f)
         activity?.let { MapsInitializer.initialize(activity) }
 
@@ -215,7 +217,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             if (AddNewAddressUtils.isLocationEnabled(it)) {
                 this.googleMap?.isMyLocationEnabled = true
                 this.googleMap?.setOnMyLocationButtonClickListener(this);
-                this.googleMap?.setOnMyLocationClickListener(this);
+                // this.googleMap?.setOnMyLocationClickListener(this);
             }
         }
 
@@ -550,6 +552,34 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             Log.d("##LOGVIEW",child.toString() + " ID: ${child.id} TAG: ${child.tag}")
             if (child is ViewGroup) {
                 logView(child)
+            }
+        }
+    }
+
+    private var onGlobalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener = ViewTreeObserver.OnGlobalLayoutListener {
+        val r = Rect()
+        //r will be populated with the coordinates of your view that area still visible.
+        activity?.window?.decorView?.getWindowVisibleDisplayFrame(r)
+
+        //get screen height and calculate the difference with the useable area from the r
+        val height = activity?.window?.decorView?.context?.resources?.displayMetrics?.heightPixels
+        val diff = height?.minus(r.bottom)
+
+        //if it could be a keyboard add the padding to the view
+        if (diff != 0) {
+            // if the use-able screen height differs from the total screen height we assume that it shows a keyboard now
+            //check if the padding is 0 (if yes set the padding for the keyboard)
+            if (bottomsheet_getdistrict?.paddingBottom !== diff) {
+                //set the padding of the contentView for the keyboard
+                if (diff != null) {
+                    bottomsheet_getdistrict?.setPadding(0, 0, 0, diff)
+                }
+            }
+        } else {
+            //check if the padding is != 0 (if yes reset the padding)
+            if (bottomsheet_getdistrict?.paddingBottom !== 0) {
+                //reset the padding of the contentView
+                bottomsheet_getdistrict?.setPadding(0, 0, 0, 0)
             }
         }
     }

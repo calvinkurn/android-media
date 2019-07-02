@@ -135,7 +135,7 @@
                 android:inputType="text"
                 android:maxLines="1"
                 android:textColor="#ae31353b"
-                android:textSize="@dimen/sp_14" />
+                android:textSize="@dimen/sp_15" />
 
         </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
