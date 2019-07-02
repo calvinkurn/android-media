@@ -20,7 +20,6 @@ class TestActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_test)
         sendViewToBack(playerView)
-        setupAdujstResize()
 
         val sourceMedia = "https://scontent-sin6-1.cdninstagram.com/vp/cb4297650b392eab52095d911a1a17dc/5D1C8FA4/t50.12441-16/53306725_332584844027284_3716503313000746737_n.mp4?_nc_ht=scontent-sin6-1.cdninstagram.com"
         Toast.makeText(this, intent?.extras?.getString(EXTRA_CHANNEL_URL), Toast.LENGTH_LONG).show()
@@ -29,32 +28,6 @@ class TestActivity: AppCompatActivity() {
                 .videoSource(sourceMedia)
                 .repeatMode(RepeatMode.REPEAT_MODE_ALL)
                 .build()
-    }
-
-    private fun setupAdujstResize() {
-        rootView.viewTreeObserver.addOnGlobalLayoutListener {
-            val heightDiff = rootView.rootView.height - rootView.height
-            if (heightDiff > pxFromDp(this@TestActivity, 200f)) { // if more than 200 dp, it's probably a keyboard...
-                updateFullscreenStatus(false)
-            } else {
-                updateFullscreenStatus(true)
-            }
-        }
-    }
-
-    fun pxFromDp(context: Context, dp: Float): Float {
-        return dp * context.resources.displayMetrics.density
-    }
-
-    private fun updateFullscreenStatus(bUseFullscreen: Boolean) {
-        if (bUseFullscreen) {
-            window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-            window.clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN)
-        } else {
-            window.addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN)
-            window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-        }
-        rootView.requestLayout()
     }
 
     companion object {
