@@ -487,17 +487,18 @@ public class ProductListFragment
         } else {
             RouteManager.route(getActivity(), item.getUrl());
         }
-        SearchTracking.trackEventClickGlobalNavWidgetItem(item.getGlobalNavItemAsObjectDataLayer(), keyword);
+        SearchTracking.trackEventClickGlobalNavWidgetItem(item.getGlobalNavItemAsObjectDataLayer(),
+                keyword, item.getName(), item.getApplink());
     }
 
     @Override
-    public void onGlobalNavWidgetClickSeeAll(String applink, String url) {
+    public void onGlobalNavWidgetClickSeeAll(String applink, String url, String keyword, String title) {
         if (!TextUtils.isEmpty(applink)) {
             RouteManager.route(getActivity(), applink);
         } else {
             RouteManager.route(getActivity(), url);
         }
-        SearchTracking.eventUserClickSeeAllGlobalNavWidget();
+        SearchTracking.eventUserClickSeeAllGlobalNavWidget(keyword, title, applink);
     }
 
     @Override

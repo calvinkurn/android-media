@@ -136,7 +136,9 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
                 @Override
                 public void onclickSeeAllButton(String applink, String url) {
                     if (globalNavWidgetListener != null) {
-                        globalNavWidgetListener.onGlobalNavWidgetClickSeeAll(applink, url);
+                        globalNavWidgetListener.onGlobalNavWidgetClickSeeAll(applink, url,
+                                element.getGlobalNavViewModel().getKeyword(),
+                                element.getGlobalNavViewModel().getTitle());
                     }
                 }
             });
