@@ -24,6 +24,9 @@ class PowerMerchantSuccessBottomSheet : BottomSheets() {
     private lateinit var txtSuccessDescBs: TextViewCompat
     private lateinit var model: BottomSheetModel
     private var listener: BottomSheetListener? = null
+    val powerMerchantTracking: PowerMerchantTracking by lazy {
+        PowerMerchantTracking()
+    }
 
     companion object {
         private const val MODEL = "model"
@@ -60,8 +63,8 @@ class PowerMerchantSuccessBottomSheet : BottomSheets() {
         buttonSubmit.text = model.btnTitle
         buttonSubmit.setOnClickListener {
             when (model.trackingFlag) {
-                PM_HOME_NONACTIVE -> PowerMerchantTracking.eventIncreaseScoreBottomSheet()
-                PM_SUBSCRIBE_SUCCESS -> PowerMerchantTracking.eventLearnMoreSuccessPopUp()
+                PM_HOME_NONACTIVE -> powerMerchantTracking.eventIncreaseScoreBottomSheet()
+                PM_SUBSCRIBE_SUCCESS -> powerMerchantTracking.eventLearnMoreSuccessPopUp()
             }
             listener?.onButtonClicked()
         }

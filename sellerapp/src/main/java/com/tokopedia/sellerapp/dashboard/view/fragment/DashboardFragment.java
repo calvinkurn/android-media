@@ -113,6 +113,9 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
     @Inject
     public UserSessionInterface userSession;
 
+    @Inject
+    PowerMerchantTracking powerMerchantTracking;
+
     private TickerView tickerView;
     private LoadingStateView headerShopInfoLoadingStateView;
     private LoadingStateView footerShopInfoLoadingStateView;
@@ -178,7 +181,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
         buttonActivatePowerMerchant.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PowerMerchantTracking.INSTANCE.eventUpgradeShopHome();
+                powerMerchantTracking.eventUpgradeShopHome();
                 RouteManager.route(getContext(), ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE);
             }
         });

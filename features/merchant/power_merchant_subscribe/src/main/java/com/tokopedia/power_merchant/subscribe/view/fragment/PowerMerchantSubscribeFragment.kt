@@ -60,6 +60,8 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     lateinit var presenter: PmSubscribeContract.Presenter
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
+    @Inject
+    lateinit var powerMerchantTracking:PowerMerchantTracking
     lateinit var partialMemberPmViewHolder: PartialMemberPmViewHolder
     lateinit var partialBenefitPmViewHolder: PartialBenefitPmViewHolder
     lateinit var partialTncViewHolder: PartialTncViewHolder
@@ -108,7 +110,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         root_view_pm.showLoading()
         renderInitialLayout()
         button_activate_root.setOnClickListener {
-            PowerMerchantTracking.eventUpgradeShopPm()
+            powerMerchantTracking.eventUpgradeShopPm()
             if (getApprovalStatusPojo.kycStatus.kycStatusDetailPojo.status == 1) {
                 if (shopStatusModel.isPowerMerchantInactive()) {
                     if (shopScore < MINIMUM_SCORE_ACTIVATE_REGULAR) {
@@ -154,7 +156,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     private val onViewClickListener = View.OnClickListener {
         when (it.id) {
             R.id.member_cancellation_button -> {
-                PowerMerchantTracking.eventCancelMembershipPm()
+                powerMerchantTracking.eventCancelMembershipPm()
                 showBottomSheetCancel()
             }
             else -> {
@@ -234,7 +236,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             dialog.setContentView(R.layout.dialog_score_verification)
 
             dialog.btn_submit_score.setOnClickListener {
-                PowerMerchantTracking.eventIncreaseScorePopUp()
+                powerMerchantTracking.eventIncreaseScorePopUp()
                 RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, URL_GAINS_SCORE_POINT)
             }
             dialog.btn_close_score.setOnClickListener {
@@ -426,7 +428,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             partialTncViewHolder = PartialTncViewHolder.build(base_partial_tnc, activity)
         }
         if (!::partialBenefitPmViewHolder.isInitialized) {
-            partialBenefitPmViewHolder = PartialBenefitPmViewHolder.build(base_partial_benefit, activity)
+            partialBenefitPmViewHolder = PartialBenefitPmViewHolder.build(base_partial_benefit, activity,powerMerchantTracking)
         }
     }
 }

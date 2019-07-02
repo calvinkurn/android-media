@@ -28,7 +28,8 @@ class PowerMerchantTermsFragment: BaseWebViewFragment(), PmTermsContract.View {
     lateinit var userSession: UserSessionInterface
     @Inject
     lateinit var presenter: PmTermsContract.Presenter
-
+    @Inject
+    lateinit var powerMerchantTracking: PowerMerchantTracking
     private var isTermsAgreed: Boolean = false
     private var action: String = ""
 
@@ -116,7 +117,7 @@ class PowerMerchantTermsFragment: BaseWebViewFragment(), PmTermsContract.View {
             onCheckBoxClicked()
         }
         activateBtn.setOnClickListener {
-            PowerMerchantTracking.eventUpgradeShopWebView()
+            powerMerchantTracking.eventUpgradeShopWebView()
             if (!isTermsAgreed) {
                 mainView.showErrorToaster(getString(R.string.pm_terms_error_no_agreed))
             } else {

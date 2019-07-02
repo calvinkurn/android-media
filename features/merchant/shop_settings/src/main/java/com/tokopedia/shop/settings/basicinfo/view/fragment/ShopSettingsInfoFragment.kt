@@ -60,6 +60,9 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var powerMerchantTracking: PowerMerchantTracking
+
     private var needReload: Boolean = false
     private var shopBasicDataModel: ShopBasicDataModel? = null
 
@@ -335,7 +338,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         tv_ticker_info.text = getString(R.string.regular_merchant_learn_more)
         button_activate.visibility = View.VISIBLE
         button_activate.setOnClickListener {
-            PowerMerchantTracking.eventUpgradeShopSetting()
+            powerMerchantTracking.eventUpgradeShopSetting()
             navigateToPMSubscribe()
         }
     }
