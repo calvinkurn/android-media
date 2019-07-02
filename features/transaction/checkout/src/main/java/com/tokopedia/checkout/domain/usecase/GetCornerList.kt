@@ -17,10 +17,10 @@ import javax.inject.Inject
 
 const val PARAM_CORNER_USECASE: String = "input"
 
-class GetCornerList
+open class GetCornerList
 @Inject constructor(val context: Context, val graphqlUseCase: GraphqlUseCase, val mapper: AddressCornerMapper) {
 
-    fun execute(query: String): Observable<AddressListModel> =
+    open fun execute(query: String): Observable<AddressListModel> =
             this.getObservable(query = query, page = 1, isAddress = false, isCorner = true)
 
     fun loadMore(query: String, page: Int): Observable<AddressListModel> =
