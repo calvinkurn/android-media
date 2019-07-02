@@ -160,7 +160,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     }
 
     private fun prepareLayout() {
-        bottomSheetBehavior = BottomSheetBehavior.from(bottomsheet_getdistrict?)
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomsheet_getdistrict)
         getdistrict_container?.visibility = View.GONE
         invalid_container?.visibility = View.GONE
         whole_loading_container?.visibility = View.VISIBLE
