@@ -2,7 +2,6 @@ package com.tokopedia.core.analytics.container;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.support.annotation.Nullable;
@@ -23,7 +22,6 @@ import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
-import com.tokopedia.core.analytics.nishikino.singleton.ContainerHolderSingleton;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.iris.Iris;
@@ -34,6 +32,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import timber.log.Timber;
 
 import static com.tokopedia.core.analytics.TrackingUtils.getAfUniqueId;
 
@@ -103,14 +103,11 @@ public class GTMAnalytics extends ContextAnalytics {
                     bundle.getInt(AppEventTracking.GTM.GTM_RESOURCE));
 
             pResult.setResultCallback(cHolder -> {
-                ContainerHolderSingleton.setContainerHolder(cHolder);
-
-                if (isAllowRefreshDefault(cHolder)) {
-                    Log.i("GTM TKPD", "Refreshed Container ");
-                    cHolder.refresh();
-                }
-                //cHolder.setContainerAvailableListener((containerHolder, s) -> {
-                //});
+                cHolder.setContainerAvailableListener((containerHolder, s) -> {
+                    if (isAllowRefreshDefault(containerHolder)) {
+                        containerHolder.refresh();
+                    }
+                });
             }, 2, TimeUnit.SECONDS);
         } catch (Exception e) {
             eventError(getContext().getClass().toString(), e.toString());
