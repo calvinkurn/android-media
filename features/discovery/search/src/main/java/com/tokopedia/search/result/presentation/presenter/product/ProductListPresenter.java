@@ -377,6 +377,7 @@ final class ProductListPresenter
                     item.setCountReview(convertCountReviewFormatToInt(topAds.getProduct().getCountReviewFormat()));
                     item.setBadgesList(mapBadges(topAds.getShop().getBadges()));
                     item.setNew(topAds.getProduct().isProductNewLabel());
+                    item.setIsShopOfficialStore(topAds.getShop().isShop_is_official());
                     list.add(i, item);
                     j++;
                 }
