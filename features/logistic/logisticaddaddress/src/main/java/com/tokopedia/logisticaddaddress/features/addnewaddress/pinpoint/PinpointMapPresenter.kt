@@ -155,7 +155,9 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
         }
     }
 
-    fun setPermissionChecker(permissionCheckerHelper: PermissionCheckerHelper) {
-        this.permissionCheckerHelper = permissionCheckerHelper
+    fun setPermissionChecker(permissionCheckerHelper: PermissionCheckerHelper?) {
+        if (permissionCheckerHelper != null) {
+            this.permissionCheckerHelper = permissionCheckerHelper
+        }
     }
 }

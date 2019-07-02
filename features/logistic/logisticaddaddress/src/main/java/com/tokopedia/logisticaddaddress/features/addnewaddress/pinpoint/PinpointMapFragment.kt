@@ -204,8 +204,8 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             }
         }
 
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-        bottomSheetBehavior.isHideable = false
+        bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+        bottomSheetBehavior?.isHideable = false
         this.googleMap?.setOnCameraIdleListener { onMapDraggedListener() }
 
         context?.let {
