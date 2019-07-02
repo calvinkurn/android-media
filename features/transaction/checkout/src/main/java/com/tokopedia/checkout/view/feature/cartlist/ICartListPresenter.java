@@ -25,7 +25,7 @@ public interface ICartListPresenter {
 
     void detachView();
 
-    void processInitialGetCartData(String cartId, boolean initialLoad);
+    void processInitialGetCartData(String cartId, boolean initialLoad, boolean forceInitialLoad);
 
     void processDeleteCartItem(List<CartItemData> allCartItemData, List<CartItemData> removedCartItems, ArrayList<String> appliedPromocodeList, boolean addWishList);
 

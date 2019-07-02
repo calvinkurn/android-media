@@ -207,10 +207,10 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public void processInitialGetCartData(String cartId, boolean initialLoad) {
-        if (initialLoad && cartListData == null) {
+    public void processInitialGetCartData(String cartId, boolean initialLoad, boolean forceInitialLoad) {
+        if (initialLoad) {
             view.renderLoadGetCartData();
-        } else {
+        } else if (!forceInitialLoad) {
             view.showProgressLoading();
         }
 
@@ -357,7 +357,7 @@ public class CartListPresenter implements ICartListPresenter {
                         errorMessage = ErrorHandler.getErrorMessage(view.getActivity(), e);
                     }
                     view.showToastMessageRed(errorMessage);
-                    processInitialGetCartData(view.getCartId(), cartListData == null);
+                    processInitialGetCartData(view.getCartId(), cartListData == null, false);
                 }
             }
 
@@ -392,7 +392,7 @@ public class CartListPresenter implements ICartListPresenter {
                         errorMessage = ErrorHandler.getErrorMessage(view.getActivity(), e);
                     }
                     view.showToastMessageRed(errorMessage);
-                    processInitialGetCartData(view.getCartId(), cartListData == null);
+                    processInitialGetCartData(view.getCartId(), cartListData == null, false);
                 }
             }
 
@@ -758,7 +758,7 @@ public class CartListPresenter implements ICartListPresenter {
                     view.renderLoadGetCartDataFinish();
                     if (deleteAndRefreshCartListData.getDeleteCartData().isSuccess()) {
                         if (removeAllItems) {
-                            processInitialGetCartData(view.getCartId(), false);
+                            processInitialGetCartData(view.getCartId(), false, false);
                         } else {
                             view.onDeleteCartDataSuccess(toBeDeletedCartIds);
                         }
@@ -790,7 +790,7 @@ public class CartListPresenter implements ICartListPresenter {
                         errorMessage = ErrorHandler.getErrorMessage(view.getActivity(), e);
                     }
                     view.showToastMessageRed(errorMessage);
-                    processInitialGetCartData(view.getCartId(), cartListData == null);
+                    processInitialGetCartData(view.getCartId(), cartListData == null, false);
                 }
             }
 
@@ -1239,13 +1239,12 @@ public class CartListPresenter implements ICartListPresenter {
         enhancedECommerceProductCartMapData.setProductName(cartWishlistItemHolderData.getName());
         enhancedECommerceProductCartMapData.setProductID(cartWishlistItemHolderData.getId());
         enhancedECommerceProductCartMapData.setPrice(cartWishlistItemHolderData.getPrice());
-//        enhancedECommerceProductCartMapData.setBrand();
 //        enhancedECommerceProductCartMapData.setCategory();
 //        enhancedECommerceProductCartMapData.setVariant();
-//        enhancedECommerceProductCartMapData.setQty();
-//        enhancedECommerceProductCartMapData.setShopId();
+        enhancedECommerceProductCartMapData.setQty(cartWishlistItemHolderData.getMinOrder());
+        enhancedECommerceProductCartMapData.setShopId(cartWishlistItemHolderData.getShopId());
 //        enhancedECommerceProductCartMapData.setShopType();
-//        enhancedECommerceProductCartMapData.setShopName();
+        enhancedECommerceProductCartMapData.setShopName(cartWishlistItemHolderData.getShopName());
 //        enhancedECommerceProductCartMapData.pictureUrl();
 //        enhancedECommerceProductCartMapData.setUrl();
 //        enhancedECommerceProductCartMapData.setCategoryId();
@@ -1266,16 +1265,15 @@ public class CartListPresenter implements ICartListPresenter {
         EnhancedECommerceActionField enhancedECommerceActionField = new EnhancedECommerceActionField();
         enhancedECommerceActionField.setList(EnhancedECommerceActionField.LIST_RECENT_VIEW);
         EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData = new EnhancedECommerceProductCartMapData();
-//        enhancedECommerceProductCartMapData.setProductName();
-//        enhancedECommerceProductCartMapData.setProductID();
-//        enhancedECommerceProductCartMapData.setPrice();
-//        enhancedECommerceProductCartMapData.setBrand();
+        enhancedECommerceProductCartMapData.setProductName(cartRecentViewItemHolderData.getName());
+        enhancedECommerceProductCartMapData.setProductID(cartRecentViewItemHolderData.getId());
+        enhancedECommerceProductCartMapData.setPrice(cartRecentViewItemHolderData.getPrice());
 //        enhancedECommerceProductCartMapData.setCategory();
 //        enhancedECommerceProductCartMapData.setVariant();
-//        enhancedECommerceProductCartMapData.setQty();
-//        enhancedECommerceProductCartMapData.setShopId();
+        enhancedECommerceProductCartMapData.setQty(cartRecentViewItemHolderData.getMinOrder());
+        enhancedECommerceProductCartMapData.setShopId(cartRecentViewItemHolderData.getShopId());
 //        enhancedECommerceProductCartMapData.setShopType();
-//        enhancedECommerceProductCartMapData.setShopName();
+        enhancedECommerceProductCartMapData.setShopName(cartRecentViewItemHolderData.getShopName());
 //        enhancedECommerceProductCartMapData.pictureUrl();
 //        enhancedECommerceProductCartMapData.setUrl();
 //        enhancedECommerceProductCartMapData.setCategoryId();
@@ -1296,16 +1294,15 @@ public class CartListPresenter implements ICartListPresenter {
         EnhancedECommerceActionField enhancedECommerceActionField = new EnhancedECommerceActionField();
         enhancedECommerceActionField.setList(EnhancedECommerceActionField.LIST_RECOMMENDATION);
         EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData = new EnhancedECommerceProductCartMapData();
-//        enhancedECommerceProductCartMapData.setProductName();
-//        enhancedECommerceProductCartMapData.setProductID();
-//        enhancedECommerceProductCartMapData.setPrice();
-//        enhancedECommerceProductCartMapData.setBrand();
+        enhancedECommerceProductCartMapData.setProductName(cartRecommendationItemHolderData.getRecommendationItem().getName());
+        enhancedECommerceProductCartMapData.setProductID(String.valueOf(cartRecommendationItemHolderData.getRecommendationItem().getProductId()));
+        enhancedECommerceProductCartMapData.setPrice(cartRecommendationItemHolderData.getRecommendationItem().getPrice());
 //        enhancedECommerceProductCartMapData.setCategory();
 //        enhancedECommerceProductCartMapData.setVariant();
-//        enhancedECommerceProductCartMapData.setQty();
-//        enhancedECommerceProductCartMapData.setShopId();
+        enhancedECommerceProductCartMapData.setQty(cartRecommendationItemHolderData.getRecommendationItem().getMinOrder());
+        enhancedECommerceProductCartMapData.setShopId(String.valueOf(cartRecommendationItemHolderData.getRecommendationItem().getShopId()));
 //        enhancedECommerceProductCartMapData.setShopType();
-//        enhancedECommerceProductCartMapData.setShopName();
+        enhancedECommerceProductCartMapData.setShopName(cartRecommendationItemHolderData.getRecommendationItem().getShopName());
 //        enhancedECommerceProductCartMapData.pictureUrl();
 //        enhancedECommerceProductCartMapData.setUrl();
 //        enhancedECommerceProductCartMapData.setCategoryId();

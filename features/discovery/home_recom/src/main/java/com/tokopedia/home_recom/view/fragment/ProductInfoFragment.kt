@@ -268,6 +268,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
             discountPercentage = productDataModel.productDetailData.discountPercentage,
             slashedPriceInt = productDataModel.productDetailData.slashedPriceInt,
             shopId = productDataModel.productDetailData.shop.id,
+            shopName = productDataModel.productDetailData.shop.name,
             minOrder = productDataModel.productDetailData.minOrder
     )
 

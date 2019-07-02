@@ -1120,7 +1120,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                         rlContent.setVisibility(View.VISIBLE);
                         refreshHandler.setRefreshing(true);
                         cartAdapter.resetData();
-                        dPresenter.processInitialGetCartData(getCartId(), dPresenter.getCartListData() == null);
+                        dPresenter.processInitialGetCartData(getCartId(), dPresenter.getCartListData() == null, false);
                     });
         }
     }
@@ -1155,7 +1155,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     private void showSnackbarRetry(String message) {
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), message, ()
-                -> dPresenter.processInitialGetCartData(getCartId(), dPresenter.getCartListData() == null))
+                -> dPresenter.processInitialGetCartData(getCartId(), dPresenter.getCartListData() == null, false))
                 .showRetrySnackbar();
     }
 
@@ -1274,12 +1274,12 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         if (!hidden) {
             refreshHandler.setRefreshing(true);
             if (dPresenter.getCartListData() == null) {
-                dPresenter.processInitialGetCartData(getCartId(), true);
+                dPresenter.processInitialGetCartData(getCartId(), true, false);
             } else {
                 if (dPresenter.dataHasChanged()) {
                     dPresenter.processToUpdateAndReloadCartData();
                 } else {
-                    dPresenter.processInitialGetCartData(getCartId(), true);
+                    dPresenter.processInitialGetCartData(getCartId(), false, true);
                 }
             }
         }
@@ -1444,7 +1444,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             if (dPresenter.getCartListData() != null && dPresenter.getCartListData().getShopGroupDataList().size() > 0) {
                 showMainContainer();
             }
-            dPresenter.processInitialGetCartData(getCartId(), true);
+            dPresenter.processInitialGetCartData(getCartId(), true, false);
             String promo = checkoutModuleRouter.checkoutModuleRouterGetAutoApplyCouponBranchUtil();
             if (!TextUtils.isEmpty(promo)) {
                 dPresenter.processCheckPromoCodeFromSuggestedPromo(promo, true);
@@ -1474,7 +1474,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             showToastMessageGreen(getString(R.string.message_payment_success));
             checkoutModuleRouter.checkoutModuleRouterResetBadgeCart();
             refreshHandler.setRefreshing(true);
-            dPresenter.processInitialGetCartData(getCartId(), false);
+            dPresenter.processInitialGetCartData(getCartId(), false, false);
         } else if (resultCode == TopPayActivity.PAYMENT_FAILED) {
             showToastMessage(getString(R.string.default_request_error_unknown));
             sendAnalyticsScreenName(getScreenName());
@@ -1482,7 +1482,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             sendAnalyticsScreenName(getScreenName());
         } else if (resultCode == ShipmentActivity.RESULT_CODE_COUPON_STATE_CHANGED) {
             refreshHandler.setRefreshing(true);
-            dPresenter.processInitialGetCartData(getCartId(), false);
+            dPresenter.processInitialGetCartData(getCartId(), false, false);
         }
     }
 
@@ -1930,6 +1930,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 cartRecentViewItemHolderData.setReviewCount(recentView.getProductReviewCount());
                 cartRecentViewItemHolderData.setShopLocation(recentView.getShopLocation());
                 cartRecentViewItemHolderData.setShopId(recentView.getShopId());
+                cartRecentViewItemHolderData.setShopName(recentView.getShopName());
                 cartRecentViewItemHolderData.setMinOrder(1);
                 if (recentView.getBadges().size() > 0) {
                     cartRecentViewItemHolderData.setBadgeUrl(recentView.getBadges().get(0).getImageUrl());
@@ -1965,6 +1966,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 cartWishlistItemHolderData.setMinOrder(item.getMinimumOrder());
                 if (item.getShop() != null) {
                     cartWishlistItemHolderData.setShopId(item.getShop().getId());
+                    cartWishlistItemHolderData.setShopName(item.getShop().getName());
                     cartWishlistItemHolderData.setShopLocation(item.getShop().getLocation());
                 }
                 if (item.getBadges().size() > 0) {

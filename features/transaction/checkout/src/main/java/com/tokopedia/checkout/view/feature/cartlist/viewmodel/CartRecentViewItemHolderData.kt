@@ -15,5 +15,6 @@ data class CartRecentViewItemHolderData(
         var badgeUrl: String = "",
         var shopLocation: String = "",
         var shopId: String = "",
+        var shopName: String = "",
         var minOrder: Int = 1
 )

@@ -36,7 +36,7 @@ class AddToCartSubscriber(val view: ICartListView?,
         if (view != null) {
             view.hideProgressLoading()
             if (response.success == 1) {
-                presenter.processInitialGetCartData("0", false)
+                presenter.processInitialGetCartData("0", false, false)
                 view.showToastMessageGreen(response.message[0])
             } else {
                 view.showToastMessageRed(response.message[0])
