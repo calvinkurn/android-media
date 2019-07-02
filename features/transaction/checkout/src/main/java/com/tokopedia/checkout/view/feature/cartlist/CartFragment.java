@@ -1279,7 +1279,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 if (dPresenter.dataHasChanged()) {
                     dPresenter.processToUpdateAndReloadCartData();
                 } else {
-                    dPresenter.processInitialGetCartData(getCartId(), false);
+                    dPresenter.processInitialGetCartData(getCartId(), true);
                 }
             }
         }
