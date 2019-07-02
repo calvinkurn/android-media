@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -113,12 +112,15 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
             mTvPPPLinkText.setText(cartItem.getProtectionTitle());
             mTvPPPPrice.setText(cartItem.getProtectionSubTitle());
             mCbPPP.setChecked(cartItem.isProtectionOptIn());
-            mCbPPP.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                    shipmentItemListener.notifyOnPurchaseProtectionChecked(checked, getAdapterPosition() + 1);
-                }
-            });
+
+            if (cartItem.isProtectionCheckboxDisabled()) {
+                mCbPPP.setClickable(false);
+                mCbPPP.setEnabled(false);
+            } else {
+                mCbPPP.setClickable(true);
+                mCbPPP.setEnabled(true);
+                mCbPPP.setOnCheckedChangeListener((compoundButton, checked) -> shipmentItemListener.notifyOnPurchaseProtectionChecked(checked, getAdapterPosition() + 1));
+            }
         }
 
         mIvFreeReturnIcon.setVisibility(cartItem.isFreeReturn() ? View.VISIBLE : View.GONE);
