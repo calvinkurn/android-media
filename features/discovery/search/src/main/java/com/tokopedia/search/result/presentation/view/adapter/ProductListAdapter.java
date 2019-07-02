@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.presentation.view.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,13 +44,30 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
         loadingMoreModel = new LoadingMoreModel();
     }
 
+    @NonNull
     @Override
     public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         View view = LayoutInflater.from(context).inflate(viewType, parent, false);
         AbstractViewHolder viewHolder = typeFactory.createViewHolder(view, viewType);
+
         setTopAdsSwitcherForTopAdsViewHolder(viewHolder);
+        setFullSpanForStaggeredGrid(viewHolder, viewType);
+
         return viewHolder;
+    }
+
+    private void setFullSpanForStaggeredGrid(AbstractViewHolder holder, int viewType) {
+        if(holder.itemView.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
+            StaggeredGridLayoutManager.LayoutParams layoutParams =
+                    (StaggeredGridLayoutManager.LayoutParams) holder.itemView.getLayoutParams();
+
+            layoutParams.setFullSpan(isStaggeredGridFullSpan(viewType));
+        }
+    }
+
+    private boolean isStaggeredGridFullSpan(int viewType) {
+        return viewType != SmallGridProductItemViewHolder.LAYOUT;
     }
 
     private void setTopAdsSwitcherForTopAdsViewHolder(AbstractViewHolder viewHolder) {
@@ -64,22 +82,7 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
 
     @Override
     public void onBindViewHolder(AbstractViewHolder holder, int position) {
-        setFullSpanForStaggeredGrid(holder, position);
-
         holder.bind(list.get(position));
-    }
-
-    private void setFullSpanForStaggeredGrid(AbstractViewHolder holder, int position) {
-        if(holder.itemView.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
-            StaggeredGridLayoutManager.LayoutParams layoutParams =
-                    (StaggeredGridLayoutManager.LayoutParams) holder.itemView.getLayoutParams();
-
-            layoutParams.setFullSpan(isStaggeredGridFullSpan(position));
-        }
-    }
-
-    private boolean isStaggeredGridFullSpan(int position) {
-        return getItemViewType(position) != SmallGridProductItemViewHolder.LAYOUT;
     }
 
     @Override
