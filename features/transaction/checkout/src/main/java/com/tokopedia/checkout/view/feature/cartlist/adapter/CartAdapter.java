@@ -522,9 +522,10 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 recentViewIndex = cartDataList.indexOf(item);
             }
         }
+        int startIndex = recentViewIndex + 1;
         cartDataList.add(++recentViewIndex, cartSectionHeaderHolderData);
         cartDataList.add(++recentViewIndex, cartRecentViewHolderData);
-        notifyDataSetChanged();
+        notifyItemRangeInserted(startIndex, 2);
     }
 
     public void addCartWishlistData(CartSectionHeaderHolderData cartSectionHeaderHolderData,
@@ -537,9 +538,10 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 wishlistIndex = cartDataList.indexOf(item);
             }
         }
+        int startIndex = wishlistIndex + 1;
         cartDataList.add(++wishlistIndex, cartSectionHeaderHolderData);
         cartDataList.add(++wishlistIndex, cartWishlistHolderData);
-        notifyDataSetChanged();
+        notifyItemRangeInserted(startIndex, 2);
     }
 
     public void addCartRecommendationData(CartSectionHeaderHolderData cartSectionHeaderHolderData,
@@ -555,12 +557,16 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
         }
 
+        int startIndex = recommendationIndex + 1;
+        int count = 0;
         if (cartSectionHeaderHolderData != null) {
             cartDataList.add(++recommendationIndex, cartSectionHeaderHolderData);
+            count += 1;
         }
 
         cartDataList.addAll(++recommendationIndex, cartRecommendationItemHolderDataList);
-        notifyDataSetChanged();
+        count += cartRecommendationItemHolderDataList.size();
+        notifyItemRangeInserted(startIndex, count);
     }
 
     public void removeCartEmptyData() {
