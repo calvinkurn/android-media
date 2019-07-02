@@ -53,7 +53,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     private var googleMap: GoogleMap? = null
     private var currentLat: Double? = 0.0
     private var currentLong: Double? = 0.0
-    private lateinit var bottomSheetBehavior: BottomSheetBehavior<CoordinatorLayout>
+    private var bottomSheetBehavior: BottomSheetBehavior<CoordinatorLayout>? = null
     val handler = Handler()
     private var unnamedRoad: String = "Unnamed Road"
     private var isShowingAutocomplete: Boolean? = null
@@ -73,7 +73,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     private var saveAddressDataModel: SaveAddressDataModel? = null
     private var addNewAddressComponent: AddNewAddressComponent? = null
     private var isChangesRequested: Boolean? = null
-    private lateinit var permissionCheckerHelper: PermissionCheckerHelper
+    private var permissionCheckerHelper: PermissionCheckerHelper? = null
     private val SCREEN_NAME = "/user/address/create/cart/pinpoint1"
     private var mapView: MapView? = null
 
@@ -92,9 +92,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
                     .build()
                     .inject(this@PinpointMapFragment)
             presenter.attachView(this@PinpointMapFragment)
-            if (::permissionCheckerHelper.isInitialized) {
-                presenter.setPermissionChecker(permissionCheckerHelper)
-            }
+            presenter.setPermissionChecker(permissionCheckerHelper)
         }
     }
 
@@ -115,7 +113,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
                     putParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL, extra.getParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL))
                     putBoolean(AddressConstants.EXTRA_IS_CHANGES_REQUESTED, extra.getBoolean(AddressConstants.EXTRA_IS_CHANGES_REQUESTED))
                 }
-                if (::permissionCheckerHelper.isInitialized) permissionCheckerHelper = PermissionCheckerHelper()
+                permissionCheckerHelper = PermissionCheckerHelper()
             }
         }
     }
@@ -151,12 +149,12 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     }
 
     private fun prepareMap(savedInstanceState: Bundle?) {
-        /*map_view?.onCreate(savedInstanceState)
-        map_view?.getMapAsync(this)*/
+        map_view?.onCreate(savedInstanceState)
+        map_view?.getMapAsync(this)
 
-        val mapFragment: SupportMapFragment = fragmentManager?.findFragmentById(R.id.map_view) as SupportMapFragment
+        /*val mapFragment: SupportMapFragment = fragmentManager?.findFragmentById(R.id.map_view) as SupportMapFragment
         mapView = mapFragment.view as MapView?
-        mapFragment.getMapAsync(this)
+        mapFragment.getMapAsync(this)*/
     }
 
     private fun prepareLayout() {
@@ -514,11 +512,9 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             context?.let {
-                if (::permissionCheckerHelper.isInitialized) {
-                    permissionCheckerHelper.onRequestPermissionsResult(it,
-                            requestCode, permissions,
-                            grantResults)
-                }
+                permissionCheckerHelper?.onRequestPermissionsResult(it,
+                        requestCode, permissions,
+                        grantResults)
             }
         }
     }
