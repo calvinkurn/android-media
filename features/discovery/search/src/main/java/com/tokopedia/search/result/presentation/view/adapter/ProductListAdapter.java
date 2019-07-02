@@ -50,24 +50,8 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
         Context context = parent.getContext();
         View view = LayoutInflater.from(context).inflate(viewType, parent, false);
         AbstractViewHolder viewHolder = typeFactory.createViewHolder(view, viewType);
-
         setTopAdsSwitcherForTopAdsViewHolder(viewHolder);
-        setFullSpanForStaggeredGrid(viewHolder, viewType);
-
         return viewHolder;
-    }
-
-    private void setFullSpanForStaggeredGrid(AbstractViewHolder holder, int viewType) {
-        if(holder.itemView.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
-            StaggeredGridLayoutManager.LayoutParams layoutParams =
-                    (StaggeredGridLayoutManager.LayoutParams) holder.itemView.getLayoutParams();
-
-            layoutParams.setFullSpan(isStaggeredGridFullSpan(viewType));
-        }
-    }
-
-    private boolean isStaggeredGridFullSpan(int viewType) {
-        return viewType != SmallGridProductItemViewHolder.LAYOUT;
     }
 
     private void setTopAdsSwitcherForTopAdsViewHolder(AbstractViewHolder viewHolder) {
@@ -82,7 +66,22 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
 
     @Override
     public void onBindViewHolder(AbstractViewHolder holder, int position) {
+        setFullSpanForStaggeredGrid(holder, holder.getItemViewType());
+
         holder.bind(list.get(position));
+    }
+
+    private void setFullSpanForStaggeredGrid(AbstractViewHolder holder, int viewType) {
+        if(holder.itemView.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
+            StaggeredGridLayoutManager.LayoutParams layoutParams =
+                    (StaggeredGridLayoutManager.LayoutParams) holder.itemView.getLayoutParams();
+
+            layoutParams.setFullSpan(isStaggeredGridFullSpan(viewType));
+        }
+    }
+
+    private boolean isStaggeredGridFullSpan(int viewType) {
+        return viewType != SmallGridProductItemViewHolder.LAYOUT;
     }
 
     @Override

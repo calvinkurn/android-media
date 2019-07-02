@@ -503,7 +503,7 @@ final class ProductListPresenter
             if (productViewModel.getProductList().isEmpty()) {
                 getViewToShowEmptySearch();
             } else {
-                getViewToShowProductList(productViewModel, isFirstTimeLoad);
+                getViewToShowProductList(productViewModel);
             }
 
             getView().storeTotalData(productViewModel.getTotalData());
@@ -520,9 +520,7 @@ final class ProductListPresenter
         getView().setTotalSearchResultCount("0");
     }
 
-    private void getViewToShowProductList(ProductViewModel productViewModel,
-                                          boolean isFirstTimeLoad
-                                          ) {
+    private void getViewToShowProductList(ProductViewModel productViewModel) {
         List<Visitable> list = new ArrayList<>();
 
         HeaderViewModel headerViewModel = new HeaderViewModel();
