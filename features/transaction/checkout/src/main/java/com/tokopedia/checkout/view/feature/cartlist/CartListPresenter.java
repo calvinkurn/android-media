@@ -1206,14 +1206,34 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public void processAddToCart(String productId, String shopId, int minOrder) {
+    public void processAddToCart(Object productModel) {
         try {
+            int productId = 0;
+            int minOrder = 0;
+            int shopId = 0;
+            if (productModel instanceof CartWishlistItemHolderData) {
+                CartWishlistItemHolderData cartWishlistItemHolderData = (CartWishlistItemHolderData) productModel;
+                productId = Integer.parseInt(cartWishlistItemHolderData.getId());
+                minOrder = cartWishlistItemHolderData.getMinOrder();
+                shopId = Integer.parseInt(cartWishlistItemHolderData.getShopId());
+            } else if (productModel instanceof CartRecentViewItemHolderData) {
+                CartRecentViewItemHolderData cartRecentViewItemHolderData = (CartRecentViewItemHolderData) productModel;
+                productId = Integer.parseInt(cartRecentViewItemHolderData.getId());
+                minOrder = cartRecentViewItemHolderData.getMinOrder();
+                shopId = Integer.parseInt(cartRecentViewItemHolderData.getShopId());
+            } else if (productModel instanceof CartRecommendationItemHolderData) {
+                CartRecommendationItemHolderData cartRecommendationItemHolderData = (CartRecommendationItemHolderData) productModel;
+                productId = cartRecommendationItemHolderData.getRecommendationItem().getProductId();
+                minOrder = cartRecommendationItemHolderData.getRecommendationItem().getMinOrder();
+                shopId = cartRecommendationItemHolderData.getRecommendationItem().getShopId();
+            }
+
             view.showProgressLoading();
             AddToCartRequest addToCartRequest = new AddToCartRequest.Builder()
-                    .productId(Integer.parseInt(productId))
+                    .productId(productId)
                     .notes("")
                     .quantity(minOrder)
-                    .shopId(Integer.parseInt(shopId))
+                    .shopId(shopId)
                     .build();
 
             RequestParams requestParams = RequestParams.create();
@@ -1223,7 +1243,7 @@ public class CartListPresenter implements ICartListPresenter {
                     .subscribeOn(Schedulers.io())
                     .unsubscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new AddToCartSubscriber(view, this));
+                    .subscribe(new AddToCartSubscriber(view, this, productModel));
         } catch (NumberFormatException e) {
             e.printStackTrace();
             view.hideProgressLoading();

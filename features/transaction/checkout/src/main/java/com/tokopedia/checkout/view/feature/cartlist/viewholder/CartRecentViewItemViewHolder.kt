@@ -67,7 +67,7 @@ class CartRecentViewItemViewHolder(val view: View, val actionListener: ActionLis
         }
 
         itemView.tv_atc.setOnClickListener {
-            actionListener.onButtonAddToCartClicked(element.id, element.shopId, element.minOrder)
+            actionListener.onButtonAddToCartClicked(element)
         }
 
         itemView.setOnClickListener {

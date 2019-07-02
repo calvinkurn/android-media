@@ -37,6 +37,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.domain.datamodel.addtocart.AddToCartDataModel;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
@@ -642,8 +643,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void onButtonAddToCartClicked(@NotNull String productId, @NotNull String shopId, @NotNull int minOrder) {
-        dPresenter.processAddToCart(productId, shopId, minOrder);
+    public void onButtonAddToCartClicked(@NotNull Object productModel) {
+        dPresenter.processAddToCart(productModel);
     }
 
     @NonNull
@@ -2036,5 +2037,33 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void hideItemLoading() {
         cartAdapter.removeCartLoadingData();
+    }
+
+    @Override
+    public void triggerSendEnhancedEcommerceAddToCartSuccess(AddToCartDataModel addToCartDataModel, Object productModel) {
+        Map<String, Object> stringObjectMap = null;
+        String eventCategory = "";
+        String eventAction = "";
+        String eventLabel = "";
+        if (productModel instanceof CartWishlistItemHolderData) {
+            eventCategory = "wishlist page";
+            eventAction = "click - beli on wishlist";
+            eventLabel = "";
+            stringObjectMap = dPresenter.generateAddToCartEnhanceEcommerceDataLayer((CartWishlistItemHolderData) productModel);
+        } else if (productModel instanceof CartRecentViewItemHolderData) {
+            eventCategory = "recent view";
+            eventAction = "click - beli on recent view page";
+            eventLabel = "";
+            stringObjectMap = dPresenter.generateAddToCartEnhanceEcommerceDataLayer((CartRecentViewItemHolderData) productModel);
+        } else if (productModel instanceof CartRecommendationItemHolderData) {
+            eventCategory = "recommendation page";
+            eventAction = "click add to cart on primary product";
+            eventLabel = "";
+            stringObjectMap = dPresenter.generateAddToCartEnhanceEcommerceDataLayer((CartRecommendationItemHolderData) productModel);
+        }
+
+        if (stringObjectMap != null && !TextUtils.isEmpty(eventCategory) && !TextUtils.isEmpty(eventAction) && !TextUtils.isEmpty(eventLabel)) {
+            checkoutAnalyticsCourierSelection.sendEnhancedECommerceAddToCart(stringObjectMap, eventCategory, eventAction, eventLabel);
+        }
     }
 }

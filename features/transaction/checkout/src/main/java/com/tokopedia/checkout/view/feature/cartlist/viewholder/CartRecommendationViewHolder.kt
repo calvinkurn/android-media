@@ -27,10 +27,7 @@ class CartRecommendationViewHolder(val view: View, val actionListener: ActionLis
 
         itemView.productCardView.showAddToCartButton()
         itemView.productCardView.setAddToCartClickListener {
-            actionListener.onButtonAddToCartClicked(
-                    element.recommendationItem.productId.toString(),
-                    element.recommendationItem.shopId.toString(),
-                    element.recommendationItem.minOrder)
+            actionListener.onButtonAddToCartClicked(element)
         }
 
         if (element.rightPosition) {

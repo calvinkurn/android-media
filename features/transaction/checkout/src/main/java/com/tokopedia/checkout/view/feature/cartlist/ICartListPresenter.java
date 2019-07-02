@@ -69,7 +69,7 @@ public interface ICartListPresenter {
 
     void processGetRecommendationData(int page);
 
-    void processAddToCart(String productId, String shopId, int minOrder);
+    void processAddToCart(Object productModel);
 
     Map<String, Object> generateAddToCartEnhanceEcommerceDataLayer(CartWishlistItemHolderData cartWishlistItemHolderData);
 

@@ -38,5 +38,5 @@ interface ActionListener {
 
     fun onProductClicked(productId: String)
 
-    fun onButtonAddToCartClicked(productId: String, shopId: String, minOrder: Int)
+    fun onButtonAddToCartClicked(productModel: Any)
 }
