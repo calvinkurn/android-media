@@ -360,6 +360,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         })
         ticker_container.visibility = View.VISIBLE
         setTextViewClickSpan(tv_ticker, MethodChecker.fromHtml(getString(R.string.power_merchant_learn_more)), getString(R.string.learn_more)) {
+            powerMerchantTracking.eventLearnMoreSetting()
             RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, URL_GAINS_SCORE_POINT)
         }
         tv_ticker_info.visibility = View.GONE
