@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -145,7 +146,8 @@ public class ProductCardView extends BaseCustomView {
 
     public void setBadges(List<String> urls){
         badgesContainerView.removeAllViews();
-        ((LinearLayout.LayoutParams) textLocation.getLayoutParams() ).setMargins((int) getResources().getDimension(urls.isEmpty() ? R.dimen.dp_0 : R.dimen.dp_4), (int) getResources().getDimension(R.dimen.dp_4), (int) getResources().getDimension(R.dimen.dp_0),(int) getResources().getDimension(R.dimen.dp_0));
+        if(textLocation.getLayoutParams() instanceof ConstraintLayout.LayoutParams) ((ConstraintLayout.LayoutParams) textLocation.getLayoutParams() ).setMargins((int) getResources().getDimension(urls.isEmpty() ? R.dimen.dp_0 : R.dimen.dp_4), (int) getResources().getDimension(R.dimen.dp_4), (int) getResources().getDimension(R.dimen.dp_0),(int) getResources().getDimension(R.dimen.dp_0));
+        else if(textLocation.getLayoutParams() instanceof LinearLayout.LayoutParams) ((LinearLayout.LayoutParams) textLocation.getLayoutParams() ).setMargins((int) getResources().getDimension(urls.isEmpty() ? R.dimen.dp_0 : R.dimen.dp_4), (int) getResources().getDimension(R.dimen.dp_4), (int) getResources().getDimension(R.dimen.dp_0),(int) getResources().getDimension(R.dimen.dp_0));
         for(String url: urls){
             View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_badge, null);
             ImageHandler.loadImageFitCenter(getContext(), view.findViewById(R.id.badge), url);
