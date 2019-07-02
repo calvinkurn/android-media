@@ -33,7 +33,6 @@ import com.tokopedia.contactus.createticket.presenter.CreateTicketFormFragmentPr
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.ImageUploadHandler;
@@ -46,7 +45,6 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import butterknife.BindView;
 
 /**
  * Created by Tkpd_Eka on 8/13/2015.
@@ -55,28 +53,18 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
         implements CreateTicketFormFragmentView, ContactUsConstant {
 
     private static final int REQUEST_CODE_IMAGE = 1001;
-    @BindView(R2.id.main_category)
-    EditText mainCategory;
-    @BindView(R2.id.detail)
-    EditText detail;
-    @BindView(R2.id.attachment_note)
-    TextView attachmentNote;
-    @BindView(R2.id.main)
-    View mainView;
-    @BindView(R2.id.attachment)
-    RecyclerView attachment;
-    @BindView(R2.id.phone_number)
-    EditText phoneNumber;
-    @BindView(R2.id.name)
-    EditText name;
-    @BindView(R2.id.email)
-    EditText email;
-    @BindView(R2.id.name_text)
-    TextView nameTitle;
-    @BindView(R2.id.email_text)
-    TextView emailTitle;
-    TextView detailTextView;
-    TextView attachmentLabelTextView;
+    private EditText mainCategory;
+    private EditText detail;
+    private TextView attachmentNote;
+    private View mainView;
+    private RecyclerView attachment;
+    private EditText phoneNumber;
+    private EditText name;
+    private EditText email;
+    private TextView nameTitle;
+    private TextView emailTitle;
+    private TextView detailTextView;
+    private TextView attachmentLabelTextView;
     ImageUploadAdapter imageAdapter;
     TkpdProgressDialog progressDialog;
     ImageUploadHandler imageUploadHandler;
@@ -93,9 +81,23 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        detailTextView = (TextView) view.findViewById(R.id.detail_text);
-        attachmentLabelTextView = (TextView) view.findViewById(R.id.attachment_note);
+        findingViewsId(view);
         return view;
+    }
+
+    private void findingViewsId(View view) {
+        mainCategory = view.findViewById(R.id.main_category);
+        detail = view.findViewById(R.id.detail);
+        attachmentNote = view.findViewById(R.id.attachment_note);
+        mainView = view.findViewById(R.id.main);
+        attachment = view.findViewById(R.id.attachment);
+        phoneNumber = view.findViewById(R.id.phone_number);
+        name = view.findViewById(R.id.name);
+        email = view.findViewById(R.id.email);
+        nameTitle = view.findViewById(R.id.name_text);
+        emailTitle = view.findViewById(R.id.email_text);
+        detailTextView = view.findViewById(R.id.detail_text);
+        attachmentLabelTextView = view.findViewById(R.id.attachment_note);
     }
 
     @Override
