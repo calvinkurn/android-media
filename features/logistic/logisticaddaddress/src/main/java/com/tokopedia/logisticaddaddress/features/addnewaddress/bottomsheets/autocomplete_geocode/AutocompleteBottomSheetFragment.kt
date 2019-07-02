@@ -52,7 +52,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
     val handler = Handler()
 
     @Inject
-    private var presenter: AutocompleteBottomSheetPresenter? = null
+    lateinit var presenter: AutocompleteBottomSheetPresenter
 
     interface ActionListener {
         fun onGetPlaceId(placeId: String)
@@ -117,17 +117,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         llPoi = view.findViewById(R.id.ll_poi)
         llLoading = view.findViewById(R.id.ll_loading)
         llSubtitle = view.findViewById(R.id.ll_subtitle_poi)
-
         etSearch = view.findViewById(R.id.et_search)
-        if (currentSearch?.isNotEmpty()!!) {
-            etSearch.run {
-                setText(currentSearch.toString())
-                setSelection(etSearch.text.length)
-                setSelectAllOnFocus(true)
-            }
-            loadAutocomplete(currentSearch!!)
-        }
-
 
         adapter = AutocompleteBottomSheetAdapter(this)
         hideListPointOfInterest()
@@ -155,6 +145,15 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
                     }
                 }
             }
+        }
+
+        if (currentSearch?.isNotEmpty()!!) {
+            etSearch.run {
+                setText(currentSearch.toString())
+                setSelection(etSearch.text.length)
+                setSelectAllOnFocus(true)
+            }
+            loadAutocomplete(currentSearch!!)
         }
 
         etSearch.setOnClickListener {
@@ -185,8 +184,8 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         // show loading list, hide result list
         showLoadingList()
 
-        presenter?.clearCacheAutocompleteGeocode()
-        presenter?.getAutocompleteGeocode(currentLat, currentLong)
+        presenter.clearCacheAutocompleteGeocode()
+        presenter.getAutocompleteGeocode(currentLat, currentLong)
         rlCurrentLocation.setOnClickListener {
             actionListener.useCurrentLocation(currentLat, currentLong)
             dismiss()
@@ -209,7 +208,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
                     .addNewAddressModule(AddNewAddressModule())
                     .build()
                     .inject(this@AutocompleteBottomSheetFragment)
-            presenter?.attachView(this@AutocompleteBottomSheetFragment)
+            presenter.attachView(this@AutocompleteBottomSheetFragment)
         }
     }
 
@@ -226,8 +225,8 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         // show loading list, hide result list
         showLoadingList()
 
-        presenter?.clearCacheAutocomplete()
-        presenter?.getAutocomplete(input)
+        presenter.clearCacheAutocomplete()
+        presenter.getAutocomplete(input)
     }
 
     private fun showLoadingList() {
