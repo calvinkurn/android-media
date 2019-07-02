@@ -12,10 +12,11 @@
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
         android:layout_gravity="center"
-        android:src="@drawable/ic_smiley_bad"
+        android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="@+id/tv_desc"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tv_sw_title" />
+        app:layout_constraintTop_toTopOf="@+id/tv_sw_title"
+        tools:src="@drawable/ic_smiley_bad" />
 
     <TextView
         android:id="@+id/tv_sw_title"
