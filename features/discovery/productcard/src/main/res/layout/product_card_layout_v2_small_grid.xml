@@ -155,15 +155,15 @@
             app:layout_constraintTop_toBottomOf="@id/textViewPrice"
             app:layout_constraintStart_toStartOf="@id/imageProduct"
             android:orientation="horizontal"
-            tools:visibility="gone" />
+            tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewShopLocation"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_18"
             android:layout_marginTop="@dimen/dp_4"
-            android:layout_marginLeft="@dimen/dp_4"
-            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
             android:ellipsize="end"
@@ -194,8 +194,8 @@
             android:id="@+id/textViewReviewCount"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_18"
-            android:layout_marginLeft="@dimen/dp_4"
-            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
             android:textColor="@color/product_card_review_count_text_color"
             android:gravity="center_vertical"
             android:visibility="gone"
