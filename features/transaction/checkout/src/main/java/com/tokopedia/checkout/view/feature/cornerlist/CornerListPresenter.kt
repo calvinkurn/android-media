@@ -21,19 +21,6 @@ class CornerListPresenter @Inject constructor(val usecase: GetCornerList) : Corn
         this.mView = null
     }
 
-    override fun loadMore(page: Int) {
-        usecase.loadMore(currentQuery, page)
-                .doOnSubscribe { mView?.setLoadingState(true) }
-                .doOnTerminate { mView?.setLoadingState(false) }
-                .subscribe(
-                        {
-                            if (it.listAddress.isNotEmpty()) mView?.appendData(it.listAddress)
-                            else mView?.notifyHasNotNextPage()
-                        },
-                        { e -> mView?.showError(e) }, {}
-                )
-    }
-
     override fun getList(query: String) {
         usecase.execute(query)
                 .doOnSubscribe { mView?.setLoadingState(true) }
@@ -45,5 +32,18 @@ class CornerListPresenter @Inject constructor(val usecase: GetCornerList) : Corn
                             currentQuery = query
                         },
                         { e -> mView?.showError(e) }, {})
+    }
+
+    override fun loadMore(page: Int) {
+        usecase.loadMore(currentQuery, page)
+                .doOnSubscribe { mView?.setLoadingState(true) }
+                .doOnTerminate { mView?.setLoadingState(false) }
+                .subscribe(
+                        {
+                            if (it.listAddress.isNotEmpty()) mView?.appendData(it.listAddress)
+                            else mView?.notifyHasNotNextPage()
+                        },
+                        { e -> mView?.showError(e) }, {}
+                )
     }
 }
