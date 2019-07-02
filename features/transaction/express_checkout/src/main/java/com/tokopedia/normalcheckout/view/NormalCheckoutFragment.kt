@@ -112,7 +112,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     var shopType: String? = null
     var shopName: String? = null
     private var tradeInParams: TradeInParams? = null
-    val currencyLable = "INR"
+    val currencyLable = "IDR"
 
 
     companion object {
