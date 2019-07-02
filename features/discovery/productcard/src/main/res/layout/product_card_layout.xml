@@ -14,7 +14,7 @@
         android:paddingBottom="@dimen/dp_8">
         <com.tokopedia.topads.sdk.view.ImpressedImageView
                 android:id="@+id/image"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
                 app:corner_radius="0dp"
@@ -97,32 +97,33 @@
                 android:id="@+id/badge"
                 android:layout_marginLeft="@dimen/dp_8"
                 android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_4"
                 android:layout_width="@dimen/dp_14"
                 android:layout_height="@dimen/dp_14"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textPrice"
+                app:layout_constraintTop_toTopOf="@+id/location"
+                app:layout_constraintBottom_toBottomOf="@+id/location"
                 tools:background="@color/red_150"
-                tools:layout_height="20dp" />
+                tools:layout_height="@dimen/dp_14"
+                tools:layout_width="@dimen/dp_14"
+                tools:visibility="gone"/>
         <TextView
                 android:id="@+id/location"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginLeft="@dimen/dp_4"
+                android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginTop="@dimen/dp_4"
                 android:ellipsize="end"
                 android:lines="1"
+                app:layout_goneMarginLeft="@dimen/dp_8"
                 app:layout_constraintEnd_toStartOf="@+id/topAdsIcon"
-                app:layout_constraintBottom_toBottomOf="@+id/badge"
-                app:layout_constraintStart_toEndOf="@+id/badge"
-                app:layout_constraintTop_toTopOf="@+id/badge"
-                app:layout_goneMarginTop="@dimen/dp_8"
-                tools:text="Jakarta" />
+                app:layout_constraintTop_toBottomOf="@+id/textPrice"
+                tools:text="Jakarta" app:layout_constraintStart_toEndOf="@+id/badge"/>
         <ImageView
                 android:id="@+id/rating"
                 android:layout_marginLeft="@dimen/dp_8"
                 android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_6"
                 android:layout_width="@dimen/dp_52"
                 android:layout_height="@dimen/dp_10"
                 app:layout_constraintStart_toStartOf="parent"
