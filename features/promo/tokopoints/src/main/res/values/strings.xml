@@ -2,6 +2,7 @@
     <string name="tp_title_tokopoints">TokoPoints</string>
     <string name="tp_title_detail">Detail Kupon</string>
     <string name="tp_title_send_coupon">Kirim Kupon</string>
+    <string name="tp_title_history">Riwayat</string>
     <string name="tp_label_coupon">Kupon</string>
     <string name="tp_mes_coupon_part_2">akan digunakan pada transaksi selanjutnya.</string>
     <string name="tp_label_later">Nanti Saja</string>

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:padding="@dimen/dp_16">
+
+    <TextView
+        android:id="@+id/text_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="6sp"
+        android:textColor="#f531353b"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="Points dan Loyalty adalah hadiah yang Anda peroleh dari memecahkan Lucky Egg." />
+
+    <TextView
+        android:id="@+id/text_point_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:drawableLeft="@drawable/ic_tp_point_stack_new"
+        android:drawablePadding="@dimen/dp_8"
+        android:gravity="top"
+        android:lineSpacingExtra="6sp"
+        android:textColor="#f531353b"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="@+id/text_header"
+        app:layout_constraintTop_toBottomOf="@+id/text_header"
+        android:text="Points dapat Anda tukarkan dengan berbagai Kupon di halaman TokoPoints." />
+
+    <TextView
+        android:id="@+id/text_loyalty_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:drawableLeft="@drawable/ic_tp_loyalty_stack_new"
+        android:drawablePadding="@dimen/dp_8"
+        android:lineSpacingExtra="6sp"
+        android:textColor="#f531353b"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="@+id/text_header"
+        app:layout_constraintTop_toBottomOf="@+id/text_point_info"
+        android:text="Loyalty tidak dapat ditukarkan, tetapi dapat meningkatkan status Membership Anda. Semakin tinggi status Membership, semakin banyak keuntungan yang bisa Anda dapatkan." />
+
+    <TextView
+        android:id="@+id/text_exp_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:lineSpacingExtra="6sp"
+        android:textColor="#f531353b"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="@+id/text_header"
+        app:layout_constraintTop_toBottomOf="@+id/text_loyalty_info"
+        android:text="Points dan Loyalty memiliki masa berlaku yang berbeda:" />
+
+    <View
+        android:id="@+id/view_bg_exp_info"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/dp_8"
+        android:background="@drawable/bg_tp_history_info"
+        app:layout_constraintBottom_toBottomOf="@+id/text_loyalty_exp_info"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/text_point_exp_info" />
+
+    <TextView
+        android:id="@+id/text_point_exp_info"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_10"
+        android:textColor="#f531353b"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="@+id/view_bg_exp_info"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="@+id/view_bg_exp_info"
+        app:layout_constraintTop_toBottomOf="@+id/text_exp_info"
+        app:layout_constraintWidth_default="wrap"
+        android:text="5.000 Points Anda akan kedaluwarsa tanggal 31 Desember 2018" />
+
+    <TextView
+        android:id="@+id/text_loyalty_exp_info"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_10"
+        android:textColor="#f531353b"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="@+id/view_bg_exp_info"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="@+id/view_bg_exp_info"
+        app:layout_constraintTop_toBottomOf="@+id/text_point_exp_info"
+        app:layout_constraintWidth_default="wrap"
+        android:text="Loyalty Anda akan di-reset tanggal 1 Januari 2019" />
+
+    <TextView
+        android:id="@+id/btn_help"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_22"
+        android:gravity="center_horizontal"
+        android:textColor="#41b54a"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view_bg_exp_info"
+        app:layout_constraintWidth_default="wrap"
+        android:text="Selengkapnya tentang Points dan Loyalty" />
+
+    <TextView
+        android:id="@+id/btn_help2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_22"
+        android:gravity="center_horizontal"
+        android:textColor="#41b54a"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_help"
+        app:layout_constraintWidth_default="wrap"
+        android:text="Selengkapnya tentang Points dan Loyalty" />
+
+</android.support.constraint.ConstraintLayout>

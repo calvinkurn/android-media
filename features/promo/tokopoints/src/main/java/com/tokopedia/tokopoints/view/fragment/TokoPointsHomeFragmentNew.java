@@ -48,6 +48,7 @@ import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
 import com.tokopedia.tokopoints.view.activity.CatalogListingActivity;
 import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
+import com.tokopedia.tokopoints.view.activity.PointHistoryActivity;
 import com.tokopedia.tokopoints.view.activity.SendGiftActivity;
 import com.tokopedia.tokopoints.view.activity.TokoPointsHomeActivity;
 import com.tokopedia.tokopoints.view.adapter.ExploreSectionPagerAdapter;
@@ -351,8 +352,9 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
                     "");
         } else if (source.getId() == R.id.view_point_bottom
                 || source.getId() == R.id.view_point) {
-            ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.HISTORY, getString(R.string.tp_history));
+            //((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.HISTORY, getString(R.string.tp_history));
 
+            startActivity(new Intent(getActivityContext(), PointHistoryActivity.class));
             AnalyticsTrackerUtil.sendEvent(getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
@@ -370,7 +372,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
             mPresenter.getTokoPointDetail();
         } else if (source.getId() == R.id.container_fab_egg_token) {
             if (mSumToken <= 0) {
-                if(mStartPurchaseBottomSheet!=null) {
+                if (mStartPurchaseBottomSheet != null) {
                     mStartPurchaseBottomSheet.show(getChildFragmentManager(), StartPurchaseBottomSheet.class.getName());
                 }
             } else {
