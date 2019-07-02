@@ -73,7 +73,7 @@ public class VideoRecorderFragment extends TkpdBaseV4Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_recorder, container, false);
+        return inflater.inflate(R.layout.fragment_video_recorder, container, false);
     }
 
     @Override
