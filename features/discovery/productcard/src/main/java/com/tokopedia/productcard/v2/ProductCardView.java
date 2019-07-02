@@ -10,7 +10,6 @@ import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -293,21 +292,6 @@ public abstract class ProductCardView extends BaseCustomView {
 
     public void setImageTopAdsVisible(boolean isVisible) {
         imageTopAds.setVisibility(isVisible ? View.VISIBLE : View.GONE);
-    }
-
-    protected void setViewMarginsInConstraintLayoutProductCard(View view, int leftPixel, int topPixel, int rightPixel, int bottomPixel) {
-        if(view.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
-            ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
-
-            layoutParams.setMargins(
-                    leftPixel < 0 ? layoutParams.leftMargin : leftPixel,
-                    topPixel < 0 ? layoutParams.topMargin : topPixel,
-                    rightPixel < 0 ? layoutParams.rightMargin : rightPixel,
-                    bottomPixel < 0 ? layoutParams.bottomMargin : bottomPixel
-            );
-
-            view.setLayoutParams(layoutParams);
-        }
     }
 
     protected void setViewMarginsInConstraintLayoutProductCard(@IdRes int viewId, int anchor, int marginDp) {
