@@ -78,7 +78,7 @@ public class ProductCardView extends BaseCustomView {
         wishlistButton = view.findViewById(R.id.btn_wishlist);
         ratingView = view.findViewById(R.id.rating);
         reviewCountView = view.findViewById(R.id.review_count);
-        badgesContainerView = view.findViewById(R.id.badge);
+        badgesContainerView = view.findViewById(R.id.badge_container);
         textLocation = view.findViewById(R.id.location);
     }
 
