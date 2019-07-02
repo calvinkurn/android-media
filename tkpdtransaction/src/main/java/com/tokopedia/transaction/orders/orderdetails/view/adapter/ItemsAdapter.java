@@ -1,7 +1,6 @@
 package com.tokopedia.transaction.orders.orderdetails.view.adapter;
 
 import android.app.Activity;
-import android.app.DownloadManager;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -37,6 +36,8 @@ import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDet
 import org.w3c.dom.Text;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static android.content.Context.DOWNLOAD_SERVICE;
 
@@ -140,23 +141,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         notifyItemChanged(position);
     }
 
-    private View.OnClickListener getActionButtonClickListener(final String url) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                presenter.downloadPdf(url);
-            }
-        };
-    }
-
-    private void downloadFile (String url) {
-        DownloadManager.Request request = new DownloadManager.Request(
-                Uri.parse(url));
-        request.allowScanningByMediaScanner();
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, url.substring(url.lastIndexOf("/") + 1));
-        DownloadManager dm = (DownloadManager) context.getSystemService(DOWNLOAD_SERVICE);
-        dm.enqueue(request);
+    private View.OnClickListener getActionButtonClickListener(final String uri) {
+        return view -> presenter.onClick(uri);
     }
 
     @Override

@@ -3,8 +3,6 @@ package com.tokopedia.transaction.orders.orderdetails.view.fragment;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -37,7 +35,6 @@ import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
@@ -76,7 +73,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static android.content.Context.CLIPBOARD_SERVICE;
 import static com.tokopedia.transaction.orders.orderdetails.view.fragment.OrderListDetailFragment.ORDER_LIST_URL_ENCODING;
 
 /**
@@ -296,7 +292,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     }
 
     @Override
-    public void setContactUs(final ContactUs contactUs) {
+    public void setContactUs(final ContactUs contactUs, String helpLink) {
         String text = getResources().getString(R.string.contact_us_text);
         SpannableString spannableString = new SpannableString(text);
         int startIndexOfLink = text.indexOf(getResources().getString(R.string.help_text));

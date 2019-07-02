@@ -80,6 +80,7 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback;
 import com.tokopedia.unifycomponents.ticker.TickerData;
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -989,13 +990,13 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                     adapter.setDescriptionClickEvent(new TickerCallback() {
                         @Override
                         public void onDescriptionViewClick(CharSequence link) {
-                            analytics.eventClickLinkTicker(link.toString());
+                            registerAnalytics.trackClickLinkTicker(link.toString());
                             RouteManager.route(getContext(), String.format("%s?url=%s", ApplinkConst.WEBVIEW, link));
                         }
 
                         @Override
                         public void onDismiss() {
-                            analytics.eventClickCloseTicker();
+                            registerAnalytics.trackClickCloseTickerButton();
                         }
                     });
                     tickerAnnouncement.addPagerView(adapter, mockData);
@@ -1008,17 +1009,17 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                 tickerAnnouncement.setTickerType(type);
             }
             tickerAnnouncement.setOnClickListener(v ->
-                    analytics.eventClickTicker());
+                    registerAnalytics.trackClickTicker());
             tickerAnnouncement.setDescriptionClickEvent(new TickerCallback() {
                 @Override
                 public void onDescriptionViewClick(CharSequence link) {
-                    analytics.eventClickLinkTicker(link.toString());
+                    registerAnalytics.trackClickLinkTicker(link.toString());
                     RouteManager.route(getContext(), ApplinkConst.WEBVIEW, String.format("%s?url=%s", ApplinkConst.WEBVIEW, link));
                 }
 
                 @Override
                 public void onDismiss() {
-                    analytics.eventClickCloseTicker();
+                    registerAnalytics.trackClickCloseTickerButton();
                 }
             });
         }
