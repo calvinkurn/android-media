@@ -8,73 +8,15 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
  * @author by nisie on 22/02/19.
  */
 
-class DynamicButtonsViewModel constructor(var floatingButton: Button = Button(),
-                                          var listDynamicButton: ArrayList<Button> = ArrayList())
+class DynamicButtonsViewModel constructor(var floatingButton: DynamicButton = DynamicButton(),
+                                          var listDynamicButton: ArrayList<DynamicButton> = ArrayList(),
+                                          var interactiveButton: InteractiveButton = InteractiveButton())
     : Visitable<Any>, Parcelable {
 
     constructor(`in`: Parcel) : this() {
-        this.floatingButton = `in`.readParcelable(Button::class.java.classLoader)
-        this.listDynamicButton = `in`.createTypedArrayList(Button.CREATOR)
-    }
-
-    class Button(var buttonId : String = "",
-                 var imageUrl: String = "",
-                 var linkUrl: String = "",
-                 var contentType: String = "",
-                 var contentText: String = "",
-                 var contentButtonText: String = "",
-                 var contentLinkUrl: String = "",
-                 var contentImageUrl: String = "",
-                 var hasNotification: Boolean = false,
-                 var tooltip: String = "",
-                 var tooltipDuration: Int = 0,
-                 var priority: Int = 0
-                 ) : Parcelable {
-        constructor(parcel: Parcel) : this(
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readByte() != 0.toByte(),
-                parcel.readString(),
-                parcel.readInt(),
-                parcel.readInt()) {
-        }
-
-        override fun writeToParcel(parcel: Parcel, flags: Int) {
-            parcel.writeString(buttonId)
-            parcel.writeString(imageUrl)
-            parcel.writeString(linkUrl)
-            parcel.writeString(contentType)
-            parcel.writeString(contentText)
-            parcel.writeString(contentButtonText)
-            parcel.writeString(contentLinkUrl)
-            parcel.writeString(contentImageUrl)
-            parcel.writeByte(if (hasNotification) 1 else 0)
-            parcel.writeString(tooltip)
-            parcel.writeInt(tooltipDuration)
-            parcel.writeInt(priority)
-        }
-
-        override fun describeContents(): Int {
-            return 0
-        }
-
-        companion object CREATOR : Parcelable.Creator<Button> {
-            override fun createFromParcel(parcel: Parcel): Button {
-                return Button(parcel)
-            }
-
-            override fun newArray(size: Int): Array<Button?> {
-                return arrayOfNulls(size)
-            }
-        }
-
-
+        this.floatingButton = `in`.readParcelable(DynamicButton::class.java.classLoader)
+        this.listDynamicButton = `in`.createTypedArrayList(DynamicButton.CREATOR)
+        this.interactiveButton = `in`.readParcelable(InteractiveButton::class.java.classLoader)
     }
 
     companion object {
@@ -103,6 +45,7 @@ class DynamicButtonsViewModel constructor(var floatingButton: Button = Button(),
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeParcelable(this.floatingButton, flags)
         dest.writeTypedList(listDynamicButton)
+        dest.writeParcelable(this.interactiveButton, flags)
     }
 
     override fun describeContents(): Int {

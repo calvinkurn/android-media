@@ -2,13 +2,15 @@ package com.tokopedia.discovery.common.constants;
 
 public interface SearchConstant {
 
-    String EXTRA_IS_AUTOCOMPLETE= "EXTRA_IS_AUTOCOMPLETE";
     String EXTRA_SEARCH_PARAMETER_MODEL = "EXTRA_SEARCH_PARAMETER_MODEL";
 
     String EXTRA_HAS_CATALOG = "EXTRA_HAS_CATALOG";
     String EXTRA_FORCE_SWIPE_TO_SHOP = "EXTRA_FORCE_SWIPE_TO_SHOP";
+    String EXTRA_IS_FROM_APPLINK = "EXTRA_IS_FROM_APPLINK";
 
     String EXTRA_ACTIVE_TAB_POSITION = "EXTRA_ACTIVE_TAB_POSITION";
+
+    String EXTRA_CATALOG_ID = "EXTRA_CATALOG_ID";
 
     String FROM_APP_SHORTCUTS = "FROM_APP_SHORTCUTS" ;
     String DEEP_LINK_URI = "deep_link_uri";
@@ -65,14 +67,40 @@ public interface SearchConstant {
 
     interface BaseUrl {
         String TOPADS_DOMAIN = "https://ta.tokopedia.com/";
+        String ACE_DOMAIN = "https://ace.tokopedia.com/";
+        String TOME_DOMAIN = "https://tome.tokopedia.com/";
+    }
+
+    interface Ace {
         String PATH_GET_DYNAMIC_ATTRIBUTE = "v2/dynamic_attributes";
         String PATH_GET_DYNAMIC_ATTRIBUTE_V4 = "v4/dynamic_attributes";
+        String PATH_BROWSE_SHOP = "search/v1/shop";
+        String PATH_BROWSE_CATALOG = "search/v2.1/catalog";
+    }
+
+    interface Tome {
+        String PATH_IS_FAVORITE_SHOP = "v1/user/isfollowing";
     }
 
     interface DynamicFilter {
         String GET_DYNAMIC_FILTER_USE_CASE = "get_dynamic_filter_use_case";
         String GET_DYNAMIC_FILTER_V4_USE_CASE = "get_dynamic_filter_v4_use_case";
         String GET_DYNAMIC_FILTER_GQL_USE_CASE = "get_dynamic_filter_gql_use_case";
-        String DYNAMIC_FILTER_GQL_REPOSITORY = "get_dynamic_filter_gql_repository";
+        String DYNAMIC_FILTER_REPOSITORY = "dynamic_filter_repository";
+        String DYNAMIC_FILTER_REPOSITORY_V4 = "dynamic_filter_repository_v4";
+    }
+
+    interface SearchShop {
+        String SEARCH_SHOP_USE_CASE = "search_shop_use_case";
+        String TOGGLE_FAVORITE_SHOP_USE_CASE = "toggle_favorite_shop_use_case";
+        String TOGGLE_FAVORITE_SHOP_ID = "SHOP_ID";
+    }
+
+    interface SearchCatalog {
+        String SEARCH_CATALOG_USE_CASE = "search_catalog_use_case";
+    }
+
+    interface SearchProfile {
+        String SEARCH_PROFILE_USE_CASE = "search_profile_use_case";
     }
 }

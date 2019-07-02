@@ -1,17 +1,19 @@
 package com.tokopedia.settingbank.addeditaccount.domain.usecase
 
+import com.tokopedia.settingbank.addeditaccount.data.AddEditAccountApi
 import com.tokopedia.settingbank.addeditaccount.domain.mapper.ValidateBankMapper
 import com.tokopedia.settingbank.addeditaccount.view.viewmodel.ValidateBankViewModel
 import com.tokopedia.settingbank.banklist.data.SettingBankApi
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
+import javax.inject.Inject
 
 /**
  * @author by nisie on 7/13/18.
  */
 
-class ValidateBankUseCase(val api: SettingBankApi,
+class ValidateBankUseCase @Inject constructor(val api: AddEditAccountApi,
                           val mapper: ValidateBankMapper) : UseCase<ValidateBankViewModel>() {
 
     override fun createObservable(requestParams: RequestParams): Observable<ValidateBankViewModel> {

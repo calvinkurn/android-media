@@ -7,8 +7,10 @@ import android.support.annotation.StringRes;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.home.beranda.data.model.KeywordSearchData;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData;
+import com.tokopedia.home.beranda.domain.model.SearchPlaceholder;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.TrackedVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
@@ -36,6 +38,8 @@ public interface HomeContract {
         void hideLoading();
 
         void setItems(List<Visitable> items, int repositoryFlag);
+
+        void setHint(SearchPlaceholder searchPlaceholder);
 
         void updateHeaderItem(HeaderViewModel headerViewModel);
 
@@ -116,6 +120,8 @@ public interface HomeContract {
         void onBannerClicked(BannerSlidesModel slidesModel);
 
         void updateHeaderTokoPointData(TokopointsDrawerHomeData tokopointsDrawerHomeData);
+
+        void updateKeywordSearch(KeywordSearchData keywordSearchData);
 
         void getFeedTabData();
     }

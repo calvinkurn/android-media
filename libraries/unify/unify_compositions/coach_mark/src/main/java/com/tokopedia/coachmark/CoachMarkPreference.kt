@@ -19,9 +19,9 @@
 package com.tokopedia.coachmark
 
 import android.content.Context
-import android.content.SharedPreferences
 
 object CoachMarkPreference {
+
     private val SHOWCASE_PREFERENCES = "show_case_pref"
 
     fun hasShown(context: Context, tag: String): Boolean {

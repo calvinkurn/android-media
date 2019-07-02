@@ -1,29 +1,23 @@
 package com.tokopedia.kotlin.extensions.view
 
+import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Rect
 import android.os.Build
 import android.support.annotation.DimenRes
 import android.support.annotation.StringRes
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.widget.LinearLayout
-import com.tokopedia.kotlin.extensions.R
-import android.app.Activity
-import android.app.ProgressDialog
-import android.view.ViewGroup
-import android.widget.TextView
 import android.view.*
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
+import com.tokopedia.kotlin.extensions.R
 import com.tokopedia.kotlin.model.ImpressHolder
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
 
 /**
  * @author by milhamj on 30/11/18.
@@ -199,6 +193,21 @@ fun View.getDimens(@DimenRes id: Int): Int {
 }
 
 fun ImageView.addOnImpressionListener(holder: ImpressHolder, listener: ViewHintListener) {
+    if (!holder.isInvoke) {
+        viewTreeObserver.addOnScrollChangedListener(
+                object : ViewTreeObserver.OnScrollChangedListener {
+                    override fun onScrollChanged() {
+                        if (!holder.isInvoke && viewIsVisible(this@addOnImpressionListener)) {
+                            listener.onViewHint()
+                            holder.invoke()
+                            viewTreeObserver.removeOnScrollChangedListener(this)
+                        }
+                    }
+                })
+    }
+}
+
+fun View.addOnImpressionListener(holder: ImpressHolder, listener: ViewHintListener) {
     if (!holder.isInvoke) {
         viewTreeObserver.addOnScrollChangedListener(
                 object : ViewTreeObserver.OnScrollChangedListener {

@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -17,22 +18,26 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.otaliastudios.cameraview.CameraListener;
-import com.otaliastudios.cameraview.CameraOptions;
-import com.otaliastudios.cameraview.CameraUtils;
-import com.otaliastudios.cameraview.CameraView;
-import com.otaliastudios.cameraview.Facing;
-import com.otaliastudios.cameraview.Flash;
-import com.otaliastudios.cameraview.Size;
+import com.tokopedia.cameraview.BitmapCallback;
+import com.tokopedia.cameraview.CameraListener;
+import com.tokopedia.cameraview.CameraOptions;
+import com.tokopedia.cameraview.CameraUtils;
+import com.tokopedia.cameraview.CameraView;
+import com.tokopedia.cameraview.Facing;
+import com.tokopedia.cameraview.Flash;
+import com.tokopedia.cameraview.PictureResult;
+import com.tokopedia.cameraview.Size;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
 
@@ -58,6 +63,7 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
 
     private ProgressDialog progressDialog;
     public String finalCameraResultFilePath;
+    protected ImageView cameraOverlayImage;
 
     @Override
     protected void initInjector() {
@@ -74,7 +80,7 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
         if (cameraView == null || cameraView.getCameraOptions() == null) {
             return;
         }
-        Set<Flash> flashSet = cameraView.getCameraOptions().getSupportedFlash();
+        Collection<Flash> flashSet = cameraView.getCameraOptions().getSupportedFlash();
         for (Flash flash : flashSet) {
             if (flash != Flash.TORCH) {
                 supportedFlashList.add(flash);
@@ -103,16 +109,16 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
 
     private void setUIFlashCamera(int flashEnum) {
         if (flashEnum == Flash.AUTO.ordinal()) {
-            flashControl.setImageResource(com.tokopedia.imagepicker.R.drawable.ic_auto_flash);
+            flashControl.setImageDrawable(MethodChecker.getDrawable(getActivity(),com.tokopedia.imagepicker.R.drawable.ic_auto_flash));
         } else if (flashEnum == Flash.ON.ordinal()) {
-            flashControl.setImageResource(com.tokopedia.imagepicker.R.drawable.ic_on_flash);
+            flashControl.setImageDrawable(MethodChecker.getDrawable(getActivity(),com.tokopedia.imagepicker.R.drawable.ic_on_flash));
         } else if (flashEnum == Flash.OFF.ordinal()) {
-            flashControl.setImageResource(com.tokopedia.imagepicker.R.drawable.ic_off_flash);
+            flashControl.setImageDrawable(MethodChecker.getDrawable(getActivity(),com.tokopedia.imagepicker.R.drawable.ic_off_flash));
         }
     }
 
     public void initCameraProp() {
-        cameraView.start();
+        cameraView.open();
         imageCaptured.setVisibility(View.GONE);
         cameraActionsRL.setVisibility(View.VISIBLE);
         pictureActionLL.setVisibility(View.GONE);
@@ -134,9 +140,9 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
             }
 
             @Override
-            public void onPictureTaken(byte[] imageByte) {
+            public void onPictureTaken(@NonNull PictureResult result) {
                 try {
-                    generateImage(imageByte);
+                    generateImage(result.getData());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -174,12 +180,9 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
             mCaptureNativeSize = cameraView.getPictureSize();
         }
         try {
-            CameraUtils.decodeBitmap(imageByte, mCaptureNativeSize.getWidth(), mCaptureNativeSize.getHeight(), new CameraUtils.BitmapCallback() {
-                @Override
-                public void onBitmapReady(Bitmap bitmap) {
-                    File cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, bitmap, false);
-                    onSuccessImageTakenFromCamera(cameraResultFile);
-                }
+            CameraUtils.decodeBitmap(imageByte, mCaptureNativeSize.getWidth(), mCaptureNativeSize.getHeight(), bitmap -> {
+                File cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, bitmap, false);
+                onSuccessImageTakenFromCamera(cameraResultFile);
             });
         } catch (Throwable error) {
             File cameraResultFile = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA, imageByte, false);
@@ -225,7 +228,7 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
         showLoading();
         mCapturingPicture = true;
         mCaptureNativeSize = cameraView.getPictureSize();
-        cameraView.capturePicture();
+        cameraView.takePicture();
     }
 
     private void showLoading() {
@@ -249,7 +252,7 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
 
 
     public void hideCameraProp() {
-        cameraView.stop();
+        cameraView.close();
         imageCaptured.setVisibility(View.VISIBLE);
         cameraActionsRL.setVisibility(View.GONE);
         pictureActionLL.setVisibility(View.VISIBLE);
@@ -273,7 +276,7 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
         try {
             cameraView.clearCameraListeners();
             cameraView.addCameraListener(cameraListener);
-            cameraView.start();
+            cameraView.open();
         } catch (Throwable e) {
         }
     }

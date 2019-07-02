@@ -10,13 +10,9 @@ public interface DeepLinkPresenter extends DeepLinkAnalyticsPresenter {
 
     void processDeepLinkAction(Activity activity, Uri uri);
 
-    boolean isLandingPageWebView(Uri uri);
-
     void checkUriLogin(Uri uriData);
 
     void actionGotUrlFromApplink(Uri uriData);
-
-    void mapUrlToApplink(Uri uri);
 
     void sendAuthenticatedEvent(Uri uriData, String screenName);
 }

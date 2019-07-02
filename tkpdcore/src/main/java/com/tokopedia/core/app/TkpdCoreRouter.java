@@ -32,17 +32,11 @@ public interface TkpdCoreRouter {
 
     void goToManageProduct(Context context);
 
-    void goToEtalaseList(Context context);
-
     void goToDraftProductList(Context context);
 
     void clearEtalaseCache();
 
     void resetAddProductCache(Context context);
-
-    void goToWallet(Context context, String url);
-
-    void goToMerchantRedirect(Context context);
 
     void actionAppLink(Context context, String linkUrl);
 
@@ -140,8 +134,6 @@ public interface TkpdCoreRouter {
     Intent getResolutionCenterIntentBuyer(Context context);
 
     Intent getResolutionCenterIntentSeller(Context context);
-
-    String applink(Activity activity, String deeplink);
 
     Intent getKolFollowingPageIntent(Context context, int userId);
 

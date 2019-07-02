@@ -123,11 +123,13 @@ public class ProductCardView extends BaseCustomView {
     public void setRatingReviewCount(int rating, int reviewCount) {
         if (rating > 0 && rating <= 5) {
             ratingView.setImageResource(getRatingDrawable(rating));
+            reviewCountView.setText(String.format(getContext().getString(R.string.review_count_format), reviewCount));
         } else {
             if(fixedHeight) {
                 ratingView.setVisibility(View.INVISIBLE);
                 reviewCountView.setVisibility(View.INVISIBLE);
             } else {
+
                 ratingView.setVisibility(View.GONE);
                 reviewCountView.setVisibility(View.GONE);
             }

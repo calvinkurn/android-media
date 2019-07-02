@@ -3,4 +3,7 @@
     <dimen name="spacing_show_case">12dp</dimen>
     <dimen name="arrow_width_show_case">16dp</dimen>
     <dimen name="fontvs">12sp</dimen>
+
+    <dimen name="shop_item_preview_size_grid">28dp</dimen>
+    <dimen name="shop_item_preview_size">32dp</dimen>
 </resources>

@@ -7,7 +7,6 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivi
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryPresenter;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.ProductFragment;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.ProductPresenter;
-import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.CatalogFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.presenter.CatalogPresenter;
 
 import dagger.Component;
@@ -26,8 +25,6 @@ public interface CategoryComponent {
     void inject(ProductFragment productFragment);
 
     void inject(ProductPresenter presenter);
-
-    void inject(CatalogFragment catalogFragment);
 
     void inject(CatalogPresenter presenter);
 

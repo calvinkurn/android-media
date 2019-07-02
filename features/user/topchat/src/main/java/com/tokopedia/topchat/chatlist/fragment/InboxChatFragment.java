@@ -63,6 +63,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * Created by stevenfredian on 9/14/17.
@@ -182,6 +183,8 @@ public class InboxChatFragment extends BaseDaggerFragment
         callbackContext = initCallbackActionMode();
         notifier = parentView.findViewById(R.id.notifier);
         sendBroadcast = parentView.findViewById(R.id.tv_bm_action);
+        sendBroadcast.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                (getActivity(), R.drawable.ic_bm_speaker), null, null , null);
         View broadcastLayout = parentView.findViewById(R.id.base_action);
         sendBroadcast.setVisibility(View.GONE);
         broadcastLayout.setVisibility(View.GONE);
@@ -564,10 +567,14 @@ public class InboxChatFragment extends BaseDaggerFragment
     public void onIncomingEvent(final WebSocketResponse response) {
         switch (response.getCode()) {
             case ChatWebSocketConstant.EVENT_TOPCHAT_TYPING:
-                adapter.showTyping(response.getData().getMsgId());
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() -> adapter.showTyping(response.getData().getMsgId()));
+                }
                 break;
             case ChatWebSocketConstant.EVENT_TOPCHAT_END_TYPING:
-                adapter.removeTyping(response.getData().getMsgId());
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() -> adapter.removeTyping(response.getData().getMsgId()));
+                }
                 break;
             case ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE:
                 if (getActivity() != null) {
@@ -579,7 +586,6 @@ public class InboxChatFragment extends BaseDaggerFragment
                             reloadNotifDrawer();
                         }
                     });
-
                 }
                 break;
             default:

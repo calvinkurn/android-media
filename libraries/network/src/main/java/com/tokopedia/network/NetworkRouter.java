@@ -18,7 +18,8 @@ public interface NetworkRouter {
 
     void showMaintenancePage();
 
-    void sendForceLogoutAnalytics(Response response);
+    void sendForceLogoutAnalytics(Response response, boolean isInvalidToken,
+                                  boolean isRequestDenied);
 
     void showForceLogoutTokenDialog(String response);
 

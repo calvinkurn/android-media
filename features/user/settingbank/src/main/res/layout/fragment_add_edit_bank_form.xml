@@ -44,7 +44,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="false"
-                android:drawableRight="@drawable/ic_arrow_down_grey"
                 android:focusable="false"
                 android:singleLine="true"
                 android:textColor="@color/font_black_primary_70"
