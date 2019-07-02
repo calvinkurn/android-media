@@ -73,13 +73,6 @@ allprojects {
             dirs project(rootProject.ext.libraries.inappupdate).file('libs')
         }
         maven { url 'https://hansel.io/maven' }
-        maven {
-            url "${artifactory_url}" + "/libs-snapshot-local";
-            credentials {
-                username = "${artifactory_username}"
-                password = "${artifactory_password}"
-            }
-        }
     }
 }
 apply plugin: 'com.uber.okbuck'
@@ -175,6 +168,7 @@ subprojects {
                 substitute module('com.google.android.gms:play-services-base') with module("com.google.android.gms:play-services-base:${playServiceBaseVersion}")
                 substitute module('com.google.firebase:firebase-iid') with module("com.google.firebase:firebase-iid:${playServiceFirebaseIidVersion}")
                 substitute module('com.google.android.gms:play-services-measurement-base') with module("com.google.android.gms:play-services-measurement-base:16.0.5")
+                substitute module('com.google.guava:guava') with module("com.google.guava:guava:${guavaVersion}")
             }
         }
     }

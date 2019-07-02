@@ -411,6 +411,15 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
+    public void eventClickBuyPromoRedState() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_BUY,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
+                EventLabel.NOT_SUCCESS + " - " + EventLabel.PROMO_RED_STATE
+        );
+    }
+
     public void eventClickBuyCourierSelectionClickBayarFailedDropshipper() {
         sendEventCategoryActionLabel(
                 EventName.CLICK_BUY,
@@ -820,4 +829,30 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 promoCode
         );
     }
+
+    // Promo not eligible bottomsheet
+    public void eventClickLanjutkanOnErrorPromoConfirmation() {
+        sendEventCategoryAction(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_LANJUTKAN_ON_ERROR_PROMO_CONFIRMATION
+        );
+    }
+
+    public void eventClickBatalOnErrorPromoConfirmation() {
+        sendEventCategoryAction(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_BATAL_ON_ERROR_PROMO_CONFIRMATION
+        );
+    }
+
+    public void eventViewPopupErrorPromoConfirmation() {
+        sendEventCategoryAction(
+                EventName.VIEW_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_POP_UP_ERROR_PROMO_CONFIRMATION
+        );
+    }
+
 }

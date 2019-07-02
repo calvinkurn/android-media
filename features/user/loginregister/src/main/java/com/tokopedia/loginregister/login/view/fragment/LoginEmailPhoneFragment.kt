@@ -997,12 +997,12 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 val adapter = TickerPagerAdapter(activity!!, mockData)
                 adapter.setDescriptionClickEvent(object : TickerCallback{
                     override fun onDescriptionViewClick(link: CharSequence?) {
-                        registerAnalytics.trackClickLinkTicker(link.toString())
+                        analytics.eventClickLinkTicker(link.toString())
                         RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, link))
                     }
 
                     override fun onDismiss() {
-                        registerAnalytics.trackClickCloseTickerButton()
+                        analytics.eventClickCloseTicker()
                     }
 
                 })
@@ -1015,18 +1015,18 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 }
                 tickerAnnouncement.setDescriptionClickEvent(object : TickerCallback{
                     override fun onDescriptionViewClick(link: CharSequence?) {
-                        registerAnalytics.trackClickLinkTicker(link.toString())
+                        analytics.eventClickLinkTicker(link.toString())
                         RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, link))
                     }
 
                     override fun onDismiss() {
-                        registerAnalytics.trackClickCloseTickerButton()
+                        analytics.eventClickCloseTicker()
                     }
 
                 })
             }
             tickerAnnouncement.setOnClickListener { v ->
-                registerAnalytics.trackClickTicker() }
+                analytics.eventClickTicker() }
 
         }
     }

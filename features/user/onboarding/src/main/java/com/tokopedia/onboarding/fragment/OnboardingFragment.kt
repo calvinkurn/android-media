@@ -99,6 +99,9 @@ OnboardingFragment : BaseDaggerFragment(),
         lottieAsset = getParamString(ARG_LOTTIE, arguments, savedInstanceState, "")
         bgColor = getParamInt(ARG_BG_COLOR, arguments, savedInstanceState, 0)
         position = getParamInt(ARG_POSITION, arguments, savedInstanceState, 0)
+        descKey = getParamString(ARG_DESCKEY, arguments, savedInstanceState, "")
+        ttlKey = getParamString(ARG_TTLKEY, arguments, savedInstanceState, "")
+
     }
 
     override fun initInjector() {
