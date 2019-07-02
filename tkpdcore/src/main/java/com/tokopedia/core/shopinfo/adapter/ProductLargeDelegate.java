@@ -11,7 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -19,7 +18,6 @@ import android.widget.TextView;
 import com.tkpd.library.utils.BadgeUtil;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core2.R;
-//import com.tokopedia.core2.R2;
 import com.tokopedia.core.customwidget.FlowLayout;
 import com.tokopedia.core.customwidget.SquareImageView;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
@@ -30,9 +28,6 @@ import com.tokopedia.core.util.MethodChecker;
 
 import java.util.ArrayList;
 
-//import butterknife.BindString;
-//import butterknife.BindView;
-//import butterknife.ButterKnife;
 
 /**
  * Created by Tkpd_Eka on 10/9/2015.
