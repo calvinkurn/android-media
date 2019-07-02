@@ -26,6 +26,7 @@ import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsGqlUseCase;
+import com.tokopedia.transactiondata.insurance.usecase.GetInsuranceRecommendationUsecase;
 import com.tokopedia.transactiondata.insurance.usecase.RemoveInsuranceProductUsecase;
 import com.tokopedia.transactiondata.insurance.usecase.GetInsuranceCartUseCase;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
@@ -96,6 +97,12 @@ public class CartListModule {
 
     @Provides
     @CartListScope
+    GetInsuranceRecommendationUsecase provideGetInsuranceRecommendationUsecase(@ApplicationContext Context context) {
+        return new GetInsuranceRecommendationUsecase(context);
+    }
+
+    @Provides
+    @CartListScope
     RemoveInsuranceProductUsecase getRemoveInsuranceProductUsecase(@ApplicationContext Context context) {
         return new RemoveInsuranceProductUsecase(context);
     }
@@ -126,13 +133,14 @@ public class CartListModule {
                                                  TopAdsGqlUseCase topAdsGqlUseCase,
                                                  ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase,
                                                  GetInsuranceCartUseCase getInsuranceCartUseCase,
-                                                 RemoveInsuranceProductUsecase removeInsuranceProductUsecase) {
+                                                 RemoveInsuranceProductUsecase removeInsuranceProductUsecase,
+                                                 GetInsuranceRecommendationUsecase getInsuranceRecommendationUsecase) {
         return new CartListPresenter(getCartListUseCase, deleteCartUseCase, deleteCartGetCartListUseCase,
                 updateCartUseCase, resetCartGetCartListUseCase, checkPromoStackingCodeUseCase,
                 checkPromoStackingCodeMapper, checkPromoCodeCartListUseCase, compositeSubscription,
                 cartApiRequestParamGenerator, cancelAutoApplyCouponUseCase, addWishListUseCase,
                 removeWishListUseCase, updateAndReloadCartUseCase, userSessionInterface, topAdsGqlUseCase,
-                clearCacheAutoApplyStackUseCase, getInsuranceCartUseCase, removeInsuranceProductUsecase);
+                clearCacheAutoApplyStackUseCase, getInsuranceCartUseCase, removeInsuranceProductUsecase, getInsuranceRecommendationUsecase);
     }
 
     @Provides

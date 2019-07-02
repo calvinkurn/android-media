@@ -28,6 +28,7 @@ query GetInsureTechCart($data: TransactionalUserInfo) {
               id
               label
               place_holder
+              type
               required
               value
               values {
@@ -38,6 +39,7 @@ query GetInsureTechCart($data: TransactionalUserInfo) {
                 id
                 type
                 value
+                error_message
               }
             }
           }

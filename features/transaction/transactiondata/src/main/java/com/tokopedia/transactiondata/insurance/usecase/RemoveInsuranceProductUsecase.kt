@@ -38,4 +38,8 @@ class RemoveInsuranceProductUsecase @Inject constructor(@ApplicationContext val 
         graphqlUseCase.execute(subscriber)
     }
 
+    fun unsubscribe() {
+        graphqlUseCase.unsubscribe()
+    }
+
 }

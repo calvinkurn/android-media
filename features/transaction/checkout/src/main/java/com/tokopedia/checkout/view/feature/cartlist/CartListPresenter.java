@@ -56,13 +56,18 @@ import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapDa
 import com.tokopedia.transactiondata.apiservice.CartResponseErrorException;
 import com.tokopedia.transactiondata.entity.request.RemoveCartRequest;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
+import com.tokopedia.transactiondata.insurance.entity.request.InsuranceRecommendationRequest;
+import com.tokopedia.transactiondata.insurance.entity.request.InsuranceShops;
+import com.tokopedia.transactiondata.insurance.entity.request.InsuranceShopsData;
 import com.tokopedia.transactiondata.insurance.entity.request.RemoveInsuranceData;
 import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartDigitalProduct;
 import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartGqlResponse;
 import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShopItems;
 import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShops;
+import com.tokopedia.transactiondata.insurance.entity.response.InsuranceRecommendationGqlResponse;
 import com.tokopedia.transactiondata.insurance.entity.response.RemoveInsuranceProductGqlResponse;
 import com.tokopedia.transactiondata.insurance.usecase.GetInsuranceCartUseCase;
+import com.tokopedia.transactiondata.insurance.usecase.GetInsuranceRecommendationUsecase;
 import com.tokopedia.transactiondata.insurance.usecase.RemoveInsuranceProductUsecase;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 import com.tokopedia.usecase.RequestParams;
@@ -130,6 +135,7 @@ public class CartListPresenter implements ICartListPresenter {
     private final ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase;
     private final GetInsuranceCartUseCase getInsuranceCartUseCase;
     private final RemoveInsuranceProductUsecase removeInsuranceProductUsecase;
+    private final GetInsuranceRecommendationUsecase getInsuranceRecommendationUsecase;
     private final UserSessionInterface userSessionInterface;
     private CartListData cartListData;
     private boolean hasPerformChecklistChange;
@@ -155,7 +161,8 @@ public class CartListPresenter implements ICartListPresenter {
                              TopAdsGqlUseCase topAdsUseCase,
                              ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase,
                              GetInsuranceCartUseCase getInsuranceCartUseCase,
-                             RemoveInsuranceProductUsecase removeInsuranceProductUsecase) {
+                             RemoveInsuranceProductUsecase removeInsuranceProductUsecase,
+                             GetInsuranceRecommendationUsecase getInsuranceRecommendationUsecase) {
         this.getCartListUseCase = getCartListUseCase;
         this.compositeSubscription = compositeSubscription;
         this.deleteCartUseCase = deleteCartUseCase;
@@ -175,6 +182,7 @@ public class CartListPresenter implements ICartListPresenter {
         this.clearCacheAutoApplyStackUseCase = clearCacheAutoApplyStackUseCase;
         this.getInsuranceCartUseCase = getInsuranceCartUseCase;
         this.removeInsuranceProductUsecase = removeInsuranceProductUsecase;
+        this.getInsuranceRecommendationUsecase = getInsuranceRecommendationUsecase;
     }
 
     @Override
@@ -196,6 +204,15 @@ public class CartListPresenter implements ICartListPresenter {
         }
         if (checkPromoStackingCodeUseCase != null) {
             checkPromoStackingCodeUseCase.unsubscribe();
+        }
+        if (getInsuranceCartUseCase != null) {
+            getInsuranceCartUseCase.unsubscribe();
+        }
+        if (getInsuranceRecommendationUsecase != null) {
+            getInsuranceRecommendationUsecase.unsubscribe();
+        }
+        if (removeInsuranceProductUsecase != null) {
+            removeInsuranceProductUsecase.unsubscribe();
         }
         view = null;
     }
@@ -304,16 +321,53 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public void setAllInsuranceProductsChecked(InsuranceCartShops insuranceCartShops, boolean isChecked) {
+    public void setAllInsuranceProductsChecked(ArrayList<InsuranceCartShops> insuranceCartShopsArrayList, boolean isChecked) {
+        for (InsuranceCartShops insuranceCartShops : insuranceCartShopsArrayList) {
+            if (insuranceCartShops != null &&
+                    insuranceCartShops.getShopIemsList() != null &&
+                    insuranceCartShops.getShopIemsList().get(0) != null &&
+                    insuranceCartShops.getShopIemsList().get(0).getDigitalProductList() != null &&
+                    insuranceCartShops.getShopIemsList().get(0).getDigitalProductList().get(0) != null) {
 
-        if (insuranceCartShops != null &&
-                insuranceCartShops.getShopIemsList() != null &&
-                insuranceCartShops.getShopIemsList().get(0) != null &&
-                insuranceCartShops.getShopIemsList().get(0).getDigitalProductList() != null &&
-                insuranceCartShops.getShopIemsList().get(0).getDigitalProductList().get(0) != null) {
-
-            insuranceCartShops.getShopIemsList().get(0).getDigitalProductList().get(0).setOptIn(isChecked);
+                insuranceCartShops.getShopIemsList().get(0).getDigitalProductList().get(0).setOptIn(isChecked);
+            }
         }
+    }
+
+    @Override
+    public void getInsuranceRecommendationProducts(CartListData cartListData) {
+        String page = "cart";
+        String clientVersion = String.valueOf(Build.VERSION.SDK_INT);
+
+        InsuranceRecommendationRequest insuranceRecommendationRequest = new InsuranceRecommendationRequest();
+        insuranceRecommendationRequest.setPage(page);
+        insuranceRecommendationRequest.setClientVersion(clientVersion);
+
+        ArrayList<InsuranceShopsData> insuranceShopsDataArrayList = new ArrayList<>();
+
+        for (ShopGroupData shopGroupData : cartListData.getShopGroupDataList()) {
+            InsuranceShopsData insuranceShopsData = new InsuranceShopsData();
+            insuranceShopsData.setShopId(Long.parseLong(shopGroupData.getShopId()));
+
+            ArrayList<InsuranceShops> insuranceShopsArrayList = new ArrayList<>();
+            InsuranceShops insuranceShops;
+
+            for (CartItemHolderData cartItemHolderData : shopGroupData.getCartItemDataList()) {
+                insuranceShops = new InsuranceShops();
+                insuranceShops.setProductId(Long.parseLong(cartItemHolderData.getCartItemData().getOriginData().getProductId()));
+                insuranceShops.setProductQuantity(cartItemHolderData.getCartItemData().getOriginData().getOriginalQty());
+                insuranceShops.setCategoryId(Long.parseLong(cartItemHolderData.getCartItemData().getOriginData().getCategoryId()));
+                insuranceShops.setProductTitle(cartItemHolderData.getCartItemData().getOriginData().getProductName());
+                insuranceShops.setProductPrice(cartItemHolderData.getCartItemData().getOriginData().getPricePlanInt());
+                insuranceShopsArrayList.add(insuranceShops);
+            }
+            insuranceShopsData.setShopItems(insuranceShopsArrayList);
+            insuranceShopsDataArrayList.add(insuranceShopsData);
+        }
+        insuranceRecommendationRequest.setShopsArrayList(insuranceShopsDataArrayList);
+
+        getInsuranceRecommendationUsecase.setRequestParams(insuranceRecommendationRequest);
+        getInsuranceRecommendationUsecase.execute(getSubscriberInsuranceRecommendation());
 
     }
 
@@ -625,7 +679,7 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public void reCalculateSubTotal(List<CartShopHolderData> dataList, InsuranceCartShops insuranceCartShops) {
+    public void reCalculateSubTotal(List<CartShopHolderData> dataList, ArrayList<InsuranceCartShops> insuranceCartShopsArrayList) {
         double totalCashback = 0;
         double totalPrice = 0;
         int totalItemQty = 0;
@@ -765,20 +819,23 @@ public class CartListPresenter implements ICartListPresenter {
             }
         }
 
+        insuranceChecked = true;
+        for (InsuranceCartShops insuranceCartShops : insuranceCartShopsArrayList) {
 
-        if (insuranceCartShops != null &&
-                insuranceCartShops.getShopIemsList() != null &&
-                insuranceCartShops.getShopIemsList().get(0) != null &&
-                insuranceCartShops.getShopIemsList().get(0).getDigitalProductList().get(0) != null) {
+            if (insuranceCartShops != null &&
+                    insuranceCartShops.getShopIemsList() != null &&
+                    insuranceCartShops.getShopIemsList().get(0) != null &&
+                    insuranceCartShops.getShopIemsList().get(0).getDigitalProductList().get(0) != null) {
 
-            InsuranceCartDigitalProduct insuranceCartDigitalProduct = insuranceCartShops.getShopIemsList().get(0).getDigitalProductList().get(0);
+                InsuranceCartDigitalProduct insuranceCartDigitalProduct = insuranceCartShops.getShopIemsList().get(0).getDigitalProductList().get(0);
 
-            if (insuranceCartDigitalProduct.getOptIn()) {
-                totalPrice += insuranceCartDigitalProduct.getPricePerProduct();
-                totalItemQty += 1;
-                insuranceChecked = true;
-            } else {
-                insuranceChecked = false;
+                if (insuranceCartDigitalProduct.getOptIn()) {
+                    totalPrice += insuranceCartDigitalProduct.getPricePerProduct();
+                    totalItemQty += 1;
+                } else {
+                    insuranceChecked = false;
+                }
+
             }
 
         }
@@ -907,7 +964,7 @@ public class CartListPresenter implements ICartListPresenter {
 
             @Override
             public void onError(Throwable e) {
-
+                view.renderInsuranceCartData(null);
             }
 
             @Override
@@ -917,14 +974,56 @@ public class CartListPresenter implements ICartListPresenter {
                         graphqlResponse.getData(InsuranceCartGqlResponse.class) != null) {
                     insuranceCartGqlResponse =
                             graphqlResponse.getData(InsuranceCartGqlResponse.class);
-                    view.renderInsuranceCartData(insuranceCartGqlResponse);
+//                    view.renderInsuranceCartData(insuranceCartGqlResponse.getData());
+                } else {
+                    /*
+                      Do Nothing if insureTech cart service fails
+                     */
+                    view.showToastMessageRed("Cart Fail");
+                }
+
+                if (insuranceCartGqlResponse != null) {
+                    view.renderInsuranceCartData(insuranceCartGqlResponse.getData());
+                } else {
+                    view.renderInsuranceCartData(null);
+                }
+            }
+        };
+    }
+
+    @NonNull
+    private Subscriber<GraphqlResponse> getSubscriberInsuranceRecommendation() {
+        return new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                view.renderInsuranceCartData(null);
+            }
+
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+                InsuranceRecommendationGqlResponse insuranceRecommendationGqlResponse = null;
+                if (graphqlResponse != null &&
+                        graphqlResponse.getData(InsuranceRecommendationGqlResponse.class) != null) {
+                    insuranceRecommendationGqlResponse =
+                            graphqlResponse.getData(InsuranceRecommendationGqlResponse.class);
+//                    view.renderInsuranceCartData(insuranceRecommendationGqlResponse.getData());
                 } else {
                     /*
                       Do Nothing is insureTech cart service fails
                      */
-                    view.showToastMessageRed("Cart Fail");
+                    view.showToastMessageRed("Insurance Recommendation Fail");
                 }
-//                view.renderInsuranceCartData(insuranceCartGqlResponse);
+
+                if (insuranceRecommendationGqlResponse != null) {
+                    view.renderInsuranceCartData(insuranceRecommendationGqlResponse.getData());
+                } else {
+                    view.renderInsuranceCartData(null);
+                }
             }
         };
     }

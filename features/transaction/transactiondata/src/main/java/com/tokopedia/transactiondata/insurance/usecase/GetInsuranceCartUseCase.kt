@@ -33,4 +33,8 @@ class GetInsuranceCartUseCase @Inject constructor(@ApplicationContext val contex
         graphqlUseCase.execute(subscriber)
     }
 
+    fun unsubscribe() {
+        graphqlUseCase.unsubscribe()
+    }
+
 }

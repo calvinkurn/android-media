@@ -99,6 +99,9 @@ data class InsuranceProductApplicationDetails(
         @SerializedName("place_holder")
         var placeHolder: String,
 
+        @SerializedName("type")
+        var type: String,
+
         @SerializedName("required")
         var isRequired: Boolean,
 

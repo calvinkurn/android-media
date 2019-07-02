@@ -37,6 +37,7 @@ query getTransactionalProducts($digitalProducts: InsuretechDigitalProductRequest
               value
             }
             validations{
+              id
               type
               value
               error_message

@@ -16,7 +16,7 @@ import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel;
-import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartGqlResponse;
+import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartResponse;
 
 import java.util.List;
 import java.util.Map;
@@ -112,5 +112,6 @@ public interface ICartListView extends IBaseView {
 
     String getCartId();
 
-    void renderInsuranceCartData(InsuranceCartGqlResponse insuranceCartGqlResponse);
+    void renderInsuranceCartData(InsuranceCartResponse insuranceCartResponse);
+
 }

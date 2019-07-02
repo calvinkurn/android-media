@@ -95,7 +95,7 @@ import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
-import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartGqlResponse;
+import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartResponse;
 import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShops;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -439,6 +439,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             });
             dialog.setOnCancelClickListener(v -> {
                 if (toBeDeletedCartItemDataList.size() > 0) {
+
+                    // TODO: 1/7/19 remove insurance products as well
+
                     dPresenter.processDeleteAndRefreshCart(allCartItemDataList, toBeDeletedCartItemDataList, getAppliedPromoCodeList(toBeDeletedCartItemDataList), false);
                     sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
                             dPresenter.generateCartDataAnalytics(
@@ -1013,6 +1016,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
             if (cartListData.getShopGroupDataList() != null && !cartListData.getShopGroupDataList().isEmpty()) {
                 dPresenter.getInsuranceTechCart();
+                dPresenter.getInsuranceRecommendationProducts(cartListData);
             }
 
             /*if (cartListData.getAdsModel() != null) {
@@ -1849,8 +1853,10 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         clashBottomSheetFragment.show(getFragmentManager(), "");
     }
 
+    boolean firstTime = true;
+
     @Override
-    public void renderInsuranceCartData(InsuranceCartGqlResponse insuranceCartGqlResponse) {
+    public void renderInsuranceCartData(InsuranceCartResponse insuranceCartResponse) {
 
         // TODO: 18/6/19 render insurance cart data on ui, both micro and macro, if is_product_level == true,
         // then insurance product is of type micro insurance and shoudl be tagged at product level
@@ -1858,34 +1864,39 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         // TODO: 19/6/19 for micro insurance product add insurance data in shopGroup list
 
 
-        if (insuranceCartGqlResponse != null &&
-                !insuranceCartGqlResponse.getData().getCartShopsList().isEmpty()) {
-            for (InsuranceCartShops insuranceCartShops : insuranceCartGqlResponse.getData().getCartShopsList()) {
+        if (insuranceCartResponse != null &&
+                !insuranceCartResponse.getCartShopsList().isEmpty()) {
+            for (InsuranceCartShops insuranceCartShops : insuranceCartResponse.getCartShopsList()) {
                 if (!insuranceCartShops.getShopIemsList().isEmpty()) {
                     cartAdapter.addInsuranceDataList(insuranceCartShops);
                 }
             }
         }
 
-        if (cartListData.getAdsModel() != null) {
-            cartAdapter.mappingTopAdsModel(cartListData.getAdsModel());
-        }
-        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList(), cartAdapter.getInsuranceCartShops());
-        if (cbSelectAll != null) {
-            cbSelectAll.setChecked(cartListData.isAllSelected());
-        }
-
-        cartAdapter.checkForShipmentForm();
-
-        if (toolbar != null) {
-            setVisibilityRemoveButton(true);
-        } else {
-            if (getActivity() != null && !mIsMenuVisible && !cartListData.getShopGroupDataList().isEmpty()) {
-                mIsMenuVisible = true;
-                getActivity().invalidateOptionsMenu();
+        if (!firstTime) {
+            if (cartListData.getAdsModel() != null) {
+                cartAdapter.mappingTopAdsModel(cartListData.getAdsModel());
             }
+            dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList(), cartAdapter.getInsuranceCartShops());
+            if (cbSelectAll != null) {
+                cbSelectAll.setChecked(cartListData.isAllSelected());
+            }
+
+            cartAdapter.checkForShipmentForm();
+
+            if (toolbar != null) {
+                setVisibilityRemoveButton(true);
+            } else {
+                if (getActivity() != null && !mIsMenuVisible && !cartListData.getShopGroupDataList().isEmpty()) {
+                    mIsMenuVisible = true;
+                    getActivity().invalidateOptionsMenu();
+                }
+            }
+            cartPageAnalytics.eventViewCartListFinishRender();
         }
-        cartPageAnalytics.eventViewCartListFinishRender();
+
+        firstTime = false;
+
 
     }
 
@@ -2033,7 +2044,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onInsuranceSelectStateChanges(InsuranceCartShops insuranceCartShops, boolean isChecked) {
-        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList(), insuranceCartShops);
+    public void onInsuranceSelectStateChanges() {
+        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList(), cartAdapter.getInsuranceCartShops());
     }
 }

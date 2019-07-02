@@ -126,7 +126,7 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 insuranceCartShops.getShopIemsList().get(0).getDigitalProductList().get(0).setOptIn(isChecked);
-                insuranceItemActionlistener.onInsuranceSelectStateChanges(insuranceCartShops, isChecked);
+                insuranceItemActionlistener.onInsuranceSelectStateChanges();
             }
         });
 
