@@ -42,7 +42,7 @@ public class AdultManager {
 
     public static void handleActivityResult(Activity activity, int requestCode, int resultCode,
                                             @Nullable Intent data) {
-       handleActivityResult(activity, requestCode, resultCode, data, null);
+        handleActivityResult(activity, requestCode, resultCode, data, null);
     }
 
     public static void handleActivityResult(Activity activity, int requestCode, int resultCode,
@@ -66,10 +66,10 @@ public class AdultManager {
 
     private static void handleVerificationSuccessResult(Intent data, Callback callback, Activity activity) {
         String message = data.getStringExtra(EXTRA_VERIFICATION_SUCCESS);
-        if (callback != null)  {
+        if (callback != null) {
             callback.onVerificationSuccess(message);
         } else {
-            Toaster.Companion.showNormalWithAction(activity,
+            Toaster.Companion.showNormalWithAction(activity.findViewById(android.R.id.content),
                     message,
                     Snackbar.LENGTH_INDEFINITE,
                     "Ok", (v) -> {
@@ -87,7 +87,9 @@ public class AdultManager {
 
     public interface Callback {
         void onFail();
+
         void onVerificationSuccess(String message);
+
         void onLoginPreverified();
     }
 }

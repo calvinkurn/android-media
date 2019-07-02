@@ -393,7 +393,7 @@ open class DynamicPostViewHolder(v: View,
                     }
                 }
                 itemView.rvPosttag.layoutManager = layoutManager
-                itemView.rvPosttag.adapter = PostTagAdapter(postTag.items, listener, adapterPosition)
+                itemView.rvPosttag.adapter = PostTagAdapter(postTag.items, listener, adapterPosition,feedType)
                 (itemView.rvPosttag.adapter as PostTagAdapter).notifyDataSetChanged()
             } else {
                 itemView.rvPosttag.hide()

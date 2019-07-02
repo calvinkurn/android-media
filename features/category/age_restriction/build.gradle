@@ -13,7 +13,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.commonNetwork)
-    implementation project(rootProject.ext.features.tradeInCommon)
+    implementation project(rootProject.ext.features.basemvvm)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.travelCalendar)
     implementation project(rootProject.ext.libraries.track)
