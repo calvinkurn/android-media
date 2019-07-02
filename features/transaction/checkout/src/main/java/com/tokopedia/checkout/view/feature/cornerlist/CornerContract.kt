@@ -19,8 +19,7 @@ interface CornerContract {
     interface Presenter {
         fun attachView(view: View)
         fun detachView()
-        fun getData()
         fun loadMore(page: Int)
-        fun searchQuery(query: String)
+        fun getList(query: String)
     }
 }

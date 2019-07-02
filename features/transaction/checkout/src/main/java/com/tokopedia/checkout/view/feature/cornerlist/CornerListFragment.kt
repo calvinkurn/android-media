@@ -88,7 +88,7 @@ class CornerListFragment : BaseDaggerFragment(), CornerContract.View, CornerAdap
         mSearchView.setSearchHint(activity!!.getString(R.string.hint_search_corner))
         mSearchView.setListener(object : SearchInputView.Listener {
             override fun onSearchSubmitted(text: String) {
-                mPresenter.searchQuery(text)
+                mPresenter.getList(text)
             }
 
             override fun onSearchTextChanged(text: String) {
@@ -97,7 +97,7 @@ class CornerListFragment : BaseDaggerFragment(), CornerContract.View, CornerAdap
         })
 
         mPresenter.attachView(this)
-        mPresenter.getData()
+        mPresenter.getList("")
     }
 
     override fun onItemClick(corner: RecipientAddressModel) {
