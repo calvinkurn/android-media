@@ -79,6 +79,7 @@ open class PlayViewStateImpl(
         var view: View,
         var activity: FragmentActivity,
         var listener: PlayContract.View,
+        fragmentManager: FragmentManager,
         quickReplyListener: ChatroomContract.QuickReply,
         imageListener: ChatroomContract.ChatItem.ImageAnnouncementViewHolderListener,
         voteAnnouncementListener: ChatroomContract.ChatItem.VoteAnnouncementViewHolderListener,
@@ -125,6 +126,7 @@ open class PlayViewStateImpl(
     private var interactionGuideline = view.findViewById<FrameLayout>(R.id.interaction_button_guideline)
     private var bufferContainer = view.findViewById<View>(R.id.video_buffer_container)
     private var bufferDimContainer = view.findViewById<View>(R.id.dim_video_vertical)
+    private var videoFragment = fragmentManager.findFragmentById(R.id.video_container) as GroupChatVideoFragment
 
     private lateinit var overlayDialog: CloseableBottomSheetDialog
     private lateinit var pinnedMessageDialog: CloseableBottomSheetDialog
@@ -154,6 +156,7 @@ open class PlayViewStateImpl(
     private var overflowMenuHelper: OverflowMenuHelper
     private var videoBufferHelper: VideoBufferHelper
     private var videoHorizontalHelper: VideoHorizontalHelper
+    private var sponsorHelper: SponsorHelper
 
     init {
         val groupChatTypeFactory = GroupChatTypeFactoryImpl(
@@ -249,30 +252,15 @@ open class PlayViewStateImpl(
                 sendMessage(pendingChatViewModel)
             }
         }
-        hideVideoToggle.setOnClickListener {
-            it.hide()
-            showVideoToggle.show()
-            youTubePlayer?.pause()
-            videoContainer.visibility = View.GONE
-            setChatListHasSpaceOnTop(true)
-            analytics.eventClickHideVideoToggle(viewModel?.channelId)
-        }
-        showVideoToggle.setOnClickListener {
-            it.hide()
-            hideVideoToggle.show()
-            videoContainer.visibility = View.VISIBLE
-            setChatListHasSpaceOnTop(false)
-            analytics.eventClickShowVideoToggle(viewModel?.channelId)
-        }
         errorView.setOnClickListener {  }
 
         interactionAnimationHelper = InteractionAnimationHelper(interactionGuideline)
-        overflowMenuHelper = OverflowMenuHelper(activity, onInfoMenuClicked())
+        overflowMenuHelper = OverflowMenuHelper(viewModel, activity, onInfoMenuClicked(), toggleHorizontalVideo(), videoContainer)
         videoBufferHelper = VideoBufferHelper(bufferContainer, bufferDimContainer)
-        videoHorizontalHelper = VideoHorizontalHelper()
-        videoBufferHelper.showRetryOnly()
+        videoHorizontalHelper = VideoHorizontalHelper(viewModel, hideVideoToggle, showVideoToggle, videoContainer, youTubePlayer, setChatListHasSpaceOnTop(), analytics)
+        sponsorHelper = SponsorHelper(viewModel, sponsorLayout, sponsorImage, analytics, listener)
 
-        errorView.setOnClickListener {  }
+        errorView.setOnClickListener {}
     }
 
 
@@ -419,11 +407,11 @@ open class PlayViewStateImpl(
     override fun onSuccessGetInfoFirstTime(it: ChannelInfoViewModel, childFragmentManager: FragmentManager) {
         showBottomSheetFirstTime(it)
         setDefaultBackground()
-        onSuccessGetInfo(it, childFragmentManager)
+        onSuccessGetInfo(it)
 
     }
 
-    override fun onSuccessGetInfo(it: ChannelInfoViewModel, childFragmentManager: FragmentManager) {
+    override fun onSuccessGetInfo(it: ChannelInfoViewModel) {
         loadingView.hide()
 
         if (it.isFreeze) {
@@ -433,8 +421,8 @@ open class PlayViewStateImpl(
         }
 
         setToolbarData(it.title, it.bannerUrl, it.totalView, it.blurredBannerUrl)
-        setSponsorData(it.adsId, it.adsImageUrl, it.adsName)
-        initVideoFragment(childFragmentManager, it.videoId, it.isVideoLive)
+
+        initVideoFragment(it.videoId, it.isVideoLive)
         setBottomView()
         showLoginButton(!userSession.isLoggedIn)
         it.settingGroupChat?.maxChar?.let {
@@ -448,6 +436,11 @@ open class PlayViewStateImpl(
         viewModel = it
         viewModel?.infoUrl = it.infoUrl
         autoAddSprintSale()
+
+        videoHorizontalHelper.assignViewModel(it)
+        sponsorHelper.assignViewModel(it)
+        sponsorHelper.setSponsor()
+        overflowMenuHelper.assignViewModel(it)
     }
 
     fun setDefaultBackground() {
@@ -520,18 +513,20 @@ open class PlayViewStateImpl(
             viewModel.adsImageUrl = it.adsUrl
             viewModel.adsId = it.adsId
             viewModel.adsLink = it.adsLink
-            setSponsorData(viewModel.adsId, viewModel.adsImageUrl, viewModel.adsName)
+            sponsorHelper.assignViewModel(viewModel)
+            sponsorHelper.setSponsor()
         }
 
     }
 
-    override fun onVideoUpdated(it: VideoViewModel, childFragmentManager: FragmentManager) {
+    override fun onVideoUpdated(it: VideoViewModel) {
         viewModel?.let { viewModel ->
+            initVideoFragment(it.videoId, it.videoLive)
             viewModel.videoId = it.videoId
-            viewModel.adsId?.let {
-                setSponsorData(it, viewModel.adsImageUrl, viewModel.adsName)
-            }
-            initVideoFragment(childFragmentManager, it.videoId, it.videoLive)
+            videoHorizontalHelper.assignViewModel(viewModel)
+            sponsorHelper.assignViewModel(viewModel)
+            sponsorHelper.setSponsor()
+            overflowMenuHelper.assignViewModel(viewModel)
         }
     }
 
@@ -760,7 +755,7 @@ open class PlayViewStateImpl(
     }
 
     private fun setToolbarWhite() {
-        sponsorLayout.hide()
+        sponsorHelper.hideSponsor()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.elevation = 10f
             toolbar.setBackgroundResource(R.color.white)
@@ -797,53 +792,7 @@ open class PlayViewStateImpl(
     }
 
     fun setSponsorData(adsId: String?, adsImageUrl: String?, adsName: String?) {
-        if (adsId == null || adsImageUrl.isNullOrEmpty()) {
-            sponsorLayout.visibility = View.GONE
-        } else {
-            sponsorLayout.visibility = View.VISIBLE
-            ImageHandler.loadImage2(sponsorImage, adsImageUrl, R.drawable.loading_page)
-            viewModel?.let { infoViewModel ->
-                sponsorImage.setOnClickListener {
-                    listener.openRedirectUrl(generateLink(
-                            infoViewModel.adsLink,
-                            GroupChatAnalytics.ATTRIBUTE_BANNER,
-                            infoViewModel.channelUrl,
-                            infoViewModel.title))
 
-                    analytics.eventClickBanner(infoViewModel, adsId, adsName, adsImageUrl)
-                }
-            }
-        }
-
-        if (sponsorLayout.visibility == View.VISIBLE) {
-            viewModel?.run {
-                analytics.eventViewBanner(this, adsId, adsName, adsImageUrl)
-            }
-        }
-    }
-
-    private fun generateLink(
-            applink: String,
-            attributeBanner: String,
-            channelUrl: String,
-            channelName: String): String {
-        return if (applink.contains("?")) {
-            applink + "&" + generateTrackerAttribution(attributeBanner,
-                    channelUrl, channelName)
-        } else {
-            applink + "?" + generateTrackerAttribution(attributeBanner,
-                    channelUrl, channelName)
-        }
-    }
-
-    private fun generateTrackerAttribution(attributeBanner: String,
-                                           channelUrl: String,
-                                           channelName: String): String {
-        return "tracker_attribution=" + GroupChatAnalytics.generateTrackerAttribution(attributeBanner, channelUrl, channelName)
-    }
-
-    fun getAttributionTracking(attributeName: String): String {
-        return GroupChatAnalytics.generateTrackerAttribution(attributeName, viewModel?.channelUrl, viewModel?.title)
     }
 
     override fun autoPlayVideo() {
@@ -854,19 +803,18 @@ open class PlayViewStateImpl(
         }
     }
 
-    fun initVideoFragment(fragmentManager: FragmentManager, videoId: String, isVideoLive: Boolean) {
+    fun initVideoFragment(videoId: String, isVideoLive: Boolean) {
         videoContainer.hide()
         liveIndicator.hide()
         hideVideoToggle.hide()
         showVideoToggle.hide()
-        setChatListHasSpaceOnTop(true)
+        setChatListHasSpaceOnTop().invoke(true)
         videoId.let {
             if (it.isEmpty()) return
-            val videoFragment = fragmentManager.findFragmentById(R.id.video_container) as GroupChatVideoFragment
             videoFragment.run {
                 videoContainer.show()
-                sponsorLayout.hide()
-                setChatListHasSpaceOnTop(false)
+                sponsorHelper.hideSponsor()
+                setChatListHasSpaceOnTop().invoke(false)
                 liveIndicator.showWithCondition(isVideoLive)
                 youTubePlayer?.let {
                     if (videoId != viewModel?.videoId) {
@@ -874,7 +822,6 @@ open class PlayViewStateImpl(
                     }
                     autoPlayVideo()
                 }
-
                 videoFragment.initialize(YoutubePlayerConstant.GOOGLE_API_KEY, getVideoInitializer(videoId))
             }
         }
@@ -941,6 +888,8 @@ open class PlayViewStateImpl(
                                 override fun onError(errorReason: YouTubePlayer.ErrorReason) {
                                 }
                             })
+
+                            videoHorizontalHelper.assignPlayer(it)
                         }
 
                     } catch (e: Exception) {
@@ -1298,14 +1247,27 @@ open class PlayViewStateImpl(
         }
     }
 
-    private fun setChatListHasSpaceOnTop(hasSpace: Boolean) {
-        val space = when {
-            hasSpace -> view.context.resources.getDimensionPixelSize(R.dimen.dp_24)
-            else -> view.context.resources.getDimensionPixelSize(R.dimen.dp_8)
+    private fun setChatListHasSpaceOnTop(): (Boolean) -> Unit {
+        return {
+            val space = when {
+                it -> view.context.resources.getDimensionPixelSize(R.dimen.dp_24)
+                else -> view.context.resources.getDimensionPixelSize(R.dimen.dp_8)
+            }
+            spaceChatVideo.showWithCondition(it)
+            chatRecyclerView.setFadingEdgeLength(space)
+            chatRecyclerView.invalidate()
         }
-        spaceChatVideo.showWithCondition(hasSpace)
-        chatRecyclerView.setFadingEdgeLength(space)
-        chatRecyclerView.invalidate()
+    }
+
+
+    private fun toggleHorizontalVideo(): (Boolean) -> Unit {
+        return {
+            if(it) {
+                videoHorizontalHelper.showVideo()
+            } else {
+                videoHorizontalHelper.hideVideo()
+            }
+        }
     }
 
     override fun onShowOverlayCTAFromDynamicButton(button: DynamicButton) {

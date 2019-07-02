@@ -10,17 +10,24 @@ import android.view.View
 import android.widget.FrameLayout
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.groupchat.R
+import com.tokopedia.groupchat.chatroom.view.fragment.GroupChatVideoFragment
+import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.room.view.adapter.OverflowMenuAdapter
 import com.tokopedia.groupchat.room.view.viewmodel.OverflowMenuButtonViewModel
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.visible
 import java.util.*
 
 /**
  * @author : Steven 28/05/19
  */
 class OverflowMenuHelper(
+        model: ChannelInfoViewModel?,
         var context: Context,
-        private var onInfoMenuClicked: () -> Unit
-) {
+        private var onInfoMenuClicked: () -> Unit,
+        private var toggleHorizontalVideo: (Boolean) -> Unit,
+        var videoContainer: View
+): PlayBaseHelper(model) {
 
 
     private lateinit var overflowMenuDialog: CloseableBottomSheetDialog
@@ -61,19 +68,45 @@ class OverflowMenuHelper(
     }
 
     private fun createOverflowMenu(){
-        var list = ArrayList<OverflowMenuButtonViewModel>()
+
 
         var infoClickListener = {
             onInfoMenuClicked.invoke()
             dismissDialog()
         }
-        list.add(OverflowMenuButtonViewModel(getStringResource(R.string.menu_info), infoClickListener, R.drawable.ic_info_play))
+
 
         var videoQualityText = String.format(getStringResource(R.string.menu_video_quality), 480)
         var changeVideoQualityListener:() -> Unit = {createVideoQualityMenu()}
-        list.add(OverflowMenuButtonViewModel(videoQualityText, changeVideoQualityListener, R.drawable.ic_menu_quality_video))
-        list.add(OverflowMenuButtonViewModel(getStringResource(R.string.menu_hide_video), infoClickListener, R.drawable.ic_menu_hide_video))
 
+
+        var dismissVideoListener:() -> Unit = {
+            dismissVideo()
+            dismissDialog()
+        }
+
+        var showVideoListener:() -> Unit = {
+            showVideo()
+            dismissDialog()
+        }
+
+
+        var infoMenu = OverflowMenuButtonViewModel(getStringResource(R.string.menu_info), infoClickListener, R.drawable.ic_info_play)
+        var qualityMenu = OverflowMenuButtonViewModel(videoQualityText, changeVideoQualityListener, R.drawable.ic_menu_quality_video)
+        var hideMenu = OverflowMenuButtonViewModel(getStringResource(R.string.menu_hide_video), dismissVideoListener, R.drawable.ic_menu_hide_video)
+        var showMenu = OverflowMenuButtonViewModel(getStringResource(R.string.menu_show_video), showVideoListener, R.drawable.ic_menu_show_video)
+
+        var list = ArrayList<OverflowMenuButtonViewModel>()
+
+        list.add(infoMenu)
+        list.add(qualityMenu)
+        if(!viewModel?.videoId.isNullOrBlank()) {
+            if (videoContainer.isVisible) {
+                list.add(hideMenu)
+            } else {
+                list.add(showMenu)
+            }
+        }
         menuAdapter.setDataList(list)
     }
 
@@ -88,5 +121,18 @@ class OverflowMenuHelper(
         if (::overflowMenuDialog.isInitialized) {
             overflowMenuDialog?.dismiss()
         }
+    }
+
+    private fun dismissVideo() {
+        toggleHorizontalVideo.invoke(false)
+    }
+
+    private fun showVideo() {
+        toggleHorizontalVideo.invoke(true)
+    }
+
+    override fun assignViewModel(model: ChannelInfoViewModel) {
+        super.assignViewModel(model)
+        createOverflowMenu()
     }
 }

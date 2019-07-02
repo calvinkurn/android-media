@@ -22,6 +22,7 @@ class VideoBufferHelper(var bufferContainer: View, var bufferDimContainer: View)
     private var bufferText = bufferContainer.findViewById<TextView>(R.id.buffer_text)
 
     init {
+        hideContainer()
         bufferDimContainer.setOnClickListener{}
         bufferText.text = getSpannable(R.string.buffer_text_long, R.string.buffer_text_retry)
         bufferText.setOnClickListener {

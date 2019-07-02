@@ -282,7 +282,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
             presenter.getStickyComponents(channelInfoViewModel.channelId,
                     onSuccessGetStickyComponent(), onErrorGetStickyComponent())
 
-            viewState.onSuccessGetInfo(it, childFragmentManager)
+            viewState.onSuccessGetInfo(it)
             saveGCTokenToCache(it.groupChatToken)
             channelInfoViewModel = it
             setExitDialog(it.exitMessage)
@@ -357,7 +357,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     private fun initView(view: View) {
         activity?.let {
             viewState = PlayViewStateImpl(userSession, analytics, view,
-                    it, this, this, this, this,
+                    it, this, childFragmentManager,this, this, this,
                     this, this, sendMessage(), this, this)
         }
         setToolbarView()
@@ -516,7 +516,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun onVideoUpdated(it: VideoViewModel) {
-        viewState.onVideoUpdated(it, childFragmentManager)
+        viewState.onVideoUpdated(it)
     }
 
     override fun handleEvent(it: EventGroupChatViewModel) {

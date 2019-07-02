@@ -11,8 +11,7 @@
 
     <item
         android:id="@+id/action_overflow"
-        android:icon="@drawable/ic_toolbar_overflow_level_two_black"
-        android:iconTint="@color/white"
+        android:icon="@drawable/ic_overflow_menu"
         android:orderInCategory="102"
         android:title="@string/title_share"
         app:showAsAction="ifRoom"/>
