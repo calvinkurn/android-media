@@ -75,11 +75,13 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
             AddNewAddressAnalytics.eventClickButtonPilihLokasiIniNotSuccess()
             AddNewAddressAnalytics.eventClickButtonTandaiLokasiChangeAddressNegativeFailed()
         } else {
-            isChangesRequested?.let {
-                if (it) {
-                    view.finishBackToAddEdit(false, it)
-                } else {
-                    isMismatchSolved?.let { view.goToAddEditActivity(false, it) }
+            isChangesRequested?.let { isChanges ->
+                isMismatchSolved?.let { isSolved ->
+                    if (isChanges) {
+                        view.finishBackToAddEdit(false, isSolved)
+                    } else {
+                        view.goToAddEditActivity(false, isSolved)
+                    }
                 }
             }
 

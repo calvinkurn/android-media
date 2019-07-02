@@ -13,13 +13,18 @@ import org.junit.Test;
 import java.util.HashMap;
 
 import rx.Observable;
+import rx.Subscriber;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 public class SearchSectionPresenterTest {
+
+    private static abstract class MockGetDynamicFilterUseCase extends UseCase<DynamicFilterModel> { }
+    private static abstract class MockGetDynamicFilterSubscriber extends Subscriber<DynamicFilterModel> { }
 
     private SearchSectionContract.View view = mock(SearchSectionContract.View.class);
     private DynamicFilterModel dynamicFilterModel = new DynamicFilterModel();
@@ -75,5 +80,26 @@ public class SearchSectionPresenterTest {
 
         verify(view).renderFailRequestDynamicFilter();
         verify(searchLocalCacheHandler, never()).saveDynamicFilterModelLocally(any(), any());
+    }
+
+    @Test
+    public void detachView_NotInjected_ShouldNotError() {
+        UseCase<DynamicFilterModel> getDynamicFilterUseCase = mock(MockGetDynamicFilterUseCase.class);
+
+        searchSectionPresenterSubclass.detachView();
+
+        assert searchSectionPresenterSubclass.getView() == null;
+        verify(getDynamicFilterUseCase, never()).execute(any(RequestParams.class), any(MockGetDynamicFilterSubscriber.class));
+    }
+
+    @Test
+    public void detachView_AfterInjectUseCase_ShouldUnsubscribeAllUseCases() {
+        UseCase<DynamicFilterModel> getDynamicFilterUseCase = mock(MockGetDynamicFilterUseCase.class);
+        searchSectionPresenterInjectDependencies(getDynamicFilterUseCase);
+
+        searchSectionPresenterSubclass.detachView();
+
+        assert searchSectionPresenterSubclass.getView() == null;
+        verify(getDynamicFilterUseCase).unsubscribe();
     }
 }
