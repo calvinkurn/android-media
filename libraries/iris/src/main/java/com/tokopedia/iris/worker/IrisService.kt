@@ -11,8 +11,8 @@ import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.data.db.table.Tracking
 import com.tokopedia.iris.data.network.ApiService
 import com.tokopedia.iris.launchCatchError
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import retrofit2.Call
 import retrofit2.Callback
@@ -22,12 +22,12 @@ import kotlin.coroutines.CoroutineContext
 /**
  * Created by meta on 24/05/19.
  */
-class IrisService : JobIntentService() {
+class IrisService : JobIntentService(), CoroutineScope {
 
     private lateinit var mContext: Context
     private val job: Job = Job()
 
-    private val coroutineContext: CoroutineContext
+    override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + job
 
     override fun onCreate() {
@@ -49,7 +49,7 @@ class IrisService : JobIntentService() {
     }
 
     private fun startService(maxRow: Int) {
-        GlobalScope.launchCatchError(coroutineContext) {
+        launchCatchError {
             val trackingRepository = TrackingRepository(applicationContext)
 
             val trackings: List<Tracking> = trackingRepository.getFromOldest(maxRow)
@@ -74,8 +74,10 @@ class IrisService : JobIntentService() {
 
     override fun onDestroy() {
         super.onDestroy()
-        job?.children.forEach {
-            it.cancel()
+        if(!job.isCancelled) {
+            job.children.forEach {
+                it.cancel()
+            }
         }
     }
 }
