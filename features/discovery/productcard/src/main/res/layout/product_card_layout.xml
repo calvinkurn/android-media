@@ -116,9 +116,14 @@
                 android:ellipsize="end"
                 android:lines="1"
                 app:layout_goneMarginLeft="@dimen/dp_8"
+                app:layout_goneMarginStart="@dimen/dp_8"
                 app:layout_constraintEnd_toStartOf="@+id/topAdsIcon"
                 app:layout_constraintTop_toBottomOf="@+id/textPrice"
-                tools:text="Jakarta" app:layout_constraintStart_toEndOf="@+id/badge"/>
+                app:layout_constraintStart_toEndOf="@+id/badge"
+                app:layout_goneMarginRight="@dimen/dp_8"
+                app:layout_goneMarginEnd="@dimen/dp_8"
+                tools:text="Jakarta"/>
+
         <ImageView
                 android:id="@+id/rating"
                 android:layout_marginLeft="@dimen/dp_8"
