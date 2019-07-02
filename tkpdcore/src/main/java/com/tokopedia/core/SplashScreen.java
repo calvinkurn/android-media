@@ -15,7 +15,6 @@ import android.view.View;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tkpd.library.utils.data.DataManagerImpl;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
@@ -53,9 +52,11 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     public static final int TIME_DELAY = 300;
     public static final String IS_LOADING = "IS_LOADING";
     public static final String RE_INIT_DATA_FOR_THE_FIRST_TIME = "RE-INIT-DATA-FOR-THE-FIRST-TIME";
+    public static final String SHIPPING_CITY_DURATION_STORAGE = "shipping_city_storage";
     public static final int WEEK_IN_SECONDS = 604800;
     public static final int DAYS_IN_SECONDS = 86400;
     public static final int OVERLAY_PERMISSION_REQ_CODE = 1080;
+
     private PasswordGenerator Pgenerator;
     DownloadResultReceiver mReceiver;
     String id = null;
@@ -165,7 +166,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     private void resetAllDatabaseFlag() {
         LocalCacheHandler flagDB = new LocalCacheHandler(this, "DATABASE_VERSION" + MainApplication.DATABASE_VERSION);
         if (!flagDB.getBoolean("reset_db_flag", false)) {
-            LocalCacheHandler.clearCache(this, DataManagerImpl.SHIPPING_CITY_DURATION_STORAGE);
+            LocalCacheHandler.clearCache(this, SHIPPING_CITY_DURATION_STORAGE);
             if (getApplication() instanceof TkpdCoreRouter) {
                 ((TkpdCoreRouter) getApplication()).resetAddProductCache(this);
             }

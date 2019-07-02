@@ -18,12 +18,7 @@ import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.common.dbManager.FeedDbManager;
-import com.tokopedia.core.base.common.dbManager.RecentProductDbManager;
-import com.tokopedia.core.base.common.dbManager.TopAdsDbManager;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.database.manager.ProductDetailCacheManager;
-import com.tokopedia.core.database.manager.ProductOtherCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.message.interactor.CacheInteractorImpl;
 import com.tokopedia.core.prototype.InboxCache;
@@ -141,8 +136,6 @@ public class SessionHandler {
         ManageProductCache.ClearCache(context);
         CacheInteractorImpl messageCacheInteractor = new CacheInteractorImpl();
         messageCacheInteractor.deleteCache();
-        new ProductDetailCacheManager().deleteAll();
-        new ProductOtherCacheManager().deleteAll();
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         Editor editor = sharedPrefs.edit();
         editor.putString(LOGIN_ID, null);
@@ -186,8 +179,6 @@ public class SessionHandler {
         }
         LocalCacheHandler.clearCache(context, DrawerHelper.DRAWER_CACHE);
 
-
-        clearFeedCache();
         AppWidgetUtil.sendBroadcastToAppWidget(context);
 
         deleteCacheBalanceTokoCash();
@@ -482,12 +473,6 @@ public class SessionHandler {
     public static String getUUID(Context context) {
         return new LocalCacheHandler(context, LOGIN_UUID_KEY)
                 .getString(UUID_KEY, DEFAULT_UUID_VALUE);
-    }
-
-    private static void clearFeedCache() {
-        new FeedDbManager().delete();
-        new RecentProductDbManager().delete();
-        new TopAdsDbManager().delete();
     }
 
     public static String getAccessToken(Context context) {
