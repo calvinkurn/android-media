@@ -141,7 +141,7 @@ public class ProductCardView extends BaseCustomView {
 
     public void setBadgeUrl(String url){
         if(!url.isEmpty())  ImageHandler.loadImageFitCenter(getContext(), badgeView, url);
-        else badgeView.setVisibility(View.INVISIBLE);
+        else badgeView.setVisibility(View.GONE);
     }
 
     public void setLocation(String location){
