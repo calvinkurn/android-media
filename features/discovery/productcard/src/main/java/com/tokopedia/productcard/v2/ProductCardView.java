@@ -137,6 +137,33 @@ public abstract class ProductCardView extends BaseCustomView {
         labelPromo.setLabelType(getLabelTypeFromString(promoLabelType));
     }
 
+    protected int getLabelTypeFromString(String labelType) {
+        switch(labelType) {
+            case LIGHT_GREY :
+                return Label.GENERAL_LIGHT_GREY;
+            case LIGHT_BLUE :
+                return Label.GENERAL_LIGHT_BLUE;
+            case LIGHT_GREEN :
+                return Label.GENERAL_LIGHT_GREEN;
+            case LIGHT_RED:
+                return Label.GENERAL_LIGHT_RED;
+            case LIGHT_ORANGE:
+                return Label.GENERAL_LIGHT_ORANGE;
+            case DARK_GREY :
+                return Label.GENERAL_DARK_GREY;
+            case DARK_BLUE :
+                return Label.GENERAL_DARK_BLUE;
+            case DARK_GREEN :
+                return Label.GENERAL_DARK_GREEN;
+            case DARK_RED:
+                return Label.GENERAL_DARK_RED;
+            case DARK_ORANGE:
+                return Label.GENERAL_DARK_ORANGE;
+            default :
+                return Label.GENERAL_LIGHT_GREY;
+        }
+    }
+
     public void setShopNameVisible(boolean isVisible) {
         textViewShopName.setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
@@ -268,7 +295,7 @@ public abstract class ProductCardView extends BaseCustomView {
         imageTopAds.setVisibility(isVisible ? View.VISIBLE : View.GONE);
     }
 
-    protected void setMarginsToView(View view, int leftPixel, int topPixel, int rightPixel, int bottomPixel) {
+    protected void setViewMarginsInConstraintLayoutProductCard(View view, int leftPixel, int topPixel, int rightPixel, int bottomPixel) {
         if(view.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
             ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
 
@@ -283,30 +310,15 @@ public abstract class ProductCardView extends BaseCustomView {
         }
     }
 
-    protected int getLabelTypeFromString(String labelType) {
-        switch(labelType) {
-            case LIGHT_GREY :
-                return Label.GENERAL_LIGHT_GREY;
-            case LIGHT_BLUE :
-                return Label.GENERAL_LIGHT_BLUE;
-            case LIGHT_GREEN :
-                return Label.GENERAL_LIGHT_GREEN;
-            case LIGHT_RED:
-                return Label.GENERAL_LIGHT_RED;
-            case LIGHT_ORANGE:
-                return Label.GENERAL_LIGHT_ORANGE;
-            case DARK_GREY :
-                return Label.GENERAL_DARK_GREY;
-            case DARK_BLUE :
-                return Label.GENERAL_DARK_BLUE;
-            case DARK_GREEN :
-                return Label.GENERAL_DARK_GREEN;
-            case DARK_RED:
-                return Label.GENERAL_DARK_RED;
-            case DARK_ORANGE:
-                return Label.GENERAL_DARK_ORANGE;
-            default :
-                return Label.GENERAL_LIGHT_GREY;
+    protected void setViewMarginsInConstraintLayoutProductCard(@IdRes int viewId, int anchor, int marginDp) {
+        if (constraintLayoutProductCard != null) {
+            ConstraintSet constraintSet = new ConstraintSet();
+            constraintSet.clone(constraintLayoutProductCard);
+
+            int marginPixel = getDimensionPixelSize(marginDp);
+            constraintSet.setMargin(viewId, anchor, marginPixel);
+
+            constraintSet.applyTo(constraintLayoutProductCard);
         }
     }
 

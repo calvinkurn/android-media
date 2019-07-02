@@ -37,39 +37,27 @@ public class ProductCardViewList extends ProductCardView {
     }
 
     private void setTitleMarginTop() {
-        int marginTopPixel =
-                isViewVisible(textViewShopName)
-                        ? getDimensionPixelSize(R.dimen.dp_2)
-                        : getDimensionPixelSize(R.dimen.dp_8);
+        int marginTopDp = isViewVisible(textViewShopName) ? R.dimen.dp_2 : R.dimen.dp_8;
 
-        setMarginsToView(textViewProductName, -1, marginTopPixel, -1, -1);
+        setViewMarginsInConstraintLayoutProductCard(textViewProductName.getId(), ConstraintSet.TOP, marginTopDp);
     }
 
     private void setPriceMarginTop() {
-        int marginTopPixel =
-                isViewVisible(labelDiscount)
-                        ? getDimensionPixelSize(R.dimen.dp_2)
-                        : getDimensionPixelSize(R.dimen.dp_4);
+        int marginTopDp = isViewVisible(labelDiscount) ? R.dimen.dp_2 : R.dimen.dp_4;
 
-        setMarginsToView(textViewPrice, -1, marginTopPixel, -1, -1);
+        setViewMarginsInConstraintLayoutProductCard(textViewPrice.getId(), ConstraintSet.TOP, marginTopDp);
     }
 
     private void setLocationMarginLeft() {
-        int marginLeftPixel =
-                isViewVisible(linearLayoutShopBadges)
-                        ? getDimensionPixelSize(R.dimen.dp_4)
-                        : getDimensionPixelSize(R.dimen.dp_0);
+        int marginStartDp = isViewVisible(linearLayoutShopBadges) ? R.dimen.dp_4 : R.dimen.dp_8;
 
-        setMarginsToView(textViewShopLocation, marginLeftPixel, -1, -1, -1);
+        setViewMarginsInConstraintLayoutProductCard(textViewShopLocation.getId(), ConstraintSet.START, marginStartDp);
     }
 
     private void setReviewCountMarginLeft() {
-        int marginLeftPixel =
-                isViewVisible(imageRating)
-                        ? getDimensionPixelSize(R.dimen.dp_4)
-                        : getDimensionPixelSize(R.dimen.dp_0);
+        int marginStartDp = isViewVisible(imageRating) ? R.dimen.dp_4 : R.dimen.dp_8;
 
-        setMarginsToView(textViewReviewCount, marginLeftPixel, -1, -1, -1);
+        setViewMarginsInConstraintLayoutProductCard(textViewReviewCount.getId(), ConstraintSet.START, marginStartDp);
     }
 
     private void setOffersLabelConstraint() {
