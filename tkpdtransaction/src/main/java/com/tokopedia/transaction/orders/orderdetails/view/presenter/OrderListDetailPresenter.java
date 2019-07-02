@@ -84,7 +84,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
     private String Insurance_File_Name = "Invoice";
     public String pdfUri = " ";
-    public boolean isdownloadable = false;
+    private boolean isdownloadable = false;
 
     @Inject
     public OrderListDetailPresenter(GraphqlUseCase orderDetailsUseCase) {

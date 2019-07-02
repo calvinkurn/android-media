@@ -23,6 +23,7 @@ import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.EntityAddress;
+import com.tokopedia.transaction.orders.orderdetails.data.Header;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
 import com.tokopedia.transaction.orders.orderdetails.data.MetaDataInfo;
 import com.tokopedia.transaction.orders.orderdetails.view.customview.BookingCodeView;
@@ -38,6 +39,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public static final String KEY_BUTTON = "button";
     public static final String KEY_TEXT = "text";
     public static final String KEY_REDIRECT = "redirect";
+    public static final String CONTENT_TYPE = "application/pdf";
     public static final String KEY_QRCODE = "qrcode";
     private static final int DEALS_CATEGORY_ID = 35;
     private boolean isShortLayout;
@@ -308,7 +310,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                                     voucherCodeLayout.addView(bookingCodeView);
                                 }
                             }
-                        }else {
+                        } else {
                             customTicketView.setVisibility(View.GONE);
                             tapActionLayoutDeals.setVisibility(View.GONE);
                         }
@@ -354,7 +356,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                                     voucherCodeLayout.addView(bookingCodeView);
                                 }
                             }
-                        }else {
+                        } else {
                             customTicketView.setVisibility(View.GONE);
                             tapActionLayoutEvents.setVisibility(View.GONE);
                         }
@@ -392,11 +394,14 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     brandName.setText(context.getResources().getString(R.string.event_ticket_voucher_count));
                 }
                 if (!actionButton.getBody().equals("") && !actionButton.getBody().getAppURL().equals("")) {
-                    if (view == null)
+                    if (view == null) {
                         RouteManager.route(context, actionButton.getBody().getAppURL());
-                    else {
+                    } else if (isDownloadable(actionButton)) {
                         presenter.setDownloadableFlag(true);
+                        presenter.setDownloadableFileName("Tokopedia E-Ticket");
                         view.setOnClickListener(getActionButtonClickListener(actionButton.getBody().getAppURL()));
+                    } else {
+                        presenter.setDownloadableFlag(true);
                     }
                 }
             } else if (actionButton.getControl().equalsIgnoreCase(KEY_QRCODE)) {
@@ -409,6 +414,23 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     setEventDetails.openShowQRFragment(actionButton, item);
                 });
             }
+        }
+
+        private boolean isDownloadable(ActionButton actionButton) {
+
+            Header header = null;
+
+            if (!TextUtils.isEmpty(actionButton.getHeader())) {
+                Gson gson = new Gson();
+                header = gson.fromJson(actionButton.getHeader(), Header.class);
+
+                if (header.getContentType().equalsIgnoreCase(CONTENT_TYPE)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            return false;
         }
 
         private TextView renderActionButtons(int position, ActionButton actionButton, Items item) {
