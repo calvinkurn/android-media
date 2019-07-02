@@ -31,17 +31,14 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
 
     private static final int ADAPTER_POSITION_HEADER = 0;
     private List<Visitable> list = new ArrayList<>();
-    private EmptySearchViewModel emptySearchModel;
     private ProductListTypeFactory typeFactory;
     private int startFrom;
     private int totalData;
-    private Context context;
     private LoadingMoreModel loadingMoreModel;
     private TopAdsSwitcher topAdsSwitcher;
 
-    public ProductListAdapter(Context context, OnItemChangeView itemChangeView, ProductListTypeFactory typeFactory) {
+    public ProductListAdapter(OnItemChangeView itemChangeView, ProductListTypeFactory typeFactory) {
         super(itemChangeView);
-        this.context = context;
         this.typeFactory = typeFactory;
         loadingMoreModel = new LoadingMoreModel();
     }

@@ -236,7 +236,7 @@ public class ProductListFragment
                 this, this,
                 this, this,
                 topAdsConfig);
-        adapter = new ProductListAdapter(getActivity(), this, productListTypeFactory);
+        adapter = new ProductListAdapter(this, productListTypeFactory);
         recyclerView.setLayoutManager(getStaggeredGridLayoutManager());
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new ProductItemDecoration(
