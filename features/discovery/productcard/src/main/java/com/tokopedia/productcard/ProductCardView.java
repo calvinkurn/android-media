@@ -149,7 +149,7 @@ public class ProductCardView extends BaseCustomView {
         badgesContainerView.removeAllViews();
         if(textLocation.getLayoutParams() instanceof ConstraintLayout.LayoutParams) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                ((ConstraintLayout.LayoutParams) textLocation.getLayoutParams()).setMarginStart((int) getResources().getDimension(R.dimen.dp_0));
+                ((ConstraintLayout.LayoutParams) textLocation.getLayoutParams()).setMarginStart((int) getResources().getDimension(urls.isEmpty() ? R.dimen.dp_0 : R.dimen.dp_4));
             }
             ((ConstraintLayout.LayoutParams) textLocation.getLayoutParams()).setMargins((int) getResources().getDimension(urls.isEmpty() ? R.dimen.dp_0 : R.dimen.dp_4), (int) getResources().getDimension(R.dimen.dp_4), (int) getResources().getDimension(R.dimen.dp_0),(int) getResources().getDimension(R.dimen.dp_0));
         }
