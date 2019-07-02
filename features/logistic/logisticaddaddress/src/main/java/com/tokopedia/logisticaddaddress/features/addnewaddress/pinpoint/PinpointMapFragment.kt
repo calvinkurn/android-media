@@ -11,9 +11,14 @@ import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.CoordinatorLayout
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.Toast
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.*
@@ -23,6 +28,7 @@ import com.google.android.gms.maps.model.PolygonOptions
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.logisticaddaddress.AddressConstants
 import com.tokopedia.logisticaddaddress.R
@@ -48,7 +54,8 @@ import javax.inject.Inject
  * Created by fwidjaja on 2019-05-08.
  */
 class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapReadyCallback,
-        AutocompleteBottomSheetFragment.ActionListener, HasComponent<AddNewAddressComponent>, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, GoogleMap.OnCameraIdleListener, GoogleMap.OnCameraMoveStartedListener, GoogleMap.OnCameraMoveListener, GoogleMap.OnCameraMoveCanceledListener {
+        AutocompleteBottomSheetFragment.ActionListener, HasComponent<AddNewAddressComponent>,
+        GoogleMap.OnMyLocationButtonClickListener {
 
     private var googleMap: GoogleMap? = null
     private var currentLat: Double? = 0.0
@@ -75,7 +82,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     private var isChangesRequested: Boolean? = null
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
     private val SCREEN_NAME = "/user/address/create/cart/pinpoint1"
-    private var mapView: MapView? = null
 
     @Inject
     lateinit var presenter: PinpointMapPresenter
@@ -151,10 +157,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     private fun prepareMap(savedInstanceState: Bundle?) {
         map_view?.onCreate(savedInstanceState)
         map_view?.getMapAsync(this)
-
-        /*val mapFragment: SupportMapFragment = fragmentManager?.findFragmentById(R.id.map_view) as SupportMapFragment
-        mapView = mapFragment.view as MapView?
-        mapFragment.getMapAsync(this)*/
     }
 
     private fun prepareLayout() {
@@ -174,8 +176,13 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             activity?.finish()
         }
 
-        ic_search_btn.setOnClickListener {
+        ic_search_btn?.setOnClickListener {
             currentLat?.let { it1 -> currentLong?.let { it2 -> showAutocompleteGeocodeBottomSheet(it1, it2, "") } }
+        }
+
+        et_detail_address?.setOnClickListener {
+            getdistrict_container?.findViewById<ButtonCompat>(R.id.btn_choose_location)?.requestFocusFromTouch()
+            getdistrict_container?.findViewById<EditText>(R.id.et_detail_address)?.requestFocusFromTouch()
         }
     }
 
@@ -184,13 +191,8 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         this.googleMap = googleMap
         this.googleMap?.uiSettings?.isMapToolbarEnabled = false
         this.googleMap?.uiSettings?.isMyLocationButtonEnabled = true
-        this.googleMap?.setMinZoomPreference(20.0f)
+        this.googleMap?.setMinZoomPreference(16f)
         activity?.let { MapsInitializer.initialize(activity) }
-
-        this.googleMap?.setOnCameraIdleListener(this)
-        this.googleMap?.setOnCameraMoveStartedListener(this)
-        this.googleMap?.setOnCameraMoveListener(this)
-        this.googleMap?.setOnCameraMoveCanceledListener(this)
 
         moveMap(AddNewAddressUtils.generateLatLng(currentLat, currentLong))
 
@@ -206,7 +208,8 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
 
         bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
         bottomSheetBehavior?.isHideable = false
-        this.googleMap?.setOnCameraIdleListener { onMapDraggedListener() }
+        this.googleMap?.setOnCameraMoveListener { onMapDraggedListener() }
+        this.googleMap?.setOnCameraIdleListener { onMapIdleListener() }
 
         context?.let {
             if (AddNewAddressUtils.isLocationEnabled(it)) {
@@ -215,17 +218,24 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
                 this.googleMap?.setOnMyLocationClickListener(this);
             }
         }
+
+        val locationButton = map_view.findViewWithTag<ImageView>("GoogleMapMyLocationButton")
+        val layoutParams = locationButton.layoutParams as RelativeLayout.LayoutParams
+        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+        layoutParams.setMargins(0, 0, 30, 10);
     }
 
     private fun onMapDraggedListener() {
+        getdistrict_container?.visibility = View.GONE
+        invalid_container?.visibility = View.GONE
+        whole_loading_container?.visibility = View.VISIBLE
+    }
+
+    private fun onMapIdleListener() {
         if (!isGetDistrict) {
             val target: LatLng? = this.googleMap?.cameraPosition?.target
             val latTarget = target?.latitude
             val longTarget = target?.longitude
-
-            getdistrict_container?.visibility = View.GONE
-            invalid_container?.visibility = View.GONE
-            whole_loading_container?.visibility = View.VISIBLE
 
             presenter.clearCacheAutofill()
             presenter.autofill("$latTarget,$longTarget")
@@ -245,8 +255,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         println("## masuk moveMap - lat = ${latLng.latitude}, long = ${latLng.longitude}")
         val cameraPosition = CameraPosition.Builder()
                 .target(latLng)
-                .zoom(20.0f)
-                .bearing(0f)
+                .zoom(16f)
                 .build()
 
         googleMap?.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
@@ -359,24 +368,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
 
             et_detail_address?.apply {
                 setOnClickListener { AddNewAddressAnalytics.eventClickFieldDetailAlamat() }
-                addTextChangedListener(object : TextWatcher {
-                    override fun beforeTextChanged(s: CharSequence, start: Int, count: Int,
-                                                   after: Int) {
-                    }
-
-                    override fun onTextChanged(s: CharSequence, start: Int, before: Int,
-                                               count: Int) {
-                        if (s.isNotEmpty()) {
-                            showClearBtn()
-
-                        } else {
-                            ic_clear_detail?.visibility = View.GONE
-                        }
-                    }
-
-                    override fun afterTextChanged(s: Editable) {
-                    }
-                })
+                setupClearButtonWithAction()
             }
 
             tv_title_getdistrict?.apply {
@@ -400,13 +392,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         }
     }
 
-    private fun showClearBtn() {
-        ic_clear_detail?.apply {
-            visibility = View.VISIBLE
-            setOnClickListener { et_detail_address.setText("") }
-        }
-    }
-
     private fun showAutoCompleteBottomSheet(searchStr: String) {
         currentLat?.let { it1 -> currentLong?.let { it2 -> showAutocompleteGeocodeBottomSheet(it1, it2, searchStr) } }
     }
@@ -420,17 +405,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         }
 
         presenter.loadAddEdit( isMismatchSolved, isChangesRequested)
-    }
-
-    private fun validateDetailAlamat(): Boolean {
-        var validate = true
-
-        if (et_detail_address.text.isEmpty()) {
-            validate = false
-            view?.let { activity?.let { it1 -> AddNewAddressUtils.showToastError(getString(R.string.validate_detail_alamat), it, it1) } }
-        }
-
-        return validate
     }
 
     override fun showFailedDialog() {
@@ -531,16 +505,12 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         return false;
     }
 
-    override fun onMyLocationClick(p0: Location) {
+    /*override fun onMyLocationClick(p0: Location) {
         Toast.makeText(context, "Current location:\n$p0", Toast.LENGTH_LONG).show()
     }
 
     override fun onCameraMoveCanceled() {
         Toast.makeText(context, "onCameraMoveCanceled()", Toast.LENGTH_SHORT).show()
-    }
-
-    override fun onCameraMove() {
-        Toast.makeText(context, "onCameraMove()", Toast.LENGTH_SHORT).show()
     }
 
     override fun onCameraMoveStarted(p0: Int) {
@@ -549,5 +519,38 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
 
     override fun onCameraIdle() {
         Toast.makeText(context, "onCameraIdle()", Toast.LENGTH_SHORT).show()
+    }*/
+
+    private fun EditText.setupClearButtonWithAction() {
+
+        addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(editable: Editable?) {
+                val clearIcon = if (editable?.isNotEmpty() == true) R.drawable.ic_close_btn else 0
+                setCompoundDrawablesWithIntrinsicBounds(0, 0, clearIcon, 0)
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
+        })
+
+        setOnTouchListener(View.OnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_UP) {
+                if (event.rawX >= (this.right - this.compoundPaddingRight)) {
+                    this.setText("")
+                    return@OnTouchListener true
+                }
+            }
+            return@OnTouchListener false
+        })
+    }
+
+    private fun logView(viewGroup: ViewGroup) {
+        for (i in 0 until viewGroup.childCount) {
+            val child = viewGroup.getChildAt(i)
+            Log.d("##LOGVIEW",child.toString() + " ID: ${child.id} TAG: ${child.tag}")
+            if (child is ViewGroup) {
+                logView(child)
+            }
+        }
     }
 }
