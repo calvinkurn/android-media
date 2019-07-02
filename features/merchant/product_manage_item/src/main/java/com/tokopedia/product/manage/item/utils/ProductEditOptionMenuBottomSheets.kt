@@ -71,7 +71,7 @@ class ProductEditOptionMenuBottomSheets : BottomSheets() {
 
     override fun setupDialog(dialog: Dialog, style: Int) {
         super.setupDialog(dialog, style)
-        val btnClose = getDialog().findViewById<ImageButton>(com.tokopedia.design.R.id.btn_close)
+        val btnClose = getDialog().findViewById<View>(com.tokopedia.design.R.id.btn_close)
         btnClose.setOnClickListener { dismiss() }
     }
 

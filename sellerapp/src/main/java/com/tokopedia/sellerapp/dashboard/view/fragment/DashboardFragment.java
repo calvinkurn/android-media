@@ -79,7 +79,6 @@ import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.user.session.UserSessionInterface;
-import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.user_identification_common.KycWidgetUtil;
 import com.tokopedia.user_identification_common.subscriber.GetApprovalStatusSubscriber;
 
@@ -423,12 +422,7 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
             showcases.add(new ShowCaseObject(
                     shopScoreWidget,
                     getString(R.string.showcase_title_2_power_merchant),
-                    getString(R.string.showcase_desc_2_power_merchant))
-                    .withCustomTarget(new int[]{
-                            shopScoreWidget.getLeft(),
-                            shopScoreWidgetTop,
-                            shopScoreWidget.getRight(),
-                            shopScoreWidgetBottom}));
+                    getString(R.string.showcase_desc_2_power_merchant)));
             showCaseDialog.show(getActivity(), showCaseTag, showcases);
         }
     }
@@ -761,21 +755,10 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                     verificationWarningTickerView.setVisibility(View.VISIBLE);
                 }
 
-                if (status == KYCConstant.STATUS_NOT_VERIFIED) {
-                    String tickerMessage = getString(R.string.ticker_unverified);
-                    addMessageToTickerView(tickerMessage);
-                }
-
                 checkShowTickerView();
 
             }
         };
-    }
-
-    private void addMessageToTickerView(String tickerMessage) {
-        if (!TextUtils.isEmpty(tickerMessage) && !tickerView.contains(tickerMessage)) {
-            tickerView.addMessage(tickerMessage);
-        }
     }
 
     private void checkShowTickerView() {

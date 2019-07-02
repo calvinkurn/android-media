@@ -108,6 +108,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         root_view_pm.showLoading()
+        hideButtonActivatedPm()
         renderInitialLayout()
         button_activate_root.setOnClickListener {
             powerMerchantTracking.eventUpgradeShopPm()
@@ -177,6 +178,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     override fun refreshData() {
         root_view_pm.showLoading()
+        hideButtonActivatedPm()
         presenter.getPmStatusInfo(userSessionInterface.shopId)
     }
 
@@ -274,7 +276,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     }
 
     fun showBottomSheetCancel() {
-        bottomSheetCancel = PowerMerchantCancelBottomSheet.newInstance(shopStatusModel.isAutoExtend(),shopStatusModel.powerMerchant.expiredTime)
+        bottomSheetCancel = PowerMerchantCancelBottomSheet.newInstance(shopStatusModel.isAutoExtend(), shopStatusModel.powerMerchant.expiredTime)
         bottomSheetCancel.setListener(object : PowerMerchantCancelBottomSheet.BottomSheetCancelListener {
             override fun onclickButton() {
                 cancelMembership()
@@ -304,11 +306,8 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             showToasterCancellationSuccess()
         }
 
-        if (isTransitionKycPage) {
-            return
-        } else {
-            hideLoading()
-        }
+        hideLoading()
+
     }
 
     override fun hideLoading() {
@@ -339,40 +338,43 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         if (isPowerMerchant) {
             var isNotKyc = getApprovalStatusPojo.kycStatus.kycStatusDetailPojo.status != KYCConstant.STATUS_VERIFIED
             if (isNotKyc) {
-                if(isAutoExtend()){
-                    ticker_yellow_container.visibility = View.VISIBLE
-                    ticker_blue_container.visibility = View.VISIBLE
+                if (isAutoExtend()) {
+                    showTickerYellowTransitionPeriod()
                 } else {
+                    showButtonActivatePm()
                     ticker_yellow_container.visibility = View.GONE
-                    ticker_blue_container.visibility = View.GONE
                 }
                 button_activate_root.text = getString(R.string.pm_label_button_kyc_upload)
             } else {
                 if (isAutoExtend()) {
-                    ticker_yellow_container.visibility = View.VISIBLE
-                    txt_ticker_yellow.text = MethodChecker.fromHtml(getString(R.string.pm_label_cancellation_duration))
+                    showTickerYellowTransitionPeriod()
                     hideButtonActivatedPm()
                 } else {
                     ticker_yellow_container.visibility = View.GONE
                     showButtonActivatePm()
                 }
-                ticker_blue_container.visibility = View.VISIBLE
             }
-        } else if (isPending) {
-            if (isAutoExtend()){
+            ticker_blue_container.visibility = View.VISIBLE
+        } else if (isPending) { // Regular Merchant but Activated Pm on Transition Period
+            if (isAutoExtend()) {
                 hideButtonActivatedPm()
-                ticker_yellow_container.visibility = View.VISIBLE
+                showTickerYellowTransitionPeriod()
             } else {
                 ticker_yellow_container.visibility = View.GONE
                 showButtonActivatePm()
             }
+
             ticker_blue_container.visibility = View.GONE
-        } else { //regular merchant
+        } else { //Regular Merchant
             showButtonActivatePm()
             ticker_yellow_container.visibility = View.GONE
-            // if inactive do nothing
-            // default state: button activate is visible
+            ticker_blue_container.visibility = View.GONE
         }
+    }
+
+    private fun showTickerYellowTransitionPeriod() {
+        ticker_yellow_container.visibility = View.VISIBLE
+        txt_ticker_yellow.text = MethodChecker.fromHtml(getString(R.string.pm_label_cancellation_duration))
     }
 
     private fun hideButtonActivatedPm() {
@@ -380,6 +382,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     }
 
     private fun showButtonActivatePm() {
+        button_activate_root.text = getString(R.string.pm_upgrade_shop)
         ll_footer_submit.visibility = View.VISIBLE
     }
 
