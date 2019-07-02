@@ -71,6 +71,16 @@ showHelp( ) {
     echo "install <project> -> install costumerapp / sellerapp on connected device"
 }
 
+enableMod( ) {
+    isInFile=$(cat buckw | grep -c "buck_extra_script")
+
+    if [ $isInFile -eq 0 ]; then
+        Temp1="success \"PROCEEDING WITH BUCK\""
+        Temp2="success \"PROCEEDING WITH BUCK\" \&\& cat \$SCRIPT_DIR\/tools\/buck_extra_script >> \$SCRIPT_DIR\/customerapp\/BUCK"
+        sed -i ".bak" "s/$Temp1/$Temp2/g" "buckw"
+    fi
+}
+
 if [ -z "$1" ]; then
     showHelp
     exit 1
@@ -85,6 +95,8 @@ elif [ $1 = "build" ]; then
     buckBuild $2
 elif [ $1 = "install" ]; then
     buckInstall $2
+elif [ $1 = "enable-mod" ]; then
+    enableMod
 else
     showHelp
 fi
