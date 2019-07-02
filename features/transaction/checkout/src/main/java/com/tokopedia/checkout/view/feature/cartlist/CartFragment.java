@@ -1988,7 +1988,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     public void renderRecommendation(@Nullable List<RecommendationItem> recommendationItems) {
         List<CartRecommendationItemHolderData> cartRecommendationItemHolderDataList = new ArrayList<>();
         if (this.recommendationList != null) {
-            if (recommendationList.size() == 0) {
+            if (recommendationList.size() != 0) {
                 cartRecommendationItemHolderDataList.addAll(this.recommendationList);
             } else {
                 if (recommendationItems != null) {
