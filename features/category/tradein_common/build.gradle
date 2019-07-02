@@ -15,6 +15,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.liveData
     implementation rootProject.ext.miscDependencies.rxJava
-    implementation rootProject.ext.libraries.unifyComponents
+    implementation rootProject.ext.unifyDependencies.components
     implementation project(rootProject.ext.libraries.userSession)
 }
