@@ -72,16 +72,11 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
     public static final int REQUEST_CHANGE_NAME = 1002;
 
     public static final int REQUEST_CODE_PROFILE_PICTURE = 1202;
-
-//    @BindView(R2.id.layout_main)
+    
     View layoutMain;
-//    @BindView(R2.id.layout_manage_people_profile_avatar_view)
     AvatarView avatarSection;
-//    @BindView(R2.id.layout_manage_people_profile_detail_view)
     DetailView detailSection;
-//    @BindView(R2.id.layout_manage_people_profile_contact_view)
     ContactView contactSection;
-//    @BindView(R2.id.save_button)
     View saveButton;
 
     private ManagePeopleProfileView listener;
