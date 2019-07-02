@@ -250,10 +250,8 @@ public final class ProductListAdapter extends SearchSectionGeneralAdapter {
     }
 
     public void addLoading() {
-        int loadingModelPosition = this.list.size();
-
         this.list.add(loadingMoreModel);
-        notifyItemInserted(loadingModelPosition);
+        notifyItemInserted(this.list.size());
     }
 
     public void removeLoading() {
