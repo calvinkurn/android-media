@@ -66,7 +66,7 @@ public class ProductCardViewSmallGrid extends ProductCardView {
 
     private void setLocationConstraintLeft() {
         if(!isViewVisible(linearLayoutShopBadges)) {
-            setViewConstraintInConstraintLayoutProductCard(textViewShopLocation.getId(), ConstraintSet.LEFT, imageProduct.getId(), ConstraintSet.RIGHT, R.dimen.dp_8);
+            setViewConstraintInConstraintLayoutProductCard(textViewShopLocation.getId(), ConstraintSet.LEFT, imageProduct.getId(), ConstraintSet.LEFT, R.dimen.dp_8);
         }
     }
 

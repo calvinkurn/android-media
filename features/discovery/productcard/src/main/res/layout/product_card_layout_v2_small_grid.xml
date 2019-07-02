@@ -194,9 +194,10 @@
             android:visibility="gone"
             app:layout_constraintStart_toEndOf="@id/imageRating"
             app:layout_constraintTop_toBottomOf="@id/textViewShopLocation"
-            app:typographyType="body_3"
             tools:background="@color/red_150"
             tools:width="20dp" />
+
+        <!--app:typographyType="body_3"-->
 
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/labelCredibility"
