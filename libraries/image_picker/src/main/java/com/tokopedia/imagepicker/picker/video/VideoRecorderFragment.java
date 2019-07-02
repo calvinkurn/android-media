@@ -298,7 +298,7 @@ public class VideoRecorderFragment extends TkpdBaseV4Fragment {
         txtDuration = view.findViewById(R.id.txtDuration);
         vwRecord = view.findViewById(R.id.vwRecord);
         videoPreview = view.findViewById(R.id.videoPreview);
-        containerPreview = view.findViewById(R.id.video_preview);
+        containerPreview = view.findViewById(R.id.container_preview);
         containerRecorder = view.findViewById(R.id.layout_video_recorder);
         recapture = view.findViewById(R.id.layout_recapture);
         useVideo = view.findViewById(R.id.layout_use);

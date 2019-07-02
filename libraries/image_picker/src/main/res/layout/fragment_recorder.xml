@@ -7,8 +7,7 @@
 
     <RelativeLayout android:id="@+id/layout_video_recorder"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        xmlns:tools="http://schemas.android.com/tools">
+        android:layout_height="match_parent">
 
         <com.tokopedia.cameraview.CameraView
             android:id="@+id/cameraView"
@@ -128,7 +127,7 @@
 
     </RelativeLayout>
 
-    <RelativeLayout android:id="@+id/video_preview"
+    <RelativeLayout android:id="@+id/container_preview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"
