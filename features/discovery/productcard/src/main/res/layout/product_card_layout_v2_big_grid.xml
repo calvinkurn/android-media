@@ -7,13 +7,15 @@
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:layout_height="match_parent">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/constraintLayoutProductCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/dp_8">
+        android:paddingBottom="@dimen/dp_8"
+        tools:layout_height="match_parent">
 
         <com.tokopedia.topads.sdk.view.ImpressedImageView
             android:id="@+id/imageProduct"
@@ -25,7 +27,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:layout_height="100dp" />
+            tools:visibility="visible" />
 
         <ImageView
             android:id="@+id/buttonWishlist"
@@ -50,6 +52,7 @@
             android:visibility="gone"
             app:layout_constraintLeft_toLeftOf="@id/imageProduct"
             app:layout_constraintBottom_toBottomOf="@id/imageProduct"
+            tools:visibility="visible"
             tools:text="Promo Label" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -69,6 +72,7 @@
             app:typographyWeight="bold"
             app:layout_constraintLeft_toLeftOf="@id/imageProduct"
             app:layout_constraintTop_toBottomOf="@id/imageProduct"
+            tools:visibility="visible"
             tools:text="Shop Name"/>
 
         <com.tokopedia.unifyprinciples.Typography
@@ -89,6 +93,7 @@
             app:layout_constraintStart_toStartOf="@id/imageProduct"
             app:layout_constraintTop_toBottomOf="@id/textViewShopName"
             app:typographyType="heading_5"
+            tools:visibility="visible"
             tools:text="Nama" />
 
         <com.tokopedia.unifycomponents.Label
@@ -112,7 +117,6 @@
             android:layout_height="@dimen/dp_20"
             android:layout_marginLeft="@dimen/dp_4"
             android:layout_marginStart="@dimen/dp_4"
-            android:layout_marginTop="@dimen/dp_4"
             android:textColor="@color/product_card_slashed_price_text_color"
             android:visibility="gone"
             android:gravity="center_vertical"
@@ -138,6 +142,7 @@
             app:layout_constraintTop_toBottomOf="@id/labelDiscount"
             app:typographyType="body_2"
             app:typographyWeight="bold"
+            tools:visibility="visible"
             tools:text="Harga" />
 
         <LinearLayout
@@ -150,7 +155,8 @@
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/textViewPrice"
             app:layout_constraintStart_toStartOf="@id/imageProduct"
-            android:orientation="horizontal" />
+            android:orientation="horizontal"
+            tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewShopLocation"
@@ -169,6 +175,7 @@
             app:layout_constraintTop_toBottomOf="@id/textViewPrice"
             app:layout_constraintStart_toEndOf="@id/linearLayoutShopBadges"
             app:typographyType="body_3"
+            tools:visibility="visible"
             tools:text="Town Location" />
 
         <ImageView
@@ -181,8 +188,8 @@
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="@id/imageProduct"
             app:layout_constraintTop_toBottomOf="@id/textViewShopLocation"
-            tools:background="@color/red_150"
-            tools:layout_height="@dimen/dp_10" />
+            tools:background="@drawable/ic_star_five"
+            tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewReviewCount"
@@ -196,8 +203,8 @@
             app:layout_constraintStart_toEndOf="@id/imageRating"
             app:layout_constraintTop_toBottomOf="@id/textViewShopLocation"
             app:typographyType="body_3"
-            tools:background="@color/red_150"
-            tools:width="20dp" />
+            tools:visibility="visible"
+            tools:text="(3000)" />
 
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/labelCredibility"
@@ -208,6 +215,7 @@
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="@id/imageProduct"
             app:layout_constraintTop_toBottomOf="@id/textViewShopLocation"
+            tools:visibility="gone"
             tools:text="Credibility Label" />
 
         <com.tokopedia.unifycomponents.Label
@@ -220,6 +228,7 @@
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/imageRating"
             app:layout_constraintLeft_toLeftOf="@id/imageProduct"
+            tools:visibility="visible"
             tools:text="Offers Label" />
 
         <ImageView
