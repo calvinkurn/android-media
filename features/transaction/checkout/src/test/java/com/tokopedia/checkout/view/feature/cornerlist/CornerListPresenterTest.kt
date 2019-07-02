@@ -1,9 +1,6 @@
 package com.tokopedia.checkout.view.feature.cornerlist
 
-import com.google.gson.Gson
 import com.tokopedia.checkout.domain.datamodel.newaddresscorner.AddressListModel
-import com.tokopedia.checkout.domain.datamodel.newaddresscorner.NewAddressCornerResponse
-import com.tokopedia.checkout.domain.mapper.AddressCornerMapper
 import com.tokopedia.checkout.domain.usecase.GetCornerList
 import com.tokopedia.checkout.helper.AddressDummyDataProvider
 import org.junit.Before
@@ -34,8 +31,14 @@ class CornerListPresenterTest {
     fun searchQuery() {
         val items: AddressListModel = AddressDummyDataProvider.getCornerList()
 
-        `when`(usecase.execute(EMPTY_QUERY)).thenReturn(Observable.just(items))
-        presenter.searchQuery(EMPTY_QUERY)
-        verify(view).showData(items.listAddress)
+        `when`(usecase.execute("")).thenReturn(Observable.just(items))
+
+        presenter.getList("")
+
+        inOrder(view).apply {
+            this.verify(view).setLoadingState(true)
+            this.verify(view).showData(items.listAddress)
+            this.verify(view).setLoadingState(false)
+        }
     }
 }
