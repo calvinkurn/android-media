@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.InputFilter
 import android.view.*
 import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -62,6 +63,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         ProductAttachmentAdapter(onDeleteProduct = this::onDeleteProduct)
     }
 
+    private val invalidatePostCallBack: OnCreatePostCallBack? by lazy {
+        activity as? OnCreatePostCallBack
+    }
+
     private fun onDeleteProduct(){
         if (adapter.itemCount < 1){
             label_title_product_attachment.gone()
@@ -99,11 +104,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         affiliateAnalytics.analyticTracker.sendScreenAuthenticated(screenName)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_new_create_post, container, false)
@@ -124,27 +124,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater?.inflate(R.menu.menu_create_post, menu)
-    }
-
-    override fun onPrepareOptionsMenu(menu: Menu?) {
-        super.onPrepareOptionsMenu(menu)
-        val menuPost = menu?.findItem(R.id.action_post) ?: return
-        val isButtonEnabled = viewModel.completeImageList.isNotEmpty()
+    private inline val isPostEnabled: Boolean
+        get() = viewModel.completeImageList.isNotEmpty()
                 && viewModel.relatedProducts.isNotEmpty()
                 && (viewModel.adIdList.isNotEmpty() || viewModel.productIdList.isNotEmpty())
-        menuPost.isEnabled = isButtonEnabled
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId == R.id.action_post){
-            saveDraftAndSubmit()
-            affiliateAnalytics.onSelesaiCreateButtonClicked(viewModel.productIdList)
-        }
-        return super.onOptionsItemSelected(item)
-    }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -177,7 +160,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                     media_attachment.bind(listOf())
                 }
 
-                activity?.invalidateOptionsMenu()
+                invalidatePostCallBack?.invalidatePostMenu(isPostEnabled)
             }
             REQUEST_VIDEO_PICKER -> if (resultCode == Activity.RESULT_OK) {
                 val videoList = data?.getStringArrayListExtra(VIDEOS_RESULT) ?: arrayListOf()
@@ -190,7 +173,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                     viewModel.urlImageList.clear()
                 }
 
-                activity?.invalidateOptionsMenu()
+                invalidatePostCallBack?.invalidatePostMenu(isPostEnabled)
             }
             REQUEST_PREVIEW -> if (resultCode == Activity.RESULT_OK) {
                 val resultViewModel = data?.getParcelableExtra<CreatePostViewModel>(
@@ -250,7 +233,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         updateRelatedProduct()
         updateMedia()
         updateAddTagText()
-        activity?.invalidateOptionsMenu()
+        invalidatePostCallBack?.invalidatePostMenu(isPostEnabled)
         updateCaption()
         updateHeader(feedContentForm.authors)
     }
@@ -299,7 +282,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         }
 
         updateAddTagText()
-        activity?.invalidateOptionsMenu()
+        invalidatePostCallBack?.invalidatePostMenu(isPostEnabled)
     }
 
     abstract fun fetchContentForm()
@@ -326,10 +309,13 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     protected fun initProductIds() {
         val productIds = arguments!!.getString(CreatePostActivity.PARAM_PRODUCT_ID, "")
                 .split(',')
+                .filterNot { it != "-1" }
                 .toMutableList()
                 .apply { removeAll { it.trim() == "" } }
+
         val adIds = arguments!!.getString(CreatePostActivity.PARAM_AD_ID, "")
                 .split(',')
+                .filterNot { it != "-1" }
                 .toMutableList()
                 .apply { removeAll { it.trim() == "" } }
 
@@ -406,6 +392,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             affiliateAnalytics.onTambahVideoButtonClicked()
             goToVideoPicker()
         }*/
+        caption.filters = arrayOf(InputFilter.LengthFilter(MAX_CHAR))
         caption.afterTextChanged {
             viewModel.caption = it
             updateMaxCharacter()
@@ -517,12 +504,13 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         return isFormInvalid
     }
 
-    private fun saveDraftAndSubmit() {
+    public fun saveDraftAndSubmit() {
         if (isFormInvalid()) {
             return
         }
 
         activity?.let {
+            affiliateAnalytics.onSelesaiCreateButtonClicked(viewModel.productIdList)
             showLoading()
 
             val cacheManager = SaveInstanceCacheManager(it, true)
@@ -570,6 +558,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             product_attachment.gone()
             label_title_product_attachment.gone()
         }
+    }
+
+    interface OnCreatePostCallBack{
+        fun invalidatePostMenu(isPostEnabled: Boolean)
     }
 
     private fun isTypeAffiliate(): Boolean = viewModel.authorType == TYPE_AFFILIATE

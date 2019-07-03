@@ -11,7 +11,7 @@ import com.tokopedia.attachproduct.view.activity.AttachProductActivity
  */
 class ContentCreatePostFragment : BaseCreatePostFragment() {
 
-    private var shouldGoAttachProduct = true
+    private var shouldGoAttachProduct = false
 
     companion object {
         private const val REQUEST_ATTACH_PRODUCT = 10

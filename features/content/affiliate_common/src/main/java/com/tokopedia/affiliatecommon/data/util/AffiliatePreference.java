@@ -1,4 +1,4 @@
-package com.tokopedia.affiliate.common.preference;
+package com.tokopedia.affiliatecommon.data.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
