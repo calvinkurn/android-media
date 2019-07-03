@@ -2062,7 +2062,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             stringObjectMap = dPresenter.generateAddToCartEnhanceEcommerceDataLayer((CartRecommendationItemHolderData) productModel);
         }
 
-        if (stringObjectMap != null && !TextUtils.isEmpty(eventCategory) && !TextUtils.isEmpty(eventAction) && !TextUtils.isEmpty(eventLabel)) {
+        if (stringObjectMap != null) {
             checkoutAnalyticsCourierSelection.sendEnhancedECommerceAddToCart(stringObjectMap, eventCategory, eventAction, eventLabel);
         }
     }
