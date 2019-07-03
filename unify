@@ -34,8 +34,8 @@ start( ) {
         git checkout -b $branchname feature/unify/dev
     fi
 
-    #./gradlew clean
-    #./gradlew -p unifysample assembleDebug
+    ./gradlew clean
+    ./gradlew -p unifysample assembleDebug
 
     echo "Finish!"
 }
