@@ -126,7 +126,8 @@ import java.util.concurrent.TimeUnit;
 public class ConsumerMainApplication extends ConsumerRouterApplication implements
         MoEPushCallBacks.OnMoEPushNavigationAction,
         InAppManager.InAppMessageListener,
-        CharacterPerMinuteInterface {
+        CharacterPerMinuteInterface
+{
 
     private final String NOTIFICATION_CHANNEL_NAME = "Promo";
     private final String NOTIFICATION_CHANNEL_ID = "custom_sound";
@@ -191,7 +192,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             new ANRWatchDog().setANRListener(Crashlytics::logException).start();
         }
 
-        if (callback == null) {
+        if(callback == null) {
             callback = new CharacterPerMinuteActivityLifecycleCallbacks(this);
         }
         registerActivityLifecycleCallbacks(callback);
