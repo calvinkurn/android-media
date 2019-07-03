@@ -109,6 +109,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private TextView tvPPPPrice;
     private TextView tvPPPMore;
     private CheckBox cbPPP;
+    private CheckBox cbPPPDisabled;
     private TextView tvAddressName;
     private TextView tvAddressStatus;
     private TextView tvRecipientName;
@@ -252,6 +253,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvPPPPrice = itemView.findViewById(R.id.text_price_per_product);
         tvPPPMore = itemView.findViewById(R.id.text_ppp_more);
         cbPPP = itemView.findViewById(R.id.checkbox_ppp);
+        cbPPPDisabled = itemView.findViewById(R.id.checkbox_ppp_disabled);
         ivFreeReturnIcon = itemView.findViewById(R.id.iv_free_return_icon);
         tvFreeReturnLabel = itemView.findViewById(R.id.tv_free_return_label);
         tvPreOrder = itemView.findViewById(R.id.tv_pre_order);
@@ -576,17 +578,17 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             });
             tvPPPLinkText.setText(cartItemModel.getProtectionTitle());
             tvPPPPrice.setText(cartItemModel.getProtectionSubTitle());
-            cbPPP.setChecked(cartItemModel.isProtectionOptIn());
 
             if (cartItemModel.isProtectionCheckboxDisabled()) {
-
-                cbPPP.setClickable(false);
-                cbPPP.setEnabled(false);
-
+                cbPPP.setVisibility(View.GONE);
+                cbPPPDisabled.setVisibility(View.VISIBLE);
+                cbPPPDisabled.setChecked(true);
+                cbPPPDisabled.setClickable(false);
             } else {
+                cbPPPDisabled.setVisibility(View.GONE);
+                cbPPP.setVisibility(View.VISIBLE);
+                cbPPP.setChecked(cartItemModel.isProtectionOptIn());
                 cbPPP.setClickable(true);
-                cbPPP.setEnabled(true);
-
                 cbPPP.setOnCheckedChangeListener((compoundButton, checked) -> notifyOnPurchaseProtectionChecked(checked, 0));
             }
 
