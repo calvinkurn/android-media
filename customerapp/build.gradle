@@ -551,8 +551,6 @@ dependencies {
     implementation project(rootProject.ext.features.referral)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation project(rootProject.ext.features.kyc)
-
-    implementation 'com.facebook.infer.annotation:infer-annotation:+'
 }
 
 
