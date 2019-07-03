@@ -53,7 +53,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.config)
     
     implementation project(rootProject.ext.libraries.track)
-    implementation 'com.facebook.infer.annotation:infer-annotation:+'
 }
 
 apply from: '../../publish_local.gradle'
