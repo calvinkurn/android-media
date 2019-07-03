@@ -92,6 +92,6 @@ public class ProductCardViewSmallGrid extends ProductCardView {
     }
 
     public void setImageShopUrl(String imageUrl) {
-        ImageHandler.loadImageThumbs(getContext(), imageShop, imageUrl);
+        ImageHandler.loadImageCircle2(getContext(), imageShop, imageUrl);
     }
 }
