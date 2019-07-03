@@ -77,7 +77,7 @@ public class OrderListActivity extends BaseSimpleActivity
         Intent intent = new Intent(context, OrderListActivity.class);
         return intent.putExtras(extras);
     }
-    
+
     @DeepLink({ApplinkConst.DEALS_ORDER,
             ApplinkConst.DIGITAL_ORDER,
             ApplinkConst.EVENTS_ORDER,
