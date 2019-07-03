@@ -25,6 +25,8 @@
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
             android:adjustViewBounds="true"
+            android:gravity="center"
+            android:scaleType="centerCrop"
             android:visibility="gone"
             app:corner_radius="@dimen/dp_8"
             app:layout_constraintStart_toStartOf="parent"
