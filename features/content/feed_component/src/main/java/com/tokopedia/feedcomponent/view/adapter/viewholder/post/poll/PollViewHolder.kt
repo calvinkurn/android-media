@@ -12,7 +12,7 @@ class PollViewHolder(private val pollOptionListener: PollAdapter.PollOptionListe
     : BasePostViewHolder<PollContentViewModel>() {
 
     companion object {
-        private const val TOTAL_VOTER = "\${totalVoter}";
+        private const val TOTAL_VOTER = "\${totalVoter}"
     }
 
     override var layoutRes = R.layout.item_post_poll

@@ -57,7 +57,10 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
         AccountItemListener {
     public static final String PARAM_USER_ID = "{user_id}";
     public static final String PARAM_SHOP_ID = "{shop_id}";
+    public static final int OPEN_SHOP_SUCCESS = 100;
+    public static final int REQUEST_PHONE_VERIFICATION = 123;
     public static final String OVO = "OVO";
+    public Boolean isOpenShop = false;
 
     private SeeAllView seeAllView;
     private AccountAnalytics accountAnalytics;
@@ -325,9 +328,19 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
 
     @Override
     public void onOpenShopClicked() {
+        if (userSession.isMsisdnVerified()){
+            moveToCreateShop();
+        } else {
+            startActivityForResult(RouteManager.getIntent(getContext(), ApplinkConst.PHONE_VERIFICATION), REQUEST_PHONE_VERIFICATION);
+        }
+    }
+
+
+    protected void moveToCreateShop(){
+        isOpenShop = true;
         if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
-            startActivity(((AccountHomeRouter) getContext().getApplicationContext()).
-                    getIntentCreateShop(getContext()));
+            startActivityForResult(((AccountHomeRouter) getContext().getApplicationContext()).
+                    getIntentCreateShop(getContext()),OPEN_SHOP_SUCCESS);
         }
     }
 

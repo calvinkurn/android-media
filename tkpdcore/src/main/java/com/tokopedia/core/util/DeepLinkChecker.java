@@ -28,7 +28,10 @@ import java.util.List;
 /**
  * Created by Nisie on 28/10/15.
  * Modified by Alifa
+ *
+ * use DeepLinkChecker from library applink instead.
  */
+@Deprecated
 public class DeepLinkChecker {
 
     public static final int OTHER = -1;
@@ -60,6 +63,7 @@ public class DeepLinkChecker {
     public static final int PROFILE = 25;
     public static final int CONTENT = 26;
     public static final int SMCREFERRAL = 27;
+    public static final int HOME_RECOMMENDATION = 28;
 
 
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
@@ -140,6 +144,8 @@ public class DeepLinkChecker {
                 return CONTENT;
             else if (isSMCReferral(linkSegment))
                 return SMCREFERRAL;
+            else if(isHomeRecoomendation(linkSegment))
+                return HOME_RECOMMENDATION;
             else return OTHER;
         } catch (Exception e) {
             e.printStackTrace();
@@ -163,7 +169,7 @@ public class DeepLinkChecker {
         return linkSegment.size() > 0 && linkSegment.get(0).equalsIgnoreCase(FLIGHT_SEGMENT);
     }
 
-    public static List<String> getLinkSegment(String url) {
+    private static List<String> getLinkSegment(String url) {
         return Uri.parse(url).getPathSegments();
     }
 
@@ -253,7 +259,8 @@ public class DeepLinkChecker {
                 && !isWalletOvo(linkSegment)
                 && !isKycTerms(linkSegment)
                 && !isProfile(linkSegment)
-                && !isSMCReferral(linkSegment);
+                && !isSMCReferral(linkSegment)
+                && !isHomeRecoomendation(linkSegment);
     }
 
     private static boolean isShop(List<String> linkSegment) {
@@ -300,6 +307,10 @@ public class DeepLinkChecker {
         return (linkSegment.get(0).equals("kupon-thr"));
     }
 
+    private static boolean isHomeRecoomendation(List<String> linkSegment){
+        return (linkSegment.get(0).equals("rekomendasi"));
+    }
+
     private static boolean isKycTerms(List<String> linkSegment) {
         return (linkSegment.get(0).equals("terms")) && (linkSegment.get(1).equals("merchantkyc"));
     }
@@ -334,17 +345,26 @@ public class DeepLinkChecker {
         String source = BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT;
 
         bundle.putBoolean(IS_DEEP_LINK_SEARCH, true);
-        bundle.putString(BrowseProductRouter.DEPARTMENT_ID, departmentId);
-        bundle.putString(BrowseProductRouter.EXTRAS_SEARCH_TERM, searchQuery);
 
         Intent intent;
         if (TextUtils.isEmpty(departmentId)) {
-            intent = BrowseProductRouter.getSearchProductIntent(context);
+            intent = RouteManager.getIntent(context, constructSearchApplink(searchQuery, departmentId));
             intent.putExtras(bundle);
         } else {
             intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL, departmentId);
         }
         context.startActivity(intent);
+    }
+
+    private static String constructSearchApplink(String query, String departmentId) {
+        String applink = TextUtils.isEmpty(query) ?
+                ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE :
+                ApplinkConst.DISCOVERY_SEARCH;
+
+        return applink
+                + "?"
+                + "q=" + query
+                + "&sc=" + departmentId;
     }
 
     private static boolean isHotBrowse(String url) {

@@ -19,6 +19,7 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
@@ -27,31 +28,32 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.discovery.DiscoveryRouter;
+import com.tokopedia.discovery.autocomplete.presentation.activity.AutoCompleteActivity;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.data.Filter;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
 import com.tokopedia.discovery.newdiscovery.base.InitiateSearchListener;
-import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
-import com.tokopedia.discovery.newdiscovery.search.SearchNavigationListener;
 import com.tokopedia.discovery.newdiscovery.search.adapter.SearchSectionPagerAdapter;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragment;
-import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.CatalogFragment;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.NetworkParamHelper;
-import com.tokopedia.discovery.newdiscovery.search.fragment.profile.ProfileListFragment;
-import com.tokopedia.discovery.newdiscovery.search.fragment.shop.ShopListFragment;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchSectionItem;
 import com.tokopedia.discovery.newdiscovery.widget.BottomSheetFilterView;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.search.R;
-import com.tokopedia.search.result.di.component.DaggerSearchComponent;
-import com.tokopedia.search.result.di.component.SearchComponent;
 import com.tokopedia.search.result.presentation.SearchContract;
+import com.tokopedia.search.result.presentation.view.fragment.CatalogListFragment;
+import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment;
+import com.tokopedia.search.result.presentation.view.fragment.ProfileListFragment;
+import com.tokopedia.search.result.presentation.view.fragment.SearchSectionFragment;
+import com.tokopedia.search.result.presentation.view.fragment.ShopListFragment;
+import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
+import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -61,9 +63,13 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.discovery.common.constants.SearchConstant.AUTO_COMPLETE_ACTIVITY_REQUEST_CODE;
+import static com.tokopedia.discovery.common.constants.SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_START_ACTIVITY;
+import static com.tokopedia.discovery.common.constants.SearchConstant.DEEP_LINK_URI;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_ACTIVE_TAB_POSITION;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_FORCE_SWIPE_TO_SHOP;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_HAS_CATALOG;
+import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_IS_FROM_APPLINK;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_SEARCH_PARAMETER_MODEL;
 import static com.tokopedia.discovery.common.constants.SearchConstant.GCM_ID;
 import static com.tokopedia.discovery.common.constants.SearchConstant.GCM_STORAGE;
@@ -74,7 +80,7 @@ public class SearchActivity extends BaseActivity
         RedirectionListener,
         BottomSheetListener,
         SearchNavigationListener,
-        HasComponent<SearchComponent> {
+        HasComponent<BaseAppComponent> {
 
     public static Intent newInstance(Context context) {
         return new Intent(context, SearchActivity.class);
@@ -85,7 +91,7 @@ public class SearchActivity extends BaseActivity
     private static final int TAB_SECOND_POSITION = 1;
 
     private ProductListFragment productListFragment;
-    private CatalogFragment catalogFragment;
+    private CatalogListFragment catalogListFragment;
     private ShopListFragment shopListFragment;
     private ProfileListFragment profileListFragment;
 
@@ -108,21 +114,38 @@ public class SearchActivity extends BaseActivity
     private String profileTabTitle;
     private boolean isForceSwipeToShop;
     private boolean isHasCatalog;
+    private boolean isFromApplink;
     private int activeTabPosition;
 
     @Inject SearchContract.Presenter searchPresenter;
     @Inject SearchTracking searchTracking;
     @Inject UserSessionInterface userSession;
 
-    private SearchComponent searchComponent;
+    private SearchViewComponent searchComponent;
     private MenuItem menuChangeGrid;
     private PerformanceMonitoring performanceMonitoring;
     private SearchParameter searchParameter;
 
+    @DeepLink(ApplinkConst.DISCOVERY_SEARCH)
+    public static Intent getCallingApplinkSearchIntent(Context context, Bundle bundle) {
+        SearchParameter searchParameter = createSearchParameterFromBundle(bundle);
+
+        Intent intent = newInstance(context);
+        intent.putExtra(EXTRA_SEARCH_PARAMETER_MODEL, searchParameter);
+        intent.putExtra(EXTRA_IS_FROM_APPLINK, true);
+
+        return intent;
+    }
+
+    private static SearchParameter createSearchParameterFromBundle(Bundle bundle) {
+        String deepLinkURI = bundle.getString(DEEP_LINK_URI);
+        return new SearchParameter(deepLinkURI == null ? "" : deepLinkURI);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search);
+        setContentView(R.layout.search_activity_search);
         initActivityOnCreate();
 
         proceed();
@@ -136,13 +159,13 @@ public class SearchActivity extends BaseActivity
 
     private void initInjector() {
         searchComponent =
-                DaggerSearchComponent.builder()
+                DaggerSearchViewComponent.builder()
                         .baseAppComponent(getBaseAppComponent())
                         .build();
         searchComponent.inject(this);
     }
 
-    private BaseAppComponent getBaseAppComponent() {
+    public BaseAppComponent getBaseAppComponent() {
         return ((BaseMainApplication)getApplication()).getBaseAppComponent();
     }
 
@@ -152,9 +175,9 @@ public class SearchActivity extends BaseActivity
     }
 
     protected void findViews() {
-        toolbar = findViewById(com.tokopedia.discovery.R.id.toolbar);
-        container = findViewById(com.tokopedia.discovery.R.id.container);
-        loadingView = findViewById(com.tokopedia.discovery.R.id.progressBar);
+        toolbar = findViewById(R.id.toolbar);
+        container = findViewById(R.id.container);
+        loadingView = findViewById(R.id.progressBar);
         tabLayout = findViewById(R.id.tabs);
         viewPager = findViewById(R.id.pager);
         bottomSheetFilterView = findViewById(R.id.bottomSheetFilter);
@@ -166,7 +189,6 @@ public class SearchActivity extends BaseActivity
 
     protected void prepareView() {
         initToolbar();
-        showLoadingView(false);
 
         initViewPager();
         initBottomSheetListener();
@@ -188,14 +210,18 @@ public class SearchActivity extends BaseActivity
     }
 
     private void moveToAutoCompleteActivity() {
-        ActivityCompat.startActivity(this, getAutoCompleteIntent(), getOptionsForTransitionAnimation().toBundle());
+        ActivityCompat.startActivityForResult(
+                this,
+                getAutoCompleteIntent(),
+                AUTO_COMPLETE_ACTIVITY_REQUEST_CODE,
+                getOptionsForTransitionAnimation().toBundle());
     }
 
     private Intent getAutoCompleteIntent() {
         SearchParameter autoCompleteSearchParameter = new SearchParameter();
         autoCompleteSearchParameter.setSearchQuery(searchParameter.getSearchQuery());
 
-        Intent intent = ((DiscoveryRouter)getApplicationContext()).gotoSearchAutoCompletePage(SearchActivity.this);
+        Intent intent = RouteManager.getIntent(this, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE);
         intent.putExtra(EXTRA_SEARCH_PARAMETER_MODEL, autoCompleteSearchParameter);
 
         return intent;
@@ -307,12 +333,67 @@ public class SearchActivity extends BaseActivity
         initResources();
         getExtrasFromIntent(intent);
 
-        loadSection();
+        if (isFromApplink) {
+            performProductSearch("");
+        } else {
+            onSearchingStart();
+            loadSection();
+        }
         setToolbarTitle(searchParameter.getSearchQuery());
     }
 
     private void initPresenter() {
         searchPresenter.attachView(this);
+        searchPresenter.initInjector(this);
+    }
+
+    protected void stopPerformanceMonitoring() {
+        if (performanceMonitoring != null) {
+            performanceMonitoring.stopTrace();
+        }
+    }
+
+    private void moveToSearchActivity(boolean isHasCatalog) {
+        if(getApplication() instanceof DiscoveryRouter) {
+            DiscoveryRouter router = (DiscoveryRouter)getApplication();
+            Intent searchActivityIntent = getSearchActivityIntent(router, isHasCatalog);
+            startActivity(searchActivityIntent);
+        }
+    }
+
+    private Intent getSearchActivityIntent(DiscoveryRouter router, boolean isHasCatalog) {
+        Intent searchActivityIntent = router.gotoSearchPage(this);
+        searchActivityIntent.putExtra(EXTRA_SEARCH_PARAMETER_MODEL, searchParameter);
+        searchActivityIntent.putExtra(EXTRA_HAS_CATALOG, isHasCatalog);
+        searchActivityIntent.putExtra(EXTRA_FORCE_SWIPE_TO_SHOP, isForceSwipeToShop);
+
+        return searchActivityIntent;
+    }
+
+    public void moveWithApplink(String applink) {
+        if(getApplication() instanceof DiscoveryRouter) {
+            DiscoveryRouter router = (DiscoveryRouter)getApplication();
+
+            if (router.isSupportApplink(applink)) {
+                openApplink(router, applink);
+            } else {
+                openWebViewURL(router, applink, this);
+            }
+        }
+
+        finish();
+    }
+
+    public void openApplink(DiscoveryRouter router, String applink) {
+        if (!TextUtils.isEmpty(applink)) {
+            router.goToApplinkActivity(this, applink);
+        }
+    }
+
+    public void openWebViewURL(DiscoveryRouter router, String url, Context context) {
+        if (!TextUtils.isEmpty(url) && context != null) {
+            router.actionOpenGeneralWebView(this, url);
+        }
     }
 
     private void initResources() {
@@ -326,6 +407,7 @@ public class SearchActivity extends BaseActivity
         searchParameter = intent.getParcelableExtra(EXTRA_SEARCH_PARAMETER_MODEL);
         isForceSwipeToShop = intent.getBooleanExtra(EXTRA_FORCE_SWIPE_TO_SHOP, false);
         isHasCatalog = intent.getBooleanExtra(EXTRA_HAS_CATALOG, false);
+        isFromApplink = intent.getBooleanExtra(EXTRA_IS_FROM_APPLINK, false);
 
         createNewSearchParameterIfNull();
     }
@@ -357,7 +439,7 @@ public class SearchActivity extends BaseActivity
 
     private void initFragments() {
         productListFragment = getProductFragment();
-        if(isHasCatalog) catalogFragment = getCatalogFragment();
+        if(isHasCatalog) catalogListFragment = getCatalogFragment();
         shopListFragment = getShopFragment();
         profileListFragment = getProfileListFragment();
     }
@@ -370,8 +452,8 @@ public class SearchActivity extends BaseActivity
         return ShopListFragment.newInstance(searchParameter);
     }
 
-    private CatalogFragment getCatalogFragment() {
-        return CatalogFragment.newInstance(searchParameter);
+    private CatalogListFragment getCatalogFragment() {
+        return CatalogListFragment.newInstance(searchParameter);
     }
 
     private ProfileListFragment getProfileListFragment() {
@@ -380,7 +462,7 @@ public class SearchActivity extends BaseActivity
 
     private void addFragmentsToList(List<SearchSectionItem> searchSectionItemList) {
         searchSectionItemList.add(new SearchSectionItem(productTabTitle, productListFragment));
-        if(isHasCatalog) searchSectionItemList.add(new SearchSectionItem(catalogTabTitle, catalogFragment));
+        if(isHasCatalog) searchSectionItemList.add(new SearchSectionItem(catalogTabTitle, catalogListFragment));
         searchSectionItemList.add(new SearchSectionItem(shopTabTitle, shopListFragment));
         searchSectionItemList.add(new SearchSectionItem(profileTabTitle, profileListFragment));
     }
@@ -406,7 +488,7 @@ public class SearchActivity extends BaseActivity
                 productListFragment.backToTop();
                 break;
             case TAB_SECOND_POSITION:
-                if(isHasCatalog) catalogFragment.backToTop();
+                if(isHasCatalog) catalogListFragment.backToTop();
                 else shopListFragment.backToTop();
                 break;
             case TAB_THIRD_POSITION:
@@ -479,15 +561,33 @@ public class SearchActivity extends BaseActivity
         super.onResume();
         searchPresenter.onResume();
         unregisterShake();
-
-        showContainer(true);
-        showLoadingView(false);
-        showBottomNavigation();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        switch(requestCode) {
+            case AUTO_COMPLETE_ACTIVITY_REQUEST_CODE:
+                handleResultFromAutoCompleteActivity(resultCode, data);
+                break;
+            default:
+                handleDefaultActivityResult(requestCode, resultCode, data);
+                break;
+        }
+    }
+
+    private void handleResultFromAutoCompleteActivity(int resultCode, Intent data) {
+        switch(resultCode) {
+            case AUTO_COMPLETE_ACTIVITY_RESULT_CODE_START_ACTIVITY:
+                finish();
+                startActivity(data);
+                overridePendingTransition(0, 0);
+                break;
+        }
+    }
+
+    private void handleDefaultActivityResult(int requestCode, int resultCode, Intent data) {
         bottomSheetFilterView.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -565,7 +665,7 @@ public class SearchActivity extends BaseActivity
         onSearchingStart();
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_RESULT_TRACE);
 
-        searchPresenter.initiateSearch(searchParameter.getSearchParameterMap(), getInitiateSearchListener());
+        searchPresenter.initiateSearch(searchParameter.getSearchParameterMap());
     }
 
     private void updateSearchParameterBeforeSearch(String queryParams) {
@@ -582,7 +682,7 @@ public class SearchActivity extends BaseActivity
         searchParameter.set(SearchApiConst.UNIQUE_ID, uniqueId);
     }
 
-    public static String getRegistrationId(Context context) {
+    private String getRegistrationId(Context context) {
         LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
         return cache.getString(GCM_ID, "");
     }
@@ -599,85 +699,47 @@ public class SearchActivity extends BaseActivity
         hideBottomNavigation();
     }
 
-    private InitiateSearchListener getInitiateSearchListener() {
-        return new InitiateSearchListener() {
-            @Override
-            public void onHandleResponseSearch(boolean isHasCatalog) {
-                stopPerformanceMonitoring();
-                moveToSearchActivity(isHasCatalog);
-            }
-
-            @Override
-            public void onHandleApplink(@NonNull String applink) {
-                moveWithApplink(applink);
-            }
-
-            @Override
-            public void onHandleResponseError() {
-                NetworkErrorHelper.showEmptyState(SearchActivity.this, container, () -> {
-                    if(searchParameter == null) return;
-                    SearchActivity.this.performProductSearch("");
-                });
-            }
-
-            @Override
-            public void onHandleResponseUnknown() {
-                throw new RuntimeException("Not yet handle unknown response");
-            }
-        };
-    }
-
-    private void moveToSearchActivity(boolean isHasCatalog) {
-        if(getApplication() instanceof DiscoveryRouter) {
-            DiscoveryRouter router = (DiscoveryRouter)getApplication();
-            Intent searchActivityIntent = getSearchActivityIntent(router, isHasCatalog);
-            startActivity(searchActivityIntent);
-        }
-    }
-
-    private Intent getSearchActivityIntent(DiscoveryRouter router, boolean isHasCatalog) {
-        Intent searchActivityIntent = router.gotoSearchPage(this);
-        searchActivityIntent.putExtra(EXTRA_SEARCH_PARAMETER_MODEL, searchParameter);
-        searchActivityIntent.putExtra(EXTRA_HAS_CATALOG, isHasCatalog);
-        searchActivityIntent.putExtra(EXTRA_FORCE_SWIPE_TO_SHOP, isForceSwipeToShop);
-
-        return searchActivityIntent;
-    }
-
-    public void moveWithApplink(String applink) {
-        if(getApplication() instanceof DiscoveryRouter) {
-            DiscoveryRouter router = (DiscoveryRouter)getApplication();
-
-            if (router.isSupportApplink(applink)) {
-                openApplink(router, applink);
-            } else {
-                openWebViewURL(router, applink, this);
-            }
-        }
-
-        finish();
-    }
-
-    public void openApplink(DiscoveryRouter router, String applink) {
-        if (!TextUtils.isEmpty(applink)) {
-            router.goToApplinkActivity(this, applink);
-        }
-    }
-
-    public void openWebViewURL(DiscoveryRouter router, String url, Context context) {
-        if (!TextUtils.isEmpty(url) && context != null) {
-            router.actionOpenGeneralWebView(this, url);
-        }
-    }
-
-    protected void stopPerformanceMonitoring() {
-        if (performanceMonitoring != null) {
-            performanceMonitoring.stopTrace();
-        }
+    @Override
+    public void onProductLoadingFinished() {
+        showLoadingView(false);
+        showContainer(true);
+        showBottomNavigation();
     }
 
     private void showContainer(boolean visible) {
-        container.setVisibility(visible ? View.VISIBLE : View.GONE);
+        container.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+    }
+
+    @Override
+    public void initiateSearchHandleResponseSearch(boolean isHasCatalog) {
+        stopPerformanceMonitoring();
+        if (isTabInitialized()) {
+            moveToSearchActivity(isHasCatalog);
+        } else {
+            loadSection();
+        }
+    }
+
+    private boolean isTabInitialized() {
+        return searchSectionPagerAdapter != null;
+    }
+
+    @Override
+    public void initiateSearchHandleApplink(@NonNull String applink) {
+        moveWithApplink(applink);
+    }
+
+    @Override
+    public void initiateSearchHandleResponseError() {
+        NetworkErrorHelper.showEmptyState(SearchActivity.this, container, () -> {
+            if(searchParameter == null) return;
+            SearchActivity.this.performProductSearch("");
+        });
+    }
+
+    @Override
+    public void initiateSearchHandleResponseUnknown() {
+        throw new RuntimeException("Not yet handle unknown response");
     }
 
     @Override
@@ -712,7 +774,9 @@ public class SearchActivity extends BaseActivity
 
     @Override
     public void setupSearchNavigation(ClickListener clickListener, boolean isSortEnabled) {
-        showBottomNavigation();
+        if (loadingView.getVisibility() != View.VISIBLE) {
+            showBottomNavigation();
+        }
 
         if (isSortEnabled) {
             buttonSort.setVisibility(View.VISIBLE);
@@ -743,7 +807,7 @@ public class SearchActivity extends BaseActivity
     }
 
     @Override
-    public SearchComponent getComponent() {
-        return searchComponent;
+    public BaseAppComponent getComponent() {
+        return getBaseAppComponent();
     }
 }

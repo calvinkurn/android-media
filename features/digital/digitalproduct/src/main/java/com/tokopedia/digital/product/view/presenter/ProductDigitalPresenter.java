@@ -638,33 +638,8 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
     }
 
     @Override
-    public void processGetHelpUrlData(String categoryId) {
-        digitalGetHelpUrlUseCase.execute(digitalGetHelpUrlUseCase.createRequest(categoryId),
-                new Subscriber<String>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(String url) {
-                        if (url != null && url.length() > 0) {
-                            getView().showHelpMenu(url);
-                        }
-                    }
-                });
-    }
-
-    @Override
     public void onHelpMenuClicked() {
-        if (getView().getHelpUrl() != null && getView().getHelpUrl().length() > 0) {
-            getView().navigateToWebview(getView().getHelpUrl());
-        }
+        getView().navigateToWebview();
     }
 
     private String getPhoneNumberForSim(int simIndex, Operator operator, List<Validation> validationList) {

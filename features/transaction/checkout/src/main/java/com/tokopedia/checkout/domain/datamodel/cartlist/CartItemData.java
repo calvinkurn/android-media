@@ -23,6 +23,7 @@ public class CartItemData implements Parcelable {
     private String errorMessageTitle;
     private String errorMessageDescription;
     private boolean isDisableAllProducts;
+    private boolean isFulfillment;
 
     public boolean isFulfillment() {
         return isFulfillment;
@@ -31,8 +32,6 @@ public class CartItemData implements Parcelable {
     public void setFulfillment(boolean fulfillment) {
         isFulfillment = fulfillment;
     }
-
-    private boolean isFulfillment;
 
     public boolean isSingleChild() {
         return singleChild;
@@ -179,6 +178,8 @@ public class CartItemData implements Parcelable {
         private String officialStoreLogoUrl;
         private String preOrderInfo;
         private String cartString;
+        private boolean checkboxState;
+        private int warehouseId;
 
         public String getTrackerAttribution() {
             return trackerAttribution;
@@ -516,6 +517,22 @@ public class CartItemData implements Parcelable {
             this.cartString = cartString;
         }
 
+        public boolean isCheckboxState() {
+            return checkboxState;
+        }
+
+        public void setCheckboxState(boolean checkboxState) {
+            this.checkboxState = checkboxState;
+        }
+
+        public int getWarehouseId() {
+            return warehouseId;
+        }
+
+        public void setWarehouseId(int warehouseId) {
+            this.warehouseId = warehouseId;
+        }
+
         public OriginData() {
         }
 
@@ -567,6 +584,8 @@ public class CartItemData implements Parcelable {
             dest.writeString(this.officialStoreLogoUrl);
             dest.writeString(this.preOrderInfo);
             dest.writeString(this.cartString);
+            dest.writeByte(this.checkboxState ? (byte) 1 : (byte) 0);
+            dest.writeInt(this.warehouseId);
         }
 
         protected OriginData(Parcel in) {
@@ -611,6 +630,8 @@ public class CartItemData implements Parcelable {
             this.officialStoreLogoUrl = in.readString();
             this.preOrderInfo = in.readString();
             this.cartString = in.readString();
+            this.checkboxState = in.readByte() != 0;
+            this.warehouseId = in.readInt();
         }
 
         public static final Creator<OriginData> CREATOR = new Creator<OriginData>() {

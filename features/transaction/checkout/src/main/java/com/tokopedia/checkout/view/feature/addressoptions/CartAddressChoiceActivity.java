@@ -10,7 +10,9 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.data.mapper.AddressModelMapper;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutActivity;
+import com.tokopedia.logisticaddaddress.AddressConstants;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity;
+import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity;
 import com.tokopedia.logisticdata.data.constant.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
@@ -140,11 +142,17 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
         Intent intent;
         switch (typeRequest) {
             case TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS:
-                intent = AddAddressActivity
+                /*intent = AddAddressActivity
                         .createInstanceAddAddressFromCheckoutSingleAddressFormWhenDefaultAddressIsEmpty(
                                 this, token);
                 startActivityForResult(intent,
-                        LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);
+                        LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);*/
+
+                startActivityForResult(PinpointMapActivity.newInstance(this,
+                        AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
+                        false, 0, false, false, null,
+                        false), LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT);
+
                 break;
             case TYPE_REQUEST_EDIT_ADDRESS_FOR_TRADE_IN:
                 RecipientAddressModel currentAddress = getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS);
@@ -154,6 +162,8 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
                 );
                 startActivityForResult(intent,
                         LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT);
+                /*intent = new Intent(this, PinpointMapActivity.class);
+                startActivity(intent);*/
                 break;
             default:
         }

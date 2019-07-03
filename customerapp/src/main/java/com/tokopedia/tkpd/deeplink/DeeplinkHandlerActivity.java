@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd.deeplink;
 
-import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -8,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
@@ -16,6 +16,8 @@ import com.tokopedia.affiliate.applink.AffiliateApplinkModule;
 import com.tokopedia.affiliate.applink.AffiliateApplinkModuleLoader;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.applink.DeeplinkMapper;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.SessionApplinkModule;
 import com.tokopedia.applink.SessionApplinkModuleLoader;
 import com.tokopedia.applink.TkpdApplinkDelegate;
@@ -33,8 +35,6 @@ import com.tokopedia.checkout.applink.CheckoutAppLinkModuleLoader;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModuleLoader;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
 import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
@@ -67,6 +67,8 @@ import com.tokopedia.home.account.applink.AccountHomeApplinkModule;
 import com.tokopedia.home.account.applink.AccountHomeApplinkModuleLoader;
 import com.tokopedia.home.applink.HomeApplinkModule;
 import com.tokopedia.home.applink.HomeApplinkModuleLoader;
+import com.tokopedia.home_recom.deeplink.RecommendationDeeplinkModule;
+import com.tokopedia.home_recom.deeplink.RecommendationDeeplinkModuleLoader;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModule;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModuleLoader;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
@@ -148,6 +150,12 @@ import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModul
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModule;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleLoader;
 
+import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
 @DeepLinkHandler({
         ConsumerDeeplinkModule.class,
         CoreDeeplinkModule.class,
@@ -206,12 +214,14 @@ import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleL
         ChatbotApplinkModule.class,
         HomeCreditAppLinkModule.class,
         OfficialStoreApplinkModule.class,
-        OvoPayWithQrApplinkModule.class
+        OvoPayWithQrApplinkModule.class,
+        RecommendationDeeplinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity implements DefferedDeeplinkCallback {
 
     private static ApplinkDelegate applinkDelegate;
+    private Subscription clearNotifUseCase;
 
     public static ApplinkDelegate getApplinkDelegateInstance() {
         if (applinkDelegate == null) {
@@ -273,11 +283,46 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new ChatbotApplinkModuleLoader(),
                     new HomeCreditAppLinkModuleLoader(),
                     new OfficialStoreApplinkModuleLoader(),
-                    new OvoPayWithQrApplinkModuleLoader()
+                    new OvoPayWithQrApplinkModuleLoader(),
+                    new RecommendationDeeplinkModuleLoader()
             );
         }
 
         return applinkDelegate;
+    }
+
+    @DeepLink({Constants.Applinks.SellerApp.SELLER_APP_HOME,
+            Constants.Applinks.SellerApp.TOPADS_DASHBOARD,
+            Constants.Applinks.SellerApp.SALES,
+            Constants.Applinks.SellerApp.TOPADS_CREDIT,
+            Constants.Applinks.SellerApp.TOPADS_PRODUCT_CREATE,
+            Constants.Applinks.SellerApp.GOLD_MERCHANT,
+            Constants.Applinks.SellerApp.TOPADS_DASHBOARD,
+            Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL,
+            Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL_CONSTS,
+            Constants.Applinks.SellerApp.BROWSER})
+    public static Intent getIntentSellerApp(Context context, Bundle extras) {
+        Intent launchIntent = context.getPackageManager()
+                .getLaunchIntentForPackage(GlobalConfig.PACKAGE_SELLER_APP);
+
+        if (launchIntent == null) {
+            return RedirectCreateShopActivity.getCallingIntent(context);
+        } else {
+            launchIntent.setData(Uri.parse(extras.getString(DeepLink.URI)));
+            launchIntent.putExtras(extras);
+            launchIntent.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
+            return launchIntent;
+        }
+    }
+
+    @DeepLink(Constants.Applinks.BROWSER)
+    public static Intent getCallingIntentOpenBrowser(Context context, Bundle extras) {
+        String webUrl = extras.getString(
+                Constants.ARG_NOTIFICATION_URL, TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL
+        );
+        Intent destination = new Intent(Intent.ACTION_VIEW);
+        destination.setData(Uri.parse(webUrl));
+        return destination;
     }
 
     @Override
@@ -291,18 +336,16 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
 
         DeepLinkAnalyticsImpl presenter = new DeepLinkAnalyticsImpl();
         if (getIntent() != null) {
-            Intent intent = getIntent();
-            Uri applink = Uri.parse(intent.getData().toString().replaceAll("%", "%25"));
+            String applinkString = getIntent().getData().toString().replaceAll("%", "%25");
+            Uri applink = Uri.parse(applinkString);
             presenter.processUTM(this, applink);
-            if (deepLinkDelegate.supportsUri(applink.toString())) {
-                routeFromApplink(applink);
+
+            //map applink to internal if any
+            String mappedDeeplink = DeeplinkMapper.getRegisteredNavigation(this, applinkString);
+            if (!TextUtils.isEmpty(mappedDeeplink)) {
+                routeApplink(deepLinkDelegate, mappedDeeplink);
             } else {
-                Intent homeIntent = HomeRouter.getHomeActivityInterfaceRouter(this);
-                homeIntent.putExtra(HomeRouter.EXTRA_APPLINK_UNSUPPORTED, true);
-                if (getIntent() != null && getIntent().getExtras() != null)
-                    homeIntent.putExtras(getIntent().getExtras());
-                homeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(homeIntent);
+                routeApplink(deepLinkDelegate, applinkString);
             }
 
             if (getIntent().getExtras() != null) {
@@ -312,27 +355,74 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                 } else if (bundle.getBoolean(Constant.EXTRA_APPLINK_FROM_PUSH, false)) {
                     int notificationType = bundle.getInt(Constant.EXTRA_NOTIFICATION_TYPE, 0);
                     int notificationId = bundle.getInt(Constant.EXTRA_NOTIFICATION_ID, 0);
-
-                    if (notificationId == 0) {
-                        HistoryNotification.clearAllHistoryNotification(notificationType);
-                    } else {
-                        HistoryNotification.clearHistoryNotification(notificationType, notificationId);
-                    }
-
-                    NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
-                    notificationManagerCompat.cancel(notificationId);
-
-                    //clear summary notification if group notification only have 1 left
-                    if (notificationId != 0 && HistoryNotification.isSingleNotification(notificationType)) {
-                        notificationManagerCompat.cancel(notificationType);
-                    }
-
-
+                    cancelNotification(notificationType, notificationId);
                 }
-//                NotificationModHandler.clearCacheIfFromNotification(bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
             }
         }
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (clearNotifUseCase != null && !clearNotifUseCase.isUnsubscribed()) {
+            clearNotifUseCase.unsubscribe();
+        }
+    }
+
+    private void cancelNotification(int notificationType, int notificationId) {
+        clearNotifUseCase = Observable.just(true)
+                .subscribeOn(Schedulers.io())
+                .map(aBoolean -> {
+                    if (notificationId == 0) {
+                        HistoryNotification.clearAllHistoryNotification(DeeplinkHandlerActivity.this, notificationType);
+                    } else {
+                        HistoryNotification.clearHistoryNotification(DeeplinkHandlerActivity.this, notificationType, notificationId);
+                    }
+
+                    return HistoryNotification.isSingleNotification(DeeplinkHandlerActivity.this, notificationType);
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable ignored) {
+
+                    }
+
+                    @Override
+                    public void onNext(Boolean isSingleNotif) {
+                        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(DeeplinkHandlerActivity.this);
+                        notificationManagerCompat.cancel(notificationId);
+
+                        //clear summary notification if group notification only have 1 left
+                        if (notificationId != 0 && isSingleNotif) {
+                            notificationManagerCompat.cancel(notificationType);
+                        }
+                    }
+                });
+    }
+
+    private void routeApplink(ApplinkDelegate deepLinkDelegate, String applinkString) {
+        if (deepLinkDelegate.supportsUri(applinkString)) {
+            routeFromApplink(Uri.parse(applinkString));
+        } else {
+            Intent intent = RouteManager.getIntent(this, applinkString);
+            startActivity(intent);
+        }
+    }
+
+    private void goToHome() {
+        Intent homeIntent = HomeRouter.getHomeActivityInterfaceRouter(this);
+        homeIntent.putExtra(HomeRouter.EXTRA_APPLINK_UNSUPPORTED, true);
+        if (getIntent() != null && getIntent().getExtras() != null)
+            homeIntent.putExtras(getIntent().getExtras());
+        homeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(homeIntent);
     }
 
     public void eventPersonalizedClicked(String label) {
@@ -373,40 +463,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
             } catch (Exception ignored) {
             }
         }
-    }
-
-    @DeepLink({Constants.Applinks.SellerApp.SELLER_APP_HOME,
-            Constants.Applinks.SellerApp.TOPADS_DASHBOARD,
-            Constants.Applinks.SellerApp.SALES,
-            Constants.Applinks.SellerApp.TOPADS_CREDIT,
-            Constants.Applinks.SellerApp.TOPADS_PRODUCT_CREATE,
-            Constants.Applinks.SellerApp.GOLD_MERCHANT,
-            Constants.Applinks.SellerApp.TOPADS_DASHBOARD,
-            Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL,
-            Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL_CONSTS,
-            Constants.Applinks.SellerApp.BROWSER})
-    public static Intent getIntentSellerApp(Context context, Bundle extras) {
-        Intent launchIntent = context.getPackageManager()
-                .getLaunchIntentForPackage(GlobalConfig.PACKAGE_SELLER_APP);
-
-        if (launchIntent == null) {
-            return RedirectCreateShopActivity.getCallingIntent(context);
-        } else {
-            launchIntent.setData(Uri.parse(extras.getString(DeepLink.URI)));
-            launchIntent.putExtras(extras);
-            launchIntent.putExtra(Constants.EXTRA_APPLINK, extras.getString(DeepLink.URI));
-            return launchIntent;
-        }
-    }
-
-    @DeepLink(Constants.Applinks.BROWSER)
-    public static Intent getCallingIntentOpenBrowser(Context context, Bundle extras) {
-        String webUrl = extras.getString(
-                Constants.ARG_NOTIFICATION_URL, TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL
-        );
-        Intent destination = new Intent(Intent.ACTION_VIEW);
-        destination.setData(Uri.parse(webUrl));
-        return destination;
     }
 
     @Override

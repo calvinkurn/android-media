@@ -68,7 +68,7 @@ public class TnCConfirmationPresenter extends BaseDaggerPresenter<GenericOperati
                     getView().success(kycDocumentUploadResponse);
                 }
                 else {
-                    getView().failure(null);
+                    getView().failure(kycDocumentUploadResponse);
                 }
             }
         };

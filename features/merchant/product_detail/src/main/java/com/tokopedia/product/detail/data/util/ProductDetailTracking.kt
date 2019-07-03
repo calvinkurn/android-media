@@ -7,8 +7,8 @@ import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
-import com.tokopedia.product.detail.data.model.shop.ShopInfo
-import com.tokopedia.topads.sdk.domain.model.Product
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.track.TrackApp
 import java.util.*
 
@@ -199,45 +199,45 @@ class ProductDetailTracking() {
             id.toString())
     }
 
-    fun eventRecommendationClick(product: Product, position: Int, recommendationType: String, isTopAds: Boolean) {
-        var listValue = LIST_DEFAULT.plus(recommendationType)
-        if (isTopAds) listValue = "$listValue - product top ads"
+    fun eventRecommendationClick(product: RecommendationItem, position: Int, isSessionActive: Boolean) {
+        val listValue = LIST_DEFAULT + product.recommendationType + (if (product.isTopAds) " - product topads" else "")
 
-        TrackApp.getInstance()?.gtm?.sendEnhanceEcommerceEvent(
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(KEY_EVENT, ProductTrackingConstant.Action.PRODUCT_CLICK,
                         KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
-                        KEY_ACTION, ProductTrackingConstant.Action.TOPADS_CLICK,
+                        KEY_ACTION, ProductTrackingConstant.Action.TOPADS_CLICK +
+                        (if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN}" else ""),
                         KEY_LABEL, "",
                         KEY_ECOMMERCE, DataLayer.mapOf(ProductTrackingConstant.Action.CLICK,
                         DataLayer.mapOf(ACTION_FIELD, DataLayer.mapOf(LIST, listValue),
                                 PRODUCTS, DataLayer.listOf(
                                 DataLayer.mapOf(PROMO_NAME, product.name,
-                                        ID, product.id, PRICE, product.priceFormat,
+                                        ID, product.productId.toString(), PRICE, removeCurrencyPrice(product.price),
                                         BRAND, DEFAULT_VALUE,
-                                        CATEGORY, product.category.id,
                                         VARIANT, DEFAULT_VALUE,
+                                        CATEGORY, product.categoryBreadcrumbs.toLowerCase(),
                                         PROMO_POSITION, position + 1)
                         ))
                 ))
         )
     }
 
-    fun eventRecommendationImpression(position: Int, product: Product, recommendationType: String, isTopAds: Boolean) {
-        var listValue = LIST_DEFAULT.plus(recommendationType)
-        if (isTopAds) listValue = "$listValue - product top ads"
+    fun eventRecommendationImpression(position: Int, product: RecommendationItem, isSessionActive: Boolean) {
+        val listValue = LIST_DEFAULT + product.recommendationType + (if (product.isTopAds) " - product topads" else "")
 
-        TrackApp.getInstance()?.gtm?.sendEnhanceEcommerceEvent(
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(KEY_EVENT, "productView",
                         KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
-                        KEY_ACTION, ProductTrackingConstant.Action.TOPADS_IMPRESSION,
+                        KEY_ACTION, ProductTrackingConstant.Action.TOPADS_IMPRESSION +
+                        (if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN}" else ""),
                         KEY_LABEL, "",
-                        KEY_ECOMMERCE, DataLayer.mapOf("currencyCode", "IDR", "impression",
+                        KEY_ECOMMERCE, DataLayer.mapOf("currencyCode", "IDR", "impressions",
                         DataLayer.listOf(
                                 DataLayer.mapOf(PROMO_NAME, product.name,
-                                        ID, product.id, PRICE, product.priceFormat,
+                                        ID, product.productId.toString(), PRICE, removeCurrencyPrice(product.price),
                                         BRAND, DEFAULT_VALUE,
                                         VARIANT, DEFAULT_VALUE,
-                                        CATEGORY, product.category.id,
+                                        CATEGORY, product.categoryBreadcrumbs.toLowerCase(),
                                         PROMO_POSITION, position + 1,
                                         LIST, listValue)
                         ))
@@ -555,6 +555,14 @@ class ProductDetailTracking() {
     private fun getMultiOriginAttribution(isMultiOrigin: Boolean): String = when(isMultiOrigin) {
         true -> "tokopedia"
         else -> "regular"
+    }
+
+    private fun removeCurrencyPrice(priceFormatted: String): String{
+        return try {
+            priceFormatted.replace("[^\\d]".toRegex(), "")
+        } catch (t: Throwable){
+            "0"
+        }
     }
 
 }

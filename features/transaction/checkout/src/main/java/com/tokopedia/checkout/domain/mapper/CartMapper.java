@@ -79,7 +79,7 @@ public class CartMapper implements ICartMapper {
                 }
             }
         }
-        cartListData.setError(!TextUtils.isEmpty(errorMessage) || hasError);
+        cartListData.setError(hasError);
         cartListData.setErrorMessage(errorMessage);
         if (cartListData.isError()) {
             cartListData.setCartTickerErrorData(
@@ -97,7 +97,6 @@ public class CartMapper implements ICartMapper {
             ShopGroupData shopGroupData = new ShopGroupData();
 
             shopGroupData.setError(!mapperUtil.isEmpty(shopGroup.getErrors()));
-            shopGroupData.setErrorTitle(mapperUtil.convertToString(shopGroup.getErrors()));
 
             if (!shopGroupData.isError()) {
                 int errorItemCountPerShop = 0;
@@ -169,6 +168,7 @@ public class CartMapper implements ICartMapper {
                 CartItemData cartItemData = new CartItemData();
 
                 CartItemData.OriginData cartItemDataOrigin = new CartItemData.OriginData();
+                cartItemDataOrigin.setCheckboxState(data.isCheckboxState());
                 cartItemDataOrigin.setProductVarianRemark(
                         data.getProduct().getProductNotes()
                 );
@@ -214,6 +214,7 @@ public class CartMapper implements ICartMapper {
                 cartItemDataOrigin.setShopId(String.valueOf(shopGroup.getShop().getShopId()));
                 cartItemDataOrigin.setShopType(generateShopType(shopGroup.getShop()));
                 cartItemDataOrigin.setWishlisted(data.getProduct().isWishlisted());
+                cartItemDataOrigin.setWarehouseId(shopGroup.getWarehouse().getWarehouseId());
                 if (data.getProduct().getWholesalePrice() != null) {
                     List<WholesalePrice> wholesalePrices = new ArrayList<>();
                     for (com.tokopedia.transactiondata.entity.response.cartlist.WholesalePrice wholesalePriceDataModel : data.getProduct().getWholesalePrice()) {
@@ -299,11 +300,15 @@ public class CartMapper implements ICartMapper {
 
                 cartItemDataList.add(cartItemData);
             }
+            if (shopGroupData.isError() && TextUtils.isEmpty(shopGroupData.getErrorTitle())) {
+                shopGroupData.setErrorTitle(mapperUtil.convertToString(shopGroup.getErrors()));
+            }
             shopGroupData.setCartItemDataList(cartItemDataList);
+            shopGroupData.setChecked(shopGroup.isCheckboxState());
             shopGroupDataList.add(shopGroupData);
         }
         cartListData.setShopGroupDataList(shopGroupDataList);
-        cartListData.setAllSelected(true);
+        cartListData.setAllSelected(cartDataListResponse.isGlobalCheckboxState());
         cartListData.setPromoCouponActive(cartDataListResponse.getIsCouponActive() == 1);
 
         CartPromoSuggestion cartPromoSuggestion = new CartPromoSuggestion();

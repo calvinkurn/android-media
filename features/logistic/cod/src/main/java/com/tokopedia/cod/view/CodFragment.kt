@@ -120,8 +120,8 @@ class CodFragment : BaseDaggerFragment(), CodContract.View {
         if (checkoutRequest != null) {
             val checkoutMapData = HashMap<String, Any>()
             val enhancedECommerceActionField = EnhancedECommerceActionField()
-            enhancedECommerceActionField.setStep(EnhancedECommerceActionField.STEP_2)
-            enhancedECommerceActionField.setOption(EnhancedECommerceActionField.OPTION_CLICK_PAYMENT_OPTION_BUTTON)
+            enhancedECommerceActionField.setStep(EnhancedECommerceActionField.STEP_4)
+            enhancedECommerceActionField.setOption(EnhancedECommerceActionField.STEP_4_OPTION_CLICK_PAYMENT_OPTION_BUTTON)
 
             val enhancedECommerceCheckout = EnhancedECommerceCheckout()
             for (dataCheckoutRequest in checkoutRequest.data) {

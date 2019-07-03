@@ -302,7 +302,7 @@ public class AddAddressFragment extends BaseDaggerFragment
     @Override
     public void finishActivity() {
         Intent intent = getActivity().getIntent();
-        intent.putExtra(EXTRA_ADDRESS, address);
+            intent.putExtra(EXTRA_ADDRESS, address);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }

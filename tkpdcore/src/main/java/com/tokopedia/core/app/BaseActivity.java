@@ -11,6 +11,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Toast;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
@@ -245,7 +246,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     }
 
     private void showForceLogoutDialog() {
-        DialogForceLogout.createShow(this,
+        DialogForceLogout.createShow(this, getScreenName(),
                 new DialogForceLogout.ActionListener() {
                     @Override
                     public void onDialogClicked() {

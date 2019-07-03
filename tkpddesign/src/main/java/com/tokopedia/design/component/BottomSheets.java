@@ -22,7 +22,7 @@ import com.tokopedia.design.R;
 
 /**
  * Created by meta on 15/03/18.
- *
+ * <p>
  * Note: to avoid error "Fatal Exception: java.lang.IllegalArgumentException: The view is not a child of CoordinatorLayout"
  * please use `android.support.design.widget.CoordinatorLayout` as parent layout on your xml
  */
@@ -31,7 +31,7 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
 
     public abstract int getLayoutResourceId();
 
-    public int getBaseLayoutResourceId(){
+    public int getBaseLayoutResourceId() {
         return R.layout.widget_bottomsheet;
     }
 
@@ -55,7 +55,7 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
 
     private BottomSheetBehavior bottomSheetBehavior;
     private View inflatedView;
-    
+
     public interface BottomSheetDismissListener {
         void onDismiss();
     }
@@ -114,11 +114,13 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
         textViewTitle.setText(title());
 
         TextView resetButton = parentView.findViewById(R.id.tv_reset);
-        if (!TextUtils.isEmpty(resetButtonTitle())) {
-            resetButton.setText(resetButtonTitle());
-            resetButton.setVisibility(View.VISIBLE);
+        if (resetButton != null) {
+            if (!TextUtils.isEmpty(resetButtonTitle())) {
+                resetButton.setText(resetButtonTitle());
+                resetButton.setVisibility(View.VISIBLE);
+            }
+            resetButton.setOnClickListener(view -> onResetButtonClicked());
         }
-        resetButton.setOnClickListener(view -> onResetButtonClicked());
 
         View layoutTitle = parentView.findViewById(R.id.layout_title);
         layoutTitle.setOnClickListener(v -> onCloseButtonClick());
