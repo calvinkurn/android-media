@@ -91,9 +91,6 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
                         override fun onPlayerError(error: PlayerException) {
                             dismiss()
                         }
-                        override fun repeatMode(): Int {
-                            return RepeatMode.REPEAT_MODE_OFF
-                        }
                     })
                     /* 4. build it. */
                     .build()

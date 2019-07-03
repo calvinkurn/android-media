@@ -16,10 +16,4 @@ interface VideoPlayerListener: Serializable {
      * @param: PlayerException
      */
     fun onPlayerError(error: PlayerException)
-
-    /**
-     * Repeat mode
-     * @param(REPEAT_MODE_OFF, REPEAT_MODE_ONE, and REPEAT_MODE_ALL)
-     */
-    fun repeatMode(): Int = RepeatMode.REPEAT_MODE_OFF
 }

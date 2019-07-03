@@ -74,8 +74,8 @@ class TkpdVideoPlayer: Fragment() {
         }
     }
 
-    private lateinit var playerOptions: SimpleExoPlayer
-    private var callback: VideoPlayerListener ?= null
+    private var playerOptions: SimpleExoPlayer?= null
+    private var callback: VideoPlayerListener?= null
 
     private var viewModel = TkpdPlayerViewModel()
 
@@ -123,7 +123,7 @@ class TkpdVideoPlayer: Fragment() {
         outState.putParcelable(VIEW_MODEL, viewModel)
     }
 
-    private fun playerListener() = playerOptions.addListener(object : Player.EventListener {
+    private fun playerListener() = playerOptions?.addListener(object : Player.EventListener {
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
             callback?.onPlayerStateChanged(playbackState)
             when (playbackState) {
@@ -147,17 +147,17 @@ class TkpdVideoPlayer: Fragment() {
             playerView.player = playerOptions
 
             //repeat mode
-            playerOptions.repeatMode = viewModel.repeatMode
+            playerOptions?.repeatMode = viewModel.repeatMode
 
             //auto play enabled
-            playerOptions.playWhenReady = true
+            playerOptions?.playWhenReady = true
 
             //fix bug: on kitkat devices
             if (SDK_INT == KITKAT) {
                 playerView.rotation = VIDEO_ROTATION_90
             }
 
-            playerOptions.prepare(
+            playerOptions?.prepare(
                     buildMediaSource(source, protocol),
                     /* reset position */
                     true,
@@ -206,8 +206,18 @@ class TkpdVideoPlayer: Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         try {
-            playerOptions.release()
+            playerOptions?.release()
         } catch (ignored: Exception) {}
+    }
+
+    override fun onPause() {
+        super.onPause()
+        playerOptions?.stop()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        playerOptions?.stop()
     }
 
 }

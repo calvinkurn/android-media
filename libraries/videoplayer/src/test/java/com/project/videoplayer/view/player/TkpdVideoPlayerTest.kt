@@ -1,6 +1,7 @@
 package com.project.videoplayer.view.player
 
 import com.google.android.exoplayer2.Player
+import com.tokopedia.videoplayer.utils.PlayerException
 import com.tokopedia.videoplayer.view.player.TkpdVideoPlayer
 import com.tokopedia.videoplayer.view.player.VideoPlayerListener
 import org.junit.Assert.assertEquals
@@ -32,7 +33,7 @@ class TkpdVideoPlayerTest {
                             }
                         }
                     }
-                    override fun onPlayerError() {
+                    override fun onPlayerError(error: PlayerException) {
                         throw Exception("onPlayerError();")
                     }
                 })
