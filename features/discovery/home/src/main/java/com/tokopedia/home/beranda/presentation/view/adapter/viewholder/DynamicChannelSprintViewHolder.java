@@ -7,6 +7,7 @@ import android.support.annotation.LayoutRes;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridS
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
 
 import java.util.Date;
+
+import timber.log.Timber;
 
 /**
  * Created by henrypriyono on 31/01/18.
