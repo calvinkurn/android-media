@@ -31,6 +31,9 @@ import com.tokopedia.tokopoints.view.util.CommonConstant;
 import javax.inject.Inject;
 
 public class PointHistoryFragment extends BaseDaggerFragment implements PointHistoryContract.View, AdapterCallback, View.OnClickListener {
+    private static final int CONTAINER_LOADER = 0;
+    private static final int CONTAINER_DATA = 1;
+    private static final int CONTAINER_ERROR = 2;
     private ViewFlipper mContainerMain;
     private RecyclerView mRecyclerView;
     private PointHistoryListAdapter mAdapter;
@@ -49,8 +52,7 @@ public class PointHistoryFragment extends BaseDaggerFragment implements PointHis
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         initInjector();
-        View view = inflater.inflate(R.layout.tp_fragment_point_history, container, false);
-        return view;
+        return inflater.inflate(R.layout.tp_fragment_point_history, container, false);
     }
 
     @Override
@@ -98,6 +100,8 @@ public class PointHistoryFragment extends BaseDaggerFragment implements PointHis
         if (getView() == null) {
             return;
         }
+
+        mContainerMain.setDisplayedChild(CONTAINER_LOADER);
     }
 
     @Override
@@ -105,14 +109,17 @@ public class PointHistoryFragment extends BaseDaggerFragment implements PointHis
         if (getView() == null) {
             return;
         }
+
+        mContainerMain.setDisplayedChild(CONTAINER_DATA);
     }
 
     @Override
     public void onSuccess(TokoPointStatusPointsEntity data) {
-        if (data == null || getActivity() == null) {
+        if (data == null || getActivity() == null || getView() == null) {
             return;
         }
 
+        getView().findViewById(R.id.con_header).setVisibility(View.VISIBLE);
         TextView point = getView().findViewById(R.id.text_my_points_value);
         point.setTextColor(ContextCompat.getColor(getActivity(), R.color.black_87));
         point.setText(data.getRewardStr());
@@ -125,7 +132,7 @@ public class PointHistoryFragment extends BaseDaggerFragment implements PointHis
 
     @Override
     public void onError(String error) {
-
+        mContainerMain.setDisplayedChild(CONTAINER_ERROR);
     }
 
     @Override
@@ -136,14 +143,6 @@ public class PointHistoryFragment extends BaseDaggerFragment implements PointHis
     @Override
     public Context getActivityContext() {
         return getActivity();
-    }
-
-    private void decorateDialog(AlertDialog dialog) {
-        if (dialog.getButton(AlertDialog.BUTTON_POSITIVE) != null) {
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(getActivityContext(),
-                    R.color.tkpd_main_green));
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
-        }
     }
 
     @Override
@@ -164,14 +163,6 @@ public class PointHistoryFragment extends BaseDaggerFragment implements PointHis
     @Override
     public void onFinishFirstPageLoad(int itemCount, @Nullable Object rawObject) {
         hideLoading();
-//        if (itemCount == -1) {
-//            showError();
-//        } else {
-//            if (mTimer == null) {
-//                startUpdateCatalogStatusTimer();
-//            }
-//        }
-
     }
 
     @Override
@@ -187,9 +178,8 @@ public class PointHistoryFragment extends BaseDaggerFragment implements PointHis
     @Override
     public void onError(int pageNumber) {
         if (pageNumber == 1) {
-            //showError();
+            onError("n/a");
         }
-
     }
 
     @Override
