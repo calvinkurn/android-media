@@ -10,6 +10,7 @@ import com.tokopedia.common_digital.cart.view.model.cart.CartItemDigital;
 import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
+import com.tokopedia.digital.common.domain.interactor.RechargePushEventRecommendationUseCase;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.newcart.data.cache.DigitalPostPaidLocalCache;
 import com.tokopedia.digital.newcart.domain.interactor.ICartDigitalInteractor;
@@ -44,6 +45,7 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
                                         UserSession userSession,
                                         DigitalCheckoutUseCase digitalCheckoutUseCase,
                                         DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase,
+                                        RechargePushEventRecommendationUseCase rechargePushEventRecommendationUseCase,
                                         DigitalPostPaidLocalCache digitalPostPaidLocalCache) {
         super(digitalAddToCartUseCase,
                 digitalAnalytics,
@@ -52,6 +54,7 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
                 userSession,
                 digitalCheckoutUseCase,
                 digitalInstantCheckoutUseCase,
+                rechargePushEventRecommendationUseCase,
                 digitalPostPaidLocalCache);
         this.digitalAnalytics = digitalAnalytics;
         this.userSession = userSession;

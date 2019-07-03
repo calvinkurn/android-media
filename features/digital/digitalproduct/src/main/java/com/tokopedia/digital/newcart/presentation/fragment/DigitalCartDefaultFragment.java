@@ -77,6 +77,8 @@ public class DigitalCartDefaultFragment extends DigitalBaseCartFragment implemen
 
     @Override
     protected void setupView(View view) {
+        presenter.trackRechargePushEventRecommendation(2, "ATC");
+
         progressBar = view.findViewById(R.id.progress_bar);
         containerLayout = view.findViewById(R.id.container);
         categoryTextView = view.findViewById(R.id.tv_category_name);

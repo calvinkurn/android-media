@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.constant.IRouterConstant;
-import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.atc.Attributes;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.atc.Field;
@@ -26,9 +25,11 @@ import com.tokopedia.common_digital.cart.view.model.cart.UserInputPriceDigital;
 import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
 import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData;
 import com.tokopedia.common_digital.common.constant.DigitalCache;
+import com.tokopedia.commonpromo.PromoCodeAutoApplyUseCase;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
+import com.tokopedia.digital.common.domain.interactor.RechargePushEventRecommendationUseCase;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.newcart.data.cache.DigitalPostPaidLocalCache;
 import com.tokopedia.digital.newcart.data.entity.requestbody.otpcart.RequestBodyOtpSuccess;
@@ -42,7 +43,6 @@ import com.tokopedia.digital.newcart.presentation.contract.DigitalBaseContract;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.network.exception.ResponseDataNullException;
 import com.tokopedia.network.exception.ResponseErrorException;
-import com.tokopedia.commonpromo.PromoCodeAutoApplyUseCase;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
@@ -69,6 +69,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     private DigitalCheckoutUseCase digitalCheckoutUseCase;
     private DigitalAddToCartUseCase digitalAddToCartUseCase;
     private DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase;
+    private RechargePushEventRecommendationUseCase rechargePushEventRecommendationUseCase;
     private DigitalPostPaidLocalCache digitalPostPaidLocalCache;
     private String PROMO_CODE = "promoCode";
     public static final String KEY_CACHE_PROMO_CODE = "KEY_CACHE_PROMO_CODE";
@@ -81,6 +82,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
                                     UserSession userSession,
                                     DigitalCheckoutUseCase digitalCheckoutUseCase,
                                     DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase,
+                                    RechargePushEventRecommendationUseCase rechargePushEventRecommendationUseCase,
                                     DigitalPostPaidLocalCache digitalPostPaidLocalCache) {
         this.digitalAddToCartUseCase = digitalAddToCartUseCase;
         this.digitalAnalytics = digitalAnalytics;
@@ -89,6 +91,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         this.userSession = userSession;
         this.digitalCheckoutUseCase = digitalCheckoutUseCase;
         this.digitalInstantCheckoutUseCase = digitalInstantCheckoutUseCase;
+        this.rechargePushEventRecommendationUseCase = rechargePushEventRecommendationUseCase;
         this.digitalPostPaidLocalCache = digitalPostPaidLocalCache;
     }
 
@@ -758,5 +761,9 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         builder.userAgent(DeviceUtil.getUserAgentForApiCall());
         builder.needOtp(cartDigitalInfoData.isNeedOtp());
         return builder;
+    }
+
+    public void trackRechargePushEventRecommendation(int categoryId, String actionType) {
+        rechargePushEventRecommendationUseCase.execute(rechargePushEventRecommendationUseCase.createRequestParam(categoryId, actionType), null);
     }
 }

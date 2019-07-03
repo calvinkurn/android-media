@@ -12,7 +12,9 @@ import com.tokopedia.common_digital.common.data.api.DigitalRestApi
 import com.tokopedia.common_digital.common.di.DigitalCommonComponent
 import com.tokopedia.common_digital.common.di.DigitalRestApiRetrofit
 import com.tokopedia.digital.common.analytic.DigitalAnalytics
+import com.tokopedia.digital.common.domain.interactor.RechargePushEventRecommendationUseCase
 import com.tokopedia.digital.common.router.DigitalModuleRouter
+import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.user.session.UserSession
 
 import dagger.Component
@@ -34,6 +36,10 @@ interface DigitalComponent{
     fun context(): Context
 
     fun abstractionRouter(): AbstractionRouter
+
+    fun graphqlUseCase(): GraphqlUseCase
+
+    fun digitalRechargePushEventRecommendationUseCase(): RechargePushEventRecommendationUseCase
 
     fun digitalAddToCartUseCase(): DigitalAddToCartUseCase
 

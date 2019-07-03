@@ -350,6 +350,8 @@ public class DigitalProductFragment extends BaseDaggerFragment
     }
 
     protected void initView(View view) {
+        presenter.trackRechargePushEventRecommendation(2, "VISIT");
+
         pbMainLoading = view.findViewById(R.id.pb_main_loading);
         holderProductDetail = view.findViewById(R.id.holder_product_detail);
         holderCheckBalance = view.findViewById(R.id.holder_check_balance);
@@ -423,6 +425,8 @@ public class DigitalProductFragment extends BaseDaggerFragment
 
     @Override
     public void renderCategory(BaseDigitalProductView digitalProductView, CategoryData categoryData, HistoryClientNumber historyClientNumber) {
+        digitalAnalytics.eventDigitalCategoryScreenLaunch(categoryData);
+
         this.categoryDataState = categoryData;
         this.historyClientNumberState = historyClientNumber;
         actionListener.updateTitleToolbar(categoryData.getName());
