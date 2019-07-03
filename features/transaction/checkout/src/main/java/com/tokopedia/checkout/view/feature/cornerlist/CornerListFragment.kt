@@ -31,14 +31,19 @@ import javax.inject.Inject
 class CornerListFragment : BaseDaggerFragment(), CornerContract.View, CornerAdapter.OnItemClickListener {
 
     private var mBranchList: MutableList<RecipientAddressModel> = ArrayList()
-    private lateinit var mListener: BranchChosenListener
     private val mAdapter = CornerAdapter(mBranchList, this)
+    private lateinit var mListener: ActionListener
+    private val mLayoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
+    private var mScrollListener: EndlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(mLayoutManager) {
+        override fun onLoadMore(page: Int, totalItemsCount: Int) {
+            mPresenter.loadMore(page + 1)
+        }
+    }
 
     private lateinit var mEmptyView: View
     private lateinit var mSearchView: SearchInputView
     private lateinit var mRvCorner: RecyclerView
     private lateinit var mProgressBar: ProgressBar
-    private var mScrollListener: EndlessRecyclerViewScrollListener? = null
 
     @Inject
     lateinit var mPresenter: CornerListPresenter
@@ -74,14 +79,8 @@ class CornerListFragment : BaseDaggerFragment(), CornerContract.View, CornerAdap
         mProgressBar = view.findViewById(R.id.progress_bar)
 
         mRvCorner.setHasFixedSize(true)
-        val layoutManager = LinearLayoutManager(context)
-        mRvCorner.layoutManager = layoutManager
+        mRvCorner.layoutManager = mLayoutManager
         mRvCorner.addItemDecoration(DividerItemDecoration(context!!, DividerItemDecoration.VERTICAL))
-        mScrollListener = object : EndlessRecyclerViewScrollListener(layoutManager) {
-            override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                mPresenter.loadMore(page + 1)
-            }
-        }
         mRvCorner.addOnScrollListener(mScrollListener)
         mRvCorner.adapter = mAdapter
 
@@ -106,17 +105,17 @@ class CornerListFragment : BaseDaggerFragment(), CornerContract.View, CornerAdap
 
     override fun showData(data: List<RecipientAddressModel>) {
         mAdapter.setAddress(data)
-        mScrollListener?.resetState()
+        mScrollListener.resetState()
         mEmptyView.visibility = View.GONE
     }
 
     override fun appendData(data: List<RecipientAddressModel>) {
         mAdapter.appendAddress(data)
-        mScrollListener?.updateStateAfterGetData()
+        mScrollListener.updateStateAfterGetData()
     }
 
     override fun notifyHasNotNextPage() {
-        mScrollListener?.setHasNextPage(false)
+        mScrollListener.setHasNextPage(false)
     }
 
     override fun setLoadingState(active: Boolean) {
@@ -132,11 +131,11 @@ class CornerListFragment : BaseDaggerFragment(), CornerContract.View, CornerAdap
         mRvCorner.visibility = View.GONE
     }
 
-    fun setCornerListener(listener: BranchChosenListener) {
+    fun setCornerListener(listener: ActionListener) {
         mListener = listener
     }
 
-    interface BranchChosenListener {
+    interface ActionListener {
         fun onCornerChosen(corner: RecipientAddressModel)
     }
 
@@ -144,6 +143,7 @@ class CornerListFragment : BaseDaggerFragment(), CornerContract.View, CornerAdap
 
         private const val ARGUMENTS_BRANCH_LIST = "ARGUMENTS_BRANCH_LIST"
 
+        @JvmStatic
         fun newInstance(): CornerListFragment {
             return CornerListFragment()
         }

@@ -18,6 +18,8 @@ import com.tokopedia.logisticcommon.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 
 /**
@@ -26,7 +28,7 @@ import java.util.ArrayList;
  * Fajar U N
  */
 public class CartAddressChoiceActivity extends BaseCheckoutActivity
-        implements ShipmentAddressListFragment.ICartAddressChoiceActivityListener, CornerListFragment.BranchChosenListener {
+        implements ShipmentAddressListFragment.ICartAddressChoiceActivityListener, CornerListFragment.ActionListener {
 
     public static final int REQUEST_CODE = 981;
 
@@ -42,13 +44,13 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     public static final String EXTRA_MULTIPLE_ADDRESS_DATA_LIST = "EXTRA_MULTIPLE_ADDRESS_DATA_LIST";
     public static final String EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX = "EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX";
     public static final String EXTRA_SELECTED_ADDRESS_DATA = "EXTRA_SELECTED_ADDRESS_DATA";
+    private static final String TAG_CORNER_FRAGMENT = "TAG_CORNER_FRAGMENT";
 
     public static final int TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS = 1;
     public static final int TYPE_REQUEST_MULTIPLE_ADDRESS_ADD_SHIPMENT = 3;
     public static final int TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS = 2;
     public static final int TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST = 0;
     public static final int TYPE_REQUEST_EDIT_ADDRESS_FOR_TRADE_IN = 4;
-    private final String TAG_CORNER_FRAGMENT = "TAG_CORNER_FRAGMENT";
 
     private int typeRequest;
     private Token token;
@@ -251,13 +253,13 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
         updateTitle(getString(R.string.button_choose_corner));
         getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_up, R.anim.stay_still)
-                .replace(R.id.parent_view, CornerListFragment.Companion.newInstance(), TAG_CORNER_FRAGMENT)
+                .replace(R.id.parent_view, CornerListFragment.newInstance(), TAG_CORNER_FRAGMENT)
                 .addToBackStack(null)
                 .commit();
     }
 
     @Override
-    public void onCornerChosen(RecipientAddressModel corner) {
+    public void onCornerChosen(@NotNull RecipientAddressModel corner) {
         updateTitle(getString(R.string.checkout_module_title_shipping_dest_multiple_address));
         getSupportFragmentManager().popBackStack();
         ((ShipmentAddressListFragment) getFragment()).onChooseCorner(corner);
