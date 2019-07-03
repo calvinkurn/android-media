@@ -8,21 +8,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
-import android.widget.Toast
-
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.domain.datamodel.addressoptions.CornerAddressModel
 import com.tokopedia.checkout.view.di.component.CartComponent
+import com.tokopedia.checkout.view.di.component.DaggerShipmentAddressListComponent
 import com.tokopedia.checkout.view.di.module.ShipmentAddressListModule
 import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel
-import com.tokopedia.checkout.view.di.component.DaggerShipmentAddressListComponent
-
-import java.util.ArrayList
-
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -44,6 +42,7 @@ class CornerListFragment : BaseDaggerFragment(), CornerContract.View, CornerAdap
     private lateinit var mSearchView: SearchInputView
     private lateinit var mRvCorner: RecyclerView
     private lateinit var mProgressBar: ProgressBar
+    private lateinit var mErrorView: View
 
     @Inject
     lateinit var mPresenter: CornerListPresenter
@@ -77,6 +76,7 @@ class CornerListFragment : BaseDaggerFragment(), CornerContract.View, CornerAdap
         mEmptyView = view.findViewById(R.id.ll_no_result)
         mRvCorner = view.findViewById(R.id.rv_corner_list)
         mProgressBar = view.findViewById(R.id.progress_bar)
+        mErrorView = view.findViewById(R.id.errorview)
 
         mRvCorner.setHasFixedSize(true)
         mRvCorner.layoutManager = mLayoutManager
@@ -106,7 +106,9 @@ class CornerListFragment : BaseDaggerFragment(), CornerContract.View, CornerAdap
     override fun showData(data: List<RecipientAddressModel>) {
         mAdapter.setAddress(data)
         mScrollListener.resetState()
+        mRvCorner.visibility = View.VISIBLE
         mEmptyView.visibility = View.GONE
+        mErrorView.visibility = View.GONE
     }
 
     override fun appendData(data: List<RecipientAddressModel>) {
@@ -123,11 +125,19 @@ class CornerListFragment : BaseDaggerFragment(), CornerContract.View, CornerAdap
     }
 
     override fun showError(e: Throwable) {
-        Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+        mErrorView.visibility = View.VISIBLE
+        mRvCorner.visibility = View.GONE
+        mEmptyView.visibility = View.GONE
+        context?.let {
+            NetworkErrorHelper.showEmptyState(it, mErrorView, ErrorHandler.getErrorMessage(it, e)) {
+                mPresenter.getList("")
+            }
+        }
     }
 
     override fun showEmptyView() {
         mEmptyView.visibility = View.VISIBLE
+        mErrorView.visibility = View.GONE
         mRvCorner.visibility = View.GONE
     }
 
