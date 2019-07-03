@@ -15,12 +15,12 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.browse.R
-import com.tokopedia.browse.categoryNavigation.CategoryNavigationConfig
 import com.tokopedia.browse.categoryNavigation.analytics.CategoryAnalytics
 import com.tokopedia.browse.categoryNavigation.fragments.CategoryLevelTwoFragment
 import com.tokopedia.browse.categoryNavigation.fragments.CategorylevelOneFragment
 import com.tokopedia.browse.categoryNavigation.fragments.Listener
 import com.tokopedia.browse.homepage.presentation.activity.DigitalBrowseHomeActivity
+import com.tokopedia.navigation_common.category.CategoryNavigationConfig
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey.APP_CATEGORY_BROWSE_V1
 import kotlinx.android.synthetic.main.activity_category_browse.*
@@ -57,11 +57,6 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
         fun newIntent(context: Context): Intent {
             return Intent(context, BaseCategoryBrowseActivity::class.java)
         }
-
-        fun isNewCategoryEnabled(context: Context): Boolean {
-            val remoteConfig = FirebaseRemoteConfigImpl(context)
-            return (remoteConfig.getBoolean(APP_CATEGORY_BROWSE_V1, true) && CategoryNavigationConfig.isNewCategoryEnabled)
-        }
     }
 
     open fun getCategoryLaunchSource(): String {
@@ -73,20 +68,24 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
         val EXTRA_CATEGORY_NAME = "CATEGORY_NAME"
         val EXTRA_TYPE = "type"
         val TYPE_BELANJA = "1"
+        lateinit var extras: Bundle
 
         @DeepLink(ApplinkConst.CATEGORY_BELANJA)
         @JvmStatic
         fun getCtegoryBrowseIntent(context: Context, bundle: Bundle): Intent {
-            if(isNewCategoryEnabled(context)){
-                val deepLinkCategoryName = bundle.getString(EXTRA_CATEGORY_NAME, "0")
-                return newIntent(context, deepLinkCategoryName)
-            }else{
-                val intent = Intent(context, DigitalBrowseHomeActivity::class.java)
-                intent.putExtra(EXTRA_TYPE,TYPE_BELANJA)
-                return intent
-            }
+            extras = bundle
+            return CategoryNavigationConfig.updateCategoryConfig(context, ::runNewBelanja, ::runOldBelanja)
+        }
 
+        fun runNewBelanja(context: Context): Intent {
+            val deepLinkCategoryName = extras.getString(EXTRA_CATEGORY_NAME, "0")
+            return newIntent(context, deepLinkCategoryName)
+        }
 
+        fun runOldBelanja(context: Context): Intent {
+            val intent = Intent(context, DigitalBrowseHomeActivity::class.java)
+            intent.putExtra(EXTRA_TYPE, TYPE_BELANJA)
+            return intent
         }
 
     }
