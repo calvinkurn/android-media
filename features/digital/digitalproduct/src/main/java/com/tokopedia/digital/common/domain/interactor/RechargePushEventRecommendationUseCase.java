@@ -25,7 +25,7 @@ import javax.inject.Inject;
 import rx.Observable;
 
 /**
- * @author rizkyfadillah on 19/01/18.
+ * @author resakemal on 01/07/19.
  */
 
 public class RechargePushEventRecommendationUseCase extends UseCase<RechargePushEventRecommendationResponseEntity> {

@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by Rizky on 22/05/18.
+ * Created by resakemal on 01/07/19.
  */
 public class RechargePushEventRecommendationResponseEntity {
 
