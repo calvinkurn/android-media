@@ -20,8 +20,6 @@ import rx.functions.Func1;
  */
 public class AddressCornerMapper implements Func1<AddressCornerResponse, PeopleAddressModel> {
 
-    private static final String ADDRESS_NAME_SAMPAI = "Tokopedia Corner";
-
     @Override
     public PeopleAddressModel call(AddressCornerResponse addressCornerResponse) {
         PeopleAddressModel result = new PeopleAddressModel();
@@ -52,33 +50,7 @@ public class AddressCornerMapper implements Func1<AddressCornerResponse, PeopleA
                 recipientAddressModelList.add(recipientAddress);
             }
 
-            if (addressCornerResponse.getTokopediaCornerData() != null &&
-                    !addressCornerResponse.getTokopediaCornerData().isEmpty()) {
-                TokopediaCornerDatum cornerDatum = addressCornerResponse.getTokopediaCornerData().get(0);
-                List<CornerAddressModel> cornerAddressModels = new ArrayList<>();
-                for (CornerBranch cornerBranch : cornerDatum.getCornerBranch()) {
-                    CornerAddressModel cornerAddressModel = new CornerAddressModel();
-                    cornerAddressModel.setCornerId(cornerBranch.getCornerId());
-                    cornerAddressModel.setCornerName(cornerDatum.getCornerName());
-                    cornerAddressModel.setCornerBranchName(cornerBranch.getCornerBranchName());
-                    cornerAddressModel.setCornerBranchDesc(cornerBranch.getDistrictName() + ", " + cornerBranch.getCityName());
-                    cornerAddressModel.setDistrictName(cornerBranch.getDistrictName());
-                    cornerAddressModel.setDistrictId(String.valueOf(cornerBranch.getDistrictId()));
-                    cornerAddressModel.setPostalCode(cornerBranch.getPostcode());
-                    cornerAddressModel.setCityName(cornerBranch.getCityName());
-                    cornerAddressModel.setRecipientFullName(cornerDatum.getUserFullname());
-                    cornerAddressModel.setUserCornerId(cornerDatum.getUserCornerId());
-                    cornerAddressModel.setCityId(String.valueOf(cornerBranch.getCityId()));
-                    cornerAddressModel.setProvinceId(String.valueOf(cornerBranch.getProvinceId()));
-
-                    String[] latlong = cornerBranch.getGeoloc().split(",");
-                    cornerAddressModel.setLatitude(latlong[0]);
-                    cornerAddressModel.setLongitude(latlong[1]);
-
-                    cornerAddressModels.add(cornerAddressModel);
-                }
-                result.setCornerAddressModelsList(cornerAddressModels);
-            }
+            /* Retrieving Corner Data from here is deprecated see GetCornerList usecase */
 
             result.setRecipientAddressModelList(recipientAddressModelList);
         }

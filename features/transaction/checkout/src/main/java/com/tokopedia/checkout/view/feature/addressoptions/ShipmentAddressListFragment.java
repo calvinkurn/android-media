@@ -389,7 +389,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
             mCornerAnalytics.sendChooseCornerAddress();
             mCartAddressChoiceActivityListener.finishSendResultActionSelectedAddress(addressModel);
         } else {
-            // Show error due to unexpected behaviour
+            // Show error in case of unexpected behaviour
             this.showError(new Throwable());
         }
     }

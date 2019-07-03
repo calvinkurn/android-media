@@ -158,12 +158,6 @@ class CornerListFragment : BaseDaggerFragment(), CornerContract.View, CornerAdap
             return CornerListFragment()
         }
 
-        fun newInstance(modelList: List<CornerAddressModel>): CornerListFragment =
-                CornerListFragment().apply {
-                    arguments = Bundle().apply {
-                        putParcelableArrayList(ARGUMENTS_BRANCH_LIST, ArrayList(modelList))
-                    }
-                }
     }
 
 }
