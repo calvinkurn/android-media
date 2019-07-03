@@ -91,7 +91,7 @@
                 android:layout_width="@dimen/dp_30"
                 android:layout_height="@dimen/dp_30"
                 android:padding="@dimen/dp_3"
-                android:src="@drawable/ic_share_via_card"
+                app:srcCompat="@drawable/ic_share_via_card"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

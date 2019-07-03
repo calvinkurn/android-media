@@ -31,6 +31,7 @@ import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateUseCase;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.CheckShipmentPromoFirstStepAfterClashSubscriber;
+import com.tokopedia.checkout.view.feature.shipment.subscriber.ClearNotEligiblePromoSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.ClearShipmentCacheAutoApplyAfterClashSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.ClearShipmentCacheAutoApplySubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.GetCourierRecommendationSubscriber;
@@ -40,6 +41,7 @@ import com.tokopedia.checkout.view.feature.shipment.subscriber.GetShipmentAddres
 import com.tokopedia.checkout.view.feature.shipment.subscriber.SaveShipmentStateSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldTieringModel;
+import com.tokopedia.checkout.view.feature.shipment.viewmodel.NotEligiblePromoHolderdata;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
@@ -170,6 +172,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private Map<Integer, List<ShippingCourierViewModel>> shippingCourierViewModelsState;
     private boolean isPurchaseProtectionPage = false;
     private boolean isShowOnboarding;
+    private boolean isIneligbilePromoDialogEnabled;
 
     private ShipmentContract.AnalyticsActionListener analyticsActionListener;
     private CheckoutAnalyticsPurchaseProtection mTrackerPurchaseProtection;
@@ -512,6 +515,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
+    public boolean isIneligbilePromoDialogEnabled() {
+        return isIneligbilePromoDialogEnabled;
+    }
+
+    @Override
     public void processInitialLoadCheckoutPage(boolean isReloadData, boolean isOneClickShipment,
                                                boolean isTradeIn, boolean isSkipUpdateOnboardingState,
                                                @Nullable String cornerId, String deviceId) {
@@ -598,6 +606,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         token.setDistrictRecommendation(cartShipmentAddressFormData.getKeroDiscomToken());
 
         isShowOnboarding = cartShipmentAddressFormData.isShowOnboarding();
+        isIneligbilePromoDialogEnabled = cartShipmentAddressFormData.isIneligbilePromoDialogEnabled();
     }
 
     private boolean checkHaveSameCurrentCodAddress(String cornerId) {
@@ -1509,6 +1518,20 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             }
             clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), promoCodeList);
             clearCacheAutoApplyStackUseCase.execute(RequestParams.create(), new ClearShipmentCacheAutoApplySubscriber(getView(), this, shopIndex, ignoreAPIResponse));
+        }
+    }
+
+    @Override
+    public void cancelNotEligiblePromo(ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataArrayList, int checkoutType) {
+        ArrayList<String> notEligiblePromoCodes = new ArrayList<>();
+        for (NotEligiblePromoHolderdata notEligiblePromoHolderdata : notEligiblePromoHolderdataArrayList) {
+            notEligiblePromoCodes.add(notEligiblePromoHolderdata.getPromoCode());
+        }
+
+        if (notEligiblePromoCodes.size() > 0) {
+            getView().showLoading();
+            clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), notEligiblePromoCodes);
+            clearCacheAutoApplyStackUseCase.execute(RequestParams.create(), new ClearNotEligiblePromoSubscriber(getView(), this, checkoutType, notEligiblePromoHolderdataArrayList));
         }
     }
 

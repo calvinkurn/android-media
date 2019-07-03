@@ -86,7 +86,11 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
 
     private void fetchRemoteConfig() {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
-        remoteConfig.fetch(null);
+        remoteConfig.fetch(getRemoteConfigListener());
+    }
+
+    protected RemoteConfig.Listener getRemoteConfigListener(){
+        return null;
     }
 
     @Override

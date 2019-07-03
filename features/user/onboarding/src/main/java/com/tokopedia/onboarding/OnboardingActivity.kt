@@ -261,7 +261,7 @@ class OnboardingActivity : BaseActivity() {
     private fun fetchFromRemoteConfig() {
         remoteConfig = FirebaseRemoteConfigImpl(this)
         remoteConfig.fetch(object : RemoteConfig.Listener {
-            override fun onComplete() {
+            override fun onComplete(rc: RemoteConfig?) {
                 if (slideCallBackList != null && slideCallBackList.isNotEmpty()) {
                     for (slideCallback in slideCallBackList) {
                         slideCallback.onResponse(remoteConfig)

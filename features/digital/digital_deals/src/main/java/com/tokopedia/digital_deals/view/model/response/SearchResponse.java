@@ -26,6 +26,10 @@ public class SearchResponse {
     @Expose
     private int count;
 
+    @SerializedName("brand_count")
+    @Expose
+    private int brandCount;
+
     @SerializedName("brands")
     @Expose
     private List<Brand> brandList;
@@ -60,6 +64,14 @@ public class SearchResponse {
 
     public void setCount(int count) {
         this.count = count;
+    }
+
+    public int getBrandCount() {
+        return brandCount;
+    }
+
+    public void setBrandCount(int brandCount) {
+        this.brandCount = brandCount;
     }
 
     public List<Brand> getBrandList() {

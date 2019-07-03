@@ -51,6 +51,9 @@ dependencies {
         exclude group: 'com.android.support'
     }
 
+    implementation rootProject.ext.unifyDependencies.coach_mark
+
+
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }

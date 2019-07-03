@@ -62,6 +62,7 @@ import com.tokopedia.tkpd.utils.ProductNotFoundException;
 import com.tokopedia.tkpd.utils.ShopNotFoundException;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.webview.download.BaseDownloadAppLinkActivity;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -536,7 +537,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             @Override
             public void onError(Throwable e) {
                 viewListener.finishLoading();
-                Intent intent = SimpleWebViewWithFilePickerActivity.getIntent(context, uriData.toString());
+                Intent intent = BaseDownloadAppLinkActivity.newIntent(context, uriData.toString(),true);
                 context.startActivity(intent);
                 context.finish();
             }
@@ -552,7 +553,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                         Crashlytics.logException(new ShopNotFoundException(linkSegment.get(0)));
                         Crashlytics.logException(new ProductNotFoundException(linkSegment.get(0) + "/" + linkSegment.get(1)));
                     }
-                    Intent intent = SimpleWebViewWithFilePickerActivity.getIntent(context, uriData.toString());
+                    Intent intent = BaseDownloadAppLinkActivity.newIntent(context, uriData.toString(),true);
                     context.startActivity(intent);
                 }
                 context.finish();
