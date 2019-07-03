@@ -32,19 +32,19 @@ abstract class ProductItemViewHolder(
     override fun bind(productItem: ProductItemViewModel?) {
         if (productItem == null) return
 
-        initProductCardContainer(productItem)
+//        initProductCardContainer(productItem)
         initProductImage(productItem)
-        initWishlistButton(productItem)
-        initPromoLabel(productItem)
-        initShopName(productItem)
+//        initWishlistButton(productItem)
+//        initPromoLabel(productItem)
+//        initShopName(productItem)
         initTitleTextView(productItem)
-        initSlashedPriceSection(productItem)
+//        initSlashedPriceSection(productItem)
         initPriceTextView(productItem)
-        initShopBadge(productItem)
-        initLocationTextView(productItem)
-        initCredibilitySection(productItem)
-        initOffersLabel(productItem)
-        initTopAdsIcon(productItem)
+//        initShopBadge(productItem)
+//        initLocationTextView(productItem)
+//        initCredibilitySection(productItem)
+//        initOffersLabel(productItem)
+//        initTopAdsIcon(productItem)
 
         finishBindViewHolder()
     }
