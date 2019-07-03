@@ -9,6 +9,10 @@ import java.util.HashMap
 
 class EnhancedECommerceAdd {
 
+    companion object {
+        public val KEY_ADD = "add"
+    }
+
     private val KEY_PRODUCT = "products"
     private val KEY_ACTION_FIELD = "actionField"
 

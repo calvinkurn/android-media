@@ -1275,7 +1275,7 @@ public class CartListPresenter implements ICartListPresenter {
         enhancedECommerceAdd.addProduct(enhancedECommerceProductCartMapData.getProduct());
 
         stringObjectMap.put("currencyCode", "IDR");
-        stringObjectMap.put("add", enhancedECommerceAdd.getAddMap());
+        stringObjectMap.put(EnhancedECommerceAdd.Companion.getKEY_ADD(), enhancedECommerceAdd.getAddMap());
         return stringObjectMap;
     }
 
@@ -1304,7 +1304,7 @@ public class CartListPresenter implements ICartListPresenter {
         enhancedECommerceAdd.addProduct(enhancedECommerceProductCartMapData.getProduct());
 
         stringObjectMap.put("currencyCode", "IDR");
-        stringObjectMap.put("add", enhancedECommerceAdd.getAddMap());
+        stringObjectMap.put(EnhancedECommerceAdd.Companion.getKEY_ADD(), enhancedECommerceAdd.getAddMap());
         return stringObjectMap;
     }
 
@@ -1333,7 +1333,7 @@ public class CartListPresenter implements ICartListPresenter {
         enhancedECommerceAdd.addProduct(enhancedECommerceProductCartMapData.getProduct());
 
         stringObjectMap.put("currencyCode", "IDR");
-        stringObjectMap.put("add", enhancedECommerceAdd.getAddMap());
+        stringObjectMap.put(EnhancedECommerceAdd.Companion.getKEY_ADD(), enhancedECommerceAdd.getAddMap());
         return stringObjectMap;
     }
 }
