@@ -177,13 +177,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_wishlist_product_card"
             tools:visibility="visible" />
-        <View
-            android:id="@+id/view_separator"
-            android:layout_width="@dimen/dp_8"
-            android:layout_height="@dimen/dp_8"
-            app:layout_constraintTop_toBottomOf="@+id/rating"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
     </android.support.constraint.ConstraintLayout>
 
 </android.support.v7.widget.CardView>
