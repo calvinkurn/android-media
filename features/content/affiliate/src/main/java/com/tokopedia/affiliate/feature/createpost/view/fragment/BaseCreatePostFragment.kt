@@ -215,9 +215,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 ))
             }
         }
-        adapter.updateProduct(viewModel.relatedProducts)
-        adapter.notifyDataSetChanged()
-
+        updateRelatedProduct()
         updateMedia()
         updateAddTagText()
         updateButton()
