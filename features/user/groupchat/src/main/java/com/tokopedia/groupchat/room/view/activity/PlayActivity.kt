@@ -112,6 +112,7 @@ open class PlayActivity : BaseSimpleActivity(), PlayViewListener {
                     .transaction(R.id.playerView, supportFragmentManager)
                     .videoSource(sourceMedia)
                     .repeatMode(RepeatMode.REPEAT_MODE_ALL)
+                    .controller(false)
                     .build()
         }
     }
