@@ -108,6 +108,13 @@ open class PlayActivity : BaseSimpleActivity(), PlayViewListener {
             sendViewToBack(playerView)
             val sourceMedia = "https://scontent-sin6-1.cdninstagram.com/vp/cb4297650b392eab52095d911a1a17dc/5D1C8FA4/t50.12441-16/53306725_332584844027284_3716503313000746737_n.mp4?_nc_ht=scontent-sin6-1.cdninstagram.com"
 
+            val size = Point()
+            windowManager.defaultDisplay.getSize(size)
+            playerView.layoutParams = playerView.layoutParams.apply {
+                height = size.x
+                width = size.y
+            }
+
             TkpdVideoPlayer.Builder()
                     .transaction(R.id.playerView, supportFragmentManager)
                     .videoSource(sourceMedia)
