@@ -1,40 +1,25 @@
 package com.tokopedia.tokopoints.view.adapter;
 
 import android.content.Context;
-import android.graphics.Paint;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.library.baseadapter.AdapterCallback;
 import com.tokopedia.library.baseadapter.BaseAdapter;
 import com.tokopedia.tokopoints.R;
-import com.tokopedia.tokopoints.view.activity.CouponCatalogDetailsActivity;
-import com.tokopedia.tokopoints.view.contract.CatalogPurchaseRedemptionPresenter;
-import com.tokopedia.tokopoints.view.model.CatalogListingOuter;
-import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.model.PointHistoryBase;
 import com.tokopedia.tokopoints.view.model.PointHistoryItem;
-import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
-import com.tokopedia.tokopoints.view.util.ImageUtil;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import rx.Subscriber;
@@ -75,7 +60,7 @@ public class PointHistoryListAdapter extends BaseAdapter<PointHistoryItem> {
 
         holder.title.setText(item.getTitle());
         holder.date.setText(item.getCreateTimeDesc());
-        holder.txnId.setText("#" + item.getId());
+        holder.txnId.setText(String.format("#%d", item.getId()));
 
         if (item.getNotes().isEmpty()) {
             holder.note.setText("");
@@ -84,21 +69,15 @@ public class PointHistoryListAdapter extends BaseAdapter<PointHistoryItem> {
         }
 
         if (item.getRewardPoints() != 0) {
-            if (item.getRewardPoints() > 0) {
-                holder.point.setText("+" + item.getRewardPoints());
-            } else {
-                holder.point.setText("-" + item.getRewardPoints());
-            }
+            holder.point.setText(item.getRewardPoints() > 0
+                    ? String.format("+%d", item.getRewardPoints()) : String.format("%d", item.getRewardPoints()));
         } else {
             holder.point.setText("-");
         }
 
         if (item.getMemberPoints() != 0) {
-            if (item.getMemberPoints() > 0) {
-                holder.loyalty.setText("+" + item.getMemberPoints());
-            } else {
-                holder.loyalty.setText("-" + item.getMemberPoints());
-            }
+            holder.loyalty.setText(item.getMemberPoints() > 0
+                    ? String.format("+%d", item.getMemberPoints()) : String.format("%d", item.getMemberPoints()));
         } else {
             holder.loyalty.setText("-");
         }
