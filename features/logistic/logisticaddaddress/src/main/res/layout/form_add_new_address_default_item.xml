@@ -20,8 +20,7 @@
         style="@style/HintTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:hintEnabled="false"
-        android:layout_marginBottom="@dimen/dp_24">
+        app:hintEnabled="false">
 
         <EditText
             android:id="@+id/et_label_address"
@@ -47,6 +46,7 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/sp_12"
         android:textColor="@color/label_grey"
+        android:layout_marginTop="@dimen/dp_24"
         android:text="@string/add_new_address_name_label"/>
 
     <com.tokopedia.design.text.TkpdHintTextInputLayout

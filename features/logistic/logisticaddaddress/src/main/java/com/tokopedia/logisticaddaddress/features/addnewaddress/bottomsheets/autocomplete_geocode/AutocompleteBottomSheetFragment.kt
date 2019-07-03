@@ -51,7 +51,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
 
     interface ActionListener {
         fun onGetPlaceId(placeId: String)
-        fun useCurrentLocation(lat: Double?, long: Double?)
+        fun useCurrentLocation()
     }
 
     companion object {
@@ -124,32 +124,33 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
     }
 
     private fun setViewListener() {
-        if (currentLat != 0.0 && currentLong != 0.0) {
-            doLoadAutocompleteGeocode()
+        if (currentSearch?.isNotEmpty()!!) {
+            etSearch.apply {
+                setText(currentSearch.toString())
+                setSelectAllOnFocus(true)
+                requestFocus()
+                setSelection(etSearch.text.length)
+                showKeyboard()
+            }
+            loadAutocomplete(currentSearch!!)
         } else {
-            context?.let {
-                if (AddNewAddressUtils.isLocationEnabled(it)) {
-                    if (currentLat == 0.0 && currentLong == 0.0) {
-                        currentLat = defaultLat
-                        currentLong = defaultLong
-                    }
-                    doLoadAutocompleteGeocode()
-                } else {
-                    rlCurrentLocation.setOnClickListener {
-                        showLocationInfoBottomSheet()
+            if (currentLat != 0.0 && currentLong != 0.0) {
+                doLoadAutocompleteGeocode()
+            } else {
+                context?.let {
+                    if (AddNewAddressUtils.isLocationEnabled(it)) {
+                        if (currentLat == 0.0 && currentLong == 0.0) {
+                            currentLat = defaultLat
+                            currentLong = defaultLong
+                        }
+                        doLoadAutocompleteGeocode()
+                    } else {
+                        rlCurrentLocation.setOnClickListener {
+                            showLocationInfoBottomSheet()
+                        }
                     }
                 }
             }
-        }
-
-        if (currentSearch?.isNotEmpty()!!) {
-            etSearch.run {
-                setText(currentSearch.toString())
-                isFocusable = true
-                setSelection(etSearch.text.length)
-                setSelectAllOnFocus(true)
-            }
-            loadAutocomplete(currentSearch!!)
         }
 
         etSearch.setOnClickListener {
@@ -174,6 +175,11 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
             override fun afterTextChanged(s: Editable) {
             }
         })
+
+        rlCurrentLocation.setOnClickListener {
+            actionListener.useCurrentLocation()
+            dismiss()
+        }
     }
 
     private fun doLoadAutocompleteGeocode() {
@@ -182,10 +188,6 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
 
         presenter.clearCacheAutocompleteGeocode()
         presenter.getAutocompleteGeocode(currentLat, currentLong)
-        rlCurrentLocation.setOnClickListener {
-            actionListener.useCurrentLocation(currentLat, currentLong)
-            dismiss()
-        }
     }
 
     override fun configView(parentView: View?) {
@@ -266,8 +268,13 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
     }
 
     private fun hideKeyboard() {
-        val inputMethodManager = context?.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        (inputMethodManager as InputMethodManager).hideSoftInputFromWindow(view?.windowToken, 0);
+        val inputMethodManager = context?.getSystemService(Activity.INPUT_METHOD_SERVICE)
+        (inputMethodManager as InputMethodManager).hideSoftInputFromWindow(view?.windowToken, 0)
+    }
+
+    private fun showKeyboard() {
+        val imm = context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
     }
 
     private fun showLocationInfoBottomSheet() {

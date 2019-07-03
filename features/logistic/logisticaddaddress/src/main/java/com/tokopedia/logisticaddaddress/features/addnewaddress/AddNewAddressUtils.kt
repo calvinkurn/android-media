@@ -4,6 +4,7 @@ import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
 import android.content.IntentSender
+import android.content.res.Resources
 import android.location.LocationManager
 import android.os.Build
 import android.provider.Settings
@@ -37,7 +38,7 @@ object AddNewAddressUtils {
         return latitude?.let { longitude?.let { it1 -> LatLng(it, it1) } }!!
     }
 
-    @JvmStatic
+    /*@JvmStatic
     fun scrollUpLayout(scrollViewLayout: ScrollView) {
         scrollViewLayout.postDelayed(Runnable {
             val lastChild = scrollViewLayout.getChildAt(scrollViewLayout.childCount - 1)
@@ -47,7 +48,7 @@ object AddNewAddressUtils {
             val delta = bottom - (sy + sh)
             scrollViewLayout.smoothScrollBy(0, delta)
         }, 200)
-    }
+    }*/
 
     @JvmStatic
     fun showToastError(message: String, view: View, activity: Activity) {
@@ -76,5 +77,10 @@ object AddNewAddressUtils {
             mode != Settings.Secure.LOCATION_MODE_OFF
 
         }
+    }
+
+    @JvmStatic
+    fun toDp(number: Int): Int {
+        return (number * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
     }
 }

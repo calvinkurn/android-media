@@ -34,6 +34,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.Pinpoint
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 
 import java.util.List;
 
@@ -57,8 +58,6 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
 
     private boolean IS_EMPTY_ADDRESS = false;
     private MPAddressActivityListener mActivityListener;
-
-    private FirebaseRemoteConfigImpl remoteConfig;
 
     @Inject
     ManageAddressContract.Presenter mPresenter;
@@ -275,7 +274,8 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
     }
 
     public boolean isAddNewAddressEnabled() {
-        return remoteConfig.getBoolean(ENABLE_ADD_NEW_ADDRESS_KEY, true);
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
+        return remoteConfig.getBoolean(ENABLE_ADD_NEW_ADDRESS_KEY, false);
     }
 
 }

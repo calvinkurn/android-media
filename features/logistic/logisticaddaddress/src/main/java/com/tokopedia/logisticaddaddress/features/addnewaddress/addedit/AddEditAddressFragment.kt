@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.res.Resources
+import android.graphics.Rect
+import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
@@ -13,6 +15,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.TextView
@@ -56,7 +59,9 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_distr
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_address.SaveAddressDataModel
 import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.bottomsheet_getdistrict.*
 import kotlinx.android.synthetic.main.form_add_new_address_data_item.*
+import kotlinx.android.synthetic.main.form_add_new_address_data_item.et_detail_address
 import kotlinx.android.synthetic.main.form_add_new_address_default_item.*
 import kotlinx.android.synthetic.main.form_add_new_address_mismatch_data_item.*
 import kotlinx.android.synthetic.main.fragment_add_edit_new_address.*
@@ -179,6 +184,11 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         et_label_address.setText(labelRumah)
         et_receiver_name.setText(userSession.name)
         et_phone.setText(userSession.phoneNumber)
+
+        if (Build.VERSION.SDK_INT >= 19) {
+            val decorView = activity?.window?.decorView
+            decorView?.viewTreeObserver?.addOnGlobalLayoutListener(onGlobalLayoutListener)
+        }
     }
 
     private fun setViewListener() {
@@ -214,11 +224,16 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
 
             setOnTouchLabelAddress(ANA_POSITIVE)
 
-            et_receiver_name.setOnClickListener {
-                AddNewAddressAnalytics.eventClickFieldNamaPenerimaChangeAddressPositive()
+            et_receiver_name.setOnFocusChangeListener { _, hasFocus ->
+                if (hasFocus) {
+                    AddNewAddressAnalytics.eventClickFieldNamaPenerimaChangeAddressPositive()
+                }
             }
-            et_phone.setOnClickListener {
-                AddNewAddressAnalytics.eventClickFieldNoPonselChangeAddressPositive()
+
+            et_phone.setOnFocusChangeListener { _, hasFocus ->
+                if (hasFocus) {
+                    AddNewAddressAnalytics.eventClickFieldNoPonselChangeAddressPositive()
+                }
             }
 
         } else {
@@ -237,18 +252,19 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                 addTextChangedListener(setAlamatWatcher())
                 setOnFocusChangeListener { _, hasFocus ->
                     if (hasFocus) {
-                        AddNewAddressUtils.scrollUpLayout(scroll_view_layout)
+                        // AddNewAddressUtils.scrollUpLayout(scroll_view_layout)
+                        AddNewAddressAnalytics.eventClickFieldAlamatChangeAddressNegative()
                     }
                 }
-                AddNewAddressAnalytics.eventClickFieldAlamatChangeAddressNegative()
             }
 
             et_kode_pos_mismatch.apply {
                 setOnFocusChangeListener { _, hasFocus ->
                     if (hasFocus) {
-                        // scrollUpLayout()
-                        AddNewAddressUtils.scrollUpLayout(scroll_view_layout)
+                        // AddNewAddressUtils.scrollUpLayout(scroll_view_layout)
                         eventShowZipCodes()
+                    } else {
+                        rv_kodepos_chips_mismatch.visibility = View.GONE
                     }
                 }
                 setOnClickListener {
@@ -283,12 +299,16 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
 
             setOnTouchLabelAddress(ANA_NEGATIVE)
 
-            et_receiver_name.setOnClickListener {
-                AddNewAddressAnalytics.eventClickFieldNamaPenerimaChangeAddressNegative()
+            et_receiver_name.setOnFocusChangeListener { _, hasFocus ->
+                if (hasFocus) {
+                    AddNewAddressAnalytics.eventClickFieldNamaPenerimaChangeAddressNegative()
+                }
             }
 
-            et_phone.setOnClickListener {
-                AddNewAddressAnalytics.eventClickFieldNoPonselChangeAddressNegative()
+            et_phone.setOnFocusChangeListener { _, hasFocus ->
+                if (hasFocus) {
+                    AddNewAddressAnalytics.eventClickFieldNoPonselChangeAddressNegative()
+                }
             }
         }
 
@@ -301,12 +321,14 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         et_label_address.apply {
             setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
-                    AddNewAddressUtils.scrollUpLayout(scroll_view_layout)
+                    // AddNewAddressUtils.scrollUpLayout(scroll_view_layout)
                     eventShowListLabelAlamat(type)
+                } else {
+                    rv_label_alamat_chips.visibility = View.GONE
                 }
             }
             setOnClickListener {
-                AddNewAddressUtils.scrollUpLayout(scroll_view_layout)
+                // AddNewAddressUtils.scrollUpLayout(scroll_view_layout)
                 eventShowListLabelAlamat(type)
             }
             addTextChangedListener(object : TextWatcher {
@@ -337,7 +359,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     }
 
     private fun eventShowListLabelAlamat(type: String) {
-        // showLabelAlamatList() - on next phase
+        showLabelAlamatList()
         if (type.equals("positive", true)) {
             AddNewAddressAnalytics.eventClickFieldLabelAlamatChangeAddressPositive()
         } else {
@@ -496,7 +518,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (s.isNotEmpty()) {
-                    var countCharLeft: Int
+                    val countCharLeft: Int
                     var info = ""
                     when {
                         count < 5 -> {
@@ -897,5 +919,33 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     }
 
     override fun finishBackToAddEdit(isMismatch: Boolean, isMismatchSolved: Boolean) {
+    }
+
+    private var onGlobalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener = ViewTreeObserver.OnGlobalLayoutListener {
+        val r = Rect()
+        //r will be populated with the coordinates of your view that area still visible.
+        activity?.window?.decorView?.getWindowVisibleDisplayFrame(r)
+
+        //get screen height and calculate the difference with the useable area from the r
+        val height = activity?.window?.decorView?.context?.resources?.displayMetrics?.heightPixels
+        val diff = height?.minus(r.bottom)
+
+        //if it could be a keyboard add the padding to the view
+        if (diff != 0) {
+            // if the use-able screen height differs from the total screen height we assume that it shows a keyboard now
+            //check if the padding is 0 (if yes set the padding for the keyboard)
+            if (rl_add_edit?.paddingBottom !== diff) {
+                //set the padding of the contentView for the keyboard
+                if (diff != null) {
+                    rl_add_edit?.setPadding(0, 0, 0, diff)
+                }
+            }
+        } else {
+            //check if the padding is != 0 (if yes reset the padding)
+            if (rl_add_edit?.paddingBottom !== 0) {
+                //reset the padding of the contentView
+                rl_add_edit?.setPadding(0, 0, 0, 10)
+            }
+        }
     }
 }

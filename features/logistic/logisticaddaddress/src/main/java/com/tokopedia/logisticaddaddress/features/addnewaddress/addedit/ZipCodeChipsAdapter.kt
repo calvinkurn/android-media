@@ -1,6 +1,7 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.addedit
 
 import android.content.Context
+import android.content.res.Resources
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import com.tokopedia.logisticaddaddress.R
 import kotlinx.android.synthetic.main.chips_item.view.*
 import android.support.v4.content.ContextCompat
+import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 
 
 /**
@@ -17,6 +19,7 @@ class ZipCodeChipsAdapter(context: Context?, private var actionListener: ActionL
     var zipCodes = mutableListOf<String>()
 
     private var drawablePressed = context?.let { ContextCompat.getDrawable(it, R.drawable.bg_chips_pressed) }
+    private var drawableDefault = context?.let { ContextCompat.getDrawable(it, R.drawable.bg_chips_item_layout) }
 
     interface ActionListener {
         fun onZipCodeClicked(zipCode: String)
@@ -35,9 +38,13 @@ class ZipCodeChipsAdapter(context: Context?, private var actionListener: ActionL
         val res = holder.itemView.context.resources
         holder.itemView.tv_chips_item.apply {
             text = zipCodes[position]
+            background = drawableDefault
+            setTextColor(res.getColor(R.color.font_black_secondary_54))
+            setPadding(AddNewAddressUtils.toDp(12), AddNewAddressUtils.toDp(10),
+                    AddNewAddressUtils.toDp(12), AddNewAddressUtils.toDp(10))
             setOnClickListener {
-                holder.itemView.tv_chips_item.background = drawablePressed
-                holder.itemView.tv_chips_item.setTextColor(res.getColor(R.color.tkpd_green))
+                background = drawablePressed
+                setTextColor(res.getColor(R.color.tkpd_green))
                 actionListener.onZipCodeClicked(zipCodes[position])
             }
         }

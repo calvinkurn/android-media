@@ -1,6 +1,7 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint
 
 import android.annotation.SuppressLint
+import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -12,6 +13,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.CoordinatorLayout
+import android.support.v4.content.ContextCompat
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -84,6 +86,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     private var isChangesRequested: Boolean? = null
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
     private val SCREEN_NAME = "/user/address/create/cart/pinpoint1"
+    private var continueWithLocation: Boolean? = false
 
     @Inject
     lateinit var presenter: PinpointMapPresenter
@@ -176,6 +179,39 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         }
     }
 
+    private fun isGpsEnabled(): Boolean {
+        var isGpsOn = false
+        context?.let {
+            val locationManager = it.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            val mSettingsClient = LocationServices.getSettingsClient(it)
+
+            val locationRequest = LocationRequest.create()
+            locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+            locationRequest.interval = 10 * 1000
+            locationRequest.fastestInterval = 2 * 1000
+            val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
+            val mLocationSettingsRequest = builder.build()
+            builder.setAlwaysShow(true)
+
+            if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                isGpsOn = true
+            } else {
+                mSettingsClient
+                        .checkLocationSettings(mLocationSettingsRequest)
+                        .addOnSuccessListener(context as Activity) {
+                            isGpsOn = true
+                        }
+            }
+
+            if (AddNewAddressUtils.isLocationEnabled(it) && isGpsOn) {
+                isGpsOn = true
+            } else {
+                isGpsOn = false
+            }
+        }
+        return isGpsOn
+    }
+
     private fun setViewListener() {
         back_button?.setOnClickListener {
             map_view?.onPause()
@@ -192,15 +228,15 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             getdistrict_container?.findViewById<EditText>(R.id.et_detail_address)?.requestFocusFromTouch()
         }
 
-        ic_current_location?.apply {
+        /*ic_current_location?.setOnClickListener {
             context?.let {
                 if (AddNewAddressUtils.isLocationEnabled(it)) {
-                    setOnClickListener { presenter.requestLocation(requireActivity()) }
+                    presenter.requestLocation(requireActivity())
                 } else {
                     showLocationInfoBottomSheet()
                 }
             }
-        }
+        }*/
     }
 
     @SuppressLint("MissingPermission")
@@ -258,6 +294,15 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             handler.postDelayed({
                 showAutocompleteGeocodeBottomSheet(lat, long, "")
             }, 1000)
+        } else {
+            if (lat == 0.0 && long == 0.0) {
+                currentLat = AddressConstants.MONAS_LAT
+                currentLong = AddressConstants.MONAS_LONG
+            } else {
+                currentLat = lat
+                currentLong = long
+            }
+            moveMap(AddNewAddressUtils.generateLatLng(currentLat, currentLong))
         }
     }
 
@@ -273,8 +318,34 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
 
     override fun onResume() {
         map_view?.onResume()
-        presenter.requestLocation(requireActivity())
+        context?.let {
+            if (AddNewAddressUtils.isLocationEnabled(it)) {
+                if (currentLat == 0.0 && currentLong == 0.0) presenter.requestLocation(requireActivity())
+                ic_current_location.apply {
+                    setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_gps_enable))
+                    setOnClickListener {
+                        AddNewAddressAnalytics.eventClickButtonPilihLokasi()
+                        doUseCurrentLocation()
+                    }
+                }
+            } else {
+                ic_current_location.apply {
+                    setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_gps_disable))
+                    setOnClickListener {
+                        AddNewAddressAnalytics.eventClickButtonPilihLokasi()
+                        showLocationInfoBottomSheet() }
+                }
+            }
+        }
         super.onResume()
+    }
+
+    private fun doUseCurrentLocation() {
+        if (isGpsEnabled()) {
+            presenter.requestLocation(requireActivity())
+        } else {
+            showLocationInfoBottomSheet()
+        }
     }
 
     override fun onPause() {
@@ -344,12 +415,15 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         this.isPolygon?.let {
             if (this.isPolygon as Boolean) {
                 if (autofillDataUiModel.districtId != districtId) {
+                    continueWithLocation = false
                     view?.let { it1 -> activity?.let { it2 -> AddNewAddressUtils.showToastError(getString(R.string.invalid_district), it1, it2) } }
                     AddNewAddressAnalytics.eventViewToasterAlamatTidakSesuaiDenganPeta()
                 } else {
+                    continueWithLocation = true
                     updateGetDistrictBottomSheet(presenter.convertAutofillToSaveAddressDataUiModel(autofillDataUiModel, zipCodes))
                 }
             } else {
+                continueWithLocation = true
                 updateGetDistrictBottomSheet(presenter.convertAutofillToSaveAddressDataUiModel(autofillDataUiModel, zipCodes))
             }
         }
@@ -379,6 +453,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             et_detail_address?.apply {
                 setOnClickListener { AddNewAddressAnalytics.eventClickFieldDetailAlamat() }
                 setupClearButtonWithAction()
+                addTextChangedListener(setDetailAlamatWatcher())
             }
 
             tv_title_getdistrict?.apply {
@@ -396,8 +471,14 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             }
 
             btn_choose_location?.setOnClickListener {
-                doLoadAddEdit()
-                AddNewAddressAnalytics.eventClickButtonPilihLokasi()
+                continueWithLocation?.let {
+                    if (it) {
+                        doLoadAddEdit()
+                        AddNewAddressAnalytics.eventClickButtonPilihLokasi()
+                    } else {
+                        view?.let { it1 -> activity?.let { it2 -> AddNewAddressUtils.showToastError(getString(R.string.invalid_district), it1, it2) } }
+                    }
+                }
             }
         }
     }
@@ -499,30 +580,9 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         }
     }
 
-    override fun useCurrentLocation(lat: Double?, long: Double?) {
-        currentLat = lat
-        currentLong = long
-        val latLng = AddNewAddressUtils.generateLatLng(currentLat, currentLong)
-        moveMap(latLng)
-        presenter.clearCacheAutofill()
-        presenter.autofill(latLng.toString())
+    override fun useCurrentLocation() {
+        doUseCurrentLocation()
     }
-
-    /*override fun onMyLocationClick(p0: Location) {
-        Toast.makeText(context, "Current location:\n$p0", Toast.LENGTH_LONG).show()
-    }
-
-    override fun onCameraMoveCanceled() {
-        Toast.makeText(context, "onCameraMoveCanceled()", Toast.LENGTH_SHORT).show()
-    }
-
-    override fun onCameraMoveStarted(p0: Int) {
-        Toast.makeText(context, "onCameraMoveStarted()", Toast.LENGTH_SHORT).show()
-    }
-
-    override fun onCameraIdle() {
-        Toast.makeText(context, "onCameraIdle()", Toast.LENGTH_SHORT).show()
-    }*/
 
     private fun EditText.setupClearButtonWithAction() {
 
@@ -580,7 +640,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             //check if the padding is != 0 (if yes reset the padding)
             if (bottomsheet_getdistrict?.paddingBottom !== 0) {
                 //reset the padding of the contentView
-                bottomsheet_getdistrict?.setPadding(0, 0, 0, 0)
+                bottomsheet_getdistrict?.setPadding(0, 0, 0, 10)
             }
         }
     }
@@ -588,5 +648,31 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     private fun showLocationInfoBottomSheet() {
         val locationInfoBottomSheetFragment = LocationInfoBottomSheetFragment.newInstance()
         locationInfoBottomSheetFragment.show(fragmentManager, "")
+    }
+
+    private fun setDetailAlamatWatcher(): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if (s.isNotEmpty()) {
+                    println("## count = $count")
+                    when (val countCharLeft = 60 - count) {
+                        60 -> {
+                            tv_detail_address_counter.text = "0/60"
+                        } else -> {
+                        tv_detail_address_counter.text = "$countCharLeft/60"
+                        }
+                    }
+                } else {
+                    tv_detail_address_counter.text = "60/60"
+                }
+            }
+
+            override fun afterTextChanged(text: Editable) {
+            }
+        }
     }
 }

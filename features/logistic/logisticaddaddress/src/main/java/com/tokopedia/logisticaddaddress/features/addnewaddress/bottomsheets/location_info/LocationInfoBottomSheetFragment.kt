@@ -79,12 +79,12 @@ class LocationInfoBottomSheetFragment : BottomSheets() {
         val mSettingsClient = LocationServices.getSettingsClient(context)
 
         val locationRequest = LocationRequest.create()
-        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY;
-        locationRequest.interval = 10 * 1000;
-        locationRequest.fastestInterval = 2 * 1000;
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        locationRequest.interval = 10 * 1000
+        locationRequest.fastestInterval = 2 * 1000
         val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
-        val mLocationSettingsRequest = builder.build();
-        builder.setAlwaysShow(true);
+        val mLocationSettingsRequest = builder.build()
+        builder.setAlwaysShow(true)
 
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             isGpsOn = true

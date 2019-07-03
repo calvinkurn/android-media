@@ -52,6 +52,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import static com.tokopedia.checkout.view.feature.addressoptions.CartAddressChoiceActivity.EXTRA_CURRENT_ADDRESS;
+import static com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_ADD_NEW_ADDRESS_KEY;
 
 /**
  * @author Aghny A. Putra on 25/01/18
@@ -69,7 +70,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     public static final int ORIGIN_DIRECTION_TYPE_DEFAULT = 0;
     public final int ADD_NEW_ADDRESS_CREATED = 3333;
     public final String EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW";
-    public final String ENABLE_ADD_NEW_ADDRESS_KEY = "android_customer_enable_add_new_address";
 
     private RecyclerView mRvRecipientAddressList;
     private SearchInputView mSvAddressSearchBox;

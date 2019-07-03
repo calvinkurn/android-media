@@ -35,7 +35,9 @@
                 android:inputType="textMultiLine"
                 android:textColor="#ae31353b"
                 android:singleLine="false"
-                android:enabled="false"
+                android:focusable="false"
+                android:enabled="true"
+                android:longClickable="false"
                 android:cursorVisible="false"
                 android:scrollHorizontally="false"/>
 
@@ -66,7 +68,7 @@
                 android:maxLength="5"
                 android:focusableInTouchMode="true"
                 android:clickable="true"
-                android:focusable="true"
+                android:focusable="false"
                 android:textColor="#ae31353b" />
 
         </com.tokopedia.design.text.TkpdHintTextInputLayout>
