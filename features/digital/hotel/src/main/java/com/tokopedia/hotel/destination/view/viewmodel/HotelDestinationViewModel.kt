@@ -4,12 +4,15 @@ import android.app.Activity
 import android.arch.lifecycle.MutableLiveData
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.hotel.R
-import com.tokopedia.hotel.common.getSuccessData
-import com.tokopedia.hotel.destination.data.model.*
+import com.tokopedia.hotel.destination.data.model.HotelSuggestion
+import com.tokopedia.hotel.destination.data.model.PopularSearch
+import com.tokopedia.hotel.destination.data.model.RecentSearch
+import com.tokopedia.hotel.destination.data.model.SearchDestination
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper

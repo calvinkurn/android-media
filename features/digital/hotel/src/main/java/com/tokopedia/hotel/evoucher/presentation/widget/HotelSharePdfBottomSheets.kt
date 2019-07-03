@@ -22,6 +22,7 @@ class HotelSharePdfBottomSheets : BottomSheets(), HotelShareAsPdfAdapter.ShareAs
 
     val emailList = mutableListOf<String>()
     lateinit var adapter: HotelShareAsPdfAdapter
+    lateinit var listener: SharePdfBottomSheetsListener
 
     lateinit var recyclerView: RecyclerView
     lateinit var divider: View
@@ -86,8 +87,8 @@ class HotelSharePdfBottomSheets : BottomSheets(), HotelShareAsPdfAdapter.ShareAs
                     evError.visibility = View.GONE
                 }
 
-                if (emailList.isNotEmpty()) {
-                    // call API to send email
+                if (emailList.isNotEmpty() && ::listener.isInitialized) {
+                    listener.sendPdf(emailList)
                 }
             }
 
@@ -149,6 +150,10 @@ class HotelSharePdfBottomSheets : BottomSheets(), HotelShareAsPdfAdapter.ShareAs
 
     private fun configSendButton() {
         btnSend.isEnabled = !(evEmail.text.isEmpty() && emailList.isEmpty())
+    }
+
+    interface SharePdfBottomSheetsListener {
+        fun sendPdf(emailList: MutableList<String>)
     }
 
 }

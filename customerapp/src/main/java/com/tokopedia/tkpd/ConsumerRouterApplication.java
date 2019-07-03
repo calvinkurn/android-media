@@ -91,7 +91,6 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.homecredit.view.fragment.FragmentCardIdCamera;
 import com.tokopedia.homecredit.view.fragment.FragmentSelfieIdCamera;
-import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity;
 import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
@@ -2517,8 +2516,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent gotoQrScannerPage(boolean needResult) {
-//        return QrScannerActivity.newInstance(this, needResult);
-        return HotelHomepageActivity.Companion.getCallingIntent(this);
+        return QrScannerActivity.newInstance(this, needResult);
     }
 
 

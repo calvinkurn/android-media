@@ -31,7 +31,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_24"
-        android:layout_marginBottom="@dimen/dp_32"
         android:text="@string/hotel_button_save"
         app:buttonCompatSize="medium"
         app:buttonCompatTextAllCaps="false"

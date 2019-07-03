@@ -122,7 +122,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
             progressDialog.dismiss()
             when (it) {
                 is Success -> {
-                    startActivity(HotelBookingActivity.getCallingIntent(context!!,it.data.cartId))
+                    startActivity(HotelBookingActivity.getCallingIntent(context!!,it.data.response.cartId))
                 }
                 is Fail -> {
                     NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))

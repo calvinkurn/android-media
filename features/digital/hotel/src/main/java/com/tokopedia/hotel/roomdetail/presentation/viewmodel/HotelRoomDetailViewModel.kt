@@ -20,7 +20,7 @@ class HotelRoomDetailViewModel @Inject constructor(
         private val useCase: HotelAddToCartUseCase)
     : BaseViewModel(dispatcher) {
 
-    val addCartResponseResult = MutableLiveData<Result<HotelAddCartResponse>>()
+    val addCartResponseResult = MutableLiveData<Result<HotelAddCartData.Response>>()
 
     fun addToCart(rawQuery: String, hotelAddCartParam: HotelAddCartParam) {
         launch {

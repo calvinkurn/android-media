@@ -1,72 +1,73 @@
-query PropertyCart($data: PropertyGetCartRequest) {
-    propertyCart(input: $data) {
-        cartID
-        cart {
-            contact {
-                name
-                email
-                phone
-                phoneCode
-            }
-            adult
-            rooms {
-                roomID
-                numOfRooms
-            }
-            checkIn
-            checkOut
-            guestName
-            specialRequest
-            totalPrice
-            totalPriceAmount
-            localTotalPrice
-            localTotalPriceAmount
-            currency
-            fares {
-                type
-                description
-                price
-                priceAmount
-                localPrice
-                localPriceAmount
-            }
-        }
-        property {
-            propertyID
-            name
-            type
-            address
-            image
-            star
-            paymentNote
-            rooms: {
-                roomID
-                isBreakFastIncluded
-                maxOccupancy
-                roomName
-                isNeedDeposit
-                isRefundAble
-                isCCRequired
-                importantNote
-                paymentTerms {
-                    name
-                    cancellationDescription
-                    prepaymentDescription
-                }
-                roomPolicies {
-                    content
-                    policyType
-                }
-                cancellationPolicies {
-                    content
-                    policyType
-                    isClickable
-                    details {
-                        title
-                        content
-                    }
-                }
-            }
-        }
+query PropertyCart($data: PropertyGetCartRequest!) {
+  propertyGetCart(input: $data) {
+    cartID
+    cart {
+      adult
+      checkIn
+      checkOut
+      rooms {
+        roomID
+        numOfRooms
+      }
+      guestName
+      specialRequest
+      totalPrice
+      totalPriceAmount
+      currency
+      localTotalPrice
+      localTotalPriceAmount
+      localCurrency
+      fares {
+        type
+        description
+        priceAmount
+        price
+        localPriceAmount
+        localPrice
+      }
+      contact {
+        name
+        email
+        phone
+        phoneCode
+      }
     }
+    property {
+      propertyID
+      name
+      type
+      address
+      image
+      star
+      paymentNote
+      checkInFrom
+      checkInTo
+      checkOutFrom
+      checkOutTo
+      isDirectPayment
+      room {
+        roomID
+        isBreakFastIncluded
+        maxOccupancy
+        roomName
+        isNeedDeposit
+        isRefundAble
+        isCCRequired
+        paymentTerms {
+          name
+          cancellationDescription
+          prepaymentDescription
+        }
+        roomPolicies {
+          content
+          policyType
+        }
+        cancellationPolicies {
+          title
+          content
+          isClickable
+        }
+      }
+    }
+  }
 }

@@ -89,7 +89,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
             progressDialog.dismiss()
             when (it) {
                 is Success -> {
-                    val cartId = it.data.cartId
+                    val cartId = it.data.response.cartId
                     startActivity(HotelBookingActivity.getCallingIntent(context!!, cartId))
                 }
                 is Fail -> {
@@ -254,7 +254,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
     }
 
     fun setupRoomDeposit() {
-        if (hotelRoom.depositInfo.depositText.isNotEmpty()) {
+        if (hotelRoom.depositInfo.isNeedDeposit) {
             room_detail_deposit.setTitleAndDescription(getString(R.string.hotel_room_detail_deposit), hotelRoom.depositInfo.depositText)
             room_detail_deposit.buildView()
         }

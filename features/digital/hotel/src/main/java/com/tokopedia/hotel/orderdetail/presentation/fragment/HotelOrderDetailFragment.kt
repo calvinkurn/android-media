@@ -154,6 +154,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             refund_ticker.visibility = View.VISIBLE
             refund_ticker.tickerTitle = hotelTransportDetail.cancellation.title
             refund_ticker.setHtmlDescription(hotelTransportDetail.cancellation.content)
+            refund_ticker.closeButtonVisibility = View.GONE
 
             refund_ticker.setOnClickListener {
                 if (hotelTransportDetail.cancellation.isClickable)
