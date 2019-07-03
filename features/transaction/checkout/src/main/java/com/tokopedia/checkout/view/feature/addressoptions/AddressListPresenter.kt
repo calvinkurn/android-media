@@ -17,12 +17,12 @@ const val EMPTY_STRING: String = ""
 class AddressListPresenter
 @Inject constructor(val usecase: GetAddressCornerUseCase) : AddressListContract.Presenter {
 
-    private var mView: ISearchAddressListView<List<RecipientAddressModel>>? = null
+    private var mView: AddressListContract.View? = null
     private var mCurrentQuery: String = ""
     private var mCurrentPage: Int = 1
     private var mHasNext: Boolean = false
 
-    override fun attachView(view: ISearchAddressListView<List<RecipientAddressModel>>) {
+    override fun attachView(view: AddressListContract.View) {
         mView = view
     }
 
@@ -62,7 +62,7 @@ class AddressListPresenter
                 .subscribe(
                         { result ->
                             mCurrentPage++
-                            mView?.updateList(result.listAddress)
+                            mView?.updateList(result.listAddress.toMutableList())
                         }, { e -> mView?.showError(e) }, {}
                 )
     }
@@ -85,7 +85,7 @@ class AddressListPresenter
                         mCurrentQuery = query
                         mCurrentPage = 1
                         if (it.listAddress.isNotEmpty()) {
-                            mView?.showList(it.listAddress)
+                            mView?.showList(it.listAddress.toMutableList())
                         } else mView?.showListEmpty()
                     }
                 }
@@ -95,7 +95,7 @@ class AddressListPresenter
                 }
 
                 override fun onError(e: Throwable?) {
-                    mView?.showError(e)
+                    mView?.showError(e ?: Throwable())
                 }
             }
 

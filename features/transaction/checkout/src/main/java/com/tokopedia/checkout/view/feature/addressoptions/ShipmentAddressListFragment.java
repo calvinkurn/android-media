@@ -43,6 +43,8 @@ import com.tokopedia.transactionanalytics.CheckoutAnalyticsMultipleAddress;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactionanalytics.CornerAnalytics;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,7 +57,7 @@ import static com.tokopedia.checkout.view.feature.addressoptions.CartAddressChoi
  * Fajar U N
  */
 public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
-        ISearchAddressListView<List<RecipientAddressModel>>, SearchInputView.Listener,
+        AddressListContract.View, SearchInputView.Listener,
         SearchInputView.ResetListener, ShipmentAddressListAdapter.ActionListener {
 
     private static final String CHOOSE_ADDRESS_TRACE = "mp_choose_another_address";
@@ -268,15 +270,15 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     }
 
     @Override
-    public void showList(List<RecipientAddressModel> recipientAddressModels) {
+    public void showList(@NotNull List<RecipientAddressModel> list) {
         maxItemPosition = 0;
         String selectedId = mCurrentAddress.getId();
-        mShipmentAddressListAdapter.setAddressList(recipientAddressModels, selectedId);
+        mShipmentAddressListAdapter.setAddressList(list, selectedId);
         mRvRecipientAddressList.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void onChooseCorner(RecipientAddressModel cornerAddressModel) {
+    public void onChooseCorner(@NotNull RecipientAddressModel cornerAddressModel) {
         mCurrentAddress = cornerAddressModel;
         mShipmentAddressListAdapter.setCorner(cornerAddressModel);
 
@@ -285,12 +287,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     }
 
     @Override
-    public void populateCorner(List<CornerAddressModel> cornerAddressModelList) {
-        // Changed the flow
-    }
-
-    @Override
-    public void navigateToCheckoutPage(RecipientAddressModel recipientAddressModel) {
+    public void navigateToCheckoutPage(@NotNull RecipientAddressModel recipientAddressModel) {
         onAddressContainerClicked(recipientAddressModel, -1);
     }
 
@@ -303,7 +300,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     }
 
     @Override
-    public void updateList(List<RecipientAddressModel> recipientAddressModels) {
+    public void updateList(@NotNull List<RecipientAddressModel> recipientAddressModels) {
         mShipmentAddressListAdapter.updateAddressList(recipientAddressModels);
         mRvRecipientAddressList.setVisibility(View.VISIBLE);
     }
@@ -317,7 +314,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     }
 
     @Override
-    public void showError(Throwable e) {
+    public void showError(@NotNull Throwable e) {
         rlContent.setVisibility(View.GONE);
         llNetworkErrorView.setVisibility(View.VISIBLE);
         llNoResult.setVisibility(View.GONE);
@@ -393,7 +390,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
             mCartAddressChoiceActivityListener.finishSendResultActionSelectedAddress(addressModel);
         } else {
             // Show error due to unexpected behaviour
-            this.showError(null);
+            this.showError(new Throwable());
         }
     }
 

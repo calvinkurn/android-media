@@ -16,9 +16,9 @@ import rx.Subscriber;
 /**
  * @author Aghny A. Putra on 26/01/18
  */
-
+@Deprecated
 public class ShipmentAddressListPresenter
-        extends CartMvpPresenter<ISearchAddressListView<List<RecipientAddressModel>>> {
+        extends CartMvpPresenter<AddressListContract.View> {
 
     private static final String DEFAULT_KEYWORD = "";
 
@@ -107,7 +107,7 @@ public class ShipmentAddressListPresenter
                                                             !peopleAddressModel.getCornerAddressModelsList().isEmpty() &&
                                                             !isDisableCorner) {
 //                                                        getMvpView().onChooseCorner(peopleAddressModel.getCornerAddressModelsList().get(0));
-                                                        getMvpView().populateCorner(peopleAddressModel.getCornerAddressModelsList());
+//                                                        getMvpView().populateCorner(peopleAddressModel.getCornerAddressModelsList());
                                                     }
                                                     getMvpView().showList(peopleAddressModel.getRecipientAddressModelList());
                                                     getMvpView().stopTrace();
