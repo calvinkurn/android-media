@@ -686,5 +686,4 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
     public void trackRechargePushEventRecommendation(int categoryId, String actionType) {
         rechargePushEventRecommendationUseCase.execute(rechargePushEventRecommendationUseCase.createRequestParam(categoryId, actionType), null);
     }
-
 }

@@ -6,7 +6,6 @@ import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUs
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData
 import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter
 import com.tokopedia.digital.common.analytic.DigitalAnalytics
-import com.tokopedia.digital.common.domain.interactor.RechargePushEventRecommendationUseCase
 import com.tokopedia.digital.common.router.DigitalModuleRouter
 import com.tokopedia.digital.newcart.constants.DigitalCartCrossSellingType
 import com.tokopedia.digital.newcart.data.cache.DigitalPostPaidLocalCache
