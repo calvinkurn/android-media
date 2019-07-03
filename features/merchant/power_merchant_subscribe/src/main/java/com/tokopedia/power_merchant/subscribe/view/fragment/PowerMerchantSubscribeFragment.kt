@@ -160,7 +160,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     override fun cancelMembership() {
         bottomSheetCancel.dismiss()
-        presenter.setAutoExtendOff(false)
+        presenter.setAutoExtendOff()
     }
 
     override fun onSuccessCancelMembership() {
