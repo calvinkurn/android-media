@@ -109,13 +109,15 @@ public class PointHistoryFragment extends BaseDaggerFragment implements PointHis
 
     @Override
     public void onSuccess(TokoPointStatusPointsEntity data) {
-        if (data == null) {
+        if (data == null || getActivity() == null) {
             return;
         }
 
         TextView point = getView().findViewById(R.id.text_my_points_value);
+        point.setTextColor(ContextCompat.getColor(getActivity(), R.color.black_87));
         point.setText(data.getRewardStr());
         TextView loyalty = getView().findViewById(R.id.text_loyalty_value);
+        loyalty.setTextColor(ContextCompat.getColor(getActivity(), R.color.black_87));
         loyalty.setText(data.getLoyaltyStr());
         mStrPointExpInfo = data.getRewardExpiryInfo();
         mStrLoyaltyExpInfo = data.getLoyaltyExpiryInfo();

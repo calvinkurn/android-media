@@ -78,5 +78,6 @@
     <string name="tp_point_info"><b>Points</b> dapat Anda tukarkan dengan berbagai Kupon di halaman TokoPoints.</string>
     <string name="tp_history_header"><b>Points dan Loyalty</b> adalah hadiah yang Anda peroleh dari memecahkan Lucky Egg.</string>
     <string name="tp_title_history_bottomshet">Beda Points dan Loyalty</string>
+    <string name="tp_btn_history_bottomshet">Cek Info Points &amp; Loyalty</string>
 
 </resources>
