@@ -2,6 +2,7 @@ package com.tokopedia.search.result.presentation.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -322,7 +323,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
                 "position", Integer.toString(getPosition()),
                 "userId", userId,
                 "shopId", getShopID(),
-                "dimensionXX", filterSortParams
+                "dimensionXX", TextUtils.isEmpty(filterSortParams) ? "none / other" : filterSortParams
         );
     }
 
