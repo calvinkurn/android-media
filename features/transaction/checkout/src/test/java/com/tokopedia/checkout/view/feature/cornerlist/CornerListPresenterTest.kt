@@ -7,7 +7,9 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.InjectMocks
+import org.mockito.Matchers
 import org.mockito.Mock
+import org.mockito.Mockito
 import org.mockito.Mockito.*
 import org.mockito.runners.MockitoJUnitRunner
 import rx.Observable
@@ -28,16 +30,46 @@ class CornerListPresenterTest {
     }
 
     @Test
-    fun searchQuery() {
+    fun searchQueryNormalReturn() {
         val items: AddressListModel = AddressDummyDataProvider.getCornerList()
 
-        `when`(usecase.execute("")).thenReturn(Observable.just(items))
+        `when`(usecase.execute(Matchers.anyString())).thenReturn(Observable.just(items))
 
         presenter.getList("")
 
         inOrder(view).apply {
             this.verify(view).setLoadingState(true)
             this.verify(view).showData(items.listAddress)
+            this.verify(view).setLoadingState(false)
+        }
+    }
+
+    @Test
+    fun searchQueryEmptyReturn() {
+        val items = AddressListModel()
+
+        `when`(usecase.execute(Matchers.anyString())).thenReturn(Observable.just(items))
+
+        presenter.getList("")
+
+        inOrder(view).apply {
+            this.verify(view).setLoadingState(true)
+            this.verify(view).showEmptyView()
+            this.verify(view).setLoadingState(false)
+        }
+    }
+
+    @Test
+    fun searchQueryErrorReturn() {
+        val err = Throwable()
+
+        `when`(usecase.execute(Matchers.anyString())).thenReturn(Observable.error(err))
+
+        presenter.getList("")
+
+        inOrder(view).apply {
+            this.verify(view).setLoadingState(true)
+            this.verify(view).showError(err)
             this.verify(view).setLoadingState(false)
         }
     }

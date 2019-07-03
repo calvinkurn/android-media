@@ -31,7 +31,8 @@ class CornerListPresenter @Inject constructor(val usecase: GetCornerList) : Corn
                             else mView?.showEmptyView()
                             currentQuery = query
                         },
-                        { e -> mView?.showError(e) }, {})
+                        { e -> mView?.showError(e) }, {}
+                )
     }
 
     override fun loadMore(page: Int) {
