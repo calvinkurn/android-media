@@ -18,8 +18,9 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:background="#ffeaef"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_15"
+        android:background="@drawable/checkout_module_bg_round_red">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -30,7 +31,6 @@
             android:id="@+id/rv_promo_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_15"
             android:paddingLeft="@dimen/dp_8"
             android:paddingTop="@dimen/dp_8"
             android:paddingRight="@dimen/dp_8"
