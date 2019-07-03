@@ -33,7 +33,7 @@ abstract class ProductItemViewHolder(
         if (productItem == null) return
 
 //        initProductCardContainer(productItem)
-        initProductImage(productItem)
+//        initProductImage(productItem)
 //        initWishlistButton(productItem)
 //        initPromoLabel(productItem)
 //        initShopName(productItem)
