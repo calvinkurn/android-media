@@ -317,7 +317,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 ConstantTransactionAnalytics.Key.EVENT_CATEGORY, eventCategory,
                 ConstantTransactionAnalytics.Key.EVENT_ACTION, eventAction,
                 ConstantTransactionAnalytics.Key.EVENT_LABEL, eventLabel,
-                atcMap
+                ConstantTransactionAnalytics.Key.E_COMMERCE, atcMap
         );
         sendEnhancedEcommerce(dataLayer);
     }
