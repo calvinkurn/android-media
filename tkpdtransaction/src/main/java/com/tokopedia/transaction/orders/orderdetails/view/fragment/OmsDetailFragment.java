@@ -405,7 +405,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     @Override
     public Context getAppContext() {
         if (getActivity() != null)
-            return getActivity().getApplicationContext();
+            return getActivity();
         else
             return null;
     }

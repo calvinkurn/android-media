@@ -1,6 +1,5 @@
 package com.tokopedia.transaction.orders.orderdetails.view.customview;
 
-import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -12,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.transaction.R;
 import com.tokopedia.unifycomponents.Toaster;
 
@@ -69,8 +67,6 @@ public class BookingCodeView extends RelativeLayout {
                 myClip = ClipData.newPlainText("text", bookingCode);
                 myClipboard.setPrimaryClip(myClip);
                 Toaster.Companion.showNormalWithAction(view, "Kode booking telah disalin", Snackbar.LENGTH_LONG, "Ok", v1 -> {});
-//                ToasterNormal.showClose((Activity)context, "Kode booking telah disalin");
-
             }
         });
 

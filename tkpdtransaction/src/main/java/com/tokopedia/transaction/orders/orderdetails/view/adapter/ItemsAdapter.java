@@ -401,7 +401,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         presenter.setDownloadableFileName("Tokopedia E-Ticket");
                         view.setOnClickListener(getActionButtonClickListener(actionButton.getBody().getAppURL()));
                     } else {
-                        presenter.setDownloadableFlag(true);
+                        presenter.setDownloadableFlag(false);
+                        view.setOnClickListener(getActionButtonClickListener(actionButton.getBody().getAppURL()));
                     }
                 }
             } else if (actionButton.getControl().equalsIgnoreCase(KEY_QRCODE)) {
