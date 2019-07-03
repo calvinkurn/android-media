@@ -120,22 +120,19 @@ class TkpdVideoPlayer: Fragment() {
         if (viewModel.videoSource.isEmpty()) {
             showToast(R.string.videoplayer_file_not_found)
             callback?.onPlayerError(PlayerException.SourceNotFound)
-        } else {
-            if (File(viewModel.videoSource).exists()) {
-                val file = Uri.fromFile(File(viewModel.videoSource))
-                initPlayer(file, VideoSourceProtocol.File)
-            } else {
-                val url = Uri.parse(viewModel.videoSource)
-                initPlayer(url, VideoSourceProtocol.protocol(context, viewModel.videoSource))
-            }
         }
 
         playerListener()
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putParcelable(VIEW_MODEL, viewModel)
+    private fun playVideo() {
+        if (File(viewModel.videoSource).exists()) {
+            val file = Uri.fromFile(File(viewModel.videoSource))
+            initPlayer(file, VideoSourceProtocol.File)
+        } else {
+            val url = Uri.parse(viewModel.videoSource)
+            initPlayer(url, VideoSourceProtocol.protocol(context, viewModel.videoSource))
+        }
     }
 
     private fun playerListener() = playerOptions?.addListener(object : Player.EventListener {
@@ -218,11 +215,14 @@ class TkpdVideoPlayer: Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        playVideo()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
-        try {
-            playerOptions?.release()
-        } catch (ignored: Exception) {}
+        playerOptions?.release()
     }
 
     override fun onPause() {
@@ -233,6 +233,11 @@ class TkpdVideoPlayer: Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         playerOptions?.stop()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(VIEW_MODEL, viewModel)
     }
 
 }
