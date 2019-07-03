@@ -25,7 +25,6 @@ import com.tokopedia.core.network.apiservices.mojito.MojitoService;
 import com.tokopedia.discovery.newdiscovery.helper.UrlParamHelper;
 import com.tokopedia.kotlin.util.ContainNullException;
 import com.tokopedia.kotlin.util.NullCheckerKt;
-import com.tokopedia.tkpd.home.adapter.viewmodel.TopAdsWishlistItem;
 import com.tokopedia.tkpd.home.adapter.viewmodel.WishlistProductViewModel;
 import com.tokopedia.tkpd.home.adapter.viewmodel.WishlistTopAdsViewModel;
 import com.tokopedia.tkpd.home.wishlist.domain.model.GqlWishListDataResponse;
