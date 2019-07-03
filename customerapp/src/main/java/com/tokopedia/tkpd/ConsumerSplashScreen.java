@@ -85,6 +85,8 @@ public class ConsumerSplashScreen extends SplashScreen {
 
         CMPushNotificationManager.getInstance()
                 .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(this.getApplicationContext()), false);
+        
+        
     }
 
     @Override
