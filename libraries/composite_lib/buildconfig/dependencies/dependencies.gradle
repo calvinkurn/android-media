@@ -51,7 +51,7 @@ ext {
     playServiceFirebaseRemoteConfig = '16.1.3'
     playServiceFirebasePerfMon = '16.2.3'
     playServiceAds = '17.1.2'
-    playServiceFirebaseCore = '16.0.6'
+    playServiceFirebaseCore = '16.0.9'
     playServiceTagManager = '16.0.6'
 
     JunitVersion = '4.12'
