@@ -57,7 +57,6 @@ import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
-import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
 import com.tokopedia.core.network.CoreNetworkRouter;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -157,7 +156,6 @@ import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
-import com.tokopedia.seller.shopsettings.shipping.EditShippingActivity;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
@@ -181,9 +179,7 @@ import com.tokopedia.talk.shoptalk.view.activity.ShopTalkActivity;
 import com.tokopedia.talk.talkdetails.view.activity.TalkDetailsActivity;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
-import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
-import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopInfoActivity;
 import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.TopAdsManagementInternalRouter;
 import com.tokopedia.topads.TopAdsManagementRouter;
@@ -871,12 +867,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Observable<TokoCashData> getTokoCashBalance() {
         return null;
-    }
-
-    @Override
-    public void navigateToChooseAddressActivityRequest(Fragment var1, Intent var2, int var3) {
-        Intent instance = ChooseAddressActivity.createInstance(var1.getContext());
-        var1.startActivityForResult(instance, var3);
     }
 
     @Override

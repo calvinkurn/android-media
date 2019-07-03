@@ -129,10 +129,6 @@ public interface TkpdCoreRouter {
 
     Intent getInboxReputationIntent(Context context);
 
-    Intent getResolutionCenterIntent(Context context);
-
-    Intent getResolutionCenterIntentBuyer(Context context);
-
     Intent getResolutionCenterIntentSeller(Context context);
 
     Intent getKolFollowingPageIntent(Context context, int userId);

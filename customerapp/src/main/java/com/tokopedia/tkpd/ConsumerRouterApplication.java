@@ -99,7 +99,6 @@ import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
-import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
 import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.myproduct.utils.FileUtils;
@@ -201,7 +200,6 @@ import com.tokopedia.imageuploader.ImageUploaderRouter;
 import com.tokopedia.inbox.common.ResolutionRouter;
 import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
-import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 import com.tokopedia.instantloan.di.module.InstantLoanChuckRouter;
 import com.tokopedia.instantloan.router.InstantLoanRouter;
@@ -427,6 +425,7 @@ import io.hansel.hanselsdk.Hansel;
 import okhttp3.Interceptor;
 import okhttp3.Response;
 import retrofit2.Converter;
+import rx.Completable;
 import rx.Observable;
 import rx.functions.Func1;
 import tradein_common.TradeInUtils;
@@ -1458,16 +1457,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getResolutionCenterIntent(Context context) {
-        return InboxResCenterActivity.createIntent(context);
-    }
-
-    @Override
-    public Intent getResolutionCenterIntentBuyer(Context context) {
-        return ResoInboxActivity.newBuyerInstance(context);
-    }
-
-    @Override
     public Intent getResolutionCenterIntentSeller(Context context) {
         return ResoInboxActivity.newSellerInstance(context);
     }
@@ -1697,12 +1686,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return new GetBalanceTokoCashWrapper(tokoCashComponent.getBalanceTokoCashUseCase(),
                 tokoCashComponent.getPendingCasbackUseCase())
                 .getTokoCashAccountBalance();
-    }
-
-    @Override
-    public void navigateToChooseAddressActivityRequest(Fragment var1, Intent var2, int var3) {
-        Intent instance = ChooseAddressActivity.createInstance(var1.getContext());
-        var1.startActivityForResult(instance, var3);
     }
 
     @Override

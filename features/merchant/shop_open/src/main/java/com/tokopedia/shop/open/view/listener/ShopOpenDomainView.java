@@ -21,8 +21,6 @@ public interface ShopOpenDomainView extends CustomerView {
 
     void onErrorCheckShopDomain(String message);
 
-    void onSuccessReserveShop(String shopName);
-
     void onErrorReserveShop(Throwable t);
 
     void showSubmitLoading();

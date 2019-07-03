@@ -26,7 +26,6 @@ import com.tokopedia.seller.selling.presenter.listener.SellingView;
 import com.tokopedia.seller.selling.model.SellingStatusTxModel;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
 import com.tokopedia.seller.selling.presenter.ShippingImpl;
-import com.tokopedia.core.service.DownloadService;
 
 import org.parceler.Parcels;
 
@@ -36,6 +35,9 @@ import org.parceler.Parcels;
 public class SellingDetailActivity extends TkpdActivity implements  DownloadResultReceiver.Receiver {
 
     Toolbar toolbar;
+
+    private static final String TYPE = "type";
+    private static final int INVALID_TYPE = -1;
 
     public enum Type {
         NEW_ORDER,
@@ -119,7 +121,7 @@ public class SellingDetailActivity extends TkpdActivity implements  DownloadResu
 
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
-        int type = resultData.getInt(DownloadService.TYPE, DownloadService.INVALID_TYPE);
+        int type = resultData.getInt(TYPE, INVALID_TYPE);
         Fragment fragment = null;
         switch (type) {
             case SellingService.CONFIRM_SHIPPING:
@@ -137,7 +139,7 @@ public class SellingDetailActivity extends TkpdActivity implements  DownloadResu
         }
 
         //check if Fragment implement necessary interface
-        if (fragment != null && type != DownloadService.INVALID_TYPE) {
+        if (fragment != null && type != INVALID_TYPE) {
             switch (resultCode) {
                 case SellingService.STATUS_RUNNING:
                     switch (type) {

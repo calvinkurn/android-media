@@ -12,7 +12,6 @@ import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationP
  */
 
 public interface LogisticRouter {
-    void navigateToChooseAddressActivityRequest(Fragment fragment, Intent intent, int requestCode);
     void navigateToEditAddressActivityRequest(Fragment fragment, int requestCode, Token token);
     Intent navigateToGeoLocationActivityRequest(Context context, LocationPass locationPass);
 }

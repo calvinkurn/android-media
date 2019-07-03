@@ -26,8 +26,6 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.base.list.seller.view.fragment.BasePresenterFragment;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -49,7 +47,6 @@ import com.tokopedia.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.shop.open.util.ShopErrorHandler;
 import com.tokopedia.shop.open.view.activity.ShopOpenCreateReadyActivity;
 import com.tokopedia.shop.open.view.activity.ShopOpenPostalCodeChooserActivity;
-import com.tokopedia.shop.open.view.activity.ShopOpenReserveDomainSuccessActivity;
 import com.tokopedia.shop.open.view.activity.ShopOpenWebViewActivity;
 import com.tokopedia.shop.open.view.holder.OpenShopAddressViewHolder;
 import com.tokopedia.shop.open.view.listener.ShopOpenDomainView;
@@ -414,12 +411,12 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
         trackingOpenShop.eventOpenShopBiodataErrorWithData(generatedErrorMessage);
     }
 
-    @Override
-    public void onSuccessReserveShop(String shopName) {
-        hideSubmitLoading();
-        trackingOpenShop.eventOpenShopBiodataSuccess();
-        goToShopOpenMandatory(shopName);
-    }
+//    @Override
+//    public void onSuccessReserveShop(String shopName) {
+//        hideSubmitLoading();
+//        trackingOpenShop.eventOpenShopBiodataSuccess();
+//        goToShopOpenMandatory(shopName);
+//    }
 
     @Override
     public void checkEnableSubmit() {
@@ -435,11 +432,11 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
                 textInputDomainName.isSuccessShown() && textInputShopName.isSuccessShown();
     }
 
-    private void goToShopOpenMandatory(String shopName) {
-        Intent intent = ShopOpenReserveDomainSuccessActivity.getIntent(getContext(), shopName);
-        startActivity(intent);
-        getActivity().finish();
-    }
+//    private void goToShopOpenMandatory(String shopName) {
+//        Intent intent = ShopOpenReserveDomainSuccessActivity.getIntent(getContext(), shopName);
+//        startActivity(intent);
+//        getActivity().finish();
+//    }
 
     @Override
     public void onSuccessCreateShop(String message, String shopId) {

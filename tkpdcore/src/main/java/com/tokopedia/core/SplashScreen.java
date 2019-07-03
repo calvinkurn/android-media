@@ -32,7 +32,6 @@ import com.tokopedia.linker.model.LinkerError;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.PasswordGenerator.PGListener;
@@ -56,6 +55,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     public static final int WEEK_IN_SECONDS = 604800;
     public static final int DAYS_IN_SECONDS = 86400;
     public static final int OVERLAY_PERMISSION_REQ_CODE = 1080;
+    public static final int STATUS_FINISHED = 1;
 
     private PasswordGenerator Pgenerator;
     DownloadResultReceiver mReceiver;
@@ -160,7 +160,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
         CommonUtils.dumper(resultData);
-        if (resultCode == DownloadService.STATUS_FINISHED) finishSplashScreen();
+        if (resultCode == STATUS_FINISHED) finishSplashScreen();
     }
 
     private void resetAllDatabaseFlag() {

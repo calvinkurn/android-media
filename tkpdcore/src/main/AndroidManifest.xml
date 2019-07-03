@@ -263,9 +263,6 @@
         <service
             android:name="com.tokopedia.core.product.intentservice.ProductInfoIntentService"
             android:exported="false" > </service>
-        <service
-            android:name="com.tokopedia.core.service.DownloadService"
-            android:exported="false" />
 
         <!-- ======================================================= -->
         <!-- PROVIDERS REGISTRY -->
