@@ -33,14 +33,15 @@ class TkpdVideoPlayer: Fragment() {
 
     companion object {
         //keys
-        private const val VIEW_MODEL        = "video_model"
-        private const val VIDEO_SOURCE      = "video_uri"
-        private const val VIDEO_CALLBACK    = "video_callback"
-        private const val REPEAT_MODE       = "repeat_mode"
+        private const val VIEW_MODEL = "video_model"
+        private const val VIDEO_SOURCE = "video_uri"
+        private const val VIDEO_CALLBACK = "video_callback"
+        private const val REPEAT_MODE = "repeat_mode"
+        private const val NATIVE_CONTROLLER = "native_controller"
 
         //const
         private const val VIDEO_ROTATION_90 = 90f
-        private const val EXOPLAYER_AGENT   = "exoplayer-codelab"
+        private const val EXOPLAYER_AGENT = "exoplayer-codelab"
     }
 
     class Builder {
@@ -65,6 +66,11 @@ class TkpdVideoPlayer: Fragment() {
 
         fun listener(callback: VideoPlayerListener) = apply {
             bundle.putSerializable(VIDEO_CALLBACK, callback)
+            return this
+        }
+
+        fun controller(isActive: Boolean) = apply {
+            bundle.putBoolean(NATIVE_CONTROLLER, isActive)
             return this
         }
 
@@ -95,12 +101,21 @@ class TkpdVideoPlayer: Fragment() {
             arguments != null -> {
                 viewModel.videoSource = arguments!!.getString(VIDEO_SOURCE, "")
                 viewModel.repeatMode = arguments!!.getInt(REPEAT_MODE, RepeatMode.REPEAT_MODE_OFF)
+                viewModel.nativeController = arguments!!.getBoolean(NATIVE_CONTROLLER, true)
+
+                //passing callback listener with serializable
+                callback = arguments?.getSerializable(VIDEO_CALLBACK) as VideoPlayerListener?
+
+                //native controller visibility
+                playerView.useController = viewModel.nativeController
+                pgLoader.visibility = if (viewModel.nativeController) {
+                    View.VISIBLE
+                } else {
+                    View.GONE
+                }
             }
             else -> activity?.finish()
         }
-
-        //passing callback listener with serializable
-        callback = arguments?.getSerializable(VIDEO_CALLBACK) as VideoPlayerListener?
 
         if (viewModel.videoSource.isEmpty()) {
             showToast(R.string.videoplayer_file_not_found)

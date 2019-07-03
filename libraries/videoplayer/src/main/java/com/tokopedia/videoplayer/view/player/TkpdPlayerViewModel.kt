@@ -6,14 +6,17 @@ import com.tokopedia.videoplayer.utils.RepeatMode
 
 class TkpdPlayerViewModel(
         var videoSource: String = "",
+        var nativeController: Boolean = true,
         var repeatMode: Int = RepeatMode.REPEAT_MODE_OFF): Parcelable {
 
     constructor(parcel: Parcel) : this(
-            parcel.readString() ?: "",
+            parcel.readString()?:"",
+            parcel.readByte() != 0.toByte(),
             parcel.readInt())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(videoSource)
+        parcel.writeByte(if (nativeController) 1 else 0)
         parcel.writeInt(repeatMode)
     }
 
@@ -21,15 +24,15 @@ class TkpdPlayerViewModel(
         return 0
     }
 
-    companion object {
-        @JvmField
-        val TAG: String = TkpdPlayerViewModel::class.java.simpleName
+    companion object CREATOR : Parcelable.Creator<TkpdPlayerViewModel> {
+        override fun createFromParcel(parcel: Parcel): TkpdPlayerViewModel {
+            return TkpdPlayerViewModel(parcel)
+        }
 
-        @JvmField
-        val CREATOR: Parcelable.Creator<TkpdPlayerViewModel> = object : Parcelable.Creator<TkpdPlayerViewModel> {
-            override fun createFromParcel(source: Parcel): TkpdPlayerViewModel = TkpdPlayerViewModel(source)
-            override fun newArray(size: Int): Array<TkpdPlayerViewModel?> = arrayOfNulls(size)
+        override fun newArray(size: Int): Array<TkpdPlayerViewModel?> {
+            return arrayOfNulls(size)
         }
     }
+
 
 }

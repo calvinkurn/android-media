@@ -85,6 +85,8 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
                     .transaction(R.id.playerView, childFragmentManager)
                     /* 2. acceptable for multiple source media (e.g. uri, url, file) */
                     .videoSource(videoSource)
+                    /* optional: native controller */
+                    .controller(true)
                     /* 3. callback listener to handle video state and player error */
                     .listener(object : VideoPlayerListener {
                         override fun onPlayerStateChanged(playbackState: Int) {}
