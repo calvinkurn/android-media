@@ -49,29 +49,30 @@ public class EventDetailsActivity extends EventBaseActivity implements
         EventsDetailsContract.EventDetailsView, View.OnClickListener {
 
 
-    ImageView eventDetailBanner;
-    ExpandableTextView tvExpandableDescription;
-    TextView seemorebutton;
-    TextView seemorebuttonTnC;
-    ImageView ivArrowSeating;
-    ExpandableTextView tvExpandableTermsNCondition;
-    LinearLayout timeView;
-    LinearLayout locationView;
-    LinearLayout addressView;
-    TextView textViewTitle;
-    View btnBook;
-    View progressBarLayout;
-    ProgressBar progBar;
-    FrameLayout mainContent;
-    TextView buttonTextView;
-    LinearLayout expandLayout;
-    LinearLayout expandTnc;
-    ImageView ivArrowSeatingTnC;
-    TextView eventPrice;
-
-    ImageTextViewHolder timeHolder;
-    ImageTextViewHolder locationHolder;
-    ImageTextViewHolder addressHolder;
+    private ImageView eventDetailBanner;
+    private ExpandableTextView tvExpandableDescription;
+    private TextView seemorebutton;
+    private TextView seemorebuttonTnC;
+    private ImageView ivArrowSeating;
+    private ExpandableTextView tvExpandableTermsNCondition;
+    private LinearLayout timeView;
+    private LinearLayout locationView;
+    private LinearLayout addressView;
+    private TextView textViewTitle;
+    private View btnBook;
+    private View progressBarLayout;
+    private ProgressBar progBar;
+    private FrameLayout mainContent;
+    private TextView buttonTextView;
+    private LinearLayout expandLayout;
+    private LinearLayout expandTnc;
+    private ImageView ivArrowSeatingTnC;
+    private TextView eventPrice;
+    private TextView dateRangeName, cityName, address;
+    private ImageView dateImageView, cityImageView, addressImageView;
+    private ImageTextViewHolder timeHolder;
+    private ImageTextViewHolder locationHolder;
+    private ImageTextViewHolder addressHolder;
     private Menu mMenu;
 
 
@@ -169,10 +170,15 @@ public class EventDetailsActivity extends EventBaseActivity implements
         expandTnc = findViewById(R.id.expand_view_tnc);
         ivArrowSeatingTnC = findViewById(R.id.down_arrow_tnc);
         eventPrice = findViewById(R.id.tv_event_price);
+        View view = findViewById(R.id.event_detail_card).findViewById(R.id.event_details_layout);
+        dateRangeName = view.findViewById(R.id.event_time).findViewById(R.id.textview_holder_small);
+        dateImageView = view.findViewById(R.id.event_time).findViewById(R.id.image_holder_small);
 
-        timeHolder = new ImageTextViewHolder(this);
-        locationHolder = new ImageTextViewHolder(this);
-        addressHolder = new ImageTextViewHolder(this);
+        cityName = view.findViewById(R.id.event_location_detail).findViewById(R.id.textview_holder_small);
+        cityImageView = view.findViewById(R.id.event_location_detail).findViewById(R.id.image_holder_small);
+
+        address = view.findViewById(R.id.event_address).findViewById(R.id.textview_holder_small);
+        addressImageView = view.findViewById(R.id.event_address).findViewById(R.id.image_holder_small);
 
         expandLayout.setOnClickListener(this);
         expandTnc.setOnClickListener(this);
@@ -219,9 +225,15 @@ public class EventDetailsActivity extends EventBaseActivity implements
             timeView.setVisibility(View.GONE);
         }
 
-        setHolder(R.drawable.ic_time, dateRange, timeHolder);
-        setHolder(R.drawable.ic_placeholder, homedata.getCityName(), locationHolder);
-        setHolder(R.drawable.ic_skyline, homedata.getCityName(), addressHolder);
+        dateImageView.setImageResource(R.drawable.ic_time);
+        dateRangeName.setText(dateRange);
+
+        cityName.setText(homedata.getCityName());
+        cityImageView.setImageResource(R.drawable.ic_placeholder);
+
+        address.setText(homedata.getCityName());
+        addressImageView.setImageResource(R.drawable.ic_skyline);
+
         textViewTitle.setText(homedata.getTitle());
         tvExpandableDescription.setText(Html.fromHtml(homedata.getLongRichDesc()));
 
@@ -261,13 +273,24 @@ public class EventDetailsActivity extends EventBaseActivity implements
         toolbar.setTitle(data.getTitle());
         ImageHandler.loadImageCover2(eventDetailBanner, data.getImageApp());
 
-        if (data.getTimeRange() != null && data.getTimeRange().length() > 3)
-            setHolder(R.drawable.ic_time, data.getTimeRange(), timeHolder);
+        if (data.getTimeRange() != null && data.getTimeRange().length() > 3) {
+            dateRangeName.setText(data.getTimeRange());
+            dateImageView.setImageResource(R.drawable.ic_time);
+        }
         else
             timeView.setVisibility(View.GONE);
 
-        setHolder(R.drawable.ic_placeholder, data.getCityName(), locationHolder);
-        setHolder(R.drawable.ic_skyline, data.getAddress(), addressHolder);
+        if (data.getSchedulesViewModels() != null && data.getSchedulesViewModels().size() > 0) {
+            if (!TextUtils.isEmpty(data.getSchedulesViewModels().get(0).getaDdress())) {
+                address.setText(data.getSchedulesViewModels().get(0).getaDdress());
+                addressImageView.setImageResource(R.drawable.ic_skyline);
+            }
+            if (!TextUtils.isEmpty(data.getSchedulesViewModels().get(0).getCityName())) {
+                cityName.setText(data.getSchedulesViewModels().get(0).getCityName());
+                cityImageView.setImageResource(R.drawable.ic_placeholder);
+            }
+        }
+
         textViewTitle.setText(data.getTitle());
         if (data.getLongRichDesc() != null && !TextUtils.isEmpty(data.getLongRichDesc()))
             tvExpandableDescription.setText(Html.fromHtml(data.getLongRichDesc()));
