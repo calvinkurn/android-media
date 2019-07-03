@@ -1,6 +1,7 @@
 package com.tokopedia.tokopoints.view.fragment;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -197,14 +198,14 @@ public class PointHistoryFragment extends BaseDaggerFragment implements PointHis
     }
 
     private void showHistoryExpiryBottomSheet(String pointInfo, String loyaltyInfo) {
-        CloseableBottomSheetDialog dialog = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
+        CloseableBottomSheetDialog dialog = CloseableBottomSheetDialog.createInstance(getActivity());
         View view = getLayoutInflater().inflate(R.layout.tp_point_history_info, null, false);
         TextView textPoint = view.findViewById(R.id.text_point_exp_info);
         TextView textLoyalty = view.findViewById(R.id.text_loyalty_exp_info);
         textPoint.setText(MethodChecker.fromHtml(pointInfo));
         textLoyalty.setText(MethodChecker.fromHtml(loyaltyInfo));
-        view.findViewById(R.id.btn_help).setOnClickListener(v -> ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.INFO_EXPIRED_POINTS, getString(R.string.tp_title_tokopoints)));
-        dialog.setContentView(view);
+        view.findViewById(R.id.btn_help_history).setOnClickListener(v -> ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.INFO_EXPIRED_POINTS, getString(R.string.tp_title_tokopoints)));
+        dialog.setCustomContentView(view, getString(R.string.tp_title_history_bottomshet), true);
         dialog.show();
     }
 }
