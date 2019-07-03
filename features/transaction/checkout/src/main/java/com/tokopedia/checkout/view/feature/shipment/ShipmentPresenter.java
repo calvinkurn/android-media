@@ -479,7 +479,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 for (DataCheckoutRequest dataCheckoutRequest : dataCheckoutRequests) {
                     if (dataCheckoutRequest.shopProducts != null) {
                         for (ShopProductCheckoutRequest shopProductCheckoutRequest : dataCheckoutRequest.shopProducts) {
-                            if (shopProductCheckoutRequest.cartString.equalsIgnoreCase(shipmentCartItemModel.getCartString()) && shopProductCheckoutRequest.productData != null) {
+                            if (shopProductCheckoutRequest != null && shopProductCheckoutRequest.cartString.equalsIgnoreCase(shipmentCartItemModel.getCartString()) && shopProductCheckoutRequest.productData != null) {
                                 if (shipmentCartItemModel.getVoucherOrdersItemUiModel() != null) {
                                     if (!TextUtils.isEmpty(promoCodes)) {
                                         promoCodes.append("|");
