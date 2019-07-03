@@ -117,8 +117,6 @@ class TkpdVideoPlayer: Fragment() {
             }
         }
 
-        Log.d("TkpdVideoPlayer", viewModel.videoSource)
-
         playerListener()
     }
 
