@@ -100,5 +100,6 @@
     <string name="label_add_sticker">Aa</string>
     <string name="kol_action_share_to">Share ke:</string>
     <string name="af_title_header_product_attachment">Barang di post ini</string>
+    <string name="af_label_post">Post</string>
 
 </resources>

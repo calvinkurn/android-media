@@ -43,10 +43,10 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
 
-            <!-- will be replaced by yoas widget -->
-            <View android:id="@+id/media_attachment"
+            <com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
+                android:id="@+id/media_attachment"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/dp_1"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8"
                 android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@+id/caption"

@@ -5,10 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -36,6 +33,7 @@ import com.tokopedia.affiliate.feature.createpost.view.viewmodel.*
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.MediaItem
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.user.session.UserSessionInterface
@@ -101,6 +99,11 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         affiliateAnalytics.analyticTracker.sendScreenAuthenticated(screenName)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_new_create_post, container, false)
@@ -119,6 +122,28 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN), REQUEST_LOGIN)
             }
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater?.inflate(R.menu.menu_create_post, menu)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?) {
+        super.onPrepareOptionsMenu(menu)
+        val menuPost = menu?.findItem(R.id.action_post) ?: return
+        val isButtonEnabled = viewModel.completeImageList.isNotEmpty()
+                && viewModel.relatedProducts.isNotEmpty()
+                && (viewModel.adIdList.isNotEmpty() || viewModel.productIdList.isNotEmpty())
+        menuPost.isEnabled = isButtonEnabled
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item?.itemId == R.id.action_post){
+            saveDraftAndSubmit()
+            affiliateAnalytics.onSelesaiCreateButtonClicked(viewModel.productIdList)
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -143,9 +168,16 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
                 if (imageList.isNotEmpty()) {
                     viewModel.urlImageList.clear()
+
+                    val mItems = imageList.map { MediaItem(thumbnail = it, type = MediaType.IMAGE) }
+                    media_attachment.bind(mItems)
+                    media_attachment.visible()
+                } else {
+                    media_attachment.gone()
+                    media_attachment.bind(listOf())
                 }
 
-                updateButton()
+                activity?.invalidateOptionsMenu()
             }
             REQUEST_VIDEO_PICKER -> if (resultCode == Activity.RESULT_OK) {
                 val videoList = data?.getStringArrayListExtra(VIDEOS_RESULT) ?: arrayListOf()
@@ -158,7 +190,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                     viewModel.urlImageList.clear()
                 }
 
-                updateButton()
+                activity?.invalidateOptionsMenu()
             }
             REQUEST_PREVIEW -> if (resultCode == Activity.RESULT_OK) {
                 val resultViewModel = data?.getParcelableExtra<CreatePostViewModel>(
@@ -218,7 +250,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         updateRelatedProduct()
         updateMedia()
         updateAddTagText()
-        updateButton()
+        activity?.invalidateOptionsMenu()
         updateCaption()
         updateHeader(feedContentForm.authors)
     }
@@ -267,7 +299,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         }
 
         updateAddTagText()
-        updateButton()
+        activity?.invalidateOptionsMenu()
     }
 
     abstract fun fetchContentForm()
@@ -365,24 +397,19 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         product_attachment.layoutManager = LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false)
         product_attachment.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(R.dimen.dp_8),
                 LinearLayoutManager.HORIZONTAL))
-        /*doneBtn.setOnClickListener {
-            saveDraftAndSubmit()
-            affiliateAnalytics.onSelesaiCreateButtonClicked(viewModel.productIdList)
-        }*/
+
         image_picker.setOnClickListener {
             goToImagePicker()
             affiliateAnalytics.onTambahGambarButtonClicked()
         }
         /*addVideoBtn.setOnClickListener {
             affiliateAnalytics.onTambahVideoButtonClicked()
+            goToVideoPicker()
         }*/
         caption.afterTextChanged {
             viewModel.caption = it
             updateMaxCharacter()
         }
-        /*addVideoBtn.setOnClickListener {
-            goToVideoPicker()
-        }*/
         caption.setOnTouchListener { v, event ->
             if (v.id == R.id.caption) {
                 v.parent.requestDisallowInterceptTouchEvent(true)
@@ -528,13 +555,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
             ))
         }
-    }
-
-    private fun updateButton() {
-        val isButtonEnabled = viewModel.completeImageList.isNotEmpty()
-                && viewModel.relatedProducts.isNotEmpty()
-                && (viewModel.adIdList.isNotEmpty() || viewModel.productIdList.isNotEmpty())
-        //doneBtn.isEnabled = isButtonEnabled
     }
 
     private fun updateCaption() {

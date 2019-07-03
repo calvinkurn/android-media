@@ -50,6 +50,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation project(rootProject.ext.libraries.videoUploader)
     implementation rootProject.ext.unifyDependencies.principles
+    implementation project(rootProject.ext.features.feedComponent)
 
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
