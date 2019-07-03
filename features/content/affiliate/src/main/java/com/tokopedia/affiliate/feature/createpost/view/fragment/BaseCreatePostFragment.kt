@@ -309,13 +309,13 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     protected fun initProductIds() {
         val productIds = arguments!!.getString(CreatePostActivity.PARAM_PRODUCT_ID, "")
                 .split(',')
-                .filterNot { it != "-1" }
+                .filterNot { it == "-1" }
                 .toMutableList()
                 .apply { removeAll { it.trim() == "" } }
 
         val adIds = arguments!!.getString(CreatePostActivity.PARAM_AD_ID, "")
                 .split(',')
-                .filterNot { it != "-1" }
+                .filterNot { it == "-1" }
                 .toMutableList()
                 .apply { removeAll { it.trim() == "" } }
 

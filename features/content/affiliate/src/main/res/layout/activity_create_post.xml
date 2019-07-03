@@ -64,8 +64,7 @@
             android:text="@string/af_label_post"
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
-            android:textColor="@color/green_500"
-            app:typographyType="heading_6"/>
+            app:typographyType="heading_5"/>
     </LinearLayout>
 
     <FrameLayout

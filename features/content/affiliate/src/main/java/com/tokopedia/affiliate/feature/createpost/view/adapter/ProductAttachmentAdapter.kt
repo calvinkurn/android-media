@@ -1,5 +1,6 @@
 package com.tokopedia.affiliate.feature.createpost.view.adapter
 
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
@@ -40,9 +41,9 @@ class ProductAttachmentAdapter(private val products: MutableList<RelatedProductI
                 image_product.loadImageWithoutPlaceholder(relatedProductItem.image)
                 product_name.text = MethodChecker.fromHtmlPreserveLineBreak(relatedProductItem.name)
                 product_price.text = relatedProductItem.price
-                /*product_price.setTextColor(MethodChecker.getColor(
+                product_price.setTextColor(ContextCompat.getColor(
                         context, if (relatedProductItem.type == TYPE_AFFILIATE) R.color.af_commission_blue
-                        else R.color.Yellow_Y500))*/
+                        else R.color.Yellow_Y500))
                 product_rating.gone()
 
                 delete.setOnClickListener { removeProduct(adapterPosition) }
