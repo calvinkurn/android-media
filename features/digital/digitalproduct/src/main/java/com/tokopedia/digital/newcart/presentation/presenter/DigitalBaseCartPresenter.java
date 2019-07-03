@@ -69,7 +69,6 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     private DigitalCheckoutUseCase digitalCheckoutUseCase;
     private DigitalAddToCartUseCase digitalAddToCartUseCase;
     private DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase;
-    private RechargePushEventRecommendationUseCase rechargePushEventRecommendationUseCase;
     private DigitalPostPaidLocalCache digitalPostPaidLocalCache;
     private String PROMO_CODE = "promoCode";
     public static final String KEY_CACHE_PROMO_CODE = "KEY_CACHE_PROMO_CODE";
@@ -82,7 +81,6 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
                                     UserSession userSession,
                                     DigitalCheckoutUseCase digitalCheckoutUseCase,
                                     DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase,
-                                    RechargePushEventRecommendationUseCase rechargePushEventRecommendationUseCase,
                                     DigitalPostPaidLocalCache digitalPostPaidLocalCache) {
         this.digitalAddToCartUseCase = digitalAddToCartUseCase;
         this.digitalAnalytics = digitalAnalytics;
@@ -91,7 +89,6 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         this.userSession = userSession;
         this.digitalCheckoutUseCase = digitalCheckoutUseCase;
         this.digitalInstantCheckoutUseCase = digitalInstantCheckoutUseCase;
-        this.rechargePushEventRecommendationUseCase = rechargePushEventRecommendationUseCase;
         this.digitalPostPaidLocalCache = digitalPostPaidLocalCache;
     }
 
@@ -761,9 +758,5 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         builder.userAgent(DeviceUtil.getUserAgentForApiCall());
         builder.needOtp(cartDigitalInfoData.isNeedOtp());
         return builder;
-    }
-
-    public void trackRechargePushEventRecommendation(int categoryId, String actionType) {
-        rechargePushEventRecommendationUseCase.execute(rechargePushEventRecommendationUseCase.createRequestParam(categoryId, actionType), null);
     }
 }

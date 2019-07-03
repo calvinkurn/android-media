@@ -350,7 +350,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
     }
 
     protected void initView(View view) {
-        presenter.trackRechargePushEventRecommendation(2, "VISIT");
+        presenter.trackRechargePushEventRecommendation(Integer.parseInt(categoryId), "VISIT");
 
         pbMainLoading = view.findViewById(R.id.pb_main_loading);
         holderProductDetail = view.findViewById(R.id.holder_product_detail);

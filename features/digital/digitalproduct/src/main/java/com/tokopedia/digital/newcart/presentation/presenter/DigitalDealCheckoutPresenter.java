@@ -45,7 +45,6 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
                                         UserSession userSession,
                                         DigitalCheckoutUseCase digitalCheckoutUseCase,
                                         DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase,
-                                        RechargePushEventRecommendationUseCase rechargePushEventRecommendationUseCase,
                                         DigitalPostPaidLocalCache digitalPostPaidLocalCache) {
         super(digitalAddToCartUseCase,
                 digitalAnalytics,
@@ -54,7 +53,6 @@ public class DigitalDealCheckoutPresenter extends DigitalBaseCartPresenter<Digit
                 userSession,
                 digitalCheckoutUseCase,
                 digitalInstantCheckoutUseCase,
-                rechargePushEventRecommendationUseCase,
                 digitalPostPaidLocalCache);
         this.digitalAnalytics = digitalAnalytics;
         this.userSession = userSession;

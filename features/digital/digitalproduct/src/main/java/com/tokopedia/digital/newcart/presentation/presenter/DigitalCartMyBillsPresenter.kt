@@ -23,7 +23,6 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
                                                       val userSession: UserSession?,
                                                       digitalCheckoutUseCase: DigitalCheckoutUseCase?,
                                                       digitalInstantCheckoutUseCase: DigitalInstantCheckoutUseCase?,
-                                                      rechargePushEventRecommendationUseCase: RechargePushEventRecommendationUseCase,
                                                       digitalPostPaidLocalCache: DigitalPostPaidLocalCache?) :
         DigitalBaseCartPresenter<DigitalCartMyBillsContract.View>(digitalAddToCartUseCase,
                 digitalAnalytics,
@@ -32,7 +31,6 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
                 userSession,
                 digitalCheckoutUseCase,
                 digitalInstantCheckoutUseCase,
-                rechargePushEventRecommendationUseCase,
                 digitalPostPaidLocalCache), DigitalCartMyBillsContract.Presenter {
     override fun onSubcriptionCheckedListener(checked: Boolean) {
 

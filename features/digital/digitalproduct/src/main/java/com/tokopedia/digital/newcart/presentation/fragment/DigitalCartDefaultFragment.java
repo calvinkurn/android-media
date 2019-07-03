@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
+import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.newcart.di.DigitalCartComponent;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalCartDefaultContract;
@@ -77,8 +78,6 @@ public class DigitalCartDefaultFragment extends DigitalBaseCartFragment implemen
 
     @Override
     protected void setupView(View view) {
-        presenter.trackRechargePushEventRecommendation(2, "ATC");
-
         progressBar = view.findViewById(R.id.progress_bar);
         containerLayout = view.findViewById(R.id.container);
         categoryTextView = view.findViewById(R.id.tv_category_name);
@@ -132,5 +131,13 @@ public class DigitalCartDefaultFragment extends DigitalBaseCartFragment implemen
     protected void onAttachActivity(Context context) {
         super.onAttachActivity(context);
         interactionListener = (InteractionListener) context;
+    }
+
+    @Override
+    public void setCartDigitalInfo(CartDigitalInfoData cartDigitalInfoData) {
+        super.setCartDigitalInfo(cartDigitalInfoData);
+        String categoryId = cartDigitalInfoData.getId();
+        if (StringUtils.isNotBlank(categoryId))
+            presenter.trackRechargePushEventRecommendation(Integer.parseInt(cartDigitalInfoData.getId()), "ATC");
     }
 }

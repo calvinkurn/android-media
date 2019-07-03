@@ -17,6 +17,8 @@ import javax.inject.Inject;
 
 public class DigitalCartDefaultPresenter extends DigitalBaseCartPresenter<DigitalCartDefaultContract.View> implements DigitalCartDefaultContract.Presenter {
 
+    private RechargePushEventRecommendationUseCase rechargePushEventRecommendationUseCase;
+
     @Inject
     public DigitalCartDefaultPresenter(DigitalAddToCartUseCase digitalAddToCartUseCase,
                                        DigitalAnalytics digitalAnalytics,
@@ -25,8 +27,8 @@ public class DigitalCartDefaultPresenter extends DigitalBaseCartPresenter<Digita
                                        UserSession userSession,
                                        DigitalCheckoutUseCase digitalCheckoutUseCase,
                                        DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase,
-                                       RechargePushEventRecommendationUseCase rechargePushEventRecommendationUseCase,
-                                       DigitalPostPaidLocalCache digitalPostPaidLocalCache) {
+                                       DigitalPostPaidLocalCache digitalPostPaidLocalCache,
+                                       RechargePushEventRecommendationUseCase rechargePushEventRecommendationUseCase) {
         super(digitalAddToCartUseCase,
                 digitalAnalytics,
                 digitalModuleRouter,
@@ -34,8 +36,9 @@ public class DigitalCartDefaultPresenter extends DigitalBaseCartPresenter<Digita
                 userSession,
                 digitalCheckoutUseCase,
                 digitalInstantCheckoutUseCase,
-                rechargePushEventRecommendationUseCase,
                 digitalPostPaidLocalCache);
+
+        this.rechargePushEventRecommendationUseCase = rechargePushEventRecommendationUseCase;
     }
 
     @Override
@@ -54,5 +57,9 @@ public class DigitalCartDefaultPresenter extends DigitalBaseCartPresenter<Digita
                 renderBaseCart(cartDigitalInfoData);
                 break;
         }
+    }
+
+    public void trackRechargePushEventRecommendation(int categoryId, String actionType) {
+        rechargePushEventRecommendationUseCase.execute(rechargePushEventRecommendationUseCase.createRequestParam(categoryId, actionType), null);
     }
 }
