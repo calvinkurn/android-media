@@ -198,6 +198,7 @@ query SearchProduct(
                 uri
                 owner_id
                 is_owner
+                shop_is_official
                 badges {
                     title
                     image_url
