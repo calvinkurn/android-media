@@ -99,6 +99,7 @@ searchProduct(params: $params) {
              key
              icon
              value
+             #is_new
              input_type
              total_data
              val_max

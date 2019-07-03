@@ -25,6 +25,7 @@ search_filter_product(query: $query, source: $source, extraParams: $params) {
             key_max
             metric
             is_popular
+            #is_new
             hex_color
             child {
               key
