@@ -443,7 +443,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             if (dataCheckoutRequest.shopProducts != null) {
                 boolean foundItem = false;
                 for (ShopProductCheckoutRequest shopProductCheckoutRequest : dataCheckoutRequest.shopProducts) {
-                    if (shopProductCheckoutRequest.cartString.equalsIgnoreCase(cartString) && shopProductCheckoutRequest.productData != null) {
+                    if (shopProductCheckoutRequest != null && shopProductCheckoutRequest.cartString.equalsIgnoreCase(cartString) && shopProductCheckoutRequest.productData != null) {
                         for (ProductDataCheckoutRequest productDataCheckoutRequest : shopProductCheckoutRequest.productData) {
                             productDataCheckoutRequest.setShippingDuration(shippingDuration);
                             productDataCheckoutRequest.setShippingPrice(shippingPrice);
