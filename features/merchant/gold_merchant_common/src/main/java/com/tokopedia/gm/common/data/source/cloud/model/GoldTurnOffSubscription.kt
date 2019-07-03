@@ -3,17 +3,23 @@ package com.tokopedia.gm.common.data.source.cloud.model
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class GoldTurnOffSubscription (
+data class GoldTurnOffSubscription(
+        @SerializedName("goldTurnOffSubscription")
+        @Expose
+        val GoldMerchantData: GoldMerchantData = GoldMerchantData()
+)
+
+data class GoldMerchantData(
         @SerializedName("subscriptionDataResponse")
         @Expose
-        val data:GoldData = GoldData(),
+        val data: GoldData = GoldData(),
 
         @SerializedName("subscriptionHeaderResponse")
         @Expose
-        val header:GoldHeader = GoldHeader()
+        val header: GoldHeader = GoldHeader()
 )
 
-data class GoldData (
+data class GoldData(
         @SerializedName("shopID")
         @Expose
         val shopId: Int = 0,
@@ -24,13 +30,13 @@ data class GoldData (
 
         @SerializedName("expiredTime")
         @Expose
-        val expiredTime:String = ""
+        val expiredTime: String = ""
 )
 
 data class GoldProduct(
         @SerializedName("id")
         @Expose
-        val id:Int = 0,
+        val id: Int = 0,
 
         @SerializedName("autoextend")
         @Expose
@@ -38,16 +44,16 @@ data class GoldProduct(
 )
 
 data class GoldHeader(
-    @SerializedName("process_time")
-    @Expose
-    val message: List<String> = listOf(),
+        @SerializedName("process_time")
+        @Expose
+        val message: List<String> = listOf(),
 
-    @SerializedName("reason")
-    @Expose
-    val reason : String = "",
+        @SerializedName("reason")
+        @Expose
+        val reason: String = "",
 
-    @SerializedName("error_code")
-    @Expose
-    val errorCode: String = ""
+        @SerializedName("error_code")
+        @Expose
+        val errorCode: String = ""
 
 )
