@@ -1,0 +1,11 @@
+apk_genrule(
+  name = 'bin_liveDevDebugMod',
+  srcs = ['debug.keystore', 'META-INF'],
+  apk = ':bin_liveDevDebug',
+  bash = 'unzip $APK -d bin_liveDevDebug &&' \
+        'cp -R META-INF/* bin_liveDevDebug/META-INF &&' \
+        '(cd bin_liveDevDebug && zip -r ../mod_unaligned.apk .) &&' \
+        '$ANDROID_SDK/build-tools/27.0.3/zipalign -v -p 4 mod_unaligned.apk $OUT &&' \
+        '$ANDROID_SDK/build-tools/27.0.3/apksigner sign --ks debug.keystore --ks-pass pass:android $OUT',
+  out = 'bin_liveDevDebugMod.apk'
+)

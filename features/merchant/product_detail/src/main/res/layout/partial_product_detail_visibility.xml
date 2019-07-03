@@ -55,6 +55,7 @@
             app:textViewTheme="lightDisabled"
             android:text="@string/label_success_transaction"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/txt_tx_success"
             app:layout_constraintLeft_toRightOf="@+id/label_seen"
             app:layout_constraintStart_toEndOf="@+id/label_seen"
             app:layout_constraintRight_toLeftOf="@+id/label_wishlist"
