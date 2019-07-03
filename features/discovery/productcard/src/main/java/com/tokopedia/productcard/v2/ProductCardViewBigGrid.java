@@ -37,41 +37,56 @@ public class ProductCardViewBigGrid extends ProductCardView {
     }
 
     private void setTitleMarginTop() {
-        int marginTopDp = isViewVisible(textViewShopName) ? R.dimen.dp_2 : R.dimen.dp_8;
+        if(textViewProductName != null && isViewVisible(textViewProductName)) {
+            int marginTopDp = textViewShopName != null && isViewVisible(textViewShopName) ? R.dimen.dp_2 : R.dimen.dp_8;
 
-        setViewMarginsInConstraintLayoutProductCard(textViewProductName.getId(), ConstraintSet.TOP, marginTopDp);
+            setViewMarginsInConstraintLayoutProductCard(textViewProductName.getId(), ConstraintSet.TOP, marginTopDp);
+        }
     }
 
     private void setPriceMarginTop() {
-        int marginTopDp = isViewVisible(labelDiscount) ? R.dimen.dp_2 : R.dimen.dp_4;
+        if (textViewPrice != null && isViewVisible(textViewPrice)) {
+            int marginTopDp = labelDiscount != null && isViewVisible(labelDiscount) ? R.dimen.dp_2 : R.dimen.dp_4;
 
-        setViewMarginsInConstraintLayoutProductCard(textViewPrice.getId(), ConstraintSet.TOP, marginTopDp);
+            setViewMarginsInConstraintLayoutProductCard(textViewPrice.getId(), ConstraintSet.TOP, marginTopDp);
+        }
     }
 
     private void setLocationMarginLeft() {
-        int marginStartDp = isViewVisible(linearLayoutShopBadges) ? R.dimen.dp_4 : R.dimen.dp_8;
+        if (textViewShopLocation != null && isViewVisible(textViewShopLocation)) {
+            int marginStartDp = linearLayoutShopBadges != null && isViewVisible(linearLayoutShopBadges) ? R.dimen.dp_4 : R.dimen.dp_8;
 
-        setViewMarginsInConstraintLayoutProductCard(textViewShopLocation.getId(), ConstraintSet.START, marginStartDp);
+            setViewMarginsInConstraintLayoutProductCard(textViewShopLocation.getId(), ConstraintSet.START, marginStartDp);
+        }
     }
 
     private void setReviewCountMarginLeft() {
-        int marginStartDp = isViewVisible(imageRating) ? R.dimen.dp_4 : R.dimen.dp_8;
+        if (textViewReviewCount != null && isViewVisible(textViewReviewCount)) {
+            int marginStartDp = imageRating != null && isViewVisible(imageRating) ? R.dimen.dp_4 : R.dimen.dp_8;
 
-        setViewMarginsInConstraintLayoutProductCard(textViewReviewCount.getId(), ConstraintSet.START, marginStartDp);
+            setViewMarginsInConstraintLayoutProductCard(textViewReviewCount.getId(), ConstraintSet.START, marginStartDp);
+        }
     }
 
     private void setOffersLabelConstraint() {
-        if(isViewVisible(labelCredibility)) {
-            setViewConstraintInConstraintLayoutProductCard(labelOffers.getId(), ConstraintSet.TOP, labelCredibility.getId(), ConstraintSet.BOTTOM, R.dimen.dp_8);
-        }
-        else if(isViewVisible(imageRating)) {
-            setViewConstraintInConstraintLayoutProductCard(labelOffers.getId(), ConstraintSet.TOP, imageRating.getId(), ConstraintSet.BOTTOM, R.dimen.dp_8);
-        }
-        else if(isViewVisible(textViewReviewCount)) {
-            setViewConstraintInConstraintLayoutProductCard(labelOffers.getId(), ConstraintSet.TOP, textViewReviewCount.getId(), ConstraintSet.BOTTOM, R.dimen.dp_8);
-        }
-        else {
-            setViewConstraintInConstraintLayoutProductCard(labelOffers.getId(), ConstraintSet.TOP, textViewShopLocation.getId(), ConstraintSet.BOTTOM, R.dimen.dp_8);
+        if (labelOffers != null && isViewVisible(labelOffers)) {
+            if (labelCredibility != null && isViewVisible(labelCredibility)) {
+                setViewConstraintInConstraintLayoutProductCard(
+                        labelOffers.getId(), ConstraintSet.TOP, labelCredibility.getId(), ConstraintSet.BOTTOM, R.dimen.dp_8
+                );
+            } else if (imageRating != null && isViewVisible(imageRating)) {
+                setViewConstraintInConstraintLayoutProductCard(
+                        labelOffers.getId(), ConstraintSet.TOP, imageRating.getId(), ConstraintSet.BOTTOM, R.dimen.dp_8
+                );
+            } else if (textViewReviewCount != null && isViewVisible(textViewReviewCount)) {
+                setViewConstraintInConstraintLayoutProductCard(
+                        labelOffers.getId(), ConstraintSet.TOP, textViewReviewCount.getId(), ConstraintSet.BOTTOM, R.dimen.dp_8
+                );
+            } else if(textViewShopLocation != null && isViewVisible(textViewShopLocation)) {
+                setViewConstraintInConstraintLayoutProductCard(
+                        labelOffers.getId(), ConstraintSet.TOP, textViewShopLocation.getId(), ConstraintSet.BOTTOM, R.dimen.dp_8
+                );
+            }
         }
     }
 }

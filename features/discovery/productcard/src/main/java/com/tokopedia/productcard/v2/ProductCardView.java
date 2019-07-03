@@ -35,21 +35,37 @@ public abstract class ProductCardView extends BaseCustomView {
     protected static final String DARK_RED = "darkRed";
     protected static final String DARK_ORANGE = "darkOrange";
 
+    @Nullable
     protected ConstraintLayout constraintLayoutProductCard;
+    @Nullable
     protected ImpressedImageView imageProduct;
+    @Nullable
     protected ImageView buttonWishlist;
+    @Nullable
     protected Label labelPromo;
+    @Nullable
     protected Typography textViewShopName;
+    @Nullable
     protected Typography textViewProductName;
+    @Nullable
     protected Label labelDiscount;
+    @Nullable
     protected Typography textViewSlashedPrice;
+    @Nullable
     protected Typography textViewPrice;
+    @Nullable
     protected LinearLayout linearLayoutShopBadges;
+    @Nullable
     protected Typography textViewShopLocation;
+    @Nullable
     protected ImageView imageRating;
+    @Nullable
     protected Typography textViewReviewCount;
+    @Nullable
     protected Label labelCredibility;
+    @Nullable
     protected Label labelOffers;
+    @Nullable
     protected ImageView imageTopAds;
 
     public ProductCardView(@NonNull Context context) {
@@ -72,7 +88,7 @@ public abstract class ProductCardView extends BaseCustomView {
 
         findViews(inflatedView);
 
-        textViewProductName.setLineSpacing(0f, 1f);
+        postInit();
     }
 
     protected void findViews(View inflatedView) {
@@ -94,49 +110,72 @@ public abstract class ProductCardView extends BaseCustomView {
         imageTopAds = inflatedView.findViewById(R.id.imageTopAds);
     }
 
+    protected void postInit() {
+        if(textViewProductName != null) {
+            textViewProductName.setLineSpacing(0f, 1f);
+        }
+    }
+
     protected abstract int getLayout();
 
     public abstract void realignLayout();
 
     public void setImageProductVisible(boolean isVisible) {
-        imageProduct.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        if(imageProduct != null) {
+            imageProduct.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        }
     }
 
     public void setImageProductUrl(String imageUrl) {
-        ImageHandler.loadImageThumbs(getContext(), imageProduct, imageUrl);
+        if (imageProduct != null) {
+            ImageHandler.loadImageThumbs(getContext(), imageProduct, imageUrl);
+        }
     }
 
     public void setImageProductViewHintListener(ImpressHolder holder, ImpressedImageView.ViewHintListener listener) {
-        imageProduct.setViewHintListener(holder, listener);
+        if (imageProduct != null) {
+            imageProduct.setViewHintListener(holder, listener);
+        }
     }
 
     public void setButtonWishlistVisible(boolean isVisible) {
-        buttonWishlist.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        if (buttonWishlist != null) {
+            buttonWishlist.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        }
     }
 
     public void setButtonWishlistImage(boolean isWishlisted) {
-        if(isWishlisted) {
-            buttonWishlist.setImageResource(R.drawable.product_card_ic_wishlist_red);
-        }
-        else {
-            buttonWishlist.setImageResource(R.drawable.product_card_ic_wishlist);
+        if (buttonWishlist != null) {
+            if (isWishlisted) {
+                buttonWishlist.setImageResource(R.drawable.product_card_ic_wishlist_red);
+            } else {
+                buttonWishlist.setImageResource(R.drawable.product_card_ic_wishlist);
+            }
         }
     }
 
     public void setButtonWishlistOnClickListener(View.OnClickListener onClickListener) {
-        buttonWishlist.setOnClickListener(onClickListener);
+        if (buttonWishlist != null) {
+            buttonWishlist.setOnClickListener(onClickListener);
+        }
     }
 
     public void setLabelPromoVisible(boolean isVisible) {
-        labelPromo.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        if (labelPromo != null) {
+            labelPromo.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        }
     }
 
     public void setLabelPromoText(String promoLabelText) {
-        labelPromo.setText(MethodChecker.fromHtml(promoLabelText));
+        if (labelPromo != null) {
+            labelPromo.setText(MethodChecker.fromHtml(promoLabelText));
+        }
     }
 
     public void setLabelPromoType(String promoLabelType) {
-        labelPromo.setLabelType(getLabelTypeFromString(promoLabelType));
+        if (labelPromo != null) {
+            labelPromo.setLabelType(getLabelTypeFromString(promoLabelType));
+        }
     }
 
     protected int getLabelTypeFromString(String labelType) {
@@ -167,75 +206,109 @@ public abstract class ProductCardView extends BaseCustomView {
     }
 
     public void setShopNameVisible(boolean isVisible) {
-        textViewShopName.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        if (textViewShopName != null) {
+            textViewShopName.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        }
     }
 
     public void setShopNameText(String shopName) {
-        textViewShopName.setText(MethodChecker.fromHtml(shopName));
+        if (textViewShopName != null) {
+            textViewShopName.setText(MethodChecker.fromHtml(shopName));
+        }
     }
 
     public void setProductNameVisible(boolean isVisible) {
-        textViewProductName.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        if (textViewProductName != null) {
+            textViewProductName.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        }
     }
 
     public void setProductNameText(String title) {
-        textViewProductName.setText(MethodChecker.fromHtml(title));
+        if (textViewProductName != null) {
+            textViewProductName.setText(MethodChecker.fromHtml(title));
+        }
     }
 
     public void setLabelDiscountVisible(boolean isVisible) {
-        labelDiscount.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        if (labelDiscount != null) {
+            labelDiscount.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        }
     }
 
     public void setLabelDiscountText(int discount) {
-        String discountText = Integer.toString(discount) + "%";
-        labelDiscount.setText(discountText);
+        if (labelDiscount != null) {
+            String discountText = Integer.toString(discount) + "%";
+            labelDiscount.setText(discountText);
+        }
     }
 
     public void setSlashedPriceVisible(boolean isVisible) {
-        textViewSlashedPrice.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        if (textViewSlashedPrice != null) {
+            textViewSlashedPrice.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        }
     }
 
     public void setSlashedPriceText(String slashedPrice) {
-        textViewSlashedPrice.setText(slashedPrice);
-        textViewSlashedPrice.setPaintFlags(
-                textViewSlashedPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
-        );
+        if (textViewSlashedPrice != null) {
+            textViewSlashedPrice.setText(slashedPrice);
+            textViewSlashedPrice.setPaintFlags(
+                    textViewSlashedPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
+            );
+        }
     }
 
     public void setPriceVisible(boolean isVisible) {
-        textViewPrice.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        if (textViewPrice != null) {
+            textViewPrice.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        }
     }
 
     public void setPriceText(String price) {
-        textViewPrice.setText(price);
+        if (textViewPrice != null) {
+            textViewPrice.setText(price);
+        }
     }
 
     public void setShopBadgesVisible(boolean isVisible) {
-        linearLayoutShopBadges.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        if (linearLayoutShopBadges != null) {
+            linearLayoutShopBadges.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        }
     }
 
     public void removeAllShopBadges() {
-        linearLayoutShopBadges.removeAllViews();
+        if (linearLayoutShopBadges != null) {
+            linearLayoutShopBadges.removeAllViews();
+        }
     }
 
     public void addShopBadge(View view) {
-        linearLayoutShopBadges.addView(view);
+        if (linearLayoutShopBadges != null) {
+            linearLayoutShopBadges.addView(view);
+        }
     }
 
     public void setShopLocationVisible(boolean isVisible) {
-        textViewShopLocation.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        if (textViewShopLocation != null) {
+            textViewShopLocation.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        }
     }
 
     public void setShopLocationText(String location) {
-        textViewShopLocation.setText(MethodChecker.fromHtml(location));
+        if (textViewShopLocation != null) {
+            textViewShopLocation.setText(MethodChecker.fromHtml(location));
+        }
     }
 
     public void setImageRatingVisible(boolean isVisible) {
-        imageRating.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        if (imageRating != null) {
+            imageRating.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        }
     }
 
     public void setRating(int rating) {
-        imageRating.setImageResource(getRatingDrawable(rating));
+        if (imageRating != null) {
+            imageRating.setImageResource(getRatingDrawable(rating));
+        }
     }
 
     protected int getRatingDrawable(int param) {
@@ -258,11 +331,15 @@ public abstract class ProductCardView extends BaseCustomView {
     }
 
     public void setReviewCountVisible(boolean isVisible) {
-        textViewReviewCount.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        if (textViewReviewCount != null) {
+            textViewReviewCount.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        }
     }
 
     public void setReviewCount(int reviewCount) {
-        textViewReviewCount.setText(getReviewCountFormattedAsText(reviewCount));
+        if (textViewReviewCount != null) {
+            textViewReviewCount.setText(getReviewCountFormattedAsText(reviewCount));
+        }
     }
 
     public String getReviewCountFormattedAsText(int reviewCount) {
@@ -270,31 +347,45 @@ public abstract class ProductCardView extends BaseCustomView {
     }
 
     public void setLabelCredibilityVisible(boolean isVisible) {
-        labelCredibility.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        if (labelCredibility != null) {
+            labelCredibility.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        }
     }
 
     public void setLabelCredibilityText(String credibilityLabelText) {
-        labelCredibility.setText(MethodChecker.fromHtml(credibilityLabelText));
+        if (labelCredibility != null) {
+            labelCredibility.setText(MethodChecker.fromHtml(credibilityLabelText));
+        }
     }
 
     public void setLabelCredibilityType(String credibilityLabelType) {
-        labelCredibility.setLabelType(getLabelTypeFromString(credibilityLabelType));
+        if (labelCredibility != null) {
+            labelCredibility.setLabelType(getLabelTypeFromString(credibilityLabelType));
+        }
     }
 
     public void setLabelOffersVisible(boolean isVisible) {
-        labelOffers.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        if (labelOffers != null) {
+            labelOffers.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        }
     }
 
     public void setLabelOffersText(String offersLabelText) {
-        labelOffers.setText(MethodChecker.fromHtml(offersLabelText));
+        if (labelOffers != null) {
+            labelOffers.setText(MethodChecker.fromHtml(offersLabelText));
+        }
     }
 
     public void setLabelOffersType(String offersLabelType) {
-        labelOffers.setLabelType(getLabelTypeFromString(offersLabelType));
+        if (labelOffers != null) {
+            labelOffers.setLabelType(getLabelTypeFromString(offersLabelType));
+        }
     }
 
     public void setImageTopAdsVisible(boolean isVisible) {
-        imageTopAds.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        if (imageTopAds != null) {
+            imageTopAds.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        }
     }
 
     protected void setViewMarginsInConstraintLayoutProductCard(@IdRes int viewId, int anchor, int marginDp) {
@@ -319,6 +410,10 @@ public abstract class ProductCardView extends BaseCustomView {
 
             constraintSet.applyTo(constraintLayoutProductCard);
         }
+    }
+
+    protected boolean isViewNotNullAndVisible(@Nullable View view) {
+        return view != null && isViewVisible(view);
     }
 
     protected boolean isViewVisible(View view) {
