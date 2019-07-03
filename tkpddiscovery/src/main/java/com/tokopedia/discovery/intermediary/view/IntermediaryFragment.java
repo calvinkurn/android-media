@@ -100,10 +100,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.tokopedia.core.home.presenter.HotList.CATALOG_KEY;
-import static com.tokopedia.core.home.presenter.HotList.HOT_KEY;
-import static com.tokopedia.core.home.presenter.HotList.SEARCH;
-import static com.tokopedia.core.home.presenter.HotList.TOPPICKS_KEY;
 import static com.tokopedia.topads.sdk.domain.TopAdsParams.DEFAULT_KEY_EP;
 import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_INTERMEDIARY_VALUE;
 
@@ -116,6 +112,11 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         IntermediaryCategoryAdapter.CategoryListener, IntermediaryBrandsAdapter.BrandListener,
         BannerPagerAdapter.OnPromoClickListener, HotListItemAdapter.HotlistItemListener,
         WishListActionListener {
+
+    private static final String HOT_KEY = "hot";
+    private static final String CATALOG_KEY = "catalog";
+    private static final String TOPPICKS_KEY = "toppicks";
+    private static final String SEARCH = "search";
 
     public static final String TAG = "INTERMEDIARY_FRAGMENT";
     private static final long SLIDE_DELAY = 8000;
