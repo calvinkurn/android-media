@@ -474,36 +474,38 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             promoDetails.append(TickerCheckoutUtilKt.revertMapToStatePromoStackingCheckout(promoStackingGlobalData.getState()));
         }
 
-        for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModels) {
-            for (DataCheckoutRequest dataCheckoutRequest : dataCheckoutRequests) {
-                if (dataCheckoutRequest.shopProducts != null) {
-                    for (ShopProductCheckoutRequest shopProductCheckoutRequest : dataCheckoutRequest.shopProducts) {
-                        if (shopProductCheckoutRequest.cartString.equalsIgnoreCase(shipmentCartItemModel.getCartString()) && shopProductCheckoutRequest.productData != null) {
-                            if (shipmentCartItemModel.getVoucherOrdersItemUiModel() != null) {
-                                if (!TextUtils.isEmpty(promoCodes)) {
-                                    promoCodes.append("|");
+        if (dataCheckoutRequests != null) {
+            for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModels) {
+                for (DataCheckoutRequest dataCheckoutRequest : dataCheckoutRequests) {
+                    if (dataCheckoutRequest.shopProducts != null) {
+                        for (ShopProductCheckoutRequest shopProductCheckoutRequest : dataCheckoutRequest.shopProducts) {
+                            if (shopProductCheckoutRequest.cartString.equalsIgnoreCase(shipmentCartItemModel.getCartString()) && shopProductCheckoutRequest.productData != null) {
+                                if (shipmentCartItemModel.getVoucherOrdersItemUiModel() != null) {
+                                    if (!TextUtils.isEmpty(promoCodes)) {
+                                        promoCodes.append("|");
+                                    }
+                                    promoCodes.append(shipmentCartItemModel.getVoucherOrdersItemUiModel().getCode());
+                                    if (!TextUtils.isEmpty(promoDetails)) {
+                                        promoDetails.append("|");
+                                    }
+                                    promoDetails.append(shipmentCartItemModel.getVoucherOrdersItemUiModel().getMessage().getState());
                                 }
-                                promoCodes.append(shipmentCartItemModel.getVoucherOrdersItemUiModel().getCode());
-                                if (!TextUtils.isEmpty(promoDetails)) {
-                                    promoDetails.append("|");
-                                }
-                                promoDetails.append(shipmentCartItemModel.getVoucherOrdersItemUiModel().getMessage().getState());
-                            }
 
-                            if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
-                                if (!TextUtils.isEmpty(promoCodes)) {
-                                    promoCodes.append("|");
+                                if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
+                                    if (!TextUtils.isEmpty(promoCodes)) {
+                                        promoCodes.append("|");
+                                    }
+                                    promoCodes.append(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
+                                    if (!TextUtils.isEmpty(promoDetails)) {
+                                        promoDetails.append("|");
+                                    }
+                                    promoDetails.append(shipmentCartItemModel.getVoucherLogisticItemUiModel().getMessage().getState());
                                 }
-                                promoCodes.append(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
-                                if (!TextUtils.isEmpty(promoDetails)) {
-                                    promoDetails.append("|");
-                                }
-                                promoDetails.append(shipmentCartItemModel.getVoucherLogisticItemUiModel().getMessage().getState());
-                            }
 
-                            for (ProductDataCheckoutRequest productDataCheckoutRequest : shopProductCheckoutRequest.productData) {
-                                productDataCheckoutRequest.setPromoCode(promoCodes.toString());
-                                productDataCheckoutRequest.setPromoDetails(promoDetails.toString());
+                                for (ProductDataCheckoutRequest productDataCheckoutRequest : shopProductCheckoutRequest.productData) {
+                                    productDataCheckoutRequest.setPromoCode(promoCodes.toString());
+                                    productDataCheckoutRequest.setPromoDetails(promoDetails.toString());
+                                }
                             }
                         }
                     }
