@@ -110,6 +110,8 @@
                 android:layout_marginLeft="@dimen/dp_4"
                 android:layout_marginStart="@dimen/dp_4"
                 android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginRight="@dimen/dp_4"
+                android:layout_marginEnd="@dimen/dp_4"
                 android:ellipsize="end"
                 android:lines="1"
                 app:layout_goneMarginLeft="@dimen/dp_8"
