@@ -1,6 +1,6 @@
 package com.tokopedia.gamification;
 
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 
 /**
  * Created by nabillasabbaha on 3/28/18.

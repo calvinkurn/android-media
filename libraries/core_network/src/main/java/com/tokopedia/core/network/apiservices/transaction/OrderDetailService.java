@@ -1,8 +1,7 @@
 package com.tokopedia.core.network.apiservices.transaction;
 
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.network.apiservices.transaction.apis.OrderDetailApi;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.services.AuthService;
 
 import retrofit2.Retrofit;

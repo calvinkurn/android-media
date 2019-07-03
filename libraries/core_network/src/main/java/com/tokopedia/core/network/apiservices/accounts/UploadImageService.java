@@ -1,6 +1,6 @@
 package com.tokopedia.core.network.apiservices.accounts;
 
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.network.apiservices.accounts.apis.UploadImageApi;
 import com.tokopedia.core.network.retrofit.services.AuthService;
 

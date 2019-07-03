@@ -5,12 +5,10 @@ import com.tokopedia.abstraction.common.utils.network.AuthUtil
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase
-import com.tokopedia.config.url.TokopediaUrl
-import com.tokopedia.network.constant.TkpdBaseURL
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.promocheckout.common.domain.model.cancelpromo.ResponseCancelPromo
 import com.tokopedia.usecase.RequestParams
 import okhttp3.Interceptor
-import org.json.JSONObject
 
 class CancelPromoUseCase(authInterceptor : List<Interceptor>, context: Context) : RestRequestSupportInterceptorUseCase(authInterceptor, context) {
 
@@ -22,7 +20,7 @@ class CancelPromoUseCase(authInterceptor : List<Interceptor>, context: Context) 
 
         val params = HashMap<String, String>()
         params.put(AuthUtil.HEADER_DEVICE, ANDROID)
-        val restRequest1 = RestRequest.Builder(TokopediaUrl.getInstance().API + PATH_CANCEL_AUTO_APPLY_COUPON, ResponseCancelPromo::class.java)
+        val restRequest1 = RestRequest.Builder(com.tokopedia.url.TokopediaUrl.getInstance().API + PATH_CANCEL_AUTO_APPLY_COUPON, ResponseCancelPromo::class.java)
                 .setHeaders(params)
                 .setBody(HashMap<String, Any>())
                 .setRequestType(RequestType.POST)

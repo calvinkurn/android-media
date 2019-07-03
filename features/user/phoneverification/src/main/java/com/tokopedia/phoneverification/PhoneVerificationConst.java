@@ -1,6 +1,6 @@
 package com.tokopedia.phoneverification;
 
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 
 /**
  * @author by alvinatin on 12/10/18.

@@ -1,10 +1,10 @@
 package com.tokopedia.product.detail.data.util
 
-import com.tokopedia.config.url.TokopediaUrl
+import com.tokopedia.url.TokopediaUrl
 
 object ProductDetailConstant {
     @JvmField
-    var BASE_REST_URL = TokopediaUrl.getInstance().WS
+    var BASE_REST_URL = com.tokopedia.url.TokopediaUrl.getInstance().WS
 
     const val MAINAPP_SHOW_PDP_TOPADS = "mainapp_show_pdp_topads"
 

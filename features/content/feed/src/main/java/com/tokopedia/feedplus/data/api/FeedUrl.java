@@ -1,6 +1,6 @@
 package com.tokopedia.feedplus.data.api;
 
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 
 /**
  * @author by nisie on 10/3/18.

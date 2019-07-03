@@ -1,6 +1,6 @@
 package com.tokopedia.network.utils;
 
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 
 /**
  * Created by ricoharisin on 9/29/15.

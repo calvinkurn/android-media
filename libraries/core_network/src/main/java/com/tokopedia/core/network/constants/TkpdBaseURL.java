@@ -1,6 +1,6 @@
 package com.tokopedia.core.network.constants;
 
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 
 /**
  * Created by Angga.Prasetiyo on 07/12/2015.

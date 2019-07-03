@@ -1,9 +1,7 @@
 package com.tokopedia.core.network.apiservices.product;
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.network.apiservices.product.apis.ReputationReviewApi;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.services.AuthService;
-import com.tokopedia.core.network.retrofit.services.BaseService;
 
 import retrofit2.Retrofit;
 

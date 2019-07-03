@@ -10,7 +10,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.common_digital.common.data.api.DigitalResponseConverter;
 import com.tokopedia.common_digital.common.data.api.DigitalRestApi;
 import com.tokopedia.common_digital.common.di.DigitalRestApiRetrofit;
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.digital.common.data.apiservice.DigitalGqlApi;
 import com.tokopedia.digital.common.data.apiservice.DigitalHmacAuthInterceptor;
 import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;

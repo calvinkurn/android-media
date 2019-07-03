@@ -1,8 +1,7 @@
 package com.tokopedia.core.network.apiservices.notification;
 
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.network.apiservices.notification.apis.PushNotificationApi;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.services.BearerService;
 
 import retrofit2.Retrofit;

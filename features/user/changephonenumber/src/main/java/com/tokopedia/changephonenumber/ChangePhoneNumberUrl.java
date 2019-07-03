@@ -1,6 +1,6 @@
 package com.tokopedia.changephonenumber;
 
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 
 /**
  * @author by alvinatin on 26/09/18.
