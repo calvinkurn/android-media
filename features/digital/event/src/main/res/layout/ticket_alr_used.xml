@@ -12,7 +12,7 @@
         android:layout_height="@dimen/dp_24"
         android:layout_marginLeft="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_13"
-        android:src="@drawable/ic_close" />
+        app:srcCompat="@drawable/ic_close" />
 
     <android.support.design.widget.FloatingActionButton
         android:layout_width="wrap_content"
@@ -58,7 +58,7 @@
         <ImageView
             android:layout_width="@dimen/dp_16"
             android:layout_height="@dimen/dp_16"
-            android:src="@drawable/ic_valid_time"/>
+            app:srcCompat="@drawable/ic_valid_time"/>
 
         <TextView
             android:layout_width="wrap_content"

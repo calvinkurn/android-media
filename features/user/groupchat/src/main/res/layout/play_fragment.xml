@@ -168,7 +168,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sponsor_layout"
             tools:ignore="MergeRootFrame"
-            tools:visibility="visible">
+            tools:visibility="gone">
 
             <fragment xmlns:android="http://schemas.android.com/apk/res/android"
                       xmlns:tools="http://schemas.android.com/tools"
@@ -498,6 +498,44 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"/>
         </RelativeLayout>
+
+        <FrameLayout
+            android:id="@+id/dim_video_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#ae31353b"
+            android:visibility="gone"
+            android:elevation="@dimen/dp_3"/>
+
+        <LinearLayout
+            android:id="@+id/video_buffer_container"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            app:layout_constraintWidth_max="@dimen/dp_240"
+            app:layout_constraintTop_toTopOf="@id/layout_video_toggle"
+            app:layout_constraintBottom_toBottomOf="@id/chat_list"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:orientation="vertical"
+            android:elevation="@dimen/dp_3"
+            android:gravity="center"
+            android:visibility="gone">
+            <ProgressBar
+                android:id="@+id/buffer_progress_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/buffer_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="@dimen/sp_12"
+                android:text="@string/buffer_text_long"
+                android:textColor="@color/white"
+                />
+
+        </LinearLayout>
 
     </android.support.constraint.ConstraintLayout>
 

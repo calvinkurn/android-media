@@ -33,6 +33,7 @@ class TkpdVideoPlayerTest {
                             }
                         }
                     }
+
                     override fun onPlayerError(error: PlayerException) {
                         throw Exception("onPlayerError();")
                     }

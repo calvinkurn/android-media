@@ -39,7 +39,6 @@
         android:layout_marginStart="@dimen/tp_margin_regular"
         android:layout_marginLeft="@dimen/tp_margin_regular"
         android:layout_marginBottom="@dimen/dp_4"
-        android:drawableRight="@drawable/ic_arrow_right_grey"
         android:drawablePadding="@dimen/dp_16"
         android:drawableTint="@color/medium_green"
         android:ellipsize="end"

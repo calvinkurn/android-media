@@ -1,10 +1,8 @@
 package com.tokopedia.groupchat.room.view.activity
 
 import android.app.Activity
-import android.app.PictureInPictureParams
 import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Point
 import android.os.Build
@@ -12,7 +10,6 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.graphics.drawable.DrawableCompat
 import android.util.DisplayMetrics
-import android.util.Rational
 import android.view.View
 import android.view.WindowManager
 import android.widget.RelativeLayout
@@ -30,19 +27,20 @@ import com.tokopedia.groupchat.room.di.DaggerPlayComponent
 import com.tokopedia.groupchat.room.view.adapter.FragmentPagerAdapter
 import com.tokopedia.groupchat.room.view.fragment.BlankFragment
 import com.tokopedia.groupchat.room.view.fragment.PlayFragment
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.groupchat.room.view.listener.PlayActivityContract
+import com.tokopedia.groupchat.room.view.presenter.PlayActivityPresenter
+import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
 import com.tokopedia.videoplayer.utils.RepeatMode
 import com.tokopedia.videoplayer.utils.sendViewToBack
 import com.tokopedia.videoplayer.view.player.TkpdVideoPlayer
 import kotlinx.android.synthetic.main.play_activity.*
-import kotlinx.android.synthetic.main.play_fragment.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
  * @author : Steven 11/02/19
  */
-open class PlayActivity : BaseSimpleActivity(), PlayerViewListener {
+open class PlayActivity : BaseSimpleActivity(), PlayerViewListener, PlayActivityContract.View {
 
     lateinit var rootView: View
     lateinit var viewPager: NonSwipeableViewPager
@@ -51,12 +49,10 @@ open class PlayActivity : BaseSimpleActivity(), PlayerViewListener {
     @Inject
     lateinit var analytics: GroupChatAnalytics
 
-    private val mPictureInPictureParamsBuilder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        PictureInPictureParams.Builder()
-    } else {
-        null
-    }
+    @Inject
+    lateinit var presenter: PlayActivityPresenter
 
+    var channelId: String? = null
 
     override fun getNewFragment(): Fragment? {
         return null
@@ -82,6 +78,10 @@ open class PlayActivity : BaseSimpleActivity(), PlayerViewListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        channelId = intent?.extras?.getString(ApplinkConstant.PARAM_CHANNEL_ID)
+        if(channelId == null) {
+            channelId = intent?.extras?.getString(EXTRA_CHANNEL_UUID)
+        }
         initInjector()
         initView()
     }
@@ -96,11 +96,13 @@ open class PlayActivity : BaseSimpleActivity(), PlayerViewListener {
                 .build()
 
         playComponent.inject(this)
+        presenter.attachView(this)
     }
 
     private fun initView() {
         setupToolbar()
         setFragment()
+        presenter.getVideoStream(channelId, onSuccessGetVideoStream(), onErrorGetVideoStream())
     }
 
     override fun onPlayerActive(isActive: Boolean) {
@@ -136,10 +138,6 @@ open class PlayActivity : BaseSimpleActivity(), PlayerViewListener {
         val fragmentList = ArrayList<Fragment>()
 
         val bundle = Bundle()
-        var channelId = intent?.extras?.getString(ApplinkConstant.PARAM_CHANNEL_ID)
-        if(channelId == null) {
-            channelId = intent?.extras?.getString(EXTRA_CHANNEL_UUID)
-        }
         val useGCP = intent?.extras?.getString(EXTRA_USE_GCP, "false")
         useGCP?.run{
             bundle.putBoolean(EXTRA_USE_GCP, this.toBoolean())
@@ -154,6 +152,8 @@ open class PlayActivity : BaseSimpleActivity(), PlayerViewListener {
         viewPager.currentItem = 1
 
         viewPager.swipeable = false
+
+
     }
 
     private fun setupToolbar() {
@@ -254,23 +254,14 @@ open class PlayActivity : BaseSimpleActivity(), PlayerViewListener {
         }
     }
 
-    override fun onUserLeaveHint() {
-        super.onUserLeaveHint()
-        minimize()
-    }
-
-    private fun minimize() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            enterPictureInPictureMode(mPictureInPictureParamsBuilder?.build())
+    private fun onSuccessGetVideoStream(): (VideoStreamViewModel) -> Unit {
+        return {
         }
     }
 
-    override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration?) {
-        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
-        if(isInPictureInPictureMode) {
-            viewPager.visibility = View.GONE
-        } else {
-            viewPager.visibility = View.VISIBLE
+    private fun onErrorGetVideoStream(): (String) -> Unit {
+        return {
+
         }
     }
 

@@ -20,6 +20,7 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.RouteManager;
@@ -98,6 +99,7 @@ import javax.inject.Inject;
 
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_PRODUCT_ID;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WIHSLIST_STATUS_IS_WISHLIST;
+import static com.tokopedia.remoteconfig.RemoteConfigKey.HOTLIST_SHARE_MSG;
 
 /**
  * Created by hangnadi on 10/6/17.
@@ -151,6 +153,9 @@ public class HotlistFragment extends BrowseSectionFragment
 
     private LocalCacheHandler trackerProductCache;
 
+    private String HOTLIST_NAME_PLACEHOLDER = "{{hotlist__name_plchldr}}";
+
+
     @Inject
     HotlistFragmentPresenter presenter;
     @Inject
@@ -159,6 +164,8 @@ public class HotlistFragment extends BrowseSectionFragment
     private String trackerAttribution;
     private PerformanceMonitoring performanceMonitoring;
     private boolean isTraceStopped;
+    private RemoteConfig remoteConfig;
+
     private List<QuickFilterItem> quickFilterItems = new ArrayList<>();
 
     public static Fragment createInstanceUsingAlias(String alias, String trackerAttribution) {
@@ -494,11 +501,27 @@ public class HotlistFragment extends BrowseSectionFragment
         if (TextUtils.isEmpty(shareUrl)) {
             return;
         }
+        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
+        String hotlistShareMsg = remoteConfig.getString(HOTLIST_SHARE_MSG);
+        if(!TextUtils.isEmpty(hotlistShareMsg)){
+            String hotlistTitle = "";
+            if(hotlistAdapter != null && hotlistAdapter.getItemList() != null && hotlistAdapter.getItemList().size() > 0
+                    && hotlistAdapter.getItemList().get(0) instanceof HotlistHeaderViewModel){
+                if(!TextUtils.isEmpty(((HotlistHeaderViewModel) hotlistAdapter.getItemList().get(0)).getHotlistTitle())){
+                    hotlistTitle = ((HotlistHeaderViewModel) hotlistAdapter.getItemList().get(0)).getHotlistTitle();
+                }
+            }
+            hotlistShareMsg = FindAndReplaceHelper.findAndReplacePlaceHolders(hotlistShareMsg, HOTLIST_NAME_PLACEHOLDER, hotlistTitle);
+        }
+        else {
+            hotlistShareMsg = getString(R.string.message_share_category);
+        }
 
         LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
                 .setType(LinkerData.DISCOVERY_TYPE)
                 .setName(getString(R.string.message_share_catalog))
-                .setTextContent(getString(R.string.message_share_category))
+                .setTextContent(hotlistShareMsg)
+                .setCustMsg(hotlistShareMsg)
                 .setUri(shareUrl)
                 .setId(aliasHotlist)
                 .build();

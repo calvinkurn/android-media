@@ -17,6 +17,7 @@ import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewMod
 interface PlayViewState {
 
     fun onSuccessGetInfoFirstTime(it: ChannelInfoViewModel, childFragmentManager: FragmentManager)
+    fun onSuccessGetInfo(it: ChannelInfoViewModel)
 
     fun loadImageChannelBanner(context: Context, bannerUrl: String?, blurredBannerUrl: String?)
     fun setToolbarData(title: String?, bannerUrl: String?, totalView: String?, blurredBannerUrl: String?)
@@ -26,7 +27,7 @@ interface PlayViewState {
     fun onTotalViewChanged(channelId: String, totalView: String)
     fun onAdsUpdated(it: AdsViewModel)
     fun onPinnedMessageUpdated(it: PinnedMessageViewModel)
-    fun onVideoUpdated(it: VideoViewModel, childFragmentManager: FragmentManager)
+    fun onVideoUpdated(it: VideoViewModel)
     fun onChannelFrozen(channelId: String)
     fun banUser(userId: String)
     fun onChannelDeleted()
@@ -41,7 +42,6 @@ interface PlayViewState {
     fun getChannelInfo(): ChannelInfoViewModel?
     fun onDynamicButtonUpdated(it: DynamicButtonsViewModel)
     fun onErrorGetDynamicButtons()
-    fun onInfoMenuClicked()
     fun onReceiveGamificationNotif(model: GroupChatPointsViewModel)
     fun onBackgroundUpdated(it: BackgroundViewModel)
     fun getDurationWatchVideo(): String?
@@ -61,4 +61,5 @@ interface PlayViewState {
     fun onNoInternetConnection()
     fun onInteractiveButtonClicked(anchorView: LottieAnimationView)
     fun onInteractiveButtonViewed(anchorView: LottieAnimationView)
+    fun onOverflowMenuClicked()
 }

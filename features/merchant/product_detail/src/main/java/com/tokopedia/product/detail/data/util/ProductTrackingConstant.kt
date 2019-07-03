@@ -1,6 +1,8 @@
 package com.tokopedia.product.detail.data.util
 
 object ProductTrackingConstant {
+    const val USER_NON_LOGIN = "non login"
+
     object Category {
         const val PDP = "product detail page"
         const val PRODUCT_PAGE = "Product Page"

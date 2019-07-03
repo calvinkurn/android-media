@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/dp_8">
+
+    <ImageView
+        android:id="@+id/category_image_view"
+        android:layout_width="@dimen/dp_48"
+        android:layout_height="@dimen/dp_48"
+        android:layout_marginTop="@dimen/dp_8"
+        android:padding="@dimen/dp_6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/category_heading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:gravity="center_horizontal"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/sp_10"
+        app:layout_constraintEnd_toEndOf="@+id/category_image_view"
+        app:layout_constraintStart_toStartOf="@+id/category_image_view"
+        app:layout_constraintTop_toBottomOf="@+id/category_image_view"
+        tools:text="Pinjaman" />
+
+
+    <TextView
+        android:id="@+id/category_subheading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:gravity="center_horizontal"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/sp_10"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/category_image_view"
+        app:layout_constraintStart_toStartOf="@+id/category_image_view"
+        app:layout_constraintTop_toBottomOf="@+id/category_heading"
+        tools:text="Pendidikan"
+        tools:visibility="gone" />
+
+</android.support.constraint.ConstraintLayout>

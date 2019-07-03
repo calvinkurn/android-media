@@ -18,7 +18,7 @@ import com.tokopedia.user.session.UserSessionInterface
  */
 interface PlayContract {
     interface View : BaseListViewListener<Visitable<*>>, CustomerView {
-        fun onOpenWebSocket()
+        fun onOpenWebSocket(refreshInfo: Boolean)
         fun setSnackBarConnectingWebSocket()
         fun setSnackBarRetryConnectingWebSocket()
         fun onLoginClicked(channelId: String?)
@@ -47,7 +47,13 @@ interface PlayContract {
     }
 
     interface Presenter: CustomerPresenter<View> {
-        fun openWebSocket(userSession: UserSessionInterface, channelId: String, groupChatToken: String, settingGroupChat: SettingGroupChat?)
+        fun openWebSocket(
+                userSession: UserSessionInterface,
+                channelId: String,
+                groupChatToken: String,
+                settingGroupChat: SettingGroupChat?,
+                needRefreshInfo: Boolean
+        )
         fun sendMessage(
                 viewModel: PendingChatViewModel,
                 afterSendMessage: () -> Unit,
