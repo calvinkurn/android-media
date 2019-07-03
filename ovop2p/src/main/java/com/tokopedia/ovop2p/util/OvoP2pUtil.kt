@@ -129,4 +129,9 @@ object OvoP2pUtil {
         var userSession = UserSession(context)
         return userSession.name
     }
+
+    fun getDeviceId(context: Context): String{
+        var userSession = UserSession(context)
+        return userSession.deviceId
+    }
 }

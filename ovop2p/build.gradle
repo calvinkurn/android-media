@@ -21,6 +21,7 @@ project.ext {
 }
 
 dependencies {
+    implementation project(rootProject.ext.libraries.track)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.abstraction)

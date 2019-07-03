@@ -25,6 +25,7 @@ import com.tokopedia.ovop2p.di.OvoP2pTransferComponent
 import com.tokopedia.ovop2p.model.OvoP2pTransferConfirmBase
 import com.tokopedia.ovop2p.model.OvoP2pTransferRequestBase
 import com.tokopedia.ovop2p.model.WalletDataBase
+import com.tokopedia.ovop2p.util.AnalyticsUtil
 import com.tokopedia.ovop2p.util.OvoP2pUtil
 import com.tokopedia.ovop2p.view.activity.AllContactsActivity
 import com.tokopedia.ovop2p.view.activity.OVOP2PThankyouActivity
@@ -70,11 +71,16 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
                     rcvrMsg = msgEdtxtv.text.toString()
                     createOvoP2pTransferReqMap(Constants.Keys.AMOUNT, rcvrAmt)
                     createOvoP2pTransferReqMap(Constants.Keys.NAME, rcvrName)
-                    createOvoP2pTransferReqMap(Constants.Keys.FORMATTED_AMOUNT, rcvrAmt)
+                    createOvoP2pTransferReqMap(Constants.Keys.FORMATTED_AMOUNT,
+                            CurrencyFormatUtil.getThousandSeparatorString(rcvrAmt.toDouble(), false, 0).formattedString)
                     createOvoP2pTransferReqMap(Constants.Keys.TO_PHN_NO, rcvrPhnNo)
                     createOvoP2pTransferReqMap(Constants.Keys.MESSAGE, rcvrMsg)
                     (activity as LoaderUiListener).showProgressDialog()
                     context?.let { ovoP2pTransferRequestViewModel.makeTransferRequestCall(it, trnsfrReqDataMap) }
+                    context?.let {
+                        AnalyticsUtil.sendEvent(it, AnalyticsUtil.EventName.CLICK_OVO,
+                                AnalyticsUtil.EventCategory.OVO_TRNSFR, "", AnalyticsUtil.EventAction.CLK_LNJKTN)
+                    }
                 }
                 R.id.iv_contact -> {
                     val intent = Intent(activity, AllContactsActivity::class.java)
@@ -82,16 +88,37 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
                 }
                 R.id.cancel -> {
                     alertDialog.dismiss()
+                    context?.let {
+                        AnalyticsUtil.sendEvent(it, AnalyticsUtil.EventName.CLICK_OVO,
+                                AnalyticsUtil.EventCategory.OVO_CONF_TRANSFER, "", AnalyticsUtil.EventAction.CLK_BTLKN)
+                    }
                 }
                 R.id.close -> {
                     alertDialog.dismiss()
                     nonOvoUsr = false
+                    context?.let {
+                        AnalyticsUtil.sendEvent(it, AnalyticsUtil.EventName.CLICK_OVO,
+                                AnalyticsUtil.EventCategory.OVO_CONF_TRANSFER, "", AnalyticsUtil.EventAction.CLK_BTLKN)
+                    }
                 }
                 R.id.proceed_dlg -> {
                     //make transfer confirm request
                     alertDialog.dismiss()
                     (activity as LoaderUiListener).showProgressDialog()
                     context?.let { ovoP2pTransferConfirmViewModel.makeTransferConfirmCall(it, trnsfrReqDataMap) }
+                    context?.let {
+                        AnalyticsUtil.sendEvent(it, AnalyticsUtil.EventName.CLICK_OVO,
+                                AnalyticsUtil.EventCategory.OVO_CONF_TRANSFER, "", AnalyticsUtil.EventAction.CLK_TRNSFR)
+                    }
+                }
+                R.id.proceed_dlg_non_ovo -> {
+                    alertDialog.dismiss()
+                    (activity as LoaderUiListener).showProgressDialog()
+                    context?.let { ovoP2pTransferConfirmViewModel.makeTransferConfirmCall(it, trnsfrReqDataMap) }
+                    context?.let {
+                        AnalyticsUtil.sendEvent(it, AnalyticsUtil.EventName.CLICK_OVO,
+                                AnalyticsUtil.EventCategory.OVO_CONF_TRANSFER, "", AnalyticsUtil.EventAction.CLK_TRNSFR)
+                    }
                 }
                 R.id.btn_ok -> {
                     errorSnackbar.let {

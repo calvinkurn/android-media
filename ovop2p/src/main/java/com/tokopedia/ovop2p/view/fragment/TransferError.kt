@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.ovop2p.Constants
 import com.tokopedia.ovop2p.R
 import com.tokopedia.ovop2p.di.OvoP2pTransferComponent
+import com.tokopedia.ovop2p.util.AnalyticsUtil
 
 class TransferError : BaseDaggerFragment(), View.OnClickListener {
 
@@ -46,9 +47,17 @@ class TransferError : BaseDaggerFragment(), View.OnClickListener {
             when (id) {
                 R.id.try_agn -> {
                     activity?.supportFragmentManager?.popBackStack()
+                    context?.let {
+                        AnalyticsUtil.sendEvent(it, AnalyticsUtil.EventName.CLICK_OVO,
+                                AnalyticsUtil.EventCategory.OVO_SUMRY_TRNSFR_GAGAL, "", AnalyticsUtil.EventAction.CLK_TRY_AGN)
+                    }
                 }
                 R.id.back_to_app -> {
                     activity?.finish()
+                    context?.let {
+                        AnalyticsUtil.sendEvent(it, AnalyticsUtil.EventName.CLICK_OVO,
+                                AnalyticsUtil.EventCategory.OVO_SUMRY_TRNSFR_GAGAL, "", AnalyticsUtil.EventAction.CLK_KMBL_TKPD)
+                    }
                 }
             }
         }

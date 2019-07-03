@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.ovop2p.Constants
 import com.tokopedia.ovop2p.R
 import com.tokopedia.ovop2p.di.OvoP2pTransferComponent
+import com.tokopedia.ovop2p.util.AnalyticsUtil
 import com.tokopedia.ovop2p.view.activity.OvoP2PFormActivity
 
 class TxnSucsNonOvoUsr: BaseDaggerFragment(), View.OnClickListener {
@@ -47,12 +48,20 @@ class TxnSucsNonOvoUsr: BaseDaggerFragment(), View.OnClickListener {
             when(id){
                 R.id.back_to_app -> {
                     activity?.finish()
+                    context?.let {
+                        AnalyticsUtil.sendEvent(it, AnalyticsUtil.EventName.CLICK_OVO,
+                                AnalyticsUtil.EventCategory.OVO_SUMRY_TRNSFR_SUCS, "", AnalyticsUtil.EventAction.CLK_KMBL_TKPD)
+                    }
                 }
                 R.id.send_agn -> {
                     //relaunch the form activity
                     var intent = Intent(activity, OvoP2PFormActivity::class.java)
                     activity?.startActivity(intent)
                     activity?.finish()
+                    context?.let {
+                        AnalyticsUtil.sendEvent(it, AnalyticsUtil.EventName.CLICK_OVO,
+                                AnalyticsUtil.EventCategory.OVO_SUMRY_TRNSFR_SUCS, "", AnalyticsUtil.EventAction.CLK_TRY_AGN)
+                    }
                 }
             }
         }

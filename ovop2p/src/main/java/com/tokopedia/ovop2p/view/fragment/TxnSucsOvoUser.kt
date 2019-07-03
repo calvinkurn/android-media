@@ -17,6 +17,7 @@ import com.tokopedia.ovop2p.Constants
 import com.tokopedia.ovop2p.R
 import com.tokopedia.ovop2p.di.OvoP2pTransferComponent
 import com.tokopedia.ovop2p.model.OvoP2pTransferThankyouBase
+import com.tokopedia.ovop2p.util.AnalyticsUtil
 import com.tokopedia.ovop2p.util.OvoP2pUtil
 import com.tokopedia.ovop2p.view.interfaces.ActivityListener
 import com.tokopedia.ovop2p.view.interfaces.LoaderUiListener
@@ -154,9 +155,17 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
                     bundle.putSerializable(Constants.Keys.RECIEVER_PHONE, rcvrNum.text.toString())
                     (activity as ActivityListener).addReplaceFragment(TxnDetails.newInstance(bundle), true,
                             TxnDetails.TAG)
+                    context?.let {
+                        AnalyticsUtil.sendEvent(it, AnalyticsUtil.EventName.CLICK_OVO,
+                                AnalyticsUtil.EventCategory.OVO_SUMRY_TRNSFR_SUCS, "", AnalyticsUtil.EventAction.CLK_SEE_DTL)
+                    }
                 }
                 R.id.back_to_app -> {
                     activity?.finish()
+                    context?.let {
+                        AnalyticsUtil.sendEvent(it, AnalyticsUtil.EventName.CLICK_OVO,
+                                AnalyticsUtil.EventCategory.OVO_SUMRY_TRNSFR_SUCS, "", AnalyticsUtil.EventAction.CLK_KMBL_TKPD)
+                    }
                 }
                 R.id.btn_ok -> {
                     errorSnackbar.let {
