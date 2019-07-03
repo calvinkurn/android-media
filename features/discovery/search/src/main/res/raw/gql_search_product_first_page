@@ -30,6 +30,7 @@ searchProduct(params: $params) {
    }
    products {
      id
+     #whid
      name
      childs
      url
