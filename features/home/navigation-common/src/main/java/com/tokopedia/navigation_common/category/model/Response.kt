@@ -1,6 +1,9 @@
 package com.tokopedia.navigation_common.category.model
 
+import com.google.gson.annotations.SerializedName
+
 
 data class Response(
-	val data: CategoryConfigModel? = null
+		@field:SerializedName("data")
+		val data: CategoryConfigModel? = null
 )

@@ -1,5 +1,8 @@
 package com.tokopedia.navigation_common.category.model
 
+import com.google.gson.annotations.SerializedName
+
 data class HomeFlag(
-	val isRevampBelanja: Boolean = false
+		@field:SerializedName("isRevampBelanja")
+		val isRevampBelanja: Boolean = false
 )

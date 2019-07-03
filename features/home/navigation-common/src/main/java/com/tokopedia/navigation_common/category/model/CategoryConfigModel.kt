@@ -1,6 +1,9 @@
 package com.tokopedia.navigation_common.category.model
 
+import com.google.gson.annotations.SerializedName
+
 
 data class CategoryConfigModel(
-	val homeFlag: HomeFlag? = null
+		@field:SerializedName("homeFlag")
+		val homeFlag: HomeFlag? = null
 )
