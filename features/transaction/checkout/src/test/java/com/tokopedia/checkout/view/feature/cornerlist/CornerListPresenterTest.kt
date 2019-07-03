@@ -17,12 +17,9 @@ import rx.Observable
 @RunWith(MockitoJUnitRunner::class)
 class CornerListPresenterTest {
 
-    @Mock
-    lateinit var usecase: GetCornerList
-    @Mock
-    lateinit var view: CornerContract.View
-    @InjectMocks
-    lateinit var presenter: CornerListPresenter
+    @Mock lateinit var usecase: GetCornerList
+    @Mock lateinit var view: CornerContract.View
+    @InjectMocks lateinit var presenter: CornerListPresenter
 
     @Before
     fun setup() {
@@ -69,8 +66,11 @@ class CornerListPresenterTest {
 
         inOrder(view).apply {
             this.verify(view).setLoadingState(true)
-            this.verify(view).showError(err)
+
+            // When onError case, doOnTerminate method is executed after onNext/onComplete and
+            // before onError
             this.verify(view).setLoadingState(false)
+            this.verify(view).showError(err)
         }
     }
 }
