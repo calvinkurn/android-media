@@ -11,10 +11,7 @@ import android.util.Log;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core2.R;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
