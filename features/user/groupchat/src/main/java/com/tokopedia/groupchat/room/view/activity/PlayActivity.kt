@@ -42,7 +42,7 @@ import javax.inject.Inject
 /**
  * @author : Steven 11/02/19
  */
-open class PlayActivity : BaseSimpleActivity(), PlayViewListener {
+open class PlayActivity : BaseSimpleActivity(), PlayerViewListener {
 
     lateinit var rootView: View
     lateinit var viewPager: NonSwipeableViewPager

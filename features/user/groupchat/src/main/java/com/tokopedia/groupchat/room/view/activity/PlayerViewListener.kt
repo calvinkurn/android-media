@@ -1,5 +1,5 @@
 package com.tokopedia.groupchat.room.view.activity
 
-interface PlayViewListener {
+interface PlayerViewListener {
     fun onPlayerActive(isActive: Boolean)
 }

@@ -35,7 +35,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics
 import com.tokopedia.groupchat.room.di.DaggerPlayComponent
 import com.tokopedia.groupchat.room.view.activity.PlayActivity
-import com.tokopedia.groupchat.room.view.activity.PlayViewListener
+import com.tokopedia.groupchat.room.view.activity.PlayerViewListener
 import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.groupchat.room.view.presenter.PlayPresenter
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
@@ -112,7 +112,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     private var position = 0
     private var optionsMenuEnable = false
 
-    private lateinit var listener: PlayViewListener
+    private lateinit var listener: PlayerViewListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -760,7 +760,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        if (context is PlayViewListener) {
+        if (context is PlayerViewListener) {
             listener = context
         }
     }
