@@ -105,7 +105,6 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
         setHasOptionsMenu(true);
         mActivityListener = (MPAddressActivityListener) getActivity();
         performanceMonitoring.startTrace(FIREBASE_PERFORMANCE_MONITORING_TRACE_MP_ADDRESS_LIST);
-        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
     }
 
     @Override
