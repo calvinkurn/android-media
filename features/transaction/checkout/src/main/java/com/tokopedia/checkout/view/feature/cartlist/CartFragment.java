@@ -1940,7 +1940,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             }
         }
         CartSectionHeaderHolderData cartSectionHeaderHolderData = new CartSectionHeaderHolderData();
-        cartSectionHeaderHolderData.setTitle("Terakhir Dilihat");
+        cartSectionHeaderHolderData.setTitle(getString(R.string.checkout_module_title_recent_view));
 
         CartRecentViewHolderData cartRecentViewHolderData = new CartRecentViewHolderData();
         cartRecentViewHolderData.setRecentViewList(cartRecentViewItemHolderDataList);
@@ -1977,7 +1977,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             }
         }
         CartSectionHeaderHolderData cartSectionHeaderHolderData = new CartSectionHeaderHolderData();
-        cartSectionHeaderHolderData.setTitle("Wishlist");
+        cartSectionHeaderHolderData.setTitle(getString(R.string.checkout_module_title_wishlist));
         cartSectionHeaderHolderData.setShowAllAppLink(ApplinkConst.WISHLIST);
 
         CartWishlistHolderData cartRecentViewHolderData = new CartWishlistHolderData();
@@ -2019,7 +2019,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         CartSectionHeaderHolderData cartSectionHeaderHolderData = null;
         if (endlessRecyclerViewScrollListener.getCurrentPage() == 0) {
             cartSectionHeaderHolderData = new CartSectionHeaderHolderData();
-            cartSectionHeaderHolderData.setTitle("Rekomendasi");
+            cartSectionHeaderHolderData.setTitle(getString(R.string.checkout_module_title_recommendation));
         }
 
         endlessRecyclerViewScrollListener.updateStateAfterGetData();
@@ -2046,18 +2046,18 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         String eventAction = "";
         String eventLabel = "";
         if (productModel instanceof CartWishlistItemHolderData) {
-            eventCategory = "wishlist page";
-            eventAction = "click - beli on wishlist";
+            eventCategory = ConstantTransactionAnalytics.EventCategory.WISHLIST_PAGE;
+            eventAction = ConstantTransactionAnalytics.EventAction.CLICK_BELI_ON_WISHLIST;
             eventLabel = "";
             stringObjectMap = dPresenter.generateAddToCartEnhanceEcommerceDataLayer((CartWishlistItemHolderData) productModel);
         } else if (productModel instanceof CartRecentViewItemHolderData) {
-            eventCategory = "recent view";
-            eventAction = "click - beli on recent view page";
+            eventCategory = ConstantTransactionAnalytics.EventCategory.RECENT_VIEW;
+            eventAction = ConstantTransactionAnalytics.EventAction.CLICK_BELI_ON_RECENT_VIEW_PAGE;
             eventLabel = "";
             stringObjectMap = dPresenter.generateAddToCartEnhanceEcommerceDataLayer((CartRecentViewItemHolderData) productModel);
         } else if (productModel instanceof CartRecommendationItemHolderData) {
-            eventCategory = "recommendation page";
-            eventAction = "click add to cart on primary product";
+            eventCategory = ConstantTransactionAnalytics.EventCategory.RECOMMENDATION_PAGE;
+            eventAction = ConstantTransactionAnalytics.EventAction.CLICK_ADD_TO_CART_ON_PRIMARY_PRODUCT;
             eventLabel = "";
             stringObjectMap = dPresenter.generateAddToCartEnhanceEcommerceDataLayer((CartRecommendationItemHolderData) productModel);
         }
