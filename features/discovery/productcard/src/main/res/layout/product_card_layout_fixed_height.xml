@@ -58,7 +58,7 @@
                     android:textStyle="bold"
                     android:textColor="@color/discountTextColor"
                     android:textSize="@dimen/sp_10"
-                    android:background="@drawable/discount_text_background"
+                    android:background="@drawable/product_card_discount_text_background"
                     android:paddingLeft="@dimen/dp_4"
                     android:paddingRight="@dimen/dp_4"
                     android:paddingTop="@dimen/dp_2"

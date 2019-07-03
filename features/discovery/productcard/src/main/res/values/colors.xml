@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="white">#FFFFFF</color>
     <color name="charcoal_grey_88">#e131353b</color>
     <color name="charcoal_grey_40">#6631353b</color>
     <color name="icon_product_card_background_color">#f3f4f5</color>
@@ -11,4 +12,6 @@
     <color name="product_card_price_text_color">#fa591d</color>
     <color name="product_card_location_text_color">#ae31353b</color>
     <color name="product_card_review_count_text_color">#7031353b</color>
+
+    <color name="product_card_button_buy_background_color">#fa591d</color>
 </resources>

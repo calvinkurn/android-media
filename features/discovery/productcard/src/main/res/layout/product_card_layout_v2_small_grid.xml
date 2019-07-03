@@ -56,6 +56,18 @@
             app:layout_constraintBottom_toBottomOf="@id/imageProduct"
             tools:visibility="visible"
             tools:text="Promo Label" />
+            
+        <ImageView
+            android:id="@+id/imageShop"
+            android:layout_width="@dimen/dp_32"
+            android:layout_height="@dimen/dp_32"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@id/imageProduct"
+            app:layout_constraintTop_toBottomOf="@id/imageProduct"
+            app:layout_constraintBottom_toBottomOf="@id/imageProduct"
+            tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewShopName"

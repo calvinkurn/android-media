@@ -68,27 +68,30 @@ public abstract class ProductCardView extends BaseCustomView {
     }
 
     protected void init() {
-        final View view = inflate(getContext(), getLayout(), this);
+        final View inflatedView = inflate(getContext(), getLayout(), this);
 
-        constraintLayoutProductCard = view.findViewById(R.id.constraintLayoutProductCard);
-        imageProduct = view.findViewById(R.id.imageProduct);
-        buttonWishlist = view.findViewById(R.id.buttonWishlist);
-        labelPromo = view.findViewById(R.id.labelPromo);
-        textViewShopName = view.findViewById(R.id.textViewShopName);
-        textViewProductName = view.findViewById(R.id.textViewProductName);
-        labelDiscount = view.findViewById(R.id.labelDiscount);
-        textViewSlashedPrice = view.findViewById(R.id.textViewSlashedPrice);
-        textViewPrice = view.findViewById(R.id.textViewPrice);
-        linearLayoutShopBadges = view.findViewById(R.id.linearLayoutShopBadges);
-        textViewShopLocation = view.findViewById(R.id.textViewShopLocation);
-        imageRating = view.findViewById(R.id.imageRating);
-        textViewReviewCount = view.findViewById(R.id.textViewReviewCount);
-        labelCredibility = view.findViewById(R.id.labelCredibility);
-        labelOffers = view.findViewById(R.id.labelOffers);
-        imageTopAds = view.findViewById(R.id.imageTopAds);
-
+        findViews(inflatedView);
 
         textViewProductName.setLineSpacing(0f, 1f);
+    }
+
+    protected void findViews(View inflatedView) {
+        constraintLayoutProductCard = inflatedView.findViewById(R.id.constraintLayoutProductCard);
+        imageProduct = inflatedView.findViewById(R.id.imageProduct);
+        buttonWishlist = inflatedView.findViewById(R.id.buttonWishlist);
+        labelPromo = inflatedView.findViewById(R.id.labelPromo);
+        textViewShopName = inflatedView.findViewById(R.id.textViewShopName);
+        textViewProductName = inflatedView.findViewById(R.id.textViewProductName);
+        labelDiscount = inflatedView.findViewById(R.id.labelDiscount);
+        textViewSlashedPrice = inflatedView.findViewById(R.id.textViewSlashedPrice);
+        textViewPrice = inflatedView.findViewById(R.id.textViewPrice);
+        linearLayoutShopBadges = inflatedView.findViewById(R.id.linearLayoutShopBadges);
+        textViewShopLocation = inflatedView.findViewById(R.id.textViewShopLocation);
+        imageRating = inflatedView.findViewById(R.id.imageRating);
+        textViewReviewCount = inflatedView.findViewById(R.id.textViewReviewCount);
+        labelCredibility = inflatedView.findViewById(R.id.labelCredibility);
+        labelOffers = inflatedView.findViewById(R.id.labelOffers);
+        imageTopAds = inflatedView.findViewById(R.id.imageTopAds);
     }
 
     protected abstract int getLayout();
