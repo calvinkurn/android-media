@@ -220,7 +220,7 @@ public class SearchTracking {
 
     public static void eventClickRelatedSearch(Context context, String currentKeyword, String relatedKeyword) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                "",
+                "clickSearchResult",
                 "search result",
                 "click - related keyword",
                 String.format("%s - %s", currentKeyword, relatedKeyword)
