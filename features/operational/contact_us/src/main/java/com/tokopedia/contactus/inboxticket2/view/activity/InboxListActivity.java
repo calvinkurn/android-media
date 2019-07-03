@@ -7,7 +7,9 @@ import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -15,7 +17,6 @@ import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.R;
-import com.tokopedia.contactus.R2;
 import com.tokopedia.contactus.common.analytics.ContactUsTracking;
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking;
 import com.tokopedia.contactus.home.view.ContactUsHomeActivity;
@@ -26,33 +27,23 @@ import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract;
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText;
 
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.OnClick;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
-public class InboxListActivity extends InboxBaseActivity
-        implements InboxListContract.InboxListView {
-    @BindView(R2.id.iv_no_ticket)
-    ImageView ivNoTicket;
-    @BindView(R2.id.tv_no_ticket)
-    TextView tvNoTicket;
-    @BindView(R2.id.tv_raise_ticket)
-    TextView tvRaiseTicket;
-    @BindView(R2.id.btn_filter_tv)
-    TextView btnFilterTv;
-    @BindView(R2.id.rv_email_list)
-    VerticalRecyclerView rvEmailList;
-    @BindView(R2.id.btn_filter)
-    View btnFilter;
-    @BindView(R2.id.inbox_search_view)
-    View searchView;
-    @BindView(R2.id.custom_search)
-    CustomEditText editText;
-    @BindView(R2.id.close_search)
-    View clearSearch;
 
+public class InboxListActivity extends InboxBaseActivity
+        implements InboxListContract.InboxListView, View.OnClickListener {
+
+    private ImageView ivNoTicket;
+    private TextView tvNoTicket;
+    private TextView tvRaiseTicket;
+    private VerticalRecyclerView rvEmailList;
+    private View btnFilter;
+    private View searchView;
+    private CustomEditText editText;
+    private View clearSearch;
     private TicketListAdapter mAdapter;
+
+    private TextView btnFilterTv;
 
     @DeepLink(ApplinkConst.INBOX_TICKET)
     public static TaskStackBuilder getCallingTaskStackList(Context context, Bundle extras) {
@@ -142,10 +133,30 @@ public class InboxListActivity extends InboxBaseActivity
 
     @Override
     void initView() {
+        findingViewsId();
+        settingOnClickListener();
         btnFilterTv.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
                 (this, R.drawable.ic_filter_list), null, null , null);
         rvEmailList.addOnScrollListener(rvOnScrollListener);
         editText.setListener(((InboxListContract.InboxListPresenter) mPresenter).getSearchListener());
+    }
+
+    void findingViewsId(){
+        ivNoTicket = findViewById(R.id.iv_no_ticket);
+        tvNoTicket = findViewById(R.id.tv_no_ticket);
+        tvRaiseTicket = findViewById(R.id.tv_raise_ticket);
+        rvEmailList = findViewById(R.id.rv_email_list);
+        btnFilter = findViewById(R.id.btn_filter);
+        searchView = findViewById(R.id.inbox_search_view);
+        editText = findViewById(R.id.custom_search);
+        clearSearch = findViewById(R.id.close_search);
+        btnFilterTv = findViewById(R.id.btn_filter_tv);
+    }
+
+    private void settingOnClickListener() {
+        tvRaiseTicket.setOnClickListener(this);
+        btnFilter.setOnClickListener(this);
+        clearSearch.setOnClickListener(this);
     }
 
     @Override
@@ -163,8 +174,6 @@ public class InboxListActivity extends InboxBaseActivity
         return true;
     }
 
-    @OnClick({R2.id.btn_filter,
-            R2.id.close_search})
     void onClickFilter(View v) {
         if (v.getId() == R.id.btn_filter) {
             ((InboxListContract.InboxListPresenter) mPresenter).onClickFilter();
@@ -173,7 +182,6 @@ public class InboxListActivity extends InboxBaseActivity
         }
     }
 
-    @OnClick(R2.id.tv_raise_ticket)
     void raiseTicket() {
         Intent contactUsHome = new Intent(this, ContactUsHomeActivity.class);
         contactUsHome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -213,4 +221,14 @@ public class InboxListActivity extends InboxBaseActivity
             ((InboxListContract.InboxListPresenter) mPresenter).onRecyclerViewScrolled(getLayoutManager());
         }
     };
+
+    @Override
+    public void onClick(View view) {
+        int id = view.getId();
+        if(id==R.id.btn_filter||id==R.id.close_search){
+            onClickFilter(view);
+        }else if(id==R.id.tv_raise_ticket){
+            raiseTicket();
+        }
+    }
 }
