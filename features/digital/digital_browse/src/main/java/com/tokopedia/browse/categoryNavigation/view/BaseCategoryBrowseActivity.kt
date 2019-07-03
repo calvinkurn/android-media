@@ -72,7 +72,7 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
 
         @DeepLink(ApplinkConst.CATEGORY_BELANJA)
         @JvmStatic
-        fun getCtegoryBrowseIntent(context: Context, bundle: Bundle): Intent {
+        fun getCategoryBrowseIntent(context: Context, bundle: Bundle): Intent {
             extras = bundle
             return CategoryNavigationConfig.updateCategoryConfig(context, ::runNewBelanja, ::runOldBelanja)
         }

@@ -144,7 +144,7 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
                 DEFAULT_SCREEN
             }
 
-    object DeepLickIntents {
+    object DeepLinkIntents {
         lateinit var intent: Intent
 
         @JvmStatic
