@@ -182,10 +182,6 @@ public class ProductCardView extends BaseCustomView {
     }
 
     protected int getLayout() {
-//        if(fixedHeight) {
-//            return R.layout.product_card_layout_fixed_height;
-//        } else {
-//        }
         return R.layout.product_card_layout;
     }
 
