@@ -586,3 +586,4 @@ apply from: "../buildconfig/reactnative/react.gradle"
 //apply from: "../buildconfig/reactnative/codepush.gradle"
 //apply from: "../node_modules/react-native-code-push/android/codepush.gradle"
 apply from: "../buildconfig/reactnative/sentry.gradle"
+apply plugin: 'com.google.gms.google-services'
