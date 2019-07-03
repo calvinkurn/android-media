@@ -118,7 +118,6 @@ public class ProductListFragment
     @Inject
     UserSessionInterface userSession;
 
-    private EndlessRecyclerViewScrollListener linearLayoutLoadMoreTriggerListener;
     private EndlessRecyclerViewScrollListener staggeredGridLayoutLoadMoreTriggerListener;
 
     private Config topAdsConfig;
@@ -249,7 +248,6 @@ public class ProductListFragment
     private void setupListener() {
         recyclerView.addOnScrollListener(getRecyclerViewBottomSheetScrollListener());
 
-        linearLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(getLinearLayoutManager());
         staggeredGridLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(getStaggeredGridLayoutManager());
 
         recyclerView.addOnScrollListener(staggeredGridLayoutLoadMoreTriggerListener);
@@ -393,19 +391,10 @@ public class ProductListFragment
         if (!getUserVisibleHint()) {
             return;
         }
+
         recyclerView.clearOnScrollListeners();
-
         recyclerView.addOnScrollListener(getRecyclerViewBottomSheetScrollListener());
-
-        switch (getAdapter().getCurrentLayoutType()) {
-            case GRID_1: // List
-                recyclerView.addOnScrollListener(linearLayoutLoadMoreTriggerListener);
-                break;
-            case GRID_2: // Grid 2x2
-            case GRID_3: // Grid 1x1
-                recyclerView.addOnScrollListener(staggeredGridLayoutLoadMoreTriggerListener);
-                break;
-        }
+        recyclerView.addOnScrollListener(staggeredGridLayoutLoadMoreTriggerListener);
     }
 
     @Override
@@ -790,17 +779,20 @@ public class ProductListFragment
 
     @Override
     public void onChangeList() {
-        recyclerView.setLayoutManager(getLinearLayoutManager());
+//        recyclerView.setLayoutManager(getStaggeredGridLayoutManager());
+        recyclerView.requestLayout();
     }
 
     @Override
     public void onChangeDoubleGrid() {
-        recyclerView.setLayoutManager(getStaggeredGridLayoutManager());
+//        recyclerView.setLayoutManager(getStaggeredGridLayoutManager());
+        recyclerView.requestLayout();
     }
 
     @Override
     public void onChangeSingleGrid() {
-        recyclerView.setLayoutManager(getStaggeredGridLayoutManager());
+//        recyclerView.setLayoutManager(getStaggeredGridLayoutManager());
+        recyclerView.requestLayout();
     }
 
     public SearchParameter getSearchParameter() {
@@ -931,7 +923,6 @@ public class ProductListFragment
 
     @Override
     public void updateScrollListener() {
-        linearLayoutLoadMoreTriggerListener.updateStateAfterGetData();
         staggeredGridLayoutLoadMoreTriggerListener.updateStateAfterGetData();
     }
 
