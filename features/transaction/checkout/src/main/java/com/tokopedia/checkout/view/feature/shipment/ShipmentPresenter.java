@@ -470,7 +470,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             StringBuilder promoCodes = new StringBuilder();
             StringBuilder promoDetails = new StringBuilder();
 
-            if (!TextUtils.isEmpty(promoStackingGlobalData.getPromoCode())) {
+            if (promoStackingGlobalData != null && !TextUtils.isEmpty(promoStackingGlobalData.getPromoCode())) {
                 promoCodes.append(promoStackingGlobalData.getPromoCode());
                 promoDetails.append(TickerCheckoutUtilKt.revertMapToStatePromoStackingCheckout(promoStackingGlobalData.getState()));
             }
