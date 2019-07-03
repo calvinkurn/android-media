@@ -779,19 +779,16 @@ public class ProductListFragment
 
     @Override
     public void onChangeList() {
-//        recyclerView.setLayoutManager(getStaggeredGridLayoutManager());
         recyclerView.requestLayout();
     }
 
     @Override
     public void onChangeDoubleGrid() {
-//        recyclerView.setLayoutManager(getStaggeredGridLayoutManager());
         recyclerView.requestLayout();
     }
 
     @Override
     public void onChangeSingleGrid() {
-//        recyclerView.setLayoutManager(getStaggeredGridLayoutManager());
         recyclerView.requestLayout();
     }
 
