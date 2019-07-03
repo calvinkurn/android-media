@@ -25,7 +25,6 @@ import java.util.Map;
 import rx.Subscriber;
 
 public class PointHistoryListAdapter extends BaseAdapter<PointHistoryItem> {
-
     private final Context mContext;
 
     public PointHistoryListAdapter(Context context, AdapterCallback callback) {
@@ -57,7 +56,6 @@ public class PointHistoryListAdapter extends BaseAdapter<PointHistoryItem> {
 
     private void setData(ViewHolder holder, PointHistoryItem item, int position) {
         ImageHandler.loadImageFitCenter(holder.imgIcon.getContext(), holder.imgIcon, item.getIcon());
-
         holder.title.setText(item.getTitle());
         holder.date.setText(item.getCreateTimeDesc());
         holder.txnId.setText(String.format("#%d", item.getId()));
@@ -120,8 +118,8 @@ public class PointHistoryListAdapter extends BaseAdapter<PointHistoryItem> {
 
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
-                //handling the catalog listing and tabs
                 PointHistoryBase data = graphqlResponse.getData(PointHistoryBase.class);
+
                 if (data != null) {
                     loadCompleted(data.getPointHistory().getItems(), data);
                     setLastPage(!data.getPointHistory().getPageInfo().isHasNext());

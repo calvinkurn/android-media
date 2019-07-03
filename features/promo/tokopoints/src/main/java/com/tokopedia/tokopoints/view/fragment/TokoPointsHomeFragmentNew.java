@@ -344,7 +344,6 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
                     mValueMembershipDescription);
         } else if (source.getId() == R.id.view_loyalty_bottom) {
             ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.MEMBERSHIP, getString(R.string.tp_label_membership));
-
             AnalyticsTrackerUtil.sendEvent(getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
@@ -360,12 +359,6 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
                     "");
         } else if (source.getId() == R.id.view_loyalty) {
             startActivity(new Intent(getActivityContext(), PointHistoryActivity.class));
-            AnalyticsTrackerUtil.sendEvent(getContext(),
-                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_POINT_SAYA,
-                    "");
-
             AnalyticsTrackerUtil.sendEvent(getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,

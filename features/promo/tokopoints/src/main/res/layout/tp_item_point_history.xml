@@ -75,7 +75,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
         android:lineSpacingExtra="@dimen/sp_6"
-        android:text="Points: "
+        android:text="@string/tp_ph_point"
         android:textColor="@color/black_40"
         android:textSize="@dimen/sp_12"
         app:layout_constraintLeft_toLeftOf="@+id/text_date"
@@ -100,7 +100,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
         android:lineSpacingExtra="@dimen/sp_6"
-        android:text="Loyalty: "
+        android:text="@string/tp_ph_loyalty"
         android:textColor="@color/black_40"
         android:textSize="@dimen/sp_12"
         app:layout_constraintEnd_toStartOf="@+id/text_loyalty"
@@ -119,4 +119,5 @@
         app:layout_constraintTop_toTopOf="@+id/text_label_point"
         tools:text="+50" />
 </android.support.constraint.ConstraintLayout>
+
 

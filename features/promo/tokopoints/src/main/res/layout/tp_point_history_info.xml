@@ -68,7 +68,7 @@
         android:layout_marginTop="@dimen/dp_16"
         android:lineSpacingExtra="@dimen/sp_6"
         android:text="@string/tp_exp_info"
-        android:textColor="#f531353b"
+        android:textColor="@color/black_70"
         android:textSize="@dimen/sp_14"
         app:layout_constraintStart_toStartOf="@+id/text_header"
         app:layout_constraintTop_toBottomOf="@+id/text_loyalty_info" />

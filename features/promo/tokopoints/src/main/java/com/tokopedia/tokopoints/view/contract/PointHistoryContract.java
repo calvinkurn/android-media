@@ -8,7 +8,6 @@ import com.tokopedia.tokopoints.view.model.TokoPointDetailEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointStatusPointsEntity;
 
 public interface PointHistoryContract {
-
     interface View extends CustomerView {
         void showLoading();
 
