@@ -573,6 +573,8 @@ dependencies {
     implementation project(rootProject.ext.features.kyc)
     implementation 'com.facebook.soloader:soloader:0.6.0'
 
+    implementation 'com.facebook.infer.annotation:infer-annotation:+'
+
 //    implementation project(':react-native-code-push')
 }
 
