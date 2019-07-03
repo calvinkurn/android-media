@@ -34,7 +34,6 @@ import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
 import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.activity.FreeReturnActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.activity.SolutionListActivity;
-import com.tokopedia.inbox.rescenter.detail.dialog.ConfirmationDialog;
 import com.tokopedia.inbox.rescenter.detailv2.di.component.DaggerResolutionDetailComponent;
 import com.tokopedia.inbox.rescenter.detailv2.di.component.ResolutionDetailComponent;
 import com.tokopedia.inbox.rescenter.detailv2.di.module.ResolutionDetailModule;
@@ -487,15 +486,6 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void showConfirmationDialog(String messageDialog, ConfirmationDialog.Listener listener) {
-        ConfirmationDialog.Builder(getActivity())
-                .initView()
-                .initValue(messageDialog)
-                .initListener(listener)
-                .show();
-    }
-
-    @Override
     public void setOnActionCancelResolutionClick() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(InboxAnalytics.eventResoDetailClickCancelComplaint(resolutionID).getEvent());
         showActionDialog(getViewData().getButtonData().getCancelLabel(),
@@ -561,24 +551,6 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     public Intent getChooseAddressIntent(boolean isEditAddress) {
         return ChooseAddressActivity.createResolutionInstance(
                 getActivity(), getResolutionID(), false, isEditAddress);
-    }
-
-    @Override
-    public void setOnActionAcceptAdminSolutionClick() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(InboxAnalytics.eventResoDetailClickAcceptSolution(resolutionID).getEvent());
-        showConfirmationDialog(getActivity().getString(R.string.msg_accept_admin),
-                new ConfirmationDialog.Listener() {
-                    @Override
-                    public void onSubmitButtonClick() {
-                        if (getViewData().getButtonData().isAcceptReturSolution()) {
-                            Intent intent = getChooseAddressIntent(false);
-                            intent.putExtra("resolution_center", true);
-                            startActivityForResult(intent, REQUEST_CHOOSE_ADDRESS_ACCEPT_ADMIN_SOLUTION);
-                        } else {
-                            presenter.acceptAdminSolution();
-                        }
-                    }
-                });
     }
 
     @Override

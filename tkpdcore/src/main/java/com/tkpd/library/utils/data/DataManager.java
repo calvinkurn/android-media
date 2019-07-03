@@ -2,7 +2,6 @@ package com.tkpd.library.utils.data;
 
 import android.content.Context;
 
-import com.tokopedia.core.database.model.Bank;
 import com.tokopedia.core.database.model.City;
 import com.tokopedia.core.database.model.District;
 import com.tokopedia.core.database.model.Province;
@@ -28,13 +27,6 @@ public interface DataManager {
     void getListDistrict(Context context, DataReceiver dataReceiver, String cityId);
 
     /**
-     * always fetch List Bank from Network, because it will update the last one or not.
-     * @param context
-     * @param dataReceiver
-     */
-    void getListBank(Context context, DataReceiver dataReceiver);
-
-    /**
      * get all list of shipping city used {@link com.tokopedia.core.discovery.fragment.FragmentBrowseProduct}
      * or any browse related to it.
      * @param context
@@ -50,7 +42,6 @@ public interface DataManager {
         public void setDistricts(List<District> districts){}
         public void setCities(List<City> cities){}
         public void setProvinces(List<Province> provinces){}
-        public void setBank(List<Bank> banks){}
         public void setShippingCity(List<District> districts){}
         public void onNetworkError(String message){}
         public void onMessageError(String message){}

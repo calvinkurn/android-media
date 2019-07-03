@@ -1,7 +1,5 @@
 package com.tkpd.library.utils.data;
 
-
-import com.tokopedia.core.database.model.Bank;
 import com.tokopedia.core.database.model.City;
 import com.tokopedia.core.database.model.District;
 import com.tokopedia.core.database.model.Province;
@@ -18,7 +16,6 @@ public interface DataReceiver {
     void setDistricts(List<District> districts);
     void setCities(List<City> cities);
     void setProvinces(List<Province> provinces);
-    void setBank(List<Bank> banks);
     void setShippingCity(List<District> districts);
     void onNetworkError(String message);
     void onMessageError(String message);

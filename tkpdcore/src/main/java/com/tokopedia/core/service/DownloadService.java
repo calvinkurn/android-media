@@ -16,7 +16,6 @@ import com.tkpd.library.utils.data.DataManagerImpl;
 import com.tkpd.library.utils.data.DataReceiver;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.SplashScreen;
-import com.tokopedia.core.database.model.Bank;
 import com.tokopedia.core.database.model.City;
 import com.tokopedia.core.database.model.District;
 import com.tokopedia.core.database.model.Province;
@@ -179,11 +178,6 @@ public class DownloadService extends IntentService implements DownloadServiceCon
     public void setProvinces(List<Province> provinces) {
         // step 3- get list shipping city
         DataManagerImpl.getDataManager().getListShippingCity(this, this);
-    }
-
-    @Override
-    public void setBank(List<Bank> banks) {
-        throw new RuntimeException("Not supported yet");
     }
 
     @Override

@@ -19,7 +19,6 @@ import com.tokopedia.core.database.DbFlowDatabase;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.CacheDuration;
-import com.tokopedia.core.database.model.Bank;
 import com.tokopedia.core.database.model.City;
 import com.tokopedia.core.database.model.City_Table;
 import com.tokopedia.core.database.model.District;
@@ -463,94 +462,6 @@ public class DataManagerImpl implements DataManager {
         } else {
             dataReceiver.setDistricts(districts);
         }
-    }
-
-    @Override
-    public void getListBank(Context context, final DataReceiver dataReceiver) {
-        for (int T = 15; T > 0; T--) {
-            HashMap<String, String> param = new HashMap<>();
-            param.put("keyword", "");
-            param.put("page", T + "");
-            param.put("profile_user_id", "");
-            final int finalT = T;
-            new PeopleService().getApi().searchBankAccount(
-                    AuthUtil.generateParams(context, param)
-            ).map(
-                    new Func1<Response<TkpdResponse>, List<Bank>>() {
-                        @Override
-                        public List<Bank> call(Response<TkpdResponse> tkpdResponseResponse) {
-                            ListBank.Data datas = new GsonBuilder().create().fromJson(tkpdResponseResponse.body().getStringData(), ListBank.Data.class);
-                            //[START] read page from previous page
-                            int page = 1;
-                            try {
-//                                if(!datas.getPaging().getUriPrevious().equals("0")){
-//                                    Uri uri = Uri.parse(datas.getPaging().getUriPrevious());
-//                                    page = Integer.parseInt(uri.getQueryParameter("page"))+1;
-//                                }
-
-                                if (!datas.getPaging().getUriNext().equals("0")) {
-                                    Uri uri = Uri.parse(datas.getPaging().getUriNext());
-                                    page = Integer.parseInt(uri.getQueryParameter("page")) - 1;
-                                }
-                            } catch (Exception e) {
-                                Log.e("MNORMANSYAH", DataManagerImpl.class.getSimpleName() + e.getLocalizedMessage());
-                            }
-                            //[START] read page from previous page
-
-                            List<Bank> bankList = null;
-                            DatabaseWrapper database = FlowManager.getDatabase(DbFlowDatabase.NAME).getWritableDatabase();
-                            database.beginTransaction();
-                            try {
-                                bankList = Bank.toDbs(datas.getList());
-                                for (Bank bank : bankList) {
-
-                                    bank.setBankPage(page);
-                                    bank.save();
-                                }
-                                database.setTransactionSuccessful();
-                            } finally {
-                                database.endTransaction();
-                            }
-                            return bankList;
-                        }
-                    }
-            ).subscribeOn(Schedulers.newThread())
-                    .unsubscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                            new Subscriber<List<Bank>>() {
-                                @Override
-                                public void onCompleted() {
-                                    Log.d("MNORMANSYAH", DataManagerImpl.class.getSimpleName() + " onCompleted() ");
-                                }
-
-                                @Override
-                                public void onError(Throwable e) {
-                                    Log.e("MNORMANSYAH", DataManagerImpl.class.getSimpleName() + " onError : " + e.getLocalizedMessage());
-                                    if (e instanceof UnknownHostException) {
-                                        dataReceiver.onNetworkError("No Connection");
-                                    } else {
-                                        dataReceiver.onTimeout();
-                                    }
-//                                    dataReceiver.onMessageError(e.getLocalizedMessage());
-                                }
-
-                                @Override
-                                public void onNext(List<Bank> banks) {
-                                    Log.d("MNORMANSYAH", DataManagerImpl.class.getSimpleName() + " do nothing just log ");
-                                    if (finalT == 1) {
-                                        List<Bank> listBank = new Select().from(Bank.class).queryList();
-                                        Log.d("MNORMANSYAH", "banks -> " + banks);
-                                        if (banks.size() > 0)
-                                            dataReceiver.setBank(listBank);
-                                        else
-                                            dataReceiver.onMessageError("Gagal mengambil data bank");
-                                    }
-                                }
-                            }
-                    );
-        }
-
     }
 
     @Override

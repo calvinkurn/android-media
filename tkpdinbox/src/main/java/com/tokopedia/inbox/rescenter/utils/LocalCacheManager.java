@@ -5,8 +5,6 @@ import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB_Table;
 import com.tokopedia.core.database.model.InboxResCenterFilterDB;
 import com.tokopedia.core.database.model.InboxResCenterFilterDB_Table;
-import com.tokopedia.core.database.model.ReplyConversationDB;
-import com.tokopedia.core.database.model.ReplyConversationDB_Table;
 import com.tokopedia.core.database.model.StateResCenterDetailDB;
 import com.tokopedia.core.database.model.StateResCenterDetailDB_Table;
 
@@ -242,50 +240,6 @@ public class LocalCacheManager {
                     .where(AttachmentResCenterVersion2DB_Table.resolutionID.is(resolutionID))
                     .and(AttachmentResCenterVersion2DB_Table.id.is(attachmentReplyResCenterDB.getId()))
                     .execute();
-        }
-    }
-
-    public static class MessageConversation {
-
-        private String resolutionID;
-        private String message;
-
-        public MessageConversation(String resolutionID) {
-            this.resolutionID = resolutionID;
-        }
-
-        public static MessageConversation Builder(String resolutionID) {
-            return new MessageConversation(resolutionID);
-        }
-
-        public String getMessage() {
-            return message;
-        }
-
-        public MessageConversation setMessage(String message) {
-            this.message = message;
-            return this;
-        }
-
-        public void save() {
-            ReplyConversationDB cache = new ReplyConversationDB();
-            cache.resolutionID = resolutionID;
-            cache.messageValue = getMessage();
-            cache.save();
-        }
-
-        public void clear() {
-            SQLite.delete().from(ReplyConversationDB.class).where(ReplyConversationDB_Table.resolutionID.is(resolutionID)).execute();
-        }
-
-        public MessageConversation getCache() {
-            try {
-                ReplyConversationDB cache = SQLite.select().from(ReplyConversationDB.class).where(ReplyConversationDB_Table.resolutionID.is(resolutionID)).querySingle();
-                setMessage(cache.messageValue);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return this;
         }
     }
 
