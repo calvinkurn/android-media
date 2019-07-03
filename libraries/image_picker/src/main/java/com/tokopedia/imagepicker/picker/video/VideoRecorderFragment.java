@@ -202,7 +202,7 @@ public class VideoRecorderFragment extends TkpdBaseV4Fragment {
 
         //set default value
         progress.setProgress(0);
-        final long[] countDownMills = {DURATION_MAX};
+        long[] countDownMills = {DURATION_MAX};
         txtDuration.setText(getString(R.string.vidpick_duration_default));
 
         if (cameraView.isTakingVideo()) {
@@ -225,17 +225,18 @@ public class VideoRecorderFragment extends TkpdBaseV4Fragment {
                     new TimerTask() {
                            @Override
                            public void run() {
-                               if (cameraView != null && cameraView.isTakingVideo() && getActivity() != null) {
-                                   getActivity().runOnUiThread(() -> {
-                                       long minutes = TimeUnit.MILLISECONDS.toMinutes(countDownMills[0]);
-                                       long seconds = TimeUnit.MILLISECONDS.toSeconds(countDownMills[0]) - TimeUnit.MINUTES.toSeconds(minutes);
-                                       txtDuration.setText(getString(R.string.vidpick_duration_format,
-                                               String.format(Locale.getDefault(), "%02d",minutes),
-                                               String.format(Locale.getDefault(), "%02d", seconds)));
-                                       progress.setProgress(progress.getProgress() + 1000);
-                                       countDownMills[0] -= 1000;
-                                   });
-
+                               if (cameraView != null && cameraView.isTakingVideo()) {
+                                   if (getActivity() != null) {
+                                       getActivity().runOnUiThread(() -> {
+                                           long minutes = TimeUnit.MILLISECONDS.toMinutes(countDownMills[0]);
+                                           long seconds = TimeUnit.MILLISECONDS.toSeconds(countDownMills[0]) - TimeUnit.MINUTES.toSeconds(minutes);
+                                           txtDuration.setText(getString(R.string.vidpick_duration_format,
+                                                   String.format(Locale.getDefault(), "%02d",minutes),
+                                                   String.format(Locale.getDefault(), "%02d", seconds)));
+                                           progress.setProgress(progress.getProgress() + 1000);
+                                           countDownMills[0] -= 1000;
+                                       });
+                                   }
                                }
                            }
                        },1, 1000);
