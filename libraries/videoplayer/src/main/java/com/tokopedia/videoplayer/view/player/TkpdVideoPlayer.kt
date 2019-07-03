@@ -121,8 +121,6 @@ class TkpdVideoPlayer: Fragment() {
             showToast(R.string.videoplayer_file_not_found)
             callback?.onPlayerError(PlayerException.SourceNotFound)
         }
-
-        playerListener()
     }
 
     private fun playVideo() {
@@ -135,12 +133,15 @@ class TkpdVideoPlayer: Fragment() {
         }
     }
 
-    private fun playerListener() = playerOptions?.addListener(object : Player.EventListener {
+    private fun playerListener(playback: () -> Unit = {}) = playerOptions?.addListener(object : Player.EventListener {
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
             callback?.onPlayerStateChanged(playbackState)
             when (playbackState) {
                 STATE_BUFFERING -> pgLoader.show()
-                STATE_READY -> pgLoader.hide()
+                STATE_READY -> {
+                    pgLoader.hide()
+                    playback()
+                }
             }
         }
 
@@ -218,6 +219,13 @@ class TkpdVideoPlayer: Fragment() {
     override fun onResume() {
         super.onResume()
         playVideo()
+        if (viewModel.seekDuration > 0) {
+            playerListener {
+                playerOptions?.seekTo(viewModel.seekDuration)
+            }
+        } else {
+            playerListener()
+        }
     }
 
     override fun onDestroy() {
