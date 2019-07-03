@@ -10,11 +10,6 @@ import com.tokopedia.tkpd.home.adapter.viewmodel.WishlistEmptyViewModel
  */
 class WishlistAdapter(adapterTypeFactory: WishlistAdapterFactory) : BaseAdapter<WishlistAdapterFactory>(adapterTypeFactory) {
 
-    fun addList(visitables: MutableList<Visitable<*>>) {
-        this.visitables.addAll(visitables)
-        notifyDataSetChanged()
-    }
-
     fun setEmptyState() {
         this.visitables.clear()
         this.visitables.add(WishlistEmptyViewModel())

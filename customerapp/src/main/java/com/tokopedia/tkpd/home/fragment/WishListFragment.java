@@ -455,7 +455,8 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 //        adapter.setWishlistView(this);
 //        adapter.setActionButtonClicked(this);
 
-        wishlistAdapter = new WishlistAdapter(new WishlistAdapterFactory(this,this  ,wishlistAnalytics));
+        wishlistAdapter = new WishlistAdapter(new WishlistAdapterFactory(this,this, wishlistAnalytics));
+        wishlistAdapter.setVisitables(data);
     }
 
     @Override
