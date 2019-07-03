@@ -24,8 +24,9 @@ import com.google.android.exoplayer2.upstream.FileDataSource
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.videoplayer.R
+import com.tokopedia.videoplayer.state.*
+import com.tokopedia.videoplayer.state.RepeatMode
 import com.tokopedia.videoplayer.utils.*
-import com.tokopedia.videoplayer.utils.RepeatMode
 import kotlinx.android.synthetic.main.fragment_video_player.*
 import java.io.File
 
@@ -38,6 +39,7 @@ class TkpdVideoPlayer: Fragment() {
         private const val VIDEO_CALLBACK = "video_callback"
         private const val REPEAT_MODE = "repeat_mode"
         private const val NATIVE_CONTROLLER = "native_controller"
+        private const val PLAYER_TYPE = "player_type"
 
         //const
         private const val VIDEO_ROTATION_90 = 90f
@@ -66,6 +68,11 @@ class TkpdVideoPlayer: Fragment() {
 
         fun listener(callback: VideoPlayerListener) = apply {
             bundle.putSerializable(VIDEO_CALLBACK, callback)
+            return this
+        }
+
+        fun type(type: Int) = apply {
+            bundle.putInt(PLAYER_TYPE, type)
             return this
         }
 
@@ -101,7 +108,8 @@ class TkpdVideoPlayer: Fragment() {
             arguments != null -> {
                 viewModel.videoSource = arguments!!.getString(VIDEO_SOURCE, "")
                 viewModel.repeatMode = arguments!!.getInt(REPEAT_MODE, RepeatMode.REPEAT_MODE_OFF)
-                viewModel.nativeController = arguments!!.getBoolean(NATIVE_CONTROLLER, true)
+                viewModel.nativeController = arguments!!.getBoolean(NATIVE_CONTROLLER, PlayerController.ON)
+                viewModel.playerType = arguments!!.getInt(PLAYER_TYPE, PlayerType.DEFAULT)
 
                 //passing callback listener with serializable
                 callback = arguments?.getSerializable(VIDEO_CALLBACK) as VideoPlayerListener?
@@ -131,17 +139,17 @@ class TkpdVideoPlayer: Fragment() {
             val url = Uri.parse(viewModel.videoSource)
             initPlayer(url, VideoSourceProtocol.protocol(context, viewModel.videoSource))
         }
+
+        //player listener
+        playerListener()
     }
 
-    private fun playerListener(playback: () -> Unit = {}) = playerOptions?.addListener(object : Player.EventListener {
+    private fun playerListener() = playerOptions?.addListener(object : Player.EventListener {
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
             callback?.onPlayerStateChanged(playbackState)
             when (playbackState) {
                 STATE_BUFFERING -> pgLoader.show()
-                STATE_READY -> {
-                    pgLoader.hide()
-                    playback()
-                }
+                STATE_READY -> pgLoader.hide()
             }
         }
 
@@ -173,7 +181,7 @@ class TkpdVideoPlayer: Fragment() {
             playerOptions?.prepare(
                     buildMediaSource(source, protocol),
                     /* reset position */
-                    true,
+                    viewModel.stateVideoPosition <= 0,
                     /* reset state */
                     false)
         } catch (e: Exception) {
@@ -219,18 +227,23 @@ class TkpdVideoPlayer: Fragment() {
     override fun onResume() {
         super.onResume()
         playVideo()
-        if (viewModel.seekDuration > 0) {
-            playerListener {
-                playerOptions?.seekTo(viewModel.seekDuration)
-            }
-        } else {
-            playerListener()
+
+        //get current position and seeking of video player
+        if (viewModel.playerType == PlayerType.DEFAULT) {
+            playerOptions?.seekTo(viewModel.stateVideoPosition)
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         playerOptions?.release()
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        //save current position on video player
+        viewModel.stateVideoPosition = playerOptions?.currentPosition!!
     }
 
     override fun onPause() {

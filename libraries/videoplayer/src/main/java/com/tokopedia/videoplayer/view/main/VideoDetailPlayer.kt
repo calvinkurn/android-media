@@ -10,8 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.tokopedia.videoplayer.R
-import com.tokopedia.videoplayer.utils.PlayerException
-import com.tokopedia.videoplayer.utils.RepeatMode
+import com.tokopedia.videoplayer.state.PlayerController
+import com.tokopedia.videoplayer.state.PlayerException
 import com.tokopedia.videoplayer.utils.sendViewToBack
 import com.tokopedia.videoplayer.utils.showToast
 import com.tokopedia.videoplayer.view.player.TkpdVideoPlayer
@@ -86,7 +86,7 @@ class VideoDetailPlayer: BottomSheetDialogFragment() {
                     /* 2. acceptable for multiple source media (e.g. uri, url, file) */
                     .videoSource(videoSource)
                     /* optional: native controller */
-                    .controller(true)
+                    .controller(PlayerController.ON)
                     /* 3. callback listener to handle video state and player error */
                     .listener(object : VideoPlayerListener {
                         override fun onPlayerStateChanged(playbackState: Int) {}

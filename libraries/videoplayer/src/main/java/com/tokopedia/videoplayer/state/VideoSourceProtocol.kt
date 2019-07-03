@@ -1,4 +1,4 @@
-package com.tokopedia.videoplayer.utils
+package com.tokopedia.videoplayer.state
 
 import android.content.Context
 import com.tokopedia.videoplayer.R
@@ -21,10 +21,10 @@ sealed class VideoSourceProtocol {
             } else {
                 val url = source.split(":").first()
                 return when (url) {
-                    https -> VideoSourceProtocol.Http
-                    http -> VideoSourceProtocol.Http
-                    rtmp -> VideoSourceProtocol.Rtmp
-                    file -> VideoSourceProtocol.File
+                    https -> Http
+                    http -> Http
+                    rtmp -> Rtmp
+                    file -> File
                     else -> throw Exception(context?.getString(R.string.videoplayer_invalid_protocol_type))
                 }
             }

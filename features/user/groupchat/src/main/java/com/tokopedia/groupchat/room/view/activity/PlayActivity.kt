@@ -12,7 +12,6 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.graphics.drawable.DrawableCompat
 import android.util.DisplayMetrics
-import android.util.Rational
 import android.view.View
 import android.view.WindowManager
 import android.widget.RelativeLayout
@@ -30,12 +29,14 @@ import com.tokopedia.groupchat.room.di.DaggerPlayComponent
 import com.tokopedia.groupchat.room.view.adapter.FragmentPagerAdapter
 import com.tokopedia.groupchat.room.view.fragment.BlankFragment
 import com.tokopedia.groupchat.room.view.fragment.PlayFragment
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.videoplayer.utils.RepeatMode
+import com.tokopedia.videoplayer.state.PlayerController
+import com.tokopedia.videoplayer.state.PlayerException
+import com.tokopedia.videoplayer.state.PlayerType
+import com.tokopedia.videoplayer.state.RepeatMode
 import com.tokopedia.videoplayer.utils.sendViewToBack
 import com.tokopedia.videoplayer.view.player.TkpdVideoPlayer
+import com.tokopedia.videoplayer.view.player.VideoPlayerListener
 import kotlinx.android.synthetic.main.play_activity.*
-import kotlinx.android.synthetic.main.play_fragment.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -69,6 +70,7 @@ open class PlayActivity : BaseSimpleActivity(), PlayerViewListener {
     override fun onStart() {
         super.onStart()
         analytics.sendScreen(this, screenName)
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     override fun getScreenName(): String {
@@ -123,8 +125,22 @@ open class PlayActivity : BaseSimpleActivity(), PlayerViewListener {
             TkpdVideoPlayer.Builder()
                     .transaction(R.id.playerView, supportFragmentManager)
                     .videoSource(sourceMedia)
+                    /* preventing seekTo, declare videoPlayer with live_stream mode */
+                    .type(PlayerType.LIVE_STREAM)
+                    /* if you have custom controller, turn it off */
+                    .controller(PlayerController.OFF)
+                    /* repeat video mode after finished */
                     .repeatMode(RepeatMode.REPEAT_MODE_ALL)
-                    .controller(false)
+                    /* handle video player listener */
+                    .listener(object : VideoPlayerListener {
+                        override fun onPlayerStateChanged(playbackState: Int) {
+                            //@references playBackState: com.google.android.exoplayer2.Player
+                        }
+
+                        override fun onPlayerError(error: PlayerException) {
+                            //@references error: com.tokopedia.videoplayer.state.PlayerException
+                        }
+                    })
                     .build()
         }
     }
