@@ -9,7 +9,7 @@
     android:layout_height="wrap_content"
     android:clickable="true"
     app:behavior_hideable="false"
-    app:behavior_peekHeight="500dp"
+    app:behavior_peekHeight="600dp"
     app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
     <LinearLayout
@@ -43,7 +43,8 @@
             layout="@layout/partial_shimmering_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_20" />
+            android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginBottom="@dimen/dp_20"/>
 
     </LinearLayout>
 
@@ -69,7 +70,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_24"
+            android:layout_marginTop="@dimen/dp_12"
             android:layout_gravity="center_vertical">
 
             <TextView
@@ -153,7 +154,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_24"
-            android:layout_marginBottom="@dimen/dp_24"
+            android:layout_marginBottom="@dimen/dp_30"
             android:foreground="?selectableItemBackground"
             android:text="@string/choose_this_location"
             android:textAllCaps="false"

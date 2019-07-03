@@ -2,8 +2,11 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.content.IntentSender
 import android.graphics.Rect
+import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -17,6 +20,8 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.Toast
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.CameraPosition
@@ -25,6 +30,7 @@ import com.google.android.gms.maps.model.PolygonOptions
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.analytics.debugger.ui.fragment.AnalyticsDebuggerFragment
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.logisticaddaddress.AddressConstants
@@ -36,6 +42,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtil
 import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.AddEditAddressActivity
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetFragment
+import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.location_info.LocationInfoBottomSheetFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.AutofillDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryGeometryUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
@@ -43,7 +50,6 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_addr
 import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.bottomsheet_getdistrict.*
-import kotlinx.android.synthetic.main.bottomsheet_getdistrict.et_detail_address
 import kotlinx.android.synthetic.main.fragment_pinpoint_map.*
 import javax.inject.Inject
 
@@ -51,8 +57,7 @@ import javax.inject.Inject
  * Created by fwidjaja on 2019-05-08.
  */
 class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapReadyCallback,
-        AutocompleteBottomSheetFragment.ActionListener, HasComponent<AddNewAddressComponent>,
-        GoogleMap.OnMyLocationButtonClickListener {
+        AutocompleteBottomSheetFragment.ActionListener, HasComponent<AddNewAddressComponent> {
 
     private var googleMap: GoogleMap? = null
     private var currentLat: Double? = 0.0
@@ -186,12 +191,23 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             getdistrict_container?.findViewById<ButtonCompat>(R.id.btn_choose_location)?.requestFocusFromTouch()
             getdistrict_container?.findViewById<EditText>(R.id.et_detail_address)?.requestFocusFromTouch()
         }
+
+        ic_current_location?.apply {
+            context?.let {
+                if (AddNewAddressUtils.isLocationEnabled(it)) {
+                    setOnClickListener { presenter.requestLocation(requireActivity()) }
+                } else {
+                    showLocationInfoBottomSheet()
+                }
+            }
+        }
     }
 
     @SuppressLint("MissingPermission")
     override fun onMapReady(googleMap: GoogleMap?) {
         this.googleMap = googleMap
         this.googleMap?.uiSettings?.isMapToolbarEnabled = false
+        this.googleMap?.isMyLocationEnabled = true
         this.googleMap?.uiSettings?.isMyLocationButtonEnabled = false
         this.googleMap?.setMinZoomPreference(16f)
         activity?.let { MapsInitializer.initialize(activity) }
@@ -213,18 +229,10 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         this.googleMap?.setOnCameraMoveListener { onMapDraggedListener() }
         this.googleMap?.setOnCameraIdleListener { onMapIdleListener() }
 
-        context?.let {
-            if (AddNewAddressUtils.isLocationEnabled(it)) {
-                this.googleMap?.isMyLocationEnabled = true
-                this.googleMap?.setOnMyLocationButtonClickListener(this);
-                // this.googleMap?.setOnMyLocationClickListener(this);
-            }
-        }
-
-        val locationButton = map_view.findViewWithTag<ImageView>("GoogleMapMyLocationButton")
+        /*val locationButton = map_view.findViewWithTag<ImageView>("GoogleMapMyLocationButton")
         val layoutParams = locationButton.layoutParams as RelativeLayout.LayoutParams
         layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-        layoutParams.setMargins(0, 0, 30, 10);
+        layoutParams.setMargins(0, 0, 30, 10);*/
     }
 
     private fun onMapDraggedListener() {
@@ -500,13 +508,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         presenter.autofill(latLng.toString())
     }
 
-    override fun onMyLocationButtonClick(): Boolean {
-        Toast.makeText(context, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
-        // Return false so that we don't consume the event and the default behavior still occurs
-        // (the camera animates to the user's current position).
-        return false;
-    }
-
     /*override fun onMyLocationClick(p0: Location) {
         Toast.makeText(context, "Current location:\n$p0", Toast.LENGTH_LONG).show()
     }
@@ -582,5 +583,10 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
                 bottomsheet_getdistrict?.setPadding(0, 0, 0, 0)
             }
         }
+    }
+
+    private fun showLocationInfoBottomSheet() {
+        val locationInfoBottomSheetFragment = LocationInfoBottomSheetFragment.newInstance()
+        locationInfoBottomSheetFragment.show(fragmentManager, "")
     }
 }

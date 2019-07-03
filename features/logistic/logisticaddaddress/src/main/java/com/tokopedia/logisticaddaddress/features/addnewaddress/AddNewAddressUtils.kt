@@ -3,19 +3,29 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress
 import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
+import android.content.IntentSender
 import android.location.LocationManager
 import android.os.Build
 import android.provider.Settings
 import android.provider.Settings.Secure.getInt
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ScrollView
 import android.widget.TextView
+import android.widget.Toast
 import com.google.android.gms.maps.model.LatLng
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.logisticaddaddress.R
+import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.location.*
+import com.google.android.gms.tasks.OnFailureListener
+import com.tokopedia.analytics.debugger.ui.fragment.AnalyticsDebuggerFragment.TAG
+import com.tokopedia.logisticaddaddress.AddressConstants
+
 
 /**
  * Created by fwidjaja on 2019-06-22.

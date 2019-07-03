@@ -24,11 +24,6 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.loca
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AutocompleteDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete_geocode.AutocompleteGeocodeDataUiModel
 import javax.inject.Inject
-import android.provider.Settings.Secure.LOCATION_MODE_OFF
-import android.provider.Settings.Secure.LOCATION_MODE
-import android.content.Context.LOCATION_SERVICE
-import android.location.LocationManager
-import android.provider.Settings
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 
 /**
@@ -150,6 +145,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         if (currentSearch?.isNotEmpty()!!) {
             etSearch.run {
                 setText(currentSearch.toString())
+                isFocusable = true
                 setSelection(etSearch.text.length)
                 setSelectAllOnFocus(true)
             }
