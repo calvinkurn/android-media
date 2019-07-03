@@ -40,9 +40,9 @@ class ProductAttachmentAdapter(private val products: MutableList<RelatedProductI
                 image_product.loadImageWithoutPlaceholder(relatedProductItem.image)
                 product_name.text = MethodChecker.fromHtmlPreserveLineBreak(relatedProductItem.name)
                 product_price.text = relatedProductItem.price
-                product_price.setTextColor(MethodChecker.getColor(
+                /*product_price.setTextColor(MethodChecker.getColor(
                         context, if (relatedProductItem.type == TYPE_AFFILIATE) R.color.af_commission_blue
-                        else R.color.Yellow_Y500))
+                        else R.color.Yellow_Y500))*/
                 product_rating.gone()
 
                 delete.setOnClickListener { removeProduct(adapterPosition) }

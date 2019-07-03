@@ -19,12 +19,12 @@
             android:id="@+id/image_product"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:scaleType="centerCrop"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="W,1:1"
-            tools:src="@color/cardview_dark_background"/>
+            app:layout_constraintDimensionRatio="W,1:1"/>
 
         <ImageView
             android:id="@+id/delete"

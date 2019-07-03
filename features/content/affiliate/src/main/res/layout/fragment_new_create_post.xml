@@ -16,7 +16,11 @@
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/dp_16">
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingStart="@dimen/dp_16"
+            android:paddingEnd="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingBottom="@dimen/dp_16">
 
             <com.tokopedia.design.component.EditTextCompat
                 android:id="@+id/caption"
