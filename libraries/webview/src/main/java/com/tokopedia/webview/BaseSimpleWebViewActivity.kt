@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 
-class BaseSimpleWebViewActivity : BaseSimpleActivity() {
+open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
     private lateinit var url: String
     private var needToolbar = DEFAULT_TOOLBAR_VISIBILITY

@@ -62,6 +62,7 @@ import com.tokopedia.tkpd.utils.ProductNotFoundException;
 import com.tokopedia.tkpd.utils.ShopNotFoundException;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.webview.download.BaseDownloadAppLinkActivity;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -183,6 +184,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openProduct(linkSegment, uriData);
                     screenName = AppScreen.SCREEN_PRODUCT_INFO;
                     break;
+                case DeepLinkChecker.ETALASE:
                 case DeepLinkChecker.SHOP:
                     openShopInfo(linkSegment, uriData);
                     screenName = AppScreen.SCREEN_SHOP_INFO;
@@ -504,8 +506,13 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             public void onNext(ShopInfo shopInfo) {
                 viewListener.finishLoading();
                 if (shopInfo != null && shopInfo.getInfo() != null) {
-                    Intent intent = ((TkpdCoreRouter) context.getApplication()).getShopPageIntent(context, shopInfo.getInfo().getShopId());
-                    context.startActivity(intent);
+                    if (linkSegment.size() == 3){
+                        RouteManager.route(context, ApplinkConst.SHOP_ETALASE, shopInfo.getInfo().getShopId(), linkSegment.get(2));
+                    } else {
+                        Intent intent = ((TkpdCoreRouter) context.getApplication()).getShopPageIntent(context, shopInfo.getInfo().getShopId());
+                        context.startActivity(intent);
+                    }
+
                     context.finish();
                 } else {
                     if (!GlobalConfig.DEBUG) {
@@ -518,11 +525,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openHomeRecommendation(final List<String> linkSegment, final Uri uriData) {
-        if (linkSegment != null && linkSegment.size() > 0) {
-            Intent intent = RouteManager.getIntent(context  , ApplinkConstInternalMarketplace.HOME_RECOMMENDATION, linkSegment.get(1));
-            context.startActivity(intent);
-            context.finish();
-        }
+        Intent intent = RouteManager.getIntent(context  , ApplinkConstInternalMarketplace.HOME_RECOMMENDATION, linkSegment.size() > 1 ? linkSegment.get(1) : "");
+        context.startActivity(intent);
+        context.finish();
     }
 
     private void openProduct(final List<String> linkSegment, final Uri uriData) {
@@ -537,7 +542,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             @Override
             public void onError(Throwable e) {
                 viewListener.finishLoading();
-                Intent intent = SimpleWebViewWithFilePickerActivity.getIntent(context, uriData.toString());
+                Intent intent = BaseDownloadAppLinkActivity.newIntent(context, uriData.toString(),true);
                 context.startActivity(intent);
                 context.finish();
             }
@@ -553,7 +558,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                         Crashlytics.logException(new ShopNotFoundException(linkSegment.get(0)));
                         Crashlytics.logException(new ProductNotFoundException(linkSegment.get(0) + "/" + linkSegment.get(1)));
                     }
-                    Intent intent = SimpleWebViewWithFilePickerActivity.getIntent(context, uriData.toString());
+                    Intent intent = BaseDownloadAppLinkActivity.newIntent(context, uriData.toString(),true);
                     context.startActivity(intent);
                 }
                 context.finish();
