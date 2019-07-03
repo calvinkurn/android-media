@@ -142,19 +142,18 @@ class CornerListFragment : BaseDaggerFragment(), CornerContract.View, CornerAdap
 
     companion object {
 
-        private val ARGUMENTS_BRANCH_LIST = "ARGUMENTS_BRANCH_LIST"
+        private const val ARGUMENTS_BRANCH_LIST = "ARGUMENTS_BRANCH_LIST"
 
         fun newInstance(): CornerListFragment {
             return CornerListFragment()
         }
 
-        fun newInstance(modelList: List<CornerAddressModel>): CornerListFragment {
-            val args = Bundle()
-            args.putParcelableArrayList(ARGUMENTS_BRANCH_LIST, ArrayList(modelList))
-            val fragment = CornerListFragment()
-            fragment.arguments = args
-            return fragment
-        }
+        fun newInstance(modelList: List<CornerAddressModel>): CornerListFragment =
+                CornerListFragment().apply {
+                    arguments = Bundle().apply {
+                        putParcelableArrayList(ARGUMENTS_BRANCH_LIST, ArrayList(modelList))
+                    }
+                }
     }
 
 }
