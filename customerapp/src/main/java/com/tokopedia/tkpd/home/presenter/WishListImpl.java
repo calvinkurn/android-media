@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
@@ -25,6 +26,8 @@ import com.tokopedia.discovery.newdiscovery.helper.UrlParamHelper;
 import com.tokopedia.kotlin.util.ContainNullException;
 import com.tokopedia.kotlin.util.NullCheckerKt;
 import com.tokopedia.tkpd.home.adapter.viewmodel.TopAdsWishlistItem;
+import com.tokopedia.tkpd.home.adapter.viewmodel.WishlistProductViewModel;
+import com.tokopedia.tkpd.home.adapter.viewmodel.WishlistTopAdsViewModel;
 import com.tokopedia.tkpd.home.wishlist.domain.model.GqlWishListDataResponse;
 import com.tokopedia.core.network.entity.wishlist.Pagination;
 import com.tokopedia.core.network.entity.wishlist.Wishlist;
@@ -34,7 +37,6 @@ import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
-import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.graphql.data.ObservableFactory;
 import com.tokopedia.graphql.data.model.CacheType;
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy;
@@ -88,7 +90,7 @@ public class WishListImpl implements WishList {
     public static final String TOPADS_SRC = "wishlist";
     WishListView wishListView;
 
-    List<RecyclerViewItem> data = new ArrayList<>();
+    List<Visitable> data = new ArrayList<>();
 
     WishlistPaging mPaging;
 
@@ -228,7 +230,7 @@ public class WishListImpl implements WishList {
     }
 
     @Override
-    public List<RecyclerViewItem> getData() {
+    public List<Visitable> getData() {
         return data;
     }
 
@@ -507,7 +509,7 @@ public class WishListImpl implements WishList {
                     if (gqlWishListDataResponse.getGqlWishList().getWishlistDataList().size() == 0) {
                         wishListView.setEmptyState();
                     } else {
-                        data.add(new TopAdsWishlistItem(gqlWishListDataResponse.getTopAdsModel(), query));
+                        data.add(new WishlistTopAdsViewModel(gqlWishListDataResponse.getTopAdsModel(), query));
                     }
                 } else {
                     setData();
@@ -581,8 +583,8 @@ public class WishListImpl implements WishList {
         return pagination != null;
     }
 
-    public List<RecyclerViewItem> convertToProductItemList(List<Wishlist> wishlists, TopAdsModel adsModel, String query) {
-        List<RecyclerViewItem> products = new ArrayList<>();
+    public List<Visitable> convertToProductItemList(List<Wishlist> wishlists, TopAdsModel adsModel, String query) {
+        List<Visitable> products = new ArrayList<>();
         for (int i = 0; i < wishlists.size(); i++) {
             ProductItem product = new ProductItem();
             product.setId(wishlists.get(i).getId());
@@ -602,10 +604,10 @@ public class WishListImpl implements WishList {
             product.setLabels(wishlists.get(i).getLabels());
             product.setShopLocation(wishlists.get(i).getShop().getLocation());
             product.setOfficial(wishlists.get(i).getShop().isOfficial());
-            products.add(product);
+            products.add(new WishlistProductViewModel(product));
         }
         if (products.size() >= TOPADS_INDEX && adsModel!=null && !adsModel.getData().isEmpty()) {
-            products.add(TOPADS_INDEX, new TopAdsWishlistItem(adsModel, query));
+            products.add(TOPADS_INDEX, new WishlistTopAdsViewModel(adsModel, query));
         }
         return products;
     }

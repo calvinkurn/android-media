@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.home.presenter;
 
 import android.support.v7.widget.GridLayoutManager;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.tkpd.home.wishlist.domain.model.GqlWishListDataResponse;
 import com.tokopedia.core.network.entity.wishlist.Wishlist;
 import com.tokopedia.core.var.RecyclerViewItem;
@@ -40,7 +41,7 @@ public interface WishListView {
      * initiate {@code ProductFeedAdapter} data
      * @param data not null List<{@code RecyclerViewItem}>
      */
-    void initAdapterWithData(List<RecyclerViewItem> data);
+    void initAdapterWithData(List<Visitable> data);
 
     /**
      * @return change span size according to orientation

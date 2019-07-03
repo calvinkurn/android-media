@@ -20,14 +20,12 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.FlowLayout;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.network.entity.home.recentView.RecentView;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.Label;
@@ -448,12 +446,6 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
                 .setProductName(recentView.getProductName())
                 .setProductImage(recentView.getProductImage())
                 .build();
-    }
-
-    public interface OnWishlistActionButtonClicked {
-        void showAllWishlist();
-
-        void findProduct();
     }
 
 }
