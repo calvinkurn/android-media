@@ -78,6 +78,7 @@ public class InboxDetailActivity extends InboxBaseActivity
     private String rateCommentID;
     private boolean isCustomReason;
     public static final String PARAM_TICKET_ID = "ticket_id";
+    public static final String PARAM_TICKET_T_ID = "id";
     public static final String IS_OFFICIAL_STORE = "is_official_store";
 
     @DeepLink(ApplinkConst.TICKET_DETAIL)
@@ -85,6 +86,9 @@ public class InboxDetailActivity extends InboxBaseActivity
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         Intent parentIntent = new Intent(context, InboxListActivity.class);
         String ticketId = bundle.getString(PARAM_TICKET_ID, "");
+        if(ticketId.equalsIgnoreCase("%v")){
+            ticketId = bundle.getString(PARAM_TICKET_T_ID, "");
+        }
         taskStackBuilder.addNextIntent(parentIntent);
         taskStackBuilder.addNextIntent(getIntent(context, ticketId));
         return taskStackBuilder;
