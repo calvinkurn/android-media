@@ -5,7 +5,7 @@ import android.view.MenuItem;
 
 import com.tokopedia.tradein.R;
 import tradein_common.TradeInUtils;
-import viewmodel.TradeInVMFactory;
+import com.tokopedia.tradein.viewmodel.TradeInVMFactory;
 import com.tokopedia.tradein_common.viewcontrollers.BaseViewModelActivity;
 
 

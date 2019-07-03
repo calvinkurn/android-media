@@ -221,8 +221,6 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
     }
 
     protected void sendGeneralEvent(String event, String category, String action, String label) {
-        TrackApp.getInstance();
-        TrackApp.getInstance().getGTM();
         TrackApp.getInstance().getGTM().sendGeneralEvent(event,
                 category,
                 action,

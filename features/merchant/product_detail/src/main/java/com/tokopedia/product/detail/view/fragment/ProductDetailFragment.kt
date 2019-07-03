@@ -122,9 +122,9 @@ import kotlinx.android.synthetic.main.partial_product_rating_talk_courier.*
 import kotlinx.android.synthetic.main.partial_product_recommendation.*
 import kotlinx.android.synthetic.main.partial_product_shop_info.*
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
-import model.TradeInParams
-import view.customview.TradeInTextView
-import viewmodel.TradeInBroadcastReceiver
+import com.tokopedia.tradein.model.TradeInParams
+import com.tokopedia.tradein.view.customview.TradeInTextView
+import com.tokopedia.tradein.viewmodel.TradeInBroadcastReceiver
 import javax.inject.Inject
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.product.detail.common.data.model.product.Category

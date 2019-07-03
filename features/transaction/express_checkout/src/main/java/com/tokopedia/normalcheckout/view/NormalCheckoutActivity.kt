@@ -9,8 +9,7 @@ import com.tokopedia.expresscheckout.R
 import com.tokopedia.normalcheckout.constant.ATC_AND_BUY
 import com.tokopedia.normalcheckout.constant.ProductAction
 import com.tokopedia.tradein_common.IAccessRequestListener
-import model.TradeInParams
-import view.viewcontrollers.TradeInHomeActivity
+import com.tokopedia.tradein.model.TradeInParams
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
