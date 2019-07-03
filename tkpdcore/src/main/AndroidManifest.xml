@@ -109,10 +109,6 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.tokopedia.core.ManagePeople"
-            android:label="@string/title_activity_manage_people"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.tokopedia.core.manage.people.notification.activity.ManageNotificationActivity"
             android:label="@string/title_activity_manage_notification"
             android:screenOrientation="portrait" />
