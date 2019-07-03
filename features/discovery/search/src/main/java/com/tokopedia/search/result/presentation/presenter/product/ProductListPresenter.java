@@ -378,6 +378,7 @@ final class ProductListPresenter
                     item.setBadgesList(mapBadges(topAds.getShop().getBadges()));
                     item.setNew(topAds.getProduct().isProductNewLabel());
                     item.setIsShopOfficialStore(topAds.getShop().isShop_is_official());
+                    item.setShopName(topAds.getShop().getName());
                     list.add(i, item);
                     j++;
                 }
