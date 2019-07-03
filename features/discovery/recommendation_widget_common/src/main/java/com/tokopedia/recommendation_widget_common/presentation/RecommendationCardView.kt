@@ -12,11 +12,15 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.ProductCardView
+import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 
 class RecommendationCardView : ProductCardView {
+    private val reviewContainer by lazy { this.findViewById<View>(R.id.rating_review_container) }
     constructor(context: Context) : super(context) {}
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {}
@@ -67,6 +71,9 @@ class RecommendationCardView : ProductCardView {
         if (rating in 1..5) {
             ratingView.setImageResource(getRatingDrawable(rating))
             reviewCountView.text = "($reviewCount)"
+            if (fixedHeight && !reviewContainer.isVisible) {
+                reviewContainer.show()
+            }
         } else {
             if (fixedHeight) {
                 ratingView.visibility = View.INVISIBLE

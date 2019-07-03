@@ -194,6 +194,7 @@ import com.tokopedia.home.beranda.data.model.UserTier;
 import com.tokopedia.home.beranda.helper.StartSnapHelper;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SpacingItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
+import com.tokopedia.home_recom.router.HomeRecommendationRouter;
 import com.tokopedia.homecredit.view.fragment.FragmentCardIdCamera;
 import com.tokopedia.homecredit.view.fragment.FragmentSelfieIdCamera;
 import com.tokopedia.imageuploader.ImageUploaderRouter;
@@ -525,7 +526,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TradeInRouter,
         ProductDetailRouter,
         OvoPayWithQrRouter,
-        KYCRouter{
+        KYCRouter,
+        HomeRecommendationRouter {
 
     private static final String EXTRA = "extra";
 
@@ -3107,6 +3109,39 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getMaintenancePageIntent() {
         return MaintenancePage.createIntentFromNetwork(getAppContext());
+    }
+
+    @NotNull
+    @Override
+    public Observable<Map<String, Object>> getNormalCheckoutIntent(int productId, int quantity, int shopId, boolean isOneClickShipment) {
+        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
+
+        AddToCartRequest request = new AddToCartRequest.Builder()
+                .productId(productId)
+                .notes("")
+                .quantity(quantity)
+                .shopId(shopId)
+                .build();
+        requestParams.putObject(AddToCartUseCase.PARAM_ADD_TO_CART, request);
+        if (isOneClickShipment) {
+            return CartComponentInjector.newInstance(this).getAddToCartUseCaseOneClickShipment()
+                    .createObservable(requestParams)
+                    .map(this::mapAddToCartResultToHashMap);
+        } else {
+            return CartComponentInjector.newInstance(this).getAddToCartUseCase()
+                    .createObservable(requestParams)
+                    .map(this::mapAddToCartResultToHashMap);
+        }
+    }
+
+    private Map<String, Object> mapAddToCartResultToHashMap(AddToCartDataResponse addToCartDataResponse){
+        HashMap<String, Object> map = new HashMap<>();
+        AddToCartResult addToCartResult = mapAddToCartResult(addToCartDataResponse);
+        map.put("status", addToCartResult.isSuccess());
+        map.put("message", addToCartResult.getMessage());
+        map.put("cartId", addToCartResult.getCartId());
+        map.put("source", addToCartResult.getSource());
+        return map;
     }
 
     @SuppressLint("MissingPermission")
