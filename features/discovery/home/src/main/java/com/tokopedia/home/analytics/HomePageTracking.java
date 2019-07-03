@@ -852,4 +852,16 @@ public class HomePageTracking {
             );
         }
     }
+
+    public static void eventClickOnAtur(Context context) {
+        ContextAnalytics tracker = getTracker(context);
+        if (tracker != null) {
+            tracker.sendGeneralEvent(
+                    EVENT_CLICK_HOME_PAGE,
+                    CATEGORY_HOME_PAGE,
+                    "click on atur",
+                    ""
+            );
+        }
+    }
 }

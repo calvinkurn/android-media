@@ -1460,6 +1460,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 .setAction(getString(R.string.discovery_home_snackbar_geolocation_setting), new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        HomePageTracking.eventClickOnAtur(getActivity());
                         goToApplicationDetailActivity();
                     }
                 }).show();
