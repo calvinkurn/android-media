@@ -71,6 +71,7 @@ open class PlayActivity : BaseSimpleActivity(), PlayerViewListener {
         super.onStart()
         analytics.sendScreen(this, screenName)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
     }
 
     override fun getScreenName(): String {
