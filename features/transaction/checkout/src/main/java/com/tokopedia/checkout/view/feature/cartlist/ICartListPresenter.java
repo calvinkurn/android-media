@@ -7,6 +7,7 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
+import com.tokopedia.transactiondata.insurance.entity.request.InsuranceShopsData;
 import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShops;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
@@ -30,6 +31,8 @@ public interface ICartListPresenter {
     void processDeleteAndRefreshCart(List<CartItemData> allCartItemData, List<CartItemData> removedCartItems, ArrayList<String> appliedPromocodeList, boolean addWishList);
 
     void processToUpdateCartData(List<CartItemData> cartItemDataList);
+
+    void processToUpdateCartAndInsuranceData(List<CartItemData> cartItemDataList, List<InsuranceCartShops> insuranceShopsDataList);
 
     void processUpdateCartDataPromoMerchant(List<CartItemData> cartItemDataList, ShopGroupData shopGroupData);
 

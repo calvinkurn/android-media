@@ -17,7 +17,7 @@ data class InsuranceCartShops(
         var shopId: Long,
 
         @SerializedName("items")
-        var shopIemsList: ArrayList<InsuranceCartShopItems>
+        var shopItemsList: ArrayList<InsuranceCartShopItems>
 )
 
 data class InsuranceCartShopItems(

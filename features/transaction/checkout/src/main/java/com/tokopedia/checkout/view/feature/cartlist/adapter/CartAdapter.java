@@ -53,8 +53,10 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private CompositeSubscription compositeSubscription;
     private RecyclerView.RecycledViewPool viewPool;
     private Map<Integer, Boolean> checkedItemState;
-    private InsuranceCartShops insuranceCartShops;
-    private ArrayList<InsuranceCartShops> insuranceCartShopsArrayList = new ArrayList<>();
+    private ArrayList<InsuranceCartShops> allInsuranceProductsList = new ArrayList<>();
+
+    private ArrayList<InsuranceCartShops> insuranceRecommendationList = new ArrayList<>();
+    private ArrayList<InsuranceCartShops> insuranceCartList = new ArrayList<>();
 
     @Inject
     public CartAdapter(CartAdapter.ActionListener cartActionListener,
@@ -396,15 +398,38 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         checkForShipmentForm();
     }
 
-    public void addInsuranceDataList(InsuranceCartShops insuranceCartShops) {
-        insuranceCartShopsArrayList.add(insuranceCartShops);
+    public void addInsuranceDataList(InsuranceCartShops insuranceCartShops, boolean isRecommendation) {
+        allInsuranceProductsList.add(insuranceCartShops);
+
+        if (isRecommendation) {
+            insuranceRecommendationList.add(insuranceCartShops);
+        } else {
+            insuranceCartList.add(insuranceCartShops);
+        }
+
         cartDataList.add(insuranceCartShops);
         notifyDataSetChanged();
         // TODO: 19/6/19 check if need to call checkForShipmentForm()
     }
 
+    public List<InsuranceCartShops> getSelectedRecommendedInsuranceList() {
+
+        List<InsuranceCartShops> insuranceCartShops = new ArrayList<>();
+        for (InsuranceCartShops insuranceCartShops1 : insuranceRecommendationList) {
+
+            if (insuranceCartShops1 != null &&
+                    insuranceCartShops1.getShopItemsList().get(0) != null &&
+                    insuranceCartShops1.getShopItemsList().get(0).getDigitalProductList().get(0) != null &&
+                    insuranceCartShops1.getShopItemsList().get(0).getDigitalProductList().get(0).getOptIn()) {
+
+                insuranceCartShops.add(insuranceCartShops1);
+            }
+        }
+        return insuranceCartShops;
+    }
+
     public ArrayList<InsuranceCartShops> getInsuranceCartShops() {
-        return insuranceCartShopsArrayList;
+        return allInsuranceProductsList;
     }
 
     public void resetData() {

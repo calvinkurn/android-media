@@ -95,6 +95,7 @@ import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
+import com.tokopedia.transactiondata.insurance.entity.request.InsuranceShopsData;
 import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartResponse;
 import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShops;
 import com.tokopedia.user.session.UserSession;
@@ -489,6 +490,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
         return view -> {
             if (message == null || message.equals("")) {
+
+                // TODO: 2/7/19 check if recommended insurance product is being bought
+
                 dPresenter.processToUpdateCartData(getSelectedCartDataList());
             } else {
                 showToastMessageRed(message);
@@ -1313,6 +1317,10 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         return cartAdapter.getSelectedCartItemData();
     }
 
+    public List<InsuranceCartShops> getSelectedRecommendedInsuranceList() {
+        return cartAdapter.getSelectedRecommendedInsuranceList();
+    }
+
     @Override
     public List<CartItemData> getAllCartDataList() {
         return cartAdapter.getAllCartItemData();
@@ -1856,7 +1864,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     boolean firstTime = true;
 
     @Override
-    public void renderInsuranceCartData(InsuranceCartResponse insuranceCartResponse) {
+    public void renderInsuranceCartData(InsuranceCartResponse insuranceCartResponse, boolean isRecommendation) {
 
         // TODO: 18/6/19 render insurance cart data on ui, both micro and macro, if is_product_level == true,
         // then insurance product is of type micro insurance and shoudl be tagged at product level
@@ -1867,8 +1875,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         if (insuranceCartResponse != null &&
                 !insuranceCartResponse.getCartShopsList().isEmpty()) {
             for (InsuranceCartShops insuranceCartShops : insuranceCartResponse.getCartShopsList()) {
-                if (!insuranceCartShops.getShopIemsList().isEmpty()) {
-                    cartAdapter.addInsuranceDataList(insuranceCartShops);
+                if (!insuranceCartShops.getShopItemsList().isEmpty()) {
+                    cartAdapter.addInsuranceDataList(insuranceCartShops, isRecommendation);
                 }
             }
         }

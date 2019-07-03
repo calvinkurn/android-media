@@ -47,7 +47,7 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
 
     public void bindData(InsuranceCartShops insuranceCartShops, int position) {
 
-        InsuranceCartDigitalProduct insuranceCartDigitalProduct = insuranceCartShops.getShopIemsList().get(0).getDigitalProductList().get(0);
+        InsuranceCartDigitalProduct insuranceCartDigitalProduct = insuranceCartShops.getShopItemsList().get(0).getDigitalProductList().get(0);
 
         boolean isInsuranceSelected = insuranceCartDigitalProduct.getOptIn();
         cbSelectInsurance.setChecked(isInsuranceSelected);
@@ -125,7 +125,7 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
         cbSelectInsurance.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                insuranceCartShops.getShopIemsList().get(0).getDigitalProductList().get(0).setOptIn(isChecked);
+                insuranceCartShops.getShopItemsList().get(0).getDigitalProductList().get(0).setOptIn(isChecked);
                 insuranceItemActionlistener.onInsuranceSelectStateChanges();
             }
         });
