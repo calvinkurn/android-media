@@ -100,7 +100,7 @@ public abstract class ProductCardView extends BaseCustomView {
     }
 
     public void setImageProductUrl(String imageUrl) {
-        ImageHandler.loadImageFitCenter(getContext(), imageProduct, imageUrl);
+        ImageHandler.loadImageThumbs(getContext(), imageProduct, imageUrl);
     }
 
     public void setImageProductViewHintListener(ImpressHolder holder, ImpressedImageView.ViewHintListener listener) {
