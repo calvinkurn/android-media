@@ -350,7 +350,7 @@
 -keep class com.tokopedia.events.data.entity.response.** { *; }
 
 #tradein
--keep class viewmodel.** { *; }
+-keep class com.tokopedia.tradein.viewmodel.** { *; }
 
 #image search
 -keep class com.tokopedia.discovery.imagesearch.domain.model.** { *; }
