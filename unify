@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 
 help() {
-    echo "start              => Start Development"
-    echo "commit <message>   => Add + Commit to Unify"
-    echo "push               => Push to Unify"
-    echo "publish <project>  => Publish to Artifactory"
+    echo "start                 => Start Development"
+    echo "commit <message>      => Add + Commit to Unify"
+    echo "push                  => Push to Unify"
+    echo "checkver <project>    => Check current version of Project"
+    echo "devwith [aar/module] => Testing / Developing SampleApp with aar / module"
 }
 
-startDev( ) {
+start( ) {
     if [ -z "$1" ]; then
         echo "Please input your username"
         exit 1
@@ -20,7 +21,7 @@ startDev( ) {
     echo "Starting development..."
     echo "Please wait..."
 
-    echo "user_name=$1" > unifyproject.config
+    echo "user_name=$1" > unifyconfig/unifyproject.config
     source unifyproject.config
     branchname="feature/unify/$user_name"
 
@@ -32,6 +33,9 @@ startDev( ) {
         echo "Creating new branch..."
         git checkout -b $branchname feature/unify/dev
     fi
+
+    ./gradlew clean
+    ./gradlew -p unifysample assembleDebug
 
     echo "Finish!"
 }
@@ -53,7 +57,7 @@ push( ) {
     git push origin $branchname
 }
 
-publish( ) {
+checkVersion( ) {
 
     if [ -z "$1" ]; then
         echo "Please specify project:"
@@ -66,26 +70,43 @@ publish( ) {
     fi
 
     if [ $1 = "icon" ];
-    then
-        $projectname = "libraries/unify/unify_icon"
-    elif [ $1 = "principle" ];
-    then
-        $projectname = "libraries/unify/unify_principles"
-    elif [ $1 = "component" ];
-    then
-        $projectname = "libraries/unify/unify_components"
-    elif [ $1 = "calendar" ];
-    then
-        $projectname = "libraries/unify/unify_compositions/calendar"
-    elif [ $1 = "coachmark" ];
-    then
-        $projectname = "libraries/unify/unify_compositions/coach_mark"
-    else
-        echo "This $1 project not available yet. Please contact core-team for help"
+        then
+            versionname="unify_icon"
+        elif [ $1 = "principle" ];
+        then
+            versionname="unify_principles"
+        elif [ $1 = "component" ];
+        then
+            versionname="unify_components"
+        elif [ $1 = "calendar" ];
+        then
+            versionname="unify_calendar"
+        elif [ $1 = "coachmark" ];
+        then
+            versionname="unify_coach_mark"
+        else
+            echo "This $1 project not available yet. Please contact core-team for help"
+            exit 1
+        fi
+
+    VERSIONNAME="${versionname}_version"
+    source unifyconfig/version.properties
+
+    echo "${!VERSIONNAME}"
+}
+
+test( ) {
+
+    if [ -z "$1" ] && [ "$1" != "aar" ] && [ "$1" != "module" ]; then
+        echo "Please choose environment! [aar/module]"
         exit 1
     fi
 
-    ./gradlew -p $projectname assembleRelease artifactoryPublish
+    environment=$1
+    cat libraries/unify/unify_components/build.gradle."${environment}" > libraries/unify/unify_components/build.gradle
+    cat libraries/unify/unify_compositions/calendar/build.gradle."${environment}" > libraries/unify/unify_compositions/calendar/build.gradle
+    cat libraries/unify/unify_compositions/coach_mark/build.gradle."${environment}" > libraries/unify/unify_compositions/coach_mark/build.gradle
+    cat unifysample/build.gradle."${environment}" > unifysample/build.gradle
 }
 
 if [ -z "$1" ]; then
@@ -94,13 +115,15 @@ if [ -z "$1" ]; then
 fi
 
 if [ $1 = "start" ]; then
-    startDev $2
+    start $2
 elif [ $1 = "commit" ]; then
     commit "$2"
 elif [ $1 = "push" ]; then
     push
-elif [ $1 = "publish" ]; then
-     publish $2
+elif [ $1 = "checkver" ]; then
+     checkVersion $2
+elif [ $1 = "devwith" ]; then
+    test $2
 else
     help
 fi
