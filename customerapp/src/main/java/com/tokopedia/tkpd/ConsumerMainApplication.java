@@ -147,7 +147,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         com.example.akamai_bot_lib.UtilsKt.initAkamaiBotManager(this);
         setVersionCode();
 
-        FirebaseApp.initializeApp(getAppContext());
+        FirebaseApp.initializeApp(this);
 //        FacebookSdk.sdkInitialize(this);
 //        FirebaseApp.initializeApp(this);
 //        FacebookSdk.sdkInitialize(this);
