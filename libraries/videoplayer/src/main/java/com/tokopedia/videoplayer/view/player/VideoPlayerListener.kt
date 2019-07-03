@@ -1,7 +1,6 @@
 package com.tokopedia.videoplayer.view.player
 
-import com.tokopedia.videoplayer.utils.PlayerException
-import com.tokopedia.videoplayer.utils.RepeatMode
+import com.tokopedia.videoplayer.state.PlayerException
 import java.io.Serializable
 
 interface VideoPlayerListener: Serializable {

@@ -1,4 +1,4 @@
-package com.tokopedia.videoplayer.utils
+package com.tokopedia.videoplayer.state
 
 class RepeatMode {
     companion object {
