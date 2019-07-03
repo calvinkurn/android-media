@@ -466,15 +466,15 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     public List<DataCheckoutRequest> updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(PromoStackingData promoStackingGlobalData, List<ShipmentCartItemModel> shipmentCartItemModels) {
         List<DataCheckoutRequest> dataCheckoutRequests = getView().generateNewCheckoutRequest(getShipmentCartItemModelList(), true);
 
-        StringBuilder promoCodes = new StringBuilder();
-        StringBuilder promoDetails = new StringBuilder();
-
-        if (!TextUtils.isEmpty(promoStackingGlobalData.getPromoCode())) {
-            promoCodes.append(promoStackingGlobalData.getPromoCode());
-            promoDetails.append(TickerCheckoutUtilKt.revertMapToStatePromoStackingCheckout(promoStackingGlobalData.getState()));
-        }
-
         if (dataCheckoutRequests != null) {
+            StringBuilder promoCodes = new StringBuilder();
+            StringBuilder promoDetails = new StringBuilder();
+
+            if (!TextUtils.isEmpty(promoStackingGlobalData.getPromoCode())) {
+                promoCodes.append(promoStackingGlobalData.getPromoCode());
+                promoDetails.append(TickerCheckoutUtilKt.revertMapToStatePromoStackingCheckout(promoStackingGlobalData.getState()));
+            }
+
             for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModels) {
                 for (DataCheckoutRequest dataCheckoutRequest : dataCheckoutRequests) {
                     if (dataCheckoutRequest.shopProducts != null) {
