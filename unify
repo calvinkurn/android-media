@@ -22,8 +22,8 @@ start( ) {
     echo "Please wait..."
 
     echo "user_name=$1" > unifyconfig/unifyproject.config
-    source unifyproject.config
-    branchname="feature/unify/$user_name"
+    source unifyconfig/unifyproject.config
+    branchname="feature/unify/${user_name}"
 
     if [ `git branch | egrep "^[[:space:]]+${branchname}$"` ];
     then
@@ -34,8 +34,8 @@ start( ) {
         git checkout -b $branchname feature/unify/dev
     fi
 
-    ./gradlew clean
-    ./gradlew -p unifysample assembleDebug
+    #./gradlew clean
+    #./gradlew -p unifysample assembleDebug
 
     echo "Finish!"
 }
