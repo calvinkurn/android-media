@@ -1,4 +1,4 @@
-package com.tokopedia.config.url
+package com.tokopedia.url
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -29,9 +29,10 @@ class TokopediaUrlTest {
 
     @Test
     fun init_multiThread_consistentInstance() {
+        TokopediaUrl.init(context)
         Mockito.`when`(sharedPrefs.getString(KEY_ENV, Env.LIVE.value)).thenReturn("STAGING")
         val initThread = Thread {
-            val baseUrl = TokopediaUrl.getInstance(context)
+            val baseUrl = TokopediaUrl.getInstance()
             Assert.assertNotNull(baseUrl)
 //            Assert.assertEquals(Env.LIVE, baseUrl.TYPE)
             Assert.assertEquals(Env.STAGING, baseUrl.TYPE)
@@ -39,7 +40,7 @@ class TokopediaUrlTest {
         }
 
         val execThread = Thread {
-            val baseUrlTest = TokopediaUrl.getInstance(context)
+            val baseUrlTest = TokopediaUrl.getInstance()
             Assert.assertNotNull(baseUrlTest)
             Assert.assertEquals(Env.STAGING, baseUrlTest.TYPE)
             println(baseUrlTest.TYPE.value)

@@ -1,6 +1,6 @@
 package com.tokopedia.logout.data
 
-import com.tokopedia.config.url.TokopediaUrl
+import com.tokopedia.url.TokopediaUrl
 
 /**
  * @author by nisie on 5/30/18.
@@ -8,7 +8,7 @@ import com.tokopedia.config.url.TokopediaUrl
 class LogoutUrl {
 
     companion object {
-        var BASE_URL: String = TokopediaUrl.getInstance().WS
+        var BASE_URL: String = com.tokopedia.url.TokopediaUrl.getInstance().WS
         const val PATH_LOGOUT: String = "v4/session/logout.pl"
     }
 }

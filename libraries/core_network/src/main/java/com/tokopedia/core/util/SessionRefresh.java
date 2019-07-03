@@ -4,12 +4,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.network.apiservices.accounts.apis.AccountsApi;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;

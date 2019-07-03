@@ -1,6 +1,6 @@
 package com.tokopedia.events.data.source;
 
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 
 /**
  * Created by ashwanityagi on 02/11/17.

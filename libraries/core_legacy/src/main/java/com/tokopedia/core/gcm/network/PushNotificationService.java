@@ -2,7 +2,7 @@ package com.tokopedia.core.gcm.network;
 
 import android.content.Context;
 
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 
 import retrofit2.Retrofit;
 

@@ -1,6 +1,6 @@
 package com.tokopedia.logisticdata.data.constant;
 
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 
 /**
  * @author anggaprasetiyo on 09/05/18.

@@ -28,6 +28,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     testImplementation 'junit:junit:4.12'
     implementation project(rootProject.ext.features.transactioncommon)
+    implementation project(rootProject.ext.libraries.url)
     implementation project(rootProject.ext.libraries.config)
     implementation rootProject.ext.supportLibDependencies.appCompactV7
     implementation rootProject.ext.supportLibDependencies.supportV4

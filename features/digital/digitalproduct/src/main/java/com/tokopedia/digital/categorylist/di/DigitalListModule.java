@@ -7,7 +7,7 @@ import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.digital.categorylist.data.cloud.DigitalCategoryListApi;
 import com.tokopedia.digital.categorylist.data.mapper.CategoryDigitalListDataMapper;
 import com.tokopedia.digital.categorylist.data.repository.DigitalCategoryListRepository;

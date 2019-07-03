@@ -11,7 +11,7 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 import com.tokopedia.broadcast.message.common.data.model.TopChatBlastSellerMetaData;
 import com.tokopedia.broadcast.message.common.domain.interactor.GetChatBlastSellerMetaDataUseCase;
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatlist.data.TopChatUrl;
 import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper;

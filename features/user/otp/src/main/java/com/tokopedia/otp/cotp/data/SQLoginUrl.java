@@ -1,6 +1,6 @@
 package com.tokopedia.otp.cotp.data;
 
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 
 /**
  * @author by nisie on 4/25/18.

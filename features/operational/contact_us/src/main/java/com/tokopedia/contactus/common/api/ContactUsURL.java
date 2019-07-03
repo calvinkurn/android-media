@@ -1,8 +1,7 @@
 package com.tokopedia.contactus.common.api;
 
 
-import com.tokopedia.config.url.TokopediaUrl;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.url.TokopediaUrl;
 
 /**
  * Created by sandeepgoyal on 15/12/17.

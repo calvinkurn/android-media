@@ -1,6 +1,6 @@
 package com.tokopedia.home.constant;
 
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 
 public class BerandaUrl {
 

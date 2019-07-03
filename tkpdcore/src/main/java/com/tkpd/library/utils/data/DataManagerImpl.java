@@ -15,7 +15,7 @@ import com.tkpd.library.utils.data.model.ListDistricts;
 import com.tkpd.library.utils.data.model.ListProvince;
 import com.tkpd.library.utils.data.model.ListShippingCity;
 import com.tkpd.library.utils.data.model.ListShippingCity.Shipping_city;
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.database.DbFlowDatabase;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.app.MainApplication;

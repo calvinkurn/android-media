@@ -1,6 +1,6 @@
 package com.tokopedia.common_digital.common.constant
 
-import com.tokopedia.config.url.TokopediaUrl
+import com.tokopedia.url.TokopediaUrl
 
 /**
  * Created by Rizky on 13/08/18.
@@ -8,7 +8,7 @@ import com.tokopedia.config.url.TokopediaUrl
 object DigitalUrl {
 
     @JvmField
-    var DIGITAL_API_DOMAIN = TokopediaUrl.getInstance().PULSA_API
+    var DIGITAL_API_DOMAIN = com.tokopedia.url.TokopediaUrl.getInstance().PULSA_API
 
     val VERSION = "v1.4/"
 

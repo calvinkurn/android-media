@@ -10,7 +10,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.logisticdata.data.apiservice.InsuranceApi;
 import com.tokopedia.logisticdata.data.apiservice.MyShopOrderActApi;
 import com.tokopedia.logisticdata.data.apiservice.MyShopOrderApi;

@@ -1,6 +1,6 @@
 package com.tokopedia.updateinactivephone.common;
 
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 
 public class UpdateInactivePhoneURL {
     public static String ACCOUNTS_DOMAIN = TokopediaUrl.Companion.getInstance().getACCOUNTS();

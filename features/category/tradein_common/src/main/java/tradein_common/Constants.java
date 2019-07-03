@@ -1,6 +1,6 @@
 package tradein_common;
 
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 
 public class Constants {
     public static String LAKU6_BASEURL = TokopediaUrl.Companion.getInstance().getLAKU6();

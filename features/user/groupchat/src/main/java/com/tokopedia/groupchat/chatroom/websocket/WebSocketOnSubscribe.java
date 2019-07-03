@@ -2,8 +2,7 @@ package com.tokopedia.groupchat.chatroom.websocket;
 
 import android.util.Log;
 
-import com.tokopedia.config.url.TokopediaUrl;
-import com.tokopedia.network.constant.TkpdBaseURL;
+import com.tokopedia.url.TokopediaUrl;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;

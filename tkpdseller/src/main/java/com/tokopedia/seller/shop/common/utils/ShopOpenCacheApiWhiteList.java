@@ -1,7 +1,7 @@
 package com.tokopedia.seller.shop.common.utils;
 
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 
 import java.util.ArrayList;

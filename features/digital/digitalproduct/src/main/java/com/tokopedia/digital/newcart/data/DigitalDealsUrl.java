@@ -1,6 +1,6 @@
 package com.tokopedia.digital.newcart.data;
 
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 
 public class DigitalDealsUrl {
     public static String BASE_URL = TokopediaUrl.Companion.getInstance().getBOOKING();

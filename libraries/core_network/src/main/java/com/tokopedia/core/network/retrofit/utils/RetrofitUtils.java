@@ -7,10 +7,9 @@ import android.net.NetworkInfo;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.network.BuildConfig;
 import com.tokopedia.core.network.CoreNetworkApplication;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.util.GeneralUtils;

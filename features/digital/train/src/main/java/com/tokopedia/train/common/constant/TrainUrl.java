@@ -1,6 +1,6 @@
 package com.tokopedia.train.common.constant;
 
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 
 /**
  * Created by alvarisi on 2/19/18.

@@ -1,4 +1,4 @@
-package com.tokopedia.config.url
+package com.tokopedia.url
 
 /**
  * @author okasurya on 4/9/19.

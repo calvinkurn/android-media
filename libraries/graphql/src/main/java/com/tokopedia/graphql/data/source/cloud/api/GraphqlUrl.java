@@ -1,6 +1,6 @@
 package com.tokopedia.graphql.data.source.cloud.api;
 
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 
 /**
  * @author by yfsx on 19/07/18.

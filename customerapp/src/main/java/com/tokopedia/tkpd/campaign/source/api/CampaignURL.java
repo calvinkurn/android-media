@@ -1,6 +1,6 @@
 package com.tokopedia.tkpd.campaign.source.api;
 
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 
 /**
  * Created by sandeepgoyal on 15/12/17.

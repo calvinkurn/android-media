@@ -1,6 +1,6 @@
 package com.tokopedia.tokocash.network.api;
 
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 
 /**
  * Created by nabillasabbaha on 1/17/18.

@@ -1,6 +1,6 @@
 package com.tokopedia.abstraction.constant;
 
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 
 /**
  * Created by hendry on 17/01/18.

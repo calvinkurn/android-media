@@ -24,7 +24,7 @@ dependencies {
         transitive = true
     }
 
-    
+    implementation project(rootProject.ext.libraries.url)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.network)

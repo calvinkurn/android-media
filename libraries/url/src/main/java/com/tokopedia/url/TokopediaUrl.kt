@@ -1,4 +1,4 @@
-package com.tokopedia.config.url
+package com.tokopedia.url
 
 import android.content.Context
 
@@ -14,7 +14,8 @@ class TokopediaUrl {
         @Volatile private var tokopediaUrl: Url? = null
 
         fun init(context: Context) : Url {
-            return tokopediaUrl?: synchronized(lock) {
+            return tokopediaUrl
+                    ?: synchronized(lock) {
                 getEnvironment(context).also {
                     tokopediaUrl = it
                 }
@@ -23,7 +24,7 @@ class TokopediaUrl {
 
         @JvmStatic
         fun getInstance() : Url {
-            return tokopediaUrl?: live
+            return tokopediaUrl ?: live
         }
 
         fun deleteInstance() {
@@ -41,7 +42,7 @@ class TokopediaUrl {
         fun selectInstance(env: String?): Url {
             return when(env) {
                 Env.STAGING.value -> staging
-                else ->  live
+                else -> live
             }
         }
 

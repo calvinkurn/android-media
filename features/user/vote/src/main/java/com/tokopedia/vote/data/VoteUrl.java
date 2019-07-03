@@ -1,6 +1,6 @@
 package com.tokopedia.vote.data;
 
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 
 public class VoteUrl {
     public static String BASE_URL = TokopediaUrl.Companion.getInstance().getCHAT();
