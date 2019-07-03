@@ -31,9 +31,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.graphql)
 
-    implementation rootProject.ext.libraries.unifyComponents
-    implementation rootProject.ext.libraries.unifyIcon
-    implementation rootProject.ext.libraries.unifyPrinciples
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.icon
 
     implementation project(rootProject.ext.features.resourcesCommon)
 
