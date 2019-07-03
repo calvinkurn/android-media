@@ -231,10 +231,6 @@
             android:label="@string/title_activity_manage_people_profile"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.manage.people.address.activity.ManagePeopleAddressActivity"
-            android:label="@string/title_activity_manage_people_address"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.tokopedia.core.manage.general.ManageWebViewActivity"
             android:screenOrientation="portrait" />
         <activity
