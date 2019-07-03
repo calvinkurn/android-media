@@ -35,7 +35,7 @@ start( ) {
     fi
 
     ./gradlew clean
-    ./gradlew -p unifysample assembleDebug
+    ./gradlew build
 
     echo "Finish!"
 }
