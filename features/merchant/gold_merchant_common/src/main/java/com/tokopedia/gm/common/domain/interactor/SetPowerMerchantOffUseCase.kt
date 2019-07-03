@@ -22,7 +22,7 @@ class SetPowerMerchantOffUseCase @Inject constructor(private val graphqlUseCase:
 
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map {
             val data: GoldTurnOffSubscription? = it.getData(GoldTurnOffSubscription::class.java)
-            val error: List<GraphqlError> = it.getError(GraphqlError::class.java)
+            val error: List<GraphqlError> = it.getError(GraphqlError::class.java) ?: listOf()
 
             if (data == null) {
                 throw RuntimeException()
