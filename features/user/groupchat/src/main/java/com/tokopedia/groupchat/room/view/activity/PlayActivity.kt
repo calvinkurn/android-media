@@ -107,27 +107,20 @@ open class PlayActivity : BaseSimpleActivity(), PlayerViewListener {
 
     override fun onPlayerActive(isActive: Boolean) {
         if (isActive) {
+            val sourceUrl = "https://scontent-sin6-1.cdninstagram.com/vp/cb4297650b392eab52095d911a1a17dc/5D1C8FA4/t50.12441-16/53306725_332584844027284_3716503313000746737_n.mp4?_nc_ht=scontent-sin6-1.cdninstagram.com"
+
+            //order playerView into back
             sendViewToBack(playerView)
-            val sourceMedia = "https://scontent-sin6-1.cdninstagram.com/vp/cb4297650b392eab52095d911a1a17dc/5D1C8FA4/t50.12441-16/53306725_332584844027284_3716503313000746737_n.mp4?_nc_ht=scontent-sin6-1.cdninstagram.com"
 
-            val display = windowManager.defaultDisplay
-            val layoutParams = playerView.layoutParams
-            val size = Point()
-            display.getSize(size)
-            val width = size.x
-            val height = size.y
-
-            layoutParams.height = height
-            layoutParams.width = width
-
-            playerView.layoutParams = layoutParams
+            //set layoutParams programmatically for VideoPlayer
+            setVideoPlayerLayoutParams()
 
             TkpdVideoPlayer.Builder()
                     .transaction(R.id.playerView, supportFragmentManager)
-                    .videoSource(sourceMedia)
+                    .videoSource(sourceUrl)
                     /* preventing seekTo, declare videoPlayer with live_stream mode */
                     .type(PlayerType.LIVE_STREAM)
-                    /* if you have custom controller, turn it off */
+                    /* if you have custom controller, turn it off and handle it on listener */
                     .controller(PlayerController.OFF)
                     /* repeat video mode after finished */
                     .repeatMode(RepeatMode.REPEAT_MODE_ALL)
@@ -188,6 +181,19 @@ open class PlayActivity : BaseSimpleActivity(), PlayerViewListener {
         removePaddingStatusBar()
     }
 
+    private fun setVideoPlayerLayoutParams() {
+        val display = windowManager.defaultDisplay
+        val layoutParams = playerView.layoutParams
+        val size = Point()
+        display.getSize(size)
+        val width = size.x
+        val height = size.y
+
+        layoutParams.height = height
+        layoutParams.width = width
+
+        playerView.layoutParams = layoutParams
+    }
 
     private fun removePaddingStatusBar() {
 
