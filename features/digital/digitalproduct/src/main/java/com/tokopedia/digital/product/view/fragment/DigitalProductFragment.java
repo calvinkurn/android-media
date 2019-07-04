@@ -255,6 +255,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
         super.onViewCreated(view, savedInstanceState);
         renderViewShadow();
         setupArguments(getArguments());
+        presenter.trackRechargePushEventRecommendation(Integer.parseInt(categoryId), "VISIT");
 
         if (savedInstanceState != null) {
             categoryDataState = saveInstanceCacheManager.get(EXTRA_STATE_CATEGORY_DATA,
@@ -350,8 +351,6 @@ public class DigitalProductFragment extends BaseDaggerFragment
     }
 
     protected void initView(View view) {
-        presenter.trackRechargePushEventRecommendation(Integer.parseInt(categoryId), "VISIT");
-
         pbMainLoading = view.findViewById(R.id.pb_main_loading);
         holderProductDetail = view.findViewById(R.id.holder_product_detail);
         holderCheckBalance = view.findViewById(R.id.holder_check_balance);
