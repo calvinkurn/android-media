@@ -12,11 +12,10 @@
         android:orientation="vertical">
 
         <ScrollView
-            android:id="@+id/scroll_view_layout"
+            android:id="@+id/sv_add_edit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:isScrollContainer="false"
-            android:windowSoftInputMode="adjustPan"
             android:background="@color/white">
 
             <LinearLayout

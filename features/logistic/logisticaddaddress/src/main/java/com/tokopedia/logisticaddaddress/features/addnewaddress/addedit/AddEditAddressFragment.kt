@@ -677,9 +677,11 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
 
     private fun showZipCodes() {
         ViewCompat.setLayoutDirection(rv_kodepos_chips_mismatch, ViewCompat.LAYOUT_DIRECTION_LTR)
-        zipCodeChipsAdapter.zipCodes = saveAddressDataModel?.zipCodes!!.toMutableList()
-
-        rv_kodepos_chips_mismatch.visibility = View.VISIBLE
+        saveAddressDataModel?.zipCodes?.let {
+            zipCodeChipsAdapter.zipCodes = it.toMutableList()
+            zipCodeChipsAdapter.notifyDataSetChanged()
+            rv_kodepos_chips_mismatch.visibility = View.VISIBLE
+        }
     }
 
     private fun showLabelAlamatList() {
@@ -688,6 +690,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
 
         ViewCompat.setLayoutDirection(rv_label_alamat_chips, ViewCompat.LAYOUT_DIRECTION_LTR)
         labelAlamatChipsAdapter.labelAlamatList = labelAlamatList.toMutableList()
+        labelAlamatChipsAdapter.notifyDataSetChanged()
 
         rv_label_alamat_chips.visibility = View.VISIBLE
     }
@@ -934,17 +937,17 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         if (diff != 0) {
             // if the use-able screen height differs from the total screen height we assume that it shows a keyboard now
             //check if the padding is 0 (if yes set the padding for the keyboard)
-            if (rl_add_edit?.paddingBottom !== diff) {
+            if (sv_add_edit?.paddingBottom !== diff) {
                 //set the padding of the contentView for the keyboard
                 if (diff != null) {
-                    rl_add_edit?.setPadding(0, 0, 0, diff)
+                    sv_add_edit?.setPadding(0, 0, 0, diff)
                 }
             }
         } else {
             //check if the padding is != 0 (if yes reset the padding)
-            if (rl_add_edit?.paddingBottom !== 0) {
+            if (sv_add_edit?.paddingBottom !== 0) {
                 //reset the padding of the contentView
-                rl_add_edit?.setPadding(0, 0, 0, 10)
+                sv_add_edit?.setPadding(0, 0, 0, 0)
             }
         }
     }

@@ -33,14 +33,14 @@ class LabelAlamatChipsAdapter(context: Context?, private var actionListener: Act
     @Suppress("DEPRECATION")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val res = holder.itemView.context.resources
-        holder.itemView.tv_chips_item.apply {
+        holder.itemView.tv_chips_item.run {
             text = labelAlamatList[position]
-            background = drawableDefault
+            // background = drawableDefault
             setTextColor(res.getColor(R.color.font_black_secondary_54))
-            setPadding(AddNewAddressUtils.toDp(12), AddNewAddressUtils.toDp(10),
-                    AddNewAddressUtils.toDp(12), AddNewAddressUtils.toDp(10))
+            // setPadding(AddNewAddressUtils.toDp(12), AddNewAddressUtils.toDp(10),
+                    // AddNewAddressUtils.toDp(12), AddNewAddressUtils.toDp(10))
             setOnClickListener {
-                background = drawablePressed
+                // background = drawablePressed
                 setTextColor(res.getColor(R.color.tkpd_green))
                 actionListener.onLabelAlamatChipClicked(labelAlamatList[position])
             }

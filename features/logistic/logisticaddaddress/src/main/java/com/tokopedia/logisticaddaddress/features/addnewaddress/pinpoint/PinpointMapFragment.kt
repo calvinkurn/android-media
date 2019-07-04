@@ -203,11 +203,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
                         }
             }
 
-            if (AddNewAddressUtils.isLocationEnabled(it) && isGpsOn) {
-                isGpsOn = true
-            } else {
-                isGpsOn = false
-            }
+            isGpsOn = AddNewAddressUtils.isLocationEnabled(it) && isGpsOn
         }
         return isGpsOn
     }
@@ -321,7 +317,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         context?.let {
             if (AddNewAddressUtils.isLocationEnabled(it)) {
                 if (currentLat == 0.0 && currentLong == 0.0) presenter.requestLocation(requireActivity())
-                ic_current_location.apply {
+                ic_current_location.run {
                     setImageResource(R.drawable.ic_gps_enable)
                     setOnClickListener {
                         AddNewAddressAnalytics.eventClickButtonPilihLokasi()
@@ -329,7 +325,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
                     }
                 }
             } else {
-                ic_current_location.apply {
+                ic_current_location.run {
                     setImageResource(R.drawable.ic_gps_disable)
                     setOnClickListener {
                         AddNewAddressAnalytics.eventClickButtonPilihLokasi()
@@ -342,7 +338,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
 
     private fun doUseCurrentLocation() {
         if (isGpsEnabled()) {
-            presenter.requestLocation(requireActivity())
+            activity?.let { presenter.requestLocation(it) }
         } else {
             showLocationInfoBottomSheet()
         }
