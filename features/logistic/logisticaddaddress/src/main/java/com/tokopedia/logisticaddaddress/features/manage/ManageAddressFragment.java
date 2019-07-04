@@ -42,6 +42,7 @@ import javax.inject.Inject;
 
 import static com.tokopedia.logisticaddaddress.AddressConstants.REQUEST_CODE_PARAM_CREATE;
 import static com.tokopedia.logisticaddaddress.AddressConstants.REQUEST_CODE_PARAM_EDIT;
+import static com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_ADD_NEW_ADDRESS_KEY;
 
 /**
  * Created by Fajar Ulin Nuha on 13/11/18.
@@ -54,7 +55,6 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
     private static final String DEFAULT_QUERY_VALUE = "";
 
     private static final String FIREBASE_PERFORMANCE_MONITORING_TRACE_MP_ADDRESS_LIST = "mp_address_list";
-    private static final String ENABLE_ADD_NEW_ADDRESS_KEY = "android_customer_enable_add_new_address";
 
     private boolean IS_EMPTY_ADDRESS = false;
     private MPAddressActivityListener mActivityListener;
