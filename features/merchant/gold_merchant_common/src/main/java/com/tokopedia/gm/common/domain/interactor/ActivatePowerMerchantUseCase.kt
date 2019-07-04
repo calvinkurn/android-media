@@ -3,7 +3,6 @@ package com.tokopedia.gm.common.domain.interactor
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.gm.common.constant.GMParamConstant.RAW_ACTIVATION
 import com.tokopedia.gm.common.data.source.cloud.model.GoldActivationSubscription
-import com.tokopedia.gm.common.data.source.cloud.model.GoldDeactivationSubscription
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -19,7 +18,7 @@ class ActivatePowerMerchantUseCase @Inject constructor(private val graphqlUseCas
 
     override fun createObservable(requestParams: RequestParams?): Observable<Boolean> {
 
-        val graphqlRequest = GraphqlRequest(rawQuery, GoldDeactivationSubscription::class.java)
+        val graphqlRequest = GraphqlRequest(rawQuery, GoldActivationSubscription::class.java)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
 
