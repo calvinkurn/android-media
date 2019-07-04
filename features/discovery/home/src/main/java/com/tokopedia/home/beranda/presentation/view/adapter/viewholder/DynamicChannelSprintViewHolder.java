@@ -44,7 +44,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
     private TextView homeChannelTitle;
     private TextView seeAllButton;
     private HomeCategoryListener listener;
-    private static CountDownView countDownView;
+    private CountDownView countDownView;
     private String sprintSaleExpiredText;
     private CountDownView.CountDownListener countDownListener;
     private ItemAdapter itemAdapter;
@@ -59,7 +59,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
         this.listener = listener;
         initResources(itemView.getContext());
         findViews(itemView);
-        itemAdapter = new ItemAdapter(itemView.getContext(), listener);
+        itemAdapter = new ItemAdapter(itemView.getContext(), listener, countDownView);
         recyclerView.setAdapter(itemAdapter);
     }
 
@@ -141,14 +141,16 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
 
         private final HomeCategoryListener listener;
         private final Context context;
+        private final CountDownView countDownView;
         private DynamicHomeChannel.Channels channel;
         private DynamicHomeChannel.Grid[] list;
 
 
-        public ItemAdapter(Context context, HomeCategoryListener listener) {
+        public ItemAdapter(Context context, HomeCategoryListener listener, CountDownView countDownView) {
             this.listener = listener;
             this.list = new DynamicHomeChannel.Grid[0];
             this.context = context;
+            this.countDownView = countDownView;
         }
 
         public void setChannel(DynamicHomeChannel.Channels channel) {
