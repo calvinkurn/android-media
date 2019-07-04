@@ -56,10 +56,10 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
         mainToolbar = view.findViewById(R.id.toolbar);
         tabLayout = view.findViewById(R.id.tab_layout);
         viewPager = view.findViewById(R.id.view_pager);
-        if (getActivity() != null) {
-            statusBarBackground.getLayoutParams().height =
-                    DisplayMetricUtils.getStatusBarHeight(getActivity());
-        }
+//        if (getActivity() != null) {
+//            statusBarBackground.getLayoutParams().height =
+//                    DisplayMetricUtils.getStatusBarHeight(getActivity());
+//        }
         return view;
     }
 
