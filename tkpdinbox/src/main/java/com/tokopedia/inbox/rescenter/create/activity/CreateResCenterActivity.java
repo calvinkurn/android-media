@@ -47,7 +47,6 @@ public class CreateResCenterActivity extends BasePresenterActivity<CreateResCent
 
     @Override
     protected void setupURIPass(Uri data) {
-        this.uriData = data;
     }
 
     @Override
