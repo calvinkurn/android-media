@@ -34,10 +34,6 @@ data class GMActivationData(
 )
 
 data class GMActivationHeader(
-        @SerializedName("process_time")
-        @Expose
-        val processTime: Float = 0F,
-
         @SerializedName("message")
         @Expose
         val message: List<String> = listOf(),
@@ -62,7 +58,7 @@ data class GMActivationProduct(
 
         @SerializedName("initial_duration")
         @Expose
-        val initialDurationInDays: Int = 30, // initial Duration in days
+        val initialDurationInDays: Int = 0, // initial Duration in days
 
         @SerializedName("auto_extend")
         @Expose

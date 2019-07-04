@@ -10,11 +10,11 @@ data class GoldDeactivationSubscription(
 )
 
 data class GMDeactivation(
-        @SerializedName("subscriptionDataResponse")
+        @SerializedName("data")
         @Expose
         val data: GoldData = GoldData(),
 
-        @SerializedName("subscriptionHeaderResponse")
+        @SerializedName("header")
         @Expose
         val header: GoldHeader = GoldHeader()
 )

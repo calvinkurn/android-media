@@ -1,4 +1,4 @@
-mutation activationPM{
+mutation GoldActivationSubscription{
 GoldActivationSubscription(){
  header {
    process_time
