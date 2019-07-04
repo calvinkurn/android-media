@@ -200,8 +200,8 @@ class ProductDetailTracking() {
     }
 
     fun eventRecommendationClick(product: RecommendationItem, position: Int, isSessionActive: Boolean, pageName: String, pageTitle:String) {
-        val listValue = LIST_DEFAULT + pageName + " - " +
-                (if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN} - " else "") +
+        val listValue = LIST_DEFAULT + pageName +
+                (if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN}" else "") +
                 LIST_RECOMMENDATION + product.recommendationType + (if (product.isTopAds) " - product topads" else "")
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
@@ -226,8 +226,8 @@ class ProductDetailTracking() {
     }
 
     fun eventRecommendationImpression(position: Int, product: RecommendationItem, isSessionActive: Boolean, pageName: String, pageTitle: String) {
-        val listValue = LIST_DEFAULT + pageName + " - " +
-                (if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN} - " else "") +
+        val listValue = LIST_DEFAULT + pageName  +
+                (if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN}" else "") +
                 LIST_RECOMMENDATION + product.recommendationType + (if (product.isTopAds) " - product topads" else "")
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
