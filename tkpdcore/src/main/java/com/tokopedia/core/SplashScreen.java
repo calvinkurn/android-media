@@ -22,6 +22,7 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
+import com.tokopedia.core.service.constant.DownloadServiceConstant;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
@@ -32,7 +33,6 @@ import com.tokopedia.linker.model.LinkerError;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.PasswordGenerator.PGListener;
@@ -160,7 +160,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
         CommonUtils.dumper(resultData);
-        if (resultCode == DownloadService.STATUS_FINISHED) finishSplashScreen();
+        if (resultCode == DownloadServiceConstant.DOWNLOAD_FINISHED) finishSplashScreen();
     }
 
     private void resetAllDatabaseFlag() {

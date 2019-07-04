@@ -122,6 +122,9 @@ public interface DownloadServiceConstant {
     int VERIFY_PHONE = 28;
     int LOGIN_UNIQUE_CODE = 29;
 
+    int DOWNLOAD_RUNNING = 0;
+    int DOWNLOAD_FINISHED = 1;
+    int DOWNLOAD_ERROR = 2;
 
     String FACEBOOK = "facebook";
     String GOOGLE = "gplus";

@@ -31,7 +31,7 @@ import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.service.DownloadService;
+import com.tokopedia.core.service.constant.DownloadServiceConstant;
 import com.tokopedia.core.session.model.LoginProviderModel;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.sellerapp.R;
@@ -300,7 +300,7 @@ public class WelcomeFragment extends BaseDaggerFragment implements
 //            }
         }
         switch (type) {
-            case DownloadService.DISCOVER_LOGIN:
+            case DownloadServiceConstant.DISCOVER_LOGIN:
                 showProgress(false);
                 snackbar = SnackbarManager.make(getActivity(), "Gagal mendownload provider", Snackbar.LENGTH_INDEFINITE)
                         .setAction("Coba lagi", retryDiscover());

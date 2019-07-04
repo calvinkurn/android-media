@@ -29,7 +29,6 @@ import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.rxjava.RxUtils;
-import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.service.constant.DownloadServiceConstant;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
@@ -184,10 +183,10 @@ public class HotListImpl implements HotList {
                             Log.e(TAG, HotListImpl.class.getSimpleName() + " is error : " + json.getLocalizedMessage());
                         }
                         Bundle result = new Bundle();
-                        result.putParcelable(DownloadService.HOTLIST_DATA, Parcels.wrap(items));
-                        result.putBoolean(DownloadService.HOTLIST_HAS_NEXT, hasNext);
-                        result.putInt(DownloadService.HOTLIST_NEXT_PAGE, nextPage);
-                        result.putBoolean(DownloadService.RETRY_FLAG, false);
+                        result.putParcelable(DownloadServiceConstant.HOTLIST_DATA, Parcels.wrap(items));
+                        result.putBoolean(DownloadServiceConstant.HOTLIST_HAS_NEXT, hasNext);
+                        result.putInt(DownloadServiceConstant.HOTLIST_NEXT_PAGE, nextPage);
+                        result.putBoolean(DownloadServiceConstant.RETRY_FLAG, false);
                         return result;
                     }
                 })
@@ -207,7 +206,7 @@ public class HotListImpl implements HotList {
                     @Override
                     public void onNext(Bundle bundle) {
                         Log.d(TAG, "CACHE ACIL, ini dari cache cil");
-                        hotListView.setData(DownloadService.HOTLIST, bundle);
+                        hotListView.setData(DownloadServiceConstant.HOTLIST, bundle);
                         fetchHotListData();
                         hotListView.displayPull(true);
                     }
@@ -483,13 +482,13 @@ public class HotListImpl implements HotList {
                     cache(jsonObject, nextPage - 1);
 
                     Bundle result = new Bundle();
-                    result.putParcelable(DownloadService.HOTLIST_DATA, Parcels.wrap(items));
-                    result.putBoolean(DownloadService.HOTLIST_HAS_NEXT, hasNext);
-                    result.putInt(DownloadService.HOTLIST_NEXT_PAGE, nextPage);
-                    result.putBoolean(DownloadService.RETRY_FLAG, false);
+                    result.putParcelable(DownloadServiceConstant.HOTLIST_DATA, Parcels.wrap(items));
+                    result.putBoolean(DownloadServiceConstant.HOTLIST_HAS_NEXT, hasNext);
+                    result.putInt(DownloadServiceConstant.HOTLIST_NEXT_PAGE, nextPage);
+                    result.putBoolean(DownloadServiceConstant.RETRY_FLAG, false);
 
                     //[START] set result here
-                    hotListView.setData(DownloadService.HOTLIST, result);
+                    hotListView.setData(DownloadServiceConstant.HOTLIST, result);
 
 
                     if (nextPage - 1 == 1) {

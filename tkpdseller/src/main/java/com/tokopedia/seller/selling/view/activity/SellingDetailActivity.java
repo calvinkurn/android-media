@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.WindowManager;
 
 import com.tkpd.library.utils.DownloadResultReceiver;
+import com.tokopedia.core.service.constant.DownloadServiceConstant;
 import com.tokopedia.core2.R;
 
 import com.tokopedia.core.analytics.AppScreen;
@@ -26,7 +27,6 @@ import com.tokopedia.seller.selling.presenter.listener.SellingView;
 import com.tokopedia.seller.selling.model.SellingStatusTxModel;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
 import com.tokopedia.seller.selling.presenter.ShippingImpl;
-import com.tokopedia.core.service.DownloadService;
 
 import org.parceler.Parcels;
 
@@ -119,7 +119,7 @@ public class SellingDetailActivity extends TkpdActivity implements  DownloadResu
 
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
-        int type = resultData.getInt(DownloadService.TYPE, DownloadService.INVALID_TYPE);
+        int type = resultData.getInt(DownloadServiceConstant.TYPE, DownloadServiceConstant.INVALID_TYPE);
         Fragment fragment = null;
         switch (type) {
             case SellingService.CONFIRM_SHIPPING:
@@ -137,7 +137,7 @@ public class SellingDetailActivity extends TkpdActivity implements  DownloadResu
         }
 
         //check if Fragment implement necessary interface
-        if (fragment != null && type != DownloadService.INVALID_TYPE) {
+        if (fragment != null && type != DownloadServiceConstant.INVALID_TYPE) {
             switch (resultCode) {
                 case SellingService.STATUS_RUNNING:
                     switch (type) {
