@@ -3,6 +3,7 @@ package com.tokopedia.affiliate.feature.createpost.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.InputFilter
@@ -26,7 +27,6 @@ import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostVideoP
 import com.tokopedia.affiliate.feature.createpost.view.activity.MediaPreviewActivity
 import com.tokopedia.affiliate.feature.createpost.view.adapter.DefaultCaptionsAdapter
 import com.tokopedia.affiliate.feature.createpost.view.adapter.ProductAttachmentAdapter
-import com.tokopedia.affiliate.feature.createpost.view.adapter.RelatedProductAdapter
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract
 import com.tokopedia.affiliate.feature.createpost.view.listener.CreatePostActivityListener
 import com.tokopedia.affiliate.feature.createpost.view.service.SubmitPostService
@@ -39,6 +39,7 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.MediaItem
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videorecorder.main.VideoPickerActivity.Companion.VIDEOS_RESULT
 import kotlinx.android.synthetic.main.fragment_new_create_post.*
@@ -47,8 +48,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 abstract class BaseCreatePostFragment : BaseDaggerFragment(),
-        CreatePostContract.View,
-        RelatedProductAdapter.RelatedProductListener {
+        CreatePostContract.View {
 
     @Inject
     lateinit var presenter: CreatePostContract.Presenter
@@ -73,13 +73,35 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         DefaultCaptionsAdapter(this::onDefaultCaptionClicked)
     }
 
-    private fun onDeleteProduct(){
+    private fun onDeleteProduct(position: Int){
         if (adapter.itemCount < 1){
             label_title_product_attachment.gone()
             product_attachment.gone()
         } else {
             label_title_product_attachment.visible()
             product_attachment.visible()
+        }
+
+        val relatedProductItem = viewModel.relatedProducts.getOrNull(position) ?: return
+
+        viewModel.relatedProducts.removeAt(position)
+
+        if (viewModel.urlImageList.getOrNull(position)?.path == relatedProductItem.image) {
+            viewModel.urlImageList.removeAt(position)
+        } else {
+            viewModel.urlImageList.removeFirst { it.path == relatedProductItem.image }
+        }
+
+        val idPosition = if (isTypeAffiliate()) {
+            viewModel.adIdList.indexOf(relatedProductItem.id)
+        } else {
+            viewModel.productIdList.indexOf(relatedProductItem.id)
+        }
+        if (idPosition != -1 && viewModel.adIdList.size > idPosition) {
+            viewModel.adIdList.removeAt(idPosition)
+        }
+        if (idPosition != -1 && viewModel.productIdList.size > idPosition) {
+            viewModel.productIdList.removeAt(idPosition)
         }
     }
 
@@ -216,30 +238,27 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
         if (feedContentForm.media.media.isNotEmpty() && viewModel.fileImageList.isEmpty()) {
             viewModel.urlImageList.clear()
-            feedContentForm.media.media.forEach {
-                viewModel.urlImageList.add(MediaModel(it.mediaUrl, MediaType.IMAGE))
-            }
+            viewModel.urlImageList.addAll(feedContentForm.media.media.map { MediaModel(it.mediaUrl, it.type) })
         }
 
         if (feedContentForm.relatedItems.isNotEmpty()) {
             viewModel.relatedProducts.clear()
-
-            feedContentForm.relatedItems.forEach {
-                viewModel.relatedProducts.add(RelatedProductItem(
+            viewModel.relatedProducts.addAll(feedContentForm.relatedItems.map {
+                RelatedProductItem(
                         it.id,
                         it.title,
                         it.price,
                         it.image,
                         viewModel.authorType
-                ))
-            }
+                )
+            })
         }
 
         captionsAdapter.updateCaptions(feedContentForm.defaultCaptions)
         updateRelatedProduct()
         updateMedia()
         updateMediaPreview()
-        updateAddTagText()
+        //updateAddTagText()
         invalidatePostCallBack?.invalidatePostMenu(isPostEnabled)
         updateCaption()
         updateHeader(feedContentForm.authors)
@@ -258,38 +277,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             it.finish()
             affiliateAnalytics.onJatahRekomendasiHabisDialogShow()
         }
-    }
-
-    override fun onEmptyProductClick() {
-        onRelatedAddProductClick()
-    }
-
-    override fun onItemDeleted(position: Int) {
-        val relatedProductItem = viewModel.relatedProducts.getOrNull(position) ?: return
-
-        viewModel.relatedProducts.removeAt(position)
-        adapter.notifyItemRemoved(position)
-
-        if (viewModel.urlImageList.getOrNull(position)?.path == relatedProductItem.image) {
-            viewModel.urlImageList.removeAt(position)
-        } else {
-            viewModel.urlImageList.removeFirst { it.path == relatedProductItem.image }
-        }
-
-        val idPosition = if (isTypeAffiliate()) {
-            viewModel.adIdList.indexOf(relatedProductItem.id)
-        } else {
-            viewModel.productIdList.indexOf(relatedProductItem.id)
-        }
-        if (idPosition != -1 && viewModel.adIdList.size > idPosition) {
-            viewModel.adIdList.removeAt(idPosition)
-        }
-        if (idPosition != -1 && viewModel.productIdList.size > idPosition) {
-            viewModel.productIdList.removeAt(idPosition)
-        }
-
-        updateAddTagText()
-        invalidatePostCallBack?.invalidatePostMenu(isPostEnabled)
     }
 
     abstract fun fetchContentForm()
@@ -336,10 +323,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             ) { }
         }
 
-        updateAddTagText()
+        //updateAddTagText()
     }
 
-    protected fun updateAddTagText() {
+    /*protected fun updateAddTagText() {
         context?.let {
             val numberOfProducts = if (isTypeAffiliate()) viewModel.adIdList.size else
                 viewModel.productIdList.size
@@ -351,11 +338,21 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 label_add_product.setOnClickListener {  }
             }
         }
-    }
+    }*/
 
     private fun onAddProduct() {
-        onRelatedAddProductClick()
-        affiliateAnalytics.onTambahTagButtonClicked()
+        val numOfProducts = with(viewModel) { if (isTypeAffiliate()) adIdList else productIdList }.size
+        if (numOfProducts < viewModel.maxProduct) {
+            onRelatedAddProductClick()
+            affiliateAnalytics.onTambahTagButtonClicked()
+        } else {
+            view?.run {
+                Toaster.showErrorWithAction(this,
+                        getString(R.string.string_attach_product_warning_max_product_format,
+                                viewModel.maxProduct.toString()),
+                        Snackbar.LENGTH_LONG, getString(R.string.general_label_ok), View.OnClickListener {  })
+            }
+        }
     }
 
     private fun initDraft(arguments: Bundle) {
@@ -412,7 +409,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         caption.filters = arrayOf(InputFilter.LengthFilter(MAX_CHAR))
         caption.afterTextChanged {
             viewModel.caption = it
-            updateMaxCharacter()
+            //updateMaxCharacter()
         }
         caption.setOnTouchListener { v, event ->
             if (v.id == R.id.caption) {
@@ -437,11 +434,13 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         list_captions.adapter = captionsAdapter
         list_captions.layoutManager = LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false)
         list_captions.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(R.dimen.dp_8), LinearLayoutManager.HORIZONTAL))
-        updateMaxCharacter()
-        updateAddTagText()
+        icon_add_product.setOnClickListener { onAddProduct() }
+        label_add_product.setOnClickListener { onAddProduct() }
+        //updateMaxCharacter()
+        //updateAddTagText()
     }
 
-    private inline fun updateMediaPreview(){
+    private fun updateMediaPreview(){
         val mItems = viewModel.fileImageList.map { MediaItem(thumbnail = it.path, type = it.type) }
         media_attachment.bind(mItems)
         media_attachment.visibility = if (mItems.isEmpty()) View.GONE else View.VISIBLE
@@ -454,12 +453,12 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun updateMaxCharacter() {
-        /*maxCharacter.text = String.format(Locale.GERMAN, "%,d/%,d",
+    /*private fun updateMaxCharacter() {
+        maxCharacter.text = String.format(Locale.GERMAN, "%,d/%,d",
                 viewModel.caption.length,
                 MAX_CHAR
-        )*/
-    }
+        )
+    }*/
 
     private fun goToVideoPicker() {
         activity?.let {
@@ -549,7 +548,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         return isFormInvalid
     }
 
-    public fun saveDraftAndSubmit() {
+    fun saveDraftAndSubmit() {
         if (isFormInvalid()) {
             return
         }

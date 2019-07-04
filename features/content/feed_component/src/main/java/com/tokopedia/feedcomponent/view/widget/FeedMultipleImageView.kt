@@ -55,6 +55,7 @@ class FeedMultipleImageView: BaseCustomView {
         rv_media.layoutManager = gridLayoutManager
         rv_media.addItemDecoration(ItemOffsetDecoration(context.resources.getDimensionPixelSize(R.dimen.dp_4)))
         rv_media.adapter = adapter
+        rv_media.isNestedScrollingEnabled = false
     }
 
     fun bind(itemList: List<MediaItem>) {

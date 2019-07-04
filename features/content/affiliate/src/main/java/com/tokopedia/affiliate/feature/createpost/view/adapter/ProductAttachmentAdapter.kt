@@ -14,7 +14,7 @@ import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import kotlinx.android.synthetic.main.item_product_attachment.view.*
 
 class ProductAttachmentAdapter(private val products: MutableList<RelatedProductItem> = mutableListOf(),
-                               private val onDeleteProduct: (()->Unit)? = null)
+                               private val onDeleteProduct: ((Int)->Unit)? = null)
     : RecyclerView.Adapter<ProductAttachmentAdapter.ProductAttachmentViewHolder>() {
 
     init {
@@ -54,7 +54,7 @@ class ProductAttachmentAdapter(private val products: MutableList<RelatedProductI
     private fun removeProduct(adapterPosition: Int) {
         products.removeAt(adapterPosition)
         notifyDataSetChanged()
-        onDeleteProduct?.invoke()
+        onDeleteProduct?.invoke(adapterPosition)
     }
 
     fun updateProduct(products: List<RelatedProductItem>){
