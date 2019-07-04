@@ -568,7 +568,7 @@ dependencies {
     implementation project(rootProject.ext.features.navigationCommon)
     implementation 'com.facebook.soloader:soloader:0.6.0'
 
-    implementation 'com.facebook.infer.annotation:infer-annotation:+'
+    implementation 'com.facebook.infer.annotation:infer-annotation:0.11.2'
 }
 
 

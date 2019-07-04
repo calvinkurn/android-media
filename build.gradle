@@ -152,7 +152,7 @@ subprojects {
             dependencySubstitution {
                 substitute module('com.squareup.okhttp3:okhttp') with module(rootProject.ext.networkDependencies.okHttp)
                 substitute module('org.jetbrains.kotlin:kotlin-stdlib') with module(rootProject.ext.supportLibDependencies.kotlinSupport)
-                substitute module('com.squareup.okio:okio') with module('com.squareup.okio:okio:1.13.0')
+                substitute module('com.squareup.okio:okio') with module('com.squareup.okio:okio:1.15.0')
                 substitute module('com.google.code.findbugs:jsr305') with module('com.google.code.findbugs:jsr305:1.3.9')
                 substitute module('com.android.support:support-annotations') with module("com.android.support:support-annotations:${supportLibraryVersion}")
                 substitute module('com.android.support:multidex') with module("com.android.support:multidex:${multiDexVersion}")
