@@ -20,8 +20,9 @@ import kotlinx.android.synthetic.main.layout_image_grid.view.*
  */
 class FeedMultipleImageView: BaseCustomView {
 
-    private lateinit var gridLayoutManager: GridLayoutManager
-    private var listener: OnFileClickListener? = null
+    private val adapter: ImageAdapter by lazy {
+        ImageAdapter(mutableListOf())
+    }
 
 
     constructor(context: Context) : super(context) {
@@ -38,13 +39,10 @@ class FeedMultipleImageView: BaseCustomView {
 
     private fun init() {
         View.inflate(context, R.layout.layout_image_grid, this)
-    }
-
-    fun bind(itemList: List<MediaItem>) {
-        gridLayoutManager = GridLayoutManager(context, 6)
+        val gridLayoutManager = GridLayoutManager(context, 6)
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup(){
             override fun getSpanSize(position: Int): Int {
-                return when(itemList.size) {
+                return when(adapter.itemCount) {
                     1 -> 6
                     2 -> 3
                     3 -> 2
@@ -56,15 +54,25 @@ class FeedMultipleImageView: BaseCustomView {
         }
         rv_media.layoutManager = gridLayoutManager
         rv_media.addItemDecoration(ItemOffsetDecoration(context.resources.getDimensionPixelSize(R.dimen.dp_4)))
-        rv_media.adapter = ImageAdapter(itemList.toMutableList(), listener)
+        rv_media.adapter = adapter
+    }
+
+    fun bind(itemList: List<MediaItem>) {
+        adapter.updateItem(itemList)
     }
 
     fun setOnFileClickListener(listener: OnFileClickListener){
-        this.listener = listener
+        adapter.fileListener = listener
     }
 
-    class ImageAdapter(private var itemList: MutableList<MediaItem>,
+    private class ImageAdapter(private var itemList: MutableList<MediaItem>,
                        var fileListener: OnFileClickListener? = null): RecyclerView.Adapter<ImageAdapter.Holder>() {
+
+        fun updateItem(itemList: List<MediaItem>){
+            this.itemList.clear()
+            this.itemList.addAll(itemList)
+            notifyDataSetChanged()
+        }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
             return Holder(LayoutInflater.from(parent.context).inflate(R.layout.item_multiple_media, parent, false))
