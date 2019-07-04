@@ -1936,6 +1936,11 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 cartRecentViewItemHolderData.setMinOrder(1);
                 if (recentView.getBadges().size() > 0) {
                     cartRecentViewItemHolderData.setBadgeUrl(recentView.getBadges().get(0).getImageUrl());
+                    if (recentView.getBadges().get(0).getTitle().equalsIgnoreCase("Official Store")) {
+                        cartRecentViewItemHolderData.setShopType("official_store");
+                    } else if (recentView.getBadges().get(0).getTitle().equalsIgnoreCase("Power Badge")) {
+                        cartRecentViewItemHolderData.setShopType("power_badge");
+                    }
                 }
                 cartRecentViewItemHolderDataList.add(cartRecentViewItemHolderData);
             }

@@ -1289,16 +1289,11 @@ public class CartListPresenter implements ICartListPresenter {
         enhancedECommerceProductCartMapData.setProductName(cartRecentViewItemHolderData.getName());
         enhancedECommerceProductCartMapData.setProductID(cartRecentViewItemHolderData.getId());
         enhancedECommerceProductCartMapData.setPrice(cartRecentViewItemHolderData.getPrice());
-//        enhancedECommerceProductCartMapData.setCategory();
-//        enhancedECommerceProductCartMapData.setVariant();
         enhancedECommerceProductCartMapData.setQty(cartRecentViewItemHolderData.getMinOrder());
-        enhancedECommerceProductCartMapData.setShopId(cartRecentViewItemHolderData.getShopId());
-//        enhancedECommerceProductCartMapData.setShopType();
-        enhancedECommerceProductCartMapData.setShopName(cartRecentViewItemHolderData.getShopName());
-//        enhancedECommerceProductCartMapData.pictureUrl();
-//        enhancedECommerceProductCartMapData.setUrl();
-//        enhancedECommerceProductCartMapData.setCategoryId();
-//        enhancedECommerceProductCartMapData.setDimension45();
+        enhancedECommerceProductCartMapData.setDimension52(cartRecentViewItemHolderData.getShopId());
+        enhancedECommerceProductCartMapData.setDimension57(cartRecentViewItemHolderData.getShopName());
+        enhancedECommerceProductCartMapData.setDimension59(cartRecentViewItemHolderData.getShopType());
+        enhancedECommerceProductCartMapData.setDimension77(String.valueOf(addToCartDataResponseModel.getData().getCartId()));
 
         EnhancedECommerceAdd enhancedECommerceAdd = new EnhancedECommerceAdd();
         enhancedECommerceAdd.setActionField(enhancedECommerceActionField.getActionFieldMap());

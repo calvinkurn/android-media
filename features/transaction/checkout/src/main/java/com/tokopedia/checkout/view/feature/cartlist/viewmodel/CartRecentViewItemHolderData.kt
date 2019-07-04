@@ -16,5 +16,6 @@ data class CartRecentViewItemHolderData(
         var shopLocation: String = "",
         var shopId: String = "",
         var shopName: String = "",
+        var shopType: String = "",
         var minOrder: Int = 1
 )
