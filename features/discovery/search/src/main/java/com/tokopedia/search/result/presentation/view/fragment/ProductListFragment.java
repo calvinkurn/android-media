@@ -385,19 +385,6 @@ public class ProductListFragment
     }
 
     @Override
-    protected void switchLayoutType() {
-        super.switchLayoutType();
-
-        if (!getUserVisibleHint() || getAdapter() == null) {
-            return;
-        }
-
-        recyclerView.clearOnScrollListeners();
-        recyclerView.addOnScrollListener(getRecyclerViewBottomSheetScrollListener());
-        recyclerView.addOnScrollListener(staggeredGridLayoutLoadMoreTriggerListener);
-    }
-
-    @Override
     protected GridLayoutManager.SpanSizeLookup onSpanSizeLookup() {
         return new GridLayoutManager.SpanSizeLookup() {
             @Override
