@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.Point
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -27,16 +26,9 @@ import com.tokopedia.groupchat.room.di.DaggerPlayComponent
 import com.tokopedia.groupchat.room.view.adapter.FragmentPagerAdapter
 import com.tokopedia.groupchat.room.view.fragment.BlankFragment
 import com.tokopedia.groupchat.room.view.fragment.PlayFragment
-import com.tokopedia.videoplayer.state.PlayerController
-import com.tokopedia.videoplayer.state.PlayerException
-import com.tokopedia.videoplayer.state.PlayerType
-import com.tokopedia.videoplayer.state.RepeatMode
 import com.tokopedia.groupchat.room.view.listener.PlayActivityContract
 import com.tokopedia.groupchat.room.view.presenter.PlayActivityPresenter
 import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
-import com.tokopedia.videoplayer.utils.sendViewToBack
-import com.tokopedia.videoplayer.view.player.TkpdVideoPlayer
-import com.tokopedia.videoplayer.view.player.VideoPlayerListener
 import kotlinx.android.synthetic.main.play_activity.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -44,7 +36,7 @@ import javax.inject.Inject
 /**
  * @author : Steven 11/02/19
  */
-open class PlayActivity : BaseSimpleActivity(), PlayerViewListener, PlayActivityContract.View {
+open class PlayActivity : BaseSimpleActivity(), PlayActivityContract.View {
 
     lateinit var rootView: View
     lateinit var viewPager: NonSwipeableViewPager
@@ -110,12 +102,6 @@ open class PlayActivity : BaseSimpleActivity(), PlayerViewListener, PlayActivity
         presenter.getVideoStream(channelId, onSuccessGetVideoStream(), onErrorGetVideoStream())
     }
 
-    override fun onPlayerActive(isActive: Boolean) {
-        if (isActive) {
-
-        }
-    }
-
     private fun setFragment() {
 
         viewPager = findViewById(R.id.view_pager_play)
@@ -156,7 +142,6 @@ open class PlayActivity : BaseSimpleActivity(), PlayerViewListener, PlayActivity
 
         removePaddingStatusBar()
     }
-
 
     private fun removePaddingStatusBar() {
 

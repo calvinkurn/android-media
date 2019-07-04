@@ -10,12 +10,10 @@ import android.view.View
 import android.widget.FrameLayout
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.groupchat.R
-import com.tokopedia.groupchat.chatroom.view.fragment.GroupChatVideoFragment
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.room.view.adapter.OverflowMenuAdapter
 import com.tokopedia.groupchat.room.view.viewmodel.OverflowMenuButtonViewModel
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.visible
 import java.util.*
 
 /**
@@ -26,10 +24,12 @@ class OverflowMenuHelper(
         var context: Context,
         private var onInfoMenuClicked: () -> Unit,
         private var toggleHorizontalVideo: (Boolean) -> Unit,
-        var videoContainer: View
+        var videoContainer: View,
+        var changeQualityVideoVertical: (Int) -> Unit
 ): PlayBaseHelper(model) {
 
 
+    private var videoQuality = 0
     private lateinit var overflowMenuDialog: CloseableBottomSheetDialog
     private var menuAdapter = OverflowMenuAdapter()
     private lateinit var menuDialog: View
@@ -75,9 +75,11 @@ class OverflowMenuHelper(
             dismissDialog()
         }
 
+        var videoQualityText = String.format(getStringResource(R.string.menu_video_quality), maxOf(videoQuality, 480))
 
-        var videoQualityText = String.format(getStringResource(R.string.menu_video_quality), 480)
-        var changeVideoQualityListener:() -> Unit = {createVideoQualityMenu()}
+        var changeVideoQualityListener:() -> Unit = {
+            createVideoQualityMenu()
+        }
 
 
         var dismissVideoListener:() -> Unit = {
@@ -112,8 +114,19 @@ class OverflowMenuHelper(
 
     private fun createVideoQualityMenu(){
         var list = ArrayList<OverflowMenuButtonViewModel>()
-        list.add(OverflowMenuButtonViewModel(getStringResource(R.string.video_quality_480), {dismissDialog()}, 0, true))
-        list.add(OverflowMenuButtonViewModel(getStringResource(R.string.video_quality_720), {dismissDialog()}, 0))
+        var listener480 = {
+            changeQualityVideoVertical.invoke(VideoVerticalHelper.VIDEO_480)
+            setQualityVideo(VideoVerticalHelper.VIDEO_480)
+            dismissDialog()
+        }
+
+        var listener720 = {
+            changeQualityVideoVertical.invoke(VideoVerticalHelper.VIDEO_720)
+            setQualityVideo(VideoVerticalHelper.VIDEO_720)
+            dismissDialog()
+        }
+        list.add(OverflowMenuButtonViewModel(getStringResource(R.string.video_quality_480), listener480, 0, videoQuality == VideoVerticalHelper.VIDEO_480))
+        list.add(OverflowMenuButtonViewModel(getStringResource(R.string.video_quality_720), listener720, 0, videoQuality == VideoVerticalHelper.VIDEO_720))
         menuAdapter.setDataList(list)
     }
 
@@ -134,5 +147,9 @@ class OverflowMenuHelper(
     override fun assignViewModel(model: ChannelInfoViewModel) {
         super.assignViewModel(model)
         createOverflowMenu()
+    }
+
+    fun setQualityVideo(videoQuality: Int) {
+        this.videoQuality = videoQuality
     }
 }

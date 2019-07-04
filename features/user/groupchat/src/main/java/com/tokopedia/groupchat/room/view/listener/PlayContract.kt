@@ -44,7 +44,6 @@ interface PlayContract {
         fun onToolbarEnabled(b: Boolean)
         fun onSprintSaleReceived(it: SprintSaleAnnouncementViewModel)
         fun onStickyComponentReceived(it: StickyComponentViewModel)
-        fun onVerticalVideo(isActive: Boolean = false)
         fun onVideoStreamUpdated(it: VideoStreamViewModel)
     }
 

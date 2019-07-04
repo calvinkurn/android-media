@@ -223,7 +223,7 @@ class PlayWebSocketMessageMapper @Inject constructor() {
 
     private fun mapToVideo(data: JsonObject?): Visitable<*> {
         if (TextUtils.isEmpty(data.toString())) {
-            return VideoViewModel("")
+            return VideoViewModel("", false)
         }
         val gson = Gson()
         return gson.fromJson(data, VideoViewModel::class.java)

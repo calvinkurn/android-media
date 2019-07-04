@@ -259,7 +259,7 @@ open class PlayViewStateImpl(
         errorView.setOnClickListener {  }
 
         interactionAnimationHelper = InteractionAnimationHelper(interactionGuideline)
-        overflowMenuHelper = OverflowMenuHelper(viewModel, activity, onInfoMenuClicked(), toggleHorizontalVideo(), videoContainer)
+        overflowMenuHelper = OverflowMenuHelper(viewModel, activity, onInfoMenuClicked(), toggleHorizontalVideo(), videoContainer, changeQualityVideoVertical())
         var view = (activity as PlayActivity).findViewById<FrameLayout>(R.id.playerView)
         var rootView = (activity as PlayActivity).findViewById<RelativeLayout>(R.id.root_view)
         videoVerticalHelper = VideoVerticalHelper(bufferContainer, bufferDimContainer, activity.supportFragmentManager, view, rootView)
@@ -419,7 +419,8 @@ open class PlayViewStateImpl(
 
     override fun onSuccessGetInfo(it: ChannelInfoViewModel) {
         loadingView.hide()
-
+        var needCueVideo = viewModel?.videoId != it.videoId
+        viewModel = it
         if (it.isFreeze) {
             onChannelFrozen(it.channelId)
             listener.onToolbarEnabled(false)
@@ -427,7 +428,9 @@ open class PlayViewStateImpl(
         }
 
         setToolbarData(it.title, it.bannerUrl, it.totalView, it.blurredBannerUrl)
-        initVideoFragment(it.videoId, it.isVideoLive)
+        if(needCueVideo) {
+            onVideoUpdated(VideoViewModel(it.videoId, it.isVideoLive))
+        }
         showLoginButton(!userSession.isLoggedIn)
         it.settingGroupChat?.maxChar?.let {
             replyEditText.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(it))
@@ -436,8 +439,6 @@ open class PlayViewStateImpl(
 
         setPinnedMessage(it)
         onBackgroundUpdated(it.backgroundViewModel)
-
-        viewModel = it
         viewModel?.infoUrl = it.infoUrl
         autoAddSprintSale()
 
@@ -446,7 +447,12 @@ open class PlayViewStateImpl(
         sponsorHelper.assignViewModel(it)
         sponsorHelper.setSponsor()
         overflowMenuHelper.assignViewModel(it)
-        videoVerticalHelper.initialize()
+        onVideoStreamUpdated(VideoStreamViewModel(
+                true,
+                false,
+                "https://scontent-sin6-1.cdninstagram.com/vp/2a1b5cba5df6f097605c516a3c7d58d3/5D1FB5C0/t50.12441-16/55450199_131136041277815_5339080047835994825_n.mp4?_nc_ht=scontent-sin6-1.cdninstagram.com",
+                "https://scontent-sin6-2.cdninstagram.com/vp/37c031a24fd60eb087a6c1b1072ad5d8/5D208424/t50.12441-16/53306725_332584844027284_3716503313000746737_n.mp4?_nc_ht=scontent-sin6-2.cdninstagram.com"
+        ))
     }
 
     fun setDefaultBackground() {
@@ -527,21 +533,24 @@ open class PlayViewStateImpl(
 
     override fun onVideoUpdated(it: VideoViewModel) {
         viewModel?.let { viewModel ->
-            initVideoFragment(it.videoId, it.videoLive)
             viewModel.videoId = it.videoId
+            viewModel.isVideoLive = it.videoLive
+            initVideoFragment(it.videoId, it.videoLive)
             videoHorizontalHelper.assignViewModel(viewModel)
             sponsorHelper.assignViewModel(viewModel)
             sponsorHelper.setSponsor()
             overflowMenuHelper.assignViewModel(viewModel)
-//            videoVerticalHelper.hideVideo()
+            videoVerticalHelper.hideVideo()
         }
     }
 
 
     override fun onVideoStreamUpdated(it: VideoStreamViewModel) {
-//        videoVerticalHelper.assignViewModel(it)
-        videoHorizontalHelper.hideVideo()
-        videoHorizontalHelper.hideToggle()
+        videoVerticalHelper.setData(it)
+        videoVerticalHelper.play(VideoVerticalHelper.VIDEO_480)
+        overflowMenuHelper.setQualityVideo(VideoVerticalHelper.VIDEO_480)
+        videoHorizontalHelper.hideVideoAndToggle()
+        videoHorizontalHelper.hideAllToggle()
     }
 
 
@@ -820,22 +829,20 @@ open class PlayViewStateImpl(
     }
 
     fun initVideoFragment(videoId: String, isVideoLive: Boolean) {
-        videoHorizontalHelper.hideVideo()
-        videoHorizontalHelper.hideToggle()
-        videoId.let {
+        videoHorizontalHelper.hideVideoAndToggle()
+        if(!videoId.isNullOrBlank()){
             val videoFragment = fragmentManager.findFragmentById(R.id.video_container) as GroupChatVideoFragment
             videoFragment.run {
-                if(videoId.isNullOrBlank()) return
                 videoHorizontalHelper.showVideoOnly(isVideoLive)
                 sponsorHelper.hideSponsor()
                 youTubePlayer?.let {
-                    if (videoId != viewModel?.videoId) {
-                        it.cueVideo(videoId)
-                    }
+                    it.cueVideo(videoId)
                     autoPlayVideo()
                 }
                 videoFragment.initialize(YoutubePlayerConstant.GOOGLE_API_KEY, getVideoInitializer(videoId))
             }
+        } else {
+            videoHorizontalHelper.hideVideoAndToggle()
         }
     }
 
@@ -860,13 +867,11 @@ open class PlayViewStateImpl(
                                         onPlayTime = System.currentTimeMillis() / 1000L
                                     }
                                     analytics.eventClickAutoPlayVideo(viewModel?.channelId)
-                                    hideVideoToggle.hide()
+                                    videoHorizontalHelper.onPlayed()
                                 }
 
                                 override fun onPaused() {
-                                    if (!showVideoToggle.isShown) {
-                                        hideVideoToggle.show()
-                                    }
+                                    videoHorizontalHelper.onPaused()
                                     analytics.eventClickPauseVideo(viewModel?.channelId)
                                     onPauseTime = System.currentTimeMillis() / 1000L
                                 }
@@ -1222,6 +1227,12 @@ open class PlayViewStateImpl(
             } else {
                 videoHorizontalHelper.hideVideo()
             }
+        }
+    }
+
+    private fun changeQualityVideoVertical(): (Int) -> Unit {
+        return {
+            videoVerticalHelper.play(it)
         }
     }
 

@@ -5,6 +5,7 @@ import com.google.android.youtube.player.YouTubePlayer
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 
@@ -41,26 +42,40 @@ class VideoHorizontalHelper(
     }
 
     fun hideVideo() {
-        hideVideoToggle.hide()
+        hideVideoAndToggle()
         showVideoToggle.show()
-        youTubePlayer?.pause()
-        videoContainer.hide()
-        setChatListHasSpaceOnTop.invoke(true)
-        liveIndicator.hide()
     }
 
     fun assignPlayer(youTubePlayer: YouTubePlayer) {
         this.youTubePlayer = youTubePlayer
     }
 
-    fun hideToggle() {
+    fun hideAllToggle() {
         showVideoToggle.hide()
         hideVideoToggle.hide()
     }
 
     fun showVideoOnly(videoLive: Boolean) {
         showVideo()
-        hideToggle()
+        hideAllToggle()
         liveIndicator.showWithCondition(videoLive)
+    }
+
+    fun onPlayed() {
+        hideVideoToggle.hide()
+    }
+
+    fun onPaused() {
+        if (!showVideoToggle.isShown && videoContainer.isVisible) {
+            hideVideoToggle.show()
+        }
+    }
+
+    fun hideVideoAndToggle() {
+        youTubePlayer?.pause()
+        hideAllToggle()
+        videoContainer.hide()
+        setChatListHasSpaceOnTop.invoke(true)
+        liveIndicator.hide()
     }
 }

@@ -33,11 +33,11 @@ class VideoStreamMapper @Inject constructor() : Func1<Response<DataResponse<Vide
         return VideoStreamViewModel(
                 pojo.isActive,
                 pojo.isLive,
-                pojo.orientation,
                 pojo.streamRtmpStandard,
                 pojo.streamRtmpHigh,
                 pojo.streamHlsStandard,
-                pojo.streamHlsHigh
+                pojo.streamHlsHigh,
+                pojo.orientation
         )
     }
 

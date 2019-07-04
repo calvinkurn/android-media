@@ -425,6 +425,9 @@ public class ChannelInfoViewModel implements Parcelable {
     public void setVideoId(String videoId) {
         this.videoId = videoId;
     }
+    public void setVideoLive(Boolean videoLive) {
+        this.videoLive = videoLive;
+    }
 
     public SettingGroupChat getSettingGroupChat() {
         return settingGroupChat;
