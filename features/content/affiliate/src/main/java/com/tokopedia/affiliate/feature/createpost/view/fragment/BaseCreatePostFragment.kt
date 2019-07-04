@@ -431,8 +431,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         updateAddTagText()
     }
 
-    private fun onDefaultCaptionClicked(caption: String){
-
+    private fun onDefaultCaptionClicked(_caption: String){
+        if (caption.text.length + _caption.length <= MAX_CHAR ){
+            caption.text.append(_caption)
+        }
     }
 
     private fun updateMaxCharacter() {
