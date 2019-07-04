@@ -323,7 +323,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
                 "position", Integer.toString(getPosition()),
                 "userId", userId,
                 "shopId", getShopID(),
-                "dimensionXX", TextUtils.isEmpty(filterSortParams) ? "none / other" : filterSortParams
+                "dimension61", TextUtils.isEmpty(filterSortParams) ? "none / other" : filterSortParams
         );
     }
 
