@@ -2,6 +2,7 @@ package com.tokopedia.gm.common.domain.interactor
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.gm.common.constant.GMParamConstant.RAW_ACTIVATION
+import com.tokopedia.gm.common.constant.GMParamConstant.SUCCESS_ACTIVATE
 import com.tokopedia.gm.common.data.source.cloud.model.GoldActivationSubscription
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -32,8 +33,7 @@ class ActivatePowerMerchantUseCase @Inject constructor(private val graphqlUseCas
                 throw MessageErrorException(error.first().message)
             }
 
-            true
-
+            SUCCESS_ACTIVATE
         }
     }
 }

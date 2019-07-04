@@ -11,5 +11,7 @@ public class GMParamConstant {
 
     public static final String RAW_DEACTIVATION = "raw_deactivation";
     public static final String RAW_ACTIVATION = "raw_activation";
+    public static final Boolean SUCCESS_DEACTIVATE = true;
+    public static final Boolean SUCCESS_ACTIVATE = true;
 }
 

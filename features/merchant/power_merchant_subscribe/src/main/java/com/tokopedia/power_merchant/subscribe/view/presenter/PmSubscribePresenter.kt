@@ -1,8 +1,8 @@
 package com.tokopedia.power_merchant.subscribe.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.gm.common.domain.interactor.GetPowerMerchantStatusUseCase
 import com.tokopedia.gm.common.domain.interactor.DeactivatePowerMerchantUseCase
+import com.tokopedia.gm.common.domain.interactor.GetPowerMerchantStatusUseCase
 import com.tokopedia.power_merchant.subscribe.view.contract.PmSubscribeContract
 import com.tokopedia.power_merchant.subscribe.view.subscriber.GetInfoToggleAutoExtendSubscriber
 import com.tokopedia.power_merchant.subscribe.view.subscriber.GetPmStatusInfoSubscriber
@@ -26,6 +26,4 @@ class PmSubscribePresenter @Inject constructor(
         getPowerMerchantStatusUseCase.unsubscribe()
         toggleAutoExtend.unsubscribe()
     }
-
-
 }
