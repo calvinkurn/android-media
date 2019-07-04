@@ -68,16 +68,16 @@ public class PointHistoryListAdapter extends BaseAdapter<PointHistoryItem> {
 
         if (item.getRewardPoints() != 0) {
             holder.point.setText(item.getRewardPoints() > 0
-                    ? String.format("+%d", item.getRewardPoints()) : String.format("%d", item.getRewardPoints()));
+                    ? String.format(" +%d", item.getRewardPoints()) : String.format(" %d", item.getRewardPoints()));
         } else {
-            holder.point.setText("-");
+            holder.point.setText(" -");
         }
 
         if (item.getMemberPoints() != 0) {
             holder.loyalty.setText(item.getMemberPoints() > 0
-                    ? String.format("+%d", item.getMemberPoints()) : String.format("%d", item.getMemberPoints()));
+                    ? String.format(" +%d", item.getMemberPoints()) : String.format(" %d", item.getMemberPoints()));
         } else {
-            holder.loyalty.setText("-");
+            holder.loyalty.setText(" -");
         }
     }
 
