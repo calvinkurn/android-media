@@ -11,6 +11,7 @@ searchProduct(params: $params) {
   count
   count_text
   additional_params
+   isQuerySafe
    suggestion {
      currentKeyword
      suggestion

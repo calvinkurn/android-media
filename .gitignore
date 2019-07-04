@@ -69,3 +69,6 @@ BUCK
 
 file_changes.log
 coverageResults/
+
+# unify
+unifyconfig/unifyproject.config
