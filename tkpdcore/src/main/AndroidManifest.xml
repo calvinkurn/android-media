@@ -100,15 +100,6 @@
             android:label="@string/title_activity_shop_location"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.manage.people.address.activity.AddAddressActivity"
-            android:label="@string/title_activity_add_address"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity"
-            android:label="@string/title_activity_choose_address"
-            android:screenOrientation="portrait" />
-
-        <activity
             android:name="com.tokopedia.core.manage.people.notification.activity.ManageNotificationActivity"
             android:label="@string/title_activity_manage_notification"
             android:screenOrientation="portrait" />

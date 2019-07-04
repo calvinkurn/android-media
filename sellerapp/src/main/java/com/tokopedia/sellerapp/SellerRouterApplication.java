@@ -805,16 +805,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getResolutionCenterIntent(Context context) {
-        return InboxResCenterActivity.createIntent(context);
-    }
-
-    @Override
-    public Intent getResolutionCenterIntentBuyer(Context context) {
-        return null;
-    }
-
-    @Override
     public Intent getResolutionCenterIntentSeller(Context context) {
         return ResoInboxActivity.newSellerInstance(context);
     }

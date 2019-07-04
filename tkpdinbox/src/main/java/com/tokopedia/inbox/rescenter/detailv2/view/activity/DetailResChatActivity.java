@@ -1,23 +1,15 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.activity;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.customView.TextDrawable;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.MethodChecker;
@@ -25,22 +17,13 @@ import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.common.ResolutionRouter;
 import com.tokopedia.inbox.common.ResolutionUrl;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResChatActivityListener;
-import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResChatActivityPresenter;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
-import com.tokopedia.inbox.util.analytics.InboxAnalytics;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.track.TrackApp;
-
-import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_WEBVIEW_RESO_ENABLED_TOGGLE;
 
 /**
  * Created by yoasfs on 10/6/17.
  */
 
-public class DetailResChatActivity
-        extends BasePresenterActivity<DetailResChatActivityListener.Presenter>
-        implements DetailResChatActivityListener.View, HasComponent {
+public class DetailResChatActivity extends BasePresenterActivity<DetailResChatActivityListener.Presenter> {
 
     public static final String PARAM_RESOLUTION_ID = "resolution_id";
     public static final String PARAM_SHOP_NAME = "shopName";
@@ -58,47 +41,16 @@ public class DetailResChatActivity
     private boolean isSeller;
 
     public static Intent newBuyerInstance(Context context, String resolutionId, String shopName) {
-        Intent intent = null;
-        if (isToggleResoEnabled(context)) {
-            intent = getApplinkIntent(context, resolutionId);
-        }
-
-        if (intent == null) {
-            intent = new Intent(context, DetailResChatActivity.class);
-            intent.putExtra(PARAM_RESOLUTION_ID, resolutionId);
-            intent.putExtra(PARAM_SHOP_NAME, shopName);
-            intent.putExtra(PARAM_IS_SELLER, false);
-        }
-        return intent;
-    }
-
-    public static Intent newSellerInstance(Context context, String resolutionId, String username) {
-        Intent intent = null;
-        if (isToggleResoEnabled(context)) {
-            intent = getApplinkIntent(context, resolutionId);
-        }
-
-        if (intent == null) {
-            intent = new Intent(context, DetailResChatActivity.class);
-            intent.putExtra(PARAM_RESOLUTION_ID, resolutionId);
-            intent.putExtra(PARAM_USER_NAME, username);
-            intent.putExtra(PARAM_IS_SELLER, true);
-        }
-        return intent;
-    }
-
-    private static boolean isToggleResoEnabled(Context context) {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-        return remoteConfig.getBoolean(APP_WEBVIEW_RESO_ENABLED_TOGGLE);
+        return getApplinkIntent(context, resolutionId);
     }
 
     private static Intent getApplinkIntent(Context context, String resolutionId) {
         if (context.getApplicationContext() instanceof ResolutionRouter) {
             if (GlobalConfig.isSellerApp()) {
-            return ((ResolutionRouter)context.getApplicationContext()).getSellerWebViewIntent(context,
-                    String.format(ResolutionUrl.RESO_DETAIL, resolutionId));
+                return ((ResolutionRouter) context.getApplicationContext()).getSellerWebViewIntent(context,
+                        String.format(ResolutionUrl.RESO_DETAIL, resolutionId));
             } else {
-                return ((ResolutionRouter)context.getApplicationContext()).getApplinkIntent(context,
+                return ((ResolutionRouter) context.getApplicationContext()).getApplinkIntent(context,
                         String.format(ResolutionUrl.RESO_APPLINK + ResolutionUrl.HOSTNAME + ResolutionUrl.RESO_DETAIL, resolutionId));
             }
         }
@@ -107,7 +59,7 @@ public class DetailResChatActivity
 
     private static Intent getApplinkIntentCenter(Context context, String resolutionId) {
         if (context.getApplicationContext() instanceof ResolutionRouter) {
-            return ((ResolutionRouter)context.getApplicationContext()).getApplinkIntent(context,
+            return ((ResolutionRouter) context.getApplicationContext()).getApplinkIntent(context,
                     String.format(ResolutionUrl.RESO_APPLINK + ResolutionUrl.HOSTNAME + ResolutionUrl.RESO_DETAIL_NEW, resolutionId));
         }
         return null;
@@ -129,21 +81,13 @@ public class DetailResChatActivity
         Intent parentIntent;
         Intent destinationIntent = null;
         String resoId = bundle.getString(PARAM_RESOLUTION_ID, "");
-        if (isToggleResoEnabled(context)) {
-            switch (rescenter_type) {
-                case Constants.Applinks.RESCENTER_CENTER:
-                    destinationIntent = getApplinkIntentCenter(context, resoId);
-                    break;
-                case Constants.Applinks.RESCENTER:
-                    destinationIntent = getApplinkIntent(context, resoId);
-                    break;
-                default:
-                    break;
-            }
+
+        if (rescenter_type.equals(Constants.Applinks.RESCENTER)) {
+            destinationIntent = getApplinkIntent(context, resoId);
+        } else {
+            destinationIntent = getApplinkIntentCenter(context, resoId);
         }
-        if (destinationIntent == null) {
-            destinationIntent = new Intent(context, DetailResChatActivity.class);
-        }
+
         destinationIntent.putExtra(PARAM_RESOLUTION_ID, resoId);
         String userName = MethodChecker.fromHtml(bundle.getString(PARAM_APPLINK_BUYER, "")).toString();
         String shopName = MethodChecker.fromHtml(bundle.getString(PARAM_APPLINK_SELLER, "")).toString();
@@ -169,19 +113,6 @@ public class DetailResChatActivity
         taskStackBuilder.addNextIntent(destinationIntent);
         return taskStackBuilder;
     }
-    @Override
-    public void inflateFragment(Fragment fragment, String TAG, boolean isReload) {
-        if (getFragmentManager().findFragmentByTag(TAG) != null && !isReload) {
-            getFragmentManager().beginTransaction()
-                    .replace(com.tokopedia.core2.R.id.container,
-                            getFragmentManager().findFragmentByTag(TAG))
-                    .commit();
-        } else {
-            getFragmentManager().beginTransaction()
-                    .add(com.tokopedia.core2.R.id.container, fragment, TAG)
-                    .commit();
-        }
-    }
 
     @Override
     protected boolean isLightToolbarThemes() {
@@ -206,7 +137,6 @@ public class DetailResChatActivity
 
     @Override
     protected void initialPresenter() {
-        presenter = new DetailResChatActivityPresenter(this, resolutionId);
     }
 
     @Override
@@ -217,9 +147,9 @@ public class DetailResChatActivity
     @Override
     protected void initView() {
         if (isSeller) {
-            toolbar.setTitle(getString(R.string.complaint_from) +" "+ userName);
+            toolbar.setTitle(getString(R.string.complaint_from) + " " + userName);
         } else {
-            toolbar.setTitle(getString(R.string.complaint_to) +" "+ shopName);
+            toolbar.setTitle(getString(R.string.complaint_to) + " " + shopName);
         }
         presenter.initFragment(isSeller, resolutionId, false);
     }
@@ -236,38 +166,6 @@ public class DetailResChatActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(Menu.NONE, R.id.action_detail, 0, "");
-        MenuItem menuItem = menu.findItem(R.id.action_detail); // OR THIS
-        menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        menuItem.setIcon(getDetailMenuItem());
-        return true;
-    }
-
-    private Drawable getDetailMenuItem() {
-        TextDrawable drawable = new TextDrawable(this);
-        drawable.setText(getResources().getString(R.string.detail));
-        drawable.setTextColor(R.color.black_70b);
-        return drawable;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_detail) {
-            Intent intent;
-            if (isSeller) {
-                intent = DetailResCenterActivity.newSellerInstance(DetailResChatActivity.this, resolutionId, userName);
-            } else {
-                intent = DetailResCenterActivity.newBuyerInstance(DetailResChatActivity.this, resolutionId, shopName);
-            }
-            startActivityForResult(intent, REQUEST_GO_DETAIL);
-            TrackApp.getInstance().getGTM().sendGeneralEvent(InboxAnalytics.eventResoChatClickDetail(resolutionId).getEvent());
-            return true;
-        } else
-            return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     protected void initVar() {
 
     }
@@ -275,53 +173,5 @@ public class DetailResChatActivity
     @Override
     protected void setActionVar() {
 
-    }
-
-    @Override
-    public Object getComponent() {
-        return getApplicationComponent();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_GO_DETAIL) {
-            if (resultCode == Activity.RESULT_OK) {
-                presenter.initFragment(isSeller, resolutionId, true);
-            } else if (resultCode == ACTION_GO_TO_LIST) {
-                finish();
-            }
-        }
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString(PARAM_RESOLUTION_ID, resolutionId);
-        outState.putBoolean(PARAM_IS_SELLER, isSeller);
-        outState.putString(PARAM_USER_NAME, userName);
-        outState.putString(PARAM_SHOP_NAME, shopName);
-
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        resolutionId = savedInstanceState.getString(PARAM_RESOLUTION_ID);
-        isSeller = savedInstanceState.getBoolean(PARAM_IS_SELLER);
-        if (isSeller) {
-            userName = savedInstanceState.getString(PARAM_USER_NAME);
-        } else {
-            shopName = savedInstanceState.getString(PARAM_SHOP_NAME);
-        }
-        initView();
-    }
-
-    @Override
-    public void onBackPressed() {
-        Intent data = new Intent();
-        data.putExtra(PARAM_RESOLUTION_ID, resolutionId);
-        setResult(Activity.RESULT_OK, data);
-        finish();
     }
 }
