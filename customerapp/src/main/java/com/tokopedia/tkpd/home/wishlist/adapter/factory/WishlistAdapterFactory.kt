@@ -1,12 +1,12 @@
-package com.tokopedia.tkpd.home.adapter.factory
+package com.tokopedia.tkpd.home.wishlist.adapter.factory
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tkpd.home.adapter.OnWishlistActionButtonClicked
-import com.tokopedia.tkpd.home.adapter.viewholder.*
-import com.tokopedia.tkpd.home.adapter.viewmodel.*
+import com.tokopedia.tkpd.home.wishlist.adapter.viewholder.*
+import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.*
 import com.tokopedia.tkpd.home.presenter.WishListView
 import com.tokopedia.tkpd.home.wishlist.analytics.WishlistAnalytics
 

@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.home.adapter.viewholder
+package com.tokopedia.tkpd.home.wishlist.adapter.viewholder
 
 import android.content.Context
 import android.support.annotation.LayoutRes
@@ -9,7 +9,7 @@ import com.tokopedia.navigation.analytics.InboxGtmTracker
 import com.tokopedia.recommendation_widget_common.presentation.RecommendationCardView
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.tkpd.R
-import com.tokopedia.tkpd.home.adapter.viewmodel.WishlistRecomendationViewModel
+import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistRecomendationViewModel
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.Category
 import com.tokopedia.topads.sdk.domain.model.Product

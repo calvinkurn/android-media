@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.home.adapter.viewholder
+package com.tokopedia.tkpd.home.wishlist.adapter.viewholder
 
 import android.support.annotation.LayoutRes
 import android.view.View
@@ -7,8 +7,7 @@ import android.widget.Button
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tkpd.R
 import com.tokopedia.tkpd.home.adapter.OnWishlistActionButtonClicked
-import com.tokopedia.tkpd.home.adapter.viewmodel.WishlistEmptySearchViewModel
-import com.tokopedia.tkpd.home.adapter.viewmodel.WishlistEmptyViewModel
+import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistEmptySearchViewModel
 
 /**
  * Author errysuprayogi on 03,July,2019

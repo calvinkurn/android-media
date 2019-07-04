@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.home.adapter.viewholder
+package com.tokopedia.tkpd.home.wishlist.adapter.viewholder
 
 import android.content.Context
 import android.content.Intent
@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.tkpd.R
-import com.tokopedia.tkpd.home.adapter.viewmodel.WishlistTopAdsViewModel
+import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistTopAdsViewModel
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.topads.sdk.domain.model.Product

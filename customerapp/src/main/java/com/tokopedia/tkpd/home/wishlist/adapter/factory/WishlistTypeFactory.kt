@@ -1,6 +1,6 @@
-package com.tokopedia.tkpd.home.adapter.factory
+package com.tokopedia.tkpd.home.wishlist.adapter.factory
 
-import com.tokopedia.tkpd.home.adapter.viewmodel.*
+import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.*
 
 /**
  * Author errysuprayogi on 03,July,2019

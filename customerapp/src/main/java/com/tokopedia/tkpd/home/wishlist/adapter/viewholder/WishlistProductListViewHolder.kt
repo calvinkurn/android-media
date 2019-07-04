@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.home.adapter.viewholder
+package com.tokopedia.tkpd.home.wishlist.adapter.viewholder
 
 import android.content.Context
 import android.content.Intent
@@ -25,7 +25,7 @@ import com.tokopedia.core.analytics.UnifyTracking
 import com.tokopedia.core.customwidget.FlowLayout
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage
 import com.tokopedia.tkpd.R
-import com.tokopedia.tkpd.home.adapter.viewmodel.WishlistProductViewModel
+import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistProductViewModel
 import com.tokopedia.tkpd.home.presenter.WishListView
 import com.tokopedia.tkpd.home.wishlist.analytics.WishlistAnalytics
 
