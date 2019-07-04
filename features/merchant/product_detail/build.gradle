@@ -29,7 +29,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation project(rootProject.ext.libraries.track)
-    implementation rootProject.ext.libraries.unifyPrinciples
+    implementation rootProject.ext.unifyDependencies.principles
     
 
     implementation project(rootProject.ext.features.affiliateCommon)

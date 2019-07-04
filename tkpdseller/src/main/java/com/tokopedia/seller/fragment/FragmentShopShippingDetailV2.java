@@ -34,21 +34,17 @@ import com.tkpd.library.utils.ListViewHelper;
 import com.tkpd.library.utils.SimpleSpinnerAdapter;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
-import com.tokopedia.core2.R;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.TkpdInboxRouter;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.core2.R;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.ShippingConfirmationDetail;
 import com.tokopedia.seller.customadapter.ListViewShopTxDetailProdListV2;
@@ -67,30 +63,28 @@ import com.tokopedia.seller.selling.view.activity.SellingDetailActivity;
 import com.tokopedia.seller.selling.view.fragment.CustomScannerBarcodeActivity;
 import com.tokopedia.track.TrackApp;
 
+import org.jetbrains.annotations.NotNull;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
 import rx.subscriptions.CompositeSubscription;
+
+import static com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_CAMERA;
+import static com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE;
 
 /**
  * Created by Tkpd_Eka on 2/17/2015.
  * modified by m.normansyah on 11/05/2016, ButterKnife and change json String to model
  */
-@RuntimePermissions
 public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippingDetailView, SellingView {
 
     private static final String DATAPROCESSORDER = "data_process_order";
     private Bundle bundle;
     private boolean isConfirmDone = false;
     public static final int REQUEST_CODE_BARCODE = 1;
+    private PermissionCheckerHelper permissionCheckerHelper;
 
     public FragmentShopShippingDetailV2() {
 
@@ -496,11 +490,34 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
         AppUtils.InvoiceDialog(getActivity(), invoiceUrl, invoicePdf, invoice.getText().toString());
     }
 
-    public void scanBarCode() {
-        FragmentShopShippingDetailV2PermissionsDispatcher.onScanBarcodeWithCheck(FragmentShopShippingDetailV2.this);
+    private String[] getPermissions() {
+        return new String[]{PERMISSION_CAMERA, PERMISSION_WRITE_EXTERNAL_STORAGE};
     }
 
-    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    public void scanBarCode() {
+        permissionCheckerHelper = new PermissionCheckerHelper();
+        permissionCheckerHelper.checkPermissions(
+                this,
+                getPermissions(),
+                new PermissionCheckerHelper.PermissionCheckListener() {
+                    @Override
+                    public void onPermissionDenied(@NotNull String permissionText) {
+                        permissionCheckerHelper.onPermissionDenied(getActivity(), permissionText);
+                    }
+
+                    @Override
+                    public void onNeverAskAgain(@NotNull String permissionText) {
+                        permissionCheckerHelper.onNeverAskAgain(getActivity(), permissionText);
+
+                    }
+
+                    @Override
+                    public void onPermissionGranted() {
+                        onScanBarcode();
+                    }
+                }, "");
+    }
+
     public void onScanBarcode() {
         CommonUtils.requestBarcodeScanner(this, CustomScannerBarcodeActivity.class);
     }
@@ -817,59 +834,14 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                           int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions,
+                                           @NotNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        FragmentShopShippingDetailV2PermissionsDispatcher.onRequestPermissionsResult(
-                FragmentShopShippingDetailV2.this, requestCode, grantResults);
-    }
-
-
-    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
-    void showRationaleForStorageAndCamera(final PermissionRequest request) {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-
-        RequestPermissionUtil.onShowRationale(getActivity(), request, listPermission);
-    }
-
-    @OnPermissionDenied(Manifest.permission.CAMERA)
-    void showDeniedForCamera() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CAMERA);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.CAMERA)
-    void showNeverAskForCamera() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CAMERA);
-    }
-
-    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showDeniedForStorage() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showNeverAskForStorage() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
-    void showDeniedForStorageAndCamera() {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-
-        RequestPermissionUtil.onPermissionDenied(getActivity(), listPermission);
-    }
-
-    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
-    void showNeverAskForStorageAndCamera() {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            if (getContext() != null) {
+                permissionCheckerHelper.onRequestPermissionsResult(getContext(), requestCode, permissions, grantResults);
+            }
+        }
     }
 
     private ProductPass getProductDataToPass(int position) {

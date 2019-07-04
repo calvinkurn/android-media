@@ -95,14 +95,13 @@ dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
-    implementation rootProject.ext.networkDependencies.volley
     implementation rootProject.ext.networkDependencies.glide
 
     implementation rootProject.ext.analyticsDependencies.appsflyer
     implementation rootProject.ext.analyticsDependencies.installRef
 
     implementation (rootProject.ext.analyticsDependencies.moengage) {
-        exclude group: 'com.moengage', module: 'moe-push-gcm'
+        exclude group: 'com.moengage', module: 'moe-push-firebase'
     }
     implementation (rootProject.ext.analyticsDependencies.moengageMSG) {
         exclude group: 'com.android.support'
@@ -136,7 +135,6 @@ dependencies {
     implementation rootProject.ext.firebase.config
     implementation rootProject.ext.debugToolsDependencies.stetho
 
-    implementation rootProject.ext.analyticsDependencies.logentries
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.userSession)

@@ -16,5 +16,5 @@ data class WhitelistDomain(
     var postSuccessMessage: String = "",
     var desc: String = "",
     var image: String = "",
-    var authors: ArrayList<Author>? = ArrayList()
+    var authors: ArrayList<Author> = ArrayList()
 ){}

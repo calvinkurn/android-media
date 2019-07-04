@@ -49,8 +49,7 @@ dependencies {
     kapt rootProject.ext.miscDependencies.daggerCompiler
     kapt rootProject.ext.miscDependencies.guava
 
-    implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    kapt  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+    implementation project(rootProject.ext.libraries.permissionchecker)
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     
     implementation (rootProject.ext.debugToolsDependencies.chuck) {

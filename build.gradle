@@ -6,6 +6,7 @@ apply from: 'buildconfig/dependencies/dependency-features.gradle'
 //apply from: 'buildconfig/dependencies/dependency-features-no-op.gradle'
 apply from: 'tools/quality.gradle'
 apply from: 'tools/composite_build.gradle'
+apply plugin: 'idea'
 
 
 buildscript {
@@ -73,13 +74,6 @@ allprojects {
             dirs project(rootProject.ext.libraries.inappupdate).file('libs')
         }
         maven { url 'https://hansel.io/maven' }
-        maven {
-            url "${artifactory_url}" + "/libs-snapshot-local";
-            credentials {
-                username = "${artifactory_username}"
-                password = "${artifactory_password}"
-            }
-        }
     }
 }
 apply plugin: 'com.uber.okbuck'
@@ -160,7 +154,7 @@ subprojects {
                 substitute module('com.squareup.okio:okio') with module('com.squareup.okio:okio:1.13.0')
                 substitute module('com.google.code.findbugs:jsr305') with module('com.google.code.findbugs:jsr305:1.3.9')
                 substitute module('com.android.support:support-annotations') with module('com.android.support:support-annotations:27.1.1')
-                substitute module('com.android.support:multidex') with module('com.android.support:multidex:1.0.3')
+                substitute module('com.android.support:multidex') with module("com.android.support:multidex:${multiDexVersion}")
                 substitute module('com.android.support:support-v13') with module('com.android.support:support-v13:27.1.1')
                 substitute module('com.android.support:support-v4') with module('com.android.support:support-v4:27.1.1')
                 substitute module('com.android.support:support-compat') with module('com.android.support:support-compat:27.1.1')
@@ -175,6 +169,7 @@ subprojects {
                 substitute module('com.google.android.gms:play-services-base') with module("com.google.android.gms:play-services-base:${playServiceBaseVersion}")
                 substitute module('com.google.firebase:firebase-iid') with module("com.google.firebase:firebase-iid:${playServiceFirebaseIidVersion}")
                 substitute module('com.google.android.gms:play-services-measurement-base') with module("com.google.android.gms:play-services-measurement-base:16.0.5")
+                substitute module('com.google.guava:guava') with module("com.google.guava:guava:${guavaVersion}")
             }
         }
     }
@@ -188,3 +183,9 @@ gradle.buildFinished {
     "zip -d .okbuck/cache/org.hamcrest.hamcrest-integration-1.3.jar LICENSE.txt".execute()
 }
 
+idea.module {
+    excludeDirs += file('build/')
+    excludeDirs += file('.buckd/')
+    excludeDirs += file('.okbuck/')
+    excludeDirs += file('buck-out/')
+}

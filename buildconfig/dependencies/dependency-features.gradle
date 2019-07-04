@@ -209,7 +209,8 @@ ext {
 //            flashsaleManagement             : ":features:discovery:flashsale_management_no_op",
             flashsaleManagementCommon       : ":features:discovery:flashsale_management_common",
             home                            : ":features:discovery:home",
-            //home                          : ":features:discovery:home_no_op",
+            homeRecommendation              : ":features:discovery:home_recom",
+//            home                          : ":features:discovery:home_no_op",
             recentview                      : ":features:discovery:recentview",
             //recentview                    : ":features:discovery:recentview_no_op",
             search                          : ":features:discovery:search",
@@ -230,7 +231,7 @@ ext {
             navigation                      : ":features:home:navigation",
             navigationCommon                : ":features:home:navigation-common",
             searchbar                       : ":features:home:searchbar",
-
+            
             challenges                      : ":features:im:challenges",
 //            challenges                    : ":features:im:challenges_no_op",
 
@@ -338,6 +339,7 @@ ext {
 //            notifCenter                     : ":features:user:notifcenter_no_op",
             otp                             : ":features:user:otp",
             phoneVerification               : ":features:user:phoneverification",
+            profileCompletion               : ":features:user:profilecompletion",
             settingbank                     : ":features:user:settingbank",
             talk                            : ":features:user:talk",
             topchat                         : ":features:user:topchat",

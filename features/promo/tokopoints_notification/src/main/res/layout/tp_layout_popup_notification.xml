@@ -31,8 +31,6 @@
         android:layout_marginLeft="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_8"
         android:background="@drawable/bg_tp_remaining_exchange"
-        android:drawableStart="@drawable/ic_tp_flash"
-        android:drawableLeft="@drawable/ic_tp_flash"
         android:drawablePadding="@dimen/dp_3"
         android:gravity="center_vertical"
         android:paddingLeft="@dimen/dp_8"

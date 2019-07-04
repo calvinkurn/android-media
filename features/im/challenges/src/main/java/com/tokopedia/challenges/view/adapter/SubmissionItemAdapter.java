@@ -25,6 +25,7 @@ import com.tokopedia.challenges.view.presenter.SubmissionAdapterPresenter;
 import com.tokopedia.challenges.view.share.ShareBottomSheet;
 import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +74,7 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         switch (viewType) {
             case ITEM:
                 v = inflater.inflate(R.layout.submission_item, parent, false);
+                v.findViewById(R.id.tv_winner_number).setBackground(MethodChecker.getDrawable(v.getContext(), R.drawable.ic_winner_badge));
                 holder = new ItemViewHolder(v);
                 break;
             case FOOTER:
@@ -245,9 +247,9 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             if (categoryItems.get(getIndex()).getMe() != null) {
                 categoryItems.get(getIndex()).getMe().setLiked(isLiked);
                 if (isLiked) {
-                    ivFavourite.setImageResource(R.drawable.ic_wishlist_checked);
+                    ivFavourite.setImageDrawable(MethodChecker.getDrawable(context,R.drawable.ic_wishlist_checked));
                 } else {
-                    ivFavourite.setImageResource(R.drawable.ic_wishlist_unchecked);
+                    ivFavourite.setImageDrawable(MethodChecker.getDrawable(context,R.drawable.ic_wishlist_unchecked));
                 }
             }
         }

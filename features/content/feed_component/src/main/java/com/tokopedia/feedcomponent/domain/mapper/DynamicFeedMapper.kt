@@ -58,6 +58,8 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         private const val AUTHOR_TOPADS_SHOP = "topads shop"
     }
 
+    var feedType: String = ""
+
     @Suppress("UNCHECKED_CAST")
     override fun call(t: GraphqlResponse?): DynamicFeedDomainModel {
         val feedQuery = t?.getData<FeedQuery?>(FeedQuery::class.java)
@@ -167,6 +169,10 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                 it.shop != null && it.shopClickUrl != null
             } as MutableList
 
+            feed.content.cardRecommendation.items.forEachIndexed { index, item ->
+                topadsShopList.get(index).isFavorit = item.header.followCta.isFollow
+            }
+
             posts.add(
                     TopadsShopViewModel(
                             feed.content.cardRecommendation.title,
@@ -244,7 +250,8 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                             contentList,
                             template,
                             trackingPostModel,
-                            mapTrackingData(feed.content.cardpost.tracking)
+                            mapTrackingData(feed.content.cardpost.tracking),
+                            feedType
                     )
             )
         }
