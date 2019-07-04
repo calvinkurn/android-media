@@ -157,13 +157,9 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
                 if (imageList.isNotEmpty()) {
                     viewModel.urlImageList.clear()
-                    val mItems = viewModel.fileImageList.map { MediaItem(thumbnail = it.path, type = it.type) }
-                    media_attachment.bind(mItems)
-                    media_attachment.visible()
-                } else {
-                    media_attachment.gone()
-                    media_attachment.bind(listOf())
                 }
+
+                updateMediaPreview()
 
                 invalidatePostCallBack?.invalidatePostMenu(isPostEnabled)
             }
@@ -176,14 +172,9 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
                 if (videoList.isNotEmpty()) {
                     viewModel.urlImageList.clear()
-
-                    val mItems = viewModel.fileImageList.map { MediaItem(thumbnail = it.path, type = it.type) }
-                    media_attachment.bind(mItems)
-                    media_attachment.visible()
-                } else {
-                    media_attachment.gone()
-                    media_attachment.bind(listOf())
                 }
+
+                updateMediaPreview()
 
                 invalidatePostCallBack?.invalidatePostMenu(isPostEnabled)
             }
@@ -194,6 +185,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 resultViewModel?.let {
                     viewModel = resultViewModel
                     updateRelatedProduct()
+                    updateMediaPreview()
 
                     if (viewModel.completeImageList.isEmpty()) {
                         fetchContentForm()
@@ -246,6 +238,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         captionsAdapter.updateCaptions(feedContentForm.defaultCaptions)
         updateRelatedProduct()
         updateMedia()
+        updateMediaPreview()
         updateAddTagText()
         invalidatePostCallBack?.invalidatePostMenu(isPostEnabled)
         updateCaption()
@@ -409,11 +402,13 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         media_attachment.setOnFileClickListener(object : FeedMultipleImageView.OnFileClickListener {
             override fun onDeleteItem(item: MediaItem, position: Int) {
                 viewModel.fileImageList.removeAt(position)
-                viewModel.urlImageList.removeAt(position)
+                if (position < viewModel.urlImageList.size)
+                    viewModel.urlImageList.removeAt(position)
             }
 
             override fun onClickItem(item: MediaItem, position: Int) { goToMediaPreview() }
         })
+        updateMediaPreview()
         caption.filters = arrayOf(InputFilter.LengthFilter(MAX_CHAR))
         caption.afterTextChanged {
             viewModel.caption = it
@@ -444,6 +439,13 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         list_captions.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(R.dimen.dp_8), LinearLayoutManager.HORIZONTAL))
         updateMaxCharacter()
         updateAddTagText()
+    }
+
+    private inline fun updateMediaPreview(){
+        val mItems = viewModel.fileImageList.map { MediaItem(thumbnail = it.path, type = it.type) }
+        media_attachment.bind(mItems)
+        media_attachment.visibility = if (mItems.isEmpty()) View.GONE else View.VISIBLE
+
     }
 
     private fun onDefaultCaptionClicked(_caption: String){
