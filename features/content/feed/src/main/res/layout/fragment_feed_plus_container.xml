@@ -25,7 +25,6 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
-            android:fitsSystemWindows="true"
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
             app:layout_anchor="@id/status_bar_bg"
