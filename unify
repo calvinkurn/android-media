@@ -1,13 +1,41 @@
 #!/usr/bin/env bash
+#
+# Helps develop Unify Component
+# @core-team
+#
 
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#  Required!
+#  - Have GIT installed
+#  - Already clone https://github.com/tokopedia/android-tokopedia-core.git
+#
+#  List unify module available:
+#  - icon
+#  - principle
+#  - component
+#  - calendar
+#  - coachmark
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+#
+# Showing list of action items
+#
 help() {
-    echo "start                 => Start Development"
+    echo "start <username>      => Start Development"
     echo "commit <message>      => Add + Commit to Unify"
     echo "push                  => Push to Unify"
     echo "checkver <project>    => Check current version of Project"
     echo "devwith [aar/module] => Testing / Developing SampleApp with aar / module"
 }
 
+#
+# Helps start develop unify
+#
+# 1 Write your username for branch_name to <unifyconfig/unifyproject.config>
+# 2 Check if your branch already exist
+# 3 Creating new branch from <feature/unify/dev> and name it by your username
+# 4 Gradle clean > build
+#
 start( ) {
     if [ -z "$1" ]; then
         echo "Please input your username"
@@ -40,6 +68,11 @@ start( ) {
     echo "Finish!"
 }
 
+#
+# Helps commit your changes to your branch
+#
+# 1 Git add > commit
+#
 commit( ) {
     if [ -z "$1" ]; then
         echo "Please input commit message"
@@ -50,6 +83,12 @@ commit( ) {
     git commit -m "$1"
 }
 
+#
+# Helps push your changes to your branch
+#
+# 1 Get your branch name
+# 2 Push to your branch
+#
 push( ) {
     source unifyproject.config
     branchname="feature/unify/$user_name"
@@ -57,6 +96,11 @@ push( ) {
     git push origin $branchname
 }
 
+#
+# Give information bout latest version of unify module
+#
+# 1 Get version by specify module
+#
 checkVersion( ) {
 
     if [ -z "$1" ]; then
@@ -89,12 +133,17 @@ checkVersion( ) {
             exit 1
         fi
 
-    VERSIONNAME="${versionname}_version"
+    name="${versionname}_version"
     source unifyconfig/version.properties
 
-    echo "${!VERSIONNAME}"
+    echo "${!name}"
 }
 
+#
+# Helps choose environment what you want to use
+#
+# 1 Change some build.gradle by param
+#
 chooseEnvironment( ) {
 
     if [ -z "$1" ] && [ "$1" != "aar" ] && [ "$1" != "module" ]; then
