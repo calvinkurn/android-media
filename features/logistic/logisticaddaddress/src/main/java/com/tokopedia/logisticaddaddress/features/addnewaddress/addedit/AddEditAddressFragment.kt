@@ -882,7 +882,10 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
 
     override fun onLabelAlamatChipClicked(labelAlamat: String) {
         rv_label_alamat_chips.visibility = View.GONE
-        et_label_address.setText(labelAlamat)
+        et_label_address.run {
+            setText(labelAlamat)
+            setSelection(et_label_address.text.length)
+        }
         if (!isMismatch && !isMismatchSolved) {
             AddNewAddressAnalytics.eventClickChipsLabelAlamatChangeAddressPositive()
         } else {
