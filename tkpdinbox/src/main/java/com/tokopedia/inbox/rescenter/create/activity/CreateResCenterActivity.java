@@ -23,13 +23,9 @@ public class CreateResCenterActivity extends BasePresenterActivity<CreateResCent
         return getApplinkIntent(context, orderID);
     }
 
-    public static Intent newRecomplaintInstance(Context context, String orderID, String resolutionId) {
-        return getApplinkIntent(context, orderID);
-    }
-
     private static Intent getApplinkIntent(Context context, String orderId) {
         if (context.getApplicationContext() instanceof ResolutionRouter) {
-            if (GlobalConfig.isSellerApp()) {
+            if (GlobalConfig.isSellerApp()){
                 return ((ResolutionRouter) context.getApplicationContext()).getSellerWebViewIntent(context,
                         String.format(ResolutionUrl.RESO_CREATE, orderId));
             } else {
