@@ -2130,14 +2130,24 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 );
                 shipmentPresenter.setDataCheckoutRequestList(dataCheckoutRequestsShipping);
                 List<DataCheckoutRequest> dataCheckoutRequestsPromo = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentAdapter.getPromoGlobalStackData(), shipmentAdapter.getShipmentCartItemModelList());
-                shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
-                        dataCheckoutRequestsPromo,
-                        EnhancedECommerceActionField.STEP_3,
-                        ConstantTransactionAnalytics.EventAction.CLICK_CHECKLIST_PILIH_DURASI_PENGIRIMAN,
-                        !TextUtils.isEmpty(recommendedCourier.getPromoCode()) ?
-                                ConstantTransactionAnalytics.EventLabel.PROMO + " - " + recommendedCourier.getEstimatedTimeDelivery() :
-                                ConstantTransactionAnalytics.EventLabel.NON_PROMO + " - " + recommendedCourier.getEstimatedTimeDelivery()
-                );
+                if (dataCheckoutRequestsPromo != null) {
+                    shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
+                            dataCheckoutRequestsPromo,
+                            EnhancedECommerceActionField.STEP_3,
+                            ConstantTransactionAnalytics.EventAction.CLICK_CHECKLIST_PILIH_DURASI_PENGIRIMAN,
+                            !TextUtils.isEmpty(recommendedCourier.getPromoCode()) ?
+                                    ConstantTransactionAnalytics.EventLabel.PROMO + " - " + recommendedCourier.getEstimatedTimeDelivery() :
+                                    ConstantTransactionAnalytics.EventLabel.NON_PROMO + " - " + recommendedCourier.getEstimatedTimeDelivery()
+                    );
+                } else {
+                    shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
+                            EnhancedECommerceActionField.STEP_3,
+                            ConstantTransactionAnalytics.EventAction.CLICK_CHECKLIST_PILIH_DURASI_PENGIRIMAN,
+                            !TextUtils.isEmpty(recommendedCourier.getPromoCode()) ?
+                                    ConstantTransactionAnalytics.EventLabel.PROMO + " - " + recommendedCourier.getEstimatedTimeDelivery() :
+                                    ConstantTransactionAnalytics.EventLabel.NON_PROMO + " - " + recommendedCourier.getEstimatedTimeDelivery()
+                    );
+                }
             }
         }
     }
