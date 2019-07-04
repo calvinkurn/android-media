@@ -21,7 +21,6 @@ public class NotificationBroadcast extends BroadcastReceiver {
             if (null == action)
                 return;
             int notificationId = intent.getExtras().getInt(CustomPushListener.EXTRA_NOTIFICATION_ID);
-            System.out.println("NotificationBroadcast " + action + " id:" + notificationId);
             switch (action) {
                 case CustomPushListener.ACTION_DELETE_NOTIFY:
                     cancelNotification(context, notificationId);
@@ -34,8 +33,6 @@ public class NotificationBroadcast extends BroadcastReceiver {
                     break;
             }
         } catch (Exception e) {
-
-            System.out.println("NotificationBroadcast deleting:" +e.getMessage());
             e.printStackTrace();
         }
     }
@@ -79,8 +76,6 @@ public class NotificationBroadcast extends BroadcastReceiver {
     }
 
     public void cancelNotification(Context context, int notificationId) {
-
-        System.out.println("NotificationBroadcast deleting:" + notificationId);
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.cancel(notificationId);
     }
