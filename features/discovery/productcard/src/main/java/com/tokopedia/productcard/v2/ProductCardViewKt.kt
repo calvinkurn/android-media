@@ -13,11 +13,11 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.productcard.R
 import com.tokopedia.topads.sdk.domain.model.ImpressHolder
 import com.tokopedia.topads.sdk.view.ImpressedImageView
 import com.tokopedia.unifycomponents.Label
-import com.tokopedia.unifycomponents.base.BaseCustomView
 import com.tokopedia.unifyprinciples.Typography
 
 abstract class ProductCardViewKt: BaseCustomView {
