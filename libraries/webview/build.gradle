@@ -14,13 +14,17 @@ buildscript {
 
 dependencies {
 
+    api (rootProject.ext.serviceDependencies.crashlytics) {
+        transitive = true
+    }
+    
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.config)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.applink)
-
-    api (rootProject.ext.serviceDependencies.crashlytics) {
-        transitive = true
-    }
+    implementation project(rootProject.ext.libraries.permissionchecker)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }

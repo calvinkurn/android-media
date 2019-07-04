@@ -18,6 +18,7 @@ import com.tokopedia.youtubeutils.common.YoutubePlayerConstant;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * @author by furqan on 04/07/18.
@@ -114,6 +115,11 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
 
             tvTitle = itemView.findViewById(R.id.tv_guide_title);
             youtubeTV = itemView.findViewById(R.id.youtube_thumbnail_view);
+            itemView.findViewById(R.id.circle_thumbnail_view)
+                    .setBackground(MethodChecker
+                            .getDrawable(itemView.getContext(),
+                                    R.drawable.ic_play_circle_outline_48dp));
+
             progressBar = itemView.findViewById(R.id.youtube_thumbnail_loading_bar);
         }
     }
