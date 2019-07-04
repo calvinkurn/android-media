@@ -366,7 +366,9 @@ public class MainParentActivity extends BaseActivity implements
             return false;
         }
 
-        hideStatusBar();
+        if (position == HOME_MENU) {
+            hideStatusBar();
+        }
 
         Fragment fragment = fragmentList.get(position);
         if (fragment != null) {
