@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
@@ -211,6 +212,15 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
         if (savedInstanceState != null && saveInstanceCacheManager != null) {
             cartListData = saveInstanceCacheManager.get(CartListData.class.getSimpleName(), CartListData.class);
+            wishLists = saveInstanceCacheManager.get(CartWishlistItemHolderData.class.getSimpleName(),
+                    (new TypeToken<ArrayList<CartWishlistItemHolderData>>() {
+                    }).getType(), null);
+            recentViewList = saveInstanceCacheManager.get(CartRecentViewItemHolderData.class.getSimpleName(),
+                    (new TypeToken<ArrayList<CartRecentViewItemHolderData>>() {
+                    }).getType(), null);
+            recommendationList = saveInstanceCacheManager.get(CartRecommendationItemHolderData.class.getSimpleName(),
+                    (new TypeToken<ArrayList<CartRecommendationItemHolderData>>() {
+                    }).getType(), null);
         }
 
         dPresenter.attachView(this);
@@ -533,6 +543,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 refreshHandler.startRefresh();
             } else {
                 if (cartListData != null) {
+                    renderLoadGetCartDataFinish();
                     renderInitialGetCartListDataSuccess(cartListData);
                     stopCartPerformanceTrace();
                 } else {
@@ -548,6 +559,9 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         if (saveInstanceCacheManager != null) {
             saveInstanceCacheManager.onSave(outState);
             saveInstanceCacheManager.put(CartListData.class.getSimpleName(), cartListData);
+            saveInstanceCacheManager.put(CartWishlistItemHolderData.class.getSimpleName(), new ArrayList<>(wishLists));
+            saveInstanceCacheManager.put(CartRecentViewItemHolderData.class.getSimpleName(), new ArrayList<>(recentViewList));
+            saveInstanceCacheManager.put(CartRecommendationItemHolderData.class.getSimpleName(), new ArrayList<>(recommendationList));
         }
     }
 
