@@ -16,11 +16,7 @@ data class GMActivation(
 
         @SerializedName("data")
         @Expose
-        val data: GMActivationData = GMActivationData(),
-
-        @SerializedName("expired_time")
-        @Expose
-        val expiredTime: String = ""
+        val data: GMActivationData = GMActivationData()
 )
 
 data class GMActivationData(
@@ -30,7 +26,11 @@ data class GMActivationData(
 
         @SerializedName("product")
         @Expose
-        val product: GMActivationProduct = GMActivationProduct()
+        val product: GMActivationProduct = GMActivationProduct(),
+
+        @SerializedName("expired_time")
+        @Expose
+        val expiredTime: String = ""
 )
 
 data class GMActivationHeader(
