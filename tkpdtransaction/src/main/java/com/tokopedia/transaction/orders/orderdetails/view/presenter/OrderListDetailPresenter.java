@@ -518,10 +518,4 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             orderListAnalytics.sendThankYouEvent(metaDataInfo.getEntityProductId(), metaDataInfo.getEntityProductName(), metaDataInfo.getTotalTicketPrice(), metaDataInfo.getTotalTicketCount(), orderId);
         }
     }
-
-    public void sendThankYouEvent(MetaDataInfo metaDataInfo) {
-        if ("true".equalsIgnoreCase(this.fromPayment)) {
-            orderListAnalytics.sendThankYouEvent(metaDataInfo.getEntityProductId(), metaDataInfo.getEntityProductName(), metaDataInfo.getTotalTicketPrice(), metaDataInfo.getTotalTicketCount(), orderId);
-        }
-    }
 }
