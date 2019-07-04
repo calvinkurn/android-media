@@ -505,7 +505,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     public void displayLoadMore(boolean isLoadMore) {
         Log.d(TAG, WishListFragment.class.getSimpleName() + (isLoadMore ? " tampilkan" : " hilangkan ") + " load more");
 //        adapter.setIsLoading(isLoadMore);
-        wishlistAdapter.showLoading();
+//        wishlistAdapter.showLoading();
     }
 
     @Override
@@ -527,7 +527,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
             public int getSpanSize(int position) {
                 if (position == wishList.getData().size()) {
                     return 2;
-                } else if (position % 5 == 0 && wishlistAdapter.getItemViewType(position) == WishlistTopAdsListViewHolder.Companion.getLAYOUT()
+                } else if (wishlistAdapter.getItemViewType(position) == WishlistTopAdsListViewHolder.Companion.getLAYOUT()
                         || wishlistAdapter.getItemViewType(position) == LoadingMoreViewHolder.LAYOUT
                         || wishlistAdapter.getItemViewType(position) == WishlistEmptyViewHolder.Companion.getLAYOUT()) {
                     return 2;
