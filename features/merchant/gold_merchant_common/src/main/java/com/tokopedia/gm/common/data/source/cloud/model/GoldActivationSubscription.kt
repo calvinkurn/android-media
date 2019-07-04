@@ -10,11 +10,11 @@ data class GoldActivationSubscription(
 )
 
 data class GMActivation(
-        @SerializedName("header")
+        @SerializedName("ActivationSubscriptionHeader")
         @Expose
         val header: GMActivationHeader = GMActivationHeader(),
 
-        @SerializedName("data")
+        @SerializedName("ActivationSubscriptionData")
         @Expose
         val data: GMActivationData = GMActivationData()
 )
