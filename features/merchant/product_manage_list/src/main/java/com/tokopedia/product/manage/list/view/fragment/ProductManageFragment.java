@@ -97,6 +97,7 @@ import com.tokopedia.topads.common.data.model.FreeDeposit;
 import com.tokopedia.topads.freeclaim.data.constant.TopAdsFreeClaimConstantKt;
 import com.tokopedia.topads.freeclaim.view.widget.TopAdsWidgetFreeClaim;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -109,6 +110,11 @@ import kotlin.Unit;
 
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMAGE_DESCRIPTION_LIST;
+import static com.tokopedia.product.manage.list.constant.ProductTrackingConstant.ACTION_CLICK_MANAGE_COURIER;
+import static com.tokopedia.product.manage.list.constant.ProductTrackingConstant.ACTION_LINK;
+import static com.tokopedia.product.manage.list.constant.ProductTrackingConstant.ACTION_SEE_PRODUCT;
+import static com.tokopedia.product.manage.list.constant.ProductTrackingConstant.CATEGORY_ADD_PRODUCT;
+import static com.tokopedia.product.manage.list.constant.ProductTrackingConstant.EVENT_ADD_PRODUCT;
 import static com.tokopedia.product.manage.list.view.fragment.ProductManageSellerFragment.URL_TIPS_TRICK;
 
 /**
@@ -171,11 +177,13 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         txtTipsTrick = dialog.findViewById(R.id.txt_tips_trick);
 
         btnSubmit.setOnClickListener(v -> {
+            trackerManageCourierButton();
             RouteManager.route(getContext(),ApplinkConst.SELLER_SHIPPING_EDITOR);
             getActivity().finish();
         });
 
         btnGoToPdp.setOnClickListener(v -> {
+            trackerSeeProduct();
             goToPDP(productId);
             dialog.dismiss();
         });
@@ -190,6 +198,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         ClickableSpan cs = new ClickableSpan() {
             @Override
             public void onClick(View v) {
+                trackerLinkClick();
                 RouteManager.route(getContext(), String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_TIPS_TRICK));
                 getActivity().finish();
             }
@@ -198,6 +207,30 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         txtTipsTrick.setMovementMethod(LinkMovementMethod.getInstance());
         txtTipsTrick.setText(spanText);
         return dialog;
+    }
+
+    private void trackerManageCourierButton(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                EVENT_ADD_PRODUCT,
+                CATEGORY_ADD_PRODUCT,
+                ACTION_CLICK_MANAGE_COURIER,
+                "");
+    }
+
+    private void trackerSeeProduct(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                EVENT_ADD_PRODUCT,
+                CATEGORY_ADD_PRODUCT,
+                ACTION_SEE_PRODUCT,
+                "");
+    }
+
+    private void trackerLinkClick(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                EVENT_ADD_PRODUCT,
+                CATEGORY_ADD_PRODUCT,
+                ACTION_LINK,
+                "");
     }
 
     @Override
