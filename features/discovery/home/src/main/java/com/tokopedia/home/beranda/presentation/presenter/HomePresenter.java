@@ -406,6 +406,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         private int repositoryFlag;
 
         HomePresenter homePresenter;
+        private static int VISITABLE_SIZE_WITH_DEFAULT_BANNER = 1;
 
         public HomeDataSubscriber(HomePresenter homePresenter) {
             this.homePresenter = homePresenter;
@@ -442,19 +443,23 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
         @Override
         public void onNext(List<TrackedVisitable> visitables) {
-            if (homePresenter != null && homePresenter.isViewAttached()) {
-                homePresenter.getView().setItems(new ArrayList<>(visitables), homePresenter.getHeaderViewModel(), repositoryFlag);
-                homePresenter.getView().addImpressionToTrackingQueue(visitables);
-                if (visitables.size() > 0) {
-                    homePresenter.getView().showRecomendationButton();
+            if (visitables.size()>VISITABLE_SIZE_WITH_DEFAULT_BANNER) {
+                if (homePresenter != null && homePresenter.isViewAttached()) {
+                    homePresenter.getView().setItems(new ArrayList<>(visitables), homePresenter.getHeaderViewModel(), repositoryFlag);
+                    homePresenter.getView().addImpressionToTrackingQueue(visitables);
+                    if (visitables.size() > 0) {
+                        homePresenter.getView().showRecomendationButton();
+                    }
+                    if (homePresenter.isDataValid(visitables)) {
+                        homePresenter.getView().removeNetworkError();
+                    } else {
+                        homePresenter.showNetworkError();
+                    }
                 }
-                if (homePresenter.isDataValid(visitables)) {
-                    homePresenter.getView().removeNetworkError();
-                } else {
-                    homePresenter.showNetworkError();
-                }
+                lastRequestTimeHomeData = System.currentTimeMillis();
+            } else {
+                onError(new Throwable());
             }
-            lastRequestTimeHomeData = System.currentTimeMillis();
         }
 
     }

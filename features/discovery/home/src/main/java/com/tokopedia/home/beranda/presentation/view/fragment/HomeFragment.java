@@ -909,7 +909,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             visitables.add(feedTabVisitable);
         }
 
-        presenter.getFeedTabData();
+        if (!visitables.isEmpty()) {
+            presenter.getFeedTabData();
+        }
         if (needToShowGeolocationComponent()) {
             adapter.setGeolocationViewModel(new GeolocationPromptViewModel());
         }
