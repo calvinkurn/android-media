@@ -26,17 +26,4 @@ class ProfileCompletionModule {
     @Provides
     @ProfileCompletionScope
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
-
-//    @Provides
-//    @HomeRecommendationScope
-//    fun provideGetRecommendationUseCase(@Named("recommendationQuery") recomQuery: String,
-//                                        graphqlUseCase: GraphqlUseCase,
-//                                        userSessionInterface: UserSessionInterface): GetRecommendationUseCase = GetRecommendationUseCase(recomQuery, graphqlUseCase, userSessionInterface)
-//
-//    @Provides
-//    @HomeRecommendationScope
-//    @Named("recommendationQuery")
-//    fun provideRecommendationRawQuery(@ApplicationContext context: Context): String =
-//            GraphqlHelper.loadRawString(context.resources,
-//                    R.raw.query_recommendation_widget)
 }

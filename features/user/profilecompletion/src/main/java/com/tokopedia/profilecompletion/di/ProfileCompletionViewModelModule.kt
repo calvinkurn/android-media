@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.profilecompletion.addemail.viewmodel.AddEmailViewModel
 import com.tokopedia.profilecompletion.changegender.viewmodel.ChangeGenderViewModel
 import dagger.Binds
 import dagger.Module
@@ -20,4 +21,9 @@ abstract class ProfileCompletionViewModelModule {
     @IntoMap
     @ViewModelKey(ChangeGenderViewModel::class)
     internal abstract fun changeGenderViewModel(viewModel: ChangeGenderViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(AddEmailViewModel::class)
+    internal abstract fun addEmailViewModel(viewModel: AddEmailViewModel): ViewModel
 }

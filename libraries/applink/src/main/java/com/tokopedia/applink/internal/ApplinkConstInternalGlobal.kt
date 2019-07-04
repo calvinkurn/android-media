@@ -52,13 +52,18 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val FORGOT_PASSWORD = "$INTERNAL_GLOBAL/forgot-password"
 
-    // ChangeGenderActivity
-    // tokopedia-android-internal://global/profile-completion
-    @JvmField
-    val CHANGE_GENDER = "$INTERNAL_GLOBAL/change-gender"
-
     // ProfileCompletionActivity
     // tokopedia-android-internal://global/profile-completion
     @JvmField
     val PROFILE_COMPLETION = "$INTERNAL_GLOBAL/profile-completion"
+
+    // ChangeGenderActivity
+    // tokopedia-android-internal://global/change-gender
+    @JvmField
+    val CHANGE_GENDER = "$INTERNAL_GLOBAL/change-gender"
+
+    // AddEmailActivity
+    // tokopedia-android-internal://global/add-email
+    @JvmField
+    val ADD_EMAIL = "$INTERNAL_GLOBAL/add-email"
 }

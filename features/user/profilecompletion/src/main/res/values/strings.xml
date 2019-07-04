@@ -45,4 +45,13 @@
     <string name="profile_completion_end_subtext">Kini akun Anda menjadi lebih aman dan nikmati promo menarik hanya untuk Verified Account</string>
     <string name="see_your_profile">Lihat Profil Anda</string>
 
+
+    <!-- ADD EMAIL -->
+    <string name="title_add_email">Tambah Email</string>
+    <string name="warning_add_email">Pastikan email Anda aktif untuk keamanan dan kemudahan transaksi</string>
+    <string name="title_email">Email</string>
+    <string name="we_will_send_email_verification_code">Kami akan mengirimkan kode verifikasi melalui email</string>
+    <string name="error_field_required">Harus diisi</string>
+    <string name="wrong_email_format">Format email salah</string>
+
 </resources>

@@ -28,4 +28,11 @@ class ProfileCompletionQueryModule {
     fun provideRawMutationChangeGender(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.mutation_change_gender)
 
+    @ProfileCompletionScope
+    @Provides
+    @IntoMap
+    @StringKey(ProfileCompletionQueriesConstant.MUTATION_ADD_EMAIL)
+    fun provideRawMutationAddEmail(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_email)
+
 }

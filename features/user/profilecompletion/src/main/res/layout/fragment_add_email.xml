@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="@dimen/dp_16">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/mainView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/dp_8">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/add_email_warning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/dp_8"
+            android:text="@string/warning_add_email"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_1" />
+
+        <com.tokopedia.design.text.TkpdHintTextInputLayout
+            android:id="@+id/wrapper_email"
+            app:layout_constraintTop_toBottomOf="@id/add_email_warning"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_width="match_parent"
+            android:hint="@string/title_email"
+            style="@style/HintTextInputLayout"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_32"
+            android:layout_marginBottom="@dimen/dp_3"
+            >
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/et_email"
+                android:textColorHint="@color/black_54"
+                android:textColor="@color/black_70"
+                android:inputType="textEmailAddress"
+                android:textSize="@dimen/sp_16"
+                />
+
+        </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+        <TextView
+            app:layout_constraintTop_toBottomOf="@id/wrapper_email"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:id="@+id/tv_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/we_will_send_email_verification_code"
+            android:textSize="@dimen/sp_12"
+            android:textColor="@color/black_38"/>
+
+        <TextView
+            app:layout_constraintTop_toBottomOf="@id/wrapper_email"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:id="@+id/tv_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="@string/we_will_send_email_verification_code"
+            android:textSize="@dimen/sp_12"
+            android:visibility="gone"
+            android:textColor="@color/red_500"/>
+
+
+    </android.support.constraint.ConstraintLayout>
+
+    <com.tokopedia.design.component.ButtonCompat
+        android:id="@+id/buttonSubmit"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_48"
+        android:layout_gravity="center_horizontal"
+        android:enabled="false"
+        android:gravity="center"
+        android:text="@string/button_save"
+        android:textColor="@color/black_70"
+        app:buttonCompatSize="big"
+        app:buttonCompatType="primary_disabled"
+        android:layout_alignParentBottom="true"
+        />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+</RelativeLayout>
