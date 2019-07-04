@@ -68,7 +68,7 @@ ext {
     artifactIdCheckout = 'checkout'
 
     unifyIconVersion = '0.0.4'
-    unifyPrinciplesVersion = '0.0.2'
+    unifyPrinciplesVersion = '0.0.3'
     unifyComponentsVersion = '0.0.4'
     unifyCoachMarkVersion = '1.0.0'
     unifyCalendarVersion = '0.0.2'

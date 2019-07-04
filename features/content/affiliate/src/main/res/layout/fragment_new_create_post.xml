@@ -22,7 +22,7 @@
             android:paddingRight="@dimen/dp_16"
             android:paddingBottom="@dimen/dp_16">
 
-            <com.tokopedia.design.component.EditTextCompat
+            <com.tokopedia.affiliate.common.widget.ClearFocusEditText
                 android:id="@+id/caption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
