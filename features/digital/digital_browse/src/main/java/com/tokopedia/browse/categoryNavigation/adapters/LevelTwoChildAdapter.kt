@@ -28,11 +28,14 @@ class LevelTwoChildAdapter(private val list: List<ChildItem>?) : RecyclerView.Ad
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.productName.text = list!![position].name
 
+        val marginThirty = holder.itemView.resources.getDimensionPixelOffset(R.dimen.dp_30)
+        val marginZero = holder.itemView.resources.getDimensionPixelOffset(R.dimen.dp_0)
+
         if (list[position].iconImageUrl == null) {
-
             holder.productImage.setImageResource(R.drawable.ic_see_more)
-
+            holder.productImage.setPadding(marginThirty, marginThirty, marginThirty, marginThirty)
         } else {
+            holder.productImage.setPadding(marginZero, marginZero, marginZero, marginZero)
             ImageHandler.loadImage(holder.itemView.context, holder.productImage, list[position].iconImageUrl, R.drawable.loading_page)
         }
 

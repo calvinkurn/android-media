@@ -109,6 +109,11 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        loadInitialData();
+    }
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         performanceMonitoring = PerformanceMonitoring.start(PERFORMANCE_TRACE_CATEGORY);
