@@ -4,5 +4,5 @@ import android.content.Context
 import android.content.Intent
 
 interface MLPRouter {
-    fun getSellerWebViewIntent(context: Context, webviewUrl: String): Intent
+    fun getSellerWebViewIntent(context: Context, webViewUrl: String): Intent
 }

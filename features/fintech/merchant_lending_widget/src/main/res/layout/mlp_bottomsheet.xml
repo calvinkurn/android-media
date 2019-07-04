@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -43,18 +44,17 @@
 
     <Button
         android:id="@+id/button_bottomsheet"
-        android:layout_width="288dp"
-        android:layout_height="40dp"
+        android:layout_width="@dimen/mlp_button_bottomsheet_width"
+        android:layout_height="@dimen/mlp_button_bottomsheet_height"
         android:layout_marginTop="@dimen/dp_24"
-        android:layout_marginRight="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_20"
         android:background="@drawable/bg_button_green"
-        android:text="Saya Yakin"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_detail_bottom" />
+        app:layout_constraintTop_toBottomOf="@id/tv_detail_bottom"
+        tools:text="Saya Yakin" />
 
 
 </android.support.constraint.ConstraintLayout>

@@ -2,6 +2,7 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:id="@+id/parentContainer"
     android:layout_height="wrap_content"
     android:background="@color/white">
 
@@ -19,8 +20,8 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
-        android:text="Layanan Finansial"
-        android:textSize="17sp"
+        android:text="@string/mlp_header"
+        android:textSize="@dimen/sp_17"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/line" />
@@ -58,6 +59,7 @@
 
 
     <View
+        android:id="@+id/line2"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_4"
         android:layout_marginTop="@dimen/dp_16"

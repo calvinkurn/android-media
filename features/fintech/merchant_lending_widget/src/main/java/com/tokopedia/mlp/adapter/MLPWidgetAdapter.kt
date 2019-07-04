@@ -4,27 +4,50 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.support.v7.widget.RecyclerView
-import android.util.Log
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.webkit.URLUtil
-import android.widget.*
+import android.widget.LinearLayout
+import android.widget.PopupWindow
 import com.example.merchant_lending_widget.R
 import com.tokopedia.abstraction.common.utils.HexValidator
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.mlp.callback.MLPWidgetAdapterCallBack
 import com.tokopedia.mlp.contractModel.*
+import com.tokopedia.mlp.fragment.MerchantLendingFragment
 import com.tokopedia.mlp.router.MLPRouter
 import kotlinx.android.synthetic.main.fragment_merchant_lending.view.*
+import kotlinx.android.synthetic.main.mlp_bottomsheet.view.*
 import kotlinx.android.synthetic.main.mlp_box_layout.view.*
 import kotlinx.android.synthetic.main.mlp_row_info.view.*
 import kotlinx.android.synthetic.main.switchon_popup.view.*
 
-class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Context, var isexpanded: Boolean) : RecyclerView.Adapter<MLPWidgetAdapter.ViewHolder>() {
+
+class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Context, var isexpanded: Boolean, var merchantLendingFragment: MerchantLendingFragment) : RecyclerView.Adapter<MLPWidgetAdapter.ViewHolder>() {
+
+
+    private val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+
+    private val bodyOpenBottomSheetType = 1
+    private val sideTextOpenBottomSheetType=2
+    private val toggleOpenBottomSheetType=3
+    private var toggleCheck: Boolean? = false
+    private val paddingTopTextBody=8
+    private val paddingBottomTextBody=10
+    lateinit var mlpWidgetAdapterCallBack: MLPWidgetAdapterCallBack
+
+    val viewBoxLayout = inflater.inflate(R.layout.mlp_box_layout, null)
+    val viewRowLayout = inflater.inflate(R.layout.mlp_row_info, null)
+    val viewPopUp = inflater.inflate(R.layout.switchon_popup, null)
+
+
+    interface ToggleSaldoPrioritasLisneter {
+        fun onSuccessToggleSaldo(success: Boolean)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MLPWidgetAdapter.ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.fragment_merchant_lending, parent, false))
@@ -41,32 +64,32 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         fun bindData(widgetsItem: WidgetsItem, position: Int) {
-
             if (!boxList[position].firstLoad) {
                 if (isexpanded) {
-                    itemView.ll_container.visibility = View.VISIBLE
+                    itemView.ll_container.show()
                 } else {
-                    itemView.ll_container.visibility = View.GONE
+                    itemView.ll_container.hide()
                 }
                 return
             } else {
                 widgetsItem.header?.let {
                     itemView.text_title.setTextAndCheckShow(it.title)
                     if (it.logo?.length!! > 0) {
-                        itemView.header_logo.visibility = View.VISIBLE
+                        itemView.header_logo.show()
                         ImageHandler.loadImage(context, itemView.header_logo, it.logo, R.color.grey_100)
+                    } else {
+                        itemView.header_logo.hide()
                     }
-
-
                     itemView.text_badge.setTextAndCheckShow(it.tag?.name)
+
                     if (HexValidator.validate(it.tag?.color)) {
                         itemView.text_badge.background.setColorFilter(Color.parseColor(it.tag?.color), PorterDuff.Mode.SRC_ATOP)
                     }
-
-
-                    val checkToggleStatus: Boolean? = it.sideToggle?.toggleStatus
+                    else {
+                        itemView.text_badge.background.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP)
+                    }
+                    val checkToggleStatus: Boolean? = it.sideToggle?.showToggle
                     val checkSideTextSize = it.sideText?.text?.isNotEmpty()
-
                     if (checkToggleStatus!! && checkSideTextSize!!) {
                         renderSideTextHeader(it, position)
                     } else if (checkToggleStatus && !checkSideTextSize!!) {
@@ -88,34 +111,48 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
             }
         }
 
-
         private fun renderSideToggleHeader(headerContent: Header, position: Int) {
 
-            itemView.switch_enable.visibility = View.VISIBLE
-
-            itemView.switch_enable.setOnCheckedChangeListener { _, isChecked ->
-                run {
-                    headerContent.sideToggle?.url?.let {
-
-                        if (!isChecked) {
-                            openWebViewOrOpenBottomSheet(it, position, 2)
-                        } else {
-                            val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-                            val myView = inflater.inflate(R.layout.switchon_popup, null)
-                            val width = LinearLayout.LayoutParams.WRAP_CONTENT
-                            val height = LinearLayout.LayoutParams.WRAP_CONTENT
-                            val focusable = true
-                            val popupWindow = PopupWindow(myView, width, height, focusable)
-
-                            popupWindow.showAtLocation(myView, Gravity.BOTTOM, 0, 0)
-
-                            myView.tv_dismiss.setOnClickListener {
-                                popupWindow.dismiss()
+            itemView.switch_enable.show()
+            toggleCheck = headerContent.sideToggle?.toggleStatus
+            itemView.switch_enable.isChecked = toggleCheck!!
+            itemView.switch_enable.setOnCheckedChangeListener { buttonView, isChecked ->
+                if (isChecked) {
+                    mlpWidgetAdapterCallBack = merchantLendingFragment
+                    mlpWidgetAdapterCallBack.toggleSaldoPrioritas( object : ToggleSaldoPrioritasLisneter {
+                        override fun onSuccessToggleSaldo(success: Boolean) {
+                            if (success == null || success) {
+                                    showPopUp()
                             }
-
                         }
-                    }
+                    })
                 }
+                else {
+                    val bottomSheetLength: Int = boxList[position].bottomSheet?.size!!
+                    val bottomSheetItem = boxList[position].bottomSheet
+
+                    val placeHolder: String? = boxList[position].header?.sideToggle?.url
+                    val bottomSheetId: Int = computeBottomSheetId(placeHolder, position, bottomSheetLength)
+                    renderBottomSheet(bottomSheetItem?.get(bottomSheetId), position,toggleOpenBottomSheetType)
+                }
+            }
+        }
+
+        private fun showPopUp() {
+            val width = LinearLayout.LayoutParams.WRAP_CONTENT
+            val height = LinearLayout.LayoutParams.WRAP_CONTENT
+            val focusable = true
+            val popupWindow = PopupWindow(viewPopUp, width, height, focusable)
+            popupWindow.showAtLocation(viewPopUp, Gravity.BOTTOM, 0, 0)
+
+            viewPopUp.setOnTouchListener(object : View.OnTouchListener {
+                override fun onTouch(v: View, event: MotionEvent): Boolean {
+                    popupWindow.dismiss()
+                    return true
+                }
+            })
+            viewPopUp.tv_dismiss.setOnClickListener {
+                popupWindow.dismiss()
             }
         }
 
@@ -125,7 +162,8 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
 
             itemView.text_side.setOnClickListener {
                 headerContent.sideText?.url?.let {
-                    openWebViewOrOpenBottomSheet(it, position, 1)
+                    openWebViewOrOpenBottomSheet(it, position, sideTextOpenBottomSheetType)
+
                 }
             }
         }
@@ -133,114 +171,121 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
         private fun renderBodyInfo(it: List<InfoItem?>?) {
 
             if (it?.isEmpty()!!) {
-                itemView.info_container.visibility = View.GONE
-
+                itemView.info_container.hide()
             } else {
                 if (itemView.info_container.childCount > 0) {
                     return
+                } else {
+                    var infolabel: String?
+                    var infovalue: String?
+                    val length: Int = it.size
+
+                    for (item in 0 until length) {
+                        infolabel = it.get(item)?.label
+                        infovalue = it.get(item)?.value
+
+                        viewRowLayout.label.setTextAndCheckShow(infolabel)
+                        viewRowLayout.value.setTextAndCheckShow(infovalue)
+                        if (viewRowLayout.parent!=null) {
+                            (viewRowLayout.parent as ViewGroup).removeView(viewRowLayout)
+                        }
+                    }
+                    itemView.info_container.show()
                 }
-
-                var infolabel: String?
-                var infovalue: String?
-                var length: Int = it.size
-
-
-                for (item in 0 until length) {
-                    infolabel = it.get(item)?.label
-                    infovalue = it.get(item)?.value
-
-                    val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-                    val myView = inflater.inflate(R.layout.mlp_row_info, null)
-
-                    myView.label.setTextAndCheckShow(infolabel)
-                    myView.value.setTextAndCheckShow(infovalue)
-                    itemView.info_container.addView(myView)
-                }
-                itemView.info_container.visibility = View.VISIBLE
             }
-
         }
-
 
         private fun renderBodyBox(it: List<BoxesItem?>?) {
-
-
             if (it?.isEmpty()!!) {
-                itemView.box_container.visibility = View.GONE
-
-            } else {
-
+                itemView.box_container.hide()
+            }
+            else {
                 if (itemView.box_container.childCount > 0) {
                     return
-                }
+                } else {
+                    var boxTitle: String?
+                    var boxContent: String?
+                    var boxColor: String?
+                    val length: Int = it.size
 
-                var boxTitle: String?
-                var boxContent: String?
-                var boxColor: String?
-                val length: Int = it.size
+                    for (item in 0 until length) {
 
+                        if (it[item]?.title?.length!! > 0 || it[item]?.text?.length!! > 0) {
+                            boxTitle = it.get(item)?.title
+                            boxContent = it.get(item)?.text
+                            boxColor = it.get(item)?.boxColor
+                            itemView.box_container.show()
 
-                for (item in 0 until length) {
+                            viewBoxLayout.text_body_title.setTextAndCheckShow(boxTitle)
 
-                    if (it[item]?.title?.length!! > 0 || it[item]?.text?.length!! > 0) {
-                        boxTitle = it.get(item)?.title
-                        boxContent = it.get(item)?.text
-                        boxColor = it.get(item)?.boxColor
-                        itemView.box_container.visibility = View.VISIBLE
+                            if ((!viewBoxLayout.text_body_title.isVisible)) {
+                                viewBoxLayout.text_body_content.setPadding(0, paddingTopTextBody, 0, paddingBottomTextBody)
+                            }
+                            else
+                            {
+                                viewBoxLayout.text_body_content.setPadding(0, viewBoxLayout.text_body_content.paddingTop, 0, paddingBottomTextBody)
+                            }
+                            viewBoxLayout.text_body_content.setTextAndCheckShow(boxContent)
+                            viewBoxLayout.viewbody_background.show()
 
-                        val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-                        val myView = inflater.inflate(R.layout.mlp_box_layout, null)
+                            if (boxColor != null && boxColor.isNotEmpty()) {
+                                viewBoxLayout.viewbody_background.background.setColorFilter(Color.parseColor(boxColor), PorterDuff.Mode.SRC_ATOP)
+                            }
+                            else
+                            {
+                                viewBoxLayout.viewbody_background.background.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP)
+                            }
+                            if (viewBoxLayout.parent!=null) {
+                                (viewBoxLayout.parent as ViewGroup).removeView(viewBoxLayout)
+                            }
+                            itemView.box_container.addView(viewBoxLayout)
 
-                        myView.text_body_title.setTextAndCheckShow(boxTitle)
-
-                        if ((!myView.text_body_title.isVisible)) {
-                            myView.text_body_content.setPadding(0, 8, 0, 8)
+                        }else{
+                              viewBoxLayout.text_body_title.hide()
+                              viewBoxLayout.text_body_content.hide()
+                              viewBoxLayout.viewbody_background.hide()
+                              itemView.box_container.hide()
                         }
-                        myView.text_body_content.setTextAndCheckShow(boxContent)
-                        myView.viewbody_background.visibility = View.VISIBLE
-
-                        if (boxColor != null && boxColor.isNotEmpty()) {
-                            myView.viewbody_background.background.setColorFilter(Color.parseColor(boxColor), PorterDuff.Mode.SRC_ATOP)
-                        }
-
-                        itemView.box_container.addView(myView)
                     }
-                    itemView.box_container.visibility = View.VISIBLE
                 }
             }
-
-
         }
 
-        private fun renderBottomSheet(bottomSheetItem: BottomSheetItem?, position: Int) {
+        private fun renderBottomSheet(bottomSheetItem: BottomSheetItem?, position: Int, type: Int) {
 
             val closeableBottomSheetDialog: CloseableBottomSheetDialog = CloseableBottomSheetDialog.createInstanceRounded(context)
-            val view: View = View.inflate(context, R.layout.mlp_bottomsheet, null)
-            view.findViewById<TextView>(R.id.tv_title_bottom).text = bottomSheetItem?.title
-            view.findViewById<TextView>(R.id.tv_detail_bottom).text = bottomSheetItem?.text
-            val button: Button = view.findViewById(R.id.button_bottomsheet)
+            val viewMLPBottomSheet: View = View.inflate(context, R.layout.mlp_bottomsheet, null)
+            viewMLPBottomSheet.tv_title_bottom.text = bottomSheetItem?.title
+            viewMLPBottomSheet.tv_detail_bottom.text = bottomSheetItem?.text
+            viewMLPBottomSheet.button_bottomsheet.text = bottomSheetItem?.buttonCta
+            viewMLPBottomSheet.button_bottomsheet.setOnClickListener {
 
-            val buttonText: String?
-            buttonText = bottomSheetItem?.buttonCta
-            button.text = buttonText
-
-            val imageView: ImageView = view.findViewById(R.id.iv_cancel)
-            imageView.setOnClickListener {
-                closeableBottomSheetDialog.dismiss()
-            }
-            button.setOnClickListener {
-
-                val url: String? = bottomSheetItem?.url
-                url?.let {
-                    openWebViewOrOpenBottomSheet(url, position, 3)
+                if (type == 1 || type == 2) {
+                    val url: String? = bottomSheetItem?.url
+                    url?.let {
+                        openWebViewOrOpenBottomSheet(url, position, 3)
+                    }
+                } else if (type == 3) {
+                    mlpWidgetAdapterCallBack = merchantLendingFragment
+                    mlpWidgetAdapterCallBack.toggleSaldoPrioritas(object : ToggleSaldoPrioritasLisneter {
+                        override fun onSuccessToggleSaldo(success: Boolean) {
+                            if (success == null || success) {
+                                closeableBottomSheetDialog.dismiss()
+                            } else {
+                                print("SP DISABLE FAILED")
+                            }
+                        }
+                    })
                 }
             }
-            closeableBottomSheetDialog.setContentView(view)
+
+            closeableBottomSheetDialog.setCustomContentView(viewMLPBottomSheet, bottomSheetItem?.title, false)
             closeableBottomSheetDialog.show()
+            viewMLPBottomSheet.iv_cancel.setOnClickListener {
+                closeableBottomSheetDialog.dismiss()
+            }
             closeableBottomSheetDialog.setCanceledOnTouchOutside(true)
-
         }
-
 
         private fun redirectUrl(urlBody: String?, position: Int) {
 
@@ -248,15 +293,14 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
 
                 if (itemView.box_container.isVisible) {
                     itemView.box_container.setOnClickListener {
-                        openWebViewOrOpenBottomSheet(url, position, 0)
+                        openWebViewOrOpenBottomSheet(url, position, bodyOpenBottomSheetType)
                     }
                 } else if (itemView.info_container.isVisible) {
                     itemView.info_container.setOnClickListener {
-                        openWebViewOrOpenBottomSheet(url, position, 0)
+                        openWebViewOrOpenBottomSheet(url, position, bodyOpenBottomSheetType)
                     }
                 }
             }
-
         }
 
         private fun openWebViewOrOpenBottomSheet(rawUrl: String, position: Int, type: Int) {
@@ -273,6 +317,8 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
                     val mlpRouter = context.applicationContext as MLPRouter
                     context.startActivity(mlpRouter.getSellerWebViewIntent(context, filteredUrl))
 
+                } else {
+                    print("Not valid url")
                 }
             } else {
 
@@ -281,59 +327,36 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
 
                 when (type) {
 
-                    0 -> {
-
+                    bodyOpenBottomSheetType -> {
                         val placeHolder: String? = boxList[position].body?.urlbody
                         val bottomSheetId: Int = computeBottomSheetId(placeHolder, position, bottomSheetLength)
 
                         if (bottomSheetId >= 0) {
-                            renderBottomSheet(bottomSheetItem?.get(bottomSheetId), position)
+                            renderBottomSheet(bottomSheetItem?.get(bottomSheetId), position, bodyOpenBottomSheetType)
                         }
                     }
 
-                    1 -> {
-
+                    sideTextOpenBottomSheetType -> {
                         val placeHolder: String? = boxList[position].header?.sideText?.url
                         val bottomSheetId: Int = computeBottomSheetId(placeHolder, position, bottomSheetLength)
 
                         if (bottomSheetId >= 0) {
-                            renderBottomSheet(bottomSheetItem?.get(bottomSheetId), position)
-                        }
-
-                    }
-
-                    2 -> {
-
-                        val placeHolder: String? = boxList[position].header?.sideToggle?.url
-                        val bottomSheetId: Int = computeBottomSheetId(placeHolder, position, bottomSheetLength)
-
-                        if (bottomSheetId >= 0) {
-                            renderBottomSheet(bottomSheetItem?.get(bottomSheetId), position)
+                            renderBottomSheet(bottomSheetItem?.get(bottomSheetId), position, sideTextOpenBottomSheetType)
                         }
                     }
-
                 }
-
             }
-
         }
 
         private fun computeBottomSheetId(placeHolder: String?, position: Int, bottomSheetLength: Int): Int {
-
             var index: Int = -1
-
             for (bottomItem in 0 until bottomSheetLength) {
-
                 index++
                 if (placeHolder == boxList[position].bottomSheet?.get(bottomItem)?.id) {
                     return index
                 }
             }
             return index
-
         }
-
-
     }
-
 }

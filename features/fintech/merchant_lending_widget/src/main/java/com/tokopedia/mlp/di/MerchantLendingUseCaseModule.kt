@@ -4,6 +4,7 @@ import android.content.Context
 
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.mlp.usecase.MerchantLendingUseCase
+import com.tokopedia.mlp.usecase.MerchantLendingUseCaseSPUpdate
 import dagger.Module
 import dagger.Provides
 import javax.inject.Inject
@@ -32,4 +33,9 @@ class MerchantLendingUseCaseModule(var context: Context) {
         return MerchantLendingUseCase(context, graphqlUseCase)
     }
 
+    @MerchantScope
+    @Provides
+    fun providesSPUseCase(context: Context, graphqlUseCase: GraphqlUseCase): MerchantLendingUseCaseSPUpdate {
+        return MerchantLendingUseCaseSPUpdate(context, graphqlUseCase)
+    }
 }

@@ -1,0 +1,5 @@
+mutation SPUpdateSaldoPrioritas($enable: Boolean!) {
+ sp_togglesaldoprioritas(enable: $enable) {
+   success
+ }
+}
