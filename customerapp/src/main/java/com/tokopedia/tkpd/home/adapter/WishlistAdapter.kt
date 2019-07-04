@@ -12,7 +12,7 @@ class WishlistAdapter(adapterTypeFactory: WishlistAdapterFactory) : BaseAdapter<
 
     fun setEmptyState() {
         this.visitables.clear()
-        this.visitables.add(WishlistEmptyViewModel())
+        addElement(WishlistEmptyViewModel())
     }
 
     fun setSearchNotFound(query: String){

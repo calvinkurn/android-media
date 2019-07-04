@@ -25,6 +25,7 @@ import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder;
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppScreen;
@@ -96,9 +97,9 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
     private SearchView searchEditText;
+    private EndlessRecyclerViewScrollListener scrollListener;
 
     GridLayoutManager layoutManager;
-//    WishListProductAdapter adapter;
 
     WishlistAdapter wishlistAdapter;
     TkpdProgressDialog progressDialog;
@@ -211,15 +212,13 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     @Override
     public void setListener() {
-        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+        scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (isLoading() && layoutManager.findLastVisibleItemPosition() == layoutManager.getItemCount() - 1) {
-                    wishList.loadMore(getActivity());
-                }
+            public void onLoadMore(int page, int totalItemsCount) {
+                wishList.loadMore(getActivity());
             }
-        });
+        };
+        recyclerView.addOnScrollListener(scrollListener);
         swipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -456,10 +455,6 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     @Override
     public void initAdapterWithData(List<Visitable> data) {
-//        adapter = new WishListProductAdapter(getActivity(), data, wishlistAnalytics);
-//        adapter.setWishlistView(this);
-//        adapter.setActionButtonClicked(this);
-
         wishlistAdapter = new WishlistAdapter(new WishlistAdapterFactory(this, this, wishlistAnalytics));
         wishlistAdapter.setVisitables(data);
     }
@@ -537,6 +532,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     @Override
     public void loadDataChange() {
+        scrollListener.updateStateAfterGetData();
         wishlistAdapter.notifyDataSetChanged();
     }
 

@@ -7,14 +7,15 @@ import android.widget.Button
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tkpd.R
 import com.tokopedia.tkpd.home.adapter.OnWishlistActionButtonClicked
+import com.tokopedia.tkpd.home.adapter.viewmodel.WishlistEmptySearchViewModel
 import com.tokopedia.tkpd.home.adapter.viewmodel.WishlistEmptyViewModel
 
 /**
  * Author errysuprayogi on 03,July,2019
  */
-class WishlistEmptySearchViewHolder(itemView: View, var actionButtonClicked: OnWishlistActionButtonClicked) : AbstractViewHolder<WishlistEmptyViewModel>(itemView) {
+class WishlistEmptySearchViewHolder(itemView: View, var actionButtonClicked: OnWishlistActionButtonClicked) : AbstractViewHolder<WishlistEmptySearchViewModel>(itemView) {
 
-    override fun bind(element: WishlistEmptyViewModel) {
+    override fun bind(element: WishlistEmptySearchViewModel) {
         itemView.findViewById<Button>(R.id.action_btn).setOnClickListener {
             actionButtonClicked.showAllWishlist()
         }
