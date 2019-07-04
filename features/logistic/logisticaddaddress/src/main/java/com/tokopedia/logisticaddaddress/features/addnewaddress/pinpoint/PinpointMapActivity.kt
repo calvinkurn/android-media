@@ -24,6 +24,7 @@ import com.tokopedia.logisticdata.data.entity.address.Token
 class PinpointMapActivity : BaseSimpleActivity() {
     private val FINISH_FLAG = 1212
     var SCREEN_NAME = "PinpointMapActivity"
+    private lateinit var actionListener: ActionListener
 
     companion object {
         @JvmStatic
@@ -91,10 +92,15 @@ class PinpointMapActivity : BaseSimpleActivity() {
         }
 
         if (isAllowed) {
+            actionListener.permissionIsAllowed()
             AddNewAddressAnalytics.eventClickButtonOkOnAllowLocation()
         } else {
             AddNewAddressAnalytics.eventClickButtonDoNotAllowOnAllowLocation()
         }
 
+    }
+
+    interface ActionListener {
+        fun permissionIsAllowed()
     }
 }

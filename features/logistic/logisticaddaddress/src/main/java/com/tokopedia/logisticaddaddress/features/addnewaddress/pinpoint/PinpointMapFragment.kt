@@ -1,11 +1,9 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint
 
 import android.annotation.SuppressLint
-import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.IntentSender
 import android.graphics.Rect
 import android.location.LocationManager
 import android.os.Build
@@ -13,17 +11,11 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.CoordinatorLayout
-import android.support.v4.content.ContextCompat
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.*
 import android.widget.EditText
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import android.widget.Toast
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.CameraPosition
@@ -32,7 +24,6 @@ import com.google.android.gms.maps.model.PolygonOptions
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.analytics.debugger.ui.fragment.AnalyticsDebuggerFragment
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.logisticaddaddress.AddressConstants
@@ -59,7 +50,8 @@ import javax.inject.Inject
  * Created by fwidjaja on 2019-05-08.
  */
 class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapReadyCallback,
-        AutocompleteBottomSheetFragment.ActionListener, HasComponent<AddNewAddressComponent> {
+        AutocompleteBottomSheetFragment.ActionListener, HasComponent<AddNewAddressComponent>,
+        PinpointMapActivity.ActionListener{
 
     private var googleMap: GoogleMap? = null
     private var currentLat: Double? = 0.0
@@ -224,6 +216,11 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             getdistrict_container?.findViewById<EditText>(R.id.et_detail_address)?.requestFocusFromTouch()
         }
 
+        ic_current_location.setOnClickListener {
+            AddNewAddressAnalytics.eventClickButtonPilihLokasi()
+            doUseCurrentLocation()
+        }
+
         /*ic_current_location?.setOnClickListener {
             context?.let {
                 if (AddNewAddressUtils.isLocationEnabled(it)) {
@@ -235,11 +232,9 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         }*/
     }
 
-    @SuppressLint("MissingPermission")
     override fun onMapReady(googleMap: GoogleMap?) {
         this.googleMap = googleMap
         this.googleMap?.uiSettings?.isMapToolbarEnabled = false
-        this.googleMap?.isMyLocationEnabled = true
         this.googleMap?.uiSettings?.isMyLocationButtonEnabled = false
         this.googleMap?.setMinZoomPreference(16f)
         activity?.let { MapsInitializer.initialize(activity) }
@@ -313,20 +308,14 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     }
 
     override fun onResume() {
-        map_view?.onResume()
-        context?.let {
-            if (AddNewAddressUtils.isLocationEnabled(it)) {
-                if (currentLat == 0.0 && currentLong == 0.0) presenter.requestLocation(requireActivity())
-                ic_current_location.setImageResource(R.drawable.ic_gps_enable)
-            } else {
-                ic_current_location.setImageResource(R.drawable.ic_gps_disable)
-            }
-            ic_current_location.setOnClickListener {
-                AddNewAddressAnalytics.eventClickButtonPilihLokasi()
-                doUseCurrentLocation()
-            }
-        }
         super.onResume()
+        map_view?.onResume()
+        if (isGpsEnabled()) {
+            if (currentLat == 0.0 && currentLong == 0.0) presenter.requestLocation(requireActivity())
+            ic_current_location.setImageResource(R.drawable.ic_gps_enable)
+        } else {
+            ic_current_location.setImageResource(R.drawable.ic_gps_disable)
+        }
     }
 
     private fun doUseCurrentLocation() {
@@ -338,18 +327,18 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     }
 
     override fun onPause() {
-        map_view?.onPause()
         super.onPause()
+        map_view?.onPause()
     }
 
     override fun onStop() {
-        map_view?.onStop()
         super.onStop()
+        map_view?.onStop()
     }
 
     override fun onDestroy() {
-        map_view?.onDestroy()
         super.onDestroy()
+        map_view?.onDestroy()
     }
 
     override fun onLowMemory() {
@@ -663,5 +652,10 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             override fun afterTextChanged(text: Editable) {
             }
         }
+    }
+
+    @SuppressLint("MissingPermission")
+    override fun permissionIsAllowed() {
+        this.googleMap?.isMyLocationEnabled = true
     }
 }
