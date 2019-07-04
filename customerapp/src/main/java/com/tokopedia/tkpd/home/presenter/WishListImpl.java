@@ -11,6 +11,12 @@ import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.navigation.domain.model.RecomTitle;
+import com.tokopedia.navigation.domain.model.Recomendation;
+import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
@@ -87,6 +93,9 @@ public class WishListImpl implements WishList {
     public static final int TOPADS_INDEX = 4;
     public static final String TOPADS_ITEM = "5";
     public static final String TOPADS_SRC = "wishlist";
+    public static final String X_SOURCE_RECOM_WIDGET = "recom_widget";
+    public static final String RECOM_PAGE = "wishlist";
+
     WishListView wishListView;
 
     List<Visitable> data = new ArrayList<>();
@@ -111,6 +120,8 @@ public class WishListImpl implements WishList {
     Context context;
     private String query = "";
 
+    private final GetRecommendationUseCase getRecommendationUseCase;
+
     public WishListImpl(Context context, WishListView wishListView) {
         this.wishListView = wishListView;
         mPaging = new WishlistPaging();
@@ -122,12 +133,9 @@ public class WishListImpl implements WishList {
         removeWishListUseCase = new RemoveWishListUseCase(context);
         this.context = context;
         userSession = new UserSession(context);
+        getRecommendationUseCase = new GetRecommendationUseCase(GraphqlHelper.loadRawString(context.getResources(),
+                R.raw.query_recommendation_widget), new GraphqlUseCase(), new UserSession(context));
     }
-
-    private com.tokopedia.core.base.common.service.MojitoService initNewMojitoService() {
-        return null;
-    }
-
 
     @Override
     public void initDataInstance(Context context) {
@@ -139,6 +147,46 @@ public class WishListImpl implements WishList {
         wishListView.initItemDecoration();
         wishListView.initAdapterWithData(data);
 
+    }
+
+    public void getFirstRecomData(){
+        getRecommendationUseCase.execute(getRecommendationUseCase.getRecomParams(0,
+                X_SOURCE_RECOM_WIDGET,
+                RECOM_PAGE,
+                new ArrayList<>()),
+                new Subscriber<List<? extends RecommendationWidget>>() {
+                    @Override
+                    public void onStart() {
+                        wishListView.displayLoadMore(true);
+                    }
+                    @Override
+                    public void onCompleted() {
+                        wishListView.displayLoadMore(false);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        wishListView.displayLoadMore(false);
+                    }
+
+                    @Override
+                    public void onNext(List<? extends RecommendationWidget> recommendationWidgets) {
+                        List<Visitable> visitables = new ArrayList<>();
+                        RecommendationWidget recommendationWidget = recommendationWidgets.get(0);
+                        visitables.add(new RecomTitle(recommendationWidget.getTitle()));
+                        visitables.addAll(getRecommendationVisitables(recommendationWidget));
+                        wishListView.onRenderRecomInbox(visitables);
+                    }
+                });
+    }
+
+    @NonNull
+    private List<Visitable> getRecommendationVisitables(RecommendationWidget recommendationWidget) {
+        List<Visitable> recomendationList = new ArrayList<>();
+        for (RecommendationItem item : recommendationWidget.getRecommendationItemList()) {
+            recomendationList.add(new Recomendation(item));
+        }
+        return recomendationList;
     }
 
     @Override

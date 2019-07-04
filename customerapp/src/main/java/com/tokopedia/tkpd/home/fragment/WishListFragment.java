@@ -311,6 +311,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     @Override
     public void setSearchNotFound(String query) {
         wishlistAdapter.setSearchNotFound(query);
+        wishList.getFirstRecomData();
     }
 
     @Override
@@ -577,6 +578,11 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
                 }
             }
         };
+    }
+
+    @Override
+    public void onRenderRecomInbox(List<Visitable> visitables) {
+        wishlistAdapter.addElement(visitables);
     }
 
     @Override

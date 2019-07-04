@@ -1,9 +1,6 @@
 package com.tokopedia.tkpd.home.adapter.factory
 
-import com.tokopedia.tkpd.home.adapter.viewmodel.WishlistEmptySearchViewModel
-import com.tokopedia.tkpd.home.adapter.viewmodel.WishlistEmptyViewModel
-import com.tokopedia.tkpd.home.adapter.viewmodel.WishlistProductViewModel
-import com.tokopedia.tkpd.home.adapter.viewmodel.WishlistTopAdsViewModel
+import com.tokopedia.tkpd.home.adapter.viewmodel.*
 
 /**
  * Author errysuprayogi on 03,July,2019
@@ -17,5 +14,7 @@ interface WishlistTypeFactory {
     fun type(viewModel: WishlistEmptySearchViewModel): Int
 
     fun type(viewModel: WishlistTopAdsViewModel): Int
+
+    fun type(viewModel: WishlistRecomendationViewModel): Int
 
 }

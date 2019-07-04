@@ -117,4 +117,5 @@ public interface WishListView {
 
     void sendWishlistImpressionAnalysis(GqlWishListDataResponse.GqlWishList wishListData, int currentSize);
 
+    void onRenderRecomInbox(List<Visitable> visitables);
 }

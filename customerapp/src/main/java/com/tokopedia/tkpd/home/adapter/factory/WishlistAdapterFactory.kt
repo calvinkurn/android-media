@@ -5,14 +5,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tkpd.home.adapter.OnWishlistActionButtonClicked
-import com.tokopedia.tkpd.home.adapter.viewholder.WishlistEmptySearchViewHolder
-import com.tokopedia.tkpd.home.adapter.viewholder.WishlistEmptyViewHolder
-import com.tokopedia.tkpd.home.adapter.viewholder.WishlistProductListViewHolder
-import com.tokopedia.tkpd.home.adapter.viewholder.WishlistTopAdsListViewHolder
-import com.tokopedia.tkpd.home.adapter.viewmodel.WishlistEmptySearchViewModel
-import com.tokopedia.tkpd.home.adapter.viewmodel.WishlistEmptyViewModel
-import com.tokopedia.tkpd.home.adapter.viewmodel.WishlistProductViewModel
-import com.tokopedia.tkpd.home.adapter.viewmodel.WishlistTopAdsViewModel
+import com.tokopedia.tkpd.home.adapter.viewholder.*
+import com.tokopedia.tkpd.home.adapter.viewmodel.*
 import com.tokopedia.tkpd.home.presenter.WishListView
 import com.tokopedia.tkpd.home.wishlist.analytics.WishlistAnalytics
 
@@ -38,12 +32,17 @@ class WishlistAdapterFactory(val buttonActionClick: OnWishlistActionButtonClicke
         return WishlistTopAdsListViewHolder.LAYOUT
     }
 
+    override fun type(viewModel: WishlistRecomendationViewModel): Int {
+        return WishlistRecomendationViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<out Visitable<*>> {
         return when (viewType) {
             WishlistProductListViewHolder.LAYOUT -> WishlistProductListViewHolder(view, wishlistAnalytics, wishListView)
             WishlistEmptyViewHolder.LAYOUT -> WishlistEmptyViewHolder(view, buttonActionClick)
             WishlistEmptySearchViewHolder.LAYOUT -> WishlistEmptySearchViewHolder(view, buttonActionClick)
             WishlistTopAdsListViewHolder.LAYOUT -> WishlistTopAdsListViewHolder(view)
+            WishlistRecomendationViewHolder.LAYOUT -> WishlistRecomendationViewHolder(view)
             else -> super.createViewHolder(view, viewType)
         }
     }
