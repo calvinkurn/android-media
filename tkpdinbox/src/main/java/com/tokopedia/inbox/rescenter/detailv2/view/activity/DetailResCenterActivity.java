@@ -36,14 +36,6 @@ public class DetailResCenterActivity extends BasePresenterActivity<DetailResCent
     private String userName;
     private boolean isSeller;
 
-    public static Intent newInstance(Context context, String resolutionID) {
-        Intent intent = new Intent(context, DetailResCenterActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(EXTRA_PARAM_RESOLUTION_CENTER_DETAIL, resolutionID);
-        intent.putExtras(bundle);
-        return intent;
-    }
-
     public static Intent newBuyerInstance(Context context, String resolutionId, String shopName) {
         Intent intent = new Intent(context, DetailResCenterActivity.class);
         intent.putExtra(EXTRA_PARAM_RESOLUTION_CENTER_DETAIL, resolutionId);

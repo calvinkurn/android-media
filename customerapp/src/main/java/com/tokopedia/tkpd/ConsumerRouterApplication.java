@@ -1472,11 +1472,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getCreateResCenterActivityIntent(Context context, String orderId, int troubleId, int solutionId) {
-        return CreateResCenterActivity.getCreateResCenterActivityIntent(context, orderId, troubleId, solutionId);
-    }
-
-    @Override
     public void onForceLogout(Activity activity) {
         SessionHandler sessionHandler = new SessionHandler(activity);
         sessionHandler.forceLogout();

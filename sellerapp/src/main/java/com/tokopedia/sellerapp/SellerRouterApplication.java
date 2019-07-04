@@ -1537,11 +1537,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getCreateResCenterActivityIntent(Context context, String orderId, int troubleId, int solutionId) {
-        return CreateResCenterActivity.getCreateResCenterActivityIntent(context, orderId, troubleId, solutionId);
-    }
-
-    @Override
     public void sendForceLogoutAnalytics(Response response, boolean isInvalidToken,
                                          boolean isRequestDenied) {
         ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString(), isInvalidToken, isRequestDenied);
