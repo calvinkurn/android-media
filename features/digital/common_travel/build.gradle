@@ -49,6 +49,7 @@ dependencies {
 
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockitorCore
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
     // Room components
     implementation rootProject.ext.dbDependencies.dbRoomRuntime

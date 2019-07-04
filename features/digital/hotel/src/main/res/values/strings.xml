@@ -52,6 +52,8 @@
     <string name="hotel_guest_info_room_more_than_adult_error_message">Jumlah kamar tidak boleh melebihi jumlah tamu dewasa.</string>
     <string name="hotel_homepage_near_by_destination">Hotel dekat lokasimu</string>
 
+    <string name="hotel_calendar_error_max_range">Maksimum rentang waktu 30 hari</string>
+
     <string name="hotel_destination_edittext_hint">Cari kota, area, atau hotel</string>
     <string name="hotel_destination_nearest_location">Lihat hotel dekat lokasimu</string>
     <string name="hotel_destination_recent_search_title">Terakhir dicari</string>
