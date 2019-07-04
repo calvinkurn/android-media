@@ -24,7 +24,7 @@ class PowerMerchantSuccessBottomSheet : BottomSheets() {
     private lateinit var txtSuccessDescBs: TextViewCompat
     private lateinit var model: BottomSheetModel
     private var listener: BottomSheetListener? = null
-    val powerMerchantTracking: PowerMerchantTracking by lazy {
+    private val powerMerchantTracking: PowerMerchantTracking by lazy {
         PowerMerchantTracking()
     }
 

@@ -18,7 +18,7 @@ class PowerMerchantCancelBottomSheet : BottomSheets() {
     private var listener: BottomSheetCancelListener? = null
     private var isTransitionPeriod: Boolean = false
     private var expiredDate: String = ""
-    val powerMerchantTracking: PowerMerchantTracking by lazy {
+    private val powerMerchantTracking: PowerMerchantTracking by lazy {
         PowerMerchantTracking()
     }
 
