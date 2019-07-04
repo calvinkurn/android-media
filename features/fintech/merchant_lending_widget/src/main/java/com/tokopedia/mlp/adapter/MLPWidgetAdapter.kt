@@ -31,6 +31,9 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
 
 
     private val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+    val viewBoxLayout = inflater.inflate(R.layout.mlp_box_layout, null)
+    val viewRowLayout = inflater.inflate(R.layout.mlp_row_info, null)
+    val viewPopUp = inflater.inflate(R.layout.switchon_popup, null)
 
     private val bodyOpenBottomSheetType = 1
     private val sideTextOpenBottomSheetType = 2
@@ -39,11 +42,6 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
     private val paddingTopTextBody = 8
     private val paddingBottomTextBody = 10
     lateinit var mlpWidgetAdapterCallBack: MLPWidgetAdapterCallBack
-
-    val viewBoxLayout = inflater.inflate(R.layout.mlp_box_layout, null)
-    val viewRowLayout = inflater.inflate(R.layout.mlp_row_info, null)
-    val viewPopUp = inflater.inflate(R.layout.switchon_popup, null)
-
 
     interface ToggleSaldoPrioritasLisneter {
         fun onSuccessToggleSaldo(success: Boolean)
@@ -99,7 +97,6 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
                         itemView.text_side.hide()
                         itemView.switch_enable.hide()
                     }
-
                 }
 
                 widgetsItem.body?.let {
@@ -164,11 +161,9 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
         private fun renderSideTextHeader(headerContent: Header, position: Int) {
 
             itemView.text_side.setTextAndCheckShow(headerContent.sideText?.text)
-
             itemView.text_side.setOnClickListener {
                 headerContent.sideText?.url?.let {
                     openWebViewOrOpenBottomSheet(it, position, sideTextOpenBottomSheetType)
-
                 }
             }
         }
@@ -180,22 +175,21 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
             } else {
                 if (itemView.info_container.childCount > 0) {
                     return
-                } else {
-                    var infolabel: String?
-                    var infovalue: String?
-                    val length: Int = it.size
+                }
+                var infolabel: String?
+                var infovalue: String?
+                val length: Int = it.size
 
-                    for (item in 0 until length) {
-                        infolabel = it.get(item)?.label
-                        infovalue = it.get(item)?.value
+                for (item in 0 until length) {
+                    infolabel = it.get(item)?.label
+                    infovalue = it.get(item)?.value
 
-                        viewRowLayout.label.setTextAndCheckShow(infolabel)
-                        viewRowLayout.value.setTextAndCheckShow(infovalue)
-                        if (viewRowLayout.parent != null) {
-                            (viewRowLayout.parent as ViewGroup).removeView(viewRowLayout)
-                        } else {
-                            itemView.box_container.addView(viewRowLayout)
-                        }
+                    viewRowLayout.label.setTextAndCheckShow(infolabel)
+                    viewRowLayout.value.setTextAndCheckShow(infovalue)
+                    if (viewRowLayout.parent != null) {
+                        (viewRowLayout.parent as ViewGroup).removeView(viewRowLayout)
+                    } else {
+                        itemView.box_container.addView(viewRowLayout)
                     }
                     itemView.info_container.show()
                 }
@@ -208,7 +202,7 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
             } else {
                 if (itemView.box_container.childCount > 0) {
                     return
-                } else {
+                }
                     var boxTitle: String?
                     var boxContent: String?
                     var boxColor: String?
@@ -252,7 +246,6 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
                     }
                 }
             }
-        }
 
         private fun renderBottomSheet(bottomSheetItem: BottomSheetItem?, position: Int, type: Int) {
 
