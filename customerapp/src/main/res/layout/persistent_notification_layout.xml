@@ -138,5 +138,5 @@
         android:layout_width="@dimen/dp_36"
         android:layout_height="match_parent"
         android:padding="@dimen/dp_11"
-        android:src="@drawable/ic_close_black" />
+        android:src="@drawable/ic_persist_close" />
 </LinearLayout>
