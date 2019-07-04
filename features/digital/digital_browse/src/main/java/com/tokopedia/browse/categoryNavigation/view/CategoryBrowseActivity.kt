@@ -6,6 +6,7 @@ import android.os.Bundle
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.navigation_common.category.CategoryNavigationConfig
 
 
 class CategoryBrowseActivity : BaseCategoryBrowseActivity() {
@@ -20,15 +21,21 @@ class CategoryBrowseActivity : BaseCategoryBrowseActivity() {
 
     object DeepLinkIntents {
         val KEY_EXTRA_DEPARTMENT_ID = "EXTRA_DEPARTMENT_ID"
+        lateinit var bundle: Bundle
 
         @DeepLink(ApplinkConst.CATEGORY_BELANJA_DEFAULT)
         @JvmStatic
         fun getCategoryBrowseDefaultIntent(context: Context, extras: Bundle): Intent {
-            return if (isNewCategoryEnabled(context)) {
-                Intent(context, CategoryBrowseActivity::class.java)
-            } else {
-                RouteManager.getIntent(context, ApplinkConst.CATEGORY + "/" + extras.getString(KEY_EXTRA_DEPARTMENT_ID, ""))
-            }
+            bundle = extras
+            return CategoryNavigationConfig.updateCategoryConfig(context, ::runNewBelanja,::runOldBelanja)
+        }
+
+        fun runNewBelanja(context: Context): Intent {
+            return Intent(context, CategoryBrowseActivity::class.java)
+        }
+
+        fun runOldBelanja(context: Context): Intent {
+          return  RouteManager.getIntent(context, ApplinkConst.CATEGORY + "/" + bundle.getString(KEY_EXTRA_DEPARTMENT_ID, ""))
         }
     }
 }

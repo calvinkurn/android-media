@@ -340,7 +340,9 @@ public class ProductListFragment
             if (object instanceof ProductItemViewModel) {
                 ProductItemViewModel item = (ProductItemViewModel) object;
                 if (!item.isTopAds()) {
-                    dataLayerList.add(item.getProductAsObjectDataLayer(userId));
+                    String filterSortParams
+                            = SearchTracking.generateFilterAndSortEventLabel(getSelectedFilter(), getSelectedSort());
+                    dataLayerList.add(item.getProductAsObjectDataLayer(userId, filterSortParams));
                 }
             }
         }
@@ -533,13 +535,14 @@ public class ProductListFragment
         if (item.isTopAds()) {
             sendItemClickTrackingEventForTopAdsItem(item, pos);
         } else {
+            String filterSortParams
+                    = SearchTracking.generateFilterAndSortEventLabel(getSelectedFilter(), getSelectedSort());
             SearchTracking.trackEventClickSearchResultProduct(
                     getActivity(),
-                    item.getProductAsObjectDataLayer(userId),
+                    item.getProductAsObjectDataLayer(userId, filterSortParams),
                     item.getPageNumber(),
                     getQueryKey(),
-                    getSelectedFilter(),
-                    getSelectedSort()
+                    filterSortParams
             );
         }
     }

@@ -142,8 +142,7 @@ public class SearchTracking {
                                                           Object item,
                                                           int pageNumber,
                                                           String eventLabel,
-                                                          Map<String, String> selectedFilter,
-                                                          Map<String, String> selectedSort) {
+                                                          String filterSortParams) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf("event", "productClick",
                         "eventCategory", "search result",
@@ -155,10 +154,7 @@ public class SearchTracking {
                                         "products", DataLayer.listOf(item)
                                 )
                         ),
-                        "searchFilter", concatFilterAndSortEventLabel(
-                                generateFilterEventLabel(selectedFilter),
-                                generateSortEventLabel(selectedSort)
-                        )
+                        "searchFilter", filterSortParams
                 )
         );
     }
@@ -334,7 +330,12 @@ public class SearchTracking {
         return TextUtils.join("&", sortList);
     }
 
-    private static String concatFilterAndSortEventLabel(String filterEventLabel, String sortEventLabel) {
+    public static String generateFilterAndSortEventLabel(Map<String, String> selectedFilter,
+                                                         Map<String, String> selectedSort) {
+
+        String filterEventLabel = generateFilterEventLabel(selectedFilter);
+        String sortEventLabel = generateSortEventLabel(selectedSort);
+
         if (TextUtils.isEmpty(filterEventLabel)) {
             return sortEventLabel;
         } else {
