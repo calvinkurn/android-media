@@ -1,5 +1,6 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
@@ -16,6 +17,7 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.*
 import android.widget.EditText
+import android.widget.Toast
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.CameraPosition
@@ -26,6 +28,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.Dialog
+import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.logisticaddaddress.AddressConstants
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressComponent
@@ -231,10 +234,35 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         }*/
     }
 
+    @SuppressLint("MissingPermission")
     override fun onMapReady(googleMap: GoogleMap?) {
         this.googleMap = googleMap
         this.googleMap?.uiSettings?.isMapToolbarEnabled = false
         this.googleMap?.uiSettings?.isMyLocationButtonEnabled = false
+
+        activity?.let {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                permissionCheckerHelper?.checkPermissions(it, getPermissions(),
+                        object : PermissionCheckerHelper.PermissionCheckListener {
+                            override fun onPermissionDenied(permissionText: String) {
+                                permissionCheckerHelper?.onPermissionDenied(it, permissionText)
+                            }
+
+                            override fun onNeverAskAgain(permissionText: String) {
+                                permissionCheckerHelper?.onNeverAskAgain(it, permissionText)
+                            }
+
+                            override fun onPermissionGranted() {
+                                googleMap?.isMyLocationEnabled = true
+                            }
+
+                        },
+                        it.getString(R.string.rationale_need_location))
+            } else {
+                googleMap?.isMyLocationEnabled = true
+            }
+        }
+
         this.googleMap?.setMinZoomPreference(16f)
         activity?.let { MapsInitializer.initialize(activity) }
 
@@ -651,5 +679,11 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             override fun afterTextChanged(text: Editable) {
             }
         }
+    }
+
+    private fun getPermissions(): Array<String> {
+        return arrayOf(
+                PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
+                PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION)
     }
 }
