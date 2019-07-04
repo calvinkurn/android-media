@@ -56,7 +56,7 @@
         android:textColor="@color/white"
         android:textStyle="bold"
         app:layout_goneMarginBottom="@dimen/dp_16"
-        app:layout_constraintBottom_toTopOf="@id/button_deny"
+        app:layout_constraintBottom_toTopOf="@+id/button_deny"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_description_permission"
