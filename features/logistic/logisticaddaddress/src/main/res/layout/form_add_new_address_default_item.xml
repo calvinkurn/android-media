@@ -29,7 +29,9 @@
             android:layout_height="wrap_content"
             android:hint="@string/et_address_label_hint"
             android:inputType="text"
-            android:textColor="#ae31353b"/>
+            android:textColor="#ae31353b"
+            android:imeOptions="actionDone"
+            android:maxLines="1"/>
 
     </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
@@ -61,7 +63,9 @@
             android:layout_height="wrap_content"
             android:hint="@string/et_receiver_name_hint"
             android:inputType="text"
-            android:textColor="#ae31353b"/>
+            android:textColor="#ae31353b"
+            android:imeOptions="actionDone"
+            android:maxLines="1"/>
 
     </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
@@ -86,7 +90,9 @@
             android:layout_height="wrap_content"
             android:inputType="phone"
             android:hint="@string/et_no_ponsel_hint"
-            android:textColor="#ae31353b"/>
+            android:textColor="#ae31353b"
+            android:imeOptions="actionDone"
+            android:maxLines="1"/>
 
     </com.tokopedia.design.text.TkpdHintTextInputLayout>
 

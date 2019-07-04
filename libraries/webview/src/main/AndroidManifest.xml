@@ -6,6 +6,10 @@
             android:name=".BaseSimpleWebViewActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
+        <activity android:name="com.tokopedia.webview.download.BaseDownloadAppLinkActivity"
+            android:label="@string/tokopedia"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
     </application>
 
 </manifest>

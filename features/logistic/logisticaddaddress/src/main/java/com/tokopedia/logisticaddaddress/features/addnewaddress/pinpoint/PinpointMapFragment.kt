@@ -83,6 +83,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     private var districtId: Int? = null
     private val GREEN_ARGB = 0x40388E3C
     private var isMismatchSolved: Boolean? = null
+    private var isMismatch: Boolean? = null
     private var zipCodes: MutableList<String>? = null
     private var saveAddressDataModel: SaveAddressDataModel? = null
     protected var addNewAddressComponent: AddNewAddressComponent? = null
@@ -122,6 +123,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
                     putBoolean(AddressConstants.EXTRA_IS_POLYGON, extra.getBoolean(AddressConstants.EXTRA_IS_POLYGON))
                     putInt(AddressConstants.EXTRA_DISTRICT_ID, extra.getInt(AddressConstants.EXTRA_DISTRICT_ID))
                     putBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, extra.getBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED))
+                    putBoolean(AddressConstants.EXTRA_IS_MISMATCH, extra.getBoolean(AddressConstants.EXTRA_IS_MISMATCH))
                     putParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL, extra.getParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL))
                     putBoolean(AddressConstants.EXTRA_IS_CHANGES_REQUESTED, extra.getBoolean(AddressConstants.EXTRA_IS_CHANGES_REQUESTED))
                 }
@@ -141,6 +143,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             isPolygon = arguments?.getBoolean(AddressConstants.EXTRA_IS_POLYGON)
             districtId = arguments?.getInt(AddressConstants.EXTRA_DISTRICT_ID)
             isMismatchSolved = arguments?.getBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED)
+            isMismatch = arguments?.getBoolean(AddressConstants.EXTRA_IS_MISMATCH)
             saveAddressDataModel = arguments?.getParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL)
             zipCodes = saveAddressDataModel?.zipCodes?.toMutableList()
             isChangesRequested = arguments?.getBoolean(AddressConstants.EXTRA_IS_CHANGES_REQUESTED)
@@ -156,6 +159,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         prepareMap(savedInstanceState)
         prepareLayout()
         setViewListener()
+        presenter.autofill("$currentLat,$currentLong")
     }
 
     private fun prepareMap(savedInstanceState: Bundle?) {
@@ -168,7 +172,9 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         getdistrict_container.visibility = View.GONE
         invalid_container.visibility = View.GONE
         whole_loading_container.visibility = View.VISIBLE
-        // et_detail_address.setText(saveAddressDataModel?.editDetailAddress)
+        isMismatch?.let {
+            if (!it) et_detail_address.setText(saveAddressDataModel?.editDetailAddress)
+        }
     }
 
     private fun setViewListener() {
@@ -201,22 +207,24 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         }
 
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        bottomSheetBehavior.isHideable = false
+        this.googleMap?.setOnCameraIdleListener { onMapDraggedListener() }
+    }
 
-        this.googleMap?.setOnCameraIdleListener {
-            if (!isGetDistrict) {
-                val target: LatLng? = this.googleMap?.cameraPosition?.target
-                val latTarget = target?.latitude
-                val longTarget = target?.longitude
+    private fun onMapDraggedListener() {
+        if (!isGetDistrict) {
+            val target: LatLng? = this.googleMap?.cameraPosition?.target
+            val latTarget = target?.latitude
+            val longTarget = target?.longitude
 
-                getdistrict_container.visibility = View.GONE
-                invalid_container.visibility = View.GONE
-                whole_loading_container.visibility = View.VISIBLE
+            getdistrict_container.visibility = View.GONE
+            invalid_container.visibility = View.GONE
+            whole_loading_container.visibility = View.VISIBLE
 
-                presenter.clearCacheAutofill()
-                presenter.autofill("$latTarget,$longTarget")
-            }
-            isGetDistrict = false
+            presenter.clearCacheAutofill()
+            presenter.autofill("$latTarget,$longTarget")
         }
+        isGetDistrict = false
     }
 
     /*override fun loadPoiList(lat: Double, long: Double) {
@@ -327,6 +335,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     }
 
     private fun updateGetDistrictBottomSheet(saveAddressDataModel: SaveAddressDataModel) {
+        this.saveAddressDataModel = saveAddressDataModel
         if (saveAddressDataModel.title.equals(unnamedRoad, true)) {
             whole_loading_container.visibility = View.GONE
             getdistrict_container.visibility = View.GONE
@@ -353,19 +362,29 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             tv_title_getdistrict.text = saveAddressDataModel.title
             tv_address_getdistrict.text = saveAddressDataModel.formattedAddress
             btn_choose_location.setOnClickListener {
-                if (validateDetailAlamat()) {
-                    saveAddressDataModel.editDetailAddress = et_detail_address.text.toString()
-                    this.isPolygon?.let {
-                        if (this.isPolygon as Boolean) {
-                            isMismatchSolved = true
+                isMismatchSolved?.let {
+                    if (it) {
+                        doLoadAddEdit()
+                    } else {
+                        if (validateDetailAlamat()) {
+                            doLoadAddEdit()
                         }
                     }
-
-                    presenter.loadAddEdit( isMismatchSolved, isChangesRequested)
                 }
                 AddNewAddressAnalytics.eventClickButtonPilihLokasi()
             }
         }
+    }
+
+    private fun doLoadAddEdit() {
+        saveAddressDataModel?.editDetailAddress = et_detail_address.text.toString()
+        this.isPolygon?.let {
+            if (this.isPolygon as Boolean) {
+                isMismatchSolved = true
+            }
+        }
+
+        presenter.loadAddEdit( isMismatchSolved, isChangesRequested)
     }
 
     private fun validateDetailAlamat(): Boolean {

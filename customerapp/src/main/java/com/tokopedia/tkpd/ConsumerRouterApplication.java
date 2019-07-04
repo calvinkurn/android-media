@@ -89,9 +89,6 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
-import com.tokopedia.homecredit.view.fragment.FragmentCardIdCamera;
-import com.tokopedia.homecredit.view.fragment.FragmentSelfieIdCamera;
-import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.Constants;
@@ -131,7 +128,6 @@ import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.DataMapper;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.core.util.ShareSocmedHandler;
@@ -198,6 +194,7 @@ import com.tokopedia.home.beranda.data.model.UserTier;
 import com.tokopedia.home.beranda.helper.StartSnapHelper;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SpacingItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
+import com.tokopedia.home_recom.router.HomeRecommendationRouter;
 import com.tokopedia.homecredit.view.fragment.FragmentCardIdCamera;
 import com.tokopedia.homecredit.view.fragment.FragmentSelfieIdCamera;
 import com.tokopedia.imageuploader.ImageUploaderRouter;
@@ -223,8 +220,6 @@ import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.linker.model.LinkerError;
 import com.tokopedia.linker.model.LinkerShareResult;
 import com.tokopedia.linker.model.UserData;
-import com.tokopedia.loginphone.common.LoginPhoneNumberRouter;
-import com.tokopedia.loginregister.LoginRegisterRouter;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity;
 import com.tokopedia.logisticaddaddress.features.manage.ManagePeopleAddressActivity;
@@ -275,7 +270,7 @@ import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.ovo.OvoPayWithQrRouter;
 import com.tokopedia.ovo.view.PaymentQRSummaryActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
-import com.tokopedia.common.payment.model.PaymentPassData;
+import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.payment.setting.PaymentSettingInternalRouter;
 import com.tokopedia.payment.setting.util.PaymentSettingRouter;
@@ -354,9 +349,7 @@ import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
-import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
-import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopInfoActivity;
 import com.tokopedia.tkpd.tokocash.GetBalanceTokoCashWrapper;
 import com.tokopedia.tkpd.tokocash.datepicker.DatePickerUtil;
 import com.tokopedia.tkpd.train.TrainGetBuyerProfileInfoMapper;
@@ -511,8 +504,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         UnifiedOrderListRouter,
         RecentViewRouter,
         MerchantVoucherModuleRouter,
-        LoginRegisterRouter,
-        LoginPhoneNumberRouter,
         LinkerRouter,
         TopAdsDashboardRouter,
         NpsRouter,
@@ -529,7 +520,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TradeInRouter,
         ProductDetailRouter,
         OvoPayWithQrRouter,
-        KYCRouter {
+        KYCRouter,
+        HomeRecommendationRouter {
 
     private static final String EXTRA = "extra";
 
@@ -1048,7 +1040,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getLoginIntent(Context context) {
-        Intent intent = LoginActivity.getCallingIntent(context);
+        Intent intent = LoginActivity.DeepLinkIntents.getCallingIntent(context);
         return intent;
     }
 
@@ -1176,18 +1168,18 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getLoginGoogleIntent(Context context) {
-        return LoginActivity.getAutoLoginGoogle(context);
+        return LoginActivity.DeepLinkIntents.getAutoLoginGoogle(context);
     }
 
     @Override
     public Intent getLoginFacebookIntent(Context context) {
-        return LoginActivity.getAutoLoginFacebook(context);
+        return LoginActivity.DeepLinkIntents.getAutoLoginFacebook(context);
 
     }
 
     @Override
     public Intent getLoginWebviewIntent(Context context, String name, String url) {
-        return LoginActivity.getAutoLoginWebview(context, name, url);
+        return LoginActivity.DeepLinkIntents.getAutoLoginWebview(context, name, url);
     }
 
     @Override
@@ -1408,11 +1400,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getForgotPasswordIntent(Context context, String email) {
-        return ForgotPasswordActivity.getCallingIntent(context, email);
-    }
-
-    @Override
     public Intent getAutomaticResetPasswordIntent(Context context, String email) {
         return ForgotPasswordActivity.getAutomaticResetPasswordIntent(context, email);
     }
@@ -1564,7 +1551,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getLoginIntent() {
-        Intent intent = LoginActivity.getCallingIntent(this);
+        Intent intent = LoginActivity.DeepLinkIntents.getCallingIntent(this);
         return intent;
     }
 
@@ -2896,46 +2883,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return dd4Seesion;
     }
 
-
-    @Override
-    public void setTrackingUserId(String userId, Context applicationContext) {
-        onAppsFlyerInit();
-        TrackApp.getInstance().getGTM()
-                .pushUserId(userId);
-        if (!BuildConfig.DEBUG && Crashlytics.getInstance() != null)
-            Crashlytics.setUserIdentifier(userId);
-        UserSessionInterface userSession = new UserSession(this);
-
-        if (userSession.isLoggedIn()) {
-            UserData userData = new UserData();
-            userData.setUserId(userSession.getUserId());
-            userData.setEmail(userSession.getEmail());
-            userData.setPhoneNumber(userSession.getPhoneNumber());
-
-            //Identity Event
-            LinkerManager.getInstance().sendEvent(
-                    LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY, userData));
-
-            //Login Event
-            LinkerManager.getInstance().sendEvent(
-                    LinkerUtils.createGenericRequest(LinkerConstants.EVENT_LOGIN_VAL, userData));
-        }
-        mIris.setUserId(userId);
-        mIris.setDeviceId(userSession.getDeviceId());
-    }
-
     @Override
     public String getDeviceId(Context context) {
         return TradeInUtils.getDeviceId(context);
-    }
-
-    @Override
-    public void sendBranchRegisterEvent(String email, String phone) {
-        UserData userData = new UserData();
-        userData.setEmail(email);
-        userData.setPhoneNumber(phone);
-        LinkerManager.getInstance().sendEvent(
-                LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_REGISTRATION_VAL, userData));
     }
 
     /**
@@ -3025,12 +2975,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return TransactionCartRouter.createInstanceCartActivity(context);
     }
 
-    public void onLoginSuccess() {
-        refreshFCMTokenFromForegroundToCM();
-        onAppsFlyerInit();
-
-    }
-
     private void initCMPushNotification() {
         CMPushNotificationManager.getInstance().init(this);
         refreshFCMTokenFromBackgroundToCM(FCMCacheManager.getRegistrationId(this), false);
@@ -3116,6 +3060,39 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getMaintenancePageIntent() {
         return MaintenancePage.createIntentFromNetwork(getAppContext());
+    }
+
+    @NotNull
+    @Override
+    public Observable<Map<String, Object>> getNormalCheckoutIntent(int productId, int quantity, int shopId, boolean isOneClickShipment) {
+        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
+
+        AddToCartRequest request = new AddToCartRequest.Builder()
+                .productId(productId)
+                .notes("")
+                .quantity(quantity)
+                .shopId(shopId)
+                .build();
+        requestParams.putObject(AddToCartUseCase.PARAM_ADD_TO_CART, request);
+        if (isOneClickShipment) {
+            return CartComponentInjector.newInstance(this).getAddToCartUseCaseOneClickShipment()
+                    .createObservable(requestParams)
+                    .map(this::mapAddToCartResultToHashMap);
+        } else {
+            return CartComponentInjector.newInstance(this).getAddToCartUseCase()
+                    .createObservable(requestParams)
+                    .map(this::mapAddToCartResultToHashMap);
+        }
+    }
+
+    private Map<String, Object> mapAddToCartResultToHashMap(AddToCartDataResponse addToCartDataResponse){
+        HashMap<String, Object> map = new HashMap<>();
+        AddToCartResult addToCartResult = mapAddToCartResult(addToCartDataResponse);
+        map.put("status", addToCartResult.isSuccess());
+        map.put("message", addToCartResult.getMessage());
+        map.put("cartId", addToCartResult.getCartId());
+        map.put("source", addToCartResult.getSource());
+        return map;
     }
 
     @SuppressLint("MissingPermission")
