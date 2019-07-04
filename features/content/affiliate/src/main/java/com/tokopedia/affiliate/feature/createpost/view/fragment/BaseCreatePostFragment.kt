@@ -152,12 +152,11 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 val imageList = data?.getStringArrayListExtra(PICKER_RESULT_PATHS) ?: arrayListOf()
                 val images = imageList.map { MediaModel(it, MediaType.IMAGE) }
 
-                viewModel.fileImageList.removeAll { it.type == MediaType.IMAGE }
+                viewModel.fileImageList.clear()
                 viewModel.fileImageList.addAll(images)
 
-                if (viewModel.fileImageList.isNotEmpty()) {
+                if (imageList.isNotEmpty()) {
                     viewModel.urlImageList.clear()
-
                     val mItems = viewModel.fileImageList.map { MediaItem(thumbnail = it.path, type = it.type) }
                     media_attachment.bind(mItems)
                     media_attachment.visible()
@@ -172,10 +171,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 val videoList = data?.getStringArrayListExtra(VIDEOS_RESULT) ?: arrayListOf()
                 val videos = videoList.map { MediaModel(it, MediaType.VIDEO) }
 
-                viewModel.fileImageList.removeAll { it.type ==  MediaType.VIDEO}
+                viewModel.fileImageList.clear()
                 viewModel.fileImageList.addAll(videos)
 
-                if (viewModel.fileImageList.isNotEmpty()) {
+                if (videoList.isNotEmpty()) {
                     viewModel.urlImageList.clear()
 
                     val mItems = viewModel.fileImageList.map { MediaItem(thumbnail = it.path, type = it.type) }
@@ -431,7 +430,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         }
         caption.hint = viewModel.defaultPlaceholder
         caption.setText(viewModel.caption)
-        caption.setOnFocusChangeListener { _, hasFocus ->
+        caption.onFocusChangeListener = View.OnFocusChangeListener{ _, hasFocus ->
             if (hasFocus){
                 layout_default_caption.visible()
                 action_bottom.gone()
@@ -541,6 +540,9 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             view?.showErrorToaster(getString(R.string.af_warning_empty_photo), R.string.label_add) {
                 goToImagePicker()
             }
+        } else if (caption.text.length > MAX_CHAR){
+            isFormInvalid = true
+            view?.showErrorToaster(getString(R.string.af_warning_over_char, MAX_CHAR.toString()), R.string.general_label_ok){}
         }
         return isFormInvalid
     }

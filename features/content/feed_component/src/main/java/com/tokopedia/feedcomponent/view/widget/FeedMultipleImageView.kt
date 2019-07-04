@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.layout_image_grid.view.*
 class FeedMultipleImageView: BaseCustomView {
 
     private lateinit var gridLayoutManager: GridLayoutManager
-    private var adapter: ImageAdapter = ImageAdapter(mutableListOf())
+    private var listener: OnFileClickListener? = null
 
 
     constructor(context: Context) : super(context) {
@@ -56,12 +56,11 @@ class FeedMultipleImageView: BaseCustomView {
         }
         rv_media.layoutManager = gridLayoutManager
         rv_media.addItemDecoration(ItemOffsetDecoration(context.resources.getDimensionPixelSize(R.dimen.dp_4)))
-        adapter = ImageAdapter(itemList.toMutableList())
-        rv_media.adapter = adapter
+        rv_media.adapter = ImageAdapter(itemList.toMutableList(), listener)
     }
 
     fun setOnFileClickListener(listener: OnFileClickListener){
-        adapter.fileListener = listener
+        this.listener = listener
     }
 
     class ImageAdapter(private var itemList: MutableList<MediaItem>,
@@ -76,7 +75,7 @@ class FeedMultipleImageView: BaseCustomView {
         }
 
         override fun onBindViewHolder(holder: Holder, position: Int) {
-            holder.bind(itemList.get(position))
+            holder.bind(itemList[position])
         }
 
         inner class Holder(itemView: View): RecyclerView.ViewHolder(itemView) {

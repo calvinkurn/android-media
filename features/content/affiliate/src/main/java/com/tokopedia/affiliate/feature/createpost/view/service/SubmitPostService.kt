@@ -94,7 +94,7 @@ class SubmitPostService : JobIntentService() {
                             if (isTypeAffiliate(viewModel.authorType)) userSession.userId
                             else userSession.shopId,
                             viewModel.caption,
-                            viewModel.completeImageList.map { it.path?: "" },
+                            viewModel.completeImageList.map { it.path },
                             if (isTypeAffiliate(viewModel.authorType)) viewModel.adIdList
                             else viewModel.productIdList
                     ),
