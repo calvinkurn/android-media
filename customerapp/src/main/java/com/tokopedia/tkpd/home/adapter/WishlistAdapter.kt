@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd.home.adapter
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.tkpd.home.adapter.factory.WishlistAdapterFactory
 import com.tokopedia.tkpd.home.adapter.viewmodel.WishlistEmptyViewModel
@@ -18,4 +17,5 @@ class WishlistAdapter(adapterTypeFactory: WishlistAdapterFactory) : BaseAdapter<
     fun setSearchNotFound(query: String){
 
     }
+
 }

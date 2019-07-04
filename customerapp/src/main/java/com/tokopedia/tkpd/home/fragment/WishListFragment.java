@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppScreen;
@@ -34,6 +35,8 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.tkpd.home.adapter.OnWishlistActionButtonClicked;
 import com.tokopedia.tkpd.home.adapter.WishlistAdapter;
 import com.tokopedia.tkpd.home.adapter.factory.WishlistAdapterFactory;
+import com.tokopedia.tkpd.home.adapter.viewholder.WishlistEmptyViewHolder;
+import com.tokopedia.tkpd.home.adapter.viewholder.WishlistTopAdsListViewHolder;
 import com.tokopedia.tkpd.home.wishlist.domain.model.GqlWishListDataResponse;
 import com.tokopedia.core.network.entity.wishlist.Wishlist;
 import com.tokopedia.core.router.productdetail.PdpRouter;
@@ -74,7 +77,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     public static final String DEFAULT_VALUE_NONE_OTHER = "none / other";
 
-    public static final String FROM_APP_SHORTCUTS = "FROM_APP_SHORTCUTS" ;
+    public static final String FROM_APP_SHORTCUTS = "FROM_APP_SHORTCUTS";
     public static final String FRAGMENT_TAG = "WishListFragment";
     private CheckoutAnalyticsAddToCart checkoutAnalyticsAddToCart;
 
@@ -126,9 +129,9 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         getActivity().startActivity(intent);
     }
 
-    private Intent getProductIntent(String productId){
+    private Intent getProductIntent(String productId) {
         if (getActivity() != null) {
-            return RouteManager.getIntent(getActivity(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+            return RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
         } else {
             return null;
         }
@@ -368,7 +371,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     @Override
     public void onSuccessDeleteWishlist(String searchTerm, int position) {
-        if (getActivity() != null  && getView() != null) {
+        if (getActivity() != null && getView() != null) {
             ToasterNormal.make(getView(), getActivity().getString(R.string.msg_delete_wishlist_success), BaseToaster.LENGTH_SHORT).show();
             displayPull(false);
 
@@ -416,13 +419,13 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
                 message = getString(R.string.default_request_error_unknown_short);
             }
             ToasterNormal.make(getView(),
-                    message.replace("\n", " "), BaseToaster.LENGTH_LONG).setAction(getString(R.string.wishlist_check_cart),v -> {
-                            if (getActivity() != null && getActivity().getApplication() != null) {
-                                wishlistAnalytics.eventClickCartWishlist();
-                                getActivity().startActivity(((PdpRouter) getActivity().getApplication())
-                                        .getCartIntent(getActivity()));
-                            }
-                    }).show();
+                    message.replace("\n", " "), BaseToaster.LENGTH_LONG).setAction(getString(R.string.wishlist_check_cart), v -> {
+                if (getActivity() != null && getActivity().getApplication() != null) {
+                    wishlistAnalytics.eventClickCartWishlist();
+                    getActivity().startActivity(((PdpRouter) getActivity().getApplication())
+                            .getCartIntent(getActivity()));
+                }
+            }).show();
         }
     }
 
@@ -455,7 +458,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 //        adapter.setWishlistView(this);
 //        adapter.setActionButtonClicked(this);
 
-        wishlistAdapter = new WishlistAdapter(new WishlistAdapterFactory(this,this, wishlistAnalytics));
+        wishlistAdapter = new WishlistAdapter(new WishlistAdapterFactory(this, this, wishlistAnalytics));
         wishlistAdapter.setVisitables(data);
     }
 
@@ -524,11 +527,10 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
             public int getSpanSize(int position) {
                 if (position == wishList.getData().size()) {
                     return 2;
-//                } else if(position % 5 == 0 && adapter.getItemViewType(position) == TkpdState.RecyclerViewItem.TYPE_LIST
-//                        || adapter.getItemViewType(position) == TkpdState.RecyclerView.VIEW_EMPTY_SEARCH
-//                        || adapter.getItemViewType(position)  == TkpdState.RecyclerView.VIEW_EMPTY_STATE
-//                        || adapter.getItemViewType(position)  == TkpdState.RecyclerView.VIEW_TOP_ADS_LIST) {
-//                    return 2;
+                } else if (position % 5 == 0 && wishlistAdapter.getItemViewType(position) == WishlistTopAdsListViewHolder.Companion.getLAYOUT()
+                        || wishlistAdapter.getItemViewType(position) == LoadingMoreViewHolder.LAYOUT
+                        || wishlistAdapter.getItemViewType(position) == WishlistEmptyViewHolder.Companion.getLAYOUT()) {
+                    return 2;
                 } else {
                     return 1;
                 }
@@ -590,9 +592,9 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     }
 
     public List<Object> getProductAsObjectDataLayerForWishlistImpression(List<Wishlist> wishlistDataList, int currentSize) {
-        int position = currentSize+1;
+        int position = currentSize + 1;
         List<Object> objects = new ArrayList<>();
-        for (int i = 0; i<wishlistDataList.size() ; i++){
+        for (int i = 0; i < wishlistDataList.size(); i++) {
             Wishlist wishlist = wishlistDataList.get(i);
             objects.add(DataLayer.mapOf(
                     "name", wishlist.getName(),
