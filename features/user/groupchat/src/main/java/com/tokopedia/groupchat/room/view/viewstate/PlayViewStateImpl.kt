@@ -21,6 +21,7 @@ import android.view.View.OnFocusChangeListener
 import android.view.View.VISIBLE
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.TextView
 import com.airbnb.lottie.LottieAnimationView
 import com.google.android.youtube.player.YouTubeInitializationResult
@@ -52,6 +53,7 @@ import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics
 import com.tokopedia.groupchat.common.design.QuickReplyItemDecoration
 import com.tokopedia.groupchat.common.design.SpaceItemDecoration
 import com.tokopedia.groupchat.common.util.TextFormatter
+import com.tokopedia.groupchat.room.view.activity.PlayActivity
 import com.tokopedia.groupchat.room.view.customview.StickyComponentHelper
 import com.tokopedia.groupchat.room.view.fragment.PlayFragment
 import com.tokopedia.groupchat.room.view.fragment.PlayWebviewDialogFragment
@@ -258,7 +260,9 @@ open class PlayViewStateImpl(
 
         interactionAnimationHelper = InteractionAnimationHelper(interactionGuideline)
         overflowMenuHelper = OverflowMenuHelper(viewModel, activity, onInfoMenuClicked(), toggleHorizontalVideo(), videoContainer)
-        videoVerticalHelper = VideoVerticalHelper(bufferContainer, bufferDimContainer)
+        var view = (activity as PlayActivity).findViewById<FrameLayout>(R.id.playerView)
+        var rootView = (activity as PlayActivity).findViewById<RelativeLayout>(R.id.root_view)
+        videoVerticalHelper = VideoVerticalHelper(bufferContainer, bufferDimContainer, activity.supportFragmentManager, view, rootView)
         videoHorizontalHelper = VideoHorizontalHelper(viewModel, hideVideoToggle, showVideoToggle, videoContainer, youTubePlayer, setChatListHasSpaceOnTop(), liveIndicator, analytics)
         sponsorHelper = SponsorHelper(viewModel, sponsorLayout, sponsorImage, analytics, listener)
         welcomeHelper = PlayWelcomeHelper(viewModel, analytics, activity, view)
@@ -423,7 +427,6 @@ open class PlayViewStateImpl(
         }
 
         setToolbarData(it.title, it.bannerUrl, it.totalView, it.blurredBannerUrl)
-
         initVideoFragment(it.videoId, it.isVideoLive)
         showLoginButton(!userSession.isLoggedIn)
         it.settingGroupChat?.maxChar?.let {
@@ -443,6 +446,7 @@ open class PlayViewStateImpl(
         sponsorHelper.assignViewModel(it)
         sponsorHelper.setSponsor()
         overflowMenuHelper.assignViewModel(it)
+        videoVerticalHelper.initialize()
     }
 
     fun setDefaultBackground() {
@@ -819,12 +823,9 @@ open class PlayViewStateImpl(
         videoHorizontalHelper.hideVideo()
         videoHorizontalHelper.hideToggle()
         videoId.let {
-            if (it.isEmpty()) {
-                listener.onVerticalVideo(true)
-                return
-            }
             val videoFragment = fragmentManager.findFragmentById(R.id.video_container) as GroupChatVideoFragment
             videoFragment.run {
+                if(videoId.isNullOrBlank()) return
                 videoHorizontalHelper.showVideoOnly(isVideoLive)
                 sponsorHelper.hideSponsor()
                 youTubePlayer?.let {

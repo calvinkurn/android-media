@@ -112,37 +112,7 @@ open class PlayActivity : BaseSimpleActivity(), PlayerViewListener, PlayActivity
 
     override fun onPlayerActive(isActive: Boolean) {
         if (isActive) {
-            sendViewToBack(playerView)
-            val sourceMedia = "https://scontent-sin6-1.cdninstagram.com/vp/cb4297650b392eab52095d911a1a17dc/5D1C8FA4/t50.12441-16/53306725_332584844027284_3716503313000746737_n.mp4?_nc_ht=scontent-sin6-1.cdninstagram.com"
 
-            var width = findViewById<View>(R.id.root_view).layoutParams.width
-            var height = findViewById<View>(R.id.root_view).layoutParams.height
-            val layoutParams = playerView.layoutParams
-            layoutParams.width = width
-            layoutParams.height = height
-
-            playerView.layoutParams = layoutParams
-
-            TkpdVideoPlayer.Builder()
-                    .transaction(R.id.playerView, supportFragmentManager)
-                    .videoSource(sourceMedia)
-                    /* preventing seekTo, declare videoPlayer with live_stream mode */
-                    .type(PlayerType.LIVE_STREAM)
-                    /* if you have custom controller, turn it off */
-                    .controller(PlayerController.OFF)
-                    /* repeat video mode after finished */
-                    .repeatMode(RepeatMode.REPEAT_MODE_ALL)
-                    /* handle video player listener */
-                    .listener(object : VideoPlayerListener {
-                        override fun onPlayerStateChanged(playbackState: Int) {
-                            //@references playBackState: com.google.android.exoplayer2.Player
-                        }
-
-                        override fun onPlayerError(error: PlayerException) {
-                            //@references error: com.tokopedia.videoplayer.state.PlayerException
-                        }
-                    })
-                    .build()
         }
     }
 
