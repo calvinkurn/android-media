@@ -704,7 +704,6 @@ public class InboxDetailActivity extends InboxBaseActivity
 
     @Override
     public void OnSucessfullTicketClose() {
-        Toast.makeText(this, "jregek", Toast.LENGTH_SHORT).show();
         mPresenter.refreshLayout();
     }
 }

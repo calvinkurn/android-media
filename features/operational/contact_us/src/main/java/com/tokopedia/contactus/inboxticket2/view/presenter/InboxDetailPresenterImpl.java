@@ -251,7 +251,7 @@ public class InboxDetailPresenterImpl
                     }
                     for (CommentsItem item : commentsItems) {
                         if (userData == null) {
-                            if (item.getCreatedBy().getRole().equals("customer")) {
+                            if (item.getCreatedBy().getRole().equals("user")) {
                                 userData = item.getCreatedBy();
                             }
                         }
@@ -857,7 +857,7 @@ public class InboxDetailPresenterImpl
     private void addNewLocalComment() {
         CommentsItem newItem = new CommentsItem();
         newItem.setCreatedBy(userData);
-        newItem.setMessagePlaintext(mView.getUserMessage());
+        newItem.setMessage(mView.getUserMessage());
         newItem.setCreateTime(getUtils().getDateTimeCurrent());
         List<ImageUpload> uploadImageList = mView.getImageList();
         List<AttachmentItem> attachmentItems = new ArrayList<>();
