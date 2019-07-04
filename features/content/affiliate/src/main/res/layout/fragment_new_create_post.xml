@@ -138,9 +138,19 @@
             android:text="@string/label_add_product"/>
 
         <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/video_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            app:srcCompat="@drawable/ic_af_pick_video"/>
+
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/image_picker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
             android:src="@drawable/ic_af_pick_media"/>
 
         <com.tokopedia.unifyprinciples.Typography

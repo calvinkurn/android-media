@@ -86,7 +86,7 @@ class CreatePostImagePickerActivity : ImagePickerActivity() {
             val builder = ImagePickerBuilder(
                     context.getString(R.string.title_af_image_picker),
                     intArrayOf(TYPE_GALLERY, TYPE_CAMERA, TYPE_INSTAGRAM),
-                    GalleryType.ALL,
+                    GalleryType.IMAGE_ONLY,
                     DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                     DEFAULT_MIN_RESOLUTION,
                     ImageRatioTypeDef.RATIO_1_1,

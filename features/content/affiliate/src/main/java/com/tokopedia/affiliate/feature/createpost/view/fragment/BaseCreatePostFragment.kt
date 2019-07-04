@@ -36,6 +36,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.MediaItem
+import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.user.session.UserSessionInterface
@@ -151,13 +152,13 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 val imageList = data?.getStringArrayListExtra(PICKER_RESULT_PATHS) ?: arrayListOf()
                 val images = imageList.map { MediaModel(it, MediaType.IMAGE) }
 
-                viewModel.fileImageList.clear()
+                viewModel.fileImageList.removeAll { it.type == MediaType.IMAGE }
                 viewModel.fileImageList.addAll(images)
 
-                if (imageList.isNotEmpty()) {
+                if (viewModel.fileImageList.isNotEmpty()) {
                     viewModel.urlImageList.clear()
 
-                    val mItems = imageList.map { MediaItem(thumbnail = it, type = MediaType.IMAGE) }
+                    val mItems = viewModel.fileImageList.map { MediaItem(thumbnail = it.path, type = it.type) }
                     media_attachment.bind(mItems)
                     media_attachment.visible()
                 } else {
@@ -171,11 +172,18 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 val videoList = data?.getStringArrayListExtra(VIDEOS_RESULT) ?: arrayListOf()
                 val videos = videoList.map { MediaModel(it, MediaType.VIDEO) }
 
-                viewModel.fileImageList.clear()
+                viewModel.fileImageList.removeAll { it.type ==  MediaType.VIDEO}
                 viewModel.fileImageList.addAll(videos)
 
-                if (videoList.isNotEmpty()) {
+                if (viewModel.fileImageList.isNotEmpty()) {
                     viewModel.urlImageList.clear()
+
+                    val mItems = viewModel.fileImageList.map { MediaItem(thumbnail = it.path, type = it.type) }
+                    media_attachment.bind(mItems)
+                    media_attachment.visible()
+                } else {
+                    media_attachment.gone()
+                    media_attachment.bind(listOf())
                 }
 
                 invalidatePostCallBack?.invalidatePostMenu(isPostEnabled)
@@ -392,13 +400,21 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 LinearLayoutManager.HORIZONTAL))
 
         image_picker.setOnClickListener {
-            goToImagePicker()
             affiliateAnalytics.onTambahGambarButtonClicked()
+            goToImagePicker()
         }
-        /*addVideoBtn.setOnClickListener {
+        video_picker.setOnClickListener {
             affiliateAnalytics.onTambahVideoButtonClicked()
             goToVideoPicker()
-        }*/
+        }
+        media_attachment.setOnFileClickListener(object : FeedMultipleImageView.OnFileClickListener {
+            override fun onDeleteItem(item: MediaItem, position: Int) {
+                viewModel.fileImageList.removeAt(position)
+                viewModel.urlImageList.removeAt(position)
+            }
+
+            override fun onClickItem(item: MediaItem, position: Int) { goToMediaPreview() }
+        })
         caption.filters = arrayOf(InputFilter.LengthFilter(MAX_CHAR))
         caption.afterTextChanged {
             viewModel.caption = it
@@ -555,7 +571,8 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     private fun updateMedia() {
-        image_picker.showWithCondition(viewModel.allowImage || viewModel.allowVideo)
+        video_picker.showWithCondition(viewModel.allowVideo)
+        image_picker.showWithCondition(viewModel.allowImage)
     }
 
 

@@ -31,7 +31,7 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener, Bas
             action_post.setTextColor(ContextCompat.getColor(this, R.color.green_500))
         } else {
             action_post.isEnabled = false
-            action_post.setTextColor(ContextCompat.getColor(this, R.color.red_100))
+            action_post.setTextColor(ContextCompat.getColor(this, R.color.grey_500))
         }
     }
 
