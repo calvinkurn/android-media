@@ -574,8 +574,6 @@ dependencies {
     implementation 'com.facebook.soloader:soloader:0.6.0'
 
     implementation 'com.facebook.infer.annotation:infer-annotation:+'
-
-//    implementation project(':react-native-code-push')
 }
 
 
@@ -585,7 +583,5 @@ project.ext.sentryCli = [
 ]
 
 apply from: "../buildconfig/reactnative/react.gradle"
-//apply from: "../buildconfig/reactnative/codepush.gradle"
-//apply from: "../node_modules/react-native-code-push/android/codepush.gradle"
 apply from: "../buildconfig/reactnative/sentry.gradle"
 apply plugin: 'com.google.gms.google-services'
