@@ -25,7 +25,6 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core2.R2;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
@@ -53,13 +52,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-/*import okhttp3.OkHttpClient;
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;*/
 import retrofit2.Retrofit;
 
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB;
@@ -70,7 +62,6 @@ import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDe
 /**
  * Created by hangnadi on 12/13/16.
  */
-//@RuntimePermissions
 public class InputShippingFragment extends BasePresenterFragment<InputShippingFragmentPresenter>
         implements InputShippingFragmentView, AttachmentAdapter.AttachmentAdapterListener {
 
@@ -281,8 +272,6 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
                             permissionCheckerHelper = new PermissionCheckerHelper();
                         }
 
-                        //InputShippingFragmentPermissionsDispatcher.scanBarcodeClickWithCheck(InputShippingFragment.this);
-
                         permissionCheckerHelper.checkPermissions(getActivity(), listOfPermission, new PermissionCheckerHelper.PermissionCheckListener() {
                             @Override
                             public void onPermissionDenied(@NotNull String permissionText) {
@@ -374,11 +363,6 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
             }
         });
     }
-
-   /* @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
-    public void scanBarcodeClick() {
-        presenter.onScanBarcodeClick(getActivity());
-    }*/
 
     @Override
     public void renderInputShippingRefNum(String text) {
@@ -521,57 +505,6 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
             permissionCheckerHelper.onRequestPermissionsResult(getActivity(), requestCode, permissions, grantResults);
         }
     }
-/*    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
-    void showRationaleForStorageAndCamera(final PermissionRequest request) {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-
-        RequestPermissionUtil.onShowRationale(getActivity(), request, listPermission);
-    }
-
-    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showRationaleForStorage(final PermissionRequest request) {
-        RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnPermissionDenied(Manifest.permission.CAMERA)
-    void showDeniedForCamera() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(),Manifest.permission.CAMERA);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.CAMERA)
-    void showNeverAskForCamera() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),Manifest.permission.CAMERA);
-    }
-
-    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showDeniedForStorage() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showNeverAskForStorage() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnPermissionDenied({Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE})
-    void showDeniedForStorageAndCamera() {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-
-        RequestPermissionUtil.onPermissionDenied(getActivity(),listPermission);
-    }
-
-    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
-    void showNeverAskForStorageAndCamera() {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),listPermission);
-    }*/
 
     @Override
     protected void initInjector() {
