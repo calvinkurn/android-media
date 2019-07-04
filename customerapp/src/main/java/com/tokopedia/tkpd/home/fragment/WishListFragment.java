@@ -35,7 +35,9 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.tkpd.home.adapter.OnWishlistActionButtonClicked;
 import com.tokopedia.tkpd.home.adapter.WishlistAdapter;
 import com.tokopedia.tkpd.home.adapter.factory.WishlistAdapterFactory;
+import com.tokopedia.tkpd.home.adapter.viewholder.WishlistEmptySearchViewHolder;
 import com.tokopedia.tkpd.home.adapter.viewholder.WishlistEmptyViewHolder;
+import com.tokopedia.tkpd.home.adapter.viewholder.WishlistProductListViewHolder;
 import com.tokopedia.tkpd.home.adapter.viewholder.WishlistTopAdsListViewHolder;
 import com.tokopedia.tkpd.home.wishlist.domain.model.GqlWishListDataResponse;
 import com.tokopedia.core.network.entity.wishlist.Wishlist;
@@ -497,26 +499,25 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     @Override
     public boolean isLoading() {
-//        return adapter.getItemViewType(layoutManager.findLastCompletelyVisibleItemPosition()) == TkpdState.RecyclerView.VIEW_LOADING;
         return wishlistAdapter.isLoading();
     }
 
     @Override
     public void displayLoadMore(boolean isLoadMore) {
-        Log.d(TAG, WishListFragment.class.getSimpleName() + (isLoadMore ? " tampilkan" : " hilangkan ") + " load more");
-//        adapter.setIsLoading(isLoadMore);
-//        wishlistAdapter.showLoading();
+        if(isLoadMore) {
+            wishlistAdapter.showLoading();
+        } else {
+            wishlistAdapter.hideLoading();
+        }
     }
 
     @Override
     public void displayPull(boolean isShow) {
-        Log.d(TAG, WishListFragment.class.getSimpleName() + (isShow ? " tampilkan" : " hilangkan ") + " pull to refresh");
         swipeToRefresh.setRefreshing(isShow);
     }
 
     @Override
     public void setPullEnabled(boolean isPullEnabled) {
-        Log.d(TAG, WishListFragment.class.getSimpleName() + (isPullEnabled ? " hidupkan" : " matikan") + " pull to refresh");
         swipeToRefresh.setEnabled(isPullEnabled);
     }
 
@@ -525,14 +526,10 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         return new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                if (position == wishList.getData().size()) {
-                    return 2;
-                } else if (wishlistAdapter.getItemViewType(position) == WishlistTopAdsListViewHolder.Companion.getLAYOUT()
-                        || wishlistAdapter.getItemViewType(position) == LoadingMoreViewHolder.LAYOUT
-                        || wishlistAdapter.getItemViewType(position) == WishlistEmptyViewHolder.Companion.getLAYOUT()) {
-                    return 2;
-                } else {
+                if(wishlistAdapter.getItemViewType(position) == WishlistProductListViewHolder.Companion.getLAYOUT()){
                     return 1;
+                } else {
+                    return 2;
                 }
             }
         };

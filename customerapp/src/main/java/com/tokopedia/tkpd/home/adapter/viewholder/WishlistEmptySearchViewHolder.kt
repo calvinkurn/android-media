@@ -12,17 +12,17 @@ import com.tokopedia.tkpd.home.adapter.viewmodel.WishlistEmptyViewModel
 /**
  * Author errysuprayogi on 03,July,2019
  */
-class WishlistEmptyViewHolder(itemView: View, var actionButtonClicked: OnWishlistActionButtonClicked) : AbstractViewHolder<WishlistEmptyViewModel>(itemView) {
+class WishlistEmptySearchViewHolder(itemView: View, var actionButtonClicked: OnWishlistActionButtonClicked) : AbstractViewHolder<WishlistEmptyViewModel>(itemView) {
 
     override fun bind(element: WishlistEmptyViewModel) {
         itemView.findViewById<Button>(R.id.action_btn).setOnClickListener {
-            actionButtonClicked.findProduct()
+            actionButtonClicked.showAllWishlist()
         }
     }
 
     companion object {
 
         @LayoutRes
-        val LAYOUT = R.layout.layout_wishlist_empty_state
+        val LAYOUT = R.layout.layout_wishlist_empty_search
     }
 }

@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
 import com.tkpd.library.utils.ImageHandler
 
@@ -53,13 +54,10 @@ class WishlistProductListViewHolder(itemView: View,
         }
         setBadges(product)
         setLabels(product)
-        itemView.findViewById<View>(R.id.container).setOnClickListener {
-            onProductItemClicked(product, adapterPosition)
-        }
-
+        itemView.findViewById<RelativeLayout>(R.id.container).setOnClickListener(onProductItemClicked(product, adapterPosition))
         if (product.isWishlist!!) {
             itemView.findViewById<View>(R.id.wishlist).setVisibility(View.VISIBLE)
-            itemView.findViewById<View>(R.id.wishlist).setOnClickListener(onDeleteWishlistClicked(product.getId(), position))
+            itemView.findViewById<View>(R.id.wishlist).setOnClickListener(onDeleteWishlistClicked(product.getId(), adapterPosition))
             var buyWishlistBtn = itemView.findViewById<TextView>(R.id.buy_button)
             if (product.isAvailable!!) {
                 setBuyButtonAvailable(buyWishlistBtn)
