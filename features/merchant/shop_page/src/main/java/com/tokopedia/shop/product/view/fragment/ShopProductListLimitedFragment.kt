@@ -590,7 +590,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
 
     private fun onSuccessGetProductFeature(list: List<ShopProductViewModel>) {
         shopProductAdapter.shopProductFeaturedViewModel = ShopProductFeaturedViewModel(list)
-        if (list.isNotEmpty()) {
+        if (list.isNotEmpty() && shopInfo != null) {
             shopPageTracking?.impressionProductList(
                     isOwner,
                     ListTitleTypeDef.HIGHLIGHTED,
