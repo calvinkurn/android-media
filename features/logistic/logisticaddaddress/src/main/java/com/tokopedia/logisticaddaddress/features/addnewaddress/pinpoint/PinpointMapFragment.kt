@@ -317,20 +317,13 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         context?.let {
             if (AddNewAddressUtils.isLocationEnabled(it)) {
                 if (currentLat == 0.0 && currentLong == 0.0) presenter.requestLocation(requireActivity())
-                ic_current_location.run {
-                    setImageResource(R.drawable.ic_gps_enable)
-                    setOnClickListener {
-                        AddNewAddressAnalytics.eventClickButtonPilihLokasi()
-                        doUseCurrentLocation()
-                    }
-                }
+                ic_current_location.setImageResource(R.drawable.ic_gps_enable)
             } else {
-                ic_current_location.run {
-                    setImageResource(R.drawable.ic_gps_disable)
-                    setOnClickListener {
-                        AddNewAddressAnalytics.eventClickButtonPilihLokasi()
-                        showLocationInfoBottomSheet() }
-                }
+                ic_current_location.setImageResource(R.drawable.ic_gps_disable)
+            }
+            ic_current_location.setOnClickListener {
+                AddNewAddressAnalytics.eventClickButtonPilihLokasi()
+                doUseCurrentLocation()
             }
         }
         super.onResume()
