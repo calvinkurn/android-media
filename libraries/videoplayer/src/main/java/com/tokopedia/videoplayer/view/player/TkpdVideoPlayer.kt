@@ -30,7 +30,7 @@ import com.tokopedia.videoplayer.utils.*
 import kotlinx.android.synthetic.main.fragment_video_player.*
 import java.io.File
 
-class TkpdVideoPlayer: Fragment() {
+class TkpdVideoPlayer: Fragment(), ControllerListener {
 
     companion object {
         //keys
@@ -131,13 +131,13 @@ class TkpdVideoPlayer: Fragment() {
         }
     }
 
-    private fun playVideo() {
-        if (File(viewModel.videoSource).exists()) {
-            val file = Uri.fromFile(File(viewModel.videoSource))
+    private fun playVideo(source: String) {
+        if (File(source).exists()) {
+            val file = Uri.fromFile(File(source))
             initPlayer(file, VideoSourceProtocol.File)
         } else {
-            val url = Uri.parse(viewModel.videoSource)
-            initPlayer(url, VideoSourceProtocol.protocol(context, viewModel.videoSource))
+            val url = Uri.parse(source)
+            initPlayer(url, VideoSourceProtocol.protocol(context, source))
         }
 
         //player listener
@@ -217,6 +217,20 @@ class TkpdVideoPlayer: Fragment() {
         }
     }
 
+    override fun resume() {
+        playerOptions?.playWhenReady = true
+        playerOptions?.playbackState
+    }
+
+    override fun pause() {
+        playerOptions?.playWhenReady = false
+        playerOptions?.playbackState
+    }
+
+    override fun stop() {
+        playerOptions?.stop()
+    }
+
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         if (context is VideoPlayerListener) {
@@ -226,7 +240,7 @@ class TkpdVideoPlayer: Fragment() {
 
     override fun onResume() {
         super.onResume()
-        playVideo()
+        playVideo(viewModel.videoSource)
 
         //get current position and seeking of video player
         if (viewModel.playerType == PlayerType.DEFAULT) {
