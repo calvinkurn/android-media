@@ -157,8 +157,7 @@ public class GlobalNavWidget extends BaseCustomView {
         adapter.setItemList(globalNavViewModel.getItemList());
         globalNavSeeAllButton.setOnClickListener(v -> {
             if (clickListener != null) {
-                clickListener.onclickSeeAllButton(globalNavViewModel.getSeeAllApplink(),
-                        globalNavViewModel.getSeeAllUrl());
+                clickListener.onclickSeeAllButton(globalNavViewModel);
             }
         });
     }
@@ -172,6 +171,6 @@ public class GlobalNavWidget extends BaseCustomView {
 
     public interface ClickListener {
         void onClickItem(GlobalNavViewModel.Item item);
-        void onclickSeeAllButton(String applink, String url);
+        void onclickSeeAllButton(GlobalNavViewModel globalNavViewModel);
     }
 }

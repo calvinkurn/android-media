@@ -228,6 +228,9 @@ public class CatalogListFragment extends SearchSectionFragment implements
     protected void prepareView() {
         setupAdapter();
         setupListener();
+        if (getUserVisibleHint()) {
+            setupSearchNavigation();
+        }
     }
 
     private void setupListener() {

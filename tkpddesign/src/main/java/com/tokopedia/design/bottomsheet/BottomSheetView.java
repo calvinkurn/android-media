@@ -3,10 +3,14 @@ package com.tokopedia.design.bottomsheet;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.graphics.drawable.Drawable;
+import android.support.v7.content.res.AppCompatResources;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.StyleRes;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.content.ContextCompat;
+
 import android.support.v7.widget.TintContextWrapper;
 import android.text.Html;
 import android.util.TypedValue;
@@ -73,6 +77,13 @@ public class BottomSheetView extends BottomSheetDialog {
         addListener();
     }
 
+    public Drawable getDrawable(Context context, int resId) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1)
+            return context.getResources().getDrawable(resId, context.getApplicationContext().getTheme());
+        else
+            return AppCompatResources.getDrawable(context, resId);
+    }
+
     protected int getLayout() {
         return R.layout.widget_bottom_sheet;
     }
@@ -96,7 +107,7 @@ public class BottomSheetView extends BottomSheetDialog {
                 imgIconBottomSheet.setVisibility(View.GONE);
             } else {
                 imgIconBottomSheet.setVisibility(View.VISIBLE);
-                imgIconBottomSheet.setImageResource(bottomSheetField.getImg());
+                imgIconBottomSheet.setImageDrawable(getDrawable(imgIconBottomSheet.getContext(),bottomSheetField.getImg()));
             }
         }
 

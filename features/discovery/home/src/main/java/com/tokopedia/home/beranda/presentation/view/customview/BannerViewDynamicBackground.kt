@@ -27,6 +27,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeB
 import com.tokopedia.kotlin.extensions.view.setMargin
 import kotlinx.android.synthetic.main.layout_card_banner_dynamic_background.view.*
 import java.util.*
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 
 class BannerViewDynamicBackground : BannerView {
 
@@ -44,6 +45,9 @@ class BannerViewDynamicBackground : BannerView {
 
     override fun init() {
         val view = View.inflate(context, R.layout.layout_card_banner_dynamic_background, this)
+        view.findViewById<View>(R.id.overlay_round)
+                .setBackground(MethodChecker.getDrawable(
+                        view.getContext(), R.drawable.background_banner_image_mask));
         bannerRecyclerView = view.findViewById(R.id.banner_recyclerview)
         bannerIndicator = view.findViewById(R.id.banner_indicator_container)
         bannerSeeAll = view.findViewById(R.id.banner_see_all)
@@ -103,7 +107,7 @@ class BannerViewDynamicBackground : BannerView {
             var currentImagePosition = 0
             var oldImagePosition = 0
 
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 val manager : LinearLayoutManager =
                         recyclerView!!.layoutManager as LinearLayoutManager
                 val position = manager.findFirstCompletelyVisibleItemPosition()
