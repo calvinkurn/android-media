@@ -151,7 +151,7 @@
                 android:foreground="?selectableItemBackground"
                 android:gravity="center"
                 android:padding="@dimen/dp_8"
-                android:text="+ Keranjang"
+                android:text="@string/product_card_module_label_add_to_card"
                 android:textAllCaps="false"
                 android:textColor="@color/orange_red"
                 android:visibility="gone"
