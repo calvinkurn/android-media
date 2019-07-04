@@ -12,8 +12,6 @@ import android.widget.TextView
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.data.TelcoProductDataCollection
 import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
-import android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
-
 
 
 /**
@@ -78,13 +76,14 @@ class DigitalProductAdapter(val productList: List<TelcoProductDataCollection>, v
             titleProduct.setText(productItem.product.attributes.desc)
             descProduct.setText(productItem.product.attributes.detail)
             productPrice.setText(productItem.product.attributes.price)
+
+            productPromoPrice.visibility = View.INVISIBLE
             productItem.product.attributes.productPromo?.run {
                 if (this.newPrice.isNotEmpty()) {
-                    productPromoPrice.setText(this.newPrice)
+                    productPrice.setText(this.newPrice)
+                    productPromoPrice.setText(productItem.product.attributes.price)
                     productPromoPrice.setPaintFlags(productPromoPrice.getPaintFlags() or Paint.STRIKE_THRU_TEXT_FLAG)
                     productPromoPrice.visibility = View.VISIBLE
-                } else {
-                    productPromoPrice.visibility = View.GONE
                 }
             }
         }

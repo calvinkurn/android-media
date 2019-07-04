@@ -21,14 +21,13 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.covertContactUriToContactData
 import com.tokopedia.topupbills.telco.data.TelcoFavNumber
-import com.tokopedia.topupbills.telco.data.constant.TelcoFavNumberType
 import com.tokopedia.topupbills.telco.view.adapter.NumberListAdapter
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
-import com.tokopedia.topupbills.telco.view.model.DigitalFavNumber
 import kotlinx.android.synthetic.main.fragment_search_number_telco.*
 import java.util.*
 import javax.inject.Inject
@@ -38,7 +37,7 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnCl
     private lateinit var callback: OnClientNumberClickListener
     private lateinit var numberListAdapter: NumberListAdapter
     private lateinit var clientNumbers: List<TelcoFavNumber>
-    private lateinit var clientNumber: DigitalFavNumber
+    private lateinit var clientNumberType: String
 
     private var number: String? = null
 
@@ -63,7 +62,7 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnCl
 
     fun setupArguments(arguments: Bundle?) {
         arguments?.run {
-            clientNumber = arguments.getParcelable(ARG_PARAM_EXTRA_CLIENT_NUMBER)
+            clientNumberType = arguments.getString(ARG_PARAM_EXTRA_CLIENT_NUMBER)
             number = arguments.getString(ARG_PARAM_EXTRA_NUMBER)
             clientNumbers = arguments.getParcelableArrayList(ARG_PARAM_EXTRA_NUMBER_LIST)
         }
@@ -107,8 +106,8 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnCl
     }
 
     private fun setClientNumberInputType() {
-        if (clientNumber.type.equals(TelcoFavNumberType.TYPE_INPUT_TEL, ignoreCase = true) ||
-                clientNumber.type.equals(TelcoFavNumberType.TYPE_INPUT_NUMERIC, ignoreCase = true)) {
+        if (clientNumberType.equals(ClientNumberType.TYPE_INPUT_TEL, ignoreCase = true) ||
+                clientNumberType.equals(ClientNumberType.TYPE_INPUT_NUMERIC, ignoreCase = true)) {
             editTextSearchNumber.inputType = InputType.TYPE_CLASS_NUMBER
             editTextSearchNumber.keyListener = DigitsKeyListener.getInstance("0123456789")
         } else {
@@ -252,11 +251,11 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnCl
 
         private val REQUEST_CODE_CONTACT_PICKER = 75
 
-        fun newInstance(clientNumber: DigitalFavNumber, number: String,
+        fun newInstance(clientNumberType: String, number: String,
                         numberList: List<TelcoFavNumber>): Fragment {
             val fragment = DigitalSearchNumberFragment()
             val bundle = Bundle()
-            bundle.putParcelable(ARG_PARAM_EXTRA_CLIENT_NUMBER, clientNumber)
+            bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER, clientNumberType)
             bundle.putString(ARG_PARAM_EXTRA_NUMBER, number)
             bundle.putParcelableArrayList(ARG_PARAM_EXTRA_NUMBER_LIST, numberList as ArrayList<out Parcelable>)
             fragment.arguments = bundle

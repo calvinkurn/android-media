@@ -7,7 +7,6 @@ import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.topupbills.telco.data.TelcoFavNumber
 import com.tokopedia.topupbills.telco.view.fragment.DigitalSearchNumberFragment
-import com.tokopedia.topupbills.telco.view.model.DigitalFavNumber
 import java.util.*
 
 /**
@@ -17,7 +16,7 @@ import java.util.*
 class DigitalSearchNumberActivity : BaseSimpleActivity(), DigitalSearchNumberFragment.OnClientNumberClickListener {
 
     private lateinit var categoryId: String
-    private lateinit var clientNumber: DigitalFavNumber
+    private lateinit var clientNumberType: String
     private lateinit var number: String
     private lateinit var numberList: List<TelcoFavNumber>
 
@@ -28,7 +27,7 @@ class DigitalSearchNumberActivity : BaseSimpleActivity(), DigitalSearchNumberFra
     override fun onCreate(savedInstanceState: Bundle?) {
         val extras = intent.extras
         extras?.let {
-            this.clientNumber = extras.getParcelable(EXTRA_CLIENT_NUMBER)
+            this.clientNumberType = extras.getString(EXTRA_CLIENT_NUMBER)
             this.number = extras.getString(EXTRA_NUMBER)
             this.numberList = extras.getParcelableArrayList(EXTRA_NUMBER_LIST)
         }
@@ -37,7 +36,7 @@ class DigitalSearchNumberActivity : BaseSimpleActivity(), DigitalSearchNumberFra
 
     override fun getNewFragment(): android.support.v4.app.Fragment {
         return DigitalSearchNumberFragment
-                .newInstance(clientNumber, number, numberList)
+                .newInstance(clientNumberType, number, numberList)
     }
 
     override fun onClientNumberClicked(orderClientNumber: TelcoFavNumber) {
@@ -54,10 +53,10 @@ class DigitalSearchNumberActivity : BaseSimpleActivity(), DigitalSearchNumberFra
 
         val EXTRA_CALLBACK_CLIENT_NUMBER = "EXTRA_CALLBACK_CLIENT_NUMBER"
 
-        fun newInstance(activity: Activity, clientNumber: DigitalFavNumber,
+        fun newInstance(activity: Activity, clientNumberType: String,
                         number: String, numberList: List<TelcoFavNumber>): Intent {
             val intent = Intent(activity, DigitalSearchNumberActivity::class.java)
-            intent.putExtra(EXTRA_CLIENT_NUMBER, clientNumber)
+            intent.putExtra(EXTRA_CLIENT_NUMBER, clientNumberType)
             intent.putExtra(EXTRA_NUMBER, number)
             intent.putParcelableArrayListExtra(EXTRA_NUMBER_LIST, numberList as ArrayList<out Parcelable>)
             return intent

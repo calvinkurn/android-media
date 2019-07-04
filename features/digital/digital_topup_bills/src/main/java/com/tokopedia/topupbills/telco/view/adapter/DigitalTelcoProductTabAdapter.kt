@@ -16,7 +16,7 @@ class DigitalTelcoProductTabAdapter(val tabList: List<DigitalTabTelcoItem>, fm: 
     }
 
     override fun getCount(): Int {
-        return tabList.size;
+        return tabList.size
     }
 
     override fun getPageTitle(position: Int): CharSequence? {

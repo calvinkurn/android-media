@@ -18,4 +18,5 @@
     <string name="digital_telco_error_min_phone_number">Nomor HP minimum 10 digit</string>
     <string name="digital_telco_error_max_phone_number">Nomor HP maksimum 14 digit</string>
     <string name="digital_voucher_code_already_copied">Kode voucher telah tersalin</string>
+    <string name="digital_btn_check_bill">Check Bill</string>
 </resources>

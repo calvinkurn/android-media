@@ -41,7 +41,7 @@ class DigitalPromoListWidget @JvmOverloads constructor(@NotNull context: Context
 
     fun setPromoList(promoList: List<TelcoPromo>) {
         titleWidget.visibility = View.VISIBLE
-        titleWidget.setText(context.getString(R.string.title_promo))
+        titleWidget.text = context.getString(R.string.title_promo)
         digitalPromoListAdapter.setListener(object : DigitalPromoListAdapter.ActionListener {
             override fun onClickPromoCode(voucherCode: String) {
                 listener.onCopiedPromoCode(voucherCode)

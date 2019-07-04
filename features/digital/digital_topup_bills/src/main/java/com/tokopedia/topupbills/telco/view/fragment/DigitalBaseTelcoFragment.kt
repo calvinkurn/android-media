@@ -91,21 +91,6 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
 
     protected abstract fun getMapFavNumbers(): Map<String, kotlin.Any>
 
-    fun handleFocusClientNumber() {
-        mainContainer.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS)
-        mainContainer.setFillViewport(true)
-        mainContainer.setFocusable(true)
-        mainContainer.setFocusableInTouchMode(true)
-        mainContainer.setOnTouchListener { view1, motionEvent ->
-            if (view1 is DigitalClientNumberWidget) {
-                view1.requestFocusFromTouch()
-            } else {
-                view1.clearFocus()
-            }
-            false
-        }
-    }
-
     fun getCatalogMenuDetail() {
         catalogMenuDetailViewModel.getCatalogMenuDetail(GraphqlHelper.loadRawString(resources,
                 R.raw.query_telco_catalog_menu_detail), getMapCatalogMenuDetail(),
@@ -256,6 +241,21 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
             recentNumbersView.visibility = View.VISIBLE
         } else {
             recentNumbersView.visibility = View.GONE
+        }
+    }
+
+    fun handleFocusClientNumber() {
+        mainContainer.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS)
+        mainContainer.setFillViewport(true)
+        mainContainer.setFocusable(true)
+        mainContainer.setFocusableInTouchMode(true)
+        mainContainer.setOnTouchListener { view1, motionEvent ->
+            if (view1 is DigitalClientNumberWidget) {
+                view1.requestFocusFromTouch()
+            } else {
+                view1.clearFocus()
+            }
+            false
         }
     }
 

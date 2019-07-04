@@ -11,6 +11,7 @@ import android.widget.RelativeLayout
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topupbills.R
@@ -21,7 +22,6 @@ import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.view.activity.DigitalSearchNumberActivity
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
 import com.tokopedia.topupbills.telco.view.listener.ClientNumberPostpaidListener
-import com.tokopedia.topupbills.telco.view.model.DigitalFavNumber
 import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoEnquiryViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
 import com.tokopedia.topupbills.telco.view.widget.DigitalPostpaidClientNumberWidget
@@ -84,8 +84,8 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        handleFocusClientNumber()
         getInputFilterDataCollections()
+        handleFocusClientNumber()
         renderClientNumber()
         getCatalogMenuDetail()
     }
@@ -116,7 +116,10 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
             }
 
             override fun onClientNumberHasFocus(clientNumber: String) {
-                startActivityForResult(activity?.let { DigitalSearchNumberActivity.newInstance(it, DigitalFavNumber(), "", favNumberList) },
+                startActivityForResult(activity?.let {
+                    DigitalSearchNumberActivity.newInstance(it,
+                            ClientNumberType.TYPE_INPUT_TEL, "", favNumberList)
+                },
                         REQUEST_CODE_DIGITAL_SEARCH_NUMBER)
             }
         })

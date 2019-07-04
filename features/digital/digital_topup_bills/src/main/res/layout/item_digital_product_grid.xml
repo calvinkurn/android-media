@@ -4,7 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/dp_8"
+    android:layout_marginTop="@dimen/dp_8"
+    android:layout_marginRight="@dimen/dp_8"
+    android:layout_marginLeft="@dimen/dp_8"
+    android:layout_marginBottom="@dimen/dp_8"
     app:cardCornerRadius="@dimen/dp_5"
     app:cardElevation="@dimen/dp_2">
 
@@ -51,7 +54,7 @@
 
         <TextView
             android:id="@+id/product_price"
-            style="@style/TextView.Micro.Orange.Bold"
+            style="@style/TextView.Small.OrangeRed.Bold"
             android:layout_marginBottom="@dimen/dp_4"
             android:gravity="center_horizontal"
             android:lines="1"

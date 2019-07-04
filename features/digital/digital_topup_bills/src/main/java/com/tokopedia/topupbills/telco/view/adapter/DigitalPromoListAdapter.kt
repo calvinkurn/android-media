@@ -2,9 +2,11 @@ package com.tokopedia.digital.topupbillsproduct.adapter
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.tokopedia.topupbills.R
@@ -40,10 +42,11 @@ class DigitalPromoListAdapter(val digitalPromoList: List<TelcoPromo>) :
 
     inner class PromoItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        private val container: RelativeLayout = itemView.findViewById(R.id.promo_container)
+        private val container: LinearLayout = itemView.findViewById(R.id.promo_container)
         private val description: TextView = itemView.findViewById(R.id.desc_promo)
         private val promoCode: TextView = itemView.findViewById(R.id.promo_code)
         private val btnCopyPromo: TextView = itemView.findViewById(R.id.btn_copy_promo)
+        private val promoCodeLayout: RelativeLayout = itemView.findViewById(R.id.layout_promo_code)
 
         private lateinit var telcoPromo: TelcoPromo
 
@@ -82,6 +85,12 @@ class DigitalPromoListAdapter(val digitalPromoList: List<TelcoPromo>) :
                 btnCopyPromo.setBackgroundResource(R.drawable.digital_bg_transparent_border_green)
                 btnCopyPromo.setText(context.getString(R.string.text_copy_promo_code))
                 btnCopyPromo.setTextColor(context.resources.getColorFromResources(context, R.color.tkpd_main_green))
+            }
+
+            if (TextUtils.isEmpty(telcoPromo.promoCode)) {
+                promoCodeLayout.visibility = View.GONE
+            } else {
+                promoCodeLayout.visibility = View.VISIBLE
             }
         }
 

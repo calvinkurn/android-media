@@ -16,7 +16,7 @@
         <Button
             android:id="@+id/button_next_enquiry"
             style="@style/Button.Submit.Orange"
-            android:text="Lanjut"
+            android:text="@string/digital_btn_check_bill"
             android:background="@drawable/grey_button_rounded"
             android:textColor="@color/digital_text_enquiry_non_active"
             android:visibility="visible"/>

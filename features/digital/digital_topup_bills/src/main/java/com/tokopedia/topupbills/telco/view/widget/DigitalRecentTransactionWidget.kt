@@ -41,7 +41,7 @@ class DigitalRecentTransactionWidget @JvmOverloads constructor(@NotNull context:
 
     fun setRecentNumbers(recentNumbers: List<TelcoRecommendation>) {
         titleWidget.visibility = View.VISIBLE
-        titleWidget.setText(context.getString(R.string.title_reccent_transaction_widget))
+        titleWidget.text = context.getString(R.string.title_reccent_transaction_widget)
         digitalRecentNumbersAdapter.setListener(object : DigitalRecentNumbersAdapter.ActionListener {
             override fun onClickRecentNumber(telcoRecommendation: TelcoRecommendation, position: Int) {
                 listener.onClickRecentNumber(telcoRecommendation)

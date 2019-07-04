@@ -5,75 +5,83 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/dp_5"
-    app:cardElevation="@dimen/dp_2"
-    app:cardCornerRadius="@dimen/dp_5">
+    app:cardCornerRadius="@dimen/dp_5"
+    app:cardElevation="@dimen/dp_2">
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/promo_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/desc_promo"
             style="@style/TextView.Micro.BlackPrimary"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginRight="@dimen/dp_12"
             android:lineHeight="@dimen/dp_18"
             android:lines="2"
-            android:layout_marginTop="@dimen/dp_12"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:layout_marginRight="@dimen/dp_12"
             tools:text="Cashback hingga Rp400.000 (khusus pengguna baru). SK lengkap klik di sini." />
 
-        <ImageView
-            android:id="@+id/img_voucher"
-            android:layout_width="@dimen/dp_16"
-            android:layout_height="@dimen/dp_16"
-            android:layout_below="@+id/desc_promo"
-            android:layout_alignTop="@+id/btn_copy_promo"
-            android:layout_alignBottom="@id/btn_copy_promo"
-            android:gravity="center_vertical"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:src="@drawable/digital_ic_voucher" />
+        <RelativeLayout
+            android:id="@+id/layout_promo_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible">
 
-        <TextView
-            android:id="@+id/title_promo_code"
-            style="@style/TextView.Micro.BlackPrimary"
-            android:layout_below="@+id/desc_promo"
-            android:layout_marginLeft="@dimen/dp_5"
-            android:layout_toRightOf="@+id/img_voucher"
-            android:layout_alignTop="@+id/btn_copy_promo"
-            android:layout_alignBottom="@id/btn_copy_promo"
-            android:gravity="center_vertical"
-            android:text="@string/title_promo_code" />
+            <ImageView
+                android:id="@+id/img_voucher"
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_16"
+                android:layout_alignTop="@+id/btn_copy_promo"
+                android:layout_alignBottom="@id/btn_copy_promo"
+                android:layout_marginLeft="@dimen/dp_12"
+                android:gravity="center_vertical"
+                android:src="@drawable/digital_ic_voucher" />
 
-        <TextView
-            android:id="@+id/promo_code"
-            style="@style/TextView.Micro.Orange.Bold"
-            android:layout_below="@+id/desc_promo"
-            android:layout_toRightOf="@+id/title_promo_code"
-            android:layout_alignTop="@+id/btn_copy_promo"
-            android:layout_alignBottom="@id/btn_copy_promo"
-            android:gravity="center_vertical"
-            tools:text="TOPED " />
+            <TextView
+                android:id="@+id/title_promo_code"
+                style="@style/TextView.Micro.BlackPrimary"
+                android:layout_alignTop="@+id/btn_copy_promo"
+                android:layout_alignBottom="@id/btn_copy_promo"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:layout_marginRight="@dimen/dp_5"
+                android:layout_toRightOf="@+id/img_voucher"
+                android:gravity="center_vertical"
+                android:text="@string/title_promo_code" />
 
-        <TextView
-            android:id="@+id/btn_copy_promo"
-            style="@style/TextView.Micro.Bold"
+            <TextView
+                android:id="@+id/promo_code"
+                style="@style/TextView.Micro.Orange.Bold"
+                android:layout_alignTop="@+id/btn_copy_promo"
+                android:layout_alignBottom="@id/btn_copy_promo"
+                android:layout_toRightOf="@+id/title_promo_code"
+                android:gravity="center_vertical"
+                tools:text="TOPED " />
 
-            android:layout_toRightOf="@+id/promo_code"
-            android:paddingTop="@dimen/dp_4"
-            android:paddingBottom="@dimen/dp_4"
-            android:paddingRight="@dimen/dp_8"
-            android:paddingLeft="@dimen/dp_8"
-            android:layout_marginBottom="@dimen/dp_12"
-            android:layout_below="@+id/desc_promo"
-            android:layout_marginTop="@dimen/dp_4"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:lineHeight="@dimen/sp_16"
-            tools:textColor="@color/white"
-            tools:background="@drawable/digital_bg_green_rounded"
-            tools:text="Disalin"/>
+            <TextView
+                android:id="@+id/btn_copy_promo"
+                style="@style/TextView.Micro.Bold"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_4"
+                android:layout_toRightOf="@+id/promo_code"
+                android:lineHeight="@dimen/sp_16"
+                android:paddingLeft="@dimen/dp_8"
+                android:paddingTop="@dimen/dp_4"
+                android:paddingRight="@dimen/dp_8"
+                android:paddingBottom="@dimen/dp_4"
+                tools:background="@drawable/digital_bg_green_rounded"
+                tools:text="Disalin"
+                tools:textColor="@color/white" />
 
-    </RelativeLayout>
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_12" />
+
+    </LinearLayout>
 
 </android.support.v7.widget.CardView>
 
