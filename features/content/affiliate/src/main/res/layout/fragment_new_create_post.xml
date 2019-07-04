@@ -141,7 +141,7 @@
             android:id="@+id/image_picker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_image_picker"/>
+            android:src="@drawable/ic_af_pick_media"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/add_sticker"
@@ -159,7 +159,7 @@
             android:id="@+id/add_coupon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_coupon_image"
+            android:src="@drawable/ic_af_add_voucher"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_16"
             android:visibility="gone"
