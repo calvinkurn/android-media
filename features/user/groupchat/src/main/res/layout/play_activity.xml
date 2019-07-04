@@ -7,6 +7,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!--testing purpose-->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:elevation="99dp"
+        android:layout_marginTop="@dimen/dp_100">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Resume"
+            android:id="@+id/btnResume"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pause"
+            android:id="@+id/btnPause"/>
+
+    </LinearLayout>
+
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/background_video_container"
         android:layout_width="match_parent"
