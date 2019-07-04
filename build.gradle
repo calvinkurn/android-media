@@ -127,6 +127,7 @@ okbuck {
         version = "26.0.1"
     }
 
+    buckBinary = "com.github.tokopedia:buck:7c9bdd9e65d5c25eeb5c4c4e2542267b6b6c6900@pex"
 }
 
 task clean(type: Delete) {
