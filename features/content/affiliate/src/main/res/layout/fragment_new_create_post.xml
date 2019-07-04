@@ -87,6 +87,26 @@
 
     </android.support.v4.widget.NestedScrollView>
 
+    <LinearLayout android:id="@+id/layout_default_caption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dp_12"
+        android:paddingBottom="@dimen/dp_12"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
+        android:background="@drawable/card_shadow_top"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/list_captions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
     <LinearLayout android:id="@+id/action_bottom"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_56"

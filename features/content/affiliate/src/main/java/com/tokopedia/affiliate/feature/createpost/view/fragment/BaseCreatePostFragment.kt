@@ -24,6 +24,7 @@ import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostActivi
 import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostImagePickerActivity
 import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostVideoPickerActivity
 import com.tokopedia.affiliate.feature.createpost.view.activity.MediaPreviewActivity
+import com.tokopedia.affiliate.feature.createpost.view.adapter.DefaultCaptionsAdapter
 import com.tokopedia.affiliate.feature.createpost.view.adapter.ProductAttachmentAdapter
 import com.tokopedia.affiliate.feature.createpost.view.adapter.RelatedProductAdapter
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract
@@ -65,6 +66,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     private val invalidatePostCallBack: OnCreatePostCallBack? by lazy {
         activity as? OnCreatePostCallBack
+    }
+
+    private val captionsAdapter: DefaultCaptionsAdapter by lazy {
+        DefaultCaptionsAdapter(this::onDefaultCaptionClicked)
     }
 
     private fun onDeleteProduct(){
@@ -230,6 +235,8 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 ))
             }
         }
+
+        captionsAdapter.updateCaptions(feedContentForm.defaultCaptions)
         updateRelatedProduct()
         updateMedia()
         updateAddTagText()
@@ -408,8 +415,24 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         }
         caption.hint = viewModel.defaultPlaceholder
         caption.setText(viewModel.caption)
+        caption.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus){
+                layout_default_caption.visible()
+                action_bottom.gone()
+            } else {
+                layout_default_caption.gone()
+                action_bottom.visible()
+            }
+        }
+        list_captions.adapter = captionsAdapter
+        list_captions.layoutManager = LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false)
+        list_captions.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(R.dimen.dp_8), LinearLayoutManager.HORIZONTAL))
         updateMaxCharacter()
         updateAddTagText()
+    }
+
+    private fun onDefaultCaptionClicked(caption: String){
+
     }
 
     private fun updateMaxCharacter() {
