@@ -517,11 +517,11 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun onVideoUpdated(it: VideoViewModel) {
-        viewState.onVideoUpdated(it)
+        viewState.onVideoHorizontalUpdated(it)
     }
 
     override fun onVideoStreamUpdated(it: VideoStreamViewModel) {
-        viewState.onVideoStreamUpdated(it)
+        viewState.onVideoVerticalUpdated(it)
     }
 
     override fun handleEvent(it: EventGroupChatViewModel) {

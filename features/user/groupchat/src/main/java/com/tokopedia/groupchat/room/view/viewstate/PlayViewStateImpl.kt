@@ -108,7 +108,7 @@ open class PlayViewStateImpl(
     private var channelBanner: ImageView = view.findViewById(R.id.channel_banner)
     private var sponsorLayout = view.findViewById<View>(R.id.sponsor_layout)
     private var sponsorImage = view.findViewById<ImageView>(R.id.sponsor_image)
-    private var videoContainer = view.findViewById<View>(R.id.video_horizontal)
+    private var videoHorizontalContainer = view.findViewById<View>(R.id.video_horizontal)
     private var pinnedMessageContainer = view.findViewById<View>(R.id.pinned_message)
     private var chatRecyclerView = view.findViewById<RecyclerView>(R.id.chat_list)
     private var quickReplyRecyclerView = view.findViewById<RecyclerView>(R.id.quick_reply)
@@ -259,11 +259,35 @@ open class PlayViewStateImpl(
         errorView.setOnClickListener {  }
 
         interactionAnimationHelper = InteractionAnimationHelper(interactionGuideline)
-        overflowMenuHelper = OverflowMenuHelper(viewModel, activity, onInfoMenuClicked(), toggleHorizontalVideo(), videoContainer, changeQualityVideoVertical())
-        var view = (activity as PlayActivity).findViewById<FrameLayout>(R.id.playerView)
+        var videoVerticalContainer = (activity as PlayActivity).findViewById<FrameLayout>(R.id.playerView)
         var rootView = (activity as PlayActivity).findViewById<RelativeLayout>(R.id.root_view)
-        videoVerticalHelper = VideoVerticalHelper(bufferContainer, bufferDimContainer, activity.supportFragmentManager, view, rootView)
-        videoHorizontalHelper = VideoHorizontalHelper(viewModel, hideVideoToggle, showVideoToggle, videoContainer, youTubePlayer, setChatListHasSpaceOnTop(), liveIndicator, analytics)
+        overflowMenuHelper = OverflowMenuHelper(
+                viewModel,
+                activity,
+                onInfoMenuClicked(),
+                toggleHorizontalVideo(),
+                videoHorizontalContainer,
+                changeQualityVideoVertical(),
+                videoVerticalContainer,
+                toggleVerticalVideo()
+        )
+        videoVerticalHelper = VideoVerticalHelper(
+                bufferContainer,
+                bufferDimContainer,
+                activity.supportFragmentManager,
+                videoVerticalContainer,
+                rootView
+        )
+        videoHorizontalHelper = VideoHorizontalHelper(
+                viewModel,
+                hideVideoToggle,
+                showVideoToggle,
+                videoHorizontalContainer,
+                youTubePlayer,
+                setChatListHasSpaceOnTop(),
+                liveIndicator,
+                analytics
+        )
         sponsorHelper = SponsorHelper(viewModel, sponsorLayout, sponsorImage, analytics, listener)
         welcomeHelper = PlayWelcomeHelper(viewModel, analytics, activity, view)
 
@@ -429,7 +453,7 @@ open class PlayViewStateImpl(
 
         setToolbarData(it.title, it.bannerUrl, it.totalView, it.blurredBannerUrl)
         if(needCueVideo) {
-            onVideoUpdated(VideoViewModel(it.videoId, it.isVideoLive))
+            onVideoHorizontalUpdated(VideoViewModel(it.videoId, it.isVideoLive))
         }
         showLoginButton(!userSession.isLoggedIn)
         it.settingGroupChat?.maxChar?.let {
@@ -447,7 +471,7 @@ open class PlayViewStateImpl(
         sponsorHelper.assignViewModel(it)
         sponsorHelper.setSponsor()
         overflowMenuHelper.assignViewModel(it)
-        onVideoStreamUpdated(VideoStreamViewModel(
+        onVideoVerticalUpdated(VideoStreamViewModel(
                 true,
                 false,
                 "https://scontent-sin6-1.cdninstagram.com/vp/2a1b5cba5df6f097605c516a3c7d58d3/5D1FB5C0/t50.12441-16/55450199_131136041277815_5339080047835994825_n.mp4?_nc_ht=scontent-sin6-1.cdninstagram.com",
@@ -531,7 +555,7 @@ open class PlayViewStateImpl(
 
     }
 
-    override fun onVideoUpdated(it: VideoViewModel) {
+    override fun onVideoHorizontalUpdated(it: VideoViewModel) {
         viewModel?.let { viewModel ->
             viewModel.videoId = it.videoId
             viewModel.isVideoLive = it.videoLive
@@ -545,12 +569,16 @@ open class PlayViewStateImpl(
     }
 
 
-    override fun onVideoStreamUpdated(it: VideoStreamViewModel) {
-        videoVerticalHelper.setData(it)
-        videoVerticalHelper.play(VideoVerticalHelper.VIDEO_480)
-        overflowMenuHelper.setQualityVideo(VideoVerticalHelper.VIDEO_480)
-        videoHorizontalHelper.hideVideoAndToggle()
-        videoHorizontalHelper.hideAllToggle()
+    override fun onVideoVerticalUpdated(it: VideoStreamViewModel) {
+        if(it.isActive) {
+            videoVerticalHelper.setData(it)
+            videoVerticalHelper.playVideo(VideoVerticalHelper.VIDEO_480)
+            overflowMenuHelper.setQualityVideo(VideoVerticalHelper.VIDEO_480)
+            videoHorizontalHelper.hideVideoAndToggle()
+            videoHorizontalHelper.hideAllToggle()
+        } else {
+            videoVerticalHelper.hideVideo()
+        }
     }
 
 
@@ -770,8 +798,6 @@ open class PlayViewStateImpl(
 
         toolbar.findViewById<TextView>(R.id.toolbar_title).setTextColor(MethodChecker.getColor(activity, R.color.white))
         toolbar.findViewById<TextView>(R.id.toolbar_subtitle).setTextColor(MethodChecker.getColor(activity, R.color.white))
-
-        loadImageChannelBanner(view.context, bannerUrl, blurredBannerUrl)
 
         when {
             title != null -> setVisibilityHeader(View.VISIBLE)
@@ -1108,10 +1134,6 @@ open class PlayViewStateImpl(
         viewModel = channelInfoViewModel
         viewModel?.let {
             if (userSession.isLoggedIn) {
-//                if (::welcomeInfoDialog.isInitialized && welcomeInfoDialog.isShowing) {
-//                    welcomeInfoDialog.setOnDismissListener { onDismiss ->
-//                        checkShowWhichBottomSheet(channelInfoViewModel)
-//                    }
                 if (welcomeHelper.isShowingDialog()) {
                     welcomeHelper.setOnDismissListener{checkShowWhichBottomSheet(channelInfoViewModel)}
                 } else if (::pinnedMessageDialog.isInitialized && pinnedMessageDialog.isShowing) {
@@ -1219,20 +1241,31 @@ open class PlayViewStateImpl(
         }
     }
 
-
     private fun toggleHorizontalVideo(): (Boolean) -> Unit {
         return {
             if(it) {
                 videoHorizontalHelper.showVideo()
+                videoVerticalHelper.hideVideo()
             } else {
                 videoHorizontalHelper.hideVideo()
             }
         }
     }
 
+    private fun toggleVerticalVideo(): (Boolean) -> Unit {
+        return {
+            if(it) {
+                videoVerticalHelper.showVideo()
+                videoHorizontalHelper.hideVideoAndToggle()
+            } else {
+                videoVerticalHelper.hideVideo()
+            }
+        }
+    }
+
     private fun changeQualityVideoVertical(): (Int) -> Unit {
         return {
-            videoVerticalHelper.play(it)
+            videoVerticalHelper.playVideo(it)
         }
     }
 
@@ -1350,9 +1383,5 @@ open class PlayViewStateImpl(
 
     private fun getCurrentTime(): Long {
         return Date().time / 1000L
-    }
-
-    override fun loadImageChannelBanner(context: Context, bannerUrl: String?, blurredBannerUrl: String?) {
-//NOT USED
     }
 }

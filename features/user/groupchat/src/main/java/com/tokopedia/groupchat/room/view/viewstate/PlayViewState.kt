@@ -19,8 +19,6 @@ interface PlayViewState {
 
     fun onSuccessGetInfoFirstTime(it: ChannelInfoViewModel, childFragmentManager: FragmentManager)
     fun onSuccessGetInfo(it: ChannelInfoViewModel)
-
-    fun loadImageChannelBanner(context: Context, bannerUrl: String?, blurredBannerUrl: String?)
     fun setToolbarData(title: String?, bannerUrl: String?, totalView: String?, blurredBannerUrl: String?)
     fun getToolbar(): Toolbar?
     fun onBackPressed() : Boolean
@@ -28,7 +26,7 @@ interface PlayViewState {
     fun onTotalViewChanged(channelId: String, totalView: String)
     fun onAdsUpdated(it: AdsViewModel)
     fun onPinnedMessageUpdated(it: PinnedMessageViewModel)
-    fun onVideoUpdated(it: VideoViewModel)
+    fun onVideoHorizontalUpdated(it: VideoViewModel)
     fun onChannelFrozen(channelId: String)
     fun banUser(userId: String)
     fun onChannelDeleted()
@@ -63,5 +61,5 @@ interface PlayViewState {
     fun onInteractiveButtonClicked(anchorView: LottieAnimationView)
     fun onInteractiveButtonViewed(anchorView: LottieAnimationView)
     fun onOverflowMenuClicked()
-    fun onVideoStreamUpdated(it: VideoStreamViewModel)
+    fun onVideoVerticalUpdated(it: VideoStreamViewModel)
 }

@@ -27,7 +27,7 @@ import com.tokopedia.videoplayer.view.player.VideoPlayerListener
 /**
  * @author : Steven 28/05/19
  */
-class VideoVerticalHelper(
+class VideoVerticalHelper constructor(
         var bufferContainer: View,
         var bufferDimContainer: View,
         var fragmentManager: FragmentManager,
@@ -52,7 +52,7 @@ class VideoVerticalHelper(
         bufferText.text = getSpannable(R.string.buffer_text_long, R.string.buffer_text_retry)
         bufferText.setOnClickListener {
             showLoadingOnly()
-            play(videoSource)
+            playVideo(videoSource)
         }
     }
 
@@ -142,7 +142,7 @@ class VideoVerticalHelper(
     }
 
 
-    fun play(videoQuality: Int) {
+    fun playVideo(videoQuality: Int) {
         videoSource = videoQuality
         val video: String = when (videoQuality) {
             VIDEO_480 -> videoStreamViewModel.rtmpStandard
@@ -150,5 +150,10 @@ class VideoVerticalHelper(
             else -> videoStreamViewModel.rtmpStandard
         }
         playVideoSource(video)
+    }
+
+    fun showVideo() {
+        playerView.show()
+        player?.resume()
     }
 }
