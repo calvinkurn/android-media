@@ -1,12 +1,7 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.presenter;
 
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.inbox.rescenter.detailv2.view.fragment.NextActionFragment;
 import com.tokopedia.inbox.rescenter.detailv2.view.fragment.TrackShippingFragment;
-import com.tokopedia.inbox.rescenter.detailv2.view.listener.NextActionActivityListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.TrackShippingActivityListener;
-import com.tokopedia.inbox.rescenter.detailv2.view.listener.TrackShippingFragmentListener;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextActionDomain;
 
 /**
  * Created by milhamj on 24/11/17.
