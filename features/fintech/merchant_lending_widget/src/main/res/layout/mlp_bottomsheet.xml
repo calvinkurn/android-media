@@ -24,6 +24,7 @@
         android:text="Menunggu Proses Verifikasi"
         android:textColor="#f531353b"
         android:textSize="@dimen/dp_18"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/iv_cancel"
         app:layout_constraintStart_toEndOf="@id/iv_cancel"
         app:layout_constraintTop_toTopOf="@id/iv_cancel" />

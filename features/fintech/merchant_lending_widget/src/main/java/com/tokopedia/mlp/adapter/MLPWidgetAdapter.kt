@@ -33,11 +33,11 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
     private val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
     private val bodyOpenBottomSheetType = 1
-    private val sideTextOpenBottomSheetType=2
-    private val toggleOpenBottomSheetType=3
+    private val sideTextOpenBottomSheetType = 2
+    private val toggleOpenBottomSheetType = 3
     private var toggleCheck: Boolean? = false
-    private val paddingTopTextBody=8
-    private val paddingBottomTextBody=10
+    private val paddingTopTextBody = 8
+    private val paddingBottomTextBody = 10
     lateinit var mlpWidgetAdapterCallBack: MLPWidgetAdapterCallBack
 
     val viewBoxLayout = inflater.inflate(R.layout.mlp_box_layout, null)
@@ -84,8 +84,7 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
 
                     if (HexValidator.validate(it.tag?.color)) {
                         itemView.text_badge.background.setColorFilter(Color.parseColor(it.tag?.color), PorterDuff.Mode.SRC_ATOP)
-                    }
-                    else {
+                    } else {
                         itemView.text_badge.background.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP)
                     }
                     val checkToggleStatus: Boolean? = it.sideToggle?.showToggle
@@ -96,6 +95,11 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
                         renderSideToggleHeader(it, position)
                     } else if (checkSideTextSize!! && !checkToggleStatus)
                         renderSideTextHeader(it, position)
+                    else {
+                        itemView.text_side.hide()
+                        itemView.switch_enable.hide()
+                    }
+
                 }
 
                 widgetsItem.body?.let {
@@ -119,21 +123,22 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
             itemView.switch_enable.setOnCheckedChangeListener { buttonView, isChecked ->
                 if (isChecked) {
                     mlpWidgetAdapterCallBack = merchantLendingFragment
-                    mlpWidgetAdapterCallBack.toggleSaldoPrioritas( object : ToggleSaldoPrioritasLisneter {
+                    mlpWidgetAdapterCallBack.toggleSaldoPrioritas(object : ToggleSaldoPrioritasLisneter {
                         override fun onSuccessToggleSaldo(success: Boolean) {
                             if (success == null || success) {
-                                    showPopUp()
+                                showPopUp()
+                            } else {
+                                print("spUpdate failed")
                             }
                         }
                     })
-                }
-                else {
+                } else {
                     val bottomSheetLength: Int = boxList[position].bottomSheet?.size!!
                     val bottomSheetItem = boxList[position].bottomSheet
 
                     val placeHolder: String? = boxList[position].header?.sideToggle?.url
                     val bottomSheetId: Int = computeBottomSheetId(placeHolder, position, bottomSheetLength)
-                    renderBottomSheet(bottomSheetItem?.get(bottomSheetId), position,toggleOpenBottomSheetType)
+                    renderBottomSheet(bottomSheetItem?.get(bottomSheetId), position, toggleOpenBottomSheetType)
                 }
             }
         }
@@ -186,8 +191,10 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
 
                         viewRowLayout.label.setTextAndCheckShow(infolabel)
                         viewRowLayout.value.setTextAndCheckShow(infovalue)
-                        if (viewRowLayout.parent!=null) {
+                        if (viewRowLayout.parent != null) {
                             (viewRowLayout.parent as ViewGroup).removeView(viewRowLayout)
+                        } else {
+                            itemView.box_container.addView(viewRowLayout)
                         }
                     }
                     itemView.info_container.show()
@@ -198,8 +205,7 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
         private fun renderBodyBox(it: List<BoxesItem?>?) {
             if (it?.isEmpty()!!) {
                 itemView.box_container.hide()
-            }
-            else {
+            } else {
                 if (itemView.box_container.childCount > 0) {
                     return
                 } else {
@@ -220,9 +226,7 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
 
                             if ((!viewBoxLayout.text_body_title.isVisible)) {
                                 viewBoxLayout.text_body_content.setPadding(0, paddingTopTextBody, 0, paddingBottomTextBody)
-                            }
-                            else
-                            {
+                            } else {
                                 viewBoxLayout.text_body_content.setPadding(0, viewBoxLayout.text_body_content.paddingTop, 0, paddingBottomTextBody)
                             }
                             viewBoxLayout.text_body_content.setTextAndCheckShow(boxContent)
@@ -230,21 +234,20 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
 
                             if (boxColor != null && boxColor.isNotEmpty()) {
                                 viewBoxLayout.viewbody_background.background.setColorFilter(Color.parseColor(boxColor), PorterDuff.Mode.SRC_ATOP)
-                            }
-                            else
-                            {
+                            } else {
                                 viewBoxLayout.viewbody_background.background.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP)
                             }
-                            if (viewBoxLayout.parent!=null) {
+                            if (viewBoxLayout.parent != null) {
                                 (viewBoxLayout.parent as ViewGroup).removeView(viewBoxLayout)
+                            } else {
+                                itemView.box_container.addView(viewBoxLayout)
                             }
-                            itemView.box_container.addView(viewBoxLayout)
 
-                        }else{
-                              viewBoxLayout.text_body_title.hide()
-                              viewBoxLayout.text_body_content.hide()
-                              viewBoxLayout.viewbody_background.hide()
-                              itemView.box_container.hide()
+                        } else {
+                            viewBoxLayout.text_body_title.hide()
+                            viewBoxLayout.text_body_content.hide()
+                            viewBoxLayout.viewbody_background.hide()
+                            itemView.box_container.hide()
                         }
                     }
                 }
@@ -291,7 +294,7 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
 
             urlBody?.let { url ->
 
-                if (itemView.box_container.isVisible) {
+                if (itemView.box_container.isVisible || itemView.info_container.isVisible) {
                     itemView.box_container.setOnClickListener {
                         openWebViewOrOpenBottomSheet(url, position, bodyOpenBottomSheetType)
                     }
@@ -299,6 +302,9 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
                     itemView.info_container.setOnClickListener {
                         openWebViewOrOpenBottomSheet(url, position, bodyOpenBottomSheetType)
                     }
+                } else {
+                    itemView.box_container.hide()
+                    itemView.box_container.hide()
                 }
             }
         }
@@ -360,3 +366,4 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
         }
     }
 }
+

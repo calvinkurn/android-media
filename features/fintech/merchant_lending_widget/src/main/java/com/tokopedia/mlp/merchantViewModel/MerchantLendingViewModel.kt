@@ -33,6 +33,7 @@ class MerchantLendingViewModel @Inject constructor(var merchantUseCase: Merchant
             override fun onCompleted() {
             }
             override fun onError(exception: Throwable?) {
+
             }
             override fun onNext(spUpdateData: Data?) {
                 dataSpUpdate.value = spUpdateData?.spTogglesaldoprioritas?.success
@@ -48,4 +49,6 @@ class MerchantLendingViewModel @Inject constructor(var merchantUseCase: Merchant
         return dataSpUpdate
     }
 }
+
+
 
