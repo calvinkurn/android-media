@@ -322,7 +322,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             if (AddNewAddressUtils.isLocationEnabled(it)) {
                 if (currentLat == 0.0 && currentLong == 0.0) presenter.requestLocation(requireActivity())
                 ic_current_location.apply {
-                    setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_gps_enable))
+                    setImageResource(R.drawable.ic_gps_enable)
                     setOnClickListener {
                         AddNewAddressAnalytics.eventClickButtonPilihLokasi()
                         doUseCurrentLocation()
@@ -330,7 +330,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
                 }
             } else {
                 ic_current_location.apply {
-                    setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_gps_disable))
+                    setImageResource(R.drawable.ic_gps_disable)
                     setOnClickListener {
                         AddNewAddressAnalytics.eventClickButtonPilihLokasi()
                         showLocationInfoBottomSheet() }
