@@ -12,7 +12,6 @@ import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.navigation.domain.model.RecomTitle;
 import com.tokopedia.navigation.domain.model.Recomendation;
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
@@ -173,7 +172,6 @@ public class WishListImpl implements WishList {
                     public void onNext(List<? extends RecommendationWidget> recommendationWidgets) {
                         List<Visitable> visitables = new ArrayList<>();
                         RecommendationWidget recommendationWidget = recommendationWidgets.get(0);
-                        visitables.add(new RecomTitle(recommendationWidget.getTitle()));
                         visitables.addAll(getRecommendationVisitables(recommendationWidget));
                         wishListView.onRenderRecomInbox(visitables);
                     }

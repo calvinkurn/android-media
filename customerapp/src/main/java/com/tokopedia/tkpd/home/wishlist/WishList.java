@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.home;
+package com.tokopedia.tkpd.home.wishlist;
 
 public interface WishList{
     // this value for main colum recyclerview

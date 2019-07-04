@@ -470,10 +470,10 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         int defaultColumnNumber = 1;
         switch (getResources().getConfiguration().orientation) {
             case Configuration.ORIENTATION_PORTRAIT:
-                defaultColumnNumber = com.tokopedia.tkpd.home.WishList.PORTRAIT_COLUMN_MAIN;
+                defaultColumnNumber = com.tokopedia.tkpd.home.wishlist.WishList.PORTRAIT_COLUMN_MAIN;
                 break;
             case Configuration.ORIENTATION_LANDSCAPE:
-                defaultColumnNumber = com.tokopedia.tkpd.home.WishList.LANDSCAPE_COLUMN_MAIN;
+                defaultColumnNumber = com.tokopedia.tkpd.home.wishlist.WishList.LANDSCAPE_COLUMN_MAIN;
                 break;
         }
         return defaultColumnNumber;
