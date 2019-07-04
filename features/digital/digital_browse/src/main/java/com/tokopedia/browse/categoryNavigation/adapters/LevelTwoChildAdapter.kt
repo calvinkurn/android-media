@@ -28,7 +28,7 @@ class LevelTwoChildAdapter(private val list: List<ChildItem>?) : RecyclerView.Ad
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.productName.text = list!![position].name
 
-        val marginThirty = holder.itemView.resources.getDimensionPixelOffset(R.dimen.dp_30)
+        val marginThirty = holder.itemView.resources.getDimensionPixelOffset(R.dimen.dp_10)
         val marginZero = holder.itemView.resources.getDimensionPixelOffset(R.dimen.dp_0)
 
         if (list[position].iconImageUrl == null) {
