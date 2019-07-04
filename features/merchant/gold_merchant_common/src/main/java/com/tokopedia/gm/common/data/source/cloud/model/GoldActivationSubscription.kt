@@ -10,13 +10,17 @@ data class GoldActivationSubscription(
 )
 
 data class GMActivation(
-        @SerializedName("ActivationSubscriptionData")
+        @SerializedName("header")
+        @Expose
+        val header: GMActivationHeader = GMActivationHeader(),
+
+        @SerializedName("data")
         @Expose
         val data: GMActivationData = GMActivationData(),
 
-        @SerializedName("ActivationSubscriptionHeader")
+        @SerializedName("expired_time")
         @Expose
-        val header: GMActivationHeader = GMActivationHeader()
+        val expiredTime: String = ""
 )
 
 data class GMActivationData(
@@ -26,11 +30,7 @@ data class GMActivationData(
 
         @SerializedName("product")
         @Expose
-        val product: GMActivationProduct = GMActivationProduct(),
-
-        @SerializedName("expired_time")
-        @Expose
-        val expiredTime: String = ""
+        val product: GMActivationProduct = GMActivationProduct()
 )
 
 data class GMActivationHeader(
@@ -49,7 +49,6 @@ data class GMActivationHeader(
         @SerializedName("error_code")
         @Expose
         val errorCode: String = ""
-
 )
 
 data class GMActivationProduct(
