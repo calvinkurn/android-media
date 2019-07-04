@@ -105,6 +105,9 @@ public class DigitalCartDefaultFragment extends DigitalBaseCartFragment implemen
 
     @Override
     public void showCartView() {
+        if (StringUtils.isNotBlank(cartPassData.getCategoryId())) {
+            presenter.trackRechargePushEventRecommendation(Integer.parseInt(cartPassData.getCategoryId()), "ATC");
+        }
         containerLayout.setVisibility(View.VISIBLE);
     }
 
@@ -133,11 +136,4 @@ public class DigitalCartDefaultFragment extends DigitalBaseCartFragment implemen
         interactionListener = (InteractionListener) context;
     }
 
-    @Override
-    public void setCartDigitalInfo(CartDigitalInfoData cartDigitalInfoData) {
-        super.setCartDigitalInfo(cartDigitalInfoData);
-        String categoryId = cartDigitalInfoData.getId();
-        if (StringUtils.isNotBlank(categoryId))
-            presenter.trackRechargePushEventRecommendation(Integer.parseInt(cartDigitalInfoData.getId()), "ATC");
-    }
 }
