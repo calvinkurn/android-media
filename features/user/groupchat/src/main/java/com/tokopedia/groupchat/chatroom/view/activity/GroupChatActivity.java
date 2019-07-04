@@ -447,7 +447,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         channelInfoDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                analytics.eventClickJoin(getChannelInfoViewModel().getChannelId());
+                analytics.eventClickJoin(getChannelInfoViewModel().getChannelId(), userSession.isLoggedIn());
             }
         });
 

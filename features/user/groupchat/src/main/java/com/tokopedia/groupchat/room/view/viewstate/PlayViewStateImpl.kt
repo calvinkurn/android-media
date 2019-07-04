@@ -1173,7 +1173,7 @@ open class PlayViewStateImpl(
 
         welcomeInfoDialog.setOnDismissListener {
             onDismiss()
-            analytics.eventClickJoin(channelInfoViewModel.channelId)
+            analytics.eventClickJoin(channelInfoViewModel.channelId, userSession.isLoggedIn())
         }
 
         val welcomeInfoView = createWelcomeInfoView(welcomeInfoDialog, channelInfoViewModel)
@@ -1218,7 +1218,7 @@ open class PlayViewStateImpl(
 
         ctaButton.setOnClickListener {
             welcomeInfoDialog.dismiss()
-            analytics.eventClickJoin(channelInfoViewModel.channelId)
+            analytics.eventClickJoin(channelInfoViewModel.channelId, userSession.isLoggedIn())
         }
 
         return welcomeInfoView
