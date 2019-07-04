@@ -2,7 +2,6 @@ package com.tokopedia.gm.common.domain.interactor
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.gm.common.constant.GMParamConstant.RAW_DEACTIVATION
-import com.tokopedia.gm.common.constant.GMParamConstant.SUCCESS_DEACTIVATE
 import com.tokopedia.gm.common.data.source.cloud.model.GoldDeactivationSubscription
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -33,7 +32,7 @@ class DeactivatePowerMerchantUseCase @Inject constructor(private val graphqlUseC
                 throw MessageErrorException(error.first().message)
             }
 
-            SUCCESS_DEACTIVATE
+            data.isSuccess()
         }
     }
 

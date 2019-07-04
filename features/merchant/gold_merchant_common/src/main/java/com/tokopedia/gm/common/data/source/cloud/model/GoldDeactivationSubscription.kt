@@ -7,7 +7,11 @@ data class GoldDeactivationSubscription(
         @SerializedName("goldTurnOffSubscription")
         @Expose
         val GMDeactivation: GMDeactivation = GMDeactivation()
-)
+){
+        fun isSuccess() : Boolean {
+                return GMDeactivation.header.errorCode == ""
+        }
+}
 
 data class GMDeactivation(
         @SerializedName("subscriptionDataResponse")

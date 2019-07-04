@@ -9,6 +9,8 @@ class GetInfoToggleAutoExtendSubscriber(private val view: PmSubscribeContract.Vi
     override fun onNext(success: Boolean) {
         if (success) {
             view.onSuccessCancelMembership()
+        } else {
+            onError(RuntimeException())
         }
     }
 

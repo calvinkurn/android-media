@@ -21,6 +21,8 @@ class PmTermsPresenter @Inject constructor(
                 if (isSuccess) {
                     view.hideLoading()
                     view.onSuccessActivate()
+                } else {
+                    onError(RuntimeException())
                 }
             }
 

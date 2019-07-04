@@ -7,7 +7,11 @@ data class GoldActivationSubscription(
         @SerializedName("GoldActivationSubscription")
         @Expose
         val goldActivationData: GMActivation = GMActivation()
-)
+) {
+        fun isSuccess() : Boolean {
+                return goldActivationData.header.errorCode == ""
+        }
+}
 
 data class GMActivation(
         @SerializedName("ActivationSubscriptionHeader")
