@@ -71,7 +71,7 @@ class RecommendationCardView : ProductCardView {
         if (rating in 1..5) {
             ratingView.setImageResource(getRatingDrawable(rating))
             reviewCountView.text = "($reviewCount)"
-            if (fixedHeight && !reviewContainer.isVisible) {
+            if (fixedHeight && reviewContainer != null && !reviewContainer.isVisible) {
                 reviewContainer.show()
             }
         } else {
