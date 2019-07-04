@@ -125,6 +125,7 @@ class WishlistProductListViewHolder(itemView: View,
 
     private fun setLabels(data: ProductItem) {
         var container = itemView.findViewById<FlowLayout>(R.id.label_container)
+        container.removeAllViews()
         if (data.getLabels() != null) {
             for (label in data.getLabels()) {
                 val view = LayoutInflater.from(context).inflate(R.layout.label_layout, null)
@@ -145,11 +146,11 @@ class WishlistProductListViewHolder(itemView: View,
         }
     }
     private fun setBadges(data: ProductItem) {
-        var view = itemView.findViewById<LinearLayout>(R.id.badges_container)
-        view.removeAllViews()
+        var container = itemView.findViewById<LinearLayout>(R.id.badges_container)
+        container.removeAllViews()
         if (data.getBadges() != null) {
             for (badges in data.getBadges()) {
-                LuckyShopImage.loadImage(context, badges.imageUrl, view)
+                LuckyShopImage.loadImage(context, badges.imageUrl, container)
             }
         }
     }
