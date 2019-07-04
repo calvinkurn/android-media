@@ -17,4 +17,6 @@ interface WishlistTypeFactory {
 
     fun type(viewModel: WishlistRecomendationViewModel): Int
 
+    fun type(viewModel: WishlistRecomTitleViewModel): Int
+
 }

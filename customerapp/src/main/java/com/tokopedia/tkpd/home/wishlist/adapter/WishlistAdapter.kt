@@ -10,14 +10,25 @@ import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistEmptyViewModel
  */
 class WishlistAdapter(adapterTypeFactory: WishlistAdapterFactory) : BaseAdapter<WishlistAdapterFactory>(adapterTypeFactory) {
 
+    val emptyViewModel = WishlistEmptyViewModel()
+    val emptySearchViewModel = WishlistEmptySearchViewModel()
+
     fun setEmptyState() {
         this.visitables.clear()
-        addElement(WishlistEmptyViewModel())
+        addElement(emptyViewModel)
     }
 
     fun setSearchNotFound(query: String){
+        emptySearchViewModel.query = query
         this.visitables.clear()
-        addElement(WishlistEmptySearchViewModel(query))
+        addElement(emptySearchViewModel)
     }
 
+    fun isEmptySearch(): Boolean {
+        return visitables.contains(emptySearchViewModel)
+    }
+
+    fun isEmptyWishlist(): Boolean {
+        return visitables.contains(emptyViewModel)
+    }
 }

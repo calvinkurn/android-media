@@ -94,4 +94,6 @@ public interface WishList {
     void onResume(Context context);
 
     void getFirstRecomData();
+
+    void loadMoreRecomendation();
 }

@@ -30,6 +30,7 @@ import com.tokopedia.discovery.newdiscovery.helper.UrlParamHelper;
 import com.tokopedia.kotlin.util.ContainNullException;
 import com.tokopedia.kotlin.util.NullCheckerKt;
 import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistProductViewModel;
+import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistRecomTitleViewModel;
 import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistRecomendationViewModel;
 import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistTopAdsViewModel;
 import com.tokopedia.tkpd.home.wishlist.domain.model.GqlWishListDataResponse;
@@ -148,6 +149,11 @@ public class WishListImpl implements WishList {
 
     }
 
+    @Override
+    public void loadMoreRecomendation() {
+
+    }
+
     public void getFirstRecomData(){
         getRecommendationUseCase.execute(getRecommendationUseCase.getRecomParams(0,
                 X_SOURCE_RECOM_WIDGET,
@@ -172,6 +178,7 @@ public class WishListImpl implements WishList {
                     public void onNext(List<? extends RecommendationWidget> recommendationWidgets) {
                         List<Visitable> visitables = new ArrayList<>();
                         RecommendationWidget recommendationWidget = recommendationWidgets.get(0);
+                        visitables.add(new WishlistRecomTitleViewModel(recommendationWidget.getTitle()));
                         visitables.addAll(getRecommendationVisitables(recommendationWidget));
                         wishListView.onRenderRecomInbox(visitables);
                     }

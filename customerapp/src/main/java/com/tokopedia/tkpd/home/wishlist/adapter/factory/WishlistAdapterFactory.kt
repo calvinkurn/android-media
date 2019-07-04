@@ -36,6 +36,10 @@ class WishlistAdapterFactory(val buttonActionClick: OnWishlistActionButtonClicke
         return WishlistRecomendationViewHolder.LAYOUT
     }
 
+    override fun type(viewModel: WishlistRecomTitleViewModel): Int {
+        return WishlistRecomTitleViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<out Visitable<*>> {
         return when (viewType) {
             WishlistProductListViewHolder.LAYOUT -> WishlistProductListViewHolder(view, wishlistAnalytics, wishListView)
@@ -43,6 +47,7 @@ class WishlistAdapterFactory(val buttonActionClick: OnWishlistActionButtonClicke
             WishlistEmptySearchViewHolder.LAYOUT -> WishlistEmptySearchViewHolder(view, buttonActionClick)
             WishlistTopAdsListViewHolder.LAYOUT -> WishlistTopAdsListViewHolder(view)
             WishlistRecomendationViewHolder.LAYOUT -> WishlistRecomendationViewHolder(view)
+            WishlistRecomTitleViewHolder.LAYOUT -> WishlistRecomTitleViewHolder(view)
             else -> super.createViewHolder(view, viewType)
         }
     }

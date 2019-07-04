@@ -35,6 +35,7 @@ import com.tokopedia.tkpd.home.adapter.OnWishlistActionButtonClicked;
 import com.tokopedia.tkpd.home.wishlist.adapter.WishlistAdapter;
 import com.tokopedia.tkpd.home.wishlist.adapter.factory.WishlistAdapterFactory;
 import com.tokopedia.tkpd.home.wishlist.adapter.viewholder.WishlistProductListViewHolder;
+import com.tokopedia.tkpd.home.wishlist.adapter.viewholder.WishlistRecomendationViewHolder;
 import com.tokopedia.tkpd.home.wishlist.domain.model.GqlWishListDataResponse;
 import com.tokopedia.core.network.entity.wishlist.Wishlist;
 import com.tokopedia.core.router.productdetail.PdpRouter;
@@ -208,7 +209,11 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                wishList.loadMore(getActivity());
+                if(wishlistAdapter.isEmptySearch() || wishlistAdapter.isEmptyWishlist()){
+                    wishList.loadMoreRecomendation();
+                } else {
+                    wishList.loadMore(getActivity());
+                }
             }
         };
         recyclerView.addOnScrollListener(scrollListener);
@@ -493,7 +498,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     @Override
     public void displayLoadMore(boolean isLoadMore) {
-        if(isLoadMore) {
+        if (isLoadMore) {
             wishlistAdapter.showLoading();
         } else {
             wishlistAdapter.hideLoading();
@@ -515,7 +520,8 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         return new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                if(wishlistAdapter.getItemViewType(position) == WishlistProductListViewHolder.Companion.getLAYOUT()){
+                if (wishlistAdapter.getItemViewType(position) == WishlistProductListViewHolder.Companion.getLAYOUT()
+                        || wishlistAdapter.getItemViewType(position) == WishlistRecomendationViewHolder.Companion.getLAYOUT()) {
                     return 1;
                 } else {
                     return 2;
