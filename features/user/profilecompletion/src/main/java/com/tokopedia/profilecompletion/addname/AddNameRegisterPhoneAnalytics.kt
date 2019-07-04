@@ -6,7 +6,7 @@ import javax.inject.Inject
 /**
  * @author by nisie on 30/04/19.
  */
-class ProfileCompletionAnalytics @Inject constructor() {
+class AddNameRegisterPhoneAnalytics @Inject constructor() {
 
     companion object {
 

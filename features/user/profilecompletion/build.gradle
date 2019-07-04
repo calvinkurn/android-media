@@ -33,7 +33,13 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
 
+    implementation rootProject.ext.unifyDependencies.principles
+//    implementation rootProject.ext.unifyDependencies.components
+
     implementation project(rootProject.ext.features.sessioncommon)
+
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
 
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler

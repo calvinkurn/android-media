@@ -12,6 +12,7 @@
     <string name="path_withdraw">/withdraw</string>
     <string name="path_add_name_register">/add-name-register</string>
     <string name="path_forgot_password">/forgot-password</string>
+    <string name="path_profile_completion">/profile-completion</string>
 
 
 </resources>

@@ -26,4 +26,23 @@
     <string name="bottom_info_terms_and_privacy">Dengan mendaftar, saya menyetujui \n &lt;font
         color=\'#42b549\'&gt;&lt;a href=\'launch.TermPrivacy://parent?param=0\'&gt;Syarat dan Ketentuan&lt;/a&gt;&lt;/font&gt; serta &lt;font color=\'#42b549\'&gt;&lt;a href=\'launch.TermPrivacy://parent?param=1\'&gt;Kebijakan Privasi&lt;/a&gt;&lt;/font&gt;</string>
 
+    <!-- PROFILE COMPLETION -->
+    <string name="title_profile_completion">Lengkapi Profil</string>
+
+    <!-- CHANGE GENDER -->
+    <string name="title_change_gender">Tambah Jenis Kelamin</string>
+    <string name="choose_gender">Pilih Jenis Kelamin</string>
+    <string name="can_only_choose_one_gender">Jenis kelamin hanya dapat diubah sekali</string>
+    <string name="button_save">Simpan</string>
+
+    <string name="gender_title_prof_comp">Jenis Kelamin Kamu</string>
+    <string name="profile_completion_man">Pria</string>
+    <string name="profile_completion_woman">Wanita</string>
+    <string name="profile_completion_date">Tanggal</string>
+    <string name="profile_completion_month">Bulan</string>
+    <string name="profile_completion_year">Tahun</string>
+    <string name="profile_completion_end_message">Selamat! Akun Anda telah terverifikasi</string>
+    <string name="profile_completion_end_subtext">Kini akun Anda menjadi lebih aman dan nikmati promo menarik hanya untuk Verified Account</string>
+    <string name="see_your_profile">Lihat Profil Anda</string>
+
 </resources>
