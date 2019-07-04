@@ -401,6 +401,9 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 viewModel.fileImageList.removeAt(position)
                 if (position < viewModel.urlImageList.size)
                     viewModel.urlImageList.removeAt(position)
+
+                if (viewModel.completeImageList.isEmpty())
+                    fetchContentForm()
             }
 
             override fun onClickItem(item: MediaItem, position: Int) { goToMediaPreview() }
