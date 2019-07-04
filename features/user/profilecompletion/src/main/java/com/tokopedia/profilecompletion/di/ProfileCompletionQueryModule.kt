@@ -35,4 +35,11 @@ class ProfileCompletionQueryModule {
     fun provideRawMutationAddEmail(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_email)
 
+    @ProfileCompletionScope
+    @Provides
+    @IntoMap
+    @StringKey(ProfileCompletionQueriesConstant.MUTATION_ADD_PHONE)
+    fun provideRawMutationAddPhone(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_phone)
+
 }

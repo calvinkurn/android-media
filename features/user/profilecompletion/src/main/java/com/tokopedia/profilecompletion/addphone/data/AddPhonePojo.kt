@@ -1,25 +1,25 @@
-package com.tokopedia.profilecompletion.addemail.data
+package com.tokopedia.profilecompletion.addphone.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class AddEmailPojo(
+data class AddPhonePojo(
         @SerializedName("data")
         @Expose
-        var data: AddEmailData = AddEmailData()
+        var data: AddPhoneData = AddPhoneData()
 )
 
-data class AddEmailData(
+data class AddPhoneData(
         @SerializedName("userProfileCompletionUpdate")
         @Expose
-        var userProfileCompletionUpdate: UserProfileCompletionUpdateEmail = UserProfileCompletionUpdateEmail()
+        var userProfileCompletionUpdate: UserProfileCompletionUpdatePhone = UserProfileCompletionUpdatePhone()
 )
 
-data class UserProfileCompletionUpdateEmail(
+data class UserProfileCompletionUpdatePhone(
         @SerializedName("isSuccess")
         @Expose
         var isSuccess: Boolean = false,
-        @SerializedName("emailMessage")
+        @SerializedName("msisdnMessage")
         @Expose
         var errorMessage: String = "",
         @SerializedName("completionScore")

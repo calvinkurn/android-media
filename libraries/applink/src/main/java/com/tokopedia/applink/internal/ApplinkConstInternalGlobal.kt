@@ -66,4 +66,14 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/add-email
     @JvmField
     val ADD_EMAIL = "$INTERNAL_GLOBAL/add-email"
+
+    // AddEmailActivity
+    // tokopedia-android-internal://global/add-phone
+    @JvmField
+    val ADD_PHONE = "$INTERNAL_GLOBAL/add-phone"
+
+    // VerificationActivity
+    // tokopedia-android-internal://global/cotp
+    @JvmField
+    val COTP = "$INTERNAL_GLOBAL/cotp"
 }

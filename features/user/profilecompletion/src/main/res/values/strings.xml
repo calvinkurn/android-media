@@ -54,4 +54,13 @@
     <string name="error_field_required">Harus diisi</string>
     <string name="wrong_email_format">Format email salah</string>
 
+    <!-- ADD PHONE -->
+    <string name="title_add_phone">Tambah Nomor Ponsel</string>
+    <string name="warning_add_phone">Jaga akun dan transaksi Anda tetap aman dengan menambahkan nomor ponsel</string>
+    <string name="title_phone">Nomor Ponsel</string>
+    <string name="sample_phone">Contoh: 08xxxxxxxxxx</string>
+    <string name="wrong_phone_format">Format nomor ponsel salah</string>
+    <string name="tokocash_after_activation">Setelah terverifikasi, TokoCash akan aktif dan bisa digunakan sebagai salah satu metode pembayaran Anda.</string>
+
+
 </resources>

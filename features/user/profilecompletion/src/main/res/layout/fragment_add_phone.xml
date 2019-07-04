@@ -14,22 +14,22 @@
         android:paddingBottom="@dimen/dp_8">
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/add_email_warning"
+            android:id="@+id/add_phone_warning"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/dp_8"
-            android:text="@string/warning_add_email"
+            android:text="@string/warning_add_phone"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_1" />
 
         <com.tokopedia.design.text.TkpdHintTextInputLayout
-            android:id="@+id/wrapper_email"
-            app:layout_constraintTop_toBottomOf="@id/add_email_warning"
+            android:id="@+id/wrapperPhone"
+            app:layout_constraintTop_toBottomOf="@id/add_phone_warning"
             app:layout_constraintLeft_toLeftOf="parent"
             android:layout_width="match_parent"
-            android:hint="@string/title_email"
+            android:hint="@string/title_phone"
             style="@style/HintTextInputLayout"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_32"
@@ -39,29 +39,29 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/et_email"
+                android:id="@+id/etPhone"
                 android:textColorHint="@color/black_54"
                 android:textColor="@color/black_70"
-                android:inputType="textEmailAddress"
+                android:inputType="phone"
                 android:textSize="@dimen/sp_16"
                 />
 
         </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
         <TextView
-            app:layout_constraintTop_toBottomOf="@id/wrapper_email"
+            app:layout_constraintTop_toBottomOf="@id/wrapperPhone"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:id="@+id/tv_message"
+            android:id="@+id/tvMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/we_will_send_email_verification_code"
+            android:text="@string/sample_phone"
             android:textSize="@dimen/sp_12"
             android:textColor="@color/black_38"/>
 
         <TextView
-            app:layout_constraintTop_toBottomOf="@id/wrapper_email"
+            app:layout_constraintTop_toBottomOf="@id/wrapperPhone"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:id="@+id/tv_error"
+            android:id="@+id/tvError"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="@string/we_will_send_email_verification_code"
@@ -69,10 +69,18 @@
             android:visibility="gone"
             android:textColor="@color/red_500"/>
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/add_phone_warning_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/dp_8"
+            android:text="@string/warning_add_phone"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:typographyType="body_1" />
 
         <com.tokopedia.design.component.ButtonCompat
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
             android:id="@+id/buttonSubmit"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_48"
@@ -84,6 +92,8 @@
             app:buttonCompatSize="big"
             app:buttonCompatType="primary_disabled"
             android:layout_alignParentBottom="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
             />
 
     </android.support.constraint.ConstraintLayout>

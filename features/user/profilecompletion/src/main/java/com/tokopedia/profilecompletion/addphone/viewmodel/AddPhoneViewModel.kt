@@ -1,4 +1,4 @@
-package com.tokopedia.profilecompletion.addemail.viewmodel
+package com.tokopedia.profilecompletion.addphone.viewmodel
 
 import android.arch.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -7,9 +7,10 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.profilecompletion.changegender.data.AddEmailPojo
+import com.tokopedia.profilecompletion.addphone.data.AddPhonePojo
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueriesConstant
-import com.tokopedia.profilecompletion.data.ProfileCompletionQueriesConstant.PARAM_GENDER
+import com.tokopedia.profilecompletion.data.ProfileCompletionQueriesConstant.PARAM_MSISDN
+import com.tokopedia.profilecompletion.data.ProfileCompletionQueriesConstant.PARAM_OTP_CODE
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -19,42 +20,44 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class AddEmailViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
+class AddPhoneViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
                                                 private val rawQueries: Map<String, String>,
                                                 val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
-    val mutateAddEmailResponse = MutableLiveData<Result<AddEmailPojo>>()
+    val mutateAddPhoneResponse = MutableLiveData<Result<AddPhonePojo>>()
 
-    fun mutateAddEmail(email: String) {
+    fun mutateAddPhone(msisdn: String, otp : String) {
         launchCatchError(block = {
             val data = withContext(Dispatchers.IO) {
 
-                val params = mapOf(PARAM_GENDER to email)
+                val params = mapOf(
+                        PARAM_MSISDN to msisdn,
+                        PARAM_OTP_CODE to otp)
 
-                val graphqlInfoRequest = GraphqlRequest(rawQueries[ProfileCompletionQueriesConstant.MUTATION_ADD_EMAIL],
-                        AddEmailPojo::class.java, params)
+                val graphqlInfoRequest = GraphqlRequest(rawQueries[ProfileCompletionQueriesConstant.MUTATION_ADD_PHONE],
+                        AddPhonePojo::class.java, params)
 
                 graphqlRepository.getReseponse(listOf(graphqlInfoRequest))
             }
 
-            data.getSuccessData<AddEmailPojo>().let {
-                val errorMessage = it.addEmailData.userProfileCompletionUpdate.errorMessage
-                val isSuccess = it.addEmailData.userProfileCompletionUpdate.isSuccess
+            data.getSuccessData<AddPhonePojo>().let {
+                val errorMessage = it.data.userProfileCompletionUpdate.errorMessage
+                val isSuccess = it.data.userProfileCompletionUpdate.isSuccess
 
                 if (errorMessage.isBlank() && isSuccess) {
-                    mutateAddEmailResponse.value = Success(it)
+                    mutateAddPhoneResponse.value = Success(it)
                 } else if (!errorMessage.isBlank()) {
-                    mutateAddEmailResponse.value = Fail(MessageErrorException(errorMessage,
+                    mutateAddPhoneResponse.value = Fail(MessageErrorException(errorMessage,
                             ErrorHandlerSession.ErrorCode.WS_ERROR.toString()))
                 } else {
-                    mutateAddEmailResponse.value = Fail(RuntimeException())
+                    mutateAddPhoneResponse.value = Fail(RuntimeException())
                 }
             }
 
         }
         ) {
             it.printStackTrace()
-            mutateAddEmailResponse.value = Fail(it)
+            mutateAddPhoneResponse.value = Fail(it)
         }
 
     }
