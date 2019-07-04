@@ -60,6 +60,6 @@ public class DigitalCartDefaultPresenter extends DigitalBaseCartPresenter<Digita
     }
 
     public void trackRechargePushEventRecommendation(int categoryId, String actionType) {
-        rechargePushEventRecommendationUseCase.execute(rechargePushEventRecommendationUseCase.createRequestParam(categoryId, actionType), null);
+        rechargePushEventRecommendationUseCase.execute(rechargePushEventRecommendationUseCase.createRequestParams(categoryId, actionType), null);
     }
 }
