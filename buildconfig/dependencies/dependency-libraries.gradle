@@ -89,10 +89,6 @@ ext {
 //            iris              : ":libraries:iris_no_op",
             cpm              : ":libraries:cpm",
             banner            : ":libraries:unify:unify_compositions:banner",
-            collapsingTabLayout: ":libraries:collapsing_tab_layout",
-            unifyIcon         : "com.tokopedia.unify:icon:${unifyIconVersion}@aar",
-            unifyPrinciples   : "com.tokopedia.unify:principles:${unifyPrinciplesVersion}@aar",
-            unifyComponents   : "com.tokopedia.unify:components:${unifyComponentsVersion}@aar",
-            coachMark         : ":libraries:unify:unify_compositions:coach_mark"
+            collapsingTabLayout: ":libraries:collapsing_tab_layout"
     ]
 }

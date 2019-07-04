@@ -350,7 +350,7 @@ dependencies {
     implementation rootProject.ext.dbDependencies.dbFlow
 
     implementation(rootProject.ext.analyticsDependencies.moengage) {
-        exclude group: 'com.moengage', module: 'moe-push-gcm'
+        exclude group: 'com.moengage', module: 'moe-push-firebase'
     }
 
     implementation(rootProject.ext.analyticsDependencies.moengageMSG) {

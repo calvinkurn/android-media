@@ -98,7 +98,9 @@
                 android:hint="@string/et_alamat_hint"
                 android:inputType="text"
                 android:textColor="#ae31353b"
-                android:maxLength="175"/>
+                android:maxLength="175"
+                android:imeOptions="actionDone"
+                android:maxLines="1"/>
 
         </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
@@ -137,7 +139,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/et_alamat_hint"
-                android:inputType="text"
+                android:focusable="false"
+                android:enabled="false"
+                android:cursorVisible="false"
                 android:textColor="#ae31353b" />
 
         </com.tokopedia.design.text.TkpdHintTextInputLayout>
