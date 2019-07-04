@@ -19,6 +19,10 @@ ext {
     tkpdBaseAdapterlVersion = '2.22'
     tkpdGraphViewVersion = '2.22'
 
+    unifyIconVersion = '0.0.2'
+    unifyPrinciplesVersion = '0.0.1'
+    unifyComponentsVersion = '0.0.3'
+
     // Sort alphabetically by package name
     tkpdInternalLibDependencies = [
             abstraction           : "com.tokopedia.abstraction:abstraction:${tkpdAbstractionVersion}",

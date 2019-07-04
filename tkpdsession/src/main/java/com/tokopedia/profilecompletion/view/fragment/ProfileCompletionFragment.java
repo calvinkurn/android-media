@@ -105,7 +105,6 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
     private Drawable getDraw() {
         TextDrawable drawable = new TextDrawable(getActivity());
         drawable.setText(getResources().getString(R.string.skip_form));
-        drawable.setTextColor(R.color.black_70b);
         return drawable;
     }
 

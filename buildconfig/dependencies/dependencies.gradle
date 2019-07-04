@@ -68,7 +68,7 @@ ext {
     artifactIdCheckout = 'checkout'
 
     unifyIconVersion = '0.0.4'
-    unifyPrinciplesVersion = '0.0.2'
+    unifyPrinciplesVersion = '0.0.3'
     unifyComponentsVersion = '0.0.4'
     unifyCoachMarkVersion = '1.0.0'
     unifyCalendarVersion = '0.0.2'
@@ -160,7 +160,7 @@ ext {
     analyticsDependencies = [
             appsflyer  : "com.appsflyer:af-android-sdk:4.8.11@aar",
             installRef : "com.android.installreferrer:installreferrer:1.0",
-            moengage   : "com.moengage:moe-android-sdk:9.3.00",
+            moengage   : "com.moengage:moe-android-sdk:9.3.02",
             moengageFirebase   : "com.moengage:moe-push-firebase:3.1.00",
             moengageSdk         : "com.moengage:moengagesdk:3.3.00",
             moengagePushbase    : "com.moengage:pushbase:3.2.00",
@@ -275,5 +275,5 @@ ext {
        components: "com.tokopedia.unify:components:${unifyComponentsVersion}@aar",
        coach_mark: "com.tokopedia.unify.compositions:coach_mark:${unifyCoachMarkVersion}@aar",
        calendar: "com.tokopedia.unify.compositions:calendar:${unifyCalendarVersion}@aar"
-    ]   
+    ]
 }

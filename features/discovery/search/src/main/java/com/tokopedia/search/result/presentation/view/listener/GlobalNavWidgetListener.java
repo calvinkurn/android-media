@@ -6,5 +6,5 @@ public interface GlobalNavWidgetListener {
 
     void onGlobalNavWidgetClicked(GlobalNavViewModel.Item item, String keyword);
 
-    void onGlobalNavWidgetClickSeeAll(String applink, String url);
+    void onGlobalNavWidgetClickSeeAll(GlobalNavViewModel globalNavViewModel);
 }

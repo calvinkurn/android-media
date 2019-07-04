@@ -40,8 +40,6 @@ public class OrderListActivity extends BaseSimpleActivity
     private OrderTabAdapter adapter;
     private OrderListComponent orderListComponent;
     private OrderListInitContract.Presenter presenter;
-   
-
 
     @DeepLink({ApplinkConst.PURCHASE_CONFIRMED, ApplinkConst.PURCHASE_ORDER})
     public static Intent getConfirmedIntent(Context context, Bundle extras) {
