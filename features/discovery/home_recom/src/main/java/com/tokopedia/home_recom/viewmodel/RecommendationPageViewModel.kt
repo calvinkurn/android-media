@@ -25,7 +25,7 @@ import rx.Subscriber
 import javax.inject.Inject
 import javax.inject.Named
 
-class RecommendationPageViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
+open class RecommendationPageViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
                                                       private val userSessionInterface: UserSessionInterface,
                                                       private val getRecommendationUseCase: GetRecommendationUseCase,
                                                       @Named("Main")
@@ -36,7 +36,7 @@ class RecommendationPageViewModel @Inject constructor(private val graphqlReposit
     val xSource = "recom_landing_page"
     val pageName = "recom_1,recom_2,recom_3"
 
-    fun getPrimaryProduct(productId: String,
+    open fun getPrimaryProduct(productId: String,
                           context: Context) {
         launchCatchError(block = {
             val gqlData = withContext(Dispatchers.IO) {
@@ -66,7 +66,7 @@ class RecommendationPageViewModel @Inject constructor(private val graphqlReposit
         }
     }
 
-    fun getRecommendationList(
+    open fun getRecommendationList(
             productIds: ArrayList<String>,
             onErrorGetRecommendation: ((errorMessage: String?) -> Unit)?) {
         getRecommendationUseCase.execute(
