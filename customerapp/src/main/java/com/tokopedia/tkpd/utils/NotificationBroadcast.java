@@ -34,6 +34,8 @@ public class NotificationBroadcast extends BroadcastReceiver {
                     break;
             }
         } catch (Exception e) {
+
+            System.out.println("NotificationBroadcast deleting:" +e.getMessage());
             e.printStackTrace();
         }
     }
@@ -77,6 +79,8 @@ public class NotificationBroadcast extends BroadcastReceiver {
     }
 
     public void cancelNotification(Context context, int notificationId) {
+
+        System.out.println("NotificationBroadcast deleting:" + notificationId);
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.cancel(notificationId);
     }

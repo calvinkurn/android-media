@@ -44,7 +44,7 @@ public class MoengageAnalytics extends ContextAnalytics {
                         .setNotificationSmallIcon(R.drawable.ic_status_bar_notif_customerapp)
                         .setNotificationLargeIcon(R.drawable.ic_big_notif_customerapp)
                         .optOutTokenRegistration()
-                        .setNotificationType(R.integer.notification_type_multiple)
+                        //.setNotificationType(R.integer.notification_type_multiple)
                         .build();
         MoEngage.initialise(moEngage);
     }
