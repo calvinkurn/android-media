@@ -476,12 +476,14 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     private fun goToImagePicker() {
+        val imageOnly = viewModel.fileImageList.filter { it.type == MediaType.IMAGE }
+        val countVid = viewModel.fileImageList.size - imageOnly.size
         activity?.let {
             startActivityForResult(
                     CreatePostImagePickerActivity.getInstance(
                             it,
-                            ArrayList(viewModel.fileImageList),
-                            viewModel.maxImage,
+                            ArrayList(imageOnly),
+                            viewModel.maxImage - countVid,
                             viewModel.fileImageList.isEmpty()
                     ),
                     REQUEST_IMAGE_PICKER)
