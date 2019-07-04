@@ -22,11 +22,13 @@ import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
-import com.tokopedia.core.analytics.nishikino.singleton.ContainerHolderSingleton;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 
 import java.util.HashMap;
@@ -52,12 +54,14 @@ public class GTMAnalytics extends ContextAnalytics {
     private static final String SHOP_ID = "shopId";
     private static final String SHOP_TYPE = "shopType";
     private final Iris iris;
+    private final RemoteConfig remoteConfig;
 
     // have status that describe pending.
 
     public GTMAnalytics(Context context) {
         super(context);
         iris = IrisAnalytics.Companion.getInstance(context);
+        remoteConfig = new FirebaseRemoteConfigImpl(context);
     }
 
     @Override
@@ -106,10 +110,11 @@ public class GTMAnalytics extends ContextAnalytics {
                     bundle.getInt(AppEventTracking.GTM.GTM_RESOURCE));
 
             pResult.setResultCallback(cHolder -> {
-                ContainerHolderSingleton.setContainerHolder(cHolder);
-                if (isAllowRefreshDefault(cHolder)) {
-                    Log.i("GTM TKPD", "Refreshed Container ");
-                    cHolder.refresh();
+                if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GTM_REFRESH, true)) {
+                    if (isAllowRefreshDefault(cHolder)) {
+                        Log.i("GTM TKPD", "Refreshed Container ");
+                        cHolder.refresh();
+                    }
                 }
             }, 2, TimeUnit.SECONDS);
         } catch (Exception e) {

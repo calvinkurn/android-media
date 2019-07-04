@@ -312,4 +312,8 @@
     <key>android_seller_account_ticker_msg</key>
         <value>Perkuat bisnismu dengan Power Merchant versi baru.</value>
     </entry>
+    <entry>
+        <key>android_enable_gtm_refresh</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>
