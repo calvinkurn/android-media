@@ -14,7 +14,7 @@
         android:paddingBottom="@dimen/dp_8">
         <com.tokopedia.topads.sdk.view.ImpressedImageView
                 android:id="@+id/image"
-                android:layout_width="@dimen/dp_100"
+                android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
                 app:corner_radius="0dp"
