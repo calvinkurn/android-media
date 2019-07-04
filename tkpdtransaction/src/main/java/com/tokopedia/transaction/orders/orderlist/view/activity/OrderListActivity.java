@@ -40,44 +40,6 @@ public class OrderListActivity extends BaseSimpleActivity
     private OrderTabAdapter adapter;
     private OrderListComponent orderListComponent;
     private OrderListInitContract.Presenter presenter;
-   
-
-
-    @DeepLink({ApplinkConst.PURCHASE_CONFIRMED, ApplinkConst.PURCHASE_ORDER})
-    public static Intent getConfirmedIntent(Context context, Bundle extras) {
-        return getMarketPlaceIntent(context, extras);
-
-    }
-
-    @DeepLink(ApplinkConst.PURCHASE_PROCESSED)
-    public static Intent getProcessedIntent(Context context, Bundle extras) {
-        return getMarketPlaceIntent(context, extras);
-    }
-
-    @DeepLink({ApplinkConst.PURCHASE_SHIPPED})
-    public static Intent getShippedIntent(Context context, Bundle extras) {
-        return getMarketPlaceIntent(context, extras);
-    }
-
-    @DeepLink({ApplinkConst.PURCHASE_DELIVERED, ApplinkConst.PURCHASE_SHIPPING_CONFIRM})
-    public static Intent getDeliveredIntent(Context context, Bundle extras) {
-        return getMarketPlaceIntent(context, extras);
-    }
-
-    @DeepLink(ApplinkConst.PURCHASE_HISTORY)
-    public static Intent getHistoryIntent(Context context, Bundle extras) {
-        return getMarketPlaceIntent(context, extras);
-    }
-
-
-    private static Intent getMarketPlaceIntent(Context context, Bundle extras) {
-        Uri uri = Uri.parse(extras.getString(DeepLink.URI));
-        extras.putString(OrderCategory.KEY_LABEL, OrderCategory.MARKETPLACE);
-        extras.putString(OrderListContants.ORDER_FILTER_ID, uri.getQueryParameter(OrderListContants.ORDER_FILTER_ID));
-        Intent intent = new Intent(context, OrderListActivity.class);
-        return intent.putExtras(extras);
-    }
-
 
     @DeepLink({ApplinkConst.PURCHASE_CONFIRMED, ApplinkConst.PURCHASE_ORDER})
     public static Intent getConfirmedIntent(Context context, Bundle extras) {
