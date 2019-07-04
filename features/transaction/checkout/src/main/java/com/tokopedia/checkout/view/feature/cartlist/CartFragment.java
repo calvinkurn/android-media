@@ -211,9 +211,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
         if (savedInstanceState != null && saveInstanceCacheManager != null) {
             cartListData = saveInstanceCacheManager.get(CartListData.class.getSimpleName(), CartListData.class);
-            if (cartListData != null) {
-                renderInitialGetCartListDataSuccess(cartListData);
-            }
         }
 
         dPresenter.attachView(this);
