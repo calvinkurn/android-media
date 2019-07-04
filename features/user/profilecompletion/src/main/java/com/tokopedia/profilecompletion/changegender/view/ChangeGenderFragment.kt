@@ -1,4 +1,4 @@
-package com.tokopedia.profilecompletion.changegender
+package com.tokopedia.profilecompletion.changegender.view
 
 import android.app.Activity
 import android.arch.lifecycle.Observer
@@ -6,7 +6,6 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -19,7 +18,6 @@ import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.changegender.data.ChangeGenderResult
 import com.tokopedia.profilecompletion.changegender.viewmodel.ChangeGenderViewModel
 import com.tokopedia.profilecompletion.di.ProfileCompletionComponent
-import com.tokopedia.sessioncommon.ErrorHandlerSession
 //import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success

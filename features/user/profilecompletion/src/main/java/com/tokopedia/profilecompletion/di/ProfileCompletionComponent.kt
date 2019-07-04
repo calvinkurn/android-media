@@ -1,7 +1,7 @@
 package com.tokopedia.profilecompletion.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.profilecompletion.changegender.ChangeGenderFragment
+import com.tokopedia.profilecompletion.changegender.view.ChangeGenderFragment
 import dagger.Component
 
 

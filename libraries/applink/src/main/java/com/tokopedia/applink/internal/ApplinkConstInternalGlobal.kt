@@ -23,10 +23,6 @@ object ApplinkConstInternalGlobal {
     val PARAM_CIPF_OLD_PHONE = "oldPhone"
     @JvmField
     val PARAM_EMAIL = "email"
-    @JvmField
-    val PARAM_MODE = "mode"
-    @JvmField
-    val PARAM_TITLE = "title"
 
     @JvmField
     val INTERNAL_GLOBAL = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_GLOBAL}"
@@ -55,6 +51,11 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/add-name-register
     @JvmField
     val FORGOT_PASSWORD = "$INTERNAL_GLOBAL/forgot-password"
+
+    // ChangeGenderActivity
+    // tokopedia-android-internal://global/profile-completion
+    @JvmField
+    val CHANGE_GENDER = "$INTERNAL_GLOBAL/change-gender"
 
     // ProfileCompletionActivity
     // tokopedia-android-internal://global/profile-completion
