@@ -1,16 +1,34 @@
 package com.tokopedia.tokopoints.view.model;
 
+import com.google.gson.annotations.SerializedName;
 import com.tokopedia.library.baseadapter.BaseItem;
 
 public class PointHistoryItem extends BaseItem {
+    @SerializedName("id")
     public long id;
+
+    @SerializedName("createTime")
     public String createTime;
+
+    @SerializedName("createTimeDesc")
     public String createTimeDesc;
+
+    @SerializedName("title")
     public String title;
+
+    @SerializedName("notes")
     public String notes;
+
+    @SerializedName("memberPoints")
     public int memberPoints;
+
+    @SerializedName("rewardPoints")
     public int rewardPoints;
+
+    @SerializedName("historyType")
     public int historyType;
+
+    @SerializedName("icon")
     public String icon;
 
     public long getId() {
