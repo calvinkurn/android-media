@@ -234,7 +234,7 @@ public interface ApplinkConst {
     String PLAY_WEBVIEW = "tokopedia://play/webview?url={url}&titlebar={has_titlebar}";
     String SMC_REFERRAL = "tokopedia://smc-referral";
 
-    String CATEGORY_BELANJA = "tokopedia://category_belanja/{category_name}";
+    String CATEGORY_BELANJA = "tokopedia://category_belanja/{CATEGORY_NAME}";
     String CATEGORY_BELANJA_DEFAULT = "tokopedia://category_belanja/";
 
     String CATEGORY = "tokopedia://category";
