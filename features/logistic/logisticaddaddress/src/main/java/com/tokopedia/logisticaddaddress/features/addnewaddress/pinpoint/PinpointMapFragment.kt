@@ -50,8 +50,7 @@ import javax.inject.Inject
  * Created by fwidjaja on 2019-05-08.
  */
 class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapReadyCallback,
-        AutocompleteBottomSheetFragment.ActionListener, HasComponent<AddNewAddressComponent>,
-        PinpointMapActivity.ActionListener{
+        AutocompleteBottomSheetFragment.ActionListener, HasComponent<AddNewAddressComponent> {
 
     private var googleMap: GoogleMap? = null
     private var currentLat: Double? = 0.0
@@ -652,10 +651,5 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             override fun afterTextChanged(text: Editable) {
             }
         }
-    }
-
-    @SuppressLint("MissingPermission")
-    override fun permissionIsAllowed() {
-        this.googleMap?.isMyLocationEnabled = true
     }
 }
