@@ -18,9 +18,6 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtil
 class ZipCodeChipsAdapter(context: Context?, private var actionListener: ActionListener) : RecyclerView.Adapter<ZipCodeChipsAdapter.ViewHolder>() {
     var zipCodes = mutableListOf<String>()
 
-    private var drawablePressed = context?.let { ContextCompat.getDrawable(it, R.drawable.bg_chips_pressed) }
-    private var drawableDefault = context?.let { ContextCompat.getDrawable(it, R.drawable.bg_chips_item_layout) }
-
     interface ActionListener {
         fun onZipCodeClicked(zipCode: String)
     }
@@ -38,12 +35,8 @@ class ZipCodeChipsAdapter(context: Context?, private var actionListener: ActionL
         val res = holder.itemView.context.resources
         holder.itemView.tv_chips_item.apply {
             text = zipCodes[position]
-            background = drawableDefault
             setTextColor(res.getColor(R.color.font_black_secondary_54))
-            setPadding(AddNewAddressUtils.toDp(12), AddNewAddressUtils.toDp(10),
-                    AddNewAddressUtils.toDp(12), AddNewAddressUtils.toDp(10))
             setOnClickListener {
-                background = drawablePressed
                 setTextColor(res.getColor(R.color.tkpd_green))
                 actionListener.onZipCodeClicked(zipCodes[position])
             }

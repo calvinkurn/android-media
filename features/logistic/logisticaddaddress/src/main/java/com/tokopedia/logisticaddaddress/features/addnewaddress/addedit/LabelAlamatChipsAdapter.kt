@@ -15,8 +15,6 @@ import kotlinx.android.synthetic.main.chips_item.view.*
  */
 class LabelAlamatChipsAdapter(context: Context?, private var actionListener: ActionListener) : RecyclerView.Adapter<LabelAlamatChipsAdapter.ViewHolder>() {
     var labelAlamatList = mutableListOf<String>()
-    private var drawablePressed = context?.let { ContextCompat.getDrawable(it, R.drawable.bg_chips_pressed) }
-    private var drawableDefault = context?.let { ContextCompat.getDrawable(it, R.drawable.bg_chips_item_layout) }
 
     interface ActionListener {
         fun onLabelAlamatChipClicked(labelAlamat: String)
@@ -35,12 +33,8 @@ class LabelAlamatChipsAdapter(context: Context?, private var actionListener: Act
         val res = holder.itemView.context.resources
         holder.itemView.tv_chips_item.run {
             text = labelAlamatList[position]
-            // background = drawableDefault
             setTextColor(res.getColor(R.color.font_black_secondary_54))
-            // setPadding(AddNewAddressUtils.toDp(12), AddNewAddressUtils.toDp(10),
-                    // AddNewAddressUtils.toDp(12), AddNewAddressUtils.toDp(10))
             setOnClickListener {
-                // background = drawablePressed
                 setTextColor(res.getColor(R.color.tkpd_green))
                 actionListener.onLabelAlamatChipClicked(labelAlamatList[position])
             }
