@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd.home.adapter.factory
 
-import com.tokopedia.tkpd.home.adapter.viewholder.WishListTopAdsViewHolder
 import com.tokopedia.tkpd.home.adapter.viewmodel.WishlistEmptySearchViewModel
 import com.tokopedia.tkpd.home.adapter.viewmodel.WishlistEmptyViewModel
 import com.tokopedia.tkpd.home.adapter.viewmodel.WishlistProductViewModel
