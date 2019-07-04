@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.gm.common.constant.GMParamConstant.RAW_ACTIVATION
+import com.tokopedia.gm.common.constant.GMParamConstant.RAW_DEACTIVATION
 import com.tokopedia.gm.common.di.GmCommonModule
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.view.contract.PmSubscribeContract
@@ -48,9 +50,16 @@ class PowerMerchantSubscribeModule {
 
     @PowerMerchantSubscribeScope
     @Provides
-    @Named("gm_turn_off")
-    fun providePmOffRaw(@ApplicationContext context: Context) : String{
+    @Named(RAW_DEACTIVATION)
+    fun providePmOffRaw(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.gold_merchant_turn_off)
+    }
+
+    @PowerMerchantSubscribeScope
+    @Provides
+    @Named(RAW_ACTIVATION)
+    fun providePmOnRaw(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.gold_merchant_activation)
 
     }
 
