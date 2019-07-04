@@ -59,13 +59,11 @@ public class PointHistoryPresenter extends BaseDaggerPresenter<PointHistoryContr
 
             @Override
             public void onError(Throwable e) {
-                //NA
-                getView().hideLoading();
+                getView().onError(e.getMessage());
             }
 
             @Override
             public void onNext(GraphqlResponse response) {
-                getView().hideLoading();
                 TokoPointDetailEntity data = response.getData(TokoPointDetailEntity.class);
                 getView().onSuccess(data.getTokoPoints().getStatus().getPoints());
             }

@@ -11,8 +11,6 @@ public interface PointHistoryContract {
     interface View extends CustomerView {
         void showLoading();
 
-        void hideLoading();
-
         void onSuccess(TokoPointStatusPointsEntity data);
 
         void onError(String error);

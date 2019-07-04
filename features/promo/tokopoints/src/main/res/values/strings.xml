@@ -81,5 +81,10 @@
     <string name="tp_btn_history_bottomshet">Cek Info Points &amp; Loyalty</string>
     <string name="tp_ph_point">Points: </string>
     <string name="tp_ph_loyalty">Loyalty: </string>
+    <string name="tp_title_err_history">Ada gangguan di rumah Toped</string>
+    <string name="tp_desc_err_history">Kami akan bereskan secepatnya. Klik tombol di bawah atau balik lagi nanti.</string>
+    <string name="tp_history_empty_title">Kamu belum punya riwayat TokoPoints</string>
+    <string name="tp_history_empty_desc">Ayo lakukan transaksi dan dapatkan Lucky Egg</string>
+    <string name="tp_history_btn_action">Yuk Belanja</string>
 
 </resources>

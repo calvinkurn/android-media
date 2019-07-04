@@ -13,4 +13,6 @@
 
     <include layout="@layout/tp_content_point_history" />
 
+    <include layout="@layout/layout_tp_history_error" />
+
 </ViewFlipper>
