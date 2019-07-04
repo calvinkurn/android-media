@@ -12,7 +12,6 @@ import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.navigation.domain.model.Recomendation;
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
@@ -31,6 +30,7 @@ import com.tokopedia.discovery.newdiscovery.helper.UrlParamHelper;
 import com.tokopedia.kotlin.util.ContainNullException;
 import com.tokopedia.kotlin.util.NullCheckerKt;
 import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistProductViewModel;
+import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistRecomendationViewModel;
 import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistTopAdsViewModel;
 import com.tokopedia.tkpd.home.wishlist.domain.model.GqlWishListDataResponse;
 import com.tokopedia.core.network.entity.wishlist.Pagination;
@@ -182,7 +182,7 @@ public class WishListImpl implements WishList {
     private List<Visitable> getRecommendationVisitables(RecommendationWidget recommendationWidget) {
         List<Visitable> recomendationList = new ArrayList<>();
         for (RecommendationItem item : recommendationWidget.getRecommendationItemList()) {
-            recomendationList.add(new Recomendation(item));
+            recomendationList.add(new WishlistRecomendationViewModel(item));
         }
         return recomendationList;
     }
