@@ -32,22 +32,30 @@ class UploadMultipleImageUseCase @Inject constructor(
 
     @Suppress("UNCHECKED_CAST")
     override fun createObservable(requestParams: RequestParams): Observable<List<SubmitPostMedium>> {
-        val isUploadVideo = requestParams.getBoolean(IS_UPLOAD_VIDEO, false)
+        //val isUploadVideo = requestParams.getBoolean(IS_UPLOAD_VIDEO, false)
         return Observable.from(requestParams.getObject(PARAM_URL_LIST) as List<SubmitPostMedium>)
-                .flatMap(if (isUploadVideo) uploadVideo() else uploadSingleImage())
+                .flatMap { if (it.type == SubmitPostMedium.TYPE_VIDEO) uploadVideo(it) else uploadSingleImage(it) }
                 .toList()
     }
 
-    private fun uploadVideo(): Func1<SubmitPostMedium, Observable<SubmitPostMedium>> {
+    /*private fun uploadVideo(): Func1<SubmitPostMedium, Observable<SubmitPostMedium>> {
         return Func1 { medium ->
             uploadVideoUseCase.createObservable(UploadVideoUseCase.createParam(medium.mediaURL))
                     .map(mapToUrlVideo(medium))
                     .map(updateNotification())
                     .subscribeOn(Schedulers.io())
         }
+    }*/
+
+    private fun uploadVideo(medium: SubmitPostMedium): Observable<SubmitPostMedium> {
+        return uploadVideoUseCase.createObservable(UploadVideoUseCase.createParam(medium.mediaURL))
+                    .map(mapToUrlVideo(medium))
+                    .map(updateNotification())
+                    .subscribeOn(Schedulers.io())
+
     }
 
-    private fun uploadSingleImage(): Func1<SubmitPostMedium, Observable<SubmitPostMedium>> {
+    /*private fun uploadSingleImage(): Func1<SubmitPostMedium, Observable<SubmitPostMedium>> {
         return Func1 { medium ->
             if (urlIsFile(medium.mediaURL)) {
                 uploadImageUseCase.createObservable(createUploadParams(medium.mediaURL))
@@ -57,6 +65,15 @@ class UploadMultipleImageUseCase @Inject constructor(
                 Observable.just<SubmitPostMedium>(medium).map(updateNotification())
             }
         }
+    }*/
+
+    private fun uploadSingleImage(medium: SubmitPostMedium): Observable<SubmitPostMedium> {
+        return (if (urlIsFile(medium.mediaURL)) {
+                uploadImageUseCase.createObservable(createUploadParams(medium.mediaURL))
+                        .map(mapToUrl(medium))
+            } else {
+                Observable.just(medium)
+            }).map(updateNotification())
     }
 
     private fun mapToUrl(

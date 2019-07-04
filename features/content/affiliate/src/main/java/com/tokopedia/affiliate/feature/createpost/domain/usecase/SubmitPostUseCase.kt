@@ -36,24 +36,30 @@ open class SubmitPostUseCase @Inject constructor(
         val type = requestParams.getString(PARAM_TYPE, "")
         val tags = getListOfTag(relatedIdList, type)
 
-        val imageList = requestParams.getObject(PARAM_IMAGE_LIST) as List<String>
+        //val imageList = requestParams.getObject(PARAM_IMAGE_LIST) as List<String>
         uploadMultipleImageUseCase.notificationManager = notificationManager
 
-        val isUploadVideo = requestParams.getBoolean(IS_UPLOAD_VIDEO, false)
-        val videoUrl = requestParams.getString(PARAM_VIDEO_PATH, "")
+        //val isUploadVideo = requestParams.getBoolean(IS_UPLOAD_VIDEO, false)
+        //val videoUrl = requestParams.getString(PARAM_VIDEO_PATH, "")
+        val media = requestParams.getObject(PARAM_MEDIA_LIST) as List<Pair<String, String>>
 
         return uploadMultipleImageUseCase
                 .createObservable(
-                        UploadMultipleImageUseCase.createRequestParams(
-                                getMediumList(imageList, tags, videoUrl, isUploadVideo),
-                                isUploadVideo
-                        )
+                        UploadMultipleImageUseCase.createRequestParams(getMediumList(media, tags), false)
                 )
                 .map(rearrangeMedia())
                 .flatMap(submitPostToGraphql(requestParams))
     }
 
-    private fun getMediumList(imageList: List<String>, tags: List<MediaTag>, videoUrl: String, isUploadVideo: Boolean)
+    private fun getMediumList(media: List<Pair<String, String>>, tags: List<MediaTag>): List<SubmitPostMedium> {
+        val mediumList = mutableListOf<SubmitPostMedium>()
+        media.forEachIndexed { index, pair ->
+            mediumList.add(SubmitPostMedium(pair.first, index, addProductTagsToFirstIndex(index, tags), pair.second))
+        }
+        return mediumList
+    }
+
+    /*private fun getMediumList(imageList: List<String>, tags: List<MediaTag>, videoUrl: String, isUploadVideo: Boolean)
             : List<SubmitPostMedium> {
 
         val mediumList = ArrayList<SubmitPostMedium>()
@@ -67,7 +73,7 @@ open class SubmitPostUseCase @Inject constructor(
         }
 
         return mediumList
-    }
+    }*/
 
     private fun addProductTagsToFirstIndex(index: Int, tags: List<MediaTag>): List<MediaTag> {
         return if (index == 0) tags else arrayListOf()
@@ -147,7 +153,7 @@ open class SubmitPostUseCase @Inject constructor(
         private const val PARAM_AUTHOR_ID = "authorID"
         private const val PARAM_AUTHOR_TYPE = "authorType"
         private const val PARAM_CAPTION = "caption"
-        private const val PARAM_IMAGE_LIST = "image_list"
+        //private const val PARAM_IMAGE_LIST = "image_list"
         private const val PARAM_TAGS = "tags"
 
         private const val PARAM_INPUT = "input"
@@ -155,13 +161,17 @@ open class SubmitPostUseCase @Inject constructor(
         private const val INPUT_TYPE_CONTENT = "content"
         private const val TAGS_TYPE_PRODUCT = "product"
 
-        private const val PARAM_VIDEO_PATH = "video_path"
+        //private const val PARAM_VIDEO_PATH = "video_path"
 
         const val SUCCESS = 1
 
-        private const val IS_UPLOAD_VIDEO = "is_video"
+       //private const val IS_UPLOAD_VIDEO = "is_video"
 
-        fun createRequestParams(type: String, token: String, authorId: String, caption: String,
+        /* === New field === */
+        private const val PARAM_MEDIA_LIST = "media_list"
+        /* ================= */
+
+        /*fun createRequestParamsImage(type: String, token: String, authorId: String, caption: String,
                                 imageList: List<String>, relatedIdList: List<String>): RequestParams {
             val requestParams = RequestParams.create()
             requestParams.putString(PARAM_TYPE, type)
@@ -188,6 +198,20 @@ open class SubmitPostUseCase @Inject constructor(
             requestParams.putObject(PARAM_TAGS, relatedIdList)
             requestParams.putBoolean(IS_UPLOAD_VIDEO, true)
             requestParams.putObject(PARAM_IMAGE_LIST, ArrayList<String>())
+            return requestParams
+        }*/
+
+        fun createRequestParams(type: String, token: String, authorId: String, caption: String,
+                                     media: List<Pair<String, String>>, relatedIdList: List<String>): RequestParams {
+
+            val requestParams = RequestParams.create()
+            requestParams.putString(PARAM_TYPE, type)
+            requestParams.putString(PARAM_TOKEN, token)
+            requestParams.putString(PARAM_AUTHOR_ID, authorId)
+            requestParams.putString(PARAM_AUTHOR_TYPE, type)
+            requestParams.putString(PARAM_CAPTION, caption)
+            requestParams.putObject(PARAM_MEDIA_LIST, media)
+            requestParams.putObject(PARAM_TAGS, relatedIdList)
             return requestParams
         }
     }

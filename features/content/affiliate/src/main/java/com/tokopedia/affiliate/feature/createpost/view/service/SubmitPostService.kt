@@ -71,7 +71,18 @@ class SubmitPostService : JobIntentService() {
                 viewModel.completeImageList.size)
         submitPostUseCase.notificationManager = notificationManager
 
-        if (isUploadVideo(viewModel)) {
+        submitPostUseCase.execute(SubmitPostUseCase.createRequestParams(
+                viewModel.authorType,
+                viewModel.token,
+                if (isTypeAffiliate(viewModel.authorType)) userSession.userId
+                else userSession.shopId,
+                viewModel.caption,
+                viewModel.fileImageList.map { it.path to it.type },
+                if (isTypeAffiliate(viewModel.authorType)) viewModel.adIdList
+                else viewModel.productIdList
+        ), getSubscriber())
+
+        /*if (isUploadVideo(viewModel)) {
             submitPostUseCase.execute(
                     SubmitPostUseCase.createRequestParamsVideo(
                             viewModel.authorType,
@@ -100,7 +111,7 @@ class SubmitPostService : JobIntentService() {
                     ),
                     getSubscriber()
             )
-        }
+        }*/
     }
 
     private fun isUploadVideo(viewModel: CreatePostViewModel): Boolean {

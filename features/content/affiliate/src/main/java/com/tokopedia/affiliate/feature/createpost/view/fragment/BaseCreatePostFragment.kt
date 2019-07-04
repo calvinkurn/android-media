@@ -174,14 +174,16 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 val imageList = data?.getStringArrayListExtra(PICKER_RESULT_PATHS) ?: arrayListOf()
                 val images = imageList.map { MediaModel(it, MediaType.IMAGE) }
 
-                viewModel.fileImageList.clear()
+                viewModel.fileImageList.removeAll { it.type == MediaType.IMAGE }
                 viewModel.fileImageList.addAll(images)
 
-                if (imageList.isNotEmpty()) {
-                    viewModel.urlImageList.clear()
-                }
-
                 updateMediaPreview()
+
+                if (viewModel.fileImageList.isNotEmpty()) {
+                    viewModel.urlImageList.clear()
+                } else {
+                    fetchContentForm()
+                }
 
                 invalidatePostCallBack?.invalidatePostMenu(isPostEnabled)
             }
@@ -189,14 +191,15 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 val videoList = data?.getStringArrayListExtra(VIDEOS_RESULT) ?: arrayListOf()
                 val videos = videoList.map { MediaModel(it, MediaType.VIDEO) }
 
-                viewModel.fileImageList.clear()
+                viewModel.fileImageList.removeAll { it.type == MediaType.VIDEO }
                 viewModel.fileImageList.addAll(videos)
-
-                if (videoList.isNotEmpty()) {
-                    viewModel.urlImageList.clear()
-                }
-
                 updateMediaPreview()
+
+                if (viewModel.fileImageList.isNotEmpty()) {
+                    viewModel.urlImageList.clear()
+                } else {
+                    fetchContentForm()
+                }
 
                 invalidatePostCallBack?.invalidatePostMenu(isPostEnabled)
             }
