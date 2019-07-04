@@ -2,6 +2,7 @@ package com.tokopedia.transactiondata.entity.response.cartlist;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.transactiondata.entity.response.cartlist.shopgroup.ProductInvenageTotal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,6 +94,9 @@ public class Product {
     @SerializedName("product_switch_invenage")
     @Expose
     private int productSwitchInvenage;
+    @SerializedName("product_invenage_total")
+    @Expose
+    private ProductInvenageTotal productInvenageTotal = new ProductInvenageTotal();
     @SerializedName("currency_rate")
     @Expose
     private int currencyRate;
