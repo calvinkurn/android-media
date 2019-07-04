@@ -6,6 +6,7 @@ apply from: 'buildconfig/dependencies/dependency-features.gradle'
 //apply from: 'buildconfig/dependencies/dependency-features-no-op.gradle'
 apply from: 'tools/quality.gradle'
 apply from: 'tools/composite_build.gradle'
+apply plugin: 'idea'
 
 
 buildscript {
@@ -182,3 +183,9 @@ gradle.buildFinished {
     "zip -d .okbuck/cache/org.hamcrest.hamcrest-integration-1.3.jar LICENSE.txt".execute()
 }
 
+idea.module {
+    excludeDirs += file('build/')
+    excludeDirs += file('.buckd/')
+    excludeDirs += file('.okbuck/')
+    excludeDirs += file('buck-out/')
+}

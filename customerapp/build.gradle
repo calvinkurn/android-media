@@ -394,6 +394,7 @@ dependencies {
     implementation project(rootProject.ext.features.officialStore)
     implementation project(rootProject.ext.features.agerestriction)
     implementation project(rootProject.ext.features.onboarding)
+    implementation project(rootProject.ext.features.profileCompletion)
 
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.userSession)
@@ -560,6 +561,7 @@ dependencies {
     implementation (rootProject.ext.debugToolsDependencies.timber){
         exclude group: 'org.jetbrains', module: 'annotations'
     }
+    implementation project(rootProject.ext.features.navigationCommon)
 }
 
 

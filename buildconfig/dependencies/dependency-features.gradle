@@ -339,6 +339,7 @@ ext {
 //            notifCenter                     : ":features:user:notifcenter_no_op",
             otp                             : ":features:user:otp",
             phoneVerification               : ":features:user:phoneverification",
+            profileCompletion               : ":features:user:profilecompletion",
             settingbank                     : ":features:user:settingbank",
             talk                            : ":features:user:talk",
             topchat                         : ":features:user:topchat",

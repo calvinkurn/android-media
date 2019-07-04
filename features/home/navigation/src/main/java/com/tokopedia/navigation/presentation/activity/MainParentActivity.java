@@ -196,6 +196,12 @@ public class MainParentActivity extends BaseActivity implements
         cacheManager = PreferenceManager.getDefaultSharedPreferences(this);
         createView(savedInstanceState);
         ((GlobalNavRouter) getApplicationContext()).sendOpenHomeEvent();
+
+        initCategoryConfig();
+    }
+
+    private void initCategoryConfig() {
+        ((GlobalNavRouter) getApplicationContext()).setCategoryAbTestingConfig();
     }
 
     @Override
