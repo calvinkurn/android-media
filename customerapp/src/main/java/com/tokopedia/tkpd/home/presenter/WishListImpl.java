@@ -239,7 +239,12 @@ public class WishListImpl implements WishList {
         Subscriber<GraphqlResponse> subscriber = new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
+                wishListView.displayLoadMore(false);
+            }
 
+            @Override
+            public void onStart() {
+                wishListView.displayLoadMore(true);
             }
 
             @Override
@@ -354,12 +359,6 @@ public class WishListImpl implements WishList {
         data.addAll(convertToProductItemList(wishlistData.getWishlistDataList(),
                 gqlWishListDataResponse.getTopAdsModel(), query));
         mPaging.setPagination(wishlistData.getPagination());
-
-        if (mPaging.CheckNextPage() && wishlistData.isHasNextPage()) {
-            wishListView.displayLoadMore(true);
-        } else {
-            wishListView.displayLoadMore(false);
-        }
         wishListView.setPullEnabled(true);
 
         wishListView.loadDataChange();
@@ -476,7 +475,7 @@ public class WishListImpl implements WishList {
         Subscriber<GraphqlResponse> subscriber = new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
-
+                wishListView.displayLoadMore(false);
             }
 
             @Override
@@ -485,6 +484,11 @@ public class WishListImpl implements WishList {
                     wishListView.displayPull(false);
                 }
                 wishListView.displayErrorNetwork(false);
+            }
+
+            @Override
+            public void onStart() {
+                wishListView.displayLoadMore(true);
             }
 
             @Override
@@ -498,12 +502,6 @@ public class WishListImpl implements WishList {
                     mPaging.setPagination(gqlWishListDataResponse.getGqlWishList().getPagination());
                     wishListView.loadDataChange();
                     wishListView.displayContentList(true);
-
-                    if (mPaging.CheckNextPage() && gqlWishListDataResponse.getGqlWishList().isHasNextPage()) {
-                        wishListView.displayLoadMore(true);
-                    } else {
-                        wishListView.displayLoadMore(false);
-                    }
                     wishListView.setPullEnabled(true);
                     if (gqlWishListDataResponse.getGqlWishList().getWishlistDataList().size() == 0) {
                         wishListView.setEmptyState();
@@ -538,7 +536,6 @@ public class WishListImpl implements WishList {
         if (!isLoadedFirstPage()) {
             refreshData(context);
         } else {
-            wishListView.displayLoadMore(mPaging.CheckNextPage());
             wishListView.displayContentList(true);
             wishListView.displayLoading(false);
         }
@@ -627,6 +624,11 @@ public class WishListImpl implements WishList {
 
 
         @Override
+        public void onStart() {
+            wishListView.displayLoadMore(true);
+        }
+
+        @Override
         public void onNext(GraphqlResponse graphqlResponse) {
             if (graphqlResponse != null && graphqlResponse.getData(GqlWishListDataResponse.class) != null) {
                 GqlWishListDataResponse gqlWishListDataResponse = graphqlResponse.getData(GqlWishListDataResponse.class);
@@ -646,11 +648,6 @@ public class WishListImpl implements WishList {
                 data.addAll(convertToProductItemList(gqlWishListDataResponse.getGqlWishList().getWishlistDataList(),
                         gqlWishListDataResponse.getTopAdsModel(), query));
                 mPaging.setPagination(gqlWishListDataResponse.getGqlWishList().getPagination());
-                if (gqlWishListDataResponse.getGqlWishList().isHasNextPage()) {
-                    wishListView.displayLoadMore(true);
-                } else {
-                    wishListView.displayLoadMore(false);
-                }
                 wishListView.setPullEnabled(true);
                 wishListView.loadDataChange();
                 wishListView.displayContentList(true);
@@ -661,7 +658,7 @@ public class WishListImpl implements WishList {
 
         @Override
         public void onCompleted() {
-
+            wishListView.displayLoadMore(false);
         }
 
         @Override
