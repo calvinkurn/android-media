@@ -1,8 +1,6 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode
 
-import android.annotation.TargetApi
 import android.app.Activity
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.widget.LinearLayoutManager
@@ -183,7 +181,6 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
     }
 
     private fun doLoadAutocompleteGeocode() {
-        // show loading list, hide result list
         showLoadingList()
 
         presenter.clearCacheAutocompleteGeocode()
@@ -220,7 +217,6 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
     }
 
     private fun loadAutocomplete(input: String) {
-        // show loading list, hide result list
         showLoadingList()
 
         presenter.clearCacheAutocomplete()
@@ -233,7 +229,6 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
     }
 
     override fun onSuccessGetAutocompleteGeocode(responseAutocompleteGeocodeDataUiModel: AutocompleteGeocodeDataUiModel) {
-        // hide loading list, show subtitle & result list
         llLoading.visibility = View.GONE
         if (responseAutocompleteGeocodeDataUiModel.results.isNotEmpty()) {
             llSubtitle.visibility = View.VISIBLE
@@ -245,8 +240,6 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
     }
 
     override fun onSuccessGetAutocomplete(dataUiModel: AutocompleteDataUiModel) {
-        // hide loading list, show result list
-        // hide subtitle_poi
         llLoading.visibility = View.GONE
         llSubtitle.visibility = View.GONE
         if (dataUiModel.listPredictions.isNotEmpty()) {

@@ -4,21 +4,15 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.res.Resources
-import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewCompat
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.TextView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
@@ -32,7 +26,6 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.logisticaddaddress.AddressConstants
 import com.tokopedia.logisticaddaddress.AddressConstants.ANA_NEGATIVE
@@ -59,7 +52,6 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_distr
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_address.SaveAddressDataModel
 import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.bottomsheet_getdistrict.*
 import kotlinx.android.synthetic.main.form_add_new_address_data_item.*
 import kotlinx.android.synthetic.main.form_add_new_address_data_item.et_detail_address
 import kotlinx.android.synthetic.main.form_add_new_address_default_item.*
@@ -187,7 +179,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
 
         if (Build.VERSION.SDK_INT >= 19) {
             val decorView = activity?.window?.decorView
-            decorView?.viewTreeObserver?.addOnGlobalLayoutListener(onGlobalLayoutListener)
+            decorView?.viewTreeObserver?.addOnGlobalLayoutListener(AddNewAddressUtils.onGlobalLayoutListener(activity, sv_add_edit))
         }
     }
 
@@ -252,7 +244,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                 addTextChangedListener(setAlamatWatcher())
                 setOnFocusChangeListener { _, hasFocus ->
                     if (hasFocus) {
-                        // AddNewAddressUtils.scrollUpLayout(scroll_view_layout)
                         AddNewAddressAnalytics.eventClickFieldAlamatChangeAddressNegative()
                     }
                 }
@@ -261,7 +252,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             et_kode_pos_mismatch.apply {
                 setOnFocusChangeListener { _, hasFocus ->
                     if (hasFocus) {
-                        // AddNewAddressUtils.scrollUpLayout(scroll_view_layout)
                         eventShowZipCodes()
                     } else {
                         rv_kodepos_chips_mismatch.visibility = View.GONE
@@ -321,14 +311,12 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         et_label_address.apply {
             setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
-                    // AddNewAddressUtils.scrollUpLayout(scroll_view_layout)
                     eventShowListLabelAlamat(type)
                 } else {
                     rv_label_alamat_chips.visibility = View.GONE
                 }
             }
             setOnClickListener {
-                // AddNewAddressUtils.scrollUpLayout(scroll_view_layout)
                 eventShowListLabelAlamat(type)
             }
             addTextChangedListener(object : TextWatcher {
@@ -925,33 +913,5 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     }
 
     override fun finishBackToAddEdit(isMismatch: Boolean, isMismatchSolved: Boolean) {
-    }
-
-    private var onGlobalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener = ViewTreeObserver.OnGlobalLayoutListener {
-        val r = Rect()
-        //r will be populated with the coordinates of your view that area still visible.
-        activity?.window?.decorView?.getWindowVisibleDisplayFrame(r)
-
-        //get screen height and calculate the difference with the useable area from the r
-        val height = activity?.window?.decorView?.context?.resources?.displayMetrics?.heightPixels
-        val diff = height?.minus(r.bottom)
-
-        //if it could be a keyboard add the padding to the view
-        if (diff != 0) {
-            // if the use-able screen height differs from the total screen height we assume that it shows a keyboard now
-            //check if the padding is 0 (if yes set the padding for the keyboard)
-            if (sv_add_edit?.paddingBottom !== diff) {
-                //set the padding of the contentView for the keyboard
-                if (diff != null) {
-                    sv_add_edit?.setPadding(0, 0, 0, diff)
-                }
-            }
-        } else {
-            //check if the padding is != 0 (if yes reset the padding)
-            if (sv_add_edit?.paddingBottom !== 0) {
-                //reset the padding of the contentView
-                sv_add_edit?.setPadding(0, 0, 0, 0)
-            }
-        }
     }
 }

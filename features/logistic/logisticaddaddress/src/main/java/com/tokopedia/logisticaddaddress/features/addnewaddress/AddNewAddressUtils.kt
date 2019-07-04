@@ -3,30 +3,21 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress
 import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
-import android.content.IntentSender
 import android.content.res.Resources
+import android.graphics.Rect
 import android.location.LocationManager
 import android.os.Build
 import android.provider.Settings
 import android.provider.Settings.Secure.getInt
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
-import android.util.Log
 import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.Button
-import android.widget.ScrollView
 import android.widget.TextView
-import android.widget.Toast
 import com.google.android.gms.maps.model.LatLng
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.logisticaddaddress.R
-import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.location.*
-import com.google.android.gms.tasks.OnFailureListener
-import com.tokopedia.analytics.debugger.ui.fragment.AnalyticsDebuggerFragment.TAG
-import com.tokopedia.logisticaddaddress.AddressConstants
-
 
 /**
  * Created by fwidjaja on 2019-06-22.
@@ -37,18 +28,6 @@ object AddNewAddressUtils {
     fun generateLatLng(latitude: Double?, longitude: Double?): LatLng {
         return latitude?.let { longitude?.let { it1 -> LatLng(it, it1) } }!!
     }
-
-    /*@JvmStatic
-    fun scrollUpLayout(scrollViewLayout: ScrollView) {
-        scrollViewLayout.postDelayed(Runnable {
-            val lastChild = scrollViewLayout.getChildAt(scrollViewLayout.childCount - 1)
-            val bottom = lastChild.bottom + scrollViewLayout.paddingBottom
-            val sy = scrollViewLayout.scrollY
-            val sh = scrollViewLayout.height
-            val delta = bottom - (sy + sh)
-            scrollViewLayout.smoothScrollBy(0, delta)
-        }, 200)
-    }*/
 
     @JvmStatic
     fun showToastError(message: String, view: View, activity: Activity) {
@@ -82,5 +61,34 @@ object AddNewAddressUtils {
     @JvmStatic
     fun toDp(number: Int): Int {
         return (number * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
+    }
+
+    @JvmStatic
+    fun onGlobalLayoutListener(activity: Activity?, view: View?): ViewTreeObserver.OnGlobalLayoutListener = ViewTreeObserver.OnGlobalLayoutListener {
+        val r = Rect()
+        //r will be populated with the coordinates of your view that area still visible.
+        activity?.window?.decorView?.getWindowVisibleDisplayFrame(r)
+
+        //get screen height and calculate the difference with the useable area from the r
+        val height = activity?.window?.decorView?.context?.resources?.displayMetrics?.heightPixels
+        val diff = height?.minus(r.bottom)
+
+        //if it could be a keyboard add the padding to the view
+        if (diff != 0) {
+            // if the use-able screen height differs from the total screen height we assume that it shows a keyboard now
+            //check if the padding is 0 (if yes set the padding for the keyboard)
+            if (view?.paddingBottom !== diff) {
+                //set the padding of the contentView for the keyboard
+                if (diff != null) {
+                    view?.setPadding(0, 0, 0, diff)
+                }
+            }
+        } else {
+            //check if the padding is != 0 (if yes reset the padding)
+            if (view?.paddingBottom !== 0) {
+                //reset the padding of the contentView
+                view?.setPadding(0, 0, 0, 0)
+            }
+        }
     }
 }

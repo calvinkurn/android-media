@@ -21,7 +21,6 @@ import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.logisticaddaddress.AddressConstants
 import com.tokopedia.logisticaddaddress.R
-import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 
 /**
@@ -45,12 +44,6 @@ class LocationInfoBottomSheetFragment : BottomSheets() {
     override fun initView(view: View) {
         bottomSheetView = view
         btnActivateLocation = view.findViewById(R.id.btn_activate_location)
-        /*btnActivateLocation.setOnClickListener {
-            AddNewAddressAnalytics.eventClickButtonAktifkanLayananLokasiOnBlockGps()
-            startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
-            dismiss()
-        }*/
-
         btnActivateLocation.setOnClickListener {
             AddNewAddressAnalytics.eventClickButtonAktifkanLayananLokasiOnBlockGps()
             if (!context?.let { it1 -> turnGPSOn(it1) }!!) {
