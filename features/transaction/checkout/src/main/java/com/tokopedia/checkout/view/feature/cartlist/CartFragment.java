@@ -532,9 +532,12 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             if (savedInstanceState == null) {
                 refreshHandler.startRefresh();
             } else {
-                cartListData = saveInstanceCacheManager.get(CartListData.class.getSimpleName(), CartListData.class);
-                renderInitialGetCartListDataSuccess(cartListData);
-                stopCartPerformanceTrace();
+                if (cartListData != null) {
+                    renderInitialGetCartListDataSuccess(cartListData);
+                    stopCartPerformanceTrace();
+                } else {
+                    refreshHandler.startRefresh();
+                }
             }
         }
     }
