@@ -71,6 +71,8 @@ public interface ICartListView extends IBaseView {
 
     void stopCartPerformanceTrace();
 
+    void stopAllCartPerformanceTrace();
+
     void onSuccessClearPromoStack(int shopIndex);
 
     void onSuccessCheckPromoFirstStep(ResponseGetPromoStackUiModel responseGetPromoStackUiModel);

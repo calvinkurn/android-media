@@ -20,6 +20,7 @@ class GetRecentViewSubscriber(private val view: ICartListView?,
 
     override fun onError(e: Throwable) {
         e.printStackTrace()
+        view?.stopAllCartPerformanceTrace();
     }
 
     override fun onNext(graphqlResponse: GraphqlResponse?) {

@@ -20,6 +20,7 @@ class GetRecommendationSubscriber(private val view: ICartListView?,
     override fun onError(e: Throwable) {
         e.printStackTrace()
         view?.hideItemLoading()
+        view?.stopAllCartPerformanceTrace();
     }
 
     override fun onNext(recommendationModels: List<RecommendationWidget>) {

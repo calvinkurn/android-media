@@ -1100,7 +1100,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         }
     }
 
-    private void stopAllCartPerformanceTrace() {
+    @Override
+    public void stopAllCartPerformanceTrace() {
         if (!isTraceCartAllStopped && wishLists != null && recentViewList != null && recommendationList != null) {
             cartAllPerformanceMonitoring.stopTrace();
             isTraceCartAllStopped = true;
