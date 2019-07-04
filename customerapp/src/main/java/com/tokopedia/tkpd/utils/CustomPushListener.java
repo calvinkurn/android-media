@@ -134,15 +134,22 @@ public class CustomPushListener extends PushMessageListener {
             }
         }
 
+        ConfigurationProvider configurationProvider = ConfigurationProvider.getInstance(context);
+        configurationProvider.updateNotificationId(NOTIFICATION_ID);
+
         Intent deleteIntent = new Intent(context, NotificationBroadcast.class);
         deleteIntent.setAction(ACTION_DELETE_NOTIFY);
         deleteIntent.putExtra(EXTRA_NOTIFICATION_ID, NOTIFICATION_ID);
         PendingIntent deletePendingIntent = getPendingIntent(context, 107, deleteIntent);
-        remoteView.setOnClickPendingIntent(R.id.image_icon5, deletePendingIntent);
+        remoteView.setOnClickPendingIntent(R.id.lin_container_5, deletePendingIntent);
 
         Intent notificationIntent = new Intent(context, MainParentActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 104, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 104,
+                notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
         remoteView.setOnClickPendingIntent(R.id.image_icon6, contentIntent);
+
+
         builder.setSmallIcon(R.drawable.ic_stat_notify_white)
                 .setCustomContentView(remoteView)
                 .setCustomBigContentView(remoteView)
@@ -230,6 +237,7 @@ public class CustomPushListener extends PushMessageListener {
         Intent intent = new Intent(context, NotificationBroadcast.class);
         intent.setAction(ACTION_PERSISTENT_CLICK);
         intent.putExtra(EXTRA_CAMPAIGN_ID, campaignId);
+        intent.putExtra(EXTRA_NOTIFICATION_ID, NOTIFICATION_ID);
         intent.putExtra(EXTRA_PERSISTENT_ICON_URL, iconUrl);
         intent.putExtra(EXTRA_PERSISTENT_ICON_NAME, iconName);
         intent.putExtra(EXTRA_PERSISTENT_DEEPLINK, deepLink);
