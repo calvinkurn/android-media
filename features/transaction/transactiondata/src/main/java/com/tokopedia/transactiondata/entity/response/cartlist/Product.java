@@ -233,6 +233,10 @@ public class Product {
         return productInvenageValue;
     }
 
+    public ProductInvenageTotal getProductInvenageTotal() {
+        return productInvenageTotal;
+    }
+
     public int getProductSwitchInvenage() {
         return productSwitchInvenage;
     }
