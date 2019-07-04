@@ -20,6 +20,7 @@ import com.tokopedia.groupchat.room.domain.usecase.GetPlayInfoUseCase
 import com.tokopedia.groupchat.room.domain.usecase.GetStickyComponentUseCase
 import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
+import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
@@ -135,14 +136,19 @@ class PlayPresenter @Inject constructor(
         )
     }
 
-    override fun openWebSocket(userSession: UserSessionInterface, channelId: String, groupChatToken: String, settingGroupChat: SettingGroupChat?) {
+    override fun openWebSocket(
+            userSession: UserSessionInterface,
+            channelId: String,
+            groupChatToken: String,
+            settingGroupChat: SettingGroupChat?,
+            refreshInfo: Boolean
+    ) {
         var settings = settingGroupChat ?: SettingGroupChat()
         processUrl(userSession, channelId, groupChatToken, settings)
-        connectWebSocket(userSession.userId, userSession.deviceId, userSession.accessToken, settings, groupChatToken)
-        Log.d("connectev", groupChatToken)
+        connectWebSocket(userSession.accessToken, settings, refreshInfo)
     }
 
-    private fun connectWebSocket(userId: String?, deviceId: String?, accessToken: String, settings: SettingGroupChat, groupChatToken: String) {
+    private fun connectWebSocket(accessToken: String, settings: SettingGroupChat, refreshInfo: Boolean) {
 
         mSubscription?.clear()
         if (mSubscription == null || mSubscription!!.isUnsubscribed) {
@@ -157,7 +163,7 @@ class PlayPresenter @Inject constructor(
                     Log.d("RxWebSocket Presenter", " on WebSocket open")
 //                    showDummy("onOpened $webSocketUrlWithToken", "logger open")
                 }
-                view.onOpenWebSocket()
+                view.onOpenWebSocket(refreshInfo)
             }
 
             override fun onMessage(text: String) {
@@ -189,6 +195,7 @@ class PlayPresenter @Inject constructor(
                         is BackgroundViewModel -> view.onBackgroundUpdated(it)
                         is SprintSaleAnnouncementViewModel -> view.onSprintSaleReceived(it)
                         is StickyComponentViewModel -> view.onStickyComponentReceived(it)
+                        is VideoStreamViewModel -> view.onVideoStreamUpdated(it)
                         else -> {
                             view.addIncomingMessage(it)
                         }

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="@dimen/dp_16">
+
+    <TextView
+        android:id="@+id/il_seo_heading"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:lineSpacingExtra="@dimen/dp_7"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/sp_15"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_default="wrap"
+        tools:text="Dapatkan Pinjaman Tunai Online di Tokopedia, Proses Cepat dan Praktis!" />
+
+
+    <TextView
+        android:id="@+id/il_seo_subheading"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/dp_12"
+        android:lineSpacingExtra="@dimen/dp_7"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintEnd_toEndOf="@+id/il_seo_heading"
+        app:layout_constraintHeight_default="wrap"
+        app:layout_constraintStart_toStartOf="@+id/il_seo_heading"
+        app:layout_constraintTop_toBottomOf="@+id/il_seo_heading"
+        app:layout_constraintWidth_default="wrap"
+        tools:text="Dapatkan Pinjaman Tunai Online di Tokopedia, Proses Cepat dan Praktis!" />
+
+</android.support.constraint.ConstraintLayout>

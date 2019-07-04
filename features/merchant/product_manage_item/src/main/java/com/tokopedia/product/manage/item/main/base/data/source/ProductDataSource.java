@@ -23,11 +23,11 @@ public class ProductDataSource {
         this.productUploadMapper = productUploadMapper;
     }
 
-    public Observable<Boolean> addProductSubmit(ProductViewModel productViewModel) {
+    public Observable<Integer> addProductSubmit(ProductViewModel productViewModel) {
         return productCloud.addProductSubmit(productUploadMapper.removeUnusedParam(productViewModel, true));
     }
 
-    public Observable<Boolean> editProduct(ProductViewModel productViewModel) {
+    public Observable<Integer> editProduct(ProductViewModel productViewModel) {
         //when edit, we don;t remove empty object, because we need to delete the object.
         return productCloud.editProduct(productViewModel.getProductId(), productUploadMapper.removeUnusedParam(productViewModel, false));
     }

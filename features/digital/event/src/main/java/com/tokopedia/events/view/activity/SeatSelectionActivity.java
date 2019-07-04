@@ -43,6 +43,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class SeatSelectionActivity extends EventBaseActivity implements
         SeatSelectionContract.SeatSelectionView {
@@ -78,6 +79,12 @@ public class SeatSelectionActivity extends EventBaseActivity implements
     ProgressBar progBar;
     @BindView(R2.id.main_content)
     FrameLayout mainContent;
+    @BindView(R2.id.tv_seats_available)
+    TextView tvSeatsAvailable;
+    @BindView(R2.id.tv_seats__not_available)
+    TextView tvSeatsNotAvailable;
+    @BindView(R2.id.seats_booking)
+    TextView seatsLooking;
 
     SeatSelectionPresenter seatSelectionPresenter;
 
@@ -128,6 +135,13 @@ public class SeatSelectionActivity extends EventBaseActivity implements
         intentFilter.addAction(EventModuleRouter.ACTION_CLOSE_ACTIVITY);
         LocalBroadcastManager.getInstance(this).registerReceiver(finishReceiver, intentFilter);
         seatSelectionPresenter.getSeatSelectionDetails();
+
+        tvSeatsAvailable.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                (this, R.drawable.seat_bg), null, null, null);
+        tvSeatsNotAvailable.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                (this, R.drawable.cannot_select_seat_bg), null, null, null);
+        seatsLooking.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                (this, R.drawable.currently_selected_seat_bg), null, null, null);
     }
 
     @Override

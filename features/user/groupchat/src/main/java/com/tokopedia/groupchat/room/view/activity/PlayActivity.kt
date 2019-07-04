@@ -1,10 +1,8 @@
 package com.tokopedia.groupchat.room.view.activity
 
 import android.app.Activity
-import android.app.PictureInPictureParams
 import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -28,13 +26,9 @@ import com.tokopedia.groupchat.room.di.DaggerPlayComponent
 import com.tokopedia.groupchat.room.view.adapter.FragmentPagerAdapter
 import com.tokopedia.groupchat.room.view.fragment.BlankFragment
 import com.tokopedia.groupchat.room.view.fragment.PlayFragment
-import com.tokopedia.videoplayer.state.PlayerController
-import com.tokopedia.videoplayer.state.PlayerException
-import com.tokopedia.videoplayer.state.PlayerType
-import com.tokopedia.videoplayer.state.RepeatMode
-import com.tokopedia.videoplayer.utils.sendViewToBack
-import com.tokopedia.videoplayer.view.player.TkpdVideoPlayer
-import com.tokopedia.videoplayer.view.player.VideoPlayerListener
+import com.tokopedia.groupchat.room.view.listener.PlayActivityContract
+import com.tokopedia.groupchat.room.view.presenter.PlayActivityPresenter
+import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
 import kotlinx.android.synthetic.main.play_activity.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -42,7 +36,7 @@ import javax.inject.Inject
 /**
  * @author : Steven 11/02/19
  */
-open class PlayActivity : BaseSimpleActivity(), PlayerViewListener {
+open class PlayActivity : BaseSimpleActivity(), PlayActivityContract.View {
 
     lateinit var rootView: View
     lateinit var viewPager: NonSwipeableViewPager
@@ -51,12 +45,10 @@ open class PlayActivity : BaseSimpleActivity(), PlayerViewListener {
     @Inject
     lateinit var analytics: GroupChatAnalytics
 
-    private val mPictureInPictureParamsBuilder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        PictureInPictureParams.Builder()
-    } else {
-        null
-    }
+    @Inject
+    lateinit var presenter: PlayActivityPresenter
 
+    var channelId: String? = null
 
     override fun getNewFragment(): Fragment? {
         return null
@@ -83,6 +75,10 @@ open class PlayActivity : BaseSimpleActivity(), PlayerViewListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        channelId = intent?.extras?.getString(ApplinkConstant.PARAM_CHANNEL_ID)
+        if(channelId == null) {
+            channelId = intent?.extras?.getString(EXTRA_CHANNEL_UUID)
+        }
         initInjector()
         initView()
     }
@@ -97,47 +93,13 @@ open class PlayActivity : BaseSimpleActivity(), PlayerViewListener {
                 .build()
 
         playComponent.inject(this)
+        presenter.attachView(this)
     }
 
     private fun initView() {
         setupToolbar()
         setFragment()
-    }
-
-    override fun onPlayerActive(isActive: Boolean) {
-        if (isActive) {
-            val urlVideo = "https://scontent-sin6-1.cdninstagram.com/vp/2a1b5cba5df6f097605c516a3c7d58d3/5D1FB5C0/t50.12441-16/55450199_131136041277815_5339080047835994825_n.mp4?_nc_ht=scontent-sin6-1.cdninstagram.com"
-
-            //order playerView into back
-            sendViewToBack(playerView)
-
-            //set layoutParams programmatically for VideoPlayer
-            setVideoPlayerLayoutParams()
-
-            val player = TkpdVideoPlayer.Builder()
-                    .transaction(R.id.playerView, supportFragmentManager)
-                    .videoSource(urlVideo)
-                    /* preventing seekTo, declare videoPlayer with live_stream mode */
-                    .type(PlayerType.LIVE_STREAM)
-                    /* if you have custom controller, turn it off and handle it on listener */
-                    .controller(PlayerController.OFF)
-                    /* repeat video mode after finished */
-                    .repeatMode(RepeatMode.REPEAT_MODE_ALL)
-                    /* handle video player listener */
-                    .listener(object : VideoPlayerListener {
-                        override fun onPlayerStateChanged(playbackState: Int) {
-                            //@references playBackState: com.google.android.exoplayer2.Player
-                        }
-
-                        override fun onPlayerError(error: PlayerException) {
-                            //@references error: com.tokopedia.videoplayer.state.PlayerException
-                        }
-                    })
-                    .build()
-
-            btnResume.setOnClickListener { player.resume() }
-            btnPause.setOnClickListener { player.pause() }
-        }
+        presenter.getVideoStream(channelId, onSuccessGetVideoStream(), onErrorGetVideoStream())
     }
 
     private fun setFragment() {
@@ -147,10 +109,6 @@ open class PlayActivity : BaseSimpleActivity(), PlayerViewListener {
         val fragmentList = ArrayList<Fragment>()
 
         val bundle = Bundle()
-        var channelId = intent?.extras?.getString(ApplinkConstant.PARAM_CHANNEL_ID)
-        if(channelId == null) {
-            channelId = intent?.extras?.getString(EXTRA_CHANNEL_UUID)
-        }
         val useGCP = intent?.extras?.getString(EXTRA_USE_GCP, "false")
         useGCP?.run{
             bundle.putBoolean(EXTRA_USE_GCP, this.toBoolean())
@@ -165,6 +123,8 @@ open class PlayActivity : BaseSimpleActivity(), PlayerViewListener {
         viewPager.currentItem = 1
 
         viewPager.swipeable = false
+
+
     }
 
     private fun setupToolbar() {
@@ -181,20 +141,6 @@ open class PlayActivity : BaseSimpleActivity(), PlayerViewListener {
         }
 
         removePaddingStatusBar()
-    }
-
-    private fun setVideoPlayerLayoutParams() {
-        val layoutParams = playerView.layoutParams
-
-        val displayMetrics = DisplayMetrics()
-        windowManager.defaultDisplay.getMetrics(displayMetrics)
-        val height = displayMetrics.heightPixels
-        val width = displayMetrics.widthPixels
-
-        layoutParams.height = height
-        layoutParams.width = width
-
-        playerView.layoutParams = layoutParams
     }
 
     private fun removePaddingStatusBar() {
@@ -278,23 +224,14 @@ open class PlayActivity : BaseSimpleActivity(), PlayerViewListener {
         }
     }
 
-    override fun onUserLeaveHint() {
-        super.onUserLeaveHint()
-        minimize()
-    }
-
-    private fun minimize() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            enterPictureInPictureMode(mPictureInPictureParamsBuilder?.build())
+    private fun onSuccessGetVideoStream(): (VideoStreamViewModel) -> Unit {
+        return {
         }
     }
 
-    override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration?) {
-        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
-        if(isInPictureInPictureMode) {
-            viewPager.visibility = View.GONE
-        } else {
-            viewPager.visibility = View.VISIBLE
+    private fun onErrorGetVideoStream(): (String) -> Unit {
+        return {
+
         }
     }
 
