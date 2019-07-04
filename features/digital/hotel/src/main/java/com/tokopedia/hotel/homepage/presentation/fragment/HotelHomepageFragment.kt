@@ -28,15 +28,13 @@ import com.tokopedia.hotel.homepage.presentation.model.viewmodel.HotelHomepageVi
 import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomSheets
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity
-import com.tokopedia.travelcalendar.view.bottomsheet.TravelCalendarBottomSheet
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_homepage.*
 import java.util.*
 import javax.inject.Inject
 import android.support.v7.widget.RecyclerView
-import android.util.Log
-import com.tokopedia.hotel.homepage.presentation.widget.HotelCalendarDialog
+import com.tokopedia.hotel.common.presentation.widget.hotelcalendar.HotelCalendarDialog
 
 /**
  * @author by furqan on 28/03/19
