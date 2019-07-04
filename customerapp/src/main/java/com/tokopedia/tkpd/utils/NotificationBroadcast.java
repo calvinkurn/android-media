@@ -21,6 +21,7 @@ public class NotificationBroadcast extends BroadcastReceiver {
             if (null == action)
                 return;
             int notificationId = intent.getExtras().getInt(CustomPushListener.EXTRA_NOTIFICATION_ID);
+            System.out.println("NotificationBroadcast " + action + " id:" + notificationId);
             switch (action) {
                 case CustomPushListener.ACTION_DELETE_NOTIFY:
                     cancelNotification(context, notificationId);
