@@ -95,7 +95,7 @@ checkVersion( ) {
     echo "${!VERSIONNAME}"
 }
 
-test( ) {
+chooseEnvironment( ) {
 
     if [ -z "$1" ] && [ "$1" != "aar" ] && [ "$1" != "module" ]; then
         echo "Please choose environment! [aar/module]"
@@ -121,9 +121,9 @@ elif [ $1 = "commit" ]; then
 elif [ $1 = "push" ]; then
     push
 elif [ $1 = "checkver" ]; then
-     checkVersion $2
+    checkVersion $2
 elif [ $1 = "devwith" ]; then
-    test $2
+    chooseEnvironment $2
 else
     help
 fi
