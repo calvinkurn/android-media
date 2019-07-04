@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.IntentSender
 import android.location.LocationManager
 import android.provider.Settings
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.google.android.gms.common.api.ApiException
@@ -16,7 +15,6 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.LocationSettingsStatusCodes
 import com.google.android.gms.tasks.OnFailureListener
-import com.tokopedia.analytics.debugger.ui.fragment.AnalyticsDebuggerFragment
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.logisticaddaddress.AddressConstants
@@ -98,13 +96,11 @@ class LocationInfoBottomSheetFragment : BottomSheets() {
                                     val rae = e as ResolvableApiException
                                     rae.startResolutionForResult(context, AddressConstants.GPS_REQUEST)
                                 } catch (sie: IntentSender.SendIntentException) {
-                                    Log.i(AnalyticsDebuggerFragment.TAG, "PendingIntent unable to execute request.")
+                                    sie.printStackTrace()
                                 }
 
                             LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
                                 val errorMessage = "Location settings are inadequate, and cannot be " + "fixed here. Fix in Settings."
-                                Log.e(AnalyticsDebuggerFragment.TAG, errorMessage)
-
                                 Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
                             }
                         }

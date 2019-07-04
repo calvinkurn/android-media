@@ -122,7 +122,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
     }
 
     private fun setViewListener() {
-        if (currentSearch?.isNotEmpty()!!) {
+        if (currentSearch?.isNotEmpty() == true) {
             etSearch.apply {
                 setText(currentSearch.toString())
                 setSelectAllOnFocus(true)
@@ -130,7 +130,9 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
                 setSelection(etSearch.text.length)
                 showKeyboard()
             }
-            loadAutocomplete(currentSearch!!)
+            currentSearch?.let {
+                loadAutocomplete(it)
+            }
         } else {
             if (currentLat != 0.0 && currentLong != 0.0) {
                 doLoadAutocompleteGeocode()

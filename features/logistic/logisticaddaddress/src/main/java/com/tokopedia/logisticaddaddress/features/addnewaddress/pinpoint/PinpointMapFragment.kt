@@ -1,6 +1,5 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
@@ -14,10 +13,8 @@ import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.CoordinatorLayout
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.*
 import android.widget.EditText
-import android.widget.Toast
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.CameraPosition
@@ -28,7 +25,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.Dialog
-import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.logisticaddaddress.AddressConstants
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressComponent
@@ -282,11 +278,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         bottomSheetBehavior?.isHideable = false
         this.googleMap?.setOnCameraMoveListener { onMapDraggedListener() }
         this.googleMap?.setOnCameraIdleListener { onMapIdleListener() }
-
-        /*val locationButton = map_view.findViewWithTag<ImageView>("GoogleMapMyLocationButton")
-        val layoutParams = locationButton.layoutParams as RelativeLayout.LayoutParams
-        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-        layoutParams.setMargins(0, 0, 30, 10);*/
     }
 
     private fun onMapDraggedListener() {
@@ -610,16 +601,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             }
             return@OnTouchListener false
         })
-    }
-
-    private fun logView(viewGroup: ViewGroup) {
-        for (i in 0 until viewGroup.childCount) {
-            val child = viewGroup.getChildAt(i)
-            Log.d("##LOGVIEW",child.toString() + " ID: ${child.id} TAG: ${child.tag}")
-            if (child is ViewGroup) {
-                logView(child)
-            }
-        }
     }
 
     private var onGlobalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener = ViewTreeObserver.OnGlobalLayoutListener {
