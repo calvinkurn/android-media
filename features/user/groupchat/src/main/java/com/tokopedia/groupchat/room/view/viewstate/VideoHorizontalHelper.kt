@@ -6,6 +6,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 
 /**
  * @author : Steven 28/05/19
@@ -17,6 +18,7 @@ class VideoHorizontalHelper(
         private var videoContainer: View,
         private var youTubePlayer: YouTubePlayer?,
         private var setChatListHasSpaceOnTop: (Boolean) -> Unit,
+        private var liveIndicator: View,
         analytics: GroupChatAnalytics
 ): PlayBaseHelper(model) {
 
@@ -34,7 +36,7 @@ class VideoHorizontalHelper(
     fun showVideo() {
         showVideoToggle.hide()
         hideVideoToggle.show()
-        videoContainer.visibility = View.VISIBLE
+        videoContainer.show()
         setChatListHasSpaceOnTop.invoke(false)
     }
 
@@ -42,11 +44,23 @@ class VideoHorizontalHelper(
         hideVideoToggle.hide()
         showVideoToggle.show()
         youTubePlayer?.pause()
-        videoContainer.visibility = View.GONE
+        videoContainer.hide()
         setChatListHasSpaceOnTop.invoke(true)
+        liveIndicator.hide()
     }
 
     fun assignPlayer(youTubePlayer: YouTubePlayer) {
         this.youTubePlayer = youTubePlayer
+    }
+
+    fun hideToggle() {
+        showVideoToggle.hide()
+        hideVideoToggle.hide()
+    }
+
+    fun showVideoOnly(videoLive: Boolean) {
+        showVideo()
+        hideToggle()
+        liveIndicator.showWithCondition(videoLive)
     }
 }

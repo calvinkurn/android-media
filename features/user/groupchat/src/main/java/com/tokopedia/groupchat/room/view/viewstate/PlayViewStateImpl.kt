@@ -58,6 +58,7 @@ import com.tokopedia.groupchat.room.view.fragment.PlayWebviewDialogFragment
 import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
+import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -94,6 +95,7 @@ open class PlayViewStateImpl(
     private var viewModel: ChannelInfoViewModel? = null
     private var stickyComponentViewModel: StickyComponentViewModel? = null
     private var dynamicButtonsViewModel: DynamicButtonsViewModel? = null
+    private var videoStreamViewModel: VideoStreamViewModel? = null
     private var listMessage: ArrayList<Visitable<*>> = arrayListOf()
 
     private var quickReplyAdapter: QuickReplyAdapter
@@ -153,7 +155,7 @@ open class PlayViewStateImpl(
 
     private var interactionAnimationHelper: InteractionAnimationHelper
     private var overflowMenuHelper: OverflowMenuHelper
-    private var videoBufferHelper: VideoBufferHelper
+    private var videoVerticalHelper: VideoVerticalHelper
     private var videoHorizontalHelper: VideoHorizontalHelper
     private var sponsorHelper: SponsorHelper
     private var welcomeHelper: PlayWelcomeHelper
@@ -256,14 +258,13 @@ open class PlayViewStateImpl(
 
         interactionAnimationHelper = InteractionAnimationHelper(interactionGuideline)
         overflowMenuHelper = OverflowMenuHelper(viewModel, activity, onInfoMenuClicked(), toggleHorizontalVideo(), videoContainer)
-        videoBufferHelper = VideoBufferHelper(bufferContainer, bufferDimContainer)
-        videoHorizontalHelper = VideoHorizontalHelper(viewModel, hideVideoToggle, showVideoToggle, videoContainer, youTubePlayer, setChatListHasSpaceOnTop(), analytics)
+        videoVerticalHelper = VideoVerticalHelper(bufferContainer, bufferDimContainer)
+        videoHorizontalHelper = VideoHorizontalHelper(viewModel, hideVideoToggle, showVideoToggle, videoContainer, youTubePlayer, setChatListHasSpaceOnTop(), liveIndicator, analytics)
         sponsorHelper = SponsorHelper(viewModel, sponsorLayout, sponsorImage, analytics, listener)
         welcomeHelper = PlayWelcomeHelper(viewModel, analytics, activity, view)
 
         errorView.setOnClickListener {}
     }
-
 
     override fun onDynamicButtonUpdated(it: DynamicButtonsViewModel) {
         viewModel?.let { viewModel ->
@@ -528,8 +529,18 @@ open class PlayViewStateImpl(
             sponsorHelper.assignViewModel(viewModel)
             sponsorHelper.setSponsor()
             overflowMenuHelper.assignViewModel(viewModel)
+//            videoVerticalHelper.hideVideo()
         }
     }
+
+
+    override fun onVideoStreamUpdated(it: VideoStreamViewModel) {
+//        videoVerticalHelper.assignViewModel(it)
+        videoHorizontalHelper.hideVideo()
+        videoHorizontalHelper.hideToggle()
+    }
+
+
 
     override fun onChannelFrozen(channelId: String) {
         viewModel?.let { viewModel ->
@@ -805,11 +816,8 @@ open class PlayViewStateImpl(
     }
 
     fun initVideoFragment(videoId: String, isVideoLive: Boolean) {
-        videoContainer.hide()
-        liveIndicator.hide()
-        hideVideoToggle.hide()
-        showVideoToggle.hide()
-        setChatListHasSpaceOnTop().invoke(true)
+        videoHorizontalHelper.hideVideo()
+        videoHorizontalHelper.hideToggle()
         videoId.let {
             if (it.isEmpty()) {
                 listener.onVerticalVideo(true)
@@ -817,10 +825,8 @@ open class PlayViewStateImpl(
             }
             val videoFragment = fragmentManager.findFragmentById(R.id.video_container) as GroupChatVideoFragment
             videoFragment.run {
-                videoContainer.show()
+                videoHorizontalHelper.showVideoOnly(isVideoLive)
                 sponsorHelper.hideSponsor()
-                setChatListHasSpaceOnTop().invoke(false)
-                liveIndicator.showWithCondition(isVideoLive)
                 youTubePlayer?.let {
                     if (videoId != viewModel?.videoId) {
                         it.cueVideo(videoId)

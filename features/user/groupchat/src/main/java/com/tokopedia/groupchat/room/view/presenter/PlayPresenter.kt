@@ -20,6 +20,7 @@ import com.tokopedia.groupchat.room.domain.usecase.GetPlayInfoUseCase
 import com.tokopedia.groupchat.room.domain.usecase.GetStickyComponentUseCase
 import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
+import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
@@ -194,6 +195,7 @@ class PlayPresenter @Inject constructor(
                         is BackgroundViewModel -> view.onBackgroundUpdated(it)
                         is SprintSaleAnnouncementViewModel -> view.onSprintSaleReceived(it)
                         is StickyComponentViewModel -> view.onStickyComponentReceived(it)
+                        is VideoStreamViewModel -> view.onVideoStreamUpdated(it)
                         else -> {
                             view.addIncomingMessage(it)
                         }

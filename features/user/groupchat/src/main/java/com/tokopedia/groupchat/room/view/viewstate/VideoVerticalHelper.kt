@@ -16,7 +16,7 @@ import com.tokopedia.kotlin.extensions.view.show
 /**
  * @author : Steven 28/05/19
  */
-class VideoBufferHelper(var bufferContainer: View, var bufferDimContainer: View) {
+class VideoVerticalHelper(var bufferContainer: View, var bufferDimContainer: View) {
 
     private var bufferLoading = bufferContainer.findViewById<ProgressBar>(R.id.buffer_progress_bar)
     private var bufferText = bufferContainer.findViewById<TextView>(R.id.buffer_text)

@@ -9,6 +9,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
+import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
 
 /**
@@ -62,4 +63,5 @@ interface PlayViewState {
     fun onInteractiveButtonClicked(anchorView: LottieAnimationView)
     fun onInteractiveButtonViewed(anchorView: LottieAnimationView)
     fun onOverflowMenuClicked()
+    fun onVideoStreamUpdated(it: VideoStreamViewModel)
 }

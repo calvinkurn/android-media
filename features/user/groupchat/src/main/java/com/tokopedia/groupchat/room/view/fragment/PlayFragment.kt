@@ -40,6 +40,7 @@ import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.groupchat.room.view.presenter.PlayPresenter
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
+import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
 import com.tokopedia.groupchat.room.view.viewstate.PlayViewState
 import com.tokopedia.groupchat.room.view.viewstate.PlayViewStateImpl
@@ -520,6 +521,10 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun onVideoUpdated(it: VideoViewModel) {
         viewState.onVideoUpdated(it)
+    }
+
+    override fun onVideoStreamUpdated(it: VideoStreamViewModel) {
+        viewState.onVideoStreamUpdated(it)
     }
 
     override fun handleEvent(it: EventGroupChatViewModel) {
