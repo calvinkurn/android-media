@@ -55,7 +55,7 @@ public class Wishlist implements Parcelable {
     public int reviewCount;
     @SerializedName("category_breadcrumb")
     @Expose
-    public String categoryBreadcrumb;
+    public String categoryBreadcrumb = "";
 
     public List<Label> getLabels() {
         return labels;

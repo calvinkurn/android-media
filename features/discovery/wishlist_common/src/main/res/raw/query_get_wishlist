@@ -3,6 +3,7 @@ query wishlist($page: Int, $count: Int){
       has_next_page
       total_data
       items {
+        category_breadcrumb
         id
         name
         url
@@ -15,7 +16,6 @@ query wishlist($page: Int, $count: Int){
         minimum_order
         rating
         review_count
-        category_breadcrumb
         wholesale_price {
           minimum
           maximum
