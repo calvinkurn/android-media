@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
-import android.graphics.Point
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -71,7 +70,6 @@ open class PlayActivity : BaseSimpleActivity(), PlayerViewListener {
         super.onStart()
         analytics.sendScreen(this, screenName)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
     }
 
     override fun getScreenName(): String {
@@ -108,7 +106,7 @@ open class PlayActivity : BaseSimpleActivity(), PlayerViewListener {
 
     override fun onPlayerActive(isActive: Boolean) {
         if (isActive) {
-            val sourceUrl = "https://scontent-sin6-1.cdninstagram.com/vp/cb4297650b392eab52095d911a1a17dc/5D1C8FA4/t50.12441-16/53306725_332584844027284_3716503313000746737_n.mp4?_nc_ht=scontent-sin6-1.cdninstagram.com"
+            val urlVideo = "https://scontent-sin6-1.cdninstagram.com/vp/2a1b5cba5df6f097605c516a3c7d58d3/5D1FB5C0/t50.12441-16/55450199_131136041277815_5339080047835994825_n.mp4?_nc_ht=scontent-sin6-1.cdninstagram.com"
 
             //order playerView into back
             sendViewToBack(playerView)
@@ -116,9 +114,9 @@ open class PlayActivity : BaseSimpleActivity(), PlayerViewListener {
             //set layoutParams programmatically for VideoPlayer
             setVideoPlayerLayoutParams()
 
-            TkpdVideoPlayer.Builder()
+            val player = TkpdVideoPlayer.Builder()
                     .transaction(R.id.playerView, supportFragmentManager)
-                    .videoSource(sourceUrl)
+                    .videoSource(urlVideo)
                     /* preventing seekTo, declare videoPlayer with live_stream mode */
                     .type(PlayerType.LIVE_STREAM)
                     /* if you have custom controller, turn it off and handle it on listener */
@@ -136,6 +134,9 @@ open class PlayActivity : BaseSimpleActivity(), PlayerViewListener {
                         }
                     })
                     .build()
+
+            btnResume.setOnClickListener { player.resume() }
+            btnPause.setOnClickListener { player.pause() }
         }
     }
 
@@ -183,12 +184,12 @@ open class PlayActivity : BaseSimpleActivity(), PlayerViewListener {
     }
 
     private fun setVideoPlayerLayoutParams() {
-        val display = windowManager.defaultDisplay
         val layoutParams = playerView.layoutParams
-        val size = Point()
-        display.getSize(size)
-        val width = size.x
-        val height = size.y
+
+        val displayMetrics = DisplayMetrics()
+        windowManager.defaultDisplay.getMetrics(displayMetrics)
+        val height = displayMetrics.heightPixels
+        val width = displayMetrics.widthPixels
 
         layoutParams.height = height
         layoutParams.width = width
