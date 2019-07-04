@@ -64,7 +64,7 @@ public class DrawerSellerHelper extends DrawerHelper
     private ImageView shopIcon;
     private View shopLayout;
     private View footerShadow;
-    private DrawerItem drawerItem;
+    private DrawerItem powerMerchantDrawerItem;
 
     private SessionHandler sessionHandler;
 
@@ -94,7 +94,7 @@ public class DrawerSellerHelper extends DrawerHelper
     public ArrayList<DrawerItem> createDrawerData() {
         initRemoteConfig();
         ArrayList<DrawerItem> data = new ArrayList<>();
-        drawerItem = getInstance();
+        powerMerchantDrawerItem = getInstance();
 
         data.add(new DrawerItem(context.getString(R.string.drawer_title_home),
                 R.drawable.icon_home,
@@ -106,9 +106,9 @@ public class DrawerSellerHelper extends DrawerHelper
         data.add(getProductMenu());
 
         if (!((SellerDrawerAdapter) adapter).isOfficialStore()) {
-            data.add(drawerItem);
+            data.add(powerMerchantDrawerItem);
         } else {
-            data.remove(drawerItem);
+            data.remove(powerMerchantDrawerItem);
         }
         data.add(new DrawerItem(context.getString(R.string.drawer_title_top_ads),
                 R.drawable.ic_top_ads,
@@ -540,12 +540,12 @@ public class DrawerSellerHelper extends DrawerHelper
     }
 
     private DrawerItem getInstance() {
-        if (drawerItem == null) {
-            drawerItem = new DrawerItem(context.getString(R.string.pm_title),
+        if (powerMerchantDrawerItem == null) {
+            powerMerchantDrawerItem = new DrawerItem(context.getString(R.string.pm_title),
                     R.drawable.ic_pm_badge_shop_regular,
                     TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND,
                     true);
         }
-        return drawerItem;
+        return powerMerchantDrawerItem;
     }
 }
