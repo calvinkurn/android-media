@@ -11,7 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.Player.*
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ext.rtmp.RtmpDataSourceFactory
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.source.ExtractorMediaSource
@@ -25,6 +25,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.videoplayer.R
 import com.tokopedia.videoplayer.state.*
+import com.tokopedia.videoplayer.state.Player.Companion.STATE_BUFFERING
+import com.tokopedia.videoplayer.state.Player.Companion.STATE_READY
 import com.tokopedia.videoplayer.state.RepeatMode
 import com.tokopedia.videoplayer.utils.*
 import kotlinx.android.synthetic.main.fragment_video_player.*
