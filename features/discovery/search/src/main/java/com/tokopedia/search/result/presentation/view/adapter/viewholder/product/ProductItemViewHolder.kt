@@ -69,7 +69,7 @@ abstract class ProductItemViewHolder(
 
         setImageProductUrl(productItem)
 
-        getProductCardView()?.setImageProductViewHintListener(productItem){
+        getProductCardView()?.setImageProductViewHintListener(productItem) {
             productListener.onProductImpressed(productItem, adapterPosition)
         }
     }

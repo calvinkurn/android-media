@@ -20,7 +20,7 @@ import com.tokopedia.topads.sdk.view.ImpressedImageView
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
-abstract class ProductCardViewKt: BaseCustomView {
+abstract class ProductCardView: BaseCustomView {
 
     companion object {
         protected const val LIGHT_GREY = "lightGrey"
@@ -114,6 +114,10 @@ abstract class ProductCardViewKt: BaseCustomView {
         imageProduct?.setViewHintListener(holder, listener)
     }
 
+    fun setImageProductViewHintListener(holder: ImpressHolder, viewHintListener: () -> Unit) {
+        imageProduct?.setViewHintListener(holder, viewHintListener)
+    }
+
     fun setButtonWishlistVisible(isVisible: Boolean) {
         buttonWishlist?.visibility = if (isVisible) View.VISIBLE else View.GONE
     }
@@ -126,7 +130,7 @@ abstract class ProductCardViewKt: BaseCustomView {
         }
     }
 
-    fun setButtonWishlistOnClickListener(onClickListener: View.OnClickListener) {
+    fun setButtonWishlistOnClickListener(onClickListener: (view: View) -> Unit) {
         buttonWishlist?.setOnClickListener(onClickListener)
     }
 

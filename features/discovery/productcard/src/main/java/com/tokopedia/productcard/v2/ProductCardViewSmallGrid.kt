@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.productcard.R
 import com.tokopedia.unifycomponents.Label
 
-class ProductCardViewSmallGridKt: ProductCardViewKt {
+class ProductCardViewSmallGrid: ProductCardView {
 
     private var imageShop: ImageView? = null
 
