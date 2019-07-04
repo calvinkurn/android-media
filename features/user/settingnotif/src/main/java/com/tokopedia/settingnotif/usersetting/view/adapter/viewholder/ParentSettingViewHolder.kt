@@ -69,14 +69,20 @@ class ParentSettingViewHolder(
         settingListener.updateSettingView(childToChangeAdapterIndex)
     }
 
-    override fun getUpdatedSettingIds(element: ParentSetting, checked: Boolean): Map<String, Boolean> {
-        val settingToChange = HashMap<String, Boolean>()
-        element.childSettings.forEach { childSetting ->
-            if (childSetting != null) {
-                settingToChange[childSetting.key] = checked
+    override fun getUpdatedSettingIds(element: ParentSetting, checked: Boolean): List<Map<String, Any>> {
+        val settingsToChange = arrayListOf<Map<String, Any>>()
+        if (element.hasChild()) {
+            element.childSettings.forEach { childSetting ->
+                if (childSetting != null) {
+                    val setting = getMapSettingToChange(childSetting, checked)
+                    settingsToChange.add(setting)
+                }
             }
+        } else {
+            val setting = getMapSettingToChange(element, checked)
+            settingsToChange.add(setting)
         }
-        return settingToChange
+        return settingsToChange
     }
 
     companion object {

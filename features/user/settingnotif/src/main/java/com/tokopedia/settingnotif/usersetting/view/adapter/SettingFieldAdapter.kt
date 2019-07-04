@@ -8,10 +8,16 @@ import com.tokopedia.settingnotif.usersetting.domain.pojo.ParentSetting
 import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SettingViewHolder
 
 class SettingFieldAdapter<T : Visitable<SettingFieldTypeFactory>>(
+        private val notificationType: String,
+        private val settingFieldAdapterListener: SettingFieldAdapterListener,
         private val baseListAdapterTypeFactory: SettingFieldTypeFactory,
         onAdapterInteractionListener: OnAdapterInteractionListener<T>?
 ) : BaseListAdapter<T, SettingFieldTypeFactory>(baseListAdapterTypeFactory, onAdapterInteractionListener),
         SettingViewHolder.SettingListener {
+
+    interface SettingFieldAdapterListener {
+        fun requestUpdateUserSetting(notificationType: String, updatedSettingIds: List<Map<String, Any>>)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<out Visitable<*>> {
         val view = onCreateViewItem(parent, viewType)
@@ -34,4 +40,11 @@ class SettingFieldAdapter<T : Visitable<SettingFieldTypeFactory>>(
         return null
     }
 
+    override fun getNotificationType(): String {
+        return notificationType
+    }
+
+    override fun requestUpdateUserSetting(notificationType: String, updatedSettingIds: List<Map<String, Any>>) {
+        settingFieldAdapterListener.requestUpdateUserSetting(notificationType, updatedSettingIds)
+    }
 }

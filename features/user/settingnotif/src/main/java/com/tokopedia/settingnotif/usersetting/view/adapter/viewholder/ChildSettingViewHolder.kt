@@ -46,10 +46,10 @@ class ChildSettingViewHolder(
         }
     }
 
-    override fun getUpdatedSettingIds(element: ChildSetting, checked: Boolean): Map<String, Boolean> {
-        return HashMap<String, Boolean>().apply {
-            put(element.key, checked)
-        }
+    override fun getUpdatedSettingIds(element: ChildSetting, checked: Boolean): List<Map<String, Any>> {
+        return listOf(
+                getMapSettingToChange(element, checked)
+        )
     }
 
     companion object {

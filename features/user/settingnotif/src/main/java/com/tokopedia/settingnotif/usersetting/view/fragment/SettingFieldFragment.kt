@@ -12,8 +12,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.settingnotif.usersetting.di.DaggerUserSettingComponent
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+import com.tokopedia.settingnotif.usersetting.di.DaggerUserSettingComponent
 import com.tokopedia.settingnotif.usersetting.di.UserSettingModule
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldAdapter
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldTypeFactory
@@ -24,7 +24,10 @@ import com.tokopedia.settingnotif.usersetting.widget.NotifSettingBigDividerDecor
 import com.tokopedia.settingnotif.usersetting.widget.NotifSettingDividerDecoration
 import javax.inject.Inject
 
-abstract class SettingFieldFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), SettingFieldContract.View {
+abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
+        BaseAdapterTypeFactory>(),
+        SettingFieldAdapter.SettingFieldAdapterListener,
+        SettingFieldContract.View {
 
     @Inject
     lateinit var presenter: SettingFieldContract.Presenter
@@ -68,8 +71,19 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>, BaseAdapter
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
-        val adapter = SettingFieldAdapter<Visitable<SettingFieldTypeFactory>>(adapterTypeFactory as SettingFieldTypeFactory, null)
+        val adapter = SettingFieldAdapter<Visitable<SettingFieldTypeFactory>>(
+                getNotificationType(),
+                this,
+                adapterTypeFactory as SettingFieldTypeFactory,
+                null
+        )
         return adapter as BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>
+    }
+
+    abstract fun getNotificationType(): String
+
+    override fun requestUpdateUserSetting(notificationType: String, updatedSettingIds: List<Map<String, Any>>) {
+        presenter.requestUpdateUserSetting(notificationType, updatedSettingIds)
     }
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {

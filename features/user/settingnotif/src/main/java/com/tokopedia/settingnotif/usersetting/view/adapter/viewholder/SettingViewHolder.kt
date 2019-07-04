@@ -13,11 +13,16 @@ abstract class SettingViewHolder<T : BaseSetting>(
 
     protected val settingSwitch: Switch? = getSwitchView(itemView)
 
+    private val PARAM_SETTING_KEY = "name"
+    private val PARAM_SETTING_VALUE = "value"
+
     abstract fun getSwitchView(itemView: View?): Switch?
 
     interface SettingListener {
         fun updateSettingView(positions: List<Int>)
         fun getParentSetting(childAdapterPosition: Int): Pair<ParentSetting, Int>?
+        fun getNotificationType(): String
+        fun requestUpdateUserSetting(notificationType: String, updatedSettingIds: List<Map<String, Any>>)
     }
 
     override fun bind(element: T?) {
@@ -45,10 +50,19 @@ abstract class SettingViewHolder<T : BaseSetting>(
     abstract fun updateSiblingAndChild(element: T, checked: Boolean)
 
     private fun updateUserSetting(element: T, checked: Boolean) {
-        val updatedSettingId: Map<String, Boolean> = getUpdatedSettingIds(element, checked)
+        val notificationType: String = settingListener.getNotificationType()
+        val updatedSettingIds: List<Map<String, Any>> = getUpdatedSettingIds(element, checked)
+        settingListener.requestUpdateUserSetting(notificationType, updatedSettingIds)
     }
 
-    abstract fun getUpdatedSettingIds(element: T, checked: Boolean): Map<String, Boolean>
+    protected fun getMapSettingToChange(element: BaseSetting, checked: Boolean) : Map<String, Any> {
+        return mapOf(
+                Pair(PARAM_SETTING_KEY, element.key),
+                Pair(PARAM_SETTING_VALUE, checked)
+        )
+    }
+
+    abstract fun getUpdatedSettingIds(element: T, checked: Boolean): List<Map<String, Any>>
 
     companion object {
         val PAYLOAD_SWITCH = "payload_switch"

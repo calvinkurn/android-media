@@ -13,6 +13,7 @@ interface SettingFieldContract {
 
     interface Presenter : CustomerPresenter<View> {
         fun loadUserSettings()
+        fun requestUpdateUserSetting(notificationType: String, updatedSettingIds: List<Map<String, Any>>)
     }
 
 }
