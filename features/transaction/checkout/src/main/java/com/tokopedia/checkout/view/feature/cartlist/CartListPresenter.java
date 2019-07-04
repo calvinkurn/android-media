@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.checkout.domain.datamodel.DeleteAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.ResetAndRefreshCartListData;
+import com.tokopedia.checkout.domain.datamodel.addtocart.AddToCartDataResponseModel;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
@@ -1251,24 +1252,23 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public Map<String, Object> generateAddToCartEnhanceEcommerceDataLayer(CartWishlistItemHolderData cartWishlistItemHolderData) {
+    public Map<String, Object> generateAddToCartEnhanceEcommerceDataLayer(CartWishlistItemHolderData cartWishlistItemHolderData,
+                                                                          AddToCartDataResponseModel addToCartDataResponseModel) {
         Map<String, Object> stringObjectMap = new HashMap<>();
         EnhancedECommerceActionField enhancedECommerceActionField = new EnhancedECommerceActionField();
         enhancedECommerceActionField.setList(EnhancedECommerceActionField.LIST_WISHLIST);
         EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData = new EnhancedECommerceProductCartMapData();
         enhancedECommerceProductCartMapData.setProductName(cartWishlistItemHolderData.getName());
         enhancedECommerceProductCartMapData.setProductID(cartWishlistItemHolderData.getId());
-        enhancedECommerceProductCartMapData.setPrice(cartWishlistItemHolderData.getPrice());
-//        enhancedECommerceProductCartMapData.setCategory();
-//        enhancedECommerceProductCartMapData.setVariant();
+        enhancedECommerceProductCartMapData.setPrice(cartWishlistItemHolderData.getRawPrice());
+        enhancedECommerceProductCartMapData.setCategory(cartWishlistItemHolderData.getCategory());
         enhancedECommerceProductCartMapData.setQty(cartWishlistItemHolderData.getMinOrder());
         enhancedECommerceProductCartMapData.setShopId(cartWishlistItemHolderData.getShopId());
-//        enhancedECommerceProductCartMapData.setShopType();
+        enhancedECommerceProductCartMapData.setShopType(cartWishlistItemHolderData.getShopType());
         enhancedECommerceProductCartMapData.setShopName(cartWishlistItemHolderData.getShopName());
-//        enhancedECommerceProductCartMapData.pictureUrl();
-//        enhancedECommerceProductCartMapData.setUrl();
-//        enhancedECommerceProductCartMapData.setCategoryId();
-//        enhancedECommerceProductCartMapData.setDimension45();
+        enhancedECommerceProductCartMapData.setPicture(cartWishlistItemHolderData.getImageUrl());
+        enhancedECommerceProductCartMapData.setUrl(cartWishlistItemHolderData.getUrl());
+        enhancedECommerceProductCartMapData.setDimension45(String.valueOf(addToCartDataResponseModel.getData().getCartId()));
 
         EnhancedECommerceAdd enhancedECommerceAdd = new EnhancedECommerceAdd();
         enhancedECommerceAdd.setActionField(enhancedECommerceActionField.getActionFieldMap());
@@ -1280,7 +1280,8 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public Map<String, Object> generateAddToCartEnhanceEcommerceDataLayer(CartRecentViewItemHolderData cartRecentViewItemHolderData) {
+    public Map<String, Object> generateAddToCartEnhanceEcommerceDataLayer(CartRecentViewItemHolderData cartRecentViewItemHolderData,
+                                                                          AddToCartDataResponseModel addToCartDataResponseModel) {
         Map<String, Object> stringObjectMap = new HashMap<>();
         EnhancedECommerceActionField enhancedECommerceActionField = new EnhancedECommerceActionField();
         enhancedECommerceActionField.setList(EnhancedECommerceActionField.LIST_RECENT_VIEW);
@@ -1309,7 +1310,8 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public Map<String, Object> generateAddToCartEnhanceEcommerceDataLayer(CartRecommendationItemHolderData cartRecommendationItemHolderData) {
+    public Map<String, Object> generateAddToCartEnhanceEcommerceDataLayer(CartRecommendationItemHolderData cartRecommendationItemHolderData,
+                                                                          AddToCartDataResponseModel addToCartDataResponseModel) {
         Map<String, Object> stringObjectMap = new HashMap<>();
         EnhancedECommerceActionField enhancedECommerceActionField = new EnhancedECommerceActionField();
         enhancedECommerceActionField.setList(EnhancedECommerceActionField.LIST_RECOMMENDATION);
@@ -1333,7 +1335,7 @@ public class CartListPresenter implements ICartListPresenter {
         enhancedECommerceAdd.addProduct(enhancedECommerceProductCartMapData.getProduct());
 
         stringObjectMap.put("currencyCode", "IDR");
-        stringObjectMap.put(EnhancedECommerceAdd.Companion.getKEY_ADD(), enhancedECommerceAdd.getAddMap());
+        stringObjectMap.put(EnhancedECommerceAdd.getKEY_ADD(), enhancedECommerceAdd.getAddMap());
         return stringObjectMap;
     }
 }

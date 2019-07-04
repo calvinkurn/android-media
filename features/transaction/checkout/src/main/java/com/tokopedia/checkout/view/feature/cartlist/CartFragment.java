@@ -37,7 +37,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.domain.datamodel.addtocart.AddToCartDataModel;
+import com.tokopedia.checkout.domain.datamodel.addtocart.AddToCartDataResponseModel;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
@@ -1959,15 +1959,25 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 CartWishlistItemHolderData cartWishlistItemHolderData = new CartWishlistItemHolderData();
                 cartWishlistItemHolderData.setId(item.getId());
                 cartWishlistItemHolderData.setName(item.getName());
+                cartWishlistItemHolderData.setRawPrice(String.valueOf(item.getPrice()));
                 cartWishlistItemHolderData.setPrice(item.getPriceFmt());
                 cartWishlistItemHolderData.setImageUrl(item.getImageUrl());
+                cartWishlistItemHolderData.setUrl(item.getUrl());
                 cartWishlistItemHolderData.setWishlist(true);
                 cartWishlistItemHolderData.setRating(item.rating);
                 cartWishlistItemHolderData.setReviewCount(item.reviewCount);
                 cartWishlistItemHolderData.setMinOrder(item.getMinimumOrder());
+                cartWishlistItemHolderData.setCategory(item.getCategoryBreadcrumb());
                 if (item.getShop() != null) {
                     cartWishlistItemHolderData.setShopId(item.getShop().getId());
                     cartWishlistItemHolderData.setShopName(item.getShop().getName());
+                    String shopType = "";
+                    if (item.getShop().isOfficial()) {
+                        shopType = "official_store";
+                    } else if (item.getShop().isGoldMerchant()) {
+                        shopType = "gold_merchant";
+                    }
+                    cartWishlistItemHolderData.setShopType(shopType);
                     cartWishlistItemHolderData.setShopLocation(item.getShop().getLocation());
                 }
                 if (item.getBadges().size() > 0) {
@@ -2040,7 +2050,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void triggerSendEnhancedEcommerceAddToCartSuccess(AddToCartDataModel addToCartDataModel, Object productModel) {
+    public void triggerSendEnhancedEcommerceAddToCartSuccess(AddToCartDataResponseModel addToCartDataResponseModel, Object productModel) {
         Map<String, Object> stringObjectMap = null;
         String eventCategory = "";
         String eventAction = "";
@@ -2049,17 +2059,17 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             eventCategory = ConstantTransactionAnalytics.EventCategory.WISHLIST_PAGE;
             eventAction = ConstantTransactionAnalytics.EventAction.CLICK_BELI_ON_WISHLIST;
             eventLabel = "";
-            stringObjectMap = dPresenter.generateAddToCartEnhanceEcommerceDataLayer((CartWishlistItemHolderData) productModel);
+            stringObjectMap = dPresenter.generateAddToCartEnhanceEcommerceDataLayer((CartWishlistItemHolderData) productModel, addToCartDataResponseModel);
         } else if (productModel instanceof CartRecentViewItemHolderData) {
             eventCategory = ConstantTransactionAnalytics.EventCategory.RECENT_VIEW;
             eventAction = ConstantTransactionAnalytics.EventAction.CLICK_BELI_ON_RECENT_VIEW_PAGE;
             eventLabel = "";
-            stringObjectMap = dPresenter.generateAddToCartEnhanceEcommerceDataLayer((CartRecentViewItemHolderData) productModel);
+            stringObjectMap = dPresenter.generateAddToCartEnhanceEcommerceDataLayer((CartRecentViewItemHolderData) productModel, addToCartDataResponseModel);
         } else if (productModel instanceof CartRecommendationItemHolderData) {
             eventCategory = ConstantTransactionAnalytics.EventCategory.RECOMMENDATION_PAGE;
             eventAction = ConstantTransactionAnalytics.EventAction.CLICK_ADD_TO_CART_ON_PRIMARY_PRODUCT;
             eventLabel = "";
-            stringObjectMap = dPresenter.generateAddToCartEnhanceEcommerceDataLayer((CartRecommendationItemHolderData) productModel);
+            stringObjectMap = dPresenter.generateAddToCartEnhanceEcommerceDataLayer((CartRecommendationItemHolderData) productModel, addToCartDataResponseModel);
         }
 
         if (stringObjectMap != null) {

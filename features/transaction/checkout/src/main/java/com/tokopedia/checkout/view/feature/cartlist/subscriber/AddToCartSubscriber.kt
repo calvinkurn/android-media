@@ -1,12 +1,10 @@
 package com.tokopedia.checkout.view.feature.cartlist.subscriber
 
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.checkout.domain.datamodel.addtocart.AddToCartDataModel
+import com.tokopedia.checkout.domain.datamodel.addtocart.AddToCartDataResponseModel
 import com.tokopedia.checkout.domain.datamodel.addtocart.DataModel
 import com.tokopedia.checkout.view.feature.cartlist.ICartListPresenter
 import com.tokopedia.checkout.view.feature.cartlist.ICartListView
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStackResponse
 import com.tokopedia.transactiondata.apiservice.CartResponseErrorException
 import com.tokopedia.transactiondata.entity.response.addtocart.AddToCartDataResponse
 import rx.Subscriber
@@ -47,7 +45,7 @@ class AddToCartSubscriber(val view: ICartListView?,
                 dataModel.shopId = response.data.shopId
                 dataModel.quantity = response.data.quantity
 
-                val addToCartDataModel = AddToCartDataModel()
+                val addToCartDataModel = AddToCartDataResponseModel()
                 addToCartDataModel.success = response.success
                 addToCartDataModel.message = response.message
                 addToCartDataModel.data = dataModel

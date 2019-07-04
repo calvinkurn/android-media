@@ -47,6 +47,8 @@ public class EnhancedECommerceProductCartMapData {
     private static final String KEY_COD_FLAG = "dimension10";
     private static final String KEY_TOKOPEDIA_CORNER_FLAG = "dimension57";
     private static final String KEY_IS_FULFILLMENT = "dimension58";
+    private static final String KEY_PICTURE = "picture";
+    private static final String KEY_URL = "url";
 
     public static final String DEFAULT_VALUE_NONE_OTHER = "none / other";
 
@@ -187,4 +189,13 @@ public class EnhancedECommerceProductCartMapData {
     public void setIsFulfillment(String isFulfillment) {
         Product.put(KEY_IS_FULFILLMENT, !TextUtils.isEmpty(isFulfillment) ? isFulfillment : "");
     }
+
+    public void setPicture(String picture) {
+        Product.put(KEY_PICTURE, !TextUtils.isEmpty(picture) ? picture : "");
+    }
+
+    public void setUrl(String url) {
+        Product.put(KEY_URL, !TextUtils.isEmpty(url) ? url : "");
+    }
+
 }

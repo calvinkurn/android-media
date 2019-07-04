@@ -10,7 +10,8 @@ import java.util.HashMap
 class EnhancedECommerceAdd {
 
     companion object {
-        public val KEY_ADD = "add"
+        @JvmStatic
+        val KEY_ADD = "add"
     }
 
     private val KEY_PRODUCT = "products"

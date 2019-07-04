@@ -7,6 +7,7 @@ package com.tokopedia.checkout.view.feature.cartlist.viewmodel
 data class CartWishlistItemHolderData(
         var id: String = "",
         var name: String = "",
+        var rawPrice: String = "",
         var price: String = "",
         var imageUrl: String = "",
         var isWishlist: Boolean = false,
@@ -15,6 +16,9 @@ data class CartWishlistItemHolderData(
         var badgeUrl: String = "",
         var shopLocation: String = "",
         var shopId: String = "",
+        var shopType: String = "",
         var shopName: String = "",
-        var minOrder: Int = 1
+        var minOrder: Int = 1,
+        var category: String = "",
+        var url: String = ""
 )

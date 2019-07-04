@@ -53,6 +53,9 @@ public class Wishlist implements Parcelable {
     @SerializedName("review_count")
     @Expose
     public int reviewCount;
+    @SerializedName("category_breadcrumb")
+    @Expose
+    public String categoryBreadcrumb;
 
     public List<Label> getLabels() {
         return labels;
@@ -191,6 +194,14 @@ public class Wishlist implements Parcelable {
         this.reviewCount = reviewCount;
     }
 
+    public String getCategoryBreadcrumb() {
+        return categoryBreadcrumb;
+    }
+
+    public void setCategoryBreadcrumb(String categoryBreadcrumb) {
+        this.categoryBreadcrumb = categoryBreadcrumb;
+    }
+
     public Wishlist() {
     }
 
@@ -214,6 +225,7 @@ public class Wishlist implements Parcelable {
         labels = in.createTypedArrayList(Label.CREATOR);
         rating = in.readInt();
         reviewCount = in.readInt();
+        categoryBreadcrumb = in.readString();
     }
 
     @Override
@@ -235,6 +247,7 @@ public class Wishlist implements Parcelable {
         dest.writeTypedList(labels);
         dest.writeInt(rating);
         dest.writeInt(reviewCount);
+        dest.writeString(categoryBreadcrumb);
     }
 
     @Override

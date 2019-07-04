@@ -2,19 +2,15 @@ package com.tokopedia.checkout.view.feature.cartlist;
 
 import android.app.Activity;
 
-import com.tokopedia.checkout.domain.datamodel.addtocart.AddToCartDataModel;
+import com.tokopedia.checkout.domain.datamodel.addtocart.AddToCartDataResponseModel;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
-import com.tokopedia.checkout.domain.datamodel.cartlist.CartTickerErrorData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.recentview.RecentView;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
-import com.tokopedia.checkout.domain.datamodel.voucher.promostacking.ResponseFirstStep;
 import com.tokopedia.checkout.view.common.base.IBaseView;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.promocheckout.common.data.entity.request.Promo;
-import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel;
@@ -103,5 +99,5 @@ public interface ICartListView extends IBaseView {
 
     void hideItemLoading();
 
-    void triggerSendEnhancedEcommerceAddToCartSuccess(AddToCartDataModel addToCartDataModel, Object productModel);
+    void triggerSendEnhancedEcommerceAddToCartSuccess(AddToCartDataResponseModel addToCartDataResponseModel, Object productModel);
 }
