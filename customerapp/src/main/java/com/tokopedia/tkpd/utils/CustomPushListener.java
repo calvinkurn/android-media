@@ -137,7 +137,7 @@ public class CustomPushListener extends PushMessageListener {
         Intent deleteIntent = new Intent(context, NotificationBroadcast.class);
         deleteIntent.setAction(ACTION_DELETE_NOTIFY);
         deleteIntent.putExtra(EXTRA_NOTIFICATION_ID, NOTIFICATION_ID);
-        PendingIntent deletePendingIntent = getPendingIntent(context, NOTIFICATION_ID, deleteIntent);
+        PendingIntent deletePendingIntent = getPendingIntent(context, 107, deleteIntent);
         remoteView.setOnClickPendingIntent(R.id.image_icon5, deletePendingIntent);
 
         Intent notificationIntent = new Intent(context, MainParentActivity.class);
