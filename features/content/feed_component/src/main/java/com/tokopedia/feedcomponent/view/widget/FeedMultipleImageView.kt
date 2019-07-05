@@ -18,22 +18,15 @@ import kotlinx.android.synthetic.main.layout_image_grid.view.*
 /**
  * @author by yoasfs on 2019-07-01
  */
-class FeedMultipleImageView: BaseCustomView {
+class FeedMultipleImageView @JvmOverloads constructor(
+        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+) : BaseCustomView(context, attrs, defStyleAttr) {
 
     private val adapter: ImageAdapter by lazy {
         ImageAdapter(mutableListOf())
     }
 
-
-    constructor(context: Context) : super(context) {
-        init()
-    }
-
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        init()
-    }
-
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+    init {
         init()
     }
 
@@ -53,7 +46,7 @@ class FeedMultipleImageView: BaseCustomView {
             }
         }
         rv_media.layoutManager = gridLayoutManager
-        //rv_media.addItemDecoration(ItemOffsetDecoration(context.resources.getDimensionPixelSize(R.dimen.dp_4)))
+        rv_media.addItemDecoration(ItemOffsetDecoration(context.resources.getDimensionPixelSize(R.dimen.dp_4)))
         rv_media.adapter = adapter
         rv_media.isNestedScrollingEnabled = false
     }
