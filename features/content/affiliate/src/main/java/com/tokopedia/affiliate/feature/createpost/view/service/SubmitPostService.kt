@@ -81,43 +81,6 @@ class SubmitPostService : JobIntentService() {
                 if (isTypeAffiliate(viewModel.authorType)) viewModel.adIdList
                 else viewModel.productIdList
         ), getSubscriber())
-
-        /*if (isUploadVideo(viewModel)) {
-            submitPostUseCase.execute(
-                    SubmitPostUseCase.createRequestParamsVideo(
-                            viewModel.authorType,
-                            viewModel.token,
-                            if (isTypeAffiliate(viewModel.authorType)) userSession.userId
-                            else userSession.shopId,
-                            viewModel.caption,
-                            viewModel.fileImageList.first().path,
-                            if (isTypeAffiliate(viewModel.authorType)) viewModel.adIdList
-                            else viewModel.productIdList
-                    ),
-                    getSubscriber()
-            )
-        } else {
-
-            submitPostUseCase.execute(
-                    SubmitPostUseCase.createRequestParams(
-                            viewModel.authorType,
-                            viewModel.token,
-                            if (isTypeAffiliate(viewModel.authorType)) userSession.userId
-                            else userSession.shopId,
-                            viewModel.caption,
-                            viewModel.completeImageList.map { it.path },
-                            if (isTypeAffiliate(viewModel.authorType)) viewModel.adIdList
-                            else viewModel.productIdList
-                    ),
-                    getSubscriber()
-            )
-        }*/
-    }
-
-    private fun isUploadVideo(viewModel: CreatePostViewModel): Boolean {
-        return viewModel.fileImageList.isNotEmpty()
-                && viewModel.fileImageList.first().type == MediaType.VIDEO 
-                && viewModel.fileImageList.first().path.isNotBlank()
     }
 
     private fun initInjector() {

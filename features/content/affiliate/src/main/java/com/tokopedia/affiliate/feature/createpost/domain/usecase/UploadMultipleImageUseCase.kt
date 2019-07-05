@@ -32,20 +32,10 @@ class UploadMultipleImageUseCase @Inject constructor(
 
     @Suppress("UNCHECKED_CAST")
     override fun createObservable(requestParams: RequestParams): Observable<List<SubmitPostMedium>> {
-        //val isUploadVideo = requestParams.getBoolean(IS_UPLOAD_VIDEO, false)
         return Observable.from(requestParams.getObject(PARAM_URL_LIST) as List<SubmitPostMedium>)
                 .flatMap { if (it.type == SubmitPostMedium.TYPE_VIDEO) uploadVideo(it) else uploadSingleImage(it) }
                 .toList()
     }
-
-    /*private fun uploadVideo(): Func1<SubmitPostMedium, Observable<SubmitPostMedium>> {
-        return Func1 { medium ->
-            uploadVideoUseCase.createObservable(UploadVideoUseCase.createParam(medium.mediaURL))
-                    .map(mapToUrlVideo(medium))
-                    .map(updateNotification())
-                    .subscribeOn(Schedulers.io())
-        }
-    }*/
 
     private fun uploadVideo(medium: SubmitPostMedium): Observable<SubmitPostMedium> {
         return uploadVideoUseCase.createObservable(UploadVideoUseCase.createParam(medium.mediaURL))
@@ -54,18 +44,6 @@ class UploadMultipleImageUseCase @Inject constructor(
                     .subscribeOn(Schedulers.io())
 
     }
-
-    /*private fun uploadSingleImage(): Func1<SubmitPostMedium, Observable<SubmitPostMedium>> {
-        return Func1 { medium ->
-            if (urlIsFile(medium.mediaURL)) {
-                uploadImageUseCase.createObservable(createUploadParams(medium.mediaURL))
-                        .map(mapToUrl(medium))
-                        .map(updateNotification())
-            } else {
-                Observable.just<SubmitPostMedium>(medium).map(updateNotification())
-            }
-        }
-    }*/
 
     private fun uploadSingleImage(medium: SubmitPostMedium): Observable<SubmitPostMedium> {
         return (if (urlIsFile(medium.mediaURL)) {
@@ -144,13 +122,10 @@ class UploadMultipleImageUseCase @Inject constructor(
         private const val RESOLUTION_500 = "500"
         private const val TEXT_PLAIN = "text/plain"
 
-        private const val IS_UPLOAD_VIDEO = "isUploadVideo"
-
-        fun createRequestParams(mediumList: List<SubmitPostMedium>, isUploadVideo: Boolean):
+        fun createRequestParams(mediumList: List<SubmitPostMedium>):
                 RequestParams {
             val requestParams = RequestParams.create()
             requestParams.putObject(PARAM_URL_LIST, mediumList)
-            requestParams.putBoolean(IS_UPLOAD_VIDEO, isUploadVideo)
             return requestParams
         }
     }

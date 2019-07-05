@@ -261,7 +261,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         updateRelatedProduct()
         updateMedia()
         updateMediaPreview()
-        //updateAddTagText()
         invalidatePostCallBack?.invalidatePostMenu(isPostEnabled)
         updateCaption()
         updateHeader(feedContentForm.authors)
@@ -325,23 +324,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                     getString(R.string.af_title_ok)
             ) { }
         }
-
-        //updateAddTagText()
     }
-
-    /*protected fun updateAddTagText() {
-        context?.let {
-            val numberOfProducts = if (isTypeAffiliate()) viewModel.adIdList.size else
-                viewModel.productIdList.size
-            if (numberOfProducts < viewModel.maxProduct) {
-                icon_add_product.setOnClickListener { onAddProduct() }
-                label_add_product.setOnClickListener { onAddProduct() }
-            } else {
-                icon_add_product.setOnClickListener { }
-                label_add_product.setOnClickListener {  }
-            }
-        }
-    }*/
 
     private fun onAddProduct() {
         val numOfProducts = with(viewModel) { if (isTypeAffiliate()) adIdList else productIdList }.size
@@ -415,7 +398,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         caption.filters = arrayOf(InputFilter.LengthFilter(MAX_CHAR))
         caption.afterTextChanged {
             viewModel.caption = it
-            //updateMaxCharacter()
         }
         caption.setOnTouchListener { v, event ->
             if (v.id == R.id.caption) {
@@ -442,8 +424,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         list_captions.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(R.dimen.dp_8), LinearLayoutManager.HORIZONTAL))
         icon_add_product.setOnClickListener { onAddProduct() }
         label_add_product.setOnClickListener { onAddProduct() }
-        //updateMaxCharacter()
-        //updateAddTagText()
     }
 
     private fun updateMediaPreview(){
@@ -458,13 +438,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             caption.text.append(_caption)
         }
     }
-
-    /*private fun updateMaxCharacter() {
-        maxCharacter.text = String.format(Locale.GERMAN, "%,d/%,d",
-                viewModel.caption.length,
-                MAX_CHAR
-        )
-    }*/
 
     private fun goToVideoPicker() {
         activity?.let {
