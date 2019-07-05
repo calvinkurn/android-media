@@ -13,5 +13,6 @@ data class PurchaseProtectionPlanDataModel(
         var protectionSubtitle: String? = null,
         var protectionLinkText: String? = null,
         var protectionLinkUrl: String? = null,
-        var protectionOptIn: Boolean? = null
+        var protectionOptIn: Boolean? = null,
+        var protectionCheckboxDisabled: Boolean? = null
 )
