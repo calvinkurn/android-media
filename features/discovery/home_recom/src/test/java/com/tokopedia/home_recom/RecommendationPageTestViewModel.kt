@@ -2,9 +2,7 @@ package com.tokopedia.home_recom
 
 import android.content.Context
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.home_recom.util.LiveDataTestUtil
-import com.tokopedia.home_recom.viewModel.FakeRecommendationPageViewModel
-import com.tokopedia.home_recom.viewmodel.RecommendationPageViewModel
+import com.tokopedia.home_recom.testViewModel.FakeRecommendationPageViewModel
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher

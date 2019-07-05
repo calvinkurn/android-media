@@ -1,4 +1,4 @@
-package com.tokopedia.home_recom.viewModel
+package com.tokopedia.home_recom.testViewModel
 
 import android.content.Context
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -13,7 +13,7 @@ import org.mockito.Mock
 /**
  * Created by Lukas on 2019-07-04
  */
-open class FakeRecommendationPageViewModel(
+class FakeRecommendationPageViewModel(
         graphqlRepository: GraphqlRepository,
         userSessionInterface: UserSessionInterface,
         getRecommendationUseCase: GetRecommendationUseCase,
