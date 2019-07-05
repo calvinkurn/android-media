@@ -4,12 +4,18 @@ import android.app.Dialog
 import android.os.Bundle
 import android.support.design.widget.BottomSheetDialog
 import android.support.design.widget.BottomSheetDialogFragment
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.view.adapter.ChatMenuAdapter
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatmenu.BaseChatMenuViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.ChatMenuFactory
 
-class BottomChatMenu : BottomSheetDialogFragment() {
+class BottomChatMenu : BottomSheetDialogFragment(), BaseChatMenuViewHolder.ChatMenuListener {
+
+    private lateinit var rvChatMenu: RecyclerView
 
     override fun getTheme(): Int {
         return R.style.BottomSheetDialogTheme
@@ -20,7 +26,19 @@ class BottomChatMenu : BottomSheetDialogFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_chat_menu, container, false)
+        return inflater.inflate(R.layout.fragment_chat_menu, container, false).also { view ->
+            rvChatMenu = view.findViewById(R.id.rvChatMenu)
+
+            initChatMenu()
+        }
+    }
+
+    private fun initChatMenu() {
+        val menuItems = ChatMenuFactory.createChatMenuItems()
+        with(rvChatMenu) {
+            setHasFixedSize(true)
+            adapter = ChatMenuAdapter(menuItems, this@BottomChatMenu)
+        }
     }
 
     companion object {
