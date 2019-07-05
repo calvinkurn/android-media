@@ -45,10 +45,10 @@ class PinpointMapActivity : BaseSimpleActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        requestWindowFeature(Window.FEATURE_NO_TITLE)
-        this.window.setFlags(
-                WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        // requestWindowFeature(Window.FEATURE_NO_TITLE)
+        setTheme(android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        supportActionBar?.hide()
         super.onCreate(savedInstanceState)
     }
 
