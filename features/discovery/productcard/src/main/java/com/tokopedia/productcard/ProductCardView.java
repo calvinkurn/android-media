@@ -32,6 +32,7 @@ public class ProductCardView extends BaseCustomView {
     protected View wishlistButton;
     protected ImageView ratingView;
     protected TextView reviewCountView;
+    protected LinearLayout ratingContainer;
     protected int layout;
     protected boolean fixedHeight = false;
     protected LinearLayout badgesContainerView;
@@ -80,6 +81,7 @@ public class ProductCardView extends BaseCustomView {
         wishlistButton = view.findViewById(R.id.btn_wishlist);
         ratingView = view.findViewById(R.id.rating);
         reviewCountView = view.findViewById(R.id.review_count);
+        ratingContainer = view.findViewById(R.id.rating_review_container);
         badgesContainerView = view.findViewById(R.id.badge_container);
         textLocation = view.findViewById(R.id.location);
     }

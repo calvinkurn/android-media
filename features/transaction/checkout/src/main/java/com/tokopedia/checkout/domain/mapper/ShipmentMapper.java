@@ -494,6 +494,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                     purchaseProtectionPlanData.setProtectionSubtitle(pppDataMapping.getProtectionSubtitle());
                                     purchaseProtectionPlanData.setProtectionTitle(pppDataMapping.getProtectionTitle());
                                     purchaseProtectionPlanData.setProtectionTypeId(pppDataMapping.getProtectionTypeId());
+                                    purchaseProtectionPlanData.setProtectionCheckboxDisabled(pppDataMapping.getProtectionCheckboxDisabled());
 
                                     productResult.setPurchaseProtectionPlanData(purchaseProtectionPlanData);
                                 }
