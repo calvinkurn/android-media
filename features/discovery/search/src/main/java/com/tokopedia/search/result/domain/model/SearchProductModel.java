@@ -102,9 +102,6 @@ public class SearchProductModel {
         @SerializedName("additional_params")
         @Expose
         private String additionalParams;
-        @SerializedName("isQuerySafe")
-        @Expose
-        private boolean isQuerySafe;
         @SerializedName("suggestion")
         @Expose
         private Suggestion suggestion = new Suggestion();
@@ -145,10 +142,6 @@ public class SearchProductModel {
 
         public String getAdditionalParams() {
             return additionalParams;
-        }
-
-        public boolean isQuerySafe() {
-            return isQuerySafe;
         }
 
         public Suggestion getSuggestion() {

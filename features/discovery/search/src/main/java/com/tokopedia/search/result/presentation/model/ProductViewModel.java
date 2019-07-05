@@ -31,7 +31,6 @@ public class ProductViewModel implements Parcelable {
     private CpmModel cpmModel;
     private RelatedSearchViewModel relatedSearchModel;
     private GlobalNavViewModel globalNavViewModel;
-    private boolean isQuerySafe;
 
     public TopAdsModel getAdsModel() {
         return adsModel;
@@ -61,7 +60,7 @@ public class ProductViewModel implements Parcelable {
         return isQuerySafe;
     }
 
-    public void setQuerySafe(boolean querySafe) {
+    public void setIsQuerySafe(boolean querySafe) {
         isQuerySafe = querySafe;
     }
 
@@ -168,14 +167,6 @@ public class ProductViewModel implements Parcelable {
         return getProductList().size() + getAdsModel().getData().size();
     }
 
-    public void setIsQuerySafe(boolean isQuerySafe) {
-        this.isQuerySafe = isQuerySafe;
-    }
-
-    public boolean isQuerySafe() {
-        return isQuerySafe;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -200,7 +191,6 @@ public class ProductViewModel implements Parcelable {
         dest.writeParcelable(this.cpmModel, flags);
         dest.writeParcelable(this.relatedSearchModel, flags);
         dest.writeParcelable(this.globalNavViewModel, flags);
-        dest.writeByte(this.isQuerySafe ? (byte) 1 : (byte) 0);
     }
 
     protected ProductViewModel(Parcel in) {
@@ -221,7 +211,6 @@ public class ProductViewModel implements Parcelable {
         this.cpmModel = in.readParcelable(CpmModel.class.getClassLoader());
         this.relatedSearchModel = in.readParcelable(RelatedSearchViewModel.class.getClassLoader());
         this.globalNavViewModel = in.readParcelable(GlobalNavViewModel.class.getClassLoader());
-        this.isQuerySafe = in.readByte() != 0;
     }
 
     public static final Creator<ProductViewModel> CREATOR = new Creator<ProductViewModel>() {
