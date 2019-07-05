@@ -85,7 +85,8 @@
                 <TextView
                     android:id="@+id/shopLabel"
                     style="@style/TextView.Micro.BlackSecondary"
-                    android:text="@string/official_store_label"/>
+                    android:text="@string/official_store_label"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/shopFollower"

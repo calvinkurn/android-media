@@ -107,7 +107,7 @@ class BannerViewDynamicBackground : BannerView {
             var currentImagePosition = 0
             var oldImagePosition = 0
 
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 val manager : LinearLayoutManager =
                         recyclerView!!.layoutManager as LinearLayoutManager
                 val position = manager.findFirstCompletelyVisibleItemPosition()
