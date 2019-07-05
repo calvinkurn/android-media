@@ -10,7 +10,7 @@
     <RelativeLayout
         android:id="@+id/layout_header_left"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_36"
         android:layout_margin="@dimen/dp_4"
         android:background="@drawable/bg_round_corner_solid_green"
         android:layout_weight="1">
@@ -31,7 +31,7 @@
     <RelativeLayout
         android:id="@+id/layout_header_right"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_36"
         android:layout_margin="@dimen/dp_4"
         android:background="@color/digital_grey_bg_header"
         android:layout_weight="1">
