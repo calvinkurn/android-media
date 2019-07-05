@@ -20,9 +20,16 @@ import com.tokopedia.topads.sdk.view.ImpressedImageView
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
-/*
-* Test adding comments and commit
-* */
+/**
+ * This abstract class provides a basis for Custom View Product Card.
+ * All the view components for Product Card are initialized and configured here.
+ *
+ * How to use:
+ * 1. Choose one of ProductCardView subclasses and put it in the layout xml.
+ * 2. Configure the components of the ProductCardView from the provided public methods,
+ *    e.g. setImageProductUrl, setProductNameVisible, setProductNameText, etc.
+ * 3. Call method realignLayout() after configuring the required ProductCardView components.
+ */
 abstract class ProductCardView: BaseCustomView {
 
     companion object {
@@ -38,6 +45,9 @@ abstract class ProductCardView: BaseCustomView {
         protected const val DARK_ORANGE = "darkOrange"
     }
 
+    /**
+     * View components of a ProductCardView
+     */
     protected var constraintLayoutProductCard: ConstraintLayout? = null
     protected var imageProduct: ImpressedImageView? = null
     protected var buttonWishlist: ImageView? = null
@@ -63,7 +73,11 @@ abstract class ProductCardView: BaseCustomView {
         init()
     }
 
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int): super(context, attrs, defStyleAttr) {
+    constructor(
+            context: Context,
+            attrs: AttributeSet?,
+            defStyleAttr: Int
+    ) : super(context, attrs, defStyleAttr) {
         init()
     }
 
@@ -75,9 +89,20 @@ abstract class ProductCardView: BaseCustomView {
         postInit()
     }
 
+    /**
+     * Provides layout resource to be inflated in init() method.
+     * Layouts could be different depending on its subclasses,
+     * but all of them should contain all the view components required from a ProductCardView
+     *
+     */
     @LayoutRes
     protected abstract fun getLayout(): Int
 
+    /**
+     * Find view components from the getLayout() method.
+     *
+     * @param inflatedView View inflated from getLayout()
+     */
     protected open fun findViews(inflatedView: View) {
         constraintLayoutProductCard = inflatedView.findViewById(R.id.constraintLayoutProductCard)
         imageProduct = inflatedView.findViewById(R.id.imageProduct)
@@ -97,10 +122,18 @@ abstract class ProductCardView: BaseCustomView {
         imageTopAds = inflatedView.findViewById(R.id.imageTopAds)
     }
 
+    /**
+     * "Force" configuration of some view components,
+     * in case it cannot be configured from the layout xml.
+     */
     protected open fun postInit() {
         textViewProductName?.setLineSpacing(0f, 1f)
     }
 
+    /**
+     * Realign the view components based on their visibility.
+     * Make sure all the view components are configured before calling this method.
+     */
     abstract fun realignLayout()
 
     fun setImageProductVisible(isVisible: Boolean) {
@@ -285,18 +318,16 @@ abstract class ProductCardView: BaseCustomView {
         imageTopAds?.visibility = if (isVisible) View.VISIBLE else View.GONE
     }
 
-    protected fun setViewMarginsInConstraintLayoutProductCard(
-        @IdRes viewId: Int,
-        anchor: Int,
-        marginDp: Int
-    ) {
+    protected fun setViewMargins(@IdRes viewId: Int, anchor: Int, marginDp: Int) {
         applyConstraintSetToConstraintLayoutProductCard { constraintSet ->
             val marginPixel = getDimensionPixelSize(marginDp)
             constraintSet.setMargin(viewId, anchor, marginPixel)
         }
     }
 
-    private fun applyConstraintSetToConstraintLayoutProductCard(configureConstraintSet: (constraintSet: ConstraintSet) -> Unit) {
+    private fun applyConstraintSetToConstraintLayoutProductCard(
+            configureConstraintSet: (constraintSet: ConstraintSet) -> Unit
+    ) {
         constraintLayoutProductCard?.let {
             val constraintSet = ConstraintSet()
 
@@ -306,7 +337,7 @@ abstract class ProductCardView: BaseCustomView {
         }
     }
 
-    protected fun setViewConstraintInConstraintLayoutProductCard(
+    protected fun setViewConstraint(
         @IdRes startLayoutId: Int,
         startSide: Int,
         @IdRes endLayoutId: Int,
