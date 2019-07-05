@@ -146,18 +146,19 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
         Intent intent;
         switch (typeRequest) {
             case TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS:
-                if (isAddNewAddressEnabled()) {
+                // TODO : open if going to merge
+                // if (isAddNewAddressEnabled()) {
                     startActivityForResult(PinpointMapActivity.newInstance(this,
                             AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
                             false, 0, false, false, null,
                             false), LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT);
-                } else {
+                /*} else {
                     intent = AddAddressActivity
                             .createInstanceAddAddressFromCheckoutSingleAddressFormWhenDefaultAddressIsEmpty(
                                     this, token);
                     startActivityForResult(intent,
                             LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);
-                }
+                }*/
 
                 break;
             case TYPE_REQUEST_EDIT_ADDRESS_FOR_TRADE_IN:
