@@ -71,6 +71,7 @@ import com.tokopedia.product.manage.item.main.duplicate.activity.ProductDuplicat
 import com.tokopedia.product.manage.item.main.edit.view.activity.ProductEditActivity;
 import com.tokopedia.product.manage.list.R;
 import com.tokopedia.product.manage.list.constant.CashbackOption;
+import com.tokopedia.product.manage.list.constant.ProductTrackingConstant;
 import com.tokopedia.product.manage.list.constant.StatusProductOption;
 import com.tokopedia.product.manage.list.di.DaggerProductManageComponent;
 import com.tokopedia.product.manage.list.di.ProductManageModule;
@@ -110,11 +111,6 @@ import kotlin.Unit;
 
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMAGE_DESCRIPTION_LIST;
-import static com.tokopedia.product.manage.list.constant.ProductTrackingConstant.ACTION_CLICK_MANAGE_COURIER;
-import static com.tokopedia.product.manage.list.constant.ProductTrackingConstant.ACTION_LINK;
-import static com.tokopedia.product.manage.list.constant.ProductTrackingConstant.ACTION_SEE_PRODUCT;
-import static com.tokopedia.product.manage.list.constant.ProductTrackingConstant.CATEGORY_ADD_PRODUCT;
-import static com.tokopedia.product.manage.list.constant.ProductTrackingConstant.EVENT_ADD_PRODUCT;
 import static com.tokopedia.product.manage.list.view.fragment.ProductManageSellerFragment.URL_TIPS_TRICK;
 
 /**
@@ -211,25 +207,25 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     private void trackerManageCourierButton(){
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                EVENT_ADD_PRODUCT,
-                CATEGORY_ADD_PRODUCT,
-                ACTION_CLICK_MANAGE_COURIER,
+                ProductTrackingConstant.EVENT_ADD_PRODUCT,
+                ProductTrackingConstant.CATEGORY_ADD_PRODUCT,
+                ProductTrackingConstant.ACTION_CLICK_MANAGE_COURIER,
                 "");
     }
 
     private void trackerSeeProduct(){
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                EVENT_ADD_PRODUCT,
-                CATEGORY_ADD_PRODUCT,
-                ACTION_SEE_PRODUCT,
+                ProductTrackingConstant.EVENT_ADD_PRODUCT,
+                ProductTrackingConstant.CATEGORY_ADD_PRODUCT,
+                ProductTrackingConstant.ACTION_SEE_PRODUCT,
                 "");
     }
 
     private void trackerLinkClick(){
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                EVENT_ADD_PRODUCT,
-                CATEGORY_ADD_PRODUCT,
-                ACTION_LINK,
+                ProductTrackingConstant.EVENT_ADD_PRODUCT,
+                ProductTrackingConstant.CATEGORY_ADD_PRODUCT,
+                ProductTrackingConstant.ACTION_LINK,
                 "");
     }
 
