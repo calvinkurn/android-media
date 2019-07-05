@@ -1,6 +1,6 @@
 package com.tokopedia.product.manage.list.constant
 
-interface ProductTrackingConstant {
+class ProductTrackingConstant {
     companion object{
         const val EVENT_ADD_PRODUCT = "clickAddProduct"
         const val CATEGORY_ADD_PRODUCT = "add product - new"
