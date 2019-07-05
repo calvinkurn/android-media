@@ -345,4 +345,8 @@ Anda di sini.</string>
     <string name="event_ticket_voucher_count">E-Tiket</string>
     <string name="event_ticket_booking_count">Kode Booking</string>
     <string name="event_ticket_qrcode_count">QR Code</string>
+    <string name="event_ticket_voucher_number">E-Voucher</string>
+    <string name="event_ticket_voucher_number_multiple">E-Voucher #</string>
+    <string name="deal_voucher_code_copied">Berhasil! Silakan cek voucher di</string>
+    <string name="event_voucher_code_copied">Berhasil! Silakan cek e-tiket di</string>
 </resources>

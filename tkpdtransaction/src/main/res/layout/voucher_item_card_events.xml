@@ -99,7 +99,7 @@
                 android:layout_marginRight="@dimen/dp_8"
                 android:layout_toRightOf="@+id/imageView"
                 android:fontFamily="sans-serif"
-                android:textColor="@color/clr_ae31353b"
+                android:textColor="@color/subtitle_gray_color"
                 android:textSize="@dimen/sp_12"
                 android:textStyle="normal" />
 
@@ -116,7 +116,7 @@
                 android:fontFamily="sans-serif-medium"
                 android:lines="2"
                 android:maxLines="2"
-                android:textColor="@color/clr_f531353b"
+                android:textColor="@color/title_gray_color"
                 android:textSize="@dimen/sp_14"
                 android:textStyle="bold" />
 
@@ -236,7 +236,7 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_8"
         android:text="@string/tanggal_events"
-        android:textColor="@color/clr_ae31353b"
+        android:textColor="@color/subtitle_gray_color"
         android:textSize="@dimen/sp_12" />
 
     <TextView
@@ -245,7 +245,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_8"
-        android:textColor="@color/clr_f531353b"
+        android:textColor="@color/title_gray_color"
         android:textSize="@dimen/sp_12"
         android:textStyle="bold"
         tools:text="13 Jul 2019, 15:00" />
@@ -257,7 +257,7 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         android:text="@string/location_events"
-        android:textColor="@color/clr_ae31353b"
+        android:textColor="@color/subtitle_gray_color"
         android:textSize="@dimen/sp_12" />
 
     <TextView
@@ -266,7 +266,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_8"
-        android:textColor="@color/clr_f531353b"
+        android:textColor="@color/title_gray_color"
         android:textSize="@dimen/sp_12"
         android:textStyle="bold"
         tools:text="IFI Thamrin - Venue level" />
@@ -277,7 +277,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_8"
-        android:textColor="@color/clr_f531353b"
+        android:textColor="@color/title_gray_color"
         android:textSize="@dimen/sp_12"
         tools:text=" Jl. M.H. Thamrin, No.20, RT.9 RW.4, Gondang (This is street level with Max 2 lines)…" />
 

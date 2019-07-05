@@ -58,9 +58,9 @@ public class RedeemVoucherView extends LinearLayout {
         voucherNumber = view.findViewById(R.id.voucher_code_title_deals);
         redeemVoucher = view.findViewById(R.id.redeem_btn_deals);
         if (voucherCount > 0) {
-            voucherNumber.setText(String.format("%s %s", "E-Voucher #" , (voucherCount+ 1)));
+            voucherNumber.setText(String.format("%s %s", context.getResources().getString(R.string.event_ticket_voucher_number_multiple), (voucherCount+ 1)));
         } else {
-            voucherNumber.setText("E-Voucher" );
+            voucherNumber.setText(context.getResources().getString(R.string.event_ticket_voucher_number_multiple));
         }
 
         renderRedeemButton(actionButton);

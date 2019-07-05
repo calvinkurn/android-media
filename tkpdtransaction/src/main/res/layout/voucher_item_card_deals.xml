@@ -104,7 +104,7 @@
                 android:fontFamily="sans-serif-medium"
                 android:lines="2"
                 android:maxLines="2"
-                android:textColor="@color/clr_f531353b"
+                android:textColor="@color/title_gray_color"
                 android:textSize="@dimen/sp_14"
                 android:textStyle="normal" />
 
@@ -117,7 +117,7 @@
                 android:layout_marginRight="@dimen/dp_8"
                 android:layout_toRightOf="@+id/imageView"
                 android:fontFamily="sans-serif"
-                android:textColor="@color/clr_ae31353b"
+                android:textColor="@color/subtitle_gray_color"
                 android:textSize="@dimen/sp_12"
                 android:textStyle="normal" />
 

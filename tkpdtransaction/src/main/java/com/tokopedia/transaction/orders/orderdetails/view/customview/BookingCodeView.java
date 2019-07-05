@@ -18,6 +18,8 @@ import static android.content.Context.CLIPBOARD_SERVICE;
 
 public class BookingCodeView extends RelativeLayout {
 
+    private static final String TEXT_COPIED = "Kode booking telah disalin";
+    private static final String TEXT = "text";
     private Context context;
     private String bookingCode;
     private int position, totalItems;
@@ -64,9 +66,9 @@ public class BookingCodeView extends RelativeLayout {
             public void onClick(View v) {
                 ClipData myClip;
                 ClipboardManager myClipboard = (ClipboardManager) getContext().getSystemService(CLIPBOARD_SERVICE);
-                myClip = ClipData.newPlainText("text", bookingCode);
+                myClip = ClipData.newPlainText(TEXT, bookingCode);
                 myClipboard.setPrimaryClip(myClip);
-                Toaster.Companion.showNormalWithAction(view, "Kode booking telah disalin", Snackbar.LENGTH_LONG, "Ok", v1 -> {});
+                Toaster.Companion.showNormalWithAction(view, TEXT_COPIED, Snackbar.LENGTH_LONG, "Ok", v1 -> {});
             }
         });
 

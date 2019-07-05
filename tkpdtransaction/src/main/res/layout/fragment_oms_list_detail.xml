@@ -191,7 +191,7 @@
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@+id/iv_event_send_mail"
                     android:gravity="center"
-                    android:textColor="@color/clr_ae31353b"
+                    android:textColor="@color/subtitle_gray_color"
                     android:textSize="@dimen/sp_14"
                     android:layout_marginLeft="@dimen/dp_8"
                     tools:text="Kirim ulang e-mail and TopChat" />
@@ -203,7 +203,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_marginTop="@dimen/dp_4"
                     android:layout_marginRight="@dimen/dp_16"
-                    android:tint="@color/clr_ae31353b"
+                    android:tint="@color/subtitle_gray_color"
                     app:srcCompat="@drawable/ic_arrow_right_grey" />
 
             </RelativeLayout>

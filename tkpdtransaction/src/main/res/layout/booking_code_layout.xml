@@ -15,7 +15,7 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_8"
         android:text="@string/voucher_code_title"
-        android:textColor="@color/clr_ae31353b"
+        android:textColor="@color/subtitle_gray_color"
         android:textSize="@dimen/sp_12" />
 
     <TextView
@@ -28,7 +28,7 @@
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginBottom="@dimen/dp_8"
         android:text="TPR9QTMYE"
-        android:textColor="@color/clr_f531353b"
+        android:textColor="@color/title_gray_color"
         android:textSize="@dimen/sp_16"
         android:textStyle="bold" />
 
