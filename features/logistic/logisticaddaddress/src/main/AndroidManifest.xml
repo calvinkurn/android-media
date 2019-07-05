@@ -36,15 +36,7 @@
             android:label="@string/title_activity_search_address"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
-
-        <activity
-            android:name=".features.district_recommendation.shopsettings.DistrictRecommendationShopSettingsActivity"
-            android:label="@string/title_activity_search_address"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" >
-
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 
@@ -55,7 +47,6 @@
                     android:host="@string/host_marketplace"
                     android:pathPattern="@string/path_district_recommendation_shop_settings"/>
             </intent-filter>
-
         </activity>
 
         <activity android:name=".features.pinpoint.GeolocationActivity" />

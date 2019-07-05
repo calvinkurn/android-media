@@ -26,7 +26,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.logisticaddaddress.features.district_recommendation.DistrictRecommendationContract.Constant.INTENT_DATA_ADDRESS;
 import static com.tokopedia.logisticaddaddress.features.district_recommendation.DistrictRecommendationContract.Constant.INTENT_DISTRICT_RECOMMENDATION_ADDRESS;
 
 /**
@@ -40,6 +39,14 @@ public class DistrictRecommendationFragment
     private static final String ARGUMENT_DATA_TOKEN = "token";
     private static final long DEBOUNCE_DELAY_IN_MILIS = 700;
     private static final int MINIMUM_SEARCH_KEYWORD_CHAR = 3;
+
+    private static final String INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_ID = "district_id";
+    private static final String INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_NAME = "district_name";
+    private static final String INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_ID = "city_id";
+    private static final String INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_NAME = "city_name";
+    private static final String INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_ID = "province_id";
+    private static final String INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_NAME = "province_name";
+    private static final String INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODES = "zipcodes";
 
     private ITransactionAnalyticsDistrictRecommendation transactionAnalyticsDistrictRecommendation;
 
@@ -146,8 +153,16 @@ public class DistrictRecommendationFragment
         if (getActivity() != null) {
             transactionAnalyticsDistrictRecommendation.sendAnalyticsOnDistrictDropdownSelectionItemClicked(addressViewModel.getAddress().getDistrictName());
             Intent resultIntent = new Intent();
-            resultIntent.putExtra(INTENT_DATA_ADDRESS, addressViewModel.getAddress());
             resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS, addressMapper.convertAddress(addressViewModel.getAddress()));
+
+            resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_ID, addressViewModel.getAddress().getDistrictId());
+            resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_NAME, addressViewModel.getAddress().getDistrictName());
+            resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_ID, addressViewModel.getAddress().getCityId());
+            resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_NAME, addressViewModel.getAddress().getCityName());
+            resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_ID, addressViewModel.getAddress().getProvinceId());
+            resultIntent.putExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_NAME, addressViewModel.getAddress().getProvinceName());
+            resultIntent.putStringArrayListExtra(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODES, addressViewModel.getAddress().getZipCodes());
+
             getActivity().setResult(Activity.RESULT_OK, resultIntent);
             getActivity().finish();
         }
