@@ -1474,7 +1474,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun goToAffiliateExplore() {
-        val intent = RouteManager.getIntent(context, ApplinkConst.AFFILIATE_EXPLORE)
+        val intent = RouteManager.getIntent(context, ApplinkConst.AFFILIATE_CREATE_POST, "-1", "-1")
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
     }

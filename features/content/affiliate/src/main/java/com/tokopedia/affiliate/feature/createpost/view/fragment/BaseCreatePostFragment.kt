@@ -103,6 +103,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         if (idPosition != -1 && viewModel.productIdList.size > idPosition) {
             viewModel.productIdList.removeAt(idPosition)
         }
+        updateMediaPreview()
     }
 
     companion object {
@@ -242,6 +243,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         if (feedContentForm.media.media.isNotEmpty() && viewModel.fileImageList.isEmpty()) {
             viewModel.urlImageList.clear()
             viewModel.urlImageList.addAll(feedContentForm.media.media.map { MediaModel(it.mediaUrl, it.type) })
+            media_attachment.bind(viewModel.urlImageList.map { MediaItem(it.path, it.type) })
         }
 
         if (feedContentForm.relatedItems.isNotEmpty()) {
@@ -427,7 +429,9 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     private fun updateMediaPreview(){
-        val mItems = viewModel.fileImageList.map { MediaItem(thumbnail = it.path, type = it.type) }
+        val mItems = if (viewModel.fileImageList.isEmpty()){
+            viewModel.urlImageList.map { MediaItem(it.path, it.type) }
+        } else viewModel.fileImageList.map { MediaItem(thumbnail = it.path, type = it.type) }
         media_attachment.bind(mItems)
         media_attachment.visibility = if (mItems.isEmpty()) View.GONE else View.VISIBLE
 

@@ -138,7 +138,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     @Override
     public void onByMeClicked() {
         sendTracking(PEMBELI, BY_ME_CURATION, "", true);
-        openApplink(ApplinkConst.AFFILIATE_EXPLORE);
+        RouteManager.route(getContext(), ApplinkConst.AFFILIATE_CREATE_POST, "-1", "-1");
     }
 
     @Override

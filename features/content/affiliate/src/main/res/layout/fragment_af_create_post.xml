@@ -121,16 +121,16 @@
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/icon_add_product"
-            android:layout_width="@dimen/dp_14"
-            android:layout_height="@dimen/dp_14"
-            android:src="@drawable/ic_plus_add"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_af_add"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/label_add_product"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:layout_marginStart="@dimen/dp_4"
             android:layout_weight="1"
             android:textColor="@color/ae000000"
             app:typographyType="heading_5"
