@@ -564,7 +564,7 @@ open class PlayViewStateImpl(
             sponsorHelper.assignViewModel(viewModel)
             sponsorHelper.setSponsor()
             overflowMenuHelper.assignViewModel(viewModel)
-            videoVerticalHelper.hideVideo()
+            videoVerticalHelper.stopVideo()
         }
     }
 
@@ -577,7 +577,7 @@ open class PlayViewStateImpl(
             videoHorizontalHelper.hideVideoAndToggle()
             videoHorizontalHelper.hideAllToggle()
         } else {
-            videoVerticalHelper.hideVideo()
+            videoVerticalHelper.stopVideo()
         }
     }
 
@@ -1245,7 +1245,7 @@ open class PlayViewStateImpl(
         return {
             if(it) {
                 videoHorizontalHelper.showVideo()
-                videoVerticalHelper.hideVideo()
+                videoVerticalHelper.stopVideo()
             } else {
                 videoHorizontalHelper.hideVideo()
             }
@@ -1255,10 +1255,11 @@ open class PlayViewStateImpl(
     private fun toggleVerticalVideo(): (Boolean) -> Unit {
         return {
             if(it) {
-                videoVerticalHelper.showVideo()
                 videoHorizontalHelper.hideVideoAndToggle()
+                youTubePlayer?.release()
+                youTubePlayer = null
             } else {
-                videoVerticalHelper.hideVideo()
+                videoVerticalHelper.stopVideo()
             }
         }
     }

@@ -72,7 +72,12 @@ class VideoHorizontalHelper(
     }
 
     fun hideVideoAndToggle() {
-        youTubePlayer?.pause()
+        try {
+            youTubePlayer?.pause()
+        }catch (e: Exception) {
+            e.printStackTrace()
+        }
+
         hideAllToggle()
         videoContainer.hide()
         setChatListHasSpaceOnTop.invoke(true)

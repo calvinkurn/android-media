@@ -132,8 +132,8 @@ class VideoVerticalHelper constructor(
         hideContainer()
     }
 
-    fun hideVideo() {
-        player?.pause()
+    fun stopVideo() {
+        player?.stop()
         playerView.hide()
     }
 
@@ -150,10 +150,5 @@ class VideoVerticalHelper constructor(
             else -> videoStreamViewModel.rtmpStandard
         }
         playVideoSource(video)
-    }
-
-    fun showVideo() {
-        playerView.show()
-        player?.resume()
     }
 }

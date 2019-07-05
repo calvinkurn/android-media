@@ -187,6 +187,7 @@ class OverflowMenuHelper(
     }
 
     private fun showVideoVertical() {
+        changeQualityVideoVertical.invoke(videoVerticalQuality)
         toggleVerticalVideo.invoke(true)
     }
 
