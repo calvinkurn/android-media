@@ -122,10 +122,12 @@ import kotlinx.android.synthetic.main.partial_product_rating_talk_courier.*
 import kotlinx.android.synthetic.main.partial_product_recommendation.*
 import kotlinx.android.synthetic.main.partial_product_shop_info.*
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
-import model.TradeInParams
-import view.customview.TradeInTextView
-import viewmodel.TradeInBroadcastReceiver
+import com.tokopedia.tradein.model.TradeInParams
+import com.tokopedia.tradein.view.customview.TradeInTextView
+import com.tokopedia.tradein.viewmodel.TradeInBroadcastReceiver
 import javax.inject.Inject
+import com.tokopedia.discovery.common.manager.AdultManager
+import com.tokopedia.product.detail.common.data.model.product.Category
 
 class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter.UserActiveListener {
     private var productId: String? = null
@@ -401,7 +403,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             layoutParams.behavior = FlingBehavior(nested_scroll)
         }
 
-        appbar.addOnOffsetChangedListener { _, verticalOffset -> refreshLayout?.isEnabled = (verticalOffset == 0) }
+        appbar.addOnOffsetChangedListener (AppBarLayout.OnOffsetChangedListener { _, verticalOffset -> refreshLayout?.isEnabled = (verticalOffset == 0)})
         refreshLayout?.setOnRefreshListener { loadProductData(true) }
 
         if (isAffiliate) {
@@ -900,6 +902,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (activity != null) {
+            AdultManager.handleActivityResult(activity!!, requestCode, resultCode, data)
+        }
         when (requestCode) {
             REQUEST_CODE_ETALASE -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
@@ -1298,6 +1303,23 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             open_shop.gone()
         }
 
+        if (data.category.isAdult) {
+            AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_PDP, productId ?: "")
+        }
+
+        var isHandPhone = false
+        var categoryId = 0
+        productInfoP1.productInfo.category.detail.forEach { detail: Category.Detail ->
+            if (detail.name.equals("Handphone")) {
+                isHandPhone = true
+                val handfone = 24
+                categoryId = if (detail.id.isNotEmpty())
+                    detail.id.toInt()
+                else
+                    handfone
+
+            }
+        }
         tradeInParams = TradeInParams()
         tradeInParams.categoryId = productInfoP1.productInfo.category.id.toInt()
         tradeInParams.deviceId = (activity?.application as ProductDetailRouter).getDeviceId(activity as Context)
@@ -1353,6 +1375,10 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         if (data == null || !data.hasChildren) {
             partialVariantAndRateEstView.renderData(null, "", this::onVariantClicked)
             return
+        }
+        // defaulting selecting variant
+        if (userInputVariant == productId && data.defaultChild > 0) {
+            userInputVariant = data.defaultChild.toString()
         }
         val selectedVariantListString = data.getOptionListString(userInputVariant)?.joinToString(separator = ", ")
                 ?: ""

@@ -25,15 +25,12 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.kotlin.util.getParamString
-import com.tokopedia.profilecompletion.addname.AddNameRegisterPhoneActivity
 import com.tokopedia.profilecompletion.addname.listener.AddNameListener
 import com.tokopedia.profilecompletion.addname.presenter.AddNamePresenter
 import com.tokopedia.profilecompletion.addname.ProfileCompletionAnalytics
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addname.di.DaggerAddNameComponent
-import com.tokopedia.profilecompletion.addname.di.DependencyInjector
 import com.tokopedia.sessioncommon.data.register.RegisterInfo
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -55,13 +52,13 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
 
     private var isError = false
 
-//    @Inject
+    @Inject
     lateinit var presenter: AddNamePresenter
 
     @Inject
     lateinit var analytics: ProfileCompletionAnalytics
 
-//    @Inject
+    @Inject
     lateinit var userSession: UserSessionInterface
 
     companion object {
@@ -86,11 +83,6 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
                     ((activity as Activity).application as BaseMainApplication).baseAppComponent)
                     .build()
                     .inject(this)
-
-            activity?.applicationContext?.run{
-                presenter = DependencyInjector().injectPresenter(this)
-                userSession = UserSession(this)
-            }
         }
     }
 

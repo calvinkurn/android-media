@@ -58,7 +58,7 @@ public class LabelView extends BaseCustomView {
         try {
             titleText = styledAttributes.getString(R.styleable.LabelView_title);
             titleColorValue = styledAttributes.getColor(R.styleable.LabelView_lv_title_color, ContextCompat.getColor(getContext(), R.color.font_black_primary_70));
-            contentText = styledAttributes.getString(R.styleable.LabelView_content);
+            contentText = styledAttributes.getString(R.styleable.LabelView_content_text);
             contentColorValue = styledAttributes.getColor(R.styleable.LabelView_content_color, ContextCompat.getColor(getContext(), R.color.font_black_secondary_54));
             contentTextStyleValue = styledAttributes.getInt(R.styleable.LabelView_content_textStyle, Typeface.NORMAL);
             titleTextStyleValue = styledAttributes.getInt(R.styleable.LabelView_title_textStyle, Typeface.NORMAL);
