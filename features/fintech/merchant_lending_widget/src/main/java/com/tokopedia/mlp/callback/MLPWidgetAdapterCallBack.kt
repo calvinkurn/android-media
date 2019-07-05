@@ -4,5 +4,5 @@ import com.tokopedia.mlp.adapter.MLPWidgetAdapter
 
 interface MLPWidgetAdapterCallBack{
 
-    fun toggleSaldoPrioritas(listener: MLPWidgetAdapter.ToggleSaldoPrioritasLisneter)
+    fun toggleSaldoPrioritas(setSP:Boolean,listener: MLPWidgetAdapter.ToggleSaldoPrioritasLisneter)
 }

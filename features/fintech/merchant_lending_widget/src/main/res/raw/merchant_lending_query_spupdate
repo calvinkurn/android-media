@@ -3,3 +3,4 @@ mutation SPUpdateSaldoPrioritas($enable: Boolean!) {
    success
  }
 }
+

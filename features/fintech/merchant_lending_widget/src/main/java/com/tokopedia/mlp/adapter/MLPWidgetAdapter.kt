@@ -29,16 +29,11 @@ import kotlinx.android.synthetic.main.switchon_popup.view.*
 
 class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Context, var isexpanded: Boolean, var merchantLendingFragment: MerchantLendingFragment) : RecyclerView.Adapter<MLPWidgetAdapter.ViewHolder>() {
 
-
     private val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-    val viewBoxLayout = inflater.inflate(R.layout.mlp_box_layout, null)
-    val viewRowLayout = inflater.inflate(R.layout.mlp_row_info, null)
-    val viewPopUp = inflater.inflate(R.layout.switchon_popup, null)
-
     private val bodyOpenBottomSheetType = 1
     private val sideTextOpenBottomSheetType = 2
     private val toggleOpenBottomSheetType = 3
-    private var toggleCheck: Boolean? = false
+    private var originalState: Boolean? = false
     private val paddingTopTextBody = 8
     private val paddingBottomTextBody = 10
     lateinit var mlpWidgetAdapterCallBack: MLPWidgetAdapterCallBack
@@ -112,52 +107,6 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
             }
         }
 
-        private fun renderSideToggleHeader(headerContent: Header, position: Int) {
-
-            itemView.switch_enable.show()
-            toggleCheck = headerContent.sideToggle?.toggleStatus
-            itemView.switch_enable.isChecked = toggleCheck!!
-            itemView.switch_enable.setOnCheckedChangeListener { buttonView, isChecked ->
-                if (isChecked) {
-                    mlpWidgetAdapterCallBack = merchantLendingFragment
-                    mlpWidgetAdapterCallBack.toggleSaldoPrioritas(object : ToggleSaldoPrioritasLisneter {
-                        override fun onSuccessToggleSaldo(success: Boolean) {
-                            if (success == null || success) {
-                                showPopUp()
-                            } else {
-                                print("spUpdate failed")
-                            }
-                        }
-                    })
-                } else {
-                    val bottomSheetLength: Int = boxList[position].bottomSheet?.size!!
-                    val bottomSheetItem = boxList[position].bottomSheet
-
-                    val placeHolder: String? = boxList[position].header?.sideToggle?.url
-                    val bottomSheetId: Int = computeBottomSheetId(placeHolder, position, bottomSheetLength)
-                    renderBottomSheet(bottomSheetItem?.get(bottomSheetId), position, toggleOpenBottomSheetType)
-                }
-            }
-        }
-
-        private fun showPopUp() {
-            val width = LinearLayout.LayoutParams.WRAP_CONTENT
-            val height = LinearLayout.LayoutParams.WRAP_CONTENT
-            val focusable = true
-            val popupWindow = PopupWindow(viewPopUp, width, height, focusable)
-            popupWindow.showAtLocation(viewPopUp, Gravity.BOTTOM, 0, 0)
-
-            viewPopUp.setOnTouchListener(object : View.OnTouchListener {
-                override fun onTouch(v: View, event: MotionEvent): Boolean {
-                    popupWindow.dismiss()
-                    return true
-                }
-            })
-            viewPopUp.tv_dismiss.setOnClickListener {
-                popupWindow.dismiss()
-            }
-        }
-
         private fun renderSideTextHeader(headerContent: Header, position: Int) {
 
             itemView.text_side.setTextAndCheckShow(headerContent.sideText?.text)
@@ -168,11 +117,51 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
             }
         }
 
+        private fun renderSideToggleHeader(headerContent: Header, position: Int) {
+            itemView.switch_enable.show()
+            originalState = headerContent.sideToggle?.toggleStatus
+            itemView.switch_enable.isChecked = originalState!!
+            itemView.switch_enable.setOnCheckedChangeListener { buttonView, isChecked ->
+                if (isChecked) {
+
+                    if (originalState == isChecked) {
+                        return@setOnCheckedChangeListener
+                    }
+                    mlpWidgetAdapterCallBack = merchantLendingFragment
+                    mlpWidgetAdapterCallBack.toggleSaldoPrioritas(true, object : ToggleSaldoPrioritasLisneter {
+                        override fun onSuccessToggleSaldo(success: Boolean) {
+                            if (success == null || success) {
+                                originalState = true
+                                showPopUp()
+                            } else {
+                                print("spUpdate failed")
+                            }
+                        }
+                    })
+
+                } else {
+
+                    val bottomSheetLength: Int = boxList[position].bottomSheet?.size!!
+                    val bottomSheetItem = boxList[position].bottomSheet
+
+                    val placeHolder: String? = boxList[position].header?.sideToggle?.url
+                    val bottomSheetId: Int = computeBottomSheetId(placeHolder, position, bottomSheetLength)
+                    if (bottomSheetId < 0) {
+                        itemView.switch_enable.isEnabled = false
+                        return@setOnCheckedChangeListener
+
+                    } else
+                        renderBottomSheet(bottomSheetItem?.get(bottomSheetId), position, toggleOpenBottomSheetType)
+                }
+            }
+        }
+
         private fun renderBodyInfo(it: List<InfoItem?>?) {
 
             if (it?.isEmpty()!!) {
                 itemView.info_container.hide()
             } else {
+
                 if (itemView.info_container.childCount > 0) {
                     return
                 }
@@ -184,15 +173,12 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
                     infolabel = it.get(item)?.label
                     infovalue = it.get(item)?.value
 
+                    val viewRowLayout = inflater.inflate(R.layout.mlp_row_info, null)
                     viewRowLayout.label.setTextAndCheckShow(infolabel)
                     viewRowLayout.value.setTextAndCheckShow(infovalue)
-                    if (viewRowLayout.parent != null) {
-                        (viewRowLayout.parent as ViewGroup).removeView(viewRowLayout)
-                    } else {
-                        itemView.box_container.addView(viewRowLayout)
-                    }
-                    itemView.info_container.show()
+                    itemView.info_container.addView(viewRowLayout)
                 }
+                itemView.info_container.show()
             }
         }
 
@@ -203,49 +189,41 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
                 if (itemView.box_container.childCount > 0) {
                     return
                 }
-                    var boxTitle: String?
-                    var boxContent: String?
-                    var boxColor: String?
-                    val length: Int = it.size
+                var boxTitle: String?
+                var boxContent: String?
+                var boxColor: String?
+                val length: Int = it.size
 
-                    for (item in 0 until length) {
+                for (item in 0 until length) {
 
-                        if (it[item]?.title?.length!! > 0 || it[item]?.text?.length!! > 0) {
-                            boxTitle = it.get(item)?.title
-                            boxContent = it.get(item)?.text
-                            boxColor = it.get(item)?.boxColor
-                            itemView.box_container.show()
+                    if (it[item]?.title?.length!! > 0 || it[item]?.text?.length!! > 0) {
+                        boxTitle = it.get(item)?.title
+                        boxContent = it.get(item)?.text
+                        boxColor = it.get(item)?.boxColor
+                        itemView.box_container.show()
 
-                            viewBoxLayout.text_body_title.setTextAndCheckShow(boxTitle)
-
-                            if ((!viewBoxLayout.text_body_title.isVisible)) {
-                                viewBoxLayout.text_body_content.setPadding(0, paddingTopTextBody, 0, paddingBottomTextBody)
-                            } else {
-                                viewBoxLayout.text_body_content.setPadding(0, viewBoxLayout.text_body_content.paddingTop, 0, paddingBottomTextBody)
-                            }
-                            viewBoxLayout.text_body_content.setTextAndCheckShow(boxContent)
-                            viewBoxLayout.viewbody_background.show()
-
-                            if (boxColor != null && boxColor.isNotEmpty()) {
-                                viewBoxLayout.viewbody_background.background.setColorFilter(Color.parseColor(boxColor), PorterDuff.Mode.SRC_ATOP)
-                            } else {
-                                viewBoxLayout.viewbody_background.background.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP)
-                            }
-                            if (viewBoxLayout.parent != null) {
-                                (viewBoxLayout.parent as ViewGroup).removeView(viewBoxLayout)
-                            } else {
-                                itemView.box_container.addView(viewBoxLayout)
-                            }
-
+                        val viewBoxLayout = inflater.inflate(R.layout.mlp_box_layout, null)
+                        viewBoxLayout.text_body_title.setTextAndCheckShow(boxTitle)
+                        if ((!viewBoxLayout.text_body_title.isVisible)) {
+                            viewBoxLayout.text_body_content.setPadding(0, paddingTopTextBody, 0, paddingBottomTextBody)
                         } else {
-                            viewBoxLayout.text_body_title.hide()
-                            viewBoxLayout.text_body_content.hide()
-                            viewBoxLayout.viewbody_background.hide()
-                            itemView.box_container.hide()
+                            viewBoxLayout.text_body_content.setPadding(0, viewBoxLayout.text_body_content.paddingTop, 0, paddingBottomTextBody)
                         }
+                        viewBoxLayout.text_body_content.setTextAndCheckShow(boxContent)
+                        viewBoxLayout.viewbody_background.show()
+
+                        if (boxColor != null && boxColor.isNotEmpty()) {
+                            viewBoxLayout.viewbody_background.background.setColorFilter(Color.parseColor(boxColor), PorterDuff.Mode.SRC_ATOP)
+                        } else {
+                            viewBoxLayout.viewbody_background.background.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP)
+                        }
+                        itemView.box_container.addView(viewBoxLayout)
                     }
                 }
+                itemView.box_container.show()
             }
+        }
+
 
         private fun renderBottomSheet(bottomSheetItem: BottomSheetItem?, position: Int, type: Int) {
 
@@ -254,18 +232,19 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
             viewMLPBottomSheet.tv_title_bottom.text = bottomSheetItem?.title
             viewMLPBottomSheet.tv_detail_bottom.text = bottomSheetItem?.text
             viewMLPBottomSheet.button_bottomsheet.text = bottomSheetItem?.buttonCta
-            viewMLPBottomSheet.button_bottomsheet.setOnClickListener {
 
-                if (type == 1 || type == 2) {
+            viewMLPBottomSheet.button_bottomsheet.setOnClickListener {
+                if (type == bodyOpenBottomSheetType || type == sideTextOpenBottomSheetType) {
                     val url: String? = bottomSheetItem?.url
                     url?.let {
-                        openWebViewOrOpenBottomSheet(url, position, 3)
+                        openWebViewOrOpenBottomSheet(url, position, 0)
                     }
-                } else if (type == 3) {
+                } else if (type == toggleOpenBottomSheetType) {
                     mlpWidgetAdapterCallBack = merchantLendingFragment
-                    mlpWidgetAdapterCallBack.toggleSaldoPrioritas(object : ToggleSaldoPrioritasLisneter {
+                    mlpWidgetAdapterCallBack.toggleSaldoPrioritas(false, object : ToggleSaldoPrioritasLisneter {
                         override fun onSuccessToggleSaldo(success: Boolean) {
                             if (success == null || success) {
+                                originalState = false
                                 closeableBottomSheetDialog.dismiss()
                             } else {
                                 print("SP DISABLE FAILED")
@@ -278,15 +257,16 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
             closeableBottomSheetDialog.setCustomContentView(viewMLPBottomSheet, bottomSheetItem?.title, false)
             closeableBottomSheetDialog.show()
             viewMLPBottomSheet.iv_cancel.setOnClickListener {
+                if (type == 3) {
+                    itemView.switch_enable.toggle()
+                }
                 closeableBottomSheetDialog.dismiss()
             }
-            closeableBottomSheetDialog.setCanceledOnTouchOutside(true)
+            closeableBottomSheetDialog.setCanceledOnTouchOutside(false)
         }
 
         private fun redirectUrl(urlBody: String?, position: Int) {
-
             urlBody?.let { url ->
-
                 if (itemView.box_container.isVisible || itemView.info_container.isVisible) {
                     itemView.box_container.setOnClickListener {
                         openWebViewOrOpenBottomSheet(url, position, bodyOpenBottomSheetType)
@@ -320,7 +300,6 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
                     print("Not valid url")
                 }
             } else {
-
                 val bottomSheetLength: Int = boxList[position].bottomSheet?.size!!
                 val bottomSheetItem = boxList[position].bottomSheet
 
@@ -357,6 +336,29 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
             }
             return index
         }
+
+        private fun showPopUp() {
+            val width = LinearLayout.LayoutParams.WRAP_CONTENT
+            val height = LinearLayout.LayoutParams.WRAP_CONTENT
+            val focusable = true
+            val viewPopUp = inflater.inflate(R.layout.switchon_popup, null)
+            val popupWindow = PopupWindow(viewPopUp, width, height, focusable)
+            popupWindow.showAtLocation(viewPopUp, Gravity.BOTTOM, 0, 0)
+
+            viewPopUp.setOnTouchListener(object : View.OnTouchListener {
+                override fun onTouch(v: View, event: MotionEvent): Boolean {
+                    popupWindow.dismiss()
+                    return true
+                }
+            })
+            viewPopUp.tv_dismiss.setOnClickListener {
+                popupWindow.dismiss()
+            }
+        }
     }
 }
+
+
+
+
 

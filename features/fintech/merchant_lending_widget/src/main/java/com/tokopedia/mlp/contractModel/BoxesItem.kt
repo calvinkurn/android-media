@@ -1,8 +1,6 @@
 package com.tokopedia.mlp.contractModel
 
-import javax.annotation.Generated
 import com.google.gson.annotations.SerializedName
-
 data class BoxesItem(
 
 	@SerializedName("text")
@@ -14,3 +12,4 @@ data class BoxesItem(
 	@SerializedName("title")
 	val title: String? = null
 )
+

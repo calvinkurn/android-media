@@ -11,24 +11,27 @@
         android:layout_height="@dimen/dp_24"
         android:layout_marginLeft="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_16"
+        android:padding="@dimen/dp_2"
         android:src="@drawable/ic_action_x"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_title_bottom"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_12"
-        android:lineSpacingExtra="@dimen/sp_6"
         android:layout_marginRight="@dimen/dp_16"
-        tools:text="Menunggu Proses Verifikasi dcdcdcdjngjjtgnjkmgkt jmktgtkgmtkgkgg"
-        android:textColor="#f531353b"
+        android:lineSpacingExtra="@dimen/sp_6"
+        tools:text="Menunggu  jmktgtkgmtkgkgg  "
+        android:textColor="@color/clr_f531353b"
+        app:layout_constraintStart_toEndOf="@id/iv_cancel"
+        app:layout_constraintEnd_toEndOf="parent"
         android:textSize="@dimen/dp_18"
         android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="@id/iv_cancel"
         app:layout_constraintBottom_toBottomOf="@id/iv_cancel"
-        app:layout_constraintStart_toEndOf="@id/iv_cancel"
-        app:layout_constraintTop_toTopOf="@id/iv_cancel" />
+        />
 
     <TextView
         android:id="@+id/tv_detail_bottom"
@@ -39,7 +42,7 @@
         android:layout_marginRight="@dimen/dp_16"
         android:lineSpacingExtra="@dimen/sp_6"
         tools:text="Pengajuan sedang kami proses. Lama proses verifikasi maksimum 1x24 jam sejak dokumen dikirim"
-        android:textColor="#ae31353b"
+        android:textColor="@color/clr_ae31353b"
         android:textSize="@dimen/sp_14"
         app:layout_constraintStart_toStartOf="@id/iv_cancel"
         app:layout_constraintTop_toBottomOf="@id/tv_title_bottom" />
@@ -48,7 +51,7 @@
         android:id="@+id/button_bottomsheet"
         android:layout_width="@dimen/mlp_button_bottomsheet_width"
         android:layout_height="@dimen/mlp_button_bottomsheet_height"
-        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_20"
         android:layout_marginBottom="@dimen/dp_20"
         android:background="@drawable/bg_button_green"
         android:textColor="@color/white"
@@ -57,6 +60,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_detail_bottom"
         tools:text="Saya Yakin" />
-
 
 </android.support.constraint.ConstraintLayout>

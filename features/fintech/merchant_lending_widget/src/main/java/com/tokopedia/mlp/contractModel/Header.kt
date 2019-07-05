@@ -1,8 +1,6 @@
 package com.tokopedia.mlp.contractModel
 
-import javax.annotation.Generated
 import com.google.gson.annotations.SerializedName
-
 data class Header(
 
 	@SerializedName("side_toggle")
@@ -20,3 +18,4 @@ data class Header(
 	@SerializedName("title")
 	val title: String? = null
 )
+

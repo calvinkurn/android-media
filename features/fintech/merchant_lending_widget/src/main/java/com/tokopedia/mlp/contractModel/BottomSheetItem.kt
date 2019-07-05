@@ -1,8 +1,6 @@
 package com.tokopedia.mlp.contractModel
 
-import javax.annotation.Generated
 import com.google.gson.annotations.SerializedName
-
 data class BottomSheetItem(
 
 	@SerializedName("button_cta")
@@ -20,3 +18,4 @@ data class BottomSheetItem(
 	@SerializedName("url")
 	val url: String? = null
 )
+

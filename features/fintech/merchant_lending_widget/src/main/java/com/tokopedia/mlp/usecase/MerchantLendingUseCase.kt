@@ -15,7 +15,6 @@ class MerchantLendingUseCase @Inject constructor(private val context: Context,
                                                  private val graphqlUseCase: GraphqlUseCase
 ) : UseCase<LeWidgetData?>() {
 
-
     override fun createObservable(requestParams: RequestParams?): Observable<LeWidgetData?> {
 
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
@@ -24,10 +23,9 @@ class MerchantLendingUseCase @Inject constructor(private val context: Context,
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(requestParams).map { it.getData(LeWidgetData::class.java) as LeWidgetData }
-
     }
-
 }
+
 
 
 

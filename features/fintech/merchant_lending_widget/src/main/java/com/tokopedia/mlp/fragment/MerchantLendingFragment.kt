@@ -25,7 +25,6 @@ import android.transition.TransitionManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.mlp.callback.MLPWidgetAdapterCallBack
 
-
 class MerchantLendingFragment : BaseDaggerFragment(),MLPWidgetAdapterCallBack {
 
     lateinit var drawable: Drawable
@@ -62,8 +61,8 @@ class MerchantLendingFragment : BaseDaggerFragment(),MLPWidgetAdapterCallBack {
         observeSPData()
     }
 
-    override fun toggleSaldoPrioritas( listener: MLPWidgetAdapter.ToggleSaldoPrioritasLisneter) {
-        merchantLendingViewModel.executeUseCaseToggle()
+    override fun toggleSaldoPrioritas( setsp:Boolean,listener: MLPWidgetAdapter.ToggleSaldoPrioritasLisneter) {
+        merchantLendingViewModel.executeUseCaseToggle(setsp)
         toggleSaldoPrioritasListener = listener
     }
 
@@ -86,7 +85,6 @@ class MerchantLendingFragment : BaseDaggerFragment(),MLPWidgetAdapterCallBack {
 
     private fun initViewContainer() {
         (widget_container.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = true
-
         val linearLayoutManager = LinearLayoutManager(context)
         val boxAdapter = MLPWidgetAdapter(widgetList, this.context!!, isExpanded,this)
         widget_container.layoutManager = linearLayoutManager
@@ -126,11 +124,12 @@ class MerchantLendingFragment : BaseDaggerFragment(),MLPWidgetAdapterCallBack {
     fun observeSPData(){
         merchantLendingViewModel.getSPUpdateData().observe(this, Observer {
             toggleSaldoPrioritasListener.onSuccessToggleSaldo(it!!)
-
         })
     }
-
 }
+
+
+
 
 
 

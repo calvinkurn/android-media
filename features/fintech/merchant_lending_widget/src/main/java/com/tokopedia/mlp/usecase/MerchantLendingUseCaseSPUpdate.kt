@@ -15,13 +15,11 @@ class MerchantLendingUseCaseSPUpdate @Inject constructor(private val context: Co
                                                  private val graphqlUseCase: GraphqlUseCase
 ) : UseCase<Data?>() {
 
-
     fun createRequestParams(enable: Boolean): RequestParams {
         val requestParams = RequestParams.create()
         requestParams.putBoolean("enable",enable)
         return requestParams
     }
-
 
     override fun createObservable(requestParams: RequestParams?): Observable<Data?>? {
 
@@ -30,10 +28,9 @@ class MerchantLendingUseCaseSPUpdate @Inject constructor(private val context: Co
 
         graphqlUseCase.addRequest(graphqlRequestSPUpdate)
         return graphqlUseCase.createObservable(requestParams).map { it.getData(Data::class.java) as Data }
-
     }
-
 }
+
 
 
 

@@ -26,10 +26,8 @@ class MerchantLendingViewModel @Inject constructor(var merchantUseCase: Merchant
         })
     }
 
-    fun executeUseCaseToggle() {
-
-        spUpdateUseCase.execute(spUpdateUseCase.createRequestParams(true), object : Subscriber<Data?>() {
-
+    fun executeUseCaseToggle(setSP:Boolean) {
+        spUpdateUseCase.execute(spUpdateUseCase.createRequestParams(setSP), object : Subscriber<Data?>() {
             override fun onCompleted() {
             }
             override fun onError(exception: Throwable?) {
@@ -49,6 +47,7 @@ class MerchantLendingViewModel @Inject constructor(var merchantUseCase: Merchant
         return dataSpUpdate
     }
 }
+
 
 
 
