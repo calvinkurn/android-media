@@ -24,6 +24,18 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val PARAM_EMAIL = "email"
 
+    //VerificationActivity Param
+    @JvmField
+    val PARAM_CAN_USE_OTHER_METHOD = "can_use_other_method"
+    @JvmField
+    val PARAM_IS_SHOW_CHOOSE_METHOD = "is_show_choose_method"
+    @JvmField
+    val PARAM_OTP_TYPE = "otp_type"
+    @JvmField
+    val PARAM_REQUEST_OTP_MODE = "request_otp_mode"
+    @JvmField
+    val PARAM_OTP_CODE = "otp_code"
+
     @JvmField
     val INTERNAL_GLOBAL = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_GLOBAL}"
 

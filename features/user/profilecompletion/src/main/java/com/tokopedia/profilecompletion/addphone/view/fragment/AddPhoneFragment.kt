@@ -20,6 +20,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.profilecompletion.R
+import com.tokopedia.profilecompletion.addemail.view.fragment.AddEmailFragment
 import com.tokopedia.profilecompletion.addphone.viewmodel.AddPhoneViewModel
 import com.tokopedia.profilecompletion.addphone.data.AddPhonePojo
 import com.tokopedia.profilecompletion.di.ProfileCompletionComponent
@@ -85,16 +86,22 @@ class AddPhoneFragment : BaseDaggerFragment() {
                 setErrorText(getString(R.string.wrong_phone_format))
             } else {
                 showLoading()
-                //TODO GET OTP FIRST
-//                goToVerificationActivity()
+                goToVerificationActivity(phone)
             }
         }
     }
 
-    private fun goToVerificationActivity() {
-        //TODO
+    private fun goToVerificationActivity(phone: String) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
-        intent.putExtra("is_show_choose_method", false)
+        val bundle = Bundle()
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "")
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, false)
+        bundle.putInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_PHONE_VERIFICATION)
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, "sms")
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false)
+
+        intent.putExtras(bundle)
         startActivityForResult(intent, REQUEST_COTP_PHONE_VERIFICATION)
     }
 
@@ -135,7 +142,6 @@ class AddPhoneFragment : BaseDaggerFragment() {
 
     private fun onErrorAddPhone(throwable: Throwable) {
         dismissLoading()
-        Log.d("NISNIS", throwable.message)
         //TODO uncomment after unify is fixed
 //        view?.run {
 //            Toaster.showError(
@@ -169,9 +175,8 @@ class AddPhoneFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessVerifyPhone(data: Intent?) {
-
         data?.extras?.run {
-            val otpCode = getString("otp", "")
+            val otpCode = getString(ApplinkConstInternalGlobal.PARAM_OTP_CODE, "")
             if (otpCode.isNotBlank()) {
                 val phone = etPhone.text.toString()
                 viewModel.mutateAddPhone(phone.trim(), otpCode)
@@ -194,6 +199,7 @@ class AddPhoneFragment : BaseDaggerFragment() {
     companion object {
         val EXTRA_PROFILE_SCORE = "profile_score"
         val REQUEST_COTP_PHONE_VERIFICATION = 101
+        val OTP_TYPE_PHONE_VERIFICATION = 11
 
         fun createInstance(bundle: Bundle): AddPhoneFragment {
             val fragment = AddPhoneFragment()

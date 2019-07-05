@@ -15,11 +15,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addemail.viewmodel.AddEmailViewModel
 import com.tokopedia.profilecompletion.addemail.data.AddEmailPojo
 import com.tokopedia.profilecompletion.di.ProfileCompletionComponent
+import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_add_email.*
@@ -79,11 +83,25 @@ class AddEmailFragment : BaseDaggerFragment() {
                 setErrorText(getString(R.string.error_field_required))
             } else if (!isValidEmail(email)) {
                 setErrorText(getString(R.string.wrong_email_format))
-            }else{
+            } else {
                 showLoading()
-                viewModel.mutateAddEmail(email.trim())
+                goToVerificationActivity(email.trim())
             }
         }
+    }
+
+    private fun goToVerificationActivity(email: String) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        val bundle = Bundle()
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, false)
+        bundle.putInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_ADD_EMAIL)
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, "email")
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false)
+
+        intent.putExtras(bundle)
+        startActivityForResult(intent, REQUEST_ADD_EMAIL_COTP)
     }
 
     private fun setErrorText(s: String) {
@@ -123,7 +141,6 @@ class AddEmailFragment : BaseDaggerFragment() {
 
     private fun onErrorAddEmail(throwable: Throwable) {
         dismissLoading()
-        Log.d("NISNIS", throwable.message)
         //TODO uncomment after unify is fixed
 //        view?.run {
 //            Toaster.showError(
@@ -145,7 +162,6 @@ class AddEmailFragment : BaseDaggerFragment() {
         }
     }
 
-
     private fun showLoading() {
         mainView.visibility = View.GONE
         progressBar.visibility = View.VISIBLE
@@ -156,9 +172,30 @@ class AddEmailFragment : BaseDaggerFragment() {
         progressBar.visibility = View.GONE
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_ADD_EMAIL_COTP && resultCode == Activity.RESULT_OK) {
+            onSuccessVerifyAddEmail(data)
+        }
+    }
+
+    private fun onSuccessVerifyAddEmail(data: Intent?) {
+        data?.extras?.run{
+            val otpCode = getString(ApplinkConstInternalGlobal.PARAM_OTP_CODE, "")
+            if(otpCode.isNotBlank()) {
+                val email = et_email.text.toString().trim()
+                viewModel.mutateAddEmail(email, otpCode)
+            }else{
+                onErrorAddEmail(MessageErrorException(getString(R.string.default_request_error_unknown),
+                        ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW.toString()))
+            }
+        }
+    }
 
     companion object {
         val EXTRA_PROFILE_SCORE = "profile_score"
+        val REQUEST_ADD_EMAIL_COTP = 101
+        val OTP_TYPE_ADD_EMAIL = 141
 
         fun createInstance(bundle: Bundle): AddEmailFragment {
             val fragment = AddEmailFragment()
