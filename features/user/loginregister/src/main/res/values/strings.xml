@@ -281,7 +281,7 @@
     <string name="email_not_registered">Email Belum Terdaftar</string>
     <string name="email_not_registered_info">Lanjut daftar dengan email ini %1$s?</string>
     <string name="not_registered_yes">Ya, Daftar</string>
-
+    <string name="default_request_error_unknown">Terjadi kesalahan. Ulangi beberapa saat lagi</string>
 
     <!-- ACTIVATION PAGE -->
     <string name="title_activity_activation">Aktivasi Akun</string>

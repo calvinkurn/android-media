@@ -31,7 +31,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation project(rootProject.ext.libraries.track)
     implementation rootProject.ext.unifyDependencies.principles
-    
+
 
     implementation project(rootProject.ext.features.affiliateCommon)
     implementation project(rootProject.ext.features.gallery)
@@ -54,6 +54,7 @@ dependencies {
     implementation project(rootProject.ext.features.tradeIn)
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.features.productCard)
+    implementation project(rootProject.ext.features.discoveryCommon)
 
 
     implementation rootProject.ext.miscDependencies.dagger

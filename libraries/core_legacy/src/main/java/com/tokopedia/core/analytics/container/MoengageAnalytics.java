@@ -14,6 +14,8 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -47,6 +49,7 @@ public class MoengageAnalytics extends ContextAnalytics {
                         .setNotificationType(R.integer.notification_type_multiple)
                         .build();
         MoEngage.initialise(moEngage);
+        sendExistingUserAndInstallTrackingEvent();
     }
 
     @Override
@@ -106,9 +109,11 @@ public class MoengageAnalytics extends ContextAnalytics {
         sendTrackEvent(builder.build(), eventName);
     }
 
-    public void isExistingUser(final boolean bol) {
-        CommonUtils.dumper("MoEngage check is existing user " + bol);
-        MoEHelper.getInstance(getContext()).setExistingUser(bol);
+    public void sendExistingUserAndInstallTrackingEvent() {
+        if (getContext() != null) {
+            UserSessionInterface userSession = new UserSession(getContext());
+            MoEHelper.getInstance(getContext()).setExistingUser(userSession.isLoggedIn());
+        }
     }
 
     /**

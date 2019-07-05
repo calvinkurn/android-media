@@ -82,10 +82,4 @@ public class LoginRegisterModule {
     LoginRegisterApi provideLoginRegisterApi(@LoginRegisterScope Retrofit retrofit) {
         return retrofit.create(LoginRegisterApi.class);
     }
-
-    @LoginRegisterScope
-    @Provides
-    Resources provideResources(@ApplicationContext Context context){
-        return context.getResources();
-    }
 }

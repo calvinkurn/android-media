@@ -9,4 +9,5 @@ import com.tokopedia.url.TokopediaUrl;
 public class AbstractionBaseURL {
     // will be overwritten in respective MainApplication (SellerMainApplication or ConsumerMainApplication)
     public static String JS_DOMAIN = TokopediaUrl.Companion.getInstance().getJS();
+    public static String MOBILE_DOMAIN = TokopediaUrl.Companion.getInstance().getMOBILEWEB();
 }

@@ -27,7 +27,7 @@ public class RegisterInitialActivity extends BaseSimpleActivity implements HasCo
 
     @Override
     protected Fragment getNewFragment() {
-        return RegisterInitialFragment.createInstance();
+        return RegisterInitialFragment.Companion.createInstance();
     }
 
     public static Intent getCallingIntent(Context context) {

@@ -64,7 +64,7 @@ dependencies {
     implementation rootProject.ext.analyticsDependencies.installRef
     implementation rootProject.ext.analyticsDependencies.moengageFirebase
     implementation (rootProject.ext.analyticsDependencies.moengage) {
-        exclude group: 'com.moengage', module: 'moe-push-gcm'
+        exclude group: 'com.moengage', module: 'moe-push-firebase'
     }
     implementation (rootProject.ext.analyticsDependencies.moengageMSG) {
         exclude group: 'com.android.support'

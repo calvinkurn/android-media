@@ -4,13 +4,9 @@ import com.crashlytics.android.Crashlytics
 import com.tokopedia.kotlin.util.ContainNullException
 import com.tokopedia.kotlin.util.isContainNull
 import com.tokopedia.recommendation_widget_common.BuildConfig
-
 import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-
-import java.util.ArrayList
-
 import rx.functions.Func1
 
 /**
@@ -34,7 +30,6 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
     companion object {
         fun mappingToRecommendationModel(recommendations: List<RecomendationEntity.RecomendationData>): List<RecommendationWidget> {
             val recommendationWidgetList = arrayListOf<RecommendationWidget>()
-            val itemList = arrayListOf<RecommendationItem>()
 
             recommendationWidgetList.addAll(
                     recommendations.map { convertToRecommendationWidget(it) }
@@ -46,7 +41,13 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
         private fun convertToRecommendationWidget(recomendationData: RecomendationEntity.RecomendationData): RecommendationWidget {
             val recommendationItemList = arrayListOf<RecommendationItem>()
             recommendationItemList.addAll(
-                    recomendationData.recommendation?.mapIndexed { index, recommendation -> convertToRecommendationItem(recommendation, index + 1) } ?: emptyList())
+                    recomendationData.recommendation?.mapIndexed { index, recommendation ->
+                        convertToRecommendationItem(
+                                recommendation,
+                                recomendationData.title ?: "",
+                                recomendationData.pageName ?: "",
+                                index + 1)
+                    } ?: emptyList())
             return RecommendationWidget(
                     recommendationItemList,
                     recomendationData.title ?: "",
@@ -62,7 +63,11 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
                     recomendationData.pageName?:"")
         }
 
-        private fun convertToRecommendationItem(data: RecomendationEntity.Recommendation, position: Int): RecommendationItem {
+        private fun convertToRecommendationItem(
+                data: RecomendationEntity.Recommendation,
+                title: String,
+                pageName: String,
+                position: Int): RecommendationItem {
             return RecommendationItem(
                     data.id,
                     data.name ?: "",
@@ -84,7 +89,16 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
                     data.slashedPrice?:"",
                     data.slashedPriceInt,
                     data.discountPercentage,
-                    position
+                    position,
+                    data.shop?.id ?: -1,
+                    "",
+                    data.shop?.name ?: "",
+                    -1,
+                    1,
+                    title,
+                    pageName,
+                    data.minOrder ?: 1
+
             )
 
         }

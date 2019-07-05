@@ -3,6 +3,7 @@ package com.tokopedia.tkpd;
 import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
@@ -384,4 +385,16 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     }
 
 
+    @Override
+    public void setCategoryAbTestingConfig() {
+        CategoryNavigationConfig.INSTANCE.updateCategoryConfig(getApplicationContext(), this::openNewBelanja, this::openOldBelanja);
+    }
+
+    Intent openNewBelanja(Context context) {
+        return null;
+    }
+
+    Intent openOldBelanja(Context context) {
+        return null;
+    }
 }
