@@ -93,6 +93,8 @@ public interface ProductListSectionContract {
         void launchLoginActivity(String productId);
 
         void sendImpressionGuidedSearch();
+
+        void showAdultRestriction();
     }
 
     interface Presenter extends SearchSectionContract.Presenter<View> {

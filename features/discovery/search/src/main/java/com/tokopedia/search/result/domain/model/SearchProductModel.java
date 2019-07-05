@@ -90,6 +90,9 @@ public class SearchProductModel {
         @SerializedName("isFilter")
         @Expose
         private boolean isFilter;
+        @SerializedName("isQuerySafe")
+        @Expose
+        private boolean isQuerySafe;
         @SerializedName("count")
         @Expose
         private int count;
@@ -126,6 +129,10 @@ public class SearchProductModel {
 
         public boolean isFilter() {
             return isFilter;
+        }
+
+        public boolean isQuerySafe() {
+            return isQuerySafe;
         }
 
         public int getCount() {

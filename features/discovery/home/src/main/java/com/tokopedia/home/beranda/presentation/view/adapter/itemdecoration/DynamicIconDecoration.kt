@@ -20,7 +20,7 @@ class DynamicIconDecoration(val marginLeft: Int, maxParentWidth: Int,
                                 view: View,
                                 parent: RecyclerView,
                                 state: RecyclerView.State) {
-        if (parent.layoutManager.getPosition(view) > 0) {
+        if (parent.layoutManager?.getPosition(view)!! > 0) {
             outRect.left = leftOutRect
         } else {
             outRect.left = marginLeft

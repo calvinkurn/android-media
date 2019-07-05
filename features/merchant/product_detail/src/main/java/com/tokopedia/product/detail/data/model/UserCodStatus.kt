@@ -12,7 +12,7 @@ data class UserCodStatus(
         @Expose
         val error: String = "",
 
-        @SerializedName("isCod")
+        @SerializedName("is_cod")
         @Expose
         val isCod: Boolean = false
 ) {
