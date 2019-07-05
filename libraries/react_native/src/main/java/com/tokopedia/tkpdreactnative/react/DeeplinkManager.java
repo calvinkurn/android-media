@@ -1,6 +1,7 @@
 package com.tokopedia.tkpdreactnative.react;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -25,7 +26,7 @@ public class DeeplinkManager extends ReactContextBaseJavaModule {
     @ReactMethod
     public void openUrl(String applinks, String extra, Promise promise) {
         // Check if it's applink
-        if (applinks != null) {
+        if (!TextUtils.isEmpty(applinks)) {
             if (applinks.toLowerCase().contains("tokopedia://")) {
                 if (!extra.isEmpty()) { // Check if extra params is not empty
                     ((TkpdCoreRouter) context.getApplicationContext())
