@@ -28,7 +28,7 @@ public class DeeplinkManager extends ReactContextBaseJavaModule {
         // Check if it's applink
         if (!TextUtils.isEmpty(applinks)) {
             if (applinks.toLowerCase().contains("tokopedia://")) {
-                if (!extra.isEmpty()) { // Check if extra params is not empty
+                if (!TextUtils.isEmpty(extra)) { // Check if extra params is not empty
                     ((TkpdCoreRouter) context.getApplicationContext())
                             .actionApplink(this.getCurrentActivity(), applinks, extra);
                 } else {
