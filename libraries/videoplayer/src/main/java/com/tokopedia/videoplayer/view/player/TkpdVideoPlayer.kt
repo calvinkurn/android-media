@@ -69,7 +69,7 @@ class TkpdVideoPlayer: Fragment(), ControllerListener {
         }
 
         fun listener(callback: VideoPlayerListener) = apply {
-            bundle.putSerializable(VIDEO_CALLBACK, callback)
+            bundle.putParcelable(VIDEO_CALLBACK, callback)
             return this
         }
 
@@ -114,7 +114,7 @@ class TkpdVideoPlayer: Fragment(), ControllerListener {
                 viewModel.playerType = arguments!!.getInt(PLAYER_TYPE, PlayerType.DEFAULT)
 
                 //passing callback listener with serializable
-                callback = arguments?.getSerializable(VIDEO_CALLBACK) as VideoPlayerListener?
+                callback = arguments?.getParcelable(VIDEO_CALLBACK) as VideoPlayerListener?
 
                 //native controller visibility
                 playerView.useController = viewModel.nativeController
