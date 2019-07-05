@@ -713,11 +713,10 @@ public class WishListImpl implements WishList {
             if (graphqlResponse != null && graphqlResponse.getData(GqlWishListDataResponse.class) != null) {
                 GqlWishListDataResponse gqlWishListDataResponse = graphqlResponse.getData(GqlWishListDataResponse.class);
                 wishListView.displayPull(false);
-                if (mPaging.getPage() == 1 || gqlWishListDataResponse.getGqlWishList().getWishlistDataList().size() == 0) {
+                if (mPaging.getPage() == 1 && gqlWishListDataResponse.getGqlWishList().getWishlistDataList().size() == 0) {
                     data.clear();
                     dataWishlist.clear();
-                    if (gqlWishListDataResponse.getGqlWishList().getWishlistDataList().size() == 0)
-                        wishListView.setSearchNotFound(query);
+                    wishListView.setSearchNotFound(query);
                 }
                 gqlWishListDataResponse.getGqlWishList().getPagination().setNextUrl("search");
 
