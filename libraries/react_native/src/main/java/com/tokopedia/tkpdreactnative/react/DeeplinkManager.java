@@ -25,17 +25,19 @@ public class DeeplinkManager extends ReactContextBaseJavaModule {
     @ReactMethod
     public void openUrl(String applinks, String extra, Promise promise) {
         // Check if it's applink
-        if (applinks.toLowerCase().contains("tokopedia://")) {
-            if (!extra.isEmpty()) { // Check if extra params is not empty
+        if (applinks != null) {
+            if (applinks.toLowerCase().contains("tokopedia://")) {
+                if (!extra.isEmpty()) { // Check if extra params is not empty
+                    ((TkpdCoreRouter) context.getApplicationContext())
+                            .actionApplink(this.getCurrentActivity(), applinks, extra);
+                } else {
+                    ((TkpdCoreRouter) context.getApplicationContext())
+                            .actionApplinkFromActivity(this.getCurrentActivity(), applinks);
+                }
+            } else { // Check if it's web url
                 ((TkpdCoreRouter) context.getApplicationContext())
-                        .actionApplink(this.getCurrentActivity(), applinks, extra);
-            } else {
-                ((TkpdCoreRouter) context.getApplicationContext())
-                        .actionApplinkFromActivity(this.getCurrentActivity(), applinks);
+                        .actionOpenGeneralWebView(this.getCurrentActivity(), applinks);
             }
-        } else { // Check if it's web url
-            ((TkpdCoreRouter) context.getApplicationContext())
-                    .actionOpenGeneralWebView(this.getCurrentActivity(), applinks);
         }
     }
 }
