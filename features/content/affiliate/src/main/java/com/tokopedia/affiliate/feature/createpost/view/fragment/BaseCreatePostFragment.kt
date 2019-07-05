@@ -410,6 +410,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                         deleteMedia(position)
                     }
                     dialog.setCancelable(true)
+                    dialog.show()
                 } else {
                     deleteMedia(position)
                 }
