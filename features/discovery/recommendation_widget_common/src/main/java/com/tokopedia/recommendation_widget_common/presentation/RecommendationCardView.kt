@@ -85,7 +85,9 @@ class RecommendationCardView : ProductCardView {
     private fun setRatingVisible(){
         ratingView.visibility = View.VISIBLE
         reviewCountView.visibility = View.VISIBLE
-        ratingContainer.visibility = View.VISIBLE
+        if (ratingContainer != null) {
+            ratingContainer.visibility = View.VISIBLE
+        }
     }
 
     interface TrackingListener {

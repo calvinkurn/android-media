@@ -79,6 +79,8 @@ class RecomendationEntity {
         var badges: List<Badges>? = listOf()
         @SerializedName("wholesalePrice")
         var wholesalePrice: List<*>? = listOf<Any>()
+        @SerializedName("minOrder")
+        var minOrder: Int? = 0
 
         class Shop {
             @SerializedName("id")
