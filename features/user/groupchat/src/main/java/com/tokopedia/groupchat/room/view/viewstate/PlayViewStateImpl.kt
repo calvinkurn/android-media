@@ -62,9 +62,9 @@ import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
 import rx.Observable
@@ -276,7 +276,8 @@ open class PlayViewStateImpl(
                 bufferDimContainer,
                 activity.supportFragmentManager,
                 videoVerticalContainer,
-                rootView
+                rootView,
+                setChatListHasSpaceOnTop()
         )
         videoHorizontalHelper = VideoHorizontalHelper(
                 viewModel,
@@ -292,6 +293,10 @@ open class PlayViewStateImpl(
         welcomeHelper = PlayWelcomeHelper(viewModel, analytics, activity, view)
 
         errorView.setOnClickListener {}
+    }
+
+    override fun onErrorVideoVertical() {
+        videoVerticalHelper.showRetryOnly()
     }
 
     override fun onDynamicButtonUpdated(it: DynamicButtonsViewModel) {
@@ -471,12 +476,6 @@ open class PlayViewStateImpl(
         sponsorHelper.assignViewModel(it)
         sponsorHelper.setSponsor()
         overflowMenuHelper.assignViewModel(it)
-        onVideoVerticalUpdated(VideoStreamViewModel(
-                true,
-                false,
-                "https://scontent-sin6-1.cdninstagram.com/vp/2a1b5cba5df6f097605c516a3c7d58d3/5D1FB5C0/t50.12441-16/55450199_131136041277815_5339080047835994825_n.mp4?_nc_ht=scontent-sin6-1.cdninstagram.com",
-                "https://scontent-sin6-2.cdninstagram.com/vp/37c031a24fd60eb087a6c1b1072ad5d8/5D208424/t50.12441-16/53306725_332584844027284_3716503313000746737_n.mp4?_nc_ht=scontent-sin6-2.cdninstagram.com"
-        ))
     }
 
     fun setDefaultBackground() {
@@ -552,36 +551,7 @@ open class PlayViewStateImpl(
             sponsorHelper.assignViewModel(viewModel)
             sponsorHelper.setSponsor()
         }
-
     }
-
-    override fun onVideoHorizontalUpdated(it: VideoViewModel) {
-        viewModel?.let { viewModel ->
-            viewModel.videoId = it.videoId
-            viewModel.isVideoLive = it.videoLive
-            initVideoFragment(it.videoId, it.videoLive)
-            videoHorizontalHelper.assignViewModel(viewModel)
-            sponsorHelper.assignViewModel(viewModel)
-            sponsorHelper.setSponsor()
-            overflowMenuHelper.assignViewModel(viewModel)
-            videoVerticalHelper.stopVideo()
-        }
-    }
-
-
-    override fun onVideoVerticalUpdated(it: VideoStreamViewModel) {
-        if(it.isActive) {
-            videoVerticalHelper.setData(it)
-            videoVerticalHelper.playVideo(VideoVerticalHelper.VIDEO_480)
-            overflowMenuHelper.setQualityVideo(VideoVerticalHelper.VIDEO_480)
-            videoHorizontalHelper.hideVideoAndToggle()
-            videoHorizontalHelper.hideAllToggle()
-        } else {
-            videoVerticalHelper.stopVideo()
-        }
-    }
-
-
 
     override fun onChannelFrozen(channelId: String) {
         viewModel?.let { viewModel ->
@@ -842,8 +812,23 @@ open class PlayViewStateImpl(
         channelBanner.visibility = visible
     }
 
-    fun setSponsorData(adsId: String?, adsImageUrl: String?, adsName: String?) {
-
+    override fun onVideoVerticalUpdated(it: VideoStreamViewModel) {
+        var it = VideoStreamViewModel(
+                true,
+                false,
+                "https://scontent-sin6-1.cdninstagram.com/vp/2a1b5cba5df6f097605c516a3c7d58d3/5D1FB5C0/t50.12441-16/55450199_131136041277815_5339080047835994825_n.mp4?_nc_ht=scontent-sin6-1.cdninstagram.com",
+                "https://scontent-sin6-2.cdninstagram.com/vp/37c031a24fd60eb087a6c1b1072ad5d8/5D208424/t50.12441-16/53306725_332584844027284_3716503313000746737_n.mp4?_nc_ht=scontent-sin6-2.cdninstagram.com"
+        )
+        if(it.isActive) {
+            videoVerticalHelper.setData(it)
+            videoVerticalHelper.playVideo(VideoVerticalHelper.VIDEO_480)
+            overflowMenuHelper.setQualityVideo(VideoVerticalHelper.VIDEO_480)
+            videoHorizontalHelper.hideVideoAndToggle()
+            videoHorizontalHelper.hideAllToggle()
+        } else {
+            videoVerticalHelper.stopVideo()
+            setChatListHasSpaceOnTop().invoke(VideoVerticalHelper.VERTICAL_WITHOUT_VIDEO)
+        }
     }
 
     override fun autoPlayVideo() {
@@ -854,7 +839,21 @@ open class PlayViewStateImpl(
         }
     }
 
-    fun initVideoFragment(videoId: String, isVideoLive: Boolean) {
+
+    override fun onVideoHorizontalUpdated(it: VideoViewModel) {
+        viewModel?.let { viewModel ->
+            viewModel.videoId = it.videoId
+            viewModel.isVideoLive = it.videoLive
+            initVideoFragment(it.videoId, it.videoLive)
+            videoHorizontalHelper.assignViewModel(viewModel)
+            sponsorHelper.assignViewModel(viewModel)
+            sponsorHelper.setSponsor()
+            overflowMenuHelper.assignViewModel(viewModel)
+            videoVerticalHelper.stopVideo()
+        }
+    }
+
+    private fun initVideoFragment(videoId: String, isVideoLive: Boolean) {
         videoHorizontalHelper.hideVideoAndToggle()
         if(!videoId.isNullOrBlank()){
             val videoFragment = fragmentManager.findFragmentById(R.id.video_container) as GroupChatVideoFragment
@@ -868,6 +867,7 @@ open class PlayViewStateImpl(
                 videoFragment.initialize(YoutubePlayerConstant.GOOGLE_API_KEY, getVideoInitializer(videoId))
             }
         } else {
+            setChatListHasSpaceOnTop().invoke(VideoHorizontalHelper.HORIZONTAL_WITHOUT_VIDEO)
             videoHorizontalHelper.hideVideoAndToggle()
         }
     }
@@ -1225,18 +1225,24 @@ open class PlayViewStateImpl(
         buttonTxt.text = buttonText
         button.setOnClickListener {
             action()
-            loadingView.show()
         }
     }
 
-    private fun setChatListHasSpaceOnTop(): (Boolean) -> Unit {
+    private fun setChatListHasSpaceOnTop(): (Int) -> Unit {
         return {
-            val space = when {
-                it -> view.context.resources.getDimensionPixelSize(R.dimen.dp_24)
-                else -> view.context.resources.getDimensionPixelSize(R.dimen.dp_8)
+            var layoutParams = spaceChatVideo.layoutParams
+            layoutParams.height = it.dpToPx(view.context.resources.displayMetrics)
+            spaceChatVideo.layoutParams = layoutParams
+            spaceChatVideo.show()
+
+            val fadingEdgeLength = when (it){
+                VideoVerticalHelper.VERTICAL_WITH_VIDEO -> view.context.resources.getDimensionPixelSize(R.dimen.dp_0)
+                VideoHorizontalHelper.HORIZONTAL_WITH_VIDEO -> view.context.resources.getDimensionPixelSize(R.dimen.dp_8)
+                else -> {
+                    view.context.resources.getDimensionPixelSize(R.dimen.dp_24)
+                }
             }
-            spaceChatVideo.showWithCondition(it)
-            chatRecyclerView.setFadingEdgeLength(space)
+            chatRecyclerView.setFadingEdgeLength(fadingEdgeLength)
             chatRecyclerView.invalidate()
         }
     }

@@ -99,7 +99,6 @@ open class PlayActivity : BaseSimpleActivity(), PlayActivityContract.View {
     private fun initView() {
         setupToolbar()
         setFragment()
-        presenter.getVideoStream(channelId, onSuccessGetVideoStream(), onErrorGetVideoStream())
     }
 
     private fun setFragment() {
@@ -221,17 +220,6 @@ open class PlayActivity : BaseSimpleActivity(), PlayActivityContract.View {
     fun setSwipeable(swipeable: Boolean) {
         if (!swipeable) {
         } else {
-        }
-    }
-
-    private fun onSuccessGetVideoStream(): (VideoStreamViewModel) -> Unit {
-        return {
-        }
-    }
-
-    private fun onErrorGetVideoStream(): (String) -> Unit {
-        return {
-
         }
     }
 

@@ -62,4 +62,5 @@ interface PlayViewState {
     fun onInteractiveButtonViewed(anchorView: LottieAnimationView)
     fun onOverflowMenuClicked()
     fun onVideoVerticalUpdated(it: VideoStreamViewModel)
+    fun onErrorVideoVertical()
 }

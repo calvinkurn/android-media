@@ -18,7 +18,7 @@ class VideoHorizontalHelper(
         private var showVideoToggle: View,
         private var videoContainer: View,
         private var youTubePlayer: YouTubePlayer?,
-        private var setChatListHasSpaceOnTop: (Boolean) -> Unit,
+        private var setChatListHasSpaceOnTop: (Int) -> Unit,
         private var liveIndicator: View,
         analytics: GroupChatAnalytics
 ): PlayBaseHelper(model) {
@@ -38,10 +38,11 @@ class VideoHorizontalHelper(
         showVideoToggle.hide()
         hideVideoToggle.show()
         videoContainer.show()
-        setChatListHasSpaceOnTop.invoke(false)
+        setChatListHasSpaceOnTop.invoke(HORIZONTAL_WITH_VIDEO)
     }
 
     fun hideVideo() {
+        setChatListHasSpaceOnTop(VideoHorizontalHelper.HORIZONTAL_WITHOUT_VIDEO)
         hideVideoAndToggle()
         showVideoToggle.show()
     }
@@ -80,7 +81,11 @@ class VideoHorizontalHelper(
 
         hideAllToggle()
         videoContainer.hide()
-        setChatListHasSpaceOnTop.invoke(true)
         liveIndicator.hide()
+    }
+
+    companion object {
+        var HORIZONTAL_WITH_VIDEO = 0
+        var HORIZONTAL_WITHOUT_VIDEO = 48
     }
 }

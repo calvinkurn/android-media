@@ -27,17 +27,20 @@ import com.tokopedia.videoplayer.view.player.VideoPlayerListener
 /**
  * @author : Steven 28/05/19
  */
-class VideoVerticalHelper constructor(
+class VideoVerticalHelper (
         var bufferContainer: View,
         var bufferDimContainer: View,
         var fragmentManager: FragmentManager,
         var playerView: FrameLayout,
-        var rootView: RelativeLayout
+        var rootView: RelativeLayout,
+        var setChatListHasSpaceOnTop: (Int) -> Unit
 ) {
 
     companion object {
         var VIDEO_480 = 480
         var VIDEO_720 = 720
+        var VERTICAL_WITH_VIDEO = 160
+        var VERTICAL_WITHOUT_VIDEO = 0
     }
 
     var videoSource = 0
@@ -130,11 +133,13 @@ class VideoVerticalHelper constructor(
                 .build()
         playerView.show()
         hideContainer()
+        setChatListHasSpaceOnTop(VERTICAL_WITH_VIDEO)
     }
 
     fun stopVideo() {
         player?.stop()
         playerView.hide()
+        setChatListHasSpaceOnTop(VERTICAL_WITHOUT_VIDEO)
     }
 
     fun setData(it: VideoStreamViewModel) {

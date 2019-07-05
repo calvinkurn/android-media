@@ -14,6 +14,5 @@ interface PlayActivityContract {
     }
 
     interface Presenter: CustomerPresenter<View> {
-        fun getVideoStream(channelId: String?, onSuccessGetVideoStream: (VideoStreamViewModel) -> Unit, onErrorGetVideoStream: (String) -> Unit)
     }
 }

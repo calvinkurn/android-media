@@ -266,7 +266,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                     onErrorGetDynamicButtons())
             presenter.getStickyComponents(channelInfoViewModel.channelId,
                     onSuccessGetStickyComponent(), onErrorGetStickyComponent())
-
+            presenter.getVideoStream(channelInfoViewModel.channelId, onSuccessGetVideoStream(), onErrorGetVideoStream())
             viewState.onSuccessGetInfoFirstTime(it, childFragmentManager)
             saveGCTokenToCache(it.groupChatToken)
             channelInfoViewModel = it
@@ -282,11 +282,24 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                     onErrorGetDynamicButtons())
             presenter.getStickyComponents(channelInfoViewModel.channelId,
                     onSuccessGetStickyComponent(), onErrorGetStickyComponent())
-
+            presenter.getVideoStream(channelInfoViewModel.channelId, onSuccessGetVideoStream(), onErrorGetVideoStream())
             viewState.onSuccessGetInfo(it)
             saveGCTokenToCache(it.groupChatToken)
             channelInfoViewModel = it
             setExitDialog(it.exitMessage)
+        }
+    }
+
+
+    private fun onSuccessGetVideoStream(): (VideoStreamViewModel) -> Unit {
+        return {
+            viewState.onVideoVerticalUpdated(it)
+        }
+    }
+
+    private fun onErrorGetVideoStream(): (String) -> Unit {
+        return {
+            viewState.onErrorVideoVertical()
         }
     }
 

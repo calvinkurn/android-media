@@ -70,5 +70,11 @@ interface PlayContract {
 
         fun getStickyComponents(channelId: String?, onSuccessGetStickyComponent:
         (StickyComponentViewModel) -> Unit, onErrorGetStickyComponent: (String) -> Unit)
+
+        fun getVideoStream(
+                channelId: String?,
+                onSuccessGetVideoStream: (VideoStreamViewModel) -> Unit,
+                onErrorGetVideoStream: (String) -> Unit
+        )
     }
 }
