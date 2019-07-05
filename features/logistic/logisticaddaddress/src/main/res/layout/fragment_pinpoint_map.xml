@@ -1,60 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.constraint.ConstraintLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <android.support.design.widget.CoordinatorLayout
             android:id="@+id/cl_bottomsheet_getdistrict"
             android:layout_width="match_parent"
-            android:layout_height="600dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent">
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
 
             <include layout="@layout/bottomsheet_getdistrict" />
 
         </android.support.design.widget.CoordinatorLayout>
 
-        <com.google.android.gms.maps.MapView
-            android:id="@+id/map_view"
+        <RelativeLayout
+            android:id="@+id/rl_map_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/cl_bottomsheet_getdistrict"/>
+            android:layout_above="@+id/cl_bottomsheet_getdistrict">
 
-        <ImageView
-            android:id="@+id/pointer_0"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"
-            android:contentDescription="@string/pointer" />
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/map_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
 
-        <ImageView
-            android:id="@+id/icon_pointer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:contentDescription="@string/pointer"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/pointer_0"
-            app:layout_constraintVertical_chainStyle="packed"
-            android:src="@drawable/ic_green_pointer" />
+            <ImageView
+                android:id="@+id/pointer_0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:contentDescription="@string/pointer" />
+
+            <ImageView
+                android:id="@+id/icon_pointer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/pointer_0"
+                android:layout_centerHorizontal="true"
+                android:contentDescription="@string/pointer"
+                android:src="@drawable/ic_green_pointer" />
+
+        </RelativeLayout>
 
         <ImageView
             android:id="@+id/ic_current_location"
@@ -65,11 +56,10 @@
             android:layout_marginBottom="@dimen/dp_16"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/cl_bottomsheet_getdistrict"
+            android:layout_above="@+id/cl_bottomsheet_getdistrict"
             android:src="@drawable/ic_gps_enable" />
 
-    </android.support.constraint.ConstraintLayout>
+    </RelativeLayout>
 
     <ImageButton
         android:id="@+id/back_button"
