@@ -430,7 +430,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     private fun updateMediaPreview(){
         val mItems = if (viewModel.fileImageList.isEmpty()){
-            viewModel.urlImageList.map { MediaItem(it.path, it.type) }
+            viewModel.urlImageList.map { MediaItem(thumbnail = it.path, type = it.type, isSelected = true) }
         } else viewModel.fileImageList.map { MediaItem(thumbnail = it.path, type = it.type) }
         media_attachment.bind(mItems)
         media_attachment.visibility = if (mItems.isEmpty()) View.GONE else View.VISIBLE

@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.MediaItem
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import kotlinx.android.synthetic.main.item_multiple_media.view.*
 import kotlinx.android.synthetic.main.layout_image_grid.view.*
@@ -95,6 +96,7 @@ class FeedMultipleImageView @JvmOverloads constructor(
 
                      ImageHandler.LoadImage(itemImageView, item.thumbnail)
                      delete.setOnClickListener { removeItem(item, adapterPosition) }
+                     delete.visibility = if (item.isSelected) View.GONE else View.VISIBLE
                      ic_play_vid.shouldShowWithAction(item.type == TYPE_VIDEO){}
                  }
 
