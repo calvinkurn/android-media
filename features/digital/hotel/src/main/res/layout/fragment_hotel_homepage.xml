@@ -26,8 +26,8 @@
                 android:layout_width="@dimen/dp_24"
                 android:layout_height="@dimen/dp_24"
                 android:layout_gravity="center"
-                android:layout_marginEnd="@dimen/dp_12"
-                android:layout_marginRight="@dimen/dp_12"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:layout_marginRight="@dimen/dp_10"
                 app:srcCompat="@drawable/ic_hotel_location" />
 
             <LinearLayout
@@ -38,6 +38,8 @@
                 <com.tokopedia.design.component.TextViewCompat
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_3"
+                    android:layout_marginLeft="@dimen/dp_3"
                     android:text="@string/hotel_homepage_destination"
                     app:fontSize="micro" />
 
@@ -47,7 +49,8 @@
                     android:layout_height="wrap_content"
                     android:clickable="true"
                     android:focusable="false"
-                    android:hint="@string/hotel_homepage_destination_hint" />
+                    android:hint="@string/hotel_homepage_destination_hint"
+                    android:inputType="textNoSuggestions" />
 
             </LinearLayout>
         </LinearLayout>
@@ -75,6 +78,8 @@
                 <com.tokopedia.design.component.TextViewCompat
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_3"
+                    android:layout_marginLeft="@dimen/dp_3"
                     android:text="@string/hotel_homepage_check_in"
                     app:fontSize="micro" />
 
@@ -84,6 +89,7 @@
                     android:layout_height="wrap_content"
                     android:clickable="true"
                     android:focusable="false"
+                    android:inputType="textNoSuggestions"
                     tools:text="18 Des 2018" />
 
             </LinearLayout>
@@ -122,6 +128,8 @@
                 <com.tokopedia.design.component.TextViewCompat
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_3"
+                    android:layout_marginLeft="@dimen/dp_3"
                     android:text="@string/hotel_homepage_check_out"
                     app:fontSize="micro" />
 
@@ -131,6 +139,7 @@
                     android:layout_height="wrap_content"
                     android:clickable="true"
                     android:focusable="false"
+                    android:inputType="textNoSuggestions"
                     tools:text="28 Des 2018" />
 
             </LinearLayout>
@@ -146,7 +155,8 @@
                 android:layout_width="@dimen/dp_24"
                 android:layout_height="@dimen/dp_24"
                 android:layout_gravity="center"
-                android:layout_marginRight="@dimen/dp_12"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:layout_marginRight="@dimen/dp_10"
                 app:srcCompat="@drawable/ic_hotel_guest_room" />
 
             <LinearLayout
@@ -157,6 +167,8 @@
                 <com.tokopedia.design.component.TextViewCompat
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_3"
+                    android:layout_marginLeft="@dimen/dp_3"
                     android:text="@string/hotel_homepage_guest_info"
                     app:fontSize="micro" />
 
@@ -166,6 +178,7 @@
                     android:layout_height="wrap_content"
                     android:clickable="true"
                     android:focusable="false"
+                    android:inputType="textNoSuggestions"
                     tools:text="1 kamar, 1 dewasa, 1 anak" />
 
             </LinearLayout>
@@ -201,17 +214,18 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/hotel_homepage_promo_title"
-                app:fontSize="title"
+                app:fontSize="titleBig"
+                app:textViewTheme="lightPrimary"
                 app:weight="medium" />
 
             <com.tokopedia.design.component.TextViewCompat
+                android:id="@+id/tv_hotel_homepage_all_promo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:id="@+id/tv_hotel_homepage_all_promo"
                 android:text="@string/hotel_show_all_text"
                 android:textColor="@color/green_500"
-                app:fontSize="micro" />
+                app:fontSize="small" />
 
         </LinearLayout>
 
