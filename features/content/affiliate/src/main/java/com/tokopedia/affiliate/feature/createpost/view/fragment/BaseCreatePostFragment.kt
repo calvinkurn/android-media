@@ -411,7 +411,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                         deleteMedia(position)
                     }
                     dialog.setCancelable(true)
-                    dialog.setOnDismishListener { media_attachment.bind(listOf(item)) }
                     dialog.show()
                 } else {
                     deleteMedia(position)
