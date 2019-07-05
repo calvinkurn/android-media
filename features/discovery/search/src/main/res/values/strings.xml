@@ -35,15 +35,4 @@
     <string name="empty_search_content_template">Hasil pencarian untuk \"%s\" tidak ditemukan. Coba keyword lain?</string>
     <string name="empty_search_button_text">Lakukan Pencarian Baru</string>
     <string name="msg_empty_search_with_filter_1">Oops, %s tidak ditemukan :(</string>
-
-    <string name="product_card_light_grey">lightGrey</string>
-    <string name="product_card_light_blue">lightBlue</string>
-    <string name="product_card_light_green">lightGreen</string>
-    <string name="product_card_light_red">lightRed</string>
-    <string name="product_card_light_orange">lightOrange</string>
-    <string name="product_card_dark_grey">darkGrey</string>
-    <string name="product_card_dark_blue">darkBlue</string>
-    <string name="product_card_dark_green">darkGreen</string>
-    <string name="product_card_dark_red">darkRed</string>
-    <string name="product_card_dark_orange">darkOrange</string>
 </resources>
