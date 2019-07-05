@@ -113,10 +113,6 @@ abstract class ProductCardView: BaseCustomView {
         }
     }
 
-    fun setImageProductViewHintListener(holder: ImpressHolder, listener: ImpressedImageView.ViewHintListener) {
-        imageProduct?.setViewHintListener(holder, listener)
-    }
-
     fun setImageProductViewHintListener(holder: ImpressHolder, viewHintListener: () -> Unit) {
         imageProduct?.setViewHintListener(holder, viewHintListener)
     }
