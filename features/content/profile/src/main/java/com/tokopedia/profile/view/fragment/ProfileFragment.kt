@@ -32,7 +32,9 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.feature.onboarding.view.fragment.UsernameInputFragment
 import com.tokopedia.affiliatecommon.BROADCAST_SUBMIT_POST
+import com.tokopedia.affiliatecommon.DISCOVERY_BY_ME
 import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS
+import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.base.BaseToaster
@@ -161,6 +163,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     @Inject
     lateinit var profilePreference: ProfilePreference
+
+    @Inject
+    lateinit var affiliatePreference: AffiliatePreference
 
     companion object {
         private const val PARAM_TAB_NAME = "{tab_name}"
@@ -1474,9 +1479,20 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun goToAffiliateExplore() {
-        val intent = RouteManager.getIntent(context, ApplinkConst.AFFILIATE_CREATE_POST, "-1", "-1")
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        startActivity(intent)
+        if (affiliatePreference.isFirstTimeEducation(userSession.userId)) {
+
+            val intent = RouteManager.getIntent(context,
+                    ApplinkConst.DISCOVERY_PAGE.replace("{page_id}", DISCOVERY_BY_ME)
+            )
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+            startActivity(intent)
+            affiliatePreference.setFirstTimeEducation(userSession.userId)
+
+        } else {
+            val intent = RouteManager.getIntent(context, ApplinkConst.AFFILIATE_CREATE_POST, "-1", "-1")
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+        }
     }
 
     private fun goToExplore() {
