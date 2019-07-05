@@ -928,6 +928,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                                            selectedServiceId: Int,
                                            serviceData: ServiceData,
                                            flagNeedToSetPinpoint: Boolean,
+                                           isDurationClick: Boolean,
                                            isClearPromo: Boolean) {
         if (shippingCourierViewModels != null) {
             val summaryViewModel = fragmentViewModel.getSummaryViewModel()

@@ -51,7 +51,7 @@ dependencies {
         exclude group: 'com.android.support'
     }
 
-    implementation rootProject.ext.unify.coach_mark
+    implementation rootProject.ext.unifyDependencies.coach_mark
 
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch

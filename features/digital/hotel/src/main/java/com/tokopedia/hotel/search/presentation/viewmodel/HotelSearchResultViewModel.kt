@@ -79,6 +79,12 @@ class HotelSearchResultViewModel @Inject constructor(
             ranking = sort.name.toLowerCase() == "ranking"
             star = sort.name.toLowerCase() == "star"
             reviewScore = sort.name.toLowerCase() == "reviewScore"
+
+            // to be edited
+            if (popularity||reviewScore||star) sortDir = "desc"
+            else if (price) sortDir = "asc"
+            else sortDir = "desc"
+
         }
     }
 
