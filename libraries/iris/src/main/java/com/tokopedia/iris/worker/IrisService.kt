@@ -10,16 +10,25 @@ import com.tokopedia.iris.data.TrackingRepository
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.data.db.table.Tracking
 import com.tokopedia.iris.data.network.ApiService
+import com.tokopedia.iris.launchCatchError
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by meta on 24/05/19.
  */
-class IrisService : JobIntentService() {
+class IrisService : JobIntentService(), CoroutineScope {
 
     private lateinit var mContext: Context
+    private val job: Job = Job()
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.IO + job
 
     override fun onCreate() {
         super.onCreate()
@@ -40,32 +49,36 @@ class IrisService : JobIntentService() {
     }
 
     private fun startService(maxRow: Int) {
-        val trackingRepository = TrackingRepository(applicationContext)
+        launchCatchError {
+            val trackingRepository = TrackingRepository(applicationContext)
 
-        val trackings: List<Tracking> = trackingRepository.getFromOldest(maxRow)
+            val trackings: List<Tracking> = trackingRepository.getFromOldest(maxRow)
 
-        if (trackings.isNotEmpty()) {
-
-            try {
+            if (trackings.isNotEmpty()) {
                 val request: String = TrackingMapper().transformListEvent(trackings)
 
                 val service = ApiService(mContext).makeRetrofitService()
                 val requestBody = ApiService.parse(request)
                 service.sendMultiEvent(requestBody).enqueue(object : Callback<String> {
-                    override fun onFailure(call: Call<String>, t: Throwable) { }
+                    override fun onFailure(call: Call<String>, t: Throwable) {}
 
                     override fun onResponse(call: Call<String>, response: Response<String>) {
                         if (response.isSuccessful && response.code() == 200) {
-                            Thread {
-                                trackingRepository.delete(trackings)
-                            }.start()
+                            trackingRepository.delete(trackings)
                         }
                     }
-
                 })
-            } catch (e: Exception) {
-                // no op
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if(!job.isCancelled) {
+            job.children.forEach {
+                it.cancel()
             }
         }
     }
 }
+
