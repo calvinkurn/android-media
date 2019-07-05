@@ -53,7 +53,7 @@ class TopChatViewStateImpl(
         val analytics: TopChatAnalytics
 ) : BaseChatViewStateImpl(view, toolbar, typingListener), TopChatViewState {
     private var attachButton: ImageView = view.findViewById(R.id.add_url)
-
+    private var addMenuButton: ImageView = view.findViewById(R.id.iv_chat_menu)
     private var maximize: View = view.findViewById(R.id.maximize)
     private var templateRecyclerView: RecyclerView = view.findViewById(R.id.list_template)
     private var headerMenuButton: ImageButton = toolbar.findViewById(R.id.header_menu)
@@ -107,6 +107,16 @@ class TopChatViewStateImpl(
         }
 
         initProductPreviewLayout()
+        hideCurrentChatButton()
+    }
+
+    private fun hideCurrentChatButton() {
+        attachButton.visibility = View.GONE
+        pickerButton.visibility = View.GONE
+        maximize.visibility = View.GONE
+        addMenuButton.setOnClickListener {
+            sendListener.showChatMenu()
+        }
     }
 
     private fun initProductPreviewLayout() {
@@ -142,15 +152,15 @@ class TopChatViewStateImpl(
     }
 
     fun minimizeTools() {
-        maximize.visibility = View.VISIBLE
-        pickerButton.visibility = View.GONE
-        attachButton.visibility = View.GONE
+//        maximize.visibility = View.VISIBLE
+//        pickerButton.visibility = View.GONE
+//        attachButton.visibility = View.GONE
     }
 
     private fun maximizeTools() {
-        maximize.visibility = View.GONE
-        pickerButton.visibility = View.VISIBLE
-        attachButton.visibility = View.VISIBLE
+//        maximize.visibility = View.GONE
+//        pickerButton.visibility = View.VISIBLE
+//        attachButton.visibility = View.VISIBLE
     }
 
     fun setDefault() {
@@ -420,9 +430,9 @@ class TopChatViewStateImpl(
 
 
     private fun showActionButtons() {
-        pickerButton.visibility = View.VISIBLE
-        attachProductButton.visibility = View.VISIBLE
-        maximizeButton.visibility = View.GONE
+//        pickerButton.visibility = View.VISIBLE
+//        attachProductButton.visibility = View.VISIBLE
+//        maximizeButton.visibility = View.GONE
     }
 
     override fun showErrorWebSocket(b: Boolean) {

@@ -48,9 +48,7 @@ import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactoryImpl
-import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
-import com.tokopedia.topchat.chatroom.view.customview.TopChatViewState
-import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
+import com.tokopedia.topchat.chatroom.view.customview.*
 import com.tokopedia.topchat.chatroom.view.listener.*
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.chatroom.view.viewmodel.ProductPreview
@@ -75,6 +73,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         , TypingListener, SendButtonListener, ImagePickerListener, ChatTemplateListener,
         HeaderMenuListener, DualAnnouncementListener, SecurityInfoListener,
         TopChatVoucherListener {
+
+    private val bottomChatMenu = BottomChatMenu()
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -844,5 +844,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         if (seenAttachedProduct.add(element.productId)) {
             analytics.eventSeenProductAttachment(element)
         }
+    }
+
+    override fun showChatMenu() {
+        bottomChatMenu.show(fragmentManager, BottomChatMenu.TAG)
     }
 }
