@@ -7,34 +7,25 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.logisticaddaddress.R;
-import com.tokopedia.logisticaddaddress.di.DistrictRecommendationComponent;
 import com.tokopedia.logisticaddaddress.di.DaggerDistrictRecommendationComponent;
-import com.tokopedia.logisticaddaddress.domain.model.Token;
-import com.tokopedia.logisticaddaddress.domain.usecase.GetShopAddressUseCase;
+import com.tokopedia.logisticaddaddress.di.DistrictRecommendationComponent;
+import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRecomToken;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DistrictRecommendationActivity;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DistrictRecommendationFragment;
+import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
 
-import retrofit2.Response;
 import rx.Subscriber;
 
 /**
@@ -45,7 +36,7 @@ import rx.Subscriber;
 public class DistrictRecommendationShopSettingsActivity extends DistrictRecommendationActivity {
 
     @Inject
-    GetShopAddressUseCase getShopAddressUseCase;
+    GetDistrictRecomToken getTokenUsecase;
 
     @Inject
     UserSessionInterface userSession;
@@ -75,15 +66,15 @@ public class DistrictRecommendationShopSettingsActivity extends DistrictRecommen
         params = AuthUtil.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), params);
 
         RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(GetShopAddressUseCase.PARAM_AUTH, params);
+        requestParams.putObject(GetDistrictRecomToken.PARAM_AUTH, params);
 
-        ProgressDialog progress = new ProgressDialog(this, R.style.CoolDialog);
-        progress.show();
-        progress.setContentView(R.layout.loader_logistic_module);
+        ProgressDialog progress = new ProgressDialog(this);
         progress.setCancelable(false);
-        progress.setOnCancelListener(dialog -> (this).finish());
+        progress.setMessage(getString(R.string.title_loading));
+        progress.setIndeterminate(true);
+        progress.show();
 
-        getShopAddressUseCase.execute(requestParams, new Subscriber<Response<TokopediaWsV4Response>>() {
+        getTokenUsecase.execute(requestParams, new Subscriber<Token>() {
             @Override
             public void onCompleted() {
 
@@ -91,32 +82,17 @@ public class DistrictRecommendationShopSettingsActivity extends DistrictRecommen
 
             @Override
             public void onError(Throwable e) {
-                if (progress.isShowing()) {
-                    progress.dismiss();
-                }
+                progress.dismiss();
                 showErrorState();
             }
 
             @Override
-            public void onNext(Response<TokopediaWsV4Response> tokopediaWsV4ResponseResponse) {
-                if (progress.isShowing()) {
-                    progress.dismiss();
-                }
-                TokopediaWsV4Response response = tokopediaWsV4ResponseResponse.body();
-                try {
-                    JSONObject jsonObject = new JSONObject(response.getStringData());
-
-                    Gson gson = new GsonBuilder().create();
-                    ShopAddressTokenResponse data =
-                            gson.fromJson(jsonObject.toString(), ShopAddressTokenResponse.class);
-                    if (data != null && data.getToken() != null) {
-                        showView(data.getToken());
-                    } else {
-                        showErrorState();
-                    }
-
-                } catch (JSONException je) {
-                    je.printStackTrace();
+            public void onNext(Token token) {
+                progress.dismiss();
+                if (token != null) {
+                    showView(token);
+                } else {
+                    showErrorState();
                 }
             }
         });
@@ -136,19 +112,9 @@ public class DistrictRecommendationShopSettingsActivity extends DistrictRecommen
         fragmentTransaction.commit();
     }
 
-    class ShopAddressTokenResponse {
-        @SerializedName("token")
-        @Expose
-        private Token token;
-
-        public Token getToken() {
-            return token;
-        }
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        getShopAddressUseCase.unsubscribe();
+        getTokenUsecase.unsubscribe();
     }
 }

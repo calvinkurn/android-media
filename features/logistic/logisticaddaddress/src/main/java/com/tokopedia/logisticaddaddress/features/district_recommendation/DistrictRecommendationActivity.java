@@ -11,7 +11,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.domain.mapper.TokenMapper;
-import com.tokopedia.logisticaddaddress.domain.model.Token;
+import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 
 import static com.tokopedia.logisticaddaddress.features.district_recommendation.DistrictRecommendationContract.Constant.ARGUMENT_DATA_TOKEN;
@@ -25,14 +25,14 @@ public class DistrictRecommendationActivity extends BaseSimpleActivity
 
     private CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
 
-    public static Intent createInstanceIntent(Activity activity, Token token) {
+    public static Intent createInstanceIntent(Activity activity, com.tokopedia.logisticaddaddress.domain.model.Token token) {
+        return newInstance(activity, new TokenMapper().convertTokenModel(token));
+    }
+
+    public static Intent newInstance(Activity activity, Token token) {
         Intent intent = new Intent(activity, DistrictRecommendationActivity.class);
         intent.putExtra(ARGUMENT_DATA_TOKEN, token);
         return intent;
-    }
-
-    public static Intent newInstance(Activity activity, com.tokopedia.logisticdata.data.entity.address.Token token) {
-        return createInstanceIntent(activity, new TokenMapper().convertTokenModel(token));
     }
 
     @Override

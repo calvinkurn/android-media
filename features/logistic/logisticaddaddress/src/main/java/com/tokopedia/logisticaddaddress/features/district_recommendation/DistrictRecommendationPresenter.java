@@ -1,8 +1,8 @@
 package com.tokopedia.logisticaddaddress.features.district_recommendation;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.logisticaddaddress.domain.model.Token;
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRequestUseCase;
+import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
@@ -42,7 +42,7 @@ public class DistrictRecommendationPresenter extends BaseDaggerPresenter<Distric
         params.putString(GetDistrictRequestUseCase.PARAM_TOKEN,
                 token.getDistrictRecommendation());
         params.putString(GetDistrictRequestUseCase.PARAM_UT,
-                String.valueOf(token.getUnixTime()));
+                String.valueOf(token.getUt()));
         params.putString(GetDistrictRequestUseCase.PARAM_QUERY, query);
 
         if (getView() != null) {

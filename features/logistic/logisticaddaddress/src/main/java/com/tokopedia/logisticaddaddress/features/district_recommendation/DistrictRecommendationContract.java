@@ -2,7 +2,7 @@ package com.tokopedia.logisticaddaddress.features.district_recommendation;
 
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.logisticaddaddress.domain.model.Token;
+import com.tokopedia.logisticdata.data.entity.address.Token;
 
 /**
  * Created by Irfan Khoirul on 17/11/18.

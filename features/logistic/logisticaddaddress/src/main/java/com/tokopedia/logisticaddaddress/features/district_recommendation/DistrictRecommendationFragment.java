@@ -19,7 +19,7 @@ import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.di.DaggerDistrictRecommendationComponent;
 import com.tokopedia.logisticaddaddress.di.DistrictRecommendationComponent;
 import com.tokopedia.logisticaddaddress.domain.mapper.AddressMapper;
-import com.tokopedia.logisticaddaddress.domain.model.Token;
+import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.List;

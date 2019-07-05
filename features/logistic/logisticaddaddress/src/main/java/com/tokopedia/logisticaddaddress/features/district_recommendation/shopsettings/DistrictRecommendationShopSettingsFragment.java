@@ -4,9 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.tokopedia.logisticaddaddress.domain.model.Token;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.AddressViewModel;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DistrictRecommendationFragment;
+import com.tokopedia.logisticdata.data.entity.address.Token;
 
 import static com.tokopedia.logisticaddaddress.features.district_recommendation.DistrictRecommendationContract.Constant.ARGUMENT_DATA_TOKEN;
 

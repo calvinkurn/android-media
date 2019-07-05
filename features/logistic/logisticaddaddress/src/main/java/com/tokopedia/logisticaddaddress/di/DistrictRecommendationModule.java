@@ -16,8 +16,8 @@ import com.tokopedia.logisticaddaddress.data.service.KeroApi;
 import com.tokopedia.logisticaddaddress.data.service.MyShopAddressApi;
 import com.tokopedia.logisticaddaddress.data.source.DistrictRecommendationDataStore;
 import com.tokopedia.logisticaddaddress.data.source.ShopAddressDataSource;
+import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRecomToken;
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRequestUseCase;
-import com.tokopedia.logisticaddaddress.domain.usecase.GetShopAddressUseCase;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.AddressViewModelMapper;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DistrictRecommendationContract;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DistrictRecommendationPresenter;
@@ -196,10 +196,10 @@ public class DistrictRecommendationModule {
 
     @Provides
     @DistrictRecommendationScope
-    GetShopAddressUseCase provideGetShopAddressRequestUseCase(
+    GetDistrictRecomToken provideGetDistrictRecomTokenUseCase(
             ShopAddressRepository shopAddressRepository
     ) {
-        return new GetShopAddressUseCase(shopAddressRepository);
+        return new GetDistrictRecomToken(shopAddressRepository);
     }
 
     @Provides
