@@ -404,12 +404,14 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                     dialog.setBtnCancel(getString(R.string.title_delete))
                     dialog.setOnOkClickListener{
                         dialog.dismiss()
+                        media_attachment.bind(listOf(item))
                     }
                     dialog.setOnCancelClickListener{
                         dialog.dismiss()
                         deleteMedia(position)
                     }
                     dialog.setCancelable(true)
+                    dialog.setOnDismishListener { media_attachment.bind(listOf(item)) }
                     dialog.show()
                 } else {
                     deleteMedia(position)
