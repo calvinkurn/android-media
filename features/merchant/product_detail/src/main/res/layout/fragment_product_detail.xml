@@ -151,7 +151,7 @@
 
                 <include layout="@layout/partial_product_detail_wholesale"/>
 
-                <view.customview.TradeInTextView
+                <com.tokopedia.tradein.view.customview.TradeInTextView
                     android:id="@+id/tv_trade_in"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

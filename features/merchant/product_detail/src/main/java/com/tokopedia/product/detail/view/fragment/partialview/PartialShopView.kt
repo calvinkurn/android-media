@@ -88,7 +88,7 @@ class PartialShopView private constructor(private val view: View, private val cl
     }
 
     fun renderShopBadge(shopBadge: ShopBadge) {
-        ImageHandler.loadImage(view.context, view.l_medal, shopBadge.badge, R.drawable.ic_loading_toped)
+        ImageHandler.loadImage2(view.l_medal, shopBadge.badge, R.drawable.ic_loading_image)
     }
 
     fun renderShopFeature(shopFeatureData: ShopFeatureData) {

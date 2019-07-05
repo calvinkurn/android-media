@@ -15,9 +15,13 @@ import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity;
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity;
 import com.tokopedia.logisticcommon.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.address.Token;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 
 import java.util.ArrayList;
+
+import static com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_ADD_NEW_ADDRESS_KEY;
 
 /**
  * @author Irfan Khoirul on 05/02/18
@@ -142,16 +146,18 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
         Intent intent;
         switch (typeRequest) {
             case TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS:
-                /*intent = AddAddressActivity
-                        .createInstanceAddAddressFromCheckoutSingleAddressFormWhenDefaultAddressIsEmpty(
-                                this, token);
-                startActivityForResult(intent,
-                        LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);*/
-
-                startActivityForResult(PinpointMapActivity.newInstance(this,
-                        AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
-                        false, 0, false, false, null,
-                        false), LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT);
+                if (isAddNewAddressEnabled()) {
+                    startActivityForResult(PinpointMapActivity.newInstance(this,
+                            AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
+                            false, 0, false, false, null,
+                            false), LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT);
+                } else {
+                    intent = AddAddressActivity
+                            .createInstanceAddAddressFromCheckoutSingleAddressFormWhenDefaultAddressIsEmpty(
+                                    this, token);
+                    startActivityForResult(intent,
+                            LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);
+                }
 
                 break;
             case TYPE_REQUEST_EDIT_ADDRESS_FOR_TRADE_IN:
@@ -162,8 +168,6 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
                 );
                 startActivityForResult(intent,
                         LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT);
-                /*intent = new Intent(this, PinpointMapActivity.class);
-                startActivity(intent);*/
                 break;
             default:
         }
@@ -265,4 +269,8 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
         }
     }
 
+    public boolean isAddNewAddressEnabled() {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
+        return remoteConfig.getBoolean(ENABLE_ADD_NEW_ADDRESS_KEY, false);
+    }
 }

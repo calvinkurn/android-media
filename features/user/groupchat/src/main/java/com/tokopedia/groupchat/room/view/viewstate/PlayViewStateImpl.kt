@@ -169,14 +169,14 @@ open class PlayViewStateImpl(
         chatRecyclerView.addItemDecoration(itemDecoration)
 
         chatRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (layoutManager.findFirstVisibleItemPosition() == 0) {
                     attemptResetNewMessageCounter()
                 }
             }
 
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (layoutManager.findFirstVisibleItemPosition() == 0) {
                     attemptResetNewMessageCounter()
@@ -1106,7 +1106,7 @@ open class PlayViewStateImpl(
     override fun afterSendMessage() {
         KeyboardHandler.DropKeyboard(view.context, view)
         onKeyboardHidden()
-        replyEditText.text.clear()
+        replyEditText.text?.clear()
     }
 
     override fun onInfoMenuClicked() {
