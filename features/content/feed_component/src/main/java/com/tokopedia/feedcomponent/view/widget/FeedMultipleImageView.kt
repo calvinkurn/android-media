@@ -7,7 +7,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RelativeLayout
+import android.widget.FrameLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.feedcomponent.R
@@ -89,7 +89,7 @@ class FeedMultipleImageView @JvmOverloads constructor(
              fun bind(item: MediaItem) {
                  with(itemView){
                      val btnDeleteMargin = context.resources.getDimensionPixelSize(if (itemCount == 1) R.dimen.dp_16 else R.dimen.dp_8)
-                     val layoutParams = delete.layoutParams as RelativeLayout.LayoutParams
+                     val layoutParams = delete.layoutParams as LayoutParams
                      layoutParams.setMargins(btnDeleteMargin, btnDeleteMargin, btnDeleteMargin, btnDeleteMargin)
                      delete.layoutParams = layoutParams
 
