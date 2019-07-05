@@ -110,12 +110,14 @@ public class GTMAnalytics extends ContextAnalytics {
                     bundle.getInt(AppEventTracking.GTM.GTM_RESOURCE));
 
             pResult.setResultCallback(cHolder -> {
-                if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GTM_REFRESH, true)) {
-                    if (isAllowRefreshDefault(cHolder)) {
-                        Log.i("GTM TKPD", "Refreshed Container ");
-                        cHolder.refresh();
+                cHolder.setContainerAvailableListener((containerHolder, s) -> {
+                    if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GTM_REFRESH, true)) {
+                        if (isAllowRefreshDefault(containerHolder)) {
+                            Log.d("GTM TKPD", "Refreshed Container ");
+                            containerHolder.refresh();
+                        }
                     }
-                }
+                });
             }, 2, TimeUnit.SECONDS);
         } catch (Exception e) {
             eventError(getContext().getClass().toString(), e.toString());
