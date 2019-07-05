@@ -8,8 +8,6 @@ import android.widget.EditText
 import android.widget.Toast
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.application.MyApplication
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.groupchat.room.view.activity.PlayActivity
 import com.tokopedia.tkpd.network.DataSource
@@ -190,8 +188,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun goTo() {
-        startActivity(PlayActivity.getCallingIntent(this, "668", true))
-        /* or, you can use route like this:
+        /* @example: open groupchat module;
+         * startActivity(PlayActivity.getCallingIntent(this, "668", true))
+         * or, you can use route like this:
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS) */
     }
 

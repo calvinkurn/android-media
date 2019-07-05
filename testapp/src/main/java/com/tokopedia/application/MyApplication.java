@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.view.MotionEvent;
 import android.widget.Toast;
 
 import com.raizlabs.android.dbflow.config.FlowConfig;
