@@ -11,5 +11,6 @@
     <color name="grey_shadow">#20ededed</color>
     <color name="button_change_courier">#42b549</color>
     <color name="button_change_courier_disabled">#7031353b</color>
+    <color name="invenage_text_color">#f531353b</color>
 </resources>
 

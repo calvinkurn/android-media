@@ -90,6 +90,8 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
     private ImageView imgWishlist;
     private TextView tvEllipsize;
     private View divider;
+    private TextView tvInvenageText;
+    private LinearLayout llInvenageText;
 
     private CartItemHolderData cartItemHolderData;
     private QuantityTextWatcher.QuantityTextwatcherListener quantityTextwatcherListener;
@@ -135,6 +137,8 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         this.imgWishlist = itemView.findViewById(R.id.img_wishlist);
         this.tvEllipsize = itemView.findViewById(R.id.tv_ellipsize);
         this.divider = itemView.findViewById(R.id.holder_item_cart_divider);
+        this.tvInvenageText = itemView.findViewById(R.id.tv_invenage_text);
+        this.llInvenageText = itemView.findViewById(R.id.ll_invenage_text);
 
         etRemark.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -354,6 +358,13 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         });
 
         divider.setVisibility((getLayoutPosition() == dataSize - 1) ? View.GONE : View.VISIBLE);
+
+        if (!data.getCartItemData().getOriginData().getProductInvenageByUserText().isEmpty()) {
+            this.llInvenageText.setVisibility(View.VISIBLE);
+            this.tvInvenageText.setText(data.getCartItemData().getOriginData().getProductInvenageByUserText());
+        } else {
+            this.llInvenageText.setVisibility(View.GONE);
+        }
     }
 
     private void renderRemark(CartItemHolderData data, int parentPosition, ViewHolderListener viewHolderListener) {
