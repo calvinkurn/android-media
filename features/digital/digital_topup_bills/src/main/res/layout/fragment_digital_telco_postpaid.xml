@@ -11,18 +11,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.tokopedia.design.component.ticker.TickerView
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/digital_bg_pdp" />
+
+        <com.tokopedia.unifycomponents.ticker.Ticker
             android:id="@+id/ticker_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_15"
-            android:layout_marginRight="@dimen/dp_15"
-            android:padding="@dimen/dp_10"
-            android:visibility="gone"
+            tools:visibility="gone"
             app:tckv_content_text_size="@dimen/dp_11"
             app:tckv_indicator_off_color="@color/grey_550"
-            app:tckv_indicator_on_color="@color/tkpd_main_green"
-            tools:visibility="visible" />
+            app:tckv_indicator_on_color="@color/tkpd_main_green" />
 
         <com.tokopedia.topupbills.telco.view.widget.DigitalPostpaidClientNumberWidget
             android:id="@+id/telco_input_number"

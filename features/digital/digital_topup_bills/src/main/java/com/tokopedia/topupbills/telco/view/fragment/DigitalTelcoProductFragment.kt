@@ -126,14 +126,17 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
     fun onSuccessProductList(productData: TelcoProductComponentData) {
         emptyStateProductView.visibility = View.GONE
         telcoTelcoProductView.visibility = View.VISIBLE
+        var position = 0
         if (selectedProductId.isNotEmpty()) {
             for (i in 0 until productData.rechargeProductData.productDataCollections.size) {
                 if (productData.rechargeProductData.productDataCollections[i].product.id == selectedProductId) {
                     productData.rechargeProductData.productDataCollections[i].product.attributes.selected = true
+                    position = i
                 }
             }
         }
-        telcoTelcoProductView.renderGridProductList(productData.productType, productData.rechargeProductData.productDataCollections)
+        telcoTelcoProductView.renderProductList(productData.productType,
+                productData.rechargeProductData.productDataCollections, position)
     }
 
     fun onErrorProductList(throwable: Throwable) {

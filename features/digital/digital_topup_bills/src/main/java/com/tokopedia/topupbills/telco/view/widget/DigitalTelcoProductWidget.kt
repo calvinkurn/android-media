@@ -11,7 +11,6 @@ import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.data.TelcoProductDataCollection
 import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
 import com.tokopedia.topupbills.telco.view.adapter.DigitalProductAdapter
-import com.tokopedia.topupbills.telco.view.bottomsheet.DigitalProductBottomSheet
 
 /**
  * Created by nabillasabbaha on 11/04/19.
@@ -25,7 +24,7 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
     private lateinit var listener: ActionListener
 
     init {
-        val view = View.inflate(context, R.layout.view_digital_component_list, this)
+        val view = View.inflate(context, R.layout.view_digital_product_list, this)
         recyclerView = view.findViewById(R.id.recycler_view)
     }
 
@@ -33,9 +32,10 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
         this.listener = listener
     }
 
-    fun renderGridProductList(productType: Int, productList: List<TelcoProductDataCollection>) {
+    fun renderProductList(productType: Int, productList: List<TelcoProductDataCollection>,
+                              selectedProductPos: Int) {
         adapter = DigitalProductAdapter(productList, productType)
-        adapter.setListener(object: DigitalProductAdapter.ActionListener {
+        adapter.setListener(object : DigitalProductAdapter.ActionListener {
             override fun onClickItemProduct(itemProduct: TelcoProductDataCollection) {
                 listener.onClickProduct(itemProduct)
             }
@@ -52,6 +52,7 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
             recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         }
         adapter.notifyDataSetChanged()
+        recyclerView.layoutManager.scrollToPosition(selectedProductPos)
     }
 
     fun notifyProductItemChanges(productId: String) {

@@ -2,6 +2,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/buy_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -14,25 +15,31 @@
         android:elevation="@dimen/dp_5"
         android:background="@color/separator_voucher" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
-        style="@style/TextView.Small.Bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:lineHeight="@dimen/dp_18"
         android:lines="1"
         android:layout_marginLeft="@dimen/dp_15"
         android:layout_marginTop="@dimen/dp_15"
-        android:text="Total Pembayaran" />
+        android:text="Total Pembayaran"
+        app:typographyType="heading_5"
+        android:textColor="@color/Neutral_N700_96"/>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/total_price"
-        style="@style/TextView.Micro.Orange.Bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/title"
-        android:lineHeight="@dimen/dp_18"
         android:lines="1"
         android:layout_marginTop="@dimen/dp_10"
         android:layout_marginLeft="@dimen/dp_15"
         android:layout_marginBottom="@dimen/dp_15"
-        tools:text="Rp 25.200" />
+        tools:text="Rp 25.200"
+        app:typographyWeight="bold"
+        app:typographyType="body_2"
+        android:textColor="@color/tkpd_main_orange"/>
 
     <Button
         android:id="@+id/next_btn"

@@ -21,14 +21,17 @@
             android:textColor="@color/digital_text_enquiry_non_active"
             android:visibility="visible"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title_enquiry_result"
-            style="@style/TextView.Small.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:lines="1"
             android:text="Detail Tagihan"
             android:paddingLeft="@dimen/dp_15"
             android:paddingTop="@dimen/dp_15"
-            android:paddingRight="@dimen/dp_15"/>
+            android:paddingRight="@dimen/dp_15"
+            app:typographyType="heading_5"
+            android:textColor="@color/Neutral_N700_96"/>
 
         <LinearLayout
             android:id="@+id/enquiry_result"

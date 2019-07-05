@@ -2,6 +2,7 @@ package com.tokopedia.topupbills.telco.view.fragment
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.graphics.Typeface
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.design.widget.TabLayout
@@ -11,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
+import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
@@ -31,6 +33,7 @@ import com.tokopedia.topupbills.telco.view.viewmodel.SharedProductTelcoViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
 import com.tokopedia.topupbills.telco.view.widget.DigitalTelcoBuyWidget
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.android.synthetic.main.fragment_digital_telco_prepaid.*
 
 /**
  * Created by nabillasabbaha on 11/04/19.
@@ -160,6 +163,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 promoListView.visibility = View.GONE
                 tabLayout.visibility = View.VISIBLE
                 viewPager.visibility = View.VISIBLE
+                separator.visibility = View.VISIBLE
             }
         } catch (exception: Exception) {
             view?.run {
@@ -203,6 +207,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             }
 
             override fun onClearAutoComplete() {
+                separator.visibility = View.GONE
                 recentNumbersView.visibility = View.VISIBLE
                 promoListView.visibility = View.VISIBLE
                 tabLayout.visibility = View.GONE
@@ -212,8 +217,10 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             }
 
             override fun onClientNumberHasFocus(clientNumber: String) {
-                startActivityForResult(activity?.let { DigitalSearchNumberActivity.newInstance(it,
-                        ClientNumberType.TYPE_INPUT_TEL, clientNumber, favNumberList) },
+                startActivityForResult(activity?.let {
+                    DigitalSearchNumberActivity.newInstance(it,
+                            ClientNumberType.TYPE_INPUT_TEL, clientNumber, favNumberList)
+                },
                         REQUEST_CODE_DIGITAL_SEARCH_NUMBER)
             }
         })
@@ -238,6 +245,30 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         viewPager.adapter = pagerAdapter
         tabLayout.setupWithViewPager(viewPager)
         setTabFromProductSelected()
+        setCustomFont()
+    }
+
+    fun setCustomFont() {
+
+        val vg = tabLayout.getChildAt(0) as ViewGroup
+        val tabsCount = vg.childCount
+
+        for (j in 0 until tabsCount) {
+            val vgTab = vg.getChildAt(j) as ViewGroup
+
+            val tabChildsCount = vgTab.childCount
+
+            for (i in 0 until tabChildsCount) {
+                val tabViewChild = vgTab.getChildAt(i)
+                if (tabViewChild is TextView) {
+                    context?.run {
+                        tabViewChild.typeface = Typeface.createFromAsset(this.assets,
+                                "fonts/NunitoSans-ExtraBold.ttf")
+                    }
+
+                }
+            }
+        }
     }
 
     fun setTabFromProductSelected() {
