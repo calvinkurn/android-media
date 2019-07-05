@@ -1,6 +1,5 @@
 package com.tokopedia.core.util;
 
-import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
@@ -8,8 +7,13 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.webkit.WebView;
 
+import com.crashlytics.android.Crashlytics;
+import com.tokopedia.abstraction.base.view.webview.WebViewHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core2.R;
+import com.tokopedia.network.constant.TkpdBaseURL;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -44,10 +48,31 @@ public class TkpdWebView extends WebView {
 
     @Override
     public void loadUrl(String url) {
-        loadAuthUrl(url);
+        if(WebViewHelper.isUrlValid(url)){
+            loadAuthUrl(url);
+        }else {
+            if(!GlobalConfig.DEBUG)
+                Crashlytics.log(
+                        getContext().getString(R.string.error_message_url_invalid_crashlytics) + url);
+
+            super.loadUrl(TkpdBaseURL.MOBILE_DOMAIN);
+        }
+    }
+
+    @Override
+    public void loadUrl(String url, Map<String, String> additionalHttpHeaders) {
+        if(WebViewHelper.isUrlValid(url)){
+            super.loadUrl(url, additionalHttpHeaders);
+        }else {
+            if(!GlobalConfig.DEBUG)
+                Crashlytics.log(getContext().getString(R.string.error_message_url_invalid_crashlytics) + url);
+
+            super.loadUrl(TkpdBaseURL.MOBILE_DOMAIN);
+        }
     }
 
     public void loadAuthUrl(String url) {
+
         loadUrl(url, getWebviewHeaders(url));
     }
 

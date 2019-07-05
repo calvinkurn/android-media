@@ -38,6 +38,7 @@ import com.tokopedia.checkout.domain.datamodel.promostacking.MessageData;
 import com.tokopedia.checkout.domain.datamodel.promostacking.VoucherOrdersItemData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
+import com.tokopedia.checkout.view.common.PromoActionListener;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutFragment;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemTickerErrorHolderData;
 import com.tokopedia.checkout.view.di.component.CartComponent;
@@ -137,7 +138,7 @@ import static com.tokopedia.transactiondata.constant.Constant.EXTRA_CHECKOUT_REQ
  * Originaly authored by Aghny, Angga, Kris
  */
 
-public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentContract.View,
+public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentContract.View, PromoActionListener,
         ShipmentContract.AnalyticsActionListener, ShipmentAdapterActionListener, CourierBottomsheet.ActionListener,
         ShippingDurationBottomsheetListener, ShippingCourierBottomsheetListener,
         MerchantVoucherListBottomSheetFragment.ActionListener, ClashBottomSheetFragment.ActionListener,
@@ -1889,12 +1890,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onCartItemTickerErrorActionClicked(CartItemTickerErrorHolderData data,
-                                                   int position) {
-
-    }
-
-    @Override
     public void onShipmentItemClick(CourierItemData courierItemData,
                                     RecipientAddressModel recipientAddressModel,
                                     int cartItemPosition, boolean isChangeCourier) {
@@ -2130,14 +2125,24 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 );
                 shipmentPresenter.setDataCheckoutRequestList(dataCheckoutRequestsShipping);
                 List<DataCheckoutRequest> dataCheckoutRequestsPromo = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentAdapter.getPromoGlobalStackData(), shipmentAdapter.getShipmentCartItemModelList());
-                shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
-                        dataCheckoutRequestsPromo,
-                        EnhancedECommerceActionField.STEP_3,
-                        ConstantTransactionAnalytics.EventAction.CLICK_CHECKLIST_PILIH_DURASI_PENGIRIMAN,
-                        !TextUtils.isEmpty(recommendedCourier.getPromoCode()) ?
-                                ConstantTransactionAnalytics.EventLabel.PROMO + " - " + recommendedCourier.getEstimatedTimeDelivery() :
-                                ConstantTransactionAnalytics.EventLabel.NON_PROMO + " - " + recommendedCourier.getEstimatedTimeDelivery()
-                );
+                if (dataCheckoutRequestsPromo != null) {
+                    shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
+                            dataCheckoutRequestsPromo,
+                            EnhancedECommerceActionField.STEP_3,
+                            ConstantTransactionAnalytics.EventAction.CLICK_CHECKLIST_PILIH_DURASI_PENGIRIMAN,
+                            !TextUtils.isEmpty(recommendedCourier.getPromoCode()) ?
+                                    ConstantTransactionAnalytics.EventLabel.PROMO + " - " + recommendedCourier.getEstimatedTimeDelivery() :
+                                    ConstantTransactionAnalytics.EventLabel.NON_PROMO + " - " + recommendedCourier.getEstimatedTimeDelivery()
+                    );
+                } else {
+                    shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
+                            EnhancedECommerceActionField.STEP_3,
+                            ConstantTransactionAnalytics.EventAction.CLICK_CHECKLIST_PILIH_DURASI_PENGIRIMAN,
+                            !TextUtils.isEmpty(recommendedCourier.getPromoCode()) ?
+                                    ConstantTransactionAnalytics.EventLabel.PROMO + " - " + recommendedCourier.getEstimatedTimeDelivery() :
+                                    ConstantTransactionAnalytics.EventLabel.NON_PROMO + " - " + recommendedCourier.getEstimatedTimeDelivery()
+                    );
+                }
             }
         }
     }

@@ -1,6 +1,5 @@
 package com.tokopedia.searchbar;
 
-import android.content.Context;
 import android.content.Intent;
 
 /**
@@ -8,11 +7,5 @@ import android.content.Intent;
  */
 public interface SearchBarRouter {
 
-    Intent gotoWishlistPage(Context context);
-
     Intent gotoQrScannerPage(boolean needResult);
-
-    Intent gotoSearchAutoCompletePage(Context context);
-
-    Intent gotoInboxMainPage(Context context);
 }
