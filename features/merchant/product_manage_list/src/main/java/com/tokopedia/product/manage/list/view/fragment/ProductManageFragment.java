@@ -41,8 +41,8 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.base.list.seller.view.adapter.BaseEmptyDataBinder;
 import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.base.list.seller.view.adapter.BaseMultipleCheckListAdapter;
@@ -69,7 +69,7 @@ import com.tokopedia.product.manage.item.main.duplicate.activity.ProductDuplicat
 import com.tokopedia.product.manage.item.main.edit.view.activity.ProductEditActivity;
 import com.tokopedia.product.manage.list.R;
 import com.tokopedia.product.manage.list.constant.CashbackOption;
-import com.tokopedia.product.manage.list.constant.ProductManageTrackingConstantKt;
+import com.tokopedia.product.manage.list.constant.ManageTrackingConstant;
 import com.tokopedia.product.manage.list.constant.StatusProductOption;
 import com.tokopedia.product.manage.list.di.DaggerProductManageComponent;
 import com.tokopedia.product.manage.list.di.ProductManageModule;
@@ -205,25 +205,25 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     private void trackerManageCourierButton(){
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                ProductManageTrackingConstantKt.EVENT_ADD_PRODUCT,
-                ProductManageTrackingConstantKt.CATEGORY_ADD_PRODUCT,
-                ProductManageTrackingConstantKt.ACTION_CLICK_MANAGE_COURIER,
+                ManageTrackingConstant.EVENT_ADD_PRODUCT,
+                ManageTrackingConstant.CATEGORY_ADD_PRODUCT,
+                ManageTrackingConstant.ACTION_CLICK_MANAGE_COURIER,
                 "");
     }
 
     private void trackerSeeProduct(){
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                ProductManageTrackingConstantKt.EVENT_ADD_PRODUCT,
-                ProductManageTrackingConstantKt.CATEGORY_ADD_PRODUCT,
-                ProductManageTrackingConstantKt.ACTION_SEE_PRODUCT,
+                ManageTrackingConstant.EVENT_ADD_PRODUCT,
+                ManageTrackingConstant.CATEGORY_ADD_PRODUCT,
+                ManageTrackingConstant.ACTION_SEE_PRODUCT,
                 "");
     }
 
     private void trackerLinkClick(){
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                ProductManageTrackingConstantKt.EVENT_ADD_PRODUCT,
-                ProductManageTrackingConstantKt.CATEGORY_ADD_PRODUCT,
-                ProductManageTrackingConstantKt.ACTION_LINK,
+                ManageTrackingConstant.EVENT_ADD_PRODUCT,
+                ManageTrackingConstant.CATEGORY_ADD_PRODUCT,
+                ManageTrackingConstant.ACTION_LINK,
                 "");
     }
 
