@@ -173,6 +173,8 @@ public class ShopListFragment
     }
 
     public void updateScrollListenerState(boolean hasNextPage){
+        if(getAdapter() == null) return;
+
         switch (getAdapter().getCurrentLayoutType()) {
             case GRID_1: // List
                 if (linearLayoutLoadMoreTriggerListener != null) {
@@ -216,6 +218,8 @@ public class ShopListFragment
 
     @Override
     public void onSearchShopSuccess(List<ShopViewModel.ShopViewItem> shopItemList, boolean isHasNextPage) {
+        if(adapter == null) return;
+
         if (shopItemList.isEmpty()) {
             handleEmptySearchResult();
         } else {
@@ -481,7 +485,7 @@ public class ShopListFragment
     protected void switchLayoutType() {
         super.switchLayoutType();
 
-        if (!getUserVisibleHint()) {
+        if (!getUserVisibleHint() || getAdapter() == null) {
             return;
         }
         recyclerView.clearOnScrollListeners();

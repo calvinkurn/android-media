@@ -17,6 +17,7 @@ import rx.functions.Action1;
 /**
  * @author by nisie on 10/16/18.
  */
+@Deprecated
 public class GetUserInfoUseCase extends UseCase<GetUserInfoData> {
 
     private final GetProfileApi sessionCommonApi;

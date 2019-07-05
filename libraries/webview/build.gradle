@@ -14,6 +14,10 @@ buildscript {
 
 dependencies {
 
+    api (rootProject.ext.serviceDependencies.crashlytics) {
+        transitive = true
+    }
+    
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.config)
     implementation project(rootProject.ext.libraries.network)

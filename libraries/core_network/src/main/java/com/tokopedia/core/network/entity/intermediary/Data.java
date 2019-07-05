@@ -37,6 +37,9 @@ public class Data implements Parcelable {
     @SerializedName("meta_description")
     @Expose
     private String metaDescription;
+    @SerializedName("is_adult")
+    @Expose
+    private int isAdult;
     @SerializedName("header_image")
     @Expose
     private String headerImage;
@@ -126,6 +129,14 @@ public class Data implements Parcelable {
 
     public void setMetaDescription(String metaDescription) {
         this.metaDescription = metaDescription;
+    }
+
+    public int getIsAdult() {
+        return isAdult;
+    }
+
+    public void setIsAdult(int isAdult) {
+        this.isAdult = isAdult;
     }
 
     public String getHeaderImage() {
