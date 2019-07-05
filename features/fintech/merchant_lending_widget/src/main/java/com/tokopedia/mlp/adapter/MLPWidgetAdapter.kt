@@ -122,8 +122,8 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
             originalState = headerContent.sideToggle?.toggleStatus
             itemView.switch_enable.isChecked = originalState!!
             itemView.switch_enable.setOnCheckedChangeListener { buttonView, isChecked ->
-                if (isChecked) {
 
+                if (isChecked) {
                     if (originalState == isChecked) {
                         return@setOnCheckedChangeListener
                     }
@@ -138,12 +138,9 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
                             }
                         }
                     })
-
                 } else {
-
                     val bottomSheetLength: Int = boxList[position].bottomSheet?.size!!
                     val bottomSheetItem = boxList[position].bottomSheet
-
                     val placeHolder: String? = boxList[position].header?.sideToggle?.url
                     val bottomSheetId: Int = computeBottomSheetId(placeHolder, position, bottomSheetLength)
                     if (bottomSheetId < 0) {
@@ -257,11 +254,12 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
             closeableBottomSheetDialog.setCustomContentView(viewMLPBottomSheet, bottomSheetItem?.title, false)
             closeableBottomSheetDialog.show()
             viewMLPBottomSheet.iv_cancel.setOnClickListener {
-                if (type == 3) {
+                if (type == toggleOpenBottomSheetType) {
                     itemView.switch_enable.toggle()
                 }
                 closeableBottomSheetDialog.dismiss()
             }
+            closeableBottomSheetDialog.setCancelable(false)
             closeableBottomSheetDialog.setCanceledOnTouchOutside(false)
         }
 
@@ -357,6 +355,8 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
         }
     }
 }
+
+
 
 
 
