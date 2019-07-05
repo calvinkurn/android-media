@@ -220,7 +220,6 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
                 listDistrictAdapter.loadDistrictRecommendationNextPage(getDistrictRecommendationResponseUiModel.listDistrict.toMutableList())
             }
             listDistrictAdapter.notifyDataSetChanged()
-            updateHeight()
         }
     }
 

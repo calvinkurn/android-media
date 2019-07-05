@@ -24,7 +24,7 @@
         android:orientation="vertical"
         android:visibility="gone">
 
-        <include
+        <!--<include
             android:id="@+id/loading_list_1"
             layout="@layout/partial_shimmering_list"
             android:layout_width="match_parent"
@@ -36,7 +36,7 @@
             layout="@layout/partial_shimmering_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_20" />
+            android:layout_marginTop="@dimen/dp_20" />-->
 
         <include
             android:id="@+id/loading_list_3"
@@ -86,8 +86,8 @@
 
             <ImageView
                 android:id="@+id/ic_search_btn"
-                android:layout_width="@dimen/dp_12"
-                android:layout_height="@dimen/dp_12"
+                android:layout_width="@dimen/dp_20"
+                android:layout_height="@dimen/dp_20"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_marginEnd="12dp"

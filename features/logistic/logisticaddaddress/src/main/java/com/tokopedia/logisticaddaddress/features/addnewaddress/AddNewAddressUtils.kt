@@ -15,6 +15,9 @@ import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.Button
 import android.widget.TextView
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.maps.model.LatLng
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.logisticaddaddress.R
@@ -90,5 +93,35 @@ object AddNewAddressUtils {
                 view?.setPadding(0, 0, 0, 0)
             }
         }
+    }
+
+    @JvmStatic
+    fun isGpsEnabled(context: Context?): Boolean {
+        var isGpsOn = false
+        context?.let {
+            val locationManager = it.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            val mSettingsClient = LocationServices.getSettingsClient(it)
+
+            val locationRequest = LocationRequest.create()
+            locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+            locationRequest.interval = 10 * 1000
+            locationRequest.fastestInterval = 2 * 1000
+            val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
+            val mLocationSettingsRequest = builder.build()
+            builder.setAlwaysShow(true)
+
+            if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                isGpsOn = true
+            } else {
+                mSettingsClient
+                        .checkLocationSettings(mLocationSettingsRequest)
+                        .addOnSuccessListener(context as Activity) {
+                            isGpsOn = true
+                        }
+            }
+
+            isGpsOn = isLocationEnabled(it) && isGpsOn
+        }
+        return isGpsOn
     }
 }

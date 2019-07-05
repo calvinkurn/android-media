@@ -131,7 +131,16 @@
             android:layout_marginTop="@dimen/dp_24"
             android:text="@string/detail_alamat"/>
 
-        <com.tokopedia.design.text.TkpdHintTextInputLayout
+        <TextView
+            android:id="@+id/tv_detail_alamat_mismatch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_12"
+            android:textColor="@color/label_grey"
+            android:layout_marginTop="@dimen/dp_24"
+            android:text="@string/detail_alamat"/>
+
+        <!--<com.tokopedia.design.text.TkpdHintTextInputLayout
             android:id="@+id/et_detail_alamat_mismatch_wrapper"
             style="@style/HintTextInputLayout"
             android:layout_width="match_parent"
@@ -148,7 +157,7 @@
                 android:cursorVisible="false"
                 android:textColor="#ae31353b" />
 
-        </com.tokopedia.design.text.TkpdHintTextInputLayout>
+        </com.tokopedia.design.text.TkpdHintTextInputLayout>-->
 
     </LinearLayout>
 

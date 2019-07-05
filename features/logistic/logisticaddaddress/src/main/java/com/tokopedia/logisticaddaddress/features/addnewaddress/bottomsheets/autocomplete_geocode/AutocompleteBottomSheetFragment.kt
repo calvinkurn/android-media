@@ -10,6 +10,7 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -42,6 +43,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
     private lateinit var etSearch: EditText
     private lateinit var adapter: AutocompleteBottomSheetAdapter
     private lateinit var actionListener: ActionListener
+    private lateinit var icCloseBtn: ImageView
     val handler = Handler()
 
     @Inject
@@ -111,6 +113,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         llLoading = view.findViewById(R.id.ll_loading)
         llSubtitle = view.findViewById(R.id.ll_subtitle_poi)
         etSearch = view.findViewById(R.id.et_search)
+        icCloseBtn = view.findViewById(R.id.ic_close)
 
         adapter = AutocompleteBottomSheetAdapter(this)
         hideListPointOfInterest()
@@ -135,7 +138,11 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
             }
         } else {
             if (currentLat != 0.0 && currentLong != 0.0) {
-                doLoadAutocompleteGeocode()
+                context?.let {
+                    if (AddNewAddressUtils.isLocationEnabled(it)) {
+                        doLoadAutocompleteGeocode()
+                    }
+                }
             } else {
                 context?.let {
                     if (AddNewAddressUtils.isLocationEnabled(it)) {
@@ -153,32 +160,45 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
             }
         }
 
-        etSearch.setOnClickListener {
-            AddNewAddressAnalytics.eventClickFieldCariLokasi()
-        }
-
-        etSearch.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int,
-                                           after: Int) {
+        etSearch.run {
+            isFocusableInTouchMode = true
+            setOnClickListener {
+                AddNewAddressAnalytics.eventClickFieldCariLokasi()
             }
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int,
-                                       count: Int) {
-                if (s.isNotEmpty()) {
-                    val input = "$s"
-                    handler.postDelayed({
-                        loadAutocomplete(input)
-                    }, 500)
+            addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int,
+                                               after: Int) {
                 }
-            }
 
-            override fun afterTextChanged(s: Editable) {
-            }
-        })
+                override fun onTextChanged(s: CharSequence, start: Int, before: Int,
+                                           count: Int) {
+                    if (s.isNotEmpty()) {
+                        val input = "$s"
+                        showClearBtn()
+                        handler.postDelayed({
+                            loadAutocomplete(input)
+                        }, 500)
+                    } else {
+                        icCloseBtn.visibility = View.GONE
+                    }
+                }
+
+                override fun afterTextChanged(s: Editable) {
+                }
+            })
+        }
 
         rlCurrentLocation.setOnClickListener {
             actionListener.useCurrentLocation()
             dismiss()
+        }
+    }
+
+    private fun showClearBtn() {
+        icCloseBtn.setOnClickListener {
+            etSearch.setText("")
+            hideListPointOfInterest()
+            icCloseBtn.visibility = View.GONE
         }
     }
 

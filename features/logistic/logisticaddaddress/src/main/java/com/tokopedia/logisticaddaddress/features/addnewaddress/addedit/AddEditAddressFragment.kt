@@ -54,6 +54,7 @@ import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.form_add_new_address_data_item.*
 import kotlinx.android.synthetic.main.form_add_new_address_data_item.et_detail_address
+import kotlinx.android.synthetic.main.form_add_new_address_data_item.tv_detail_address_counter
 import kotlinx.android.synthetic.main.form_add_new_address_default_item.*
 import kotlinx.android.synthetic.main.form_add_new_address_mismatch_data_item.*
 import kotlinx.android.synthetic.main.fragment_add_edit_new_address.*
@@ -212,6 +213,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             et_detail_address.apply {
                 addTextChangedListener(setWrapperWatcher(et_detail_address_wrapper))
                 setOnClickListener { AddNewAddressAnalytics.eventClickFieldDetailAlamatChangeAddressPositive() }
+                addTextChangedListener(setDetailAlamatWatcher())
             }
 
             setOnTouchLabelAddress(ANA_POSITIVE)
@@ -371,7 +373,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         var field = errorField
         if (et_detail_address.text.isEmpty()) {
             validated = false
-            setWrapperError(et_label_address_wrapper, getString(R.string.validate_detail_alamat))
+            setWrapperError(et_detail_address_wrapper, getString(R.string.validate_detail_alamat))
             if (!isErrorFieldEmpty(field)) field += ", "
             field += "detail alamat"
         }
@@ -559,13 +561,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         AddNewAddressAnalytics.eventClickFieldKodePosChangeAddressNegative()
     }
 
-    private fun setOnClickLabelAlamat() {
-        // next phase
-        /*et_label_address.setOnClickListener {
-            // showLabelAlamatList()
-        }*/
-    }
-
     private fun setupRvKodePosChips() {
         rv_kodepos_chips_mismatch.apply {
             addItemDecoration(staticDimen8dp?.let { ChipsItemDecoration(it) })
@@ -633,7 +628,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             params.width = 450
             btn_map.layoutParams = params
             setOnClickListener {
-                saveAddressDataModel?.editDetailAddress = et_detail_alamat_mismatch.text.toString()
+                saveAddressDataModel?.editDetailAddress = tv_detail_alamat_mismatch.text.toString()
                 goToPinpointActivity(currentLat, currentLong, false, token, true, districtId,
                         isMismatchSolved, isMismatch, saveAddressDataModel)
             }
@@ -652,7 +647,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     private fun setMismatchSolvedForm() {
         ll_detail_alamat.visibility = View.VISIBLE
         et_kota_kecamatan_mismatch.setText(this.saveAddressDataModel?.formattedAddress)
-        et_detail_alamat_mismatch.setText(this.saveAddressDataModel?.editDetailAddress)
+        tv_detail_alamat_mismatch.setText(this.saveAddressDataModel?.editDetailAddress)
         et_kode_pos_mismatch.setText(this.saveAddressDataModel?.postalCode)
     }
 
@@ -692,7 +687,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             saveAddressDataModel?.address2 = "$currentLat,$currentLong"
 
         } else {
-            detailAddress = et_detail_alamat_mismatch.text.toString()
+            detailAddress = tv_detail_alamat_mismatch.text.toString()
             if (isMismatch) {
                 saveAddressDataModel?.address1 = "${detailAddress} ${saveAddressDataModel?.selectedDistrict}"
                 saveAddressDataModel?.address2 = ""
@@ -913,5 +908,30 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     }
 
     override fun finishBackToAddEdit(isMismatch: Boolean, isMismatchSolved: Boolean) {
+    }
+
+    private fun setDetailAlamatWatcher(): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if (s.isNotEmpty()) {
+                    when (val countCharLeft = 60 - count) {
+                        60 -> {
+                            tv_detail_address_counter.text = "0/60"
+                        } else -> {
+                        tv_detail_address_counter.text = "$countCharLeft/60"
+                    }
+                    }
+                } else {
+                    tv_detail_address_counter.text = "60/60"
+                }
+            }
+
+            override fun afterTextChanged(text: Editable) {
+            }
+        }
     }
 }

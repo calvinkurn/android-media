@@ -26,6 +26,8 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.logisticaddaddress.AddressConstants
+import com.tokopedia.logisticaddaddress.AddressConstants.MONAS_LAT
+import com.tokopedia.logisticaddaddress.AddressConstants.MONAS_LONG
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressComponent
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
@@ -167,35 +169,11 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             val decorView = activity?.window?.decorView
             decorView?.viewTreeObserver?.addOnGlobalLayoutListener(onGlobalLayoutListener)
         }
-    }
 
-    private fun isGpsEnabled(): Boolean {
-        var isGpsOn = false
-        context?.let {
-            val locationManager = it.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-            val mSettingsClient = LocationServices.getSettingsClient(it)
-
-            val locationRequest = LocationRequest.create()
-            locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-            locationRequest.interval = 10 * 1000
-            locationRequest.fastestInterval = 2 * 1000
-            val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
-            val mLocationSettingsRequest = builder.build()
-            builder.setAlwaysShow(true)
-
-            if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                isGpsOn = true
-            } else {
-                mSettingsClient
-                        .checkLocationSettings(mLocationSettingsRequest)
-                        .addOnSuccessListener(context as Activity) {
-                            isGpsOn = true
-                        }
-            }
-
-            isGpsOn = AddNewAddressUtils.isLocationEnabled(it) && isGpsOn
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            activity?.window?.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                    WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         }
-        return isGpsOn
     }
 
     private fun setViewListener() {
@@ -218,16 +196,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             AddNewAddressAnalytics.eventClickButtonPilihLokasi()
             doUseCurrentLocation()
         }
-
-        /*ic_current_location?.setOnClickListener {
-            context?.let {
-                if (AddNewAddressUtils.isLocationEnabled(it)) {
-                    presenter.requestLocation(requireActivity())
-                } else {
-                    showLocationInfoBottomSheet()
-                }
-            }
-        }*/
     }
 
     @SuppressLint("MissingPermission")
@@ -258,8 +226,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
                 googleMap?.isMyLocationEnabled = true
             }
         }
-
-        this.googleMap?.setMinZoomPreference(16f)
         activity?.let { MapsInitializer.initialize(activity) }
 
         moveMap(AddNewAddressUtils.generateLatLng(currentLat, currentLong))
@@ -322,14 +288,16 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
                 .zoom(16f)
                 .build()
 
-        googleMap?.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+        googleMap?.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
     }
 
     override fun onResume() {
         super.onResume()
         map_view?.onResume()
-        if (isGpsEnabled()) {
-            if (currentLat == 0.0 && currentLong == 0.0) presenter.requestLocation(requireActivity())
+        if (AddNewAddressUtils.isGpsEnabled(context)) {
+            if ((currentLat == 0.0 && currentLong == 0.0) || currentLat == MONAS_LAT && currentLong == MONAS_LONG) {
+                presenter.requestLocation(requireActivity())
+            }
             ic_current_location.setImageResource(R.drawable.ic_gps_enable)
         } else {
             ic_current_location.setImageResource(R.drawable.ic_gps_disable)
@@ -337,7 +305,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     }
 
     private fun doUseCurrentLocation() {
-        if (isGpsEnabled()) {
+        if (AddNewAddressUtils.isGpsEnabled(context)) {
             activity?.let { presenter.requestLocation(it) }
         } else {
             showLocationInfoBottomSheet()
