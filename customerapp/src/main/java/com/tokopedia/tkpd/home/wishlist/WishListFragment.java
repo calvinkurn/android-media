@@ -287,10 +287,13 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                outRect.left = getResources().getDimensionPixelSize(R.dimen.dp_4);
-                outRect.right = getResources().getDimensionPixelSize(R.dimen.dp_4);
-                outRect.top = getResources().getDimensionPixelSize(R.dimen.dp_4);
-                outRect.bottom = getResources().getDimensionPixelSize(R.dimen.dp_4);
+                if(parent.getAdapter().getItemViewType(parent.getChildAdapterPosition(view))
+                        == WishlistRecomendationViewHolder.Companion.getLAYOUT()) {
+                    outRect.left = getResources().getDimensionPixelSize(R.dimen.dp_4);
+                    outRect.right = getResources().getDimensionPixelSize(R.dimen.dp_4);
+                    outRect.top = getResources().getDimensionPixelSize(R.dimen.dp_4);
+                    outRect.bottom = getResources().getDimensionPixelSize(R.dimen.dp_4);
+                }
             }
         });
         searchEditText.setOnQueryTextListener(this);
@@ -556,7 +559,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         wishlistAnalytics.eventClickCariWishlist(query);
         wishList.searchWishlist(query);
         sendSearchGTM(query);
-        return false;
+        return true;
     }
 
     private void sendSearchGTM(String keyword) {
