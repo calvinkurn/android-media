@@ -110,6 +110,11 @@ public class HomePageTracking {
     public static final String NON_LOGIN = "non login";
     public static final String QR_CODE = "qr code";
     public static final String OVO = "ovo";
+    public static final String EVENT_ACTION_CLICK_ON_ALLOW_GEOLOCATION = "click on allow geolocation";
+    public static final String EVENT_ACTION_CLICK_ON_NOT_ALLOW_GEOLOCATION = "click on not allow geolocation";
+    public static final String EVENT_ACTION_CLICK_ON_GEOLOCATION_COMPONENT = "click on geolocation component";
+    public static final String EVENT_ACTION_CLICK_CLOSE_ON_GEOLOCATION_COMPONENT = "click close on geolocation component";
+    public static final String EVENT_ACTION_CLICK_ON_ATUR = "click on atur";
 
     public static ContextAnalytics getTracker(Context context) {
         return TrackApp.getInstance().getGTM();
@@ -810,8 +815,8 @@ public class HomePageTracking {
             tracker.sendGeneralEvent(
                     EVENT_CLICK_HOME_PAGE,
                     CATEGORY_HOME_PAGE,
-                    "click on allow geolocation",
-                    ""
+                    EVENT_ACTION_CLICK_ON_ALLOW_GEOLOCATION,
+                    LABEL_EMPTY
             );
         }
     }
@@ -823,8 +828,8 @@ public class HomePageTracking {
             tracker.sendGeneralEvent(
                     EVENT_CLICK_HOME_PAGE,
                     CATEGORY_HOME_PAGE,
-                    "click on not allow geolocation",
-                    ""
+                    EVENT_ACTION_CLICK_ON_NOT_ALLOW_GEOLOCATION,
+                    LABEL_EMPTY
             );
         }
     }
@@ -835,8 +840,8 @@ public class HomePageTracking {
             tracker.sendGeneralEvent(
                     EVENT_CLICK_HOME_PAGE,
                     CATEGORY_HOME_PAGE,
-                    "click on geolocation component",
-                    ""
+                    EVENT_ACTION_CLICK_ON_GEOLOCATION_COMPONENT,
+                    LABEL_EMPTY
             );
         }
     }
@@ -847,8 +852,8 @@ public class HomePageTracking {
             tracker.sendGeneralEvent(
                     EVENT_CLICK_HOME_PAGE,
                     CATEGORY_HOME_PAGE,
-                    "click close on geolocation component",
-                    ""
+                    EVENT_ACTION_CLICK_CLOSE_ON_GEOLOCATION_COMPONENT,
+                    LABEL_EMPTY
             );
         }
     }
@@ -859,8 +864,8 @@ public class HomePageTracking {
             tracker.sendGeneralEvent(
                     EVENT_CLICK_HOME_PAGE,
                     CATEGORY_HOME_PAGE,
-                    "click on atur",
-                    ""
+                    EVENT_ACTION_CLICK_ON_ATUR,
+                    LABEL_EMPTY
             );
         }
     }
