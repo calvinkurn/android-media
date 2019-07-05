@@ -264,7 +264,8 @@ class TkpdVideoPlayer: Fragment(), ControllerListener {
 
     override fun onPause() {
         super.onPause()
-        playerOptions?.stop()
+//        playerOptions?.stop()
+//        pause()
     }
 
     override fun onDestroyView() {

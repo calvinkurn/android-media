@@ -32,7 +32,7 @@ class VideoVerticalHelper (
         var bufferDimContainer: View,
         var fragmentManager: FragmentManager,
         var playerView: FrameLayout,
-        var rootView: RelativeLayout,
+        var rootView: View,
         var setChatListHasSpaceOnTop: (Int) -> Unit
 ) {
 

@@ -260,7 +260,7 @@ open class PlayViewStateImpl(
 
         interactionAnimationHelper = InteractionAnimationHelper(interactionGuideline)
         var videoVerticalContainer = (activity as PlayActivity).findViewById<FrameLayout>(R.id.playerView)
-        var rootView = (activity as PlayActivity).findViewById<RelativeLayout>(R.id.root_view)
+        var rootView = (activity as PlayActivity).findViewById<View>(R.id.root_view)
         overflowMenuHelper = OverflowMenuHelper(
                 viewModel,
                 activity,

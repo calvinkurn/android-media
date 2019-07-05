@@ -28,7 +28,7 @@ class OverflowMenuHelper(
         private var toggleHorizontalVideo: (Boolean) -> Unit,
         private var videoHorizontalContainer: View,
         private var changeQualityVideoVertical: (Int) -> Unit,
-        private var videoVerticalContainer: View,
+        private var videoVerticalContainer: View?,
         private var toggleVerticalVideo: (Boolean) -> Unit
 ): PlayBaseHelper(model) {
 
@@ -130,10 +130,12 @@ class OverflowMenuHelper(
                 list.add(showMenuHorizontal)
             }
         } else if (videoVerticalQuality > 0) {
-            if(videoVerticalContainer.isVisible) {
-                list.add(hideMenuVertical)
-            } else {
-                list.add(showMenuVertical)
+            videoVerticalContainer?.let {
+                if(it.isVisible) {
+                    list.add(hideMenuVertical)
+                } else {
+                    list.add(showMenuVertical)
+                }
             }
         }
 
