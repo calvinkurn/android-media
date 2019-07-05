@@ -295,8 +295,23 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     tapActionLayoutDeals.setVisibility(View.GONE);
                     customTicketView.setVisibility(View.GONE);
                     presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, getIndex(), true);
+                } else if (item.getTapActions() == null || item.getTapActions().size() == 0) {
+                    if (!TextUtils.isEmpty(item.getTrackingNumber())) {
+                        String[] voucherCodes = item.getTrackingNumber().split(",");
+                        if (voucherCodes.length > 0) {
+                            voucherCodeLayout.setVisibility(View.VISIBLE);
+                            for (int i = 0; i < voucherCodes.length; i++) {
+                                BookingCodeView bookingCodeView = new BookingCodeView(context, voucherCodes[i], i, context.getResources().getString(R.string.voucher_code_title), voucherCodes.length);
+                                bookingCodeView.setBackground(null);
+                                voucherCodeLayout.addView(bookingCodeView);
+                            }
+                        }
+                    } else {
+                        progressBar.setVisibility(View.GONE);
+                        customTicketView.setVisibility(View.GONE);
+                        tapActionLayoutDeals.setVisibility(View.GONE);
+                    }
                 }
-
                 if (item.isTapActionsLoaded()) {
                     progressBar.setVisibility(View.GONE);
                     if (item.getTapActions() == null || item.getTapActions().size() == 0) {
@@ -325,10 +340,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                             tapActionLayoutDeals.addView(redeemVoucherView);
                         }
                     }
-                } else if (item.getTapActions() == null || item.getTapActions().size() == 0) {
-                    customTicketView.setVisibility(View.GONE);
-                    tapActionLayoutDeals.setVisibility(View.GONE);
-                    progressBar.setVisibility(View.GONE);
                 }
             } else if (itemType == ITEM_EVENTS) {
                 if (item.getTapActions() != null && item.getTapActions().size() > 0 && !item.isTapActionsLoaded()) {
@@ -336,8 +347,28 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     tapActionLayoutEvents.setVisibility(View.GONE);
                     customTicketView.setVisibility(View.GONE);
                     presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, getIndex(), true);
+                } else if (item.getTapActions() == null || item.getTapActions().size() == 0) {
+                    if (!TextUtils.isEmpty(item.getTrackingNumber())) {
+                        String[] voucherCodes = item.getTrackingNumber().split(",");
+                        if (voucherCodes.length > 0) {
+                            if (metaDataInfo.getTotalTicketCount() > 0) {
+                                brandName.setText(String.format("%s %s", metaDataInfo.getTotalTicketCount(), context.getResources().getString(R.string.event_ticket_booking_multiple)));
+                            } else {
+                                brandName.setText(context.getResources().getString(R.string.event_ticket_booking_count));
+                            }
+                            voucherCodeLayout.setVisibility(View.VISIBLE);
+                            for (int i = 0; i < voucherCodes.length; i++) {
+                                BookingCodeView bookingCodeView = new BookingCodeView(context, voucherCodes[i], i, context.getResources().getString(R.string.voucher_code_title), voucherCodes.length);
+                                bookingCodeView.setBackground(null);
+                                voucherCodeLayout.addView(bookingCodeView);
+                            }
+                        }
+                    } else {
+                        progressBar.setVisibility(View.GONE);
+                        customTicketView.setVisibility(View.GONE);
+                        tapActionLayoutEvents.setVisibility(View.GONE);
+                    }
                 }
-
                 if (item.isTapActionsLoaded()) {
                     progressBar.setVisibility(View.GONE);
                     if (item.getTapActions() == null || item.getTapActions().size() == 0) {
@@ -376,10 +407,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                             tapActionLayoutEvents.addView(tapActionTextView);
                         }
                     }
-                } else if (item.getTapActions() == null || item.getTapActions().size() == 0) {
-                    progressBar.setVisibility(View.GONE);
-                    tapActionLayoutEvents.setVisibility(View.GONE);
-                    customTicketView.setVisibility(View.GONE);
                 }
             }
 
