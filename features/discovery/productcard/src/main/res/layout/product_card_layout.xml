@@ -160,7 +160,7 @@
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_10"
             android:layout_marginRight="@dimen/dp_8"
-            android:background="@drawable/bg_button_atc"
+            android:background="@drawable/productcard_module_bg_button_atc"
             android:foreground="?selectableItemBackground"
             android:gravity="center"
             android:padding="@dimen/dp_8"
