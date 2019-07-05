@@ -52,5 +52,28 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val FORGOT_PASSWORD = "$INTERNAL_GLOBAL/forgot-password"
 
+    // ProfileCompletionActivity
+    // tokopedia-android-internal://global/profile-completion
+    @JvmField
+    val PROFILE_COMPLETION = "$INTERNAL_GLOBAL/profile-completion"
 
+    // ChangeGenderActivity
+    // tokopedia-android-internal://global/change-gender
+    @JvmField
+    val CHANGE_GENDER = "$INTERNAL_GLOBAL/change-gender"
+
+    // AddEmailActivity
+    // tokopedia-android-internal://global/add-email
+    @JvmField
+    val ADD_EMAIL = "$INTERNAL_GLOBAL/add-email"
+
+    // AddEmailActivity
+    // tokopedia-android-internal://global/add-phone
+    @JvmField
+    val ADD_PHONE = "$INTERNAL_GLOBAL/add-phone"
+
+    // VerificationActivity
+    // tokopedia-android-internal://global/cotp
+    @JvmField
+    val COTP = "$INTERNAL_GLOBAL/cotp"
 }

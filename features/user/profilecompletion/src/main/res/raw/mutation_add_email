@@ -1,0 +1,7 @@
+mutation add_email($email: String!) {
+  userProfileCompletionUpdate(email: $email) {
+    isSuccess
+    emailMessage
+    completionScore
+  }
+}

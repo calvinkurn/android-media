@@ -27,7 +27,7 @@ import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.profilecompletion.addname.listener.AddNameListener
 import com.tokopedia.profilecompletion.addname.presenter.AddNamePresenter
-import com.tokopedia.profilecompletion.addname.ProfileCompletionAnalytics
+import com.tokopedia.profilecompletion.addname.AddNameRegisterPhoneAnalytics
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addname.di.DaggerAddNameComponent
 import com.tokopedia.sessioncommon.data.register.RegisterInfo
@@ -56,7 +56,7 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
     lateinit var presenter: AddNamePresenter
 
     @Inject
-    lateinit var analytics: ProfileCompletionAnalytics
+    lateinit var analytics: AddNameRegisterPhoneAnalytics
 
     @Inject
     lateinit var userSession: UserSessionInterface
