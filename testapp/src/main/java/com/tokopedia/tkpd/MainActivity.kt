@@ -11,6 +11,7 @@ import com.tokopedia.application.MyApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.PersistentCacheManager
+import com.tokopedia.groupchat.room.view.activity.PlayActivity
 import com.tokopedia.tkpd.network.DataSource
 import com.tokopedia.tkpd.network.LogoutPojo
 import com.tokopedia.network.refreshtoken.EncoderDecoder
@@ -43,6 +44,8 @@ class MainActivity : AppCompatActivity() {
             val userSession = UserSession(application.applicationContext)
             if (userSession.isLoggedIn) {
                 Toast.makeText(this@MainActivity, "already login", Toast.LENGTH_LONG).show()
+                goTo()
+
             } else {
                 DataSource.getLoginService(application as MyApplication).getToken(hashMapOf(
                     "username" to userName,
@@ -132,6 +135,7 @@ class MainActivity : AppCompatActivity() {
 
                         override fun onNext(t: Boolean?) {
                             Toast.makeText(this@MainActivity, "success login", Toast.LENGTH_LONG).show()
+                            goTo()
                         }
 
                         override fun onCompleted() {
@@ -181,8 +185,14 @@ class MainActivity : AppCompatActivity() {
         val button = findViewById<Button>(R.id.button)
 
         button.setOnClickListener {
-            RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
+            goTo()
         }
+    }
+
+    fun goTo() {
+        startActivity(PlayActivity.getCallingIntent(this, "668", true))
+        /* or, you can use route like this:
+         * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS) */
     }
 
 }

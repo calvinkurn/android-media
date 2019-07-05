@@ -10,7 +10,6 @@ import android.widget.Toast;
 
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.config.TkpdCacheApiGeneratedDatabaseHolder;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
@@ -70,7 +69,7 @@ public class MyApplication extends BaseMainApplication
         super.onCreate();
         FlowManager.init(new FlowConfig.Builder(this)
                 .build());
-        FlowManager.initModule(TkpdCacheApiGeneratedDatabaseHolder.class);
+        //FlowManager.initModule(TkpdCacheApiGeneratedDatabaseHolder.class);
         initCacheApi();
     }
 
@@ -138,7 +137,7 @@ public class MyApplication extends BaseMainApplication
     }
 
     private void initCacheApi() {
-        new CacheApiWhiteListUseCase().executeSync(CacheApiWhiteListUseCase.createParams(
+        new CacheApiWhiteListUseCase(this).executeSync(CacheApiWhiteListUseCase.createParams(
                 getWhiteList(), String.valueOf(System.currentTimeMillis())));
     }
 
@@ -169,9 +168,10 @@ public class MyApplication extends BaseMainApplication
     }
 
     @Override
-    public void sendForceLogoutAnalytics(Response response) {
+    public void sendForceLogoutAnalytics(Response response, boolean isInvalidToken, boolean isRequestDenied) {
 
     }
+
 
     @Override
     public void showForceLogoutTokenDialog(String response) {
@@ -292,11 +292,6 @@ public class MyApplication extends BaseMainApplication
 
     @Override
     public void logInvalidGrant(Response response) {
-
-    }
-
-    @Override
-    public void instabugCaptureUserStep(Activity activity, MotionEvent me) {
 
     }
 
