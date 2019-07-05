@@ -14,7 +14,8 @@
         android:paddingTop="@dimen/dp_16"
         android:paddingBottom="@dimen/dp_16"
         android:text="@string/hotel_bottom_menu_transaction_list"
-        app:fontSize="small"
+        app:fontSize="title"
+        app:textViewTheme="lightPrimary"
         app:weight="medium" />
 
     <View
@@ -30,7 +31,8 @@
         android:paddingTop="@dimen/dp_16"
         android:paddingBottom="@dimen/dp_16"
         android:text="@string/hotel_bottom_menu_promo"
-        app:fontSize="small"
+        app:fontSize="title"
+        app:textViewTheme="lightPrimary"
         app:weight="medium" />
 
     <View
@@ -46,7 +48,8 @@
         android:paddingTop="@dimen/dp_16"
         android:paddingBottom="@dimen/dp_16"
         android:text="@string/hotel_bottom_menu_help"
-        app:fontSize="small"
+        app:textViewTheme="lightPrimary"
+        app:fontSize="title"
         app:weight="medium" />
 
 </LinearLayout>
