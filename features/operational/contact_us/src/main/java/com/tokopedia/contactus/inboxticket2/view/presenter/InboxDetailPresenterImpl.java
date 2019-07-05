@@ -205,9 +205,9 @@ public class InboxDetailPresenterImpl
 
     private void getTicketDetails() {
         mView.showProgressBar();
-        String tId = mView.getActivity().getIntent().getStringExtra(InboxDetailActivity.PARAM_TICKET_ID);
-        if(tId.equalsIgnoreCase("%v")){
-            tId = mView.getActivity().getIntent().getStringExtra(InboxDetailActivity.PARAM_TICKET_T_ID);
+        String tId = mView.getActivity().getIntent().getStringExtra(InboxDetailActivity.PARAM_TICKET_T_ID);
+        if(tId==null){
+            tId = mView.getActivity().getIntent().getStringExtra(InboxDetailActivity.PARAM_TICKET_ID);
         }
         inboxOptionUseCase.createRequestParams(tId);
         inboxOptionUseCase.execute(new Subscriber<ChipGetInboxDetail>() {
@@ -271,10 +271,7 @@ public class InboxDetailPresenterImpl
                     else if(chipGetInboxDetail.getData().getIsSuccess()==0){
                         mView.showNoTicketView(chipGetInboxDetail.getMessageError());
                     }
-                }else{
-
                 }
-
             }
         });
 

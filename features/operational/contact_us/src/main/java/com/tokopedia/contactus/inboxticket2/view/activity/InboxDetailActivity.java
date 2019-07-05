@@ -85,9 +85,9 @@ public class InboxDetailActivity extends InboxBaseActivity
     public static TaskStackBuilder getCallingIntent(Context context, Bundle bundle) {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         Intent parentIntent = new Intent(context, InboxListActivity.class);
-        String ticketId = bundle.getString(PARAM_TICKET_ID, "");
-        if(ticketId.equalsIgnoreCase("%v")){
-            ticketId = bundle.getString(PARAM_TICKET_T_ID, "");
+        String ticketId = bundle.getString(PARAM_TICKET_T_ID);
+        if(ticketId==null){
+            ticketId = bundle.getString(PARAM_TICKET_ID, "");
         }
         taskStackBuilder.addNextIntent(parentIntent);
         taskStackBuilder.addNextIntent(getIntent(context, ticketId));
