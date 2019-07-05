@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginLeft="@dimen/dp_16"
-    android:layout_marginRight="@dimen/dp_16">
+    android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/sucs_img"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_32"
-        app:layout_constraintTop_toTopOf="parent"
         android:src="@drawable/ic_group_4"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/sucs_ttl"
@@ -23,9 +22,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_6"
         android:gravity="center_horizontal"
-        android:text="Berhasil"
-        android:textColor="#73bd00"
-        android:textSize="20sp"
+        android:text="@string/ovop2p_brhsl"
+        android:textColor="@color/clr_73bd00"
+        android:textSize="@dimen/sp_20"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sucs_img" />
@@ -35,28 +36,30 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
-        android:textSize="12sp"
-        android:textColor="#6b767e"
-        android:lineSpacingExtra="4sp"
         android:gravity="center_horizontal"
-        android:text="Undangan berhasil dikirim ke {{num_plchldr}}.
-Terima kasih telah menggunakan OVO."
-        app:layout_constraintTop_toBottomOf="@+id/sucs_ttl"
+        android:text="@string/ovop2p_msg_non_ovo"
+        android:textColor="@color/clr_6b767e"
+        android:textSize="@dimen/sp_12"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@+id/sucs_ttl" />
 
     <TextView
         android:id="@+id/send_agn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:textColor="@color/white"
-        android:gravity="center_horizontal"
-        android:background="@drawable/btn_bg_rounded_corners"
-        app:layout_constraintBottom_toTopOf="@+id/back_to_app"
         android:layout_marginTop="@dimen/dp_20"
         android:layout_marginBottom="@dimen/dp_20"
-        android:text="KIRIM LAGI"/>
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:background="@drawable/btn_bg_rounded_corners"
+        android:gravity="center_horizontal"
+        android:text="@string/ovop2p_kirlag"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintBottom_toTopOf="@+id/back_to_app" />
 
     <TextView
         android:id="@+id/back_to_app"
@@ -68,10 +71,11 @@ Terima kasih telah menggunakan OVO."
         android:layout_marginRight="@dimen/dp_30"
         android:layout_marginBottom="@dimen/dp_24"
         android:gravity="center"
-        app:layout_constraintBottom_toTopOf="@+id/branding_lauout"
-        android:text="KEMBALI KE TOKOPEDIA"
-        android:textColor="#06b3ba"
-        android:textSize="@dimen/sp_14" />
+        android:text="@string/ovop2p_kemke"
+        android:padding="@dimen/dp_5"
+        android:textColor="@color/clr_06b3ba"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintBottom_toTopOf="@+id/branding_lauout" />
 
     <include
         android:id="@+id/branding_lauout"
@@ -79,6 +83,6 @@ Terima kasih telah menggunakan OVO."
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

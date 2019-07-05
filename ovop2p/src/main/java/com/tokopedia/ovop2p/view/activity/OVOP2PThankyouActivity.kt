@@ -1,17 +1,16 @@
 package com.tokopedia.ovop2p.view.activity
 
 import android.app.ProgressDialog
-import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.TextUtils
-import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.ovop2p.Constants
 import com.tokopedia.ovop2p.R
@@ -22,23 +21,12 @@ import com.tokopedia.ovop2p.view.fragment.TxnSucsOvoUser
 import com.tokopedia.ovop2p.view.interfaces.ActivityListener
 import com.tokopedia.ovop2p.view.interfaces.LoaderUiListener
 
-class OVOP2PThankyouActivity : BaseSimpleActivity(),LoaderUiListener, ActivityListener, HasComponent<OvoP2pTransferComponent> {
+class OVOP2PThankyouActivity : BaseSimpleActivity(), LoaderUiListener, ActivityListener, HasComponent<OvoP2pTransferComponent> {
 
     private var transferId: String = ""
     private var nonOvoUser: Boolean = false
     private lateinit var loading: ProgressDialog
     private lateinit var ovoP2pTransferComponent: OvoP2pTransferComponent
-
-    object DeeplinkIntents {
-        @DeepLink(Constants.AppLinks.OVOP2PTHANKYOUPAGE)
-        @JvmStatic
-        fun getCallingStartUpgradeToOvo(context: Context, extras: Bundle): Intent {
-            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
-            return Intent(context, OVOP2PThankyouActivity::class.java)
-                    .setData(uri.build())
-                    .putExtras(extras)
-        }
-    }
 
     private fun initInjector() {
         ovoP2pTransferComponent = DaggerOvoP2pTransferComponent.builder().baseAppComponent(
@@ -53,28 +41,38 @@ class OVOP2PThankyouActivity : BaseSimpleActivity(),LoaderUiListener, ActivityLi
     }
 
     override fun getNewFragment(): Fragment {
-        if(intent != null && intent.extras != null){
-            nonOvoUser = intent.extras.getBoolean(Constants.Keys.NON_OVO_SUCS)
-            transferId = intent.extras.getString(Constants.Keys.TRANSFER_ID)
-            var fragBundle = Bundle()
-            fragBundle.putString(Constants.Keys.RECIEVER_NAME, PersistentCacheManager.instance.get(Constants.Keys.RECIEVER_NAME, String::class.java))
-            fragBundle.putString(Constants.Keys.RECIEVER_PHONE, PersistentCacheManager.instance.get(Constants.Keys.RECIEVER_PHONE, String::class.java))
-            if(nonOvoUser){
-                return TxnSucsNonOvoUsr.newInstance(fragBundle)
-            }
-            else{
-                if(!TextUtils.isEmpty(transferId)){
-                    fragBundle.putString(Constants.Keys.TRANSFER_ID, transferId)
-                    return TxnSucsOvoUser.newInstance(fragBundle)
-                }
+        var fragBundle = Bundle()
+        fragBundle.putString(Constants.Keys.RECIEVER_NAME, PersistentCacheManager.instance.get(Constants.Keys.RECIEVER_NAME, String::class.java))
+        fragBundle.putString(Constants.Keys.RECIEVER_PHONE, PersistentCacheManager.instance.get(Constants.Keys.RECIEVER_PHONE, String::class.java))
+        if (nonOvoUser) {
+            return TxnSucsNonOvoUsr.newInstance(fragBundle)
+        } else {
+            if (!TextUtils.isEmpty(transferId)) {
+                fragBundle.putString(Constants.Keys.TRANSFER_ID, transferId)
+                return TxnSucsOvoUser.newInstance(fragBundle)
             }
         }
         return Fragment()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setUserData()
         super.onCreate(savedInstanceState)
         updateTitle(Constants.Headers.TRANSFER_SUCCESS)
+    }
+
+    private fun setUserData() {
+        var uri: Uri? = intent.data
+        var listStr = uri?.let { UriUtil.destructureUri(ApplinkConst.OVOP2PTHANKYOUPAGE, it) }
+        if (listStr?.size ?: 0 > 0) {
+            transferId = listStr?.get(0) ?: ""
+        }
+        if(intent != null && intent.extras != null) {
+            nonOvoUser = intent.extras.getBoolean(Constants.Keys.NON_OVO_SUCS)
+            if(TextUtils.isEmpty(transferId) && intent.extras.containsKey(Constants.Keys.TRANSFER_ID)) {
+                transferId = intent.extras.getString(Constants.Keys.TRANSFER_ID)
+            }
+        }
     }
 
     override fun addReplaceFragment(baseDaggerFragment: BaseDaggerFragment, replace: Boolean, tag: String) {

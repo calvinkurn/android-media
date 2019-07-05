@@ -8,21 +8,22 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="none"
+        android:layout_above="@+id/branding"
         android:fillViewport="true"
-        android:layout_above="@+id/branding">
+        android:scrollbars="none">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/dp_30"
-            android:paddingRight="@dimen/dp_30">
+            android:paddingRight="@dimen/dp_30"
+            android:paddingBottom="@dimen/dp_16">
 
             <TextView
                 android:id="@+id/search_no_header"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Masukkan  nama atau nomor ponsel"
+                android:text="@string/entr_name_num"
                 android:visibility="gone"
                 app:layout_constraintBottom_toTopOf="@+id/search_no"
                 app:layout_constraintStart_toStartOf="@+id/search_no" />
@@ -35,7 +36,7 @@
                 android:closeIcon="@drawable/ic_clear_small"
                 android:iconifiedByDefault="false"
                 android:inputType="number"
-                android:paddingLeft="-16dp"
+                android:paddingLeft="@dimen/dp_neg_16"
                 android:queryHint="@string/entr_name_num"
                 android:searchIcon="@null"
                 android:theme="@style/SearchViewStyle"
@@ -58,13 +59,12 @@
                 android:id="@+id/src_fnd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:lineSpacingExtra="2sp"
-                android:textColor="#6b767e"
-                android:textSize="12sp"
+                android:layout_marginTop="@dimen/dp_24"
+                android:textColor="@color/clr_6b767e"
+                android:textSize="@dimen/sp_12"
                 app:layout_constraintStart_toStartOf="@id/search_no"
                 app:layout_constraintTop_toBottomOf="@id/search_no"
-                tools:text="Sumber Dana" />
+                tools:text="@string/ovop2p_sumdan" />
 
             <ImageView
                 android:id="@+id/ovo_logo"
@@ -83,9 +83,9 @@
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_7"
                 android:paddingTop="@dimen/dp_16"
-                android:text="OVO Cash"
-                android:textColor="#2d263b"
-                android:textSize="14sp"
+                android:text="@string/ovop2p_ovocsh"
+                android:textColor="@color/clr_2d263b"
+                android:textSize="@dimen/sp_14"
                 app:layout_constraintStart_toEndOf="@id/ovo_logo"
                 app:layout_constraintTop_toBottomOf="@+id/src_fnd" />
 
@@ -96,10 +96,10 @@
                 android:layout_marginLeft="@dimen/dp_16"
                 android:lineSpacingExtra="6sp"
                 android:paddingTop="@dimen/dp_2"
-                android:text="Saldo "
                 android:paddingBottom="@dimen/dp_16"
-                android:textColor="#8c949b"
-                android:textSize="12sp"
+                android:text="@string/ovop2p_sal"
+                android:textColor="@color/clr_8c949b"
+                android:textSize="@dimen/sp_12"
                 app:layout_constraintStart_toEndOf="@+id/ovo_logo"
                 app:layout_constraintTop_toBottomOf="@+id/ovo_cash" />
 
@@ -114,24 +114,23 @@
             <View
                 android:id="@+id/cntnr_vw_amt"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="@dimen/dp_0"
                 android:layout_marginLeft="@dimen/dp_26"
                 android:layout_marginTop="@dimen/dp_40"
                 android:layout_marginRight="@dimen/dp_26"
                 android:background="@color/clr_f8f8f8"
-                app:layout_constraintTop_toBottomOf="@+id/cntnr_vw"
-                app:layout_constraintBottom_toBottomOf="@+id/amt_err_txtv"/>
+                app:layout_constraintBottom_toBottomOf="@+id/amt_err_txtv"
+                app:layout_constraintTop_toBottomOf="@+id/cntnr_vw" />
 
             <TextView
                 android:id="@+id/nmnl_trnsfr"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:lineSpacingExtra="2sp"
-                android:paddingTop="@dimen/dp_16"
-                android:text="Nominal Transfer"
                 android:paddingLeft="@dimen/dp_10"
-                android:textColor="#6b767e"
-                android:textSize="12sp"
+                android:paddingTop="@dimen/dp_16"
+                android:text="@string/ovop2p_nomtra"
+                android:textColor="@color/clr_6b767e"
+                android:textSize="@dimen/sp_12"
                 app:layout_constraintStart_toStartOf="@+id/search_no"
                 app:layout_constraintTop_toTopOf="@+id/cntnr_vw_amt" />
 
@@ -139,11 +138,11 @@
                 android:id="@+id/rp_symbl"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/dp_10"
-                android:text="Rp"
                 android:paddingLeft="@dimen/dp_10"
-                android:textColor="#2d263b"
-                android:textSize="24sp"
+                android:paddingTop="@dimen/dp_10"
+                android:text="@string/ovop2p_symb_rp"
+                android:textColor="@color/clr_2d263b"
+                android:textSize="@dimen/sp_24"
                 app:layout_constraintStart_toStartOf="@+id/search_no"
                 app:layout_constraintTop_toBottomOf="@+id/nmnl_trnsfr" />
 
@@ -156,9 +155,9 @@
                 android:maxLength="18"
                 android:paddingTop="@dimen/dp_10"
                 android:paddingBottom="@dimen/dp_16"
-                android:textColor="#2d263b"
-                android:textColorHint="#2d263b"
-                android:textSize="24sp"
+                android:textColor="@color/clr_2d263b"
+                android:textColorHint="@color/clr_2d263b"
+                android:textSize="@dimen/sp_24"
                 android:theme="@style/editTextTheme"
                 app:layout_constraintEnd_toEndOf="@+id/cntnr_vw"
                 app:layout_constraintStart_toEndOf="@+id/rp_symbl"
@@ -168,10 +167,10 @@
                 android:id="@+id/amt_err_txtv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Error"
                 android:paddingLeft="@dimen/dp_10"
+                android:text="@string/ovop2p_err"
                 android:textColor="@color/red_600"
-                android:textSize="12sp"
+                android:textSize="@dimen/sp_12"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="@+id/search_no"
                 app:layout_constraintTop_toBottomOf="@+id/trnsfr_amt_edtv" />
@@ -180,8 +179,8 @@
                 android:id="@+id/msg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:counterEnabled="true"
                 android:layout_marginTop="@dimen/dp_40"
+                app:counterEnabled="true"
                 app:counterMaxLength="25"
                 app:layout_constraintStart_toStartOf="@+id/search_no"
                 app:layout_constraintTop_toBottomOf="@+id/cntnr_vw_amt">
@@ -190,10 +189,10 @@
                     android:id="@+id/msg_edtxt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Pesan (opsional)"
+                    android:hint="@string/ovop2p_psn_opt"
                     android:maxLength="25"
-                    android:textColor="#6b767e"
-                    android:textSize="16sp"
+                    android:textColor="@color/clr_6b767e"
+                    android:textSize="@dimen/sp_16"
                     android:theme="@style/msgEditTextTheme" />
             </android.support.design.widget.TextInputLayout>
 
@@ -204,12 +203,12 @@
                 android:layout_marginTop="@dimen/dp_56"
                 android:background="@drawable/btn_bg_rounded_corners"
                 android:enabled="false"
-                app:layout_constraintVertical_bias="0"
                 android:text="@string/lnjktn"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_14"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/msg"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintVertical_bias="0" />
 
         </android.support.constraint.ConstraintLayout>
     </ScrollView>

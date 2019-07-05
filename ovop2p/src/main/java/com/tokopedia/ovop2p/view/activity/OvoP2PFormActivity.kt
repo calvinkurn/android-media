@@ -10,8 +10,9 @@ import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
+import android.view.View
+import android.widget.ProgressBar
 
-import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -28,7 +29,7 @@ import java.util.ArrayList
 class OvoP2PFormActivity : BaseSimpleActivity(), HasComponent<OvoP2pTransferComponent>, LoaderUiListener, ActivityListener {
 
     private lateinit var ovoP2pTransferComponent: OvoP2pTransferComponent
-    private lateinit var loading: ProgressDialog
+    private lateinit var loading: ProgressBar
     private var permissionsToRequest: MutableList<String>? = null
     private var isPermissionGotDenied: Boolean = false
     private val REQUEST_CONTACTS__CAMERA_PERMISSION = 123
@@ -36,17 +37,6 @@ class OvoP2PFormActivity : BaseSimpleActivity(), HasComponent<OvoP2pTransferComp
 
     override fun getNewFragment(): Fragment {
         return OvoP2PForm.newInstance()
-    }
-
-    object DeeplinkIntents {
-        @DeepLink(OVOP2PTRANSFER)
-        @JvmStatic
-        fun getCallingStartUpgradeToOvo(context: Context, extras: Bundle): Intent {
-            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
-            return Intent(context, OvoP2PFormActivity::class.java)
-                    .setData(uri.build())
-                    .putExtras(extras)
-        }
     }
 
     override fun getComponent(): OvoP2pTransferComponent {
@@ -63,17 +53,16 @@ class OvoP2PFormActivity : BaseSimpleActivity(), HasComponent<OvoP2pTransferComp
     }
 
     override fun showProgressDialog() {
-        if (!::loading.isInitialized) loading = ProgressDialog(this)
+        if (!::loading.isInitialized) loading = ProgressBar(this)
         with(loading) {
-            setCancelable(false)
-            setMessage(getString(R.string.title_loading))
-            show()
+            isIndeterminate = true
+            visibility = View.VISIBLE
         }
     }
 
     override fun hideProgressDialog() {
         if (loading != null)
-            loading.dismiss()
+            loading.visibility = View.GONE
     }
 
     override fun onResume() {

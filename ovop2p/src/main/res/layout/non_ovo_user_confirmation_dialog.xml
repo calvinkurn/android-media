@@ -1,26 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingTop="@dimen/dp_24">
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/dp_24"
-        android:textSize="16sp"
-        android:textColor="#4c2a86"
+        android:layout_marginLeft="@dimen/dp_30"
         android:paddingBottom="@dimen/dp_24"
-        android:text="Perhatian"/>
+        android:text="@string/ovop2p_perhtn"
+        android:textColor="@color/clr_4c2a86"
+        android:textSize="@dimen/sp_16" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:textColor="#2d263b"
-        android:lineSpacingExtra="10sp"
-        android:paddingLeft="@dimen/dp_24"
-        android:text="Nomor ponsel yang Anda pilih atau masukkan bukan pengguna OVO."/>
+        android:layout_marginLeft="@dimen/dp_30"
+        android:layout_marginRight="@dimen/dp_30"
+        android:lineSpacingExtra="@dimen/sp_10"
+        android:textColor="@color/clr_2d263b"
+        android:textSize="@dimen/sp_14"
+        android:text="@string/ovop2p_nonovo_conf_msg"/>
     <Button
         android:id="@+id/proceed_dlg_non_ovo"
         android:layout_width="match_parent"
@@ -41,10 +44,14 @@
         android:id="@+id/close"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:textColor="#06b3ba"
-        android:gravity="center_horizontal"
+        android:layout_marginLeft="@dimen/dp_30"
         android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginRight="@dimen/dp_30"
         android:layout_marginBottom="@dimen/dp_20"
-        android:text="TUTUP"/>
+        android:gravity="center_horizontal"
+        android:padding="@dimen/dp_5"
+        android:textAllCaps="true"
+        android:text="@string/tutup"
+        android:textColor="@color/clr_06b3ba"
+        android:textSize="@dimen/sp_14" />
 </LinearLayout>
