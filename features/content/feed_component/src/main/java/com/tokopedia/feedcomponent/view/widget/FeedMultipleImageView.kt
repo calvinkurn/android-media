@@ -64,6 +64,10 @@ class FeedMultipleImageView @JvmOverloads constructor(
     private class ImageAdapter(private var itemList: MutableList<MediaItem>,
                        var fileListener: OnFileClickListener? = null): RecyclerView.Adapter<ImageAdapter.Holder>() {
 
+        init {
+            setHasStableIds(true)
+        }
+
         fun updateItem(itemList: List<MediaItem>){
             this.itemList.clear()
             this.itemList.addAll(itemList)
@@ -80,6 +84,12 @@ class FeedMultipleImageView @JvmOverloads constructor(
 
         override fun onBindViewHolder(holder: Holder, position: Int) {
             holder.bind(itemList[position])
+        }
+
+        override fun getItemId(position: Int): Long {
+            return with(itemList[position]){
+                (thumbnail+type).hashCode().toLong()
+            }
         }
 
         inner class Holder(itemView: View): RecyclerView.ViewHolder(itemView) {

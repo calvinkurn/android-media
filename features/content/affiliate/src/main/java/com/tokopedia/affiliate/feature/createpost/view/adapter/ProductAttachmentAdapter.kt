@@ -38,6 +38,11 @@ class ProductAttachmentAdapter(private val products: MutableList<RelatedProductI
 
         fun bind(relatedProductItem: RelatedProductItem) {
             with(itemView){
+                val layoutParams = card_product_attachment.layoutParams
+                layoutParams.width = if (itemCount == 1) ViewGroup.LayoutParams.MATCH_PARENT
+                                     else context.resources.getDimensionPixelSize(R.dimen.dp_260)
+                card_product_attachment.layoutParams = layoutParams
+
                 image_product.loadImageWithoutPlaceholder(relatedProductItem.image)
                 product_name.text = MethodChecker.fromHtmlPreserveLineBreak(relatedProductItem.name)
                 product_price.text = relatedProductItem.price

@@ -35,6 +35,7 @@ import com.tokopedia.affiliate.feature.createpost.view.viewmodel.*
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.design.component.Dialog
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.MediaItem
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
@@ -385,13 +386,34 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             goToVideoPicker()
         }
         media_attachment.setOnFileClickListener(object : FeedMultipleImageView.OnFileClickListener {
-            override fun onDeleteItem(item: MediaItem, position: Int) {
+            private fun deleteMedia(position: Int){
                 viewModel.fileImageList.removeAt(position)
                 if (position < viewModel.urlImageList.size)
                     viewModel.urlImageList.removeAt(position)
 
                 if (viewModel.completeImageList.isEmpty())
                     fetchContentForm()
+            }
+
+            override fun onDeleteItem(item: MediaItem, position: Int) {
+                if (viewModel.fileImageList.size == 1){
+                    val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
+                    dialog.setTitle(getString(R.string.af_update_post))
+                    dialog.setDesc(getString(R.string.af_delete_warning_desc))
+                    dialog.setBtnOk(getString(R.string.cancel))
+                    dialog.setBtnCancel(getString(R.string.title_delete))
+                    dialog.setOnOkClickListener{
+                        dialog.dismiss()
+                    }
+                    dialog.setOnCancelClickListener{
+                        dialog.dismiss()
+                        deleteMedia(position)
+                    }
+                    dialog.setCancelable(true)
+                } else {
+                    deleteMedia(position)
+                }
+
             }
 
             override fun onClickItem(item: MediaItem, position: Int) { goToMediaPreview() }

@@ -3,12 +3,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_product_attachment"
     android:layout_width="@dimen/dp_260"
     android:layout_height="@dimen/dp_86"
     app:cardBackgroundColor="@color/cardview_light_background"
     app:cardCornerRadius="@dimen/dp_10"
     app:cardUseCompatPadding="true"
-    app:cardPreventCornerOverlap="false">
+    app:cardPreventCornerOverlap="false"
+    tools:ignore="PrivateResource">
     
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
