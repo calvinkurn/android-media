@@ -20,6 +20,9 @@ import com.tokopedia.topads.sdk.view.ImpressedImageView
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
+/*
+* Test adding comments and commit
+* */
 abstract class ProductCardView: BaseCustomView {
 
     companion object {
