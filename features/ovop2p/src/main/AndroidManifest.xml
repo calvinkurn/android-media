@@ -1,2 +1,39 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.ovop2p" />
+    package="com.tokopedia.ovop2p">
+    <application>
+        <activity
+            android:name=".view.activity.OvoP2PFormActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data
+                    android:scheme="@string/tokopedia_scheme"
+                    android:host="@string/host_ovop2ptransfer" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".view.activity.OVOP2PThankyouActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data
+                    android:scheme="@string/tokopedia_scheme"
+                    android:host="@string/host_ovop2ptransfer_thankyou"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".view.activity.AllContactsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+        <activity
+            android:name=".view.activity.OvoP2pWebViewActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+    </application>
+</manifest>

@@ -568,7 +568,7 @@ dependencies {
     implementation project(rootProject.ext.features.referral)
     implementation project(rootProject.ext.libraries.cacheManager)
     implementation project(rootProject.ext.features.kyc)
-    compile project(path: ':ovop2p')
+    implementation project(rootProject.ext.features.ovop2p)
 }
 
 

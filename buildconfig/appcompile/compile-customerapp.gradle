@@ -107,6 +107,7 @@ include "features:merchant:official_store"
 
 include "features:operational:contact_us"
 //include "features:operational:contact_us_no_op"
+include "features:ovop2p"
 
 include "features:payment:payment"
 //include "features:payment:payment_no_op"
