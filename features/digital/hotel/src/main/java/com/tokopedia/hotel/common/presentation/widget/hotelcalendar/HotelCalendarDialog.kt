@@ -118,15 +118,16 @@ class HotelCalendarDialog : RoundedBottomSheetDialogFragment(), HasComponent<Hot
         val dateFormat = SimpleDateFormat("E, d MMM", defaultIndLocale)
         dateFormat.timeZone = TimeZone.getDefault()
 
+        calendar.init(yesterday.time, nextYear.time, legends)
+                .inMode(CalendarPickerView.SelectionMode.RANGE)
+                .maxRange(30)
+
         var dateIn: Date? = null
         if (selectedDate != null) {
             dateIn = selectedDate
             calendar.selectDate(selectedDate)
+            date_in.setText(dateFormat.format(selectedDate))
         }
-
-        calendar.init(yesterday.time, nextYear.time, legends)
-                .inMode(CalendarPickerView.SelectionMode.RANGE)
-                .maxRange(30)
 
         calendar.setMaxRangeListener(object : CalendarPickerView.OnMaxRangeListener {
             override fun onNotifyMax() {
