@@ -10,10 +10,9 @@ import android.webkit.WebView;
 import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.base.view.webview.WebViewHelper;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.network.utils.URLGenerator;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 
 import java.io.UnsupportedEncodingException;
@@ -135,7 +134,7 @@ public class TkpdWebView extends WebView {
                 Crashlytics.log(
                         getContext().getString(R.string.error_message_url_invalid_crashlytics) + url);
 
-            super.loadUrl(TkpdBaseURL.MOBILE_DOMAIN);
+            super.loadUrl(TokopediaUrl.getInstance().getMOBILEWEB());
         }
     }
 
@@ -148,7 +147,7 @@ public class TkpdWebView extends WebView {
                 Crashlytics.log(
                         getContext().getString(R.string.error_message_url_invalid_crashlytics) + url);
 
-            super.loadUrl(TkpdBaseURL.MOBILE_DOMAIN);
+            super.loadUrl(TokopediaUrl.getInstance().getMOBILEWEB());
         }
     }
 }
