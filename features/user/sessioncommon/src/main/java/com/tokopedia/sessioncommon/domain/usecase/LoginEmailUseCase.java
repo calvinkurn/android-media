@@ -18,6 +18,7 @@ import rx.functions.Func1;
 /**
  * @author by nisie on 10/12/18.
  */
+@Deprecated
 public class LoginEmailUseCase extends UseCase<LoginEmailDomain> {
 
     private final GetTokenUseCase getTokenUseCase;

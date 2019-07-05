@@ -14,7 +14,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.features.tradeInCommon)
+    implementation project(rootProject.ext.features.basemvvm)
     implementation (rootProject.ext.miscDependencies.laku6Sdk){
         exclude group: 'com.android.support'
         exclude group: 'com.squareup.retrofit2'

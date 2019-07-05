@@ -116,7 +116,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     private final boolean IS_SHORT_LAYOUT = false;
     OpenTrendingDeals openTrendingDeals;
 
-    private ConstraintLayout clSearch;
     private TextView tvLocationName;
     private LinearLayoutManager layoutManager;
     private TextView tvSeeAllBrands;
@@ -232,7 +231,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         clPromos = view.findViewById(R.id.cl_promos);
         rvPromos = view.findViewById(R.id.rv_trending_promos);
         noContent = view.findViewById(R.id.no_content);
-        clSearch = view.findViewById(R.id.cl_search_view);
         tvSeeAllBrands = view.findViewById(R.id.tv_see_all_brands);
         tvSeeAllTrendingDeals = view.findViewById(R.id.tv_see_all_deals);
         curatedDealsLayout = view.findViewById(R.id.curated_deals);
@@ -552,7 +550,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     @Override
     public void showViews() {
         baseMainContent.setVisibility(View.VISIBLE);
-        clSearch.setVisibility(View.VISIBLE);
+        searchInputView.setVisibility(View.VISIBLE);
     }
 
     @Override

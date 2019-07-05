@@ -40,6 +40,8 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.USER;
 
 /**
  * Created by meta on 04/08/18.
+ *
+ * Setting PIN : https://docs.google.com/spreadsheets/d/1H3CSARG5QtVACiffBxd2HJE7adKzAZ3xxmtEbR01Eho/edit?ts=5ca30084#gid=1785281730
  */
 public class AccountAnalytics {
 
@@ -180,6 +182,17 @@ public class AccountAnalytics {
         ));
     }
 
+    public void eventClickPinSetting() {
+        Analytics analytics = TrackApp.getInstance().getGTM();
+
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                AccountConstants.Analytics.CLICK_ACCOUNT,
+                String.format("%s %s", ACCOUNT, SETTING),
+                "click on button tokopedia pin",
+                ""
+        ));
+    }
+
     public void eventClickKYCSellerAccountPage(int status) {
 
         final Analytics analytics = TrackApp.getInstance().getGTM();
@@ -273,7 +286,7 @@ public class AccountAnalytics {
             ((AccountHomeRouter) context.getApplicationContext()).setNewsletterEmailPref(newValue);
     }
 
-    public static void ClickOpenShopFree(){
+    public static void clickOpenShopFree(){
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_ACCOUNT_SELL,
@@ -282,7 +295,7 @@ public class AccountAnalytics {
         );
     }
 
-    public static void ClickKnowMore(){
+    public static void clickKnowMore(){
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_ACCOUNT_SELL,

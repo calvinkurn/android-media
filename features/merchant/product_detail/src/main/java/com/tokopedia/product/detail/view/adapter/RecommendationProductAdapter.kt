@@ -11,7 +11,8 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 
 class RecommendationProductAdapter(private var product: RecommendationWidget,
-                                   private val userActiveListener: UserActiveListener) : RecyclerView.Adapter<RecommendationProductAdapter.RecommendationProductViewHolder>() {
+                                   private val userActiveListener: UserActiveListener,
+                                   private var pageName: String) : RecyclerView.Adapter<RecommendationProductAdapter.RecommendationProductViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecommendationProductViewHolder {
         return RecommendationProductViewHolder(parent.inflateLayout(R.layout.item_product_recommendation))
@@ -35,19 +36,19 @@ class RecommendationProductAdapter(private var product: RecommendationWidget,
         }
 
         override fun onImpressionTopAds(item: RecommendationItem) {
-            productDetailTracking.eventRecommendationImpression(adapterPosition, item, userActiveListener.isUserSessionActive)
+            productDetailTracking.eventRecommendationImpression(adapterPosition, item, userActiveListener.isUserSessionActive, pageName, product.title)
         }
 
         override fun onImpressionOrganic(item: RecommendationItem) {
-            productDetailTracking.eventRecommendationImpression(adapterPosition, item, userActiveListener.isUserSessionActive)
+            productDetailTracking.eventRecommendationImpression(adapterPosition, item, userActiveListener.isUserSessionActive, pageName, product.title)
         }
 
         override fun onClickTopAds(item: RecommendationItem) {
-            productDetailTracking.eventRecommendationClick(item, adapterPosition, userActiveListener.isUserSessionActive)
+            productDetailTracking.eventRecommendationClick(item, adapterPosition, userActiveListener.isUserSessionActive,pageName,product.title)
         }
 
         override fun onClickOrganic(item: RecommendationItem) {
-            productDetailTracking.eventRecommendationClick(item, adapterPosition, userActiveListener.isUserSessionActive)
+            productDetailTracking.eventRecommendationClick(item, adapterPosition, userActiveListener.isUserSessionActive,pageName,product.title)
         }
 
     }

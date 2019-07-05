@@ -21,8 +21,10 @@ import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
+import android.support.design.bottomnavigation.LabelVisibilityMode;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -47,6 +49,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.component.BottomNavigation;
 import com.tokopedia.graphql.data.GraphqlClient;
@@ -74,6 +77,7 @@ import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -192,6 +196,12 @@ public class MainParentActivity extends BaseActivity implements
         cacheManager = PreferenceManager.getDefaultSharedPreferences(this);
         createView(savedInstanceState);
         ((GlobalNavRouter) getApplicationContext()).sendOpenHomeEvent();
+
+        initCategoryConfig();
+    }
+
+    private void initCategoryConfig() {
+        ((GlobalNavRouter) getApplicationContext()).setCategoryAbTestingConfig();
     }
 
     @Override
@@ -246,6 +256,7 @@ public class MainParentActivity extends BaseActivity implements
         fragmentContainer = findViewById(R.id.container);
 
         bottomNavigation.setItemIconTintList(null);
+        bottomNavigation.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
         bottomNavigation.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
         bottomNavigation.setOnNavigationItemReselectedListener(item -> {
             Fragment fragment = fragmentList.get(getPositionFragmentByMenu(item));
@@ -305,6 +316,7 @@ public class MainParentActivity extends BaseActivity implements
         super.onNewIntent(intent);
         checkIsNeedUpdateIfComeFromUnsupportedApplink(intent);
         checkApplinkCouponCode(intent);
+        checkAgeVerificationExtra(intent);
     }
 
     private void initInjector() {
@@ -368,6 +380,16 @@ public class MainParentActivity extends BaseActivity implements
             selectFragment(fragment);
         }
         return true;
+    }
+
+    private void checkAgeVerificationExtra(Intent intent) {
+        if (intent.hasExtra(ApplinkConstInternalCategory.PARAM_EXTRA_SUCCESS)) {
+            Toaster.Companion.showErrorWithAction(this.findViewById(android.R.id.content),
+                    intent.getStringExtra(ApplinkConstInternalCategory.PARAM_EXTRA_SUCCESS),
+                    Snackbar.LENGTH_INDEFINITE,
+                    getString(R.string.general_label_ok), (v) -> {
+                    });
+        }
     }
 
     private void hideStatusBar() {

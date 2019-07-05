@@ -176,7 +176,7 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
             popularCityAdapter.notifyDataSetChanged()
         }
 
-        rvChips.addItemDecoration(staticDimen8dp?.let { ChipsItemDecoration(staticDimen8dp) })
+        staticDimen8dp?.let { ChipsItemDecoration(staticDimen8dp) }?.let { rvChips.addItemDecoration(it) }
 
         var visibleItemCount: Int
         var totalItemCount: Int

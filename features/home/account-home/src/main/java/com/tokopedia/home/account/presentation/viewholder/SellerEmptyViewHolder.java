@@ -13,8 +13,8 @@ import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.viewmodel.SellerEmptyViewModel;
 
-import static com.tokopedia.home.account.analytics.AccountAnalytics.ClickKnowMore;
-import static com.tokopedia.home.account.analytics.AccountAnalytics.ClickOpenShopFree;
+import static com.tokopedia.home.account.analytics.AccountAnalytics.clickKnowMore;
+import static com.tokopedia.home.account.analytics.AccountAnalytics.clickOpenShopFree;
 
 
 /**
@@ -42,11 +42,11 @@ public class SellerEmptyViewHolder extends AbstractViewHolder<SellerEmptyViewMod
     public void bind(SellerEmptyViewModel element) {
         ImageHandler.LoadImage(ivEmptyImage, AccountHomeUrl.CDN_URL + AccountHomeUrl.ImageUrl.EMPTY_SELLER_IMG);
         btnOpenShop.setOnClickListener(v -> {
-            ClickOpenShopFree();
+            clickOpenShopFree();
             listener.onOpenShopClicked();
         });
         btnLearnMore.setOnClickListener(v -> {
-            ClickKnowMore();
+            clickKnowMore();
             listener.onLearnMoreSellerClicked();
         });
     }
