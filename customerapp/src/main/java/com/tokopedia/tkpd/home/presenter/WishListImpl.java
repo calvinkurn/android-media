@@ -150,8 +150,34 @@ public class WishListImpl implements WishList {
     }
 
     @Override
-    public void loadMoreRecomendation() {
+    public void loadMoreRecomendation(int page) {
+        getRecommendationUseCase.execute(getRecommendationUseCase.getRecomParams(
+                page,
+                X_SOURCE_RECOM_WIDGET,
+                RECOM_PAGE,
+                new ArrayList<>()),
+                new Subscriber<List<? extends RecommendationWidget>>() {
+                    @Override
+                    public void onStart() {
+                        wishListView.displayLoadMore(true);
+                    }
 
+                    @Override
+                    public void onCompleted() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        wishListView.displayLoadMore(false);
+                    }
+
+                    @Override
+                    public void onNext(List<? extends RecommendationWidget> recommendationWidgets) {
+                        wishListView.displayLoadMore(false);
+                        RecommendationWidget recommendationWidget = recommendationWidgets.get(0);
+                        wishListView.onRenderRecomInbox(getRecommendationVisitables(recommendationWidget));
+                    }
+                });
     }
 
     public void getFirstRecomData(){
@@ -166,7 +192,6 @@ public class WishListImpl implements WishList {
                     }
                     @Override
                     public void onCompleted() {
-                        wishListView.displayLoadMore(false);
                     }
 
                     @Override
@@ -176,6 +201,7 @@ public class WishListImpl implements WishList {
 
                     @Override
                     public void onNext(List<? extends RecommendationWidget> recommendationWidgets) {
+                        wishListView.displayLoadMore(false);
                         List<Visitable> visitables = new ArrayList<>();
                         RecommendationWidget recommendationWidget = recommendationWidgets.get(0);
                         visitables.add(new WishlistRecomTitleViewModel(recommendationWidget.getTitle()));
@@ -292,7 +318,6 @@ public class WishListImpl implements WishList {
         Subscriber<GraphqlResponse> subscriber = new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
-                wishListView.displayLoadMore(false);
             }
 
             @Override
@@ -310,6 +335,7 @@ public class WishListImpl implements WishList {
 
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
+                wishListView.displayLoadMore(false);
                 if (graphqlResponse != null && graphqlResponse.getData(GqlWishListDataResponse.class) != null) {
                     GqlWishListDataResponse gqlWishListDataResponse = graphqlResponse.getData(GqlWishListDataResponse.class);
                     setData(gqlWishListDataResponse);
@@ -528,7 +554,6 @@ public class WishListImpl implements WishList {
         Subscriber<GraphqlResponse> subscriber = new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
-                wishListView.displayLoadMore(false);
             }
 
             @Override
@@ -546,6 +571,7 @@ public class WishListImpl implements WishList {
 
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
+                wishListView.displayLoadMore(false);
                 if (graphqlResponse != null && graphqlResponse.getData(GqlWishListDataResponse.class) != null) {
                     GqlWishListDataResponse gqlWishListDataResponse = graphqlResponse.getData(GqlWishListDataResponse.class);
                     data.clear();
@@ -683,6 +709,7 @@ public class WishListImpl implements WishList {
 
         @Override
         public void onNext(GraphqlResponse graphqlResponse) {
+            wishListView.displayLoadMore(false);
             if (graphqlResponse != null && graphqlResponse.getData(GqlWishListDataResponse.class) != null) {
                 GqlWishListDataResponse gqlWishListDataResponse = graphqlResponse.getData(GqlWishListDataResponse.class);
                 wishListView.displayPull(false);
@@ -711,7 +738,6 @@ public class WishListImpl implements WishList {
 
         @Override
         public void onCompleted() {
-            wishListView.displayLoadMore(false);
         }
 
         @Override

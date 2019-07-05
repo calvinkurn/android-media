@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -210,7 +211,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 if(wishlistAdapter.isEmptySearch() || wishlistAdapter.isEmptyWishlist()){
-                    wishList.loadMoreRecomendation();
+                    wishList.loadMoreRecomendation(page);
                 } else {
                     wishList.loadMore(getActivity());
                 }
@@ -283,6 +284,15 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.getLayoutManager().setAutoMeasureEnabled(true);
         recyclerView.setHasFixedSize(false);
+        recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                outRect.left = getResources().getDimensionPixelSize(R.dimen.dp_4);
+                outRect.right = getResources().getDimensionPixelSize(R.dimen.dp_4);
+                outRect.top = getResources().getDimensionPixelSize(R.dimen.dp_4);
+                outRect.bottom = getResources().getDimensionPixelSize(R.dimen.dp_4);
+            }
+        });
         searchEditText.setOnQueryTextListener(this);
         searchEditText.setSuggestionsAdapter(null);
         searchEditText.setFocusable(false);
