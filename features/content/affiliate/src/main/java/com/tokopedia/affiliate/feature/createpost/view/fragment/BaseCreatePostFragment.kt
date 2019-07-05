@@ -438,8 +438,8 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     private fun onDefaultCaptionClicked(_caption: String){
-        if (caption.text.length + _caption.length <= MAX_CHAR ){
-            caption.text.append(_caption)
+        if ((caption.text?.length ?: 0) + _caption.length <= MAX_CHAR ){
+            caption.text?.append(_caption)
         }
     }
 
@@ -526,7 +526,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             view?.showErrorToaster(getString(R.string.af_warning_empty_photo), R.string.label_add) {
                 goToImagePicker()
             }
-        } else if (caption.text.length > MAX_CHAR){
+        } else if ((caption.text?.length ?: 0) > MAX_CHAR){
             isFormInvalid = true
             view?.showErrorToaster(getString(R.string.af_warning_over_char, MAX_CHAR.toString()), R.string.general_label_ok){}
         }
