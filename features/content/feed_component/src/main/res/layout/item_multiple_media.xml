@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
+        <com.tokopedia.design.image.SquareImageView
             android:id="@+id/itemImageView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
