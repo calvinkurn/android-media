@@ -21,7 +21,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
-import com.tokopedia.design.component.ticker.TickerView
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.covertContactUriToContactData
@@ -34,6 +33,9 @@ import com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
 import com.tokopedia.topupbills.telco.view.widget.DigitalPromoListWidget
 import com.tokopedia.topupbills.telco.view.widget.DigitalRecentTransactionWidget
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -43,7 +45,7 @@ import javax.inject.Inject
 open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
 
     protected lateinit var mainContainer: NestedScrollView
-    protected lateinit var tickerView: TickerView
+    protected lateinit var tickerView: Ticker
     protected lateinit var recentNumbersView: DigitalRecentTransactionWidget
     protected lateinit var promoListView: DigitalPromoListWidget
     protected lateinit var checkoutPassData: DigitalCheckoutPassData
@@ -122,12 +124,20 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
 
     fun renderTicker(tickers: List<TelcoTicker>) {
         if (tickers.isNotEmpty()) {
-            val messages = ArrayList<String>()
+            val messages = ArrayList<TickerData>()
             for (item in tickers) {
-                messages.add(item.content)
+                messages.add(TickerData(item.name, item.content,
+                        when (item.type) {
+                            "warning" -> Ticker.TYPE_WARNING
+                            "info" -> Ticker.TYPE_INFORMATION
+                            "success" -> Ticker.TYPE_ANNOUNCEMENT
+                            "error" -> Ticker.TYPE_ERROR
+                            else -> Ticker.TYPE_INFORMATION
+                        }))
             }
-            tickerView.setListMessage(messages)
-            tickerView.buildView()
+            context?.run {
+                tickerView.addPagerView(TickerPagerAdapter(this, messages), messages)
+            }
             tickerView.visibility = View.VISIBLE
         } else {
             tickerView.visibility = View.GONE

@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.data.TelcoFavNumber
 import com.tokopedia.topupbills.telco.view.fragment.DigitalSearchNumberFragment
 import java.util.*
@@ -13,7 +13,7 @@ import java.util.*
  * @author rizkyfadillah on 10/4/2017.
  */
 
-class DigitalSearchNumberActivity : BaseSimpleActivity(), DigitalSearchNumberFragment.OnClientNumberClickListener {
+class DigitalSearchNumberActivity : BaseTelcoActivity(), DigitalSearchNumberFragment.OnClientNumberClickListener {
 
     private lateinit var categoryId: String
     private lateinit var clientNumberType: String
@@ -32,6 +32,7 @@ class DigitalSearchNumberActivity : BaseSimpleActivity(), DigitalSearchNumberFra
             this.numberList = extras.getParcelableArrayList(EXTRA_NUMBER_LIST)
         }
         super.onCreate(savedInstanceState)
+        updateTitle(getString(R.string.digital_title_fav_number))
     }
 
     override fun getNewFragment(): android.support.v4.app.Fragment {

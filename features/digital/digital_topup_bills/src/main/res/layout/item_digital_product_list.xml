@@ -14,65 +14,64 @@
         android:layout_height="match_parent"
         android:padding="@dimen/dp_10">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title_product"
-            style="@style/TextView.Small.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_4"
-            android:gravity="center_horizontal"
             android:lines="1"
-            tools:text="Pulsa 40.000"
-            android:textAlignment="center"
-            android:textColor="@color/clr_f531353b"
-            android:textStyle="bold" />
+            android:textColor="@color/black_70"
+            app:typographyType="heading_5"
+            tools:text="Pulsa 40.000" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/desc_product"
-            style="@style/TextView.Micro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/title_product"
             android:layout_marginBottom="@dimen/dp_4"
-            android:gravity="center_horizontal"
             android:lines="1"
-            tools:text="Masa aktif 30 hari"
-            android:textAlignment="center"
             android:textColor="@color/clr_ae31353b"
-            android:textStyle="bold" />
+            app:typographyType="body_3"
+            tools:text="Masa aktif 30 hari" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/see_more_btn"
-            style="@style/TextView.Micro.Green.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/desc_product"
             android:layout_marginBottom="@dimen/dp_4"
-            android:gravity="center_horizontal"
             android:lines="1"
             android:text="see more"
-            android:textAlignment="center"
-            android:textStyle="bold" />
+            android:textColor="@color/tkpd_main_green"
+            app:typographyType="body_3"
+            app:typographyWeight="bold" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/product_price"
-            style="@style/TextView.Micro.Orange.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/see_more_btn"
             android:layout_marginBottom="@dimen/dp_4"
-            android:gravity="center_horizontal"
             android:lines="1"
-            tools:text="Pulsa 40.000"
-            android:textAlignment="center"
-            android:textStyle="bold" />
+            android:textColor="@color/tkpd_main_orange"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            tools:text="Pulsa 40.000" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/product_promo_price"
             style="@style/TextView.Micro10"
-            android:layout_marginLeft="@dimen/dp_8"
             android:layout_below="@+id/desc_product"
-            android:lines="1"
-            tools:text="Pulsa 40.000"
-            android:textColor="@color/digital_title_header_non_active"
-            android:textSize="@dimen/sp_10"
-            android:layout_toRightOf="@+id/product_price"
             android:layout_alignTop="@+id/product_price"
             android:layout_alignBottom="@+id/product_price"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_toRightOf="@+id/product_price"
             android:gravity="center_vertical"
-            android:textStyle="bold" />
+            android:lines="1"
+            android:textColor="@color/Neutral_N700_44"
+            tools:text="Pulsa 40.000"
+            app:typographyType="small"/>
 
     </RelativeLayout>
 
