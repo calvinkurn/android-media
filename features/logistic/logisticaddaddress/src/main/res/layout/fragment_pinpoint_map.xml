@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -11,7 +10,8 @@
         <com.google.android.gms.maps.MapView
             android:id="@+id/map_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/dp_24"/>
 
         <ImageView
             android:id="@+id/pointer_0"
@@ -30,9 +30,29 @@
             android:contentDescription="@string/pointer"
             android:src="@drawable/ic_green_pointer" />
 
-    </RelativeLayout>
+        <android.support.design.widget.CoordinatorLayout
+            android:id="@+id/cl_bottomsheet_getdistrict"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
 
-    <include layout="@layout/bottomsheet_getdistrict" />
+            <include layout="@layout/bottomsheet_getdistrict" />
+
+        </android.support.design.widget.CoordinatorLayout>
+
+        <ImageView
+            android:id="@+id/ic_current_location"
+            android:layout_width="@dimen/dp_60"
+            android:layout_height="@dimen/dp_60"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_above="@+id/cl_bottomsheet_getdistrict"
+            android:src="@drawable/ic_gps_enable" />
+
+    </RelativeLayout>
 
     <ImageButton
         android:id="@+id/back_button"
