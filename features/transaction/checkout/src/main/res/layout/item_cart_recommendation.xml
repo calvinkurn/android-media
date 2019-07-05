@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.recommendation_widget_common.presentation.RecommendationCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/productCardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-    <com.tokopedia.recommendation_widget_common.presentation.RecommendationCardView
-        android:id="@+id/productCardView"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_4"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-</android.support.constraint.ConstraintLayout>
+    android:background="@color/white"
+    android:clickable="true" />
