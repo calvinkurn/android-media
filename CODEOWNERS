@@ -4,7 +4,7 @@
 /tkpdcore/          @tokopedia/core-team
 /tkpdinbox/         @tokopedia/minion-kevin
 /tkpddiscovery/     @tokopedia/minion-dave
-/tkpdtransaction/   @tokopedia/minion-bob
+/tkpdtransaction/   @tokopedia/minion-darth
 /feature/discovery/category_common/     @tokopedia/minion-stuart
 /feature/discovery/topadssdk/           @tokopedia/minion-dave
 /feature/discovery/home/                @tokopedia/minion-dave
@@ -50,7 +50,6 @@
 /features/digital/digital_browse/         @tokopedia/minion-mark
 /features/digital/digitalproduct        @tokopedia/minion-mark
 /featires/digital/common_travel         @tokopedia/minion-mark
-/features/fintech/tokocash              @tokopedia/minion-mark
 /libraries/travel_calendar              @tokopedia/minion-mark
 
 /features/payment/payment/                      @tokopedia/minion-bob
@@ -89,6 +88,7 @@
 /features/user/attachproduct/                   @tokopedia/minion-kevin
 /features/user/talk/                            @tokopedia/minion-kevin
 /features/user/changephonenumber                @tokopedia/minion-kevin
+/features/user/onboarding                       @tokopedia/minion-kevin
 /features/user/phoneverification                @tokopedia/minion-kevin
 /features/user/user_identification/             @tokopedia/minion-kevin
 /features/user/user_identification_common/      @tokopedia/minion-kevin
@@ -137,7 +137,8 @@
 /features/promo/tokopoints_notification @tokopedia/minion-solo
 /features/promo/gamification            @tokopedia/minion-solo
 /features/payment/withdraw/             @tokopedia/minion-solo
-/features/kyc                           @tokopedia/minion-solo
+/features/fintech/tokocash              @tokopedia/minion-solo
+/features/kyc                           @tokopedia/minion-yoda
 
 /features/im/challenges                 @tokopedia/minion-yoda
 /features/im/referral                   @tokopedia/minion-yoda

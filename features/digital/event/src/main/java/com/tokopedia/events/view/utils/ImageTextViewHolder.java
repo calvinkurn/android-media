@@ -7,6 +7,7 @@ import android.widget.TextView;
 import com.tokopedia.events.R2;
 
 import butterknife.BindView;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * Created by pranaymohapatra on 28/11/17.
@@ -21,7 +22,7 @@ public class ImageTextViewHolder {
     TextView textViewHolder;
 
     public void setImage(int resID) {
-        imageHolderSmall.setImageResource(resID);
+        imageHolderSmall.setImageDrawable(MethodChecker.getDrawable(imageHolderSmall.getContext(),resID));
     }
 
     public void setTextView(String label) {

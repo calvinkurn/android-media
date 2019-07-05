@@ -96,8 +96,10 @@ class PrefixEditText @JvmOverloads constructor(context: Context,
                             0, mPrefix!!.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
                 super.setText(spannable, type)
-                Selection.setSelection(super.getText(),
-                        super.getText().length)
+                super.getText()?.length?.let {
+                    Selection.setSelection(super.getText(),
+                            it)
+                }
             }
         }
         addTextChangedListener(this)
@@ -115,8 +117,10 @@ class PrefixEditText @JvmOverloads constructor(context: Context,
         if (!s.toString().startsWith(mPrefix!!)) {
             removeTextChangedListener(this)
             super@PrefixEditText.setText(mPrefix)
-            Selection.setSelection(super@PrefixEditText.getText(),
-                    super@PrefixEditText.getText().length)
+            super@PrefixEditText.getText()?.length?.let {
+                Selection.setSelection(super@PrefixEditText.getText(),
+                        it)
+            }
             addTextChangedListener(this)
         }
     }
@@ -131,8 +135,10 @@ class PrefixEditText @JvmOverloads constructor(context: Context,
         // if select on the prefix text, move selection to the end
         val prefixLength = if (mPrefix == null) 0 else mPrefix!!.length
         if (selStart < prefixLength && selEnd == selStart) {
-            Selection.setSelection(super@PrefixEditText.getText(),
-                    super@PrefixEditText.getText().length)
+            super@PrefixEditText.getText()?.length?.let {
+                Selection.setSelection(super@PrefixEditText.getText(),
+                        it)
+            }
         }
         super.onSelectionChanged(selStart, selEnd)
     }

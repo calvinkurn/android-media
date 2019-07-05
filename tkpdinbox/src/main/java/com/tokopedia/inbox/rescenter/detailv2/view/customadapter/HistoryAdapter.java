@@ -8,11 +8,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.animation.GlowingView;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.HistoryItem;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,13 +106,13 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         lastMonth = holder.tvMonth.getText().toString();
         if (listener.getResolutionStatus() == STATUS_FINISHED || listener.getResolutionStatus() == STATUS_CANCEL) {
             holder.indicator.setVisibility(View.VISIBLE);
-            holder.indicator.setImageResource(R.drawable.ic_dot_grey_24dp);
+            holder.indicator.setImageDrawable(MethodChecker.getDrawable(context,R.drawable.ic_dot_grey_24dp));
             holder.tvUsername.setTextColor(MethodChecker.getColor(context, R.color.label_text_color));
             holder.history.setTextColor(MethodChecker.getColor(context, R.color.label_text_color));
         } else {
-            holder.indicator.setImageResource(
+            holder.indicator.setImageDrawable(MethodChecker.getDrawable(context,
                     item.isLatest() ? R.drawable.bg_circle_green : R.drawable.ic_dot_grey_24dp
-            );
+            ));
             holder.indicator.setVisibility(item.isLatest() ? View.GONE : View.VISIBLE);
             holder.glowingView.setVisibility(item.isLatest() ? View.VISIBLE : View.GONE);
             if (holder.glowingView.getVisibility() == View.VISIBLE) {

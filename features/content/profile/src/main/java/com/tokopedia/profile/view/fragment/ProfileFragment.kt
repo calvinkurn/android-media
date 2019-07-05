@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.support.design.widget.AppBarLayout
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
@@ -35,7 +36,6 @@ import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.base.BaseToaster
-import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
@@ -142,6 +142,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
         }
     }
+    private var isAppBarCollapse = false
+
     private lateinit var layoutManager: LinearLayoutManager
 
     override lateinit var profileRouter: ProfileModuleRouter
@@ -165,8 +167,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         private const val PARAM_CATEGORY_ID = "{category_id}"
         private const val YOUTUBE_URL = "{youtube_url}"
         private const val TAB_INSPIRASI = "inspirasi"
-        private const val SHARE_PROFILE = "profile"
-        private const val SHARE_POST = "post"
         private const val CATEGORY_0 = "0"
         private const val TEXT_PLAIN = "text/plain"
         private const val KOL_COMMENT_CODE = 13
@@ -176,6 +176,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         private const val LOGIN_CODE = 1383
         private const val LOGIN_FOLLOW_CODE = 1384
         private const val OPEN_CONTENT_REPORT = 1130
+        private const val FOLLOW_HEADER = "follow_header"
+        private const val FOLLOW_FOOTER = "follow_footer"
 
         fun createInstance(bundle: Bundle): ProfileFragment {
             val fragment = ProfileFragment()
@@ -425,20 +427,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         startActivity(FollowingListActivity.createIntent(context, userId.toString()))
     }
 
-    override fun followUnfollowUser(userId: Int, follow: Boolean) {
-        if (userSession.isLoggedIn) {
-            if (follow) {
-                presenter.followKol(userId)
-                profileAnalytics.eventClickFollow(isOwner, userId.toString())
-            } else {
-                presenter.unfollowKol(userId)
-                profileAnalytics.eventClickUnfollow(isOwner, userId.toString())
-            }
-        } else {
-            followAfterLogin()
-        }
-    }
-
     override fun updateCursor(cursor: String) {
         presenter.cursor = cursor
     }
@@ -606,8 +594,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                         .show()
             }
 
-            setProfileToolbar(it, false)
-
+            setFollowBtn(it, false)
             if (activity != null && arguments != null) {
                 if (resultIntent == null) {
                     resultIntent = Intent()
@@ -621,6 +608,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 activity!!.setResult(Activity.RESULT_OK, resultIntent)
             }
         }
+        if (!isOwner && footerOthers.isVisible) showFooterOthers()
     }
 
     override fun onErrorFollowKol(errorMessage: String) = showError(errorMessage)
@@ -727,6 +715,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onLikeClick(positionInFeed: Int, id: Int, isLiked: Boolean) {
+        profileAnalytics.eventClickLike(isOwner, userId.toString())
         if (isLiked) {
             onUnlikeKolClicked(positionInFeed, id, false, "")
         } else {
@@ -735,6 +724,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onCommentClick(positionInFeed: Int, id: Int) {
+        profileAnalytics.eventClickComment(isOwner, userId.toString())
         onGoToKolComment(positionInFeed, id, false, "")
     }
 
@@ -829,9 +819,13 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    override fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>) {
+    override fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean) {
         for (tracking in trackList) {
-            presenter.trackPostClickUrl(tracking.clickURL)
+            if (isClick) {
+                presenter.trackPostClickUrl(tracking.clickURL)
+            } else {
+                presenter.trackPostClickUrl(tracking.viewURL)
+            }
         }
     }
 
@@ -940,15 +934,25 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
         isOwner = userId.toString() == userSession.userId
 
-        layoutManager = LinearLayoutManager(activity)
+        layoutManager = recyclerView.layoutManager as LinearLayoutManager
 
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (dy < 0) { // going up
+                    if (adapter.dataSize > 0 && isAppBarCollapse && !isOwner && !footerOthers.isVisible) {
+                       showFooterOthers()
+                    }
+                } else if (dy > 0) { // going down
+                    if (isAppBarCollapse && !isOwner && footerOthers.isVisible) hideFootersOthers()
+                }
+            }
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 try {
-                    if (hasFeed()
-                            && newState == RecyclerView.SCROLL_STATE_IDLE
-                            && layoutManager != null) {
+                    if (hasFeed() && newState == RecyclerView.SCROLL_STATE_IDLE) {
                         val item: Visitable<*>?
                         val position = when {
                             itemIsFullScreen() -> layoutManager.findLastVisibleItemPosition()
@@ -956,7 +960,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                             layoutManager.findLastCompletelyVisibleItemPosition() != -1 -> layoutManager.findLastCompletelyVisibleItemPosition()
                             else -> 0
                         }
-
                         item = adapter.list[position]
 
                         if (item is DynamicPostViewModel) {
@@ -968,7 +971,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 } catch (e: IndexOutOfBoundsException) {
                 }
             }
-
         })
     }
 
@@ -981,6 +983,38 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     private fun itemIsFullScreen(): Boolean {
         return layoutManager.findLastVisibleItemPosition() - layoutManager.findFirstVisibleItemPosition() == 0
+    }
+
+    private fun showFooterOthers() {
+        footerOthers.show()
+        if (profileHeader?.isFollowed == true){
+            footerOthersText.text = getString(R.string.sticky_footer_following)
+            footerOthersFollow.hide()
+            footerOthersShareText.show()
+        } else {
+            footerOthersText.text = getString(R.string.sticky_footer_follow)
+            footerOthersFollow.show()
+            footerOthersFollow.setOnClickListener { _ ->
+                profileHeader?.let { followUnfollowUser(it.userId, !it.isFollowed, FOLLOW_FOOTER) }
+            }
+            footerOthersShareText.hide()
+        }
+        footerOthersShare.setOnClickListener {
+            profileHeader?.let {
+                val linkerData = constructShareData(
+                        it.name,
+                        it.avatar,
+                        it.link,
+                        String.format(getString(R.string.profile_share_text),
+                                it.link),
+                        String.format(getString(R.string.profile_share_title)))
+                ShareBottomSheets().show(fragmentManager!!, linkerData, isOwner, userId.toString(), true)
+            }
+        }
+    }
+
+    private fun hideFootersOthers() {
+        footerOthers.hide()
     }
 
     private fun setToolbarTitle(title: String) {
@@ -1009,26 +1043,30 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         iv_back.setOnClickListener {
             activity?.finish()
         }
-        app_bar_layout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
+        app_bar_layout.addOnOffsetChangedListener (AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
             try {
                 toolbar.let {
                     if (Math.abs(verticalOffset) >= appBarLayout.totalScrollRange) {
                         it.visibility = View.VISIBLE
+                        isAppBarCollapse = true
                     } else {
                         it.visibility = View.GONE
+                        isAppBarCollapse = false
+                        if (!isOwner && footerOthers.isVisible) hideFootersOthers()
                     }
                 }
             } catch (e: IllegalStateException) {
 
             }
         }
+        )
 
         val selfProfile = userSession.userId == userId.toString()
                 && element.isAffiliate
         lateinit var action: View.OnClickListener
         action = if (!selfProfile) {
             iv_action_parallax.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_share_white))
-            iv_action.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_share_white))
+            iv_action.gone()
             View.OnClickListener {
                 val linkerData = constructShareData(
                         element.name,
@@ -1062,25 +1100,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             followers.text = getFollowersText(element)
             followers.movementMethod = LinkMovementMethod.getInstance()
 
-            if (GlobalConfig.isCustomerApp()) {
-                if (!element.isOwner) {
-                    editButton.visibility = View.GONE
-                    followBtn.visibility = View.VISIBLE
-                    followBtn.setOnClickListener {
-                        followUnfollowUser(element.userId, !element.isFollowed)
-                    }
-                    updateButtonState(element.isFollowed)
-                    if (isFromLogin) {
-                        followBtn.performClick()
-                    }
-                } else {
-                    editButton.visibility = View.VISIBLE
-                    followBtn.visibility = View.GONE
-                    editButton.setOnClickListener {
-                        onChangeAvatarClicked()
-                    }
-                }
-            }
+            setFollowBtn(element, isFromLogin)
         } else {
             kolBadge.visibility = View.GONE
             if (element.isOwner) {
@@ -1092,6 +1112,50 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             } else {
                 followers.visibility = View.GONE
             }
+        }
+    }
+
+    private fun setFollowBtn(element: ProfileHeaderViewModel, isFromLogin: Boolean) {
+        if (GlobalConfig.isCustomerApp()) {
+            if (!element.isOwner) {
+                editButton.visibility = View.GONE
+                followBtn.visibility = View.VISIBLE
+                followBtn.setOnClickListener {
+                    followUnfollowUser(element.userId, !element.isFollowed, FOLLOW_HEADER)
+                }
+                updateButtonState(element.isFollowed)
+                if (isFromLogin) {
+                    followBtn.performClick()
+                }
+            } else {
+                editButton.visibility = View.VISIBLE
+                followBtn.visibility = View.GONE
+                editButton.setOnClickListener {
+                    onChangeAvatarClicked()
+                }
+            }
+        }
+    }
+
+    private fun followUnfollowUser(userId: Int, follow: Boolean, source: String) {
+        if (userSession.isLoggedIn) {
+            if (follow) {
+                presenter.followKol(userId)
+                if (source == FOLLOW_HEADER) {
+                    profileAnalytics.eventClickFollow(isOwner, userId.toString())
+                } else if (source == FOLLOW_FOOTER) {
+                    profileAnalytics.eventClickFollowFooter(isOwner, userId.toString())
+                }
+            } else {
+                presenter.unfollowKol(userId)
+                if (source == FOLLOW_HEADER) {
+                    profileAnalytics.eventClickUnfollow(isOwner, userId.toString())
+                } else if (source == FOLLOW_FOOTER) {
+                    profileAnalytics.eventClickUnfollowFooter(isOwner, userId.toString())
+                }
+            }
+        } else {
+            followAfterLogin()
         }
     }
 
@@ -1198,6 +1262,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                             }
                         }
                     }
+
+                    onAffiliateTrackClicked(model.tracking, false)
                 }
             }
         }

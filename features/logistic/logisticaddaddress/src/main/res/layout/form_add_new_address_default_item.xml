@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ll_form_add_new_address_default_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_24"
+        android:textSize="@dimen/sp_12"
+        android:textColor="@color/label_grey"
+        android:text="@string/add_new_address_address_label" />
+
+    <com.tokopedia.design.text.TkpdHintTextInputLayout
+        android:id="@+id/et_label_address_wrapper"
+        style="@style/HintTextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:hintEnabled="false"
+        android:layout_marginBottom="@dimen/dp_24">
+
+        <EditText
+            android:id="@+id/et_label_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/et_address_label_hint"
+            android:inputType="text"
+            android:textColor="#ae31353b"
+            android:imeOptions="actionDone"
+            android:maxLines="1"/>
+
+    </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_label_alamat_chips"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"
+        android:visibility="gone"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_12"
+        android:textColor="@color/label_grey"
+        android:text="@string/add_new_address_name_label"/>
+
+    <com.tokopedia.design.text.TkpdHintTextInputLayout
+        android:id="@+id/et_receiver_name_wrapper"
+        style="@style/HintTextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:hintEnabled="false"
+        android:layout_marginBottom="@dimen/dp_24">
+
+        <EditText
+            android:id="@+id/et_receiver_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/et_receiver_name_hint"
+            android:inputType="text"
+            android:textColor="#ae31353b"
+            android:imeOptions="actionDone"
+            android:maxLines="1"/>
+
+    </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_12"
+        android:textColor="@color/label_grey"
+        android:text="@string/add_new_address_phone_label"/>
+
+    <com.tokopedia.design.text.TkpdHintTextInputLayout
+        android:id="@+id/et_phone_wrapper"
+        style="@style/HintTextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:hintEnabled="false"
+        android:layout_marginBottom="@dimen/dp_24">
+
+        <EditText
+            android:id="@+id/et_phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="phone"
+            android:hint="@string/et_no_ponsel_hint"
+            android:textColor="#ae31353b"
+            android:imeOptions="actionDone"
+            android:maxLines="1"/>
+
+    </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+    <com.tokopedia.design.component.ButtonCompat
+        android:id="@+id/btn_save_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:foreground="?selectableItemBackground"
+        android:text="@string/add_new_address_save"
+        android:textAllCaps="false"
+        app:buttonCompatSize="big"
+        app:buttonCompatType="primary" />
+
+</LinearLayout>

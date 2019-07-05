@@ -60,6 +60,8 @@ public interface ConstantTransactionAnalytics {
 
     interface EventAction {
         String CLICK_GUNAKAN_KODE_PROMO_ATAU_KUPON = "click gunakan kode promo atau kupon";
+        String CLICK_GUNAKAN_KODE_PROMO = "click gunakan kode promo";
+        String CLICK_GUNAKAN_KUPON = "click gunakan kupon";
         String CLICK_HAPUS_ON_TOP_RIGHT_CORNER = "click hapus on top right corner";
         String CLICK_SHOP_NAME = "click shop name";
         String CLICK_PRODUCT_NAME = "click product name";
@@ -166,6 +168,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_ALAMAT_PADA_TAMBAH_ADDRESS = "click alamat pada + address";
         String CLICK_CEK_KERANJANG = "click - cek keranjang";
         String VIEW_CART_LIST = "view cart list";
+        String VIEW_CHECKOUT_PAGE = "view checkout page";
 
         String VALIDATION_ERROR_ALAMAT_SEBAGAI_PADA_TAMBAH_ADDRESS = "validation error alamat sebagai pada + address";
         String VALIDATION_ERROR_NAMA_PADA_TAMBAH_ADDRESS = "validation error nama pada + address";
@@ -260,6 +263,11 @@ public interface ConstantTransactionAnalytics {
         String CLICK_PROMO_LOGISTIC_TICKER = "click promo logistic ticker";
         String CLICK_LANJUTKAN_TERAPKAN_PROMO = "click lanjutkan di pop up terapkan promo";
         String CLICK_BATAL_TERAPKAN_PROMO = "click batal di pop up terapkan promo";
+
+        //Promo not eligible bottomsheet
+        String CLICK_LANJUTKAN_ON_ERROR_PROMO_CONFIRMATION = "click lanjutkan on error promo confirmation";
+        String CLICK_BATAL_ON_ERROR_PROMO_CONFIRMATION = "click batal on error promo confirmation";
+        String VIEW_POP_UP_ERROR_PROMO_CONFIRMATION = "view pop up error promo confirmation";
     }
 
     interface EventLabel {
@@ -267,6 +275,7 @@ public interface ConstantTransactionAnalytics {
         String ERROR = "error";
         String NOT_SUCCESS = "not success";
         String COURIER_NOT_COMPLETE = "courier not complete";
+        String PROMO_RED_STATE = "promo red state";
         String KUOTA_PENUKARAN = "kuota penukaran";
         String FAILED = "failed";
         String CHECKLIST = "checklist";

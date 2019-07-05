@@ -6,12 +6,13 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.home.beranda.data.model.KeywordSearchData;
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData;
+import com.tokopedia.home.beranda.domain.interactor.GetLocalHomeDataUseCase;
+import com.tokopedia.home.beranda.domain.interactor.GetHomeTokopointsDataUseCase;
+import com.tokopedia.home.beranda.domain.interactor.GetKeywordSearchUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetFeedTabUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetHomeDataUseCase;
-import com.tokopedia.home.beranda.domain.interactor.GetHomeTokopointsDataUseCase;
-import com.tokopedia.home.beranda.domain.interactor.GetLocalHomeDataUseCase;
-import com.tokopedia.home.beranda.domain.model.HomeData;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.presentation.view.HomeContract;
 import com.tokopedia.home.beranda.presentation.view.adapter.TrackedVisitable;
@@ -20,6 +21,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackDa
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeRecommendationFeedViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
+import com.tokopedia.home.beranda.presentation.view.subscriber.KeywordSearchHomeSubscriber;
 import com.tokopedia.home.beranda.presentation.view.subscriber.GetFeedTabsSubscriber;
 import com.tokopedia.home.beranda.presentation.view.subscriber.PendingCashbackHomeSubscriber;
 import com.tokopedia.home.beranda.presentation.view.subscriber.TokocashHomeSubscriber;
@@ -44,7 +46,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import rx.subscriptions.Subscriptions;
@@ -74,6 +75,10 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     @Inject
     Lazy<GetHomeTokopointsDataUseCase> getHomeTokopointsDataUseCaseLazy;
+
+    @Inject
+    Lazy<GetKeywordSearchUseCase> getKeywordSearchUseCaseLazy;
+
 
     private String currentCursor = "";
     private GetShopInfoByDomainUseCase getShopInfoByDomainUseCase;
@@ -120,6 +125,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         }
         getTokocashBalance();
         getTokopoint();
+        getSearchHint();
     }
 
     @Override
@@ -490,12 +496,32 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         }
     }
 
+    public void getSearchHint(){
+        Observable<GraphqlResponse> graphqlResponseObservable = getKeywordSearchObservable();
+        if (graphqlResponseObservable != null) {
+            compositeSubscription.add(graphqlResponseObservable.subscribeOn(Schedulers.newThread())
+                    .unsubscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new KeywordSearchHomeSubscriber(this)));
+        }
+    }
+
     private Observable<GraphqlResponse> getTokopointsObservable() {
         if (getHomeTokopointsDataUseCaseLazy != null) {
             GetHomeTokopointsDataUseCase getHomeTokopointsDataUseCase = getHomeTokopointsDataUseCaseLazy.get();
             getHomeTokopointsDataUseCase.clearRequest();
             getHomeTokopointsDataUseCase.addRequest(getHomeTokopointsDataUseCase.getRequest());
             return getHomeTokopointsDataUseCase.getExecuteObservable(RequestParams.EMPTY);
+        }
+        return null;
+    }
+
+    private Observable<GraphqlResponse> getKeywordSearchObservable(){
+        if (getKeywordSearchUseCaseLazy != null) {
+            GetKeywordSearchUseCase getKeywordSearchUseCase = getKeywordSearchUseCaseLazy.get();
+            getKeywordSearchUseCase.clearRequest();
+            getKeywordSearchUseCase.addRequest(getKeywordSearchUseCase.getRequest());
+            return getKeywordSearchUseCase.getExecuteObservable(RequestParams.EMPTY);
         }
         return null;
     }
@@ -540,6 +566,11 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
         headerViewModel.setTokopointsDrawerHomeData(tokopointsDrawerHomeData != null ? tokopointsDrawerHomeData.getTokopointsDrawer() : null);
         getView().updateHeaderItem(headerViewModel);
+    }
+
+    @Override
+    public void updateKeywordSearch(KeywordSearchData keywordSearchData) {
+        getView().setHint(keywordSearchData.getSearchData());
     }
 
     public void getFeedTabData() {

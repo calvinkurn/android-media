@@ -104,6 +104,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     val REQUEST_GO_TO_SETTING_TEMPLATE = 113
     val REQUEST_GO_TO_SETTING_CHAT = 114
 
+    var seenAttachedProduct = HashSet<Int>()
+
     companion object {
 
         private const val POST_ID = "{post_id}"
@@ -660,7 +662,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun onClickBuyFromProductAttachment(element: ProductAttachmentViewModel) {
         activity?.let {
             val router = (it.application as TopChatRouter)
-            val shopName = (arguments?.get(ApplinkConst.Chat.PARAM_HEADER) as ChatRoomHeaderViewModel).name
             (viewState as TopChatViewState)?.sendAnalyticsClickBuyNow(element)
             var shopId = this.shopId
             if(shopId == 0) {
@@ -837,5 +838,11 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
+    }
+
+    override fun trackSeenProduct(element: ProductAttachmentViewModel) {
+        if (seenAttachedProduct.add(element.productId)) {
+            analytics.eventSeenProductAttachment(element)
+        }
     }
 }

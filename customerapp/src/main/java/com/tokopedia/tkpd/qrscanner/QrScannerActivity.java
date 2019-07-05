@@ -18,7 +18,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.google.gson.JsonObject;
 import com.journeyapps.barcodescanner.BarcodeResult;
 import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -27,9 +26,9 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.events.view.activity.ScanQRCodeActivity;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.ovo.model.BarcodeResponseData;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -42,15 +41,12 @@ import com.tokopedia.tokocash.qrpayment.presentation.model.InfoQrTokoCash;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 
+import org.jetbrains.annotations.NotNull;
+
 import javax.inject.Inject;
 
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.RuntimePermissions;
 import rx.Observable;
 
-@RuntimePermissions
 public class QrScannerActivity extends BaseScannerQRActivity implements QrScannerContract.View,
         HasComponent<CampaignComponent> {
 
@@ -62,24 +58,13 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     private static final String QR_DATA = "QR_DATA";
     private static final String IMEI = "IMEI";
     private static final String QR_RESPONSE = "QR_RESPONSE";
-
+    private static String QR_NEED_RESULT = "qr_need_result";
+    @Inject
+    QrScannerPresenter presenter;
     private CampaignComponent campaignComponent;
     private boolean isTorchOn;
     private ProgressBar progressBar;
-    private static String QR_NEED_RESULT = "qr_need_result";
-
-    @Inject
-    QrScannerPresenter presenter;
-
-    @Override
-    protected Fragment getNewFragment() {
-        return null;
-    }
-
-    @Override
-    protected int getLayoutRes() {
-        return R.layout.layout_scanner_qr;
-    }
+    private PermissionCheckerHelper permissionCheckerHelper;
 
     public static Intent newInstance(Context context, boolean needResult) {
         Intent intent = new Intent(context, QrScannerActivity.class);
@@ -95,10 +80,41 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     }
 
     @Override
+    protected Fragment getNewFragment() {
+        return null;
+    }
+
+    @Override
+    protected int getLayoutRes() {
+        return R.layout.layout_scanner_qr;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         progressBar = findViewById(R.id.progress_bar_scanner);
-        QrScannerActivityPermissionsDispatcher.isCameraPermissionAvailableWithCheck(this);
+        permissionCheckerHelper = new PermissionCheckerHelper();
+        permissionCheckerHelper.checkPermission(
+                this,
+                Manifest.permission.CAMERA,
+                new PermissionCheckerHelper.PermissionCheckListener() {
+                    @Override
+                    public void onPermissionDenied(@NotNull String permissionText) {
+                        requestCameraPermissionDenied();
+                    }
+
+                    @Override
+                    public void onNeverAskAgain(@NotNull String permissionText) {
+                        requestCameraPermissionNeverAsk();
+                    }
+
+                    @Override
+                    public void onPermissionGranted() {
+
+                    }
+                },
+                ""
+        );
     }
 
     @Override
@@ -140,21 +156,14 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     }
 
     private void moveToLoginPage(int requestCode) {
-        startActivityForResult(LoginActivity.getCallingIntent(getApplicationContext()), requestCode);
+        startActivityForResult(LoginActivity.DeepLinkIntents.getCallingIntent(getApplicationContext()), requestCode);
     }
 
-    @NeedsPermission({Manifest.permission.CAMERA})
-    void isCameraPermissionAvailable() {
-
-    }
-
-    @OnPermissionDenied({Manifest.permission.CAMERA})
     void requestCameraPermissionDenied() {
         Toast.makeText(this, getResources().getString(R.string.error_actiivty_open_permission), Toast.LENGTH_LONG).show();
         finish();
     }
 
-    @OnNeverAskAgain({Manifest.permission.CAMERA})
     void requestCameraPermissionNeverAsk() {
         Toast.makeText(this, getResources().getString(R.string.error_actiivty_open_permission), Toast.LENGTH_LONG).show();
         finish();
@@ -163,7 +172,7 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        QrScannerActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+        permissionCheckerHelper.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
     }
 
     @Override
@@ -322,7 +331,7 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
 
     @Override
     public void interruptToLoginPage() {
-        startActivityForResult(LoginActivity.getCallingIntent(getApplicationContext()), REQUEST_CODE_LOGIN);
+        startActivityForResult(LoginActivity.DeepLinkIntents.getCallingIntent(getApplicationContext()), REQUEST_CODE_LOGIN);
     }
 
     @Override

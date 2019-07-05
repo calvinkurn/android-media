@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,10 +19,9 @@ public class ChooseTokoCashAccountViewModel implements Parcelable {
     private String phoneNumber;
     private String accessToken;
 
-    public ChooseTokoCashAccountViewModel(List<UserDetail> listAccount,
-                                          String phoneNumber,
+    public ChooseTokoCashAccountViewModel(String phoneNumber,
                                           String accessToken) {
-        this.listAccount = listAccount;
+        this.listAccount = new ArrayList<>();
         this.phoneNumber = phoneNumber;
         this.accessToken = accessToken;
     }
@@ -64,7 +64,8 @@ public class ChooseTokoCashAccountViewModel implements Parcelable {
         return phoneNumber;
     }
 
-    public String getKey() {
+    //UUID
+    public String getAccessToken() {
         return accessToken;
     }
 }

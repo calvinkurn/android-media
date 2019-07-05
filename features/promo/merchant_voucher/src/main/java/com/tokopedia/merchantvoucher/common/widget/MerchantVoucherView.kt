@@ -12,6 +12,7 @@ import com.tokopedia.merchantvoucher.common.model.*
 import kotlinx.android.synthetic.main.widget_merchant_voucher_view.view.*
 import android.content.ClipData
 import android.content.ClipboardManager
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 
 
 /*
@@ -85,10 +86,10 @@ class MerchantVoucherView : CustomVoucherView {
     fun setData(merchantVoucherViewModel: MerchantVoucherViewModel?) {
         this.merchantVoucherViewModel = merchantVoucherViewModel
         merchantVoucherViewModel?.run {
-            ivVoucherLogo.setImageResource(when (merchantVoucherViewModel.ownerId) {
+            val draw = when (merchantVoucherViewModel.ownerId) {
                 MerchantVoucherOwnerTypeDef.TYPE_TOKOPEDIA -> R.drawable.ic_big_notif_customerapp
-                else -> R.drawable.ic_store_logo
-            })
+                else -> R.drawable.ic_store_logo}
+            ivVoucherLogo.setImageDrawable( MethodChecker.getDrawable(getContext(),  draw))
             tvVoucherTitle.text = context.getString(R.string.voucher_title_x_x,
                     merchantVoucherViewModel.getTypeString(context),
                     merchantVoucherViewModel.getAmountShortString())

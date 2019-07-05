@@ -178,7 +178,7 @@ ext {
             nps                             : ":features:common:nps",
 
             tradeIn                     : ":features:category:tradein",
-            tradeInCommon               : ":features:category:tradein_common",
+            basemvvm               : ":features:category:basemvvm",
 
             broadcastMessage                : ":features:communication:broadcast_message",
 //            broadcastMessage                : ":features:communication:broadcast_message_no_op", // toggle for no op
@@ -211,7 +211,8 @@ ext {
 //            flashsaleManagement             : ":features:discovery:flashsale_management_no_op",
             flashsaleManagementCommon       : ":features:discovery:flashsale_management_common",
             home                            : ":features:discovery:home",
-            //home                          : ":features:discovery:home_no_op",
+            homeRecommendation              : ":features:discovery:home_recom",
+//            home                          : ":features:discovery:home_no_op",
             recentview                      : ":features:discovery:recentview",
             //recentview                    : ":features:discovery:recentview_no_op",
             search                          : ":features:discovery:search",
@@ -232,7 +233,7 @@ ext {
             navigation                      : ":features:home:navigation",
             navigationCommon                : ":features:home:navigation-common",
             searchbar                       : ":features:home:searchbar",
-
+            
             challenges                      : ":features:im:challenges",
 //            challenges                    : ":features:im:challenges_no_op",
 
@@ -282,9 +283,8 @@ ext {
             shopPage                        : ":features:merchant:shop_page",
 //            shopPage                        : ":features:merchant:shop_page_no_op",
             shopSettings                    : ":features:merchant:shop_settings",
-//            shopSettings                    : ":features:merchant:shop_settings_no_op", // toggle for no op
             officialStore                  : ":features:merchant:official_store",
-
+            onboarding                      : ":features:user:onboarding",
             contactUs                       : ":features:operational:contact_us",
 //            contactUs                       : ":features:operational:contact_us_no_op",
 
@@ -342,6 +342,7 @@ ext {
 //            notifCenter                     : ":features:user:notifcenter_no_op",
             otp                             : ":features:user:otp",
             phoneVerification               : ":features:user:phoneverification",
+            profileCompletion               : ":features:user:profilecompletion",
             settingbank                     : ":features:user:settingbank",
             talk                            : ":features:user:talk",
             topchat                         : ":features:user:topchat",
@@ -360,6 +361,7 @@ ext {
             transaction                     : ":tkpdtransaction",
             transactioncommon               : ":tkpdtransaction-common",
             commonTravel                    : ":features:digital:common_travel",
-            ovo                             : ":features:fintech:ovo_pay_with_qr"
+            ovo                             : ":features:fintech:ovo_pay_with_qr",
+            agerestriction                  : ":features:category:age_restriction"
     ]
 }

@@ -9,9 +9,10 @@ import android.view.*
 import android.widget.ArrayAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
-import com.tokopedia.shop.common.router.ShopSettingRouter
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.address.data.ShopLocationViewModel
 import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
@@ -145,9 +146,9 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
     }
 
     private fun gotoDistrictActivity() {
-        if (activity != null && activity!!.application is ShopSettingRouter){
-            startActivityForResult((activity!!.application as ShopSettingRouter).getDistrictRecommendationIntent(activity!!),
-                    DISTRICT_RECOMMENDATION_REQUEST_CODE)
+        if (activity != null){
+            startActivityForResult(RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.DISTRICT_RECOMMENDATION_SHOP_SETTINGS),
+                DISTRICT_RECOMMENDATION_REQUEST_CODE)
         }
     }
 

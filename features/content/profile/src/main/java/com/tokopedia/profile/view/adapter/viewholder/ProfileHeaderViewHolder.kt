@@ -46,10 +46,6 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileEmptyContrac
             itemView.followers.movementMethod = LinkMovementMethod.getInstance()
 
             if (!element.isOwner && GlobalConfig.isCustomerApp()) {
-                itemView.followBtn.visibility = View.VISIBLE
-                itemView.followBtn.setOnClickListener {
-                    viewListener.followUnfollowUser(element.userId, !element.isFollowed)
-                }
                 updateButtonState(element.isFollowed)
             } else {
                 itemView.followBtn.visibility = View.GONE

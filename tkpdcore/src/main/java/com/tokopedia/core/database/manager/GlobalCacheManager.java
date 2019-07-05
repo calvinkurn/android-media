@@ -44,6 +44,9 @@ public class GlobalCacheManager implements CacheManager {
     }
 
     public void store() {
+        if (Key == null){
+            return;
+        }
         PersistentCacheManager.instance.put(Key, Value,
                 this.expiredTime - System.currentTimeMillis());
     }
