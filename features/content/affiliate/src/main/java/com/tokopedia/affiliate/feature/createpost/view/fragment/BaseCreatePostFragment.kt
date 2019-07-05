@@ -42,7 +42,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videorecorder.main.VideoPickerActivity.Companion.VIDEOS_RESULT
-import kotlinx.android.synthetic.main.fragment_new_create_post.*
+import kotlinx.android.synthetic.main.fragment_af_create_post.*
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -134,7 +134,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_new_create_post, container, false)
+        return inflater.inflate(R.layout.fragment_af_create_post, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

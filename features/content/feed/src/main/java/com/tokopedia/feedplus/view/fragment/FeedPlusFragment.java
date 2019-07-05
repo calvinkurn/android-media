@@ -119,6 +119,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.affiliatecommon.AffiliateCommonConstantKt.DISCOVERY_BY_ME;
 import static com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED;
 import static com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED_FIRSTPAGE_LAST_CURSOR;
 import static com.tokopedia.kol.common.util.PostMenuUtilKt.createBottomMenu;
@@ -167,7 +168,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public static final String BROADCAST_FEED = "BROADCAST_FEED";
     public static final String PARAM_BROADCAST_NEW_FEED = "PARAM_BROADCAST_NEW_FEED";
     public static final String PARAM_BROADCAST_NEW_FEED_CLICKED = "PARAM_BROADCAST_NEW_FEED_CLICKED";
-    private static final String DISCOVERY_BY_ME = "by-me";
 
     private RecyclerView recyclerView;
     private SwipeToRefresh swipeToRefresh;
@@ -792,7 +792,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     } else {
                         fabByme.show();
                         fabTextByme.setVisibility(View.VISIBLE);
-                        fabByme.setOnClickListener(v12 -> goToCreateAffiliate(author.getLink())/*onGoToLink(author.getLink())*/);
+                        fabByme.setOnClickListener(v12 -> goToCreateAffiliate(author.getLink()));
                     }
                 }
                 greyBackground.setOnClickListener(v3 -> {
