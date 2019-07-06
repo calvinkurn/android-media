@@ -8,9 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.logisticaddaddress.R
 import kotlinx.android.synthetic.main.chips_item.view.*
-import android.support.v4.content.ContextCompat
-import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
-
 
 /**
  * Created by fwidjaja on 2019-05-29.

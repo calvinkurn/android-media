@@ -10,6 +10,7 @@ import android.support.v4.view.ViewCompat
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
@@ -177,11 +178,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         et_label_address.setText(labelRumah)
         et_receiver_name.setText(userSession.name)
         et_phone.setText(userSession.phoneNumber)
-
-        if (Build.VERSION.SDK_INT >= 19) {
-            val decorView = activity?.window?.decorView
-            decorView?.viewTreeObserver?.addOnGlobalLayoutListener(AddNewAddressUtils.onGlobalLayoutListener(activity, sv_add_edit))
-        }
     }
 
     private fun setViewListener() {
@@ -214,19 +210,47 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                 addTextChangedListener(setWrapperWatcher(et_detail_address_wrapper))
                 setOnClickListener { AddNewAddressAnalytics.eventClickFieldDetailAlamatChangeAddressPositive() }
                 addTextChangedListener(setDetailAlamatWatcher())
+
+                setOnTouchListener { view, event ->
+                    view.parent.requestDisallowInterceptTouchEvent(true)
+                    if ((event.action and MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
+                        view.parent.requestDisallowInterceptTouchEvent(false)
+                    }
+                    return@setOnTouchListener false
+                }
             }
 
             setOnTouchLabelAddress(ANA_POSITIVE)
 
-            et_receiver_name.setOnFocusChangeListener { _, hasFocus ->
-                if (hasFocus) {
-                    AddNewAddressAnalytics.eventClickFieldNamaPenerimaChangeAddressPositive()
+            et_receiver_name.apply {
+                setOnFocusChangeListener { _, hasFocus ->
+                    if (hasFocus) {
+                        AddNewAddressAnalytics.eventClickFieldNamaPenerimaChangeAddressPositive()
+                    }
+                }
+
+                setOnTouchListener { view, event ->
+                    view.parent.requestDisallowInterceptTouchEvent(true)
+                    if ((event.action and MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
+                        view.parent.requestDisallowInterceptTouchEvent(false)
+                    }
+                    return@setOnTouchListener false
                 }
             }
 
-            et_phone.setOnFocusChangeListener { _, hasFocus ->
-                if (hasFocus) {
-                    AddNewAddressAnalytics.eventClickFieldNoPonselChangeAddressPositive()
+            et_phone.apply {
+                setOnTouchListener { view, event ->
+                    view.parent.requestDisallowInterceptTouchEvent(true)
+                    if ((event.action and MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
+                        view.parent.requestDisallowInterceptTouchEvent(false)
+                    }
+                    return@setOnTouchListener false
+                }
+
+                setOnFocusChangeListener { _, hasFocus ->
+                    if (hasFocus) {
+                        AddNewAddressAnalytics.eventClickFieldNoPonselChangeAddressPositive()
+                    }
                 }
             }
 
@@ -249,6 +273,13 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                         AddNewAddressAnalytics.eventClickFieldAlamatChangeAddressNegative()
                     }
                 }
+                setOnTouchListener { view, event ->
+                    view.parent.requestDisallowInterceptTouchEvent(true)
+                    if ((event.action and MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
+                        view.parent.requestDisallowInterceptTouchEvent(false)
+                    }
+                    return@setOnTouchListener false
+                }
             }
 
             et_kode_pos_mismatch.apply {
@@ -270,6 +301,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                     override fun onTextChanged(s: CharSequence, start: Int, before: Int,
                                                count: Int) {
                         if (s.isNotEmpty()) {
+                            setWrapperError(et_kode_pos_mismatch_wrapper, null)
                             val input = "$s"
                             val zipCodesDisplay = mutableListOf<String>()
 
@@ -286,27 +318,64 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                     override fun afterTextChanged(s: Editable) {
                     }
                 })
-                //addTextChangedListener(setWrapperWatcher(et_kode_pos_mismatch_wrapper))
             }
 
             setOnTouchLabelAddress(ANA_NEGATIVE)
 
-            et_receiver_name.setOnFocusChangeListener { _, hasFocus ->
-                if (hasFocus) {
-                    AddNewAddressAnalytics.eventClickFieldNamaPenerimaChangeAddressNegative()
+            et_receiver_name.apply {
+                setOnTouchListener { view, event ->
+                    view.parent.requestDisallowInterceptTouchEvent(true)
+                    if ((event.action and MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
+                        view.parent.requestDisallowInterceptTouchEvent(false)
+                    }
+                    return@setOnTouchListener false
+                }
+
+                setOnFocusChangeListener { _, hasFocus ->
+                    if (hasFocus) {
+                        AddNewAddressAnalytics.eventClickFieldNamaPenerimaChangeAddressNegative()
+                    }
                 }
             }
 
-            et_phone.setOnFocusChangeListener { _, hasFocus ->
-                if (hasFocus) {
-                    AddNewAddressAnalytics.eventClickFieldNoPonselChangeAddressNegative()
+            et_phone.apply {
+                setOnTouchListener { view, event ->
+                    view.parent.requestDisallowInterceptTouchEvent(true)
+                    if ((event.action and MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
+                        view.parent.requestDisallowInterceptTouchEvent(false)
+                    }
+                    return@setOnTouchListener false
+                }
+
+                setOnFocusChangeListener { _, hasFocus ->
+                    if (hasFocus) {
+                        AddNewAddressAnalytics.eventClickFieldNoPonselChangeAddressNegative()
+                    }
                 }
             }
         }
 
-        et_label_address.addTextChangedListener(setWrapperWatcher(et_label_address_wrapper))
-        et_receiver_name.addTextChangedListener(setWrapperWatcher(et_receiver_name_wrapper))
-        et_phone.addTextChangedListener(setWrapperWatcher(et_phone_wrapper))
+        et_receiver_name.apply {
+            setOnTouchListener { view, event ->
+                view.parent.requestDisallowInterceptTouchEvent(true)
+                if ((event.action and MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
+                    view.parent.requestDisallowInterceptTouchEvent(false)
+                }
+                return@setOnTouchListener false
+            }
+            addTextChangedListener(setWrapperWatcher(et_receiver_name_wrapper))
+        }
+
+        et_phone.apply {
+            setOnTouchListener { view, event ->
+                view.parent.requestDisallowInterceptTouchEvent(true)
+                if ((event.action and MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
+                    view.parent.requestDisallowInterceptTouchEvent(false)
+                }
+                return@setOnTouchListener false
+            }
+            addTextChangedListener(setWrapperWatcher(et_phone_wrapper))
+        }
     }
 
     private fun setOnTouchLabelAddress(type: String) {
@@ -345,6 +414,14 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                 override fun afterTextChanged(s: Editable) {
                 }
             })
+            setOnTouchListener { view, event ->
+                view.parent.requestDisallowInterceptTouchEvent(true)
+                if ((event.action and MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
+                    view.parent.requestDisallowInterceptTouchEvent(false)
+                }
+                return@setOnTouchListener false
+            }
+            addTextChangedListener(setWrapperWatcher(et_label_address_wrapper))
         }
     }
 
@@ -510,17 +587,18 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                 if (s.isNotEmpty()) {
                     val countCharLeft: Int
                     var info = ""
+                    val strLength = s.toString().length
                     when {
-                        count < 5 -> {
-                            countCharLeft = 5 - count
+                        strLength < 5 -> {
+                            countCharLeft = 5 - strLength
                             info = "$countCharLeft karakter lagi diperlukan"
                         }
-                        count > 4 -> {
-                            countCharLeft = 175 - count
+                        strLength > 4 -> {
+                            countCharLeft = 175 - strLength
                             info = "$countCharLeft karakter tersisa"
 
                         }
-                        count == 175 -> info = ""
+                        strLength == 175 -> info = ""
                     }
                     tv_alamat_info_mismatch.text = info
                 }
@@ -552,8 +630,8 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                 setMismatchSolvedForm()
             }
             setupRvKodePosChips()
-            setupRvLabelAlamatChips()
         }
+        setupRvLabelAlamatChips()
     }
 
     private fun eventShowZipCodes() {
@@ -671,11 +749,10 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         val res: Resources = resources
         labelAlamatList = res.getStringArray(R.array.labelAlamatList)
 
+        rv_label_alamat_chips.visibility = View.VISIBLE
         ViewCompat.setLayoutDirection(rv_label_alamat_chips, ViewCompat.LAYOUT_DIRECTION_LTR)
         labelAlamatChipsAdapter.labelAlamatList = labelAlamatList.toMutableList()
         labelAlamatChipsAdapter.notifyDataSetChanged()
-
-        rv_label_alamat_chips.visibility = View.VISIBLE
     }
 
     private fun setSaveAddressModel() {
@@ -917,14 +994,20 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                println("## count = $count, s.length = ${s.toString().length}")
                 if (s.isNotEmpty()) {
-                    when (val countCharLeft = 60 - count) {
-                        60 -> {
-                            tv_detail_address_counter.text = "0/60"
-                        } else -> {
-                        tv_detail_address_counter.text = "$countCharLeft/60"
+                    val countCharLeft: Int
+                    var info = ""
+                    val strLength = s.toString().length
+                    when {
+                        strLength > 0 -> {
+                            countCharLeft = 60 - strLength
+                            info = "$countCharLeft/60"
+                        }
+                        strLength == 0 -> info = "60/60"
+                        strLength == 60 -> info = "0/60"
                     }
-                    }
+                    tv_detail_address_counter.text = info
                 } else {
                     tv_detail_address_counter.text = "60/60"
                 }

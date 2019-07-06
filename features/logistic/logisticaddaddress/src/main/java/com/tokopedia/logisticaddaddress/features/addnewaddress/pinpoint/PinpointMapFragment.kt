@@ -164,16 +164,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         isMismatch?.let {
             if (!it) et_detail_address?.setText(saveAddressDataModel?.editDetailAddress)
         }
-
-        if (Build.VERSION.SDK_INT >= 19) {
-            val decorView = activity?.window?.decorView
-            decorView?.viewTreeObserver?.addOnGlobalLayoutListener(onGlobalLayoutListener)
-        }
-
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            activity?.window?.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-                    WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-        }*/
     }
 
     private fun setViewListener() {
@@ -187,9 +177,19 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             currentLat?.let { it1 -> currentLong?.let { it2 -> showAutocompleteGeocodeBottomSheet(it1, it2, "") } }
         }
 
-        et_detail_address?.setOnClickListener {
-            getdistrict_container?.findViewById<ButtonCompat>(R.id.btn_choose_location)?.requestFocusFromTouch()
-            getdistrict_container?.findViewById<EditText>(R.id.et_detail_address)?.requestFocusFromTouch()
+        et_detail_address?.run  {
+            setOnClickListener {
+                getdistrict_container?.findViewById<ButtonCompat>(R.id.btn_choose_location)?.requestFocusFromTouch()
+                getdistrict_container?.findViewById<EditText>(R.id.et_detail_address)?.requestFocusFromTouch()
+            }
+
+            setOnTouchListener { view, event ->
+                view.parent.requestDisallowInterceptTouchEvent(true)
+                if ((event.action and MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
+                    view.parent.requestDisallowInterceptTouchEvent(false)
+                }
+                return@setOnTouchListener false
+            }
         }
 
         ic_current_location.setOnClickListener {
@@ -260,6 +260,10 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
 
             presenter.clearCacheAutofill()
             presenter.autofill("$latTarget,$longTarget")
+        } else {
+            whole_loading_container?.visibility = View.GONE
+            invalid_container?.visibility = View.GONE
+            getdistrict_container?.visibility = View.VISIBLE
         }
         isGetDistrict = false
     }
@@ -268,17 +272,17 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         if (isShowingAutocomplete == true) {
             handler.postDelayed({
                 showAutocompleteGeocodeBottomSheet(lat, long, "")
-            }, 1000)
-        } else {
-            if (lat == 0.0 && long == 0.0) {
-                currentLat = AddressConstants.MONAS_LAT
-                currentLong = AddressConstants.MONAS_LONG
-            } else {
-                currentLat = lat
-                currentLong = long
-            }
-            moveMap(AddNewAddressUtils.generateLatLng(currentLat, currentLong))
+            }, 500)
         }
+
+        if (lat == 0.0 && long == 0.0) {
+            currentLat = AddressConstants.MONAS_LAT
+            currentLong = AddressConstants.MONAS_LONG
+        } else {
+            currentLat = lat
+            currentLong = long
+        }
+        moveMap(AddNewAddressUtils.generateLatLng(currentLat, currentLong))
     }
 
     private fun moveMap(latLng: LatLng) {
@@ -571,34 +575,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         })
     }
 
-    private var onGlobalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener = ViewTreeObserver.OnGlobalLayoutListener {
-        val r = Rect()
-        //r will be populated with the coordinates of your view that area still visible.
-        activity?.window?.decorView?.getWindowVisibleDisplayFrame(r)
-
-        //get screen height and calculate the difference with the useable area from the r
-        val height = activity?.window?.decorView?.context?.resources?.displayMetrics?.heightPixels
-        val diff = height?.minus(r.bottom)
-
-        //if it could be a keyboard add the padding to the view
-        if (diff != 0) {
-            // if the use-able screen height differs from the total screen height we assume that it shows a keyboard now
-            //check if the padding is 0 (if yes set the padding for the keyboard)
-            if (bottomsheet_getdistrict?.paddingBottom !== diff) {
-                //set the padding of the contentView for the keyboard
-                if (diff != null) {
-                    bottomsheet_getdistrict?.setPadding(0, 0, 0, diff)
-                }
-            }
-        } else {
-            //check if the padding is != 0 (if yes reset the padding)
-            if (bottomsheet_getdistrict?.paddingBottom !== 0) {
-                //reset the padding of the contentView
-                bottomsheet_getdistrict?.setPadding(0, 0, 0, 10)
-            }
-        }
-    }
-
     private fun showLocationInfoBottomSheet() {
         val locationInfoBottomSheetFragment = LocationInfoBottomSheetFragment.newInstance()
         locationInfoBottomSheetFragment.show(fragmentManager, "")
@@ -612,12 +588,12 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (s.isNotEmpty()) {
-                    println("## count = $count")
-                    when (val countCharLeft = 60 - count) {
+                    val typed = s.toString().replace(" ", "")
+                    when (val countCharLeft = 60 - typed.length) {
                         60 -> {
                             tv_detail_address_counter.text = "0/60"
                         } else -> {
-                        tv_detail_address_counter.text = "$countCharLeft/60"
+                            tv_detail_address_counter.text = "$countCharLeft/60"
                         }
                     }
                 } else {

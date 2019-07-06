@@ -30,7 +30,10 @@
             android:inputType="text"
             android:textColor="#ae31353b"
             android:imeOptions="actionDone"
-            android:maxLines="1"/>
+            android:maxLines="1"
+            android:overScrollMode="always"
+            android:scrollbarStyle="insideInset"
+            android:scrollbars="vertical"/>
 
     </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
@@ -65,7 +68,10 @@
             android:inputType="text"
             android:textColor="#ae31353b"
             android:imeOptions="actionDone"
-            android:maxLines="1"/>
+            android:maxLines="1"
+            android:overScrollMode="always"
+            android:scrollbarStyle="insideInset"
+            android:scrollbars="vertical"/>
 
     </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
@@ -92,7 +98,10 @@
             android:hint="@string/et_no_ponsel_hint"
             android:textColor="#ae31353b"
             android:imeOptions="actionDone"
-            android:maxLines="1"/>
+            android:maxLines="1"
+            android:overScrollMode="always"
+            android:scrollbarStyle="insideInset"
+            android:scrollbars="vertical"/>
 
     </com.tokopedia.design.text.TkpdHintTextInputLayout>
 

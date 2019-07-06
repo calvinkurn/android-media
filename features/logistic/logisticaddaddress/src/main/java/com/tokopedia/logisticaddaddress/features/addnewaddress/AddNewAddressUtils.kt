@@ -67,35 +67,6 @@ object AddNewAddressUtils {
     }
 
     @JvmStatic
-    fun onGlobalLayoutListener(activity: Activity?, view: View?): ViewTreeObserver.OnGlobalLayoutListener = ViewTreeObserver.OnGlobalLayoutListener {
-        val r = Rect()
-        //r will be populated with the coordinates of your view that area still visible.
-        activity?.window?.decorView?.getWindowVisibleDisplayFrame(r)
-
-        //get screen height and calculate the difference with the useable area from the r
-        val height = activity?.window?.decorView?.context?.resources?.displayMetrics?.heightPixels
-        val diff = height?.minus(r.bottom)
-
-        //if it could be a keyboard add the padding to the view
-        if (diff != 0) {
-            // if the use-able screen height differs from the total screen height we assume that it shows a keyboard now
-            //check if the padding is 0 (if yes set the padding for the keyboard)
-            if (view?.paddingBottom !== diff) {
-                //set the padding of the contentView for the keyboard
-                if (diff != null) {
-                    view?.setPadding(0, 0, 0, diff)
-                }
-            }
-        } else {
-            //check if the padding is != 0 (if yes reset the padding)
-            if (view?.paddingBottom !== 0) {
-                //reset the padding of the contentView
-                view?.setPadding(0, 0, 0, 0)
-            }
-        }
-    }
-
-    @JvmStatic
     fun isGpsEnabled(context: Context?): Boolean {
         var isGpsOn = false
         context?.let {
