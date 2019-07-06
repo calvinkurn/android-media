@@ -43,6 +43,7 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
     private String searchText;
     private Utils utils;
     private SpannableString hintAttachmentString;
+    private ViewRplyButtonListener viewRplyButtonListener;
     
     private static final String KEY_LIKED = "101";
     private static final String KEY_DIS_LIKED = "102";
@@ -58,6 +59,7 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
         String src = mContext.getString(R.string.hint_attachment);
         hintAttachmentString = new SpannableString(src);
         hintAttachmentString.setSpan(new StyleSpan(Typeface.BOLD), 0, 8, SpannableString.SPAN_INCLUSIVE_EXCLUSIVE);
+        viewRplyButtonListener = (ViewRplyButtonListener) context;
     }
 
     @NonNull
@@ -188,6 +190,7 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
                       ratingThumbsDown.setVisibility(View.VISIBLE);
                       ratingThumbsUp.clearColorFilter();
                       ratingThumbsDown.clearColorFilter();
+                      viewRplyButtonListener.viewRplyButtonVisibility();
                 }
 
                 if((mPresenter.getTicketStatus().equalsIgnoreCase(utils.CLOSED) && item.getRating()!=null && !item.getRating().equals(KEY_LIKED) && !item.getRating().equals(KEY_DIS_LIKED))|| !item.getCreatedBy().getRole().equals("agent")|| item.getId()==null){
@@ -265,5 +268,9 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
             notifyItemChanged(tapIndex);
             ((InboxDetailActivity) mContext).scrollTo(indexExpanded);
         }
+    }
+
+   public interface ViewRplyButtonListener{
+        void viewRplyButtonVisibility();
     }
 }
