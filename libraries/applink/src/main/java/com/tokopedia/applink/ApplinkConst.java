@@ -45,6 +45,7 @@ public interface ApplinkConst {
     String REPUTATION = "tokopedia://review";
     String PRODUCT_REPUTATION = "tokopedia://product/{product_id}/review";
     String WEBVIEW = "tokopedia://webview";
+    String WEBVIEW_DOWNLOAD = "tokopedia://webviewdownload";
     String WEBVIEW_PARENT_HOME = "tokopedia://webviewbackhome";
     String PRODUCT_TALK = "tokopedia://product/{product_id}/talk";
     String DIGITAL = "tokopedia://digital";
@@ -63,6 +64,7 @@ public interface ApplinkConst {
     String DISCOVERY_SEARCH = "tokopedia://search";
     String DISCOVERY_SEARCH_AUTOCOMPLETE = "tokopedia://search-autocomplete";
     String DISCOVERY_SEARCH_AUTOCOMPLETE_WITH_NAVSOURCE = "tokopedia://search-autocomplete?navsource={source}";
+    String DISCOVERY_SEARCH_AUTOCOMPLETE_WITH_SHOPPING_NAV_SOURCE = "tokopedia://search-autocomplete?navsource=shoppingnav";
     String DISCOVERY_SEARCH_AUTOCOMPLETE_WITH_NAVSOURCE_AND_HINT = "tokopedia://search-autocomplete?navsource={source}&hint={hint}";
     String DISCOVERY_HOTLIST_DETAIL = "tokopedia://hot/{alias}";
     String DISCOVERY_CATALOG = "tokopedia://catalog/{EXTRA_CATALOG_ID}";
@@ -161,6 +163,7 @@ public interface ApplinkConst {
     String CONTACT_US_NATIVE = "tokopedia://contactus";
 
     String ORDER_LIST = "tokopedia://order";
+    String ORDER_LIST_WEBVIEW = "tokopedia://order_list";
     String TOKOPOINTS = "tokopedia://tokopoints";
     String COUPON_LISTING = "tokopedia://tokopoints/kupon-saya";
 
@@ -231,6 +234,10 @@ public interface ApplinkConst {
     String PLAY_WEBVIEW = "tokopedia://play/webview?url={url}&titlebar={has_titlebar}";
     String SMC_REFERRAL = "tokopedia://smc-referral";
 
+    String CATEGORY_BELANJA = "tokopedia://category_belanja/{category_name}";
+    String CATEGORY_BELANJA_DEFAULT = "tokopedia://category_belanja/";
+
+    String CATEGORY = "tokopedia://category";
     String QRSCAN = "tokopedia://scanqr";
 
     interface WebViewUrl {

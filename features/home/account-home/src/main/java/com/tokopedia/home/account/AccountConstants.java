@@ -99,11 +99,6 @@ public class AccountConstants {
         public static final String CLICK_FINTECH_MICROSITE = "clickFintechMicrosite";
     }
 
-    public class ImageUrl {
-        public static final String OVO_IMG = "https://ecs7.tokopedia.net/img/wallet/ic_ovo_circle.png";
-        public static final String TOKOCASH_IMG = "https://ecs7.tokopedia.net/img/wallet/ic_tokocash_circle.png";
-    }
-
     public interface VccStatus {
         String ELIGIBLE = "eligible";
         String NOT_ELIGIBLE = "not_eligible";

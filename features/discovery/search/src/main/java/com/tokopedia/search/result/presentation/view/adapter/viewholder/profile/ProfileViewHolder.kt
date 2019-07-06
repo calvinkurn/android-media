@@ -6,6 +6,7 @@ import android.text.TextUtils
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.ProfileViewModel
@@ -25,7 +26,7 @@ class ProfileViewHolder(itemView: View, val profileListListener: ProfileListener
 
         when(profileData.isKol) {
             true -> {
-                val kolDrawable : Drawable = itemView.context.resources.getDrawable(R.drawable.search_search_kol_badge)
+                val kolDrawable : Drawable = MethodChecker.getDrawable(itemView.context,R.drawable.search_search_kol_badge)
                 itemView.tv_name.setCompoundDrawablesWithIntrinsicBounds(
                     kolDrawable,
                     null,

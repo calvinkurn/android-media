@@ -11,6 +11,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
 import android.graphics.Color
+import android.graphics.Rect
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Build
@@ -24,6 +25,7 @@ import android.support.v4.util.ArrayMap
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.*
+import android.support.v7.widget.Toolbar
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -40,16 +42,13 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
-import com.tokopedia.design.widget.ObservableNestedScrollView
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListenerWithRetry
 import com.tokopedia.gallery.ImageReviewGalleryActivity
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.imagepreview.ImagePreviewActivity
-import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
@@ -71,7 +70,6 @@ import com.tokopedia.product.detail.common.data.model.product.Wholesale
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.product.detail.data.model.*
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.data.util.numberFormatted
@@ -90,6 +88,7 @@ import com.tokopedia.product.detail.view.viewmodel.Loaded
 import com.tokopedia.product.detail.view.viewmodel.Loading
 import com.tokopedia.product.detail.view.viewmodel.ProductInfoViewModel
 import com.tokopedia.product.detail.view.widget.CountDrawable
+import com.tokopedia.product.detail.view.widget.PictureScrollingView
 import com.tokopedia.product.report.view.dialog.ReportDialogFragment
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
@@ -99,6 +98,7 @@ import com.tokopedia.referral.ReferralAction
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shopetalasepicker.constant.ShopParamConstant
 import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
@@ -166,6 +166,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private var isAppBarCollapsed = false
     private var menu: Menu? = null
     private var useVariant = true
+    private lateinit var varToolbar: Toolbar
+    private lateinit var varPictureImage: PictureScrollingView
 
     private var userCod: Boolean = false
     private var shopCod: Boolean = false
@@ -182,6 +184,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private var userInputQuantity = 0
     private var userInputVariant: String? = null
 
+    private lateinit var initToolBarMethod:()-> Unit
     private val productDetailTracking: ProductDetailTracking by lazy {
         ProductDetailTracking()
     }
@@ -372,7 +375,11 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
         initializePartialView(view)
         initView()
+        tv_trade_in_promo.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(activity, R.drawable.tradein_white), null, null, null)
         refreshLayout = view.findViewById(R.id.swipeRefresh)
+         et_search.setOnClickListener { v ->
+            RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
+        }
 
         tradeInBroadcastReceiver = TradeInBroadcastReceiver()
         tradeInBroadcastReceiver.setBroadcastListener {
@@ -407,13 +414,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             actionButtonView.gone()
             base_btn_affiliate.visible()
             loadingAffiliate.visible()
-        }
-
-        nested_scroll.listener = object : ObservableNestedScrollView.ScrollViewListener {
-            override fun onScrollEnded(scrollView: ObservableNestedScrollView, x: Int, y: Int, oldX: Int, oldY: Int) {
-                scrollView.startLoad()
-                productInfoViewModel.loadMore()
-            }
         }
 
         merchantVoucherListWidget.setOnMerchantVoucherListWidgetListener(object : MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener {
@@ -610,6 +610,15 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
     }
 
+    private fun addLoadMoreImpression(view:View){
+        val impressionHolder = ImpressHolder()
+        view.addOnImpressionListener(impressionHolder, object : ViewHintListener {
+            override fun onViewHint() {
+                productInfoViewModel.loadMore()
+            }
+        })
+    }
+
     private fun showSnackbarClose(string: String) {
         Snackbar.make(coordinator, string, Snackbar.LENGTH_LONG).apply {
             setAction(getString(R.string.close)) { dismiss() }
@@ -632,6 +641,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
         if (!::productDescrView.isInitialized) {
             productDescrView = PartialProductDescrFullView.build(base_info_and_description, activity)
+            addLoadMoreImpression(title_product_desc_label)
         }
 
         if (!::actionButtonView.isInitialized) {
@@ -716,23 +726,38 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             }
         }
     }
-
+    private fun isViewVisible(view: View): Boolean {
+        val scrollBounds = Rect()
+        nested_scroll.getDrawingRect(scrollBounds)
+        val top = view.y
+        val bottom = top + view.height - 100;
+        return !(scrollBounds.top > bottom)
+    }
     private fun initView() {
+        val appShowSearchPDP = remoteConfig.getBoolean(RemoteConfigKey.REMOTE_CONFIG_APP_SHOW_SEARCH_BAR_PDP, true)
+        if(appShowSearchPDP) {
+            initShowSearchPDP()
+        }else {
+            initCollapsingToolBar()
+        }
+        varToolbar.show()
+        varPictureImage.show()
         collapsing_toolbar.title = ""
-        toolbar.title = ""
+        varToolbar.title = ""
         activity?.let {
-            toolbar.setBackgroundColor(ContextCompat.getColor(it, R.color.white))
-            (it as AppCompatActivity).setSupportActionBar(toolbar)
+            varToolbar.setBackgroundColor(ContextCompat.getColor(it, R.color.white))
+            (it as AppCompatActivity).setSupportActionBar(varToolbar)
             it.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         }
         setupByConfiguration(resources.configuration)
+
+
         appbar.addOnOffsetChangedListener(object : AppBarStateChangeListener() {
             override fun onStateChanged(appBarLayout: AppBarLayout?, state: Int) {
                 when (state) {
                     AppBarState.EXPANDED -> {
                         isAppBarCollapsed = false
                         expandedAppBar()
-                        nested_scroll.completeLoad()
                     }
                     AppBarState.COLLAPSED -> {
                         isAppBarCollapsed = true
@@ -745,6 +770,35 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         })
     }
 
+    private fun initShowSearchPDP() {
+        search_pdp_toolbar.show()
+        varToolbar = search_pdp_toolbar
+        varPictureImage = view_picture_search_bar
+        initToolBarMethod  =  ::initToolbarLight
+        fab_detail.setAnchor(R.id.view_picture_search_bar)
+        nested_scroll.viewTreeObserver.addOnScrollChangedListener(ViewTreeObserver.OnScrollChangedListener {
+            activity?.run {
+                if(isAdded) {
+                    if (isViewVisible(varPictureImage)) {
+                        fab_detail.show()
+                    } else {
+                        fab_detail.hide()
+                    }
+                }
+            }
+        })
+
+    }
+
+    private fun initCollapsingToolBar() {
+        collapsing_toolbar.show()
+        varToolbar = toolbar
+        varPictureImage = view_picture
+        initToolBarMethod  =  ::initToolbarTransparent
+        fab_detail.setAnchor(R.id.view_picture)
+
+    }
+
     private fun collapsedAppBar() {
         initStatusBarLight()
         initToolbarLight()
@@ -754,7 +808,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun expandedAppBar() {
         initStatusBarDark()
-        initToolbarTransparent()
+        initToolBarMethod()
         showFabDetailAfterLoadData()
         label_cod?.visibility = if (shouldShowCod && userCod && shopCod) View.INVISIBLE else View.GONE
     }
@@ -764,8 +818,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             if (isAdded) {
                 collapsing_toolbar.setCollapsedTitleTextColor(ContextCompat.getColor(this, R.color.grey_icon_light_toolbar))
                 collapsing_toolbar.setExpandedTitleColor(Color.TRANSPARENT)
-                toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.grey_icon_light_toolbar))
-                toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.white))
+                varToolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.grey_icon_light_toolbar))
+                varToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.white))
                 (this as AppCompatActivity).supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back_dark)
                 menu?.let {
                     if (it.size() > 2) {
@@ -776,7 +830,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     }
                 }
 
-                toolbar.overflowIcon = ContextCompat.getDrawable(activity!!, R.drawable.ic_product_more_dark)
+                varToolbar.overflowIcon = ContextCompat.getDrawable(activity!!, R.drawable.ic_product_more_dark)
             }
         }
     }
@@ -796,7 +850,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             if (isAdded) {
                 collapsing_toolbar.setCollapsedTitleTextColor(ContextCompat.getColor(this, R.color.white))
                 collapsing_toolbar.setExpandedTitleColor(Color.TRANSPARENT)
-                toolbar.background = ContextCompat.getDrawable(this, R.drawable.gradient_shadow_black_vertical)
+                varToolbar.background = ContextCompat.getDrawable(this, R.drawable.gradient_shadow_black_vertical)
                 (this as AppCompatActivity).supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back_light)
                 menu?.let {
                     if (it.size() > 2) {
@@ -806,7 +860,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         setBadgeMenuCart(menuCart)
                     }
                 }
-                toolbar.overflowIcon = ContextCompat.getDrawable(this, R.drawable.ic_product_more_light)
+                varToolbar.overflowIcon = ContextCompat.getDrawable(this, R.drawable.ic_product_more_light)
             }
         }
     }
@@ -831,15 +885,11 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         configuration?.let {
             val screenWidth = resources.displayMetrics.widthPixels
             if (it.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                val layoutParams = appbar.layoutParams as CoordinatorLayout.LayoutParams
                 val height = screenWidth / 3
-                layoutParams.height = height
-                view_picture.layoutParams.height = height
+                varPictureImage.layoutParams.height = height
                 appbar.visibility = View.VISIBLE
             } else if (it.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                val layoutParams = appbar.layoutParams as CoordinatorLayout.LayoutParams
-                layoutParams.height = screenWidth
-                view_picture.layoutParams.height = screenWidth
+                varPictureImage.layoutParams.height = screenWidth
                 appbar.visibility = View.VISIBLE
             }
         }
@@ -974,7 +1024,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     if (isAppBarCollapsed) {
                         initToolbarLight()
                     } else {
-                        initToolbarTransparent()
+                        initToolBarMethod()
                     }
                 }
             })
@@ -1076,7 +1126,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     data.preorder)
             actionButtonView.visibility = !isAffiliate && shopInfo.statusInfo.shopStatus == 1
             headerView.showOfficialStore(shopInfo.goldOS)
-            view_picture.renderShopStatus(shopInfo, productInfo?.basic?.status
+            varPictureImage.renderShopStatus(shopInfo, productInfo?.basic?.status
                     ?: ProductStatusTypeDef.ACTIVE)
             activity?.let {
                 val userSession = UserSession(it)
@@ -1216,9 +1266,10 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         val data = productInfoP1.productInfo
         productId = data.basic.id.toString()
         productInfo = data
+        et_search.hint = String.format(getString(R.string.pdp_search_hint),productInfo?.category?.name)
         shouldShowCod = data.shouldShowCod
         headerView.renderData(data)
-        view_picture.renderData(data.pictures, this::onPictureProductClicked)
+        varPictureImage.renderData(data.pictures, this::onPictureProductClicked)
         productStatsView.renderData(data, this::onReviewClicked, this::onDiscussionClicked)
         productDescrView.renderData(data)
         attributeInfoView.renderData(data)
@@ -1325,6 +1376,10 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         if (data == null || !data.hasChildren) {
             partialVariantAndRateEstView.renderData(null, "", this::onVariantClicked)
             return
+        }
+        // defaulting selecting variant
+        if (userInputVariant == productId && data.defaultChild > 0) {
+            userInputVariant = data.defaultChild.toString()
         }
         val selectedVariantListString = data.getOptionListString(userInputVariant)?.joinToString(separator = ", ")
                 ?: ""
@@ -1561,6 +1616,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             R.menu.menu_product_detail_light, menu)
         super.onCreateOptionsMenu(menu, inflater)
         this.menu = menu
+        initToolBarMethod()
+
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?) {

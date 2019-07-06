@@ -13,7 +13,7 @@ import java.util.List;
 public interface ShippingDurationAdapterListener {
 
     void onShippingDurationChoosen(List<ShippingCourierViewModel> shippingCourierViewModelList,
-                                   int cartPosition, ServiceData serviceData, boolean hasCourierPromo);
+                                   int cartPosition, ServiceData serviceData);
 
     boolean isToogleYearEndPromotionOn();
 
