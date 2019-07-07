@@ -13,6 +13,7 @@ import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.view.adapter.DigitalTelcoProductTabAdapter
 import com.tokopedia.topupbills.telco.view.model.DigitalProductSubMenu
 import com.tokopedia.topupbills.telco.view.model.DigitalTabTelcoItem
+import com.tokopedia.topupbills.telco.view.model.DigitalTelcoExtraParam
 import com.tokopedia.topupbills.telco.view.widget.DigitalSubMenuWidget
 import kotlinx.android.synthetic.main.fragment_digital_telco.*
 
@@ -42,10 +43,23 @@ class DigitalTelcoFragment : BaseDaggerFragment() {
 
     fun renderSubMenu() {
         val listMenuTab = mutableListOf<DigitalTabTelcoItem>()
-        listMenuTab.add(DigitalTabTelcoItem(DigitalTelcoPrepaidFragment.newInstance(), ""))
-        listMenuTab.add(DigitalTabTelcoItem(DigitalTelcoPostpaidFragment.newInstance(), ""))
-        val pagerAdapter = DigitalTelcoProductTabAdapter(listMenuTab, childFragmentManager)
-        menu_view_pager.adapter = pagerAdapter
+        arguments?.run {
+            val digitalTelcoExtraParam = this.getParcelable(EXTRA_PARAM_TELCO) as DigitalTelcoExtraParam
+            var prepaidExtraParam = DigitalTelcoExtraParam()
+            var postpaidExtraParam = DigitalTelcoExtraParam()
+            if (Integer.parseInt(digitalTelcoExtraParam.menuId) == TelcoComponentType.TELCO_PREPAID) {
+                prepaidExtraParam = digitalTelcoExtraParam
+            } else {
+                postpaidExtraParam = digitalTelcoExtraParam
+            }
+            listMenuTab.add(DigitalTabTelcoItem(DigitalTelcoPrepaidFragment.newInstance(
+                    prepaidExtraParam), ""))
+            listMenuTab.add(DigitalTabTelcoItem(DigitalTelcoPostpaidFragment.newInstance(
+                    postpaidExtraParam), ""))
+            val pagerAdapter = DigitalTelcoProductTabAdapter(listMenuTab, childFragmentManager)
+            menu_view_pager.adapter = pagerAdapter
+        }
+
 
         val list = mutableListOf<DigitalProductSubMenu>()
         list.add(DigitalProductSubMenu(TelcoComponentType.TELCO_PREPAID, TelcoComponentName.TELCO_PREPAID))
@@ -83,8 +97,13 @@ class DigitalTelcoFragment : BaseDaggerFragment() {
 
     companion object {
 
-        fun newInstance(): Fragment {
+        const val EXTRA_PARAM_TELCO = "extra_param_telco"
+
+        fun newInstance(digitalTelcoExtraParam: DigitalTelcoExtraParam): Fragment {
             val fragment = DigitalTelcoFragment()
+            val bundle = Bundle()
+            bundle.putParcelable(EXTRA_PARAM_TELCO, digitalTelcoExtraParam)
+            fragment.arguments = bundle
             return fragment
         }
     }

@@ -7,6 +7,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topupbills.telco.data.TelcoCatalogMenuDetailData
 import com.tokopedia.topupbills.telco.data.TelcoRechargeFavNumberData
+import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -19,12 +20,15 @@ class TelcoCatalogMenuDetailViewModel @Inject constructor(private val graphqlRep
                                                           val dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 
-    fun getCatalogMenuDetail(rawQuery: String, mapParam: Map<String, kotlin.Any>,
-                             onLoading: (Boolean) -> Unit,
-                             onSuccess: (TelcoCatalogMenuDetailData) -> Unit,
-                             onError: (Throwable) -> Unit) {
+    fun getCatalogMenuDetailPrepaid(rawQuery: String,
+                                    onLoading: (Boolean) -> Unit,
+                                    onSuccess: (TelcoCatalogMenuDetailData) -> Unit,
+                                    onError: (Throwable) -> Unit) {
         onLoading(true)
         launchCatchError(block = {
+            var mapParam = HashMap<String, kotlin.Any>()
+            mapParam.put(KEY_MENU_ID, TelcoComponentType.TELCO_PREPAID)
+
             val data = withContext(Dispatchers.Default) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TelcoCatalogMenuDetailData::class.java, mapParam)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
@@ -38,10 +42,35 @@ class TelcoCatalogMenuDetailViewModel @Inject constructor(private val graphqlRep
         }
     }
 
-    fun getFavNumbers(rawQuery: String, mapParam: Map<String, kotlin.Any>,
-                      onSuccess: (TelcoRechargeFavNumberData) -> Unit,
-                      onError: (Throwable) -> Unit) {
+    fun getCatalogMenuDetailPostpaid(rawQuery: String,
+                                     onLoading: (Boolean) -> Unit,
+                                     onSuccess: (TelcoCatalogMenuDetailData) -> Unit,
+                                     onError: (Throwable) -> Unit) {
+        onLoading(true)
         launchCatchError(block = {
+            var mapParam = HashMap<String, kotlin.Any>()
+            mapParam.put(KEY_MENU_ID, TelcoComponentType.TELCO_POSTPAID)
+
+            val data = withContext(Dispatchers.Default) {
+                val graphqlRequest = GraphqlRequest(rawQuery, TelcoCatalogMenuDetailData::class.java, mapParam)
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
+            }.getSuccessData<TelcoCatalogMenuDetailData>()
+
+            onLoading(false)
+            onSuccess(data)
+        }) {
+            onLoading(false)
+            onError(it)
+        }
+    }
+
+    fun getFavNumbersPostpaid(rawQuery: String,
+                              onSuccess: (TelcoRechargeFavNumberData) -> Unit,
+                              onError: (Throwable) -> Unit) {
+        launchCatchError(block = {
+            var mapParam = HashMap<String, kotlin.Any>()
+            mapParam.put(KEY_CATEGORY_ID, TelcoComponentType.FAV_NUMBER_POSTPAID)
+
             val data = withContext(Dispatchers.Default) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TelcoRechargeFavNumberData::class.java, mapParam)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
@@ -51,6 +80,29 @@ class TelcoCatalogMenuDetailViewModel @Inject constructor(private val graphqlRep
         }) {
             onError(it)
         }
+    }
+
+    fun getFavNumbersPrepaid(rawQuery: String,
+                             onSuccess: (TelcoRechargeFavNumberData) -> Unit,
+                             onError: (Throwable) -> Unit) {
+        launchCatchError(block = {
+            var mapParam = HashMap<String, Any>()
+            mapParam.put(KEY_CATEGORY_ID, TelcoComponentType.FAV_NUMBER_PREPAID)
+
+            val data = withContext(Dispatchers.Default) {
+                val graphqlRequest = GraphqlRequest(rawQuery, TelcoRechargeFavNumberData::class.java, mapParam)
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
+            }.getSuccessData<TelcoRechargeFavNumberData>()
+
+            onSuccess(data)
+        }) {
+            onError(it)
+        }
+    }
+
+    companion object {
+        const val KEY_MENU_ID = "menuID"
+        const val KEY_CATEGORY_ID = "categoryID"
     }
 
 }

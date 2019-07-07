@@ -22,7 +22,7 @@ class DigitalTelcoProductViewModel @Inject constructor(private val graphqlReposi
     : BaseViewModel(dispatcher) {
 
     // cache in 10 minutes
-    fun getProductCollections(rawQuery: String, mapParam: Map<String, kotlin.Any>, productType: Int,
+    fun getProductCollections(rawQuery: String, mapParam: Map<String, Any>, productType: Int,
                               onLoading: (Boolean) -> Unit,
                               onSuccess: (TelcoProductComponentData) -> Unit,
                               onError: (Throwable) -> Unit) {
