@@ -156,10 +156,11 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     fun getDataFromBundle() {
         arguments?.run {
-            telcoClientNumberWidget.setInputNumber(this.getString(TelcoProductActivity.PARAM_CLIENT_NUMBER))
-            selectedProductId = this.getString(TelcoProductActivity.PARAM_PRODUCT_ID)
-            if (this.getString(TelcoProductActivity.PARAM_CATEGORY_ID).isNotEmpty()) {
-                selectedCategoryId = Integer.valueOf(this.getString(TelcoProductActivity.PARAM_CATEGORY_ID))
+            val digitalTelcoExtraParam = this.getParcelable(EXTRA_PARAM) as DigitalTelcoExtraParam
+            telcoClientNumberWidget.setInputNumber(digitalTelcoExtraParam.clientNumber)
+            selectedProductId = digitalTelcoExtraParam.productId
+            if (digitalTelcoExtraParam.categoryId.isNotEmpty()) {
+                selectedCategoryId = Integer.valueOf(digitalTelcoExtraParam.categoryId)
             }
         }
     }

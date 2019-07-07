@@ -108,7 +108,8 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     fun getDataFromBundle() {
         arguments?.run {
-            postpaidClientNumberWidget.setInputNumber(this.getString(TelcoProductActivity.PARAM_CLIENT_NUMBER))
+            val digitalTelcoExtraParam = this.getParcelable(EXTRA_PARAM) as DigitalTelcoExtraParam
+            postpaidClientNumberWidget.setInputNumber(digitalTelcoExtraParam.clientNumber)
         }
     }
 
