@@ -5,14 +5,11 @@ import android.graphics.Rect
 import android.support.v7.widget.RecyclerView
 import android.util.TypedValue
 import android.view.View
-import com.tokopedia.topupbills.telco.view.widget.DigitalTelcoProductWidget
-import javax.annotation.Resource
-import kotlin.math.roundToInt
 
 /**
  * Created by nabillasabbaha on 09/05/19.
  */
-class DigitalProductGridDecorator(val space: Int, val resources: Resources): RecyclerView.ItemDecoration() {
+class DigitalProductGridDecorator(val space: Int, val resources: Resources) : RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(outRect: Rect?, view: View?, parent: RecyclerView?, state: RecyclerView.State?) {
         outRect?.run {
@@ -24,8 +21,12 @@ class DigitalProductGridDecorator(val space: Int, val resources: Resources): Rec
                         resources.displayMetrics
                 ).toInt()
                 if (childPosition == 0 || childPosition == 1) top = offset // Top row cells, add top offset
-                if (childPosition % 2 == 0) right = offset // Even index cell, add right offset
+                if (childPosition % 2 == 0) {
+                    right = offset  // Even index cell, add right offset
+                    left = offset
+                }
                 bottom = offset
+                right = offset
             }
         }
 

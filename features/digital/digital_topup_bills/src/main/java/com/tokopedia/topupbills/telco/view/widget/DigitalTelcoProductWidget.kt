@@ -13,6 +13,7 @@ import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.data.TelcoProductDataCollection
 import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
 import com.tokopedia.topupbills.telco.view.adapter.DigitalProductAdapter
+import com.tokopedia.topupbills.telco.view.adapter.DigitalProductGridDecorator
 
 /**
  * Created by nabillasabbaha on 11/04/19.
