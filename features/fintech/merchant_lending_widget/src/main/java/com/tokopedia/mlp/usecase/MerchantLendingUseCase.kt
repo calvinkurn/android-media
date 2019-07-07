@@ -1,7 +1,7 @@
 package com.tokopedia.mlp.usecase
 
 import android.content.Context
-import com.example.merchant_lending_widget.R
+import com.tokopedia.mlp.R
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase

@@ -10,7 +10,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.merchant_lending_widget.R
+import com.tokopedia.mlp.R
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.mlp.adapter.MLPWidgetAdapter
 import com.tokopedia.mlp.contractModel.*

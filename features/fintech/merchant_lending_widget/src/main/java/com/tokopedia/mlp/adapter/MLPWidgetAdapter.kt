@@ -8,7 +8,6 @@ import android.view.*
 import android.webkit.URLUtil
 import android.widget.LinearLayout
 import android.widget.PopupWindow
-import com.example.merchant_lending_widget.R
 import com.tokopedia.abstraction.common.utils.HexValidator
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
@@ -16,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.mlp.R
 import com.tokopedia.mlp.callback.MLPWidgetAdapterCallBack
 import com.tokopedia.mlp.contractModel.*
 import com.tokopedia.mlp.fragment.MerchantLendingFragment
@@ -347,12 +347,4 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
         }
     }
 }
-
-
-
-
-
-
-
-
 
