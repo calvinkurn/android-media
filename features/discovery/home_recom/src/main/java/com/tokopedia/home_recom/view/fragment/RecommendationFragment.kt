@@ -272,11 +272,11 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
             LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
                     productDataToLinkerDataMapper(productDetailData), object : ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult) {
-                    openIntentShare(productDetailData.name, context.getString(R.string.home_recommendation), linkerShareData.url)
+                    openIntentShare(productDetailData.name, context.getString(R.string.recom_home_recommendation), linkerShareData.url)
                 }
 
                 override fun onError(linkerError: LinkerError) {
-                    openIntentShare(productDetailData.name, context.getString(R.string.home_recommendation), "https://tokopedia.com/rekomendasi/${productDetailData.id}")
+                    openIntentShare(productDetailData.name, context.getString(R.string.recom_home_recommendation), "https://tokopedia.com/rekomendasi/${productDetailData.id}")
                 }
             }))
         }

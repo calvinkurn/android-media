@@ -1,5 +1,7 @@
 package com.tokopedia.home_recom.testViewModel
 
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
 import android.content.Context
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
@@ -9,6 +11,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import org.mockito.Mock
+import org.mockito.Mockito
 
 /**
  * Created by Lukas on 2019-07-04
@@ -23,10 +26,9 @@ class FakeRecommendationPageViewModel(
 ){
     val errorMessage = "error"
 
-    @Mock
-    lateinit var mockRecommendationWidget: RecommendationWidget
-    @Mock
-    lateinit var mockProductInfoDataModel: ProductInfoDataModel
+    private val mockRecommendationWidget: RecommendationWidget = Mockito.mock(RecommendationWidget::class.java)
+
+    private val mockProductInfoDataModel: ProductInfoDataModel = Mockito.mock(ProductInfoDataModel::class.java)
 
     private var shouldReturnError = false
 
@@ -44,6 +46,7 @@ class FakeRecommendationPageViewModel(
 
     override fun getRecommendationList(productIds: ArrayList<String>, onErrorGetRecommendation: ((errorMessage: String?) -> Unit)?) {
         if(shouldReturnError){
+            recommendationListModel.value = null
             onErrorGetRecommendation?.invoke(errorMessage)
         }else {
             recommendationListModel.value = listOf(mockRecommendationWidget)

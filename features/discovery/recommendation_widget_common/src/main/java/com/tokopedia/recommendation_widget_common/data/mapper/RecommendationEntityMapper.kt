@@ -96,8 +96,9 @@ class RecommendationEntityMapper : Func1<List<RecomendationEntity.RecomendationD
                     -1,
                     1,
                     title,
-                    pageName
-
+                    pageName,
+                    data.shop?.location ?: "",
+                    data.badges?.map { it.imageUrl ?: "" } ?: emptyList()
             )
 
         }

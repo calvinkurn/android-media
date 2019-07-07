@@ -23,7 +23,7 @@ import rx.Observable
  * Credit errysuprayogi
  */
 
-class GetRecommendationUseCase @Inject
+open class GetRecommendationUseCase @Inject
 constructor(
             private val recomRawString: String,
             private val graphqlUseCase: GraphqlUseCase,

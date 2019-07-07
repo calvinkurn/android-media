@@ -30,8 +30,8 @@ open class RecommendationPageViewModel @Inject constructor(private val graphqlRe
                                                       private val getRecommendationUseCase: GetRecommendationUseCase,
                                                       @Named("Main")
                                   val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
-    val recommendationListModel = MutableLiveData<List<RecommendationWidget>>()
-    val productInfoDataModel = MutableLiveData<ProductInfoDataModel>()
+    open val recommendationListModel = MutableLiveData<List<RecommendationWidget>>()
+    open val productInfoDataModel = MutableLiveData<ProductInfoDataModel>()
 
     val xSource = "recom_landing_page"
     val pageName = "recom_1,recom_2,recom_3"
