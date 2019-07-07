@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.text.TextUtils
 import android.widget.Toast
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.view.fragment.DigitalTelcoFragment
@@ -21,7 +22,9 @@ class TelcoProductActivity : BaseTelcoActivity() {
         super.onCreate(savedInstanceState)
 
         val bundle = intent.extras
-        Toast.makeText(this, bundle.getString("menu_id"), Toast.LENGTH_SHORT).show()
+        if (!TextUtils.isEmpty(bundle.getString("menu_id"))) {
+            Toast.makeText(this, bundle.getString("menu_id"), Toast.LENGTH_SHORT).show()
+        }
         updateTitle(getString(R.string.digital_title_telco_page))
     }
 
