@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.item_checkout_variant_option.view.*
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class OptionVariantViewHolder(view: View?, val listener: VariantChangeListener) :
+class OptionVariantViewHolder(view: View, val listener: VariantChangeListener) :
         RecyclerView.ViewHolder(view) {
 
     companion object {

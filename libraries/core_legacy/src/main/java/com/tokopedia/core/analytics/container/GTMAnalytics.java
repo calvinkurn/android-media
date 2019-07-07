@@ -2,7 +2,6 @@ package com.tokopedia.core.analytics.container;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.support.annotation.Nullable;
@@ -35,11 +34,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import rx.Observable;
+import rx.Subscriber;
+import rx.schedulers.Schedulers;
+
 import static com.tokopedia.core.analytics.TrackingUtils.getAfUniqueId;
 
 public class GTMAnalytics extends ContextAnalytics {
     private static final String TAG = GTMAnalytics.class.getSimpleName();
-    private static final long EXPIRE_CONTAINER_TIME_DEFAULT = 7200000;
+    private static final long EXPIRE_CONTAINER_TIME_DEFAULT = TimeUnit.MINUTES.toMillis(150); // 150 minutes (2.5 hours)
 
     private static final String KEY_EVENT = "event";
     private static final String KEY_CATEGORY = "eventCategory";
@@ -132,12 +135,17 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     public void pushEvent(String eventName, Map<String, Object> values) {
-        Log.i("GAv4", "UA-9801603-15: Send Event");
-
-        log(getContext(), eventName, values);
-
-        getTagManager().getDataLayer().pushEvent(eventName, values);
-        pushIris(eventName, values);
+        Observable.just(values)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .map(uid -> {
+                    Log.i("GAv4", "UA-9801603-15: Send Event");
+                    log(getContext(), eventName, values);
+                    getTagManager().getDataLayer().pushEvent(eventName, values);
+                    pushIris(eventName, values);
+                    return true;
+                })
+                .subscribe(getDefaultSubscriber());
     }
 
     @Override
@@ -297,17 +305,30 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     private void pushGeneral(Map<String, Object> values) {
-        Log.i("GAv4", "UA-9801603-15: Send General");
-
-        log(getContext(), null, values);
-        TagManager.getInstance(getContext()).getDataLayer().push(values);
-        pushIris("", values);
+        Observable.just(values)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .map(map -> {
+                    Log.i("GAv4", "UA-9801603-15: Send General");
+                    log(getContext(), null, values);
+                    TagManager.getInstance(getContext()).getDataLayer().push(values);
+                    pushIris("", values);
+                    return true;
+                })
+                .subscribe(getDefaultSubscriber());
     }
 
     public void pushUserId(String userId) {
-        Map<String, Object> maps = new HashMap<>();
-        maps.put("user_id", userId);
-        getTagManager().getDataLayer().push(maps);
+        Observable.just(userId)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .map(uid -> {
+                    Map<String, Object> maps = new HashMap<>();
+                    maps.put("user_id", uid);
+                    getTagManager().getDataLayer().push(maps);
+                    return true;
+                })
+                .subscribe(getDefaultSubscriber());
     }
 
     public void eventLogAnalytics(String screenName, String errorDesc) {
@@ -576,5 +597,24 @@ public class GTMAnalytics extends ContextAnalytics {
     private static class GTMBody {
         Map<String, Object> values;
         String eventName;
+    }
+
+    private Subscriber<Boolean> getDefaultSubscriber() {
+        return new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Boolean ignored) {
+
+            }
+        };
     }
 }
