@@ -11,7 +11,7 @@ import android.view.View
  */
 class DigitalProductGridDecorator(val space: Int, val resources: Resources) : RecyclerView.ItemDecoration() {
 
-    override fun getItemOffsets(outRect: Rect?, view: View?, parent: RecyclerView?, state: RecyclerView.State?) {
+    override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         outRect?.run {
             parent?.let {
                 val childPosition = it.getChildAdapterPosition(view)

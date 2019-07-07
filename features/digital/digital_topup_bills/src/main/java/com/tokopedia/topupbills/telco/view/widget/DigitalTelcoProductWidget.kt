@@ -1,12 +1,10 @@
 package com.tokopedia.topupbills.telco.view.widget
 
 import android.content.Context
-import android.graphics.Rect
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
-import android.util.TypedValue
 import android.view.View
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.topupbills.R
@@ -36,7 +34,7 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
     }
 
     fun renderProductList(productType: Int, productList: List<TelcoProductDataCollection>,
-                              selectedProductPos: Int) {
+                          selectedProductPos: Int) {
         adapter = DigitalProductAdapter(productList, productType)
         adapter.setListener(object : DigitalProductAdapter.ActionListener {
             override fun onClickItemProduct(itemProduct: TelcoProductDataCollection) {
@@ -56,7 +54,9 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
             recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         }
         adapter.notifyDataSetChanged()
-        recyclerView.layoutManager.scrollToPosition(selectedProductPos)
+        recyclerView.layoutManager?.run {
+            this.scrollToPosition(selectedProductPos)
+        }
     }
 
     fun notifyProductItemChanges(productId: String) {
