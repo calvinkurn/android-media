@@ -133,8 +133,6 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
                             if (success == null || success) {
                                 originalState = true
                                 showPopUp()
-                            } else {
-                                print("spUpdate failed")
                             }
                         }
                     })
@@ -221,7 +219,6 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
             }
         }
 
-
         private fun renderBottomSheet(bottomSheetItem: BottomSheetItem?, position: Int, type: Int) {
 
             val closeableBottomSheetDialog: CloseableBottomSheetDialog = CloseableBottomSheetDialog.createInstanceRounded(context)
@@ -243,14 +240,11 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
                             if (success == null || success) {
                                 originalState = false
                                 closeableBottomSheetDialog.dismiss()
-                            } else {
-                                print("SP DISABLE FAILED")
                             }
                         }
                     })
                 }
             }
-
             closeableBottomSheetDialog.setCustomContentView(viewMLPBottomSheet, bottomSheetItem?.title, false)
             closeableBottomSheetDialog.show()
             viewMLPBottomSheet.iv_cancel.setOnClickListener {
@@ -294,8 +288,6 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
                     val mlpRouter = context.applicationContext as MLPRouter
                     context.startActivity(mlpRouter.getSellerWebViewIntent(context, filteredUrl))
 
-                } else {
-                    print("Not valid url")
                 }
             } else {
                 val bottomSheetLength: Int = boxList[position].bottomSheet?.size!!
@@ -355,6 +347,8 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
         }
     }
 }
+
+
 
 
 
