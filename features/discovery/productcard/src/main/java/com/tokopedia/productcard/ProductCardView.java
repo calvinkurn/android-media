@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.topads.sdk.view.ImpressedImageView;
+import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.List;
 
@@ -32,6 +33,8 @@ public class ProductCardView extends BaseCustomView {
     protected View wishlistButton;
     protected ImageView ratingView;
     protected TextView reviewCountView;
+    protected LinearLayout ratingContainer;
+    protected Typography textAddTocart;
     protected int layout;
     protected boolean fixedHeight = false;
     protected LinearLayout badgesContainerView;
@@ -54,6 +57,18 @@ public class ProductCardView extends BaseCustomView {
 
     public void setFixedHeight(boolean fixedHeight) {
         this.fixedHeight = fixedHeight;
+    }
+
+    public void showAddToCartButton() {
+        textAddTocart.setVisibility(View.VISIBLE);
+    }
+
+    public void hideAddToCartButton() {
+        textAddTocart.setVisibility(View.GONE);
+    }
+
+    public void setAddToCartClickListener(View.OnClickListener onClickListener) {
+        textAddTocart.setOnClickListener(onClickListener);
     }
 
     protected void init(@Nullable AttributeSet attrs) {
@@ -80,8 +95,10 @@ public class ProductCardView extends BaseCustomView {
         wishlistButton = view.findViewById(R.id.btn_wishlist);
         ratingView = view.findViewById(R.id.rating);
         reviewCountView = view.findViewById(R.id.review_count);
+        ratingContainer = view.findViewById(R.id.rating_review_container);
         badgesContainerView = view.findViewById(R.id.badge_container);
         textLocation = view.findViewById(R.id.location);
+        textAddTocart = view.findViewById(R.id.tv_atc);
     }
 
     public void setTitle(String title) {

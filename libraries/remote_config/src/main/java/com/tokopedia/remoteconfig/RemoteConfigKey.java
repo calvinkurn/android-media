@@ -114,7 +114,7 @@ public class RemoteConfigKey {
 
      //   switch for New category belanja page A/B testing
     public static final String APP_CATEGORY_BROWSE_ENABLE_AB = "app_category_browse_enable_ab";
-  
+
     public static final String SHOP_SHARE_MSG = "app_shop_shr_msg";
     public static final String HOTLIST_SHARE_MSG = "app_hotlist_shr_msg";
 

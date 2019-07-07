@@ -68,6 +68,7 @@ class RecommendationCardView : ProductCardView {
 
     override fun setRatingReviewCount(rating: Int, reviewCount: Int) {
         if (rating in 1..5) {
+            setRatingVisible()
             ratingView.setImageResource(getRatingDrawable(rating))
             reviewCountView.text = "($reviewCount)"
         } else {
@@ -78,6 +79,14 @@ class RecommendationCardView : ProductCardView {
                 ratingView.visibility = View.GONE
                 reviewCountView.visibility = View.GONE
             }
+        }
+    }
+
+    private fun setRatingVisible(){
+        ratingView.visibility = View.VISIBLE
+        reviewCountView.visibility = View.VISIBLE
+        if (ratingContainer != null) {
+            ratingContainer.visibility = View.VISIBLE
         }
     }
 
