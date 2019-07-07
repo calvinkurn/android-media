@@ -74,14 +74,14 @@ public class DigitalProductActivity extends BaseSimpleActivity
                 .build();
 
         Intent destination = DigitalProductActivity.newInstance(context, passData);
-        destination.putExtra(DigitalRouter.Companion.getEXTRA_APPLINK_FROM_PUSH(), true);
-        taskStackBuilder.addNextIntent(destination);
 
         if (!TextUtils.isEmpty(extras.getString(DigitalCategoryDetailPassData.PARAM_MENU_ID))) {
             destination = RouteManager.getIntent(context, ApplinkConsInternalDigital.TELCO_DIGITAL);
             destination.putExtra(DigitalExtraParam.EXTRA_PARAM_TELCO, extras);
-            taskStackBuilder.addNextIntent(destination);
+        } else {
+            destination.putExtra(DigitalRouter.Companion.getEXTRA_APPLINK_FROM_PUSH(), true);
         }
+        taskStackBuilder.addNextIntent(destination);
         return destination;
     }
 
