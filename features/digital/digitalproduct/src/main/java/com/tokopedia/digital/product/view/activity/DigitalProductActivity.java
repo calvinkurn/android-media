@@ -9,7 +9,10 @@ import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital;
 import com.tokopedia.common_digital.common.DigitalRouter;
+import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.digital.product.view.fragment.DigitalProductFragment;
 import com.tokopedia.digital.product.view.model.DigitalCategoryDetailPassData;
 
@@ -73,6 +76,12 @@ public class DigitalProductActivity extends BaseSimpleActivity
         Intent destination = DigitalProductActivity.newInstance(context, passData);
         destination.putExtra(DigitalRouter.Companion.getEXTRA_APPLINK_FROM_PUSH(), true);
         taskStackBuilder.addNextIntent(destination);
+
+        if (!TextUtils.isEmpty(extras.getString(DigitalCategoryDetailPassData.PARAM_MENU_ID))) {
+            destination = RouteManager.getIntent(context, ApplinkConsInternalDigital.TELCO_DIGITAL);
+            destination.putExtra(DigitalExtraParam.EXTRA_PARAM_TELCO, extras);
+            taskStackBuilder.addNextIntent(destination);
+        }
         return destination;
     }
 
