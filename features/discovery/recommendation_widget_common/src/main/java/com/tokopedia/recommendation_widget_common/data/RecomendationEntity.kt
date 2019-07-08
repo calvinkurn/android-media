@@ -87,6 +87,8 @@ class RecomendationEntity {
             var id: Int = 0
             @SerializedName("name")
             var name: String? = ""
+            @SerializedName("city")
+            var city: String? =""
         }
 
         class Badges {
