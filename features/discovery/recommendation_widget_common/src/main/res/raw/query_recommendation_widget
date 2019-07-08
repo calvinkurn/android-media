@@ -29,6 +29,7 @@ query productRecommendation($userID: Int!, $pageName: String!, $pageNumber: Int!
         discountPercentage
         slashedPrice
         slashedPriceInt
+        isWishlist
         shop {
           id
           name

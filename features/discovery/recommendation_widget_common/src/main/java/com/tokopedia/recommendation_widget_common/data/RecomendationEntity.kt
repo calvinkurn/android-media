@@ -73,6 +73,8 @@ class RecomendationEntity {
         var stock: Int = 0
         @SerializedName("isTopads")
         var isIsTopads: Boolean = false
+        @SerializedName("isWishlist")
+        var isWishlist: Boolean = false
         @SerializedName("labels")
         var labels: List<*>? = listOf<Any>()
         @SerializedName("badges")
