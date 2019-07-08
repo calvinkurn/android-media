@@ -47,10 +47,14 @@ class DigitalTelcoFragment : BaseDaggerFragment() {
             val digitalTelcoExtraParam = this.getParcelable(EXTRA_PARAM_TELCO) as DigitalTelcoExtraParam
             var prepaidExtraParam = DigitalTelcoExtraParam()
             var postpaidExtraParam = DigitalTelcoExtraParam()
+            var posCurrentTabExtraParam: Int
+
             if (Integer.parseInt(digitalTelcoExtraParam.menuId) == TelcoComponentType.TELCO_PREPAID) {
                 prepaidExtraParam = digitalTelcoExtraParam
+                posCurrentTabExtraParam = 0
             } else {
                 postpaidExtraParam = digitalTelcoExtraParam
+                posCurrentTabExtraParam = 1
             }
             listMenuTab.add(DigitalTabTelcoItem(DigitalTelcoPrepaidFragment.newInstance(
                     prepaidExtraParam), ""))
@@ -58,8 +62,8 @@ class DigitalTelcoFragment : BaseDaggerFragment() {
                     postpaidExtraParam), ""))
             val pagerAdapter = DigitalTelcoProductTabAdapter(listMenuTab, childFragmentManager)
             menu_view_pager.adapter = pagerAdapter
+            menu_view_pager.currentItem = posCurrentTabExtraParam
         }
-
 
         val list = mutableListOf<DigitalProductSubMenu>()
         list.add(DigitalProductSubMenu(TelcoComponentType.TELCO_PREPAID, TelcoComponentName.TELCO_PREPAID))
@@ -68,9 +72,9 @@ class DigitalTelcoFragment : BaseDaggerFragment() {
         header_view.setListener(object : DigitalSubMenuWidget.ActionListener {
             override fun onClickSubMenu(subMenu: DigitalProductSubMenu) {
                 if (subMenu.id == TelcoComponentType.TELCO_PREPAID) {
-                    menu_view_pager.setCurrentItem(0)
+                    menu_view_pager.currentItem = 0
                 } else {
-                    menu_view_pager.setCurrentItem(1)
+                    menu_view_pager.currentItem = 1
                 }
             }
         })

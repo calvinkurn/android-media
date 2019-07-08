@@ -122,5 +122,5 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_ADD_NEW_ADDRESS_KEY = "android_customer_enable_add_new_address";
 
-    public static final String MAINAPP_ENABLE_DIGITAL_TELCO_PDP = "mainapp_enable_telco_pdp";
+    public static final String MAINAPP_ENABLE_DIGITAL_TELCO_PDP = "android_customer_enable_telco_pdp";
 }
