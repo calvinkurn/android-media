@@ -8,6 +8,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics
 import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 
 /**
  * @author : Steven 01/07/19
@@ -20,17 +21,21 @@ class SponsorHelper(
         var listener: PlayContract.View
 ): PlayBaseHelper(model) {
 
+    var videoVertical: Boolean = false
+
     fun setSponsor() {
         val adsId = viewModel?.adsId
         val adsImageUrl = viewModel?.adsImageUrl
         val adsName = viewModel?.adsName
         val videoId = viewModel?.videoId
         if (adsId == null || adsImageUrl.isNullOrBlank()) {
-            sponsorLayout.visibility = View.GONE
+            sponsorLayout.hide()
         } else if (!videoId.isNullOrBlank()) {
-            sponsorLayout.visibility = View.GONE
-        }else {
-            sponsorLayout.visibility = View.VISIBLE
+            sponsorLayout.hide()
+        } else if (videoVertical) {
+            sponsorLayout.hide()
+        } else {
+            sponsorLayout.show()
             ImageHandler.loadImage2(sponsorImage, adsImageUrl, R.drawable.loading_page)
             viewModel?.let { infoViewModel ->
                 sponsorImage.setOnClickListener {
@@ -78,5 +83,10 @@ class SponsorHelper(
 
     fun hideSponsor() {
         sponsorLayout.hide()
+    }
+
+    fun assignVideoVertical(videoVertical: Boolean) {
+        this.videoVertical = videoVertical
+        setSponsor()
     }
 }

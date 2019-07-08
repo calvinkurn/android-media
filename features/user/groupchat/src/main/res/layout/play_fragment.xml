@@ -314,7 +314,7 @@
             android:layout_marginTop="@dimen/dp_14"
             android:layout_marginRight="@dimen/dp_16"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/top_space_guideline"
+            app:layout_constraintTop_toBottomOf="@+id/video_horizontal"
             />
 
         <include

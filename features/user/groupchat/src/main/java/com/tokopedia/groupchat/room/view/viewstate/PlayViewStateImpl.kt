@@ -824,10 +824,11 @@ open class PlayViewStateImpl(
             videoVerticalHelper.playVideo(VideoVerticalHelper.VIDEO_480)
             overflowMenuHelper.setQualityVideo(VideoVerticalHelper.VIDEO_480)
             videoHorizontalHelper.hideVideoAndToggle()
-            videoHorizontalHelper.hideAllToggle()
+            sponsorHelper.assignVideoVertical(true)
         } else {
             videoVerticalHelper.stopVideo()
             setChatListHasSpaceOnTop().invoke(VideoVerticalHelper.VERTICAL_WITHOUT_VIDEO)
+            sponsorHelper.assignVideoVertical(false)
         }
     }
 
@@ -1262,9 +1263,11 @@ open class PlayViewStateImpl(
         return {
             if(it) {
                 videoHorizontalHelper.hideVideoAndToggle()
+                sponsorHelper.hideSponsor()
                 youTubePlayer?.release()
                 youTubePlayer = null
             } else {
+                sponsorHelper.setSponsor()
                 videoVerticalHelper.stopVideo()
             }
         }
