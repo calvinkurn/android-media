@@ -70,7 +70,7 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
     private boolean stateHasLoadCourierState;
     private boolean stateHasExtraMarginTop;
 
-    // DistrictRecommendationAddress Model for multiple address shipment, null if single address shipment
+    // Address Model for multiple address shipment, null if single address shipment
     private RecipientAddressModel recipientAddressModel;
 
     // Flag for courier recommendation
