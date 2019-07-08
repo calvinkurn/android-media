@@ -19,10 +19,12 @@ import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.checkout.CartConstant;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.common.utils.NoteTextWatcher;
 import com.tokopedia.checkout.view.common.utils.QuantityTextWatcher;
@@ -91,7 +93,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
     private TextView tvEllipsize;
     private View divider;
     private TextView tvInvenageText;
-    private LinearLayout llInvenageText;
+    private RelativeLayout rlInvenageText;
 
     private CartItemHolderData cartItemHolderData;
     private QuantityTextWatcher.QuantityTextwatcherListener quantityTextwatcherListener;
@@ -138,7 +140,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         this.tvEllipsize = itemView.findViewById(R.id.tv_ellipsize);
         this.divider = itemView.findViewById(R.id.holder_item_cart_divider);
         this.tvInvenageText = itemView.findViewById(R.id.tv_invenage_text);
-        this.llInvenageText = itemView.findViewById(R.id.ll_invenage_text);
+        this.rlInvenageText = itemView.findViewById(R.id.rl_invenage_text);
 
         etRemark.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -360,10 +362,16 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         divider.setVisibility((getLayoutPosition() == dataSize - 1) ? View.GONE : View.VISIBLE);
 
         if (!data.getCartItemData().getOriginData().getProductInvenageByUserText().isEmpty()) {
-            this.llInvenageText.setVisibility(View.VISIBLE);
-            this.tvInvenageText.setText(data.getCartItemData().getOriginData().getProductInvenageByUserText());
+            this.rlInvenageText.setVisibility(View.VISIBLE);
+            String completeText = data.getCartItemData().getOriginData().getProductInvenageByUserText();
+            int totalInOtherCart = data.getCartItemData().getOriginData().getProductInvenageByUserInCart();
+            int totalRemainingStock = data.getCartItemData().getOriginData().getProductInvenageByUserLastStockLessThan();
+            String invenageText = completeText
+                    .replace(CartConstant.PRODUCT_INVENAGE_REMAINING_STOCK, "" + totalRemainingStock)
+                    .replace(CartConstant.PRODUCT_INVENAGE_IN_OTHER_CART, "" + totalInOtherCart);
+            this.tvInvenageText.setText(Html.fromHtml(invenageText));
         } else {
-            this.llInvenageText.setVisibility(View.GONE);
+            this.rlInvenageText.setVisibility(View.GONE);
         }
     }
 
