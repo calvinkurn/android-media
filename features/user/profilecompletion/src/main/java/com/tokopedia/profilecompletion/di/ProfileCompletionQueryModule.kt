@@ -71,4 +71,11 @@ class ProfileCompletionQueryModule {
     fun provideCheckPhoneGraphQlUseCase(graphqlRepository: GraphqlRepository)
             : GraphqlUseCase<CheckPhonePojo> = GraphqlUseCase(graphqlRepository)
 
+    @ProfileCompletionScope
+    @Provides
+    @IntoMap
+    @StringKey(ProfileCompletionQueriesConstant.QUERY_PROFILE_COMPLETION)
+    fun provideRawQueryProfileCompletion(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.query_user_profile_completion)
+
 }

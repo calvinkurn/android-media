@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Konten Dewasa</string>
+    <string name="ar_text_dob_warning">Kamu hanya dapat mengatur tanggal lahirmu satu kali. Pastikan
+        tanggal lahir sudah benar.</string>
+    <string name="ar_text_dob_verify">Halaman ini hanya dapat diakses untuk usia 18 tahun ke atas.
+        Verifikasi tanggal lahir untuk melanjutkan.</string>
+    <string name="ar_text_adult_content">Konten Dewasa</string>
+    <string name="ar_text_verify_dob">Verifikasi Tanggal Lahir</string>
+    <string name="ar_text_yes_continue">Benar, Lanjutkan</string>
+    <string name="ar_text_no_update">Ubah Tanggal Lahir</string>
+    <string name="ar_text_login_first">Halaman ini dapat diakses jika kamu berusia 18 tahun keatas.
+        Login terlebih dahulu untuk verifikasi umur.</string>
+    <string name="ar_text_filled_not_verfied">Halaman ini dapat diakses jika kamu berusia 18 tahun
+        keatas. Apa benar kamu lahir pada %1$s?</string>
+    <string name="ar_text_not_adult">Halaman ini dapat diakses jika kamu berusia 18 tahun keatas.
+        Usia kamu belum cukup untuk akses konten ini.</string>
+    <string name="ar_text_goto_home">Kembali Ke Beranda</string>
+    <string name="ar_text_select_dob">Pilih Tanggal Lahir</string>
+    <string name="ar_label_back">Kembali</string>
+    <string name="ar_text_age_not_adult">Verifikasi berhasil, usia belum cukup untuk akses konten dewasa.</string>
+    <string name="ar_text_verification_success">Verifikasi tanggal lahir berhasil.</string>
+    <string name="label_dob">Tanggal Lahir</string>
+</resources>

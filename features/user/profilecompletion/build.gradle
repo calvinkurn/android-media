@@ -22,6 +22,7 @@ dependencies {
         transitive = true
     }
 
+    implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.network)
@@ -53,6 +54,9 @@ dependencies {
         exclude group: 'com.squareup.okio'
         exclude group: 'com.android.support'
     }
+
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
     //test
     testImplementation rootProject.ext.testDependencies.junit

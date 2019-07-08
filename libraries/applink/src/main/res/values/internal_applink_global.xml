@@ -13,6 +13,7 @@
     <string name="path_add_name_register">/add-name-register</string>
     <string name="path_forgot_password">/forgot-password</string>
     <string name="path_profile_completion">/profile-completion</string>
+    <string name="path_setting_profile">/setting-profile</string>
     <string name="path_change_gender">/change-gender</string>
     <string name="path_add_email">/add-email</string>
     <string name="path_add_phone">/add-phone</string>

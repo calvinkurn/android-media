@@ -1,0 +1,30 @@
+package com.tokopedia.profilecompletion.settingprofile.view.activity
+
+import android.os.Bundle
+import android.support.v4.app.Fragment
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.profilecompletion.di.ProfileCompletionComponent
+import com.tokopedia.profilecompletion.di.DaggerProfileCompletionComponent
+import com.tokopedia.profilecompletion.settingprofile.view.fragment.SettingProfileFragment
+
+/**
+ * Created by Ade Fulki on 2019-07-02.
+ * ade.hadian@tokopedia.com
+ * For navigate: use {@link ApplinkConstInternalGlobal.SETTING_PROFILE}
+ */
+
+class SettingProfileActivity: BaseSimpleActivity(), HasComponent<ProfileCompletionComponent> {
+
+    override fun getComponent(): ProfileCompletionComponent = DaggerProfileCompletionComponent
+        .builder().baseAppComponent((application as BaseMainApplication).baseAppComponent).build()
+
+    override fun getNewFragment(): Fragment {
+        val bundle = Bundle()
+        if (intent.extras != null) {
+            bundle.putAll(intent.extras)
+        }
+        return SettingProfileFragment.createInstance(bundle)
+    }
+}

@@ -5,8 +5,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.view.common.adapter.CartAdapterActionListener;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemTickerErrorHolderData;
+import com.tokopedia.checkout.view.feature.cartlist.ActionListener;
 
 /**
  * @author anggaprasetiyo on 13/03/18.
@@ -14,11 +14,11 @@ import com.tokopedia.checkout.view.common.holderitemdata.CartItemTickerErrorHold
 public class CartTickerErrorViewHolder extends RecyclerView.ViewHolder {
     public static final int TYPE_VIEW_TICKER_CART_ERROR = R.layout.holder_item_cart_ticker_error;
 
-    private final CartAdapterActionListener actionListener;
+    private final ActionListener actionListener;
     private TextView tvErrorMessage;
     private TextView tvBtnAction;
 
-    public CartTickerErrorViewHolder(View itemView, CartAdapterActionListener actionListener) {
+    public CartTickerErrorViewHolder(View itemView, ActionListener actionListener) {
         super(itemView);
         this.actionListener = actionListener;
         this.tvErrorMessage = itemView.findViewById(R.id.tv_error);

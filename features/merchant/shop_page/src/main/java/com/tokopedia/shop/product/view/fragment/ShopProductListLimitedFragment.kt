@@ -258,7 +258,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
                 animator.supportsChangeAnimations = false
             }
             it.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
                     if (dy < 0) { // going up
                         if (shopProductAdapter.shopProductViewModelList.size > 0) {
@@ -590,7 +590,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
 
     private fun onSuccessGetProductFeature(list: List<ShopProductViewModel>) {
         shopProductAdapter.shopProductFeaturedViewModel = ShopProductFeaturedViewModel(list)
-        if (list.isNotEmpty()) {
+        if (list.isNotEmpty() && shopInfo != null) {
             shopPageTracking?.impressionProductList(
                     isOwner,
                     ListTitleTypeDef.HIGHLIGHTED,
