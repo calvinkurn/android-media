@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.core.shopinfo.models.productmodel.Product;
 import com.tokopedia.core.util.getproducturlutil.GetProductUrlUtil;
@@ -18,33 +17,22 @@ import com.tokopedia.core.util.getproducturlutil.GetProductUrlUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
  * Created by Nisie on 6/2/16.
  */
 public class ProductAdapter extends BaseLinearRecyclerViewAdapter {
-
-
     private static final int VIEW_PRODUCT = 100;
 
-
-
     public class ViewHolder extends RecyclerView.ViewHolder {
-
-        @BindView(R2.id.image)
-        ImageView image;
-
-        @BindView(R2.id.name)
-        TextView name;
-
-        @BindView(R2.id.main)
-        View main;
+        private ImageView image;
+        private TextView name;
+        private View main;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            image = (ImageView) itemView.findViewById(R.id.image);
+            name = (TextView) itemView.findViewById(R.id.name);
+            main = (View) itemView.findViewById(R.id.main);
         }
     }
 

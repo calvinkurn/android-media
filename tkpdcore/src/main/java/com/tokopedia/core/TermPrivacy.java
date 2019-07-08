@@ -4,22 +4,15 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.WindowManager;
 
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.fragment.FragmentTermPrivacy;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import com.tokopedia.core2.R;
 
 /**
@@ -31,7 +24,6 @@ public class TermPrivacy extends TActivity {
     private Fragment fragment;
     private Uri data;
     FragmentManager supportFragmentManager;
-    private Unbinder unbinder;
 
     @Override
     public String getScreenName() {

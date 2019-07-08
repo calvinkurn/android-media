@@ -140,6 +140,24 @@
 
             </LinearLayout>
 
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_atc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginRight="@dimen/dp_8"
+                android:background="@drawable/productcard_module_bg_button_atc"
+                android:foreground="?selectableItemBackground"
+                android:gravity="center"
+                android:padding="@dimen/dp_8"
+                android:text="@string/product_card_module_label_add_to_card"
+                android:textAllCaps="false"
+                android:textColor="@color/orange_red"
+                android:visibility="gone"
+                app:typographyType="heading_6"
+                tools:visibility="visible" />
+
         </LinearLayout>
 
         <ImageView

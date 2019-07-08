@@ -26,4 +26,10 @@ public class ConstantKey {
             }
         }
     }
+
+    public class LocationCache {
+        public static final String KEY_LOCATION = "KEY_FP_LOCATION";
+        public static final String KEY_LOCATION_LAT = "KEY_FP_LOCATION_LAT";
+        public static final String KEY_LOCATION_LONG = "KEY_FP_LOCATION_LONG";
+    }
 }
