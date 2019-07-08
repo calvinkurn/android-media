@@ -4,6 +4,7 @@ import android.content.Context
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -48,13 +49,13 @@ class FeedMultipleImageView @JvmOverloads constructor(
             }
         }
         rv_media.layoutManager = gridLayoutManager
-        rv_media.addItemDecoration(ItemOffsetDecoration(context.resources.getDimensionPixelSize(R.dimen.dp_4)))
         rv_media.adapter = adapter
         rv_media.isNestedScrollingEnabled = false
     }
 
     fun bind(itemList: List<MediaItem>) {
         adapter.updateItem(itemList)
+        rv_media.addItemDecoration(ItemOffsetDecoration(context.resources.getDimensionPixelSize(R.dimen.dp_4), adapter.itemCount))
     }
 
     fun setOnFileClickListener(listener: OnFileClickListener){

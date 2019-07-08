@@ -8,6 +8,7 @@ import com.tokopedia.feedcomponent.data.pojo.TemplateData
 import com.tokopedia.feedcomponent.data.pojo.feed.Cardpost
 import com.tokopedia.feedcomponent.data.pojo.feed.Feed
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Media
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.MediaItem
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTag
 import com.tokopedia.feedcomponent.data.pojo.template.Template
 import com.tokopedia.feedcomponent.data.pojo.track.Tracking
@@ -20,6 +21,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.grid.MultimediaGridViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.image.ImagePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentOptionViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel
@@ -42,6 +44,7 @@ import javax.inject.Inject
  */
 class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFeedDomainModel> {
 
+    var count = 1;
     companion object {
         private const val TYPE_CARDRECOM = "cardrecom"
         private const val TYPE_CARDPOST = "cardpost"
@@ -52,6 +55,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         private const val CONTENT_VIDEO = "video"
         private const val CONTENT_VOTE = "vote"
         private const val CONTENT_GRID = "productgrid"
+        private const val CONTENT_MULTIMEDIA = "mediagrid"
 
         private const val ACTIVITY_TOPADS = "topads"
 
@@ -272,7 +276,12 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
 
     private fun mapPostContent(cardPost: Cardpost, template: Template): MutableList<BasePostViewModel> {
         val list: MutableList<BasePostViewModel> = ArrayList()
-
+        if (cardPost.body.media.isNotEmpty()) {
+            cardPost.body.media = getDataMultimedia(cardPost.body.media, count)
+            if (count < 6) {
+                count++
+            }
+        }
         for (media in cardPost.body.media) {
             when (media.type) {
                 CONTENT_IMAGE -> list.add(mapPostImage(media))
@@ -286,6 +295,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                         list.add(mapPostVideo(media))
                     }
                 }
+                CONTENT_MULTIMEDIA -> list.add(mapPostMultimedia(media, template))
             }
         }
 
@@ -334,6 +344,30 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                 media.id,
                 media.thumbnail,
                 media.videoList.getOrNull(0)?.url ?: ""
+        )
+    }
+
+    private fun mapPostMultimedia(media: Media, template: Template): MultimediaGridViewModel {
+        val itemList: MutableList<GridItemViewModel> = ArrayList()
+
+        for (item in media.mediaItems) {
+            itemList.add(GridItemViewModel(
+                    item.id,
+                    item.text,
+                    item.price,
+                    item.applink,
+                    item.thumbnail,
+                    mapTrackingData(item.tracking)
+            ))
+        }
+        return MultimediaGridViewModel(
+                itemList,
+                media.mediaItems,
+                media.text,
+                media.appLink,
+                media.totalItems,
+                template.cardpost.body.mediaGridButton,
+                mapTrackingData(media.tracking)
         )
     }
 
@@ -413,5 +447,25 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
             ))
         }
         return trackingList
+    }
+
+    private fun getDataMultimedia(mediaList : List<Media>, count: Int): List<Media> {
+        var newMediaList: ArrayList<Media> = ArrayList()
+        for (media: Media in mediaList) {
+            val newMediaItemList: ArrayList<MediaItem> = ArrayList()
+            media.type = CONTENT_MULTIMEDIA
+            for (i in 1..count) {
+               newMediaItemList.add(mappingMultimediaMediaItem())
+            }
+            media.mediaItems = newMediaItemList
+            newMediaList.add(media)
+        }
+        return newMediaList
+    }
+
+    private fun mappingMultimediaMediaItem(): MediaItem {
+        var mediaItem = MediaItem()
+        mediaItem.thumbnail = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/4/19/1592907/1592907_e1fde789-3c9e-4478-9f6d-aaed7ab0a1aa_2000_2000.jpg"
+        return mediaItem
     }
 }

@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.BasePostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.MultimediaGridViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
@@ -13,6 +14,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.grid.MultimediaGridViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.image.ImagePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
@@ -45,6 +47,7 @@ class PostPagerAdapter(private val imagePostListener: ImagePostViewHolder.ImageP
             is PollContentViewModel -> PollViewHolder(pollOptionListener) as BasePostViewHolder<BasePostViewModel>
             is GridPostViewModel -> GridPostViewHolder(gridItemListener) as BasePostViewHolder<BasePostViewModel>
             is VideoViewModel -> VideoViewHolder(videoViewListener) as BasePostViewHolder<BasePostViewModel>
+            is MultimediaGridViewModel -> MultimediaGridViewHolder() as BasePostViewHolder<BasePostViewModel>
             else -> throw IllegalStateException(this.javaClass.simpleName
                     .plus(" doesn't support view model of this type: ")
                     .plus(element.javaClass.simpleName))
