@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.topupbills.R
+import com.tokopedia.topupbills.common.DigitalTopupAnalytics
 import com.tokopedia.topupbills.telco.data.TelcoProductComponentData
 import com.tokopedia.topupbills.telco.data.TelcoProductDataCollection
 import com.tokopedia.topupbills.telco.view.bottomsheet.DigitalProductBottomSheet
@@ -42,6 +43,8 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var topupAnalytics: DigitalTopupAnalytics
 
     override fun onStart() {
         context?.let {
@@ -113,10 +116,15 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
             }
 
             override fun onSeeMoreProduct(itemProduct: TelcoProductDataCollection) {
+                topupAnalytics.eventClickSeeMore(itemProduct.product.attributes.categoryId)
+
                 activity?.let {
                     val seeMoreBottomSheet = DigitalProductBottomSheet.newInstance(itemProduct.product.attributes.desc,
                             itemProduct.product.attributes.detail,
                             itemProduct.product.attributes.price)
+                    seeMoreBottomSheet.setDismissListener {
+                        topupAnalytics.eventCloseDetailProduct(itemProduct.product.attributes.categoryId)
+                    }
                     seeMoreBottomSheet.show(it.supportFragmentManager, "")
                 }
             }

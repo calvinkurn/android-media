@@ -22,7 +22,10 @@ class TelcoFavNumber(
         var operatorId: String = "",
         @SerializedName("category_id")
         @Expose
-        var categoryId: String = "") : Parcelable {
+        var categoryId: String = "",
+        @SerializedName("favorite")
+        @Expose
+        var isFavorite: Boolean = true) : Parcelable {
 
     constructor(parcel: Parcel) : this(
             parcel.readString(),

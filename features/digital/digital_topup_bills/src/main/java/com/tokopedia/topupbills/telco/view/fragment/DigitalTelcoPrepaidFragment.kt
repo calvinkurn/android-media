@@ -29,6 +29,7 @@ import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
 import com.tokopedia.topupbills.telco.view.activity.DigitalSearchNumberActivity
 import com.tokopedia.topupbills.telco.view.adapter.DigitalTelcoProductTabAdapter
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
+import com.tokopedia.topupbills.telco.view.fragment.DigitalSearchNumberFragment.InputNumberActionType
 import com.tokopedia.topupbills.telco.view.model.DigitalTabTelcoItem
 import com.tokopedia.topupbills.telco.view.model.DigitalTelcoExtraParam
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedProductTelcoViewModel
@@ -50,11 +51,14 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var layoutProgressBar: RelativeLayout
     private lateinit var productSelected: TelcoProductDataCollection
 
+    private lateinit var inputNumberActionType: InputNumberActionType
+
     private val favNumberList = mutableListOf<TelcoFavNumber>()
     private var operatorData: TelcoCustomComponentData =
             TelcoCustomComponentData(TelcoCustomData(mutableListOf()))
     private var selectedProductId = ""
     private var selectedCategoryId = 0
+    private lateinit var selectedOperator: TelcoCustomDataCollection
 
     override fun onStart() {
         context?.let {
@@ -174,12 +178,18 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             if (telcoClientNumberWidget.getInputNumber().isNotEmpty()) {
                 val prefixClientNumber = telcoClientNumberWidget.getInputNumber().substring(0, 4)
 
-                val operatorSelected = this.operatorData.rechargeCustomData.customDataCollections.filter {
+                selectedOperator = this.operatorData.rechargeCustomData.customDataCollections.filter {
                     it.value.equals(prefixClientNumber)
                 }.single()
+                val operatorName = selectedOperator.operator.attributes.name
+                when (inputNumberActionType) {
+                    InputNumberActionType.MANUAL -> { topupAnalytics.eventInputNumberManual(selectedCategoryId, operatorName) }
+                    InputNumberActionType.CONTACT -> { topupAnalytics.eventInputNumberContact(selectedCategoryId, operatorName) }
+                    InputNumberActionType.FAVORITE -> { topupAnalytics.eventInputNumberFavorites(selectedCategoryId, operatorName) }
+                }
 
-                renderViewPager(operatorSelected.operator.id)
-                telcoClientNumberWidget.setIconOperator(operatorSelected.operator.attributes.imageUrl)
+                renderViewPager(selectedOperator.operator.id)
+                telcoClientNumberWidget.setIconOperator(selectedOperator.operator.attributes.imageUrl)
 
                 recentNumbersView.visibility = View.GONE
                 promoListView.visibility = View.GONE
@@ -215,6 +225,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     fun renderInputNumber() {
         telcoClientNumberWidget.setListener(object : DigitalClientNumberWidget.ActionListener {
             override fun onNavigateToContact() {
+                inputNumberActionType = InputNumberActionType.CONTACT
                 navigateContact()
             }
 
@@ -229,6 +240,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             }
 
             override fun onClearAutoComplete() {
+                topupAnalytics.eventClearInputNumber()
+
                 separator.visibility = View.GONE
                 recentNumbersView.visibility = View.VISIBLE
                 promoListView.visibility = View.VISIBLE
@@ -313,7 +326,9 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
-    override fun handleCallbackSearchNumber(orderClientNumber: TelcoFavNumber) {
+    override fun handleCallbackSearchNumber(orderClientNumber: TelcoFavNumber, inputNumberActionTypeIndex: Int) {
+        inputNumberActionType = InputNumberActionType.values()[inputNumberActionTypeIndex]
+
         if (orderClientNumber.productId.isNotEmpty() && orderClientNumber.categoryId.isNotEmpty()) {
             selectedProductId = orderClientNumber.productId
             selectedCategoryId = Integer.valueOf(orderClientNumber.categoryId)
@@ -370,6 +385,10 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                     .voucherCodeCopied("")
                     .build()
         }
+    }
+
+    override fun onBackPressed() {
+        topupAnalytics.eventClickBackButton(selectedCategoryId)
     }
 
     companion object {

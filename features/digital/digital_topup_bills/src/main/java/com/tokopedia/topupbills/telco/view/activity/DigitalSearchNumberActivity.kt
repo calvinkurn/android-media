@@ -40,8 +40,12 @@ class DigitalSearchNumberActivity : BaseTelcoActivity(), DigitalSearchNumberFrag
                 .newInstance(clientNumberType, number, numberList)
     }
 
-    override fun onClientNumberClicked(orderClientNumber: TelcoFavNumber) {
-        setResult(Activity.RESULT_OK, Intent().putExtra(EXTRA_CALLBACK_CLIENT_NUMBER, orderClientNumber))
+    override fun onClientNumberClicked(orderClientNumber: TelcoFavNumber,
+                                       inputNumberActionType: DigitalSearchNumberFragment.InputNumberActionType) {
+        val intent = Intent()
+        intent.putExtra(EXTRA_CALLBACK_CLIENT_NUMBER, orderClientNumber)
+        intent.putExtra(EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE, inputNumberActionType.ordinal)
+        setResult(Activity.RESULT_OK, intent)
         finish()
     }
 
@@ -53,6 +57,7 @@ class DigitalSearchNumberActivity : BaseTelcoActivity(), DigitalSearchNumberFrag
         private val EXTRA_CATEGORY_ID = "EXTRA_CATEGORY_ID"
 
         val EXTRA_CALLBACK_CLIENT_NUMBER = "EXTRA_CALLBACK_CLIENT_NUMBER"
+        val EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE = "EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE"
 
         fun newInstance(activity: Activity, clientNumberType: String,
                         number: String, numberList: List<TelcoFavNumber>): Intent {

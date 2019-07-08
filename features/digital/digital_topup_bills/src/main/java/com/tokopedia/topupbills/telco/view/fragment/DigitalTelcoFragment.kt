@@ -11,6 +11,7 @@ import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.view.adapter.DigitalTelcoProductTabAdapter
+import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
 import com.tokopedia.topupbills.telco.view.model.DigitalProductSubMenu
 import com.tokopedia.topupbills.telco.view.model.DigitalTabTelcoItem
 import com.tokopedia.topupbills.telco.view.model.DigitalTelcoExtraParam
@@ -29,7 +30,10 @@ class DigitalTelcoFragment : BaseDaggerFragment() {
     }
 
     override fun initInjector() {
-
+        activity?.let {
+            val digitalTopupComponent = DigitalTopupInstance.getComponent(it.application)
+            digitalTopupComponent.inject(this)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -98,6 +102,11 @@ class DigitalTelcoFragment : BaseDaggerFragment() {
                 }
             }
         })
+    }
+
+    fun onBackPressed() {
+        val currentFragment = (menu_view_pager.adapter as DigitalTelcoProductTabAdapter).getItem(menu_view_pager.currentItem)
+        (currentFragment as DigitalBaseTelcoFragment).onBackPressed()
     }
 
     companion object {

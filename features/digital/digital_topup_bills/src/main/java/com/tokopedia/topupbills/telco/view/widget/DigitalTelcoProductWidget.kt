@@ -43,13 +43,12 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
 
             override fun onClickSeeMoreProduct(itemProduct: TelcoProductDataCollection) {
                 listener.onSeeMoreProduct(itemProduct)
-
             }
         })
         recyclerView.adapter = adapter
         if (productType == TelcoProductType.PRODUCT_GRID) {
             recyclerView.layoutManager = GridLayoutManager(context, 2)
-            recyclerView.addItemDecoration(DigitalProductGridDecorator(CELL_MARGIN, resources))
+            recyclerView.addItemDecoration(DigitalProductGridDecorator(CELL_MARGIN_DP, resources))
         } else {
             recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         }
@@ -71,7 +70,7 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
     }
 
     companion object {
-        const val CELL_MARGIN: Int = 8
+        const val CELL_MARGIN_DP: Int = 8
     }
 
 }
