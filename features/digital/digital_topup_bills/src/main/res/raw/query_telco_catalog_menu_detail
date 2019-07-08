@@ -1,5 +1,5 @@
 query catalogMenuDetail($menuID: Int!){
-  rechargeCatalogMenuDetail(menuID: $menuID, platformID: 4) {
+  rechargeCatalogMenuDetail(menuID: $menuID, platformID: 5) {
     recommendations {
       iconUrl
       title
