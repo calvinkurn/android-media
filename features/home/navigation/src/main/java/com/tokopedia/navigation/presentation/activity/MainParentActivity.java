@@ -21,8 +21,10 @@ import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
+import android.support.design.bottomnavigation.LabelVisibilityMode;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -47,6 +49,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.component.BottomNavigation;
 import com.tokopedia.graphql.data.GraphqlClient;
@@ -64,7 +67,6 @@ import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 import com.tokopedia.navigation.presentation.view.MainParentView;
 import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
-import com.tokopedia.navigation_common.listener.EmptyCartListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
@@ -74,6 +76,7 @@ import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -86,7 +89,7 @@ import javax.inject.Inject;
  */
 public class MainParentActivity extends BaseActivity implements
         NavigationView.OnNavigationItemSelectedListener, HasComponent,
-        MainParentView, ShowCaseListener, CartNotifyListener, EmptyCartListener, RefreshNotificationListener {
+        MainParentView, ShowCaseListener, CartNotifyListener, RefreshNotificationListener {
 
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
     public static final String ARGS_TAB_POSITION = "TAB_POSITION";
@@ -252,6 +255,7 @@ public class MainParentActivity extends BaseActivity implements
         fragmentContainer = findViewById(R.id.container);
 
         bottomNavigation.setItemIconTintList(null);
+        bottomNavigation.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
         bottomNavigation.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
         bottomNavigation.setOnNavigationItemReselectedListener(item -> {
             Fragment fragment = fragmentList.get(getPositionFragmentByMenu(item));
@@ -311,6 +315,7 @@ public class MainParentActivity extends BaseActivity implements
         super.onNewIntent(intent);
         checkIsNeedUpdateIfComeFromUnsupportedApplink(intent);
         checkApplinkCouponCode(intent);
+        checkAgeVerificationExtra(intent);
     }
 
     private void initInjector() {
@@ -374,6 +379,16 @@ public class MainParentActivity extends BaseActivity implements
             selectFragment(fragment);
         }
         return true;
+    }
+
+    private void checkAgeVerificationExtra(Intent intent) {
+        if (intent.hasExtra(ApplinkConstInternalCategory.PARAM_EXTRA_SUCCESS)) {
+            Toaster.Companion.showErrorWithAction(this.findViewById(android.R.id.content),
+                    intent.getStringExtra(ApplinkConstInternalCategory.PARAM_EXTRA_SUCCESS),
+                    Snackbar.LENGTH_INDEFINITE,
+                    getString(R.string.general_label_ok), (v) -> {
+                    });
+        }
     }
 
     private void hideStatusBar() {
@@ -793,34 +808,6 @@ public class MainParentActivity extends BaseActivity implements
 
     private void unRegisterNewFeedClickedReceiver() {
         LocalBroadcastManager.getInstance(getContext().getApplicationContext()).unregisterReceiver(newFeedClickedReceiver);
-    }
-
-    @Override
-    public void onCartEmpty(String autoApplyMessage, String state, String titleDesc, String promoCode) {
-        if (fragmentList != null && fragmentList.get(CART_MENU) != null) {
-            if (emptyCartFragment == null) {
-                emptyCartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getEmptyCartFragment(autoApplyMessage, state, titleDesc, promoCode);
-            }
-            if (emptyCartFragment.isAdded()) return;
-            cartFragment = null;
-            fragmentList.set(CART_MENU, emptyCartFragment);
-            onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_cart));
-        }
-    }
-
-    @Override
-    public void onCartNotEmpty(Bundle bundle) {
-        if (fragmentList != null && fragmentList.get(CART_MENU) != null) {
-            if (cartFragment == null) {
-                cartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getCartFragment(bundle);
-            } else if (bundle != null) {
-                cartFragment.setArguments(bundle);
-            }
-            if (cartFragment.isAdded()) return;
-            emptyCartFragment = null;
-            fragmentList.set(CART_MENU, cartFragment);
-            onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_cart));
-        }
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)

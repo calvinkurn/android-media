@@ -1,33 +1,20 @@
 package com.tokopedia.core.manage.people.address.adapter;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
-import com.tokopedia.core.manage.people.address.ManageAddressConstant;
-import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.core.manage.people.address.presenter.ChooseAddressFragmentPresenter;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.manage.people.address.presenter.ChooseAddressFragmentPresenterImpl;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
-import static android.app.Activity.RESULT_OK;
 
 /**
  * Created by Alifa on 10/11/2016.
@@ -41,20 +28,17 @@ public class ChooseAddressAdapter extends BaseLinearRecyclerViewAdapter {
     private final Context context;
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-        @BindView(R2.id.title_address)
         TextView titleAddress;
-
-        @BindView(R2.id.address_detail)
         TextView addressDetail;
-
-        @BindView(R2.id.edit_address)
         View btnEdit;
 
         public ViewHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
-            ButterKnife.bind(this, itemView);
+
+            titleAddress = (TextView) itemView.findViewById(R.id.title_address);
+            addressDetail = (TextView) itemView.findViewById(R.id.address_detail);
+            btnEdit = (View) itemView.findViewById(R.id.edit_address);
         }
         @Override
         public void onClick(View view) {

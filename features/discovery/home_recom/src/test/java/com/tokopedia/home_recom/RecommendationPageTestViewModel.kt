@@ -17,6 +17,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.Mock
+import org.mockito.Mockito
 import org.mockito.Mockito.mock
 import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnit
@@ -79,10 +80,13 @@ class RecommendationPageTestViewModel {
     fun loadSuccessGetRecommendationWidget(){
         val observer = mock(Observer::class.java) as Observer<List<RecommendationWidget>>
         recommendationPageViewModel.recommendationListModel.observeForever(observer)
-        recommendationPageViewModel.setReturnError(false)
-        recommendationPageViewModel.getRecommendationList(ArrayList()){
-            fail()
-        }
+//        recommendationPageViewModel.setReturnError(false)
+        Mockito.doAnswer {
+            recommendationPageViewModel.recommendationListModel.postValue(listOf(mock(RecommendationWidget::class.java)))
+        }.`when`(recommendationPageViewModel).getRecommendationList(ArrayList()) {}
+//        recommendationPageViewModel.getRecommendationList(ArrayList()){
+//            fail()
+//        }
         assertNotNull(recommendationPageViewModel.recommendationListModel.value)
     }
 

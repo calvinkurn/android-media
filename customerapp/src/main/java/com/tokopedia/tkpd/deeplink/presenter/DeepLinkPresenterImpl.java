@@ -175,6 +175,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openDiscoveryPage(uriData.toString());
                     screenName = AppScreen.SCREEN_DISCOVERY_PAGE;
                     break;
+                case DeepLinkChecker.CONTACT_US:
+                    URLParser urlParser = new URLParser(uriData.toString());
+                    RouteManager.route(context,ApplinkConstInternalMarketplace.CONTACT_US, urlParser.getSetQueryValue().get(1));
+                    screenName = AppScreen.SCREEN_CONTACT_US;
+                    break;
                 case DeepLinkChecker.PRODUCT:
                     openProduct(linkSegment, uriData);
                     screenName = AppScreen.SCREEN_PRODUCT_INFO;

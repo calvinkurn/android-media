@@ -339,7 +339,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
     private fun setRatingReviewCount(ratingValue: Int, review: Int){
         if (ratingValue in 1..5) {
             rating.setImageResource(getRatingDrawable(ratingValue))
-            review_count.text = String.format(getString(R.string.recom_review_count), review)
+            review_count.text = String.format(getString(R.string.review_count), review)
         } else {
             rating.visibility = View.GONE
             review_count.visibility = View.GONE
@@ -404,8 +404,9 @@ class ProductInfoFragment : BaseDaggerFragment() {
             quantity = productDataModel.productDetailData.minOrder,
             header = "",
             pageName = "",
-            badgesUrl = emptyList(),
-            location = ""
+            minOrder = productDataModel.productDetailData.minOrder,
+            location = "",
+            badgesUrl = listOf()
     )
 
     private fun handleDiscount(){

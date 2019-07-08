@@ -13,6 +13,8 @@ query UserPointsQuery {
         rewardStr
         loyalty
         loyaltyStr
+        loyaltyExpiryInfo
+        rewardExpiryInfo
       }
     }
   }
