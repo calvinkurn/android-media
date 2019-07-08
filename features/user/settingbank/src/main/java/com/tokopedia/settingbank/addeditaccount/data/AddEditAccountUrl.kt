@@ -9,7 +9,7 @@ import com.tokopedia.url.TokopediaUrl
 
 object AddEditAccountUrl{
     @JvmField
-    var BASE_URL: String = com.tokopedia.url.TokopediaUrl.getInstance().ACCOUNTS
+    var BASE_URL: String = TokopediaUrl.getInstance().ACCOUNTS
 
     const val PATH_ADD_BANK_ACCOUNT: String = "api/v2/bank-account/add"
     const val PATH_EDIT_BANK_ACCOUNT: String = "api/v2/bank-account/edit"

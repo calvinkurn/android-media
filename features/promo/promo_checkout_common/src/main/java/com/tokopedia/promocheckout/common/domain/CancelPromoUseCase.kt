@@ -20,7 +20,7 @@ class CancelPromoUseCase(authInterceptor : List<Interceptor>, context: Context) 
 
         val params = HashMap<String, String>()
         params.put(AuthUtil.HEADER_DEVICE, ANDROID)
-        val restRequest1 = RestRequest.Builder(com.tokopedia.url.TokopediaUrl.getInstance().API + PATH_CANCEL_AUTO_APPLY_COUPON, ResponseCancelPromo::class.java)
+        val restRequest1 = RestRequest.Builder(TokopediaUrl.getInstance().API + PATH_CANCEL_AUTO_APPLY_COUPON, ResponseCancelPromo::class.java)
                 .setHeaders(params)
                 .setBody(HashMap<String, Any>())
                 .setRequestType(RequestType.POST)

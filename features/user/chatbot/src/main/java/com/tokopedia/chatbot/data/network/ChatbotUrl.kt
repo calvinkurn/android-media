@@ -16,6 +16,6 @@ class ChatbotUrl {
         }
 
         val CONNECT_WEBSOCKET = "/connect"
-        val WEBSOCKET_URL = com.tokopedia.url.TokopediaUrl.getInstance().WS_CHAT
+        val WEBSOCKET_URL = TokopediaUrl.getInstance().WS_CHAT
     }
 }

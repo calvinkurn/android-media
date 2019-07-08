@@ -10,8 +10,8 @@ class ChatUrl {
 
     companion object {
 
-        var TOPCHAT = com.tokopedia.url.TokopediaUrl.getInstance().CHAT;
-        var CHAT_WEBSOCKET_DOMAIN = com.tokopedia.url.TokopediaUrl.getInstance().WS_CHAT
+        var TOPCHAT = TokopediaUrl.getInstance().CHAT;
+        var CHAT_WEBSOCKET_DOMAIN = TokopediaUrl.getInstance().WS_CHAT
 
         const val CONNECT_WEBSOCKET = "/connect"
         const val REPLY = "/tc/v1/reply"

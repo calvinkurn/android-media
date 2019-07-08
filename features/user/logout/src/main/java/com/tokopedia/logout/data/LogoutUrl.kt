@@ -8,7 +8,7 @@ import com.tokopedia.url.TokopediaUrl
 class LogoutUrl {
 
     companion object {
-        var BASE_URL: String = com.tokopedia.url.TokopediaUrl.getInstance().WS
+        var BASE_URL: String = TokopediaUrl.getInstance().WS
         const val PATH_LOGOUT: String = "v4/session/logout.pl"
     }
 }

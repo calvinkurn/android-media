@@ -57,7 +57,7 @@ open class BaseDownloadAppLinkActivity : BaseSimpleWebViewActivity() {
         fun getOrderListIntent(context: Context, extras: Bundle): Intent {
 
             var webUrl = extras.getString(
-                    KEY_APP_LINK_QUERY_URL, com.tokopedia.url.TokopediaUrl.getInstance().WEB
+                    KEY_APP_LINK_QUERY_URL, TokopediaUrl.getInstance().WEB
             )
             var extensionsList = extras.getString(
                     KEY_APP_LINK_QUERY_EXTENSIONS, "")
@@ -70,7 +70,7 @@ open class BaseDownloadAppLinkActivity : BaseSimpleWebViewActivity() {
             }
 
             if (TextUtils.isEmpty(webUrl)) {
-                webUrl = com.tokopedia.url.TokopediaUrl.getInstance().WEB
+                webUrl = TokopediaUrl.getInstance().WEB
             }
 
             return newIntent(context, webUrl, showToolbar,extensionsList)

@@ -6,7 +6,7 @@ import com.tokopedia.instantloan.network.InstantLoanUrl.BaseUrl.WEB_DOMAIN
 object InstantLoanUrl {
 
     object BaseUrl {
-        var WEB_DOMAIN : String = com.tokopedia.url.TokopediaUrl.getInstance().WEB
+        var WEB_DOMAIN : String = TokopediaUrl.getInstance().WEB
     }
 
     object COMMON_URL{

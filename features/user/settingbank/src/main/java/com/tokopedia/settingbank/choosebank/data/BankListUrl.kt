@@ -10,7 +10,7 @@ class BankListUrl {
 
     companion object {
 
-        var BASE_URL: String = com.tokopedia.url.TokopediaUrl.getInstance().ACCOUNTS
+        var BASE_URL: String = TokopediaUrl.getInstance().ACCOUNTS
         const val PATH_SEARCH_BANK_ACCOUNT: String = "api/v2/bank-account/get-bank-list"
 
     }

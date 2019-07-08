@@ -23,7 +23,7 @@ class WebSocketOnSubscribe internal constructor(private val client: OkHttpClient
 
     private fun getRequest(url: String, accessToken: String): Request {
         return Request.Builder().get().url(url)
-                .header("Origin", com.tokopedia.url.TokopediaUrl.getInstance().WEB)
+                .header("Origin", TokopediaUrl.getInstance().WEB)
                 .header("Accounts-Authorization",
                         "Bearer $accessToken")
                 .build()

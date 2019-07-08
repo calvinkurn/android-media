@@ -4,7 +4,7 @@ import com.tokopedia.url.TokopediaUrl
 
 object ProductDetailConstant {
     @JvmField
-    var BASE_REST_URL = com.tokopedia.url.TokopediaUrl.getInstance().WS
+    var BASE_REST_URL = TokopediaUrl.getInstance().WS
 
     const val MAINAPP_SHOW_PDP_TOPADS = "mainapp_show_pdp_topads"
 

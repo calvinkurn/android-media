@@ -26,7 +26,7 @@ constructor() : RestRequestUseCase() {
 
     override fun buildRequest(requestParams: RequestParams): List<RestRequest> {
         val tempRequest = ArrayList<RestRequest>()
-        val url = com.tokopedia.url.TokopediaUrl.getInstance().WS + Constants.ReferralApiPath.PATH_GET_REFERRAL_VOUCHER_CODE
+        val url = TokopediaUrl.getInstance().WS + Constants.ReferralApiPath.PATH_GET_REFERRAL_VOUCHER_CODE
         val token = object : TypeToken<DataResponse<ReferralCodeEntity>>() {
 
         }.type

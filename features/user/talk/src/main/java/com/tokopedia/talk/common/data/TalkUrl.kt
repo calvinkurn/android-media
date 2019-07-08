@@ -8,7 +8,7 @@ import com.tokopedia.url.TokopediaUrl
 class TalkUrl {
     companion object {
 
-        var BASE_URL: String = com.tokopedia.url.TokopediaUrl.getInstance().INBOX
+        var BASE_URL: String = TokopediaUrl.getInstance().INBOX
         const val PATH_GET_INBOX_TALK: String = "talk/v2/inbox"
         const val PATH_GET_PRODUCT_TALK: String = "talk/v2/read"
         const val PATH_DELETE_TALK: String = "talk/v2/delete"
