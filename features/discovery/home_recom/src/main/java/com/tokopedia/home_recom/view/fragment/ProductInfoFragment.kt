@@ -404,7 +404,9 @@ class ProductInfoFragment : BaseDaggerFragment() {
             quantity = productDataModel.productDetailData.minOrder,
             header = "",
             pageName = "",
-            minOrder = productDataModel.productDetailData.minOrder
+            minOrder = productDataModel.productDetailData.minOrder,
+            location = "",
+            badgesUrl = listOf()
     )
 
     private fun handleDiscount(){
