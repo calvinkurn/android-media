@@ -1,4 +1,4 @@
-package com.tokopedia.affiliate.common.preference;
+package com.tokopedia.affiliatecommon.data.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -18,7 +18,7 @@ public class AffiliatePreference {
     private final SharedPreferences sharedPrefs;
 
     @Inject
-    AffiliatePreference(@ApplicationContext Context context) {
+    public AffiliatePreference(@ApplicationContext Context context) {
         this.sharedPrefs = context.getSharedPreferences(
                 AFFILIATE_PREFERENCE,
                 Context.MODE_PRIVATE
