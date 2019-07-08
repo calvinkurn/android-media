@@ -40,26 +40,20 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         errorInputNumber = view.findViewById(R.id.error_input_number)
 
         autoCompleteInputNumber.clearFocus()
-        btnContactPicker.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                listener.onNavigateToContact()
-            }
-        })
+        btnContactPicker.setOnClickListener { listener.onNavigateToContact() }
 
-        btnClear.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                autoCompleteInputNumber.setText("")
-                errorInputNumber.visibility = View.GONE
-            }
-        })
+        btnClear.setOnClickListener {
+            autoCompleteInputNumber.setText("")
+            errorInputNumber.visibility = View.GONE
+        }
 
         autoCompleteInputNumber.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -101,11 +95,11 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     }
 
     fun setInputNumber(inputNumber: String) {
-        autoCompleteInputNumber.setText(inputNumber)
+        autoCompleteInputNumber.setText(formatPrefixClientNumber(inputNumber))
     }
 
     fun getInputNumber(): String {
-        return formatPrefixClientNumber(autoCompleteInputNumber.text.toString());
+        return formatPrefixClientNumber(autoCompleteInputNumber.text.toString())
     }
 
     fun setIconOperator(url: String) {
@@ -127,7 +121,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
 
     fun formatPrefixClientNumber(phoneNumber: String?): String {
         phoneNumber?.run {
-            if (phoneNumber == null || "".equals(phoneNumber.trim { it <= ' ' }, ignoreCase = true)) {
+            if ("".equals(phoneNumber.trim { it <= ' ' }, ignoreCase = true)) {
                 return phoneNumber
             }
             var phoneNumberWithPrefix = validatePrefixClientNumber(phoneNumber)

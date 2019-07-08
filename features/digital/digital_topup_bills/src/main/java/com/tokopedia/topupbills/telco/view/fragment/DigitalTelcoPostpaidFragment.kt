@@ -20,9 +20,11 @@ import com.tokopedia.topupbills.telco.data.*
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.view.activity.DigitalSearchNumberActivity
+import com.tokopedia.topupbills.telco.view.activity.TelcoProductActivity
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
 import com.tokopedia.topupbills.telco.view.fragment.DigitalSearchNumberFragment.InputNumberActionType
 import com.tokopedia.topupbills.telco.view.listener.ClientNumberPostpaidListener
+import com.tokopedia.topupbills.telco.view.model.DigitalTelcoExtraParam
 import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoEnquiryViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
 import com.tokopedia.topupbills.telco.view.widget.DigitalPostpaidClientNumberWidget
@@ -91,6 +93,28 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         handleFocusClientNumber()
         renderClientNumber()
         getCatalogMenuDetail()
+        getDataFromBundle()
+    }
+
+    fun getInputFilterDataCollections() {
+        customViewModel.getCustomDataPostpaid(GraphqlHelper.loadRawString(resources,
+                R.raw.query_custom_digital_telco),
+                this::onSuccessCustomData, this::onErrorCustomData)
+    }
+
+    fun getCatalogMenuDetail() {
+        catalogMenuDetailViewModel.getCatalogMenuDetailPostpaid(GraphqlHelper.loadRawString(resources,
+                R.raw.query_telco_catalog_menu_detail), this::onLoadingMenuDetail,
+                this::onSuccessCatalogMenuDetail, this::onErrorCatalogMenuDetail)
+        catalogMenuDetailViewModel.getFavNumbersPostpaid(GraphqlHelper.loadRawString(resources,
+                R.raw.temp_query_fav_number_digital), this::onSuccessFavNumbers, this::onErrorFavNumbers)
+    }
+
+    fun getDataFromBundle() {
+        arguments?.run {
+            val digitalTelcoExtraParam = this.getParcelable(EXTRA_PARAM) as DigitalTelcoExtraParam
+            postpaidClientNumberWidget.setInputNumber(digitalTelcoExtraParam.clientNumber)
+        }
     }
 
     fun renderClientNumber() {
@@ -139,17 +163,12 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     fun getEnquiryNumber() {
         if (::operatorSelected.isInitialized) {
             var mapParam = HashMap<String, kotlin.Any>()
-            mapParam.put("clientNumber", postpaidClientNumberWidget.getInputNumber())
-            mapParam.put("productId", operatorSelected.operator.attributes.defaultProductId.toString())
+            mapParam.put(KEY_CLIENT_NUMBER, postpaidClientNumberWidget.getInputNumber())
+            mapParam.put(KEY_PRODUCT_ID, operatorSelected.operator.attributes.defaultProductId.toString())
+
             enquiryViewModel.getEnquiry(GraphqlHelper.loadRawString(resources, R.raw.query_enquiry_digital_telco),
                     mapParam, this::onSuccessEnquiry, this::onErrorEnquiry)
         }
-    }
-
-    override fun getMapCustomData(): Map<String, Any> {
-        var mapParam = HashMap<String, kotlin.Any>()
-        mapParam.put("componentID", TelcoComponentType.CLIENT_NUMBER_PROSTPAID)
-        return mapParam
     }
 
     override fun onSuccessCustomData(telcoData: TelcoCustomComponentData) {
@@ -193,7 +212,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
-    override fun onLoadingMenuDetail(showLoading: Boolean) {
+    fun onLoadingMenuDetail(showLoading: Boolean) {
         if (showLoading) {
             layoutProgressBar.visibility = View.VISIBLE
             recentNumbersView.visibility = View.GONE
@@ -227,18 +246,6 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     override fun setInputNumberFromContact(contactNumber: String) {
         postpaidClientNumberWidget.setInputNumber(contactNumber)
-    }
-
-    override fun getMapCatalogMenuDetail(): Map<String, Any> {
-        var mapParam = HashMap<String, kotlin.Any>()
-        mapParam.put("menuID", TelcoComponentType.TELCO_POSTPAID)
-        return mapParam
-    }
-
-    override fun getMapFavNumbers(): Map<String, Any> {
-        var mapParam = HashMap<String, kotlin.Any>()
-        mapParam.put("categoryID", TelcoComponentType.FAV_NUMBER_POSTPAID)
-        return mapParam
     }
 
     override fun handleCallbackSearchNumber(orderClientNumber: TelcoFavNumber, inputNumberActionTypeIndex: Int) {
@@ -299,8 +306,16 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     companion object {
 
-        fun newInstance(): Fragment {
+        private const val EXTRA_PARAM = "extra_param"
+        const val KEY_CLIENT_NUMBER = "clientNumber"
+        const val KEY_PRODUCT_ID = "productId"
+
+
+        fun newInstance(telcoExtraParam: DigitalTelcoExtraParam): Fragment {
             val fragment = DigitalTelcoPostpaidFragment()
+            val bundle = Bundle()
+            bundle.putParcelable(EXTRA_PARAM, telcoExtraParam)
+            fragment.arguments = bundle
             return fragment
         }
     }

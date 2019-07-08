@@ -64,7 +64,7 @@ public class ActivationActivity extends BaseSimpleActivity implements HasCompone
     @Override
     protected void onStart() {
         super.onStart();
-        analytics.trackScreen(this, LoginRegisterAnalytics.SCREEN_ACCOUNT_ACTIVATION);
+        analytics.trackScreen(this, LoginRegisterAnalytics.Companion.getSCREEN_ACCOUNT_ACTIVATION());
     }
 
     public static Intent getCallingIntent(Context context, String email, String pw) {

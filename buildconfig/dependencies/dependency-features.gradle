@@ -176,7 +176,7 @@ ext {
             nps                             : ":features:common:nps",
 
             tradeIn                     : ":features:category:tradein",
-            tradeInCommon               : ":features:category:tradein_common",
+            basemvvm               : ":features:category:basemvvm",
 
             broadcastMessage                : ":features:communication:broadcast_message",
 //            broadcastMessage                : ":features:communication:broadcast_message_no_op", // toggle for no op
@@ -340,6 +340,7 @@ ext {
 //            notifCenter                     : ":features:user:notifcenter_no_op",
             otp                             : ":features:user:otp",
             phoneVerification               : ":features:user:phoneverification",
+            profileCompletion               : ":features:user:profilecompletion",
             settingbank                     : ":features:user:settingbank",
             talk                            : ":features:user:talk",
             topchat                         : ":features:user:topchat",
@@ -358,6 +359,7 @@ ext {
             transaction                     : ":tkpdtransaction",
             transactioncommon               : ":tkpdtransaction-common",
             commonTravel                    : ":features:digital:common_travel",
-            ovo                             : ":features:fintech:ovo_pay_with_qr"
+            ovo                             : ":features:fintech:ovo_pay_with_qr",
+            agerestriction                  : ":features:category:age_restriction"
     ]
 }

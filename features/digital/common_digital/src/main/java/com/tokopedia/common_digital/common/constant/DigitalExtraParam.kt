@@ -7,4 +7,7 @@ object DigitalExtraParam {
 
     @JvmField
     val EXTRA_MESSAGE = "EXTRA_MESSAGE"
+
+    @JvmField
+    val EXTRA_PARAM_TELCO = "EXTRA_PARAM_TELCO"
 }

@@ -14,7 +14,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -50,8 +49,8 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
     protected lateinit var recentNumbersView: DigitalRecentTransactionWidget
     protected lateinit var promoListView: DigitalPromoListWidget
     protected lateinit var checkoutPassData: DigitalCheckoutPassData
-    private lateinit var customViewModel: DigitalTelcoCustomViewModel
-    private lateinit var catalogMenuDetailViewModel: TelcoCatalogMenuDetailViewModel
+    protected lateinit var customViewModel: DigitalTelcoCustomViewModel
+    protected lateinit var catalogMenuDetailViewModel: TelcoCatalogMenuDetailViewModel
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -78,32 +77,9 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
         }
     }
 
-    fun getInputFilterDataCollections() {
-        customViewModel.getCustomData(GraphqlHelper.loadRawString(resources,
-                R.raw.query_custom_digital_telco), getMapCustomData(),
-                this::onSuccessCustomData, this::onErrorCustomData)
-    }
-
     protected abstract fun onSuccessCustomData(telcoData: TelcoCustomComponentData)
 
     protected abstract fun onErrorCustomData(error: Throwable)
-
-    protected abstract fun getMapCustomData(): Map<String, kotlin.Any>
-
-    protected abstract fun onLoadingMenuDetail(showLoading: Boolean)
-
-    protected abstract fun getMapCatalogMenuDetail(): Map<String, kotlin.Any>
-
-    protected abstract fun getMapFavNumbers(): Map<String, kotlin.Any>
-
-    fun getCatalogMenuDetail() {
-        catalogMenuDetailViewModel.getCatalogMenuDetail(GraphqlHelper.loadRawString(resources,
-                R.raw.query_telco_catalog_menu_detail), getMapCatalogMenuDetail(),
-                this::onLoadingMenuDetail, this::onSuccessCatalogMenuDetail, this::onErrorCatalogMenuDetail)
-        catalogMenuDetailViewModel.getFavNumbers(GraphqlHelper.loadRawString(resources,
-                R.raw.temp_query_fav_number_digital), getMapFavNumbers(),
-                this::onSuccessFavNumbers, this::onErrorFavNumbers)
-    }
 
     fun onSuccessCatalogMenuDetail(catalogMenuDetailData: TelcoCatalogMenuDetailData) {
         renderPromoList(catalogMenuDetailData.catalogMenuDetailData.promos)
@@ -311,14 +287,15 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
 
     override fun onDestroy() {
         customViewModel.clear()
+        catalogMenuDetailViewModel.clear()
         super.onDestroy()
     }
 
     companion object {
-        val REQUEST_CODE_DIGITAL_SEARCH_NUMBER = 77
-        val REQUEST_CODE_CONTACT_PICKER = 78
-        val REQUEST_CODE_LOGIN = 1010
-        val REQUEST_CODE_CART_DIGITAL = 1090
-        val CLIP_DATA_VOUCHER_CODE_DIGITAL = "digital_telco_clip_data_promo"
+        const val REQUEST_CODE_DIGITAL_SEARCH_NUMBER = 77
+        const val REQUEST_CODE_CONTACT_PICKER = 78
+        const val REQUEST_CODE_LOGIN = 1010
+        const val REQUEST_CODE_CART_DIGITAL = 1090
+        const val CLIP_DATA_VOUCHER_CODE_DIGITAL = "digital_telco_clip_data_promo"
     }
 }

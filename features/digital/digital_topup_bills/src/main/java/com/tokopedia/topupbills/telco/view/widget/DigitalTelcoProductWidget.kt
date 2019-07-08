@@ -34,7 +34,7 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
     }
 
     fun renderProductList(productType: Int, productList: List<TelcoProductDataCollection>,
-                              selectedProductPos: Int) {
+                          selectedProductPos: Int) {
         adapter = DigitalProductAdapter(productList, productType)
         adapter.setListener(object : DigitalProductAdapter.ActionListener {
             override fun onClickItemProduct(itemProduct: TelcoProductDataCollection) {
@@ -53,7 +53,9 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
             recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         }
         adapter.notifyDataSetChanged()
-        recyclerView.layoutManager.scrollToPosition(selectedProductPos)
+        recyclerView.layoutManager?.run {
+            this.scrollToPosition(selectedProductPos)
+        }
     }
 
     fun notifyProductItemChanges(productId: String) {

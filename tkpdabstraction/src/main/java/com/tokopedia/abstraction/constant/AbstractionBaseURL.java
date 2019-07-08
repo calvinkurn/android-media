@@ -7,4 +7,5 @@ package com.tokopedia.abstraction.constant;
 public class AbstractionBaseURL {
     // will be overwritten in respective MainApplication (SellerMainApplication or ConsumerMainApplication)
     public static String JS_DOMAIN = "https://js.tokopedia.com/";
+    public static String MOBILE_DOMAIN = "https://m.tokopedia.com/";
 }

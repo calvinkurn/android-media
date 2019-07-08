@@ -8,5 +8,6 @@ object ApplinkConsInternalDigital {
 
     const val INTERNAL_DIGITAL = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_DIGITAL}"
 
-    const val CART_DIGITAL = "${INTERNAL_DIGITAL}/telco/cart"
+    const val CART_DIGITAL = "${INTERNAL_DIGITAL}/cart"
+    const val TELCO_DIGITAL = "${INTERNAL_DIGITAL}/telco"
 }

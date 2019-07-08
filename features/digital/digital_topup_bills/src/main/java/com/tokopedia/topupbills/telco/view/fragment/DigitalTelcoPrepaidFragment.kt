@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.graphql.data.GraphqlClient
@@ -30,6 +31,7 @@ import com.tokopedia.topupbills.telco.view.adapter.DigitalTelcoProductTabAdapter
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
 import com.tokopedia.topupbills.telco.view.fragment.DigitalSearchNumberFragment.InputNumberActionType
 import com.tokopedia.topupbills.telco.view.model.DigitalTabTelcoItem
+import com.tokopedia.topupbills.telco.view.model.DigitalTelcoExtraParam
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedProductTelcoViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
 import com.tokopedia.topupbills.telco.view.widget.DigitalTelcoBuyWidget
@@ -138,12 +140,32 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         renderInputNumber()
         getCatalogMenuDetail()
         renderBuyProduct()
+        getDataFromBundle()
     }
 
-    override fun getMapCustomData(): Map<String, Any> {
-        var mapParam = HashMap<String, kotlin.Any>()
-        mapParam.put("componentID", TelcoComponentType.CLIENT_NUMBER_PREPAID)
-        return mapParam
+    fun getInputFilterDataCollections() {
+        customViewModel.getCustomDataPrepaid(GraphqlHelper.loadRawString(resources,
+                R.raw.query_custom_digital_telco),
+                this::onSuccessCustomData, this::onErrorCustomData)
+    }
+
+    fun getCatalogMenuDetail() {
+        catalogMenuDetailViewModel.getCatalogMenuDetailPrepaid(GraphqlHelper.loadRawString(resources,
+                R.raw.query_telco_catalog_menu_detail),
+                this::onLoadingMenuDetail, this::onSuccessCatalogMenuDetail, this::onErrorCatalogMenuDetail)
+        catalogMenuDetailViewModel.getFavNumbersPrepaid(GraphqlHelper.loadRawString(resources,
+                R.raw.temp_query_fav_number_digital), this::onSuccessFavNumbers, this::onErrorFavNumbers)
+    }
+
+    fun getDataFromBundle() {
+        arguments?.run {
+            val digitalTelcoExtraParam = this.getParcelable(EXTRA_PARAM) as DigitalTelcoExtraParam
+            telcoClientNumberWidget.setInputNumber(digitalTelcoExtraParam.clientNumber)
+            selectedProductId = digitalTelcoExtraParam.productId
+            if (digitalTelcoExtraParam.categoryId.isNotEmpty()) {
+                selectedCategoryId = Integer.valueOf(digitalTelcoExtraParam.categoryId)
+            }
+        }
     }
 
     override fun onSuccessCustomData(telcoData: TelcoCustomComponentData) {
@@ -188,7 +210,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
-    override fun onLoadingMenuDetail(showLoading: Boolean) {
+    fun onLoadingMenuDetail(showLoading: Boolean) {
         if (showLoading) {
             layoutProgressBar.visibility = View.VISIBLE
             recentNumbersView.visibility = View.GONE
@@ -276,7 +298,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 if (tabViewChild is TextView) {
                     context?.run {
                         tabViewChild.typeface = Typeface.createFromAsset(this.assets,
-                                "fonts/NunitoSans-ExtraBold.ttf")
+                                TAB_FONT_NUNITO_SANS)
                     }
 
                 }
@@ -296,12 +318,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             }
         }
         viewPager.setCurrentItem(itemId, true)
-    }
-
-    override fun getMapCatalogMenuDetail(): Map<String, Any> {
-        var mapParam = HashMap<String, kotlin.Any>()
-        mapParam.put("menuID", TelcoComponentType.TELCO_PREPAID)
-        return mapParam
     }
 
     override fun showErrorCartDigital(message: String) {
@@ -329,12 +345,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         selectedProductId = telcoRecommendation.productId.toString()
         selectedCategoryId = telcoRecommendation.categoryId
         telcoClientNumberWidget.setInputNumber(telcoRecommendation.clientNumber)
-    }
-
-    override fun getMapFavNumbers(): Map<String, Any> {
-        var mapParam = HashMap<String, Any>()
-        mapParam.put("categoryID", TelcoComponentType.FAV_NUMBER_PREPAID)
-        return mapParam
     }
 
     override fun setFavNumbers(data: TelcoRechargeFavNumberData) {
@@ -383,8 +393,14 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     companion object {
 
-        fun newInstance(): Fragment {
+        private const val EXTRA_PARAM = "extra_param"
+        const val TAB_FONT_NUNITO_SANS = "fonts/NunitoSans-ExtraBold.ttf"
+
+        fun newInstance(telcoExtraParam: DigitalTelcoExtraParam): Fragment {
             val fragment = DigitalTelcoPrepaidFragment()
+            val bundle = Bundle()
+            bundle.putParcelable(EXTRA_PARAM, telcoExtraParam)
+            fragment.arguments = bundle
             return fragment
         }
     }

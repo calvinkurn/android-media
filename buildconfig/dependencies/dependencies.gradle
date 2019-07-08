@@ -3,14 +3,14 @@ ext {
     compileSdkVersion = 28
     minSdkVersion = 16
     targetSdkVersion = 28
-    buildToolsVersion = "27.0.3"
+    buildToolsVersion = "28.0.3"
 
     jacocoVersion = "0.7.9"
     kotlinVersion = "1.3.0"
 
     lifeCycleVersion = "1.1.1"
 
-    supportLibraryVersion = '27.1.1'
+    supportLibraryVersion = '28.0.0'
     playServiceVersion = '11.0.4'
     butterKnifeVersion = '9.0.0'
     coroutineVersion = '1.0.0'
@@ -68,7 +68,7 @@ ext {
     artifactIdCheckout = 'checkout'
 
     unifyIconVersion = '0.0.4'
-    unifyPrinciplesVersion = '0.0.2'
+    unifyPrinciplesVersion = '0.0.4'
     unifyComponentsVersion = '0.0.4'
     unifyCoachMarkVersion = '1.0.0'
     unifyCalendarVersion = '0.0.2'
@@ -104,7 +104,7 @@ ext {
             design              : "com.android.support:design:${supportLibraryVersion}",
             cardViewV7          : "com.android.support:cardview-v7:${supportLibraryVersion}",
             exifinterface       : "com.android.support:exifinterface:${supportLibraryVersion}",
-            constraintLayout    : "com.android.support.constraint:constraint-layout:1.0.2",
+            constraintLayout    : "com.android.support.constraint:constraint-layout:1.1.3",
             preferenceV7        : "com.android.support:preference-v7:${supportLibraryVersion}",
             kotlinSupport       : "org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}",
             kotlinSupportJdk7   : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlinVersion}",
@@ -160,7 +160,7 @@ ext {
     analyticsDependencies = [
             appsflyer  : "com.appsflyer:af-android-sdk:4.8.11@aar",
             installRef : "com.android.installreferrer:installreferrer:1.0",
-            moengage   : "com.moengage:moe-android-sdk:9.3.00",
+            moengage   : "com.moengage:moe-android-sdk:9.3.02",
             moengageFirebase   : "com.moengage:moe-push-firebase:3.1.00",
             moengageSdk         : "com.moengage:moengagesdk:3.3.00",
             moengagePushbase    : "com.moengage:pushbase:3.2.00",
@@ -211,6 +211,7 @@ ext {
             exoPlayerRtmp         : "com.google.android.exoplayer:extension-rtmp:$exoPlayerVersion",
             lifeCycleExtentions   : "android.arch.lifecycle:extensions:$lifeCycleVersion",
             lifeCycleRuntime      : "android.arch.lifecycle:compiler:$lifeCycleVersion",
+            liveData              : "android.arch.lifecycle:livedata:$lifeCycleVersion",
             laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.1.11@aar",
     ]
 
