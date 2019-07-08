@@ -246,7 +246,7 @@
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/product_card_ic_topads"
+            app:srcCompat="@drawable/product_card_v2_ic_topads"
             tools:visibility="visible" />
 
     </android.support.constraint.ConstraintLayout>
