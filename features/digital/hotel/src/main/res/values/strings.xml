@@ -37,6 +37,8 @@
     <string name="hotel_check_in_calendar_title">Check-in</string>
     <string name="hotel_check_out_calendar_title">Check-out</string>
 
+    <string name="hotel_progress_dialog_title">Sedang diproses...</string>
+
     <string name="hotel_homepage_destination">Tujuan</string>
     <string name="hotel_homepage_destination_hint">Kota, area, atau hotel</string>
     <string name="hotel_homepage_guest_info">Kamar dan Tamu</string>
