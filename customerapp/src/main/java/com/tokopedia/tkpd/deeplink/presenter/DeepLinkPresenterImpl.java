@@ -41,6 +41,7 @@ import com.tokopedia.core.session.model.SecurityModel;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
+import com.tokopedia.discovery.catalog.fragment.CatalogDetailListFragment;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
 import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
@@ -567,8 +568,15 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openCatalogDetail(List<String> linkSegment, Uri uriData) {
-        viewListener.inflateFragment(DetailProductRouter
-                .getCatalogDetailFragment(context, linkSegment.get(1)), TAG_FRAGMENT_CATALOG_DETAIL);
+        try {
+            String catalogId = linkSegment.get(1);
+            viewListener.inflateFragment(
+                    CatalogDetailListFragment.newInstance(catalogId),
+                    TAG_FRAGMENT_CATALOG_DETAIL
+            );
+        } catch (Exception e) {
+            Crashlytics.log(e.getLocalizedMessage());
+        }
     }
 
     private void openHotProduct(List<String> linkSegment, Uri uriData) {
