@@ -176,7 +176,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = AppScreen.SCREEN_DISCOVERY_PAGE;
                     break;
                 case DeepLinkChecker.PRODUCT:
-                    if (linkSegment.size() >= 2 && linkSegment.get(1).equals("info")) {
+                    if (linkSegment.size() >= 2
+                            && linkSegment.get(1).equals("info")
+                            || isEtalase(linkSegment)) {
                         openShopInfo(linkSegment, uriData);
                         screenName = AppScreen.SCREEN_SHOP_INFO;
                     } else {
