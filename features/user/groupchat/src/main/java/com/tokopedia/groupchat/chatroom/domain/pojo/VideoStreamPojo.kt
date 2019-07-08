@@ -12,21 +12,9 @@ class VideoStreamPojo {
     @Expose
     var orientation: String = ""
 
-    @SerializedName("stream_rtmp_sd")
+    @SerializedName("data")
     @Expose
-    var streamRtmpStandard: String = ""
-
-    @SerializedName("stream_rtmp_hd")
-    @Expose
-    var streamRtmpHigh: String = ""
-
-    @SerializedName("stream_hls_sd")
-    @Expose
-    var streamHlsStandard: String = ""
-
-    @SerializedName("stream_hls_hd")
-    @Expose
-    var streamHlsHigh: String = ""
+    var streamData: StreamData = StreamData()
 
     @SerializedName("is_active")
     @Expose
@@ -35,4 +23,22 @@ class VideoStreamPojo {
     @SerializedName("is_live")
     @Expose
     var isLive: Boolean = false
+}
+
+class StreamData {
+    @SerializedName("android_stream_hd")
+    @Expose
+    var androidStreamHD: String = ""
+
+    @SerializedName("android_stream_sd")
+    @Expose
+    var androidStreamSD: String = ""
+
+    @SerializedName("ios_stream_hd")
+    @Expose
+    var iosStreamHD: String = ""
+
+    @SerializedName("ios_stream_sd")
+    @Expose
+    var iosStreamSD: String = ""
 }

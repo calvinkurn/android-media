@@ -9,7 +9,6 @@ import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ProgressBar
-import android.widget.RelativeLayout
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.groupchat.R
@@ -150,9 +149,9 @@ class VideoVerticalHelper (
     fun playVideo(videoQuality: Int) {
         videoSource = videoQuality
         val video: String = when (videoQuality) {
-            VIDEO_480 -> videoStreamViewModel.rtmpStandard
-            VIDEO_720 -> videoStreamViewModel.rtmpHigh
-            else -> videoStreamViewModel.rtmpStandard
+            VIDEO_480 -> videoStreamViewModel.androidStreamSD
+            VIDEO_720 -> videoStreamViewModel.androidStreamHD
+            else -> videoStreamViewModel.androidStreamSD
         }
         playVideoSource(video)
     }

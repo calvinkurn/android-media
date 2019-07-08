@@ -97,10 +97,10 @@ class PlayWebSocketMessageMapper @Inject constructor() {
                 pojo.isActive,
                 pojo.isLive,
                 pojo.orientation,
-                pojo.streamRtmpStandard,
-                pojo.streamRtmpHigh,
-                pojo.streamHlsStandard,
-                pojo.streamHlsHigh
+                pojo.streamData.androidStreamHD,
+                pojo.streamData.androidStreamSD,
+                pojo.streamData.iosStreamHD,
+                pojo.streamData.iosStreamSD
         )
     }
 

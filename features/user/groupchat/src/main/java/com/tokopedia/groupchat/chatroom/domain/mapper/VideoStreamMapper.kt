@@ -1,11 +1,7 @@
 package com.tokopedia.groupchat.chatroom.domain.mapper
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.groupchat.chatroom.domain.pojo.ButtonsPojo
 import com.tokopedia.groupchat.chatroom.domain.pojo.VideoStreamPojo
-import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
-import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
-import com.tokopedia.groupchat.room.view.viewmodel.InteractiveButton
 import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
 import com.tokopedia.network.data.model.response.DataResponse
 import retrofit2.Response
@@ -30,13 +26,14 @@ class VideoStreamMapper @Inject constructor() : Func1<Response<DataResponse<Vide
     }
 
     private fun mapToViewModel(pojo: VideoStreamPojo): VideoStreamViewModel {
+        var streamData = pojo.streamData
         return VideoStreamViewModel(
                 pojo.isActive,
                 pojo.isLive,
-                pojo.streamRtmpStandard,
-                pojo.streamRtmpHigh,
-                pojo.streamHlsStandard,
-                pojo.streamHlsHigh,
+                streamData.androidStreamHD,
+                streamData.androidStreamSD,
+                streamData.iosStreamHD,
+                streamData.iosStreamSD,
                 pojo.orientation
         )
     }
