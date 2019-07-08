@@ -512,12 +512,12 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     if (isEtalase(linkSegment)){
                         RouteManager.route(context,
                                 ApplinkConst.SHOP_ETALASE,
-                                shopInfo.getInfo().getShopId(),
+                                shopId,
                                 lastSegment);
                     } else if (lastSegment.equals("info")) {
                         RouteManager.route(context,
                                 ApplinkConst.SHOP_INFO,
-                                shopInfo.getInfo().getShopId());
+                                shopId);
                     } else {
                         Intent intent = ((TkpdCoreRouter) context.getApplication()).getShopPageIntent(context, shopId);
                         context.startActivity(intent);
