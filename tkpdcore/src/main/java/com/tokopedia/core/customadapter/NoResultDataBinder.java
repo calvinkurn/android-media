@@ -10,12 +10,8 @@ import android.widget.ImageView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by Nisie on 2/26/16.
@@ -72,13 +68,11 @@ public class NoResultDataBinder extends DataBinder<NoResultDataBinder.ViewHolder
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R2.id.no_result_image)
         ImageView emptyImage;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
-
+            emptyImage = (ImageView) itemView.findViewById(R.id.no_result_image);
         }
     }
 }

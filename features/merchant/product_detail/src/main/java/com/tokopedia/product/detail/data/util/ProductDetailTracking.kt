@@ -199,16 +199,19 @@ class ProductDetailTracking() {
             id.toString())
     }
 
-    fun eventRecommendationClick(product: RecommendationItem, position: Int, isSessionActive: Boolean) {
-        val listValue = LIST_DEFAULT + product.recommendationType + (if (product.isTopAds) " - product topads" else "")
+    fun eventRecommendationClick(product: RecommendationItem, position: Int, isSessionActive: Boolean, pageName: String, pageTitle:String) {
+        val listValue = LIST_DEFAULT + pageName +
+                (if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN}" else "") +
+                LIST_RECOMMENDATION + product.recommendationType + (if (product.isTopAds) " - product topads" else "")
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(KEY_EVENT, ProductTrackingConstant.Action.PRODUCT_CLICK,
                         KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
                         KEY_ACTION, ProductTrackingConstant.Action.TOPADS_CLICK +
                         (if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN}" else ""),
-                        KEY_LABEL, "",
-                        KEY_ECOMMERCE, DataLayer.mapOf(ProductTrackingConstant.Action.CLICK,
+                        KEY_LABEL, pageTitle,
+                        KEY_ECOMMERCE, DataLayer.mapOf(CURRENCY_CODE, CURRENCY_DEFAULT_VALUE,
+                        ProductTrackingConstant.Action.CLICK,
                         DataLayer.mapOf(ACTION_FIELD, DataLayer.mapOf(LIST, listValue),
                                 PRODUCTS, DataLayer.listOf(
                                 DataLayer.mapOf(PROMO_NAME, product.name,
@@ -222,19 +225,22 @@ class ProductDetailTracking() {
         )
     }
 
-    fun eventRecommendationImpression(position: Int, product: RecommendationItem, isSessionActive: Boolean) {
-        val listValue = LIST_DEFAULT + product.recommendationType + (if (product.isTopAds) " - product topads" else "")
+    fun eventRecommendationImpression(position: Int, product: RecommendationItem, isSessionActive: Boolean, pageName: String, pageTitle: String) {
+        val listValue = LIST_DEFAULT + pageName  +
+                (if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN}" else "") +
+                LIST_RECOMMENDATION + product.recommendationType + (if (product.isTopAds) " - product topads" else "")
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(KEY_EVENT, "productView",
                         KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
                         KEY_ACTION, ProductTrackingConstant.Action.TOPADS_IMPRESSION +
                         (if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN}" else ""),
-                        KEY_LABEL, "",
-                        KEY_ECOMMERCE, DataLayer.mapOf("currencyCode", "IDR", "impressions",
+                        KEY_LABEL, pageTitle,
+                        KEY_ECOMMERCE, DataLayer.mapOf(CURRENCY_CODE, CURRENCY_DEFAULT_VALUE, "impression",
                         DataLayer.listOf(
                                 DataLayer.mapOf(PROMO_NAME, product.name,
-                                        ID, product.productId.toString(), PRICE, removeCurrencyPrice(product.price),
+                                        ID, product.productId.toString(),
+                                        PRICE, removeCurrencyPrice(product.price),
                                         BRAND, DEFAULT_VALUE,
                                         VARIANT, DEFAULT_VALUE,
                                         CATEGORY, product.categoryBreadcrumbs.toLowerCase(),
@@ -545,7 +551,10 @@ class ProductDetailTracking() {
         private const val DEFAULT_VALUE = "none / other"
         private const val VARIANT = "variant"
         private const val CATEGORY = "category"
-        private const val LIST_DEFAULT = "/product - rekomendasi untuk anda - "
+        private const val LIST_DEFAULT = "/product - "
+        private const val LIST_RECOMMENDATION = " - rekomendasi untuk anda - "
+        private const val CURRENCY_CODE = "currencyCode"
+        private const val CURRENCY_DEFAULT_VALUE = "IDR"
     }
 
     private fun getFormattedPrice(price: Int): String {

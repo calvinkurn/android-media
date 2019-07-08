@@ -12,7 +12,6 @@ import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.TextView;
 
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 
 public class ClipboardHandler {
 	private Activity context;

@@ -11,9 +11,9 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.shopfeature.ShopFeatureData
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.product.detail.data.model.shopfeature.ShopFeatureData
 import kotlinx.android.synthetic.main.partial_product_shop_info.view.*
 import java.util.*
 

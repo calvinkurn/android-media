@@ -7,7 +7,6 @@ import android.widget.CheckBox;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.manage.people.notification.listener.ManageNotificationFragmentView;
 import com.tokopedia.core.manage.people.notification.model.SettingNotification;
@@ -15,30 +14,17 @@ import com.tokopedia.core.manage.people.notification.presenter.ManageNotificatio
 import com.tokopedia.core.manage.people.notification.presenter.ManageNotificationPresenterImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;
 
-import butterknife.BindView;
-
 /**
  * Created by Nisie on 6/22/16.
  */
 public class ManageNotificationFragment extends BasePresenterFragment<ManageNotificationPresenter>
         implements ManageNotificationFragmentView, View.OnClickListener {
 
-    @BindView(R2.id.newsletter)
     CheckBox newsletterCheckBox;
-
-    @BindView(R2.id.reviews)
     CheckBox reviewsCheckBox;
-
-    @BindView(R2.id.talkabout)
     CheckBox talkCheckBox;
-
-    @BindView(R2.id.message)
     CheckBox messageCheckBox;
-
-    @BindView(R2.id.admin_message)
     CheckBox adminCheckBox;
-
-    @BindView(R2.id.main_view)
     View mainView;
 
     TkpdProgressDialog mProgressDialog;
@@ -99,6 +85,13 @@ public class ManageNotificationFragment extends BasePresenterFragment<ManageNoti
 
     @Override
     protected void initView(View view) {
+        newsletterCheckBox = (CheckBox) view.findViewById(R.id.newsletter);
+        reviewsCheckBox = (CheckBox) view.findViewById(R.id.reviews);
+        talkCheckBox = (CheckBox) view.findViewById(R.id.talkabout);
+        messageCheckBox = (CheckBox) view.findViewById(R.id.message);
+        adminCheckBox = (CheckBox) view.findViewById(R.id.admin_message);
+        mainView = (View) view.findViewById(R.id.main_view);
+
         mProgressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.MAIN_PROGRESS, view);
         mProgressDialog.setLoadingViewId(R.id.include_loading);
     }

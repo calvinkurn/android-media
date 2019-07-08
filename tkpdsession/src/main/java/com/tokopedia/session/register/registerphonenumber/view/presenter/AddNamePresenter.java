@@ -47,6 +47,7 @@ public class AddNamePresenter
 
     }
 
+    @Deprecated
     @Override
     public void registerPhoneNumberAndName(String name, String uuid, String phoneNumber) {
         if (isValidate(name)) {

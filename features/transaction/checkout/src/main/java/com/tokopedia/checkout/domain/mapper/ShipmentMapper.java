@@ -232,6 +232,7 @@ public class ShipmentMapper implements IShipmentMapper {
                     userAddressResult.setProvinceName(groupAddress.getUserAddress().getProvinceName());
                     userAddressResult.setReceiverName(groupAddress.getUserAddress().getReceiverName());
                     userAddressResult.setCornerId(groupAddress.getUserAddress().getCornerId());
+                    userAddressResult.setCorner(groupAddress.getUserAddress().isCorner());
 
                     groupAddressResult.setUserAddress(userAddressResult);
                 }
@@ -494,6 +495,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                     purchaseProtectionPlanData.setProtectionSubtitle(pppDataMapping.getProtectionSubtitle());
                                     purchaseProtectionPlanData.setProtectionTitle(pppDataMapping.getProtectionTitle());
                                     purchaseProtectionPlanData.setProtectionTypeId(pppDataMapping.getProtectionTypeId());
+                                    purchaseProtectionPlanData.setProtectionCheckboxDisabled(pppDataMapping.getProtectionCheckboxDisabled());
 
                                     productResult.setPurchaseProtectionPlanData(purchaseProtectionPlanData);
                                 }

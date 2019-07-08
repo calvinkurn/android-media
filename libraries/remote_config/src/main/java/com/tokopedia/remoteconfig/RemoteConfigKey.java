@@ -107,10 +107,18 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_GLOBAL_NAV_WIDGET = "android_customer_enable_global_nav_widget";
 
+    public static final String HOME_GEOLOCATION_COMPONENT_TITLE = "android_customer_home_geolocation_component_title";
+    public static final String HOME_GEOLOCATION_COMPONENT_DESCRIPTION = "android_customer_home_geolocation_component_description";
+    public static final String SHOW_HOME_GEOLOCATION_COMPONENT = "android_customer_show_home_geolocation_component";
+
     public static final String APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP = "app_enable_saldo_split_for_seller_app";
 
+    //   switch for New category belanja page
     public static final String APP_CATEGORY_BROWSE_V1 = "app_category_browse_v1";
-  
+
+     //   switch for New category belanja page A/B testing
+    public static final String APP_CATEGORY_BROWSE_ENABLE_AB = "app_category_browse_enable_ab";
+
     public static final String SHOP_SHARE_MSG = "app_shop_shr_msg";
     public static final String HOTLIST_SHARE_MSG = "app_hotlist_shr_msg";
 

@@ -24,8 +24,7 @@
         <com.tokopedia.searchbar.MainToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fitsSystemWindows="true"
+            android:layout_height="?actionBarSize"
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
             app:layout_anchor="@id/status_bar_bg"
