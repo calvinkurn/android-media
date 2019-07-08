@@ -816,8 +816,8 @@ open class PlayViewStateImpl(
         var it = VideoStreamViewModel(
                 true,
                 false,
-                "https://scontent-sin6-1.cdninstagram.com/vp/2a1b5cba5df6f097605c516a3c7d58d3/5D1FB5C0/t50.12441-16/55450199_131136041277815_5339080047835994825_n.mp4?_nc_ht=scontent-sin6-1.cdninstagram.com",
-                "https://scontent-sin6-2.cdninstagram.com/vp/37c031a24fd60eb087a6c1b1072ad5d8/5D208424/t50.12441-16/53306725_332584844027284_3716503313000746737_n.mp4?_nc_ht=scontent-sin6-2.cdninstagram.com"
+                "https://scontent-sin6-1.cdninstagram.com/vp/6a699996e4c39439008d67726849596d/5D24E316/t50.12441-16/53744866_293174538021780_5033871342265528633_n.mp4?_nc_ht=scontent-sin6-1.cdninstagram.com",
+                "https://scontent-sin6-1.cdninstagram.com/vp/1c1f2774060e5a7403bc2eefae6e36cf/5D25AFC6/t50.12441-16/59409583_1671393593006903_5676993366659842316_n.mp4?_nc_ht=scontent-sin6-1.cdninstagram.com"
         )
         if(it.isActive) {
             videoVerticalHelper.setData(it)

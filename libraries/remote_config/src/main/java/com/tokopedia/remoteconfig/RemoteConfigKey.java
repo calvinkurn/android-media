@@ -113,4 +113,6 @@ public class RemoteConfigKey {
   
     public static final String SHOP_SHARE_MSG = "app_shop_shr_msg";
     public static final String HOTLIST_SHARE_MSG = "app_hotlist_shr_msg";
+
+    public static final String PLAY_PIP = "android_customer_enable_play_pip";
 }
