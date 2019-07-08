@@ -377,7 +377,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     this,
                     this,
                     this,
-                    onAttachProductClicked(),
                     (activity as BaseChatToolbarActivity).getToolbar(),
                     analytics
             )
@@ -420,14 +419,12 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     }
 
-    private fun onAttachProductClicked(): () -> Unit {
-        return {
-            val intent = TopChatInternalRouter.Companion.getAttachProductIntent(activity as Activity,
-                    shopId.toString(),
-                    "",
-                    getUserSession().shopId == shopId.toString())
-            startActivityForResult(intent, TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE)
-        }
+    private fun onAttachProductClicked() {
+        val intent = TopChatInternalRouter.Companion.getAttachProductIntent(activity as Activity,
+                shopId.toString(),
+                "",
+                getUserSession().shopId == shopId.toString())
+        startActivityForResult(intent, TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE)
     }
 
     override fun clearEditText() {
@@ -857,7 +854,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun onClickAttachProduct() {
         analytics.eventAttachProduct()
-        onAttachProductClicked()()
+        onAttachProductClicked()
     }
 
     override fun onClickImagePicker() {
