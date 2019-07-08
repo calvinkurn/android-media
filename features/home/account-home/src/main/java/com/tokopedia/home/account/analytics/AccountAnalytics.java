@@ -282,4 +282,29 @@ public class AccountAnalytics {
             ((AccountHomeRouter) context.getApplicationContext()).setNewsletterEmailPref(newValue);
     }
 
+    public void eventClickToggleOnGeolocation(Context context) {
+        final Analytics analytics = TrackApp.getInstance().getGTM();
+
+        if (analytics != null) {
+            analytics.sendGeneralEvent(
+                    "clickHomePage",
+                    "homepage",
+                    "click toggle on geolocation",
+                    ""
+            );
+        }
+    }
+
+    public void eventClickToggleOffGeolocation(Context context) {
+        final Analytics analytics = TrackApp.getInstance().getGTM();
+
+        if (analytics != null) {
+            analytics.sendGeneralEvent(
+                    "clickHomePage",
+                    "homepage",
+                    "click toggle off geolocation",
+                    ""
+            );
+        }
+    }
 }
