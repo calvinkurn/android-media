@@ -29,6 +29,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.view.menu.MenuItemImpl;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
@@ -376,6 +377,12 @@ public class MainParentActivity extends BaseActivity implements
 
         Fragment fragment = fragmentList.get(position);
         if (fragment != null) {
+
+            if (item.getTitle() == "Official Store"){
+                startActivity(((GlobalNavRouter) getApplication()).getOldOfficialStore(this));
+                return false;
+            }
+
             this.currentFragment = fragment;
             selectFragment(fragment);
         }
