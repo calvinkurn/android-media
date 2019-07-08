@@ -48,7 +48,6 @@ class TopChatViewStateImpl(
         private val sendListener: SendButtonListener,
         private val templateListener: ChatTemplateListener,
         private val imagePickerListener: ImagePickerListener,
-        private val onAttachProductClicked: () -> Unit,
         toolbar: Toolbar,
         val analytics: TopChatAnalytics
 ) : BaseChatViewStateImpl(view, toolbar, typingListener), TopChatViewState {
@@ -102,8 +101,8 @@ class TopChatViewStateImpl(
         }
 
         attachButton.setOnClickListener {
-            analytics.eventAttachProduct()
-            onAttachProductClicked()
+//            analytics.eventAttachProduct()
+//            onAttachProductClicked()
         }
 
         initProductPreviewLayout()
