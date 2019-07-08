@@ -26,6 +26,7 @@ object AddNewAddressAnalytics {
     private const val VIEW_ERROR_ALAMAT_TIDAK_VALID = "view error alamat tidak valid"
     private const val CLICK_BACK_ARROW_ON_INPUT_ADDRESS = "click back arrow on input address"
     private const val CLICK_FIELD_CARI_LOKASI = "click field cari lokasi"
+    private const val CLICK_MAGNIFIER = "click magnifier"
     private const val CLICK_ADDRESS_SUGGESTION_FROM_SUGGESTION_LIST = "click address suggestion from suggestion list"
     private const val CLICK_BUTTON_PILIH_LOKASI = "click button pilih lokasi"
     private const val CLICK_FIELD_DETAIL_ALAMAT = "click field detail alamat"
@@ -93,6 +94,10 @@ object AddNewAddressAnalytics {
 
     fun eventClickFieldCariLokasi() {
         sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_FIELD_CARI_LOKASI)
+    }
+
+    fun eventClickMagnifier() {
+        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_MAGNIFIER)
     }
 
     fun eventClickAddressSuggestionFromSuggestionList() {

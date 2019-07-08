@@ -1,7 +1,9 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.addedit
 
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.logisticaddaddress.AddressConstants.ANA_POSITIVE
 import com.tokopedia.logisticaddaddress.domain.mapper.AddAddressMapper
+import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_address.SaveAddressDataModel
 import rx.Subscriber
 
@@ -10,8 +12,15 @@ import rx.Subscriber
  */
 class AddAddressSubscriber(val view: AddEditAddressListener,
                            val mapper: AddAddressMapper,
-                           val saveAddressDataModel: SaveAddressDataModel): Subscriber<GraphqlResponse>() {
+                           val saveAddressDataModel: SaveAddressDataModel,
+                           val typeForm: String): Subscriber<GraphqlResponse>() {
     override fun onNext(t: GraphqlResponse?) {
+        if (typeForm.equals(ANA_POSITIVE, true)) {
+            AddNewAddressAnalytics.eventClickButtonSimpanSuccess()
+        } else {
+            AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess()
+        }
+
         val addAddressResponseUiModel = mapper.map(t)
         view.onSuccessAddAddress(addAddressResponseUiModel.data, saveAddressDataModel)
     }
@@ -20,6 +29,11 @@ class AddAddressSubscriber(val view: AddEditAddressListener,
     }
 
     override fun onError(e: Throwable?) {
+        if (typeForm.equals(ANA_POSITIVE, true)) {
+            AddNewAddressAnalytics.eventClickButtonSimpanNotSuccess(e?.printStackTrace().toString())
+        } else {
+            AddNewAddressAnalytics.eventClickButtonSimpanNegativeNotSuccess(e?.printStackTrace().toString())
+        }
         e?.printStackTrace()
     }
 }

@@ -6,4 +6,5 @@
     <color name="tp_ticker_background_color">#EBF6F6</color>
     <color name="tp_coupon_enable">#A1A7AB</color>
     <color name="tp_coupon_disable">#DBDEE2</color>
+    <color name="bg_label_grey">#f3f4f5</color>
 </resources>
