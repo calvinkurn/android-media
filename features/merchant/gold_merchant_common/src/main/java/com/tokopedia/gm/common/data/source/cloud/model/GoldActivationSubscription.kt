@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class GoldActivationSubscription(
-        @SerializedName("GoldActivationSubscription")
+        @SerializedName("goldActivationSubscription")
         @Expose
         val goldActivationData: GMActivation = GMActivation()
 ) {
