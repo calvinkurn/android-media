@@ -74,7 +74,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     private var minScore: Int = 0
     private var isSuccessActivatedPm: Boolean = false
     private var isSuccessCancellationPm: Boolean = false
-    private var isTransitionKycPage: Boolean = false
 
     private val remoteConfig: RemoteConfig by lazy {
         FirebaseRemoteConfigImpl(context)
@@ -168,7 +167,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     override fun cancelMembership() {
         bottomSheetCancel.dismiss()
-        presenter.setAutoExtendOff(false)
+        presenter.setAutoExtendOff()
     }
 
     override fun onSuccessCancelMembership() {

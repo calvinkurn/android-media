@@ -4,8 +4,6 @@ import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.gm.common.constant.GMCommonUrl;
 import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct;
 import com.tokopedia.gm.common.data.source.cloud.model.GMGetCashbackModel;
-import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantActivationResult;
-import com.tokopedia.gm.common.data.source.cloud.model.RequestAutoExtendPowerMerchantModel;
 import com.tokopedia.gm.common.data.source.cloud.model.RequestCashbackModel;
 import com.tokopedia.gm.common.data.source.cloud.model.RequestGetCashbackModel;
 import com.tokopedia.gm.common.data.source.cloud.model.ShopScoreResult;
@@ -35,17 +33,6 @@ public interface GMCommonApi {
     @Headers("Origin: tokopedia.com")
     @GET(GMCommonUrl.GET_SHOP_STATUS)
     Observable<Response<DataResponse<ShopStatusModel>>> getShopStatus(@Path("shop_id") String shopId);
-
-    // to activate power merchant
-    @Headers("Origin: tokopedia.com")
-    @POST(GMCommonUrl.SHOPS_SUBSCRIPTION)
-    Observable<Response<DataResponse<PowerMerchantActivationResult>>> activatePowerMerchant();
-
-    // to turn on/off powerMerchant
-    @Headers("Origin: tokopedia.com")
-    @POST(GMCommonUrl.SHOPS_SUBSCRIPTIONS_AUTO_EXTEND)
-    Observable<Response<DataResponse<PowerMerchantActivationResult>>> turnOnOffPowerMerchantSubscription(
-            @Body RequestAutoExtendPowerMerchantModel requestAutoExtendPowerMerchantModel);
 
     @GET(GMCommonUrl.SHOPS_SCORE_STATUS + "{shopId}")
     Observable<Response<DataResponse<ShopScoreResult>>> getShopScoreDetail(@Path("shopId") String shopId);

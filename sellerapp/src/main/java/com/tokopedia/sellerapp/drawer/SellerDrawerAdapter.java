@@ -5,11 +5,8 @@ import android.content.Context;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.drawer2.view.DrawerAdapter;
 import com.tokopedia.core.drawer2.view.databinder.DrawerItemDataBinder;
-import com.tokopedia.core.drawer2.view.viewmodel.DrawerGroup;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
 import com.tokopedia.core.var.TkpdState;
-
-import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.sellerapp.R;
 
 import java.util.ArrayList;
@@ -21,6 +18,7 @@ public class SellerDrawerAdapter extends DrawerAdapter {
 
     private boolean isGoldMerchant;
     private boolean isFlashSaleVisible;
+    private boolean isOfficialStore;
     private Context context;
 
     public SellerDrawerAdapter(Context context,
@@ -32,6 +30,14 @@ public class SellerDrawerAdapter extends DrawerAdapter {
 
     public void setGoldMerchant(boolean goldMerchant) {
         isGoldMerchant = goldMerchant;
+    }
+
+    public void setOfficialStore(boolean officialStore) {
+        isOfficialStore = officialStore;
+    }
+
+    public boolean isOfficialStore(){
+        return isOfficialStore;
     }
 
     public boolean isGoldMerchant() {
