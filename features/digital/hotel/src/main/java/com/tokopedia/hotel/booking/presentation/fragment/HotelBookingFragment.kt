@@ -286,6 +286,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                 phone = initContactData.phone
             )
         }
+        hotelBookingPageModel.guestName = hotelBookingPageModel.contactData.name
         renderContactData()
 
         iv_edit_contact.setOnClickListener {
