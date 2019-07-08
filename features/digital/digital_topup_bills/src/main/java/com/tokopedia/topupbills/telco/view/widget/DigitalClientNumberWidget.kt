@@ -49,7 +49,6 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         btnClear.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
                 autoCompleteInputNumber.setText("")
-                listener.onClearAutoComplete()
                 errorInputNumber.visibility = View.GONE
             }
         })

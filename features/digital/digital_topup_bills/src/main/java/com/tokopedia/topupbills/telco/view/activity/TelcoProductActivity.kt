@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.tokopedia.topupbills.R
+import com.tokopedia.topupbills.telco.view.fragment.DigitalBaseTelcoFragment
 import com.tokopedia.topupbills.telco.view.fragment.DigitalTelcoFragment
 
 /**
@@ -32,6 +33,7 @@ class TelcoProductActivity : BaseTelcoActivity() {
     }
 
     override fun onBackPressed() {
+        (fragment as DigitalTelcoFragment).onBackPressed()
         finish()
     }
 }

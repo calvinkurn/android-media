@@ -1,18 +1,17 @@
 package com.tokopedia.topupbills.telco.view.widget
 
 import android.content.Context
-import android.graphics.Rect
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
-import android.util.TypedValue
 import android.view.View
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.data.TelcoProductDataCollection
 import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
 import com.tokopedia.topupbills.telco.view.adapter.DigitalProductAdapter
+import com.tokopedia.topupbills.telco.view.adapter.DigitalProductGridDecorator
 
 /**
  * Created by nabillasabbaha on 11/04/19.
@@ -44,13 +43,12 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
 
             override fun onClickSeeMoreProduct(itemProduct: TelcoProductDataCollection) {
                 listener.onSeeMoreProduct(itemProduct)
-
             }
         })
         recyclerView.adapter = adapter
         if (productType == TelcoProductType.PRODUCT_GRID) {
             recyclerView.layoutManager = GridLayoutManager(context, 2)
-            recyclerView.addItemDecoration(DigitalProductGridDecorator(CELL_MARGIN, resources))
+            recyclerView.addItemDecoration(DigitalProductGridDecorator(CELL_MARGIN_DP, resources))
         } else {
             recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         }
@@ -70,7 +68,7 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
     }
 
     companion object {
-        const val CELL_MARGIN: Int = 8
+        const val CELL_MARGIN_DP: Int = 8
     }
 
 }

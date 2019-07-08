@@ -24,6 +24,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
+import com.tokopedia.topupbills.common.DigitalTopupAnalytics
 import com.tokopedia.topupbills.covertContactUriToContactData
 import com.tokopedia.topupbills.telco.data.TelcoFavNumber
 import com.tokopedia.topupbills.telco.view.adapter.NumberListAdapter
@@ -40,9 +41,12 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnCl
     private lateinit var clientNumberType: String
 
     private var number: String? = null
+    private lateinit var inputNumberActionType: InputNumberActionType
 
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
+    @Inject
+    lateinit var topupAnalytics: DigitalTopupAnalytics
 
 
     override fun initInjector() {
@@ -92,8 +96,12 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnCl
             btnClearNumber.visibility = View.GONE
         }
 
-        btnClearNumber.setOnClickListener { editTextSearchNumber.setText("") }
+        btnClearNumber.setOnClickListener {
+            topupAnalytics.eventClearInputNumber()
+            editTextSearchNumber.setText("")
+        }
         btnContactPicker.setOnClickListener {
+            inputNumberActionType = InputNumberActionType.CONTACT
             navigateContact()
         }
 
@@ -135,19 +143,22 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnCl
             }
         })
 
-        editTextSearchNumber.setOnEditorActionListener(TextView.OnEditorActionListener { textView, i, keyEvent ->
-            if (i == EditorInfo.IME_ACTION_DONE) {
-                val orderClientNumber = findNumber(textView.text.toString(),
-                        numberListAdapter.clientNumbers)
-                orderClientNumber?.let {
-                    if (it != null) {
-                        callback.onClientNumberClicked(orderClientNumber)
-                    } else {
-                        it.clientNumber = textView.text.toString()
-                        callback.onClientNumberClicked(it)
-                    }
-                    return@OnEditorActionListener true
+        editTextSearchNumber.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) inputNumberActionType = InputNumberActionType.MANUAL
+        }
+
+        editTextSearchNumber.setOnEditorActionListener(TextView.OnEditorActionListener { textView, actionId, keyEvent ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                var orderClientNumber = findNumber(textView.text.toString(), numberListAdapter.clientNumbers)
+                if (orderClientNumber != null) {
+                    inputNumberActionType = InputNumberActionType.FAVORITE
+                    callback.onClientNumberClicked(orderClientNumber, inputNumberActionType)
+                } else {
+                    inputNumberActionType = InputNumberActionType.MANUAL
+                    orderClientNumber = TelcoFavNumber(clientNumber = textView.text.toString())
+                    callback.onClientNumberClicked(orderClientNumber, inputNumberActionType)
                 }
+                return@OnEditorActionListener true
             }
             false
         })
@@ -190,7 +201,15 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnCl
     }
 
     override fun onClientNumberClicked(orderClientNumber: TelcoFavNumber) {
-        callback.onClientNumberClicked(orderClientNumber)
+        if (!::inputNumberActionType.isInitialized || inputNumberActionType != InputNumberActionType.CONTACT) {
+            val checkNumber = findNumber(orderClientNumber.clientNumber, numberListAdapter.clientNumbers)
+            if (checkNumber != null) {
+                inputNumberActionType = InputNumberActionType.FAVORITE
+            } else {
+                inputNumberActionType = InputNumberActionType.MANUAL
+            }
+        }
+        callback.onClientNumberClicked(orderClientNumber, inputNumberActionType)
     }
 
     fun navigateContact() {
@@ -243,6 +262,10 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnCl
         }
     }
 
+    enum class InputNumberActionType {
+        MANUAL, CONTACT, FAVORITE
+    }
+
     companion object {
 
         private val ARG_PARAM_EXTRA_NUMBER_LIST = "ARG_PARAM_EXTRA_NUMBER_LIST"
@@ -264,6 +287,6 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnCl
     }
 
     interface OnClientNumberClickListener {
-        fun onClientNumberClicked(orderClientNumber: TelcoFavNumber)
+        fun onClientNumberClicked(orderClientNumber: TelcoFavNumber, inputNumberActionType: InputNumberActionType)
     }
 }

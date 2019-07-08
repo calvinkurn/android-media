@@ -21,6 +21,7 @@ import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.view.activity.DigitalSearchNumberActivity
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
+import com.tokopedia.topupbills.telco.view.fragment.DigitalSearchNumberFragment.InputNumberActionType
 import com.tokopedia.topupbills.telco.view.listener.ClientNumberPostpaidListener
 import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoEnquiryViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
@@ -42,6 +43,8 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     private val favNumberList = mutableListOf<TelcoFavNumber>()
     private var operatorData: TelcoCustomComponentData =
             TelcoCustomComponentData(TelcoCustomData(mutableListOf()))
+
+    private lateinit var inputNumberActionType: InputNumberActionType
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,6 +97,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         postpaidClientNumberWidget.resetClientNumberPostpaid()
         postpaidClientNumberWidget.setListener(object : DigitalClientNumberWidget.ActionListener {
             override fun onNavigateToContact() {
+                inputNumberActionType = InputNumberActionType.CONTACT
                 navigateContact()
             }
 
@@ -109,6 +113,8 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
             }
 
             override fun onClearAutoComplete() {
+                topupAnalytics.eventClearInputNumber()
+
                 postpaidClientNumberWidget.resetClientNumberPostpaid()
                 recentNumbersView.visibility = View.VISIBLE
                 promoListView.visibility = View.VISIBLE
@@ -159,6 +165,18 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 operatorSelected = this.operatorData.rechargeCustomData.customDataCollections.filter {
                     it.value.equals(prefixClientNumber)
                 }.single()
+                val operatorName = operatorSelected.operator.attributes.name
+                when (inputNumberActionType) {
+                    InputNumberActionType.MANUAL -> {
+                        topupAnalytics.eventInputNumberManual(TelcoCategoryType.CATEGORY_PASCABAYAR, operatorName)
+                    }
+                    InputNumberActionType.CONTACT -> {
+                        topupAnalytics.eventInputNumberContact(TelcoCategoryType.CATEGORY_PASCABAYAR, operatorName)
+                    }
+                    InputNumberActionType.FAVORITE -> {
+                        topupAnalytics.eventInputNumberFavorites(TelcoCategoryType.CATEGORY_PASCABAYAR, operatorName)
+                    }
+                }
 
                 postpaidClientNumberWidget.setIconOperator(operatorSelected.operator.attributes.imageUrl)
             }
@@ -223,7 +241,8 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         return mapParam
     }
 
-    override fun handleCallbackSearchNumber(orderClientNumber: TelcoFavNumber) {
+    override fun handleCallbackSearchNumber(orderClientNumber: TelcoFavNumber, inputNumberActionTypeIndex: Int) {
+        inputNumberActionType = InputNumberActionType.values()[inputNumberActionTypeIndex]
         postpaidClientNumberWidget.setInputNumber(orderClientNumber.clientNumber)
         postpaidClientNumberWidget.clearFocus()
     }
@@ -272,6 +291,10 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                     .voucherCodeCopied("")
                     .build()
         }
+    }
+
+    override fun onBackPressed() {
+        topupAnalytics.eventClickBackButton(TelcoCategoryType.CATEGORY_PASCABAYAR)
     }
 
     companion object {

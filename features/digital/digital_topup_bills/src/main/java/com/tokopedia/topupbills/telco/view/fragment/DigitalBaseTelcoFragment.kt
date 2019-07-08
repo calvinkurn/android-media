@@ -23,6 +23,7 @@ import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
+import com.tokopedia.topupbills.common.DigitalTopupAnalytics
 import com.tokopedia.topupbills.covertContactUriToContactData
 import com.tokopedia.topupbills.telco.data.*
 import com.tokopedia.topupbills.telco.view.activity.DigitalSearchNumberActivity
@@ -58,6 +59,8 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var topupAnalytics: DigitalTopupAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -213,8 +216,9 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
                     }
                 } else if (requestCode == REQUEST_CODE_DIGITAL_SEARCH_NUMBER) {
                     if (data != null) {
+                        val inputNumberActionType = data.getIntExtra(DigitalSearchNumberActivity.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE, 0)
                         val orderClientNumber = data.getParcelableExtra<Parcelable>(DigitalSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER)
-                        handleCallbackSearchNumber(orderClientNumber as TelcoFavNumber)
+                        handleCallbackSearchNumber(orderClientNumber as TelcoFavNumber, inputNumberActionType)
                     } else {
                         handleCallbackSearchNumberCancel()
                     }
@@ -236,7 +240,7 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
 
     protected abstract fun showErrorCartDigital(message: String)
 
-    protected abstract fun handleCallbackSearchNumber(orderClientNumber: TelcoFavNumber)
+    protected abstract fun handleCallbackSearchNumber(orderClientNumber: TelcoFavNumber, inputNumberActionTypeIndex: Int)
 
     protected abstract fun handleCallbackSearchNumberCancel()
 
@@ -276,6 +280,8 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
             promoListView.visibility = View.VISIBLE
             promoListView.setListener(object : DigitalPromoListWidget.ActionListener {
                 override fun onCopiedPromoCode(voucherCode: String) {
+                    topupAnalytics.eventClickCopyPromoCode(voucherCode, promos.indexOfFirst { it.promoCode == voucherCode })
+
                     val clipboard = activity!!.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                     val clip = ClipData.newPlainText(
                             CLIP_DATA_VOUCHER_CODE_DIGITAL, voucherCode
@@ -300,6 +306,8 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
     }
 
     abstract fun setInputNumberFromContact(contactNumber: String)
+
+    abstract fun onBackPressed()
 
     override fun onDestroy() {
         customViewModel.clear()

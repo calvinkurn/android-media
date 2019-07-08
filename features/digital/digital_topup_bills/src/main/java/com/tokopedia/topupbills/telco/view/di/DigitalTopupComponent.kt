@@ -12,7 +12,7 @@ import dagger.Component
         dependencies = arrayOf(BaseAppComponent::class))
 interface DigitalTopupComponent {
 
-    fun inject(digitalTelcoPrepaidFragment: DigitalTelcoPrepaidFragment)
+    fun inject(digitalTelcoFragment: DigitalTelcoFragment)
 
     fun inject(digitalTelcoPostpaidFragment: DigitalTelcoPostpaidFragment)
 
