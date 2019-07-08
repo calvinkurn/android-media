@@ -536,7 +536,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private boolean isEtalase(List<String> linkSegment) {
         String lastSegment = linkSegment.get(linkSegment.size() - 1);
-        return lastSegment.equals("preoder")
+        return lastSegment.equals("preorder")
                 || lastSegment.equals("sold")
                 || (linkSegment.get(1).equals("etalase"));
     }
