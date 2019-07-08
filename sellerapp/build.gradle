@@ -349,6 +349,8 @@ dependencies {
     annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
     implementation rootProject.ext.dbDependencies.dbFlowCore
     implementation rootProject.ext.dbDependencies.dbFlow
+    implementation project(rootProject.ext.libraries.analytics)
+
 
     implementation rootProject.ext.analyticsDependencies.moengageSdk
     implementation rootProject.ext.analyticsDependencies.moengagePushbase

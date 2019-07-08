@@ -14,14 +14,17 @@ import android.view.View
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.component.TextViewCompat
+import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.URL_LEARN_MORE_BENEFIT
 
-class PartialBenefitPmViewHolder private constructor(private val view: View, private val activity: Activity?) {
+class PartialBenefitPmViewHolder private constructor(private val view: View, private val activity: Activity?,
+                                                     private val powerMerchantTracking:PowerMerchantTracking) {
 
     lateinit var txtLearnMoreBenefit:TextViewCompat
     companion object {
-        fun build(_view: View, _activity: Activity?) = PartialBenefitPmViewHolder(_view, _activity)
+        fun build(_view: View, _activity: Activity?,_powerMerchantTracking:PowerMerchantTracking) =
+                PartialBenefitPmViewHolder(_view, _activity,_powerMerchantTracking)
     }
 
     fun renderPartialBenefit() {
@@ -32,6 +35,7 @@ class PartialBenefitPmViewHolder private constructor(private val view: View, pri
 
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(textView: View) {
+                powerMerchantTracking.eventLearnMorePm()
                 RouteManager.route(view.context, ApplinkConstInternalGlobal.WEBVIEW, URL_LEARN_MORE_BENEFIT)
             }
 

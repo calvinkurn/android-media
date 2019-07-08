@@ -8,6 +8,7 @@ import android.widget.FrameLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.design.component.TextViewCompat
+import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.R
 
 class PowerMerchantCancelBottomSheet : BottomSheets() {
@@ -17,6 +18,9 @@ class PowerMerchantCancelBottomSheet : BottomSheets() {
     private var listener: BottomSheetCancelListener? = null
     private var isTransitionPeriod: Boolean = false
     private var expiredDate: String = ""
+    private val powerMerchantTracking: PowerMerchantTracking by lazy {
+        PowerMerchantTracking()
+    }
 
     companion object {
         const val ARGUMENT_DATA_AUTO_EXTEND = "data_is_auto_extend"
@@ -69,6 +73,7 @@ class PowerMerchantCancelBottomSheet : BottomSheets() {
         }
 
         buttonCancel.setOnClickListener {
+            powerMerchantTracking.eventCancelMembershipBottomSheet()
             listener?.onclickButton()
         }
     }

@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment
 import android.view.View
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.kotlin.extensions.view.hideLoading
 import com.tokopedia.kotlin.extensions.view.showErrorToaster
 import com.tokopedia.kotlin.extensions.view.showLoading
@@ -29,7 +30,8 @@ class PowerMerchantTermsFragment : BaseWebViewFragment(), PmTermsContract.View {
     lateinit var userSession: UserSessionInterface
     @Inject
     lateinit var presenter: PmTermsContract.Presenter
-
+    @Inject
+    lateinit var powerMerchantTracking: PowerMerchantTracking
     private var isTermsAgreed: Boolean = false
     private var action: String = ""
 
@@ -117,6 +119,7 @@ class PowerMerchantTermsFragment : BaseWebViewFragment(), PmTermsContract.View {
             onCheckBoxClicked()
         }
         activateBtn.setOnClickListener {
+            powerMerchantTracking.eventUpgradeShopWebView()
             if (!isTermsAgreed) {
                 mainView.showErrorToaster(getString(R.string.pm_terms_error_no_agreed))
             } else {
