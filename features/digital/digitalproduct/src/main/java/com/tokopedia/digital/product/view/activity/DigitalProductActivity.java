@@ -15,6 +15,9 @@ import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.digital.product.view.fragment.DigitalProductFragment;
 import com.tokopedia.digital.product.view.model.DigitalCategoryDetailPassData;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.Objects;
 
@@ -47,8 +50,9 @@ public class DigitalProductActivity extends BaseSimpleActivity
     }
 
     @SuppressWarnings("unused")
-    @DeepLink({ DIGITAL_PRODUCT })
+    @DeepLink({DIGITAL_PRODUCT})
     public static Intent getcallingIntent(Context context, Bundle extras) {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         if (extras.getBoolean(DigitalRouter.Companion.getEXTRA_APPLINK_FROM_PUSH(), false)) {
@@ -75,7 +79,8 @@ public class DigitalProductActivity extends BaseSimpleActivity
 
         Intent destination = DigitalProductActivity.newInstance(context, passData);
 
-        if (!TextUtils.isEmpty(extras.getString(DigitalCategoryDetailPassData.PARAM_MENU_ID))) {
+        if (!TextUtils.isEmpty(extras.getString(DigitalCategoryDetailPassData.PARAM_MENU_ID)) &&
+                remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_ENABLE_DIGITAL_TELCO_PDP, false)) {
             destination = RouteManager.getIntent(context, ApplinkConsInternalDigital.TELCO_DIGITAL);
             destination.putExtra(DigitalExtraParam.EXTRA_PARAM_TELCO, extras);
         } else {
