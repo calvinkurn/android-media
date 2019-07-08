@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory
 import android.view.View
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.ChatMenu
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatmenu.AttachImageViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatmenu.BaseChatMenuViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatmenu.ProductLinkViewHolder
 
@@ -11,7 +12,7 @@ object ChatMenuFactory {
     fun create(listener: BaseChatMenuViewHolder.ChatMenuListener, view: View, position: Int): BaseChatMenuViewHolder {
         return when (position) {
             0 -> ProductLinkViewHolder(listener, view)
-            1 -> ProductLinkViewHolder(listener, view)
+            1 -> AttachImageViewHolder(listener, view)
             else -> throw IllegalStateException("Unknown ViewHolder on: $position")
         }
     }
