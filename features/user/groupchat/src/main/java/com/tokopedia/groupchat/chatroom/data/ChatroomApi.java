@@ -3,6 +3,7 @@ package com.tokopedia.groupchat.chatroom.data;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.groupchat.chatroom.domain.pojo.ButtonsPojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.StickyComponentPojo;
+import com.tokopedia.groupchat.chatroom.domain.pojo.VideoStreamParent;
 import com.tokopedia.groupchat.chatroom.domain.pojo.VideoStreamPojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.ChannelInfoPojo;
 
@@ -37,7 +38,7 @@ public interface ChatroomApi {
 
 
     @GET(ChatroomUrl.GET_VIDEO_STREAM)
-    Observable<Response<com.tokopedia.network.data.model.response.DataResponse<VideoStreamPojo>>> getVideoStream(
+    Observable<Response<com.tokopedia.network.data.model.response.DataResponse<VideoStreamParent>>> getVideoStream(
             @Path(ChatroomUrl.PATH_CHANNEL_UUID) String channelUuid,
             @QueryMap HashMap<String, Object> requestParam);
 

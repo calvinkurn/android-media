@@ -6,15 +6,51 @@ import com.google.gson.annotations.SerializedName
 /**
  * @author : Steven 19/06/19
  */
+class VideoStreamParent {
+
+    @SerializedName("video_stream")
+    @Expose
+    var videoStreamData = VideoStreamPojo()
+
+}
+
 class VideoStreamPojo {
 
     @SerializedName("orientation")
     @Expose
     var orientation: String = ""
 
-    @SerializedName("data")
+//    @SerializedName("android_stream_hd")
+//    @Expose
+//    var androidStreamHD: String = ""
+//
+//    @SerializedName("android_stream_sd")
+//    @Expose
+//    var androidStreamSD: String = ""
+//
+//    @SerializedName("ios_stream_hd")
+//    @Expose
+//    var iosStreamHD: String = ""
+//
+//    @SerializedName("ios_stream_sd")
+//    @Expose
+//    var iosStreamSD: String = ""
+
+    @SerializedName("stream_rtmp_hd")
     @Expose
-    var streamData: StreamData = StreamData()
+    var androidStreamHD: String = ""
+
+    @SerializedName("stream_rtmp_sd")
+    @Expose
+    var androidStreamSD: String = ""
+
+    @SerializedName("stream_hls_hd")
+    @Expose
+    var iosStreamHD: String = ""
+
+    @SerializedName("stream_hls_sd")
+    @Expose
+    var iosStreamSD: String = ""
 
     @SerializedName("is_active")
     @Expose
@@ -23,22 +59,4 @@ class VideoStreamPojo {
     @SerializedName("is_live")
     @Expose
     var isLive: Boolean = false
-}
-
-class StreamData {
-    @SerializedName("android_stream_hd")
-    @Expose
-    var androidStreamHD: String = ""
-
-    @SerializedName("android_stream_sd")
-    @Expose
-    var androidStreamSD: String = ""
-
-    @SerializedName("ios_stream_hd")
-    @Expose
-    var iosStreamHD: String = ""
-
-    @SerializedName("ios_stream_sd")
-    @Expose
-    var iosStreamSD: String = ""
 }
