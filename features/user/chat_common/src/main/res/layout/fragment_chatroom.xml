@@ -150,7 +150,9 @@
                 <ImageView
                     android:id="@+id/iv_chat_menu"
                     android:layout_width="@dimen/dp_52"
-                    android:layout_height="@dimen/dp_20"
+                    android:layout_height="@dimen/dp_40"
+                    android:paddingTop="@dimen/dp_10"
+                    android:paddingBottom="@dimen/dp_10"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
