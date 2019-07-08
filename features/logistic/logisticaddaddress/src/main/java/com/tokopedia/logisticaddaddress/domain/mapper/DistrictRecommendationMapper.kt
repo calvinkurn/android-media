@@ -15,8 +15,8 @@ class DistrictRecommendationMapper @Inject constructor() {
     fun map(response: GraphqlResponse?): DistrictRecommendationResponseUiModel {
         var listDistrict = mutableListOf<DistrictRecommendationItemUiModel>()
         val responseDistrictRecommendation: DistrictRecommendationResponse? = response?.getData(DistrictRecommendationResponse::class.java)
-        responseDistrictRecommendation?.keroDistrictRecommendation.let { keroDistrictRecommendation ->
-            keroDistrictRecommendation?.district?.forEach {
+        responseDistrictRecommendation?.keroDistrictRecommendation?.let { keroDistrictRecommendation ->
+            keroDistrictRecommendation.district.forEach {
                 mapDistrictItem(it).let(listDistrict::add)
             }
         }

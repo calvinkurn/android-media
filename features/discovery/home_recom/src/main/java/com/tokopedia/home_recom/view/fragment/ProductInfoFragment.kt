@@ -20,10 +20,13 @@ import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.analytics.RecommendationPageTracking
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
+import com.tokopedia.home_recom.router.HomeRecommendationRouter
 import com.tokopedia.home_recom.util.RecommendationPageErrorHandler
 import com.tokopedia.home_recom.viewmodel.PrimaryProductViewModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -39,11 +42,18 @@ import kotlinx.android.synthetic.main.fragment_product_info.rating
 import kotlinx.android.synthetic.main.fragment_product_info.review_count
 import kotlinx.android.synthetic.main.fragment_product_info.product_slashed_price
 import kotlinx.android.synthetic.main.fragment_product_info.product_discount
+import kotlinx.android.synthetic.main.fragment_product_info.buy_now
+import kotlinx.android.synthetic.main.fragment_product_info.pb_buy_now
+import kotlinx.android.synthetic.main.fragment_product_info.add_to_cart
+import kotlinx.android.synthetic.main.fragment_product_info.pb_add_to_cart
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import javax.inject.Inject
 
 class ProductInfoFragment : BaseDaggerFragment() {
 
     private val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
+    private val REQUEST_CODE_LOGIN = 283
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -68,6 +78,10 @@ class ProductInfoFragment : BaseDaggerFragment() {
     override fun initInjector() {
         getComponent(HomeRecommendationComponent::class.java).inject(this)
     }
+
+    private val CART_ID = "cartId"
+    private val MESSAGE = "message"
+    private val STATUS  = "status"
 
     companion object{
         fun newInstance(dataModel: ProductInfoDataModel) = ProductInfoFragment().apply {
@@ -94,13 +108,12 @@ class ProductInfoFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         if(this::productDataModel.isInitialized && productDataModel != null) {
             product_name.text = productDataModel.productDetailData.name
-            fab_detail.visibility = View.GONE
             handleDiscount()
             product_price.text = productDataModel.productDetailData.price
             location.text = productDataModel.productDetailData.shop.location
-            if (!productDataModel.productDetailData.badges.isEmpty()) {
+            if (productDataModel.productDetailData.badges.isNotEmpty()) {
                 badge.visibility = View.VISIBLE
-                ImageHandler.loadImageFitCenter(view.context, badge, productDataModel.productDetailData.badges.get(0).imageUrl)
+                ImageHandler.loadImageFitCenter(view.context, badge, productDataModel.productDetailData.badges[0].imageUrl)
             } else {
                 badge.visibility = View.GONE
             }
@@ -108,54 +121,157 @@ class ProductInfoFragment : BaseDaggerFragment() {
             ImageHandler.loadImageRounded2(view.context, product_image, productDataModel.productDetailData.imageUrl)
             setRatingReviewCount(productDataModel.productDetailData.rating, productDataModel.productDetailData.countReview)
 
-            product_image.addOnImpressionListener(recommendationItem, object : ViewHintListener {
-                override fun onViewHint() {
-                    RecommendationPageTracking.eventImpressionPrimaryProduct(recommendationItem, "0")
-                    if (productDataModel.productDetailData.isTopads) {
-                        onImpressionTopAds(recommendationItem)
-                    } else {
-                        onImpressionOrganic(recommendationItem)
-                    }
-                }
-            })
 
-            product_card.setOnClickListener {
-                RecommendationPageTracking.eventClickPrimaryProduct(recommendationItem, "0")
-                if (productDataModel.productDetailData.isTopads) {
-                    onClickTopAds(recommendationItem)
-                } else {
-                    onClickOrganic(recommendationItem)
-                }
+            onProductImpression()
+            onClickAddToCart()
+            onClickBuyNow()
+            onClickProductCard()
+            onClickWishlist()
+        }
+    }
 
-                RouteManager.route(
-                        context,
-                        ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                        productDataModel.productDetailData.id.toString())
-            }
-
-            fab_detail.setOnClickListener {
-                if (primaryProductViewModel.isLoggedIn()) {
-                    if (it.isActivated) {
-                        RecommendationPageTracking.eventAddWishlistOnProductRecommendationLogin()
-                        productDataModel.productDetailData.id.let {
-                            primaryProductViewModel.removeWishList(it.toString(),
-                                    onSuccessRemoveWishlist = this::onSuccessRemoveWishlist,
-                                    onErrorRemoveWishList = this::onErrorRemoveWishList)
-                        }
-
-                    } else {
-                        RecommendationPageTracking.eventRemoveWishlistOnProductRecommendationLogin()
-                        productDataModel.productDetailData.id.let {
-                            primaryProductViewModel.addWishList(it.toString(),
-                                    onSuccessAddWishlist = this::onSuccessAddWishlist,
-                                    onErrorAddWishList = this::onErrorAddWishList)
-                        }
-                    }
-                } else {
-                    RecommendationPageTracking.eventAddWishlistOnProductRecommendationNonLogin()
-                    RouteManager.route(activity, ApplinkConst.LOGIN)
+    private fun onProductImpression(){
+        product_image.addOnImpressionListener(recommendationItem, object: ViewHintListener{
+            override fun onViewHint() {
+                RecommendationPageTracking.eventImpressionPrimaryProduct(recommendationItem, "0")
+                if(productDataModel.productDetailData.isTopads){
+                    onImpressionTopAds(recommendationItem)
+                }else {
+                    onImpressionOrganic(recommendationItem)
                 }
             }
+        })
+    }
+
+    private fun goToCart(){
+        RouteManager.route(context, ApplinkConst.CART)
+    }
+
+    private fun onClickProductCard(){
+        product_card.setOnClickListener {
+            RecommendationPageTracking.eventClickPrimaryProduct(recommendationItem, "0")
+            if (productDataModel.productDetailData.isTopads) {
+                onClickTopAds(recommendationItem)
+            } else {
+                onClickOrganic(recommendationItem)
+            }
+            RouteManager.route(
+                    context,
+                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                    productDataModel.productDetailData.id.toString())
+        }
+    }
+
+    private fun onClickAddToCart(){
+        add_to_cart.setOnClickListener {
+            if (primaryProductViewModel.isLoggedIn()) {
+                pb_add_to_cart.show()
+                addToCart(
+                        success = { result ->
+                            recommendationItem.cartId = (result["cartId"] as String).toInt()
+                            RecommendationPageTracking.eventUserClickAddToCart(recommendationItem)
+                            pb_add_to_cart.hide()
+                            if(result.containsKey(STATUS) && !(result[STATUS] as Boolean)){
+                                showToastError(MessageErrorException(result[MESSAGE].toString()))
+                            }else{
+                                showToastSuccessWithAction(result[MESSAGE].toString(), getString(R.string.recom_see_cart)){
+                                    RecommendationPageTracking.eventUserClickSeeToCart()
+                                    goToCart()
+                                }
+                            }
+                        },
+                        error = {
+                            pb_add_to_cart.hide()
+                            showToastError(it)
+                        }
+                )
+            } else {
+                context?.let {
+                    RecommendationPageTracking.eventUserAddToCartNonLogin()
+                    startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
+                            REQUEST_CODE_LOGIN)
+                }
+            }
+        }
+    }
+
+    private fun onClickBuyNow(){
+        buy_now.setOnClickListener {
+            if (primaryProductViewModel.isLoggedIn()){
+                pb_buy_now.show()
+                addToCart(
+                        success = { result ->
+                            pb_buy_now.hide()
+                            if(result.containsKey(STATUS) && !(result[STATUS] as Boolean)){
+                                showToastError(MessageErrorException(result[MESSAGE].toString()))
+                            }else if(result.containsKey(CART_ID) && result[CART_ID].toString().isNotEmpty()){
+                                RecommendationPageTracking.eventUserClickBuy(recommendationItem)
+                                goToCart()
+                            }
+                        },
+                        error = {
+                            pb_buy_now.hide()
+                            showToastError(it)
+                        }
+                )
+            } else {
+                RecommendationPageTracking.eventUserClickBuyNonLogin()
+                context?.let {
+                    startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
+                            REQUEST_CODE_LOGIN)
+                }
+            }
+        }
+    }
+
+    private fun onClickWishlist(){
+        fab_detail.setOnClickListener {
+            if (primaryProductViewModel.isLoggedIn()) {
+                if (it.isActivated) {
+                    RecommendationPageTracking.eventAddWishlistOnProductRecommendationLogin()
+                    productDataModel.productDetailData.id.let {
+                        primaryProductViewModel.removeWishList(it.toString(),
+                                onSuccessRemoveWishlist = this::onSuccessRemoveWishlist,
+                                onErrorRemoveWishList = this::onErrorRemoveWishList)
+                    }
+
+                } else {
+                    RecommendationPageTracking.eventRemoveWishlistOnProductRecommendationLogin()
+                    productDataModel.productDetailData.id.let {
+                        primaryProductViewModel.addWishList(it.toString(),
+                                onSuccessAddWishlist = this::onSuccessAddWishlist,
+                                onErrorAddWishList = this::onErrorAddWishList)
+                    }
+                }
+            } else {
+                RecommendationPageTracking.eventAddWishlistOnProductRecommendationNonLogin()
+                RouteManager.route(activity, ApplinkConst.LOGIN)
+            }
+        }
+    }
+
+    private fun addToCart(
+            success: (Map<String, Any>) -> Unit,
+            error: (Throwable) -> Unit
+    ){
+        context?.let { context ->
+            (context.applicationContext as HomeRecommendationRouter).getNormalCheckoutIntent(
+                    productId = productDataModel.productDetailData.id,
+                    shopId = productDataModel.productDetailData.shop.id,
+                    quantity =  productDataModel.productDetailData.minOrder,
+                    isOneClickShipment = false
+            ).subscribeOn(Schedulers.newThread())
+                    .unsubscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe (
+                            { result ->
+                                success.invoke(result)
+                            },
+                            {
+                                it.printStackTrace()
+                                error.invoke(it)
+                            }
+                    )
         }
     }
 
@@ -188,11 +304,25 @@ class ProductInfoFragment : BaseDaggerFragment() {
         sendIntentResusltWishlistChange(productId ?: "", true)
     }
 
+    private fun showToastSuccessWithAction(message: String, actionString: String, action: () -> Unit){
+        activity?.run {
+            Toaster.showNormalWithAction(
+                    findViewById(android.R.id.content),
+                    message,
+                    Snackbar.LENGTH_LONG,
+                    actionString,
+                    View.OnClickListener {
+                        action.invoke()
+                    }
+            )
+        }
+    }
+
     private fun showToastError(throwable: Throwable) {
         activity?.run {
             Toaster.showError(
                     findViewById(android.R.id.content),
-                    RecommendationPageErrorHandler.getErrorMessage(activity!!, throwable),
+                    RecommendationPageErrorHandler.getErrorMessage(this, throwable),
                     Snackbar.LENGTH_LONG)
         }
     }
@@ -209,7 +339,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
     private fun setRatingReviewCount(ratingValue: Int, review: Int){
         if (ratingValue in 1..5) {
             rating.setImageResource(getRatingDrawable(ratingValue))
-            review_count.text = getString(R.string.review_count, review)
+            review_count.text = String.format(getString(R.string.review_count), review)
         } else {
             rating.visibility = View.GONE
             review_count.visibility = View.GONE
@@ -266,7 +396,17 @@ class ProductInfoFragment : BaseDaggerFragment() {
             wishlistUrl = productDataModel.productDetailData.wishlistUrl,
             slashedPrice = productDataModel.productDetailData.slashedPrice,
             discountPercentage = productDataModel.productDetailData.discountPercentage,
-            slashedPriceInt = productDataModel.productDetailData.slashedPriceInt
+            slashedPriceInt = productDataModel.productDetailData.slashedPriceInt,
+            cartId = -1,
+            shopId = productDataModel.productDetailData.shop.id,
+            shopName = productDataModel.productDetailData.shop.name,
+            shopType = if(productDataModel.productDetailData.shop.isGold) "gold_merchant" else "reguler",
+            quantity = productDataModel.productDetailData.minOrder,
+            header = "",
+            pageName = "",
+            minOrder = productDataModel.productDetailData.minOrder,
+            location = "",
+            badgesUrl = listOf()
     )
 
     private fun handleDiscount(){

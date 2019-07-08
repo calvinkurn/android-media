@@ -61,27 +61,23 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
 
     override fun saveEvent(map: Map<String, Any>) {
         if (cache.isEnabled()) {
-            launchCatchError(block = {
+            launchCatchError {
                 // convert map to json then save as string
                 val event = JSONObject(map).toString()
                 val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId())
                 trackingRepository.saveEvent(resultEvent.toString(), session)
-            }) {
-                // no-op
-            } 
+            }
         }
     }
 
     override fun sendEvent(map: Map<String, Any>) {
          if (cache.isEnabled()) {
-             launchCatchError(block = {
+             launchCatchError {
                 val isSuccess = trackingRepository.sendSingleEvent(JSONObject(map).toString(),
                         session)
                 if (isSuccess && BuildConfig.DEBUG) {
                     Log.e("Iris", "Success Send Single Event")
                 }
-            }) {
-                // no-op
             }
          }
     }
