@@ -1,4 +1,4 @@
-package com.tokopedia.config.url
+package com.tokopedia.url
 
 import android.content.Context
 
@@ -14,15 +14,17 @@ class TokopediaUrl {
         @Volatile private var tokopediaUrl: Url? = null
 
         fun init(context: Context) : Url {
-            return tokopediaUrl?: synchronized(lock) {
+            return tokopediaUrl
+                    ?: synchronized(lock) {
                 getEnvironment(context).also {
                     tokopediaUrl = it
                 }
             }
         }
 
+        @JvmStatic
         fun getInstance() : Url {
-            return tokopediaUrl?: staging
+            return tokopediaUrl ?: live
         }
 
         fun deleteInstance() {
@@ -34,13 +36,13 @@ class TokopediaUrl {
         private fun getEnvironment(context: Context) : Url {
             val sharedPreferences = context.getSharedPreferences(KEY_ENV_PREFERENCES,
                     Context.MODE_PRIVATE)
-            return selectInstance(sharedPreferences.getString(KEY_ENV, Env.LIVE.value));
+            return selectInstance(sharedPreferences.getString(KEY_ENV, Env.LIVE.value))
         }
 
         fun selectInstance(env: String?): Url {
             return when(env) {
                 Env.STAGING.value -> staging
-                else ->  live
+                else -> live
             }
         }
 

@@ -1,6 +1,6 @@
 package com.tokopedia.payment.fingerprint.util;
 
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 
 /**
  * Created by zulfikarrahman on 3/27/18.

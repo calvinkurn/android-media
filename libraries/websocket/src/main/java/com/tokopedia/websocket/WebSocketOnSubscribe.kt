@@ -1,8 +1,7 @@
 package com.tokopedia.websocket
 
 import android.util.Log
-import com.tokopedia.config.url.TokopediaUrl
-import com.tokopedia.network.constant.TkpdBaseURL
+import com.tokopedia.url.TokopediaUrl
 import okhttp3.*
 import okio.ByteString
 import rx.Observable
@@ -24,7 +23,7 @@ class WebSocketOnSubscribe internal constructor(private val client: OkHttpClient
 
     private fun getRequest(url: String, accessToken: String): Request {
         return Request.Builder().get().url(url)
-                .header("Origin", TokopediaUrl.getInstance().WEB)
+                .header("Origin", com.tokopedia.url.TokopediaUrl.getInstance().WEB)
                 .header("Accounts-Authorization",
                         "Bearer $accessToken")
                 .build()

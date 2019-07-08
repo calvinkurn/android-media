@@ -1,14 +1,14 @@
 package com.tokopedia.home.account;
 
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 
 /**
  * @author okasurya on 9/14/18.
  */
 public class AccountHomeUrl {
 
-    public static String BASE_SELLER_URL = "https://seller.tokopedia.com/";
+    public static String BASE_SELLER_URL = TokopediaUrl.Companion.getInstance().getSELLER();
     public static String WEB_DOMAIN = TokopediaUrl.Companion.getInstance().getWEB();
 
     public static String CDN_URL = "https://ecs7.tokopedia.net";

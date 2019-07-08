@@ -22,8 +22,9 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.analytics.debugger.GtmLogger;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.config.url.Env;
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.url.Env;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.developer_options.R;
@@ -82,14 +83,17 @@ public class DeveloperOptionActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_developer_options);
+        if(GlobalConfig.isAllowDebuggingTools()) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_developer_options);
 
-        userSession = new UserSession(this);
+            userSession = new UserSession(this);
 
-        setupView();
-        initListener();
-
+            setupView();
+            initListener();
+        } else {
+            finish();
+        }
     }
 
     private void setupView() {
@@ -196,16 +200,11 @@ public class DeveloperOptionActivity extends BaseActivity {
             }
         });
 
-        toggleAnalytics.setChecked(GtmLogger.getInstance().isNotificationEnabled(this));
+        toggleAnalytics.setChecked(GtmLogger.getInstance(this).isNotificationEnabled());
 
-        toggleAnalytics.setOnCheckedChangeListener((compoundButton, state) -> GtmLogger.getInstance().enableNotification(DeveloperOptionActivity.this, state));
+        toggleAnalytics.setOnCheckedChangeListener((compoundButton, state) -> GtmLogger.getInstance(this).enableNotification(state));
 
-        vGoToAnalytics.setOnClickListener(new OneOnClick() {
-            @Override
-            public void oneOnClick(View view) {
-                GtmLogger.getInstance().openActivity(DeveloperOptionActivity.this);
-            }
-        });
+        vGoToAnalytics.setOnClickListener(v -> GtmLogger.getInstance(DeveloperOptionActivity.this).openActivity());
 
         remoteConfigCheckBtn.setOnClickListener(view -> actionCheckValueRemoteConfig());
         remoteConfigSaveBtn.setOnClickListener(view -> actionSaveValueRemoteConfig());

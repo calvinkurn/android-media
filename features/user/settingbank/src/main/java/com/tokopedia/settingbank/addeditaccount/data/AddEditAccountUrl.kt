@@ -1,5 +1,7 @@
 package com.tokopedia.settingbank.addeditaccount.data
 
+import com.tokopedia.url.TokopediaUrl
+
 /**
  * Created by Ade Fulki on 2019-05-16.
  * ade.hadian@tokopedia.com
@@ -7,7 +9,7 @@ package com.tokopedia.settingbank.addeditaccount.data
 
 object AddEditAccountUrl{
     @JvmField
-    var BASE_URL: String = "https://accounts.tokopedia.com/"
+    var BASE_URL: String = com.tokopedia.url.TokopediaUrl.getInstance().ACCOUNTS
 
     const val PATH_ADD_BANK_ACCOUNT: String = "api/v2/bank-account/add"
     const val PATH_EDIT_BANK_ACCOUNT: String = "api/v2/bank-account/edit"

@@ -1,7 +1,7 @@
 package com.tokopedia.oms.data.source;
 
 
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 
 public class OmsUrl {
 

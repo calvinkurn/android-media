@@ -1,6 +1,6 @@
 package com.tokopedia.inbox.rescenter.network;
 
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 
 /**
  * @author by yfsx on 26/07/18.

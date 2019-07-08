@@ -1,6 +1,6 @@
 package com.tokopedia.network;
 
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 
 /**
  * @author by nisie on 1/30/18.

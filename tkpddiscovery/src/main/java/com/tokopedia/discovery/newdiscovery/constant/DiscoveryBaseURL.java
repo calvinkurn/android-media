@@ -1,6 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.constant;
 
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 
 public class DiscoveryBaseURL {
     public static class Ace {

@@ -1,6 +1,6 @@
 package com.tokopedia.topads.sdk.base;
 
-import com.tokopedia.config.url.TokopediaUrl;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 
