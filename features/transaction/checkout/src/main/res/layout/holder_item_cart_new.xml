@@ -107,12 +107,33 @@
                         android:layout_below="@id/ll_product_name"
                         android:layout_marginTop="4dp" />
 
+                    <com.tokopedia.design.component.TextViewCompat
+                        android:id="@+id/tv_price_changes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="@dimen/dp_4"
+                        android:paddingLeft="@dimen/dp_4"
+                        android:paddingRight="@dimen/dp_5"
+                        android:paddingEnd="@dimen/dp_5"
+                        android:paddingTop="@dimen/dp_3"
+                        android:paddingBottom="@dimen/dp_3"
+                        android:layout_marginTop="@dimen/dp_4"
+                        android:layout_marginBottom="@dimen/dp_4"
+                        android:textColor="@color/price_changes_color_text"
+                        android:background="@drawable/bg_price_changes"
+                        android:textSize="@dimen/sp_10"
+                        android:textStyle="bold"
+                        android:layout_below="@id/product_properties"
+                        android:visibility="gone"
+                        tools:visibility="visible"
+                        tools:text="TES NIH"/>
+
                     <TextView
                         android:id="@+id/tv_product_price"
                         style="@style/TextMidMedium"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/product_properties"
+                        android:layout_below="@+id/tv_price_changes"
                         android:layout_marginTop="@dimen/dp_4"
                         android:textColor="@color/orange_red"
                         android:textStyle="bold"

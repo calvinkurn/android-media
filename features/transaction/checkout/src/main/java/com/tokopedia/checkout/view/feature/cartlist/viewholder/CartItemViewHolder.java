@@ -90,6 +90,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
     private ImageView imgWishlist;
     private TextView tvEllipsize;
     private View divider;
+    private TextView tvPriceChanges;
 
     private CartItemHolderData cartItemHolderData;
     private QuantityTextWatcher.QuantityTextwatcherListener quantityTextwatcherListener;
@@ -135,6 +136,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         this.imgWishlist = itemView.findViewById(R.id.img_wishlist);
         this.tvEllipsize = itemView.findViewById(R.id.tv_ellipsize);
         this.divider = itemView.findViewById(R.id.holder_item_cart_divider);
+        this.tvPriceChanges = itemView.findViewById(R.id.tv_price_changes);
 
         etRemark.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -354,6 +356,14 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         });
 
         divider.setVisibility((getLayoutPosition() == dataSize - 1) ? View.GONE : View.VISIBLE);
+
+        String priceChangesText = data.getCartItemData().getOriginData().getPriceChangesDesc();
+        if (priceChangesText.isEmpty()) {
+            tvPriceChanges.setVisibility(View.GONE);
+        } else {
+            tvPriceChanges.setVisibility(View.VISIBLE);
+            tvPriceChanges.setText(priceChangesText);
+        }
     }
 
     private void renderRemark(CartItemHolderData data, int parentPosition, ViewHolderListener viewHolderListener) {
