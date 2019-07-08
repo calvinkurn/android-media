@@ -27,7 +27,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.R;
-import com.tokopedia.contactus.R2;
 import com.tokopedia.contactus.common.analytics.ContactUsTracking;
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity;
 import com.tokopedia.contactus.orderquery.data.ImageUpload;
@@ -48,33 +47,22 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
-public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTicketContract.View, ImageUploadAdapter.OnSelectImageClick {
+public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTicketContract.View, ImageUploadAdapter.OnSelectImageClick, View.OnClickListener {
 
     private static final int REQUEST_CODE_IMAGE = 1001;
     public static final String KEY_QUERY_TICKET = "KEY_QUERY_TICKET";
-    @BindView(R2.id.constraint_layout)
-    ConstraintLayout constraint_layout;
-    @BindView(R2.id.img_product)
-    ImageView imgProduct;
-    @BindView(R2.id.txt_invoice_no)
-    TextView txtInvoiceNo;
-    @BindView(R2.id.txt_invoice_title)
-    TextView txtInvoiceTitle;
-    @BindView(R2.id.txt_query_title)
-    TextView txtQueryTitle;
-    @BindView(R2.id.edt_query)
-    AppCompatEditText edtQuery;
-    @BindView(R2.id.btn_send)
-    TextView sendButton;
-    ImageUploadAdapter imageUploadAdapter;
-    @BindView(R2.id.tooltiplayout)
-    ConstraintLayout toolTipLayout;
-    @BindView(R2.id.submit_success)
-    ConstraintLayout submitSuccess;
+
+    private ConstraintLayout constraint_layout;
+    private ImageView imgProduct;
+    private TextView txtInvoiceNo;
+    private TextView txtInvoiceTitle;
+    private TextView txtQueryTitle;
+    private AppCompatEditText edtQuery;
+    private TextView sendButton;
+    private ImageUploadAdapter imageUploadAdapter;
+    private ConstraintLayout toolTipLayout;
+    private ConstraintLayout submitSuccess;
     String mInvoiceNumber;
 
     OrderQueryComponent orderQueryComponent;
@@ -82,8 +70,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
     SubmitTicketPresenter presenter;
 
     ImageUploadHandler imageUploadHandler;
-    @BindView(R2.id.rv_selected_images)
-    RecyclerView rvSelectedImages;
+    private RecyclerView rvSelectedImages;
 
     public static SubmitTicketFragment newInstance(SubmitTicketInvoiceData submitTicketInvoiceData) {
         Bundle args = new Bundle();
@@ -98,15 +85,36 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
 
         View view = inflater.inflate(R.layout.layout_invoice_form, container, false);
         initInjector();
-        ButterKnife.bind(this, view);
+        findingViewsId(view);
         imageUploadHandler = ImageUploadHandler.createInstance(this);
         presenter.attachView(this);
         imageUploadAdapter = new ImageUploadAdapter(getContext(),this);
         rvSelectedImages.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         rvSelectedImages.setAdapter(imageUploadAdapter);
         edtQuery.addTextChangedListener(watcher());
+        settingClickListener(view);
         return view;
 
+    }
+
+    private void findingViewsId(View view) {
+        constraint_layout = view.findViewById(R.id.constraint_layout);
+        imgProduct = view.findViewById(R.id.img_product);
+        txtInvoiceNo = view.findViewById(R.id.txt_invoice_no);
+        txtInvoiceTitle = view.findViewById(R.id.txt_invoice_title);
+        txtQueryTitle = view.findViewById(R.id.txt_query_title);
+        edtQuery = view.findViewById(R.id.edt_query);
+        sendButton = view.findViewById(R.id.btn_send);
+        toolTipLayout = view.findViewById(R.id.tooltiplayout);
+        submitSuccess = view.findViewById(R.id.submit_success);
+        rvSelectedImages = view.findViewById(R.id.rv_selected_images);
+    }
+
+    private void settingClickListener(View view) {
+        view.findViewById(R.id.img_tooltip).setOnClickListener(this);
+        sendButton.setOnClickListener(this);
+        view.findViewById(R.id.btn_tutup).setOnClickListener(this);
+        view.findViewById(R.id.btn_ok).setOnClickListener(this);
     }
 
     private TextWatcher watcher() {
@@ -288,12 +296,10 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
         startActivityForResult(intent, REQUEST_CODE_IMAGE);
     }
 
-    @OnClick(R2.id.img_tooltip)
     public void onToolTipImgClicked() {
         presenter.onToolTipClick();
     }
 
-    @OnClick(R2.id.btn_send)
     public void onSendClick() {
         String invoiceLabel = "With Invoice";
         if(mInvoiceNumber.equals("")){
@@ -303,7 +309,6 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
         presenter.onSendButtonClick();
     }
 
-    @OnClick(R2.id.btn_tutup)
     public void ontutupClick() {
         toolTipLayout.setVisibility(View.GONE);
     }
@@ -313,7 +318,6 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
         toolTipLayout.setVisibility(View.VISIBLE);
     }
 
-    @OnClick(R2.id.btn_ok)
     public void onOkClick() {
         ContactUsTracking.eventOkClick();
         submitSuccess.setVisibility(View.GONE);
@@ -348,5 +352,19 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
     @Override
     public void onClick() {
         showImagePickerDialog();
+    }
+
+    @Override
+    public void onClick(View view) {
+        int id = view.getId();
+        if(id==R.id.img_tooltip){
+            onToolTipImgClicked();
+        }else if(id==R.id.btn_send){
+            onSendClick();
+        }else if(id==R.id.btn_tutup){
+            ontutupClick();
+        }else if(id==R.id.btn_ok){
+            onOkClick();
+        }
     }
 }

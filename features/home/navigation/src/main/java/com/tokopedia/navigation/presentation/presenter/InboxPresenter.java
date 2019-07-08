@@ -5,8 +5,8 @@ import android.support.annotation.NonNull;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.GlobalNavConstant;
+import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.domain.GetDrawerNotificationUseCase;
 import com.tokopedia.navigation.domain.model.RecomTitle;
 import com.tokopedia.navigation.domain.model.Recomendation;
@@ -14,7 +14,7 @@ import com.tokopedia.navigation.domain.subscriber.InboxSubscriber;
 import com.tokopedia.navigation.presentation.view.InboxView;
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationModel;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
@@ -64,8 +64,9 @@ public class InboxPresenter extends BaseDaggerPresenter {
             return;
         getRecommendationUseCase.execute(getRecommendationUseCase.getRecomParams(0,
                 X_SOURCE_RECOM_WIDGET,
-                INBOX_PAGE),
-                new Subscriber<RecommendationModel>() {
+                INBOX_PAGE,
+                new ArrayList<>()),
+                new Subscriber<List<? extends RecommendationWidget>>() {
                     @Override
                     public void onStart() {
                         inboxView.showLoadMoreLoading();
@@ -81,10 +82,11 @@ public class InboxPresenter extends BaseDaggerPresenter {
                     }
 
                     @Override
-                    public void onNext(RecommendationModel recommendationModel) {
+                    public void onNext(List<? extends RecommendationWidget> recommendationWidgets) {
                         List<Visitable> visitables = new ArrayList<>();
-                        visitables.add(new RecomTitle(recommendationModel.getTitle()));
-                        visitables.addAll(getRecommendationVisitables(recommendationModel));
+                        RecommendationWidget recommendationWidget = recommendationWidgets.get(0);
+                        visitables.add(new RecomTitle(recommendationWidget.getTitle()));
+                        visitables.addAll(getRecommendationVisitables(recommendationWidget));
                         inboxView.hideLoadMoreLoading();
                         inboxView.onRenderRecomInbox(visitables);
                     }
@@ -94,10 +96,12 @@ public class InboxPresenter extends BaseDaggerPresenter {
     public void getRecomData(int page) {
         if (this.inboxView == null)
             return;
-        getRecommendationUseCase.execute(getRecommendationUseCase.getRecomParams(page,
+        getRecommendationUseCase.execute(getRecommendationUseCase.getRecomParams(
+                page,
                 X_SOURCE_RECOM_WIDGET,
-                INBOX_PAGE),
-                new Subscriber<RecommendationModel>() {
+                INBOX_PAGE,
+                new ArrayList<>()),
+                new Subscriber<List<? extends RecommendationWidget>>() {
                     @Override
                     public void onStart() {
                         inboxView.showLoadMoreLoading();
@@ -114,17 +118,18 @@ public class InboxPresenter extends BaseDaggerPresenter {
                     }
 
                     @Override
-                    public void onNext(RecommendationModel recommendationModel) {
+                    public void onNext(List<? extends RecommendationWidget> recommendationWidgets) {
                         inboxView.hideLoadMoreLoading();
-                        inboxView.onRenderRecomInbox(getRecommendationVisitables(recommendationModel));
+                        RecommendationWidget recommendationWidget = recommendationWidgets.get(0);
+                        inboxView.onRenderRecomInbox(getRecommendationVisitables(recommendationWidget));
                     }
                 });
     }
 
     @NonNull
-    private List<Visitable> getRecommendationVisitables(RecommendationModel recommendationModel) {
+    private List<Visitable> getRecommendationVisitables(RecommendationWidget recommendationWidget) {
         List<Visitable> recomendationList = new ArrayList<>();
-        for (RecommendationItem item : recommendationModel.getRecommendationItemList()) {
+        for (RecommendationItem item : recommendationWidget.getRecommendationItemList()) {
             recomendationList.add(new Recomendation(item));
         }
         return recomendationList;

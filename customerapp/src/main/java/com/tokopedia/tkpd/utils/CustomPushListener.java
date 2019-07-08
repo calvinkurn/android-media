@@ -12,14 +12,13 @@ import android.widget.RemoteViews;
 import com.moe.pushlibrary.utils.MoEHelperUtils;
 import com.moengage.core.ConfigurationProvider;
 import com.moengage.pushbase.push.PushMessageListener;
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.tkpd.R;
 
 public class CustomPushListener extends PushMessageListener {
 
     static final String EXTRA_NOTIFICATION_ID = "extra_delete_notification_id";
-    static final String DELETE_NOTIFY = "com.tokopedia.tkpd.utils.delete";
+    static final String ACTION_DELETE_NOTIFY = "com.tokopedia.tkpd.utils.delete";
     private static final int NOTIFICATION_ID = 777;
     private static final int GRID_NOTIFICATION_ID = 778;
 
@@ -43,6 +42,14 @@ public class CustomPushListener extends PushMessageListener {
 
     final static String ACTION_GRID_CLICK = "action_grid_click";
     final static String EXTRA_DEEP_LINK = "extra_deep_link";
+
+
+    static final String EVENT_PERSISTENT_CLICK_NAME = "Click_Action_Persistent";
+    static final String ACTION_PERSISTENT_CLICK = "extra_action_persistent_click";
+    static final String EXTRA_PERSISTENT_ICON_NAME = "icon_name";
+    static final String EXTRA_PERSISTENT_ICON_URL = "icon_url";
+    static final String EXTRA_PERSISTENT_DEEPLINK = "deeplink";
+    static final String EXTRA_CAMPAIGN_ID = "campaign_id";
 
     @Override
     protected void onPostNotificationReceived(Context context, Bundle extras) {
@@ -81,6 +88,13 @@ public class CustomPushListener extends PushMessageListener {
 
     private void createPersistentNotification(Context context, Bundle extras, NotificationCompat.Builder builder) {
         long when = System.currentTimeMillis();
+
+        String campaign_id = "";
+        String KEY_CAMPAIGN_ID = "gcm_campaign_id";
+        if (extras.containsKey(KEY_CAMPAIGN_ID)) {
+            campaign_id = extras.getString(KEY_CAMPAIGN_ID);
+        }
+
         RemoteViews remoteView = new RemoteViews(context.getPackageName(), R.layout.persistent_notification_layout);
 
         String[] titles = new String[]{
@@ -109,16 +123,19 @@ public class CustomPushListener extends PushMessageListener {
         };
 
         for (int i = 0; i < 4; i++) {
-            remoteView.setTextViewText(titleResIds[i], titles[i]);
-            Intent intent = RouteManager.getIntent(context, deepLinks[i]);
-            remoteView.setImageViewBitmap(iconResIds[i], MoEHelperUtils.downloadImageBitmap(iconUrls[i]));
-            PendingIntent pIntent = PendingIntent.getActivity(context, 100 + i, intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT);
-            remoteView.setOnClickPendingIntent(containerResIds[i], pIntent);
+            if (!TextUtils.isEmpty(titles[i]) && !TextUtils.isEmpty(deepLinks[i]) && !TextUtils.isEmpty(iconUrls[i])) {
+                remoteView.setTextViewText(titleResIds[i], titles[i]);
+                remoteView.setImageViewBitmap(iconResIds[i], MoEHelperUtils.downloadImageBitmap(iconUrls[i]));
+
+                PendingIntent pIntent = getPersistentClickPendingIntent(
+                        context, iconUrls[i], titles[i], deepLinks[i], campaign_id, 100 + i);
+
+                remoteView.setOnClickPendingIntent(containerResIds[i], pIntent);
+            }
         }
 
         Intent deleteIntent = new Intent(context, NotificationBroadcast.class);
-        deleteIntent.setAction(DELETE_NOTIFY);
+        deleteIntent.setAction(ACTION_DELETE_NOTIFY);
         deleteIntent.putExtra(EXTRA_NOTIFICATION_ID, NOTIFICATION_ID);
         PendingIntent deletePendingIntent = getPendingIntent(context, NOTIFICATION_ID, deleteIntent);
         remoteView.setOnClickPendingIntent(R.id.image_icon5, deletePendingIntent);
@@ -204,6 +221,19 @@ public class CustomPushListener extends PushMessageListener {
         remoteView.setTextViewText(R.id.tv_collapse_title, extras.getString("gcm_title"));
         remoteView.setTextViewText(R.id.tv_collapsed_message, extras.getString("gcm_alert"));
         remoteView.setOnClickPendingIntent(R.id.collapseMainView, contentIntent);
+    }
+
+
+    private PendingIntent getPersistentClickPendingIntent(Context context, String iconUrl,
+                                                          String iconName, String deepLink,
+                                                          String campaignId, int requestCode) {
+        Intent intent = new Intent(context, NotificationBroadcast.class);
+        intent.setAction(ACTION_PERSISTENT_CLICK);
+        intent.putExtra(EXTRA_CAMPAIGN_ID, campaignId);
+        intent.putExtra(EXTRA_PERSISTENT_ICON_URL, iconUrl);
+        intent.putExtra(EXTRA_PERSISTENT_ICON_NAME, iconName);
+        intent.putExtra(EXTRA_PERSISTENT_DEEPLINK, deepLink);
+        return getPendingIntent(context, requestCode, intent);
     }
 
     private PendingIntent getPendingIntent(Context context, int requestCode, Intent intent) {

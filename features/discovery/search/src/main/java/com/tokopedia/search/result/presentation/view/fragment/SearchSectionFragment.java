@@ -28,6 +28,7 @@ import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.common.data.Sort;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterHelper;
@@ -78,7 +79,7 @@ public abstract class SearchSectionFragment
 
     private SearchNavigationListener searchNavigationListener;
     private BottomSheetListener bottomSheetListener;
-    private RedirectionListener redirectionListener;
+    protected RedirectionListener redirectionListener;
     private GridLayoutManager gridLayoutManager;
     private LinearLayoutManager linearLayoutManager;
     private SwipeRefreshLayout refreshLayout;
@@ -98,25 +99,17 @@ public abstract class SearchSectionFragment
     SearchTracking searchTracking;
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        if (getUserVisibleHint()) {
-            setupSearchNavigation();
-        }
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initSpan();
+        initLayoutManager();
+        initSwipeToRefresh(view);
 
         if (savedInstanceState == null) {
             refreshLayout.post(this::onFirstTimeLaunch);
         } else {
             onRestoreInstanceState(savedInstanceState);
         }
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        initSpan();
-        initLayoutManager();
-        initSwipeToRefresh(view);
     }
 
     private void initSwipeToRefresh(View view) {
@@ -188,7 +181,7 @@ public abstract class SearchSectionFragment
         }
     }
 
-    private void setupSearchNavigation() {
+    protected void setupSearchNavigation() {
         searchNavigationListener
                 .setupSearchNavigation(new SearchNavigationListener.ClickListener() {
                     @Override
@@ -453,8 +446,14 @@ public abstract class SearchSectionFragment
         HashMap<String, String> selectedSort = new HashMap<>(
                 SortHelper.Companion.getSelectedSortFromSearchParameter(searchParameter.getSearchParameterHashMap(), getSort())
         );
-
+        addDefaultSelectedSort(selectedSort);
         setSelectedSort(selectedSort);
+    }
+
+    private void addDefaultSelectedSort(HashMap<String, String> selectedSort) {
+        if (selectedSort.isEmpty()) {
+            selectedSort.put(SearchApiConst.OB, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT);
+        }
     }
 
     protected abstract void refreshAdapterForEmptySearch();

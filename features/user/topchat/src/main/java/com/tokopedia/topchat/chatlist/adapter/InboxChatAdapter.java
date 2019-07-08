@@ -287,6 +287,7 @@ public class InboxChatAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
                     list.remove(i);
                     list.add(0, temp);
                     notifyItemMoved(i, 0);
+                    notifyItemChanged(0);
                     presenter.moveViewToTop();
                     isNew = false;
                     break;

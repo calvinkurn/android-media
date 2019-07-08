@@ -60,7 +60,7 @@ package-lock.json
 .okbuck/
 .watchmanconfig
 buck-out/
-buckw
+buckw*
 BUCK
 .buckconfig
 .settings
@@ -71,3 +71,6 @@ BUCK
 
 file_changes.log
 coverageResults/
+
+# unify
+unifyconfig/unifyproject.config
