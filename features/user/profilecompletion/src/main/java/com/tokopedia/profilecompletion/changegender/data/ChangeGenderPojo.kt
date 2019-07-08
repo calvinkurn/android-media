@@ -4,18 +4,13 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class ChangeGenderPojo(
-        @SerializedName("data")
-        @Expose
-        var changeGenderData: ChangeGenderData = ChangeGenderData()
-)
-
-data class ChangeGenderData(
         @SerializedName("userProfileCompletionUpdate")
         @Expose
-        var userProfileCompletionUpdate: UserProfileCompletionUpdate = UserProfileCompletionUpdate()
+        var data: UserProfileCompletionGenderUpdate = UserProfileCompletionGenderUpdate()
+
 )
 
-data class UserProfileCompletionUpdate(
+data class UserProfileCompletionGenderUpdate(
         @SerializedName("isSuccess")
         @Expose
         var isSuccess: Boolean = false,

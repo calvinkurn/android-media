@@ -52,11 +52,11 @@ class ChangeGenderViewModel @Inject constructor(private val graphqlUseCase:  Gra
     private fun onSuccessMutateChangeGender(gender: Int): (ChangeGenderPojo) -> Unit {
         return {
 
-            val errorMessage = it.changeGenderData.userProfileCompletionUpdate.errorMessage
-            val isSuccess = it.changeGenderData.userProfileCompletionUpdate.isSuccess
+            val errorMessage = it.data.errorMessage
+            val isSuccess = it.data.isSuccess
 
             if (errorMessage.isBlank() && isSuccess) {
-                mutateChangeGenderResponse.value = Success(ChangeGenderResult(it.changeGenderData, gender))
+                mutateChangeGenderResponse.value = Success(ChangeGenderResult(it.data, gender))
             } else if (!errorMessage.isBlank()) {
                 mutateChangeGenderResponse.value = Fail(MessageErrorException(errorMessage,
                         ErrorHandlerSession.ErrorCode.WS_ERROR.toString()))

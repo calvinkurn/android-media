@@ -50,8 +50,8 @@ class AddEmailViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
 
     private fun onSuccessMutateAddEmail(): (AddEmailPojo) -> Unit {
         return {
-            val errorMessage = it.data.userProfileCompletionUpdate.errorMessage
-            val isSuccess = it.data.userProfileCompletionUpdate.isSuccess
+            val errorMessage = it.data.errorMessage
+            val isSuccess = it.data.isSuccess
 
             if (errorMessage.isBlank() && isSuccess) {
                 mutateAddEmailResponse.value = Success(it)

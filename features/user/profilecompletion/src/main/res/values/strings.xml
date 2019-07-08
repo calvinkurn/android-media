@@ -61,6 +61,7 @@
     <string name="sample_phone">Contoh: 08xxxxxxxxxx</string>
     <string name="wrong_phone_format">Format nomor ponsel salah</string>
     <string name="tokocash_after_activation">Setelah terverifikasi, TokoCash akan aktif dan bisa digunakan sebagai salah satu metode pembayaran Anda.</string>
+    <string name="phone_number_already_exist">Akun lain telah menggunakan nomor ponsel ini</string>
 
 
 </resources>

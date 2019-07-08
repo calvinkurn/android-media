@@ -155,7 +155,7 @@ class AddEmailFragment : BaseDaggerFragment() {
         activity?.run {
             val intent = Intent()
             val bundle = Bundle()
-            bundle.putInt(EXTRA_PROFILE_SCORE, pojo.data.userProfileCompletionUpdate.completionScore)
+            bundle.putInt(EXTRA_PROFILE_SCORE, pojo.data.completionScore)
             intent.putExtras(bundle)
             setResult(Activity.RESULT_OK, intent)
             finish()
@@ -176,6 +176,8 @@ class AddEmailFragment : BaseDaggerFragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_ADD_EMAIL_COTP && resultCode == Activity.RESULT_OK) {
             onSuccessVerifyAddEmail(data)
+        }else{
+            dismissLoading()
         }
     }
 
@@ -204,5 +206,9 @@ class AddEmailFragment : BaseDaggerFragment() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.mutateAddEmailResponse.removeObservers(this)
+    }
 
 }
