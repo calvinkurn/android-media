@@ -18,18 +18,10 @@ class TelcoProductActivity : BaseTelcoActivity() {
     override fun getNewFragment(): Fragment {
         val digitalTelcoExtraParam = DigitalTelcoExtraParam()
         val bundle = intent.extras
-        if (!TextUtils.isEmpty(bundle.getString(PARAM_MENU_ID))) {
-            digitalTelcoExtraParam.menuId = bundle.getString(PARAM_MENU_ID)
-        }
-        if (!TextUtils.isEmpty(bundle.getString(PARAM_CATEGORY_ID))) {
-            digitalTelcoExtraParam.categoryId = bundle.getString(PARAM_CATEGORY_ID)
-        }
-        if (!TextUtils.isEmpty(bundle.getString(PARAM_PRODUCT_ID))) {
-            digitalTelcoExtraParam.productId = bundle.getString(PARAM_PRODUCT_ID)
-        }
-        if (!TextUtils.isEmpty(bundle.getString(PARAM_CLIENT_NUMBER))) {
-            digitalTelcoExtraParam.clientNumber = bundle.getString(PARAM_CLIENT_NUMBER)
-        }
+        digitalTelcoExtraParam.menuId = bundle?.getString(PARAM_MENU_ID) ?: ""
+        digitalTelcoExtraParam.categoryId = bundle?.getString(PARAM_CATEGORY_ID) ?: ""
+        digitalTelcoExtraParam.productId = bundle?.getString(PARAM_PRODUCT_ID) ?: ""
+        digitalTelcoExtraParam.clientNumber = bundle?.getString(PARAM_CLIENT_NUMBER) ?: ""
         return DigitalTelcoFragment.newInstance(digitalTelcoExtraParam)
     }
 
@@ -45,8 +37,12 @@ class TelcoProductActivity : BaseTelcoActivity() {
         val PARAM_CLIENT_NUMBER = "client_number"
         val PARAM_CATEGORY_ID = "category_id"
 
-        fun newInstance(context: Context): Intent {
+        fun newInstance(context: Context, menuId: String, categoryId: String, productId: String = "", clientNumber: String = ""): Intent {
             val intent = Intent(context, TelcoProductActivity::class.java)
+            intent.putExtra(PARAM_MENU_ID, menuId)
+            intent.putExtra(PARAM_CATEGORY_ID, categoryId)
+            intent.putExtra(PARAM_PRODUCT_ID, productId)
+            intent.putExtra(PARAM_CLIENT_NUMBER, clientNumber)
             return intent
         }
 

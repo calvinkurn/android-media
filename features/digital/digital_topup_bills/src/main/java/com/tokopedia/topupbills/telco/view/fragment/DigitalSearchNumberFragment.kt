@@ -150,7 +150,7 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnCl
         editTextSearchNumber.setOnEditorActionListener(TextView.OnEditorActionListener { textView, actionId, keyEvent ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 var orderClientNumber = findNumber(textView.text.toString(), numberListAdapter.clientNumbers)
-                if (orderClientNumber != null) {
+                if (orderClientNumber != null && orderClientNumber.isFavorite) {
                     inputNumberActionType = InputNumberActionType.FAVORITE
                     callback.onClientNumberClicked(orderClientNumber, inputNumberActionType)
                 } else {
@@ -167,7 +167,7 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnCl
     private fun filterData(query: String) {
         val searchClientNumbers = ArrayList<TelcoFavNumber>()
         if (!TextUtils.isEmpty(query) and !isContain(query, clientNumbers)) {
-            searchClientNumbers.add(TelcoFavNumber(query))
+            searchClientNumbers.add(TelcoFavNumber(query, isFavorite = false))
         }
         for (orderClientNumber in clientNumbers) {
             if (orderClientNumber.clientNumber.contains(query)) {
@@ -203,7 +203,7 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnCl
     override fun onClientNumberClicked(orderClientNumber: TelcoFavNumber) {
         if (!::inputNumberActionType.isInitialized || inputNumberActionType != InputNumberActionType.CONTACT) {
             val checkNumber = findNumber(orderClientNumber.clientNumber, numberListAdapter.clientNumbers)
-            if (checkNumber != null) {
+            if (checkNumber != null && checkNumber.isFavorite) {
                 inputNumberActionType = InputNumberActionType.FAVORITE
             } else {
                 inputNumberActionType = InputNumberActionType.MANUAL
