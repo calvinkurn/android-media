@@ -47,9 +47,6 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
     public final static int ATTACH_FILE_REQUEST = 1;
 
 
-    @BindView(R2.id.scroll_view)
-    ScrollView mainView;
-
     @BindView(R2.id.webview)
     TkpdWebView webView;
 
@@ -259,18 +256,6 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
             }
         }
 
-        @Override
-        public void onPageFinished(WebView view, String url) {
-            super.onPageFinished(view, url);
-            if (mainView != null)
-                mainView.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mainView != null)
-                            mainView.smoothScrollTo(0, 0);
-                    }
-                }, 300);
-        }
 
         @Override
         protected boolean onOverrideUrl(Uri url) {
