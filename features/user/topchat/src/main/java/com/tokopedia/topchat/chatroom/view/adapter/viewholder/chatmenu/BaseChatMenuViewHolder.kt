@@ -7,13 +7,14 @@ import android.widget.TextView
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.ChatMenu
 
-abstract class BaseChatMenuViewHolder(private val listener: ChatMenuListener, itemView: View?) : RecyclerView.ViewHolder(itemView) {
+abstract class BaseChatMenuViewHolder(val listener: ChatMenuListener, itemView: View?) : RecyclerView.ViewHolder(itemView) {
 
     private val menuIcon: ImageView? = itemView?.findViewById(R.id.ivIcon)
     private val menuTitle: TextView? = itemView?.findViewById(R.id.tvTitle)
 
     interface ChatMenuListener {
-
+        fun onClickAttachProduct()
+        fun closeChatMenu()
     }
 
     fun bind(chatMenu: ChatMenu) {
@@ -21,6 +22,7 @@ abstract class BaseChatMenuViewHolder(private val listener: ChatMenuListener, it
         menuTitle?.text = chatMenu.title
 
         itemView.setOnClickListener {
+            listener.closeChatMenu()
             onItemClick()
         }
     }

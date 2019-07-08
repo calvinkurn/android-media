@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatroom.view.customview
 
 import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
 import android.support.design.widget.BottomSheetDialog
 import android.support.design.widget.BottomSheetDialogFragment
@@ -12,10 +13,22 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.ChatMenuAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatmenu.BaseChatMenuViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.ChatMenuFactory
+import java.lang.IllegalStateException
 
-class BottomChatMenuFragment : BottomSheetDialogFragment(), BaseChatMenuViewHolder.ChatMenuListener {
+class BottomChatMenuFragment : BottomSheetDialogFragment() {
 
     private lateinit var rvChatMenu: RecyclerView
+    private lateinit var chatMenuListener: BaseChatMenuViewHolder.ChatMenuListener
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        val parentFragment = parentFragment
+        if (parentFragment is BaseChatMenuViewHolder.ChatMenuListener) {
+            chatMenuListener = parentFragment
+        } else {
+            throw IllegalStateException("The parent fragment must implement the ChatMenuListener interface")
+        }
+    }
 
     override fun getTheme(): Int {
         return R.style.BottomSheetDialogTheme
@@ -37,7 +50,7 @@ class BottomChatMenuFragment : BottomSheetDialogFragment(), BaseChatMenuViewHold
         val menuItems = ChatMenuFactory.createChatMenuItems()
         with(rvChatMenu) {
             setHasFixedSize(true)
-            adapter = ChatMenuAdapter(menuItems, this@BottomChatMenuFragment)
+            adapter = ChatMenuAdapter(menuItems, chatMenuListener)
         }
     }
 

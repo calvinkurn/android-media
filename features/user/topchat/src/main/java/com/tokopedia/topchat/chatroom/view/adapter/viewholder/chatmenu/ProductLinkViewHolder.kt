@@ -5,7 +5,7 @@ import android.view.View
 class ProductLinkViewHolder(listener: ChatMenuListener, itemView: View?) : BaseChatMenuViewHolder(listener, itemView) {
 
     override fun onItemClick() {
-
+        listener.onClickAttachProduct()
     }
 
 }
