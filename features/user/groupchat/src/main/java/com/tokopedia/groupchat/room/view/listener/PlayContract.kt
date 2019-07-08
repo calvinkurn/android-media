@@ -45,6 +45,7 @@ interface PlayContract {
         fun onSprintSaleReceived(it: SprintSaleAnnouncementViewModel)
         fun onStickyComponentReceived(it: StickyComponentViewModel)
         fun onVideoStreamUpdated(it: VideoStreamViewModel)
+        fun hasVideoVertical(): Boolean
     }
 
     interface Presenter: CustomerPresenter<View> {

@@ -155,4 +155,8 @@ class VideoVerticalHelper (
         }
         playVideoSource(video)
     }
+
+    fun isVideoShown(): Boolean {
+        return playerView.isShown
+    }
 }

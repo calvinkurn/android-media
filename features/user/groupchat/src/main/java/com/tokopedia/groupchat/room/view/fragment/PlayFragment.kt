@@ -818,4 +818,11 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         return ""
     }
 
+    fun dismissExitDialog() {
+        exitDialog?.dismiss()
+    }
+
+    override fun hasVideoVertical(): Boolean {
+        return viewState?.verticalVideoShown()
+    }
 }

@@ -797,6 +797,10 @@ open class PlayViewStateImpl(
         return errorView.isShown
     }
 
+    override fun verticalVideoShown(): Boolean {
+        return videoVerticalHelper.isVideoShown()
+    }
+
     private fun setToolbarParticipantCount(context: Context, totalParticipant: String) {
         val textParticipant = String.format("%s %s", totalParticipant, context.getString(R.string.view))
         toolbar.findViewById<TextView>(R.id.toolbar_subtitle).text = textParticipant

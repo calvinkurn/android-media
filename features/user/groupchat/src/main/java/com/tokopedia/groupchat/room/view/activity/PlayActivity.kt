@@ -128,13 +128,11 @@ open class PlayActivity : BaseSimpleActivity(), PlayActivityContract.View {
     }
 
     override fun onBackPressed() {
-        val currentFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
-        if (currentFragment is PlayFragment) {
-            currentFragment.backPress()
-        } else {
-            super.onBackPressed()
+        checkFragmentisPlayFragment()?.let {
+            it.backPress()
+            return
         }
-
+        super.onBackPressed()
     }
 
     fun changeHomeDrawableColor(resId: Int) {
@@ -151,6 +149,7 @@ open class PlayActivity : BaseSimpleActivity(), PlayActivityContract.View {
 
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
+        checkFragmentisPlayFragment()?.dismissExitDialog()
         minimize()
     }
 
@@ -158,17 +157,22 @@ open class PlayActivity : BaseSimpleActivity(), PlayActivityContract.View {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && isPipActivated()) {
             val displayMetrics = DisplayMetrics()
             windowManager.defaultDisplay.getMetrics(displayMetrics)
-            mPictureInPictureParamsBuilder?.let {
-                it.setAspectRatio(Rational(9, 16))
-                enterPictureInPictureMode(it.build())
+
+            checkFragmentisPlayFragment()?.let {
+                if(it.hasVideoVertical()) {
+                    mPictureInPictureParamsBuilder?.let {
+                        it.setAspectRatio(Rational(9, 16))
+                        enterPictureInPictureMode(it.build())
+                    }
+                }
             }
         }
     }
 
     private fun isPipActivated(): Boolean {
-        remoteConfig?.let {
-            return it.getBoolean(RemoteConfigKey.PLAY_PIP)
-        }
+//        remoteConfig?.let {
+//            return it.getBoolean(RemoteConfigKey.PLAY_PIP)
+//        }
         return true
     }
 
@@ -194,6 +198,15 @@ open class PlayActivity : BaseSimpleActivity(), PlayActivityContract.View {
         } else {
             decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             fragmentContainer.show()
+        }
+    }
+
+    private fun checkFragmentisPlayFragment(): PlayFragment? {
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
+        return if (currentFragment is PlayFragment) {
+            currentFragment
+        } else {
+            null
         }
     }
 

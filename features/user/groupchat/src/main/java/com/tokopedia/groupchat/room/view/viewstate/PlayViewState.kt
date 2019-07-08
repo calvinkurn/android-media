@@ -63,4 +63,5 @@ interface PlayViewState {
     fun onOverflowMenuClicked()
     fun onVideoVerticalUpdated(it: VideoStreamViewModel)
     fun onErrorVideoVertical()
+    fun verticalVideoShown(): Boolean
 }
