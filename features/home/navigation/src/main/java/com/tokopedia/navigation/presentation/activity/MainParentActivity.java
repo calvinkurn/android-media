@@ -98,6 +98,7 @@ public class MainParentActivity extends BaseActivity implements
     public static final int HOME_MENU = 0;
     public static final int FEED_MENU = 1;
     public static final int OS_MENU = 2;
+    private static final String OFFICIAL_STORE = "Official Store";
     public static final int CART_MENU = 3;
     public static final int ACCOUNT_MENU = 4;
     public static final int RECOMENDATION_LIST = 5;
@@ -378,7 +379,7 @@ public class MainParentActivity extends BaseActivity implements
         Fragment fragment = fragmentList.get(position);
         if (fragment != null) {
 
-            if (item.getTitle() == "Official Store"){
+            if (item.getTitle().equals(OFFICIAL_STORE)){
                 startActivity(((GlobalNavRouter) getApplication()).getOldOfficialStore(this));
                 return false;
             }
