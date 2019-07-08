@@ -503,6 +503,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         this.createPostUrl = createPostUrl
         if (isShowFeed && isFeedShopPageEnabled) {
             addFeed()
+            viewPager.currentItem = if (tabPosition == TAB_POSITION_INFO) getShopInfoPosition() else tabPosition
         }
     }
 
