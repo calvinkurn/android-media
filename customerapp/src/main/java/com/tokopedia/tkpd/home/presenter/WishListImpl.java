@@ -51,6 +51,9 @@ import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractor;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractorImpl;
 import com.tokopedia.tkpd.home.service.FavoritePart1Service;
+import com.tokopedia.topads.sdk.domain.model.Data;
+import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.topads.sdk.domain.model.ProductImage;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
@@ -76,6 +79,7 @@ import kotlin.Unit;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -94,7 +98,7 @@ public class WishListImpl implements WishList {
     public static final String TOPADS_ITEM = "5";
     public static final String TOPADS_SRC = "wishlist";
     public static final String X_SOURCE_RECOM_WIDGET = "recom_widget";
-    public static final String RECOM_PAGE = "wishlist";
+    public static final String EMPTY_WISHLIST = "empty_wishlist";
 
     WishListView wishListView;
 
@@ -154,7 +158,7 @@ public class WishListImpl implements WishList {
         getRecommendationUseCase.execute(getRecommendationUseCase.getRecomParams(
                 page,
                 X_SOURCE_RECOM_WIDGET,
-                RECOM_PAGE,
+                EMPTY_WISHLIST,
                 new ArrayList<>()),
                 new Subscriber<List<? extends RecommendationWidget>>() {
                     @Override
@@ -176,6 +180,7 @@ public class WishListImpl implements WishList {
                         wishListView.displayLoadMore(false);
                         RecommendationWidget recommendationWidget = recommendationWidgets.get(0);
                         wishListView.onRenderRecomInbox(getRecommendationVisitables(recommendationWidget));
+                        wishListView.loadDataChange();
                     }
                 });
     }
@@ -183,7 +188,7 @@ public class WishListImpl implements WishList {
     public void getFirstRecomData(){
         getRecommendationUseCase.execute(getRecommendationUseCase.getRecomParams(0,
                 X_SOURCE_RECOM_WIDGET,
-                RECOM_PAGE,
+                EMPTY_WISHLIST,
                 new ArrayList<>()),
                 new Subscriber<List<? extends RecommendationWidget>>() {
                     @Override
@@ -207,6 +212,7 @@ public class WishListImpl implements WishList {
                         visitables.add(new WishlistRecomTitleViewModel(recommendationWidget.getTitle()));
                         visitables.addAll(getRecommendationVisitables(recommendationWidget));
                         wishListView.onRenderRecomInbox(visitables);
+                        wishListView.loadDataChange();
                     }
                 });
     }
@@ -315,7 +321,7 @@ public class WishListImpl implements WishList {
     @Override
     public void fetchDataFromInternet(final Context context) {
 
-        Subscriber<GraphqlResponse> subscriber = new Subscriber<GraphqlResponse>() {
+        Subscriber<GqlWishListDataResponse> subscriber = new Subscriber<GqlWishListDataResponse>() {
             @Override
             public void onCompleted() {
             }
@@ -334,11 +340,10 @@ public class WishListImpl implements WishList {
             }
 
             @Override
-            public void onNext(GraphqlResponse graphqlResponse) {
+            public void onNext(GqlWishListDataResponse response) {
                 wishListView.displayLoadMore(false);
-                if (graphqlResponse != null && graphqlResponse.getData(GqlWishListDataResponse.class) != null) {
-                    GqlWishListDataResponse gqlWishListDataResponse = graphqlResponse.getData(GqlWishListDataResponse.class);
-                    setData(gqlWishListDataResponse);
+                if (response != null) {
+                    setData(response);
                 } else {
                     setData();
                 }
@@ -411,15 +416,53 @@ public class WishListImpl implements WishList {
         GraphqlCacheStrategy graphqlCacheStrategy =
                 new GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build();
 
-        Observable<GraphqlResponse> observable = ObservableFactory.create(graphqlRequestList,
-                graphqlCacheStrategy);
+//        Observable<GraphqlResponse> observable = ObservableFactory.create(graphqlRequestList,
+//                graphqlCacheStrategy);
 
+
+        com.tokopedia.usecase.RequestParams params = getRecommendationUseCase.getRecomParams(0,
+                X_SOURCE_RECOM_WIDGET,
+                TOPADS_SRC, new ArrayList<>());
+
+        Observable observable = Observable.zip(ObservableFactory.create(graphqlRequestList,
+                graphqlCacheStrategy), getRecommendationUseCase.getExecuteObservable(params), new Func2<GraphqlResponse, List<? extends RecommendationWidget>, GqlWishListDataResponse>() {
+            @Override
+            public GqlWishListDataResponse call(GraphqlResponse graphqlResponse, List<? extends RecommendationWidget> recommendationWidgets) {
+                GqlWishListDataResponse response = graphqlResponse.getData(GqlWishListDataResponse.class);
+                response.setTopAdsModel(mappingTopAdsModel(recommendationWidgets.get(0)));
+                return response;
+            }
+        });
 
         compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber));
 
+    }
+
+    private TopAdsModel mappingTopAdsModel(RecommendationWidget recom) {
+        TopAdsModel model = new TopAdsModel();
+        List<Data> data = new ArrayList<>();
+        for (RecommendationItem r : recom.getRecommendationItemList()) {
+            if(r.isTopAds()){
+                Data d = new Data();
+                Product p = new Product();
+                ProductImage img = new ProductImage();
+                img.setM_url(r.getTrackerImageUrl());
+                img.setM_ecs(r.getImageUrl());
+                p.setId(String.valueOf(r.getProductId()));
+                p.setName(r.getName());
+                p.setApplinks(r.getAppUrl());
+                p.setUri(r.getUrl());
+                p.setImage(img);
+                d.setProduct(p);
+                d.setProductWishlistUrl(r.getWishlistUrl());
+                data.add(d);
+            }
+        }
+        model.setData(data);
+        return model;
     }
 
     @Override
