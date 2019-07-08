@@ -39,10 +39,9 @@ class DigitalSubMenuWidget @JvmOverloads constructor(@NotNull context: Context, 
     }
 
     fun setHeader(subMenus: List<DigitalProductSubMenu>) {
-        titleHeaderLeft.setText(subMenus.get(HEADER_LEFT).label)
-        titleHeaderRight.setText(subMenus.get(HEADER_RIGHT).label)
+        titleHeaderLeft.text = subMenus.get(HEADER_LEFT).label
+        titleHeaderRight.text = subMenus.get(HEADER_RIGHT).label
 
-        headerLeftActive(subMenus.get(headerSelected))
         layoutHeaderLeft.setOnClickListener {
             if (headerSelected != HEADER_LEFT)
                 headerSelected = HEADER_LEFT

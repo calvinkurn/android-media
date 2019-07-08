@@ -159,7 +159,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             telcoClientNumberWidget.setInputNumber(digitalTelcoExtraParam.clientNumber)
             selectedProductId = digitalTelcoExtraParam.productId
             if (digitalTelcoExtraParam.categoryId.isNotEmpty()) {
-                selectedCategoryId = Integer.valueOf(digitalTelcoExtraParam.categoryId)
+                selectedCategoryId = digitalTelcoExtraParam.categoryId.toInt()
             }
         }
     }

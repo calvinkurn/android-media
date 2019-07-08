@@ -22,6 +22,8 @@ import kotlinx.android.synthetic.main.fragment_digital_telco.*
  */
 class DigitalTelcoFragment : BaseDaggerFragment() {
 
+    var posCurrentTabExtraParam = 0
+
     override fun getScreenName(): String {
         return DigitalTelcoFragment::class.java.simpleName
     }
@@ -47,12 +49,11 @@ class DigitalTelcoFragment : BaseDaggerFragment() {
             val digitalTelcoExtraParam = this.getParcelable(EXTRA_PARAM_TELCO) as DigitalTelcoExtraParam
             var prepaidExtraParam = DigitalTelcoExtraParam()
             var postpaidExtraParam = DigitalTelcoExtraParam()
-            var posCurrentTabExtraParam: Int
 
-            if (Integer.parseInt(digitalTelcoExtraParam.menuId) == TelcoComponentType.TELCO_PREPAID) {
+            if (digitalTelcoExtraParam.menuId.toInt() == TelcoComponentType.TELCO_PREPAID) {
                 prepaidExtraParam = digitalTelcoExtraParam
                 posCurrentTabExtraParam = 0
-            } else {
+            } else if (digitalTelcoExtraParam.menuId.toInt() == TelcoComponentType.TELCO_POSTPAID) {
                 postpaidExtraParam = digitalTelcoExtraParam
                 posCurrentTabExtraParam = 1
             }

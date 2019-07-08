@@ -33,9 +33,9 @@ fun Uri.covertContactUriToContactData(contentResolver: ContentResolver): Digital
     var contactNumber = "";
     cursorPhone?.run {
         if (this.count > 0 && this.moveToNext()) {
-            if (Integer.parseInt(cursorPhone.getString(
+            if (cursorPhone.getString(
                             cursorPhone.getColumnIndex(
-                                    ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
+                                    ContactsContract.Contacts.HAS_PHONE_NUMBER)).toInt() > 0) {
                 givenName = cursorPhone.getString(
                         cursorPhone.getColumnIndex(
                                 ContactsContract.Contacts.DISPLAY_NAME
