@@ -52,7 +52,7 @@ import javax.inject.Inject;
 public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implements ShopOpenLocView {
 
     public static final int REQUEST_CODE_ADDRESS = 1234;
-    public static final int REQUEST_CODE__EDIT_ADDRESS = 1235;
+    public static final int REQUEST_CODE_DISTRICTRECOMMENDATION = 1235;
     public static final int REQUEST_CODE_GOOGLE_MAP = 1236;
     public static final String CONST_PINPOINT = "pinpoint";
     private final String RESULT_INTENT_DISTRICT_RECOMMENDATION = "district_recommendation_address";
@@ -217,7 +217,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
     @Override
     public void navigateToDistrictRecommendation(Token token) {
         Intent intent = logisticRouter.getDistrictRecommendationIntent(getActivity(), token);
-        startActivityForResult(intent, REQUEST_CODE__EDIT_ADDRESS);
+        startActivityForResult(intent, REQUEST_CODE_DISTRICTRECOMMENDATION);
     }
 
     @Override
@@ -294,7 +294,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
                         trackingOpenShop.eventOpenShopLocationForm(address.getAddressDetail());
                     }
                     break;
-                case REQUEST_CODE__EDIT_ADDRESS:
+                case REQUEST_CODE_DISTRICTRECOMMENDATION:
                     DistrictRecommendationAddress address = data.getParcelableExtra(RESULT_INTENT_DISTRICT_RECOMMENDATION);
                     if (address != null) {
                         locationShippingViewHolder.initializeZipCodes(address.getZipCodes());
