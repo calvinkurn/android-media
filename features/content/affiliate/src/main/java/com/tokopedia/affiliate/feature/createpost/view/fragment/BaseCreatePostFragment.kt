@@ -226,6 +226,8 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     override fun showLoading() {
+        action_bottom.gone()
+        layout_default_caption.gone()
         view?.showLoading()
     }
 
@@ -234,6 +236,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     override fun onSuccessGetContentForm(feedContentForm: FeedContentForm) {
+        action_bottom.visible()
         viewModel.token = feedContentForm.token
         viewModel.maxImage = feedContentForm.media.maxMedia
         viewModel.allowImage = feedContentForm.media.allowImage
@@ -270,9 +273,12 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     override fun onErrorGetContentForm(message: String) {
+        layout_default_caption.gone()
+        action_bottom.gone()
         NetworkErrorHelper.showEmptyState(context, main_view, message) {
             fetchContentForm()
         }
+
     }
 
     override fun onErrorNoQuota() {
