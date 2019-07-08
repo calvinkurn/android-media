@@ -54,6 +54,8 @@ import com.tokopedia.product.detail.applink.ProductDetailApplinkModule;
 import com.tokopedia.product.detail.applink.ProductDetailApplinkModuleLoader;
 import com.tokopedia.topads.applink.TopAdsApplinkModule;
 import com.tokopedia.topads.applink.TopAdsApplinkModuleLoader;
+import com.tokopedia.topads.auto.internal.AutoAdsLinkModule;
+import com.tokopedia.topads.auto.internal.AutoAdsLinkModuleLoader;
 import com.tokopedia.topads.dashboard.data.applink.TopAdsDashboardApplinkModule;
 import com.tokopedia.topads.dashboard.data.applink.TopAdsDashboardApplinkModuleLoader;
 import com.tokopedia.topchat.deeplink.TopChatAppLinkModule;
@@ -99,7 +101,8 @@ import com.tokopedia.power_merchant.subscribe.applink.PowerMerchantSubscribeDeep
         ChangePasswordDeeplinkModule.class,
         UserIdentificationApplinkModule.class,
         ChatbotApplinkModule.class,
-        PowerMerchantSubscribeDeeplinkModule.class
+        PowerMerchantSubscribeDeeplinkModule.class,
+        AutoAdsLinkModule.class
 })
 
 public class DeepLinkHandlerActivity extends AppCompatActivity {
@@ -132,7 +135,8 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new ChangePasswordDeeplinkModuleLoader(),
                 new UserIdentificationApplinkModuleLoader(),
                 new ChatbotApplinkModuleLoader(),
-                new PowerMerchantSubscribeDeeplinkModuleLoader()
+                new PowerMerchantSubscribeDeeplinkModuleLoader(),
+                new AutoAdsLinkModuleLoader()
         );
     }
 

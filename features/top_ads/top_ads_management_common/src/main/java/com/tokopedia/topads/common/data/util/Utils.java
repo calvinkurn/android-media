@@ -1,4 +1,4 @@
-package com.tokopedia.topads.dashboard.utils;
+package com.tokopedia.topads.common.data.util;
 
 import org.json.JSONArray;
 import org.json.JSONException;

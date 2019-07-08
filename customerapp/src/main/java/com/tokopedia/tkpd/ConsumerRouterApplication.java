@@ -420,7 +420,9 @@ import com.tokopedia.tokocash.qrpayment.presentation.activity.NominalQrPaymentAc
 import com.tokopedia.tokocash.qrpayment.presentation.model.InfoQrTokoCash;
 import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.view.activity.TokoPointsHomeActivity;
+import com.tokopedia.topads.auto.router.TopAdsAutoRouter;
 import com.tokopedia.topads.common.TopAdsWebViewRouter;
+import com.tokopedia.topads.dashboard.TopAdsDashboardInternalRouter;
 import com.tokopedia.topads.dashboard.TopAdsDashboardRouter;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.topads.sdk.base.TopAdsRouter;
@@ -590,6 +592,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TradeInRouter,
         com.tokopedia.product.detail.ProductDetailRouter,
         OvoPayWithQrRouter,
+        TopAdsAutoRouter,
         KYCRouter{
 
 
@@ -3621,5 +3624,17 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 break;
         }
         return baseDaggerFragment;
+    }
+
+    @Override
+    @NonNull
+    public Intent getTopAdsDashboardIntent(@NonNull Context context) {
+        return TopAdsDashboardInternalRouter.getTopAdsdashboardIntent(context);
+    }
+
+    @Override
+    @NonNull
+    public Intent getTopAdsAddCreditIntent(@NonNull Context context) {
+        return TopAdsDashboardInternalRouter.getTopAdsAddCreditIntent(context);
     }
 }
