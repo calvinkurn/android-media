@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.text.TextUtils
 import android.view.View
+import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
@@ -40,10 +41,12 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     private lateinit var quickReplyAdapter: QuickReplyAdapter
     private lateinit var rvQuickReply: RecyclerView
     private lateinit var reasonBottomSheet: ReasonBottomSheet
+    private lateinit var chatMenuBtn: ImageView
 
     override fun initView() {
         super.initView()
 
+        chatMenuBtn = view.findViewById(R.id.iv_chat_menu)
         rvQuickReply = view.findViewById(R.id.list_quick_reply)
         quickReplyAdapter = QuickReplyAdapter(QuickReplyListViewModel(), quickReplyListener)
 
@@ -55,6 +58,11 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
             onAttachImageClicked()
         }
 
+        hideCurrentButtonMenu()
+    }
+
+    private fun hideCurrentButtonMenu() {
+        pickerButton.visibility = View.GONE
     }
 
     override fun onSuccessLoadFirstTime(chatroomViewModel: ChatroomViewModel) {
@@ -151,7 +159,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     }
 
     private fun showActionButtons() {
-        pickerButton.visibility = View.VISIBLE
+//        pickerButton.visibility = View.VISIBLE
         attachProductButton.visibility = View.GONE
         maximizeButton.visibility = View.GONE
     }
