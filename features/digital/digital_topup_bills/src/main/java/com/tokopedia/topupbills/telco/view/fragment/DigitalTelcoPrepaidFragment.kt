@@ -50,7 +50,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var sharedModel: SharedProductTelcoViewModel
     private lateinit var layoutProgressBar: RelativeLayout
     private lateinit var productSelected: TelcoProductDataCollection
-
+    private lateinit var selectedOperator: TelcoCustomDataCollection
     private lateinit var inputNumberActionType: InputNumberActionType
 
     private val favNumberList = mutableListOf<TelcoFavNumber>()
@@ -58,7 +58,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             TelcoCustomComponentData(TelcoCustomData(mutableListOf()))
     private var selectedProductId = ""
     private var selectedCategoryId = 0
-    private lateinit var selectedOperator: TelcoCustomDataCollection
+
 
     override fun onStart() {
         context?.let {
@@ -183,9 +183,15 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 }.single()
                 val operatorName = selectedOperator.operator.attributes.name
                 when (inputNumberActionType) {
-                    InputNumberActionType.MANUAL -> { topupAnalytics.eventInputNumberManual(selectedCategoryId, operatorName) }
-                    InputNumberActionType.CONTACT -> { topupAnalytics.eventInputNumberContact(selectedCategoryId, operatorName) }
-                    InputNumberActionType.FAVORITE -> { topupAnalytics.eventInputNumberFavorites(selectedCategoryId, operatorName) }
+                    InputNumberActionType.MANUAL -> {
+                        topupAnalytics.eventInputNumberManual(selectedCategoryId, operatorName)
+                    }
+                    InputNumberActionType.CONTACT -> {
+                        topupAnalytics.eventInputNumberContact(selectedCategoryId, operatorName)
+                    }
+                    InputNumberActionType.FAVORITE -> {
+                        topupAnalytics.eventInputNumberFavorites(selectedCategoryId, operatorName)
+                    }
                 }
 
                 renderViewPager(selectedOperator.operator.id)
