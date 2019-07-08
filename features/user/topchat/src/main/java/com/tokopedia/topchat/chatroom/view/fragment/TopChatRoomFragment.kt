@@ -29,8 +29,6 @@ import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
-import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.BaseChatMenuViewHolder
-import com.tokopedia.chat_common.view.fragment.BottomChatMenuFragment
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.design.component.Dialog
@@ -74,9 +72,7 @@ import javax.inject.Inject
 class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         , TypingListener, SendButtonListener, ImagePickerListener, ChatTemplateListener,
         HeaderMenuListener, DualAnnouncementListener, SecurityInfoListener,
-        TopChatVoucherListener, BaseChatMenuViewHolder.ChatMenuListener {
-
-    private val bottomChatMenu = BottomChatMenuFragment()
+        TopChatVoucherListener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -208,7 +204,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         }
     }
 
-
     private fun onSuccessGetExistingChatFirstTime(): (ChatroomViewModel) -> Unit {
         return {
             updateViewData(it)
@@ -273,7 +268,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         getViewState().showErrorWebSocket(b)
     }
 
-
     private fun onSuccessGetPreviousChat(): (ChatroomViewModel) -> Unit {
         return {
             renderList(it.listChat, it.canLoadMore)
@@ -307,7 +301,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun getUserSession(): UserSessionInterface {
         return session
     }
-
 
     private fun getViewState(): TopChatViewStateImpl {
         return viewState as TopChatViewStateImpl
@@ -374,6 +367,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         view?.let {
             super.viewState = TopChatViewStateImpl(
                     it,
+                    this,
                     this,
                     this,
                     this,
@@ -843,14 +837,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         if (seenAttachedProduct.add(element.productId)) {
             analytics.eventSeenProductAttachment(element)
         }
-    }
-
-    override fun showChatMenu() {
-        bottomChatMenu.show(childFragmentManager, BottomChatMenuFragment.TAG)
-    }
-
-    override fun closeChatMenu() {
-        bottomChatMenu.dismiss()
     }
 
     override fun onClickAttachProduct() {

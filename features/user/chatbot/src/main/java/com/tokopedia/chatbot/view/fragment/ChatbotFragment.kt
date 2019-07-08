@@ -66,6 +66,7 @@ import javax.inject.Inject
 class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         AttachedInvoiceSelectionListener, QuickReplyListener,
         ChatActionListBubbleListener, ChatRatingListener, TypingListener {
+
     override fun clearChatText() {
         replyEditText.setText("")
     }
@@ -114,9 +115,16 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        super.viewState = ChatbotViewStateImpl(view, session, this,
-                this, onAttachImageClicked(),
-                (activity as BaseChatToolbarActivity).getToolbar(), adapter)
+        super.viewState = ChatbotViewStateImpl(
+                view,
+                session,
+                this,
+                this,
+                this,
+                onAttachImageClicked(),
+                (activity as BaseChatToolbarActivity).getToolbar(),
+                adapter
+        )
         viewState.initView()
         loadInitialData()
     }
@@ -411,4 +419,11 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         presenter.detachView()
     }
 
+    override fun onClickAttachProduct() {
+
+    }
+
+    override fun onClickImagePicker() {
+
+    }
 }

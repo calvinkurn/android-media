@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.util.ChatTimeConverter
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
+import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.BaseChatMenuViewHolder
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.design.component.Dialog
@@ -48,11 +49,11 @@ class TopChatViewStateImpl(
         private val sendListener: SendButtonListener,
         private val templateListener: ChatTemplateListener,
         private val imagePickerListener: ImagePickerListener,
+        chatMenuListener: BaseChatMenuViewHolder.ChatMenuListener,
         toolbar: Toolbar,
         val analytics: TopChatAnalytics
-) : BaseChatViewStateImpl(view, toolbar, typingListener), TopChatViewState {
+) : BaseChatViewStateImpl(view, toolbar, typingListener, chatMenuListener), TopChatViewState {
     private var attachButton: ImageView = view.findViewById(R.id.add_url)
-    private var addMenuButton: ImageView = view.findViewById(R.id.iv_chat_menu)
     private var maximize: View = view.findViewById(R.id.maximize)
     private var templateRecyclerView: RecyclerView = view.findViewById(R.id.list_template)
     private var headerMenuButton: ImageButton = toolbar.findViewById(R.id.header_menu)
@@ -106,6 +107,7 @@ class TopChatViewStateImpl(
         }
 
         initProductPreviewLayout()
+
         hideCurrentChatButton()
     }
 
@@ -113,9 +115,6 @@ class TopChatViewStateImpl(
         attachButton.visibility = View.GONE
         pickerButton.visibility = View.GONE
         maximize.visibility = View.GONE
-        addMenuButton.setOnClickListener {
-            sendListener.showChatMenu()
-        }
     }
 
     private fun initProductPreviewLayout() {
