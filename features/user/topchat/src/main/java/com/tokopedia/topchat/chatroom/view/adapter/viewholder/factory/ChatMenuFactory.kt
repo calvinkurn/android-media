@@ -12,8 +12,6 @@ object ChatMenuFactory {
         return when (position) {
             0 -> ProductLinkViewHolder(listener, view)
             1 -> ProductLinkViewHolder(listener, view)
-            2 -> ProductLinkViewHolder(listener, view)
-            3 -> ProductLinkViewHolder(listener, view)
             else -> throw IllegalStateException("Unknown ViewHolder on: $position")
         }
     }
@@ -21,9 +19,7 @@ object ChatMenuFactory {
     fun createChatMenuItems(): List<ChatMenu> {
         return listOf(
                 ChatMenu(R.drawable.ic_attach_grey, "Link Produk"),
-                ChatMenu(R.drawable.ic_attach_grey, "Gambar"),
-                ChatMenu(R.drawable.ic_attach_grey, "Daftar Transaksi"),
-                ChatMenu(R.drawable.ic_attach_grey, "Voucher Toko")
+                ChatMenu(R.drawable.ic_image_picker_grey, "Gambar")
         )
     }
 
