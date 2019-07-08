@@ -40,7 +40,7 @@ public class GeolocationActivity extends BaseActivity implements ITransactionAna
 
     private static final String TAG_FRAGMENT = "TAG_FRAGMENT";
     public static final String EXTRA_IS_FROM_MARKETPLACE_CART = "EXTRA_IS_FROM_MARKETPLACE_CART";
-    public static final String SCREEN_ADDRESS_GEOLOCATION = "Add Geolocation DistrictRecommendationAddress page";
+    public static final String SCREEN_ADDRESS_GEOLOCATION = "Add Geolocation Address page";
     private static final String permission = Manifest.permission.ACCESS_FINE_LOCATION;
 
     private Bundle mBundle;
