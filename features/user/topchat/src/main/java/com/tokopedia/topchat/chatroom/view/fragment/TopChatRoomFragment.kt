@@ -859,4 +859,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         analytics.eventAttachProduct()
         onAttachProductClicked()()
     }
+
+    override fun onClickImagePicker() {
+        analytics.eventPickImage()
+        pickImageToUpload()
+    }
 }

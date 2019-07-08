@@ -13,8 +13,9 @@ abstract class BaseChatMenuViewHolder(val listener: ChatMenuListener, itemView: 
     private val menuTitle: TextView? = itemView?.findViewById(R.id.tvTitle)
 
     interface ChatMenuListener {
-        fun onClickAttachProduct()
         fun closeChatMenu()
+        fun onClickAttachProduct()
+        fun onClickImagePicker()
     }
 
     fun bind(chatMenu: ChatMenu) {
