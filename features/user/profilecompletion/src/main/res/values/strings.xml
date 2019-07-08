@@ -29,6 +29,15 @@
     <!-- PROFILE COMPLETION -->
     <string name="title_profile_completion">Lengkapi Profil</string>
 
+    <!-- SETTING PROFILE -->
+    <string name="title_setting_profile">Data Diri</string>
+    <string name="change_setting_profile">Ubah</string>
+    <string name="subtitle_name_setting_profile">Nama</string>
+    <string name="subtitle_bod_setting_profile">Tanggal Lahir</string>
+    <string name="subtitle_gender_setting_profile">Jenis Kelamin</string>
+    <string name="subtitle_email_setting_profile">Email</string>
+    <string name="subtitle_phone_setting_profile">Nomor Ponsel</string>
+
     <!-- CHANGE GENDER -->
     <string name="title_change_gender">Tambah Jenis Kelamin</string>
     <string name="choose_gender">Pilih Jenis Kelamin</string>

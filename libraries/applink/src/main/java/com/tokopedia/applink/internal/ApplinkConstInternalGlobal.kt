@@ -57,6 +57,11 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val PROFILE_COMPLETION = "$INTERNAL_GLOBAL/profile-completion"
 
+    // SettingProfileActivity
+    // tokopedia-android-internal://global/setting-profile
+    @JvmField
+    val SETTING_PROFILE = "$INTERNAL_GLOBAL/setting-profile"
+
     // ChangeGenderActivity
     // tokopedia-android-internal://global/change-gender
     @JvmField
