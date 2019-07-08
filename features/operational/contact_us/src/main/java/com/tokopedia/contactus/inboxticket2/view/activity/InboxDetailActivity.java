@@ -69,19 +69,26 @@ public class InboxDetailActivity extends InboxBaseActivity
     private TextView tvPriorityLabel;
     private ImageView btnInactive1,btnInactive2,btnInactive3,btnInactive4,btnInactive5;
     private TextView txtHyper;
+    private View noTicketFound;
+    private TextView tvNoTicket;
+    private TextView tvOkButton;
     private ImageUploadAdapter imageUploadAdapter;
     private InboxDetailAdapter detailAdapter;
     private LinearLayoutManager layoutManager;
     private String rateCommentID;
     private boolean isCustomReason;
     public static final String PARAM_TICKET_ID = "ticket_id";
+    public static final String PARAM_TICKET_T_ID = "id";
     public static final String IS_OFFICIAL_STORE = "is_official_store";
 
     @DeepLink(ApplinkConst.TICKET_DETAIL)
     public static TaskStackBuilder getCallingIntent(Context context, Bundle bundle) {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         Intent parentIntent = new Intent(context, InboxListActivity.class);
-        String ticketId = bundle.getString(PARAM_TICKET_ID, "");
+        String ticketId = bundle.getString(PARAM_TICKET_T_ID);
+        if(ticketId==null){
+            ticketId = bundle.getString(PARAM_TICKET_ID, "");
+        }
         taskStackBuilder.addNextIntent(parentIntent);
         taskStackBuilder.addNextIntent(getIntent(context, ticketId));
         return taskStackBuilder;
@@ -276,6 +283,9 @@ public class InboxDetailActivity extends InboxBaseActivity
         rvSelectedImages.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         rvSelectedImages.setAdapter(imageUploadAdapter);
         edMessage.addTextChangedListener(((InboxDetailContract.InboxDetailPresenter) mPresenter).watcher());
+        noTicketFound = findViewById(R.id.no_ticket_found);
+        tvNoTicket = findViewById(R.id.tv_no_ticket);
+        tvOkButton = findViewById(R.id.tv_ok_button);
     }
 
 
@@ -345,6 +355,18 @@ public class InboxDetailActivity extends InboxBaseActivity
     @Override
     public String getCommentID() {
         return rateCommentID;
+    }
+
+    @Override
+    public void showNoTicketView(List<String> messageError) {
+        noTicketFound.setVisibility(View.VISIBLE);
+        tvNoTicket.setText(messageError.get(0));
+        tvOkButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     void sendMessage() {

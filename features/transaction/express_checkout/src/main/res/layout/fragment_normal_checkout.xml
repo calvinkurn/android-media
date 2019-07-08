@@ -43,7 +43,7 @@
         android:layout_gravity="bottom"
         android:background="@drawable/bottom_sheet_shadow" />
 
-    <view.customview.TradeInTextView
+    <com.tokopedia.tradein.view.customview.TradeInTextView
         android:id="@+id/tv_trade_in"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -1,0 +1,12 @@
+mutation userProfileDobUpdate($bdayDD: String!, $bdayMM: String!, $bdayYY: String!) {
+  userProfileDobUpdate(bdayDD: $bdayDD, bdayMM: $bdayMM, bdayYY: $bdayYY) {
+    isSuccess
+    userID
+    age
+    bday
+    isDobExist
+    isDobVerified
+    isAdult
+    error
+  }
+}

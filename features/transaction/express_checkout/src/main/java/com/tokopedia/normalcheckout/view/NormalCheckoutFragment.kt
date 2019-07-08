@@ -58,13 +58,13 @@ import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_normal_checkout.*
-import model.TradeInParams
+import com.tokopedia.tradein.model.TradeInParams
 import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
-import view.viewcontrollers.FinalPriceActivity
-import view.viewcontrollers.TradeInHomeActivity
+import com.tokopedia.tradein.view.viewcontrollers.FinalPriceActivity
+import com.tokopedia.tradein.view.viewcontrollers.TradeInHomeActivity
 import javax.inject.Inject
 
 class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAdapterTypeFactory>(),

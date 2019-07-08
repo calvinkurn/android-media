@@ -72,6 +72,7 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
+import com.tokopedia.discovery.common.manager.AdultManager;
 
 import org.json.JSONArray;
 
@@ -394,7 +395,7 @@ public class ProductListFragment
     protected void switchLayoutType() {
         super.switchLayoutType();
 
-        if (!getUserVisibleHint()) {
+        if (!getUserVisibleHint() || getAdapter() == null) {
             return;
         }
         recyclerView.clearOnScrollListeners();
@@ -453,6 +454,10 @@ public class ProductListFragment
             boolean isWishlist = data.getExtras().getBoolean(SearchConstant.Wishlist.WIHSLIST_STATUS_IS_WISHLIST, false);
 
             updateWishlistFromPDP(position, isWishlist);
+
+        }
+        if (getActivity() != null) {
+            AdultManager.handleActivityResult(getActivity(), requestCode, resultCode, data);
         }
     }
 
@@ -1048,5 +1053,10 @@ public class ProductListFragment
                 currentKey,
                 currentPage
         );
+    }
+
+    @Override
+    public void showAdultRestriction() {
+        AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_SEARCH_PAGE, getQueryKey());
     }
 }

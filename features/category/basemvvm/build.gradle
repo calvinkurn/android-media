@@ -1,0 +1,20 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+
+dependencies {
+    implementation project(rootProject.ext.features.transactioncommon)
+    implementation rootProject.ext.miscDependencies.viewModel
+    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.commonNetwork)
+    implementation project(rootProject.ext.libraries.graphql)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation rootProject.ext.miscDependencies.liveData
+    implementation rootProject.ext.miscDependencies.rxJava
+    implementation rootProject.ext.unifyDependencies.components
+    implementation project(rootProject.ext.libraries.userSession)
+}

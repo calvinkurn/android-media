@@ -14,7 +14,6 @@ import android.view.Window;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.app.BasePresenterFragmentV4;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -27,8 +26,6 @@ import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 
 import java.util.ArrayList;
-
-import butterknife.BindView;
 
 /**
  * Created by hangnadi on 10/11/16.
@@ -43,7 +40,6 @@ public class PeopleFavoritedShopFragment extends BasePresenterFragmentV4<PeopleF
     private static final String ARGS_PARAM_KEY_STORED_DATA = "param_key_stored_data";
     private String userID;
 
-    @BindView(R2.id.listview_favoritee)
     RecyclerView recyclerView;
 
     private boolean connectionStatus;
@@ -131,6 +127,7 @@ public class PeopleFavoritedShopFragment extends BasePresenterFragmentV4<PeopleF
 
     @Override
     protected void initView(View view) {
+        recyclerView = (RecyclerView) view.findViewById(R.id.listview_favoritee);
         adapter = PeopleFavoritedShopAdapter.createAdapter();
         adapter.setViewListener(this);
         this.layoutManager = new LinearLayoutManager(getActivity());

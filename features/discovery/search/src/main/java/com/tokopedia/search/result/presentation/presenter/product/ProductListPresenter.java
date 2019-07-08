@@ -524,6 +524,9 @@ final class ProductListPresenter
 
         HeaderViewModel headerViewModel = new HeaderViewModel();
         headerViewModel.setSuggestionViewModel(productViewModel.getSuggestionModel());
+        if (!productViewModel.isQuerySafe()) {
+            getView().showAdultRestriction();
+        }
         if (productViewModel.getGuidedSearchViewModel() != null) {
             headerViewModel.setGuidedSearch(productViewModel.getGuidedSearchViewModel());
             getView().sendImpressionGuidedSearch();
