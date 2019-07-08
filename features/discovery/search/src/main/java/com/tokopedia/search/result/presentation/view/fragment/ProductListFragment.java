@@ -394,7 +394,7 @@ public class ProductListFragment
     protected void switchLayoutType() {
         super.switchLayoutType();
 
-        if (!getUserVisibleHint()) {
+        if (!getUserVisibleHint() || getAdapter() == null) {
             return;
         }
         recyclerView.clearOnScrollListeners();
