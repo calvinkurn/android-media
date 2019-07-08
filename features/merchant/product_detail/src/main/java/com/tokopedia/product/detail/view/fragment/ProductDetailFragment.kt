@@ -92,6 +92,7 @@ import com.tokopedia.product.report.view.dialog.ReportDialogFragment
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.product.warehouse.view.viewmodel.ProductWarehouseViewModel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.referral.Constants.Action.Companion.ACTION_GET_REFERRAL_CODE
 import com.tokopedia.referral.ReferralAction
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -111,7 +112,6 @@ import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_product_detail.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.*
 import kotlinx.android.synthetic.main.partial_most_helpful_review_view.*
-import kotlinx.android.synthetic.main.partial_other_product.*
 import kotlinx.android.synthetic.main.partial_product_detail_header.*
 import kotlinx.android.synthetic.main.partial_product_detail_visibility.*
 import kotlinx.android.synthetic.main.partial_product_detail_wholesale.*
@@ -119,13 +119,18 @@ import kotlinx.android.synthetic.main.partial_product_full_descr.*
 import kotlinx.android.synthetic.main.partial_product_image_review.*
 import kotlinx.android.synthetic.main.partial_product_latest_talk.*
 import kotlinx.android.synthetic.main.partial_product_rating_talk_courier.*
-import kotlinx.android.synthetic.main.partial_product_recommendation.*
+import kotlinx.android.synthetic.main.partial_product_recom_1.*
+import kotlinx.android.synthetic.main.partial_product_recom_2.*
+import kotlinx.android.synthetic.main.partial_product_recom_3.*
+import kotlinx.android.synthetic.main.partial_product_recom_4.*
 import kotlinx.android.synthetic.main.partial_product_shop_info.*
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
-import model.TradeInParams
-import view.customview.TradeInTextView
-import viewmodel.TradeInBroadcastReceiver
+import com.tokopedia.tradein.model.TradeInParams
+import com.tokopedia.tradein.view.customview.TradeInTextView
+import com.tokopedia.tradein.viewmodel.TradeInBroadcastReceiver
 import javax.inject.Inject
+import com.tokopedia.discovery.common.manager.AdultManager
+import com.tokopedia.product.detail.common.data.model.product.Category
 
 class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter.UserActiveListener {
     private var productId: String? = null
@@ -147,8 +152,10 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     lateinit var imageReviewViewView: PartialImageReviewView
     lateinit var mostHelpfulReviewView: PartialMostHelpfulReviewView
     lateinit var latestTalkView: PartialLatestTalkView
-    lateinit var otherProductView: PartialOtherProductView
-    lateinit var recommendationProductView: PartialRecommendationProductView
+    lateinit var recommendationSecondView: PartialRecommendationSecondView
+    lateinit var recommendationFirstView: PartialRecommendationFirstView
+    lateinit var recommendationThirdView: PartialRecommendationThirdView
+    lateinit var recommendationFourthView: PartialRecommendationFourthView
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -331,30 +338,50 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             it?.run { renderProductInfo3(this) }
         })
 
-        productInfoViewModel.loadOtherProduct.observe(this, Observer {
-            when (it) {
-                is Loading -> otherProductView.startLoading()
-                is Loaded -> {
-                    otherProductView.renderData((it.data as? Success)?.data ?: listOf())
-                }
-            }
-        })
-
         productInfoViewModel.loadTopAdsProduct.observe(this, Observer {
             when (it) {
                 is Loading -> {
-                    recommendationProductView.startLoading()
+                    loadingRecommendationView()
                 }
                 is Loaded -> {
-                    recommendationProductView.renderData((it.data as? Success)?.data
-                            ?: return@Observer)
                     (it.data as? Success)?.data?.let { result ->
-                        recommendationProductView.renderData(result)
+                        renderRecommendationData(result)
                     }
                 }
             }
         })
+    }
 
+    private fun hideRecommendationView() {
+        recommendationSecondView.hideView()
+        recommendationFirstView.hideView()
+        recommendationThirdView.hideView()
+        recommendationFourthView.hideView()
+    }
+
+    private fun loadingRecommendationView() {
+        recommendationSecondView.startLoading()
+        recommendationFirstView.startLoading()
+        recommendationThirdView.startLoading()
+        recommendationFourthView.startLoading()
+    }
+
+    private fun renderRecommendationData(result: List<RecommendationWidget>) {
+        result.getOrNull(0)?.let {
+            recommendationFirstView.renderData(it)
+        }
+
+        result.getOrNull(1)?.let {
+            recommendationSecondView.renderData(it)
+        }
+
+        result.getOrNull(2)?.let {
+            recommendationThirdView.renderData(it)
+        }
+
+        result.getOrNull(3)?.let {
+            recommendationFourthView.renderData(it)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -401,7 +428,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             layoutParams.behavior = FlingBehavior(nested_scroll)
         }
 
-        appbar.addOnOffsetChangedListener { _, verticalOffset -> refreshLayout?.isEnabled = (verticalOffset == 0) }
+        appbar.addOnOffsetChangedListener (AppBarLayout.OnOffsetChangedListener { _, verticalOffset -> refreshLayout?.isEnabled = (verticalOffset == 0)})
         refreshLayout?.setOnRefreshListener { loadProductData(true) }
 
         if (isAffiliate) {
@@ -662,11 +689,20 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         if (!::latestTalkView.isInitialized)
             latestTalkView = PartialLatestTalkView.build(base_latest_talk)
 
-        if (!::otherProductView.isInitialized)
-            otherProductView = PartialOtherProductView.build(base_other_product)
+        if (!::recommendationSecondView.isInitialized) {
+            recommendationSecondView = PartialRecommendationSecondView.build(base_recom_2, this)
+        }
 
-        if (!::recommendationProductView.isInitialized) {
-            recommendationProductView = PartialRecommendationProductView.build(base_recommen_product, this)
+        if (!::recommendationFirstView.isInitialized) {
+            recommendationFirstView = PartialRecommendationFirstView.build(base_recom_1, this)
+        }
+
+        if (!::recommendationThirdView.isInitialized) {
+            recommendationThirdView = PartialRecommendationThirdView.build(base_recom_3, this)
+        }
+
+        if (!::recommendationFourthView.isInitialized) {
+            recommendationFourthView = PartialRecommendationFourthView.build(base_recom_4, this)
         }
 
     }
@@ -891,8 +927,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun loadProductData(forceRefresh: Boolean = false) {
         if (forceRefresh) {
-            otherProductView.renderData(listOf())
-            recommendationProductView.hideView()
+            hideRecommendationView()
         }
         if (productId != null || (productKey != null && shopDomain != null)) {
             productInfoViewModel.getProductInfo(ProductParams(productId, shopDomain, productKey), forceRefresh)
@@ -900,6 +935,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (activity != null) {
+            AdultManager.handleActivityResult(activity!!, requestCode, resultCode, data)
+        }
         when (requestCode) {
             REQUEST_CODE_ETALASE -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
@@ -1004,7 +1042,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         productInfoViewModel.p2General.removeObservers(this)
         productInfoViewModel.p2Login.removeObservers(this)
         productInfoViewModel.productInfoP3resp.removeObservers(this)
-        productInfoViewModel.loadOtherProduct.removeObservers(this)
         productInfoViewModel.loadTopAdsProduct.removeObservers(this)
         productInfoViewModel.clear()
         productWarehouseViewModel.clear()
@@ -1298,6 +1335,23 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             open_shop.gone()
         }
 
+        if (data.category.isAdult) {
+            AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_PDP, productId ?: "")
+        }
+
+        var isHandPhone = false
+        var categoryId = 0
+        productInfoP1.productInfo.category.detail.forEach { detail: Category.Detail ->
+            if (detail.name.equals("Handphone")) {
+                isHandPhone = true
+                val handfone = 24
+                categoryId = if (detail.id.isNotEmpty())
+                    detail.id.toInt()
+                else
+                    handfone
+
+            }
+        }
         tradeInParams = TradeInParams()
         tradeInParams.categoryId = productInfoP1.productInfo.category.id.toInt()
         tradeInParams.deviceId = (activity?.application as ProductDetailRouter).getDeviceId(activity as Context)

@@ -1,8 +1,10 @@
 package com.tokopedia.discovery.newdiscovery.category.presentation;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -14,6 +16,8 @@ import android.widget.FrameLayout;
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.abstraction.common.utils.toolargetool.TooLargeTool;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.discovery.R;
@@ -27,7 +31,8 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmo
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategorySectionItem;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.util.MoEngageEventTracking;
-
+import com.tokopedia.unifycomponents.Toaster;
+import com.tokopedia.discovery.common.manager.AdultManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -205,6 +210,9 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
 
     @Override
     public void prepareFragment(ProductViewModel productViewModel) {
+        if (productViewModel.getCategoryHeaderModel().getIsAdult() > 0) {
+            AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_CATEGORY_PAGE, productViewModel.getCategoryHeaderModel().getDepartementId());
+        }
         List<CategorySectionItem> categorySectionItems = new ArrayList<>();
         if (!TextUtils.isEmpty(categoryUrl)) {
             productFragment = ProductFragment.newInstance(productViewModel, categoryUrl, trackerAttribution);
@@ -301,6 +309,7 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
             setResult(CategoryNavigationActivity.DESTROY_INTERMEDIARY);
             finish();
         }
+        AdultManager.handleActivityResult(this, requestCode, resultCode, data);
     }
 
     @Override
