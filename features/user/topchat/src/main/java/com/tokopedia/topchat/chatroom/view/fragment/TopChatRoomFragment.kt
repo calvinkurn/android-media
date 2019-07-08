@@ -74,7 +74,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         HeaderMenuListener, DualAnnouncementListener, SecurityInfoListener,
         TopChatVoucherListener {
 
-    private val bottomChatMenu = BottomChatMenu()
+    private val bottomChatMenu = BottomChatMenuFragment()
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -847,6 +847,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun showChatMenu() {
-        bottomChatMenu.show(fragmentManager, BottomChatMenu.TAG)
+        bottomChatMenu.show(fragmentManager, BottomChatMenuFragment.TAG)
     }
 }

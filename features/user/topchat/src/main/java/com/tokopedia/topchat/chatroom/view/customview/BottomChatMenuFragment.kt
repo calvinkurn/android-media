@@ -13,7 +13,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.ChatMenuAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatmenu.BaseChatMenuViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.ChatMenuFactory
 
-class BottomChatMenu : BottomSheetDialogFragment(), BaseChatMenuViewHolder.ChatMenuListener {
+class BottomChatMenuFragment : BottomSheetDialogFragment(), BaseChatMenuViewHolder.ChatMenuListener {
 
     private lateinit var rvChatMenu: RecyclerView
 
@@ -37,7 +37,7 @@ class BottomChatMenu : BottomSheetDialogFragment(), BaseChatMenuViewHolder.ChatM
         val menuItems = ChatMenuFactory.createChatMenuItems()
         with(rvChatMenu) {
             setHasFixedSize(true)
-            adapter = ChatMenuAdapter(menuItems, this@BottomChatMenu)
+            adapter = ChatMenuAdapter(menuItems, this@BottomChatMenuFragment)
         }
     }
 
