@@ -368,9 +368,6 @@ public class WishListImpl implements WishList {
         GraphqlCacheStrategy graphqlCacheStrategy =
                 new GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build();
 
-//        Observable<GraphqlResponse> observable = ObservableFactory.create(graphqlRequestList,
-//                graphqlCacheStrategy);
-
         Observable observable = Observable.zip(ObservableFactory.create(graphqlRequestList,
                 graphqlCacheStrategy), getRecommendationUseCase.getExecuteObservable(getRecommendationUseCase.getRecomParams(params.getInt(PAGE_NO, 0),
                 X_SOURCE_RECOM_WIDGET, TOPADS_SRC, new ArrayList<>())), new WishlistProductMapper());
@@ -414,11 +411,8 @@ public class WishListImpl implements WishList {
         GraphqlCacheStrategy graphqlCacheStrategy =
                 new GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build();
 
-//        Observable<GraphqlResponse> observable = ObservableFactory.create(graphqlRequestList,
-//                graphqlCacheStrategy);
-
         Observable observable = Observable.zip(ObservableFactory.create(graphqlRequestList,
-                graphqlCacheStrategy), getRecommendationUseCase.getExecuteObservable(getRecommendationUseCase.getRecomParams(0,
+                graphqlCacheStrategy), getRecommendationUseCase.getExecuteObservable(getRecommendationUseCase.getRecomParams(mPaging.getPage(),
                 X_SOURCE_RECOM_WIDGET, TOPADS_SRC, new ArrayList<>())), new WishlistProductMapper());
 
         compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
@@ -542,7 +536,7 @@ public class WishListImpl implements WishList {
         params = RequestParams.create();
 
 
-        Subscriber<GraphqlResponse> subscriber = new Subscriber<GraphqlResponse>() {
+        Subscriber<GqlWishListDataResponse> subscriber = new Subscriber<GqlWishListDataResponse>() {
             @Override
             public void onCompleted() {
             }
@@ -561,10 +555,9 @@ public class WishListImpl implements WishList {
             }
 
             @Override
-            public void onNext(GraphqlResponse graphqlResponse) {
+            public void onNext(GqlWishListDataResponse gqlWishListDataResponse) {
                 wishListView.displayLoadMore(false);
-                if (graphqlResponse != null && graphqlResponse.getData(GqlWishListDataResponse.class) != null) {
-                    GqlWishListDataResponse gqlWishListDataResponse = graphqlResponse.getData(GqlWishListDataResponse.class);
+                if (gqlWishListDataResponse != null) {
                     data.clear();
                     dataWishlist.addAll(gqlWishListDataResponse.getGqlWishList().getWishlistDataList());
                     data.addAll(convertToProductItemList(gqlWishListDataResponse.getGqlWishList().getWishlistDataList(),
