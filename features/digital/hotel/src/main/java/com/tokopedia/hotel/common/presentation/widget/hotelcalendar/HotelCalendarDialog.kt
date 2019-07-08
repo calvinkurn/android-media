@@ -79,9 +79,12 @@ class HotelCalendarDialog : RoundedBottomSheetDialogFragment(), HasComponent<Hot
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        loading_progress_bar.visibility = View.VISIBLE
+
         hotelCalendarDialogViewModel.holidayResult.observe(this, Observer {
             when (it) {
                 is Success -> {
+                    loading_progress_bar.visibility = View.GONE
                     if (isFirstTime && it.data.data.isNotEmpty()) {
                         renderCalendar(mappingHolidayData(it.data))
                         isFirstTime = false
