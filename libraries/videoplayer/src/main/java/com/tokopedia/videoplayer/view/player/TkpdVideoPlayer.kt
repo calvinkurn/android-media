@@ -242,10 +242,13 @@ class TkpdVideoPlayer: Fragment(), ControllerListener {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        playVideo(viewModel.videoSource)
+    }
+
     override fun onResume() {
         super.onResume()
-        playVideo(viewModel.videoSource)
-
         //get current position and seeking of video player
         if (viewModel.playerType == PlayerType.DEFAULT) {
             playerOptions?.seekTo(viewModel.stateVideoPosition)
