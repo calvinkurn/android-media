@@ -41,13 +41,14 @@ dependencies {
     implementation project(rootProject.ext.features.discoveryCommon)
 
     implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.useCase)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.coreNetwork)
+    implementation rootProject.ext.unifyDependencies.components
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation project(rootProject.ext.libraries.cacheApi)
@@ -65,8 +66,7 @@ dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
-    implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    annotationProcessor  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+    implementation project(rootProject.ext.libraries.permissionchecker)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
@@ -76,10 +76,6 @@ dependencies {
 
     implementation rootProject.ext.viewDependencies.ahBottomNavigation
     implementation rootProject.ext.viewDependencies.appIntro
-
-    annotationProcessor  rootProject.ext.dbDependencies.dbFlowProcessor
-    implementation rootProject.ext.dbDependencies.dbFlowCore
-    implementation rootProject.ext.dbDependencies.dbFlow
 
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.maps
@@ -92,6 +88,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.apacheLang
+    implementation rootProject.ext.dbDependencies.dbRoomRuntime
+    annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler
+    kapt rootProject.ext.dbDependencies.dbRoomCompiler
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
         exclude group: 'com.android.support'
@@ -106,7 +105,8 @@ dependencies {
         exclude group: 'com.android.support'
     }
     implementation project(rootProject.ext.features.kolCommon)
-    implementation project(rootProject.ext.libraries.unifyPrinciples)
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.analyticsDependencies.appsflyer
 }
 
 apply from: '../publish_local.gradle'

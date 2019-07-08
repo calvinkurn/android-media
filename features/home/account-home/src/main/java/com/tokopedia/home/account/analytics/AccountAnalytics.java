@@ -16,8 +16,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.tokopedia.home.account.AccountConstants.Analytics.ACCOUNT;
+import static com.tokopedia.home.account.AccountConstants.Analytics.ACTION_CLICK_LEARN_MORE;
+import static com.tokopedia.home.account.AccountConstants.Analytics.ACTION_CLICK_OPEN_SHOP;
 import static com.tokopedia.home.account.AccountConstants.Analytics.AKUN_SAYA;
 import static com.tokopedia.home.account.AccountConstants.Analytics.APPLICATION;
+import static com.tokopedia.home.account.AccountConstants.Analytics.CATEGORY_ACCOUNT_SELL;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK_FINTECH_MICROSITE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK_HOME_PAGE;
@@ -25,6 +28,7 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.EMAIL;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_ACTION;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_CATEGORY;
+import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_CLICK_ACCOUNT;
 import static com.tokopedia.home.account.AccountConstants.Analytics.EVENT_LABEL;
 import static com.tokopedia.home.account.AccountConstants.Analytics.NOTIFICATION;
 import static com.tokopedia.home.account.AccountConstants.Analytics.SCREEN_NAME;
@@ -36,6 +40,8 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.USER;
 
 /**
  * Created by meta on 04/08/18.
+ *
+ * Setting PIN : https://docs.google.com/spreadsheets/d/1H3CSARG5QtVACiffBxd2HJE7adKzAZ3xxmtEbR01Eho/edit?ts=5ca30084#gid=1785281730
  */
 public class AccountAnalytics {
 
@@ -176,6 +182,17 @@ public class AccountAnalytics {
         ));
     }
 
+    public void eventClickPinSetting() {
+        Analytics analytics = TrackApp.getInstance().getGTM();
+
+        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
+                AccountConstants.Analytics.CLICK_ACCOUNT,
+                String.format("%s %s", ACCOUNT, SETTING),
+                "click on button tokopedia pin",
+                ""
+        ));
+    }
+
     public void eventClickKYCSellerAccountPage(int status) {
 
         final Analytics analytics = TrackApp.getInstance().getGTM();
@@ -269,4 +286,47 @@ public class AccountAnalytics {
             ((AccountHomeRouter) context.getApplicationContext()).setNewsletterEmailPref(newValue);
     }
 
+    public static void clickOpenShopFree(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_ACCOUNT_SELL,
+                ACTION_CLICK_OPEN_SHOP,
+                ""
+        );
+    }
+
+    public static void clickKnowMore(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                EVENT_CLICK_ACCOUNT,
+                CATEGORY_ACCOUNT_SELL,
+                ACTION_CLICK_LEARN_MORE,
+                ""
+        );
+    }
+
+    public void eventClickToggleOnGeolocation(Context context) {
+        final Analytics analytics = TrackApp.getInstance().getGTM();
+
+        if (analytics != null) {
+            analytics.sendGeneralEvent(
+                    "clickHomePage",
+                    "homepage",
+                    "click toggle on geolocation",
+                    ""
+            );
+        }
+    }
+
+    public void eventClickToggleOffGeolocation(Context context) {
+        final Analytics analytics = TrackApp.getInstance().getGTM();
+
+        if (analytics != null) {
+            analytics.sendGeneralEvent(
+                    "clickHomePage",
+                    "homepage",
+                    "click toggle off geolocation",
+                    ""
+            );
+        }
+    }
 }

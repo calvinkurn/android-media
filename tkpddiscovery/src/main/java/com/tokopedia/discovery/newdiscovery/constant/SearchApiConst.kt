@@ -43,15 +43,17 @@ class SearchApiConst {
         const val UNIQUE_ID = "unique_id"
         const val RETURNABLES = "returnables"
         const val HOT_ID = "hot_id"
-        const val REFINED = "rf"
         const val RELATED = "related"
         const val PAGE = "page"
         const val PAGE_SIZE = "page_size"
         const val OFFICIAL = "official"
         const val KEYWORD = "keyword"
+        const val HINT = "hint"
 
         const val DEFAULT_VALUE_OF_PARAMETER_DEVICE = "android"
+        const val DEFAULT_VALUE_OF_PARAMETER_MOBILE = "mobile"
         const val DEFAULT_VALUE_OF_PARAMETER_ROWS = "8"
+        const val DEFAULT_VALUE_OF_PARAMETER_ROWS_PROFILE = 12
         const val DEFAULT_VALUE_OF_PARAMETER_IMAGE_SIZE = "200"
         const val DEFAULT_VALUE_OF_PARAMETER_IMAGE_SQUARE = "true"
         const val DEFAULT_VALUE_OF_PARAMETER_SORT = "23"

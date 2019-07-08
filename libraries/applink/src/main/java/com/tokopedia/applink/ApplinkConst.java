@@ -32,6 +32,8 @@ public interface ApplinkConst {
     String PRODUCT_INFO = "tokopedia://product/{product_id}";
     String PRODUCT_IMAGE_REVIEW = "tokopedia://product/{product_id}/imagereview";
     String PRODUCT_ADD = "tokopedia://product/add";
+    String DEFAULT_RECOMMENDATION_PAGE = "tokopedia://rekomendasi";
+    String RECOMMENDATION_PAGE = "tokopedia://rekomendasi/{product_id}";
     String CREDIT_CARD_AUTH_SETTING = "tokopedia://payment/credit-card";
     String ADD_CREDIT_CARD = "tokopedia://payment/credit-card/add";
     String CART = "tokopedia://cart";
@@ -41,8 +43,10 @@ public interface ApplinkConst {
     String SELLER_HISTORY = "tokopedia://seller/history";
     String CREATE_SHOP = "tokopedia://buka-toko-online-gratis";
     String REPUTATION = "tokopedia://review";
+    String REPUTATION_DETAIL = "tokopedia://review/{reputation_id}";
     String PRODUCT_REPUTATION = "tokopedia://product/{product_id}/review";
     String WEBVIEW = "tokopedia://webview";
+    String WEBVIEW_DOWNLOAD = "tokopedia://webviewdownload";
     String WEBVIEW_PARENT_HOME = "tokopedia://webviewbackhome";
     String PRODUCT_TALK = "tokopedia://product/{product_id}/talk";
     String DIGITAL = "tokopedia://digital";
@@ -61,6 +65,8 @@ public interface ApplinkConst {
     String DISCOVERY_SEARCH = "tokopedia://search";
     String DISCOVERY_SEARCH_AUTOCOMPLETE = "tokopedia://search-autocomplete";
     String DISCOVERY_SEARCH_AUTOCOMPLETE_WITH_NAVSOURCE = "tokopedia://search-autocomplete?navsource={source}";
+    String DISCOVERY_SEARCH_AUTOCOMPLETE_WITH_SHOPPING_NAV_SOURCE = "tokopedia://search-autocomplete?navsource=shoppingnav";
+    String DISCOVERY_SEARCH_AUTOCOMPLETE_WITH_NAVSOURCE_AND_HINT = "tokopedia://search-autocomplete?navsource={source}&hint={hint}";
     String DISCOVERY_HOTLIST_DETAIL = "tokopedia://hot/{alias}";
     String DISCOVERY_CATALOG = "tokopedia://catalog/{EXTRA_CATALOG_ID}";
     String PAYMENT_BACK_TO_DEFAULT = "tokopedia://payment/backtodefault";
@@ -153,10 +159,12 @@ public interface ApplinkConst {
     String SELLER_TRANSACTION = "tokopedia://seller";
     String SELLER_OPPORTUNITY = "tokopedia://seller/opportunity";
     String SELLER_CENTER = "tokopedia://seller/seller-center";
+    String SELLER_SHIPPING_EDITOR = "tokopedia://seller/setting/shipping-editor";
     String CONTACT_US = "tokopedia://contact-us";
     String CONTACT_US_NATIVE = "tokopedia://contactus";
 
     String ORDER_LIST = "tokopedia://order";
+    String ORDER_LIST_WEBVIEW = "tokopedia://order_list";
     String TOKOPOINTS = "tokopedia://tokopoints";
     String COUPON_LISTING = "tokopedia://tokopoints/kupon-saya";
 
@@ -218,12 +226,20 @@ public interface ApplinkConst {
     String CONSUMER_SPLASH_SCREEN = "tokopedia://splashscreen/consumer";
     String IMAGE_PREVIEW = "tokopedia://imagepreview";
 
-    String HOME_CREDIT_KTP = "tokopedia://fintech/home-credit/ktp/";
-    String HOME_CREDIT_SELFIE = "tokopedia://fintech/home-credit/selfie/";
+    String HOME_CREDIT_KTP_WITHOUT_TYPE = "tokopedia://fintech/home-credit/ktp";
+    String HOME_CREDIT_KTP_WITH_TYPE = "tokopedia://fintech/home-credit/ktp/{type}";
+    String HOME_CREDIT_SELFIE_WITHOUT_TYPE = "tokopedia://fintech/home-credit/selfie";
+    String HOME_CREDIT_SELFIE_WITH_TYPE = "tokopedia://fintech/home-credit/selfie/{type}";
     String INBOX = "tokopedia://inbox";
 
     String PLAY_WEBVIEW = "tokopedia://play/webview?url={url}&titlebar={has_titlebar}";
     String SMC_REFERRAL = "tokopedia://smc-referral";
+
+    String CATEGORY_BELANJA = "tokopedia://category_belanja/{CATEGORY_NAME}";
+    String CATEGORY_BELANJA_DEFAULT = "tokopedia://category_belanja/";
+
+    String CATEGORY = "tokopedia://category";
+    String QRSCAN = "tokopedia://scanqr";
 
     interface WebViewUrl {
         String SALDO_DETAIL = "https://m.tokopedia.com/deposit";
@@ -273,6 +289,14 @@ public interface ApplinkConst {
         String AVATAR = "avatar";
         String CUSTOM_SUBJECT = "customSubject";
         String PARAM_HEADER = "header";
+        String PRODUCT_PREVIEW_ID = "product_preview_id";
+        String PRODUCT_PREVIEW_IMAGE_URL = "product_preview_image_url";
+        String PRODUCT_PREVIEW_NAME = "product_preview_name";
+        String PRODUCT_PREVIEW_PRICE = "product_preview_price";
+        String PRODUCT_PREVIEW_URL = "product_preview_url";
+        String PRODUCT_PREVIEW_COLOR_VARIANT = "product_preview_color";
+        String PRODUCT_PREVIEW_HEX_COLOR_VARIANT = "product_preview_hex_color";
+        String PRODUCT_PREVIEW_SIZE_VARIANT = "product_preview_size";
     }
 
     interface Play {

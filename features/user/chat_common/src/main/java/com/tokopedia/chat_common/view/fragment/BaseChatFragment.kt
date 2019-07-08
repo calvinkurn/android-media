@@ -7,6 +7,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.URLUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -71,7 +72,6 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewState = BaseChatViewStateImpl(view, (activity as BaseChatToolbarActivity).getToolbar(), this)
-        viewState.initView()
 
         setupViewData(arguments, savedInstanceState)
         prepareView(view)
@@ -153,8 +153,8 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
                     intent.putExtra(IS_CHAT_BOT, true)
                     startActivity(intent)
                 }
-                RouteManager.isSupportApplink(activity, url) -> RouteManager.route(activity, url)
                 isBranchIOLink(url) -> handleBranchIOLinkClick(url)
+                RouteManager.isSupportApplink(activity, url) && !URLUtil.isNetworkUrl(url) -> RouteManager.route(activity, url)
                 else -> {
                     val applinkRouter = activity!!.applicationContext as ApplinkRouter
                     applinkRouter.goToApplinkActivity(activity,
@@ -244,4 +244,5 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         this.shopId = it.headerModel.shopId
     }
 
+    override fun trackSeenProduct(element: ProductAttachmentViewModel) {}
 }

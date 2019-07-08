@@ -54,6 +54,8 @@ public interface InboxDetailContract {
         void onSuccessSubmitOfRating(int rating, int commentPosition);
 
         void OnSucessfullTicketClose();
+
+        void showNoTicketView(List<String> messageError);
     }
 
     interface InboxDetailPresenter extends InboxBaseContract.InboxBasePresenter {

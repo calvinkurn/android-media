@@ -1,290 +1,181 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mainView"
+    android:id="@+id/main_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
 
     <android.support.v4.widget.NestedScrollView
-        android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white">
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingStart="@dimen/dp_16"
+            android:paddingEnd="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingBottom="@dimen/dp_16">
 
-            <ImageView
-                android:id="@+id/thumbnail"
-                android:layout_width="@dimen/dp_60"
-                android:layout_height="@dimen/dp_60"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_16"
-                android:scaleType="centerCrop"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:src="@tools:sample/avatars" />
-
-            <ImageView
-                android:id="@+id/carouselIcon"
-                android:layout_width="@dimen/dp_24"
-                android:layout_height="@dimen/dp_24"
-                android:layout_marginTop="@dimen/dp_2"
-                android:layout_marginEnd="@dimen/dp_2"
-                android:layout_marginRight="@dimen/dp_2"
-                android:visibility="gone"
-                app:layout_constraintRight_toRightOf="@+id/thumbnail"
-                app:layout_constraintTop_toTopOf="@+id/thumbnail"
-                app:srcCompat="@drawable/ic_system_status_carousel_normal_32"
-                tools:visibility="visible" />
-
-            <ImageView
-                android:id="@+id/btnPlay"
-                android:layout_width="@dimen/dp_30"
-                android:layout_height="@dimen/dp_30"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/thumbnail"
-                app:layout_constraintEnd_toEndOf="@+id/thumbnail"
-                app:layout_constraintStart_toStartOf="@+id/thumbnail"
-                app:layout_constraintTop_toTopOf="@+id/thumbnail"
-                app:srcCompat="@drawable/ic_video_play_button"
-                tools:visibility="visible" />
-
-            <TextView
-                android:id="@+id/edit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_4"
-                android:gravity="center_horizontal"
-                android:lineSpacingExtra="6sp"
-                android:text="@string/af_title_edit"
-                android:textColor="@color/medium_green"
-                android:textSize="@dimen/sp_12"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="@+id/thumbnail"
-                app:layout_constraintStart_toStartOf="@+id/thumbnail"
-                app:layout_constraintTop_toBottomOf="@+id/thumbnail" />
-
-            <com.tokopedia.design.component.EditTextCompat
+            <com.tokopedia.affiliate.common.widget.ClearFocusEditText
                 android:id="@+id/caption"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/dp_16"
                 android:background="@android:color/transparent"
                 android:fontFamily="sans-serif"
                 android:gravity="top"
                 android:hint="@string/af_caption_hint"
-                android:lines="4"
+                android:singleLine="false"
                 android:maxLength="2000"
                 android:scrollbars="vertical"
                 android:textColor="@color/black_54"
                 android:textCursorDrawable="@color/black"
                 android:textSize="@dimen/sp_14"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/thumbnail"
-                app:layout_constraintTop_toTopOf="@+id/thumbnail" />
-
-            <TextView
-                android:id="@+id/maxCharacter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:layout_marginBottom="@dimen/dp_8"
-                android:gravity="end"
-                android:lineSpacingExtra="8sp"
-                android:textColor="@color/black_38"
-                android:textSize="@dimen/sp_10"
-                app:layout_constraintBottom_toTopOf="@+id/separatorCaption"
-                app:layout_constraintEnd_toEndOf="parent"
-                tools:text="0/2.000" />
-
-            <View
-                android:id="@+id/separatorCaption"
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginTop="@dimen/dp_40"
-                android:background="@color/white_two"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/caption" />
-
-            <LinearLayout
-                android:id="@+id/addMediaBtn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="@dimen/dp_1"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/separatorCaption">
-
-                <LinearLayout
-                    android:id="@+id/addImageBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    android:gravity="center"
-                    android:padding="@dimen/dp_20"
-                    android:visibility="visible"
-                    tools:ignore="UnusedAttribute,UseCompoundDrawables"
-                    tools:visibility="gone">
-
-                    <ImageView
-                        android:layout_width="@dimen/dp_24"
-                        android:layout_height="@dimen/dp_24"
-                        android:layout_marginEnd="@dimen/dp_8"
-                        android:layout_marginRight="@dimen/dp_8"
-                        android:contentDescription="@string/af_add_image"
-                        app:srcCompat="@drawable/ic_system_action_camera_grayscale_24" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif"
-                        android:lineSpacingExtra="4sp"
-                        android:text="@string/af_add_image"
-                        android:textColor="@color/black_54"
-                        android:textSize="@dimen/sp_14"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-                <View
-                    android:id="@+id/separatorMedia"
-                    android:layout_width="0.5dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:layout_marginBottom="@dimen/dp_16"
-                    android:background="@color/white_two"
-                    android:minHeight="@dimen/dp_1" />
-
-                <LinearLayout
-                    android:id="@+id/addVideoBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    android:gravity="center"
-                    android:padding="@dimen/dp_20"
-                    android:visibility="visible"
-                    tools:ignore="UnusedAttribute,UseCompoundDrawables"
-                    tools:visibility="gone">
-
-                    <ImageView
-                        android:layout_width="@dimen/dp_24"
-                        android:layout_height="@dimen/dp_24"
-                        android:layout_marginEnd="@dimen/dp_8"
-                        android:layout_marginRight="@dimen/dp_8"
-                        android:contentDescription="@string/af_add_video"
-                        app:srcCompat="@drawable/ic_system_action_video_grayscale_24" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif"
-                        android:lineSpacingExtra="4sp"
-                        android:text="@string/af_add_video"
-                        android:textColor="@color/black_54"
-                        android:textSize="@dimen/sp_14"
-                        android:textStyle="bold" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <View
-                android:id="@+id/shadowBottom"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_10"
-                android:background="@drawable/card_shadow_bottom"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/addMediaBtn" />
-
-            <View
-                android:id="@+id/shadowTop"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_4"
-                android:background="@drawable/card_shadow_top"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/shadowBottom" />
-
-            <TextView
-                android:id="@+id/relatedTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
-                android:text="@string/af_related_product"
-                android:textColor="@color/black_70"
-                android:textSize="@dimen/sp_14"
-                android:textStyle="bold"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/shadowTop" />
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
-            <TextView
-                android:id="@+id/relatedAddBtn"
-                android:layout_width="wrap_content"
+            <com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
+                android:id="@+id/media_attachment"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:gravity="end"
-                android:text="@string/af_add_product_tag"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="@dimen/sp_14"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/shadowTop" />
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@+id/caption"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/label_title_product_attachment"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="wrap_content"
+                android:text="@string/af_title_header_product_attachment"
+                android:layout_marginTop="@dimen/dp_12"
+                android:visibility="gone"
+                tools:visibility="visible"
+                app:layout_goneMarginTop="@dimen/dp_20"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/media_attachment"/>
+            
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/relatedProductRv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_16"
-                android:orientation="vertical"
-                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                android:id="@+id/product_attachment"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_86"
+                android:layout_marginTop="@dimen/dp_8"
+                android:visibility="gone"
+                tools:visibility="visible"
+                app:layout_constraintTop_toBottomOf="@+id/label_title_product_attachment"
+                app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/relatedAddBtn"
-                app:reverseLayout="false"
-                tools:listitem="@layout/item_af_related_product" />
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_72"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/relatedProductRv" />
         </android.support.constraint.ConstraintLayout>
+
     </android.support.v4.widget.NestedScrollView>
 
-    <FrameLayout
-        android:id="@+id/footerView"
+    <LinearLayout android:id="@+id/layout_default_caption"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:paddingTop="@dimen/dp_12"
+        android:paddingBottom="@dimen/dp_12"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
         android:background="@drawable/card_shadow_top"
-        android:orientation="horizontal">
+        android:visibility="gone"
+        tools:visibility="visible">
 
-        <com.tokopedia.design.component.ButtonCompat
-            android:id="@+id/doneBtn"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/list_captions"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <LinearLayout android:id="@+id/action_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_56"
+        android:orientation="horizontal"
+        android:background="@drawable/card_shadow_top"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
+        android:gravity="center_vertical">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/icon_add_product"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dp_16"
-            android:elevation="0dp"
-            android:enabled="true"
-            android:text="@string/af_done"
-            android:textAllCaps="false"
-            app:buttonCompatSize="medium"
-            app:buttonCompatType="primary"
-            tools:targetApi="lollipop" />
-    </FrameLayout>
-</RelativeLayout>
+            android:src="@drawable/ic_af_add"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/label_add_product"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_weight="1"
+            android:textColor="@color/ae000000"
+            app:typographyType="heading_5"
+            app:typographyWeight="bold"
+            android:text="@string/label_add_product"/>
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/video_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            app:srcCompat="@drawable/ic_af_pick_video"/>
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/image_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            android:src="@drawable/ic_af_pick_media"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/add_sticker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            app:typographyType="heading_4"
+            android:text="@string/label_add_sticker"
+            android:textColor="@color/c45000000"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/add_coupon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_af_add_voucher"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+
+    </LinearLayout>
+
+</LinearLayout>

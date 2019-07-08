@@ -16,6 +16,17 @@ class RecomendationEntity {
         var data: List<RecomendationData>? = listOf()
     }
 
+    class Pagination {
+        @SerializedName("current_page")
+        var currentPage: Int = 0
+        @SerializedName("next_page")
+        var nextPage: Int = 0
+        @SerializedName("prev_page")
+        var prevPage: Int = 0
+        @SerializedName("hasNext")
+        var hasNext: Boolean = false
+    }
+
     class Recommendation {
 
         @SerializedName("id")
@@ -32,6 +43,14 @@ class RecomendationEntity {
         var clickUrl: String? = ""
         @SerializedName("wishlistUrl")
         var wishlistUrl: String? = ""
+
+        @SerializedName("discountPercentage")
+        var discountPercentage: Int = 0
+        @SerializedName("slashedPrice")
+        var slashedPrice: String? = ""
+        @SerializedName("slashedPriceInt")
+        var slashedPriceInt: Int = 0
+
         @SerializedName("trackerImageUrl")
         var trackerImageUrl: String? = ""
         @SerializedName("imageUrl")
@@ -60,12 +79,16 @@ class RecomendationEntity {
         var badges: List<Badges>? = listOf()
         @SerializedName("wholesalePrice")
         var wholesalePrice: List<*>? = listOf<Any>()
+        @SerializedName("minOrder")
+        var minOrder: Int? = 0
 
         class Shop {
             @SerializedName("id")
             var id: Int = 0
             @SerializedName("name")
             var name: String? = ""
+            @SerializedName("city")
+            var city: String? =""
         }
 
         class Badges {
@@ -89,6 +112,12 @@ class RecomendationEntity {
         var foreignTitle: String? = ""
         @SerializedName("widgetUrl")
         var widgetUrl: String? = ""
+        @SerializedName("pageName")
+        var pageName: String? = ""
+        @SerializedName("layoutType")
+        var layoutType: String? = ""
+        @SerializedName("pagination")
+        var pagination: Pagination = Pagination()
         @SerializedName("recommendation")
         var recommendation: List<Recommendation>? = listOf()
 

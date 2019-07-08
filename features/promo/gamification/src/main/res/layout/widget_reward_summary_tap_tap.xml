@@ -101,8 +101,7 @@
             android:id="@+id/image_sinar"
             android:layout_width="@dimen/dp_160"
             android:layout_height="@dimen/dp_160"
-            android:layout_gravity="center_horizontal"
-            android:src="@drawable/sinar_rewards_3_x" />
+            android:layout_gravity="center_horizontal" />
 
 
         <FrameLayout

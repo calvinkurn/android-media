@@ -11,6 +11,7 @@ import com.tokopedia.tokopoints.view.fragment.CouponDetailFragment;
 import com.tokopedia.tokopoints.view.fragment.CouponListingStackedFragment;
 import com.tokopedia.tokopoints.view.fragment.HomepageFragment;
 import com.tokopedia.tokopoints.view.fragment.MyCouponListingFragment;
+import com.tokopedia.tokopoints.view.fragment.PointHistoryFragment;
 import com.tokopedia.tokopoints.view.fragment.SendGiftFragment;
 import com.tokopedia.tokopoints.view.fragment.TokoPointsHomeFragmentNew;
 import com.tokopedia.tokopoints.view.fragment.ValidateMerchantPinFragment;
@@ -43,4 +44,6 @@ public interface TokoPointComponent {
     void inject(CouponListingStackedActivity activity);
 
     void inject(CouponDetailFragment fragment);
+
+    void inject(PointHistoryFragment fragment);
 }

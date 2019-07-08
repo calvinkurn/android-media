@@ -265,7 +265,8 @@
 Anda di sini.</string>
     <string name="info_label">Informasi Pembayaran</string>
     <string name="lihat_detail">Lihat Detail</string>
-    <string name="detail_label">Detail Pembelian</string>
+    <string name="detail_label">Detail E-voucher Deals</string>
+    <string name="detail_label_events">Detail E-Tiket</string>
     <string name="product_info_label">Daftar Produk</string>
     <string name="lihat_text">LIHAT</string>
     <string name="status">Status</string>
@@ -296,7 +297,7 @@ Anda di sini.</string>
     <string name="barcode_label_one">Kode booking pengiriman</string>
     <string name="barcode_label_two">(tap untuk perbesar)</string>
     <string name="barcode_image_content_description">Barcode Image</string>
-    <string name="protection_count_label">Biaya Proteksi Gadget (%d barang)</string>
+    <string name="protection_count_label">Biaya Proteksi Produk (%d barang)</string>
     <string name="button_order_detail_buy_again">Beli Lagi</string>
     <string name="filter">Filter</string>
     <string name="try_again">Belanja Sekarang</string>
@@ -329,4 +330,23 @@ Anda di sini.</string>
     <string name="tooltip_fulfillment_desc">Semua pesanan berlabel Dilayani TokoCabang, akan diurus oleh admin TokoCabang</string>
 
     <string name="transaction_title_activity_order_history">Detail Status</string>
+    <string name="tiket_kategori">Kategori Tiket: </string>
+    <string name="tanggal_events">Tanggal Events </string>
+    <string name="location_events">Lokasi </string>
+    <string name="user_label">Data Pemegang E-tiket</string>
+    <string name="booking_code_title">Kode Booking:</string>
+    <string name="btn_redeem_ticket">Tutup</string>
+    <string name="voucher_code_title">Kode voucher:</string>
+    <string name="voucher_code_title_deals">Voucher Deals</string>
+    <string name="redeem_deals_btn">Redeem</string>
+    <string name="event_ticket_voucher_multiple">x E-Tiket</string>
+    <string name="event_ticket_booking_multiple">x Kode Booking</string>
+    <string name="event_ticket_qrcode_multiple">x QR Code</string>
+    <string name="event_ticket_voucher_count">E-Tiket</string>
+    <string name="event_ticket_booking_count">Kode Booking</string>
+    <string name="event_ticket_qrcode_count">QR Code</string>
+    <string name="event_ticket_voucher_number">E-Voucher</string>
+    <string name="event_ticket_voucher_number_multiple">E-Voucher #</string>
+    <string name="deal_voucher_code_copied">Berhasil! Silakan cek voucher di</string>
+    <string name="event_voucher_code_copied">Berhasil! Silakan cek e-tiket di</string>
 </resources>
