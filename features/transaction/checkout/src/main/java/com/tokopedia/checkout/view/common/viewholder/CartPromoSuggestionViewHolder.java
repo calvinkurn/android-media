@@ -13,14 +13,14 @@ import android.widget.TextView;
 
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
-import com.tokopedia.checkout.view.common.adapter.CartAdapterActionListener;
+import com.tokopedia.checkout.view.common.PromoActionListener;
 
 /**
  * @author anggaprasetiyo on 13/03/18.
  */
 public class CartPromoSuggestionViewHolder extends RecyclerView.ViewHolder {
     public static final int TYPE_VIEW_PROMO_SUGGESTION = R.layout.holder_item_cart_potential_promo;
-    private final CartAdapterActionListener actionListener;
+    private final PromoActionListener actionListener;
 
     private RelativeLayout mRlPromoSuggestionLayout;
     private ImageView btnClose;
@@ -30,7 +30,7 @@ public class CartPromoSuggestionViewHolder extends RecyclerView.ViewHolder {
     private RecyclerView.LayoutParams layoutParamsGone;
     private CartPromoSuggestion cartPromoSuggestion;
 
-    public CartPromoSuggestionViewHolder(View itemView, CartAdapterActionListener actionListener) {
+    public CartPromoSuggestionViewHolder(View itemView, PromoActionListener actionListener) {
         super(itemView);
         this.actionListener = actionListener;
 

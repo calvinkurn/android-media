@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -16,7 +15,6 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.tracking.adapter.TrackingHistoryAdapter;
 import com.tokopedia.core.tracking.listener.TrackingFragmentView;
@@ -25,7 +23,6 @@ import com.tokopedia.core.tracking.presenter.TrackingFragmentPresenter;
 import com.tokopedia.core.tracking.presenter.TrackingFragmentPresenterImpl;
 import com.tokopedia.core.util.MethodChecker;
 
-import butterknife.BindView;
 
 /**
  * @author Alifa on 10/12/2016.
@@ -34,48 +31,29 @@ import butterknife.BindView;
 public class TrackingFragment extends BasePresenterFragment<TrackingFragmentPresenter> implements
         TrackingFragmentView {
 
-    @BindView(R2.id.mainView)
     View mainView;
-
-    @BindView(R2.id.loadingStatus)
     ProgressBar loadingStatus;
 
     //HEADER
-    @BindView(R2.id.tracking_status)
     TextView sendingStatus;
-    @BindView(R2.id.view_status)
     View statusView;
 
     //VIEW1
-    @BindView(R2.id.ref_num)
     TextView refNumber;
-    @BindView(R2.id.receiver_name_non_jne)
     TextView receiverName;
-    @BindView(R2.id.date)
     TextView sendingDate;
-    @BindView(R2.id.tracking_code)
     TextView serviceCode;
-    @BindView(R2.id.view_receiver_non_jne)
     View viewReceiver;
-    @BindView(R2.id.view_receiver_jne)
     View viewReceiverJNE;
 
     //VIEW DETAIL
-    @BindView(R2.id.view_footer_tracking)
     View footerTracking;
-    @BindView(R2.id.view_detail_shipping)
     View detailShipping;
-    @BindView(R2.id.sender_name)
     TextView sellerName;
-    @BindView(R2.id.sender_city)
     TextView sellerCity;
-    @BindView(R2.id.receiver_name)
     TextView buyerName;
-    @BindView(R2.id.receiver_city)
     TextView buyerCity;
-    @BindView(R2.id.tracking_result)
     RecyclerView addressRV;
-
 
     TrackingHistoryAdapter adapter;
     LinearLayoutManager linearLayoutManager;
@@ -101,7 +79,6 @@ public class TrackingFragment extends BasePresenterFragment<TrackingFragmentPres
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
-
 
     @Override
     protected boolean isRetainInstance() {
@@ -152,6 +129,26 @@ public class TrackingFragment extends BasePresenterFragment<TrackingFragmentPres
 
     @Override
     protected void initView(View view) {
+        mainView = (View) view.findViewById(R.id.mainView);
+        loadingStatus = (ProgressBar) view.findViewById(R.id.loadingStatus);
+
+        sendingStatus = (TextView) view.findViewById(R.id.tracking_status);
+        statusView = (View) view.findViewById(R.id.view_status);
+
+        refNumber = (TextView) view.findViewById(R.id.ref_num);
+        receiverName = (TextView) view.findViewById(R.id.receiver_name_non_jne);
+        sendingDate = (TextView) view.findViewById(R.id.date);
+        serviceCode = (TextView) view.findViewById(R.id.tracking_code);
+        viewReceiver = (View) view.findViewById(R.id.view_receiver_non_jne);
+        viewReceiverJNE = (View) view.findViewById(R.id.view_receiver_jne);
+
+        footerTracking = (View) view.findViewById(R.id.view_footer_tracking);
+        detailShipping = (View) view.findViewById(R.id.view_detail_shipping);
+        sellerName = (TextView) view.findViewById(R.id.sender_name);
+        sellerCity = (TextView) view.findViewById(R.id.sender_city);
+        buyerName = (TextView) view.findViewById(R.id.receiver_name);
+        buyerCity = (TextView) view.findViewById(R.id.receiver_city);
+        addressRV = (RecyclerView) view.findViewById(R.id.tracking_result);
 
     }
 
