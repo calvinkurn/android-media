@@ -1,16 +1,11 @@
-package com.tokopedia.checkout.view.feature.addressoptions.addressadapter;
+package com.tokopedia.checkout.view.feature.addressoptions.recyclerview;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.RadioButton;
-import android.widget.TextView;
 
-import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.CornerAddressModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 
@@ -23,14 +18,14 @@ import java.util.List;
 
 public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private CornerAddressModel mSampaiModel;
+    private CornerAddressModel mCornerData;
     private List<RecipientAddressModel> mAddressModelList;
     private ActionListener mActionListener;
 
     public ShipmentAddressListAdapter(ActionListener actionListener) {
         mActionListener = actionListener;
         mAddressModelList = new ArrayList<>();
-        mSampaiModel = null;
+        mCornerData = new CornerAddressModel();
     }
 
     @NonNull
@@ -38,15 +33,15 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerVie
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(viewType, parent, false);
-        if (viewType == R.layout.item_sampai) return new SampaiViewHolder(view);
+        if (viewType == SampaiViewHolder.getTYPE()) return new SampaiViewHolder(view);
         return new RecipientAddressViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if (getItemViewType(position) == R.layout.item_sampai) {
+        if (getItemViewType(position) == SampaiViewHolder.getTYPE()) {
             SampaiViewHolder sampaiViewHolder = (SampaiViewHolder) holder;
-            sampaiViewHolder.bind(mSampaiModel, mActionListener, position);
+            sampaiViewHolder.bind(mCornerData, mActionListener, position);
         } else {
             int addressPosition = position - getExtraCount();
             RecipientAddressViewHolder addressHolder = (RecipientAddressViewHolder) holder;
@@ -62,11 +57,19 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerVie
 
     @Override
     public int getItemViewType(int position) {
-        if (position == 0 && mSampaiModel != null) return R.layout.item_sampai;
+        if (position == 0 && mCornerData != null) return SampaiViewHolder.getTYPE();
         else return RecipientAddressViewHolder.TYPE;
     }
 
-    public void setAddressList(List<RecipientAddressModel> addressModelList) {
+    public void setAddressList(List<RecipientAddressModel> addressModelList, String selectedId) {
+        for (RecipientAddressModel addressModel : addressModelList) {
+            if (addressModel.getId().equals(selectedId)) {
+                addressModel.setSelected(true);
+            } else addressModel.setSelected(false);
+        }
+        if (mCornerData != null && mCornerData.getCornerModel() != null) {
+            mCornerData.setSelected(mCornerData.getCornerModel().getId().equals(selectedId));
+        }
         mAddressModelList.clear();
         mAddressModelList.addAll(addressModelList);
         updateHeaderAndFooterPosition();
@@ -79,19 +82,19 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerVie
         notifyDataSetChanged();
     }
 
-    public void showSampaiWithoutSelected() {
-        mSampaiModel = new CornerAddressModel();
+    public void hideCornerOption() {
+        mCornerData = null;
         notifyDataSetChanged();
     }
 
-    public void setSampai(CornerAddressModel cornerAddressModel) {
-        mSampaiModel = cornerAddressModel;
+    public void setCorner(RecipientAddressModel cornerAddressModel) {
+        mCornerData.setCornerModel(cornerAddressModel);
         notifyDataSetChanged();
     }
 
     public void updateSelected(int position) {
-        if (getItemViewType(position) == R.layout.item_sampai) {
-            mSampaiModel.setSelected(true);
+        if (getItemViewType(position) == SampaiViewHolder.getTYPE()) {
+            mCornerData.setSelected(true);
             for (RecipientAddressModel addressModel : mAddressModelList) {
                 addressModel.setSelected(false);
             }
@@ -103,13 +106,17 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerVie
                     mAddressModelList.get(i).setSelected(false);
                 }
             }
-            if (mSampaiModel != null) mSampaiModel.setSelected(false);
+            if (mCornerData != null) mCornerData.setSelected(false);
         }
         notifyDataSetChanged();
     }
 
+    public Boolean isHavingCornerAddress() {
+        return (mCornerData != null && mCornerData.getCornerModel() != null);
+    }
+
     private int getExtraCount() {
-        return mSampaiModel != null ? 1 : 0;
+        return mCornerData != null ? 1 : 0;
     }
 
     private void updateHeaderAndFooterPosition() {
@@ -123,45 +130,13 @@ public class ShipmentAddressListAdapter extends RecyclerView.Adapter<RecyclerVie
 
         void onAddressContainerClicked(RecipientAddressModel model, int position);
 
-        void onCornerAddressClicked(CornerAddressModel cornerAddressModel, int position);
+        void onCornerAddressClicked(RecipientAddressModel addressModel, int position);
 
         void onEditClick(RecipientAddressModel model);
 
         void onAddAddressButtonClicked();
 
         void onCornerButtonClicked();
-    }
-
-    class SampaiViewHolder extends RecyclerView.ViewHolder {
-
-        Button mButton;
-        View mCornerView;
-        TextView mCornerName, mBranchName;
-        RadioButton mRadio;
-
-        public SampaiViewHolder(View itemView) {
-            super(itemView);
-            mCornerView = itemView.findViewById(R.id.view_tkpd_corner);
-            mButton = itemView.findViewById(R.id.button_tkpd_corner);
-            mCornerName = itemView.findViewById(R.id.text_view_corner);
-            mBranchName = itemView.findViewById(R.id.text_view_branch);
-            mRadio = itemView.findViewById(R.id.radio_button_corner);
-        }
-
-        public void bind(CornerAddressModel model, ActionListener listener, int position) {
-            if (!TextUtils.isEmpty(model.getCornerName())) {
-                mCornerView.setVisibility(View.VISIBLE);
-                mCornerView.setOnClickListener(view -> listener.onCornerAddressClicked(model, position));
-                mCornerName.setText(model.getCornerName());
-                mBranchName.setText(model.getCornerBranchName());
-                mRadio.setChecked(model.isSelected());
-                mButton.setText("Ubah Lokasi Tokopedia Corner");
-            } else {
-                mCornerView.setVisibility(View.GONE);
-                mButton.setText("Pilih Lokasi Tokopedia Corner");
-            }
-            mButton.setOnClickListener(view -> listener.onCornerButtonClicked());
-        }
     }
 
 }
