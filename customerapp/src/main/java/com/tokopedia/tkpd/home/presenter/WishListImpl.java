@@ -18,7 +18,6 @@ import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.toolargetool.TooLargeTool;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.database.CacheDuration;
 import com.tokopedia.core.network.apiservices.mojito.MojitoAuthService;
 import com.tokopedia.core.network.apiservices.mojito.MojitoService;
 import com.tokopedia.discovery.newdiscovery.helper.UrlParamHelper;
@@ -80,12 +79,15 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class WishListImpl implements WishList {
     private static final String TAG = WishListImpl.class.getSimpleName();
+    private static final int REMOVE_WISHLIST_ON_SUCCESS_DELAY = 5000;
+
     public static final String PAGE_NO = "page";
     public static final String ITEM_COUNT = "count";
     public static final String QUERY = "query";
     public static final int TOPADS_INDEX = 4;
     public static final String TOPADS_ITEM = "5";
     public static final String TOPADS_SRC = "wishlist";
+
     WishListView wishListView;
 
     List<RecyclerViewItem> data = new ArrayList<>();
@@ -619,7 +621,7 @@ public class WishListImpl implements WishList {
                 wishListView.onSuccessDeleteWishlist(
                         params.getString(QUERY, ""), position);
             }
-        }, CacheDuration.onSecond(5));
+        }, REMOVE_WISHLIST_ON_SUCCESS_DELAY);
     }
 
     private class SearchWishlistSubscriber extends Subscriber<GraphqlResponse> {
