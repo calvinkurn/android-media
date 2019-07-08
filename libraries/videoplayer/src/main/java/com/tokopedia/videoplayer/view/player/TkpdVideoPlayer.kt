@@ -117,8 +117,8 @@ class TkpdVideoPlayer: Fragment(), ControllerListener {
                 callback = arguments?.getParcelable(VIDEO_CALLBACK) as VideoPlayerListener?
 
                 //native controller visibility
-                playerView.useController = viewModel.nativeController
-                pgLoader.visibility = if (viewModel.nativeController) {
+                playerView?.useController = viewModel.nativeController
+                pgLoader?.visibility = if (viewModel.nativeController) {
                     View.VISIBLE
                 } else {
                     View.GONE
@@ -149,9 +149,11 @@ class TkpdVideoPlayer: Fragment(), ControllerListener {
     private fun playerListener() = playerOptions?.addListener(object : Player.EventListener {
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
             callback?.onPlayerStateChanged(playbackState)
-            when (playbackState) {
-                STATE_BUFFERING -> pgLoader.show()
-                STATE_READY -> pgLoader.hide()
+            if (viewModel.nativeController) {
+                when (playbackState) {
+                    STATE_BUFFERING -> pgLoader?.show()
+                    STATE_READY -> pgLoader?.hide()
+                }
             }
         }
 
