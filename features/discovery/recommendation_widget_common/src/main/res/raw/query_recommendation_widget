@@ -6,6 +6,14 @@ query productRecommendation($userID: Int!, $pageName: String!, $pageNumber: Int!
       title
       foreignTitle
       widgetUrl
+      pageName
+      layoutType
+      pagination {
+        currentPage
+        nextPage
+        prevPage
+        hasNext
+      }
       recommendation {
         id
         name
@@ -21,9 +29,11 @@ query productRecommendation($userID: Int!, $pageName: String!, $pageNumber: Int!
         discountPercentage
         slashedPrice
         slashedPriceInt
+        minOrder
         shop {
           id
           name
+          city
         }
         departmentId
         labels {

@@ -205,7 +205,7 @@ public class InboxChatModule {
                                      XUserIdInterceptor xUserIdInterceptor) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .addInterceptor(new FingerprintInterceptor(networkRouter, userSessionInterface))
-                .addInterceptor(new CacheApiInterceptor())
+                .addInterceptor(new CacheApiInterceptor(context))
                 .addInterceptor(xUserIdInterceptor)
                 .addInterceptor(errorResponseInterceptor)
                 .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS)

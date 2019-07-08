@@ -30,7 +30,6 @@ import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.ProductItemDecoration;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.NetworkParamHelper;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
@@ -45,6 +44,7 @@ import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter;
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionGeneralAdapter;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ProductItemDecoration;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
 import com.tokopedia.search.result.presentation.view.listener.GlobalNavWidgetListener;
@@ -72,6 +72,7 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
+import com.tokopedia.discovery.common.manager.AdultManager;
 
 import org.json.JSONArray;
 
@@ -183,7 +184,6 @@ public class ProductListFragment
         presenter.attachView(this);
         presenter.initInjector(this);
         presenter.setWishlistActionListener(this);
-        presenter.setRequestDynamicFilterListener(this);
 
         return inflater.inflate(R.layout.search_fragment_base_discovery, null);
     }
@@ -196,6 +196,9 @@ public class ProductListFragment
         initTopAdsParams();
         setupAdapter();
         setupListener();
+        if (getUserVisibleHint()) {
+            setupSearchNavigation();
+        }
     }
 
     @Override
@@ -215,7 +218,7 @@ public class ProductListFragment
     }
 
     private void bindView(View rootView) {
-        recyclerView = rootView.findViewById(com.tokopedia.discovery.R.id.recyclerview);
+        recyclerView = rootView.findViewById(R.id.recyclerview);
     }
 
     private void initTopAdsConfig() {
@@ -239,7 +242,7 @@ public class ProductListFragment
         recyclerView.setLayoutManager(getGridLayoutManager());
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new ProductItemDecoration(
-                getContext().getResources().getDimensionPixelSize(com.tokopedia.discovery.R.dimen.dp_16),
+                getContext().getResources().getDimensionPixelSize(R.dimen.dp_16),
                 getContext().getResources().getColor(R.color.white)
         ));
         setHeaderTopAds(true);
@@ -322,7 +325,7 @@ public class ProductListFragment
     }
 
     public void setProductList(List<Visitable> list) {
-        adapter.clear();
+        adapter.clearDataBeforeSet();
 
         addProductList(list);
 
@@ -338,7 +341,9 @@ public class ProductListFragment
             if (object instanceof ProductItemViewModel) {
                 ProductItemViewModel item = (ProductItemViewModel) object;
                 if (!item.isTopAds()) {
-                    dataLayerList.add(item.getProductAsObjectDataLayer(userId));
+                    String filterSortParams
+                            = SearchTracking.generateFilterAndSortEventLabel(getSelectedFilter(), getSelectedSort());
+                    dataLayerList.add(item.getProductAsObjectDataLayer(userId, filterSortParams));
                 }
             }
         }
@@ -390,7 +395,7 @@ public class ProductListFragment
     protected void switchLayoutType() {
         super.switchLayoutType();
 
-        if (!getUserVisibleHint()) {
+        if (!getUserVisibleHint() || getAdapter() == null) {
             return;
         }
         recyclerView.clearOnScrollListeners();
@@ -449,6 +454,10 @@ public class ProductListFragment
             boolean isWishlist = data.getExtras().getBoolean(SearchConstant.Wishlist.WIHSLIST_STATUS_IS_WISHLIST, false);
 
             updateWishlistFromPDP(position, isWishlist);
+
+        }
+        if (getActivity() != null) {
+            AdultManager.handleActivityResult(getActivity(), requestCode, resultCode, data);
         }
     }
 
@@ -485,17 +494,19 @@ public class ProductListFragment
         } else {
             RouteManager.route(getActivity(), item.getUrl());
         }
-        SearchTracking.trackEventClickGlobalNavWidgetItem(item.getGlobalNavItemAsObjectDataLayer(), keyword);
+        SearchTracking.trackEventClickGlobalNavWidgetItem(item.getGlobalNavItemAsObjectDataLayer(),
+                keyword, item.getName(), item.getApplink());
     }
 
     @Override
-    public void onGlobalNavWidgetClickSeeAll(String applink, String url) {
-        if (!TextUtils.isEmpty(applink)) {
-            RouteManager.route(getActivity(), applink);
+    public void onGlobalNavWidgetClickSeeAll(GlobalNavViewModel model) {
+        if (!TextUtils.isEmpty(model.getSeeAllApplink())) {
+            RouteManager.route(getActivity(), model.getSeeAllApplink());
         } else {
-            RouteManager.route(getActivity(), url);
+            RouteManager.route(getActivity(), model.getSeeAllUrl());
         }
-        SearchTracking.eventUserClickSeeAllGlobalNavWidget();
+        SearchTracking.eventUserClickSeeAllGlobalNavWidget(model.getKeyword(),
+                model.getTitle(), model.getSeeAllApplink());
     }
 
     @Override
@@ -529,13 +540,14 @@ public class ProductListFragment
         if (item.isTopAds()) {
             sendItemClickTrackingEventForTopAdsItem(item, pos);
         } else {
+            String filterSortParams
+                    = SearchTracking.generateFilterAndSortEventLabel(getSelectedFilter(), getSelectedSort());
             SearchTracking.trackEventClickSearchResultProduct(
                     getActivity(),
-                    item.getProductAsObjectDataLayer(userId),
+                    item.getProductAsObjectDataLayer(userId, filterSortParams),
                     item.getPageNumber(),
                     getQueryKey(),
-                    getSelectedFilter(),
-                    getSelectedSort()
+                    filterSortParams
             );
         }
     }
@@ -666,7 +678,7 @@ public class ProductListFragment
                 generateWishlistClickEventLabel(true));
         adapter.updateWishlistStatus(productId, true);
         enableWishlistButton(productId);
-        NetworkErrorHelper.showSnackbar(getActivity(), getString(com.tokopedia.discovery.R.string.msg_add_wishlist));
+        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist));
     }
 
     private String generateWishlistClickEventLabel(boolean isWishlisted) {
@@ -689,7 +701,7 @@ public class ProductListFragment
                 generateWishlistClickEventLabel(false));
         adapter.updateWishlistStatus(productId, false);
         enableWishlistButton(productId);
-        NetworkErrorHelper.showSnackbar(getActivity(), getString(com.tokopedia.discovery.R.string.msg_remove_wishlist));
+        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
     }
 
     @Override
@@ -732,14 +744,14 @@ public class ProductListFragment
     @Override
     public void setEmptyProduct() {
         isListEmpty = true;
-        adapter.showEmptyState(getActivity(), getQueryKey(), isFilterActive(), getString(com.tokopedia.discovery.R.string.product_tab_title).toLowerCase());
+        adapter.showEmptyState(getActivity(), getQueryKey(), isFilterActive(), getString(R.string.product_tab_title).toLowerCase());
         SearchTracking.eventSearchNoResult(getActivity(), getQueryKey(), getScreenName(), getSelectedFilter());
     }
 
     @Override
     protected void refreshAdapterForEmptySearch() {
         if (adapter != null) {
-            adapter.showEmptyState(getActivity(), getQueryKey(), isFilterActive(), getString(com.tokopedia.discovery.R.string.product_tab_title).toLowerCase());
+            adapter.showEmptyState(getActivity(), getQueryKey(), isFilterActive(), getString(R.string.product_tab_title).toLowerCase());
         }
     }
 
@@ -751,7 +763,6 @@ public class ProductListFragment
 
         showRefreshLayout();
         adapter.clearData();
-        adapter.notifyDataSetChanged();
         initTopAdsParams();
         generateLoadMoreParameter(0);
         performanceMonitoring = PerformanceMonitoring.start(SEARCH_PRODUCT_TRACE);
@@ -848,6 +859,7 @@ public class ProductListFragment
 
     @Override
     public void removeLoading() {
+        redirectionListener.onProductLoadingFinished();
         adapter.removeLoading();
     }
 
@@ -1016,7 +1028,35 @@ public class ProductListFragment
     }
 
     @Override
-    public boolean shouldSaveToLocalDynamicFilterDb() {
-        return false;
+    public void launchLoginActivity(String productId) {
+        Bundle extras = new Bundle();
+        extras.putString("product_id", productId);
+
+        if (getActivity() == null) return;
+
+        DiscoveryRouter router = (DiscoveryRouter) getActivity().getApplicationContext();
+
+        if (router != null) {
+            Intent intent = router.getLoginIntent(getActivity());
+            intent.putExtras(extras);
+            startActivityForResult(intent, REQUEST_CODE_LOGIN);
+        }
+    }
+
+    @Override
+    public void sendImpressionGuidedSearch() {
+        String currentKey = searchParameter.getSearchQuery();
+        String currentPage = String.valueOf(adapter.getStartFrom() / Integer.parseInt(SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS));
+
+        SearchTracking.eventImpressionGuidedSearch(
+                getActivity(),
+                currentKey,
+                currentPage
+        );
+    }
+
+    @Override
+    public void showAdultRestriction() {
+        AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_SEARCH_PAGE, getQueryKey());
     }
 }

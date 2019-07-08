@@ -1,6 +1,7 @@
 package com.tokopedia.navigation.presentation.fragment
 
 import android.animation.LayoutTransition
+import android.content.Context
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
@@ -33,6 +34,7 @@ import com.tokopedia.navigation.presentation.adapter.typefactory.NotificationUpd
 import com.tokopedia.navigation.presentation.adapter.typefactory.NotificationUpdateTypeFactoryImpl
 import com.tokopedia.navigation.presentation.di.notification.DaggerNotificationUpdateComponent
 import com.tokopedia.navigation.presentation.presenter.NotificationUpdatePresenter
+import com.tokopedia.navigation.presentation.view.listener.NotificationActivityContract
 import com.tokopedia.navigation.presentation.view.listener.NotificationSectionFilterListener
 import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateContract
 import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateItemListener
@@ -65,6 +67,17 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     @Inject
     lateinit var analytics: NotificationUpdateAnalytics
 
+    private var notificationUpdateListener: NotificationUpdateListener? = null
+
+    interface NotificationUpdateListener {
+        fun onSuccessLoadNotifUpdate()
+    }
+
+    override fun onAttachActivity(context: Context?) {
+        if (context is NotificationUpdateListener) {
+            notificationUpdateListener = context
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_notification_update, container, false)
@@ -96,7 +109,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
 
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (dy < 0) { // going up
                     if (adapter.dataSize > 0) {
@@ -107,7 +120,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
                 }
             }
 
-            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == SCROLL_STATE_IDLE) {
                     val layoutManager = (recyclerView?.layoutManager)
@@ -125,6 +138,9 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     private fun onSuccessMarkAllReadNotificationUpdate(): () -> Unit {
         return {
             (adapter as NotificationUpdateAdapter).markAllAsRead()
+            if (activity != null && activity is NotificationActivityContract.View) {
+                (activity as NotificationActivityContract.View).resetCounterNotificationUpdate()
+            }
             markAllReadCounter = 0L
             notifyBottomActionView()
         }
@@ -268,7 +284,9 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
 
     private fun onErrorInitiateData(): (Throwable) -> Unit {
         return {
-            SnackbarManager.make(activity, ErrorHandler.getErrorMessage(activity, it), Snackbar.LENGTH_LONG).show()
+            if(activity != null) {
+                SnackbarManager.make(activity, ErrorHandler.getErrorMessage(activity, it), Snackbar.LENGTH_LONG).show()
+            }
         }
     }
 
@@ -277,6 +295,9 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
             var canLoadMore = it.paging.hasNext
             if (canLoadMore && !it.list.isEmpty()) {
                 cursor = (it.list.last().notificationId)
+            }
+            if (swipeToRefresh.isRefreshing) {
+                notificationUpdateListener?.onSuccessLoadNotifUpdate()
             }
             renderList(it.list, canLoadMore)
         }
@@ -327,7 +348,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
 
     class SpacingItemDecoration(private val dimen: Int, val size: Int) : RecyclerView.ItemDecoration() {
 
-        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State?) {
+        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
             if (parent.getChildAdapterPosition(view) == 0) {
                 outRect.top = this.dimen
                 outRect.bottom = this.dimen / 2

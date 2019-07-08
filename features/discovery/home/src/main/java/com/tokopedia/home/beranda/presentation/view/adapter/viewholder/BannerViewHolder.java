@@ -51,6 +51,8 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
     public void bind(BannerViewModel element) {
         try {
             slidesList = element.getSlides();
+            bannerView.shouldShowSeeAllButton(!slidesList.isEmpty());
+
             List<String> promoUrls = new ArrayList<>();
             for (BannerSlidesModel slidesModel : slidesList) {
                 promoUrls.add(slidesModel.getImageUrl());
@@ -98,13 +100,7 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
 
     @Override
     public void onPromoLoaded() {
-        if (listener.isHomeFragment() && slidesList != null && slidesList.size() > 0) {
-            List<Promotion> promotionList = new ArrayList<>();
-            for (int i = 0, sizei = slidesList.size(); i < sizei; i++) {
-                promotionList.add(getPromotion(i));
-            }
-            HomePageTracking.eventPromoImpression(context, promotionList);
-        }
+
     }
 
     @Override

@@ -18,7 +18,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.analytics.NotificationUpdateAnalytics
-import com.tokopedia.navigation.domain.pojo.NotificationUpdateTotalUnread
 import com.tokopedia.navigation.domain.pojo.NotificationUpdateUnread
 import com.tokopedia.navigation.presentation.adapter.NotificationFragmentAdapter
 import com.tokopedia.navigation.presentation.di.notification.DaggerNotificationUpdateComponent
@@ -26,14 +25,14 @@ import com.tokopedia.navigation.presentation.fragment.NotificationFragment
 import com.tokopedia.navigation.presentation.fragment.NotificationUpdateFragment
 import com.tokopedia.navigation.presentation.presenter.NotificationActivityPresenter
 import com.tokopedia.navigation.presentation.view.listener.NotificationActivityContract
-import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateContract
 import javax.inject.Inject
 
 /**
  * Created by meta on 20/06/18.
  */
 @DeepLink(ApplinkConst.NOTIFICATION)
-class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, NotificationActivityContract.View {
+class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, NotificationActivityContract.View,
+        NotificationUpdateFragment.NotificationUpdateListener {
 
     @Inject
     lateinit var presenter: NotificationActivityPresenter
@@ -64,6 +63,9 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
         presenter.getUpdateUnreadCounter(onSuccessGetUpdateUnreadCounter())
     }
 
+    override fun onSuccessLoadNotifUpdate() {
+        clearNotifCounter(INDEX_NOTIFICATION_UPDATE)
+    }
 
     private fun onSuccessGetUpdateUnreadCounter(): (NotificationUpdateUnread) -> Unit {
         return {
@@ -106,19 +108,28 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
             override fun onTabSelected(tab: TabLayout.Tab) {
                 viewPager.setCurrentItem(tab.position, true)
                 sendAnalytics(tab.position)
+                clearNotifCounter(tab.position)
                 setTabSelectedView(tab.customView)
                 resetCircle(tab.customView)
             }
         })
     }
 
-    private fun clearNotificationUpdateCounter() {
+    private fun clearNotifCounter(position: Int) {
+        if(position == INDEX_NOTIFICATION_UPDATE) {
+            presenter.clearNotifCounter()
+            resetCounterNotificationUpdate()
+        }
+    }
+
+
+    override fun resetCounterNotificationUpdate() {
         updateCounter = 0
         setCounterNotificationUpdate()
     }
 
     private fun sendAnalytics(position: Int) {
-        if(position == 1) {
+        if(position == INDEX_NOTIFICATION_UPDATE) {
             analytics.trackClickNewestInfo()
         }
     }
@@ -182,6 +193,7 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
         super.onDestroy()
         presenter.detachView()
     }
+
 
     companion object {
 

@@ -21,15 +21,13 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
-import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.common.data.DynamicFilterModel;
 import com.tokopedia.discovery.common.data.Filter;
 import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.common.data.Sort;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
-import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
-import com.tokopedia.discovery.newdiscovery.search.SearchNavigationListener;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterHelper;
@@ -38,8 +36,8 @@ import com.tokopedia.discovery.newdynamicfilter.helper.SortHelper;
 import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.SearchSectionContract;
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionGeneralAdapter;
-import com.tokopedia.search.result.presentation.view.listener.RequestDynamicFilterListener;
-import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
+import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -57,8 +55,7 @@ import static com.tokopedia.discovery.common.constants.SearchConstant.PORTRAIT_C
 public abstract class SearchSectionFragment
         extends BaseDaggerFragment
         implements
-        SearchSectionContract.View,
-        RequestDynamicFilterListener {
+        SearchSectionContract.View {
 
     public static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 4;
     public static final int REQUEST_CODE_LOGIN = 561;
@@ -81,7 +78,7 @@ public abstract class SearchSectionFragment
 
     private SearchNavigationListener searchNavigationListener;
     private BottomSheetListener bottomSheetListener;
-    private RedirectionListener redirectionListener;
+    protected RedirectionListener redirectionListener;
     private GridLayoutManager gridLayoutManager;
     private LinearLayoutManager linearLayoutManager;
     private SwipeRefreshLayout refreshLayout;
@@ -91,7 +88,6 @@ public abstract class SearchSectionFragment
     private ArrayList<Sort> sort;
     private ArrayList<Filter> filters;
     private HashMap<String, String> selectedSort;
-    private boolean isGettingDynamicFilter;
     protected boolean isUsingBottomSheetFilter;
     protected boolean isListEmpty = false;
 
@@ -102,25 +98,17 @@ public abstract class SearchSectionFragment
     SearchTracking searchTracking;
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        if (getUserVisibleHint()) {
-            setupSearchNavigation();
-        }
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initSpan();
+        initLayoutManager();
+        initSwipeToRefresh(view);
 
         if (savedInstanceState == null) {
             refreshLayout.post(this::onFirstTimeLaunch);
         } else {
             onRestoreInstanceState(savedInstanceState);
         }
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        initSpan();
-        initLayoutManager();
-        initSwipeToRefresh(view);
     }
 
     private void initSwipeToRefresh(View view) {
@@ -192,7 +180,7 @@ public abstract class SearchSectionFragment
         }
     }
 
-    private void setupSearchNavigation() {
+    protected void setupSearchNavigation() {
         searchNavigationListener
                 .setupSearchNavigation(new SearchNavigationListener.ClickListener() {
                     @Override
@@ -222,7 +210,7 @@ public abstract class SearchSectionFragment
     }
 
     protected void switchLayoutType() {
-        if (!getUserVisibleHint()) {
+        if (!getUserVisibleHint() || getAdapter() == null) {
             return;
         }
 
@@ -249,7 +237,7 @@ public abstract class SearchSectionFragment
     }
 
     public void refreshMenuItemGridIcon() {
-        if(searchNavigationListener == null) return;
+        if(searchNavigationListener == null || getAdapter() == null) return;
 
         searchNavigationListener.refreshMenuItemGridIcon(getAdapter().getTitleTypeRecyclerView(), getAdapter().getIconTypeRecyclerView());
     }
@@ -356,11 +344,6 @@ public abstract class SearchSectionFragment
     }
 
     @Override
-    public HashMap<String, String> getExtraFilter() {
-        return null;
-    }
-
-    @Override
     public void setSelectedFilter(HashMap<String, String> selectedFilter) {
         if(filterController == null || getFilters() == null) return;
 
@@ -440,21 +423,7 @@ public abstract class SearchSectionFragment
     }
 
     @Override
-    public void getDynamicFilter() {
-        if (canRequestDynamicFilter()) {
-            isGettingDynamicFilter = true;
-            getPresenter().requestDynamicFilter();
-        }
-    }
-
-    private boolean canRequestDynamicFilter() {
-        return !isFilterDataAvailable()
-                && !isGettingDynamicFilter;
-    }
-
-    @Override
     public void renderDynamicFilter(DynamicFilterModel pojo) {
-        isGettingDynamicFilter = false;
         setFilterData(pojo.getData().getFilter());
         setSortData(pojo.getData().getSort());
 
@@ -476,16 +445,20 @@ public abstract class SearchSectionFragment
         HashMap<String, String> selectedSort = new HashMap<>(
                 SortHelper.Companion.getSelectedSortFromSearchParameter(searchParameter.getSearchParameterHashMap(), getSort())
         );
-
+        addDefaultSelectedSort(selectedSort);
         setSelectedSort(selectedSort);
+    }
+
+    private void addDefaultSelectedSort(HashMap<String, String> selectedSort) {
+        if (selectedSort.isEmpty()) {
+            selectedSort.put(SearchApiConst.OB, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT);
+        }
     }
 
     protected abstract void refreshAdapterForEmptySearch();
 
     @Override
     public void renderFailRequestDynamicFilter() {
-        isGettingDynamicFilter = false;
-
         if(getActivity() == null) return;
 
         NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.error_get_dynamic_filter));
@@ -503,19 +476,6 @@ public abstract class SearchSectionFragment
         return refreshLayout.isRefreshing();
     }
 
-    protected TopAdsParams enrichWithFilterAndSortParams(TopAdsParams topAdsParams) {
-        if (getSelectedSort() != null) {
-            topAdsParams.getParam().putAll(getSelectedSort());
-        }
-        if (getSelectedFilter() != null) {
-            topAdsParams.getParam().putAll(getSelectedFilter());
-        }
-        if (getExtraFilter() != null) {
-            topAdsParams.getParam().putAll(getExtraFilter());
-        }
-        return topAdsParams;
-    }
-
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -526,7 +486,6 @@ public abstract class SearchSectionFragment
         outState.putSerializable(EXTRA_SELECTED_FILTER, getSelectedFilter());
         outState.putSerializable(EXTRA_SELECTED_SORT, getSelectedSort());
         outState.putBoolean(EXTRA_SHOW_BOTTOM_BAR, showBottomBar);
-        outState.putBoolean(EXTRA_IS_GETTING_DYNNAMIC_FILTER, isGettingDynamicFilter);
     }
 
     public abstract void reloadData();
@@ -564,7 +523,6 @@ public abstract class SearchSectionFragment
         setSelectedFilter((HashMap<String, String>) savedInstanceState.getSerializable(EXTRA_SELECTED_FILTER));
         setSelectedSort((HashMap<String, String>) savedInstanceState.getSerializable(EXTRA_SELECTED_SORT));
         showBottomBar = savedInstanceState.getBoolean(EXTRA_SHOW_BOTTOM_BAR);
-        isGettingDynamicFilter = savedInstanceState.getBoolean(EXTRA_IS_GETTING_DYNNAMIC_FILTER);
     }
 
     @Override
@@ -659,21 +617,5 @@ public abstract class SearchSectionFragment
     @Override
     public void logDebug(String tag, String message) {
         Log.d(tag, message);
-    }
-
-    @Override
-    public void launchLoginActivity(String productId) {
-        Bundle extras = new Bundle();
-        extras.putString("product_id", productId);
-
-        if (getActivity() == null) return;
-
-        DiscoveryRouter router = (DiscoveryRouter) getActivity().getApplicationContext();
-
-        if (router != null) {
-            Intent intent = router.getLoginIntent(getActivity());
-            intent.putExtras(extras);
-            startActivityForResult(intent, REQUEST_CODE_LOGIN);
-        }
     }
 }

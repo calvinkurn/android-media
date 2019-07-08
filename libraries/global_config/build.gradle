@@ -60,7 +60,6 @@ buildscript {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
 

@@ -10,7 +10,7 @@ import com.tokopedia.search.result.presentation.view.listener.ProductListener;
 
 public class BigGridProductItemViewHolder extends GridProductItemViewHolder {
     @LayoutRes
-    public static final int LAYOUT = R.layout.search_result_product_item_big_grid;
+    public static final int LAYOUT = R.layout.search_srp_item_big_grid;
 
     public BigGridProductItemViewHolder(View itemView, ProductListener itemClickListener) {
         super(itemView, itemClickListener);

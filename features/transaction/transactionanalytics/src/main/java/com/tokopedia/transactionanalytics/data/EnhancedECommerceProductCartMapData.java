@@ -26,16 +26,33 @@ public class EnhancedECommerceProductCartMapData {
     private static final String KEY_SHOP_TYPE = "shop_type";
     private static final String KEY_SHOP_NAME = "shop_name";
     private static final String KEY_CATEGORY_ID = "category_id";
-    private static final String KEY_CART_ID = "cart_id";
+    private static final String KEY_CART_ID = "dimension45";
     private static final String KEY_POS = "position";
     private static final String KEY_LIST = "list";
     private static final String KEY_DIMENSION_38 = "dimension38";
     private static final String KEY_DIMENSION_40 = "dimension40";
     private static final String KEY_DIMENSION_45 = "dimension45";
     private static final String KEY_DIMENSION_54 = "dimension54";
+    private static final String KEY_DIMENSION_52 = "dimension52";
+    private static final String KEY_DIMENSION_57 = "dimension57";
+    private static final String KEY_DIMENSION_59 = "dimension59";
+    private static final String KEY_DIMENSION_77 = "dimension77";
     private static final String KEY_DIMENSION_80 = "dimension80";
     private static final String KEY_DIMENSION_12 = "dimension12";
     private static final String KEY_ATTRIBUTION = "attribution";
+    private static final String KEY_WAREHOUSE_ID = "dimension56";
+    private static final String KEY_PRODUCT_WEIGHT = "dimension48";
+    private static final String KEY_PROMO_CODE = "dimension49";
+    private static final String KEY_PROMO_DETAILS = "dimension59";
+    private static final String KEY_BUYER_ADDRESS_ID = "dimension11";
+    private static final String KEY_SHIPPING_DURATION = "dimension16";
+    private static final String KEY_COURIER = "dimension14";
+    private static final String KEY_SHIPPING_PRICE = "dimension12";
+    private static final String KEY_COD_FLAG = "dimension10";
+    private static final String KEY_TOKOPEDIA_CORNER_FLAG = "dimension57";
+    private static final String KEY_IS_FULFILLMENT = "dimension58";
+    private static final String KEY_PICTURE = "picture";
+    private static final String KEY_URL = "url";
 
     public static final String DEFAULT_VALUE_NONE_OTHER = "none / other";
 
@@ -132,4 +149,73 @@ public class EnhancedECommerceProductCartMapData {
     public void setDimension12(String shippingCourierPrice) {
         Product.put(KEY_DIMENSION_12, !TextUtils.isEmpty(shippingCourierPrice) ? shippingCourierPrice : DEFAULT_VALUE_NONE_OTHER);
     }
+
+    public void setWarehouseId(String warehouseId) {
+        Product.put(KEY_WAREHOUSE_ID, !TextUtils.isEmpty(warehouseId) ? warehouseId : DEFAULT_VALUE_NONE_OTHER);
+    }
+
+    public void setProductWeight(String productWeight) {
+        Product.put(KEY_PRODUCT_WEIGHT, !TextUtils.isEmpty(productWeight) ? productWeight : DEFAULT_VALUE_NONE_OTHER);
+    }
+
+    public void setPromoCode(String promoCodes) {
+        Product.put(KEY_PROMO_CODE, !TextUtils.isEmpty(promoCodes) ? promoCodes : "");
+    }
+
+    public void setPromoDetails(String promoDetails) {
+        Product.put(KEY_PROMO_DETAILS, !TextUtils.isEmpty(promoDetails) ? promoDetails : "");
+    }
+
+    public void setBuyerAddressId(String buyerAddressId) {
+        Product.put(KEY_BUYER_ADDRESS_ID, !TextUtils.isEmpty(buyerAddressId) ? buyerAddressId : "");
+    }
+
+    public void setShippingDuration(String shippingDuration) {
+        Product.put(KEY_SHIPPING_DURATION, !TextUtils.isEmpty(shippingDuration) ? shippingDuration : "");
+    }
+
+    public void setCourier(String courier) {
+        Product.put(KEY_COURIER, !TextUtils.isEmpty(courier) ? courier : "");
+    }
+
+    public void setShippingPrice(String shippingPrice) {
+        Product.put(KEY_SHIPPING_PRICE, !TextUtils.isEmpty(shippingPrice) ? shippingPrice : "");
+    }
+
+    public void setCodFlag(String codFlag) {
+        Product.put(KEY_COD_FLAG, !TextUtils.isEmpty(codFlag) ? codFlag : "");
+    }
+
+    public void setTokopediaCornerFlag(String tokopediaCornerFlag) {
+        Product.put(KEY_TOKOPEDIA_CORNER_FLAG, !TextUtils.isEmpty(tokopediaCornerFlag) ? tokopediaCornerFlag : "");
+    }
+
+    public void setIsFulfillment(String isFulfillment) {
+        Product.put(KEY_IS_FULFILLMENT, !TextUtils.isEmpty(isFulfillment) ? isFulfillment : "");
+    }
+
+    public void setPicture(String picture) {
+        Product.put(KEY_PICTURE, !TextUtils.isEmpty(picture) ? picture : "");
+    }
+
+    public void setUrl(String url) {
+        Product.put(KEY_URL, !TextUtils.isEmpty(url) ? url : "");
+    }
+
+    public void setDimension52(String shopId) {
+        Product.put(KEY_DIMENSION_52, !TextUtils.isEmpty(shopId) ? shopId : "");
+    }
+
+    public void setDimension57(String shopName) {
+        Product.put(KEY_DIMENSION_57, !TextUtils.isEmpty(shopName) ? shopName : "");
+    }
+
+    public void setDimension59(String shopType) {
+        Product.put(KEY_DIMENSION_59, !TextUtils.isEmpty(shopType) ? shopType : "");
+    }
+
+    public void setDimension77(String cartId) {
+        Product.put(KEY_DIMENSION_77, !TextUtils.isEmpty(cartId) ? cartId : "");
+    }
+
 }
