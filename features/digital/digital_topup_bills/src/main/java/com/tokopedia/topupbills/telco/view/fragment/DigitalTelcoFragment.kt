@@ -25,7 +25,7 @@ class DigitalTelcoFragment : BaseDaggerFragment() {
     var posCurrentTabExtraParam = 0
 
     override fun getScreenName(): String {
-        return DigitalTelcoFragment::class.java.simpleName
+        return getString(R.string.digital_track_title_page)
     }
 
     override fun initInjector() {

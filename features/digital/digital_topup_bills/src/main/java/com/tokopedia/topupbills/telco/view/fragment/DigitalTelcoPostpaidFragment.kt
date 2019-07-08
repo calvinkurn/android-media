@@ -60,7 +60,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     }
 
     override fun getScreenName(): String {
-        return DigitalTelcoPostpaidFragment::class.java.simpleName
+        return getString(R.string.digital_track_title_postpaid)
     }
 
     override fun initInjector() {

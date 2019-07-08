@@ -73,7 +73,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     override fun getScreenName(): String {
-        return DigitalTelcoPrepaidFragment::class.java.simpleName
+        return getString(R.string.digital_track_title_prepaid)
     }
 
     override fun initInjector() {
