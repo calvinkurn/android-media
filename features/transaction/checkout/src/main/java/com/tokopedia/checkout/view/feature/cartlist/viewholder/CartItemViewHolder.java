@@ -370,6 +370,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                     .replace(CartConstant.PRODUCT_INVENAGE_REMAINING_STOCK, "" + totalRemainingStock)
                     .replace(CartConstant.PRODUCT_INVENAGE_IN_OTHER_CART, "" + totalInOtherCart);
             this.tvInvenageText.setText(Html.fromHtml(invenageText));
+            actionListener.onCartItemShowTickerStockDecreaseAndAlreadyAtcByOtherUser(data.getCartItemData().getOriginData().getProductId());
         } else {
             this.rlInvenageText.setVisibility(View.GONE);
         }
