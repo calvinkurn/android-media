@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatmenu
+package com.tokopedia.chat_common.view.adapter.viewholder.chatmenu
 
 import android.view.View
 

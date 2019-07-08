@@ -1,11 +1,11 @@
-package com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatmenu
+package com.tokopedia.chat_common.view.adapter.viewholder.chatmenu
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatroom.domain.pojo.ChatMenu
+import com.tokopedia.chat_common.R
+import com.tokopedia.chat_common.domain.pojo.ChatMenu
 
 abstract class BaseChatMenuViewHolder(val listener: ChatMenuListener, itemView: View?) : RecyclerView.ViewHolder(itemView) {
 

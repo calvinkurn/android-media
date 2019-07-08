@@ -1,11 +1,11 @@
-package com.tokopedia.topchat.chatroom.view.adapter
+package com.tokopedia.chat_common.view.adapter
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.tokopedia.topchat.chatroom.domain.pojo.ChatMenu
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatmenu.BaseChatMenuViewHolder
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.ChatMenuFactory
+import com.tokopedia.chat_common.domain.pojo.ChatMenu
+import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.BaseChatMenuViewHolder
+import com.tokopedia.chat_common.view.adapter.viewholder.factory.ChatMenuFactory
 
 class ChatMenuAdapter(
         private val menuItems: List<ChatMenu>,

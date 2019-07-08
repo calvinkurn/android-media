@@ -1,11 +1,11 @@
-package com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory
+package com.tokopedia.chat_common.view.adapter.viewholder.factory
 
 import android.view.View
-import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatroom.domain.pojo.ChatMenu
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatmenu.AttachImageViewHolder
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatmenu.BaseChatMenuViewHolder
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatmenu.ProductLinkViewHolder
+import com.tokopedia.chat_common.R
+import com.tokopedia.chat_common.domain.pojo.ChatMenu
+import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.AttachImageViewHolder
+import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.BaseChatMenuViewHolder
+import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.ProductLinkViewHolder
 
 object ChatMenuFactory {
 

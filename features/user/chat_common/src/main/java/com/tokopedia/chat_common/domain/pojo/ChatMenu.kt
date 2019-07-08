@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.chatroom.domain.pojo
+package com.tokopedia.chat_common.domain.pojo
 
 import android.support.annotation.DrawableRes
 

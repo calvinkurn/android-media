@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.chatroom.view.customview
+package com.tokopedia.chat_common.view.fragment
 
 import android.app.Dialog
 import android.content.Context
@@ -9,10 +9,10 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatroom.view.adapter.ChatMenuAdapter
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatmenu.BaseChatMenuViewHolder
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.ChatMenuFactory
+import com.tokopedia.chat_common.R
+import com.tokopedia.chat_common.view.adapter.ChatMenuAdapter
+import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.BaseChatMenuViewHolder
+import com.tokopedia.chat_common.view.adapter.viewholder.factory.ChatMenuFactory
 import java.lang.IllegalStateException
 
 class BottomChatMenuFragment : BottomSheetDialogFragment() {
@@ -57,4 +57,6 @@ class BottomChatMenuFragment : BottomSheetDialogFragment() {
     companion object {
         val TAG = "rounded_bottom_chat_menu"
     }
+
+
 }
