@@ -51,9 +51,7 @@ import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractor;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractorImpl;
 import com.tokopedia.tkpd.home.service.FavoritePart1Service;
-import com.tokopedia.topads.sdk.domain.model.Data;
-import com.tokopedia.topads.sdk.domain.model.Product;
-import com.tokopedia.topads.sdk.domain.model.ProductImage;
+import com.tokopedia.tkpd.home.wishlist.mapper.WishlistProductMapper;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
@@ -79,7 +77,6 @@ import kotlin.Unit;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -373,9 +370,12 @@ public class WishListImpl implements WishList {
         GraphqlCacheStrategy graphqlCacheStrategy =
                 new GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build();
 
-        Observable<GraphqlResponse> observable = ObservableFactory.create(graphqlRequestList,
-                graphqlCacheStrategy);
+//        Observable<GraphqlResponse> observable = ObservableFactory.create(graphqlRequestList,
+//                graphqlCacheStrategy);
 
+        Observable observable = Observable.zip(ObservableFactory.create(graphqlRequestList,
+                graphqlCacheStrategy), getRecommendationUseCase.getExecuteObservable(getRecommendationUseCase.getRecomParams(params.getInt(PAGE_NO, 0),
+                X_SOURCE_RECOM_WIDGET, TOPADS_SRC, new ArrayList<>())), new WishlistProductMapper());
 
         compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
@@ -419,50 +419,15 @@ public class WishListImpl implements WishList {
 //        Observable<GraphqlResponse> observable = ObservableFactory.create(graphqlRequestList,
 //                graphqlCacheStrategy);
 
-
-        com.tokopedia.usecase.RequestParams params = getRecommendationUseCase.getRecomParams(0,
-                X_SOURCE_RECOM_WIDGET,
-                TOPADS_SRC, new ArrayList<>());
-
         Observable observable = Observable.zip(ObservableFactory.create(graphqlRequestList,
-                graphqlCacheStrategy), getRecommendationUseCase.getExecuteObservable(params), new Func2<GraphqlResponse, List<? extends RecommendationWidget>, GqlWishListDataResponse>() {
-            @Override
-            public GqlWishListDataResponse call(GraphqlResponse graphqlResponse, List<? extends RecommendationWidget> recommendationWidgets) {
-                GqlWishListDataResponse response = graphqlResponse.getData(GqlWishListDataResponse.class);
-                response.setTopAdsModel(mappingTopAdsModel(recommendationWidgets.get(0)));
-                return response;
-            }
-        });
+                graphqlCacheStrategy), getRecommendationUseCase.getExecuteObservable(getRecommendationUseCase.getRecomParams(0,
+                X_SOURCE_RECOM_WIDGET, TOPADS_SRC, new ArrayList<>())), new WishlistProductMapper());
 
         compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber));
 
-    }
-
-    private TopAdsModel mappingTopAdsModel(RecommendationWidget recom) {
-        TopAdsModel model = new TopAdsModel();
-        List<Data> data = new ArrayList<>();
-        for (RecommendationItem r : recom.getRecommendationItemList()) {
-            if(r.isTopAds()){
-                Data d = new Data();
-                Product p = new Product();
-                ProductImage img = new ProductImage();
-                img.setM_url(r.getTrackerImageUrl());
-                img.setM_ecs(r.getImageUrl());
-                p.setId(String.valueOf(r.getProductId()));
-                p.setName(r.getName());
-                p.setApplinks(r.getAppUrl());
-                p.setUri(r.getUrl());
-                p.setImage(img);
-                d.setProduct(p);
-                d.setProductWishlistUrl(r.getWishlistUrl());
-                data.add(d);
-            }
-        }
-        model.setData(data);
-        return model;
     }
 
     @Override
@@ -545,20 +510,6 @@ public class WishListImpl implements WishList {
                 .subscribe(addToCartSubscriber(dataDetail));
     }
 
-    private void routeToOldCheckout(Activity activity, Wishlist dataDetail) {
-        ProductCartPass pass = ProductCartPass.Builder.aProductCartPass()
-                .setImageUri(dataDetail.getImageUrl())
-                .setMinOrder(dataDetail.getMinimumOrder())
-                .setProductId(dataDetail.getId())
-                .setProductName(dataDetail.getName())
-                .setShopId(dataDetail.getShop().getId())
-                .setPrice(dataDetail.getPriceFmt()).build();
-
-        activity.startActivity(
-                TransactionAddToCartRouter.createInstanceAddToCartActivity(activity, pass)
-        );
-    }
-
     @Override
     public boolean isLoadedFirstPage() {
         return mPaging.getPage() >= 1;
@@ -571,7 +522,6 @@ public class WishListImpl implements WishList {
         params.putString(QUERY, query);
         params.putInt(PAGE_NO, mPaging.getPage());
         getWishListDataSearch(context, new SearchWishlistSubscriber());
-
     }
 
     @Override
@@ -742,7 +692,7 @@ public class WishListImpl implements WishList {
         }, CacheDuration.onSecond(5));
     }
 
-    private class SearchWishlistSubscriber extends Subscriber<GraphqlResponse> {
+    private class SearchWishlistSubscriber extends Subscriber<GqlWishListDataResponse> {
 
 
         @Override
@@ -751,10 +701,9 @@ public class WishListImpl implements WishList {
         }
 
         @Override
-        public void onNext(GraphqlResponse graphqlResponse) {
+        public void onNext(GqlWishListDataResponse gqlWishListDataResponse) {
             wishListView.displayLoadMore(false);
-            if (graphqlResponse != null && graphqlResponse.getData(GqlWishListDataResponse.class) != null) {
-                GqlWishListDataResponse gqlWishListDataResponse = graphqlResponse.getData(GqlWishListDataResponse.class);
+            if (gqlWishListDataResponse != null) {
                 wishListView.displayPull(false);
                 if (mPaging.getPage() == 1 && gqlWishListDataResponse.getGqlWishList().getWishlistDataList().size() == 0) {
                     data.clear();
