@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -72,6 +74,52 @@ public class UriUtil {
 
     public static List<String> destructureUri(@NonNull String uriPatternString, @NonNull Uri uri) {
         return destructureUri(uriPatternString, uri, true);
+    }
+
+    public static Map<String, Object> destructureUriToMap(@NonNull String uriPatternString, @NonNull Uri uri, boolean checkScheme){
+        Map<String, Object> result = new HashMap<>();
+        try {
+            Uri uriPattern = Uri.parse(uriPatternString);
+            if (uriPattern == null) {
+                return result;
+            }
+            if (checkScheme && uriPattern.getScheme() != null && !uriPattern.getScheme().equals(uri.getScheme())) {
+                return result;
+            }
+            int uriSegmentSize = uri.getPathSegments().size();
+
+            if (uriSegmentSize == 0) {
+                uriSegmentSize = uriPattern.getQueryParameterNames().size();
+                if(uriSegmentSize > 0){
+                        Iterator itr = uriPattern.getQueryParameterNames().iterator();
+                        while (itr.hasNext()){
+                            String paramName = itr.next().toString();
+                            Object paramValue = uri.getQueryParameter(paramName);
+                            if(paramValue != null) {
+                                result.put(paramName, paramValue);
+                            }
+                        }
+                }
+                else {
+                    return result;
+                }
+            }
+            else {
+                Iterator itr = uriPattern.getPathSegments().iterator();
+                int i = 0;
+                while (itr.hasNext()) {
+                    String segmentName = itr.next().toString();
+                    if (segmentName.startsWith("{") &&
+                            segmentName.endsWith("}")) {
+                        result.put(segmentName ,
+                                uri.getPathSegments().get(i));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            return result;
+        }
+        return result;
     }
 
     /**
