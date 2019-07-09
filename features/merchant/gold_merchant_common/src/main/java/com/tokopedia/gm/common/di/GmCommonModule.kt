@@ -77,21 +77,18 @@ class GmCommonModule {
         return UserSession(context)
     }
 
-    @GmCommonQualifier
     @Provides
     @Named(GMParamConstant.RAW_DEACTIVATION)
     fun providePmOffRaw(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.gold_merchant_turn_off)
     }
 
-    @GmCommonQualifier
     @Provides
     @Named(GMParamConstant.RAW_ACTIVATION)
     fun providePmOnRaw(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.gold_merchant_activation)
     }
 
-    @GmCommonQualifier
     @Provides
     @Named(GMParamConstant.RAW_GM_STATUS)
     fun provicePmStatusRaw(@ApplicationContext context: Context): String {
