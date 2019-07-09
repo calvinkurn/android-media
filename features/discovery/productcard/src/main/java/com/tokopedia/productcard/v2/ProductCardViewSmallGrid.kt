@@ -1,6 +1,8 @@
 package com.tokopedia.productcard.v2
 
 import android.content.Context
+import android.graphics.drawable.GradientDrawable
+import android.os.Build
 import android.support.constraint.ConstraintSet
 import android.util.AttributeSet
 import android.view.View
@@ -143,6 +145,30 @@ class ProductCardViewSmallGrid: ProductCardView {
     fun setImageShopUrl(imageUrl: String) {
         imageShop?.let { imageShop ->
             ImageHandler.loadImageCircle2(context, imageShop, imageUrl)
+        }
+    }
+
+    override fun setLabelPromoType(promoLabelType: String) {
+        super.setLabelPromoType(promoLabelType)
+        setLabelPromoCornerRadius()
+    }
+
+    private fun setLabelPromoCornerRadius() {
+        val labelPromoBackground = labelPromo?.background?.mutate()
+
+        if (labelPromoBackground != null
+                && labelPromoBackground is GradientDrawable) {
+            setLabelPromoBackgroundCornerRadii(labelPromoBackground)
+        }
+    }
+
+    private fun setLabelPromoBackgroundCornerRadii(labelPromoBackground: GradientDrawable) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            val cornerRadii =
+                    labelPromoBackground.cornerRadii ?: floatArrayOf(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f)
+
+            labelPromoBackground.cornerRadii =
+                    floatArrayOf(0f, 0f, cornerRadii[2], cornerRadii[3], 0f, 0f, 0f, 0f)
         }
     }
 }
