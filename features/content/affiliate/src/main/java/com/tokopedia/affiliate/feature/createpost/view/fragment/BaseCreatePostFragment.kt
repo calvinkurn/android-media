@@ -126,6 +126,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         private const val REQUEST_PREVIEW = 13
         private const val REQUEST_LOGIN = 83
         private const val MAX_CHAR = 2000
+        private const val CHAR_LENGTH_TO_SHOW = 1900
     }
 
     override fun initInjector() {
@@ -177,6 +178,24 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN), REQUEST_LOGIN)
             }
         }
+    }
+
+    private fun updateMaxCharacter() {
+        val cLength = viewModel.caption.length
+        if (cLength >= CHAR_LENGTH_TO_SHOW) {
+            counter.text = String.format(Locale.getDefault(), "%,d/%,d",
+                    viewModel.caption.length,
+                    MAX_CHAR
+            )
+            counter.visible()
+        } else
+            counter.gone()
+    }
+
+    override fun onPause() {
+        if (caption.isFocused)
+            caption.clearFocus()
+        super.onPause()
     }
 
     private inline val isPostEnabled: Boolean
@@ -456,6 +475,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         caption.filters = arrayOf(InputFilter.LengthFilter(MAX_CHAR))
         caption.afterTextChanged {
             viewModel.caption = it
+            updateMaxCharacter()
         }
         caption.setOnTouchListener { v, event ->
             if (v.id == R.id.caption) {
