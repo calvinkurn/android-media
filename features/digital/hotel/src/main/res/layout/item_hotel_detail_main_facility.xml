@@ -25,6 +25,8 @@
         android:gravity="center_horizontal"
         android:textSize="@dimen/sp_10"
         app:fontSize="micro"
-        tools:text="Wi-Fi" />
+        tools:text="Wi-Fi Hotel Kencang"
+        android:maxLines="2"
+        android:ellipsize="end"/>
 
 </LinearLayout>
