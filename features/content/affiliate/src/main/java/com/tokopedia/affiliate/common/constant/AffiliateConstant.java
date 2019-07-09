@@ -17,6 +17,4 @@ public interface AffiliateConstant {
     String IMG_AFFILIATE_SCREENSHOT_3 = "af_screenshot_3";
 
     String PNG = ".png";
-
-    String PARAM_IS_NEED_RESULT = "is_from_affiliate_form";
 }

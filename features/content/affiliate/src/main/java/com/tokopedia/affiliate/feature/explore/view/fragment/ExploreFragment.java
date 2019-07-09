@@ -138,7 +138,6 @@ public class ExploreFragment
 
     private boolean isCanDoAction;
     private boolean isTraceStopped;
-    private boolean fromFormAttachProduct = false;
 
     @Inject
     UserSessionInterface userSession;
@@ -162,10 +161,6 @@ public class ExploreFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         performanceMonitoring = PerformanceMonitoring.start(PERFORMANCE_AFFILIATE);
-        Bundle arg = getArguments();
-        if (arg != null && arg.containsKey(AffiliateConstant.PARAM_IS_NEED_RESULT)){
-            fromFormAttachProduct = arg.getBoolean(AffiliateConstant.PARAM_IS_NEED_RESULT, false);
-        }
     }
 
     @Nullable
@@ -510,7 +505,6 @@ public class ExploreFragment
                     ApplinkConstInternalMarketplace.PRODUCT_DETAIL, model.getProductId()
             );
             intent.putExtra("is_from_explore_affiliate", true);
-            intent.putExtra(AffiliateConstant.PARAM_IS_NEED_RESULT, fromFormAttachProduct);
             startActivityForResult(intent, REQUEST_CREATE_POST);
         }
         isCanDoAction = false;
@@ -941,15 +935,7 @@ public class ExploreFragment
             } else if (requestCode == LOGIN_CODE) {
                 initProfileSection();
             } else if (requestCode == REQUEST_CREATE_POST) {
-                if (fromFormAttachProduct){
-                    Activity activity = getActivity();
-                    if (activity != null){
-                        activity.setResult(Activity.RESULT_OK, data);
-                        activity.finish();
-                    }
-                } else {
-                    onRefresh();
-                }
+                onRefresh();
             }
         }
     }

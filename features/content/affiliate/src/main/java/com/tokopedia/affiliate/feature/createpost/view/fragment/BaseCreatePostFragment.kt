@@ -610,7 +610,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         return isFormInvalid
     }
 
-    protected fun showUnifyErrorToaster(message: CharSequence, action: CharSequence? = null, actionClick: ((View) -> Unit)? = null){
+    private fun showUnifyErrorToaster(message: CharSequence, action: CharSequence? = null, actionClick: ((View) -> Unit)? = null){
         view?.let {v ->
             if (action.isNullOrBlank()){
                 Toaster.showError(v, message, Snackbar.LENGTH_LONG)

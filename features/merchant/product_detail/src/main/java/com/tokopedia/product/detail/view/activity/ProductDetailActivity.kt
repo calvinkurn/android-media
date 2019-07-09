@@ -45,7 +45,6 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         private const val PARAM_IS_SPECIAL_PRIZE = "is_special_prize"
 
         private const val AFFILIATE_HOST = "affiliate"
-        const val PARAM_IS_FROM_AFFILIATE_FORM = "is_from_affiliate_form"
 
         @JvmStatic
         fun createIntent(context: Context, productUrl: String) =
@@ -93,8 +92,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
 
     override fun getNewFragment(): Fragment = ProductDetailFragment
         .newInstance(productId, shopDomain, productKey, isFromDeeplink, isFromAffiliate, isSpecialPrize,
-                trackerAttribution, trackerListName,
-                intent.extras?.getBoolean(PARAM_IS_FROM_AFFILIATE_FORM, false) ?: false)
+                trackerAttribution, trackerListName)
 
     override fun getComponent(): ProductDetailComponent = DaggerProductDetailComponent.builder()
         .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()

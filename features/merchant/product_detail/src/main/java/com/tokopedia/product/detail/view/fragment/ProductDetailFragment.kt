@@ -131,7 +131,6 @@ import com.tokopedia.tradein.viewmodel.TradeInBroadcastReceiver
 import javax.inject.Inject
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.product.detail.common.data.model.product.Category
-import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 
 class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter.UserActiveListener {
     private var productId: String? = null
@@ -141,7 +140,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private var trackerListName: String? = ""
     private var isFromDeeplink: Boolean = false
     private var isAffiliate: Boolean = false
-    private var isFromAffiliateForm: Boolean = false
     private var isSpecialPrize: Boolean = false
 
     lateinit var headerView: PartialHeaderView
@@ -248,8 +246,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         isAffiliate: Boolean = false,
                         isSpecialPrize: Boolean = false,
                         trackerAttribution: String? = null,
-                        trackerListName: String? = null,
-                        isFromAffiliateForm: Boolean = false) =
+                        trackerListName: String? = null) =
                 ProductDetailFragment().also {
                     it.arguments = Bundle().apply {
                         productId?.let { pid -> putString(ARG_PRODUCT_ID, pid) }
@@ -260,7 +257,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         putBoolean(ARG_FROM_DEEPLINK, isFromDeeplink)
                         putBoolean(ARG_FROM_AFFILIATE, isAffiliate)
                         putBoolean(ARG_IS_SPECIAL_PRIZE, isSpecialPrize)
-                        putBoolean(ProductDetailActivity.PARAM_IS_FROM_AFFILIATE_FORM, isFromAffiliateForm)
                     }
                 }
     }
@@ -287,7 +283,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             trackerListName = it.getString(ARG_TRACKER_LIST_NAME)
             isFromDeeplink = it.getBoolean(ARG_FROM_DEEPLINK, false)
             isAffiliate = it.getBoolean(ARG_FROM_AFFILIATE, false)
-            isFromAffiliateForm = it.getBoolean(ProductDetailActivity.PARAM_IS_FROM_AFFILIATE_FORM, false)
+//            isSpecialPrize = it.getBoolean(ARG_IS_SPECIAL_PRIZE, false)
         }
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
@@ -1124,17 +1120,11 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             productDetailTracking.eventClickAffiliate(productInfoViewModel.userId, productInfo!!.basic.shopID,
                     pdpAffiliate.productId.toString(), isRegularPdp)
             if (productInfoViewModel.isUserSessionActive()) {
-                if (isFromAffiliateForm){
-                    it.setResult(Activity.RESULT_OK, Intent()
-                            .putExtra("product_id", pdpAffiliate.productId.toString())
-                            .putExtra("ad_id", pdpAffiliate.adId.toString()))
-                } else {
-                    RouteManager.route(it,
-                            ApplinkConst.AFFILIATE_CREATE_POST,
-                            pdpAffiliate.productId.toString(),
-                            pdpAffiliate.adId.toString())
-                    it.setResult(Activity.RESULT_OK)
-                }
+                RouteManager.route(it,
+                        ApplinkConst.AFFILIATE_CREATE_POST,
+                        pdpAffiliate.productId.toString(),
+                        pdpAffiliate.adId.toString())
+                it.setResult(Activity.RESULT_OK)
                 it.finish()
             } else {
                 startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
