@@ -49,7 +49,7 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
             val data = withContext(Dispatchers.Default) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TYPE_HOTEL_CHECKOUT, params)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
-            }.getSuccessData<HotelCheckoutResponse>()
+            }.getSuccessData<HotelCheckoutResponse.Response>()
 
             hotelCheckoutResult.value = Success(data.response)
         }) {
