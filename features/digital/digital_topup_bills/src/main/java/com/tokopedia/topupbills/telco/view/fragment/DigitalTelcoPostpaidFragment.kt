@@ -257,6 +257,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     }
 
     override fun onClickItemRecentNumber(telcoRecommendation: TelcoRecommendation) {
+        inputNumberActionType = InputNumberActionType.LATEST_TRANSACTION
         postpaidClientNumberWidget.setInputNumber(telcoRecommendation.clientNumber)
     }
 

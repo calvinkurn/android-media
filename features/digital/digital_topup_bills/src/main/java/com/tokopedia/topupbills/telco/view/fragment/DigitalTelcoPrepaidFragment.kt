@@ -348,6 +348,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     override fun onClickItemRecentNumber(telcoRecommendation: TelcoRecommendation) {
+        inputNumberActionType = InputNumberActionType.LATEST_TRANSACTION
         selectedProductId = telcoRecommendation.productId.toString()
         selectedCategoryId = telcoRecommendation.categoryId
         telcoClientNumberWidget.setInputNumber(telcoRecommendation.clientNumber)
