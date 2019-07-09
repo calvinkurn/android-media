@@ -11,14 +11,6 @@ import com.tokopedia.logisticaddaddress.R
  */
 class AddEditAddressActivity: BaseSimpleActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        requestWindowFeature(Window.FEATURE_NO_TITLE)
-        this.window.setFlags(
-                WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN)
-        super.onCreate(savedInstanceState)
-    }
-
     override fun getLayoutRes(): Int = R.layout.activity_add_edit_new_address
 
     @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")

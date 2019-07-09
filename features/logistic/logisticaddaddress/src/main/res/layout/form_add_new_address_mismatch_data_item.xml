@@ -144,9 +144,8 @@
             android:id="@+id/tv_detail_alamat_mismatch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/sp_12"
+            android:textSize="@dimen/sp_16"
             android:textColor="@color/label_grey"
-            android:layout_marginTop="@dimen/dp_24"
             android:text="@string/detail_alamat"/>
 
         <!--<com.tokopedia.design.text.TkpdHintTextInputLayout

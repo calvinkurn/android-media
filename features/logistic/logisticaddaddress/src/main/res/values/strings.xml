@@ -73,7 +73,7 @@
     <string name="et_detail_address_hint">Tulis No. Rumah, Blok, RT/RW</string>
     <string name="tv_detail_address_info">Tulis Detail Alamat Anda dengan jelas</string>
     <string name="detail_alamat">Detail Alamat</string>
-    <string name="invalid_title">Alamat tidak valid, silahkan geser Pinpoint Anda</string>
+    <string name="invalid_title">Alamat tidak valid</string>
     <string name="research_description">ic_research</string>
     <string name="invalid_description">ic_invalid</string>
     <string name="change_pinpoint">Ubah Pinpoint</string>

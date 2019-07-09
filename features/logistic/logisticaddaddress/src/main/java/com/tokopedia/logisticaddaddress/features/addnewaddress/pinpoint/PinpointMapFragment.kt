@@ -346,6 +346,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     }
 
     override fun onGetPlaceId(placeId: String) {
+
         presenter.clearCacheGetDistrict()
         presenter.getDistrict(placeId)
     }
@@ -485,6 +486,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             putExtra(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL, presenter.getSaveAddressDataModel())
             putExtra(AddressConstants.KERO_TOKEN, token)
             putExtra(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, isMismatchSolved)
+            if (isMismatch && !isMismatchSolved) flags = Intent.FLAG_ACTIVITY_CLEAR_TOP and Intent.FLAG_ACTIVITY_SINGLE_TOP
             startActivityForResult(this, FINISH_FLAG)
         }
     }
@@ -588,8 +590,10 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (s.isNotEmpty()) {
-                    val typed = s.toString().replace(" ", "")
-                    when (val countCharLeft = 60 - typed.length) {
+                    // val typed = s.toString().replace(" ", "")
+                    val countCharLeft = 60 - s.toString().length
+                    println("## countCharLeft = $countCharLeft")
+                    when (countCharLeft) {
                         60 -> {
                             tv_detail_address_counter.text = "0/60"
                         } else -> {

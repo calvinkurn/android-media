@@ -173,11 +173,12 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                 .build()
         staticDimen8dp = context?.resources?.getDimensionPixelOffset(R.dimen.dp_8)
 
-        arrangeLayout(isMismatch, isMismatchSolved)
+        // arrangeLayout(isMismatch, isMismatchSolved)
 
         et_label_address.setText(labelRumah)
         et_receiver_name.setText(userSession.name)
         et_phone.setText(userSession.phoneNumber)
+        if (isMismatch && !isMismatchSolved) et_detail_address.isFocusable = false
     }
 
     private fun setViewListener() {
@@ -665,6 +666,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             params.width = 450
             btn_map.layoutParams = params
             setOnClickListener {
+                hideKeyboard()
                 saveAddressDataModel?.editDetailAddress = et_detail_address.text.toString()
                 goToPinpointActivity(currentLat, currentLong, false, token, false, districtId,
                         isMismatchSolved, isMismatch, saveAddressDataModel)
@@ -683,8 +685,8 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             params.width = 550
             btn_map.layoutParams = params
             setOnClickListener {
+                hideKeyboard()
                 if (et_kota_kecamatan_mismatch.text.isEmpty()) {
-                    hideKeyboard()
                     view?.let { it1 -> activity?.let { it2 -> AddNewAddressUtils.showToastError(getString(R.string.choose_district_first), it1, it2) } }
                     AddNewAddressAnalytics.eventViewToasterPilihKotaDanKodePosTerlebihDahulu()
                 } else {
@@ -706,6 +708,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             params.width = 450
             btn_map.layoutParams = params
             setOnClickListener {
+                hideKeyboard()
                 saveAddressDataModel?.editDetailAddress = tv_detail_alamat_mismatch.text.toString()
                 goToPinpointActivity(currentLat, currentLong, false, token, true, districtId,
                         isMismatchSolved, isMismatch, saveAddressDataModel)
@@ -723,9 +726,17 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     }
 
     private fun setMismatchSolvedForm() {
-        ll_detail_alamat.visibility = View.VISIBLE
         et_kota_kecamatan_mismatch.setText(this.saveAddressDataModel?.formattedAddress)
-        tv_detail_alamat_mismatch.setText(this.saveAddressDataModel?.editDetailAddress)
+
+        val isDetailAddressEmpty = this.saveAddressDataModel?.editDetailAddress?.isEmpty()
+        isDetailAddressEmpty?.let {
+            if (it) {
+                ll_detail_alamat.visibility = View.GONE
+            } else {
+                ll_detail_alamat.visibility = View.VISIBLE
+                tv_detail_alamat_mismatch.text = this.saveAddressDataModel?.editDetailAddress
+            }
+        }
         et_kode_pos_mismatch.setText(this.saveAddressDataModel?.postalCode)
     }
 
@@ -827,6 +838,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     override fun onResume() {
         map_view_detail?.onResume()
         super.onResume()
+        arrangeLayout(isMismatch, isMismatchSolved)
     }
 
     override fun onPause() {
