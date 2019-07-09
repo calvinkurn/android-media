@@ -1006,7 +1006,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             EnhancedECommerceCheckout enhancedECommerceCheckout = new EnhancedECommerceCheckout();
             for (DataCheckoutRequest dataCheckoutRequest : checkoutRequest.data) {
                 for (ShopProductCheckoutRequest shopProductCheckoutRequest : dataCheckoutRequest.shopProducts) {
-                    shopProductCheckoutRequest.productData = null;
+                    shopProductCheckoutRequest = null;
                     for (ProductDataCheckoutRequest productDataCheckoutRequest : shopProductCheckoutRequest.productData) {
                         EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData =
                                 new EnhancedECommerceProductCartMapData();
