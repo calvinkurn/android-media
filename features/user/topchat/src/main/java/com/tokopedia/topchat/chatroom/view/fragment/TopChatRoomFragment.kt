@@ -486,7 +486,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun onStartTyping() {
         presenter.startTyping()
-        getViewState().minimizeTools()
     }
 
     override fun onStopTyping() {

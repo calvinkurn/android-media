@@ -43,10 +43,6 @@ open class BaseChatViewStateImpl(
     protected lateinit var notifier: View
     protected lateinit var chatMenuButton: ImageView
 
-    protected lateinit var pickerButton: View
-    protected lateinit var maximizeButton: View
-    protected lateinit var attachProductButton: View
-
     protected lateinit var replyWatcher: Observable<String>
     protected lateinit var replyIsTyping: Observable<Boolean>
     var isTyping: Boolean = false
@@ -59,10 +55,6 @@ open class BaseChatViewStateImpl(
         actionBox = view.findViewById(R.id.add_comment_area)
         sendButton = view.findViewById(R.id.send_but)
         notifier = view.findViewById(R.id.notifier)
-
-        pickerButton = view.findViewById(R.id.image_picker)
-        maximizeButton = view.findViewById(R.id.maximize)
-        attachProductButton = view.findViewById(R.id.add_url)
         chatMenuButton = view.findViewById(R.id.iv_chat_menu)
 
         (recyclerView.layoutManager as LinearLayoutManager).stackFromEnd = false

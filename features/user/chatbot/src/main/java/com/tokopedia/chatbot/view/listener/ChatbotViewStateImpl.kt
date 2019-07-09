@@ -54,23 +54,12 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         rvQuickReply.layoutManager = LinearLayoutManager(rvQuickReply.context,
                 LinearLayoutManager.HORIZONTAL, false)
         rvQuickReply.adapter = quickReplyAdapter
-
-        pickerButton.setOnClickListener {
-//            onAttachImageClicked()
-        }
-
-        hideCurrentButtonMenu()
-    }
-
-    private fun hideCurrentButtonMenu() {
-        pickerButton.visibility = View.GONE
     }
 
     override fun onSuccessLoadFirstTime(chatroomViewModel: ChatroomViewModel) {
         scrollToBottom()
         updateHeader(chatroomViewModel) {}
         showReplyBox(chatroomViewModel.replyable)
-        showActionButtons()
         checkShowQuickReply(chatroomViewModel)
     }
 
@@ -157,12 +146,6 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     private fun hideQuickReply() {
         quickReplyAdapter.clearData()
         rvQuickReply.visibility = View.GONE
-    }
-
-    private fun showActionButtons() {
-//        pickerButton.visibility = View.VISIBLE
-        attachProductButton.visibility = View.GONE
-        maximizeButton.visibility = View.GONE
     }
 
 }

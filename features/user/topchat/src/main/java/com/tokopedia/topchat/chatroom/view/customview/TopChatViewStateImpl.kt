@@ -53,8 +53,6 @@ class TopChatViewStateImpl(
         toolbar: Toolbar,
         val analytics: TopChatAnalytics
 ) : BaseChatViewStateImpl(view, toolbar, typingListener, chatMenuListener), TopChatViewState {
-    private var attachButton: ImageView = view.findViewById(R.id.add_url)
-    private var maximize: View = view.findViewById(R.id.maximize)
     private var templateRecyclerView: RecyclerView = view.findViewById(R.id.list_template)
     private var headerMenuButton: ImageButton = toolbar.findViewById(R.id.header_menu)
     private var chatBlockLayout: View = view.findViewById(R.id.chat_blocked_layout)
@@ -83,8 +81,6 @@ class TopChatViewStateImpl(
             }
         }
 
-        maximize.setOnClickListener { maximizeTools() }
-
         sendButton.setOnClickListener {
             sendListener.onSendClicked(replyEditText.text.toString(),
                     SendableViewModel.generateStartTime())
@@ -96,25 +92,7 @@ class TopChatViewStateImpl(
         templateRecyclerView.adapter = templateAdapter
         templateRecyclerView.visibility = View.GONE
 
-        pickerButton.setOnClickListener {
-            analytics.eventPickImage()
-            imagePickerListener.pickImageToUpload()
-        }
-
-        attachButton.setOnClickListener {
-//            analytics.eventAttachProduct()
-//            onAttachProductClicked()
-        }
-
         initProductPreviewLayout()
-
-        hideCurrentChatButton()
-    }
-
-    private fun hideCurrentChatButton() {
-        attachButton.visibility = View.GONE
-        pickerButton.visibility = View.GONE
-        maximize.visibility = View.GONE
     }
 
     private fun initProductPreviewLayout() {
@@ -147,18 +125,6 @@ class TopChatViewStateImpl(
 
     override fun onSetCustomMessage(customMessage: String) {
         replyEditText.setText(customMessage)
-    }
-
-    fun minimizeTools() {
-//        maximize.visibility = View.VISIBLE
-//        pickerButton.visibility = View.GONE
-//        attachButton.visibility = View.GONE
-    }
-
-    private fun maximizeTools() {
-//        maximize.visibility = View.GONE
-//        pickerButton.visibility = View.VISIBLE
-//        attachButton.visibility = View.VISIBLE
     }
 
     fun setDefault() {
