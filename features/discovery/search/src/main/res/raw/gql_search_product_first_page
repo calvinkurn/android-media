@@ -185,6 +185,10 @@ query SearchProduct(
                 product_rating
                 top_label
                 bottom_label
+                campaign {
+                    original_price
+                    discount_percentage
+                }
             }
             shop{
                 id

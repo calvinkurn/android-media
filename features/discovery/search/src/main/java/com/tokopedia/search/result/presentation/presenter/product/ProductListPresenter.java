@@ -379,6 +379,8 @@ final class ProductListPresenter
                     item.setNew(topAds.getProduct().isProductNewLabel());
                     item.setIsShopOfficialStore(topAds.getShop().isShop_is_official());
                     item.setShopName(topAds.getShop().getName());
+                    item.setOriginalPrice(topAds.getProduct().getCampaign().getOriginalPrice());
+                    item.setDiscountPercentage(topAds.getProduct().getCampaign().getDiscountPercentage());
                     list.add(i, item);
                     j++;
                 }

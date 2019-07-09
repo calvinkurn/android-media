@@ -42,6 +42,7 @@ public class Product implements Parcelable {
     private static final String KEY_BOTTOM_LABEL = "bottom_label";
     private static final String KEY_APPLINKS = "applinks";
     private static final String KEY_IMAGE_PRODUCT = "image_product";
+    private static final String KEY_CAMPAIGN = "campaign";
 
     @SerializedName(KEY_ID)
     @Expose
@@ -134,6 +135,10 @@ public class Product implements Parcelable {
     @SerializedName(KEY_IMAGE_PRODUCT)
     @Expose
     private ImageProduct imageProduct;
+
+    @SerializedName(KEY_CAMPAIGN)
+    @Expose
+    private Campaign campaign = new Campaign();
     private boolean loaded = false;
 
     public Product() {
@@ -221,6 +226,9 @@ public class Product implements Parcelable {
                 bottomLabels.add(arr.getString(i));
             }
         }
+        if(!object.isNull(KEY_CAMPAIGN)) {
+            setCampaign(new Campaign(object.getJSONObject(KEY_CAMPAIGN)));
+        }
     }
 
     protected Product(Parcel in) {
@@ -249,6 +257,7 @@ public class Product implements Parcelable {
         topLabels = in.createStringArrayList();
         bottomLabels = in.createStringArrayList();
         imageProduct = in.readParcelable(ImageProduct.class.getClassLoader());
+        campaign = in.readParcelable(Campaign.class.getClassLoader());
     }
 
     @Override
@@ -278,6 +287,7 @@ public class Product implements Parcelable {
         dest.writeStringList(topLabels);
         dest.writeStringList(bottomLabels);
         dest.writeParcelable(imageProduct, flags);
+        dest.writeParcelable(campaign, flags);
     }
 
     @Override
@@ -503,5 +513,13 @@ public class Product implements Parcelable {
 
     public void setLoaded(boolean loaded) {
         this.loaded = loaded;
+    }
+
+    public void setCampaign(Campaign campaign) {
+        this.campaign = campaign;
+    }
+
+    public Campaign getCampaign() {
+        return campaign;
     }
 }
