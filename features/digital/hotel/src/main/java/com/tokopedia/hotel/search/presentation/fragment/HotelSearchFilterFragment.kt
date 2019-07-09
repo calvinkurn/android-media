@@ -124,7 +124,7 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
         val ratingStep = (filterReview.minReview.toInt()..filterReview.maxReview.toInt()).toList()
         selectedFilter.reviewScore = if (ratingStep.first() != 0 && selectedFilter.reviewScore == 0) ratingStep.last() else selectedFilter.reviewScore
         rating_seekbar.max = ratingStep.size - 1
-        rating_seekbar.progress = ratingStep.size - selectedFilter.reviewScore
+        rating_seekbar.progress = 9 - selectedFilter.reviewScore
         ratingStep.forEachIndexed { index, item ->
             val stepView = LayoutInflater.from(context).inflate(R.layout.item_hotel_filter_rating_step, null)
             stepView.findViewById<TextViewCompat>(R.id.title_step).text = String.format("%.1f", item.toFloat())
