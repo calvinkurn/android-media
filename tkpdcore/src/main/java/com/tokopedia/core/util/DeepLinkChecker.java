@@ -63,6 +63,8 @@ public class DeepLinkChecker {
     public static final int PROFILE = 25;
     public static final int CONTENT = 26;
     public static final int SMCREFERRAL = 27;
+    public static final int HOME_RECOMMENDATION = 28;
+    public static final int CONTACT_US = 29;
 
 
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
@@ -127,6 +129,8 @@ public class DeepLinkChecker {
                 return TOPPICKS;
             else if (isEtalase(linkSegment))
                 return ETALASE;
+            else if (isContactUs(linkSegment))
+                return CONTACT_US;
             else if (isProduct(linkSegment))
                 return PRODUCT;
             else if (isShop(linkSegment))
@@ -143,6 +147,8 @@ public class DeepLinkChecker {
                 return CONTENT;
             else if (isSMCReferral(linkSegment))
                 return SMCREFERRAL;
+            else if(isHomeRecoomendation(linkSegment))
+                return HOME_RECOMMENDATION;
             else return OTHER;
         } catch (Exception e) {
             e.printStackTrace();
@@ -256,7 +262,8 @@ public class DeepLinkChecker {
                 && !isWalletOvo(linkSegment)
                 && !isKycTerms(linkSegment)
                 && !isProfile(linkSegment)
-                && !isSMCReferral(linkSegment);
+                && !isSMCReferral(linkSegment)
+                && !isHomeRecoomendation(linkSegment);
     }
 
     private static boolean isShop(List<String> linkSegment) {
@@ -277,6 +284,9 @@ public class DeepLinkChecker {
 
     private static boolean isSearch(String url) {
         return (getLinkSegment(url).get(0).equals("search"));
+    }
+    private static boolean isContactUs(List<String> linkSegment) {
+        return linkSegment.get(0).equals("contact-us");
     }
 
     private static boolean isEtalase(List<String> linkSegment) {
@@ -301,6 +311,10 @@ public class DeepLinkChecker {
 
     private static boolean isSMCReferral(List<String> linkSegment) {
         return (linkSegment.get(0).equals("kupon-thr"));
+    }
+
+    private static boolean isHomeRecoomendation(List<String> linkSegment){
+        return (linkSegment.get(0).equals("rekomendasi"));
     }
 
     private static boolean isKycTerms(List<String> linkSegment) {

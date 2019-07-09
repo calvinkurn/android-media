@@ -2,6 +2,7 @@ package com.tokopedia.loginregister.common.di;
 
 import android.content.Context;
 
+import android.content.res.Resources;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError;
@@ -24,6 +25,8 @@ import dagger.Provides;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
+
+import javax.inject.Named;
 
 /**
  * @author by nisie on 10/15/18.
@@ -79,5 +82,4 @@ public class LoginRegisterModule {
     LoginRegisterApi provideLoginRegisterApi(@LoginRegisterScope Retrofit retrofit) {
         return retrofit.create(LoginRegisterApi.class);
     }
-
 }

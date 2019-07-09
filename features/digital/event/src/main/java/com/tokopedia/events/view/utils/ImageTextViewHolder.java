@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.events.R;
 
 /**
@@ -43,7 +44,7 @@ public class ImageTextViewHolder extends LinearLayout {
     }
 
     public void setImage(int resID) {
-        imageHolderSmall.setImageResource(resID);
+        imageHolderSmall.setImageDrawable(MethodChecker.getDrawable(imageHolderSmall.getContext(),resID));
     }
 
     public void setTextView(String label) {

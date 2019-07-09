@@ -80,6 +80,12 @@ public class CategoryFragment extends BaseDaggerFragment implements IFragmentLif
         return view;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        recyclerview.startNestedScroll(2);
+        recyclerview.stopNestedScroll();
+    }
 
     @Override
     protected String getScreenName() {

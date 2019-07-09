@@ -37,6 +37,7 @@ import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class SeatSelectionActivity extends EventBaseActivity implements
         SeatSelectionContract.SeatSelectionView, View.OnClickListener {
@@ -59,6 +60,9 @@ public class SeatSelectionActivity extends EventBaseActivity implements
     FrameLayout mainContent;
     LinearLayout verifySeatLayout;
     TextView verifySeatLayoutBtn;
+    TextView tvSeatsAvailable;
+    TextView tvSeatsNotAvailable;
+    TextView seatsLooking;
 
     SeatSelectionPresenter seatSelectionPresenter;
 
@@ -130,7 +134,17 @@ public class SeatSelectionActivity extends EventBaseActivity implements
         mainContent = findViewById(R.id.main_content);
         verifySeatLayout = findViewById(R.id.pay_tickets);
         verifySeatLayoutBtn = verifySeatLayout.findViewById(R.id.button_textview);
+        tvSeatsAvailable = findViewById(R.id.tv_seats_available);
+        tvSeatsNotAvailable = findViewById(R.id.tv_seats__not_available);
+        seatsLooking = findViewById(R.id.seats_booking);
         verifySeatLayoutBtn.setOnClickListener(this);
+
+        tvSeatsAvailable.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                (this, R.drawable.seat_bg), null, null, null);
+        tvSeatsNotAvailable.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                (this, R.drawable.cannot_select_seat_bg), null, null, null);
+        seatsLooking.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                (this, R.drawable.currently_selected_seat_bg), null, null, null);
 
     }
 

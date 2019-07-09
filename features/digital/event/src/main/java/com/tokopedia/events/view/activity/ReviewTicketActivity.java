@@ -33,6 +33,7 @@ import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
 import com.tokopedia.oms.scrooge.ScroogePGUtil;
 
 import java.util.List;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class ReviewTicketActivity extends EventBaseActivity implements
         EventReviewTicketsContractor.EventReviewTicketsView, View.OnClickListener, View.OnFocusChangeListener {
@@ -75,6 +76,7 @@ public class ReviewTicketActivity extends EventBaseActivity implements
     TextView tvTicketCntType;
     View selectedSeatLayout;
     TextView seatNumbers;
+    TextView gotoPromoTv;
     View gotoPromo;
     View sectionDiscount;
     TextView tvDiscount;
@@ -164,6 +166,7 @@ public class ReviewTicketActivity extends EventBaseActivity implements
         selectedSeatLayout = findViewById(R.id.selected_seats_layout);
         seatNumbers = findViewById(R.id.seat_numbers);
         gotoPromo = findViewById(R.id.goto_promo);
+        gotoPromoTv = findViewById(R.id.goto_promo_tv);
         sectionDiscount = findViewById(R.id.rl_section_discount);
         tvDiscount = findViewById(R.id.tv_discount);
 
@@ -184,6 +187,8 @@ public class ReviewTicketActivity extends EventBaseActivity implements
 
     @Override
     public void renderFromPackageVM(PackageViewModel packageViewModel, SelectedSeatViewModel selectedSeats) {
+        gotoPromoTv.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                (this, R.drawable.promo_code), null, null , null);
         toolbar.setTitle(packageViewModel.getTitle());
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black);
         String timerange = packageViewModel.getTimeRange();

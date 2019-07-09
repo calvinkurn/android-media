@@ -8,10 +8,10 @@
         android:supportsRtl="true"
         android:usesCleartextTraffic="true">
         <activity
-            android:name="view.viewcontrollers.TradeInHomeActivity"
+            android:name=".view.viewcontrollers.TradeInHomeActivity"
             android:label="@string/tukar_tambah" />
         <activity
-            android:name="view.viewcontrollers.FinalPriceActivity"
+            android:name=".view.viewcontrollers.FinalPriceActivity"
             android:label="@string/harga_final" />
     </application>
 </manifest>

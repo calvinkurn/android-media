@@ -58,13 +58,13 @@ import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_normal_checkout.*
-import model.TradeInParams
+import com.tokopedia.tradein.model.TradeInParams
 import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
-import view.viewcontrollers.FinalPriceActivity
-import view.viewcontrollers.TradeInHomeActivity
+import com.tokopedia.tradein.view.viewcontrollers.FinalPriceActivity
+import com.tokopedia.tradein.view.viewcontrollers.TradeInHomeActivity
 import javax.inject.Inject
 
 class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAdapterTypeFactory>(),
@@ -769,7 +769,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
     fun showLoadingDialog(onCancelClicked: (() -> Unit)? = null) {
         if (loadingProgressDialog == null) {
-            this@NormalCheckoutFragment.activity?.createDefaultProgressDialog(
+            loadingProgressDialog = activity?.createDefaultProgressDialog(
                 getString(R.string.title_loading),
                 cancelable = true,
                 onCancelClicked = {
@@ -784,7 +784,10 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     fun hideLoadingDialog() {
-        loadingProgressDialog?.dismiss()
+        loadingProgressDialog?.run{
+            if(isShowing)
+                dismiss()
+        }
     }
 
     override fun onAttach(context: Context?) {

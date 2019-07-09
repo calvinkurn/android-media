@@ -228,6 +228,9 @@ public class CatalogListFragment extends SearchSectionFragment implements
     protected void prepareView() {
         setupAdapter();
         setupListener();
+        if (getUserVisibleHint()) {
+            setupSearchNavigation();
+        }
     }
 
     private void setupListener() {
@@ -375,8 +378,11 @@ public class CatalogListFragment extends SearchSectionFragment implements
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        catalogAdapter.onRestoreInstanceState(savedInstanceState);
         setShareUrl(savedInstanceState.getString(EXTRA_SHARE_URL));
+
+        if(catalogAdapter != null) {
+            catalogAdapter.onRestoreInstanceState(savedInstanceState);
+        }
     }
 
     @Override

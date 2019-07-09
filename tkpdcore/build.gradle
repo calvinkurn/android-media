@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
-apply plugin: 'com.jakewharton.butterknife'
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'com.jakewharton.butterknife'
 
 buildscript {
     repositories {
@@ -55,6 +55,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.libraries.permissionchecker)
 
     implementation project(rootProject.ext.features.transactionanalytics)
     implementation project(rootProject.ext.features.transactiondata)
@@ -90,25 +91,22 @@ dependencies {
 
     implementation rootProject.ext.butterKnifeDependencies.butterKnife
     annotationProcessor rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
-
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
-    implementation rootProject.ext.networkDependencies.volley
     implementation rootProject.ext.networkDependencies.glide
 
     implementation rootProject.ext.analyticsDependencies.appsflyer
     implementation rootProject.ext.analyticsDependencies.installRef
 
     implementation (rootProject.ext.analyticsDependencies.moengage) {
-        exclude group: 'com.moengage', module: 'moe-push-gcm'
+        exclude group: 'com.moengage', module: 'moe-push-firebase'
     }
     implementation (rootProject.ext.analyticsDependencies.moengageMSG) {
         exclude group: 'com.android.support'
     }
 
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    annotationProcessor rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 
     implementation rootProject.ext.viewDependencies.recyclerMultiSelect
     implementation rootProject.ext.viewDependencies.appIntro
@@ -136,7 +134,6 @@ dependencies {
     implementation rootProject.ext.firebase.config
     implementation rootProject.ext.debugToolsDependencies.stetho
 
-    implementation rootProject.ext.analyticsDependencies.logentries
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.userSession)

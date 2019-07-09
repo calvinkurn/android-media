@@ -32,6 +32,8 @@ public class Author {
     @Expose
     private String badge = "";
 
+    public static String KEY_POST_TOKO = "Post Toko";
+
 
     public String getId() {
         return id;

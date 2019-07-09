@@ -16,8 +16,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.promostacking.VoucherOrdersItemData;
-import com.tokopedia.checkout.view.common.adapter.CartAdapterActionListener;
-import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
+import com.tokopedia.checkout.view.feature.cartlist.ActionListener;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
@@ -49,23 +48,19 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
     private TextView tvWarningTitle;
     private TextView tvWarningDescription;
 
-    private CartAdapter.ActionListener cartAdapterListener;
+    private ActionListener actionListener;
     private CartItemAdapter.ActionListener cartItemAdapterListener;
     private CartItemAdapter cartItemAdapter;
     private CompositeSubscription compositeSubscription;
-    private RecyclerView.RecycledViewPool viewPool;
-    private final CartAdapterActionListener actionListener;
     private TickerPromoStackingCheckoutView tickerPromoStackingCheckoutView;
 
-    public CartShopViewHolder(View itemView, CartAdapter.ActionListener cartAdapterListener,
+    public CartShopViewHolder(View itemView, ActionListener actionListener,
                               CartItemAdapter.ActionListener cartItemAdapterListener,
-                              CompositeSubscription compositeSubscription,
-                              RecyclerView.RecycledViewPool viewPool, CartAdapterActionListener actionListener) {
+                              CompositeSubscription compositeSubscription) {
         super(itemView);
-        this.cartAdapterListener = cartAdapterListener;
+        this.actionListener = actionListener;
         this.cartItemAdapterListener = cartItemAdapterListener;
         this.compositeSubscription = compositeSubscription;
-        this.viewPool = viewPool;
 
         llWarningAndError = itemView.findViewById(R.id.ll_warning_and_error);
         flShopItemContainer = itemView.findViewById(R.id.fl_shop_item_container);
@@ -83,7 +78,6 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         imgFulfillment = itemView.findViewById(R.id.img_shop_fulfill);
         tvFulfillDistrict = itemView.findViewById(R.id.tv_fulfill_district);
         tickerPromoStackingCheckoutView = itemView.findViewById(R.id.voucher_merchant_holder_view);
-        this.actionListener = actionListener;
     }
 
     public void bindData(CartShopHolderData cartShopHolderData, final int position) {
@@ -103,7 +97,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         renderWarningItemHeader(cartShopHolderData);
 
         tvShopName.setText(cartShopHolderData.getShopGroupData().getShopName());
-        tvShopName.setOnClickListener(v -> cartAdapterListener.onCartShopNameClicked(cartShopHolderData));
+        tvShopName.setOnClickListener(v -> actionListener.onCartShopNameClicked(cartShopHolderData));
 
         if (cartShopHolderData.getShopGroupData().isOfficialStore() || cartShopHolderData.getShopGroupData().isGoldMerchant()) {
             if (!cartShopHolderData.getShopGroupData().getShopBadge().isEmpty()) {
@@ -300,7 +294,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
                     }
                     cartShopHolderData.setAllSelected(isAllSelected);
                     if (getAdapterPosition() != RecyclerView.NO_POSITION) {
-                        cartAdapterListener.onShopItemCheckChanged(getAdapterPosition(), isChecked);
+                        actionListener.onShopItemCheckChanged(getAdapterPosition(), isChecked);
                     }
                 }
             }
