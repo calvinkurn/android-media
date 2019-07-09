@@ -22,6 +22,7 @@ class GetShopStatusUseCase @Inject constructor(private val graphqlUseCase: Graph
         fun createRequestParams(shopId: String): RequestParams {
             return RequestParams.create().apply {
                 putString(GMParamApiContant.SHOP_ID, shopId)
+                putString(GMParamApiContant.INCLUDE_OS,GMParamApiContant.INCLUDE_OS_VALUE)
             }
         }
     }
