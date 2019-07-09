@@ -8,10 +8,10 @@ import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.domain.pojo.ChatMenu
 import com.tokopedia.chat_common.view.adapter.viewholder.factory.ChatMenuFactory
 
-abstract class BaseChatMenuViewHolder(val listener: ChatMenuListener, itemView: View?) : RecyclerView.ViewHolder(itemView) {
+abstract class BaseChatMenuViewHolder(val listener: ChatMenuListener, itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    private val menuIcon: ImageView? = itemView?.findViewById(R.id.ivIcon)
-    private val menuTitle: TextView? = itemView?.findViewById(R.id.tvTitle)
+    private val menuIcon: ImageView? = itemView.findViewById(R.id.ivIcon)
+    private val menuTitle: TextView? = itemView.findViewById(R.id.tvTitle)
 
     interface ChatMenuListener {
         fun showChatMenu()
