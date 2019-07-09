@@ -61,12 +61,10 @@ class TopChatViewStateImpl(
 
     lateinit var productPreviewAdapter: ProductPreviewAdapter
     lateinit var templateAdapter: TemplateChatAdapter
-
-    lateinit var templateChatTypeFactory: TemplateChatTypeFactory
-    var isUploading: Boolean = false
-    var isFirstTime: Boolean = true
-    var isShopFollowed: Boolean = false
     lateinit var chatRoomViewModel: ChatroomViewModel
+
+    var isShopFollowed: Boolean = false
+
     init {
         initView()
     }
@@ -127,19 +125,6 @@ class TopChatViewStateImpl(
         replyEditText.setText(customMessage)
     }
 
-    fun setDefault() {
-        sendButton.requestFocus()
-    }
-
-    fun setNonReplyable() {
-        actionBox?.visibility = View.GONE
-
-    }
-
-    fun setReplyable() {
-        actionBox?.visibility = View.VISIBLE
-    }
-
     override fun getAdapter(): TopChatRoomAdapter {
         return super.getAdapter() as TopChatRoomAdapter
     }
@@ -150,14 +135,6 @@ class TopChatViewStateImpl(
 
     fun addMessage(visitable: Visitable<*>) {
         getAdapter().addNewMessage(visitable)
-    }
-
-    fun setActionable(actionable: Boolean) {
-        val count = actionBox.childCount
-        for (i in 0 until count) {
-            actionBox.getChildAt(i).isEnabled = actionable
-
-        }
     }
 
     fun onSuccessLoadFirstTime(viewModel: ChatroomViewModel,
