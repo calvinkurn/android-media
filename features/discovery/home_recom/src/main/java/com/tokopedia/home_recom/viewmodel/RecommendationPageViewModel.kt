@@ -30,13 +30,13 @@ open class RecommendationPageViewModel @Inject constructor(private val graphqlRe
                                                       private val getRecommendationUseCase: GetRecommendationUseCase,
                                                       @Named("Main")
                                   val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
-    open val recommendationListModel = MutableLiveData<List<RecommendationWidget>>()
-    open val productInfoDataModel = MutableLiveData<ProductInfoDataModel>()
+    val recommendationListModel = MutableLiveData<List<RecommendationWidget>>()
+    val productInfoDataModel = MutableLiveData<ProductInfoDataModel>()
 
     val xSource = "recom_landing_page"
     val pageName = "recom_1,recom_2,recom_3"
 
-    open fun getPrimaryProduct(productId: String,
+    fun getPrimaryProduct(productId: String,
                           context: Context) {
         launchCatchError(block = {
             val gqlData = withContext(Dispatchers.IO) {
@@ -66,8 +66,8 @@ open class RecommendationPageViewModel @Inject constructor(private val graphqlRe
         }
     }
 
-    open fun getRecommendationList(
-            productIds: ArrayList<String>,
+    fun getRecommendationList(
+            productIds: List<String>,
             onErrorGetRecommendation: ((errorMessage: String?) -> Unit)?) {
         getRecommendationUseCase.execute(
                 getRecommendationUseCase.getRecomParams(

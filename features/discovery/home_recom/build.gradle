@@ -38,6 +38,8 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.analytics
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.mockitorCore
+    testImplementation rootProject.ext.testDependencies.powerMockito
+    testImplementation rootProject.ext.testDependencies.kotlinMockito
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     kapt rootProject.ext.miscDependencies.daggerCompiler

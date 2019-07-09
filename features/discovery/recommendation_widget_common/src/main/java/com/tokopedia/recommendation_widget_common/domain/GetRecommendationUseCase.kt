@@ -44,7 +44,7 @@ constructor(
     fun getRecomParams(pageNumber: Int,
                        xSource: String,
                        pageName: String,
-                       productIds: ArrayList<String>): RequestParams {
+                       productIds: List<String>): RequestParams {
         val params = RequestParams.create()
         val productIdsString = TextUtils.join(",", productIds)
 
