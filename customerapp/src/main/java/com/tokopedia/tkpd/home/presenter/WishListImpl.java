@@ -350,7 +350,6 @@ public class WishListImpl implements WishList {
         variables.put(QUERY, params.getString(QUERY, ""));
         variables.put(PAGE_NO, params.getInt(PAGE_NO, 0));
         variables.put(ITEM_COUNT, 10);
-        variables.put(TopAdsParams.KEY_PARAMS, UrlParamHelper.generateUrlParamString(getTopAdsParameterMap()));
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_search_wishlist),
@@ -393,7 +392,6 @@ public class WishListImpl implements WishList {
 
         variables.put(PAGE_NO, mPaging.getPage());
         variables.put(ITEM_COUNT, 10);
-        variables.put(TopAdsParams.KEY_PARAMS, UrlParamHelper.generateUrlParamString(getTopAdsParameterMap()));
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.query_get_wishlist),

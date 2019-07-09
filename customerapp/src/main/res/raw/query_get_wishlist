@@ -1,4 +1,4 @@
-query wishlist($page: Int, $count: Int, $params: String){
+query wishlist($page: Int, $count: Int){
   wishlist(page: $page, count: $count){
 
       has_next_page
