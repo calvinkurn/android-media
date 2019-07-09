@@ -330,6 +330,9 @@ public class CatalogDetailListFragment extends BasePresenterFragment<ICatalogDet
         } else {
             mAdapter.showEmpty(false);
         }
+        if (mCatalogDetailItems == null) {
+            mCatalogDetailItems = new ArrayList<>();
+        }
         mCatalogDetailItems.addAll(catalogDetailItems);
         mAdapter.notifyDataSetChanged();
     }
