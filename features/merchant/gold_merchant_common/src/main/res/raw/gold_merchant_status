@@ -1,5 +1,5 @@
-query goldGetPMOSStatus($shopID: Int!) {
-  goldGetPMOSStatus(shopID : $shopID, includeOS: true) {
+query goldGetPMOSStatus($shop_id: Int!) {
+  goldGetPMOSStatus(shopID : $shop_id, includeOS: true) {
     header {
       process_time
       messages
