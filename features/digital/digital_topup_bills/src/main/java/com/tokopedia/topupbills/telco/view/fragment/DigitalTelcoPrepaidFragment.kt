@@ -314,14 +314,12 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     fun setTabFromProductSelected() {
         var itemId = 0
-        if (selectedProductId.isNotEmpty()) {
-            if (selectedCategoryId == TelcoCategoryType.CATEGORY_PULSA) {
-                itemId = 0
-            } else if (selectedCategoryId == TelcoCategoryType.CATEGORY_PAKET_DATA) {
-                itemId = 1
-            } else if (selectedCategoryId == TelcoCategoryType.CATEGORY_ROAMING) {
-                itemId = 2
-            }
+        if (selectedCategoryId == TelcoCategoryType.CATEGORY_PULSA) {
+            itemId = 0
+        } else if (selectedCategoryId == TelcoCategoryType.CATEGORY_PAKET_DATA) {
+            itemId = 1
+        } else if (selectedCategoryId == TelcoCategoryType.CATEGORY_ROAMING) {
+            itemId = 2
         }
         viewPager.setCurrentItem(itemId, true)
     }
