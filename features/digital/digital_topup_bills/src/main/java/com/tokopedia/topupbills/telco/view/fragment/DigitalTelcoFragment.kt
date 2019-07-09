@@ -74,7 +74,6 @@ class DigitalTelcoFragment : BaseDaggerFragment() {
         list.add(DigitalProductSubMenu(TelcoComponentType.TELCO_PREPAID, TelcoComponentName.TELCO_PREPAID))
         list.add(DigitalProductSubMenu(TelcoComponentType.TELCO_POSTPAID, TelcoComponentName.TELCO_POSTPAID))
 
-        header_view.setHeaderActive(list.get(posCurrentTabExtraParam), posCurrentTabExtraParam)
         header_view.setListener(object : DigitalSubMenuWidget.ActionListener {
             override fun onClickSubMenu(subMenu: DigitalProductSubMenu) {
                 if (subMenu.id == TelcoComponentType.TELCO_PREPAID) {
@@ -85,6 +84,7 @@ class DigitalTelcoFragment : BaseDaggerFragment() {
             }
         })
         header_view.setHeader(list)
+        header_view.setHeaderActive(list.get(posCurrentTabExtraParam), posCurrentTabExtraParam)
 
         menu_view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {
