@@ -332,6 +332,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
 
     fun goToLoginPage() {
         if (activity != null) {
+            progressDialog.dismiss()
             RouteManager.route(context, ApplinkConst.LOGIN)
         }
     }
