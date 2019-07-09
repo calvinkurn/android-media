@@ -5,6 +5,7 @@
     app:cardCornerRadius="@dimen/dp_8"
     app:cardElevation="@dimen/dp_6"
     app:cardPreventCornerOverlap="false"
+    app:cardUseCompatPadding="true"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:layout_height="match_parent">
