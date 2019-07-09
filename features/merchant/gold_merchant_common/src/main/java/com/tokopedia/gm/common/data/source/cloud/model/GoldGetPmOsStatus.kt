@@ -25,7 +25,7 @@ data class ShopStatusHeader(
         @Expose
         val processTime : Float = 0F ,
 
-        @SerializedName("message")
+        @SerializedName("messages")
         @Expose
         val message : ArrayList<String> = arrayListOf(),
 

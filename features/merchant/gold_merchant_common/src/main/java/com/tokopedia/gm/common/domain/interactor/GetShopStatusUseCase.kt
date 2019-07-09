@@ -21,15 +21,13 @@ class GetShopStatusUseCase @Inject constructor(private val graphqlUseCase: Graph
     companion object {
         fun createRequestParams(shopId: String): RequestParams {
             return RequestParams.create().apply {
-                putString(GMParamApiContant.SHOP_ID, shopId)
-                putString(GMParamApiContant.INCLUDE_OS,GMParamApiContant.INCLUDE_OS_VALUE)
+                putString(GMParamApiContant.SHOP_ID_GQL, shopId)
             }
         }
     }
 
-
-    override fun createObservable(requestParams: RequestParams?): Observable<GoldGetPmOsStatus> {
-        val graphqlRequest = GraphqlRequest(rawQuery, GoldGetPmOsStatus::class.java)
+    override fun createObservable(requestParams: RequestParams): Observable<GoldGetPmOsStatus> {
+        val graphqlRequest = GraphqlRequest(rawQuery, GoldGetPmOsStatus::class.java, requestParams.parameters)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
 
