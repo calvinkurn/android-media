@@ -25,17 +25,12 @@ import kotlinx.android.synthetic.main.activity_create_post.*
 class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener, BaseCreatePostFragment.OnCreatePostCallBack {
 
     override fun invalidatePostMenu(isPostEnabled: Boolean) {
-        this.isPostEnabled = isPostEnabled
         if (isPostEnabled){
-            action_post.isEnabled = true
             action_post.setTextColor(ContextCompat.getColor(this, R.color.green_500))
         } else {
-            action_post.isEnabled = false
             action_post.setTextColor(ContextCompat.getColor(this, R.color.grey_500))
         }
     }
-
-    private var isPostEnabled = false
 
     companion object {
         const val PARAM_PRODUCT_ID = "product_id"
@@ -114,12 +109,10 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener, Bas
             onBackPressed()
         }
         action_post.setOnClickListener {
-            if (isPostEnabled){
-                val fragment = supportFragmentManager
-                        .findFragmentByTag("TAG_FRAGMENT") as? BaseCreatePostFragment ?:
-                return@setOnClickListener
-                fragment.saveDraftAndSubmit()
-            }
+            val fragment = supportFragmentManager
+                    .findFragmentByTag("TAG_FRAGMENT") as? BaseCreatePostFragment ?:
+            return@setOnClickListener
+            fragment.saveDraftAndSubmit()
         }
     }
 

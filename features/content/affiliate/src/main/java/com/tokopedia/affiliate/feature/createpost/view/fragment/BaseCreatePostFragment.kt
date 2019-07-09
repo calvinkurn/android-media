@@ -1,12 +1,15 @@
 package com.tokopedia.affiliate.feature.createpost.view.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.LinearSmoothScroller
 import android.support.v7.widget.RecyclerView
 import android.text.InputFilter
+import android.util.DisplayMetrics
 import android.view.*
 import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -62,7 +65,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     protected var viewModel: CreatePostViewModel = CreatePostViewModel()
 
-    private val adapter: ProductAttachmentAdapter by lazy {
+    protected val adapter: ProductAttachmentAdapter by lazy {
         ProductAttachmentAdapter(onDeleteProduct = this::onDeleteProduct)
     }
 
@@ -73,6 +76,12 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     private val captionsAdapter: DefaultCaptionsAdapter by lazy {
         DefaultCaptionsAdapter(this::onDefaultCaptionClicked)
     }
+
+    protected val productAttachmentLayoutManager by lazy {
+        LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false)
+    }
+
+    lateinit var productSmoothScroller: LinearSmoothScroller
 
     private fun onDeleteProduct(position: Int){
         if (adapter.itemCount < 1){
@@ -108,6 +117,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     companion object {
+        private const val MILLISECONDS_PER_INCH = 200f
         private const val VIEW_MODEL = "view_model"
         private const val PARAM_USER_ID = "{user_id}"
         private const val PRODUCT_ID_QUERY_PARAM = "?product_id="
@@ -123,6 +133,21 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 .createPostModule(CreatePostModule(context!!.applicationContext))
                 .build()
                 .inject(this)
+    }
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        activity?.let {
+            productSmoothScroller = object : LinearSmoothScroller(it) {
+                override fun getHorizontalSnapPreference(): Int {
+                    return SNAP_TO_START
+                }
+
+                override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics): Float {
+                    return MILLISECONDS_PER_INCH / displayMetrics.densityDpi
+                }
+            }
+        }
     }
 
     override fun getScreenName(): String {
@@ -379,7 +404,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         adapter.updateProduct(viewModel.relatedProducts)
         product_attachment.adapter = adapter
         product_attachment.setHasFixedSize(true)
-        product_attachment.layoutManager = LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false)
+        product_attachment.layoutManager = productAttachmentLayoutManager
         product_attachment.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(R.dimen.dp_8),
                 LinearLayoutManager.HORIZONTAL))
 
@@ -402,7 +427,8 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             }
 
             override fun onDeleteItem(item: MediaItem, position: Int) {
-                if (viewModel.fileImageList.size == 1){
+                if (viewModel.fileImageList.size == 1 &&
+                        (viewModel.productIdList.isNotEmpty() || viewModel.adIdList.isNotEmpty())){
                     val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
                     dialog.setTitle(getString(R.string.af_update_post))
                     dialog.setDesc(getString(R.string.af_delete_warning_desc))
@@ -474,10 +500,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     private fun goToVideoPicker() {
-        activity?.let {
+        activity?.let { activity ->
             startActivityForResult(
-                    CreatePostVideoPickerActivity.getInstance(it,
-                            viewModel.fileImageList.isNotEmpty()),
+                    CreatePostVideoPickerActivity.getInstance(activity,
+                            viewModel.fileImageList.any { it.type == MediaType.VIDEO }),
                     REQUEST_VIDEO_PICKER)
         }
     }
@@ -543,24 +569,36 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         var isFormInvalid = false
         if (isTypeAffiliate() && viewModel.adIdList.isEmpty()) {
             isFormInvalid = true
-            view?.showErrorToaster(getString(R.string.af_warning_empty_product), R.string.label_add) {
+            showUnifyErrorToaster(getString(R.string.af_warning_empty_product), getString(R.string.label_add)){
                 onRelatedAddProductClick()
             }
         } else if (!isTypeAffiliate() && viewModel.productIdList.isEmpty()) {
             isFormInvalid = true
-            view?.showErrorToaster(getString(R.string.af_warning_empty_product), R.string.label_add) {
+            showUnifyErrorToaster(getString(R.string.af_warning_empty_product), getString(R.string.label_add)) {
                 onRelatedAddProductClick()
             }
         } else if (viewModel.completeImageList.isEmpty()) {
             isFormInvalid = true
-            view?.showErrorToaster(getString(R.string.af_warning_empty_photo), R.string.label_add) {
+            showUnifyErrorToaster(getString(R.string.af_warning_empty_photo), getString(R.string.label_add)) {
                 goToImagePicker()
             }
         } else if ((caption.text?.length ?: 0) > MAX_CHAR){
             isFormInvalid = true
-            view?.showErrorToaster(getString(R.string.af_warning_over_char, MAX_CHAR.toString()), R.string.general_label_ok){}
+            showUnifyErrorToaster(getString(R.string.af_warning_over_char, MAX_CHAR.toString()), getString(R.string.general_label_ok))
         }
         return isFormInvalid
+    }
+
+    private fun showUnifyErrorToaster(message: CharSequence, action: CharSequence? = null, actionClick: ((View) -> Unit)? = null){
+        view?.let {v ->
+            if (action.isNullOrBlank()){
+                Toaster.showError(v, message, Snackbar.LENGTH_LONG)
+            } else {
+                Toaster.showErrorWithAction(v, message, Snackbar.LENGTH_LONG, action, View.OnClickListener {
+                    actionClick?.invoke(it)
+                })
+            }
+        }
     }
 
     fun saveDraftAndSubmit() {
@@ -609,7 +647,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         caption.hint = viewModel.defaultPlaceholder
     }
 
-    private fun updateRelatedProduct() {
+    open fun updateRelatedProduct() {
         adapter.updateProduct(viewModel.relatedProducts)
         if (viewModel.relatedProducts.size > 0){
             product_attachment.visible()

@@ -70,4 +70,11 @@ class AffiliateCreatePostFragment : BaseCreatePostFragment() {
             isAddingProduct = false
         }
     }
+
+    override fun updateRelatedProduct() {
+        super.updateRelatedProduct()
+        if (adapter.itemCount > 0) {
+            productAttachmentLayoutManager.scrollToPosition(adapter.itemCount - 1)
+        }
+    }
 }
