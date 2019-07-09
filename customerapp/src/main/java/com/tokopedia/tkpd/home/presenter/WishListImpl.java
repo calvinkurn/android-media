@@ -733,7 +733,7 @@ public class WishListImpl implements WishList {
             wishListView.displayLoadMore(false);
             if (gqlWishListDataResponse != null) {
                 wishListView.displayPull(false);
-                if (gqlWishListDataResponse.getGqlWishList().getWishlistDataList().size() == 0) {
+                if (mPaging.getPage() == 1 && gqlWishListDataResponse.getGqlWishList().getWishlistDataList().size() == 0) {
                     data.clear();
                     dataWishlist.clear();
                     wishListView.setSearchNotFound(query);
