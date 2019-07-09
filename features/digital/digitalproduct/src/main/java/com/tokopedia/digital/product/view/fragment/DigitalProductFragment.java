@@ -256,6 +256,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
         super.onViewCreated(view, savedInstanceState);
         renderViewShadow();
         setupArguments(getArguments());
+        presenter.trackRechargePushEventRecommendation(Integer.parseInt(categoryId), "VISIT");
 
         if (savedInstanceState != null) {
             categoryDataState = saveInstanceCacheManager.get(EXTRA_STATE_CATEGORY_DATA,
@@ -424,6 +425,8 @@ public class DigitalProductFragment extends BaseDaggerFragment
 
     @Override
     public void renderCategory(BaseDigitalProductView digitalProductView, CategoryData categoryData, HistoryClientNumber historyClientNumber) {
+        digitalAnalytics.eventDigitalCategoryScreenLaunch(categoryData);
+
         this.categoryDataState = categoryData;
         this.historyClientNumberState = historyClientNumber;
         actionListener.updateTitleToolbar(categoryData.getName());
