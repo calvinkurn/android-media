@@ -23,7 +23,7 @@ import kotlinx.android.synthetic.main.fragment_digital_telco.*
  */
 class DigitalTelcoFragment : BaseDaggerFragment() {
 
-    var posCurrentTabExtraParam = 0
+    var posCurrentTabExtraParam = DigitalSubMenuWidget.HEADER_LEFT
 
     override fun getScreenName(): String {
         return getString(R.string.digital_track_title_page)
@@ -56,10 +56,10 @@ class DigitalTelcoFragment : BaseDaggerFragment() {
 
             if (digitalTelcoExtraParam.menuId.toInt() == TelcoComponentType.TELCO_PREPAID) {
                 prepaidExtraParam = digitalTelcoExtraParam
-                posCurrentTabExtraParam = 0
+                posCurrentTabExtraParam = DigitalSubMenuWidget.HEADER_LEFT
             } else if (digitalTelcoExtraParam.menuId.toInt() == TelcoComponentType.TELCO_POSTPAID) {
                 postpaidExtraParam = digitalTelcoExtraParam
-                posCurrentTabExtraParam = 1
+                posCurrentTabExtraParam = DigitalSubMenuWidget.HEADER_RIGHT
             }
             listMenuTab.add(DigitalTabTelcoItem(DigitalTelcoPrepaidFragment.newInstance(
                     prepaidExtraParam), ""))
@@ -73,7 +73,8 @@ class DigitalTelcoFragment : BaseDaggerFragment() {
         val list = mutableListOf<DigitalProductSubMenu>()
         list.add(DigitalProductSubMenu(TelcoComponentType.TELCO_PREPAID, TelcoComponentName.TELCO_PREPAID))
         list.add(DigitalProductSubMenu(TelcoComponentType.TELCO_POSTPAID, TelcoComponentName.TELCO_POSTPAID))
-        header_view.setHeaderActive(posCurrentTabExtraParam)
+
+        header_view.setHeaderActive(list.get(posCurrentTabExtraParam), posCurrentTabExtraParam)
         header_view.setListener(object : DigitalSubMenuWidget.ActionListener {
             override fun onClickSubMenu(subMenu: DigitalProductSubMenu) {
                 if (subMenu.id == TelcoComponentType.TELCO_PREPAID) {

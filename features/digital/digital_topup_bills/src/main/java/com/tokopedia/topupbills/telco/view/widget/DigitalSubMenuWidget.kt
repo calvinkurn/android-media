@@ -55,10 +55,15 @@ class DigitalSubMenuWidget @JvmOverloads constructor(@NotNull context: Context, 
         }
     }
 
-    fun setHeaderActive(type: Int) {
-        if (type == HEADER_LEFT)
+    fun setHeaderActive(subMenu: DigitalProductSubMenu, type: Int) {
+        if (type == HEADER_LEFT) {
             headerSelected = HEADER_LEFT
-        else headerSelected = HEADER_RIGHT
+            headerLeftActive(subMenu)
+        }
+        else {
+            headerSelected = HEADER_RIGHT
+            headerRightActive(subMenu)
+        }
     }
 
     fun headerLeftActive(submenu: DigitalProductSubMenu) {
