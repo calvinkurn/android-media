@@ -1,7 +1,6 @@
 package com.tokopedia.gm.common.domain.interactor
 
 import com.tokopedia.gm.common.constant.GMParamApiContant
-import com.tokopedia.gm.common.constant.GMParamConstant
 import com.tokopedia.gm.common.data.source.cloud.model.GoldGetPmOsStatus
 import com.tokopedia.gm.common.data.source.cloud.model.ShopScoreResult
 import com.tokopedia.usecase.RequestParams
@@ -24,7 +23,7 @@ class GetPowerMerchantStatusNoKycUseCase @Inject constructor(private val getShop
 
     private fun getShopStatus(requestParams: RequestParams): Observable<GoldGetPmOsStatus> {
         return getShopStatusUseCase.createObservable(GetShopStatusUseCase.createRequestParams(requestParams.getString(
-                GMParamConstant.SHOP_ID,""))).subscribeOn(Schedulers.io())
+                GMParamApiContant.SHOP_ID,""))).subscribeOn(Schedulers.io())
     }
 
     private fun getShopScore(requestParams: RequestParams): Observable<ShopScoreResult> {
