@@ -67,6 +67,7 @@ class AffiliateCreatePostFragment : BaseCreatePostFragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_ATTACH_AFFILIATE_PRODUCT && resultCode == Activity.RESULT_OK){
+            isAddingProduct = false
             val adId = data?.getStringExtra("ad_id")
             if (!adId.isNullOrBlank()){
                 if (!viewModel.adIdList.any { it == adId }) {
@@ -97,5 +98,9 @@ class AffiliateCreatePostFragment : BaseCreatePostFragment() {
         if (adapter.itemCount > 0) {
             productAttachmentLayoutManager.scrollToPosition(adapter.itemCount - 1)
         }
+    }
+
+    fun clearCache() {
+        localCacheHandler.clearCache()
     }
 }
