@@ -21,7 +21,7 @@ class GetShopStatusUseCase @Inject constructor(private val graphqlUseCase: Graph
     companion object {
         fun createRequestParams(shopId: String): RequestParams {
             return RequestParams.create().apply {
-                putString(GMParamApiContant.SHOP_ID_GQL, shopId)
+                putInt(GMParamApiContant.SHOP_ID_GQL, shopId.toInt())
             }
         }
     }
