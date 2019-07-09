@@ -27,5 +27,5 @@ public class ResCenterAttachmentRepository {
         public ResCenterAttachment[] newArray(int size) {
             return new ResCenterAttachment[size];
         }
-    }
+    };
 }
