@@ -335,6 +335,7 @@
                             android:layout_gravity="bottom"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/dp_10"
+                            android:scaleType="fitXY"
                             app:srcCompat="@drawable/ic_rectangle"/>
 
                     </FrameLayout>

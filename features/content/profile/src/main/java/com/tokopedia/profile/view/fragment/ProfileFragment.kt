@@ -372,7 +372,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 when {
                     isAutomaticOpenShareUser() -> {
                         shareLink(element.profileHeaderViewModel.link)
-                        profileAnalytics.eventClickBagikanProfile(isOwner, userId.toString())
+                        profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
                     }
                     onlyOnePost -> showShowCaseDialog(shareProfile)
                     else -> showAfterPostToaster(affiliatePostQuota?.number != 0)
@@ -737,6 +737,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                               url: String, iamgeUrl: String) {
         activity?.let {
             val linkerData = constructShareData("","", url, String.format("%s %s", description, "%s"), title)
+            profileAnalytics.eventClickSharePostIni(isOwner, userId.toString())
             ShareBottomSheets().show(fragmentManager!!, linkerData, isOwner, userId.toString(), false)
         }
     }
@@ -1013,6 +1014,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                         String.format(getString(R.string.profile_share_text),
                                 it.link),
                         String.format(getString(R.string.profile_share_title)))
+                profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
                 ShareBottomSheets().show(fragmentManager!!, linkerData, isOwner, userId.toString(), true)
             }
         }
@@ -1080,6 +1082,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                         String.format(getString(R.string.profile_share_text),
                                 element.link),
                         String.format(getString(R.string.profile_share_title)))
+                profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
                 ShareBottomSheets().show(fragmentManager!!, linkerData, isOwner, userId.toString(), true)
             }
         } else {
@@ -1305,7 +1308,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
 
             shareProfile.setOnClickListener {
-                profileAnalytics.eventClickBagikanProfile(isOwner, userId.toString())
+                profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
 
                 val linkerData = constructShareData(
                         headerViewModel.name,
