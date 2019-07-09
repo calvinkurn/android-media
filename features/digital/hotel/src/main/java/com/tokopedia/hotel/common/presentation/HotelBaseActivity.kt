@@ -52,7 +52,6 @@ abstract class HotelBaseActivity: BaseSimpleActivity(), HotelMenuBottomSheets.Ho
         menu?.clear()
         if (shouldShowOptionMenu()) {
             menuInflater.inflate(R.menu.hotel_base_menu, menu)
-            updateOptionMenuColorWhite(menu)
         }
         return true
     }
