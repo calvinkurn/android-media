@@ -130,6 +130,7 @@ include "features:user:vote"
 
 include "features:category:tradein"
 include "features:category:tradein_common"
+include "features:fintech:merchant_lending_widget"
 
 include 'logisticanalytics'
 include 'tkpdloyalty'

@@ -362,6 +362,7 @@ ext {
             transaction                     : ":tkpdtransaction",
             transactioncommon               : ":tkpdtransaction-common",
             commonTravel                    : ":features:digital:common_travel",
-            ovo                             : ":features:fintech:ovo_pay_with_qr"
+            ovo                             : ":features:fintech:ovo_pay_with_qr",
+            merchantLendingWidget           : ":features:fintech:merchant_lending_widget"
     ]
 }
