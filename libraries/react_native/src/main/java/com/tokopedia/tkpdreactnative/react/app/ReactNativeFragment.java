@@ -82,7 +82,6 @@ public abstract class ReactNativeFragment extends Fragment implements DefaultHar
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        reactRootView.startReactApplication(reactInstanceManager, getModuleName(), getInitialBundle());
     }
 
     protected abstract Bundle getInitialBundle();
@@ -90,6 +89,7 @@ public abstract class ReactNativeFragment extends Fragment implements DefaultHar
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+        reactRootView.startReactApplication(reactInstanceManager, getModuleName(), getInitialBundle());
         return reactRootView;
     }
 }
