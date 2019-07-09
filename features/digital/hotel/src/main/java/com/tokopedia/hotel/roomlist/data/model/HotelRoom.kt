@@ -196,7 +196,9 @@ data class HotelRoom(
 
             val isCvCRequired: Boolean = false,
 
-            val isDirectPayment: Boolean = false
+            val isDirectPayment: Boolean = false,
+
+            val propertyName: String = ""
     )
 }
 

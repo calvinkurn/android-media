@@ -1,6 +1,5 @@
 package com.tokopedia.hotel.roomlist.presentation.adapter.viewholder
 
-import android.text.Html
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.hotel.R
@@ -92,7 +91,7 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener): Abs
                 override fun onImageClicked(position: Int) {
                     listener.onPhotoClickListener(room)
                     context.startActivity(ImagePreviewSliderActivity.getCallingIntent(
-                            context!!, "Image", imageUrls, imageUrls, position
+                            context!!, room.additionalPropertyInfo.propertyName, imageUrls, imageUrls, position
                     ))
                 }
             }
