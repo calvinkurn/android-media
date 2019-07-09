@@ -51,7 +51,7 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<HotelCheckoutResponse>()
 
-            hotelCheckoutResult.value = Success(data)
+            hotelCheckoutResult.value = Success(data.response)
         }) {
             it.printStackTrace()
             hotelCheckoutResult.value = Fail(it)
@@ -61,6 +61,6 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
     companion object {
         const val PARAM_CART_PROPERTY = "data"
         private val TYPE_HOTEL_CART = HotelCart.Response::class.java
-        private val TYPE_HOTEL_CHECKOUT = HotelCheckoutResponse::class.java
+        private val TYPE_HOTEL_CHECKOUT = HotelCheckoutResponse.Response::class.java
     }
 }
