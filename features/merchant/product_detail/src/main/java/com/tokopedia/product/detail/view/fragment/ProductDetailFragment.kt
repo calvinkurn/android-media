@@ -396,7 +396,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 if (productInfo != null && shopInfo != null)
                     productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, productInfo, shopInfo, trackerAttribution,
                             it, tradeInParams?.usedPrice > 0, productInfoViewModel.multiOrigin.isFulfillment)
-
         }
         context?.let {
             LocalBroadcastManager.getInstance(context!!).registerReceiver(tradeInBroadcastReceiver, IntentFilter(TradeInTextView.ACTION_TRADEIN_ELLIGIBLE))
@@ -731,8 +730,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         nested_scroll.getDrawingRect(scrollBounds)
         val top = view.y
         val bottom = top + view.height - 100;
-        return !(scrollBounds.top > bottom)
+        return scrollBounds.top <= bottom
     }
+
     private fun initView() {
         val appShowSearchPDP = remoteConfig.getBoolean(RemoteConfigKey.REMOTE_CONFIG_APP_SHOW_SEARCH_BAR_PDP, true)
         if(appShowSearchPDP) {
@@ -776,17 +776,19 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         varPictureImage = view_picture_search_bar
         initToolBarMethod  =  ::initToolbarLight
         fab_detail.setAnchor(R.id.view_picture_search_bar)
-        nested_scroll.viewTreeObserver.addOnScrollChangedListener(ViewTreeObserver.OnScrollChangedListener {
+        nested_scroll.viewTreeObserver.addOnScrollChangedListener {
             activity?.run {
                 if(isAdded) {
                     if (isViewVisible(varPictureImage)) {
-                        fab_detail.show()
+                        showFabDetailAfterLoadData()
+                        label_cod?.visibility = if (shouldShowCod && userCod && shopCod) View.VISIBLE else View.GONE
                     } else {
                         fab_detail.hide()
+                        label_cod?.visibility = View.GONE
                     }
                 }
             }
-        })
+        }
 
     }
 
@@ -810,7 +812,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         initStatusBarDark()
         initToolBarMethod()
         showFabDetailAfterLoadData()
-        label_cod?.visibility = if (shouldShowCod && userCod && shopCod) View.INVISIBLE else View.GONE
+        label_cod?.visibility = if (shouldShowCod && userCod && shopCod) View.VISIBLE else View.GONE
     }
 
     private fun initToolbarLight() {
@@ -1058,8 +1060,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun renderProductInfo3(productInfoP3: ProductInfoP3) {
         userCod = productInfoP3.userCod
-        if (shouldShowCod && shopCod && userCod) label_cod.visible() else label_cod.gone()
-        headerView.renderCod(shouldShowCod && shopCod && userCod)
+        if (shouldShowCod && shopCod && productInfoP3.userCod) label_cod.visible() else label_cod.gone()
+        headerView.renderCod(shouldShowCod && shopCod && productInfoP3.userCod)
         productInfoP3.rateEstSummarizeText?.let {
             partialVariantAndRateEstView.renderRateEstimation(it) { gotoRateEstimation(false) }
         }
