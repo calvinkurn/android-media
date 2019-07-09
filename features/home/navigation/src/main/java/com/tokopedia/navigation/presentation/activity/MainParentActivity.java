@@ -378,12 +378,6 @@ public class MainParentActivity extends BaseActivity implements
 
         Fragment fragment = fragmentList.get(position);
         if (fragment != null) {
-
-            if (item.getTitle().equals(OFFICIAL_STORE)){
-                startActivity(((GlobalNavRouter) getApplication()).getOldOfficialStore(this));
-                return false;
-            }
-
             this.currentFragment = fragment;
             selectFragment(fragment);
         }
