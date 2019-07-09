@@ -35,7 +35,6 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
                            private val quickReplyListener: QuickReplyListener,
                            typingListener: TypingListener,
                            chatMenuListener: BaseChatMenuViewHolder.ChatMenuListener,
-                           private val onAttachImageClicked: () -> Unit,
                            override val toolbar: Toolbar,
                            private val adapter: BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>
 ) : BaseChatViewStateImpl(view, toolbar, typingListener, chatMenuListener), ChatbotViewState {
@@ -57,7 +56,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         rvQuickReply.adapter = quickReplyAdapter
 
         pickerButton.setOnClickListener {
-            onAttachImageClicked()
+//            onAttachImageClicked()
         }
 
         hideCurrentButtonMenu()

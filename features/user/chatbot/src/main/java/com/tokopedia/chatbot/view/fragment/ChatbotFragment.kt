@@ -123,7 +123,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 this,
                 this,
                 this,
-                onAttachImageClicked(),
                 (activity as BaseChatToolbarActivity).getToolbar(),
                 adapter
         )
@@ -131,22 +130,20 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         loadInitialData()
     }
 
-    private fun onAttachImageClicked(): () -> Unit {
-        return {
-            activity?.let {
-                val builder = ImagePickerBuilder(it.getString(R.string.choose_image),
-                        intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY,
-                                ImagePickerTabTypeDef.TYPE_CAMERA),
-                        GalleryType.IMAGE_ONLY,
-                        ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                        ImagePickerBuilder.DEFAULT_MIN_RESOLUTION,
-                        null,
-                        true,
-                        null,
-                        null)
-                val intent = ImagePickerActivity.getIntent(it, builder)
-                startActivityForResult(intent, REQUEST_CODE_CHAT_IMAGE)
-            }
+    private fun onAttachImageClicked() {
+        activity?.let {
+            val builder = ImagePickerBuilder(it.getString(R.string.choose_image),
+                    intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY,
+                            ImagePickerTabTypeDef.TYPE_CAMERA),
+                    GalleryType.IMAGE_ONLY,
+                    ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                    ImagePickerBuilder.DEFAULT_MIN_RESOLUTION,
+                    null,
+                    true,
+                    null,
+                    null)
+            val intent = ImagePickerActivity.getIntent(it, builder)
+            startActivityForResult(intent, REQUEST_CODE_CHAT_IMAGE)
         }
     }
 
@@ -422,7 +419,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun onClickImagePicker() {
-        //TODO do something
+        onAttachImageClicked()
     }
 
     override fun createChatMenuFactory(): ChatMenuFactory {
