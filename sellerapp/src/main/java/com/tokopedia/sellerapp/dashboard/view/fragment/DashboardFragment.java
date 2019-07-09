@@ -54,6 +54,7 @@ import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.design.reputation.ShopReputationView;
 import com.tokopedia.design.widget.WarningTickerView;
+import com.tokopedia.gm.common.data.source.cloud.model.GoldGetPmOsStatus;
 import com.tokopedia.gm.common.data.source.cloud.model.ShopScoreResult;
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel;
 import com.tokopedia.gm.common.utils.PowerMerchantTracking;
@@ -363,9 +364,10 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
 
     @Override
     public void onSuccessGetShopInfoAndScore(ShopModel shopModel,
-                                             ShopStatusModel shopStatusModel,
+                                             GoldGetPmOsStatus goldGetPmOsStatus,
                                              ShopScoreResult shopScoreResult) {
         headerShopInfoLoadingStateView.setViewState(LoadingStateView.VIEW_CONTENT);
+        ShopStatusModel shopStatusModel = goldGetPmOsStatus.getResult().getData();
         updateShopInfo(shopModel, shopStatusModel);
         updateReputation(shopModel);
         updateTransaction(shopModel);

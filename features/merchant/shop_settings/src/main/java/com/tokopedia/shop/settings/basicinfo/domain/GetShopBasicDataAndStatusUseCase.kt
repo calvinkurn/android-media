@@ -1,7 +1,7 @@
 package com.tokopedia.shop.settings.basicinfo.domain
 
 import com.tokopedia.gm.common.constant.GMParamApiContant
-import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
+import com.tokopedia.gm.common.data.source.cloud.model.GoldGetPmOsStatus
 import com.tokopedia.gm.common.domain.interactor.GetShopStatusUseCase
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopBasicDataUseCase
@@ -13,14 +13,14 @@ import javax.inject.Inject
 
 class GetShopBasicDataAndStatusUseCase @Inject
 constructor(private val getShopBasicDataUseCase: GetShopBasicDataUseCase,
-            private val getShopStatusUseCase: GetShopStatusUseCase) : UseCase<Pair<ShopBasicDataModel?, ShopStatusModel?>>() {
+            private val getShopStatusUseCase: GetShopStatusUseCase) : UseCase<Pair<ShopBasicDataModel?, GoldGetPmOsStatus?>>() {
 
-    override fun createObservable(requestParams: RequestParams): Observable<Pair<ShopBasicDataModel?, ShopStatusModel?>> {
+    override fun createObservable(requestParams: RequestParams): Observable<Pair<ShopBasicDataModel?, GoldGetPmOsStatus?>> {
         return Observable.zip(
             getShopBasicDataUseCase.createObservable(RequestParams.EMPTY)
                 .subscribeOn(Schedulers.io()),
             getShopStatusUseCase.createObservable(requestParams)
-                .subscribeOn(Schedulers.io())){ t1: ShopBasicDataModel?, t2: ShopStatusModel? ->
+                .subscribeOn(Schedulers.io())){ t1: ShopBasicDataModel?, t2: GoldGetPmOsStatus? ->
             t1 to t2
         }
     }

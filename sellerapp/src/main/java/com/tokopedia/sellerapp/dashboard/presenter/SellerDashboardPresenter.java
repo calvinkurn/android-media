@@ -11,9 +11,8 @@ import com.tokopedia.core.drawer2.domain.interactor.NewNotificationUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.NotificationUseCase;
 import com.tokopedia.core.drawer2.view.subscriber.NotificationSubscriber;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.gm.common.data.source.cloud.model.GoldGetPmOsStatus;
 import com.tokopedia.gm.common.data.source.cloud.model.ShopScoreResult;
-import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel;
-import com.tokopedia.gm.common.domain.interactor.GetPowerMerchantStatusNoKycUseCase;
 import com.tokopedia.seller.product.manage.constant.CatalogProductOption;
 import com.tokopedia.seller.product.manage.constant.ConditionProductOption;
 import com.tokopedia.seller.product.manage.constant.PictureStatusProductOption;
@@ -22,10 +21,6 @@ import com.tokopedia.seller.product.picker.data.model.ProductListSellerModel;
 import com.tokopedia.seller.product.picker.domain.interactor.GetProductListSellingUseCase;
 import com.tokopedia.seller.shop.setting.constant.ShopCloseAction;
 import com.tokopedia.seller.shop.setting.domain.interactor.UpdateShopScheduleUseCase;
-import com.tokopedia.seller.shopscore.domain.model.ShopScoreMainDomainModel;
-import com.tokopedia.seller.shopscore.view.mapper.ShopScoreMapper;
-import com.tokopedia.seller.shopscore.view.model.ShopScoreViewModel;
-import com.tokopedia.sellerapp.dashboard.model.ShopModelWithScore;
 import com.tokopedia.sellerapp.dashboard.presenter.listener.NotificationListener;
 import com.tokopedia.sellerapp.dashboard.usecase.GetShopInfoWithScoreUseCase;
 import com.tokopedia.sellerapp.dashboard.view.listener.SellerDashboardView;
@@ -76,8 +71,8 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
                 GetShopInfoWithScoreUseCase.createRequestParams(userSession.getShopId()), getShopInfoAndScoreSubscriber());
     }
 
-    private Subscriber<Triple<ShopModel, ShopStatusModel, ShopScoreResult>> getShopInfoAndScoreSubscriber() {
-        return new Subscriber<Triple<ShopModel, ShopStatusModel, ShopScoreResult>>() {
+    private Subscriber<Triple<ShopModel, GoldGetPmOsStatus, ShopScoreResult>> getShopInfoAndScoreSubscriber() {
+        return new Subscriber<Triple<ShopModel, GoldGetPmOsStatus, ShopScoreResult>>() {
             @Override
             public void onCompleted() {
 
@@ -91,7 +86,7 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
             }
 
             @Override
-            public void onNext(Triple<ShopModel, ShopStatusModel, ShopScoreResult> resultTriple) {
+            public void onNext(Triple<ShopModel, GoldGetPmOsStatus, ShopScoreResult> resultTriple) {
                 getView().onSuccessGetShopInfoAndScore(
                         resultTriple.getFirst(),
                         resultTriple.getSecond(),

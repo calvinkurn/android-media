@@ -3,18 +3,15 @@ package com.tokopedia.sellerapp.dashboard.view.presenter;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.flashsale.management.common.domain.interactor.FlashsaleGetSellerStatusUseCase;
-import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel;
+import com.tokopedia.gm.common.data.source.cloud.model.GoldGetPmOsStatus;
 import com.tokopedia.gm.common.domain.interactor.GetShopStatusUseCase;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.sellerapp.R;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import rx.Subscriber;
-
-import com.tokopedia.sellerapp.R;
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 
 /**
  * Created by hendry on 21/11/18.
@@ -28,7 +25,7 @@ public class SellerDashboardDrawerPresenter {
     private SellerDashboardView listener;
     public interface SellerDashboardView {
         void onSuccessGetFlashsaleSellerStatus(Boolean isVisible);
-        void onSuccessGetShopInfo(ShopStatusModel shopStatusModel);
+        void onSuccessGetShopInfo(GoldGetPmOsStatus goldGetPmOsStatus);
         Context getContext();
     }
 
@@ -67,7 +64,7 @@ public class SellerDashboardDrawerPresenter {
 
     public void isGoldMerchantAsync() {
         getShopStatusUseCase.execute(GetShopStatusUseCase.Companion.createRequestParams(userSession.getShopId()),
-                new Subscriber<ShopStatusModel>() {
+                new Subscriber<GoldGetPmOsStatus>() {
             @Override
             public void onCompleted() {
 
@@ -79,8 +76,8 @@ public class SellerDashboardDrawerPresenter {
             }
 
             @Override
-            public void onNext(ShopStatusModel shopStatusModel) {
-                listener.onSuccessGetShopInfo(shopStatusModel);
+            public void onNext(GoldGetPmOsStatus goldGetPmOsStatus) {
+                listener.onSuccessGetShopInfo(goldGetPmOsStatus);
             }
         });
     }

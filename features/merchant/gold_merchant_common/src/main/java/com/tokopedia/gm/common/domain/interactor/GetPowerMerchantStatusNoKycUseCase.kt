@@ -1,8 +1,8 @@
 package com.tokopedia.gm.common.domain.interactor
 
 import com.tokopedia.gm.common.constant.GMParamApiContant
+import com.tokopedia.gm.common.data.source.cloud.model.GoldGetPmOsStatus
 import com.tokopedia.gm.common.data.source.cloud.model.ShopScoreResult
-import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
@@ -11,9 +11,9 @@ import javax.inject.Inject
 
 class GetPowerMerchantStatusNoKycUseCase @Inject constructor(private val getShopStatusUseCase: GetShopStatusUseCase,
                                                              private val getShopScoreUseCase: GetShopScoreUseCase)
-    : UseCase<Pair<ShopStatusModel, ShopScoreResult>>() {
+    : UseCase<Pair<GoldGetPmOsStatus, ShopScoreResult>>() {
 
-    override fun createObservable(requestParams: RequestParams): Observable<Pair<ShopStatusModel, ShopScoreResult>> {
+    override fun createObservable(requestParams: RequestParams): Observable<Pair<GoldGetPmOsStatus, ShopScoreResult>> {
         return Observable.zip(
                 getShopStatus(requestParams),
                 getShopScore(requestParams)) { t1, t2 ->
@@ -21,7 +21,7 @@ class GetPowerMerchantStatusNoKycUseCase @Inject constructor(private val getShop
         }
     }
 
-    private fun getShopStatus(requestParams: RequestParams): Observable<ShopStatusModel> {
+    private fun getShopStatus(requestParams: RequestParams): Observable<GoldGetPmOsStatus> {
         return getShopStatusUseCase.createObservable(requestParams).subscribeOn(Schedulers.io())
     }
 

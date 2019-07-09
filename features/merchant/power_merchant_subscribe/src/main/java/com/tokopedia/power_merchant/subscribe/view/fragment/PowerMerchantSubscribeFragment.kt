@@ -285,7 +285,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     }
 
     override fun onSuccessGetPmInfo(powerMerchantStatus: PowerMerchantStatus) {
-        shopStatusModel = powerMerchantStatus.shopStatusModel
+        shopStatusModel = powerMerchantStatus.goldGetPmOsStatus.result.data
         getApprovalStatusPojo = powerMerchantStatus.getApprovalStatusPojo
         shopScore = powerMerchantStatus.shopScore.data.value
         minScore = powerMerchantStatus.shopScore.badgeScore
