@@ -63,11 +63,12 @@
             android:layout_marginLeft="@dimen/dp_16"
             android:clickable="false"
             android:focusable="false"
-            android:src="@drawable/ic_byme_blue"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/text_username"
             app:layout_constraintStart_toEndOf="@+id/image_profile_progress"
-            app:layout_constraintTop_toTopOf="@+id/text_username" />
+            app:layout_constraintTop_toTopOf="@+id/text_username"
+            app:srcCompat="@drawable/ic_byme_blue"
+            tools:ignore="ContentDescription" />
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/text_username"
