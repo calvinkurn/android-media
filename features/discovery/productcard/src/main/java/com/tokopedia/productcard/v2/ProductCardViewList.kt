@@ -1,6 +1,8 @@
 package com.tokopedia.productcard.v2
 
 import android.content.Context
+import android.graphics.drawable.GradientDrawable
+import android.os.Build
 import android.support.constraint.ConstraintSet
 import android.util.AttributeSet
 import android.view.View
@@ -123,6 +125,33 @@ class ProductCardViewList: ProductCardView {
                 textViewShopLocation
             }
             else -> null
+        }
+    }
+
+    override fun setLabelPromoType(promoLabelType: String) {
+        super.setLabelPromoType(promoLabelType)
+        setLabelPromoCornerRadius()
+    }
+
+    private fun setLabelPromoCornerRadius() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            val labelPromoBackground = labelPromo?.background?.mutate()
+
+            if (labelPromoBackground is GradientDrawable) {
+
+                val cornerRadii =
+                        labelPromoBackground.cornerRadii ?:
+                        floatArrayOf(
+                            0f, 0f, 0f, 0f,
+                            0f, 0f, 0f, 0f
+                        )
+
+                labelPromoBackground.cornerRadii =
+                        floatArrayOf(
+                                0f, 0f, 0f, 0f,
+                                cornerRadii[4], cornerRadii[5], cornerRadii[6], cornerRadii[7]
+                        )
+            }
         }
     }
 }
