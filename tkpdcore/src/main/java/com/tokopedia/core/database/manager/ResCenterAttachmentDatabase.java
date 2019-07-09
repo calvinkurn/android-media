@@ -9,7 +9,7 @@ import com.tokopedia.core.database.DbMetadata;
 import com.tokopedia.core.database.dao.ResCenterAttachmentDao;
 import com.tokopedia.core.database.model.ResCenterAttachment;
 
-@Database(entities = {ResCenterAttachment.class}, version = DbMetadata.resCenterDbVersion)
+@Database(entities = {ResCenterAttachment.class}, version = DbMetadata.resCenterDbVersion, exportSchema= false)
 public abstract class ResCenterAttachmentDatabase extends RoomDatabase {
 
     public abstract ResCenterAttachmentDao resCenterAttachmentDao();
@@ -17,7 +17,7 @@ public abstract class ResCenterAttachmentDatabase extends RoomDatabase {
     private ResCenterAttachmentDatabase() {}
 
     private static class InstanceHolder {
-        private static final ResCenterAttachmentDatabase INSTANCE;
+        private static ResCenterAttachmentDatabase INSTANCE;
 
         static ResCenterAttachmentDatabase getInstance(Context context) {
             if (INSTANCE == null) {
