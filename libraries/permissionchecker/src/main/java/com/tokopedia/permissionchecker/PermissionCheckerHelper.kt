@@ -315,7 +315,7 @@ class PermissionCheckerHelper {
                 permissionText) else rationaleText
     }
 
-    private fun hasPermission(context: Context, permissions: Array<String>): Boolean {
+    fun hasPermission(context: Context, permissions: Array<String>): Boolean {
         val iterator = permissions.iterator()
         while (iterator.hasNext()) {
             val permission = iterator.next()

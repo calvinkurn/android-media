@@ -78,7 +78,7 @@
                         android:layout_gravity="center"
                         android:layout_marginStart="4dp"
                         android:layout_marginLeft="4dp"
-                        android:src="@drawable/ic_search_bar" />
+                        app:srcCompat="@drawable/ic_search_bar" />
 
                     <TextView
                         android:id="@+id/et_search"
@@ -151,7 +151,7 @@
 
                 <include layout="@layout/partial_product_detail_wholesale"/>
 
-                <view.customview.TradeInTextView
+                <com.tokopedia.tradein.view.customview.TradeInTextView
                     android:id="@+id/tv_trade_in"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -161,12 +161,14 @@
                     android:layout_marginBottom="@dimen/dp_8"
                     android:visibility="gone" />
                 <include layout="@layout/partial_product_full_descr"/>
+                <include layout="@layout/partial_product_recom_1"/>
                 <include layout="@layout/partial_product_shop_info"/>
-                <include layout="@layout/partial_product_recommendation"/>
+                <include layout="@layout/partial_product_recom_2"/>
                 <include layout="@layout/partial_product_image_review"/>
                 <include layout="@layout/partial_most_helpful_review_view"/>
                 <include layout="@layout/partial_product_latest_talk"/>
-                <include layout="@layout/partial_other_product"/>
+                <include layout="@layout/partial_product_recom_3"/>
+                <include layout="@layout/partial_product_recom_4"/>
 
                 <FrameLayout android:id="@+id/open_shop"
                     android:layout_width="match_parent"

@@ -14,6 +14,7 @@ import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment;
 import com.tokopedia.imagepicker.picker.instagram.view.fragment.ImagePickerInstagramFragment;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
+import com.tokopedia.imagepicker.picker.video.VideoRecorderFragment;
 
 /**
  * Created by hendry on 19/04/18.
@@ -41,6 +42,8 @@ public class ImagePickerViewPagerAdapter extends FragmentStatePagerAdapter {
                 return createCameraFragment();
             case ImagePickerTabTypeDef.TYPE_INSTAGRAM:
                 return createInstagramFragment();
+            case ImagePickerTabTypeDef.TYPE_RECORDER:
+                return createVideoFragment();
             default:
                 return new Fragment();
         }
@@ -67,6 +70,10 @@ public class ImagePickerViewPagerAdapter extends FragmentStatePagerAdapter {
                 imagePickerBuilder.getMinResolution());
     }
 
+    protected Fragment createVideoFragment(){
+        return new VideoRecorderFragment();
+    }
+
     @Override
     public CharSequence getPageTitle(int position) {
         switch (imagePickerBuilder.getTabTypeDef(position)) {
@@ -76,6 +83,8 @@ public class ImagePickerViewPagerAdapter extends FragmentStatePagerAdapter {
                 return context.getString(R.string.camera);
             case ImagePickerTabTypeDef.TYPE_INSTAGRAM:
                 return context.getString(R.string.instagram);
+            case ImagePickerTabTypeDef.TYPE_RECORDER:
+                return context.getString(R.string.recorder);
             default:
                 return context.getString(R.string.gallery);
         }

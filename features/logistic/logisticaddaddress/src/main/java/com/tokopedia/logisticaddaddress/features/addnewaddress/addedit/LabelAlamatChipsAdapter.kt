@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.logisticaddaddress.R
+import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import kotlinx.android.synthetic.main.chips_item.view.*
 
 /**
@@ -14,8 +15,6 @@ import kotlinx.android.synthetic.main.chips_item.view.*
  */
 class LabelAlamatChipsAdapter(context: Context?, private var actionListener: ActionListener) : RecyclerView.Adapter<LabelAlamatChipsAdapter.ViewHolder>() {
     var labelAlamatList = mutableListOf<String>()
-    private var drawablePressed = context?.let { ContextCompat.getDrawable(it, R.drawable.bg_chips_pressed) }
-    private var drawableDefault = context?.let { ContextCompat.getDrawable(it, R.drawable.bg_chips) }
 
     interface ActionListener {
         fun onLabelAlamatChipClicked(labelAlamat: String)
@@ -32,10 +31,10 @@ class LabelAlamatChipsAdapter(context: Context?, private var actionListener: Act
     @Suppress("DEPRECATION")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val res = holder.itemView.context.resources
-        holder.itemView.tv_chips_item.apply {
+        holder.itemView.tv_chips_item.run {
             text = labelAlamatList[position]
+            setTextColor(res.getColor(R.color.font_black_secondary_54))
             setOnClickListener {
-                background = drawablePressed
                 setTextColor(res.getColor(R.color.tkpd_green))
                 actionListener.onLabelAlamatChipClicked(labelAlamatList[position])
             }

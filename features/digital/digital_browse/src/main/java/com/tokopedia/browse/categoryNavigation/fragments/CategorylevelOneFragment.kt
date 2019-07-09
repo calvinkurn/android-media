@@ -99,8 +99,8 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
                     } else {
                         categoryList[selectedPosition].isSelected = true
                     }
-                    master_list.adapter.notifyDataSetChanged()
-                    master_list.layoutManager.scrollToPosition(selectedPosition)
+                    master_list.adapter?.notifyDataSetChanged()
+                    master_list.layoutManager?.scrollToPosition(selectedPosition)
 
                     initiateSlaveFragmentLoading(selectedPosition)
                 }
@@ -139,8 +139,8 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
             if (position != selectedPosition) {
                 categoryList[selectedPosition].isSelected = false
                 categoryList[position].isSelected = true
-                master_list.adapter.notifyItemChanged(position)
-                master_list.adapter.notifyItemChanged(selectedPosition)
+                master_list.adapter?.notifyItemChanged(position)
+                master_list.adapter?.notifyItemChanged(selectedPosition)
                 selectedPosition = position
                 if (activity != null)
                     (activity as CategoryChangeListener).onCategoryChanged(id, categoryName, applink)

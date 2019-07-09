@@ -33,7 +33,7 @@ import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.analytics.AffiliateAnalytics;
 import com.tokopedia.affiliate.analytics.AffiliateEventTracking;
 import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent;
-import com.tokopedia.affiliate.common.preference.AffiliatePreference;
+import com.tokopedia.affiliatecommon.data.util.AffiliatePreference;
 import com.tokopedia.affiliate.common.viewmodel.ExploreCardViewModel;
 import com.tokopedia.affiliate.common.viewmodel.ExploreTitleViewModel;
 import com.tokopedia.affiliate.common.widget.ExploreSearchView;

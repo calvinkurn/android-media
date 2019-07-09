@@ -45,19 +45,43 @@
             android:id="@+id/et_detail_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:enabled="true"
             android:hint="@string/et_detail_address_hint"
             android:inputType="text"
-            android:textColor="#ae31353b" />
+            android:textColor="#ae31353b"
+            android:maxLines="1"
+            android:maxLength="60"
+            android:textSize="@dimen/sp_15"
+            android:overScrollMode="always"
+            android:scrollbarStyle="insideInset"
+            android:scrollbars="vertical"/>
 
     </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
-    <TextView
-        android:id="@+id/tv_detail_address_info"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_4"
-        android:textSize="@dimen/sp_12"
-        android:textColor="@color/label_grey"
-        android:text="@string/tv_detail_address_info"/>
+        android:layout_marginTop="@dimen/dp_4">
+
+        <TextView
+            android:id="@+id/tv_detail_address_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_12"
+            android:textColor="@color/label_grey"
+            android:text="@string/tv_detail_address_info"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"/>
+
+        <TextView
+            android:id="@+id/tv_detail_address_counter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_12"
+            android:textColor="@color/label_grey"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"/>
+
+    </RelativeLayout>
 
 </LinearLayout>

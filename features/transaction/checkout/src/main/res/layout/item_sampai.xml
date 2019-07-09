@@ -6,15 +6,43 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
-        android:text="Tokopedia Corner"
-        android:textSize="@dimen/sp_14"
-        android:textStyle="bold" />
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/brand_tokopedia_corner"
+            android:textSize="@dimen/sp_14"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/img_info"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:contentDescription="@string/information_icon"
+            android:src="@drawable/ic_info_black" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:textSize="12sp"
+            android:text="@string/gratis_ongkir"
+            android:textColor="@color/white"
+            android:background="@drawable/bg_label_red"/>
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/text_view_ticker"
@@ -27,9 +55,9 @@
         android:layout_marginBottom="@dimen/dp_16"
         android:background="@drawable/bg_warning"
         android:padding="@dimen/dp_16"
-        android:text="Saat ini, pengiriman dengan tujuan Tokopedia Corner hanya dapat menggunakan SiCepat Regular."
+        android:text="@string/corner_info_ticker"
         android:textSize="@dimen/sp_12"
-        tools:text="Saat ini, pengiriman dengan tujuan Tokopedia Corner hanya dapat menggunakan SiCepat Regular." />
+        tools:text="@string/corner_info_ticker" />
 
     <android.support.v7.widget.CardView
         android:id="@+id/view_tkpd_corner"
@@ -51,9 +79,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_4"
+                android:text="@string/brand_tokopedia_corner"
                 android:textColor="@color/black_38"
                 android:textSize="@dimen/sp_12"
-                android:text="Tokopedia Corner"
                 tools:text="Tokopedia Corner" />
 
             <TextView
@@ -78,9 +106,10 @@
                 android:id="@+id/radio_button_corner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:clickable="false"
                 android:layout_centerVertical="true"
+                android:clickable="false"
                 android:theme="@style/TransactionToggleButton" />
 
         </RelativeLayout>
