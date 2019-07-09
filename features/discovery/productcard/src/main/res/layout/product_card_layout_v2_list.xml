@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/productCardViewContainer"
     app:cardCornerRadius="@dimen/dp_8"
-    app:cardElevation="@dimen/dp_1"
+    app:cardElevation="@dimen/dp_6"
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true"
     android:layout_width="match_parent"
@@ -17,30 +17,38 @@
         android:paddingBottom="@dimen/dp_8"
         tools:layout_height="match_parent">
 
-        <com.tokopedia.topads.sdk.view.ImpressedImageView
-            android:id="@+id/imageProduct"
-            android:layout_width="@dimen/dp_96"
-            android:layout_height="@dimen/dp_96"
+        <android.support.v7.widget.CardView
+            android:id="@+id/cardViewImageProduct"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
-            android:adjustViewBounds="true"
-            android:gravity="center"
-            android:scaleType="centerCrop"
-            android:visibility="gone"
-            app:corner_radius="@dimen/dp_8"
+            app:cardCornerRadius="@dimen/dp_8"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:layout_height="@dimen/dp_96"
-            tools:visibility="visible" />
+            android:gravity="center">
+
+            <com.tokopedia.topads.sdk.view.ImpressedImageView
+                android:id="@+id/imageProduct"
+                android:layout_width="@dimen/dp_96"
+                android:layout_height="@dimen/dp_96"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:visibility="gone"
+                app:corner_radius="@dimen/dp_8"
+                tools:layout_height="@dimen/dp_96"
+                tools:visibility="visible" />
+
+        </android.support.v7.widget.CardView>
 
         <ImageView
             android:id="@+id/buttonWishlist"
             android:layout_width="@dimen/dp_28"
             android:layout_height="@dimen/dp_28"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
             android:background="@drawable/product_card_wishlist_icon_background"
             android:padding="@dimen/dp_4"
             android:scaleType="fitXY"
@@ -52,11 +60,12 @@
 
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/labelPromo"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_20"
             android:visibility="gone"
-            app:layout_constraintLeft_toLeftOf="@id/imageProduct"
-            app:layout_constraintBottom_toBottomOf="@id/imageProduct"
+            app:layout_constraintLeft_toLeftOf="@id/cardViewImageProduct"
+            app:layout_constraintRight_toRightOf="@id/cardViewImageProduct"
+            app:layout_constraintBottom_toBottomOf="@id/cardViewImageProduct"
             tools:visibility="visible"
             tools:text="Promo Label" />
 
@@ -75,7 +84,7 @@
             android:visibility="gone"
             app:typographyType="small"
             app:typographyWeight="bold"
-            app:layout_constraintLeft_toRightOf="@id/imageProduct"
+            app:layout_constraintLeft_toRightOf="@id/cardViewImageProduct"
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="visible"
             tools:text="Shop Name"/>
@@ -93,7 +102,7 @@
             android:maxLines="2"
             android:textColor="@color/product_card_product_name_text_color"
             android:visibility="gone"
-            app:layout_constraintLeft_toRightOf="@id/imageProduct"
+            app:layout_constraintLeft_toRightOf="@id/cardViewImageProduct"
             app:layout_constraintTop_toBottomOf="@id/textViewShopName"
             app:layout_constraintRight_toLeftOf="@id/buttonWishlist"
             app:typographyType="heading_5"
@@ -110,7 +119,7 @@
             android:visibility="gone"
             android:gravity="center_vertical"
             app:labelType="general_light_red"
-            app:layout_constraintLeft_toRightOf="@id/imageProduct"
+            app:layout_constraintLeft_toRightOf="@id/cardViewImageProduct"
             app:layout_constraintTop_toBottomOf="@id/textViewProductName"
             tools:text="100%"
             tools:visibility="visible" />
@@ -142,7 +151,7 @@
             android:layout_marginRight="@dimen/dp_8"
             android:visibility="gone"
             android:textColor="@color/product_card_price_text_color"
-            app:layout_constraintLeft_toRightOf="@id/imageProduct"
+            app:layout_constraintLeft_toRightOf="@id/cardViewImageProduct"
             app:layout_constraintTop_toBottomOf="@id/labelDiscount"
             app:layout_constraintRight_toLeftOf="@id/buttonWishlist"
             app:typographyType="body_2"
@@ -158,7 +167,7 @@
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
             android:visibility="gone"
-            app:layout_constraintLeft_toRightOf="@id/imageProduct"
+            app:layout_constraintLeft_toRightOf="@id/cardViewImageProduct"
             app:layout_constraintTop_toBottomOf="@id/textViewPrice"
             android:orientation="horizontal"
             tools:visibility="visible" />
@@ -191,7 +200,7 @@
             android:layout_marginStart="@dimen/dp_8"
             android:layout_gravity="center_vertical"
             android:visibility="gone"
-            app:layout_constraintLeft_toRightOf="@id/imageProduct"
+            app:layout_constraintLeft_toRightOf="@id/cardViewImageProduct"
             app:layout_constraintTop_toBottomOf="@id/textViewShopLocation"
             tools:visibility="visible"
             tools:background="@drawable/ic_star_five" />
@@ -218,7 +227,7 @@
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
             android:visibility="gone"
-            app:layout_constraintLeft_toRightOf="@id/imageProduct"
+            app:layout_constraintLeft_toRightOf="@id/cardViewImageProduct"
             app:layout_constraintTop_toBottomOf="@id/textViewShopLocation"
             tools:text="Credibility Label"
             tools:visibility="gone" />
@@ -232,7 +241,7 @@
             android:layout_marginStart="@dimen/dp_8"
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/imageRating"
-            app:layout_constraintLeft_toRightOf="@id/imageProduct"
+            app:layout_constraintLeft_toRightOf="@id/cardViewImageProduct"
             tools:text="Offers Label"
             tools:visibility="visible" />
 

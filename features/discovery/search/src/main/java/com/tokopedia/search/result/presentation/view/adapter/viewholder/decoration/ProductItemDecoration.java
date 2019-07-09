@@ -16,7 +16,10 @@ import java.util.List;
 
 public class ProductItemDecoration extends RecyclerView.ItemDecoration {
 
-    private final int spacing;
+    private final int leftSpacing;
+    private final int topSpacing;
+    private final int rightSpacing;
+    private final int bottomSpacing;
     private final int color;
 
     private final List<Integer> allowedViewTypes = Arrays.asList(
@@ -24,8 +27,11 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
             R.layout.search_product_card_big_grid,
             R.layout.search_product_card_list);
 
-    public ProductItemDecoration(int spacing, int color) {
-        this.spacing = spacing;
+    public ProductItemDecoration(int leftSpacing, int topSpacing, int rightSpacing, int bottomSpacing, int color) {
+        this.leftSpacing = leftSpacing;
+        this.topSpacing = topSpacing;
+        this.rightSpacing = rightSpacing;
+        this.bottomSpacing = bottomSpacing;
         this.color = color;
     }
 
@@ -40,10 +46,10 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
             final int relativePos = getProductItemRelativePosition(parent, view);
             final int totalSpanCount = getTotalSpanCount(parent);
 
-            outRect.top = isTopProductItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : spacing / 2;
-            outRect.left = isFirstInRow(relativePos, totalSpanCount) ? spacing : spacing / 2;
-            outRect.right = isLastInRow(relativePos, totalSpanCount) ? spacing : spacing / 2;
-            outRect.bottom = isBottomProductItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : spacing / 2;
+            outRect.left = isFirstInRow(relativePos, totalSpanCount) ? leftSpacing : leftSpacing / 4;
+            outRect.top = isTopProductItem(parent, absolutePos, relativePos, totalSpanCount) ? topSpacing : topSpacing / 4;
+            outRect.right = isLastInRow(relativePos, totalSpanCount) ? rightSpacing : rightSpacing / 4;
+            outRect.bottom = isBottomProductItem(parent, absolutePos, relativePos, totalSpanCount) ? bottomSpacing : bottomSpacing / 4;
         }
     }
 
@@ -122,10 +128,10 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
             View child = parent.getChildAt(i);
             int absolutePos = parent.getChildAdapterPosition(child);
             if (isProductItem(parent, absolutePos) || child == null) {
-                canvas.drawRect(child.getLeft() - spacing, child.getTop() - spacing, child.getRight() + spacing, child.getTop(), paint);
-                canvas.drawRect(child.getLeft() - spacing, child.getBottom(), child.getRight() + spacing, child.getBottom() + spacing, paint);
-                canvas.drawRect(child.getLeft() - spacing, child.getTop(), child.getLeft(), child.getBottom(), paint);
-                canvas.drawRect(child.getRight(), child.getTop(), child.getRight() + spacing, child.getBottom(), paint);
+                canvas.drawRect(child.getLeft() - topSpacing, child.getTop() - topSpacing, child.getRight() + topSpacing, child.getTop(), paint);
+                canvas.drawRect(child.getLeft() - topSpacing, child.getBottom(), child.getRight() + topSpacing, child.getBottom() + topSpacing, paint);
+                canvas.drawRect(child.getLeft() - topSpacing, child.getTop(), child.getLeft(), child.getBottom(), paint);
+                canvas.drawRect(child.getRight(), child.getTop(), child.getRight() + topSpacing, child.getBottom(), paint);
             }
         }
     }

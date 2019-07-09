@@ -241,6 +241,9 @@ public class ProductListFragment
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new ProductItemDecoration(
                 getContext().getResources().getDimensionPixelSize(R.dimen.dp_16),
+                getContext().getResources().getDimensionPixelSize(R.dimen.dp_16),
+                getContext().getResources().getDimensionPixelSize(R.dimen.dp_16),
+                getContext().getResources().getDimensionPixelSize(R.dimen.dp_16),
                 getContext().getResources().getColor(R.color.white)
         ));
         setHeaderTopAds(true);
