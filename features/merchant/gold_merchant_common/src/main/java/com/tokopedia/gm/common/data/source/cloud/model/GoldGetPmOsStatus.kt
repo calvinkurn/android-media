@@ -11,11 +11,11 @@ data class GoldGetPmOsStatus(
 )
 
 data class ShopStatusData(
-        @SerializedName("getPMOSStatusHeaderResponse")
+        @SerializedName("header")
         @Expose
         val header : ShopStatusHeader = ShopStatusHeader(),
 
-        @SerializedName("getPMOSStatusDataResponse")
+        @SerializedName("data")
         @Expose
         val data : ShopStatusModel = ShopStatusModel()
 )
