@@ -43,7 +43,7 @@ public class InstantDebitBcaFragment extends BaseDaggerFragment implements Insta
     @Inject
     UserSessionInterface userSession;
 
-    private RelativeLayout layoutWidget;
+    protected RelativeLayout layoutWidget;
     private BCARegistrasiXCOWidget widgetBca;
     private ActionListener listener;
     private String applinkUrl;
@@ -67,12 +67,16 @@ public class InstantDebitBcaFragment extends BaseDaggerFragment implements Insta
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         applinkUrl = getArguments().getString(InstantDebitBcaActivity.CALLBACK_URL);
-        widgetBca = new BCARegistrasiXCOWidget(getActivity(), XCOEnum.ENVIRONMENT.PROD);
+        presenter.getAccessTokenBca();
+        createAndSetBcaWidget();
+    }
+
+    @Override
+    public void createAndSetBcaWidget(){
+        widgetBca = new BCARegistrasiXCOWidget(getActivity(), XCOEnum.ENVIRONMENT.DEV);
         widgetBca.setListener(this);
         layoutWidget.addView(widgetBca);
-        presenter.getAccessTokenBca();
     }
 
     @Override

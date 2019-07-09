@@ -14,6 +14,8 @@ public interface InstantDebitBcaContract {
         void redirectPageAfterRegisterBca();
 
         void showErrorMessage(Throwable throwable);
+
+        void createAndSetBcaWidget();
     }
 
     interface Presenter extends CustomerPresenter<View> {

@@ -8,5 +8,5 @@ import com.tokopedia.abstraction.constant.TkpdAppLink;
 public class ApplinkConstant extends TkpdAppLink {
 
     public static final String INSTANT_DEBIT_BCA_APPLINK  = "tokopedia://instantdebitbca";
-
+    public static final String INSTANT_DEBIT_BCA_EDITLIMIT_APPLINK  = "tokopedia://editbcaoneklik";
 }

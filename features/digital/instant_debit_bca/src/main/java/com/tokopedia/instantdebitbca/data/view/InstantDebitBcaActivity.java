@@ -18,7 +18,6 @@ public class InstantDebitBcaActivity extends BaseSimpleActivity implements Insta
 
     public static final String CALLBACK_URL = "callbackUrl";
 
-    @SuppressWarnings("unused")
     @DeepLink({ApplinkConstant.INSTANT_DEBIT_BCA_APPLINK})
     public static Intent intentForTaskStackBuilderMethods(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
