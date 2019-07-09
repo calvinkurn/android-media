@@ -392,6 +392,9 @@ class HotelDetailFragment : HotelBaseFragment() {
     }
 
     private fun setupPolicySwitcher(data: PropertyDetailData) {
+        scv_hotel_date.setLeftSubtitleText(data.property.checkinInfo)
+        scv_hotel_date.setRightSubtitleText(data.property.checkoutInfo)
+
         if (data.property.checkinTo.isNotEmpty()) {
             scv_hotel_date.setLeftTitleText(getString(R.string.hotel_detail_check_from_to, data.property.checkInFrom, data.property.checkinTo))
         } else {

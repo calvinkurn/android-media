@@ -25,8 +25,10 @@ propertyDetail(input: $data){
     isClosed
     checkinFrom
     checkinTo
+    checkinInfo
     checkoutFrom
     checkoutTo
+    checkoutInfo
     star
     description
     importantInformation
