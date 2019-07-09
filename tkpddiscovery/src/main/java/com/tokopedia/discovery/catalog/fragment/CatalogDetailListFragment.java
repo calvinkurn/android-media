@@ -309,7 +309,7 @@ public class CatalogDetailListFragment extends BasePresenterFragment<ICatalogDet
 
     @Override
     public void renderListLocation(@NonNull List<CatalogDetailListLocation> locationsData) {
-        if (mLocationsData == null) {
+        if (mLocationsData == null || locationsData == null) {
             return;
         }
         this.mLocationsData.clear();
