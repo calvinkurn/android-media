@@ -1,11 +1,14 @@
 package com.tokopedia.affiliate.feature.createpost.view.fragment
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.affiliate.R
+import com.tokopedia.affiliate.common.constant.AffiliateConstant
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -32,6 +35,7 @@ class AffiliateCreatePostFragment : BaseCreatePostFragment() {
     companion object {
         private const val AF_CREATE_POST_CACHE = "af_create_post_cache"
         private const val AF_ADD_PRODUCT = "af_add_product_%s"
+        private const val REQUEST_ATTACH_AFFILIATE_PRODUCT = 12
 
         fun createInstance(bundle: Bundle): AffiliateCreatePostFragment {
             val fragment = AffiliateCreatePostFragment()
@@ -57,7 +61,24 @@ class AffiliateCreatePostFragment : BaseCreatePostFragment() {
         isAddingProduct = true
 
         val intent = RouteManager.getIntent(context, ApplinkConst.AFFILIATE_EXPLORE)
-        startActivity(intent)
+        intent.putExtra(AffiliateConstant.PARAM_IS_NEED_RESULT, true)
+        startActivityForResult(intent, REQUEST_ATTACH_AFFILIATE_PRODUCT)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_ATTACH_AFFILIATE_PRODUCT && resultCode == Activity.RESULT_OK){
+            val adId = data?.getStringExtra("ad_id")
+            if (!adId.isNullOrBlank()){
+                if (!viewModel.adIdList.any { it == adId }) {
+                    viewModel.adIdList.add(adId)
+                    fetchContentForm()
+                } else {
+                    showUnifyErrorToaster(getString(R.string.af_duplicate_product), getString(R.string.af_title_ok))
+                }
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data)
+        }
     }
 
     override fun initVar(savedInstanceState: Bundle?) {

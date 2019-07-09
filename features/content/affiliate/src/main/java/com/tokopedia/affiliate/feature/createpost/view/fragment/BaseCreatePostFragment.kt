@@ -114,6 +114,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             viewModel.productIdList.removeAt(idPosition)
         }
         updateMediaPreview()
+        invalidatePostCallBack?.invalidatePostMenu(isPostEnabled)
     }
 
     companion object {
@@ -609,7 +610,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         return isFormInvalid
     }
 
-    private fun showUnifyErrorToaster(message: CharSequence, action: CharSequence? = null, actionClick: ((View) -> Unit)? = null){
+    protected fun showUnifyErrorToaster(message: CharSequence, action: CharSequence? = null, actionClick: ((View) -> Unit)? = null){
         view?.let {v ->
             if (action.isNullOrBlank()){
                 Toaster.showError(v, message, Snackbar.LENGTH_LONG)
