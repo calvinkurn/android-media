@@ -73,7 +73,7 @@ class DigitalTelcoFragment : BaseDaggerFragment() {
         val list = mutableListOf<DigitalProductSubMenu>()
         list.add(DigitalProductSubMenu(TelcoComponentType.TELCO_PREPAID, TelcoComponentName.TELCO_PREPAID))
         list.add(DigitalProductSubMenu(TelcoComponentType.TELCO_POSTPAID, TelcoComponentName.TELCO_POSTPAID))
-        header_view.setHeaderActive(DigitalSubMenuWidget.HEADER_LEFT)
+        header_view.setHeaderActive(posCurrentTabExtraParam)
         header_view.setListener(object : DigitalSubMenuWidget.ActionListener {
             override fun onClickSubMenu(subMenu: DigitalProductSubMenu) {
                 if (subMenu.id == TelcoComponentType.TELCO_PREPAID) {
