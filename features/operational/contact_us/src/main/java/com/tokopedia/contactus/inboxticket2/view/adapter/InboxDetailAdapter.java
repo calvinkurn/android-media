@@ -106,11 +106,12 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
         private TextView tvAttachmentHint;
         private AttachmentAdapter attachmentAdapter;
         private LinearLayoutManager layoutManager;
-        ImageView ratingThumbsUp;
-        ImageView ratingThumbsDown;
+        private ImageView ratingThumbsUp;
+        private ImageView ratingThumbsDown;
 
-        DetailViewHolder(View itemView) {
-            super(itemView);
+        DetailViewHolder(View view) {
+            super(view);
+            findindViewsId(view);
             ratingThumbsUp = itemView.findViewById(R.id.iv_csast_status_good);
             ratingThumbsDown = itemView.findViewById(R.id.iv_csast_status_bad);
             layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);

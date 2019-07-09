@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.widget.LinearLayoutManager;
@@ -39,6 +41,7 @@ import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
+import com.tokopedia.unifycomponents.Toaster;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,6 +80,7 @@ public class InboxDetailActivity extends InboxBaseActivity
     private View noTicketFound;
     private TextView tvNoTicket;
     private TextView tvOkButton;
+    private ConstraintLayout rootView;
     View viewReplyButton;
     TextView tvReplyButton;
     private ImageUploadAdapter imageUploadAdapter;
@@ -236,6 +240,7 @@ public class InboxDetailActivity extends InboxBaseActivity
     }
 
     private void findingViewsId() {
+        rootView = findViewById(R.id.root_view);
         tvTicketTitle = findViewById(R.id.tv_ticket_title);
         tvIdNum = findViewById(R.id.tv_id_num);
         rvMessageList = findViewById(R.id.rv_message_list);
@@ -732,12 +737,11 @@ public class InboxDetailActivity extends InboxBaseActivity
 
         @Override
         public void onSuccessSubmitOfRating ( int rating, int commentPosition){
-
             CommentsItem item = commentsItems.get(commentPosition);
             String rate = rating == 101 ? LIKE : DISLIKE;
             item.setRating(rate);
             detailAdapter.notifyItemChanged(commentPosition, item);
-
+            mPresenter.refreshLayout();
         }
 
         @Override
@@ -776,5 +780,12 @@ public class InboxDetailActivity extends InboxBaseActivity
         public void viewRplyButtonVisibility () {
             viewReplyButton.setVisibility(View.VISIBLE);
         }
+
+    @Override
+    public void showMessage(String message) {
+        super.showMessage(message);
+        Toaster.Companion.showNormalWithAction(rootView, message, Snackbar.LENGTH_LONG, "Ok", v1 -> {
+        });
     }
+}
 
