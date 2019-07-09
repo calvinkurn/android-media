@@ -78,7 +78,7 @@
                         android:layout_gravity="center"
                         android:layout_marginStart="4dp"
                         android:layout_marginLeft="4dp"
-                        android:src="@drawable/ic_search_bar" />
+                        app:srcCompat="@drawable/ic_search_bar" />
 
                     <TextView
                         android:id="@+id/et_search"
