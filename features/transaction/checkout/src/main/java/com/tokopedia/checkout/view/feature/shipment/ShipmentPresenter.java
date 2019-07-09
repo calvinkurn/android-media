@@ -425,13 +425,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0
         );
         Map<String, Object> eeDataLayer = generateCheckoutAnalyticsDataLayer(checkoutRequest, step);
-        if (eeDataLayer != null) {
-            String transactionId = "";
-            if (checkoutData != null) {
-                transactionId = checkoutData.getTransactionId();
-            }
-            analyticsActionListener.sendEnhancedEcommerceAnalyticsCheckout(eeDataLayer, transactionId, eventAction, eventLabel);
+        String transactionId = "";
+        if (checkoutData != null) {
+            transactionId = checkoutData.getTransactionId();
         }
+        analyticsActionListener.sendEnhancedEcommerceAnalyticsCheckout(eeDataLayer, transactionId, eventAction, eventLabel);
     }
 
     @Override
