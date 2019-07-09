@@ -26,12 +26,14 @@ ext {
     apolloVersion = '0.3.0'
     lottieVersion = '2.5.1'
     cardioVersion = '5.5.1'
+
     reactNativeVersion = '0.52.1'
     alibabaCoreLibVersion = '3.2.8'
     powerMockVersion = '1.6.2'
     roomVersion = '1.1.1'
     multiDexVersion = '1.0.3'
     guavaVersion = '21.0'
+    twitter4JVersion = '4.0.7'
 
     exoPlayerVersion = '2.9.6'
 
@@ -213,6 +215,7 @@ ext {
             lifeCycleRuntime      : "android.arch.lifecycle:compiler:$lifeCycleVersion",
             liveData              : "android.arch.lifecycle:livedata:$lifeCycleVersion",
             laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.1.11@aar",
+            twitter               : "org.twitter4j:twitter4j-core:$twitter4JVersion"
     ]
 
     testDependencies = [

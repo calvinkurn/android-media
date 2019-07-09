@@ -67,6 +67,7 @@ ext {
             remoteConfig      : ":libraries:remote_config",
             travelCalendar    : ":libraries:travel_calendar",
             trackingOptimizer : ":libraries:tracking_optimizer",
+            twitterShare      : ":libraries:twitter_share",
             userSession       : ":libraries:user_session",
             videoRecorder     : ":libraries:video_recorder",
             videoUploader     : ":libraries:videouploader",
