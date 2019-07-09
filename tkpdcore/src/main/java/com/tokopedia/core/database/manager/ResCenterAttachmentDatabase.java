@@ -25,9 +25,7 @@ public abstract class ResCenterAttachmentDatabase extends RoomDatabase {
                         context.getApplicationContext(),
                         ResCenterAttachmentDatabase.class,
                         DbMetadata.resCenterDatabaseName
-                );
-
-                return INSTANCE;
+                ).build();
             }
 
             return INSTANCE;
