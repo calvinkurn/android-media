@@ -38,9 +38,7 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
     public Observable<GraphqlResponseInternal> getResponse(List<GraphqlRequest> requests, GraphqlCacheStrategy cacheStrategy) {
         return mApi.getResponse(requests)
                 .doOnError(throwable -> {
-                    if (!(throwable instanceof UnknownHostException)) {
-                        Timber.e(throwable, requests.toString());
-                    }
+                    Timber.e(throwable, requests.toString());
                 })
                 .map(jsonElements -> new GraphqlResponseInternal(jsonElements, false)).doOnNext(graphqlResponseInternal -> {
                     if (cacheStrategy != null) {

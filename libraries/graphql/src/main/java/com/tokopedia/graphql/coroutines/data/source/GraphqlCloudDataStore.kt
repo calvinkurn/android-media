@@ -26,9 +26,7 @@ class GraphqlCloudDataStore(private val api: GraphqlApi,
             try {
                 result = api.getResponseDeferred(requests).await()
             } catch (e: Throwable) {
-                if (e !is UnknownHostException) {
-                    Timber.e(e, requests.toString())
-                }
+                Timber.e(e, requests.toString())
                 throw e
             }
 
