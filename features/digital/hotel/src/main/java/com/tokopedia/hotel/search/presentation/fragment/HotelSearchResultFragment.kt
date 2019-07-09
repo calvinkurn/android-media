@@ -19,7 +19,6 @@ import com.tokopedia.design.list.decoration.SpaceItemDecoration
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
-import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.data.model.Filter
 import com.tokopedia.hotel.search.data.model.Property
@@ -56,6 +55,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
     companion object {
         private const val REQUEST_FILTER = 0x10
+        private const val REQUEST_CODE_DETAIL_HOTEL = 101
 
         const val ARG_DESTINATION_ID = "arg_destination"
         const val ARG_TYPE = "arg_type"
@@ -66,9 +66,8 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         const val ARG_TOTAL_ROOM = "arg_total_room"
         const val ARG_TOTAL_ADULT = "arg_total_adult"
         const val ARG_TOTAL_CHILDREN = "arg_total_children"
-        const val ARG_DESTINATION_NAME = "arg_destination_name"
 
-        val REQUEST_CODE_DETAIL_HOTEL = 101
+        const val ARG_DESTINATION_NAME = "arg_destination_name"
 
         fun createInstance(destinationName: String = "", destinationID: Int = 0, type: String = "",
                            latitude: Float = 0f, longitude: Float = 0f, checkIn: String = "",
@@ -194,10 +193,8 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                 trackingHotelUtil.hotelUserClickSort(sort.displayName)
 
                 searchResultviewModel.addSort(sort)
-                if(sortMenu.isVisible) {
-                    sortMenu.dismiss()
-                    loadInitialData()
-                }
+                sortMenu.dismiss()
+                loadInitialData()
             }
         }
     }

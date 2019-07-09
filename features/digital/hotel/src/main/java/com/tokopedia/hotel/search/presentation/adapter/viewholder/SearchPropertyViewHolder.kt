@@ -1,14 +1,9 @@
 package com.tokopedia.hotel.search.presentation.adapter.viewholder
 
-import android.graphics.Typeface
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.StyleSpan
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.search.data.model.Property
-import com.tokopedia.hotel.search.data.util.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show

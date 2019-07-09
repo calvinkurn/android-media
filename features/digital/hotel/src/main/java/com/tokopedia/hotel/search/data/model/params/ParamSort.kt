@@ -26,5 +26,5 @@ data class ParamSort(
 
         @SerializedName("sortDir")
         @Expose
-        var sortDir: String = ""
+        var sortDir: String = "desc"
 )

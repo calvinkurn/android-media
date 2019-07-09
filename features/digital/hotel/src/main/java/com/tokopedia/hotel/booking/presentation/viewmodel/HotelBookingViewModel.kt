@@ -9,6 +9,7 @@ import com.tokopedia.hotel.booking.data.model.CartDataParam
 import com.tokopedia.hotel.booking.data.model.HotelCart
 import com.tokopedia.hotel.booking.data.model.HotelCheckoutParam
 import com.tokopedia.hotel.booking.data.model.HotelCheckoutResponse
+import com.tokopedia.hotel.roomlist.util.HotelUtil
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -44,6 +45,8 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
     }
 
     fun checkoutCart(rawQuery: String, hotelCheckoutParam: HotelCheckoutParam) {
+
+        hotelCheckoutParam.idempotencyKey = generateIdEmpotency(hotelCheckoutParam.cartId)
         val params = mapOf(PARAM_CART_PROPERTY to hotelCheckoutParam)
         launchCatchError(block = {
             val data = withContext(Dispatchers.Default) {
@@ -56,6 +59,12 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
             it.printStackTrace()
             hotelCheckoutResult.value = Fail(it)
         }
+    }
+
+    private fun generateIdEmpotency(cartId: String): String {
+        val timeMillis = System.currentTimeMillis().toString()
+        val token = HotelUtil.md5(timeMillis)
+        return if (token.isEmpty()) "${cartId}_$timeMillis" else "${cartId}_$token"
     }
 
     companion object {

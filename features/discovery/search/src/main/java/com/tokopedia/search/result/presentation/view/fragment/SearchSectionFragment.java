@@ -28,6 +28,7 @@ import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.common.data.Sort;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterHelper;
@@ -445,8 +446,14 @@ public abstract class SearchSectionFragment
         HashMap<String, String> selectedSort = new HashMap<>(
                 SortHelper.Companion.getSelectedSortFromSearchParameter(searchParameter.getSearchParameterHashMap(), getSort())
         );
-
+        addDefaultSelectedSort(selectedSort);
         setSelectedSort(selectedSort);
+    }
+
+    private void addDefaultSelectedSort(HashMap<String, String> selectedSort) {
+        if (selectedSort.isEmpty()) {
+            selectedSort.put(SearchApiConst.OB, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT);
+        }
     }
 
     protected abstract void refreshAdapterForEmptySearch();

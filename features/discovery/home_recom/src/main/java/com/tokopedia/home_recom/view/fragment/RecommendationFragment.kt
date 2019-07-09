@@ -7,13 +7,21 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
-import android.view.*
+import android.view.View
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.analytics.RecommendationPageTracking
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
-import com.tokopedia.home_recom.model.datamodel.*
+import com.tokopedia.home_recom.model.datamodel.TitleDataModel
+import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
+import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselDataModel
+import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
+import com.tokopedia.home_recom.model.datamodel.HomeRecommendationDataModel
 import com.tokopedia.home_recom.model.entity.ProductDetailData
 import com.tokopedia.home_recom.view.adapter.HomeRecommendationAdapter
 import com.tokopedia.home_recom.view.adapter.HomeRecommendationTypeFactoryImpl
@@ -27,18 +35,17 @@ import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.recommendation_widget_common.TYPE_CAROUSEL
 import com.tokopedia.recommendation_widget_common.TYPE_SCROLL
+import com.tokopedia.recommendation_widget_common.TYPE_CUSTOM_HORIZONTAL
 import com.tokopedia.recommendation_widget_common.presentation.RecommendationCardView
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, HomeRecommendationTypeFactoryImpl>(), RecommendationCardView.TrackingListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
 
     private lateinit var trackingQueue: TrackingQueue
     private lateinit var productId: String
@@ -49,9 +56,10 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     private var menu: Menu? = null
     private val SPAN_COUNT = 2
     private val SHARE_PRODUCT_TITLE = "Bagikan Produk Ini"
+    private val SAVED_PRODUCT_ID = "saved_product_id"
 
     companion object{
-        fun newInstance(productId: String) = RecommendationFragment().apply {
+        fun newInstance(productId: String = "") = RecommendationFragment().apply {
             this.productId = productId
         }
     }
@@ -62,9 +70,18 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        clearProductInfoView()
+        savedInstanceState?.let{
+            productId = it.getString(SAVED_PRODUCT_ID) ?: ""
+        }
         activity?.let {
             trackingQueue = TrackingQueue(it)
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(SAVED_PRODUCT_ID, productId)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -98,12 +115,21 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
         return true
     }
 
+    private fun clearProductInfoView(){
+        if(childFragmentManager.fragments.size > 0 && childFragmentManager.fragments[0] is ProductInfoFragment){
+            childFragmentManager.beginTransaction().remove(childFragmentManager.fragments[0]).commit()
+        }
+    }
+
     private fun loadData(){
         activity?.let{
-            recommendationWidgetViewModel.getPrimaryProduct(productId, it)
-
-            recommendationWidgetViewModel.getRecommendationList(arrayListOf(productId),
-                    onErrorGetRecommendation = this::onErrorGetRecommendation)
+            if(productId.isNotBlank()) {
+                recommendationWidgetViewModel.getPrimaryProduct(productId, it)
+                recommendationWidgetViewModel.getRecommendationList(arrayListOf(productId),
+                        onErrorGetRecommendation = this::onErrorGetRecommendation)
+            } else {
+                recommendationWidgetViewModel.getRecommendationList(arrayListOf(), onErrorGetRecommendation = this::onErrorGetRecommendation)
+            }
         }
     }
 
@@ -157,9 +183,9 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
                 .commit()
     }
 
-    private fun mapDataModel(listRecommendationModelDummy: List<RecommendationWidget>): List<HomeRecommendationDataModel>{
+    private fun mapDataModel(listRecommendationModel: List<RecommendationWidget>): List<HomeRecommendationDataModel>{
         val list = ArrayList<HomeRecommendationDataModel>()
-        listRecommendationModelDummy.forEach { recommendationWidget ->
+        listRecommendationModel.forEach { recommendationWidget ->
             when(recommendationWidget.layoutType){
                 TYPE_SCROLL -> {
                     list.add(TitleDataModel(recommendationWidget.title))
@@ -168,6 +194,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
                     }
                 }
                 TYPE_CAROUSEL -> list.add(RecommendationCarouselDataModel(recommendationWidget.title, recommendationWidget.recommendationItemList, this))
+                TYPE_CUSTOM_HORIZONTAL -> list.add(RecommendationCarouselDataModel(recommendationWidget.title, recommendationWidget.recommendationItemList, this))
             }
         }
         return list
@@ -207,21 +234,22 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
 
     fun onClickAddWishlist(item: RecommendationItem) {
         if(recommendationWidgetViewModel.isLoggedIn()){
-            RecommendationPageTracking.eventUserClickProductToWishlistForUserLogin(true)
+            RecommendationPageTracking.eventUserClickProductToWishlistForUserLogin(true, getHeaderName(item))
         }else{
-            RecommendationPageTracking.eventUserClickProductToWishlistForNonLogin()
+            RecommendationPageTracking.eventUserClickProductToWishlistForNonLogin(getHeaderName(item))
         }
     }
 
     fun onClickRemoveWishlist(item: RecommendationItem) {
         if(recommendationWidgetViewModel.isLoggedIn()){
-            RecommendationPageTracking.eventUserClickProductToWishlistForUserLogin(false)
+            RecommendationPageTracking.eventUserClickProductToWishlistForUserLogin(false, getHeaderName(item))
         }else{
-            RecommendationPageTracking.eventUserClickProductToWishlistForNonLogin()
+            RecommendationPageTracking.eventUserClickProductToWishlistForNonLogin(getHeaderName(item))
         }
     }
 
     private fun getHeaderName(item: RecommendationItem): String{
+        if(item.header.isNotBlank()) return item.header
         var header = ""
         val data = adapter.data
         val itemFoundAtStaggeredGridLayoutManager = data.any { it is RecommendationItemDataModel && it.productItem.productId == item.productId }

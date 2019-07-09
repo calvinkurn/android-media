@@ -73,7 +73,7 @@ data class HotelReview(
 
             @SerializedName("averageScoreReview")
             @Expose
-            val averageScoreReview: Int = 0,
+            val averageScoreReview: Float = 0f,
 
             @SerializedName("hasNext")
             @Expose
