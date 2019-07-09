@@ -205,7 +205,11 @@ public class InboxDetailPresenterImpl
 
     private void getTicketDetails() {
         mView.showProgressBar();
-        inboxOptionUseCase.createRequestParams(mView.getActivity().getIntent().getStringExtra(InboxDetailActivity.PARAM_TICKET_ID));
+        String tId = mView.getActivity().getIntent().getStringExtra(InboxDetailActivity.PARAM_TICKET_T_ID);
+        if(tId==null){
+            tId = mView.getActivity().getIntent().getStringExtra(InboxDetailActivity.PARAM_TICKET_ID);
+        }
+        inboxOptionUseCase.createRequestParams(tId);
         inboxOptionUseCase.execute(new Subscriber<ChipGetInboxDetail>() {
             @Override
             public void onCompleted() {
@@ -219,47 +223,54 @@ public class InboxDetailPresenterImpl
 
             @Override
             public void onNext(ChipGetInboxDetail chipGetInboxDetail) {
-                if (chipGetInboxDetail != null && chipGetInboxDetail.getData()  != null && chipGetInboxDetail.getData().getTickets() != null) {
-                    mTicketDetail = chipGetInboxDetail.getData().getTickets();
-                    CommentsItem topItem = new CommentsItem();
-                    topItem.setAttachment(mTicketDetail.getAttachment());
-                    topItem.setMessage(mTicketDetail.getMessage());
-                    topItem.setCreatedBy(mTicketDetail.getCreatedBy());
-                    topItem.setCreateTime(mTicketDetail.getCreateTime());
-                    List<CommentsItem> commentsItems = mTicketDetail.getComments();
-                    if (commentsItems == null) {
-                        commentsItems = new ArrayList<>();
-                        mTicketDetail.setComments(commentsItems);
-                        commentsItems.add(topItem);
-                    } else {
-                        commentsItems.add(0, topItem);
-                    }
-                    for (CommentsItem item : commentsItems) {
-                        if (userData == null) {
-                            if (item.getCreatedBy().getRole().equals("user")) {
-                                userData = item.getCreatedBy();
-                            }
+                if (chipGetInboxDetail != null && chipGetInboxDetail.getData()  != null && chipGetInboxDetail.getData().getTickets() != null ) {
+                    if(chipGetInboxDetail.getData().getIsSuccess()==1){
+                        mTicketDetail = chipGetInboxDetail.getData().getTickets();
+                        CommentsItem topItem = new CommentsItem();
+                        topItem.setAttachment(mTicketDetail.getAttachment());
+                        topItem.setMessage(mTicketDetail.getMessage());
+                        topItem.setCreatedBy(mTicketDetail.getCreatedBy());
+                        topItem.setCreateTime(mTicketDetail.getCreateTime());
+                        List<CommentsItem> commentsItems = mTicketDetail.getComments();
+                        if (commentsItems == null) {
+                            commentsItems = new ArrayList<>();
+                            mTicketDetail.setComments(commentsItems);
+                            commentsItems.add(topItem);
+                        } else {
+                            commentsItems.add(0, topItem);
+
+
                         }
-                        String createTime = getUtils().getDateTime(item.getCreateTime());
-                        item.setCreateTime(createTime);
-                        int i;
-                        int count = 0;
-                        for (i = 0; i < createTime.length(); i++) {
-                            char c = createTime.charAt(i);
-                            if (c == ' ') {
-                                count++;
-                                if (count == 2)
-                                    break;
+                        for (CommentsItem item : commentsItems) {
+                            if (userData == null) {
+                                if (item.getCreatedBy().getRole().equals("customer")) {
+                                    userData = item.getCreatedBy();
+                                }
                             }
+                            String createTime = getUtils().getDateTime(item.getCreateTime());
+                            item.setCreateTime(createTime);
+                            int i;
+                            int count = 0;
+                            for (i = 0; i < createTime.length(); i++) {
+                                char c = createTime.charAt(i);
+                                if (c == ' ') {
+                                    count++;
+                                    if (count == 2)
+                                        break;
+                                }
+                            }
+                            item.setShortTime(createTime.substring(0, i));
                         }
-                        item.setShortTime(createTime.substring(0, i));
+                        if(isIssueClosed) {
+                            mTicketDetail.setShowRating(false);
+                            isIssueClosed = false;
+                        }
+                        mView.renderMessageList(mTicketDetail);
+                        mView.hideProgressBar();
                     }
-                    if(isIssueClosed) {
-                        mTicketDetail.setShowRating(false);
-                        isIssueClosed = false;
+                    else if(chipGetInboxDetail.getData().getIsSuccess()==0){
+                        mView.showNoTicketView(chipGetInboxDetail.getMessageError());
                     }
-                    mView.renderMessageList(mTicketDetail);
-                    mView.hideProgressBar();
                 }
             }
         });

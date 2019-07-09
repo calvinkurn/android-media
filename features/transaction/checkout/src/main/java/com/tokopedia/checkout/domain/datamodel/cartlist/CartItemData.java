@@ -23,6 +23,7 @@ public class CartItemData implements Parcelable {
     private String errorMessageTitle;
     private String errorMessageDescription;
     private boolean isDisableAllProducts;
+    private boolean isFulfillment;
 
     // TODO: 19/6/19 add micro insurance data, if available
 
@@ -33,8 +34,6 @@ public class CartItemData implements Parcelable {
     public void setFulfillment(boolean fulfillment) {
         isFulfillment = fulfillment;
     }
-
-    private boolean isFulfillment;
 
     public boolean isSingleChild() {
         return singleChild;
@@ -182,6 +181,7 @@ public class CartItemData implements Parcelable {
         private String preOrderInfo;
         private String cartString;
         private boolean checkboxState;
+        private int warehouseId;
 
         public String getTrackerAttribution() {
             return trackerAttribution;
@@ -527,6 +527,14 @@ public class CartItemData implements Parcelable {
             this.checkboxState = checkboxState;
         }
 
+        public int getWarehouseId() {
+            return warehouseId;
+        }
+
+        public void setWarehouseId(int warehouseId) {
+            this.warehouseId = warehouseId;
+        }
+
         public OriginData() {
         }
 
@@ -579,6 +587,7 @@ public class CartItemData implements Parcelable {
             dest.writeString(this.preOrderInfo);
             dest.writeString(this.cartString);
             dest.writeByte(this.checkboxState ? (byte) 1 : (byte) 0);
+            dest.writeInt(this.warehouseId);
         }
 
         protected OriginData(Parcel in) {
@@ -624,6 +633,7 @@ public class CartItemData implements Parcelable {
             this.preOrderInfo = in.readString();
             this.cartString = in.readString();
             this.checkboxState = in.readByte() != 0;
+            this.warehouseId = in.readInt();
         }
 
         public static final Creator<OriginData> CREATOR = new Creator<OriginData>() {

@@ -51,6 +51,7 @@ public class CartItemModel implements Parcelable {
     private String protectionLinkText;
     private String protectionLinkUrl;
     private boolean protectionOptIn;
+    private boolean protectionCheckboxDisabled;
     private String preOrderInfo;
 
     // Trade in
@@ -356,6 +357,14 @@ public class CartItemModel implements Parcelable {
         this.oldDevicePrice = oldDevicePrice;
     }
 
+    public boolean isProtectionCheckboxDisabled() {
+        return protectionCheckboxDisabled;
+    }
+
+    public void setProtectionCheckboxDisabled(boolean protectionCheckboxDisabled) {
+        this.protectionCheckboxDisabled = protectionCheckboxDisabled;
+    }
+
     public CartItemModel() {
     }
 
@@ -393,6 +402,7 @@ public class CartItemModel implements Parcelable {
                 .append(getErrorMessageDescription(), that.getErrorMessageDescription())
                 .append(getPreOrderDurationDay(), that.getPreOrderDurationDay())
                 .append(getPreOrderInfo(), that.getPreOrderInfo())
+                .append(isProtectionCheckboxDisabled(), that.isProtectionCheckboxDisabled())
                 .isEquals();
     }
 
@@ -424,6 +434,7 @@ public class CartItemModel implements Parcelable {
                 .append(getErrorMessageDescription())
                 .append(getPreOrderDurationDay())
                 .append(getPreOrderInfo())
+                .append(isProtectionCheckboxDisabled())
                 .toHashCode();
     }
 
@@ -463,6 +474,7 @@ public class CartItemModel implements Parcelable {
         dest.writeByte(this.isValidTradeIn ? (byte) 1 : (byte) 0);
         dest.writeInt(this.newDevicePrice);
         dest.writeInt(this.oldDevicePrice);
+        dest.writeByte(this.protectionCheckboxDisabled ? (byte) 1 : (byte) 0);
     }
 
     protected CartItemModel(Parcel in) {
@@ -495,6 +507,7 @@ public class CartItemModel implements Parcelable {
         this.isValidTradeIn = in.readByte() != 0;
         this.newDevicePrice = in.readInt();
         this.oldDevicePrice = in.readInt();
+        this.protectionCheckboxDisabled = in.readByte() != 0;
     }
 
     public static final Creator<CartItemModel> CREATOR = new Creator<CartItemModel>() {

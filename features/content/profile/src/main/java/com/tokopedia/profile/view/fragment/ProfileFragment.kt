@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.support.design.widget.AppBarLayout
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
@@ -31,7 +32,9 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.feature.onboarding.view.fragment.UsernameInputFragment
 import com.tokopedia.affiliatecommon.BROADCAST_SUBMIT_POST
+import com.tokopedia.affiliatecommon.DISCOVERY_BY_ME
 import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS
+import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.base.BaseToaster
@@ -141,6 +144,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
         }
     }
+    private var isAppBarCollapse = false
 
     private lateinit var layoutManager: LinearLayoutManager
 
@@ -159,6 +163,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     @Inject
     lateinit var profilePreference: ProfilePreference
+
+    @Inject
+    lateinit var affiliatePreference: AffiliatePreference
 
     companion object {
         private const val PARAM_TAB_NAME = "{tab_name}"
@@ -593,10 +600,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
 
             setFollowBtn(it, false)
-            if (!isOwner) {
-                showFooterOthers()
-            }
-
             if (activity != null && arguments != null) {
                 if (resultIntent == null) {
                     resultIntent = Intent()
@@ -610,6 +613,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 activity!!.setResult(Activity.RESULT_OK, resultIntent)
             }
         }
+        if (!isOwner && footerOthers.isVisible) showFooterOthers()
     }
 
     override fun onErrorFollowKol(errorMessage: String) = showError(errorMessage)
@@ -716,6 +720,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onLikeClick(positionInFeed: Int, id: Int, isLiked: Boolean) {
+        profileAnalytics.eventClickLike(isOwner, userId.toString())
         if (isLiked) {
             onUnlikeKolClicked(positionInFeed, id, false, "")
         } else {
@@ -724,6 +729,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onCommentClick(positionInFeed: Int, id: Int) {
+        profileAnalytics.eventClickComment(isOwner, userId.toString())
         onGoToKolComment(positionInFeed, id, false, "")
     }
 
@@ -937,18 +943,18 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (dy <= -10) {
-                    if (!isOwner && !footerOthers.isVisible) {
-                        showFooterOthers()
+                if (dy < 0) { // going up
+                    if (adapter.dataSize > 0 && isAppBarCollapse && !isOwner && !footerOthers.isVisible) {
+                       showFooterOthers()
                     }
-                } else if (dy > 10) {
-                    hideFootersOthers()
+                } else if (dy > 0) { // going down
+                    if (isAppBarCollapse && !isOwner && footerOthers.isVisible) hideFootersOthers()
                 }
             }
 
-            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 try {
                     if (hasFeed() && newState == RecyclerView.SCROLL_STATE_IDLE) {
@@ -985,16 +991,29 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun showFooterOthers() {
-        profileHeader?.let {
-            if (!it.isFollowed) {
-                footerOthers.show()
-                footerOthersText.text = getString(R.string.sticky_footer_follow)
-                footerOthersFollow.show()
-                footerOthersFollow.setOnClickListener { _ ->
-                    followUnfollowUser(it.userId, !it.isFollowed, FOLLOW_FOOTER)
-                }
-            } else {
-                footerOthers.hide()
+        footerOthers.show()
+        if (profileHeader?.isFollowed == true){
+            footerOthersText.text = getString(R.string.sticky_footer_following)
+            footerOthersFollow.hide()
+            footerOthersShareText.show()
+        } else {
+            footerOthersText.text = getString(R.string.sticky_footer_follow)
+            footerOthersFollow.show()
+            footerOthersFollow.setOnClickListener { _ ->
+                profileHeader?.let { followUnfollowUser(it.userId, !it.isFollowed, FOLLOW_FOOTER) }
+            }
+            footerOthersShareText.hide()
+        }
+        footerOthersShare.setOnClickListener {
+            profileHeader?.let {
+                val linkerData = constructShareData(
+                        it.name,
+                        it.avatar,
+                        it.link,
+                        String.format(getString(R.string.profile_share_text),
+                                it.link),
+                        String.format(getString(R.string.profile_share_title)))
+                ShareBottomSheets().show(fragmentManager!!, linkerData, isOwner, userId.toString(), true)
             }
         }
     }
@@ -1029,26 +1048,30 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         iv_back.setOnClickListener {
             activity?.finish()
         }
-        app_bar_layout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
+        app_bar_layout.addOnOffsetChangedListener (AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
             try {
                 toolbar.let {
                     if (Math.abs(verticalOffset) >= appBarLayout.totalScrollRange) {
                         it.visibility = View.VISIBLE
+                        isAppBarCollapse = true
                     } else {
                         it.visibility = View.GONE
+                        isAppBarCollapse = false
+                        if (!isOwner && footerOthers.isVisible) hideFootersOthers()
                     }
                 }
             } catch (e: IllegalStateException) {
 
             }
         }
+        )
 
         val selfProfile = userSession.userId == userId.toString()
                 && element.isAffiliate
         lateinit var action: View.OnClickListener
         action = if (!selfProfile) {
             iv_action_parallax.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_share_white))
-            iv_action.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_share_white))
+            iv_action.gone()
             View.OnClickListener {
                 val linkerData = constructShareData(
                         element.name,
@@ -1456,9 +1479,20 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun goToAffiliateExplore() {
-        val intent = RouteManager.getIntent(context, ApplinkConst.AFFILIATE_EXPLORE)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        startActivity(intent)
+        if (affiliatePreference.isFirstTimeEducation(userSession.userId)) {
+
+            val intent = RouteManager.getIntent(context,
+                    ApplinkConst.DISCOVERY_PAGE.replace("{page_id}", DISCOVERY_BY_ME)
+            )
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+            startActivity(intent)
+            affiliatePreference.setFirstTimeEducation(userSession.userId)
+
+        } else {
+            val intent = RouteManager.getIntent(context, ApplinkConst.AFFILIATE_CREATE_POST, "-1", "-1")
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+        }
     }
 
     private fun goToExplore() {

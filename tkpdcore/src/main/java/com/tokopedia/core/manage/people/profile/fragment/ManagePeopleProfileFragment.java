@@ -14,8 +14,6 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -35,7 +33,6 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder;
@@ -46,8 +43,6 @@ import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
-
-import butterknife.BindView;
 
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_BRIGHTNESS;
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CONTRAST;
@@ -78,16 +73,10 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
 
     public static final int REQUEST_CODE_PROFILE_PICTURE = 1202;
 
-
-    @BindView(R2.id.layout_main)
     View layoutMain;
-    @BindView(R2.id.layout_manage_people_profile_avatar_view)
     AvatarView avatarSection;
-    @BindView(R2.id.layout_manage_people_profile_detail_view)
     DetailView detailSection;
-    @BindView(R2.id.layout_manage_people_profile_contact_view)
     ContactView contactSection;
-    @BindView(R2.id.save_button)
     View saveButton;
 
     private ManagePeopleProfileView listener;
@@ -157,7 +146,11 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
 
     @Override
     protected void initView(View view) {
-
+        layoutMain = (View) view.findViewById(R.id.layout_main);
+        avatarSection = (AvatarView) view.findViewById(R.id.layout_manage_people_profile_avatar_view);
+        detailSection = (DetailView) view.findViewById(R.id. layout_manage_people_profile_detail_view);
+        contactSection = (ContactView) view.findViewById(R.id.layout_manage_people_profile_contact_view);
+        saveButton = (View) view.findViewById(R.id.save_button);
     }
 
     @Override

@@ -1,10 +1,13 @@
 package com.tokopedia.checkout.view.feature.cartlist;
 
+import com.tokopedia.checkout.domain.datamodel.addtocart.AddToCartDataResponseModel;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
-import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartRecentViewItemHolderData;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartRecommendationItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartWishlistItemHolderData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
 import com.tokopedia.transactiondata.insurance.entity.request.InsuranceShopsData;
@@ -20,17 +23,16 @@ import java.util.Map;
  */
 
 public interface ICartListPresenter {
+
     void attachView(ICartListView view);
 
     void detachView();
 
-    void processInitialGetCartData(String cartId, boolean initialLoad);
+    void processInitialGetCartData(String cartId, boolean initialLoad, boolean forceInitialLoad);
 
-    void processDeleteCart(CartItemData cartItemData, boolean addWishList);
+    void processDeleteCartItem(List<CartItemData> allCartItemData, List<CartItemData> removedCartItems, ArrayList<String> appliedPromocodeList, boolean addWishList);
 
-    void processDeleteAndRefreshCart(List<CartItemData> allCartItemData, List<CartItemData> removedCartItems, ArrayList<String> appliedPromocodeList, boolean addWishList);
-
-    void processToUpdateCartData(List<CartItemData> cartItemDataList);
+    void processToUpdateCartData(List<CartItemData> cartItemDataList, List<CartShopHolderData> cartShopHolderDataList);
 
     void processToUpdateCartAndInsuranceData(List<CartItemData> cartItemDataList, List<InsuranceCartShops> insuranceShopsDataList);
 
@@ -46,15 +48,11 @@ public interface ICartListPresenter {
 
     void processResetAndRefreshCartData();
 
-    void processCancelAutoApply();
-
     void processCancelAutoApplyPromoStack(int shopIndex, ArrayList<String> promoCodeList, boolean ignoreAPIResponse);
 
     void processCancelAutoApplyPromoStackAfterClash(ArrayList<String> oldPromoList, ArrayList<ClashingVoucherOrderUiModel> newPromoList, String type);
 
     void processApplyPromoStackAfterClash(ArrayList<ClashingVoucherOrderUiModel> newPromoList, String type);
-
-    Map<String, Object> generateCartDataAnalytics(CartItemData removedCartItem, String enhancedECommerceAction);
 
     Map<String, Object> generateCartDataAnalytics(List<CartItemData> cartItemDataList, String enhancedECommerceAction);
 
@@ -70,9 +68,19 @@ public interface ICartListPresenter {
 
     boolean dataHasChanged();
 
-    void setCheckedCartItemState(List<CartItemHolderData> cartItemHolderDataList);
+    void processGetRecentViewData();
 
-    Map<Integer, Boolean> getCheckedCartItemState();
+    void processGetWishlistData();
+
+    void processGetRecommendationData(int page);
+
+    void processAddToCart(Object productModel);
+
+    Map<String, Object> generateAddToCartEnhanceEcommerceDataLayer(CartWishlistItemHolderData cartWishlistItemHolderData, AddToCartDataResponseModel addToCartDataResponseModel);
+
+    Map<String, Object> generateAddToCartEnhanceEcommerceDataLayer(CartRecentViewItemHolderData cartRecentViewItemHolderData, AddToCartDataResponseModel addToCartDataResponseModel);
+
+    Map<String, Object> generateAddToCartEnhanceEcommerceDataLayer(CartRecommendationItemHolderData cartRecommendationItemHolderData, AddToCartDataResponseModel addToCartDataResponseModel);
 
     void getInsuranceTechCart();
 

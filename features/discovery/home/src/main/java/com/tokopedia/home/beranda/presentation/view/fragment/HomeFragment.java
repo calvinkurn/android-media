@@ -5,14 +5,20 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -23,7 +29,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -43,10 +48,10 @@ import com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragme
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
-import com.tokopedia.home.beranda.data.model.Promotion;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.di.BerandaComponent;
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
+import com.tokopedia.home.beranda.domain.model.SearchPlaceholder;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.helper.ViewHelper;
 import com.tokopedia.home.beranda.listener.ActivityStateListener;
@@ -63,8 +68,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.TrackedVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeRecommendationFeedViewHolder;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.GeolocationPromptViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeRecommendationFeedViewModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
@@ -75,13 +80,18 @@ import com.tokopedia.home.constant.BerandaUrl;
 import com.tokopedia.home.constant.ConstantKey;
 import com.tokopedia.home.widget.FloatingTextButton;
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout;
+import com.tokopedia.locationmanager.DeviceLocation;
+import com.tokopedia.locationmanager.LocationDetectorHelper;
 import com.tokopedia.loyalty.view.activity.PromoListActivity;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
+import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.searchbar.HomeMainToolbar;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.tokocash.TokoCashRouter;
@@ -92,17 +102,22 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.track.interfaces.Analytics;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.google.android.gms.location.LocationServices;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
+import rx.Observable;
+
+import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
-
-import rx.Observable;
 
 /**
  * @author by errysuprayogi on 11/27/17.
@@ -130,6 +145,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Inject
     HomePresenter presenter;
+
+    @Inject
+    PermissionCheckerHelper permissionCheckerHelper;
+
+    RemoteConfig remoteConfig;
 
     private UserSessionInterface userSession;
     private NestedRecyclerView homeRecyclerView;
@@ -161,6 +181,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private Visitable feedTabVisitable;
     private boolean scrollToRecommendList;
     private long lastSendScreenTimeMillis;
+    private Snackbar homeSnackbar;
+    private SharedPreferences sharedPrefs;
 
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
@@ -176,6 +198,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         performanceMonitoring = PerformanceMonitoring.start(BERANDA_TRACE);
         userSession = new UserSession(getActivity());
         trackingQueue = new TrackingQueue(getActivity());
+        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
 
         searchBarTransitionRange =
                 getResources().getDimensionPixelSize(R.dimen.home_searchbar_transition_range);
@@ -368,6 +391,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         super.onResume();
         sendScreen();
         presenter.onResume();
+
         if (activityStateListener != null) {
             activityStateListener.onResume();
         }
@@ -404,6 +428,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 }
 
                 if (presenter != null) {
+                    presenter.getSearchHint();
                     presenter.getHomeData();
                     presenter.getHeaderData(true);
                 }
@@ -697,8 +722,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         resetFeedState();
         removeNetworkError();
         if (presenter != null) {
+            presenter.getSearchHint();
             presenter.getHomeData();
             presenter.getHeaderData(false);
+        }
+
+        if (getActivity() instanceof RefreshNotificationListener) {
+            ((RefreshNotificationListener) getActivity()).onRefreshNotification();
         }
         loadEggData();
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE);
@@ -735,13 +765,122 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void setItems(List<Visitable> items, int repositoryFlag) {
+    public void setItems(List<Visitable> items, HeaderViewModel headerViewModel, int repositoryFlag) {
         if (repositoryFlag == HomePresenter.HomeDataSubscriber.FLAG_FROM_NETWORK) {
-            adapter.setItems(items);
+            adapter.setItems(items, headerViewModel);
+
+            if (needToShowGeolocationComponent()) {
+                adapter.setGeolocationViewModel(new GeolocationPromptViewModel());
+            }
             presenter.getFeedTabData();
             adapter.showLoading();
         } else {
-            adapter.setItems(items);
+            adapter.setItems(items, headerViewModel);
+        }
+    }
+
+    private boolean needToShowGeolocationComponent() {
+        boolean firebaseShowGeolocationComponent =
+                remoteConfig.getBoolean(RemoteConfigKey.SHOW_HOME_GEOLOCATION_COMPONENT,true);
+        if (!firebaseShowGeolocationComponent) {
+            return false;
+        }
+
+        boolean needToShowGeolocationComponent = true;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            boolean userHasDeniedPermissionBefore = ActivityCompat
+                    .shouldShowRequestPermissionRationale(getActivity(),
+                            PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION);
+            if (userHasDeniedPermissionBefore) {
+                return false;
+            }
+        }
+
+        if (getActivity() != null) {
+            if (hasGeolocationPermission()) {
+                needToShowGeolocationComponent = false;
+            }
+        }
+        return needToShowGeolocationComponent;
+    }
+
+    @Override
+    public boolean hasGeolocationPermission() {
+        if (getActivity() == null) return false;
+        return permissionCheckerHelper.hasPermission(getActivity(),
+                new String[]{PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION});
+    }
+
+    private void promptGeolocationPermission() {
+        permissionCheckerHelper.checkPermission(this,
+                PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
+                new PermissionCheckerHelper.PermissionCheckListener() {
+                    @Override
+                    public void onPermissionDenied(@NotNull String permissionText) {
+                        HomePageTracking.eventClickNotAllowGeolocation(getActivity());
+                        adapter.removeGeolocationViewModel();
+                        showNotAllowedGeolocationSnackbar();
+                    }
+
+                    @Override
+                    public void onNeverAskAgain(@NotNull String permissionText) {
+
+                    }
+
+                    @Override
+                    public void onPermissionGranted() {
+                        HomePageTracking.eventClickAllowGeolocation(getActivity());
+                        detectAndSendLocation();
+                        adapter.removeGeolocationViewModel();
+                        showAllowedGeolocationSnackbar();
+                    }
+                }, "");
+    }
+
+    @Override
+    public void detectAndSendLocation() {
+        LocationDetectorHelper locationDetectorHelper = new LocationDetectorHelper(
+                permissionCheckerHelper,
+                LocationServices.getFusedLocationProviderClient(getActivity()
+                        .getApplicationContext()),
+                getActivity().getApplicationContext());
+        locationDetectorHelper.getLocation(onGetLocation(), getActivity(),
+                LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                "");
+    }
+
+    private Function1<DeviceLocation, Unit> onGetLocation() {
+        return (deviceLocation) -> {
+            saveLocation(getActivity(), deviceLocation.getLatitude(), deviceLocation.getLongitude());
+            presenter.sendGeolocationData();
+            return null;
+        };
+    }
+
+    public void saveLocation(Context context, double latitude, double longitude){
+        SharedPreferences.Editor editor;
+        if (context != null && !TextUtils.isEmpty(ConstantKey.LocationCache.KEY_LOCATION)) {
+            sharedPrefs = context.getSharedPreferences(ConstantKey.LocationCache.KEY_LOCATION, Context.MODE_PRIVATE);
+            editor = sharedPrefs.edit();
+        } else {
+            return;
+        }
+        editor.putString(ConstantKey.LocationCache.KEY_LOCATION_LAT, String.valueOf(latitude));
+        editor.putString(ConstantKey.LocationCache.KEY_LOCATION_LONG, String.valueOf(longitude));
+        editor.apply();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionCheckerHelper.onRequestPermissionsResult(getActivity(), requestCode, permissions, grantResults);
+    }
+
+    @Override
+    public void setHint(SearchPlaceholder searchPlaceholder) {
+        if(searchPlaceholder.getData() != null && searchPlaceholder.getData().getPlaceholder() != null && searchPlaceholder.getData().getKeyword() != null){
+            homeMainToolbar.setHint(searchPlaceholder.getData().getPlaceholder(), searchPlaceholder.getData().getKeyword());
         }
     }
 
@@ -769,8 +908,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (feedTabVisitable != null) {
             visitables.add(feedTabVisitable);
         }
-        presenter.getFeedTabData();
-        adapter.updateItems(visitables);
+
+        if (!visitables.isEmpty()) {
+            presenter.getFeedTabData();
+        }
+        if (needToShowGeolocationComponent()) {
+            adapter.setGeolocationViewModel(new GeolocationPromptViewModel());
+        }
+        adapter.updateHomeQueryItems(visitables);
     }
 
     @Override
@@ -790,13 +935,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void updateHeaderItem(HeaderViewModel headerViewModel) {
-        if (adapter.getItemCount() > 1 && adapter.getItem(1) instanceof HeaderViewModel) {
-            adapter.getItems().set(1, headerViewModel);
-            adapter.notifyItemChanged(1);
-        } else if (adapter.getItemCount() > 2 && adapter.getItem(2) instanceof HeaderViewModel) {
-            adapter.getItems().set(2, headerViewModel);
-            adapter.notifyItemChanged(2);
-        }
+        adapter.setHomeHeaderViewModel(headerViewModel);
     }
 
     @Override
@@ -1297,6 +1436,49 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 }
             });
         }
+    }
+
+    @Override
+    public void launchPermissionChecker() {
+        promptGeolocationPermission();
+    }
+
+    @Override
+    public void onCloseGeolocationView() {
+        adapter.removeGeolocationViewModel();
+    }
+
+    private Snackbar getSnackbar(String text, int duration) {
+        if (homeSnackbar != null) {
+            homeSnackbar.dismiss();
+        }
+        homeSnackbar = Snackbar.make(root, text, duration);
+        return homeSnackbar;
+    }
+
+    public void showNotAllowedGeolocationSnackbar() {
+        getSnackbar(getString(R.string.discovery_home_snackbar_geolocation_declined_permission),
+                Snackbar.LENGTH_LONG)
+                .setAction(getString(R.string.discovery_home_snackbar_geolocation_setting), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        HomePageTracking.eventClickOnAtur(getActivity());
+                        goToApplicationDetailActivity();
+                    }
+                }).show();
+    }
+
+    public void showAllowedGeolocationSnackbar() {
+        getSnackbar(getString(R.string.discovery_home_snackbar_geolocation_granted_permission),
+                Snackbar.LENGTH_LONG).show();
+    }
+
+    private void goToApplicationDetailActivity() {
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package", getActivity().getPackageName(), null);
+        intent.setData(uri);
+        getActivity().startActivity(intent);
     }
 
     @Override

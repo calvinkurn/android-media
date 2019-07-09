@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.view.feature.cartlist.InsuranceItemActionListener;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
@@ -29,9 +30,9 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
     private ImageView ivDeleteInsurance;
     private TextView tvChangeInsuranceApplicationDetails;
 
-    private CartAdapter.InsuranceItemActionlistener insuranceItemActionlistener;
+    private InsuranceItemActionListener insuranceItemActionlistener;
 
-    public InsuranceCartShopViewHolder(View itemView, CartAdapter.InsuranceItemActionlistener insuranceItemActionlistener) {
+    public InsuranceCartShopViewHolder(View itemView, InsuranceItemActionListener insuranceItemActionlistener) {
         super(itemView);
         this.insuranceItemActionlistener = insuranceItemActionlistener;
 

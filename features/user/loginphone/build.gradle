@@ -31,12 +31,23 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.linker)
+    implementation project(rootProject.ext.libraries.config)
+    implementation project(rootProject.ext.libraries.iris)
+    implementation project(rootProject.ext.libraries.cmnotification)
+
+    api (rootProject.ext.serviceDependencies.crashlytics) {
+        transitive = true
+    }
 
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.sessioncommon)
 
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
+    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     implementation(rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'

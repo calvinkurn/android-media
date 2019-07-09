@@ -35,6 +35,7 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private boolean isPopularBrands;
     DealsAnalytics dealsAnalytics;
     private boolean fromSearchResult;
+    private boolean isBrandNative;
 
 
     public DealsBrandAdapter(List<Brand> brandItems, int itemViewType) {
@@ -55,12 +56,14 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
                 if (isPopularBrands) {
                     dealsAnalytics.sendEcommerceBrand(brandItems.get(holder1.getIndex()).getId(),
-                            holder1.getIndex(), brandItems.get(holder1.getIndex()).getTitle(), DealsAnalytics.EVENT_PROMO_VIEW, DealsAnalytics.EVENT_IMPRESSION_POPULAR_BRAND, DealsAnalytics.LIST_DEALS_TRENDING);
+                            holder1.getIndex(), brandItems.get(holder1.getIndex()).getTitle(), DealsAnalytics.EVENT_PROMO_VIEW, DealsAnalytics.EVENT_IMPRESSION_POPULAR_BRAND_HOME, DealsAnalytics.DEALS_HOME_PAGE);
 
+                } else if (isBrandNative) {
+                    dealsAnalytics.sendBrandImpressionEvent(brandItems.get(holder1.getIndex()).getId(),
+                            holder1.getIndex(), brandItems.get(holder1.getIndex()).getTitle(), DealsAnalytics.EVENT_PROMO_VIEW, DealsAnalytics.EVENT_IMPRESSION_POPULAR_BRAND_ALL, DealsAnalytics.DEALS_HOME_PAGE);
                 } else {
-                    dealsAnalytics.sendEventDealsDigitalView(DealsAnalytics.EVENT_VIEW_SEARCH_BRAND_RESULT,
-                            String.format("%s - %s", brandItems.get(holder1.getIndex()).getTitle()
-                                    , holder1.getIndex()));
+                    dealsAnalytics.sendEcommerceBrand(brandItems.get(holder1.getIndex()).getId(),
+                            holder1.getIndex(), brandItems.get(holder1.getIndex()).getTitle(), DealsAnalytics.EVENT_PROMO_VIEW, DealsAnalytics.EVENT_IMPRESSION_POPULAR_BRAND_CATEGORY, DealsAnalytics.DEALS_HOME_PAGE);
                 }
             }
         }
@@ -75,6 +78,10 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     public void setPopularBrands(boolean popularBrands) {
         this.isPopularBrands = popularBrands;
+    }
+
+    public void setBrandNativePage(boolean isBrandNative) {
+        this.isBrandNative = isBrandNative;
     }
 
 
@@ -93,9 +100,7 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
 
         public void bindData(final Brand brand, int position) {
-            if (itemViewType == ITEM_BRAND_HOME) {
-                brandName.setText(brand.getTitle());
-            }
+            brandName.setText(brand.getTitle());
             ImageHandler.loadImage(context, imageViewBrandItem, brand.getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
             itemView.setOnClickListener(this);
         }
@@ -119,12 +124,13 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         @Override
         public void onClick(View v) {
             if (isPopularBrands) {
-                dealsAnalytics.sendEcommerceBrand(brandItems.get(getIndex()).getId(),
-                        getIndex(), brandItems.get(getIndex()).getTitle(), DealsAnalytics.EVENT_PROMO_CLICK, DealsAnalytics.EVENT_CLICK_POPULAR_BRAND, DealsAnalytics.LIST_DEALS_TRENDING);
+                dealsAnalytics.sendBrandsSuggestionClickEvent(brandItems.get(getIndex()),
+                        getIndex(), "", DealsAnalytics.CLICK_BRANDS_HOME);
 
+            } else if (isBrandNative){
+                dealsAnalytics.sendBrandsSuggestionClickEvent(brandItems.get(getIndex()), getIndex(), "", DealsAnalytics.CLICK_BRAND_NATIVE_PAGE);
             } else {
-                dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_SEARCH_BRAND_RESULT,
-                        String.format("%s - %s", brandItems.get(getIndex()).getTitle(), getIndex()));
+                dealsAnalytics.sendBrandsSuggestionClickEvent(brandItems.get(getIndex()), getIndex(), "", DealsAnalytics.CLICK_BRANDS_CATEGORY);
             }
 
             Intent detailsIntent = new Intent(context, BrandDetailsActivity.class);
