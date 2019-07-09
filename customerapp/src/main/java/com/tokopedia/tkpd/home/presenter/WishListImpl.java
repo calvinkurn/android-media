@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.tagmanager.DataLayer;
@@ -44,7 +43,6 @@ import com.tokopedia.graphql.data.ObservableFactory;
 import com.tokopedia.graphql.data.model.CacheType;
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
-import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractor;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractorImpl;
@@ -180,7 +178,7 @@ public class WishListImpl implements WishList {
                 });
     }
 
-    public void getFirstRecomData(){
+    public void getFirstRecomData() {
         getRecommendationUseCase.execute(getRecommendationUseCase.getRecomParams(0,
                 X_SOURCE_RECOM_WIDGET,
                 EMPTY_WISHLIST,
@@ -190,6 +188,7 @@ public class WishListImpl implements WishList {
                     public void onStart() {
                         wishListView.displayLoadMore(true);
                     }
+
                     @Override
                     public void onCompleted() {
                     }
@@ -224,7 +223,6 @@ public class WishListImpl implements WishList {
     @Override
     public void fetchSavedsInstance(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
-            //mPaging.onCreate(savedInstanceState);
             if (savedInstanceState.containsKey(WISHLIST_MODEL)) {
                 data = Parcels.unwrap(savedInstanceState.getParcelable(WISHLIST_MODEL));
                 dataWishlist = Parcels.unwrap(savedInstanceState.getParcelable(WISHLIST_ENTITY));
@@ -283,14 +281,11 @@ public class WishListImpl implements WishList {
         wishListView.setPullEnabled(false);
         mPaging.nextPage();
         params.putInt(PAGE_NO, mPaging.getPage());
-
-        getWishListDataSearch(context, new SearchWishlistSubscriber());
-
+        getWishListDataSearch(context, new LoadMoreSearchWishlistSubscriber());
     }
 
     @Override
     public void saveDataBeforeRotate(Bundle saved) {
-        //mPaging.onSavedInstanceState(saved);
         Bundle bundle = new Bundle();
         bundle.putParcelable(WISHLIST_MODEL, Parcels.wrap(data));
         bundle.putParcelable(WISHLIST_ENTITY, Parcels.wrap(dataWishlist));
@@ -513,7 +508,7 @@ public class WishListImpl implements WishList {
         mPaging.resetPage();
         params.putString(QUERY, query);
         params.putInt(PAGE_NO, mPaging.getPage());
-        getWishListDataSearch(context, new SearchWishlistSubscriber());
+        getWishListDataSearch(context, new FirstSearchWishlistSubscriber());
     }
 
     @Override
@@ -638,10 +633,6 @@ public class WishListImpl implements WishList {
         }
     }
 
-    public Boolean isNextPage(Pagination pagination) {
-        return pagination != null;
-    }
-
     public List<Visitable> convertToProductItemList(List<Wishlist> wishlists, TopAdsModel adsModel, String query) {
         List<Visitable> products = new ArrayList<>();
         for (int i = 0; i < wishlists.size(); i++) {
@@ -665,7 +656,7 @@ public class WishListImpl implements WishList {
             product.setOfficial(wishlists.get(i).getShop().isOfficial());
             products.add(new WishlistProductViewModel(product));
         }
-        if (products.size() >= TOPADS_INDEX && adsModel!=null && !adsModel.getData().isEmpty()) {
+        if (products.size() >= TOPADS_INDEX && adsModel != null && !adsModel.getData().isEmpty()) {
             products.add(TOPADS_INDEX, new WishlistTopAdsViewModel(adsModel, query));
         }
         return products;
@@ -683,8 +674,23 @@ public class WishListImpl implements WishList {
         }, CacheDuration.onSecond(5));
     }
 
-    private class SearchWishlistSubscriber extends Subscriber<GqlWishListDataResponse> {
+    private void setDataWishlistOnSearch(GqlWishListDataResponse gqlWishListDataResponse) {
+        gqlWishListDataResponse.getGqlWishList().getPagination().setNextUrl("search");
+        wishListView.sendWishlistImpressionAnalysis(gqlWishListDataResponse.getGqlWishList()
+                , dataWishlist.size());
 
+        dataWishlist.addAll(gqlWishListDataResponse.getGqlWishList().getWishlistDataList());
+        data.addAll(convertToProductItemList(gqlWishListDataResponse.getGqlWishList().getWishlistDataList(),
+                gqlWishListDataResponse.getTopAdsModel(), query));
+        mPaging.setPagination(gqlWishListDataResponse.getGqlWishList().getPagination());
+        wishListView.setPullEnabled(true);
+        wishListView.loadDataChange();
+        wishListView.displayContentList(true);
+        wishListView.displayLoading(false);
+    }
+
+
+    private class FirstSearchWishlistSubscriber extends Subscriber<GqlWishListDataResponse> {
 
         @Override
         public void onStart() {
@@ -696,24 +702,9 @@ public class WishListImpl implements WishList {
             wishListView.displayLoadMore(false);
             if (gqlWishListDataResponse != null) {
                 wishListView.displayPull(false);
-                if (mPaging.getPage() == 1 && gqlWishListDataResponse.getGqlWishList().getWishlistDataList().size() == 0) {
-                    data.clear();
-                    dataWishlist.clear();
-                    wishListView.setSearchNotFound(query);
-                }
-                gqlWishListDataResponse.getGqlWishList().getPagination().setNextUrl("search");
-
-                wishListView.sendWishlistImpressionAnalysis(gqlWishListDataResponse.getGqlWishList()
-                        , dataWishlist.size());
-
-                dataWishlist.addAll(gqlWishListDataResponse.getGqlWishList().getWishlistDataList());
-                data.addAll(convertToProductItemList(gqlWishListDataResponse.getGqlWishList().getWishlistDataList(),
-                        gqlWishListDataResponse.getTopAdsModel(), query));
-                mPaging.setPagination(gqlWishListDataResponse.getGqlWishList().getPagination());
-                wishListView.setPullEnabled(true);
-                wishListView.loadDataChange();
-                wishListView.displayContentList(true);
-                wishListView.displayLoading(false);
+                data.clear();
+                dataWishlist.clear();
+                setDataWishlistOnSearch(gqlWishListDataResponse);
             }
         }
 
@@ -724,7 +715,42 @@ public class WishListImpl implements WishList {
 
         @Override
         public void onError(Throwable e) {
-            Log.e(TAG, "onError: ", e);
+            if (mPaging.getPage() == 1 && wishListView.isPullToRefresh()) {
+                wishListView.displayPull(false);
+            }
+            wishListView.displayErrorNetwork(false);
+        }
+
+    }
+
+    private class LoadMoreSearchWishlistSubscriber extends Subscriber<GqlWishListDataResponse> {
+
+        @Override
+        public void onStart() {
+            wishListView.displayLoadMore(true);
+        }
+
+        @Override
+        public void onNext(GqlWishListDataResponse gqlWishListDataResponse) {
+            wishListView.displayLoadMore(false);
+            if (gqlWishListDataResponse != null) {
+                wishListView.displayPull(false);
+                if (gqlWishListDataResponse.getGqlWishList().getWishlistDataList().size() == 0) {
+                    data.clear();
+                    dataWishlist.clear();
+                    wishListView.setSearchNotFound(query);
+                }
+                setDataWishlistOnSearch(gqlWishListDataResponse);
+            }
+        }
+
+
+        @Override
+        public void onCompleted() {
+        }
+
+        @Override
+        public void onError(Throwable e) {
             if (mPaging.getPage() == 1 && wishListView.isPullToRefresh()) {
                 wishListView.displayPull(false);
             }
