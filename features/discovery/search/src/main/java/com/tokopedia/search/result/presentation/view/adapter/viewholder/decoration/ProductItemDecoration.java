@@ -20,19 +20,33 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
     private final int topSpacing;
     private final int rightSpacing;
     private final int bottomSpacing;
+    private final int verticalCardViewOffset;
+    private final int horizontalCardViewOffset;
     private final int color;
+
+    public static class ProductItemDecorationParameter {
+        public int leftSpacing;
+        public int topSpacing;
+        public int rightSpacing;
+        public int bottomSpacing;
+        public int verticalCardViewOffset;
+        public int horizontalCardViewOffset;
+        public int color;
+    }
 
     private final List<Integer> allowedViewTypes = Arrays.asList(
             R.layout.search_product_card_small_grid,
             R.layout.search_product_card_big_grid,
             R.layout.search_product_card_list);
 
-    public ProductItemDecoration(int leftSpacing, int topSpacing, int rightSpacing, int bottomSpacing, int color) {
-        this.leftSpacing = leftSpacing;
-        this.topSpacing = topSpacing;
-        this.rightSpacing = rightSpacing;
-        this.bottomSpacing = bottomSpacing;
-        this.color = color;
+    public ProductItemDecoration(ProductItemDecorationParameter productItemDecorationParameter) {
+        this.leftSpacing = productItemDecorationParameter.leftSpacing;
+        this.topSpacing = productItemDecorationParameter.topSpacing;
+        this.rightSpacing = productItemDecorationParameter.rightSpacing;
+        this.bottomSpacing = productItemDecorationParameter.bottomSpacing;
+        this.verticalCardViewOffset = productItemDecorationParameter.verticalCardViewOffset;
+        this.horizontalCardViewOffset = productItemDecorationParameter.horizontalCardViewOffset;
+        this.color = productItemDecorationParameter.color;
     }
 
     @Override
@@ -46,11 +60,27 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
             final int relativePos = getProductItemRelativePosition(parent, view);
             final int totalSpanCount = getTotalSpanCount(parent);
 
-            outRect.left = isFirstInRow(relativePos, totalSpanCount) ? leftSpacing : leftSpacing / 4;
-            outRect.top = isTopProductItem(parent, absolutePos, relativePos, totalSpanCount) ? topSpacing : topSpacing / 4;
-            outRect.right = isLastInRow(relativePos, totalSpanCount) ? rightSpacing : rightSpacing / 4;
-            outRect.bottom = isBottomProductItem(parent, absolutePos, relativePos, totalSpanCount) ? bottomSpacing : bottomSpacing / 4;
+            outRect.left = getLeftOffset(relativePos, totalSpanCount);
+            outRect.top = getTopOffset(parent, absolutePos, relativePos, totalSpanCount);
+            outRect.right = getRightOffset(relativePos, totalSpanCount);
+            outRect.bottom = getBottomOffset(parent, absolutePos, relativePos, totalSpanCount);
         }
+    }
+
+    private int getLeftOffset(int relativePos, int totalSpanCount) {
+        return (isFirstInRow(relativePos, totalSpanCount) ? leftSpacing : leftSpacing / 4) - horizontalCardViewOffset;
+    }
+
+    private int getTopOffset(RecyclerView parent, int absolutePos, int relativePos, int totalSpanCount) {
+        return (isTopProductItem(parent, absolutePos, relativePos, totalSpanCount) ? topSpacing : topSpacing / 4) - verticalCardViewOffset;
+    }
+
+    private int getRightOffset(int relativePos, int totalSpanCount) {
+        return (isLastInRow(relativePos, totalSpanCount) ? rightSpacing : rightSpacing / 4) - horizontalCardViewOffset;
+    }
+
+    private int getBottomOffset(RecyclerView parent, int absolutePos, int relativePos, int totalSpanCount) {
+        return (isBottomProductItem(parent, absolutePos, relativePos, totalSpanCount) ? bottomSpacing : bottomSpacing / 4) - verticalCardViewOffset;
     }
 
     private int getProductItemRelativePosition(RecyclerView parent, View view) {

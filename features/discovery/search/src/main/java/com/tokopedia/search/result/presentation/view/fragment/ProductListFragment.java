@@ -2,6 +2,7 @@ package com.tokopedia.search.result.presentation.view.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -239,14 +240,47 @@ public class ProductListFragment
         adapter = new ProductListAdapter(this, productListTypeFactory);
         recyclerView.setLayoutManager(getStaggeredGridLayoutManager());
         recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(new ProductItemDecoration(
-                getContext().getResources().getDimensionPixelSize(R.dimen.dp_16),
-                getContext().getResources().getDimensionPixelSize(R.dimen.dp_16),
-                getContext().getResources().getDimensionPixelSize(R.dimen.dp_16),
-                getContext().getResources().getDimensionPixelSize(R.dimen.dp_16),
-                getContext().getResources().getColor(R.color.white)
-        ));
+        recyclerView.addItemDecoration(createProductItemDecoration());
         setHeaderTopAds(true);
+    }
+
+    @NonNull
+    private ProductItemDecoration createProductItemDecoration() {
+        ProductItemDecoration.ProductItemDecorationParameter parameter = createProductItemDecorationParameter();
+
+        return new ProductItemDecoration(parameter);
+    }
+
+    private ProductItemDecoration.ProductItemDecorationParameter createProductItemDecorationParameter() {
+        ProductItemDecoration.ProductItemDecorationParameter parameter = new ProductItemDecoration.ProductItemDecorationParameter();
+
+        parameter.leftSpacing = getContext().getResources().getDimensionPixelSize(R.dimen.dp_16);
+        parameter.topSpacing = getContext().getResources().getDimensionPixelSize(R.dimen.dp_16);
+        parameter.rightSpacing = getContext().getResources().getDimensionPixelSize(R.dimen.dp_16);
+        parameter.bottomSpacing = getContext().getResources().getDimensionPixelSize(R.dimen.dp_16);
+        parameter.verticalCardViewOffset = getVerticalCardViewOffset();
+        parameter.horizontalCardViewOffset = getHorizontalCardViewOffset();
+        parameter.color = getContext().getResources().getColor(R.color.white);
+
+        return parameter;
+    }
+
+    public int getVerticalCardViewOffset() {
+        if(getContext() == null) return 0;
+
+        Resources res = getContext().getResources();
+        int elevation = res.getDimensionPixelSize(R.dimen.dp_6);
+        int radius = res.getDimensionPixelSize(R.dimen.dp_8);
+        return (int) (elevation * 1.5 + (1 - Math.cos(45)) * radius);
+    }
+
+    public int getHorizontalCardViewOffset() {
+        if(getContext() == null) return 0;
+
+        Resources res = getContext().getResources();
+        int elevation = res.getDimensionPixelSize(R.dimen.dp_6);
+        int radius = res.getDimensionPixelSize(R.dimen.dp_8);
+        return (int) (elevation + (1 - Math.cos(45)) * radius);
     }
 
     private void setupListener() {
