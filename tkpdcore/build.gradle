@@ -89,6 +89,9 @@ dependencies {
     implementation rootProject.ext.dbDependencies.dbFlowCore
     implementation rootProject.ext.dbDependencies.dbFlow
 
+    implementation rootProject.ext.dbDependencies.dbRoomRuntime
+    annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler
+
     implementation rootProject.ext.butterKnifeDependencies.butterKnife
     annotationProcessor rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
