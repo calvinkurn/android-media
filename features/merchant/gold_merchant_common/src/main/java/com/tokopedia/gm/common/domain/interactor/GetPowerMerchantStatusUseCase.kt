@@ -27,7 +27,9 @@ class GetPowerMerchantStatusUseCase @Inject constructor(private val getShopStatu
     }
 
     private fun getShopStatus(requestParams: RequestParams): Observable<GoldGetPmOsStatus> {
-        return getShopStatusUseCase.createObservable(requestParams).subscribeOn(Schedulers.io())
+        return getShopStatusUseCase.createObservable(GetShopStatusUseCase.createRequestParams(
+                requestParams.getString(GMParamApiContant.SHOP_ID, "")))
+                .subscribeOn(Schedulers.io())
     }
 
     private fun getShopScore(requestParams: RequestParams): Observable<ShopScoreResult> {
