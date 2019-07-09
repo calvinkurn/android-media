@@ -199,6 +199,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
         buttonSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                trackingOpenShop.eventOpenShopSuccessClick();
                 onButtonSubmitClicked();
             }
         });
@@ -240,6 +241,11 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
             @Override
             public void onClick(@NotNull View textView) {
                 if (getActivity() != null) {
+                    if (url == URL_TNC) {
+                        trackingOpenShop.eventTncClick();
+                    } else {
+                        trackingOpenShop.eventPrivacyPolicyClick();
+                    }
                     Intent intent = ShopOpenWebViewActivity.Companion.newInstance(getActivity(), url, title);
                     startActivity(intent);
                 }
@@ -296,12 +302,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
             buttonSubmit.setEnabled(false);
             return;
         }
-        showSubmitLoading();
-        String shopName = editTextInputShopName.getText().toString().trim();
-        String shopDomain = editTextInputDomainName.getTextWithoutPrefix().trim();
-        Integer districtId = openShopAddressViewHolder.getDistrictId();
-        Integer postalCodeId = Integer.valueOf(postalCode);
-        shopOpenDomainPresenter.onSubmitCreateShop(shopName, shopDomain, districtId, postalCodeId);
+        submitCreatingShop();
     }
 
     @Override
@@ -480,7 +481,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
                         isPostalCodeChoosen = true;
                         openShopAddressViewHolder.updatePostalCodeView(postalCode);
                     }
-                }
+                } break;
             case REQUEST_CODE__EDIT_ADDRESS:
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     Address address = data.getParcelableExtra(DistrictRecommendationContract.Constant.INTENT_DATA_ADDRESS);
@@ -488,15 +489,27 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
                         isDistrictChoosen = true;
                         clearFocus();
                         openShopAddressViewHolder.setDistrictId(address.getDistrictId());
+                        isPostalCodeChoosen = false;
+                        openShopAddressViewHolder.updatePostalCodeView(null);
                         openShopAddressViewHolder.initPostalCode(address.getZipCodes());
                         openShopAddressViewHolder.updateLocationView(
                                 address.getProvinceName(),
                                 address.getCityName(),
                                 address.getDistrictName()
                         );
+                        openShopAddressViewHolder.updatePostalCodeView("");
                     }
-                }
+                } break;
         }
+    }
+
+    private void submitCreatingShop() {
+        showSubmitLoading();
+        String shopName = editTextInputShopName.getText().toString().trim();
+        String shopDomain = editTextInputDomainName.getTextWithoutPrefix().trim();
+        Integer districtId = openShopAddressViewHolder.getDistrictId();
+        Integer postalCodeId = Integer.valueOf(postalCode);
+        shopOpenDomainPresenter.onSubmitCreateShop(shopName, shopDomain, districtId, postalCodeId);
     }
 
     public void clearFocus() {

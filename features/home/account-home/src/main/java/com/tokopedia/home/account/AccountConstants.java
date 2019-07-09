@@ -97,11 +97,11 @@ public class AccountConstants {
         public static final String OVO_PAY_ICON_CLICK = "ovo - tokopedia pay icon click";
         public static final String BY_ME_CURATION = "kurasi produk by.me";
         public static final String CLICK_FINTECH_MICROSITE = "clickFintechMicrosite";
-    }
 
-    public class ImageUrl {
-        public static final String OVO_IMG = "https://ecs7.tokopedia.net/img/wallet/ic_ovo_circle.png";
-        public static final String TOKOCASH_IMG = "https://ecs7.tokopedia.net/img/wallet/ic_tokocash_circle.png";
+        public static final String EVENT_CLICK_ACCOUNT = "clickAccount";
+        public static final String CATEGORY_ACCOUNT_SELL = "my account - sell";
+        public static final String ACTION_CLICK_OPEN_SHOP = "click open shop";
+        public static final String ACTION_CLICK_LEARN_MORE = "click learn more";
     }
 
     public interface VccStatus {

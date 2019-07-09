@@ -60,13 +60,18 @@ class OnboardingActivity : BaseActivity() {
     lateinit var loginButton: ButtonCompat
     lateinit var registerButton: ButtonCompat
     lateinit var skipButton: TextView
-    var currentPosition = 1
+    var currentPosition = 0
 
 
     protected var indicatorItems = java.util.ArrayList<ImageView>()
 
     companion object {
         fun createIntent(context: Context) = Intent(context, OnboardingActivity::class.java)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        analytics.sendScreen(currentPosition)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -261,7 +266,7 @@ class OnboardingActivity : BaseActivity() {
     private fun fetchFromRemoteConfig() {
         remoteConfig = FirebaseRemoteConfigImpl(this)
         remoteConfig.fetch(object : RemoteConfig.Listener {
-            override fun onComplete() {
+            override fun onComplete(rc: RemoteConfig?) {
                 if (slideCallBackList != null && slideCallBackList.isNotEmpty()) {
                     for (slideCallback in slideCallBackList) {
                         slideCallback.onResponse(remoteConfig)

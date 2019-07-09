@@ -8,4 +8,12 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="FeedRatingBar" parent="Base.Widget.AppCompat.RatingBar">
+        <item name="android:progressDrawable">@drawable/rating_resource</item>
+        <item name="android:stepSize">0.1</item>
+        <item name="android:numStars">5</item>
+        <item name="android:isIndicator">true</item>
+        <item name="android:minHeight">16dp</item>
+        <item name="android:maxHeight">16dp</item>
+    </style>
 </resources>

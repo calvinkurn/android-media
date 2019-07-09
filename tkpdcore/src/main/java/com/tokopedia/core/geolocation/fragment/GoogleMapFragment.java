@@ -34,7 +34,6 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.geolocation.adapter.SuggestionLocationAdapter;
 import com.tokopedia.core.geolocation.domain.IMapsRepository;
@@ -46,8 +45,6 @@ import com.tokopedia.core.geolocation.presenter.GoogleMapPresenterImpl;
 import com.tokopedia.core.network.apiservices.maps.MapService;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
-
-import butterknife.BindView;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -67,17 +64,11 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
     private static final String STATE_MAPVIEW_SAVE_STATE = "STATE_MAPVIEW_SAVE_STATE";
     private static final String STATE_LOCATION_INITIATED = "STATE_LOCATION_INITIATED";
 
-    @BindView(R2.id.mapview)
     MapView mapView;
-    @BindView(R2.id.app_bar)
     Toolbar toolbar;
-    @BindView(R2.id.autocomplete)
     AutoCompleteTextView autoComplete;
-    @BindView(R2.id.pointer_text)
     TextView textPointer;
-    @BindView(R2.id.pointer_submit)
     View submitPointer;
-    @BindView(R2.id.fab)
     FloatingActionButton fab;
 
     private LocationPass locationPass;
@@ -162,6 +153,13 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
 
     @Override
     protected void initView(View view) {
+        mapView = (MapView) view.findViewById(R.id.mapview);
+        toolbar = (Toolbar) view.findViewById(R.id.app_bar);
+        autoComplete = (AutoCompleteTextView) view.findViewById(R.id.autocomplete);
+        textPointer = (TextView) view.findViewById(R.id.pointer_text);
+        submitPointer = (View) view.findViewById(R.id.pointer_submit);
+        fab = (FloatingActionButton) view.findViewById(R.id.fab);
+
         initActionBarView();
         prepareActionBarView();
         prepareAutoCompleteView();

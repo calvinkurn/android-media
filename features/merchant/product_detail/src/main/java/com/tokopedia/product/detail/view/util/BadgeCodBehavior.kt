@@ -17,12 +17,12 @@ class BadgeCodBehavior : CoordinatorLayout.Behavior<View>{
 
     constructor(context: Context, attrs: AttributeSet): super(context, attrs)
 
-    override fun layoutDependsOn(parent: CoordinatorLayout?, child: View?, dependency: View?): Boolean {
+    override fun layoutDependsOn(parent: CoordinatorLayout, child: View, dependency: View): Boolean {
         return dependency is AppBarLayout
     }
 
     @SuppressLint("RestrictedApi")
-    override fun onDependentViewChanged(parent: CoordinatorLayout?, child: View?, dependency: View?): Boolean {
+    override fun onDependentViewChanged(parent: CoordinatorLayout, child: View, dependency: View): Boolean {
         if (dependency == null)
             return false
 

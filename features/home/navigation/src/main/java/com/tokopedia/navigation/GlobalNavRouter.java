@@ -20,8 +20,6 @@ public interface GlobalNavRouter {
 
     Fragment getCartFragment(Bundle bundle);
 
-    Fragment getEmptyCartFragment(String autoApplyMessage, String state, String titleDesc, String promoCode);
-
     Fragment getOfficialStoreFragment(Bundle bundle);
 
     Intent getInboxTalkCallingIntent(Context context);
@@ -53,4 +51,6 @@ public interface GlobalNavRouter {
     void sendOpenHomeEvent();
 
     Intent getOldOfficialStore(Context context);
+
+    void setCategoryAbTestingConfig();
 }

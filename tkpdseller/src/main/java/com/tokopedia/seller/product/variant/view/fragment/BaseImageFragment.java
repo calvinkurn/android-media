@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 
+import com.tokopedia.imagepicker.common.util.FileUtils;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder;
 import com.tokopedia.product.manage.item.variant.dialog.ProductAddImageEditVariantDialogFragment;
@@ -91,7 +92,7 @@ public abstract class BaseImageFragment extends Fragment {
                 refreshImageView();
 
                 if (!TextUtils.isEmpty(uriOrPath) && !needRetainImage()) {
-                    ImageUtils.deleteFileInTokopediaFolder(uriOrPath);
+                    FileUtils.deleteFileInTokopediaFolder(uriOrPath);
                 }
             }
         });

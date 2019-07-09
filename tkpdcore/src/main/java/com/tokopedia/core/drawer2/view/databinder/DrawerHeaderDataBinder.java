@@ -18,7 +18,6 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.analytics.AnalyticsEventTrackingHelper;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerData;
@@ -31,9 +30,6 @@ import com.tokopedia.core.util.DataBinder;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.track.TrackApp;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by nisie on 1/11/17.
@@ -72,75 +68,32 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         private final View layoutProgress;
         private final ProgressBar progressBar;
 
-        @BindView(R2.id.user_avatar)
         ImageView avatar;
-
-        @BindView(R2.id.name_text)
         TextView name;
-
-        @BindView(R2.id.deposit_text)
         TextView deposit;
-
-        @BindView(R2.id.toppoints_text)
         TextView topPoint;
-
-        @BindView(R2.id.top_cash_value)
         TextView tokoCash;
-
-        @BindView(R2.id.cover_img)
         ImageView coverImg;
-
-        @BindView(R2.id.drawer_points_layout)
         LinearLayout drawerPointsLayout;
-
-        @BindView(R2.id.drawer_saldo)
         RelativeLayout saldoLayout;
-
-        @BindView(R2.id.drawer_top_points)
         RelativeLayout topPointsLayout;
-
-        @BindView(R2.id.drawer_top_cash)
         RelativeLayout tokoCashLayout;
-
-        @BindView(R2.id.loading_saldo)
         View loadingSaldo;
-
-        @BindView(R2.id.loading_loyalty)
         View loadingLoyalty;
-
-        @BindView(R2.id.loading_top_cash)
         View loadingTokoCash;
-
-        @BindView(R2.id.toko_cash_label)
         TextView tokoCashLabel;
-
-        @BindView(R2.id.retry_top_cash)
         ImageView retryTopCash;
-
-        @BindView(R2.id.toko_cash_activation_button)
         TextView tokoCashActivationButton;
-
-
-        @BindView(R2.id.drawer_header)
         View drawerHeader;
-
-
-        @BindView(R2.id.tokopoint_container)
         View tokoPointContainer;
-        @BindView(R2.id.iv_tokopoint_badge)
         ImageView ivTokoPointBadge;
-        @BindView(R2.id.tv_tokopoint_action)
         TextView tvTokoPointAction;
-        @BindView(R2.id.tv_tokopoint_count)
         TextView tvTokoPointCount;
-
-        @BindView(R2.id.drawer_tokocard)
         RelativeLayout tokocardLayout;
-
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+
             percentText = (TextView) itemView.findViewById(R.id.percent_text);
             completeProfile = (TextView) itemView.findViewById(R.id.complete_profile);
             layoutProgress = itemView.findViewById(R.id.layout_progress);
@@ -148,6 +101,29 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
             verifiedIcon = itemView.findViewById(R.id.verified_icon);
             progressBar = (ProgressBar) itemView.findViewById(R.id.ProgressBar);
 
+            avatar = (ImageView) itemView.findViewById(R.id.user_avatar);
+            name = (TextView) itemView.findViewById(R.id.name_text);
+            deposit = (TextView) itemView.findViewById(R.id.deposit_text);
+            topPoint = (TextView) itemView.findViewById(R.id.toppoints_text);
+            tokoCash = (TextView) itemView.findViewById(R.id.top_cash_value);
+
+            coverImg = (ImageView) itemView.findViewById(R.id.cover_img);
+            drawerPointsLayout = (LinearLayout) itemView.findViewById(R.id.drawer_points_layout);
+            saldoLayout = (RelativeLayout) itemView.findViewById(R.id.drawer_saldo);
+            topPointsLayout = (RelativeLayout) itemView.findViewById(R.id.drawer_top_points);
+            tokoCashLayout = (RelativeLayout) itemView.findViewById(R.id.drawer_top_cash);
+            loadingSaldo = (View) itemView.findViewById(R.id.loading_saldo);
+            loadingLoyalty = (View) itemView.findViewById(R.id.loading_loyalty);
+            loadingTokoCash = (View) itemView.findViewById(R.id.loading_top_cash);
+            tokoCashLabel = (TextView) itemView.findViewById(R.id.toko_cash_label);
+            retryTopCash = (ImageView) itemView.findViewById(R.id.retry_top_cash);
+            tokoCashActivationButton = (TextView) itemView.findViewById(R.id.toko_cash_activation_button);
+            drawerHeader = (View) itemView.findViewById(R.id.drawer_header);
+            tokoPointContainer = (View) itemView.findViewById(R.id.tokopoint_container);
+            ivTokoPointBadge = (ImageView) itemView.findViewById(R.id.iv_tokopoint_badge);
+            tvTokoPointAction = (TextView) itemView.findViewById(R.id.tv_tokopoint_action);
+            tvTokoPointCount = (TextView) itemView.findViewById(R.id.tv_tokopoint_count);
+            tokocardLayout = (RelativeLayout) itemView.findViewById(R.id.drawer_tokocard);
         }
     }
 

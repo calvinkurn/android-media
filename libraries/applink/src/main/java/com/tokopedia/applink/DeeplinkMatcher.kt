@@ -13,6 +13,7 @@ import com.tokopedia.applink.DeepLinkChecker.GROUPCHAT
 import com.tokopedia.applink.DeepLinkChecker.HOT
 import com.tokopedia.applink.DeepLinkChecker.HOT_LIST
 import com.tokopedia.applink.DeepLinkChecker.INVOICE
+import com.tokopedia.applink.DeepLinkChecker.ORDER_LIST
 import com.tokopedia.applink.DeepLinkChecker.OTHER
 import com.tokopedia.applink.DeepLinkChecker.PELUANG
 import com.tokopedia.applink.DeepLinkChecker.PLAY
@@ -20,6 +21,7 @@ import com.tokopedia.applink.DeepLinkChecker.PRODUCT
 import com.tokopedia.applink.DeepLinkChecker.PROFILE
 import com.tokopedia.applink.DeepLinkChecker.PROMO
 import com.tokopedia.applink.DeepLinkChecker.RECHARGE
+import com.tokopedia.applink.DeepLinkChecker.RECOMMENDATION
 import com.tokopedia.applink.DeepLinkChecker.REFERRAL
 import com.tokopedia.applink.DeepLinkChecker.SALE
 import com.tokopedia.applink.DeepLinkChecker.SHOP
@@ -69,7 +71,10 @@ class DeeplinkMatcher() {
             add(Pattern(GT, 0, mapOf(0 to "contact-us")) to OTHER)
             add(Pattern(GT, 0, mapOf(0 to "about")) to OTHER)
             add(Pattern(GT, 0, mapOf(0 to "reset.pl")) to OTHER)
+            add(Pattern(GT,0, mapOf(0 to "order-list")) to ORDER_LIST)
             add(Pattern(GT, 0, mapOf(0 to "activation.pl")) to OTHER)
+            add(Pattern(EQ, 2, mapOf(0 to "rekomendasi")) to RECOMMENDATION)
+            add(Pattern(EQ, 1, mapOf(0 to "rekomendasi")) to RECOMMENDATION)
             add(Pattern(EQ, 1, null) to SHOP)
             add(Pattern(EQ, 2, null) to PRODUCT)
         }

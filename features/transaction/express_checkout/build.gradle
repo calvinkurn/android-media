@@ -29,9 +29,10 @@ dependencies {
     implementation project(rootProject.ext.libraries.imagePreview)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation project(rootProject.ext.libraries.track)
-    implementation rootProject.ext.libraries.unifyPrinciples
+    implementation rootProject.ext.unifyDependencies.principles
     
     implementation project(rootProject.ext.features.tradeIn)
+    implementation project(rootProject.ext.features.basemvvm)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.analyticsDependencies.appsflyer

@@ -117,7 +117,7 @@
                         android:layout_centerVertical="true"
                         android:layout_gravity="end"
                         android:foregroundGravity="right"
-                        android:src="@drawable/ic_arrow_right_grey" />
+                        app:srcCompat="@drawable/ic_arrow_right_grey" />
 
                 </RelativeLayout>
 

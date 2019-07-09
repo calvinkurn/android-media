@@ -10,7 +10,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 
-public class SubmitRawProductUseCase extends UseCase<Boolean> {
+public class SubmitRawProductUseCase extends UseCase<Integer> {
 
     private static final String PRODUCT_VIEW_MODEL = "PRODUCT_VIEW_MODEL";
 
@@ -22,7 +22,7 @@ public class SubmitRawProductUseCase extends UseCase<Boolean> {
     }
 
     @Override
-    public Observable<Boolean> createObservable(RequestParams requestParams) {
+    public Observable<Integer> createObservable(RequestParams requestParams) {
         ProductViewModel productViewModel = (ProductViewModel) requestParams.getObject(PRODUCT_VIEW_MODEL);
         if (TextUtils.isEmpty(productViewModel.getProductId())) {
             productViewModel.resetPictureId();

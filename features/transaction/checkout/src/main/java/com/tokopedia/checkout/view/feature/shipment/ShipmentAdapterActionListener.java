@@ -1,8 +1,5 @@
 package com.tokopedia.checkout.view.feature.shipment;
 
-import android.view.View;
-
-import com.tokopedia.checkout.view.common.adapter.CartAdapterActionListener;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
@@ -17,7 +14,19 @@ import java.util.List;
  * @author Irfan Khoirul on 23/04/18.
  */
 
-public interface ShipmentAdapterActionListener extends CartAdapterActionListener {
+public interface ShipmentAdapterActionListener {
+
+    void onVoucherMerchantPromoClicked(Object object);
+
+    void onCancelVoucherMerchantClicked(String promoMerchantCode, int position, boolean ignoreAPIResponse);
+
+    void onCartDataEnableToCheckout();
+
+    void onNeedToSaveState(ShipmentCartItemModel shipmentCartItemModel);
+
+    void onCartDataDisableToCheckout(String message);
+
+    void onCheckoutValidationResult(boolean result, Object shipmentData, int position, int requestCode);
 
     void onChangeAddress();
 
