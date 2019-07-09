@@ -6,6 +6,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.domain.pojo.ChatMenu
+import com.tokopedia.chat_common.view.adapter.viewholder.factory.ChatMenuFactory
 
 abstract class BaseChatMenuViewHolder(val listener: ChatMenuListener, itemView: View?) : RecyclerView.ViewHolder(itemView) {
 
@@ -17,6 +18,7 @@ abstract class BaseChatMenuViewHolder(val listener: ChatMenuListener, itemView: 
         fun closeChatMenu()
         fun onClickAttachProduct()
         fun onClickImagePicker()
+        fun createChatMenuFactory(): ChatMenuFactory
     }
 
     fun bind(chatMenu: ChatMenu) {

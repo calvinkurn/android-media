@@ -29,6 +29,7 @@ import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
+import com.tokopedia.chat_common.view.adapter.viewholder.factory.ChatMenuFactory
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.design.component.Dialog
@@ -48,6 +49,7 @@ import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactoryImpl
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.TopChatChatMenuFactory
 import com.tokopedia.topchat.chatroom.view.customview.*
 import com.tokopedia.topchat.chatroom.view.listener.*
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
@@ -847,5 +849,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun onClickImagePicker() {
         analytics.eventPickImage()
         pickImageToUpload()
+    }
+
+    override fun createChatMenuFactory(): ChatMenuFactory {
+        return TopChatChatMenuFactory()
     }
 }

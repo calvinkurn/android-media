@@ -26,6 +26,7 @@ import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
+import com.tokopedia.chat_common.view.adapter.viewholder.factory.ChatMenuFactory
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chatbot.ChatbotRouter
 import com.tokopedia.chatbot.R
@@ -42,6 +43,7 @@ import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
 import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
 import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactoryImpl
+import com.tokopedia.chatbot.view.adapter.viewholder.factory.ChatBotChatMenuFactory
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.AttachedInvoiceSelectionListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatActionListBubbleListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatRatingListener
@@ -419,11 +421,11 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         presenter.detachView()
     }
 
-    override fun onClickAttachProduct() {
-
+    override fun onClickImagePicker() {
+        //TODO do something
     }
 
-    override fun onClickImagePicker() {
-
+    override fun createChatMenuFactory(): ChatMenuFactory {
+        return ChatBotChatMenuFactory()
     }
 }

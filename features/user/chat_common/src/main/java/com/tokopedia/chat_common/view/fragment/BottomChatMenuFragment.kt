@@ -19,15 +19,19 @@ class BottomChatMenuFragment : BottomSheetDialogFragment() {
 
     private lateinit var rvChatMenu: RecyclerView
     private lateinit var chatMenuListener: BaseChatMenuViewHolder.ChatMenuListener
+    private lateinit var chatMenuFactory: ChatMenuFactory
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
+
         val parentFragment = parentFragment
         if (parentFragment is BaseChatMenuViewHolder.ChatMenuListener) {
             chatMenuListener = parentFragment
         } else {
             throw IllegalStateException("The parent fragment must implement the ChatMenuListener interface")
         }
+
+        initChatMenuFactory()
     }
 
     override fun getTheme(): Int {
@@ -46,11 +50,14 @@ class BottomChatMenuFragment : BottomSheetDialogFragment() {
         }
     }
 
+    private fun initChatMenuFactory() {
+        chatMenuFactory = chatMenuListener.createChatMenuFactory()
+    }
+
     private fun initChatMenu() {
-        val menuItems = ChatMenuFactory.createChatMenuItems()
         with(rvChatMenu) {
             setHasFixedSize(true)
-            adapter = ChatMenuAdapter(menuItems, chatMenuListener)
+            adapter = ChatMenuAdapter(chatMenuFactory, chatMenuListener)
         }
     }
 
