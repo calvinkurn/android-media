@@ -23,6 +23,7 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.google.android.exoplayer2.upstream.FileDataSource
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.videoplayer.R
 import com.tokopedia.videoplayer.state.*
 import com.tokopedia.videoplayer.state.Player.Companion.STATE_BUFFERING
@@ -117,12 +118,9 @@ class TkpdVideoPlayer: Fragment(), ControllerListener {
                 callback = arguments?.getParcelable(VIDEO_CALLBACK) as VideoPlayerListener?
 
                 //native controller visibility
-                playerView.useController = viewModel.nativeController
-                pgLoader.visibility = if (viewModel.nativeController) {
-                    View.VISIBLE
-                } else {
-                    View.GONE
-                }
+                playerView?.useController = viewModel.nativeController
+                pgLoader?.showWithCondition(viewModel.nativeController)
+
             }
             else -> activity?.finish()
         }
@@ -150,8 +148,13 @@ class TkpdVideoPlayer: Fragment(), ControllerListener {
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
             callback?.onPlayerStateChanged(playbackState)
             when (playbackState) {
-                STATE_BUFFERING -> pgLoader.show()
-                STATE_READY -> pgLoader.hide()
+                STATE_BUFFERING -> {
+                    pgLoader?.showWithCondition(viewModel.nativeController)
+                    dimBackground?.show()
+                }
+                STATE_READY -> {
+                    dimBackground?.hide()
+                }
             }
         }
 
@@ -240,10 +243,13 @@ class TkpdVideoPlayer: Fragment(), ControllerListener {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        playVideo(viewModel.videoSource)
+    }
+
     override fun onResume() {
         super.onResume()
-        playVideo(viewModel.videoSource)
-
         //get current position and seeking of video player
         if (viewModel.playerType == PlayerType.DEFAULT) {
             playerOptions?.seekTo(viewModel.stateVideoPosition)
@@ -257,6 +263,7 @@ class TkpdVideoPlayer: Fragment(), ControllerListener {
 
     override fun onStop() {
         super.onStop()
+        playerOptions?.stop()
 
         //save current position on video player
         viewModel.stateVideoPosition = playerOptions?.currentPosition!!

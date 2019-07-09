@@ -129,7 +129,7 @@ open class PlayViewStateImpl(
     private var spaceChatVideo: View = view.findViewById(R.id.top_space_guideline)
     private var interactionGuideline = view.findViewById<FrameLayout>(R.id.interaction_button_guideline)
     private var bufferContainer = view.findViewById<View>(R.id.video_buffer_container)
-    private var bufferDimContainer = view.findViewById<View>(R.id.dim_video_vertical)
+//    private var bufferDimContainer = view.findViewById<View>(R.id.dim_video_vertical)
     private var videoFragment = fragmentManager.findFragmentById(R.id.video_container) as GroupChatVideoFragment
 
     private lateinit var overlayDialog: CloseableBottomSheetDialog
@@ -273,7 +273,6 @@ open class PlayViewStateImpl(
         )
         videoVerticalHelper = VideoVerticalHelper(
                 bufferContainer,
-                bufferDimContainer,
                 activity.supportFragmentManager,
                 videoVerticalContainer,
                 rootView,
@@ -824,7 +823,7 @@ open class PlayViewStateImpl(
 //                "https://scontent-sin6-1.cdninstagram.com/vp/6a699996e4c39439008d67726849596d/5D24E316/t50.12441-16/53744866_293174538021780_5033871342265528633_n.mp4?_nc_ht=scontent-sin6-1.cdninstagram.com",
 //                "https://scontent-sin6-1.cdninstagram.com/vp/1c1f2774060e5a7403bc2eefae6e36cf/5D25AFC6/t50.12441-16/59409583_1671393593006903_5676993366659842316_n.mp4?_nc_ht=scontent-sin6-1.cdninstagram.com"
 //        )
-        if(it.isActive) {
+        if(it.isActive && it.androidStreamSD.isNotBlank()) {
             videoVerticalHelper.setData(it)
             videoVerticalHelper.playVideo(VideoVerticalHelper.VIDEO_480)
             overflowMenuHelper.setQualityVideo(VideoVerticalHelper.VIDEO_480)

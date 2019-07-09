@@ -15,10 +15,7 @@ import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.videoplayer.state.PlayerController
-import com.tokopedia.videoplayer.state.PlayerException
-import com.tokopedia.videoplayer.state.PlayerType
-import com.tokopedia.videoplayer.state.RepeatMode
+import com.tokopedia.videoplayer.state.*
 import com.tokopedia.videoplayer.utils.sendViewToBack
 import com.tokopedia.videoplayer.view.player.TkpdVideoPlayer
 import com.tokopedia.videoplayer.view.player.VideoPlayerListener
@@ -26,9 +23,8 @@ import com.tokopedia.videoplayer.view.player.VideoPlayerListener
 /**
  * @author : Steven 28/05/19
  */
-class VideoVerticalHelper (
+class VideoVerticalHelper constructor(
         var bufferContainer: View,
-        var bufferDimContainer: View,
         var fragmentManager: FragmentManager,
         var playerView: FrameLayout,
         var rootView: View,
@@ -50,7 +46,7 @@ class VideoVerticalHelper (
 
     init {
         hideContainer()
-        bufferDimContainer.setOnClickListener {}
+
         bufferText.text = getSpannable(R.string.buffer_text_long, R.string.buffer_text_retry)
         bufferText.setOnClickListener {
             showLoadingOnly()
@@ -72,12 +68,10 @@ class VideoVerticalHelper (
 
     fun showContainer() {
         bufferContainer.show()
-        bufferDimContainer.show()
     }
 
     fun hideContainer() {
         bufferContainer.hide()
-        bufferDimContainer.hide()
     }
 
     private fun getSpannable(sourceStringRes: Int, hyperlinkStringRes: Int): Spannable {
@@ -117,11 +111,27 @@ class VideoVerticalHelper (
                 /* if you have custom controller, turn it off */
                 .controller(PlayerController.OFF)
                 /* repeat video mode after finished */
-                .repeatMode(RepeatMode.REPEAT_MODE_ALL)
+                .repeatMode(RepeatMode.REPEAT_MODE_OFF)
                 /* handle video player listener */
                 .listener(object : VideoPlayerListener {
                     override fun onPlayerStateChanged(playbackState: Int) {
-
+                        when(playbackState) {
+                            Player.STATE_BUFFERING -> {
+                                showLoadingOnly()
+                                Log.d("stevenVideo", "buffering")
+                            }
+                            Player.STATE_READY -> {
+                                hideContainer()
+                                Log.d("stevenVideo", "ready")
+                            }
+                            Player.STATE_ENDED -> {
+                                Log.d("stevenVideo", "ended")
+                            }
+                            Player.STATE_IDLE -> {
+                                hideContainer()
+                                Log.d("stevenVideo", "idle")
+                            }
+                        }
                     }
 
                     override fun onPlayerError(error: PlayerException) {

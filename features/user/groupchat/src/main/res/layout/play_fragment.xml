@@ -499,13 +499,13 @@
                 android:orientation="vertical"/>
         </RelativeLayout>
 
-        <FrameLayout
-            android:id="@+id/dim_video_vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#ae31353b"
-            android:visibility="gone"
-            android:elevation="@dimen/dp_3"/>
+        <!--<FrameLayout-->
+            <!--android:id="@+id/dim_video_vertical"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:background="#ae31353b"-->
+            <!--android:visibility="gone"-->
+            <!--android:elevation="@dimen/dp_3"/>-->
 
         <LinearLayout
             android:id="@+id/video_buffer_container"
@@ -513,7 +513,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintWidth_max="@dimen/dp_240"
             app:layout_constraintTop_toTopOf="@id/layout_video_toggle"
-            app:layout_constraintBottom_toBottomOf="@id/chat_list"
+            app:layout_constraintBottom_toTopOf="@id/chat_list"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:orientation="vertical"
