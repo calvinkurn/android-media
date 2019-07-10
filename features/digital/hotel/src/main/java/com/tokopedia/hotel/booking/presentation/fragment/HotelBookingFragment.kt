@@ -169,6 +169,7 @@ class HotelBookingFragment : HotelBaseFragment() {
 
     private fun initProgressDialog() {
         progressDialog = ProgressDialog(activity)
+        progressDialog.setMessage(getString(R.string.hotel_progress_dialog_title))
         progressDialog.setCancelable(false)
     }
 
