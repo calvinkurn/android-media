@@ -27,6 +27,7 @@ class OVOP2PThankyouActivity : BaseSimpleActivity(), LoaderUiListener, ActivityL
     private var transferId: String = ""
     private var nonOvoUser: Boolean = false
     private lateinit var loading: View
+    private lateinit var parentView: View
     private lateinit var ovoP2pTransferComponent: OvoP2pTransferComponent
 
     private fun initInjector() {
@@ -92,13 +93,17 @@ class OVOP2PThankyouActivity : BaseSimpleActivity(), LoaderUiListener, ActivityL
     }
 
     override fun showProgressDialog() {
+        if(!::parentView.isInitialized) parentView = findViewById(R.id.parent_view)
+        parentView.visibility = View.GONE
         if (!::loading.isInitialized) loading = findViewById(R.id.progressbar_cntnr)
         loading.visibility = View.VISIBLE
     }
 
     override fun hideProgressDialog() {
-        if (loading != null)
+        if (::loading.isInitialized)
             loading.visibility = View.GONE
+        if(::parentView.isInitialized)
+            parentView.visibility = View.VISIBLE
     }
 
     override fun setHeaderTitle(title: String) {

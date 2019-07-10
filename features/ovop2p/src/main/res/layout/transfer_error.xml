@@ -38,7 +38,7 @@
         android:lineSpacingExtra="@dimen/sp_4"
         android:text="@string/ovop2p_jgnkhw"
         android:textColor="@color/clr_6b767e"
-        android:textSize="@dimen/sp_12"
+        android:textSize="@dimen/sp_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/wrng" />

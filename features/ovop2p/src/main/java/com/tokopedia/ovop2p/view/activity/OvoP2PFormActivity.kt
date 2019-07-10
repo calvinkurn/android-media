@@ -28,9 +28,7 @@ class OvoP2PFormActivity : BaseSimpleActivity(), HasComponent<OvoP2pTransferComp
 
     private lateinit var ovoP2pTransferComponent: OvoP2pTransferComponent
     private lateinit var loading: View
-    private var permissionsToRequest: MutableList<String>? = null
-    private var isPermissionGotDenied: Boolean = false
-    private val REQUEST_CONTACTS__CAMERA_PERMISSION = 123
+    private lateinit var parentView: View
     private lateinit var userPhoneNo: String
 
 
@@ -60,42 +58,22 @@ class OvoP2PFormActivity : BaseSimpleActivity(), HasComponent<OvoP2pTransferComp
     }
 
     override fun showProgressDialog() {
+//        if(!::parentView.isInitialized) parentView = findViewById(R.id.parent_view)
+//        parentView.visibility = View.GONE
         if (!::loading.isInitialized) loading = findViewById(R.id.progressbar_cntnr)
         loading.visibility = View.VISIBLE
     }
 
     override fun hideProgressDialog() {
-        if (loading != null)
+        if (::loading.isInitialized)
             loading.visibility = View.GONE
+//        if(::parentView.isInitialized)
+//            parentView.visibility = View.VISIBLE
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setUserData()
         super.onCreate(savedInstanceState)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (isPermissionGotDenied)
-        {
-            finish()
-            return
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-        {
-            val permissions: Array<String>
-            permissions = arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_CONTACTS)
-            permissionsToRequest = ArrayList<String>()
-            for (permission in permissions) {
-                if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-                    (permissionsToRequest as ArrayList<String>).add(permission)
-                }
-            }
-            if (!(permissionsToRequest as ArrayList<String>).isEmpty()) {
-                ActivityCompat.requestPermissions(this,
-                        (permissionsToRequest as ArrayList<String>).toTypedArray(), REQUEST_CONTACTS__CAMERA_PERMISSION)
-            }
-        }
     }
 
     override fun setHeaderTitle(title: String) {

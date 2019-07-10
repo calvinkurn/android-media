@@ -141,12 +141,12 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
         var sourceName = thankYouData.ovoP2pTransferThankyou.source.name
         if (TextUtils.isEmpty(sourceName)) {
             sourceName = context?.let {
-                OvoP2pUtil.getUserId(it)
+                OvoP2pUtil.getUserName(it)
             }.toString()
             thankYouDataCntnr.ovoP2pTransferThankyou.source.name = sourceName
         }
         sndrName.text = sourceName
-        sndrNum.text = "Ovo - " + thankYouData.ovoP2pTransferThankyou.source.phone
+        sndrNum.text = Constants.Prefixes.OVO_PREFIX + thankYouData.ovoP2pTransferThankyou.source.phone
         setRcvrUserData()
     }
 
