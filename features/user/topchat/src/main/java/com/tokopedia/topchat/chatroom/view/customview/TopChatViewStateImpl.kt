@@ -149,7 +149,6 @@ class TopChatViewStateImpl(
         showLastTimeOnline(viewModel)
         setHeaderMenuButton(headerMenuListener, alertDialog)
         showReplyBox(viewModel.replyable)
-        showActionButtons()
         checkShowQuickReply(viewModel)
         onCheckChatBlocked(viewModel.headerModel.role, viewModel.headerModel.name, viewModel
                 .blockedStatus, onUnblockChatClicked)
@@ -367,13 +366,6 @@ class TopChatViewStateImpl(
         myAlertDialog.setBtnCancel(view.context.getString(R.string.cancel))
         myAlertDialog.setOnCancelClickListener { myAlertDialog.dismiss() }
         myAlertDialog.show()
-    }
-
-
-    private fun showActionButtons() {
-//        pickerButton.visibility = View.VISIBLE
-//        attachProductButton.visibility = View.VISIBLE
-//        maximizeButton.visibility = View.GONE
     }
 
     override fun showErrorWebSocket(b: Boolean) {
