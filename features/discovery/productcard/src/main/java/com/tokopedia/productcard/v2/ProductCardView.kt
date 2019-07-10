@@ -139,6 +139,14 @@ abstract class ProductCardView: BaseCustomView {
      */
     abstract fun realignLayout()
 
+    open fun getCardViewRadius(): Float {
+        return cardViewProductCard?.radius ?: 0f
+    }
+
+    open fun getCardViewMaxElevation(): Float {
+        return cardViewProductCard?.maxCardElevation ?: 0f
+    }
+
     open fun setImageProductVisible(isVisible: Boolean) {
         imageProduct?.visibility = if (isVisible) View.VISIBLE else View.GONE
     }

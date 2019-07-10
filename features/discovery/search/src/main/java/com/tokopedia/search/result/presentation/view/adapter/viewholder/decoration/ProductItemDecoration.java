@@ -9,6 +9,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.TopAdsViewHolder;
+import com.tokopedia.productcard.v2.ProductCardView;
 import com.tokopedia.search.R;
 
 import java.util.Arrays;
@@ -20,8 +21,8 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
     private final int topSpacing;
     private final int rightSpacing;
     private final int bottomSpacing;
-    private final int verticalCardViewOffset;
-    private final int horizontalCardViewOffset;
+    private int verticalCardViewOffset;
+    private int horizontalCardViewOffset;
     private final int color;
 
     public static class ProductItemDecorationParameter {
@@ -44,8 +45,8 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
         this.topSpacing = productItemDecorationParameter.topSpacing;
         this.rightSpacing = productItemDecorationParameter.rightSpacing;
         this.bottomSpacing = productItemDecorationParameter.bottomSpacing;
-        this.verticalCardViewOffset = productItemDecorationParameter.verticalCardViewOffset;
-        this.horizontalCardViewOffset = productItemDecorationParameter.horizontalCardViewOffset;
+//        this.verticalCardViewOffset = productItemDecorationParameter.verticalCardViewOffset;
+//        this.horizontalCardViewOffset = productItemDecorationParameter.horizontalCardViewOffset;
         this.color = productItemDecorationParameter.color;
     }
 
@@ -60,11 +61,40 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
             final int relativePos = getProductItemRelativePosition(parent, view);
             final int totalSpanCount = getTotalSpanCount(parent);
 
+            verticalCardViewOffset = getVerticalCardViewOffset(view);
+            horizontalCardViewOffset = getHorizontalCardViewOffset(view);
+
             outRect.left = getLeftOffset(relativePos, totalSpanCount);
             outRect.top = getTopOffset(parent, absolutePos, relativePos, totalSpanCount);
             outRect.right = getRightOffset(relativePos, totalSpanCount);
             outRect.bottom = getBottomOffset(parent, absolutePos, relativePos, totalSpanCount);
         }
+    }
+
+    private int getHorizontalCardViewOffset(View view) {
+        if(view instanceof ProductCardView) {
+            ProductCardView cardView = (ProductCardView)view;
+
+            float maxElevation = cardView.getCardViewMaxElevation();
+            float radius = cardView.getCardViewRadius();
+
+            return (int) (maxElevation + (1 - Math.cos(45)) * radius);
+        }
+
+        return 0;
+    }
+
+    public int getVerticalCardViewOffset(View view) {
+        if(view instanceof ProductCardView) {
+            ProductCardView cardView = (ProductCardView)view;
+
+            float maxElevation = cardView.getCardViewMaxElevation();
+            float radius = cardView.getCardViewRadius();
+
+            return (int) (maxElevation * 1.5 + (1 - Math.cos(45)) * radius);
+        }
+
+        return 0;
     }
 
     private int getLeftOffset(int relativePos, int totalSpanCount) {
