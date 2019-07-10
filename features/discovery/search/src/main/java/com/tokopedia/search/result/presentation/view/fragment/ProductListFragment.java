@@ -1042,4 +1042,23 @@ public class ProductListFragment
     public void showAdultRestriction() {
         AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_SEARCH_PAGE, getQueryKey());
     }
+
+    @Override
+    public void sendTrackingWishlistNonLogin(String productId, boolean wishlistAction) {
+        searchTracking.sendGeneralEventWithUserId(
+                SearchEventTracking.Event.CLICK_WISHLIST,
+                SearchEventTracking.Category.SEARCH_RESULT.toLowerCase(),
+                generateWishlistClickEventActionNonLogin(wishlistAction),
+                generateWishlistClickEventLabelNonLogin(productId)
+        );
+    }
+
+    private String generateWishlistClickEventActionNonLogin(boolean isWishlisted) {
+        String action = isWishlisted ? "add" : "remove";
+        return action + " wishlist - non logged in";
+    }
+
+    private String generateWishlistClickEventLabelNonLogin(String productId) {
+        return productId + " - " + getQueryKey();
+    }
 }

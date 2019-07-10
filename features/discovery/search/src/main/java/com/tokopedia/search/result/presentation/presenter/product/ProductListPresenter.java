@@ -111,6 +111,7 @@ final class ProductListPresenter
                 addWishlist(productItem.getProductID(), getView().getUserId());
             }
         } else {
+            getView().sendTrackingWishlistNonLogin(productItem.getProductID(), !productItem.isWishlisted());
             getView().launchLoginActivity(productItem.getProductID());
         }
     }
