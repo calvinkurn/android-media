@@ -559,9 +559,15 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         if (saveInstanceCacheManager != null) {
             saveInstanceCacheManager.onSave(outState);
             saveInstanceCacheManager.put(CartListData.class.getSimpleName(), cartListData);
-            saveInstanceCacheManager.put(CartWishlistItemHolderData.class.getSimpleName(), new ArrayList<>(wishLists));
-            saveInstanceCacheManager.put(CartRecentViewItemHolderData.class.getSimpleName(), new ArrayList<>(recentViewList));
-            saveInstanceCacheManager.put(CartRecommendationItemHolderData.class.getSimpleName(), new ArrayList<>(recommendationList));
+            if (wishLists != null) {
+                saveInstanceCacheManager.put(CartWishlistItemHolderData.class.getSimpleName(), new ArrayList<>(wishLists));
+            }
+            if (recentViewList != null) {
+                saveInstanceCacheManager.put(CartRecentViewItemHolderData.class.getSimpleName(), new ArrayList<>(recentViewList));
+            }
+            if (recommendationList != null) {
+                saveInstanceCacheManager.put(CartRecommendationItemHolderData.class.getSimpleName(), new ArrayList<>(recommendationList));
+            }
         }
     }
 
