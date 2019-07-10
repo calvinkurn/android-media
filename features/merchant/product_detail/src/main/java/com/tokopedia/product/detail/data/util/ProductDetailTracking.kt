@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.data.util
 
 import android.net.Uri
+import android.os.Bundle
 import android.text.TextUtils
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.design.utils.CurrencyFormatUtil
@@ -12,8 +13,12 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.track.TrackApp
 import java.util.*
 
+/**
+ * POC convert old gtm to new gtm
+ */
 class ProductDetailTracking() {
 
+    // TODO later -need to be asked
     fun sendScreen(shopID: String, shopType: String, productId: String) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(
             PRODUCT_DETAIL_SCREEN_NAME,
@@ -21,11 +26,11 @@ class ProductDetailTracking() {
     }
 
     fun eventTalkClicked() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-            ProductTrackingConstant.Category.PDP,
-            ProductTrackingConstant.Action.CLICK,
-            ProductTrackingConstant.ProductTalk.TALK)
+        TrackApp.getInstance()?.gtm?.pushGeneralGTMV5(
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.CLICK,
+                ProductTrackingConstant.ProductTalk.TALK)
     }
 
     fun eventClickBuy(productId: String, isVariant: Boolean) {
@@ -43,7 +48,7 @@ class ProductDetailTracking() {
     private fun eventClickBuyOrAddToCart(productId: String, isVariant: Boolean,
                                          action: String) {
         if (productId.isEmpty()) return
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+        TrackApp.getInstance()?.gtm?.pushGeneralGTMV5(
             ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             action,
@@ -55,28 +60,28 @@ class ProductDetailTracking() {
     }
 
     fun eventReviewClicked() {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+        TrackApp.getInstance()?.gtm?.pushGeneralGTMV5(ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             ProductTrackingConstant.Action.CLICK,
             ProductTrackingConstant.ProductReview.REVIEW)
     }
 
     fun eventReportLogin() {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(ProductTrackingConstant.Report.EVENT,
+        TrackApp.getInstance()?.gtm?.pushGeneralGTMV5(ProductTrackingConstant.Report.EVENT,
             ProductTrackingConstant.Category.PDP,
             ProductTrackingConstant.Action.CLICK,
             ProductTrackingConstant.Report.EVENT_LABEL)
     }
 
     fun eventReportNoLogin() {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(ProductTrackingConstant.Report.EVENT,
+        TrackApp.getInstance()?.gtm?.pushGeneralGTMV5(ProductTrackingConstant.Report.EVENT,
             ProductTrackingConstant.Category.PDP,
             ProductTrackingConstant.Action.CLICK,
             ProductTrackingConstant.Report.NOT_LOGIN_EVENT_LABEL)
     }
 
     fun eventCartMenuClicked(variant: String?) {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+        TrackApp.getInstance()?.gtm?.pushGeneralGTMV5(ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             ProductTrackingConstant.Action.CLICK_CART_BUTTON_VARIANT,
             variant ?: "")
@@ -168,7 +173,7 @@ class ProductDetailTracking() {
         if (productId.isNullOrEmpty()) {
             return
         }
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+        TrackApp.getInstance()?.gtm?.pushGeneralGTMV5(
             ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             "click - cek keranjang",
@@ -176,7 +181,7 @@ class ProductDetailTracking() {
     }
 
     fun eventClickVariant(eventLabel: String) {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+        TrackApp.getInstance()?.gtm?.pushGeneralGTMV5(
             ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             "click - variants",
@@ -184,7 +189,7 @@ class ProductDetailTracking() {
     }
 
     fun eventClickMerchantVoucherSeeDetail(id: Int) {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+        TrackApp.getInstance()?.gtm?.pushGeneralGTMV5(ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             listOf(ProductTrackingConstant.Action.CLICK, ProductTrackingConstant.MerchantVoucher.MERCHANT_VOUCHER,
                 ProductTrackingConstant.MerchantVoucher.DETAIL).joinToString(" - "),
@@ -192,37 +197,36 @@ class ProductDetailTracking() {
     }
 
     fun eventClickMerchantVoucherSeeAll(id: Int) {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+        TrackApp.getInstance()?.gtm?.pushGeneralGTMV5(ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             listOf(ProductTrackingConstant.Action.CLICK, ProductTrackingConstant.MerchantVoucher.MERCHANT_VOUCHER,
                 ProductTrackingConstant.MerchantVoucher.SEE_ALL).joinToString(" - "),
             id.toString())
     }
 
+    // e commerce, custom dimension, general
     fun eventRecommendationClick(product: RecommendationItem, position: Int, isSessionActive: Boolean, pageName: String, pageTitle:String) {
         val listValue = LIST_DEFAULT + pageName +
                 (if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN}" else "") +
                 LIST_RECOMMENDATION + product.recommendationType + (if (product.isTopAds) " - product topads" else "")
 
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(KEY_EVENT, ProductTrackingConstant.Action.PRODUCT_CLICK,
-                        KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
-                        KEY_ACTION, ProductTrackingConstant.Action.TOPADS_CLICK +
-                        (if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN}" else ""),
-                        KEY_LABEL, pageTitle,
-                        KEY_ECOMMERCE, DataLayer.mapOf(CURRENCY_CODE, CURRENCY_DEFAULT_VALUE,
-                        ProductTrackingConstant.Action.CLICK,
-                        DataLayer.mapOf(ACTION_FIELD, DataLayer.mapOf(LIST, listValue),
-                                PRODUCTS, DataLayer.listOf(
-                                DataLayer.mapOf(PROMO_NAME, product.name,
-                                        ID, product.productId.toString(), PRICE, removeCurrencyPrice(product.price),
-                                        BRAND, DEFAULT_VALUE,
-                                        VARIANT, DEFAULT_VALUE,
-                                        CATEGORY, product.categoryBreadcrumbs.toLowerCase(),
-                                        PROMO_POSITION, position + 1)
-                        ))
-                ))
-        )
+        // send it here
+        TrackApp.getInstance().gtm.pushClickEECommerce(Bundle().apply {
+            putBundle("items", Bundle().apply {
+                putString(PROMO_NAME, product.name)
+                putString(ID, product.productId.toString())
+                putDouble(PRICE, removeCurrencyPrice(product.price).toDouble())
+                putString(BRAND, DEFAULT_VALUE)
+                putString(VARIANT, DEFAULT_VALUE)
+                putString(CATEGORY, product.categoryBreadcrumbs.toLowerCase())
+                putLong(PROMO_POSITION, (position + 1).toLong())
+            })
+            putString(LIST, listValue)
+            putString(KEY_CATEGORY, ProductTrackingConstant.Category.PDP)
+            putString(KEY_ACTION, ProductTrackingConstant.Action.TOPADS_CLICK +
+                    (if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN}" else ""))
+            putString(KEY_LABEL, pageTitle)
+        })
     }
 
     fun eventRecommendationImpression(position: Int, product: RecommendationItem, isSessionActive: Boolean, pageName: String, pageTitle: String) {
@@ -236,6 +240,7 @@ class ProductDetailTracking() {
                         KEY_ACTION, ProductTrackingConstant.Action.TOPADS_IMPRESSION +
                         (if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN}" else ""),
                         KEY_LABEL, pageTitle,
+
                         KEY_ECOMMERCE, DataLayer.mapOf(CURRENCY_CODE, CURRENCY_DEFAULT_VALUE, "impression",
                         DataLayer.listOf(
                                 DataLayer.mapOf(PROMO_NAME, product.name,
@@ -252,7 +257,7 @@ class ProductDetailTracking() {
 
     fun eventClickWishlistOnAffiliate(userId: String,
                                       productId: String) {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+        TrackApp.getInstance()?.gtm?.pushGeneralGTMV5(
             mutableMapOf<String, Any>(KEY_EVENT to ProductTrackingConstant.Affiliate.CLICK_AFFILIATE,
                 KEY_CATEGORY to ProductTrackingConstant.Affiliate.CATEGORY,
                 KEY_ACTION to ProductTrackingConstant.Affiliate.ACTION_CLICK_WISHLIST,
@@ -273,11 +278,11 @@ class ProductDetailTracking() {
                 KEY_LABEL to productId)
         }
         params.put(KEY_USER_ID, userId)
-        TrackApp.getInstance().gtm.sendGeneralEvent(params)
+        TrackApp.getInstance().gtm.pushGeneralGTMV5(params)
     }
 
     fun eventSendMessage() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
+        TrackApp.getInstance().gtm.pushGeneralGTMV5(
             ProductTrackingConstant.Message.EVENT,
             ProductTrackingConstant.Category.PDP,
             ProductTrackingConstant.Action.CLICK,
@@ -286,7 +291,7 @@ class ProductDetailTracking() {
     }
 
     fun eventSendChat() {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+        TrackApp.getInstance()?.gtm?.pushGeneralGTMV5(
             ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PRODUCT_PAGE.toLowerCase(),
             ProductTrackingConstant.Action.CLICK,
@@ -296,7 +301,7 @@ class ProductDetailTracking() {
 
     fun eventPDPAddToWishlist(productId: String?) {
         if (productId.isNullOrEmpty()) return
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+        TrackApp.getInstance()?.gtm?.pushGeneralGTMV5(
             ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             "add wishlist",
@@ -305,7 +310,7 @@ class ProductDetailTracking() {
 
     fun eventPDPAddToWishlistNonLogin(productId: String?) {
         if (productId.isNullOrEmpty()) return
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+        TrackApp.getInstance()?.gtm?.pushGeneralGTMV5(
             ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             "add wishlist - non logged in",
@@ -314,7 +319,7 @@ class ProductDetailTracking() {
 
     fun eventPDPRemoveToWishlist(productId: String?) {
         if (productId.isNullOrEmpty()) return
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+        TrackApp.getInstance()?.gtm?.pushGeneralGTMV5(
             ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             "remove wishlist",
@@ -322,7 +327,7 @@ class ProductDetailTracking() {
     }
 
     fun eventClickReviewOnSeeAllImage(productId: Int) {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+        TrackApp.getInstance()?.gtm?.pushGeneralGTMV5(
             ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             ProductTrackingConstant.ImageReview.ACTION_SEE_ALL,
@@ -331,7 +336,7 @@ class ProductDetailTracking() {
     }
 
     fun eventClickReviewOnBuyersImage(productId: Int, reviewId: String?) {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+        TrackApp.getInstance()?.gtm?.pushGeneralGTMV5(
             ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
             ProductTrackingConstant.Category.PDP,
             ProductTrackingConstant.ImageReview.ACTION_SEE_ITEM,
@@ -515,7 +520,7 @@ class ProductDetailTracking() {
     }
 
     fun sendGeneralEvent(event: String, category: String, action: String, label: String) {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(event,
+        TrackApp.getInstance()?.gtm?.pushGeneralGTMV5(event,
                 category,
                 action,
                 label)
