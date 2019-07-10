@@ -246,21 +246,7 @@ public class ProductListFragment
 
     @NonNull
     private ProductItemDecoration createProductItemDecoration() {
-        ProductItemDecoration.ProductItemDecorationParameter parameter = createProductItemDecorationParameter();
-
-        return new ProductItemDecoration(parameter);
-    }
-
-    private ProductItemDecoration.ProductItemDecorationParameter createProductItemDecorationParameter() {
-        ProductItemDecoration.ProductItemDecorationParameter parameter = new ProductItemDecoration.ProductItemDecorationParameter();
-
-        parameter.leftSpacing = getContext().getResources().getDimensionPixelSize(R.dimen.dp_16);
-        parameter.topSpacing = getContext().getResources().getDimensionPixelSize(R.dimen.dp_16);
-        parameter.rightSpacing = getContext().getResources().getDimensionPixelSize(R.dimen.dp_16);
-        parameter.bottomSpacing = getContext().getResources().getDimensionPixelSize(R.dimen.dp_16);
-        parameter.color = getContext().getResources().getColor(R.color.white);
-
-        return parameter;
+        return new ProductItemDecoration(getContext().getResources().getDimensionPixelSize(R.dimen.dp_16));
     }
 
     private void setupListener() {

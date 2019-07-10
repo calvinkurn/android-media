@@ -1,8 +1,7 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration;
 
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.Rect;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -17,100 +16,38 @@ import java.util.List;
 
 public class ProductItemDecoration extends RecyclerView.ItemDecoration {
 
-    private final int leftSpacing;
-    private final int topSpacing;
-    private final int rightSpacing;
-    private final int bottomSpacing;
+    private int spacing;
     private int verticalCardViewOffset;
     private int horizontalCardViewOffset;
-    private final int color;
-
-    public static class ProductItemDecorationParameter {
-        public int leftSpacing;
-        public int topSpacing;
-        public int rightSpacing;
-        public int bottomSpacing;
-        public int color;
-    }
 
     private final List<Integer> allowedViewTypes = Arrays.asList(
             R.layout.search_product_card_small_grid,
             R.layout.search_product_card_big_grid,
             R.layout.search_product_card_list);
 
-    public ProductItemDecoration(ProductItemDecorationParameter productItemDecorationParameter) {
-        this.leftSpacing = productItemDecorationParameter.leftSpacing;
-        this.topSpacing = productItemDecorationParameter.topSpacing;
-        this.rightSpacing = productItemDecorationParameter.rightSpacing;
-        this.bottomSpacing = productItemDecorationParameter.bottomSpacing;
-        this.color = productItemDecorationParameter.color;
+    public ProductItemDecoration(int spacing) {
+        this.spacing = spacing;
     }
 
     @Override
-    public void getItemOffsets(Rect outRect,
-                               View view,
-                               RecyclerView parent,
-                               RecyclerView.State state) {
+    public void getItemOffsets(@NonNull Rect outRect,
+                               @NonNull View view,
+                               @NonNull RecyclerView parent,
+                               @NonNull RecyclerView.State state) {
         final int absolutePos = parent.getChildAdapterPosition(view);
 
         if (isProductItem(parent, absolutePos)) {
             final int relativePos = getProductItemRelativePosition(parent, view);
             final int totalSpanCount = getTotalSpanCount(parent);
 
-            verticalCardViewOffset = getVerticalCardViewOffset(view) / 2;
-            horizontalCardViewOffset = getHorizontalCardViewOffset(view) / 2;
+            verticalCardViewOffset = getVerticalCardViewOffset(view);
+            horizontalCardViewOffset = getHorizontalCardViewOffset(view);
 
             outRect.left = getLeftOffset(relativePos, totalSpanCount);
             outRect.top = getTopOffset(parent, absolutePos, relativePos, totalSpanCount);
             outRect.right = getRightOffset(relativePos, totalSpanCount);
             outRect.bottom = getBottomOffset(parent, absolutePos, relativePos, totalSpanCount);
         }
-    }
-
-    private int getHorizontalCardViewOffset(View view) {
-        if(view instanceof ProductCardView) {
-            ProductCardView cardView = (ProductCardView)view;
-
-            float maxElevation = cardView.getCardViewMaxElevation();
-            float radius = cardView.getCardViewRadius();
-
-            return Math.round((float)(maxElevation + (1 - Math.cos(45)) * radius));
-        }
-
-        return 0;
-    }
-
-    private int getVerticalCardViewOffset(View view) {
-        if(view instanceof ProductCardView) {
-            ProductCardView cardView = (ProductCardView)view;
-
-            float maxElevation = cardView.getCardViewMaxElevation();
-            float radius = cardView.getCardViewRadius();
-
-            return Math.round((float)(maxElevation * 1.5 + (1 - Math.cos(45)) * radius));
-        }
-
-        return 0;
-    }
-
-    private int getLeftOffset(int relativePos, int totalSpanCount) {
-        int spacing = leftSpacing;
-        return (isFirstInRow(relativePos, totalSpanCount) ? spacing : (spacing / 4) - horizontalCardViewOffset);
-    }
-
-    private int getTopOffset(RecyclerView parent, int absolutePos, int relativePos, int totalSpanCount) {
-        int spacing = topSpacing;
-        return (isTopProductItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : (spacing / 4) - verticalCardViewOffset);
-    }
-
-    private int getRightOffset(int relativePos, int totalSpanCount) {
-        int spacing = rightSpacing;
-        return (isLastInRow(relativePos, totalSpanCount) ? spacing : (spacing / 4) - horizontalCardViewOffset);
-    }
-
-    private int getBottomOffset(RecyclerView parent, int absolutePos, int relativePos, int totalSpanCount) {
-        int spacing = bottomSpacing;
-        return (isBottomProductItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : (spacing / 4) - verticalCardViewOffset);
     }
 
     private int getProductItemRelativePosition(RecyclerView parent, View view) {
@@ -135,6 +72,73 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
         return absolutePos - firstProductItemPos;
     }
 
+    private int getTotalSpanCount(RecyclerView parent) {
+        final RecyclerView.LayoutManager layoutManager = parent.getLayoutManager();
+        return layoutManager instanceof GridLayoutManager
+                ? ((GridLayoutManager) layoutManager).getSpanCount()
+                : layoutManager instanceof StaggeredGridLayoutManager
+                ? ((StaggeredGridLayoutManager) layoutManager).getSpanCount()
+                : 1;
+    }
+
+    private int getHorizontalCardViewOffset(View view) {
+        if(view instanceof ProductCardView) {
+            ProductCardView cardView = (ProductCardView)view;
+
+            float maxElevation = cardView.getCardViewMaxElevation();
+            float radius = cardView.getCardViewRadius();
+
+            return Math.round((float)(maxElevation + (1 - Math.cos(45)) * radius)) / 2;
+        }
+
+        return 0;
+    }
+
+    private int getVerticalCardViewOffset(View view) {
+        if(view instanceof ProductCardView) {
+            ProductCardView cardView = (ProductCardView)view;
+
+            float maxElevation = cardView.getCardViewMaxElevation();
+            float radius = cardView.getCardViewRadius();
+
+            return Math.round((float)(maxElevation * 1.5 + (1 - Math.cos(45)) * radius)) / 2;
+        }
+
+        return 0;
+    }
+
+    private int getLeftOffset(int relativePos, int totalSpanCount) {
+        return isFirstInRow(relativePos, totalSpanCount) ? spacing : getLeftOffsetNotFirstInRow();
+    }
+
+    private int getLeftOffsetNotFirstInRow() {
+        return (spacing / 4) - horizontalCardViewOffset;
+    }
+
+    private int getTopOffset(RecyclerView parent, int absolutePos, int relativePos, int totalSpanCount) {
+        return isTopProductItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : getTopOffsetNotTopItem();
+    }
+
+    private int getTopOffsetNotTopItem() {
+        return (spacing / 4) - verticalCardViewOffset;
+    }
+
+    private int getRightOffset(int relativePos, int totalSpanCount) {
+        return isLastInRow(relativePos, totalSpanCount) ? spacing : getRightOffsetNotLastInRow();
+    }
+
+    private int getRightOffsetNotLastInRow() {
+        return (spacing / 4) - horizontalCardViewOffset;
+    }
+
+    private int getBottomOffset(RecyclerView parent, int absolutePos, int relativePos, int totalSpanCount) {
+        return isBottomProductItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : getBottomOffsetNotBottomItem();
+    }
+
+    private int getBottomOffsetNotBottomItem() {
+        return (spacing / 4) - verticalCardViewOffset;
+    }
+
     private boolean isTopProductItem(RecyclerView parent, int absolutePos, int relativePos, int totalSpanCount) {
         return !isProductItem(parent, absolutePos - relativePos % totalSpanCount - 1);
     }
@@ -149,15 +153,6 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
 
     private boolean isLastInRow(int relativePos, int spanCount) {
         return relativePos % spanCount == spanCount - 1;
-    }
-
-    private int getTotalSpanCount(RecyclerView parent) {
-        final RecyclerView.LayoutManager layoutManager = parent.getLayoutManager();
-        return layoutManager instanceof GridLayoutManager
-                ? ((GridLayoutManager) layoutManager).getSpanCount()
-                : layoutManager instanceof StaggeredGridLayoutManager
-                ? ((StaggeredGridLayoutManager) layoutManager).getSpanCount()
-                : 1;
     }
 
     private boolean isProductItem(RecyclerView parent, int viewPosition) {
@@ -176,23 +171,5 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
         }
         final int viewType = adapter.getItemViewType(viewPosition);
         return viewType == TopAdsViewHolder.LAYOUT;
-    }
-
-    @Override
-    public void onDraw(Canvas canvas, RecyclerView parent, RecyclerView.State state) {
-//        Paint paint = new Paint();
-//        paint.setColor(color);
-//
-//        int childCount = parent.getChildCount();
-//        for (int i = 0; i < childCount; i++) {
-//            View child = parent.getChildAt(i);
-//            int absolutePos = parent.getChildAdapterPosition(child);
-//            if (isProductItem(parent, absolutePos) || child == null) {
-//                canvas.drawRect(child.getLeft() - topSpacing, child.getTop() - topSpacing, child.getRight() + topSpacing, child.getTop(), paint);
-//                canvas.drawRect(child.getLeft() - topSpacing, child.getBottom(), child.getRight() + topSpacing, child.getBottom() + topSpacing, paint);
-//                canvas.drawRect(child.getLeft() - topSpacing, child.getTop(), child.getLeft(), child.getBottom(), paint);
-//                canvas.drawRect(child.getRight(), child.getTop(), child.getRight() + topSpacing, child.getBottom(), paint);
-//            }
-//        }
     }
 }
