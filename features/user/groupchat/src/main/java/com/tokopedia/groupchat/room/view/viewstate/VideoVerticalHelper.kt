@@ -5,13 +5,14 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextPaint
 import android.text.style.ClickableSpan
-import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.groupchat.R
+import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
+import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics
 import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
 import com.tokopedia.kotlin.extensions.view.debug
 import com.tokopedia.kotlin.extensions.view.hide
@@ -24,14 +25,16 @@ import com.tokopedia.videoplayer.view.player.VideoPlayerListener
 /**
  * @author : Steven 28/05/19
  */
-class VideoVerticalHelper (
+class VideoVerticalHelper constructor(
+        model: ChannelInfoViewModel?,
         var bufferContainer: View,
         var fragmentManager: FragmentManager,
         var playerView: FrameLayout,
         var rootView: View,
         var setChatListHasSpaceOnTop: (Int) -> Unit,
-        var backgroundHelper: PlayBackgroundHelper
-) {
+        var backgroundHelper: PlayBackgroundHelper,
+        var analytics: GroupChatAnalytics
+): PlayBaseHelper(model) {
 
     companion object {
         var VIDEO_480 = 480
@@ -47,6 +50,9 @@ class VideoVerticalHelper (
     var player: TkpdVideoPlayer? = null
     private var bufferLoading = bufferContainer.findViewById<ProgressBar>(R.id.buffer_progress_bar)
     private var bufferText = bufferContainer.findViewById<TextView>(R.id.buffer_text)
+
+    private var startTime = 0L
+    private var endTime = 0L
 
     init {
         hideContainer()
@@ -153,6 +159,8 @@ class VideoVerticalHelper (
                 .build()
         playerView.show()
         setChatListHasSpaceOnTop(VERTICAL_WITH_VIDEO)
+        analytics.eventVerticalVideoPlayed(viewModel?.channelId)
+        startTime = System.currentTimeMillis()
     }
 
     fun stopVideo() {
@@ -161,6 +169,8 @@ class VideoVerticalHelper (
         setChatListHasSpaceOnTop(VERTICAL_WITHOUT_VIDEO)
         backgroundHelper.resetBackground()
         hideContainer()
+        endTime = System.currentTimeMillis()
+        analytics.eventWatchVerticalVideo(viewModel?.channelId, (endTime - startTime).toString())
     }
 
     fun setData(it: VideoStreamViewModel) {

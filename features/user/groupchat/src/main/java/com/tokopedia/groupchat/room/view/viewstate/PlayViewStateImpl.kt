@@ -261,15 +261,18 @@ open class PlayViewStateImpl(
                 videoHorizontalContainer,
                 changeQualityVideoVertical(),
                 videoVerticalContainer,
-                toggleVerticalVideo()
+                toggleVerticalVideo(),
+                analytics
         )
         videoVerticalHelper = VideoVerticalHelper(
+                viewModel,
                 bufferContainer,
                 activity.supportFragmentManager,
                 videoVerticalContainer,
                 rootView,
                 setChatListHasSpaceOnTop(),
-                backgroundHelper
+                backgroundHelper,
+                analytics
         )
         videoHorizontalHelper = VideoHorizontalHelper(
                 viewModel,
@@ -463,6 +466,7 @@ open class PlayViewStateImpl(
         autoAddSprintSale()
 
         setBottomView()
+        videoVerticalHelper.assignViewModel(it)
         videoHorizontalHelper.assignViewModel(it)
         sponsorHelper.assignViewModel(it)
         sponsorHelper.setSponsor()

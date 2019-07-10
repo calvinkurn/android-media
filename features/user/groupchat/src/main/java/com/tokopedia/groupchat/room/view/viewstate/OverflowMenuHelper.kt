@@ -11,11 +11,10 @@ import android.widget.FrameLayout
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
+import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics
 import com.tokopedia.groupchat.room.view.adapter.OverflowMenuAdapter
 import com.tokopedia.groupchat.room.view.viewmodel.OverflowMenuButtonViewModel
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.show
 import java.util.*
 
 /**
@@ -29,7 +28,8 @@ class OverflowMenuHelper(
         private var videoHorizontalContainer: View,
         private var changeQualityVideoVertical: (Int) -> Unit,
         private var videoVerticalContainer: View?,
-        private var toggleVerticalVideo: (Boolean) -> Unit
+        private var toggleVerticalVideo: (Boolean) -> Unit,
+        private var analytics: GroupChatAnalytics
 ): PlayBaseHelper(model) {
 
 
@@ -78,6 +78,7 @@ class OverflowMenuHelper(
         var infoClickListener = {
             onInfoMenuClicked.invoke()
             dismissDialog()
+            analytics.eventClickInfoVerticalVideo(viewModel?.channelId)
         }
 
         var videoQualityText = String.format(getStringResource(R.string.menu_video_quality), maxOf(videoVerticalQuality, 480))
@@ -89,21 +90,25 @@ class OverflowMenuHelper(
         var dismissVideoHorizontalListener:() -> Unit = {
             dismissVideoHorizontal()
             dismissDialog()
+            analytics.eventClickHideVerticalVideo(viewModel?.channelId)
         }
 
         var showVideoHorizontalListener:() -> Unit = {
             showVideoHorizontal()
             dismissDialog()
+            analytics.eventClickShowVerticalVideo(viewModel?.channelId)
         }
 
         var dismissVideoVerticalListener:() -> Unit = {
             dismissVideoVertical()
             dismissDialog()
+            analytics.eventClickHideVerticalVideo(viewModel?.channelId)
         }
 
         var showVideoVerticalListener:() -> Unit = {
             showVideoVertical()
             dismissDialog()
+            analytics.eventClickShowVerticalVideo(viewModel?.channelId)
         }
 
         val infoMenu = OverflowMenuButtonViewModel(getStringResource(R.string.menu_info), infoClickListener, R.drawable.ic_info_play)
@@ -148,12 +153,14 @@ class OverflowMenuHelper(
             changeQualityVideoVertical.invoke(VideoVerticalHelper.VIDEO_480)
             setQualityVideo(VideoVerticalHelper.VIDEO_480)
             dismissDialog()
+            analytics.eventClickChangeQualityVerticalVideo(viewModel?.channelId, VideoVerticalHelper.VIDEO_480.toString())
         }
 
         val listener720 = {
             changeQualityVideoVertical.invoke(VideoVerticalHelper.VIDEO_720)
             setQualityVideo(VideoVerticalHelper.VIDEO_720)
             dismissDialog()
+            analytics.eventClickChangeQualityVerticalVideo(viewModel?.channelId, VideoVerticalHelper.VIDEO_720.toString())
         }
         list.add(OverflowMenuButtonViewModel(
                 getStringResource(R.string.video_quality_480),

@@ -44,6 +44,7 @@ public class GroupChatAnalytics {
     private static final String EVENT_CATEGORY_GROUPCHAT_ROOM = "groupchat room";
     private static final String EVENT_CATEGORY_SHARE = "share page";
     public static final String EVENT_CATEGORY_LEFT_NAVIGATION = "left navigation";
+    public static final String EVENT_CATEGORY_PIP = "pip";
 
     private static final String EVENT_ACTION_GROUPCHAT_LIST = "click on group chat list";
     private static final String EVENT_ACTION_VOTE = "click on vote";
@@ -69,6 +70,15 @@ public class GroupChatAnalytics {
     private static final String EVENT_ACTION_CLICK_PAUSE_VIDEO = "click on pause video";
     private static final String EVENT_ACTION_CLICK_INTERACTION_BUTTON = "click on love button";
     private static final String EVENT_ACTION_VIEW_INTERACTION_BUTTON = "view on love button";
+    private static final String EVENT_ACTION_VERTICAL_VIDEO_DURATION = "watch vertical video duration";
+    private static final String EVENT_ACTION_VERTICAL_VIDEO_PLAYED = "click on play button vertical video";
+    private static final String EVENT_ACTION_VERTICAL_VIDEO_HIDE = "click hide vertical video";
+    private static final String EVENT_ACTION_VERTICAL_VIDEO_SHOW = "click show vertical video";
+    private static final String EVENT_ACTION_VERTICAL_VIDEO_QUALITY_CHANGED = "click on change vertical video quality";
+    private static final String EVENT_ACTION_CLICK_INFO_VIDEO_CHANNEL = "click on info vertical video channel";
+    private static final String EVENT_ACTION_PIP_TO_CHANNEL = "convert channel to pip";
+    private static final String EVENT_ACTION_CHANNEL_TO_PIP = "convert pip to channel";
+    private static final String EVENT_ACTION_CLICK_CLOSE_PIP = "click close button";
 
     private static final String EVENT_NAME_CLICK_GROUPCHAT = "clickGroupChat";
     private static final String EVENT_NAME_VIEW_GROUPCHAT = "viewGroupChat";
@@ -854,6 +864,80 @@ public class GroupChatAnalytics {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_VIEW_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION_VIEW_INTERACTION_BUTTON,
+                channelId
+        ));
+    }
+
+
+    //#VV1
+    public void eventWatchVerticalVideo(String channelId, String duration) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData("",
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
+                EVENT_ACTION_VERTICAL_VIDEO_DURATION,
+                channelId +" - "+duration
+        ));
+    }
+    //#VV2
+    public void eventVerticalVideoPlayed(String channelId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData("",
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
+                EVENT_ACTION_VERTICAL_VIDEO_PLAYED,
+                channelId
+        ));
+    }
+    //#VV3
+    public void eventClickHideVerticalVideo(String channelId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData("",
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
+                EVENT_ACTION_VERTICAL_VIDEO_HIDE,
+                channelId
+        ));
+    }
+    //#VV4
+    public void eventClickShowVerticalVideo(String channelId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData("",
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
+                EVENT_ACTION_VERTICAL_VIDEO_SHOW,
+                channelId
+        ));
+    }
+    //#VV5
+    public void eventClickChangeQualityVerticalVideo(String channelId, String resolution) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData("",
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
+                EVENT_ACTION_VERTICAL_VIDEO_QUALITY_CHANGED,
+                channelId +" - "+resolution
+        ));
+    }
+    //#VV6
+    public void eventClickInfoVerticalVideo(String channelId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData("",
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
+                EVENT_ACTION_CLICK_INFO_VIDEO_CHANNEL,
+                channelId
+        ));
+    }
+    //#VV7
+    public void eventChannelToPip(String channelId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData("",
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
+                EVENT_ACTION_CHANNEL_TO_PIP,
+                channelId
+        ));
+    }
+    //#VV8
+    public void eventPipToChannel(String channelId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData("",
+                EVENT_CATEGORY_PIP,
+                EVENT_ACTION_PIP_TO_CHANNEL,
+                channelId
+        ));
+    }
+    //#VV9
+    public void eventPipClosed(String channelId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData("",
+                EVENT_CATEGORY_PIP,
+                EVENT_ACTION_CLICK_CLOSE_PIP,
                 channelId
         ));
     }

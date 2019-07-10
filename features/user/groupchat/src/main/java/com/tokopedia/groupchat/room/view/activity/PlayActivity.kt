@@ -49,6 +49,10 @@ open class PlayActivity : BaseSimpleActivity(), PlayActivityContract.View {
 
     var channelId: String? = null
 
+    var pipDuration = 0L
+    var pipStartTime = 0L
+    var pipEndTime = 0L
+
     private val mPictureInPictureParamsBuilder
             = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         PictureInPictureParams.Builder()
@@ -180,6 +184,7 @@ open class PlayActivity : BaseSimpleActivity(), PlayActivityContract.View {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
         val decorView = window.decorView
         if(isInPictureInPictureMode) {
+            analytics.eventChannelToPip(channelId)
             fragmentContainer.hide()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -196,8 +201,10 @@ open class PlayActivity : BaseSimpleActivity(), PlayActivityContract.View {
                         or View.SYSTEM_UI_FLAG_FULLSCREEN)
             }
         } else {
+            analytics.eventPipToChannel(channelId)
             decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             fragmentContainer.show()
+
         }
     }
 
@@ -207,6 +214,15 @@ open class PlayActivity : BaseSimpleActivity(), PlayActivityContract.View {
             currentFragment
         } else {
             null
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            if(isInPictureInPictureMode) {
+                analytics.eventPipClosed(channelId)
+            }
         }
     }
 
