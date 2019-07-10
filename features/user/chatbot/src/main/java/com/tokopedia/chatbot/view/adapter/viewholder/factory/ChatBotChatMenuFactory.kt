@@ -9,9 +9,10 @@ import com.tokopedia.chatbot.R
 
 class ChatBotChatMenuFactory : ChatMenuFactory {
     override fun create(listener: BaseChatMenuViewHolder.ChatMenuListener, view: View, position: Int): BaseChatMenuViewHolder {
+        val errorMessage = "Unknown ChatMenuViewHolder on: $position"
         return when (position) {
             0 -> AttachImageViewHolder(listener, view)
-            else -> throw IllegalStateException("Unknown ViewHolder on: $position")
+            else -> throw IllegalStateException(errorMessage)
         }
     }
 

@@ -10,10 +10,11 @@ import com.tokopedia.topchat.R
 
 class TopChatChatMenuFactory : ChatMenuFactory {
     override fun create(listener: BaseChatMenuViewHolder.ChatMenuListener, view: View, position: Int): BaseChatMenuViewHolder {
+        val errorMessage = "Unknown ChatMenuViewHolder on: $position"
         return when (position) {
             0 -> ProductLinkViewHolder(listener, view)
             1 -> AttachImageViewHolder(listener, view)
-            else -> throw IllegalStateException("Unknown ViewHolder on: $position")
+            else -> throw IllegalStateException(errorMessage)
         }
     }
 
