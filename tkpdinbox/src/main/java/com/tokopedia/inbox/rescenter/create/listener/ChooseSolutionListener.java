@@ -3,7 +3,7 @@ package com.tokopedia.inbox.rescenter.create.listener;
 import android.content.Context;
 import android.os.Bundle;
 
-import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
+import com.tokopedia.core.database.model.ResCenterAttachment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.rescenter.create.model.passdata.ActionParameterPassData;
 import com.tokopedia.inbox.rescenter.create.model.responsedata.CreateResCenterFormData;
@@ -41,7 +41,7 @@ public interface ChooseSolutionListener {
 
     void successFinish();
 
-    List<AttachmentResCenterVersion2DB> getAttachmentData();
+    List<ResCenterAttachment> getAttachmentData();
 
     Context getActivity();
 }

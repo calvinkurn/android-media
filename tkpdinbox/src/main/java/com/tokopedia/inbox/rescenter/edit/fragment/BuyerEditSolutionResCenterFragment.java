@@ -19,10 +19,10 @@ import android.view.Window;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.core.database.model.ResCenterAttachment;
 import com.tokopedia.core2.R;
 import com.tokopedia.core2.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.rescenter.create.customdialog.BaseUploadImageDialog;
 import com.tokopedia.inbox.rescenter.edit.customadapter.AttachmentAdapter;
@@ -77,7 +77,7 @@ public class BuyerEditSolutionResCenterFragment
     View loading;
 
     private ActionParameterPassData passData;
-    private List<AttachmentResCenterVersion2DB> attachmentData;
+    private List<ResCenterAttachment> attachmentData;
     private AttachmentAdapter attachmentAdapter;
     private UploadImageEditResCenterDialog uploadImageDialog;
 
@@ -373,7 +373,7 @@ public class BuyerEditSolutionResCenterFragment
         super.onActivityResult(requestCode, resultCode, data);
         uploadImageDialog.onResult(requestCode, resultCode, data, new BaseUploadImageDialog.UploadImageDialogListener() {
             @Override
-            public void onSuccess(List<AttachmentResCenterVersion2DB> data) {
+            public void onSuccess(List<ResCenterAttachment> data) {
                 attachmentData.clear();
                 attachmentData.addAll(data);
                 attachmentAdapter.notifyDataSetChanged();

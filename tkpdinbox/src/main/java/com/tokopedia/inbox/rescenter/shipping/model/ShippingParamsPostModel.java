@@ -3,7 +3,8 @@ package com.tokopedia.inbox.rescenter.shipping.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
+import com.tokopedia.core.database.model.ResCenterAttachment;
+import com.tokopedia.core.database.repository.ResCenterAttachmentRepository;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ public class ShippingParamsPostModel implements Parcelable {
     private String conversationID;
     private String shippingNumber;
     private String shippingID;
-    private List<AttachmentResCenterVersion2DB> attachmentList;
+    private List<ResCenterAttachment> attachmentList;
     private String serverID;
     private String uploadHost;
     private String postKey;
@@ -57,11 +58,11 @@ public class ShippingParamsPostModel implements Parcelable {
         this.shippingID = shippingID;
     }
 
-    public List<AttachmentResCenterVersion2DB> getAttachmentList() {
+    public List<ResCenterAttachment> getAttachmentList() {
         return attachmentList;
     }
 
-    public void setAttachmentList(List<AttachmentResCenterVersion2DB> attachmentList) {
+    public void setAttachmentList(List<ResCenterAttachment> attachmentList) {
         this.attachmentList = attachmentList;
     }
 
@@ -121,7 +122,7 @@ public class ShippingParamsPostModel implements Parcelable {
         private String conversationID;
         private String shippingNumber;
         private String shippingID;
-        private List<AttachmentResCenterVersion2DB> attachmentList;
+        private List<ResCenterAttachment> attachmentList;
 
         public Builder() {
         }
@@ -146,7 +147,7 @@ public class ShippingParamsPostModel implements Parcelable {
             return this;
         }
 
-        public Builder setAttachmentList(List<AttachmentResCenterVersion2DB> attachmentList) {
+        public Builder setAttachmentList(List<ResCenterAttachment> attachmentList) {
             this.attachmentList = attachmentList;
             return this;
         }
@@ -185,7 +186,7 @@ public class ShippingParamsPostModel implements Parcelable {
         this.conversationID = in.readString();
         this.shippingNumber = in.readString();
         this.shippingID = in.readString();
-        this.attachmentList = in.createTypedArrayList(AttachmentResCenterVersion2DB.CREATOR);
+        this.attachmentList = in.createTypedArrayList(ResCenterAttachmentRepository.CREATOR);
         this.serverID = in.readString();
         this.uploadHost = in.readString();
         this.postKey = in.readString();

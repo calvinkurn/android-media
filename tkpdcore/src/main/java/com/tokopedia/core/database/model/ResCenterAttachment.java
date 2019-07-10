@@ -40,6 +40,7 @@ public class ResCenterAttachment implements Parcelable {
     private String picObj;
 
     public ResCenterAttachment() {
+
     }
 
     public ResCenterAttachment(Parcel parcel) {
@@ -143,4 +144,17 @@ public class ResCenterAttachment implements Parcelable {
         parcel.writeString(this.picSrc);
         parcel.writeString(this.picObj);
     }
+
+    @Ignore
+    public static final Creator<ResCenterAttachment> CREATOR = new Creator<ResCenterAttachment>() {
+        @Override
+        public ResCenterAttachment createFromParcel(Parcel parcel) {
+            return new ResCenterAttachment(parcel);
+        }
+
+        @Override
+        public ResCenterAttachment[] newArray(int size) {
+            return new ResCenterAttachment[size];
+        }
+    };
 }
