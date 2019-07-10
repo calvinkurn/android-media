@@ -42,20 +42,6 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener, Bas
 
     private var isPostEnabled = false
 
-    private val shareAdapter by lazy {
-        ShareBottomSheetAdapter()
-    }
-
-    private val shareDialogView: View by lazy {
-        layoutInflater.inflate(R.layout.bottom_sheet_share_post, null)
-    }
-
-    private val shareDialog: CloseableBottomSheetDialog by lazy {
-        CloseableBottomSheetDialog.createInstance(this@CreatePostActivity).apply {
-            setContentView(shareDialogView)
-        }
-    }
-
     companion object {
         const val PARAM_PRODUCT_ID = "product_id"
         const val PARAM_AD_ID = "ad_id"
@@ -167,15 +153,9 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener, Bas
         dialog.show()
     }
 
-    override fun onGetShareTypeList(typeList: List<ShareType>) {
-        shareAdapter.setItems(typeList)
-    }
-
     private fun openShareBottomSheetDialog() {
         if (fragment is BaseCreatePostFragment) {
-            (fragment as BaseCreatePostFragment).prepareShareOptions()
+            (fragment as BaseCreatePostFragment).openShareBottomSheetDialog()
         }
-        shareDialogView.shareList.adapter = shareAdapter
-        shareDialog.show()
     }
 }

@@ -14,6 +14,11 @@ class TwitterManager(
     twitterPrefs: SharedPreferences
 ) : TwitterAuthenticator.TwitterAuthenticatorListener {
 
+    interface TwitterManagerListener {
+
+        fun onAuthenticationSuccess(oAuthToken: String, oAuthSecret: String)
+    }
+
     companion object {
         const val OAUTH_VERIFIER = "oauth_verifier"
         const val OAUTH_TOKEN = "oauth_token"
@@ -40,6 +45,12 @@ class TwitterManager(
 
     private var instance: Twitter = TwitterFactory(config).instance
 
+    private var listener: TwitterManagerListener? = null
+
+    fun setListener(listener: TwitterManagerListener?) {
+        this.listener = listener
+    }
+
     override fun onAuthenticateSuccess(requestToken: RequestToken, oAuthToken: String, oAuthVerifier: String) {
         verifyAuthData(requestToken, oAuthVerifier)
     }
@@ -48,9 +59,10 @@ class TwitterManager(
         return TwitterAuthenticator(getRequestTokenInstance(), this)
     }
 
-    fun verifyAuthData(requestToken: RequestToken, oAuthVerifier: String) {
+    private fun verifyAuthData(requestToken: RequestToken, oAuthVerifier: String) {
         val accessToken = getAccessToken(requestToken, oAuthVerifier)
         saveAccessToken(accessToken)
+        listener?.onAuthenticationSuccess(accessToken.token, accessToken.tokenSecret)
     }
 
     private fun getRequestTokenInstance(): RequestToken {

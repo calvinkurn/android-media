@@ -8,7 +8,7 @@ import com.tokopedia.affiliate.feature.createpost.view.type.ShareType
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import kotlinx.android.synthetic.main.item_af_share.view.*
 
-class ShareBottomSheetAdapter : RecyclerView.Adapter<ShareBottomSheetAdapter.ShareBottomSheetViewHolder>() {
+class ShareBottomSheetAdapter(val onClick: (ShareType, Boolean) -> Unit) : RecyclerView.Adapter<ShareBottomSheetAdapter.ShareBottomSheetViewHolder>() {
 
     private val shareOptionList: MutableList<ShareType> = mutableListOf()
 
@@ -37,10 +37,14 @@ class ShareBottomSheetAdapter : RecyclerView.Adapter<ShareBottomSheetAdapter.Sha
         fun bind(item: ShareType) {
             itemView.apply {
                 imageShare.setImageResource(item.imageRes)
-                shareTitle.text = context.getString(item.titleRes)
+                shareTitle.text = item.showTitleFormula(context, item.titleRes)
                 toggleShare.apply {
+                    setOnCheckedChangeListener(null)
+
                     isChecked = item.isActivated
                     isEnabled = !item.isMandatory
+
+                    setOnCheckedChangeListener { _, isChecked -> onClick(item, isChecked) }
                 }
             }
         }

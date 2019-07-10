@@ -73,6 +73,8 @@ dependencies {
     }
 
     implementation project(rootProject.ext.libraries.track)
+
+    implementation project(rootProject.ext.libraries.twitterShare)
 }
 
 apply from: '../../../publish_local.gradle'

@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.FeedContentForm
 import com.tokopedia.affiliate.feature.createpost.view.type.ShareType
+import com.tokopedia.twitter_share.TwitterAuthenticator
 
 /**
  * @author by milhamj on 9/26/18.
@@ -25,11 +26,15 @@ interface CreatePostContract {
         fun onErrorNoQuota()
 
         fun onGetAvailableShareTypeList(typeList: List<ShareType>)
+
+        fun onAuthenticateTwitter(authenticator: TwitterAuthenticator)
     }
 
     interface Presenter : CustomerPresenter<View> {
         fun fetchContentForm(idList: MutableList<String>, type: String)
 
-        fun getShareOptions()
+        fun shouldGetShareOptions()
+
+        fun onShareButtonClicked(type: ShareType, isChecked: Boolean)
     }
 }

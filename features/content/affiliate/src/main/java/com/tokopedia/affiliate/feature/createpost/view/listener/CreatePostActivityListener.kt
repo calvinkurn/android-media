@@ -1,6 +1,5 @@
 package com.tokopedia.affiliate.feature.createpost.view.listener
 
-import com.tokopedia.affiliate.feature.createpost.view.type.ShareType
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.HeaderViewModel
 
 /**
@@ -8,6 +7,4 @@ import com.tokopedia.affiliate.feature.createpost.view.viewmodel.HeaderViewModel
  */
 interface CreatePostActivityListener {
     fun updateHeader(header: HeaderViewModel)
-
-    fun onGetShareTypeList(typeList: List<ShareType>)
 }

@@ -30,7 +30,8 @@
         android:id="@+id/shareList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_24"/>
+        android:layout_marginTop="@dimen/dp_24"
+        app:has_divider_left_padding="false"/>
 
     <LinearLayout
         android:id="@+id/shareBtn"
