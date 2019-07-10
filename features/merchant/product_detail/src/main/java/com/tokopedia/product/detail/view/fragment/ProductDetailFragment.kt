@@ -23,9 +23,9 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v4.util.ArrayMap
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.Toolbar
 import android.text.TextUtils
 import android.view.*
-import android.support.v7.widget.Toolbar
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -42,6 +42,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
+import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListenerWithRetry
 import com.tokopedia.gallery.ImageReviewGalleryActivity
@@ -63,6 +64,7 @@ import com.tokopedia.normalcheckout.view.NormalCheckoutFragment
 import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
+import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.Wholesale
@@ -88,6 +90,7 @@ import com.tokopedia.product.detail.view.viewmodel.Loading
 import com.tokopedia.product.detail.view.viewmodel.ProductInfoViewModel
 import com.tokopedia.product.detail.view.widget.CountDrawable
 import com.tokopedia.product.detail.view.widget.PictureScrollingView
+import com.tokopedia.product.detail.view.widget.ValuePropositionBottomSheet
 import com.tokopedia.product.report.view.dialog.ReportDialogFragment
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
@@ -103,6 +106,9 @@ import com.tokopedia.shopetalasepicker.constant.ShopParamConstant
 import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
+import com.tokopedia.tradein.model.TradeInParams
+import com.tokopedia.tradein.view.customview.TradeInTextView
+import com.tokopedia.tradein.viewmodel.TradeInBroadcastReceiver
 import com.tokopedia.transaction.common.TransactionRouter
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.*
@@ -124,13 +130,9 @@ import kotlinx.android.synthetic.main.partial_product_recom_2.*
 import kotlinx.android.synthetic.main.partial_product_recom_3.*
 import kotlinx.android.synthetic.main.partial_product_recom_4.*
 import kotlinx.android.synthetic.main.partial_product_shop_info.*
+import kotlinx.android.synthetic.main.partial_value_proposition_os.*
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
-import com.tokopedia.tradein.model.TradeInParams
-import com.tokopedia.tradein.view.customview.TradeInTextView
-import com.tokopedia.tradein.viewmodel.TradeInBroadcastReceiver
 import javax.inject.Inject
-import com.tokopedia.discovery.common.manager.AdultManager
-import com.tokopedia.product.detail.common.data.model.product.Category
 
 class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter.UserActiveListener {
     private var productId: String? = null
@@ -156,6 +158,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     lateinit var recommendationFirstView: PartialRecommendationFirstView
     lateinit var recommendationThirdView: PartialRecommendationThirdView
     lateinit var recommendationFourthView: PartialRecommendationFourthView
+    lateinit var valuePropotitionView: PartialValuePropotitionView
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -180,6 +183,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private var shouldShowCod = false
     private lateinit var tradeInParams: TradeInParams
     private lateinit var tradeInBroadcastReceiver: TradeInBroadcastReceiver
+    lateinit var bottomSheet: ValuePropositionBottomSheet
 
     var loadingProgressDialog: ProgressDialog? = null
     val errorBottomsheets: ErrorBottomsheets by lazy {
@@ -215,6 +219,10 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         const val REQUEST_CODE_ATC_EXPRESS = 567
         const val REQUEST_CODE_LOGIN_THEN_BUY_EXPRESS = 569
         const val REQUEST_CODE_SHOP_INFO = 998
+
+        const val URL_VALUE_PROPOSITION_READY ="ttps://www.tokopedia.com/help/article/a-1937"
+        const val URL_VALUE_PROPOSITION_ORI ="ttps://www.tokopedia.com/help/article/a-1938"
+        const val URL_VALUE_PROPOSITION_GUARANTEE ="ttps://www.tokopedia.com/help/article/a-1939"
 
         const val SAVED_NOTE = "saved_note"
         const val SAVED_QUANTITY = "saved_quantity"
@@ -705,6 +713,10 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             recommendationFourthView = PartialRecommendationFourthView.build(base_recom_4, this)
         }
 
+        if (!::valuePropotitionView.isInitialized) {
+            valuePropotitionView = PartialValuePropotitionView.build(layout_value_proposition, onViewClickListener)
+        }
+
     }
 
     private fun onImageReviewClick(imageReview: ImageReviewItem, isSeeAll: Boolean = false) {
@@ -729,6 +741,10 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             R.id.btn_favorite -> onShopFavoriteClick()
             R.id.send_msg_shop, R.id.btn_topchat -> onShopChatClicked()
             R.id.shop_ava, R.id.shop_name -> gotoShopDetail()
+            R.id.container_ready -> onValuePropositionClick(1)
+            R.id.container_ori -> onValuePropositionClick(2)
+            R.id.container_guarantee -> onValuePropositionClick(3)
+
             else -> {
             }
         }
@@ -756,6 +772,34 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             }
         }
     }
+
+    private fun onValuePropositionClick(flag: Int) {
+        val title: String
+        val desc: String
+        val url: String
+        when (flag) {
+            1 -> {
+                title = getString(R.string.value_proposition_title_ready)
+                desc = getString(R.string.value_proposition_desc_ready)
+                url = "URL_VALUE_PROPOSITION_READY"
+            }
+            2 -> {
+                title = getString(R.string.value_proposition_title_original)
+                desc = getString(R.string.value_proposition_desc_original)
+                url = "URL_VALUE_PROPOSITION_ORI"
+            }
+            else -> {
+                title = getString(R.string.value_proposition_title_guarantee)
+                desc = getString(R.string.value_proposition_desc_guarantee)
+                url = "URL_VALUE_PROPOSITION_GUARANTEE"
+
+            }
+        }
+
+        bottomSheet = ValuePropositionBottomSheet.newInstance(title,desc,url)
+        bottomSheet.show(fragmentManager,"pdp_bs")
+    }
+
     private fun isViewVisible(view: View): Boolean {
         val scrollBounds = Rect()
         nested_scroll.getDrawingRect(scrollBounds)
@@ -1157,6 +1201,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     data.preorder)
             actionButtonView.visibility = !isAffiliate && shopInfo.statusInfo.shopStatus == 1
             headerView.showOfficialStore(shopInfo.goldOS)
+            valuePropotitionView.renderData(shopInfo.goldOS)
             varPictureImage.renderShopStatus(shopInfo, productInfo?.basic?.status
                     ?: ProductStatusTypeDef.ACTIVE)
             activity?.let {
