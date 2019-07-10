@@ -89,6 +89,12 @@ public abstract class ReactNativeFragment extends Fragment implements DefaultHar
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+        if (reactRootView == null) {
+            reactRootView = new ReactRootView(getActivity());
+        }
+        if (reactInstanceManager == null && getActivity() != null) {
+            reactInstanceManager = ((ReactApplication) getActivity().getApplication()).getReactNativeHost().getReactInstanceManager();
+        }
         reactRootView.startReactApplication(reactInstanceManager, getModuleName(), getInitialBundle());
         return reactRootView;
     }
