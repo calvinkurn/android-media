@@ -1,8 +1,6 @@
 package com.tokopedia.core.database.repository;
 
 import android.app.Application;
-import android.os.Parcel;
-import android.os.Parcelable;
 
 import com.tokopedia.core.database.dao.ResCenterAttachmentDao;
 import com.tokopedia.core.database.AppDatabase;
@@ -20,18 +18,6 @@ public class ResCenterAttachmentRepository {
     }
 
     public void deleteAttachments(List<ResCenterAttachment> resCenterAttachments) {
-
-    }
-
-    public static final Parcelable.Creator<ResCenterAttachment> CREATOR = new Parcelable.Creator<ResCenterAttachment>() {
-        @Override
-        public ResCenterAttachment createFromParcel(Parcel parcel) {
-            return new ResCenterAttachment(parcel);
-        }
-
-        @Override
-        public ResCenterAttachment[] newArray(int size) {
-            return new ResCenterAttachment[size];
-        }
+        this.resCenterAttachmentDao.deleteAttachments(resCenterAttachments);
     }
 }

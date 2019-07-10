@@ -5,8 +5,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import com.tokopedia.core.database.repository.ResCenterAttachmentRepository;
 import com.tokopedia.core2.R;
-import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.rescenter.create.facade.NetworkParam;
 import com.tokopedia.inbox.rescenter.create.interactor.RetrofitInteractor;
@@ -29,10 +29,12 @@ public class ChooseSolutionImpl implements ChooseSolutionPresenter {
     private static final String TAG = ChooseSolutionImpl.class.getSimpleName();
     private final ChooseSolutionListener listener;
     private final RetrofitInteractorImpl retrofit;
+    private ResCenterAttachmentRepository resCenterRepository;
 
     public ChooseSolutionImpl(ChooseSolutionListener listener) {
         this.listener = listener;
         this.retrofit = new RetrofitInteractorImpl();
+        this.resCenterRepository = new ResCenterAttachmentRepository();
     }
 
     @Override
