@@ -1271,6 +1271,9 @@ public class CartListPresenter implements ICartListPresenter {
         enhancedECommerceProductCartMapData.setPicture(cartWishlistItemHolderData.getImageUrl());
         enhancedECommerceProductCartMapData.setUrl(cartWishlistItemHolderData.getUrl());
         enhancedECommerceProductCartMapData.setDimension45(String.valueOf(addToCartDataResponseModel.getData().getCartId()));
+        enhancedECommerceProductCartMapData.setBrand("");
+        enhancedECommerceProductCartMapData.setCategoryId("");
+        enhancedECommerceProductCartMapData.setVariant("");
 
         EnhancedECommerceAdd enhancedECommerceAdd = new EnhancedECommerceAdd();
         enhancedECommerceAdd.setActionField(enhancedECommerceActionField.getActionFieldMap());
@@ -1296,6 +1299,9 @@ public class CartListPresenter implements ICartListPresenter {
         enhancedECommerceProductCartMapData.setDimension57(cartRecentViewItemHolderData.getShopName());
         enhancedECommerceProductCartMapData.setDimension59(cartRecentViewItemHolderData.getShopType());
         enhancedECommerceProductCartMapData.setDimension77(String.valueOf(addToCartDataResponseModel.getData().getCartId()));
+        enhancedECommerceProductCartMapData.setBrand("");
+        enhancedECommerceProductCartMapData.setCategoryId("");
+        enhancedECommerceProductCartMapData.setVariant("");
 
         EnhancedECommerceAdd enhancedECommerceAdd = new EnhancedECommerceAdd();
         enhancedECommerceAdd.setActionField(enhancedECommerceActionField.getActionFieldMap());
@@ -1322,6 +1328,9 @@ public class CartListPresenter implements ICartListPresenter {
         enhancedECommerceProductCartMapData.setShopType(cartRecommendationItemHolderData.getRecommendationItem().getShopType());
         enhancedECommerceProductCartMapData.setShopName(cartRecommendationItemHolderData.getRecommendationItem().getShopName());
         enhancedECommerceProductCartMapData.setDimension45(String.valueOf(addToCartDataResponseModel.getData().getCartId()));
+        enhancedECommerceProductCartMapData.setBrand("");
+        enhancedECommerceProductCartMapData.setCategoryId("");
+        enhancedECommerceProductCartMapData.setVariant("");
 
         EnhancedECommerceAdd enhancedECommerceAdd = new EnhancedECommerceAdd();
         enhancedECommerceAdd.setActionField(enhancedECommerceActionField.getActionFieldMap());
