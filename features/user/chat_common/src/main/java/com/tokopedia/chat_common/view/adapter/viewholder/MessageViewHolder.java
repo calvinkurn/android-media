@@ -2,6 +2,8 @@ package com.tokopedia.chat_common.view.adapter.viewholder;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -13,8 +15,7 @@ import com.tokopedia.chat_common.R;
 import com.tokopedia.chat_common.data.MessageViewModel;
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod;
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener;
-import com.tokopedia.chat_common.R;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.chat_common.view.bottomSheets.ReadMoreBottomSheet;
 
 /**
  * @author by nisie on 5/16/18.
@@ -30,6 +31,7 @@ public class MessageViewHolder extends BaseChatViewHolder<MessageViewModel> {
     private TextView name;
     private TextView label;
     private TextView dot;
+    private TextView mesageBottom;
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_message_chat;
@@ -45,7 +47,7 @@ public class MessageViewHolder extends BaseChatViewHolder<MessageViewModel> {
         label = itemView.findViewById(R.id.label);
         dot = itemView.findViewById(R.id.dot);
         chatBalloon = itemView.findViewById(R.id.main);
-
+        mesageBottom = itemView.findViewById(R.id.bottom_view);
     }
 
     @Override
@@ -61,11 +63,11 @@ public class MessageViewHolder extends BaseChatViewHolder<MessageViewModel> {
             setChatRight(chatBalloon);
             setReadStatus(element);
         } else {
-            setChatLeft(chatBalloon);
+            setChatLeft(chatBalloon,element);
         }
     }
 
-    private void setChatLeft(View chatBalloon) {
+    private void setChatLeft(View chatBalloon,MessageViewModel element) {
         chatBalloon.setBackground(context.getResources().getDrawable(R.drawable
                 .left_bubble));
         setAlignParent(RelativeLayout.ALIGN_PARENT_LEFT, chatBalloon);
@@ -73,6 +75,23 @@ public class MessageViewHolder extends BaseChatViewHolder<MessageViewModel> {
         message.setTextColor(MethodChecker.getColor(context, R.color.black_70));
         message.setLinkTextColor(MethodChecker.getColor(context, R.color.black_70));
         chatStatus.setVisibility(View.GONE);
+
+        if(message.getText().toString().length()>170){
+            chatBalloon.setBackgroundDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.left_bubble_with_stroke));
+            mesageBottom.setVisibility(View.VISIBLE);
+            message.scrollTo(0,0);
+            mesageBottom.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ReadMoreBottomSheet.createInstance(message.getText().toString())
+                    .show(((FragmentActivity)itemView.getContext()).getSupportFragmentManager(),"read_more_bottom_sheet");
+                }
+            });
+
+        } else {
+            mesageBottom.setVisibility(View.GONE);
+            chatBalloon.setBackgroundDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.left_bubble));
+        }
     }
 
     private void setAlignParent(int alignment, View view) {
@@ -91,6 +110,7 @@ public class MessageViewHolder extends BaseChatViewHolder<MessageViewModel> {
         message.setTextColor(MethodChecker.getColor(context, R.color.white));
         message.setLinkTextColor(MethodChecker.getColor(context, R.color.white));
         chatStatus.setVisibility(View.VISIBLE);
+        mesageBottom.setVisibility(View.GONE);
     }
 
     private void setRole(MessageViewModel element) {
