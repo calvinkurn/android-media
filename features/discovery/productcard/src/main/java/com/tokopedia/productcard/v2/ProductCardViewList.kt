@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.support.constraint.ConstraintSet
+import android.support.v7.widget.CardView
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.productcard.R
@@ -13,6 +14,8 @@ import com.tokopedia.unifycomponents.Label
  * ProductCardView with List layout.
  */
 class ProductCardViewList: ProductCardView {
+
+    private var cardViewImageProduct: CardView? = null
 
     constructor(context: Context): super(context)
 
@@ -26,6 +29,12 @@ class ProductCardViewList: ProductCardView {
 
     override fun getLayout(): Int {
         return R.layout.product_card_layout_v2_list
+    }
+
+    override fun findViews(inflatedView: View) {
+        super.findViews(inflatedView)
+
+        cardViewImageProduct = inflatedView.findViewById(R.id.cardViewImageProduct)
     }
 
     override fun realignLayout() {

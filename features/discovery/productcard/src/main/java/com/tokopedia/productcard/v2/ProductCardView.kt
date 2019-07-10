@@ -7,6 +7,7 @@ import android.support.annotation.IdRes
 import android.support.annotation.LayoutRes
 import android.support.constraint.ConstraintLayout
 import android.support.constraint.ConstraintSet
+import android.support.v7.widget.CardView
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
@@ -48,6 +49,7 @@ abstract class ProductCardView: BaseCustomView {
     /**
      * View components of a ProductCardView
      */
+    protected var cardViewProductCard: CardView? = null
     protected var constraintLayoutProductCard: ConstraintLayout? = null
     protected var imageProduct: ImpressedImageView? = null
     protected var buttonWishlist: ImageView? = null
@@ -104,6 +106,7 @@ abstract class ProductCardView: BaseCustomView {
      * @param inflatedView View inflated from getLayout()
      */
     protected open fun findViews(inflatedView: View) {
+        cardViewProductCard = inflatedView.findViewById(R.id.cardViewProductCard)
         constraintLayoutProductCard = inflatedView.findViewById(R.id.constraintLayoutProductCard)
         imageProduct = inflatedView.findViewById(R.id.imageProduct)
         buttonWishlist = inflatedView.findViewById(R.id.buttonWishlist)
