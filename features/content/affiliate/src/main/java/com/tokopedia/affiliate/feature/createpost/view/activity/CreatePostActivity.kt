@@ -11,10 +11,12 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.feature.createpost.TYPE_AFFILIATE
 import com.tokopedia.affiliate.feature.createpost.TYPE_CONTENT_SHOP
+import com.tokopedia.affiliate.feature.createpost.view.adapter.ShareBottomSheetAdapter
 import com.tokopedia.affiliate.feature.createpost.view.fragment.AffiliateCreatePostFragment
 import com.tokopedia.affiliate.feature.createpost.view.fragment.BaseCreatePostFragment
 import com.tokopedia.affiliate.feature.createpost.view.fragment.ContentCreatePostFragment
 import com.tokopedia.affiliate.feature.createpost.view.listener.CreatePostActivityListener
+import com.tokopedia.affiliate.feature.createpost.view.type.ShareType
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.HeaderViewModel
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
@@ -23,6 +25,7 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import kotlinx.android.synthetic.main.activity_create_post.*
+import kotlinx.android.synthetic.main.bottom_sheet_share_post.view.*
 
 class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener, BaseCreatePostFragment.OnCreatePostCallBack {
 
@@ -38,6 +41,10 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener, Bas
     }
 
     private var isPostEnabled = false
+
+    private val shareAdapter by lazy {
+        ShareBottomSheetAdapter()
+    }
 
     private val shareDialogView: View by lazy {
         layoutInflater.inflate(R.layout.fragment_af_create_post, null)
@@ -160,7 +167,15 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener, Bas
         dialog.show()
     }
 
+    override fun onGetShareTypeList(typeList: List<ShareType>) {
+        shareAdapter.setItems(typeList)
+    }
+
     private fun openShareBottomSheetDialog() {
+        if (fragment is BaseCreatePostFragment) {
+            (fragment as BaseCreatePostFragment).prepareShareOptions()
+        }
+        shareDialogView.shareList.adapter = shareAdapter
         shareDialog.show()
     }
 }

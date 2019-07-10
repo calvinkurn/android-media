@@ -30,6 +30,7 @@ import com.tokopedia.affiliate.feature.createpost.view.adapter.ProductAttachment
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract
 import com.tokopedia.affiliate.feature.createpost.view.listener.CreatePostActivityListener
 import com.tokopedia.affiliate.feature.createpost.view.service.SubmitPostService
+import com.tokopedia.affiliate.feature.createpost.view.type.ShareType
 import com.tokopedia.affiliate.feature.createpost.view.util.SpaceItemDecoration
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.*
 import com.tokopedia.applink.ApplinkConst
@@ -625,4 +626,14 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     private fun isTypeAffiliate(): Boolean = viewModel.authorType == TYPE_AFFILIATE
+
+    override fun onGetAvailableShareTypeList(typeList: List<ShareType>) {
+        if (activity is CreatePostActivityListener) {
+            (activity as CreatePostActivityListener).onGetShareTypeList(typeList)
+        }
+    }
+
+    fun prepareShareOptions() {
+        presenter.getShareOptions()
+    }
 }

@@ -103,6 +103,13 @@
     <string name="af_label_post">Post</string>
     <string name="af_warning_over_char">Caption tidak boleh melebihi %1$s karakter.</string>
 
-    <string name="af_post_to">Follower %s</string>
+    <string name="af_share_title">Share biar makin laris!</string>
+    <string name="af_share_subtitle">Makin banyak yang lihat, makin cepat larisnya.</string>
+    <string name="af_share_tokopedia">Follower %s</string>
+    <string name="af_share_facebook">Post ke Facebook</string>
+    <string name="af_share_twitter">Share di Twitter</string>
+
+    <string name="af_share_next_time">Lain Kali Deh</string>
+    <string name="af_share_aja">Sip, Share Aja!</string>
 
 </resources>
