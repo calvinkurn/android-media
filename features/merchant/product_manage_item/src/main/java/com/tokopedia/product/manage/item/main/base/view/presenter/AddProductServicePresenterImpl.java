@@ -2,7 +2,7 @@ package com.tokopedia.product.manage.item.main.base.view.presenter;
 
 import android.text.TextUtils;
 
-import com.tokopedia.imagepicker.common.util.ImageUtils;
+import com.tokopedia.imagepicker.common.util.FileUtils;
 import com.tokopedia.product.manage.item.common.util.DraftNotFoundException;
 import com.tokopedia.product.manage.item.main.base.data.exception.UploadProductException;
 import com.tokopedia.product.manage.item.main.base.data.model.ProductPictureViewModel;
@@ -120,7 +120,7 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter {
             }
         }
         if (pathToDeleteList.size() > 0) {
-            ImageUtils.deleteFilesInTokopediaFolder(pathToDeleteList);
+            FileUtils.deleteFilesInTokopediaFolder(pathToDeleteList);
         }
     }
 

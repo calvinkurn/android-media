@@ -56,6 +56,9 @@ public interface ConstantTransactionAnalytics {
         String CORNER_ADDRES = "tokopedia corner address";
         String EXPRESS_CHECKOUT = "express checkout";
         String COURIER_SELECTION_TRADE_IN = "courier selection trade in";
+        String WISHLIST_PAGE = "wishlist page";
+        String RECENT_VIEW = "recent view";
+        String RECOMMENDATION_PAGE = "recommendation page";
     }
 
     interface EventAction {
@@ -169,6 +172,9 @@ public interface ConstantTransactionAnalytics {
         String CLICK_CEK_KERANJANG = "click - cek keranjang";
         String VIEW_CART_LIST = "view cart list";
         String VIEW_CHECKOUT_PAGE = "view checkout page";
+        String CLICK_BELI_ON_WISHLIST = "click - beli on wishlist";
+        String CLICK_BELI_ON_RECENT_VIEW_PAGE = "click - beli on recent view page";
+        String CLICK_ADD_TO_CART_ON_PRIMARY_PRODUCT = "click add to cart on primary product";
 
         String VALIDATION_ERROR_ALAMAT_SEBAGAI_PADA_TAMBAH_ADDRESS = "validation error alamat sebagai pada + address";
         String VALIDATION_ERROR_NAMA_PADA_TAMBAH_ADDRESS = "validation error nama pada + address";

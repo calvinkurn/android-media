@@ -37,7 +37,7 @@ public interface HomeContract {
 
         void hideLoading();
 
-        void setItems(List<Visitable> items, int repositoryFlag);
+        void setItems(List<Visitable> items, HeaderViewModel headerViewModel, int repositoryFlag);
 
         void setHint(SearchPlaceholder searchPlaceholder);
 
@@ -82,6 +82,10 @@ public interface HomeContract {
         void onTabFeedLoadSuccess(List<FeedTabModel> feedTabModelList);
 
         void onHomeDataLoadSuccess();
+
+        void detectAndSendLocation();
+
+        boolean hasGeolocationPermission();
     }
 
     interface Presenter extends CustomerPresenter<View> {

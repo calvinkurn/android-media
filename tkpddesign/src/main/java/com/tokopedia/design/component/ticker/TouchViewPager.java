@@ -96,7 +96,11 @@ public class TouchViewPager extends ViewPager {
             if (getCurrentItem() == 0 && getChildCount() == 0) {
                 return false;
             } else {
-                return super.onInterceptTouchEvent(arg0);
+                try {
+                    return super.onInterceptTouchEvent(arg0);
+                } catch (IllegalArgumentException e) {
+                    return false;
+                }
             }
         } else {
             return false;
