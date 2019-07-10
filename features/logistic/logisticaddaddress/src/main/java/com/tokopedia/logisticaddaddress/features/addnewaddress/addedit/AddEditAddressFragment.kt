@@ -611,6 +611,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     }
 
     private fun arrangeLayout(isMismatch: Boolean, isMismatchSolved: Boolean) {
+        println("## ARRANGE LAYOUT - isMismatch = $isMismatch, isMismatchSolved = $isMismatchSolved")
         if (!isMismatch && !isMismatchSolved) {
             ll_mismatch.visibility = View.GONE
             ll_normal.visibility = View.VISIBLE
@@ -723,6 +724,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
 
     private fun setMismatchForm() {
         ll_detail_alamat.visibility = View.GONE
+        et_alamat_mismatch.clearFocus()
     }
 
     private fun setMismatchSolvedForm() {
@@ -836,6 +838,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     }
 
     override fun onResume() {
+        println("## ARRANGE LAYOUT - ON RESUME()")
         map_view_detail?.onResume()
         super.onResume()
         arrangeLayout(isMismatch, isMismatchSolved)
@@ -1028,5 +1031,10 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             override fun afterTextChanged(text: Editable) {
             }
         }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        presenter.detachView()
     }
 }

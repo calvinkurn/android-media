@@ -192,7 +192,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             }
         }
 
-        ic_current_location.setOnClickListener {
+        ic_current_location?.setOnClickListener {
             AddNewAddressAnalytics.eventClickButtonPilihLokasi()
             doUseCurrentLocation()
         }
@@ -407,6 +407,10 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
 
             invalid_title?.text = getString(R.string.invalid_title)
             invalid_desc?.text = saveAddressDataModel.formattedAddress
+
+            invalid_ic_search_btn?.setOnClickListener {
+                currentLat?.let { it1 -> currentLong?.let { it2 -> showAutocompleteGeocodeBottomSheet(it1, it2, "") } }
+            }
             AddNewAddressAnalytics.eventViewErrorAlamatTidakValid()
 
         } else {
@@ -474,7 +478,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         tkpdDialog.setBtnOk(getString(R.string.mismatch_btn_title))
         tkpdDialog.setOnOkClickListener {
             tkpdDialog.dismiss()
-            goToAddEditActivity(true, false)
+            goToAddEditActivity(isMismatch = true, isMismatchSolved = false)
         }
         tkpdDialog.show()
         AddNewAddressAnalytics.eventViewFailedPinPointNotification()
@@ -482,11 +486,13 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
 
     override fun goToAddEditActivity(isMismatch: Boolean, isMismatchSolved: Boolean) {
         Intent(context, AddEditAddressActivity::class.java).apply {
+            if (isMismatch && !isMismatchSolved) {
+                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            }
             putExtra(AddressConstants.EXTRA_IS_MISMATCH, isMismatch)
             putExtra(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL, presenter.getSaveAddressDataModel())
             putExtra(AddressConstants.KERO_TOKEN, token)
             putExtra(AddressConstants.EXTRA_IS_MISMATCH_SOLVED, isMismatchSolved)
-            if (isMismatch && !isMismatchSolved) flags = Intent.FLAG_ACTIVITY_CLEAR_TOP and Intent.FLAG_ACTIVITY_SINGLE_TOP
             startActivityForResult(this, FINISH_FLAG)
         }
     }
@@ -614,5 +620,10 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         return arrayOf(
                 PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
                 PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION)
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        presenter.detachView()
     }
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.addedit
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Window
 import android.view.WindowManager
@@ -21,6 +22,11 @@ class AddEditAddressActivity: BaseSimpleActivity() {
             fragment = AddEditAddressFragment.newInstance(bundle)
         }
         return fragment
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        this.intent = intent
     }
 
     override fun onBackPressed() {
