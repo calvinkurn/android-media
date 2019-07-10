@@ -71,15 +71,6 @@ public abstract class ReactNativeFragment extends Fragment implements DefaultHar
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (reactRootView == null)
-            reactRootView = new ReactRootView(context);
-        if (reactInstanceManager == null && getActivity() != null)
-            reactInstanceManager = ((ReactApplication) getActivity().getApplication()).getReactNativeHost().getReactInstanceManager();
-    }
-
-    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
     }
