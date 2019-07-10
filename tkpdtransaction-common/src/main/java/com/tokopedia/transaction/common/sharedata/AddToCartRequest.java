@@ -9,6 +9,10 @@ import com.google.gson.annotations.SerializedName;
 
 public class AddToCartRequest {
 
+    public static final String ATC_FROM_WISHLIST = "wishlist_list";
+    public static final String ATC_FROM_RECENT_VIEW = "last_seen_list";
+    public static final String ATC_FROM_RECOMMENDATION = "recommendation_list";
+
     @SerializedName("product_id")
     @Expose
     private int productId;
@@ -32,6 +36,9 @@ public class AddToCartRequest {
     private int warehouseId;
     @SerializedName("is_trade_in")
     private int isTradeIn;
+    @SerializedName("atc_from_external_source")
+    @Expose
+    private String atcFromExternalSource;
 
 
     private AddToCartRequest(Builder builder) {
@@ -43,6 +50,7 @@ public class AddToCartRequest {
         setTrackerListName(builder.trackerListName);
         setWarehouseId(builder.warehouseId);
         setIsTradeIn(builder.istradein);
+        setAtcFromExternalSource(builder.atcFromExternalSource);
     }
 
     public int getProductId() {
@@ -109,6 +117,14 @@ public class AddToCartRequest {
         this.warehouseId = warehouseId;
     }
 
+    public String getAtcFromExternalSource() {
+        return atcFromExternalSource;
+    }
+
+    public void setAtcFromExternalSource(String atcFromExternalSource) {
+        this.atcFromExternalSource = atcFromExternalSource;
+    }
+
     public static final class Builder {
         private int productId;
         private int quantity;
@@ -118,6 +134,7 @@ public class AddToCartRequest {
         private String trackerListName;
         private int istradein;
         private int warehouseId;
+        private String atcFromExternalSource;
 
         public Builder() {
         }
@@ -159,6 +176,11 @@ public class AddToCartRequest {
 
         public Builder isTradein(int val) {
             istradein = val;
+            return this;
+        }
+
+        public Builder atcFromExternalSource(String val) {
+            atcFromExternalSource = val;
             return this;
         }
 

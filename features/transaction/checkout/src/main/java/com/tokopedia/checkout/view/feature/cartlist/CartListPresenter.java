@@ -1212,21 +1212,25 @@ public class CartListPresenter implements ICartListPresenter {
             int productId = 0;
             int minOrder = 0;
             int shopId = 0;
+            String externalSource = "";
             if (productModel instanceof CartWishlistItemHolderData) {
                 CartWishlistItemHolderData cartWishlistItemHolderData = (CartWishlistItemHolderData) productModel;
                 productId = Integer.parseInt(cartWishlistItemHolderData.getId());
                 minOrder = cartWishlistItemHolderData.getMinOrder();
                 shopId = Integer.parseInt(cartWishlistItemHolderData.getShopId());
+                externalSource = AddToCartRequest.ATC_FROM_WISHLIST;
             } else if (productModel instanceof CartRecentViewItemHolderData) {
                 CartRecentViewItemHolderData cartRecentViewItemHolderData = (CartRecentViewItemHolderData) productModel;
                 productId = Integer.parseInt(cartRecentViewItemHolderData.getId());
                 minOrder = cartRecentViewItemHolderData.getMinOrder();
                 shopId = Integer.parseInt(cartRecentViewItemHolderData.getShopId());
+                externalSource = AddToCartRequest.ATC_FROM_RECENT_VIEW;
             } else if (productModel instanceof CartRecommendationItemHolderData) {
                 CartRecommendationItemHolderData cartRecommendationItemHolderData = (CartRecommendationItemHolderData) productModel;
                 productId = cartRecommendationItemHolderData.getRecommendationItem().getProductId();
                 minOrder = cartRecommendationItemHolderData.getRecommendationItem().getMinOrder();
                 shopId = cartRecommendationItemHolderData.getRecommendationItem().getShopId();
+                externalSource = AddToCartRequest.ATC_FROM_RECOMMENDATION;
             }
 
             view.showProgressLoading();
@@ -1235,6 +1239,7 @@ public class CartListPresenter implements ICartListPresenter {
                     .notes("")
                     .quantity(minOrder)
                     .shopId(shopId)
+                    .atcFromExternalSource(externalSource)
                     .build();
 
             RequestParams requestParams = RequestParams.create();
