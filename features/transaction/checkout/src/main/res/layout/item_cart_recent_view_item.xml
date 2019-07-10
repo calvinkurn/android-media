@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:background="@drawable/bg_round_button_with_shadow"
-                android:src="@drawable/ic_wishlist_checkout_on" />
+                app:srcCompat="@drawable/ic_wishlist_checkout_on" />
 
         </FrameLayout>
 
