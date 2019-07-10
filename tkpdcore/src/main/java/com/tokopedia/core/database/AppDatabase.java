@@ -13,7 +13,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
     private static volatile AppDatabase INSTANCE;
 
-    private AppDatabase() {
+    AppDatabase() {
 
     }
 
