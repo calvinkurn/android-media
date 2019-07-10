@@ -184,19 +184,19 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
 
     @Override
     public void onDraw(Canvas canvas, RecyclerView parent, RecyclerView.State state) {
-        Paint paint = new Paint();
-        paint.setColor(color);
-
-        int childCount = parent.getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            View child = parent.getChildAt(i);
-            int absolutePos = parent.getChildAdapterPosition(child);
-            if (isProductItem(parent, absolutePos) || child == null) {
-                canvas.drawRect(child.getLeft() - topSpacing, child.getTop() - topSpacing, child.getRight() + topSpacing, child.getTop(), paint);
-                canvas.drawRect(child.getLeft() - topSpacing, child.getBottom(), child.getRight() + topSpacing, child.getBottom() + topSpacing, paint);
-                canvas.drawRect(child.getLeft() - topSpacing, child.getTop(), child.getLeft(), child.getBottom(), paint);
-                canvas.drawRect(child.getRight(), child.getTop(), child.getRight() + topSpacing, child.getBottom(), paint);
-            }
-        }
+//        Paint paint = new Paint();
+//        paint.setColor(color);
+//
+//        int childCount = parent.getChildCount();
+//        for (int i = 0; i < childCount; i++) {
+//            View child = parent.getChildAt(i);
+//            int absolutePos = parent.getChildAdapterPosition(child);
+//            if (isProductItem(parent, absolutePos) || child == null) {
+//                canvas.drawRect(child.getLeft() - topSpacing, child.getTop() - topSpacing, child.getRight() + topSpacing, child.getTop(), paint);
+//                canvas.drawRect(child.getLeft() - topSpacing, child.getBottom(), child.getRight() + topSpacing, child.getBottom() + topSpacing, paint);
+//                canvas.drawRect(child.getLeft() - topSpacing, child.getTop(), child.getLeft(), child.getBottom(), paint);
+//                canvas.drawRect(child.getRight(), child.getTop(), child.getRight() + topSpacing, child.getBottom(), paint);
+//            }
+//        }
     }
 }
