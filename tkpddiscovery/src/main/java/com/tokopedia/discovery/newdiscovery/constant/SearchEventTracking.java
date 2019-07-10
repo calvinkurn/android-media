@@ -9,6 +9,7 @@ public interface SearchEventTracking {
         String SEARCH_RESULT = "clickSearchResult";
         String PRODUCT_VIEW = "productView";
         String PRODUCT_CLICK = "productClick";
+        String CLICK_WISHLIST = "clickWishlist";
     }
 
     interface Category {

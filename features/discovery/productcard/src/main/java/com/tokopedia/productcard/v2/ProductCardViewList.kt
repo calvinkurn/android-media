@@ -157,6 +157,6 @@ class ProductCardViewList: ProductCardView {
 
             labelPromoBackground.cornerRadii =
                     floatArrayOf(0f, 0f, 0f, 0f, bottomCornerRadius, bottomCornerRadius, bottomCornerRadius, bottomCornerRadius)
-    }
+        }
     }
 }

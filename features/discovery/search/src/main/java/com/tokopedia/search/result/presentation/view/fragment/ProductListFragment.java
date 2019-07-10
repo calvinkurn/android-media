@@ -649,18 +649,25 @@ public class ProductListFragment
 
     @Override
     public void onSuccessAddWishlist(String productId) {
-        searchTracking.sendGeneralEventWithUserId(SearchEventTracking.Event.PRODUCT_VIEW,
+        searchTracking.sendGeneralEventWithUserId(
+                SearchEventTracking.Event.CLICK_WISHLIST,
                 SearchEventTracking.Category.SEARCH_RESULT.toLowerCase(),
-                SearchEventTracking.Action.CLICK_WISHLIST,
-                generateWishlistClickEventLabel(true));
+                generateWishlistClickEventAction(true),
+                generateWishlistClickEventLabel(productId)
+        );
+
         adapter.updateWishlistStatus(productId, true);
         enableWishlistButton(productId);
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist));
     }
 
-    private String generateWishlistClickEventLabel(boolean isWishlisted) {
+    private String generateWishlistClickEventAction(boolean isWishlisted) {
         String action = isWishlisted ? "add" : "remove";
-        return action + " - " + getQueryKey() + " - " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", DEFAULT_LOCALE).format(new Date());
+        return action + " wishlist";
+    }
+
+    private String generateWishlistClickEventLabel(String productId) {
+        return getQueryKey() + " - " + productId;
     }
 
     @Override
@@ -674,8 +681,8 @@ public class ProductListFragment
         searchTracking.sendGeneralEventWithUserId(
                 SearchEventTracking.Event.PRODUCT_VIEW,
                 SearchEventTracking.Category.SEARCH_RESULT.toLowerCase(),
-                SearchEventTracking.Action.CLICK_WISHLIST,
-                generateWishlistClickEventLabel(false));
+                generateWishlistClickEventAction(false),
+                generateWishlistClickEventLabel(productId));
         adapter.updateWishlistStatus(productId, false);
         enableWishlistButton(productId);
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
