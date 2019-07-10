@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
+import android.view.View
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.affiliate.R
@@ -16,6 +17,7 @@ import com.tokopedia.affiliate.feature.createpost.view.fragment.ContentCreatePos
 import com.tokopedia.affiliate.feature.createpost.view.listener.CreatePostActivityListener
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.HeaderViewModel
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
@@ -36,6 +38,16 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener, Bas
     }
 
     private var isPostEnabled = false
+
+    private val shareDialogView: View by lazy {
+        layoutInflater.inflate(R.layout.fragment_af_create_post, null)
+    }
+
+    private val shareDialog: CloseableBottomSheetDialog by lazy {
+        CloseableBottomSheetDialog.createInstance(this@CreatePostActivity).apply {
+            setContentView(shareDialogView)
+        }
+    }
 
     companion object {
         const val PARAM_PRODUCT_ID = "product_id"
@@ -121,6 +133,7 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener, Bas
                 fragment.saveDraftAndSubmit()
             }
         }
+        shareTo.setOnClickListener { openShareBottomSheetDialog() }
     }
 
     override fun updateHeader(header: HeaderViewModel) {
@@ -145,5 +158,9 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener, Bas
         }
         dialog.setCancelable(true)
         dialog.show()
+    }
+
+    private fun openShareBottomSheetDialog() {
+        shareDialog.show()
     }
 }

@@ -103,4 +103,6 @@
     <string name="af_label_post">Post</string>
     <string name="af_warning_over_char">Caption tidak boleh melebihi %1$s karakter.</string>
 
+    <string name="af_post_to">Follower %s</string>
+
 </resources>
