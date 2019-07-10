@@ -61,8 +61,8 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
             final int relativePos = getProductItemRelativePosition(parent, view);
             final int totalSpanCount = getTotalSpanCount(parent);
 
-            verticalCardViewOffset = getVerticalCardViewOffset(view);
-            horizontalCardViewOffset = getHorizontalCardViewOffset(view);
+            verticalCardViewOffset = 0;//getVerticalCardViewOffset(view);
+            horizontalCardViewOffset = 0;//getHorizontalCardViewOffset(view);
 
             outRect.left = getLeftOffset(relativePos, totalSpanCount);
             outRect.top = getTopOffset(parent, absolutePos, relativePos, totalSpanCount);
