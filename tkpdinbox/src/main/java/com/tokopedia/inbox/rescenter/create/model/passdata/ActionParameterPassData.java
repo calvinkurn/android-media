@@ -3,7 +3,8 @@ package com.tokopedia.inbox.rescenter.create.model.passdata;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
+import com.tokopedia.core.database.model.ResCenterAttachment;
+import com.tokopedia.core.database.repository.ResCenterAttachmentRepository;
 import com.tokopedia.inbox.rescenter.create.model.responsedata.ActionResponseData;
 import com.tokopedia.inbox.rescenter.create.model.responsedata.CreateResCenterFormData;
 
@@ -30,7 +31,7 @@ public class ActionParameterPassData implements Parcelable {
     // collected in step 3
     private CreateResCenterFormData.SolutionData solutionChoosen;
     private String refund;
-    private List<AttachmentResCenterVersion2DB> attachmentData;
+    private List<ResCenterAttachment> attachmentData;
 
     // collected in intent service
     private String serverID;
@@ -81,11 +82,11 @@ public class ActionParameterPassData implements Parcelable {
         this.orderID = orderID;
     }
 
-    public List<AttachmentResCenterVersion2DB> getAttachmentData() {
+    public List<ResCenterAttachment> getAttachmentData() {
         return attachmentData;
     }
 
-    public void setAttachmentData(List<AttachmentResCenterVersion2DB> attachmentData) {
+    public void setAttachmentData(List<ResCenterAttachment> attachmentData) {
         this.attachmentData = attachmentData;
     }
 
@@ -236,7 +237,7 @@ public class ActionParameterPassData implements Parcelable {
         this.inputDescription = in.readString();
         this.solutionChoosen = in.readParcelable(CreateResCenterFormData.SolutionData.class.getClassLoader());
         this.refund = in.readString();
-        this.attachmentData = in.createTypedArrayList(AttachmentResCenterVersion2DB.CREATOR);
+        this.attachmentData = in.createTypedArrayList(ResCenterAttachmentRepository.CREATOR);
         this.serverID = in.readString();
         this.uploadHost = in.readString();
         this.attachmentString = in.readString();

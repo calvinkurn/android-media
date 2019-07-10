@@ -40,6 +40,7 @@ public class ResCenterAttachment implements Parcelable {
     private String picObj;
 
     public ResCenterAttachment() {
+
     }
 
     public ResCenterAttachment(Parcel parcel) {

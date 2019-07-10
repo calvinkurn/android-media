@@ -7,8 +7,8 @@ import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.util.Log;
 
+import com.tokopedia.core.database.model.ResCenterAttachment;
 import com.tokopedia.core2.R;
-import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.core.network.apiservices.rescenter.ResCenterActService;
 import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
 import com.tokopedia.core.network.retrofit.response.GeneratedHost;
@@ -302,9 +302,9 @@ public class CreateResCenterService extends IntentService {
     }
 
     private Observable<ActionParameterPassData> getObservableUploadingFile(ActionParameterPassData actionParameterPassData) {
-        return Observable.zip(Observable.just(actionParameterPassData), uploading(actionParameterPassData), new Func2<ActionParameterPassData, List<AttachmentResCenterVersion2DB>, ActionParameterPassData>() {
+        return Observable.zip(Observable.just(actionParameterPassData), uploading(actionParameterPassData), new Func2<ActionParameterPassData, List<ResCenterAttachment>, ActionParameterPassData>() {
             @Override
-            public ActionParameterPassData call(ActionParameterPassData actionParameterPassData, List<AttachmentResCenterVersion2DB> listAttachment) {
+            public ActionParameterPassData call(ActionParameterPassData actionParameterPassData, List<ResCenterAttachment> listAttachment) {
                 int j = 0;
                 String attachmentCompiledString = "";
                 for (int i = 0; i < listAttachment.size(); i++) {
@@ -327,12 +327,12 @@ public class CreateResCenterService extends IntentService {
         });
     }
 
-    private Observable<List<AttachmentResCenterVersion2DB>> uploading(final ActionParameterPassData actionParameterPassData) {
+    private Observable<List<ResCenterAttachment>> uploading(final ActionParameterPassData actionParameterPassData) {
         return Observable
                 .from(actionParameterPassData.getAttachmentData())
-                .flatMap(new Func1<AttachmentResCenterVersion2DB, Observable<AttachmentResCenterVersion2DB>>() {
+                .flatMap(new Func1<ResCenterAttachment, Observable<ResCenterAttachment>>() {
                     @Override
-                    public Observable<AttachmentResCenterVersion2DB> call(AttachmentResCenterVersion2DB attachmentResCenterDB) {
+                    public Observable<ResCenterAttachment> call(ResCenterAttachment attachmentResCenterDB) {
                         NetworkCalculator networkCalculator = new NetworkCalculator(NetworkConfig.POST, getApplicationContext(),
                                 "https://" + actionParameterPassData.getUploadHost())
                                 .setIdentity()
@@ -370,9 +370,9 @@ public class CreateResCenterService extends IntentService {
                                         serverId
                                 );
 
-                        return Observable.zip(Observable.just(attachmentResCenterDB), upload, new Func2<AttachmentResCenterVersion2DB, UploadResCenterImageData, AttachmentResCenterVersion2DB>() {
+                        return Observable.zip(Observable.just(attachmentResCenterDB), upload, new Func2<ResCenterAttachment, UploadResCenterImageData, ResCenterAttachment>() {
                             @Override
-                            public AttachmentResCenterVersion2DB call(AttachmentResCenterVersion2DB attachmentResCenterDB, UploadResCenterImageData uploadResCenterImageData) {
+                            public ResCenterAttachment call(ResCenterAttachment attachmentResCenterDB, UploadResCenterImageData uploadResCenterImageData) {
                                 if (uploadResCenterImageData != null) {
                                     if (uploadResCenterImageData.getData() != null) {
                                         attachmentResCenterDB.imageUrl = uploadResCenterImageData.getData().getFileUrl();

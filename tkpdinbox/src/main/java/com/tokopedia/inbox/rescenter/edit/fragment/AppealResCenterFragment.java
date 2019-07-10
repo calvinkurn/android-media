@@ -21,10 +21,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.core.database.model.ResCenterAttachment;
 import com.tokopedia.core2.R;
 import com.tokopedia.core2.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -77,7 +77,7 @@ public class AppealResCenterFragment extends BasePresenterFragment<AppealResCent
     @BindView(R2.id.view_attachment_section)
     AppealAttachmentView attachmenSectionView;
 
-    private List<AttachmentResCenterVersion2DB> attachmentData;
+    private List<ResCenterAttachment> attachmentData;
     private AttachmentAdapter attachmentAdapter;
     private UploadImageEditResCenterDialog uploadImageDialog;
 
@@ -362,7 +362,7 @@ public class AppealResCenterFragment extends BasePresenterFragment<AppealResCent
         super.onActivityResult(requestCode, resultCode, data);
         uploadImageDialog.onResult(requestCode, resultCode, data, new BaseUploadImageDialog.UploadImageDialogListener() {
             @Override
-            public void onSuccess(List<AttachmentResCenterVersion2DB> data) {
+            public void onSuccess(List<ResCenterAttachment> data) {
                 attachmentData.clear();
                 attachmentData.addAll(data);
                 attachmentAdapter.notifyDataSetChanged();
@@ -423,7 +423,7 @@ public class AppealResCenterFragment extends BasePresenterFragment<AppealResCent
     }
 
     @Override
-    public List<AttachmentResCenterVersion2DB> getAttachmentData() {
+    public List<ResCenterAttachment> getAttachmentData() {
         return attachmentData;
     }
 
