@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.topupbills.R
+import com.tokopedia.topupbills.common.DigitalTopupAnalytics
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.view.adapter.DigitalTelcoProductTabAdapter
@@ -17,16 +18,20 @@ import com.tokopedia.topupbills.telco.view.model.DigitalTabTelcoItem
 import com.tokopedia.topupbills.telco.view.model.DigitalTelcoExtraParam
 import com.tokopedia.topupbills.telco.view.widget.DigitalSubMenuWidget
 import kotlinx.android.synthetic.main.fragment_digital_telco.*
+import javax.inject.Inject
 
 /**
  * Created by nabillasabbaha on 06/05/19.
  */
 class DigitalTelcoFragment : BaseDaggerFragment() {
 
-    var posCurrentTabExtraParam = DigitalSubMenuWidget.HEADER_LEFT
+    private var posCurrentTabExtraParam = DigitalSubMenuWidget.HEADER_LEFT
+
+    @Inject
+    lateinit var topupAnalytics: DigitalTopupAnalytics
 
     override fun getScreenName(): String {
-        return getString(R.string.digital_track_title_page)
+        return ""
     }
 
     override fun initInjector() {
@@ -101,6 +106,7 @@ class DigitalTelcoFragment : BaseDaggerFragment() {
                 } else {
                     header_view.headerRightActive(list.get(DigitalSubMenuWidget.HEADER_RIGHT))
                 }
+                topupAnalytics.eventClickTelcoTab(list.get(position).label)
             }
         })
     }

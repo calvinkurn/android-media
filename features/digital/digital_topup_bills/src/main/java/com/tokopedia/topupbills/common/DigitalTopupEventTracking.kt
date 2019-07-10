@@ -26,6 +26,7 @@ interface DigitalTopupEventTracking {
         companion object {
             val INPUT_MANUAL_NUMBER = "input manual number"
             val INPUT_FROM_CONTACT = "input from contact"
+            val CLICK_ON_CONTACT = "click on contact number"
             val INPUT_FROM_WIDGET = "input from widget"
             val INPUT_FROM_FAVORITE_NUMBER = "input from favorite number"
             val CLEAR_INPUT_NUMBER = "click x on input number"
@@ -39,6 +40,7 @@ interface DigitalTopupEventTracking {
             val CLICK_RECENT_ICON = "click recent icon"
             val PROMO_DIGITAL_IMPRESSION = "impression promo digital"
             val COPY_PROMO_DIGITAL = "click salin promo digital"
+            val CLICK_TELCO_CATEGORY = "click on telco category"
         }
     }
 

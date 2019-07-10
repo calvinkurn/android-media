@@ -19,7 +19,7 @@ class DigitalTopupAnalytics {
         ))
     }
 
-    fun eventInputNumberContact(categoryId: Int, operatorName: String) {
+    fun eventInputNumberContactPicker(categoryId: Int, operatorName: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
                 DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
@@ -28,6 +28,16 @@ class DigitalTopupAnalytics {
         ))
     }
 
+    fun eventClickOnContactPickerHomepage(categoryId: Int, operatorName: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
+                DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
+                DigitalTopupEventTracking.Action.CLICK_ON_CONTACT,
+                "$categoryId - $operatorName"
+        ))
+    }
+
+    //not yet
     fun eventInputNumberWidget(categoryId: Int, operatorName: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
@@ -88,6 +98,24 @@ class DigitalTopupAnalytics {
                 DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
                 DigitalTopupEventTracking.Action.COPY_PROMO_DIGITAL,
                 "$promoName - $position"
+        ))
+    }
+
+    fun eventClickTelcoPrepaidCategory(categoryName: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
+                DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
+                DigitalTopupEventTracking.Action.CLICK_TELCO_CATEGORY,
+                "Prabayar - $categoryName"
+        ))
+    }
+
+    fun eventClickTelcoTab(headerTab: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                DigitalTopupEventTracking.Event.CLICK_HOMEPAGE,
+                DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
+                DigitalTopupEventTracking.Action.CLICK_TELCO_TAB,
+                "$headerTab"
         ))
     }
 }

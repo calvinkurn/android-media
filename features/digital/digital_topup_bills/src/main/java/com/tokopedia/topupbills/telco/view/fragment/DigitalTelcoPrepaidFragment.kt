@@ -187,10 +187,13 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                         topupAnalytics.eventInputNumberManual(selectedCategoryId, operatorName)
                     }
                     InputNumberActionType.CONTACT -> {
-                        topupAnalytics.eventInputNumberContact(selectedCategoryId, operatorName)
+                        topupAnalytics.eventInputNumberContactPicker(selectedCategoryId, operatorName)
                     }
                     InputNumberActionType.FAVORITE -> {
                         topupAnalytics.eventInputNumberFavorites(selectedCategoryId, operatorName)
+                    }
+                    InputNumberActionType.CONTACT_HOMEPAGE -> {
+                        topupAnalytics.eventClickOnContactPickerHomepage(selectedCategoryId, operatorName)
                     }
                 }
 
@@ -268,6 +271,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     override fun setInputNumberFromContact(contactNumber: String) {
+        inputNumberActionType = InputNumberActionType.CONTACT_HOMEPAGE
         telcoClientNumberWidget.setInputNumber(contactNumber)
     }
 
@@ -287,6 +291,20 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         tabLayout.setupWithViewPager(viewPager)
         setTabFromProductSelected()
         setCustomFont()
+
+        viewPager.addOnPageChangeListener(object: ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(p0: Int) {
+
+            }
+
+            override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {
+
+            }
+
+            override fun onPageSelected(pos: Int) {
+                topupAnalytics.eventClickTelcoPrepaidCategory(listProductTab.get(pos).title)
+            }
+        })
     }
 
     fun setCustomFont() {

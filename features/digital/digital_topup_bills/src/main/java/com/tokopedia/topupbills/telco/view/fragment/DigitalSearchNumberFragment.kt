@@ -263,7 +263,7 @@ class DigitalSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnCl
     }
 
     enum class InputNumberActionType {
-        MANUAL, CONTACT, FAVORITE, LATEST_TRANSACTION
+        MANUAL, CONTACT, FAVORITE, LATEST_TRANSACTION, CONTACT_HOMEPAGE
     }
 
     companion object {

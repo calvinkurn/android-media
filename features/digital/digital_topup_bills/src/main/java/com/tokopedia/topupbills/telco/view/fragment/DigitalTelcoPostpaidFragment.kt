@@ -43,6 +43,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     private val favNumberList = mutableListOf<TelcoFavNumber>()
     private var operatorData: TelcoCustomComponentData =
             TelcoCustomComponentData(TelcoCustomData(mutableListOf()))
+    private val categoryId = TelcoCategoryType.CATEGORY_PASCABAYAR
 
     private lateinit var inputNumberActionType: InputNumberActionType
 
@@ -185,13 +186,16 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 val operatorName = operatorSelected.operator.attributes.name
                 when (inputNumberActionType) {
                     InputNumberActionType.MANUAL -> {
-                        topupAnalytics.eventInputNumberManual(TelcoCategoryType.CATEGORY_PASCABAYAR, operatorName)
+                        topupAnalytics.eventInputNumberManual(categoryId, operatorName)
                     }
                     InputNumberActionType.CONTACT -> {
-                        topupAnalytics.eventInputNumberContact(TelcoCategoryType.CATEGORY_PASCABAYAR, operatorName)
+                        topupAnalytics.eventInputNumberContactPicker(categoryId, operatorName)
                     }
                     InputNumberActionType.FAVORITE -> {
-                        topupAnalytics.eventInputNumberFavorites(TelcoCategoryType.CATEGORY_PASCABAYAR, operatorName)
+                        topupAnalytics.eventInputNumberFavorites(categoryId, operatorName)
+                    }
+                    InputNumberActionType.CONTACT_HOMEPAGE -> {
+                        topupAnalytics.eventClickOnContactPickerHomepage(categoryId, operatorName)
                     }
                 }
 
@@ -243,6 +247,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     }
 
     override fun setInputNumberFromContact(contactNumber: String) {
+        inputNumberActionType = InputNumberActionType.CONTACT_HOMEPAGE
         postpaidClientNumberWidget.setInputNumber(contactNumber)
     }
 
@@ -283,13 +288,13 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         if (::operatorSelected.isInitialized) {
             checkoutPassData = DigitalCheckoutPassData.Builder()
                     .action(DigitalCheckoutPassData.DEFAULT_ACTION)
-                    .categoryId(TelcoCategoryType.CATEGORY_PASCABAYAR.toString())
+                    .categoryId(categoryId.toString())
                     .clientNumber(postpaidClientNumberWidget.getInputNumber())
                     .instantCheckout("0")
                     .isPromo("0")
                     .operatorId(operatorSelected.operator.id)
                     .productId(operatorSelected.operator.attributes.defaultProductId.toString())
-                    .utmCampaign(TelcoCategoryType.CATEGORY_PASCABAYAR.toString())
+                    .utmCampaign(categoryId.toString())
                     .utmContent(GlobalConfig.VERSION_NAME)
                     .idemPotencyKey(userSession.userId.generateRechargeCheckoutToken())
                     .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
@@ -300,7 +305,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     }
 
     override fun onBackPressed() {
-        topupAnalytics.eventClickBackButton(TelcoCategoryType.CATEGORY_PASCABAYAR)
+        topupAnalytics.eventClickBackButton(categoryId)
     }
 
     companion object {
