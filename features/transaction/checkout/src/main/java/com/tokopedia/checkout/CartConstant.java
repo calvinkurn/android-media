@@ -9,6 +9,4 @@ public class CartConstant {
     public static final String CACHE_TOTAL_CART = "CACHE_TOTAL_CART";
     public static final String TERM_AND_CONDITION_URL = "https://www.tokopedia.com/proteksi/gadget/syarat-dan-ketentuan/";
     public static final String PRIORITY_TNC_URL = "https://www.tokopedia.com/tnc-order-prioritas";
-    public static final String PRODUCT_INVENAGE_REMAINING_STOCK = "$less_than_count";
-    public static final String PRODUCT_INVENAGE_IN_OTHER_CART = "$pita_by_user_count";
 }
