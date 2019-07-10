@@ -1,7 +1,6 @@
 package com.tokopedia.twitter_share
 
-import android.content.Context
-import com.tokopedia.twitter_share.session.TwitterPreference
+import android.content.SharedPreferences
 import com.tokopedia.twitter_share.session.TwitterSession
 import rx.Observable
 import twitter4j.*
@@ -12,22 +11,21 @@ import twitter4j.conf.ConfigurationBuilder
 import java.io.File
 
 class TwitterManager(
-    context: Context,
-    apiKey: String = "lDTUm7KOSe0hPJvmIxz8VbSYR",
-    apiSecretKey: String = "Rrk7C9SJCEY3Grf3QuBvEUSPceu7K9UGMVoA6XJuXjTv1FkBT9"
-) {
+    twitterPrefs: SharedPreferences
+) : TwitterAuthenticator.TwitterAuthenticatorListener {
 
     companion object {
+        const val OAUTH_VERIFIER = "oauth_verifier"
+        const val OAUTH_TOKEN = "oauth_token"
+
         private const val CALLBACK_URL = "https://localhost"
     }
 
-    private val session: TwitterSession = TwitterSession(
-            TwitterPreference.getSharedPreferences(context)
-    )
+    private val session: TwitterSession = TwitterSession(twitterPrefs)
 
     private val config: Configuration = ConfigurationBuilder()
-            .setOAuthConsumerKey(apiKey)
-            .setOAuthConsumerSecret(apiSecretKey)
+            .setOAuthConsumerKey(BuildConfig.TWITTER_API_KEY)
+            .setOAuthConsumerSecret(BuildConfig.TWITTER_API_SECRET_KEY)
             .apply {
                 val accessToken = session.getAccessToken()
                 val tokenSecret = session.getAccessTokenSecret()
@@ -42,13 +40,16 @@ class TwitterManager(
 
     private var instance: Twitter = TwitterFactory(config).instance
 
-    fun getAuthenticator(): TwitterAuthenticator {
-        return TwitterAuthenticator(getRequestTokenInstance())
+    override fun onAuthenticateSuccess(requestToken: RequestToken, oAuthToken: String, oAuthVerifier: String) {
+        verifyAuthData(requestToken, oAuthVerifier)
     }
 
-    fun processAuthenticator(authenticator: TwitterAuthenticator) {
-        val oAuthVerifier = authenticator.getOAuthVerifier()
-        val accessToken = getAccessToken(authenticator.requestToken, oAuthVerifier)
+    fun getAuthenticator(): TwitterAuthenticator {
+        return TwitterAuthenticator(getRequestTokenInstance(), this)
+    }
+
+    fun verifyAuthData(requestToken: RequestToken, oAuthVerifier: String) {
+        val accessToken = getAccessToken(requestToken, oAuthVerifier)
         saveAccessToken(accessToken)
     }
 
@@ -93,5 +94,4 @@ class TwitterManager(
         return if (isAuthenticated) action()
         else Observable.error(IllegalStateException("User not authenticated"))
     }
-
 }

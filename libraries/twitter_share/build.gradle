@@ -1,6 +1,15 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 
+android {
+    defaultConfig {
+        buildConfigField "String", "TWITTER_API_KEY", "lDTUm7KOSe0hPJvmIxz8VbSYR"
+        buildConfigField "String", "TWITTER_API_SECRET_KEY", "Rrk7C9SJCEY3Grf3QuBvEUSPceu7K9UGMVoA6XJuXjTv1FkBT9"
+    }
+}
+
 dependencies {
+    implementation rootProject.ext.tkpdInternalLibDependencies.abstraction
     implementation rootProject.ext.miscDependencies.twitter
+    implementation project(rootProject.ext.libraries.webview)
 }
