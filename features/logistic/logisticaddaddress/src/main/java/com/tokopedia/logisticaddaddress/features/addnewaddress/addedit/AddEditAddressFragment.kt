@@ -992,6 +992,13 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                 }
                 createFragment()
             }
+        } else {
+            // this solves issue when positif ANA changed into negatif ANA
+            if (data == null) {
+                isMismatch = true
+                isMismatchSolved = false
+                createFragment()
+            }
         }
     }
 
