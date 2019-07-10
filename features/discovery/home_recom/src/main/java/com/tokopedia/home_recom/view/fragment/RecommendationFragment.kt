@@ -126,7 +126,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     private fun loadData(){
         activity?.let{
             if(productId.isNotBlank()) {
-                recommendationWidgetViewModel.getPrimaryProduct(productId, it)
+                recommendationWidgetViewModel.getPrimaryProduct(productId)
                 recommendationWidgetViewModel.getRecommendationList(arrayListOf(productId),
                         onErrorGetRecommendation = this::onErrorGetRecommendation)
             } else {

@@ -29,40 +29,44 @@ open class RecommendationPageViewModel @Inject constructor(private val graphqlRe
                                                       private val userSessionInterface: UserSessionInterface,
                                                       private val getRecommendationUseCase: GetRecommendationUseCase,
                                                       @Named("Main")
-                                  val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
+                                                      val dispatcher: CoroutineDispatcher,
+                                                      @Named("primaryQuery")
+                                                      private val primaryProductQuery: String
+) : BaseViewModel(dispatcher) {
     val recommendationListModel = MutableLiveData<List<RecommendationWidget>>()
     val productInfoDataModel = MutableLiveData<ProductInfoDataModel>()
 
     val xSource = "recom_landing_page"
     val pageName = "recom_1,recom_2,recom_3"
 
-    fun getPrimaryProduct(productId: String,
-                          context: Context) {
+    fun getPrimaryProduct(productId: String) {
         launchCatchError(block = {
             val gqlData = withContext(Dispatchers.IO) {
                 val cacheStrategy =
                         GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
 
-                var params = mapOf(
+                val params = mapOf(
                         PARAM_PRODUCT_ID to productId.toInt(),
                         PARAM_X_SOURCE to xSource
                 )
 
                 val gqlRecommendationRequest = GraphqlRequest(
-                        GraphqlHelper.loadRawString(context.resources, R.raw.gql_primary_product),
+                        primaryProductQuery,
                         PrimaryProductEntity::class.java,
                         params
                 )
 
-                graphqlRepository.getReseponse(listOf(gqlRecommendationRequest), cacheStrategy)
+                graphqlRepository.getReseponse(listOf(gqlRecommendationRequest))
             }
+            val d1 = gqlData
+            val data = gqlData.getSuccessData<PrimaryProductEntity>()
             gqlData.getSuccessData<PrimaryProductEntity>().productRecommendationProductDetail?.let {
                 val productDetailResponse = it.data.get(0).recommendation.get(0)
                 productInfoDataModel.value = ProductInfoDataModel(productDetailResponse)
             }
-
         }) {
-            
+            val data = it
+            print(it)
         }
     }
 
