@@ -596,9 +596,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (s.isNotEmpty()) {
-                    // val typed = s.toString().replace(" ", "")
                     val countCharLeft = 60 - s.toString().length
-                    println("## countCharLeft = $countCharLeft")
                     when (countCharLeft) {
                         60 -> {
                             tv_detail_address_counter.text = "0/60"

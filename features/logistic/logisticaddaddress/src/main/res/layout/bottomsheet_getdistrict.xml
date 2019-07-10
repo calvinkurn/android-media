@@ -31,29 +31,6 @@
             android:layout_marginTop="@dimen/dp_24"
             android:layout_marginBottom="@dimen/dp_24"/>
 
-        <!--<include
-            android:id="@+id/loading_list_2"
-            layout="@layout/partial_shimmering_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_16"/>-->
-
-        <!--<include
-            android:id="@+id/loading_list_3"
-            layout="@layout/partial_shimmering_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_20"/>
-
-        <include
-            android:id="@+id/loading_list_4"
-            layout="@layout/partial_shimmering_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_20"
-            android:layout_marginBottom="@dimen/dp_20"/>-->
-
     </LinearLayout>
 
     <LinearLayout

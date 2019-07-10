@@ -173,8 +173,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                 .build()
         staticDimen8dp = context?.resources?.getDimensionPixelOffset(R.dimen.dp_8)
 
-        // arrangeLayout(isMismatch, isMismatchSolved)
-
         et_label_address.setText(labelRumah)
         et_receiver_name.setText(userSession.name)
         et_phone.setText(userSession.phoneNumber)
@@ -611,7 +609,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     }
 
     private fun arrangeLayout(isMismatch: Boolean, isMismatchSolved: Boolean) {
-        println("## ARRANGE LAYOUT - isMismatch = $isMismatch, isMismatchSolved = $isMismatchSolved")
         if (!isMismatch && !isMismatchSolved) {
             ll_mismatch.visibility = View.GONE
             ll_normal.visibility = View.VISIBLE
@@ -838,7 +835,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     }
 
     override fun onResume() {
-        println("## ARRANGE LAYOUT - ON RESUME()")
         map_view_detail?.onResume()
         super.onResume()
         arrangeLayout(isMismatch, isMismatchSolved)
