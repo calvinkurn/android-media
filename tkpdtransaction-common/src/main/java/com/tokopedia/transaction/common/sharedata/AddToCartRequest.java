@@ -134,7 +134,7 @@ public class AddToCartRequest {
         private String trackerListName;
         private int istradein;
         private int warehouseId;
-        private String atcFromExternalSource;
+        private String atcFromExternalSource = "";
 
         public Builder() {
         }
