@@ -61,8 +61,8 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
             final int relativePos = getProductItemRelativePosition(parent, view);
             final int totalSpanCount = getTotalSpanCount(parent);
 
-            verticalCardViewOffset = 0;//getVerticalCardViewOffset(view);
-            horizontalCardViewOffset = 0;//getHorizontalCardViewOffset(view);
+            verticalCardViewOffset = getVerticalCardViewOffset(view);
+            horizontalCardViewOffset = getHorizontalCardViewOffset(view);
 
             outRect.left = getLeftOffset(relativePos, totalSpanCount);
             outRect.top = getTopOffset(parent, absolutePos, relativePos, totalSpanCount);
@@ -98,23 +98,23 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     private int getLeftOffset(int relativePos, int totalSpanCount) {
-        int spacing = leftSpacing - horizontalCardViewOffset;
-        return (isFirstInRow(relativePos, totalSpanCount) ? spacing : spacing / 4);
+        int spacing = leftSpacing;
+        return (isFirstInRow(relativePos, totalSpanCount) ? spacing : spacing / 4) - horizontalCardViewOffset;
     }
 
     private int getTopOffset(RecyclerView parent, int absolutePos, int relativePos, int totalSpanCount) {
-        int spacing = topSpacing - verticalCardViewOffset;
-        return (isTopProductItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : spacing / 4);
+        int spacing = topSpacing;
+        return (isTopProductItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : spacing / 4) - verticalCardViewOffset;
     }
 
     private int getRightOffset(int relativePos, int totalSpanCount) {
-        int spacing = rightSpacing - horizontalCardViewOffset;
-        return (isLastInRow(relativePos, totalSpanCount) ? spacing : spacing / 4);
+        int spacing = rightSpacing;
+        return (isLastInRow(relativePos, totalSpanCount) ? spacing : spacing / 4) - horizontalCardViewOffset;
     }
 
     private int getBottomOffset(RecyclerView parent, int absolutePos, int relativePos, int totalSpanCount) {
-        int spacing = bottomSpacing - verticalCardViewOffset;
-        return (isBottomProductItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : spacing / 4);
+        int spacing = bottomSpacing;
+        return (isBottomProductItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : spacing / 4) - verticalCardViewOffset;
     }
 
     private int getProductItemRelativePosition(RecyclerView parent, View view) {
