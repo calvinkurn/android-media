@@ -76,7 +76,7 @@ public class OrderListAnalytics {
         Map<String, Object> purchase = new HashMap<>();
         Map<String, Object> ecommerce = new HashMap<>();
 
-        products.put(ID, entityProductId);
+        products.put(ID, String.valueOf(entityProductId));
         products.put(NAME, entityProductName);
         products.put(PRICE, totalTicketPrice);
         products.put("Category", CATEGORY);
@@ -94,6 +94,7 @@ public class OrderListAnalytics {
         map.put("eventCategory", EVENT_CARTEGORY);
         map.put("eventAction", ACTION);
         map.put("eventLabel", LABEL);
+        map.put("currentSite", "tokopediadigital");
         map.put("ecommerce", ecommerce);
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(map);
         TrackApp.getInstance().getGTM().sendScreenAuthenticated(SCREEN_NAME);

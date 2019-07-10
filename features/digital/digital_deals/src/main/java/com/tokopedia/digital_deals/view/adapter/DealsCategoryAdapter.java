@@ -94,6 +94,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     private boolean isFromSearchResult;
     private String dealType;
     private int homePosition;
+    List<ProductItem> itemsForGA = new ArrayList<>();
 
     public DealsCategoryAdapter(List<ProductItem> categoryItems, int pageType, INavigateToActivityRequest toActivityRequest, Boolean... layoutType) {
         if (categoryItems == null)
@@ -340,17 +341,18 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             if (!holder1.isShown()) {
                 holder1.setShown(true);
                 categoryItems.get(holder1.getAdapterPosition()).setTrack(true);
+                itemsForGA.add(categoryItems.get(holder1.getIndex()));
                 if (isDealsHomeLayout) {
                     if (dealType.equalsIgnoreCase(DealsAnalytics.TRENDING_DEALS)) {
-                        dealsAnalytics.sendTrendingDealImpression(DealsAnalytics.EVENT_PROMO_VIEW, DealsAnalytics.EVENT_IMPRESSION_TRENDING_DEALS, categoryItems.get(holder1.getIndex()), holder1.getIndex());
+                        dealsAnalytics.sendTrendingDealImpression(DealsAnalytics.EVENT_PRODUCT_VIEW, DealsAnalytics.EVENT_IMPRESSION_TRENDING_DEALS, itemsForGA, holder1.getIndex(), categoryName);
                     } else {
-                        dealsAnalytics.sendTrendingDealImpression(DealsAnalytics.EVENT_PROMO_VIEW,
-                                String.format("%s - %s", DealsAnalytics.EVENT_IMPRESSION_CURATED_DEALS, String.valueOf(this.homePosition)), categoryItems.get(holder1.getIndex()), holder1.getIndex());
+                        dealsAnalytics.sendTrendingDealImpression(DealsAnalytics.EVENT_PRODUCT_VIEW,
+                                String.format("%s - %s", DealsAnalytics.EVENT_IMPRESSION_CURATED_DEALS, String.valueOf(this.homePosition)), itemsForGA, holder1.getIndex(), categoryName);
                     }
                 } else if (dealType.equalsIgnoreCase(DealsAnalytics.CATEGORY_DEALS)) {
-                    dealsAnalytics.sendCategoryDealsImpressionEvent(DealsAnalytics.EVENT_PROMO_VIEW, DealsAnalytics.EVENT_ACTION_CATEGORY_DEALS_IMPRESSION, categoryItems.get(holder1.getIndex()), holder1.getIndex());
+                    dealsAnalytics.sendCategoryDealsImpressionEvent(DealsAnalytics.EVENT_PRODUCT_VIEW, DealsAnalytics.EVENT_ACTION_CATEGORY_DEALS_IMPRESSION, itemsForGA, holder1.getIndex(), categoryName);
                 } else {
-                    dealsAnalytics.sendProductBrandDealImpression(DealsAnalytics.EVENT_PRODUCT_VIEW, DealsAnalytics.EVENT_IMPRESSION_PRODUCT_BRAND, categoryItems.get(holder1.getIndex()), holder1.getIndex());
+                    dealsAnalytics.sendProductBrandDealImpression(DealsAnalytics.EVENT_PRODUCT_VIEW, DealsAnalytics.EVENT_IMPRESSION_PRODUCT_BRAND, itemsForGA, holder1.getIndex(), categoryName);
                 }
             }
         } else if (holder instanceof ItemViewHolderShort) {
@@ -358,7 +360,8 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             if (!holder1.isShown()) {
                 holder1.setShown(true);
                 categoryItems.get(holder1.getAdapterPosition()).setTrack(true);
-                dealsAnalytics.sendRecommendedDealImpressionEvent(categoryItems.get(holder1.getIndex()),holder1.getIndex());
+                itemsForGA.add(categoryItems.get(holder1.getIndex()));
+                dealsAnalytics.sendRecommendedDealImpressionEvent(itemsForGA,holder1.getIndex(), categoryName);
             }
         } else if (holder instanceof TopSuggestionHolder) {
 
@@ -371,8 +374,11 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             if (!holder1.isShown()) {
                 holder1.setShown(true);
                 categoryItems.get(holder1.getAdapterPosition()).setTrack(true);
-                dealsAnalytics.sendDealImpressionEvent(isHeaderAdded, isBrandHeaderAdded, topDealsLayout,
-                        categoryItems.get(holder1.getIndex()), categoryName, pageType, holder1.getIndex(), searchText, isFromSearchResult);
+                itemsForGA.add(categoryItems.get(holder1.getIndex()));
+                if (itemsForGA != null && itemsForGA.size() == 5) {
+                    dealsAnalytics.sendDealImpressionEvent(isHeaderAdded, isBrandHeaderAdded, topDealsLayout,
+                            itemsForGA, categoryName, pageType, holder1.getIndex(), searchText, isFromSearchResult);
+                }
             }
         }
     }

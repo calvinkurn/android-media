@@ -22,6 +22,7 @@ import java.util.List;
 public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<Brand> brandItems;
+    private List<Brand> itemsForGA = new ArrayList<>();
     private Context context;
     private int MAX_BRANDS = 8;
 
@@ -53,16 +54,17 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 holder1.setShown(false);
             if (!holder1.isShown()) {
                 holder1.setShown(true);
-
-                if (isPopularBrands) {
-                    dealsAnalytics.sendEcommerceBrand(brandItems.get(holder1.getIndex()).getId(),
+                itemsForGA.add(brandItems.get(holder1.getIndex()));
+                if (isPopularBrands && itemsForGA != null && itemsForGA.size() == 5) {
+                    dealsAnalytics.sendEcommerceBrand(itemsForGA,
                             holder1.getIndex(), brandItems.get(holder1.getIndex()).getTitle(), DealsAnalytics.EVENT_PROMO_VIEW, DealsAnalytics.EVENT_IMPRESSION_POPULAR_BRAND_HOME, DealsAnalytics.DEALS_HOME_PAGE);
 
-                } else if (isBrandNative) {
-                    dealsAnalytics.sendBrandImpressionEvent(brandItems.get(holder1.getIndex()).getId(),
+                } else if (isBrandNative && itemsForGA != null && itemsForGA.size() == 5) {
+                    dealsAnalytics.sendBrandImpressionEvent(itemsForGA,
                             holder1.getIndex(), brandItems.get(holder1.getIndex()).getTitle(), DealsAnalytics.EVENT_PROMO_VIEW, DealsAnalytics.EVENT_IMPRESSION_POPULAR_BRAND_ALL, DealsAnalytics.DEALS_HOME_PAGE);
                 } else {
-                    dealsAnalytics.sendEcommerceBrand(brandItems.get(holder1.getIndex()).getId(),
+                    if (itemsForGA != null && itemsForGA.size() == 5)
+                    dealsAnalytics.sendEcommerceBrand(itemsForGA,
                             holder1.getIndex(), brandItems.get(holder1.getIndex()).getTitle(), DealsAnalytics.EVENT_PROMO_VIEW, DealsAnalytics.EVENT_IMPRESSION_POPULAR_BRAND_CATEGORY, DealsAnalytics.DEALS_HOME_PAGE);
                 }
             }
