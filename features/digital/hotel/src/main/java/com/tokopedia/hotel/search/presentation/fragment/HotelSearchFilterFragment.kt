@@ -108,6 +108,7 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
         }
         maxCurrencyTextWatcher = CurrencyTextWatcher(maxPriceEditText, CurrencyEnum.RP)
         maxPriceEditText.addTextChangedListener(maxCurrencyTextWatcher)
+        if (selectedFilter.maxPrice == 0 || selectedFilter.maxPrice == price.maxPrice) maxCurrencyTextWatcher.format = getString(R.string.hotel_search_filter_max_string_format_with_plus)
         price_range_input_view.setPower(1.0)
 
         val filteredMinPrice = if (selectedFilter.minPrice < price.minPrice) price.minPrice else selectedFilter.minPrice
@@ -117,6 +118,8 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
         price_range_input_view.setOnValueChangedListener { minValue, maxValue, minBound, maxBound ->
             selectedFilter.minPrice = minValue
             selectedFilter.maxPrice = maxValue
+            if (selectedFilter.maxPrice == maxBound) maxCurrencyTextWatcher.format = getString(R.string.hotel_search_filter_max_string_format_with_plus)
+            else maxCurrencyTextWatcher.format = getString(R.string.hotel_search_filter_max_string_format)
         }
     }
 
@@ -124,7 +127,7 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
         val ratingStep = (filterReview.minReview.toInt()..filterReview.maxReview.toInt()).toList()
         selectedFilter.reviewScore = if (ratingStep.first() != 0 && selectedFilter.reviewScore == 0) ratingStep.last() else selectedFilter.reviewScore
         rating_seekbar.max = ratingStep.size - 1
-        rating_seekbar.progress = ratingStep.size - selectedFilter.reviewScore
+        rating_seekbar.progress = filterReview.maxReview.toInt() - selectedFilter.reviewScore
         ratingStep.forEachIndexed { index, item ->
             val stepView = LayoutInflater.from(context).inflate(R.layout.item_hotel_filter_rating_step, null)
             stepView.findViewById<TextViewCompat>(R.id.title_step).text = String.format("%.1f", item.toFloat())

@@ -30,7 +30,7 @@ data class HotelReviewParam(
 
         @SerializedName("filterByCountry")
         @Expose
-        var filterByCountry: String = "all",
+        var filterByCountry: String = "id",
 
         @SerializedName("filterByRank")
         @Expose

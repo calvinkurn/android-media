@@ -1,6 +1,5 @@
 package com.tokopedia.hotel.roomlist.presentation.adapter.viewholder
 
-import android.text.Html
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.hotel.R
@@ -86,12 +85,13 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener): Abs
 
     fun setImageViewPager(imageUrls: List<String>, room: HotelRoom) {
         with(itemView) {
-            room_image_view_pager.setImages(imageUrls)
+            if (imageUrls.size >= 5) room_image_view_pager.setImages(imageUrls.subList(0,5))
+            else room_image_view_pager.setImages(imageUrls)
             room_image_view_pager.imageViewPagerListener = object : ImageViewPager.ImageViewPagerListener{
                 override fun onImageClicked(position: Int) {
                     listener.onPhotoClickListener(room)
                     context.startActivity(ImagePreviewSliderActivity.getCallingIntent(
-                            context!!, "Image", imageUrls, imageUrls, position
+                            context!!, room.additionalPropertyInfo.propertyName, imageUrls, imageUrls, position
                     ))
                 }
             }

@@ -106,8 +106,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
-        progressDialog = ProgressDialog(activity)
-        progressDialog.setCancelable(false)
+        initProgressDialog()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -129,6 +128,12 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         setupRoomBreakfast()
         setupRoomExtraBed()
         setupRoomPrice()
+    }
+
+    private fun initProgressDialog() {
+        progressDialog = ProgressDialog(activity)
+        progressDialog.setMessage(getString(R.string.hotel_progress_dialog_title))
+        progressDialog.setCancelable(false)
     }
 
     private fun setupCollapsingToolbar() {
@@ -332,6 +337,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
 
     fun goToLoginPage() {
         if (activity != null) {
+            progressDialog.dismiss()
             RouteManager.route(context, ApplinkConst.LOGIN)
         }
     }

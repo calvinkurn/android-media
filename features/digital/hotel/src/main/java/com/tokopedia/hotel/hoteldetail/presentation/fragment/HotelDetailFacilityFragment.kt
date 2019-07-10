@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+import com.tokopedia.hotel.R
 import com.tokopedia.hotel.hoteldetail.data.entity.FacilityData
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailFacilityAdapterTypeFactory
 
@@ -17,7 +18,11 @@ class HotelDetailFacilityFragment : BaseListFragment<FacilityData, HotelDetailFa
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (getRecyclerView(view) as VerticalRecyclerView).clearItemDecoration()
+        val recyclerView = getRecyclerView(view) as VerticalRecyclerView
+        recyclerView.clearItemDecoration()
+        recyclerView.setPadding(0, 0,0,
+                resources.getDimension(R.dimen.dp_16).toInt())
+        recyclerView.clipToPadding = false
     }
 
     override fun getAdapterTypeFactory(): HotelDetailFacilityAdapterTypeFactory = HotelDetailFacilityAdapterTypeFactory()
