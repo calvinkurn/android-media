@@ -225,8 +225,8 @@
 
         <ImageView
             android:id="@+id/invalid_img"
-            android:layout_width="@dimen/dp_150"
-            android:layout_height="@dimen/dp_150"
+            android:layout_width="@dimen/dp_180"
+            android:layout_height="@dimen/dp_180"
             android:layout_gravity="center_horizontal"
             android:src="@drawable/ic_invalid_location"
             android:layout_marginTop="@dimen/dp_12"
