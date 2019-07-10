@@ -158,7 +158,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     lateinit var recommendationFirstView: PartialRecommendationFirstView
     lateinit var recommendationThirdView: PartialRecommendationThirdView
     lateinit var recommendationFourthView: PartialRecommendationFourthView
-    lateinit var valuePropotitionView: PartialValuePropotitionView
+    lateinit var valuePropositionView: PartialValuePropositionView
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -553,6 +553,10 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     productInfo?.variant?.isVariant ?: false)
             doBuy()
         }
+        valuePropositionView.hideBackgroundResource = {
+            base_attribute.setBackgroundResource(0)
+        }
+
 
         open_shop.setOnClickListener {
             activity?.let {
@@ -713,8 +717,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             recommendationFourthView = PartialRecommendationFourthView.build(base_recom_4, this)
         }
 
-        if (!::valuePropotitionView.isInitialized) {
-            valuePropotitionView = PartialValuePropotitionView.build(layout_value_proposition, onViewClickListener)
+        if (!::valuePropositionView.isInitialized) {
+            valuePropositionView = PartialValuePropositionView.build(layout_value_proposition, onViewClickListener)
         }
 
     }
@@ -796,8 +800,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             }
         }
 
-        bottomSheet = ValuePropositionBottomSheet.newInstance(title,desc,url)
-        bottomSheet.show(fragmentManager,"pdp_bs")
+        bottomSheet = ValuePropositionBottomSheet.newInstance(title, desc, url)
+        bottomSheet.show(fragmentManager, "pdp_bs")
     }
 
     private fun isViewVisible(view: View): Boolean {
@@ -1201,7 +1205,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     data.preorder)
             actionButtonView.visibility = !isAffiliate && shopInfo.statusInfo.shopStatus == 1
             headerView.showOfficialStore(shopInfo.goldOS)
-            valuePropotitionView.renderData(shopInfo.goldOS)
+            valuePropositionView.renderData(shopInfo.goldOS)
             varPictureImage.renderShopStatus(shopInfo, productInfo?.basic?.status
                     ?: ProductStatusTypeDef.ACTIVE)
             activity?.let {
