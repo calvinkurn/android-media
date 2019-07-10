@@ -14,7 +14,7 @@ public abstract class ResCenterAttachmentDatabase extends RoomDatabase {
 
     public abstract ResCenterAttachmentDao resCenterAttachmentDao();
 
-    private ResCenterAttachmentDatabase() {}
+    ResCenterAttachmentDatabase() {}
 
     private static class InstanceHolder {
         private static ResCenterAttachmentDatabase INSTANCE;
