@@ -59,6 +59,8 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     private val SAVED_PRODUCT_ID = "saved_product_id"
 
     companion object{
+        private val RECOMMENDATION_APP_LINK = "https://tokopedia.com/rekomendasi/%s"
+
         fun newInstance(productId: String = "") = RecommendationFragment().apply {
             this.productId = productId
         }
@@ -276,7 +278,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
                 }
 
                 override fun onError(linkerError: LinkerError) {
-                    openIntentShare(productDetailData.name, context.getString(R.string.recom_home_recommendation), "https://tokopedia.com/rekomendasi/${productDetailData.id}")
+                    openIntentShare(productDetailData.name, context.getString(R.string.recom_home_recommendation), String.format(RECOMMENDATION_APP_LINK, "${productDetailData.id}"))
                 }
             }))
         }
