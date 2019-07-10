@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment
 import android.text.SpannableString
 import android.text.TextPaint
 import android.text.TextUtils
+import android.text.format.DateFormat
 import android.text.style.ClickableSpan
 import android.view.*
 import android.view.inputmethod.EditorInfo
@@ -577,6 +578,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 //Login Event
                 LinkerManager.getInstance().sendEvent(
                         LinkerUtils.createGenericRequest(LinkerConstants.EVENT_LOGIN_VAL, userData))
+                loginEventAppsFlyer(userSession.userId, userSession.email)
             }
 
             if (::mIris.isInitialized) {
@@ -599,6 +601,17 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    private fun loginEventAppsFlyer(userId:String, userEmail:String){
+        var dataMap = HashMap<String, Any>()
+        dataMap.put("user_id", userId)
+        dataMap.put("user_email", userEmail)
+        val date = Date()
+        val stringDate = DateFormat.format("EEEE, MMMM d, yyyy ", date.time)
+        dataMap.put("timestamp", stringDate)
+        dataMap.put("timestamp", stringDate)
+        TrackApp.getInstance().appsFlyer.sendTrackEvent("Login Successful", dataMap)
     }
 
     fun onErrorLogin(errorMessage: String?) {

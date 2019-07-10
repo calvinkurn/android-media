@@ -43,6 +43,7 @@ import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.PrefixEditText;
 import com.tokopedia.shop.open.analytic.ShopOpenTracking;
+import com.tokopedia.shop.open.analytic.ShopOpenTrackingConstant;
 import com.tokopedia.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.shop.open.util.ShopErrorHandler;
 import com.tokopedia.shop.open.view.activity.ShopOpenCreateReadyActivity;
@@ -449,11 +450,21 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     public void onSuccessCreateShop(String message, String shopId) {
         hideSubmitLoading();
         AppWidgetUtil.sendBroadcastToAppWidget(getActivity());
+        trackingOpenShop.eventShopCreatedSuccessfully(setUserData(shopId));
         if (getActivity() != null) {
             Intent intent = ShopOpenCreateReadyActivity.Companion.newInstance(getActivity(), shopId);
             startActivity(intent);
             getActivity().finish();
         }
+    }
+
+    private HashMap<String, Object> setUserData(String shopId){
+        HashMap<String, Object> dataMap = new HashMap<>();
+        dataMap.put(ShopOpenTrackingConstant.Keys.PHONE, userSession.getPhoneNumber());
+        dataMap.put(ShopOpenTrackingConstant.Keys.SHOPID, shopId);
+        dataMap.put(ShopOpenTrackingConstant.Keys.USEREMAIL, userSession.getEmail());
+        dataMap.put(ShopOpenTrackingConstant.Keys.USERID, userSession.getUserId());
+        return dataMap;
     }
 
     @Override
