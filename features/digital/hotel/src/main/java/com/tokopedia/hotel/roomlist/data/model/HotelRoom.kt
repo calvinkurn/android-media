@@ -153,6 +153,10 @@ data class HotelRoom(
             @Expose
             val isCCRequired: Boolean = false,
 
+            @SerializedName("isCCDomesticRequired")
+            @Expose
+            val isCCDomesticRequired: Boolean = false,
+
             @SerializedName("info")
             @Expose
             val creditCardInfo: String = ""

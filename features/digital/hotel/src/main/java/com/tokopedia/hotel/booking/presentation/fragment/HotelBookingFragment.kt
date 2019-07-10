@@ -1,6 +1,7 @@
 package com.tokopedia.hotel.booking.presentation.fragment
 
 import android.app.Activity
+import android.app.ProgressDialog
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
@@ -61,6 +62,8 @@ class HotelBookingFragment : HotelBaseFragment() {
     lateinit var hotelCart: HotelCart
     var hotelBookingPageModel = HotelBookingPageModel()
 
+    lateinit var progressDialog: ProgressDialog
+
     var roomRequestMaxCharCount = ROOM_REQUEST_DEFAULT_MAX_CHAR_COUNT
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,6 +95,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         })
 
         bookingViewModel.hotelCheckoutResult.observe(this, android.arch.lifecycle.Observer {
+            progressDialog.dismiss()
             when (it) {
                 is Success -> {
                     val checkoutData = PaymentPassData()
@@ -124,7 +128,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_HOTEL_BOOKING_MODEL)) {
             hotelBookingPageModel = savedInstanceState.getParcelable(EXTRA_HOTEL_BOOKING_MODEL) ?: HotelBookingPageModel()
         }
-
+        initProgressDialog()
         showLoadingBar()
 
         bookingViewModel.getCartData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_cart), hotelBookingPageModel.cartId)
@@ -161,6 +165,11 @@ class HotelBookingFragment : HotelBaseFragment() {
         setupImportantNotes(hotelCart.property)
 
         booking_button.setOnClickListener { onBookingButtonClicked() }
+    }
+
+    private fun initProgressDialog() {
+        progressDialog = ProgressDialog(activity)
+        progressDialog.setCancelable(false)
     }
 
     private fun showLoadingBar() {
@@ -405,6 +414,7 @@ class HotelBookingFragment : HotelBaseFragment() {
     }
 
     private fun onBookingButtonClicked() {
+        progressDialog.show()
         if (validateData()) {
             hotelBookingPageModel.guestName = tv_guest_input.text.toString()
             hotelBookingPageModel.roomRequest = tv_room_request_input.text.toString()
