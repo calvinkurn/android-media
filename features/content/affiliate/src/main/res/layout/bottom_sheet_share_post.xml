@@ -6,10 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layout_marginStart="@dimen/dp_16"
-    android:layout_marginLeft="@dimen/dp_16"
-    android:layout_marginEnd="@dimen/dp_16"
-    android:layout_marginRight="@dimen/dp_16">
+    android:padding="@dimen/dp_16">
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"

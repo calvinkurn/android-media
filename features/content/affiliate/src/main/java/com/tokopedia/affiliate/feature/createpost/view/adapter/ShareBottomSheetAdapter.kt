@@ -38,6 +38,10 @@ class ShareBottomSheetAdapter : RecyclerView.Adapter<ShareBottomSheetAdapter.Sha
             itemView.apply {
                 imageShare.setImageResource(item.imageRes)
                 shareTitle.text = context.getString(item.titleRes)
+                toggleShare.apply {
+                    isChecked = item.isActivated
+                    isEnabled = !item.isMandatory
+                }
             }
         }
     }

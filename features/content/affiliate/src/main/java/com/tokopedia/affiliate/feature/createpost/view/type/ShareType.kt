@@ -12,6 +12,6 @@ sealed class ShareType(
 ) {
 
     object Default : ShareType(R.string.af_share_tokopedia, R.drawable.ic_btn_other, true, true)
-    data class Facebook(val isActive: Boolean) : ShareType(R.string.af_share_facebook, R.drawable.ic_btn_fb, isActive, false)
-    data class Twitter(val isActive: Boolean) : ShareType(R.string.af_share_twitter, R.drawable.ic_btn_twitter, isActive, false)
+    data class Facebook(val isActive: Boolean) : ShareType(R.string.af_share_facebook, R.drawable.ic_facebook, isActive, false)
+    data class Twitter(val isActive: Boolean) : ShareType(R.string.af_share_twitter, R.drawable.ic_twitter, isActive, false)
 }
