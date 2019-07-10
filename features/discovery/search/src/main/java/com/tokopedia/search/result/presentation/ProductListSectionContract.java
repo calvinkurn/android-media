@@ -6,7 +6,6 @@ import com.tokopedia.discovery.common.data.Filter;
 import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
-import com.tokopedia.search.result.presentation.view.listener.RequestDynamicFilterListener;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import org.json.JSONArray;
@@ -90,6 +89,12 @@ public interface ProductListSectionContract {
         boolean isAnyFilterActive();
 
         Map<String, String> getAdditionalParamsMap();
+
+        void launchLoginActivity(String productId);
+
+        void sendImpressionGuidedSearch();
+
+        void showAdultRestriction();
     }
 
     interface Presenter extends SearchSectionContract.Presenter<View> {

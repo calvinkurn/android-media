@@ -31,42 +31,127 @@
                 android:padding="@dimen/dp_16"
                 tools:visibility="visible">
 
+                <android.support.constraint.Guideline
+                    android:id="@+id/separator_action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.5"/>
+
                 <com.tokopedia.design.component.ButtonCompat
                     android:id="@+id/addCuration"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dp_1"
+                    android:layout_marginRight="@dimen/dp_8"
+                    android:layout_marginEnd="@dimen/dp_8"
                     android:text="@string/profile_add_rec"
                     android:textAllCaps="false"
                     android:textColor="#f531353b"
                     app:buttonCompatSize="medium"
                     app:buttonCompatType="secondary"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/footerOwnSpace"
+                    app:layout_constraintEnd_toStartOf="@+id/separator_action"
+                    app:layout_constraintRight_toLeftOf="@+id/separator_action"
                     app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
-
-                <View
-                    android:id="@+id/footerOwnSpace"
-                    android:layout_width="@dimen/dp_16"
-                    android:layout_height="0dp"
-                    app:layout_constraintEnd_toStartOf="@+id/shareProfile"
-                    app:layout_constraintStart_toEndOf="@+id/addCuration" />
 
                 <com.tokopedia.design.component.ButtonCompat
                     android:id="@+id/shareProfile"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dp_1"
+                    android:layout_marginLeft="@dimen/dp_8"
+                    android:layout_marginStart="@dimen/dp_8"
                     android:text="@string/profile_share_profile"
                     android:textAllCaps="false"
                     app:buttonCompatSize="medium"
                     app:buttonCompatType="primary"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/footerOwnSpace"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/separator_action"
+                    app:layout_constraintLeft_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
             </android.support.constraint.ConstraintLayout>
+
+            <LinearLayout
+                android:id="@+id/footerOthers"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:padding="@dimen/dp_16"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/footerOthersText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/dp_8"
+                    android:layout_marginRight="@dimen/dp_8"
+                    android:layout_weight="1"
+                    app:fontSize="micro"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:textViewTheme="lightPrimary"
+                    tools:text="Dapetin update-nya!" />
+
+                <FrameLayout
+                    android:id="@+id/footerOthersFollow"
+                    android:layout_width="@dimen/dp_100"
+                    android:layout_height="@dimen/dp_40"
+                    android:layout_marginEnd="@dimen/dp_8"
+                    android:layout_marginRight="@dimen/dp_8"
+                    android:background="@drawable/bg_af_rounded_corner_green"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <com.tokopedia.design.component.TextViewCompat
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:lineSpacingExtra="4sp"
+                        android:text="@string/profile_follow"
+                        android:textColor="@color/Green_G500"
+                        android:textStyle="bold"
+                        app:fontSize="small" />
+                </FrameLayout>
+
+                <LinearLayout
+                    android:id="@+id/footerOthersShare"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_40"
+                    android:background="@drawable/bg_af_rounded_corner_grey"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:gravity="center"
+                    android:paddingLeft="@dimen/dp_8"
+                    android:paddingRight="@dimen/dp_8"
+                    tools:ignore="UnusedAttribute">
+
+                <android.support.v7.widget.AppCompatImageView
+                        android:layout_width="@dimen/dp_24"
+                        android:layout_height="@dimen/dp_24"
+                        app:srcCompat="@drawable/ic_share_grey_profile" />
+
+                    <com.tokopedia.design.component.TextViewCompat
+                        android:id="@+id/footerOthersShareText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_4"
+                        android:layout_marginLeft="@dimen/dp_4"
+                        android:text="@string/title_share_en"
+                        android:textColor="@color/color_like_comment_share"
+                        android:visibility="gone"
+                        app:fontSize="micro"
+                        tools:textSize="@dimen/sp_12"
+                        tools:visibility="visible"/>
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
 
         <android.support.design.widget.CoordinatorLayout
@@ -131,7 +216,7 @@
                                     android:id="@+id/iv_back_parallax"
                                     android:layout_width="wrap_content"
                                     android:layout_height="match_parent"
-                                    android:src="@drawable/ic_action_back"
+                                    app:srcCompat="@drawable/ic_action_back"
                                     android:layout_gravity="center"
                                     />
 
@@ -193,7 +278,7 @@
                                             android:layout_height="@dimen/dp_16"
                                             android:paddingEnd="@dimen/dp_4"
                                             android:paddingRight="@dimen/dp_4"
-                                            android:src="@drawable/ic_kol_badge"
+                                            app:srcCompat="@drawable/ic_kol_badge"
                                             android:visibility="gone"
                                             tools:ignore="RtlSymmetry"
                                             tools:visibility="visible"
@@ -246,11 +331,12 @@
                             </LinearLayout>
                         </LinearLayout>
 
-                        <View
+                        <ImageView
                             android:layout_gravity="bottom"
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/dp_10"
-                            android:background="@drawable/ic_rectangle"/>
+                            android:scaleType="fitXY"
+                            app:srcCompat="@drawable/ic_rectangle"/>
 
                     </FrameLayout>
 
@@ -281,7 +367,7 @@
                                 android:id="@+id/iv_back"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
-                                android:src="@drawable/ic_action_back"
+                                app:srcCompat="@drawable/ic_action_back"
                                 android:layout_gravity="center"
                                 android:tint="@color/black_70"
                                 />

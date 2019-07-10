@@ -189,7 +189,6 @@ public class CatalogListFragment extends SearchSectionFragment implements
                              @Nullable Bundle savedInstanceState) {
         presenter.attachView(this);
         presenter.initInjector(this);
-        presenter.setRequestDynamicFilterListener(this);
         return inflater.inflate(R.layout.search_fragment_base_discovery, container, false);
     }
 
@@ -229,6 +228,9 @@ public class CatalogListFragment extends SearchSectionFragment implements
     protected void prepareView() {
         setupAdapter();
         setupListener();
+        if (getUserVisibleHint()) {
+            setupSearchNavigation();
+        }
     }
 
     private void setupListener() {
@@ -376,8 +378,11 @@ public class CatalogListFragment extends SearchSectionFragment implements
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        catalogAdapter.onRestoreInstanceState(savedInstanceState);
         setShareUrl(savedInstanceState.getString(EXTRA_SHARE_URL));
+
+        if(catalogAdapter != null) {
+            catalogAdapter.onRestoreInstanceState(savedInstanceState);
+        }
     }
 
     @Override
@@ -589,10 +594,5 @@ public class CatalogListFragment extends SearchSectionFragment implements
     @Override
     public Map<String, Object> getSearchParameterMap() {
         return searchParameter.getSearchParameterMap();
-    }
-
-    @Override
-    public boolean shouldSaveToLocalDynamicFilterDb() {
-        return true;
     }
 }

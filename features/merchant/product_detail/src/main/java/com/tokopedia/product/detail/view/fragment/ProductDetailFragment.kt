@@ -11,6 +11,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
 import android.graphics.Color
+import android.graphics.Rect
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Build
@@ -24,6 +25,7 @@ import android.support.v4.util.ArrayMap
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.*
+import android.support.v7.widget.Toolbar
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -40,16 +42,13 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
-import com.tokopedia.design.widget.ObservableNestedScrollView
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListenerWithRetry
 import com.tokopedia.gallery.ImageReviewGalleryActivity
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.imagepreview.ImagePreviewActivity
-import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
@@ -64,16 +63,12 @@ import com.tokopedia.normalcheckout.view.NormalCheckoutFragment
 import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
-import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.Wholesale
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
-import com.tokopedia.product.detail.data.model.ProductInfoP1
-import com.tokopedia.product.detail.data.model.ProductInfoP2
-import com.tokopedia.product.detail.data.model.ProductInfoP3
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.product.detail.data.model.*
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.data.util.numberFormatted
@@ -82,6 +77,7 @@ import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.estimasiongkir.view.activity.RatesEstimationDetailActivity
 import com.tokopedia.product.detail.view.activity.ProductInstallmentActivity
 import com.tokopedia.product.detail.view.activity.WholesaleActivity
+import com.tokopedia.product.detail.view.adapter.RecommendationProductAdapter
 import com.tokopedia.product.detail.view.fragment.partialview.*
 import com.tokopedia.product.detail.view.util.AppBarState
 import com.tokopedia.product.detail.view.util.AppBarStateChangeListener
@@ -91,15 +87,18 @@ import com.tokopedia.product.detail.view.viewmodel.Loaded
 import com.tokopedia.product.detail.view.viewmodel.Loading
 import com.tokopedia.product.detail.view.viewmodel.ProductInfoViewModel
 import com.tokopedia.product.detail.view.widget.CountDrawable
+import com.tokopedia.product.detail.view.widget.PictureScrollingView
 import com.tokopedia.product.report.view.dialog.ReportDialogFragment
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.product.warehouse.view.viewmodel.ProductWarehouseViewModel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.referral.Constants.Action.Companion.ACTION_GET_REFERRAL_CODE
 import com.tokopedia.referral.ReferralAction
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shopetalasepicker.constant.ShopParamConstant
 import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
@@ -113,7 +112,6 @@ import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_product_detail.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.*
 import kotlinx.android.synthetic.main.partial_most_helpful_review_view.*
-import kotlinx.android.synthetic.main.partial_other_product.*
 import kotlinx.android.synthetic.main.partial_product_detail_header.*
 import kotlinx.android.synthetic.main.partial_product_detail_visibility.*
 import kotlinx.android.synthetic.main.partial_product_detail_wholesale.*
@@ -121,15 +119,20 @@ import kotlinx.android.synthetic.main.partial_product_full_descr.*
 import kotlinx.android.synthetic.main.partial_product_image_review.*
 import kotlinx.android.synthetic.main.partial_product_latest_talk.*
 import kotlinx.android.synthetic.main.partial_product_rating_talk_courier.*
-import kotlinx.android.synthetic.main.partial_product_recommendation.*
+import kotlinx.android.synthetic.main.partial_product_recom_1.*
+import kotlinx.android.synthetic.main.partial_product_recom_2.*
+import kotlinx.android.synthetic.main.partial_product_recom_3.*
+import kotlinx.android.synthetic.main.partial_product_recom_4.*
 import kotlinx.android.synthetic.main.partial_product_shop_info.*
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
-import model.TradeInParams
-import view.customview.TradeInTextView
-import viewmodel.TradeInBroadcastReceiver
+import com.tokopedia.tradein.model.TradeInParams
+import com.tokopedia.tradein.view.customview.TradeInTextView
+import com.tokopedia.tradein.viewmodel.TradeInBroadcastReceiver
 import javax.inject.Inject
+import com.tokopedia.discovery.common.manager.AdultManager
+import com.tokopedia.product.detail.common.data.model.product.Category
 
-class ProductDetailFragment : BaseDaggerFragment() {
+class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter.UserActiveListener {
     private var productId: String? = null
     private var productKey: String? = null
     private var shopDomain: String? = null
@@ -149,8 +152,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
     lateinit var imageReviewViewView: PartialImageReviewView
     lateinit var mostHelpfulReviewView: PartialMostHelpfulReviewView
     lateinit var latestTalkView: PartialLatestTalkView
-    lateinit var otherProductView: PartialOtherProductView
-    lateinit var recommendationProductView: PartialRecommendationProductView
+    lateinit var recommendationSecondView: PartialRecommendationSecondView
+    lateinit var recommendationFirstView: PartialRecommendationFirstView
+    lateinit var recommendationThirdView: PartialRecommendationThirdView
+    lateinit var recommendationFourthView: PartialRecommendationFourthView
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -159,12 +164,16 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
     lateinit var performanceMonitoringP1: PerformanceMonitoring
     lateinit var performanceMonitoringP2: PerformanceMonitoring
+    lateinit var performanceMonitoringP2General: PerformanceMonitoring
+    lateinit var performanceMonitoringP2Login: PerformanceMonitoring
     lateinit var performanceMonitoringFull: PerformanceMonitoring
     lateinit var remoteConfig: RemoteConfig
 
     private var isAppBarCollapsed = false
     private var menu: Menu? = null
     private var useVariant = true
+    private lateinit var varToolbar: Toolbar
+    private lateinit var varPictureImage: PictureScrollingView
 
     private var userCod: Boolean = false
     private var shopCod: Boolean = false
@@ -180,7 +189,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private var userInputNotes = ""
     private var userInputQuantity = 0
     private var userInputVariant: String? = null
+    private var delegateTradeInTracking = false
 
+    private lateinit var initToolBarMethod:()-> Unit
     private val productDetailTracking: ProductDetailTracking by lazy {
         ProductDetailTracking()
     }
@@ -189,6 +200,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
     var shopInfo: ShopInfo? = null
 
     private var refreshLayout: SwipeToRefresh? = null
+
+    override val isUserSessionActive: Boolean
+        get() = if (!::productInfoViewModel.isInitialized) false else productInfoViewModel.isUserSessionActive()
 
     companion object {
         const val REQUEST_CODE_TALK_PRODUCT = 1
@@ -208,6 +222,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
         private const val PDP_P1_TRACE = "mp_pdp_p1"
         private const val PDP_P2_TRACE = "mp_pdp_p2"
+        private const val PDP_P2_GENERAL_TRACE = "mp_pdp_p2_general"
+        private const val PDP_P2_LOGIN_TRACE = "mp_pdp_p2_login"
         private const val PDP_P3_TRACE = "mp_pdp_p3"
         private const val ENABLE_VARIANT = "mainapp_discovery_enable_pdp_variant"
 
@@ -290,19 +306,30 @@ class ProductDetailFragment : BaseDaggerFragment() {
                 is Fail -> onErrorGetProductInfo(it.throwable)
             }
         })
-        productInfoViewModel.productVariantResp.observe(this, Observer {
-            when (it) {
-                is Success -> onSuccessGetProductVariantInfo(it.data)
-                is Fail -> onErrorGetProductVariantInfo(it.throwable)
-            }
-        })
 
-        productInfoViewModel.productInfoP2resp.observe(this, Observer {
+        productInfoViewModel.p2ShopDataResp.observe(this, Observer {
             if (!productInfoViewModel.isUserSessionActive() && ::performanceMonitoringFull.isInitialized)
                 performanceMonitoringFull.stopTrace()
 
             performanceMonitoringP2.stopTrace()
-            it?.run { renderProductInfo2(this) }
+            it?.run { renderProductInfo2Shop(this) }
+        })
+
+        productInfoViewModel.p2General.observe(this, Observer {
+            performanceMonitoringP2General.stopTrace()
+            it?.run {
+                renderProductInfo2(this)
+                if (variantResp == null)
+                    onErrorGetProductVariantInfo()
+                else
+                    onSuccessGetProductVariantInfo(variantResp)
+            }
+        })
+
+        productInfoViewModel.p2Login.observe(this, Observer {
+            if (::performanceMonitoringFull.isInitialized)
+                performanceMonitoringP2Login.stopTrace()
+            it?.run{ renderProductInfoP2Login(this) }
         })
 
         productInfoViewModel.productInfoP3resp.observe(this, Observer {
@@ -311,30 +338,50 @@ class ProductDetailFragment : BaseDaggerFragment() {
             it?.run { renderProductInfo3(this) }
         })
 
-        productInfoViewModel.loadOtherProduct.observe(this, Observer {
-            when (it) {
-                is Loading -> otherProductView.startLoading()
-                is Loaded -> {
-                    otherProductView.renderData((it.data as? Success)?.data ?: listOf())
-                }
-            }
-        })
-
         productInfoViewModel.loadTopAdsProduct.observe(this, Observer {
             when (it) {
                 is Loading -> {
-                    recommendationProductView.startLoading()
+                    loadingRecommendationView()
                 }
                 is Loaded -> {
-                    recommendationProductView.renderData((it.data as? Success)?.data
-                            ?: return@Observer)
                     (it.data as? Success)?.data?.let { result ->
-                        recommendationProductView.renderData(result)
+                        renderRecommendationData(result)
                     }
                 }
             }
         })
+    }
 
+    private fun hideRecommendationView() {
+        recommendationSecondView.hideView()
+        recommendationFirstView.hideView()
+        recommendationThirdView.hideView()
+        recommendationFourthView.hideView()
+    }
+
+    private fun loadingRecommendationView() {
+        recommendationSecondView.startLoading()
+        recommendationFirstView.startLoading()
+        recommendationThirdView.startLoading()
+        recommendationFourthView.startLoading()
+    }
+
+    private fun renderRecommendationData(result: List<RecommendationWidget>) {
+        result.getOrNull(0)?.let {
+            recommendationFirstView.renderData(it)
+        }
+
+        result.getOrNull(1)?.let {
+            recommendationSecondView.renderData(it)
+        }
+
+        result.getOrNull(2)?.let {
+            recommendationThirdView.renderData(it)
+        }
+
+        result.getOrNull(3)?.let {
+            recommendationFourthView.renderData(it)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -346,29 +393,30 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
         performanceMonitoringP1 = PerformanceMonitoring.start(PDP_P1_TRACE)
         performanceMonitoringP2 = PerformanceMonitoring.start(PDP_P2_TRACE)
-        if (productInfoViewModel.isUserSessionActive())
+        performanceMonitoringP2General = PerformanceMonitoring.start(PDP_P2_GENERAL_TRACE)
+
+        if (productInfoViewModel.isUserSessionActive()) {
+            performanceMonitoringP2Login = PerformanceMonitoring.start(PDP_P2_LOGIN_TRACE)
             performanceMonitoringFull = PerformanceMonitoring.start(PDP_P3_TRACE)
+        }
 
         initializePartialView(view)
         initView()
+        tv_trade_in_promo.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(activity, R.drawable.tradein_white), null, null, null)
         refreshLayout = view.findViewById(R.id.swipeRefresh)
+         et_search.setOnClickListener { v ->
+            RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
+        }
 
         tradeInBroadcastReceiver = TradeInBroadcastReceiver()
         tradeInBroadcastReceiver.setBroadcastListener {
             if (it) {
-                if (productInfo != null && shopInfo != null)
-                    productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, productInfo, shopInfo, trackerAttribution,
-                            it, tradeInParams?.usedPrice > 0, productInfoViewModel.multiOrigin.isFulfillment)
-
                 if (tv_trade_in_promo != null) {
                     tv_trade_in_promo.visible()
                     tv_available_at?.visible()
                 }
-            } else
-                if (productInfo != null && shopInfo != null)
-                    productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, productInfo, shopInfo, trackerAttribution,
-                            it, tradeInParams?.usedPrice > 0, productInfoViewModel.multiOrigin.isFulfillment)
-
+            }
+            trackTradeIn(it)
         }
         context?.let {
             LocalBroadcastManager.getInstance(context!!).registerReceiver(tradeInBroadcastReceiver, IntentFilter(TradeInTextView.ACTION_TRADEIN_ELLIGIBLE))
@@ -379,20 +427,13 @@ class ProductDetailFragment : BaseDaggerFragment() {
             layoutParams.behavior = FlingBehavior(nested_scroll)
         }
 
-        appbar.addOnOffsetChangedListener { _, verticalOffset -> refreshLayout?.isEnabled = (verticalOffset == 0) }
+        appbar.addOnOffsetChangedListener (AppBarLayout.OnOffsetChangedListener { _, verticalOffset -> refreshLayout?.isEnabled = (verticalOffset == 0)})
         refreshLayout?.setOnRefreshListener { loadProductData(true) }
 
         if (isAffiliate) {
             actionButtonView.gone()
             base_btn_affiliate.visible()
             loadingAffiliate.visible()
-        }
-
-        nested_scroll.listener = object : ObservableNestedScrollView.ScrollViewListener {
-            override fun onScrollEnded(scrollView: ObservableNestedScrollView, x: Int, y: Int, oldX: Int, oldY: Int) {
-                scrollView.startLoad()
-                productInfoViewModel.loadMore()
-            }
         }
 
         merchantVoucherListWidget.setOnMerchantVoucherListWidgetListener(object : MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener {
@@ -520,7 +561,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     private fun doBuy() {
-        val isExpressCheckout = (productInfoViewModel.productInfoP3resp.value)?.isExpressCheckoutType
+        val isExpressCheckout = (productInfoViewModel.p2Login.value)?.isExpressCheckoutType
                 ?: false
         if (isExpressCheckout) {
             if (productInfoViewModel.isUserSessionActive()) {
@@ -539,8 +580,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
     private fun goToNormalCheckout(@ProductAction action: Int = ATC_AND_BUY) {
         context?.let {
             productInfo?.run {
-                val isOcsCheckoutType = (productInfoViewModel.productInfoP3resp.value)?.isOcsCheckoutType
-                        ?: false
+                val isOcsCheckoutType = (productInfoViewModel.p2Login.value)?.isOcsCheckoutType
+                    ?: false
                 val intent = NormalCheckoutActivity.getIntent(it,
                         basic.shopID.toString(),
                         parentProductId,
@@ -589,6 +630,15 @@ class ProductDetailFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun addLoadMoreImpression(view:View){
+        val impressionHolder = ImpressHolder()
+        view.addOnImpressionListener(impressionHolder, object : ViewHintListener {
+            override fun onViewHint() {
+                productInfoViewModel.loadMore()
+            }
+        })
+    }
+
     private fun showSnackbarClose(string: String) {
         Snackbar.make(coordinator, string, Snackbar.LENGTH_LONG).apply {
             setAction(getString(R.string.close)) { dismiss() }
@@ -611,6 +661,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
         if (!::productDescrView.isInitialized) {
             productDescrView = PartialProductDescrFullView.build(base_info_and_description, activity)
+            addLoadMoreImpression(title_product_desc_label)
         }
 
         if (!::actionButtonView.isInitialized) {
@@ -637,11 +688,20 @@ class ProductDetailFragment : BaseDaggerFragment() {
         if (!::latestTalkView.isInitialized)
             latestTalkView = PartialLatestTalkView.build(base_latest_talk)
 
-        if (!::otherProductView.isInitialized)
-            otherProductView = PartialOtherProductView.build(base_other_product)
+        if (!::recommendationSecondView.isInitialized) {
+            recommendationSecondView = PartialRecommendationSecondView.build(base_recom_2, this)
+        }
 
-        if (!::recommendationProductView.isInitialized) {
-            recommendationProductView = PartialRecommendationProductView.build(base_recommen_product)
+        if (!::recommendationFirstView.isInitialized) {
+            recommendationFirstView = PartialRecommendationFirstView.build(base_recom_1, this)
+        }
+
+        if (!::recommendationThirdView.isInitialized) {
+            recommendationThirdView = PartialRecommendationThirdView.build(base_recom_3, this)
+        }
+
+        if (!::recommendationFourthView.isInitialized) {
+            recommendationFourthView = PartialRecommendationFourthView.build(base_recom_4, this)
         }
 
     }
@@ -695,23 +755,39 @@ class ProductDetailFragment : BaseDaggerFragment() {
             }
         }
     }
+    private fun isViewVisible(view: View): Boolean {
+        val scrollBounds = Rect()
+        nested_scroll.getDrawingRect(scrollBounds)
+        val top = view.y
+        val bottom = top + view.height - 100;
+        return scrollBounds.top <= bottom
+    }
 
     private fun initView() {
+        val appShowSearchPDP = remoteConfig.getBoolean(RemoteConfigKey.REMOTE_CONFIG_APP_SHOW_SEARCH_BAR_PDP, true)
+        if(appShowSearchPDP) {
+            initShowSearchPDP()
+        }else {
+            initCollapsingToolBar()
+        }
+        varToolbar.show()
+        varPictureImage.show()
         collapsing_toolbar.title = ""
-        toolbar.title = ""
+        varToolbar.title = ""
         activity?.let {
-            toolbar.setBackgroundColor(ContextCompat.getColor(it, R.color.white))
-            (it as AppCompatActivity).setSupportActionBar(toolbar)
+            varToolbar.setBackgroundColor(ContextCompat.getColor(it, R.color.white))
+            (it as AppCompatActivity).setSupportActionBar(varToolbar)
             it.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         }
         setupByConfiguration(resources.configuration)
+
+
         appbar.addOnOffsetChangedListener(object : AppBarStateChangeListener() {
             override fun onStateChanged(appBarLayout: AppBarLayout?, state: Int) {
                 when (state) {
                     AppBarState.EXPANDED -> {
                         isAppBarCollapsed = false
                         expandedAppBar()
-                        nested_scroll.completeLoad()
                     }
                     AppBarState.COLLAPSED -> {
                         isAppBarCollapsed = true
@@ -724,6 +800,37 @@ class ProductDetailFragment : BaseDaggerFragment() {
         })
     }
 
+    private fun initShowSearchPDP() {
+        search_pdp_toolbar.show()
+        varToolbar = search_pdp_toolbar
+        varPictureImage = view_picture_search_bar
+        initToolBarMethod  =  ::initToolbarLight
+        fab_detail.setAnchor(R.id.view_picture_search_bar)
+        nested_scroll.viewTreeObserver.addOnScrollChangedListener {
+            activity?.run {
+                if(isAdded) {
+                    if (isViewVisible(varPictureImage)) {
+                        showFabDetailAfterLoadData()
+                        label_cod?.visibility = if (shouldShowCod && userCod && shopCod) View.VISIBLE else View.GONE
+                    } else {
+                        fab_detail.hide()
+                        label_cod?.visibility = View.GONE
+                    }
+                }
+            }
+        }
+
+    }
+
+    private fun initCollapsingToolBar() {
+        collapsing_toolbar.show()
+        varToolbar = toolbar
+        varPictureImage = view_picture
+        initToolBarMethod  =  ::initToolbarTransparent
+        fab_detail.setAnchor(R.id.view_picture)
+
+    }
+
     private fun collapsedAppBar() {
         initStatusBarLight()
         initToolbarLight()
@@ -733,9 +840,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
     private fun expandedAppBar() {
         initStatusBarDark()
-        initToolbarTransparent()
+        initToolBarMethod()
         showFabDetailAfterLoadData()
-        label_cod?.visibility = if (shouldShowCod && userCod && shopCod) View.INVISIBLE else View.GONE
+        label_cod?.visibility = if (shouldShowCod && userCod && shopCod) View.VISIBLE else View.GONE
     }
 
     private fun initToolbarLight() {
@@ -743,8 +850,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
             if (isAdded) {
                 collapsing_toolbar.setCollapsedTitleTextColor(ContextCompat.getColor(this, R.color.grey_icon_light_toolbar))
                 collapsing_toolbar.setExpandedTitleColor(Color.TRANSPARENT)
-                toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.grey_icon_light_toolbar))
-                toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.white))
+                varToolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.grey_icon_light_toolbar))
+                varToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.white))
                 (this as AppCompatActivity).supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back_dark)
                 menu?.let {
                     if (it.size() > 2) {
@@ -755,7 +862,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                     }
                 }
 
-                toolbar.overflowIcon = ContextCompat.getDrawable(activity!!, R.drawable.ic_product_more_dark)
+                varToolbar.overflowIcon = ContextCompat.getDrawable(activity!!, R.drawable.ic_product_more_dark)
             }
         }
     }
@@ -775,7 +882,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             if (isAdded) {
                 collapsing_toolbar.setCollapsedTitleTextColor(ContextCompat.getColor(this, R.color.white))
                 collapsing_toolbar.setExpandedTitleColor(Color.TRANSPARENT)
-                toolbar.background = ContextCompat.getDrawable(this, R.drawable.gradient_shadow_black_vertical)
+                varToolbar.background = ContextCompat.getDrawable(this, R.drawable.gradient_shadow_black_vertical)
                 (this as AppCompatActivity).supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back_light)
                 menu?.let {
                     if (it.size() > 2) {
@@ -785,7 +892,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                         setBadgeMenuCart(menuCart)
                     }
                 }
-                toolbar.overflowIcon = ContextCompat.getDrawable(this, R.drawable.ic_product_more_light)
+                varToolbar.overflowIcon = ContextCompat.getDrawable(this, R.drawable.ic_product_more_light)
             }
         }
     }
@@ -810,15 +917,11 @@ class ProductDetailFragment : BaseDaggerFragment() {
         configuration?.let {
             val screenWidth = resources.displayMetrics.widthPixels
             if (it.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                val layoutParams = appbar.layoutParams as CoordinatorLayout.LayoutParams
                 val height = screenWidth / 3
-                layoutParams.height = height
-                view_picture.layoutParams.height = height
+                varPictureImage.layoutParams.height = height
                 appbar.visibility = View.VISIBLE
             } else if (it.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                val layoutParams = appbar.layoutParams as CoordinatorLayout.LayoutParams
-                layoutParams.height = screenWidth
-                view_picture.layoutParams.height = screenWidth
+                varPictureImage.layoutParams.height = screenWidth
                 appbar.visibility = View.VISIBLE
             }
         }
@@ -826,8 +929,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
     private fun loadProductData(forceRefresh: Boolean = false) {
         if (forceRefresh) {
-            otherProductView.renderData(listOf())
-            recommendationProductView.hideView()
+            hideRecommendationView()
         }
         if (productId != null || (productKey != null && shopDomain != null)) {
             productInfoViewModel.getProductInfo(ProductParams(productId, shopDomain, productKey), forceRefresh)
@@ -835,6 +937,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (activity != null) {
+            AdultManager.handleActivityResult(activity!!, requestCode, resultCode, data)
+        }
         when (requestCode) {
             REQUEST_CODE_ETALASE -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
@@ -868,19 +973,16 @@ class ProductDetailFragment : BaseDaggerFragment() {
                             productInfoViewModel.productInfoP1Resp.value = Success(ProductInfoP1().apply { productInfo = selectedProductInfo })
                             selectedWarehouse?.let {
                                 productInfoViewModel.multiOrigin = it.warehouseInfo
-                                productInfoViewModel.productInfoP2resp.value = productInfoViewModel.productInfoP2resp.value?.copy(
-                                        nearestWarehouse = it
+                                productInfoViewModel.p2ShopDataResp.value = productInfoViewModel.p2ShopDataResp.value?.copy(
+                                    nearestWarehouse = it
                                 )
                             }
 
                         }
                     }
                     //refresh variant
-                    val variantResult = productInfoViewModel.productVariantResp.value
-                    if (variantResult is Success) {
-                        variantResult.data.run {
-                            onSuccessGetProductVariantInfo(this)
-                        }
+                    productInfoViewModel.p2General.value?.variantResp?.run {
+                        onSuccessGetProductVariantInfo(this)
                     }
                     userInputNotes = data.getStringExtra(NormalCheckoutFragment.EXTRA_NOTES)
                     userInputQuantity = data.getIntExtra(NormalCheckoutFragment.EXTRA_QUANTITY, 0)
@@ -938,10 +1040,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
     override fun onDestroy() {
         productInfoViewModel.productInfoP1Resp.removeObservers(this)
-        productInfoViewModel.productInfoP2resp.removeObservers(this)
+        productInfoViewModel.p2ShopDataResp.removeObservers(this)
+        productInfoViewModel.p2General.removeObservers(this)
+        productInfoViewModel.p2Login.removeObservers(this)
         productInfoViewModel.productInfoP3resp.removeObservers(this)
-        productInfoViewModel.productVariantResp.removeObservers(this)
-        productInfoViewModel.loadOtherProduct.removeObservers(this)
         productInfoViewModel.loadTopAdsProduct.removeObservers(this)
         productInfoViewModel.clear()
         productWarehouseViewModel.clear()
@@ -955,7 +1057,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                     if (isAppBarCollapsed) {
                         initToolbarLight()
                     } else {
-                        initToolbarTransparent()
+                        initToolBarMethod()
                     }
                 }
             })
@@ -979,18 +1081,21 @@ class ProductDetailFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun renderProductInfoP2Login(p2Login: ProductInfoP2Login) {
+        shopInfo?.let { updateWishlist(it, p2Login.isWishlisted) }
+        p2Login.pdpAffiliate?.let { renderAffiliate(it) }
+
+        actionButtonView.renderData(p2Login.isExpressCheckoutType)
+    }
+
 
     private fun renderProductInfo3(productInfoP3: ProductInfoP3) {
         userCod = productInfoP3.userCod
-        if (shouldShowCod && shopCod && userCod) label_cod.visible() else label_cod.gone()
-        headerView.renderCod(shouldShowCod && shopCod && userCod)
+        if (shouldShowCod && shopCod && productInfoP3.userCod) label_cod.visible() else label_cod.gone()
+        headerView.renderCod(shouldShowCod && shopCod && productInfoP3.userCod)
         productInfoP3.rateEstSummarizeText?.let {
             partialVariantAndRateEstView.renderRateEstimation(it) { gotoRateEstimation(false) }
         }
-        shopInfo?.let { updateWishlist(it, productInfoP3.isWishlisted) }
-        productInfoP3.pdpAffiliate?.let { renderAffiliate(it) }
-
-        actionButtonView.renderData(productInfoP3.isExpressCheckoutType)
     }
 
     private fun renderAffiliate(pdpAffiliate: TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate) {
@@ -1006,7 +1111,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
             base_btn_affiliate.gone()
             actionButtonView.byMeClick = this::onAffiliateClick
             actionButtonView.showByMe(true, pdpAffiliate)
-            actionButtonView.visible()
+            actionButtonView.visibility = shopInfo?.statusInfo?.shopStatus == 1
         }
     }
 
@@ -1041,8 +1146,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun renderProductInfo2(productInfoP2: ProductInfoP2) {
-        productInfoP2.shopInfo?.let { shopInfo ->
+    private fun renderProductInfo2Shop(p2ShopData: ProductInfoP2ShopData){
+        p2ShopData.shopInfo?.let { shopInfo ->
             this.shopInfo = shopInfo
             productDescrView.shopInfo = shopInfo
             productShopView.renderShop(shopInfo, productInfoViewModel.isShopOwner(shopInfo.shopCore.shopID.toInt()))
@@ -1054,7 +1159,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
                     data.preorder)
             actionButtonView.visibility = !isAffiliate && shopInfo.statusInfo.shopStatus == 1
             headerView.showOfficialStore(shopInfo.goldOS)
-            view_picture.renderShopStatus(shopInfo, productInfo?.basic?.status
+            varPictureImage.renderShopStatus(shopInfo, productInfo?.basic?.status
                     ?: ProductStatusTypeDef.ACTIVE)
             activity?.let {
                 val userSession = UserSession(it)
@@ -1065,46 +1170,64 @@ class ProductDetailFragment : BaseDaggerFragment() {
                             ?: "", shopInfo.shipments, shopInfo.bbInfo)
                 }
             }
-            if (productInfoP2.vouchers.isNotEmpty()) {
-                merchantVoucherListWidget.setData(ArrayList(productInfoP2.vouchers))
-                merchantVoucherListWidget.visible()
-                if (!productInfoViewModel.isUserSessionActive() || !productInfoViewModel.isShopOwner(productInfo?.basic?.shopID
-                                ?: 0)) {
-                    productDetailTracking.eventImpressionMerchantVoucherUse(productInfoP2.vouchers)
-                }
-            } else {
-                merchantVoucherListWidget.gone()
-            }
-            productInfoP2.minInstallment?.let {
-                label_installment.visible()
-                label_desc_installment.text = getString(R.string.installment_template, it.interest.numberFormatted(),
-                        (if (shopInfo.goldOS.isOfficial == 1) it.osMonthlyPrice else it.monthlyPrice).getCurrencyFormatted())
-                label_desc_installment.visible()
-                label_desc_installment.setOnClickListener {
-                    activity?.let {
-                        val price = (
-                                if (productInfo?.campaign?.isActive == true && (productInfo?.campaign?.id?.toIntOrNull()
-                                                ?: 0) > 0)
-                                    productInfo?.campaign?.discountedPrice
-                                else
-                                    productInfo?.basic?.price
-                                ) ?: 0f
-                        startActivity(ProductInstallmentActivity.createIntent(it,
-                                shopInfo.goldOS.isOfficial == 1,
-                                price))
-                    }
-                }
-                if (label_min_wholesale.isVisible) {
-                    wholesale_divider.visible()
-                } else {
-                    wholesale_divider.gone()
-                }
-                base_view_wholesale.visible()
+            productDetailTracking.sendScreen(shopInfo.shopCore.shopID, shopInfo.goldOS.shopTypeString,
+                    productId ?: "")
+
+            if (delegateTradeInTracking) {
+                trackTradeIn(tradeInParams.isEligible == 1)
+                delegateTradeInTracking = false
             }
 
-            productShopView.renderShopFeature(productInfoP2.shopFeature)
+            productDetailTracking.sendMoEngageOpenProduct(data,
+                    shopInfo.goldOS.isOfficial == 1, shopInfo.shopCore.name)
+            productDetailTracking.eventAppsFylerOpenProduct(data)
         }
-        shopCod = productInfoP2.shopCod
+        shopCod = p2ShopData.shopCod
+        partialVariantAndRateEstView.renderFulfillment(p2ShopData.nearestWarehouse.warehouseInfo.isFulfillment)
+        if (productInfo != null && p2ShopData.nearestWarehouse.warehouseInfo.id.isNotBlank())
+            headerView.updateStockAndPriceWarehouse(p2ShopData.nearestWarehouse, productInfo!!.campaign)
+    }
+
+    private fun renderProductInfo2(productInfoP2: ProductInfoP2General) {
+        if (productInfoP2.vouchers.isNotEmpty()) {
+            merchantVoucherListWidget.setData(ArrayList(productInfoP2.vouchers))
+            merchantVoucherListWidget.visible()
+            if (!productInfoViewModel.isUserSessionActive() || !productInfoViewModel.isShopOwner(productInfo?.basic?.shopID
+                            ?: 0)) {
+                productDetailTracking.eventImpressionMerchantVoucherUse(productInfoP2.vouchers)
+            }
+        } else {
+            merchantVoucherListWidget.gone()
+        }
+        productInfoP2.minInstallment?.let {
+            label_installment.visible()
+            label_desc_installment.text = getString(R.string.installment_template, it.interest.numberFormatted(),
+                    (if (shopInfo?.goldOS?.isOfficial == 1) it.osMonthlyPrice else it.monthlyPrice).getCurrencyFormatted())
+            label_desc_installment.visible()
+            label_desc_installment.setOnClickListener {
+                activity?.let {
+                    val price = (
+                            if (productInfo?.campaign?.isActive == true && (productInfo?.campaign?.id?.toIntOrNull()
+                                            ?: 0) > 0)
+                                productInfo?.campaign?.discountedPrice
+                            else
+                                productInfo?.basic?.price
+                            ) ?: 0f
+                    startActivity(ProductInstallmentActivity.createIntent(it,
+                            shopInfo?.goldOS?.isOfficial == 1,
+                            price))
+                }
+            }
+            if (label_min_wholesale.isVisible) {
+                wholesale_divider.visible()
+            } else {
+                wholesale_divider.gone()
+            }
+            base_view_wholesale.visible()
+        }
+
+        productShopView.renderShopFeature(productInfoP2.shopFeature)
+
         productInfoP2.shopBadge?.let { productShopView.renderShopBadge(it) }
         productStatsView.renderRating(productInfoP2.rating)
         attributeInfoView.renderWishlistCount(productInfoP2.wishlistCount.count)
@@ -1115,13 +1238,9 @@ class ProductDetailFragment : BaseDaggerFragment() {
         latestTalkView.renderData(productInfoP2.latestTalk, productInfo?.stats?.countTalk ?: 0,
                 productInfo?.basic?.shopID ?: 0, this::onDiscussionClicked)
 
-        if (!isAffiliate) {
+        /*if (!isAffiliate) {
             otherProductView.renderData(productInfoP2.productOthers)
-        }
-
-        partialVariantAndRateEstView.renderFulfillment(productInfoP2.nearestWarehouse.warehouseInfo.isFulfillment)
-        if (productInfo != null && productInfoP2.nearestWarehouse.warehouseInfo.id.isNotBlank())
-            headerView.updateStockAndPriceWarehouse(productInfoP2.nearestWarehouse, productInfo!!.campaign)
+        }*/
 
         partialVariantAndRateEstView.renderPurchaseProtectionData(productInfoP2.productPurchaseProtectionInfo)
         productInfo?.run {
@@ -1197,9 +1316,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
         val data = productInfoP1.productInfo
         productId = data.basic.id.toString()
         productInfo = data
+        et_search.hint = String.format(getString(R.string.pdp_search_hint),productInfo?.category?.name)
         shouldShowCod = data.shouldShowCod
         headerView.renderData(data)
-        view_picture.renderData(data.pictures, this::onPictureProductClicked)
+        varPictureImage.renderData(data.pictures, this::onPictureProductClicked)
         productStatsView.renderData(data, this::onReviewClicked, this::onDiscussionClicked)
         productDescrView.renderData(data)
         attributeInfoView.renderData(data)
@@ -1235,6 +1355,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
             open_shop.gone()
         }
 
+        if (data.category.isAdult) {
+            AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_PDP, productId ?: "")
+        }
+
         var isHandPhone = false
         var categoryId = 0
         productInfoP1.productInfo.category.detail.forEach { detail: Category.Detail ->
@@ -1249,42 +1373,39 @@ class ProductDetailFragment : BaseDaggerFragment() {
             }
         }
         tradeInParams = TradeInParams()
-        if (isHandPhone) {
-            tradeInParams.categoryId = categoryId
-            tradeInParams.deviceId = (activity?.application as ProductDetailRouter).getDeviceId(activity as Context)
-            val userSession = UserSession(activity)
-            tradeInParams.userId = if (userSession.userId.isNotEmpty())
-                userSession.userId.toInt()
-            else
-                0
-            tradeInParams.setPrice(productInfoP1.productInfo.basic.price.toInt())
-            tradeInParams.productId = productInfoP1.productInfo.basic.id
-            tradeInParams.shopId = productInfoP1.productInfo.basic.shopID
-            tradeInParams.productName = productInfoP1.productInfo.basic.name
-            val preorderstatus = productInfoP1.productInfo.isPreorderActive
-            if (preorderstatus)
-                tradeInParams.isPreorder = preorderstatus
-            else
-                tradeInParams.isPreorder = false
-            tradeInParams.isOnCampaign = productInfoP1.productInfo.campaign.isActive
-            tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams, false)
-            tv_trade_in.setOnClickListener {
-                goToNormalCheckout(TRADEIN_BUY)
-                tradeInParams?.let {
-                    if (tradeInParams.usedPrice > 0)
-                        productDetailTracking.sendGeneralEvent(" clickPDP",
-                                "product detail page",
-                                "click trade in widget",
-                                "after diagnostic")
-                    else
-                        productDetailTracking.sendGeneralEvent(" clickPDP",
-                                "product detail page",
-                                "click trade in widget",
-                                "before diagnostic")
+        tradeInParams.categoryId = productInfoP1.productInfo.category.id.toInt()
+        tradeInParams.deviceId = (activity?.application as ProductDetailRouter).getDeviceId(activity as Context)
+        tradeInParams.userId = if (productInfoViewModel.userId.isNotEmpty())
+            productInfoViewModel.userId.toInt()
+        else
+            0
+        tradeInParams.setPrice(productInfoP1.productInfo.basic.price.toInt())
+        tradeInParams.productId = productInfoP1.productInfo.basic.id
+        tradeInParams.shopId = productInfoP1.productInfo.basic.shopID
+        tradeInParams.productName = productInfoP1.productInfo.basic.name
+        val preorderstatus = productInfoP1.productInfo.isPreorderActive
+        if (preorderstatus)
+            tradeInParams.isPreorder = preorderstatus
+        else
+            tradeInParams.isPreorder = false
+        tradeInParams.isOnCampaign = productInfoP1.productInfo.campaign.isActive
+        tv_trade_in.tradeInReceiver.checkTradeIn(tradeInParams, false)
+        tv_trade_in.setOnClickListener {
+            goToNormalCheckout(TRADEIN_BUY)
+            tradeInParams?.let {
+                if (tradeInParams.usedPrice > 0)
+                    productDetailTracking.sendGeneralEvent(" clickPDP",
+                            "product detail page",
+                            "click trade in widget",
+                            "after diagnostic")
+                else
+                    productDetailTracking.sendGeneralEvent(" clickPDP",
+                            "product detail page",
+                            "click trade in widget",
+                            "before diagnostic")
 
                 }
             }
-        }
         // if when first time and the product is actually a variant product, then select the default variant
         if (userInputVariant == null && data.variant.isVariant && data.variant.parentID != productId) {
             userInputVariant = productId
@@ -1297,7 +1418,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
         activity?.invalidateOptionsMenu()
     }
 
-    private fun onErrorGetProductVariantInfo(throwable: Throwable) {
+    private fun onErrorGetProductVariantInfo() {
         //variant error, do not show variant, but still can buy the product
         partialVariantAndRateEstView.renderData(null, "", this::onVariantClicked)
     }
@@ -1306,6 +1427,10 @@ class ProductDetailFragment : BaseDaggerFragment() {
         if (data == null || !data.hasChildren) {
             partialVariantAndRateEstView.renderData(null, "", this::onVariantClicked)
             return
+        }
+        // defaulting selecting variant
+        if (userInputVariant == productId && data.defaultChild > 0) {
+            userInputVariant = data.defaultChild.toString()
         }
         val selectedVariantListString = data.getOptionListString(userInputVariant)?.joinToString(separator = ", ")
                 ?: ""
@@ -1384,7 +1509,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
     private fun onSuccessRemoveWishlist(productId: String?) {
         showToastSuccess(getString(R.string.msg_success_remove_wishlist))
-        productInfoViewModel.productInfoP3resp.value?.isWishlisted = false
+        productInfoViewModel.p2Login.value?.isWishlisted = false
         updateWishlist(false)
         //TODO clear cache
         sendIntentResusltWishlistChange(productId ?: "", false)
@@ -1405,7 +1530,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
     private fun onSuccessAddWishlist(productId: String?) {
         showToastSuccess(getString(R.string.msg_success_add_wishlist))
-        productInfoViewModel.productInfoP3resp.value?.isWishlisted = true
+        productInfoViewModel.p2Login.value?.isWishlisted = true
         updateWishlist(true)
         productDetailTracking.eventBranchAddToWishlist(productInfo, (UserSession(activity)).userId)
         //TODO clear cache
@@ -1507,12 +1632,7 @@ class ProductDetailFragment : BaseDaggerFragment() {
     }
 
     private fun getProductVariant(): ProductVariant? {
-        val productVariantResponse = productInfoViewModel.productVariantResp.value
-        return if (productVariantResponse is Success) {
-            productVariantResponse.data
-        } else {
-            null
-        }
+        return productInfoViewModel.p2General.value?.variantResp
     }
 
     /**
@@ -1536,8 +1656,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
 
     private fun generateVariantString(): String {
         return try {
-            val productVariant = (productInfoViewModel.productVariantResp.value as Success).data
-            productVariant.variant.map { it.name }.joinToString(separator = ", ")
+            productInfoViewModel.p2General.value?.variantResp?.
+                    variant?.map { it.name }?.joinToString(separator = ", ") ?: ""
         } catch (e: Throwable) {
             ""
         }
@@ -1548,6 +1668,8 @@ class ProductDetailFragment : BaseDaggerFragment() {
             R.menu.menu_product_detail_light, menu)
         super.onCreateOptionsMenu(menu, inflater)
         this.menu = menu
+        initToolBarMethod()
+
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?) {
@@ -1764,6 +1886,16 @@ class ProductDetailFragment : BaseDaggerFragment() {
         }, {
             hideProgressLoading()
         })
+
+    }
+
+    private fun trackTradeIn(isElligible: Boolean) {
+        if (productInfo != null && shopInfo != null) {
+            productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, productInfo, shopInfo, trackerAttribution,
+                    isElligible, tradeInParams?.usedPrice > 0, productInfoViewModel.multiOrigin.isFulfillment)
+        } else if (shopInfo == null) {
+            delegateTradeInTracking = true
+        }
 
     }
 

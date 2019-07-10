@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,6 +20,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -28,6 +32,7 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.affiliatecommon.data.util.AffiliatePreference;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -84,7 +89,6 @@ import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager;
 import com.tokopedia.feedplus.view.viewmodel.RetryModel;
-import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.kol.KolComponentInstance;
@@ -98,6 +102,7 @@ import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity;
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity;
+import com.tokopedia.kolcommon.data.pojo.Author;
 import com.tokopedia.profile.view.activity.ProfileActivity;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
@@ -114,6 +119,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.affiliatecommon.AffiliateCommonConstantKt.DISCOVERY_BY_ME;
 import static com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED;
 import static com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED_FIRSTPAGE_LAST_CURSOR;
 import static com.tokopedia.kol.common.util.PostMenuUtilKt.createBottomMenu;
@@ -169,6 +175,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private View newFeed;
     private FeedModuleRouter feedModuleRouter;
     private BroadcastReceiver newFeedReceiver;
+    private FloatingActionButton fabFeed, fabByme, fabShop;
+    private TextView fabTextByme, fabTextShop;
+    private FrameLayout greyBackground;
 
     private LinearLayoutManager layoutManager;
     private FeedPlusAdapter adapter;
@@ -178,6 +187,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private int loginIdInt;
     private boolean isLoadedOnce;
     private boolean afterPost;
+    public boolean isFabExpanded = false;
 
     @Inject
     FeedPlusPresenter presenter;
@@ -190,6 +200,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Inject
     UserSessionInterface userSession;
+
+    @Inject
+    AffiliatePreference affiliatePreference;
 
     public static FeedPlusFragment newInstance(Bundle bundle) {
         FeedPlusFragment fragment = new FeedPlusFragment();
@@ -256,6 +269,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent != null && intent.getAction() != null && intent.getAction().equals(BROADCAST_FEED)) {
+                    hideAllFab(false);
                     boolean isHaveNewFeed = intent.getBooleanExtra(PARAM_BROADCAST_NEW_FEED, false);
                     if (isHaveNewFeed) {
                         onShowNewFeed("");
@@ -306,6 +320,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
         swipeToRefresh = parentView.findViewById(R.id.swipe_refresh_layout);
         mainContent = parentView.findViewById(R.id.main);
         newFeed = parentView.findViewById(R.id.layout_new_feed);
+        fabFeed = parentView.findViewById(R.id.fab_feed);
+        fabShop = parentView.findViewById(R.id.fab_feed_2);
+        fabByme = parentView.findViewById(R.id.fab_feed_1);
+        fabTextByme = parentView.findViewById(R.id.text_fab_1);
+        fabTextShop = parentView.findViewById(R.id.text_fab_2);
+        greyBackground = parentView.findViewById(R.id.layout_grey_popup);
 
         prepareView();
         presenter.attachView(this);
@@ -313,7 +333,30 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     }
 
+    private void hideAllFab(boolean isInitial) {
+        if (fabFeed != null) {
+            if (isInitial) {
+                fabFeed.hide();
+            } else {
+                fabFeed.setAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_backward));
+            }
+            fabShop.hide();
+            fabByme.hide();
+            fabTextByme.setVisibility(View.GONE);
+            fabTextShop.setVisibility(View.GONE);
+            greyBackground.setVisibility(View.GONE);
+            isFabExpanded = false;
+        }
+    }
+
     private void prepareView() {
+        hideAllFab(true);
+        if (!userSession.isLoggedIn()) {
+            fabFeed.setVisibility(View.VISIBLE);
+            fabFeed.setOnClickListener(v -> {
+                onGoToLogin();
+            });
+        }
         adapter.setItemTreshold(2);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
@@ -428,12 +471,15 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSuccessGetFeedFirstPage(ArrayList<Visitable> listFeed) {
+    public void onSuccessGetFeedFirstPage(ArrayList<Visitable> listFeed, WhitelistViewModel whitelistViewModel) {
         trackFeedImpression(listFeed);
 
         adapter.setList(listFeed);
         adapter.notifyDataSetChanged();
         triggerClearNewFeedNotification();
+        if (userSession.isLoggedIn() && whitelistViewModel != null && !whitelistViewModel.getWhitelist().getAuthors().isEmpty()) {
+            showFeedFab(whitelistViewModel);
+        }
     }
 
     @Override
@@ -697,6 +743,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onPause() {
         super.onPause();
         unRegisterNewFeedReceiver();
+        hideAllFab(false);
     }
 
     private void registerNewFeedReceiver() {
@@ -715,6 +762,62 @@ public class FeedPlusFragment extends BaseDaggerFragment
             LocalBroadcastManager
                     .getInstance(getActivity().getApplicationContext())
                     .unregisterReceiver(newFeedReceiver);
+        }
+    }
+
+    private void showFeedFab(WhitelistViewModel whitelistViewModel) {
+        fabFeed.show();
+        isFabExpanded = false;
+        if (!whitelistViewModel.getWhitelist().getAuthors().isEmpty() &&
+                whitelistViewModel.getWhitelist().getAuthors().size() != 1) {
+            fabFeed.setOnClickListener(fabClickListener(whitelistViewModel));
+        } else {
+            Author author = whitelistViewModel.getWhitelist().getAuthors().get(0);
+            fabFeed.setOnClickListener(v -> onGoToLink(author.getLink()));
+        }
+    }
+
+    private View.OnClickListener fabClickListener(WhitelistViewModel whitelistViewModel) {
+        return v -> {
+            if (isFabExpanded) {
+                hideAllFab(false);
+            } else {
+                fabFeed.setAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_forward));
+                greyBackground.setVisibility(View.VISIBLE);
+                for (Author author : whitelistViewModel.getWhitelist().getAuthors()) {
+                    if (author.getTitle().equalsIgnoreCase(Author.KEY_POST_TOKO)) {
+                        fabShop.show();
+                        fabTextShop.setVisibility(View.VISIBLE);
+                        fabShop.setOnClickListener(v1 -> onGoToLink(author.getLink()));
+                    } else {
+                        fabByme.show();
+                        fabTextByme.setVisibility(View.VISIBLE);
+                        fabByme.setOnClickListener(v12 -> goToCreateAffiliate(author.getLink()));
+                    }
+                }
+                greyBackground.setOnClickListener(v3 -> {
+                    hideAllFab(false);
+                });
+                isFabExpanded = true;
+            }
+        };
+    }
+
+    private void goToCreateAffiliate(String link) {
+        if (getContext() != null) {
+            if (affiliatePreference.isFirstTimeEducation(userSession.getUserId())) {
+
+                Intent intent = RouteManager.getIntent(
+                        getContext(),
+                        ApplinkConst.DISCOVERY_PAGE.replace("{page_id}", DISCOVERY_BY_ME)
+                );
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                startActivity(intent);
+                affiliatePreference.setFirstTimeEducation(userSession.getUserId());
+
+            } else {
+                RouteManager.route(getContext(), ApplinkConst.AFFILIATE_CREATE_POST, "-1", "-1");
+            }
         }
     }
 
@@ -743,6 +846,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         loadData(isVisibleToUser);
+        if (!isVisibleToUser) {
+            hideAllFab(false);
+        }
 
     }
 
@@ -1483,11 +1589,16 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onAffiliateTrackClicked(@NotNull List<TrackingViewModel> trackList) {
+    public void onAffiliateTrackClicked(@NotNull List<TrackingViewModel> trackList, boolean isClick) {
         for (TrackingViewModel track : trackList) {
-            presenter.trackAffiliate(track.getClickURL());
+            if (isClick) {
+                presenter.trackAffiliate(track.getClickURL());
+            } else  {
+                presenter.trackAffiliate(track.getViewURL());
+            }
         }
     }
+
 
     @Override
     public void onYoutubeThumbnailClick(int positionInFeed, int contentPosition,
@@ -1649,12 +1760,14 @@ public class FeedPlusFragment extends BaseDaggerFragment
                                 trackingPostModel);
                     }
                 }
+                onAffiliateTrackClicked(postViewModel.getTracking(), false);
 
             } else if (visitable instanceof BannerViewModel) {
                 BannerViewModel bannerViewModel = (BannerViewModel) visitable;
                 ArrayList<TrackingBannerModel> trackingBannerModels = new ArrayList<>();
                 for (BannerItemViewModel banner : bannerViewModel.getItemViewModels()) {
                     trackingBannerModels.add(banner.getTrackingBannerModel());
+                    onAffiliateTrackClicked(banner.getTracking(), false);
                 }
                 analytics.eventBannerImpression(trackingBannerModels, userId);
             } else if (visitable instanceof FeedRecommendationViewModel) {
@@ -1663,6 +1776,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 ArrayList<TrackingRecommendationModel> trackingList = new ArrayList<>();
                 for (RecommendationCardViewModel card : recommendationViewModel.getCards()) {
                     trackingList.add(card.getTrackingRecommendationModel());
+                    onAffiliateTrackClicked(card.getTracking(), false);
                 }
                 analytics.eventRecommendationImpression(
                         trackingList,
@@ -1674,6 +1788,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                         topadsShopViewModel.getTrackingList(),
                         userId
                 );
+                onAffiliateTrackClicked(topadsShopViewModel.getTracking(), false);
             }
         }
     }
@@ -1795,4 +1910,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
             return 0;
         }
     }
+
+    @Override
+    public boolean getUserVisibleHint() {
+        return super.getUserVisibleHint();
+    }
+
 }

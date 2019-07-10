@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/clr_ae31353b">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/dp_30"
-        android:layout_marginRight="@dimen/dp_30"
-        android:scrollbars="none">
+        android:scrollbars="none"
+        android:layout_marginTop="@dimen/dp_20"
+        android:background="@drawable/header_bottom_sheet_rounded_white">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_marginLeft="@dimen/dp_30"
+            android:layout_marginRight="@dimen/dp_30">
 
             <ImageView
                 android:id="@+id/img"
@@ -22,18 +24,20 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/dp_40"
-                android:src="@drawable/art_graphic_sand_clock" />
+                app:srcCompat="@drawable/ovo_premier_5" />
 
             <TextView
                 android:id="@+id/txtv_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/img"
+                android:gravity="center"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/dp_16"
                 android:lineSpacingExtra="6sp"
+                android:textStyle="bold"
                 android:text="@string/inprc_ttl"
-                android:textColor="@color/clr_4c2a86"
+                android:textColor="@color/black_70"
                 android:textSize="@dimen/sp_16" />
 
             <TextView
@@ -46,7 +50,7 @@
                 android:gravity="center_horizontal"
                 android:lineSpacingExtra="6sp"
                 android:text="@string/inprc_desc"
-                android:textColor="@color/clr_2d263b"
+                android:textColor="@color/clr_80000000"
                 android:textSize="@dimen/sp_14" />
 
             <TextView
@@ -55,48 +59,35 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/txtv_2"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/dp_32"
+                android:layout_marginTop="@dimen/dp_20"
                 android:gravity="center_horizontal"
                 android:lineSpacingExtra="@dimen/sp_6"
                 android:text="@string/inprc_ttl1"
-                android:textColor="@color/clr_4c2a86"
+                android:textColor="@color/clr_80000000"
                 android:textSize="@dimen/sp_14" />
 
             <TextView
-                android:id="@+id/txtv_care_no"
+                android:id="@+id/call"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/txtv_3"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/dp_10"
                 android:text="@string/ovo_ccno"
-                android:textColor="@color/clr_2d263b"
+                android:textColor="@color/clr_ae31353b"
                 android:textSize="@dimen/sp_24" />
 
             <TextView
                 android:id="@+id/txtv_care_timings"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/txtv_care_no"
+                android:layout_below="@+id/call"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/dp_10"
                 android:gravity="center_horizontal"
                 android:lineSpacingExtra="@dimen/sp_8"
                 android:text="@string/ovo_cctiming"
-                android:textColor="@color/pin_normal"
+                android:textColor="@color/clr_80000000"
                 android:textSize="@dimen/sp_12" />
 
-            <ImageView
-                android:id="@+id/call"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/txtv_care_timings"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/dp_36"
-                android:layout_marginLeft="@dimen/dp_60"
-                android:paddingRight="@dimen/dp_10"
-                android:layout_alignParentLeft="true"
-                android:src="@drawable/call" />
 
             <ImageView
                 android:id="@+id/email"
@@ -104,20 +95,18 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/txtv_care_timings"
                 android:layout_centerHorizontal="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginTop="@dimen/dp_36"
-                android:paddingLeft="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_20"
                 android:layout_marginRight="@dimen/dp_60"
-                android:src="@drawable/email" />
+                app:srcCompat="@drawable/icons_8_gmail" />
 
             <Button
                 android:id="@+id/back_to_app"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/call"
+                android:layout_below="@+id/email"
                 android:layout_marginTop="@dimen/dp_24"
                 android:layout_marginBottom="@dimen/dp_36"
-                android:background="@drawable/btn_bg_rounded_corners"
+                android:background="@drawable/btn_bg_green_curved_corners"
                 android:gravity="center"
                 android:text="@string/bck_toko"
                 android:textColor="@color/white"

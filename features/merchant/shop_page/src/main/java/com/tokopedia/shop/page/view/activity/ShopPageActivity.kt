@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.support.design.widget.AppBarLayout
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.text.TextUtils
@@ -21,6 +22,7 @@ import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
+import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -116,6 +118,8 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         const val TAB_POSITION_INFO = 2
         const val SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE"
         const val SHOP_TRACE = "mp_shop"
+        const val SHOP_NAME_PLACEHOLDER = "{{shop_name}}"
+        const val SHOP_LOCATION_PLACEHOLDER = "{{shop_location}}"
         private const val REQUEST_CODER_USER_LOGIN = 100
         private const val REQUEST_CODE_FOLLOW = 101
         private const val VIEW_CONTENT = 1
@@ -202,7 +206,8 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         initAdapter()
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        appBarLayout.addOnOffsetChangedListener { _, verticalOffset -> swipeToRefresh.isEnabled = (verticalOffset == 0) }
+        appBarLayout.addOnOffsetChangedListener (AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+            swipeToRefresh.isEnabled = (verticalOffset == 0)})
 
         viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
         viewPager.adapter = shopPageViewPagerAdapter
@@ -340,10 +345,18 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                     CustomDimensionShopPage.create(it.shopCore.shopID,
                             it.goldOS.isOfficial == 1,
                             it.goldOS.isGold == 1))
-
+            var shopShareMsg : String =  remoteConfig.getString(RemoteConfigKey.SHOP_SHARE_MSG)
+            if(!TextUtils.isEmpty(shopShareMsg)){
+                shopShareMsg = FindAndReplaceHelper.findAndReplacePlaceHolders(shopShareMsg,
+                        SHOP_NAME_PLACEHOLDER, MethodChecker.fromHtml(it.shopCore.name).toString(),
+                        SHOP_LOCATION_PLACEHOLDER, it.location)
+            }
+            else{
+                shopShareMsg = getString(R.string.shop_label_share_formatted,
+                        MethodChecker.fromHtml(it.shopCore.name).toString(), it.location)
+            }
             (application as ShopModuleRouter).goToShareShop(this@ShopPageActivity,
-                    shopId, it.shopCore.url, getString(R.string.shop_label_share_formatted,
-                    MethodChecker.fromHtml(it.shopCore.name).toString(), it.location))
+                    shopId, it.shopCore.url, shopShareMsg)
         }
 
     }
@@ -492,6 +505,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         this.createPostUrl = createPostUrl
         if (isShowFeed && isFeedShopPageEnabled) {
             addFeed()
+            viewPager.currentItem = if (tabPosition == TAB_POSITION_INFO) getShopInfoPosition() else tabPosition
         }
     }
 

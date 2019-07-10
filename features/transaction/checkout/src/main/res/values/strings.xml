@@ -43,7 +43,7 @@
     <string name="label_shipment_counter">Pengiriman #</string>
     <string name="label_item_count">Jumlah</string>
     <string name="label_item_count_summary_with_format">Total Harga (%d Barang)</string>
-    <string name="label_item_count_purchase_protection">Proteksi Gadget (%d Barang)</string>
+    <string name="label_item_count_purchase_protection">Proteksi Produk (%d Barang)</string>
     <string name="label_item_count_with_format">Harga (%d Barang)</string>
     <string name="label_item_count_without_format">Jumlah Barang</string>
     <string name="label_error_choose_address">Pilih alamat pengiriman</string>
@@ -227,6 +227,7 @@
     <string name="label_empty_cart_see_all">Lihat Semua</string>
     <string name="label_empty_cart_recent_view">Terakhir Dilihat</string>
     <string name="label_empty_cart_see_others">Lihat Lainnya</string>
+    <string name="label_empty_cart_recommendation">Rekomendasi</string>
     <string name="label_no_courier_bottomsheet_title">Pengiriman</string>
     <string name="label_no_courier_bottomsheet_button">Saya Mengerti</string>
     <string name="label_no_courier_bottomsheet_message">Tidak ada kurir yang mendukung pengiriman ini ke lokasi Anda.</string>
@@ -236,9 +237,9 @@
     <string name="text_tos_agreement">syarat dan ketentuan asuransi</string>
     <string name="title_activity_cart">Keranjang</string>
     <string name="ppp_more">Pelajari</string>
-    <string name="error_dropshipper">Fitur dropshipper tidak dapat digunakan ketika menggunakan Proteksi Gadget</string>
-    <string name="checkout_ppp_label">Proteksi Gadget (3 Barang)</string>
-    <string name="title_activity_checkout_webview">Proteksi Gadget</string>
+    <string name="error_dropshipper">Fitur dropshipper tidak dapat digunakan ketika menggunakan Proteksi Produk</string>
+    <string name="checkout_ppp_label">Proteksi Produk (3 Barang)</string>
+    <string name="title_activity_checkout_webview">Proteksi Produk</string>
     <string name="title_activity_checkout_tnc_webview">Syarat dan Ketentuan</string>
     <string name="recomendasi_untuk_anda" tools:ignore="ExtraTranslation">Rekomendasi untuk Anda</string>
     <string name="label_cod">Bayar di Tempat</string>
@@ -291,5 +292,22 @@
     <string name="gratis_ongkir_promo_kurir">Gratis Ongkir (Promo Kurir)</string>
     <string name="checkout_module_label_promo_no_item_checked">Silakan pilih item terlebih dahulu</string>
     <string name="logistic_promo_err_msg">Promo pengiriman sedang bermasalah. Silakan ubah pengiriman anda</string>
+    <string name="button_change_corner">Ubah Lokasi Tokopedia Corner</string>
+    <string name="button_choose_corner">Pilih Lokasi Tokopedia Corner</string>
+    <string name="brand_tokopedia_corner">Tokopedia Corner</string>
+    <string name="corner_info_ticker">Hanya berlaku untuk mahasiswa / staf terdaftar di kampus yang dipilih</string>
+    <string name="ticker_corner_list_info">- Wajib membawa kartu mahasiswa / staff saat pengambilan pesanan \n- Pesanan dikirim dengan siCepat Regular</string>
+    <string name="hint_search_corner">Cari kampus mu</string>
+    <string name="information_icon">Information Icon</string>
+    <string name="tooltip_corner_info">Pesanan akan dikirim ke Tokopedia Corner yang ada di kampus</string>
+    <string name="button_mengerti">Mengerti</string>
+    <string name="gratis_ongkir">Gratis Ongkir</string>
+    <string name="label_continue_to_payment">Tetap lanjut ke pembayaran?</string>
+    <string name="label_promo_not_eligible_info"><![CDATA[Promo yang tidak memenuhi syarat & ketentuan akan dinon-aktifkan untuk pembayaran ini.]]></string>
+    <string name="label_button_continue">Lanjutkan</string>
+    <string name="label_button_cancel">Batal</string>
+    <string name="checkout_module_title_wishlist">Wishlist</string>
+    <string name="checkout_module_title_recent_view">Terakhir Dilihat</string>
+    <string name="checkout_module_title_recommendation">Rekomendasi</string>
 
 </resources>

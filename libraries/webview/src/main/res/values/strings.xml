@@ -4,5 +4,9 @@
     <string name="cs_notification_error_ssl_cert_invalid">Invalid SSL Certificate. Apakah anda ingin melanjutkan?</string>
     <string name="title_ok">OK</string>
     <string name="dialog_cancel">BATAL</string>
+    <string name="tokopedia">Tokopedia</string>
+
+    <string name="error_message_url_invalid">Url tidak valid</string>
+    <string name="error_message_url_invalid_crashlytics">Invalid webview url - </string>
 
 </resources>
