@@ -23,12 +23,12 @@ class BottomChatMenuFragment : BottomSheetDialogFragment() {
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
+
         val parentFragment = parentFragment
         if (parentFragment is BaseChatMenuViewHolder.ChatMenuListener) {
             chatMenuListener = parentFragment
         } else {
-            val errorMessage = "The parent fragment must implement the ChatMenuListener interface"
-            throw IllegalStateException(errorMessage)
+            throw IllegalStateException("The parent fragment must implement the ChatMenuListener interface")
         }
 
         initChatMenuFactory()
