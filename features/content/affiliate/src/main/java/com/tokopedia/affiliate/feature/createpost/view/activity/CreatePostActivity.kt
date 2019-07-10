@@ -47,7 +47,7 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener, Bas
     }
 
     private val shareDialogView: View by lazy {
-        layoutInflater.inflate(R.layout.fragment_af_create_post, null)
+        layoutInflater.inflate(R.layout.bottom_sheet_share_post, null)
     }
 
     private val shareDialog: CloseableBottomSheetDialog by lazy {
