@@ -12,7 +12,13 @@ data class HotelCheckoutResponse(
         @Expose
         var queryString: String = "",
 
-        @SerializedName("redirectUrl")
+        @SerializedName("redirectURL")
         @Expose
         var redirectUrl: String = ""
-)
+) {
+    class Response(
+            @SerializedName("propertyCheckout")
+            @Expose
+            var response: HotelCheckoutResponse = HotelCheckoutResponse()
+    )
+}

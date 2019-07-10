@@ -65,12 +65,18 @@ class PropertyData(@SerializedName("id")
                    @SerializedName("checkinTo")
                    @Expose
                    val checkinTo: String = "",
+                   @SerializedName("checkinInfo")
+                   @Expose
+                   val checkinInfo: String = "",
                    @SerializedName("checkoutFrom")
                    @Expose
                    val checkoutFrom: String = "",
                    @SerializedName("checkoutTo")
                    @Expose
                    val checkoutTo: String = "",
+                   @SerializedName("checkoutInfo")
+                   @Expose
+                   val checkoutInfo: String = "",
                    @SerializedName("star")
                    @Expose
                    val star: Int = 0,
@@ -120,6 +126,8 @@ class PropertyData(@SerializedName("id")
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
             parcel.readInt(),
             parcel.readString(),
             parcel.readString(),
@@ -151,8 +159,10 @@ class PropertyData(@SerializedName("id")
         parcel.writeInt(isClosed)
         parcel.writeString(checkInFrom)
         parcel.writeString(checkinTo)
+        parcel.writeString(checkinInfo)
         parcel.writeString(checkoutFrom)
         parcel.writeString(checkoutTo)
+        parcel.writeString(checkoutInfo)
         parcel.writeInt(star)
         parcel.writeString(description)
         parcel.writeString(importantInformation)
@@ -177,4 +187,5 @@ class PropertyData(@SerializedName("id")
             return arrayOfNulls(size)
         }
     }
+
 }
