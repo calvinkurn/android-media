@@ -1,0 +1,32 @@
+mutation add_to_cart {
+  add_to_cart(
+    productID: #productID,
+    shopID: #shopID,
+    quantity: #quantity,
+    notes: "#notes",
+    lang: "#lang",
+    attribution: "#attribution",
+    listTracker: "#listTracker",
+    ucParams: "#ucParams",
+    warehouseID: #warehouseID,
+    atcFromExternalSource: "#atcFromExternalSource",
+    isSCP: #isSCP) {
+        error_message
+        status
+        data {
+          success
+          cart_id
+          product_id
+          quantity
+          notes
+          shop_id
+          customer_id
+          warehouse_id
+          tracker_attribution
+          tracker_list_name
+          uc_ut_param
+          is_trade_in
+          message
+        }
+    }
+}
