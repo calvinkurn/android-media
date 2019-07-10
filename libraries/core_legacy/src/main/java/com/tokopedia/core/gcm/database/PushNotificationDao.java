@@ -15,9 +15,6 @@ public interface PushNotificationDao {
     @Query("SELECT * FROM DbPushNotification")
     List<DbPushNotification> getData();
 
-    @Query("SELECT * FROM DbPushNotification WHERE category=:category")
-    List<DbPushNotification> getDataByCategory(String category);
-
     @Query("SELECT * FROM DbPushNotification WHERE category=:category ORDER BY customIndex ASC, id DESC")
     List<DbPushNotification> getDataByCategoryOrderAsc(String category);
 

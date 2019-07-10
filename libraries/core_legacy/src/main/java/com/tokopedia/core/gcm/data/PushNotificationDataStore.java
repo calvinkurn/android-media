@@ -20,10 +20,6 @@ public interface PushNotificationDataStore {
 
     Observable<Boolean> saveRegistrationDevice(String registrationDevice);
 
-    Observable<List<PushNotification>> getSavedPushNotification();
-
-    Observable<List<PushNotification>> getPushSavedPushNotification(String category);
-
     Observable<List<PushNotification>> getPushSavedPushNotificationWithOrderBy(String category, boolean ascendant);
 
     Observable<Boolean> deleteSavedPushNotificationByCategoryAndServerId(String category, String serverId);
@@ -32,11 +28,5 @@ public interface PushNotificationDataStore {
 
     Observable<Boolean> deleteSavedPushNotification();
 
-    Observable<Boolean> savePushNotification(String category, String response, String customIndex);
-
     Observable<String> savePushNotification(String category, String response, String customIndex, String serverId);
-
-    Observable<Boolean> savePushNotification(String category, String response);
-
-    Observable<String> getRegistrationDevice();
 }

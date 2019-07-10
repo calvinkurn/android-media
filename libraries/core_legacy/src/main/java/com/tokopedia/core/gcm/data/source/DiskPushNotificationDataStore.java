@@ -59,23 +59,6 @@ public class DiskPushNotificationDataStore implements PushNotificationDataStore 
         });
     }
 
-    public Observable<String> getRegistrationDevice() {
-        return Observable.just( FCMCacheManager.getRegistrationId(mContext) );
-    }
-
-    @Override
-    public Observable<List<PushNotification>> getSavedPushNotification() {
-        return Observable.just(pushNotificationDao.getData())
-                .map(dbPushNotificationMapper::transform);
-    }
-
-    @Override
-    public Observable<List<PushNotification>> getPushSavedPushNotification(String category) {
-        return Observable.just(pushNotificationDao.getDataByCategory(category))
-                .map(dbPushNotificationMapper::transform)
-                .onErrorReturn(throwable -> new ArrayList<>());
-    }
-
     @Override
     public Observable<List<PushNotification>> getPushSavedPushNotificationWithOrderBy(String category, boolean ascendant) {
         List<DbPushNotification> data;
@@ -111,39 +94,6 @@ public class DiskPushNotificationDataStore implements PushNotificationDataStore 
             pushNotificationDao.drop();
             return true;
         }).onErrorReturn(throwable -> false);
-    }
-
-    @Override
-    public Observable<Boolean> savePushNotification(String category, String response, String customIndex) {
-        DbPushNotification dbPushNotification = new DbPushNotification();
-        dbPushNotification.setCategory(category);
-        dbPushNotification.setResponse(response);
-        dbPushNotification.setCustomIndex(customIndex);
-        dbPushNotification.setServerId("");
-
-        return Observable
-                .just(dbPushNotification)
-                .map(dbPushNotification1 -> {
-                    pushNotificationDao.insert(dbPushNotification1);
-                    return true;
-                })
-                .onErrorReturn(throwable -> false);
-    }
-
-    @Override
-    public Observable<Boolean> savePushNotification(String category, String response) {
-        DbPushNotification dbPushNotification = new DbPushNotification();
-        dbPushNotification.setCategory(category);
-        dbPushNotification.setResponse(response);
-        dbPushNotification.setCustomIndex("");
-        dbPushNotification.setServerId("");
-        return Observable
-                .just(dbPushNotification)
-                .map(dbPushNotification1 -> {
-                    pushNotificationDao.insert(dbPushNotification1);
-                    return true;
-                })
-                .onErrorReturn(throwable -> false);
     }
 
     @Override
