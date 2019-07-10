@@ -679,10 +679,11 @@ public class ProductListFragment
     @Override
     public void onSuccessRemoveWishlist(String productId) {
         searchTracking.sendGeneralEventWithUserId(
-                SearchEventTracking.Event.PRODUCT_VIEW,
+                SearchEventTracking.Event.CLICK_WISHLIST,
                 SearchEventTracking.Category.SEARCH_RESULT.toLowerCase(),
                 generateWishlistClickEventAction(false),
                 generateWishlistClickEventLabel(productId));
+
         adapter.updateWishlistStatus(productId, false);
         enableWishlistButton(productId);
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
