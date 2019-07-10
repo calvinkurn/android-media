@@ -153,11 +153,10 @@ class ProductCardViewList: ProductCardView {
 
     private fun setLabelPromoBackgroundCornerRadii(labelPromoBackground: GradientDrawable) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            val cornerRadii =
-                    labelPromoBackground.cornerRadii ?: floatArrayOf(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f)
+            val bottomCornerRadius = getDimensionPixelSize(R.dimen.dp_8).toFloat()
 
             labelPromoBackground.cornerRadii =
-                    floatArrayOf(0f, 0f, 0f, 0f, cornerRadii[4], cornerRadii[5], cornerRadii[6], cornerRadii[7])
-        }
+                    floatArrayOf(0f, 0f, 0f, 0f, bottomCornerRadius, bottomCornerRadius, bottomCornerRadius, bottomCornerRadius)
+    }
     }
 }
