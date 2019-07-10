@@ -21,7 +21,6 @@ import android.view.View.OnFocusChangeListener
 import android.view.View.VISIBLE
 import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.RelativeLayout
 import android.widget.TextView
 import com.airbnb.lottie.LottieAnimationView
 import com.google.android.youtube.player.YouTubeInitializationResult
@@ -146,21 +145,13 @@ open class PlayViewStateImpl(
     private var onLeaveTime: Long = 0
     private val onTrackingTime: Long = 0
 
-    private var defaultBackground = arrayListOf(
-            R.drawable.bg_play_1,
-            R.drawable.bg_play_2,
-            R.drawable.bg_play_3
-    )
-
-    private var defaultType = arrayListOf(
-            "default", "default1", "default2", "default3")
-
     private var interactionAnimationHelper: InteractionAnimationHelper
     private var overflowMenuHelper: OverflowMenuHelper
     private var videoVerticalHelper: VideoVerticalHelper
     private var videoHorizontalHelper: VideoHorizontalHelper
     private var sponsorHelper: SponsorHelper
     private var welcomeHelper: PlayWelcomeHelper
+    private var backgroundHelper: PlayBackgroundHelper
 
     init {
         val groupChatTypeFactory = GroupChatTypeFactoryImpl(
@@ -258,9 +249,10 @@ open class PlayViewStateImpl(
         }
         errorView.setOnClickListener {  }
 
+        backgroundHelper = PlayBackgroundHelper(viewModel, activity)
         interactionAnimationHelper = InteractionAnimationHelper(interactionGuideline)
-        var videoVerticalContainer = (activity as PlayActivity).findViewById<FrameLayout>(R.id.playerView)
-        var rootView = (activity as PlayActivity).findViewById<View>(R.id.root_view)
+        val videoVerticalContainer = (activity as PlayActivity).findViewById<FrameLayout>(R.id.playerView)
+        val rootView = (activity as PlayActivity).findViewById<View>(R.id.root_view)
         overflowMenuHelper = OverflowMenuHelper(
                 viewModel,
                 activity,
@@ -276,7 +268,8 @@ open class PlayViewStateImpl(
                 activity.supportFragmentManager,
                 videoVerticalContainer,
                 rootView,
-                setChatListHasSpaceOnTop()
+                setChatListHasSpaceOnTop(),
+                backgroundHelper
         )
         videoHorizontalHelper = VideoHorizontalHelper(
                 viewModel,
@@ -290,7 +283,6 @@ open class PlayViewStateImpl(
         )
         sponsorHelper = SponsorHelper(viewModel, sponsorLayout, sponsorImage, analytics, listener)
         welcomeHelper = PlayWelcomeHelper(viewModel, analytics, activity, view)
-
         errorView.setOnClickListener {}
     }
 
@@ -440,7 +432,7 @@ open class PlayViewStateImpl(
 
     override fun onSuccessGetInfoFirstTime(it: ChannelInfoViewModel, childFragmentManager: FragmentManager) {
         showBottomSheetFirstTime(it)
-        setDefaultBackground()
+        backgroundHelper.setDefaultBackground()
         onSuccessGetInfo(it)
 
     }
@@ -477,25 +469,8 @@ open class PlayViewStateImpl(
         overflowMenuHelper.assignViewModel(it)
     }
 
-    fun setDefaultBackground() {
-        var background = defaultBackground[0]
-        activity.window?.setBackgroundDrawable(MethodChecker.getDrawable(view.context, background))
-    }
-
     override fun onBackgroundUpdated(it: BackgroundViewModel) {
-        var background: Int
-        lateinit var url: String
-        it.let {
-            var index = defaultType.indexOf(it.default)
-            background = defaultBackground[Math.max(0, index - 1)]
-            url = it.url
-
-            if (url.isBlank()) {
-                activity.window?.setBackgroundDrawable(MethodChecker.getDrawable(view.context, background))
-            } else {
-                ImageHandler.loadBackgroundImage(activity.window, url)
-            }
-        }
+        backgroundHelper.setBackground(it)
     }
 
     /**
@@ -823,8 +798,8 @@ open class PlayViewStateImpl(
 //                "https://scontent-sin6-1.cdninstagram.com/vp/6a699996e4c39439008d67726849596d/5D24E316/t50.12441-16/53744866_293174538021780_5033871342265528633_n.mp4?_nc_ht=scontent-sin6-1.cdninstagram.com",
 //                "https://scontent-sin6-1.cdninstagram.com/vp/1c1f2774060e5a7403bc2eefae6e36cf/5D25AFC6/t50.12441-16/59409583_1671393593006903_5676993366659842316_n.mp4?_nc_ht=scontent-sin6-1.cdninstagram.com"
 //        )
+        videoVerticalHelper.setData(it)
         if(it.isActive && it.androidStreamSD.isNotBlank()) {
-            videoVerticalHelper.setData(it)
             videoVerticalHelper.playVideo(VideoVerticalHelper.VIDEO_480)
             overflowMenuHelper.setQualityVideo(VideoVerticalHelper.VIDEO_480)
             videoHorizontalHelper.hideVideoAndToggle()

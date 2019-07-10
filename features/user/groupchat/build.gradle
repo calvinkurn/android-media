@@ -84,6 +84,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lottie
 
     implementation project(rootProject.ext.libraries.videoplayer)
+
+    implementation project(rootProject.ext.libraries.config)
 }
 
 apply from: '../../../publish_local.gradle'

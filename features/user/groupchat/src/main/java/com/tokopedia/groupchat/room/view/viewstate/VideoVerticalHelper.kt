@@ -13,6 +13,7 @@ import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
+import com.tokopedia.kotlin.extensions.view.debug
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.videoplayer.state.*
@@ -23,12 +24,13 @@ import com.tokopedia.videoplayer.view.player.VideoPlayerListener
 /**
  * @author : Steven 28/05/19
  */
-class VideoVerticalHelper constructor(
+class VideoVerticalHelper (
         var bufferContainer: View,
         var fragmentManager: FragmentManager,
         var playerView: FrameLayout,
         var rootView: View,
-        var setChatListHasSpaceOnTop: (Int) -> Unit
+        var setChatListHasSpaceOnTop: (Int) -> Unit,
+        var backgroundHelper: PlayBackgroundHelper
 ) {
 
     companion object {
@@ -36,6 +38,8 @@ class VideoVerticalHelper constructor(
         var VIDEO_720 = 720
         var VERTICAL_WITH_VIDEO = 160
         var VERTICAL_WITHOUT_VIDEO = 0
+
+        var TAG = "playvertical"
     }
 
     var videoSource = 0
@@ -46,7 +50,6 @@ class VideoVerticalHelper constructor(
 
     init {
         hideContainer()
-
         bufferText.text = getSpannable(R.string.buffer_text_long, R.string.buffer_text_retry)
         bufferText.setOnClickListener {
             showLoadingOnly()
@@ -94,6 +97,7 @@ class VideoVerticalHelper constructor(
     }
 
     private fun playVideoSource(sourceMedia: String) {
+        debug(TAG, "play video source $sourceMedia")
         sendViewToBack(playerView)
         val width = rootView.layoutParams.width
         val height = rootView.layoutParams.height
@@ -118,30 +122,36 @@ class VideoVerticalHelper constructor(
                         when(playbackState) {
                             Player.STATE_BUFFERING -> {
                                 showLoadingOnly()
-                                Log.d("stevenVideo", "buffering")
+                                debug(TAG, "buffering vertical video")
                             }
                             Player.STATE_READY -> {
                                 hideContainer()
-                                Log.d("stevenVideo", "ready")
+                                debug(TAG, "ready vertical video")
                             }
                             Player.STATE_ENDED -> {
-                                Log.d("stevenVideo", "ended")
+                                if(videoStreamViewModel.isActive) {
+                                    showLoadingOnly()
+                                    playVideo(videoSource)
+                                    debug(TAG, "ended vertical video active")
+                                }else {
+                                    debug(TAG, "ended vertical video non-active")
+//                                    showHasEnded()
+                                }
+
                             }
                             Player.STATE_IDLE -> {
-                                hideContainer()
-                                Log.d("stevenVideo", "idle")
+                                debug(TAG, "idle vertical video")
                             }
                         }
                     }
 
                     override fun onPlayerError(error: PlayerException) {
+                        debug(TAG, "error vertical video $error")
                         showRetryOnly()
-                        Log.d("exoplayert", error.toString())
                     }
                 })
                 .build()
         playerView.show()
-        hideContainer()
         setChatListHasSpaceOnTop(VERTICAL_WITH_VIDEO)
     }
 
@@ -149,12 +159,13 @@ class VideoVerticalHelper constructor(
         player?.stop()
         playerView.hide()
         setChatListHasSpaceOnTop(VERTICAL_WITHOUT_VIDEO)
+        backgroundHelper.resetBackground()
+        hideContainer()
     }
 
     fun setData(it: VideoStreamViewModel) {
         videoStreamViewModel = it
     }
-
 
     fun playVideo(videoQuality: Int) {
         videoSource = videoQuality
@@ -164,6 +175,7 @@ class VideoVerticalHelper constructor(
             else -> videoStreamViewModel.androidStreamSD
         }
         playVideoSource(video)
+        backgroundHelper.setEmptyBackground()
     }
 
     fun isVideoShown(): Boolean {
