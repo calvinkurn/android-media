@@ -409,7 +409,9 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                     @Override
                     public void onNext(ActionResponseData data) {
                         Log.d(TAG + "-step6", String.valueOf(data));
-                        LocalCacheManager.AttachmentEditResCenter.Builder(passData.getResolutionID()).clearAll();
+                        LocalCacheManager.AttachmentEditResCenter
+                                .Builder(context, passData.getResolutionID())
+                                .clearAll();
                         listener.onSuccess();
                     }
                 }));
@@ -731,7 +733,9 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                     @Override
                     public void onNext(ActionResponseData data) {
                         Log.d(TAG + "-step6", String.valueOf(data));
-                        LocalCacheManager.AttachmentEditResCenter.Builder(passData.getResolutionID()).clearAll();
+                        LocalCacheManager.AttachmentEditResCenter
+                                .Builder(context, passData.getResolutionID())
+                                .clearAll();
                         listener.onSuccess();
                     }
                 }));
@@ -943,7 +947,9 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                     @Override
                     public void onNext(ActionResponseData data) {
                         Log.d(TAG + "-step6", String.valueOf(data));
-                        LocalCacheManager.AttachmentEditResCenter.Builder(passData.getResolutionID()).clearAll();
+                        LocalCacheManager.AttachmentEditResCenter
+                                .Builder(context, passData.getResolutionID())
+                                .clearAll();
                         listener.onSuccess();
                     }
                 }));

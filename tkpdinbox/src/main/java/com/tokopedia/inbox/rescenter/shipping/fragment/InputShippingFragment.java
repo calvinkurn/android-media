@@ -19,7 +19,6 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.model.ResCenterAttachment;
@@ -50,7 +49,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import okhttp3.OkHttpClient;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -208,7 +206,7 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
 
     @Override
     protected void initialPresenter() {
-        presenter = new InputShippingFragmentImpl(this);
+        presenter = new InputShippingFragmentImpl(getActivity().getApplication(), this);
     }
 
     @Override

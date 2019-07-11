@@ -16,7 +16,8 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
+import com.tokopedia.core.database.model.ResCenterAttachment;
+import com.tokopedia.core.database.repository.ResCenterAttachmentRepository;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -81,6 +82,7 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
     private final InputShippingFragmentView viewListener;
     private InputAWBRequest AWBRequest;
     private ShippingParamsPostModel shippingParams;
+    private ResCenterAttachmentRepository resCenterRepository;
 
     private boolean isShippingRefValid = false;
     private boolean isShippingSpinnerValid = false;
@@ -88,11 +90,12 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
     private GraphqlUseCase graphqlUseCase;
 
 
-    public InputShippingFragmentImpl(InputShippingFragmentView viewListener) {
+    public InputShippingFragmentImpl(Context context, InputShippingFragmentView viewListener) {
         graphqlUseCase = new GraphqlUseCase();
         this.viewListener = viewListener;
         this.cacheManager = new GlobalCacheManager();
         this.retrofit = new RetrofitInteractorImpl();
+        this.resCenterRepository = new ResCenterAttachmentRepository(context);
     }
 
     @Override
@@ -104,7 +107,7 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
     @Override
     public void onRestoreState(Bundle savedState) {
         viewListener.setParamsModel((InputShippingParamsGetModel) savedState.getParcelable(EXTRA_PARAM_MODEL));
-        viewListener.setAttachmentData(savedState.<AttachmentResCenterVersion2DB>getParcelableArrayList(EXTRA_PARAM_ATTACHMENT));
+        viewListener.setAttachmentData(savedState.<ResCenterAttachment>getParcelableArrayList(EXTRA_PARAM_ATTACHMENT));
     }
 
     @Override
@@ -267,7 +270,10 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
 
     @Override
     public void removeAttachment() {
-        LocalCacheManager.AttachmentShippingResCenter.Builder(viewListener.getParamsModel().getResolutionID()).clearAll();
+        resCenterRepository.deleteAttachments(resCenterRepository.getAttachmentListByResIdModuleName(
+                viewListener.getParamsModel().getResolutionID(),
+                ResCenterAttachment.MODULE_SHIPPING_RESCENTER
+        ));
     }
 
     @Override
@@ -382,8 +388,8 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
                     .flatMap(new Func1<ShippingParamsPostModel, Observable<InputAWBRequest>>() {
                         @Override
                         public Observable<InputAWBRequest> call(ShippingParamsPostModel shippingParamsPostModel) {
-                            for (AttachmentResCenterVersion2DB attachment : params.getAttachmentList())
-                                imageList.add(attachment.picObj);
+                            for (ResCenterAttachment attachment : params.getAttachmentList())
+                                imageList.add(attachment.getPicObj());
                             awbRequest.setPictures(imageList);
                             return Observable.just(awbRequest);
                         }
@@ -409,26 +415,26 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
 
     private Observable<ShippingParamsPostModel> getObservableUploadingFile(Context
                                                                                    context, ShippingParamsPostModel passData) {
-        return Observable.zip(Observable.just(passData), doUploadFile(context, passData), new Func2<ShippingParamsPostModel, List<AttachmentResCenterVersion2DB>, ShippingParamsPostModel>() {
+        return Observable.zip(Observable.just(passData), doUploadFile(context, passData), new Func2<ShippingParamsPostModel, List<ResCenterAttachment>, ShippingParamsPostModel>() {
             @Override
-            public ShippingParamsPostModel call(ShippingParamsPostModel inputModel, List<AttachmentResCenterVersion2DB> attachmentResCenterDBs) {
+            public ShippingParamsPostModel call(ShippingParamsPostModel inputModel, List<ResCenterAttachment> attachmentResCenterDBs) {
                 inputModel.setAttachmentList(attachmentResCenterDBs);
                 return inputModel;
             }
         });
     }
 
-    private Observable<List<AttachmentResCenterVersion2DB>> doUploadFile(
+    private Observable<List<ResCenterAttachment>> doUploadFile(
             final Context context, final ShippingParamsPostModel inputModel) {
         return Observable
                 .from(inputModel.getAttachmentList())
-                .flatMap(new Func1<AttachmentResCenterVersion2DB, Observable<AttachmentResCenterVersion2DB>>() {
+                .flatMap(new Func1<ResCenterAttachment, Observable<ResCenterAttachment>>() {
                     @Override
-                    public Observable<AttachmentResCenterVersion2DB> call(AttachmentResCenterVersion2DB attachmentResCenterDB) {
+                    public Observable<ResCenterAttachment> call(ResCenterAttachment attachmentResCenterDB) {
                         String uploadUrl = "https://" + inputModel.getUploadHost();
                         NetworkCalculator networkCalculator = new NetworkCalculator(NetworkConfig.POST, context, uploadUrl)
                                 .setIdentity()
-                                .addParam("id", attachmentResCenterDB.imageUUID)
+                                .addParam("id", attachmentResCenterDB.getImageUuid())
                                 .addParam("token", inputModel.getToken())
                                 .addParam("web_service", "1")
                                 .compileAllParam()
@@ -436,7 +442,7 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
 
                         File file;
                         try {
-                            file = ImageUploadHandler.writeImageToTkpdPath(ImageUploadHandler.compressImage(attachmentResCenterDB.imagePath));
+                            file = ImageUploadHandler.writeImageToTkpdPath(ImageUploadHandler.compressImage(attachmentResCenterDB.getImagePath()));
                         } catch (IOException e) {
                             throw new RuntimeException(context.getString(com.tokopedia.core2.R.string.error_upload_image));
                         }
@@ -479,14 +485,15 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
                                         fileToUpload
                                 );
 
-                        return Observable.zip(Observable.just(attachmentResCenterDB), upload, new Func2<AttachmentResCenterVersion2DB, NewUploadResCenterImageData, AttachmentResCenterVersion2DB>() {
+                        return Observable.zip(Observable.just(attachmentResCenterDB), upload, new Func2<ResCenterAttachment, NewUploadResCenterImageData, ResCenterAttachment>() {
                             @Override
-                            public AttachmentResCenterVersion2DB call(AttachmentResCenterVersion2DB attachmentResCenterDB, NewUploadResCenterImageData responseData) {
+                            public ResCenterAttachment call(ResCenterAttachment attachmentResCenterDB, NewUploadResCenterImageData responseData) {
                                 if (responseData != null) {
                                     if (responseData.getData() != null) {
-                                        attachmentResCenterDB.picSrc = responseData.getData().getPicSrc();
-                                        attachmentResCenterDB.picObj = responseData.getData().getPicObj();
-                                        attachmentResCenterDB.save();
+                                        attachmentResCenterDB.setPicSrc(responseData.getData().getPicSrc());
+                                        attachmentResCenterDB.setPicObj(responseData.getData().getPicObj());
+                                        resCenterRepository.insertAttachment(attachmentResCenterDB);
+
                                         return attachmentResCenterDB;
                                     } else {
                                         throw new RuntimeException(responseData.getMessageError());
@@ -504,11 +511,6 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
 
     private Retrofit getRetrofit() {
         return viewListener.getRetrofit();
-    }
-
-    private void clearAttachment() {
-        LocalCacheManager.AttachmentShippingResCenter.Builder(viewListener.getParamsModel().getResolutionID())
-                .clearAll();
     }
 
     @Override
@@ -660,7 +662,7 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
                         throw new RuntimeException(messageError.get(0));
                 }
             }
-            clearAttachment();
+            removeAttachment();
             viewListener.finishAsSuccessResult();
             showLoading(false);
             showMainPage(true);

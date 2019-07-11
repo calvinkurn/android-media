@@ -4,7 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.core.database.model.ResCenterAttachment;
-import com.tokopedia.core.database.repository.ResCenterAttachmentRepository;
 
 import java.util.List;
 
@@ -186,7 +185,7 @@ public class ShippingParamsPostModel implements Parcelable {
         this.conversationID = in.readString();
         this.shippingNumber = in.readString();
         this.shippingID = in.readString();
-        this.attachmentList = in.createTypedArrayList(ResCenterAttachmentRepository.CREATOR);
+        this.attachmentList = in.createTypedArrayList(ResCenterAttachment.CREATOR);
         this.serverID = in.readString();
         this.uploadHost = in.readString();
         this.postKey = in.readString();

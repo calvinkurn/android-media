@@ -4,7 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.core.database.model.ResCenterAttachment;
-import com.tokopedia.core.database.repository.ResCenterAttachmentRepository;
 import com.tokopedia.inbox.rescenter.detail.model.detailresponsedata.DetailResCenterData;
 import com.tokopedia.inbox.rescenter.edit.model.passdata.ActionResponseData;
 import com.tokopedia.inbox.rescenter.edit.model.passdata.AppealResCenterFormData;
@@ -248,7 +247,7 @@ public class ActionParameterPassData implements Parcelable {
         this.inputDescription = in.readString();
         this.solutionChoosen = in.readParcelable(EditResCenterFormData.SolutionData.class.getClassLoader());
         this.refund = in.readString();
-        this.attachmentData = in.createTypedArrayList(ResCenterAttachmentRepository.CREATOR);
+        this.attachmentData = in.createTypedArrayList(ResCenterAttachment.CREATOR);
         this.serverID = in.readString();
         this.uploadHost = in.readString();
         this.attachmentString = in.readString();
