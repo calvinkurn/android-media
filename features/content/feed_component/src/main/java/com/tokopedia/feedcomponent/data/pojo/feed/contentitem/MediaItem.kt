@@ -40,7 +40,7 @@ data class MediaItem(
         val percentage: String = "",
 
         @SerializedName("isSelected")
-        val isSelected: Boolean = false,
+        var isSelected: Boolean = false,
 
         @SerializedName("position")
         @Expose

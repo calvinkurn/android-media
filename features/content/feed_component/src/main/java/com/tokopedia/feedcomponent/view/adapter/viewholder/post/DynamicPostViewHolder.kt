@@ -29,6 +29,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.kotlin.extensions.view.*
@@ -52,6 +53,7 @@ open class DynamicPostViewHolder(v: View,
 
     lateinit var captionTv: TextView
     val snapHelper: PagerSnapHelper = PagerSnapHelper()
+    lateinit var adapter: PostPagerAdapter
 
     companion object {
         @LayoutRes
@@ -61,6 +63,7 @@ open class DynamicPostViewHolder(v: View,
         const val PAYLOAD_COMMENT = 14
         const val PAYLOAD_FOLLOW = 15
         const val PAYLOAD_ANIMATE_FOOTER = 16
+        const val PAYLOAD_PLAY_VIDEO = 17
 
         const val MAX_CHAR = 140
         const val CAPTION_END = 90
@@ -103,6 +106,7 @@ open class DynamicPostViewHolder(v: View,
             PAYLOAD_COMMENT -> bindComment(element.footer.comment)
             PAYLOAD_FOLLOW -> bindFollow(element.header.followCta)
             PAYLOAD_ANIMATE_FOOTER -> animateFooter()
+            PAYLOAD_PLAY_VIDEO -> bindContentList(element.id, element.contentList, element.template.cardpost.body)
             else -> bind(element)
         }
     }
@@ -261,7 +265,7 @@ open class DynamicPostViewHolder(v: View,
             contentList.forEach { it.postId = postId }
             contentList.forEach { it.positionInFeed = adapterPosition }
 
-            val adapter = PostPagerAdapter(imagePostListener, youtubePostListener, pollOptionListener, gridItemListener, videoViewListener)
+            adapter = PostPagerAdapter(imagePostListener, youtubePostListener, pollOptionListener, gridItemListener, videoViewListener)
             adapter.setList(contentList)
             itemView.contentViewPager.adapter = adapter
             itemView.contentViewPager.offscreenPageLimit = adapter.count
@@ -408,6 +412,15 @@ open class DynamicPostViewHolder(v: View,
     private fun isPostTagAvailable(postTag: PostTag): Boolean {
         return postTag.totalItems != 0 || postTag.items.isNotEmpty()
     }
+//
+//    fun playVideo() {
+//         if (adapter.getList().size == 1
+//                 && adapter.getList().get(0) is VideoViewModel
+//                 && itemView.contentViewPager.getTag().equals(VideoViewHolder.TAG)) {
+//             val viewHolder = (itemView.contentViewPager.findViewWithTag<View>(VideoViewHolder.TAG) as VideoViewHolder)
+//             viewHolder.playVideo((adapter.getList().get(0) as VideoViewModel).url)
+//         }
+//    }
 
     interface DynamicPostListener {
         fun onAvatarClick(positionInFeed: Int, redirectUrl: String)

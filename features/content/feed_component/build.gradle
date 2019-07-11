@@ -35,6 +35,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.libraries.videoplayer)
     implementation project(rootProject.ext.libraries.youtubeutil)
 
     implementation project(rootProject.ext.features.topAdsSdk)

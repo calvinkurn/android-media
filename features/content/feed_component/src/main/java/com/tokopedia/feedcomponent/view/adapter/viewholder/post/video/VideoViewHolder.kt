@@ -1,5 +1,6 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.post.video
 
+import android.net.Uri
 import android.os.Build
 import android.view.View
 import android.view.ViewTreeObserver
@@ -15,10 +16,14 @@ import kotlinx.android.synthetic.main.item_post_video.view.*
  */
 class VideoViewHolder(private val listener: VideoViewListener) : BasePostViewHolder<VideoViewModel>() {
 
+
     override var layoutRes = R.layout.item_post_video
+    var isPlaying = false
+
 
     companion object {
         const val STRING_DEFAULT_TRANSCODING = "customerTrans"
+        const val TAG = "TAG_VIDEO_VIEW_HOLDER"
     }
 
     override fun bind(element: VideoViewModel) {
@@ -51,6 +56,31 @@ class VideoViewHolder(private val listener: VideoViewListener) : BasePostViewHol
                 }
         )
         itemView.image.loadImage(element.thumbnail)
+        if (element.canPlayVideo) {
+            playVideo(element.url)
+        } else {
+            stopVideo()
+        }
+    }
+
+    fun playVideo(url: String) {
+        if (!isPlaying) {
+            itemView.layout_video.visibility = View.VISIBLE
+            itemView.layout_video.setVideoURI(Uri.parse(url))
+            itemView.layout_video.setOnPreparedListener {
+                it.isLooping = true
+            }
+            itemView.layout_video.start()
+            isPlaying = true
+        }
+    }
+
+    fun stopVideo() {
+        if (isPlaying) {
+            itemView.layout_video.stopPlayback()
+            itemView.layout_video.visibility = View.GONE
+            isPlaying = false
+        }
     }
 
     interface VideoViewListener {

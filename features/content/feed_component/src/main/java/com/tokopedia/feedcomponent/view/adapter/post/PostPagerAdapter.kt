@@ -52,7 +52,6 @@ class PostPagerAdapter(private val imagePostListener: ImagePostViewHolder.ImageP
                     .plus(" doesn't support view model of this type: ")
                     .plus(element.javaClass.simpleName))
         }
-
         val view = viewHolder.inflate(container, element, position)
         container.addView(view)
         return view

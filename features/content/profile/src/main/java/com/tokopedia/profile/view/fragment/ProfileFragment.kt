@@ -58,6 +58,8 @@ import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
+import com.tokopedia.feedcomponent.util.FeedScrollListener
+import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
 import com.tokopedia.kol.common.util.PostMenuListener
 import com.tokopedia.kol.common.util.createBottomMenu
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
@@ -117,7 +119,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         PollAdapter.PollOptionListener,
         GridPostAdapter.GridItemListener,
         VideoViewHolder.VideoViewListener,
-        EmptyAffiliateViewHolder.OnEmptyItemClickedListener {
+        EmptyAffiliateViewHolder.OnEmptyItemClickedListener{
 
     private var userId: Int = 0
     private var afterPost: Boolean = false
@@ -940,7 +942,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         isOwner = userId.toString() == userSession.userId
 
         layoutManager = recyclerView.layoutManager as LinearLayoutManager
-
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -957,20 +958,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 try {
-                    if (hasFeed() && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        val item: Visitable<*>?
-                        val position = when {
-                            itemIsFullScreen() -> layoutManager.findLastVisibleItemPosition()
-                            layoutManager.findFirstCompletelyVisibleItemPosition() != -1 -> layoutManager.findFirstCompletelyVisibleItemPosition()
-                            layoutManager.findLastCompletelyVisibleItemPosition() != -1 -> layoutManager.findLastCompletelyVisibleItemPosition()
-                            else -> 0
-                        }
-                        item = adapter.list[position]
-
-                        if (item is DynamicPostViewModel) {
-                            if (!TextUtils.isEmpty(item.footer.buttonCta.appLink)) {
-                                adapter.notifyItemChanged(position, DynamicPostViewHolder.PAYLOAD_ANIMATE_FOOTER)
-                            }
+                    if (hasFeed()
+                            && newState == RecyclerView.SCROLL_STATE_IDLE
+                            && layoutManager != null) {
+                        recyclerView?.let {
+                            FeedScrollListener.onFeedScrolled(it, adapter.list)
                         }
                     }
                 } catch (e: IndexOutOfBoundsException) {

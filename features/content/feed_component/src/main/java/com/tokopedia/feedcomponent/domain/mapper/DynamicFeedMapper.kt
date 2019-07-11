@@ -351,6 +351,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         val itemList: MutableList<GridItemViewModel> = ArrayList()
 
         for (item in media.mediaItems) {
+            item.isSelected = true
             itemList.add(GridItemViewModel(
                     item.id,
                     item.text,
