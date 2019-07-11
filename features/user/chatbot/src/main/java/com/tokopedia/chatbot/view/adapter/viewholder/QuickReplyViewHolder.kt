@@ -10,9 +10,9 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
-import com.tokopedia.chat_common.view.bottomSheets.ReadMoreBottomSheet
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
+import com.tokopedia.chatbot.view.customview.ReadMoreBottomSheet
 
 /**
  * @author by nisie on 5/8/18.
@@ -42,7 +42,7 @@ class QuickReplyViewHolder(itemView: View,
             message.text = MethodChecker.fromHtml(element.message)
             if (message.text.toString().length > 170) {
 
-                mesageLayout.setBackgroundDrawable(ContextCompat.getDrawable(itemView.context, com.tokopedia.chat_common.R.drawable.left_bubble_with_stroke))
+                mesageLayout.setBackgroundDrawable(ContextCompat.getDrawable(itemView.context, com.tokopedia.chatbot.R.drawable.left_bubble_with_stroke))
                 mesageBottom.visibility = View.VISIBLE
                 mesageBottom.setOnClickListener {
                     ReadMoreBottomSheet.createInstance(message.text.toString()).show((itemView.context as FragmentActivity).supportFragmentManager,"read_more_bottom_sheet")

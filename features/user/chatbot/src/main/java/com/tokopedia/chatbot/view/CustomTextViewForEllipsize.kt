@@ -1,4 +1,4 @@
-package com.tokopedia.chat_common.view
+package com.tokopedia.chatbot.view
 
 import android.content.Context
 import android.text.DynamicLayout

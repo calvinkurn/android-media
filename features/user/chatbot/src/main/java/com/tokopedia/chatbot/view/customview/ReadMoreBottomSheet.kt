@@ -1,4 +1,4 @@
-package com.tokopedia.chat_common.view.bottomSheets
+package com.tokopedia.chatbot.view.customview
 
 
 import android.app.Dialog
@@ -9,7 +9,7 @@ import android.support.design.widget.BottomSheetDialog
 import android.support.design.widget.BottomSheetDialogFragment
 import android.view.View
 import android.widget.*
-import com.tokopedia.chat_common.R
+import com.tokopedia.chatbot.R
 
 
 class ReadMoreBottomSheet() : BottomSheetDialogFragment() {

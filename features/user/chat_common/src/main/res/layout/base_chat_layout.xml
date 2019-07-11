@@ -21,61 +21,35 @@
         android:visibility="gone"
         tools:text="13:16 wib"/>
 
-    <RelativeLayout
-        android:id="@+id/message_layout"
+    <TextView
+        android:id="@+id/message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_below="@+id/date"
+        android:layout_marginEnd="@dimen/margin_selected_rating"
+        android:layout_marginRight="@dimen/margin_selected_rating"
         android:background="@drawable/left_bubble"
-        android:layout_below="@+id/date">
-        <com.tokopedia.chat_common.view.CustomTextViewForEllipsize
-            android:id="@+id/message"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:linksClickable="true"
-            android:paddingBottom="@dimen/dp_8"
-            android:paddingEnd="@dimen/dp_18"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_18"
-            android:paddingStart="@dimen/dp_16"
-            android:paddingTop="@dimen/dp_8"
-            android:textColor="@color/black_70"
-            android:textColorLink="@color/black_70"
-            android:textIsSelectable="true"
-            android:textSize="@dimen/sp_14"
-            android:visibility="visible"
-            android:maxLines="5"
-            android:ellipsize="end"
-            android:maxWidth="@dimen/max_width_chat_bubble"
-            tools:text="opesjkajd aasdfkalskdjfla;ksdfajsdlfkjalsdjflaksjdfl;aks;dlfalskdfj;alksdflaksdjfsdfkj"/>
-
-        <TextView
-            android:layout_below="@+id/message"
-            android:id="@+id/bottom_view"
-            android:layout_width="270dp"
-            android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/dp_8"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingStart="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_8"
-            android:paddingEnd="@dimen/dp_8"
-            android:paddingTop="@dimen/dp_8"
-            android:textColor="@color/read_more_color"
-            android:maxWidth="@dimen/max_width_chat_bubble"
-            android:text="@string/read_more"
-            android:textStyle="bold"
-            android:gravity="right"
-            android:visibility="gone"
-            android:background="@drawable/left_bubble_bottom_rounded"
-            />
-    </RelativeLayout>
+        android:linksClickable="true"
+        android:maxWidth="@dimen/max_width_chat_bubble"
+        android:paddingBottom="@dimen/dp_8"
+        android:paddingEnd="@dimen/dp_18"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_18"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_8"
+        android:textColor="@color/black_70"
+        android:textColorLink="@color/black_70"
+        android:textIsSelectable="true"
+        android:textSize="@dimen/sp_14"
+        android:visibility="visible"
+        tools:text="opesjkajd aasdfkalskdjfla;ksdfajsdlfkjalsdjflaksjdfl;aks;dlfalskdfj;alksdflaksdjfsdfkj"/>
 
 
     <TextView
         android:id="@+id/hour"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/message_layout"
+        android:layout_below="@id/message"
         android:layout_marginTop="@dimen/dp_3"
         android:textColor="@color/time_color"
         android:textSize="@dimen/sp_10"
