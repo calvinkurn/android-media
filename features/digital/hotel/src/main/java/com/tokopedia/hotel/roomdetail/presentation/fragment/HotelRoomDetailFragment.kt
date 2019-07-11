@@ -175,7 +175,9 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
             val roomImageUrls300 = hotelRoom.roomInfo.roomImages.map { it.url300 }
             val roomImageUrls = hotelRoom.roomInfo.roomImages.map { it.urlOriginal }
             val roomImageUrlsSquare = hotelRoom.roomInfo.roomImages.map { it.urlSquare }
-            room_detail_images.setImages(roomImageUrls300)
+
+            if (roomImageUrls300.size >= 5) room_detail_images.setImages(roomImageUrls300.subList(0,5))
+            else room_detail_images.setImages(roomImageUrls300)
 
             room_detail_images.imageViewPagerListener = object : ImageViewPager.ImageViewPagerListener{
                 override fun onImageClicked(position: Int) {
