@@ -216,9 +216,9 @@
                                     android:id="@+id/iv_back_parallax"
                                     android:layout_width="wrap_content"
                                     android:layout_height="match_parent"
-                                    app:srcCompat="@drawable/ic_action_back"
                                     android:layout_gravity="center"
-                                    />
+                                    android:tint="@color/white"
+                                    app:srcCompat="@drawable/ic_action_back" />
 
                                 <TextView
                                     android:id="@+id/tv_name_parallax"
@@ -367,10 +367,9 @@
                                 android:id="@+id/iv_back"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
-                                app:srcCompat="@drawable/ic_action_back"
                                 android:layout_gravity="center"
                                 android:tint="@color/black_70"
-                                />
+                                app:srcCompat="@drawable/ic_action_back" />
 
                             <TextView
                                 android:id="@+id/tv_aff_name"
