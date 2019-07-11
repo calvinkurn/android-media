@@ -40,7 +40,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import kotlinx.coroutines.experimental.Dispatchers;
+import kotlinx.coroutines.Dispatchers;
 
 /**
  * Created by hadi.putra on 04/05/18.
