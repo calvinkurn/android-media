@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.tokopedia.core.database.repository.ResCenterAttachmentRepository;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.database.model.ResCenterAttachment;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -425,13 +426,13 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                 String attachmentCompiledString = "";
                 for (int i = 0; i < listAttachment.size(); i++) {
                     if (j != 0) {
-                        if (!listAttachment.get(i).imagePath.isEmpty()) {
-                            attachmentCompiledString = attachmentCompiledString + "~" + listAttachment.get(i).imageUrl;
+                        if (!listAttachment.get(i).getImagePath().isEmpty()) {
+                            attachmentCompiledString = attachmentCompiledString + "~" + listAttachment.get(i).getImageUrl();
                             j++;
                         }
                     } else {
-                        if (!listAttachment.get(i).imagePath.isEmpty()) {
-                            attachmentCompiledString = listAttachment.get(i).imageUrl;
+                        if (!listAttachment.get(i).getImagePath().isEmpty()) {
+                            attachmentCompiledString = listAttachment.get(i).getImageUrl();
                             j++;
                         }
                     }
@@ -445,6 +446,8 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
 
     private Observable<List<ResCenterAttachment>> uploading(final Context context,
                                                                       final ActionParameterPassData passData) {
+        ResCenterAttachmentRepository resCenterRepository = new ResCenterAttachmentRepository(context);
+
         return Observable
                 .from(passData.getAttachmentData())
                 .flatMap(new Func1<ResCenterAttachment, Observable<ResCenterAttachment>>() {
@@ -460,7 +463,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                         // https:// uploadhost /upload/attachment
                         File file;
                         try {
-                            file = ImageUploadHandler.writeImageToTkpdPath(ImageUploadHandler.compressImage(attachmentResCenterDB.imagePath));
+                            file = ImageUploadHandler.writeImageToTkpdPath(ImageUploadHandler.compressImage(attachmentResCenterDB.getImagePath()));
                         } catch (IOException e) {
                             throw new RuntimeException(context.getString(R.string.error_upload_image));
                         }
@@ -492,9 +495,9 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                             public ResCenterAttachment call(ResCenterAttachment attachmentResCenterDB, UploadResCenterImageData uploadResCenterImageData) {
                                 if (uploadResCenterImageData != null) {
                                     if (uploadResCenterImageData.getData() != null) {
-                                        attachmentResCenterDB.imageUrl = uploadResCenterImageData.getData().getFileUrl();
+                                        attachmentResCenterDB.setImageUrl(uploadResCenterImageData.getData().getFileUrl());
                                         Log.d(TAG + "(step2):url", uploadResCenterImageData.getData().getFileUrl());
-                                        attachmentResCenterDB.save();
+                                        resCenterRepository.insertAttachment(attachmentResCenterDB);
                                         return attachmentResCenterDB;
                                     } else {
                                         throw new RuntimeException(uploadResCenterImageData.getMessageError().get(0));

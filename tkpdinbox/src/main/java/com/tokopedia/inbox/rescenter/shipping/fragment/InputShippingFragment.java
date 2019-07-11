@@ -22,6 +22,7 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.model.ResCenterAttachment;
+import com.tokopedia.core.database.repository.ResCenterAttachmentRepository;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -460,10 +461,12 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
 
     @Override
     public void onClickOpenAttachment(View view, final int position) {
+        ResCenterAttachmentRepository resCenterRepository = new ResCenterAttachmentRepository(getActivity().getApplication());
+
         uploadImageDialog.showRemoveDialog(new UploadImageShippingResCenterDialog.onRemoveAttachmentListener() {
             @Override
             public void onRemoveClickListener() {
-                attachmentData.get(position).delete();
+                resCenterRepository.deleteAttachment(attachmentData.get(position));
                 attachmentData.remove(position);
                 attachmentAdapter.notifyItemRemoved(position);
             }

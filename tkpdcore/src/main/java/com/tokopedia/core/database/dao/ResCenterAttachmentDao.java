@@ -20,6 +20,9 @@ public interface ResCenterAttachmentDao {
     @Delete
     void deleteAttachments(List<ResCenterAttachment> resCenterAttachments);
 
+    @Delete
+    void deleteAttachment(ResCenterAttachment resCenterAttachment);
+
     @Query("SELECT * FROM " + DbMetadata.resCenterTableName + " WHERE resolutionId = :resId AND moduleName = :moduleName")
     List<ResCenterAttachment> getAttachmentListByResIdModuleName(String resId, String moduleName);
 

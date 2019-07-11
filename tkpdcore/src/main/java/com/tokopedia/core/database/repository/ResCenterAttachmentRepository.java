@@ -25,11 +25,15 @@ public class ResCenterAttachmentRepository {
         resCenterAttachmentDao.deleteAttachments(resCenterAttachments);
     }
 
-    public List<ResCenterAttachment> getAttachmentListByResIdModuleName(String resId, String moduleName) {
-        return resCenterAttachmentDao.getAttachmentListByResIdModuleName(resId, moduleName);
+    public void deleteAttachment(ResCenterAttachment resCenterAttachment) {
+        resCenterAttachmentDao.deleteAttachment(resCenterAttachment);
     }
 
     public void deleteAttachmentById(long id) {
         resCenterAttachmentDao.deleteAttachmentById(id);
+    }
+
+    public List<ResCenterAttachment> getAttachmentListByResIdModuleName(String resId, String moduleName) {
+        return resCenterAttachmentDao.getAttachmentListByResIdModuleName(resId, moduleName);
     }
 }

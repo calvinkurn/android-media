@@ -78,12 +78,6 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
         });
     }
 
-    private void remove(int position) {
-        dataSet.get(position).delete();
-        dataSet.remove(position);
-        notifyItemRemoved(position);
-    }
-
     private void setValue(ViewHolder holder, int position) {
         holder.deleteAttachment.setVisibility(View.GONE);
         if (position < dataSet.size()) {
@@ -98,7 +92,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
     }
 
     private void loadImage(ViewHolder holder, int position) {
-        File imgFile = new  File(dataSet.get(position).imagePath);
+        File imgFile = new  File(dataSet.get(position).getImagePath());
         ImageHandler.loadImageFromFile(holder.itemView.getContext(), holder.attachment, imgFile);
         holder.deleteAttachment.setVisibility(View.VISIBLE);
     }
