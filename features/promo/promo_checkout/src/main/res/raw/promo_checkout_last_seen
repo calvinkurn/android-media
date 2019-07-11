@@ -1,0 +1,14 @@
+query catalogMenuDetail($menuID: Int!){
+  rechargeCatalogMenuDetail(menuID: $menuID, platformID: 5) {
+    promos {
+      id
+      filename
+      filename_webp
+      img_url
+      status
+      title
+      subtitle
+      promo_code
+    }
+  }
+}
