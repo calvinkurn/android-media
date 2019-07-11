@@ -231,8 +231,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
     private fun trackRoomDates() {
         val dayDiff = HotelUtils.countCurrentDayDifference(hotelHomepageModel.checkInDate)
-        val dateRange = "${hotelHomepageModel.checkInDate} - ${hotelHomepageModel.checkOutDate}"
-        trackingHotelUtil.hotelSelectStayDate(dayDiff.toInt(), dateRange)
+        val dateRange = HotelUtils.countDayDifference(hotelHomepageModel.checkOutDate, hotelHomepageModel.checkInDate)
+        trackingHotelUtil.hotelSelectStayDate(dayDiff.toInt(), dateRange.toInt())
     }
 
     private fun onDestinationNearBy(longitude: Double, latitude: Double) {

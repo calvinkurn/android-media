@@ -1,5 +1,7 @@
 package com.tokopedia.hotel.common.analytics
 
+val PROMO_VIEW = "promoView"
+val PROMO_CLICK = "promoClick"
 val CLICK_HOTEL = "clickHotel"
 val VIEW_HOTEL = "viewHotel"
 val PRODUCT_VIEW = "productView"

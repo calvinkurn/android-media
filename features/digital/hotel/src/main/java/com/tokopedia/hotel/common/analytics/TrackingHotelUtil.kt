@@ -18,12 +18,12 @@ import com.tokopedia.track.TrackAppUtils.*
 class TrackingHotelUtil {
 
     fun hotelBannerImpression(bannerId: String){
-        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOTEL, DIGITAL_NATIVE, BANNER_IMPRESSION,
+        TrackApp.getInstance().gtm.sendGeneralEvent(PROMO_VIEW, DIGITAL_NATIVE, BANNER_IMPRESSION,
                 "$HOTEL_LABEL - $bannerId")
     }
 
     fun hotelClickBanner(bannerId: String){
-        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOTEL, DIGITAL_NATIVE, CLICK_BANNER,
+        TrackApp.getInstance().gtm.sendGeneralEvent(PROMO_CLICK, DIGITAL_NATIVE, CLICK_BANNER,
                 "$HOTEL_LABEL - $bannerId")
     }
 
@@ -32,7 +32,7 @@ class TrackingHotelUtil {
                 "$HOTEL_LABEL - $destType - $destination")
     }
 
-    fun hotelSelectStayDate(dayDiff: Int, dateRange: String){
+    fun hotelSelectStayDate(dayDiff: Int, dateRange: Int){
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOTEL, DIGITAL_NATIVE, SELECT_STAY_DATE,
                 "$HOTEL_LABEL - $dayDiff - $dateRange")
     }
@@ -58,7 +58,7 @@ class TrackingHotelUtil {
         val roomCount = searchParam.room
         val guestCount = searchParam.guest.adult
         val dayDiff = HotelUtils.countCurrentDayDifference(searchParam.checkIn)
-        val duration = HotelUtils.countDayDifference(searchParam.checkIn, searchParam.checkOut )
+        val duration = HotelUtils.countDayDifference(searchParam.checkIn, searchParam.checkOut)
 
         val map = mutableMapOf<String, Any?>()
         map[EVENT] = PRODUCT_VIEW
@@ -78,9 +78,9 @@ class TrackingHotelUtil {
         for (product in listProduct) {
             val map = java.util.HashMap<String, Any>()
             map["name"] = product.name
-            map["id"] = product.id
-            map["price"] = product.roomPrice.firstOrNull() ?: 0
             map["direct_payment"] = product.isDirectPayment
+            map["id"] = product.id
+            map["price"] = product.roomPrice[0].priceAmount.toLong().toInt().toString()
 
             list.add(map)
         }
@@ -92,7 +92,7 @@ class TrackingHotelUtil {
                     products: List<Property>){
         val hotelId = property.id
         val dayDiff = HotelUtils.countCurrentDayDifference(checkInDate)
-        val price = property.roomPrice.firstOrNull() ?: 0
+        val price = property.roomPrice[0].priceAmount.toLong().toString()
 
         val map = mutableMapOf<String, Any?>()
         map[EVENT] = PRODUCT_CLICK

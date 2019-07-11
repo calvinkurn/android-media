@@ -65,6 +65,8 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
 
     lateinit var progressDialog: ProgressDialog
 
+    private var roomIndex = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -72,6 +74,8 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             roomDetailViewModel = viewModelProvider.get(HotelRoomDetailViewModel::class.java)
         }
+
+        roomIndex = arguments!!.getInt(HotelRoomDetailActivity.EXTRA_ROOM_INDEX,0)
 
         saveInstanceCacheManager = SaveInstanceCacheManager(activity!!, savedInstanceState)
         val manager = if (savedInstanceState == null) SaveInstanceCacheManager(activity!!,
@@ -328,6 +332,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
             room_detail_button.isEnabled = false
             trackingHotelUtil.hotelChooseRoomDetails(hotelRoom)
             if (userSessionInterface.isLoggedIn) {
+                trackingHotelUtil.hotelChooseRoom(hotelRoom, roomIndex)
                 roomDetailViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart), addToCartParam)
             } else {
                 goToLoginPage()
@@ -357,10 +362,11 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         const val MINIMUM_ROOM_COUNT = 3
         const val ROOM_FACILITY_DEFAULT_COUNT = 6
 
-        fun getInstance(savedInstanceId: String): HotelRoomDetailFragment =
+        fun getInstance(savedInstanceId: String, roomIndex: Int): HotelRoomDetailFragment =
                 HotelRoomDetailFragment().also {
                     it.arguments = Bundle().apply {
                         putString(HotelRoomDetailActivity.EXTRA_SAVED_INSTANCE_ID, savedInstanceId)
+                        putInt(HotelRoomDetailActivity.EXTRA_ROOM_INDEX, roomIndex)
                     }
                 }
     }

@@ -60,6 +60,7 @@ class HotelDetailFragment : HotelBaseFragment() {
     private var hotelName: String = ""
     private var hotelId: Int = 0
     private var roomPrice: String = "0"
+    private var roomPriceAmount: String = ""
 
     private val thumbnailImageList = mutableListOf<String>()
     private val imageList = mutableListOf<String>()
@@ -295,7 +296,7 @@ class HotelDetailFragment : HotelBaseFragment() {
     }
 
     private fun onPhotoClicked() {
-        trackingHotelUtil.hotelClickHotelPhoto(hotelId, roomPrice)
+        trackingHotelUtil.hotelClickHotelPhoto(hotelId, roomPriceAmount)
     }
 
     private fun setupReviewLayout(data: HotelReview.ReviewData) {
@@ -342,7 +343,7 @@ class HotelDetailFragment : HotelBaseFragment() {
             rv_best_review.adapter = detailReviewAdapter
 
             tv_hotel_detail_all_promo.setOnClickListener {
-                trackingHotelUtil.hotelClickHotelReviews(hotelId, roomPrice)
+                trackingHotelUtil.hotelClickHotelReviews(hotelId, roomPriceAmount)
                 startActivityForResult(HotelReviewActivity.getCallingIntent(context!!, hotelHomepageModel.locId), RESULT_REVIEW)
             }
         } else {
@@ -420,6 +421,7 @@ class HotelDetailFragment : HotelBaseFragment() {
         if (data.isNotEmpty()) {
             trackingHotelUtil.hotelViewDetails(hotelName, hotelId, true, data[0].roomPrice.priceAmount.toInt(), data[0].additionalPropertyInfo.isDirectPayment)
             roomPrice = data[0].roomPrice.roomPrice
+            roomPriceAmount = data[0].roomPrice.priceAmount.toLong().toString()
             tv_hotel_price.text = roomPrice
 
             if (data[0].additionalPropertyInfo.isDirectPayment) {
@@ -428,7 +430,7 @@ class HotelDetailFragment : HotelBaseFragment() {
                 btn_see_room.buttonCompatType = ButtonCompat.DISABLE
             } else {
                 btn_see_room.setOnClickListener {
-                    trackingHotelUtil.hotelChooseViewRoom(hotelId, roomPrice)
+                    trackingHotelUtil.hotelChooseViewRoom(hotelId, roomPriceAmount)
                     startActivityForResult(HotelRoomListActivity.createInstance(context!!, hotelHomepageModel.locId, hotelName,
                             hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate, hotelHomepageModel.adultCount, 0,
                             hotelHomepageModel.roomCount), RESULT_ROOM_LIST)
