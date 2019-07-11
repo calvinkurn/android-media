@@ -26,8 +26,6 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.base.list.seller.view.fragment.BasePresenterFragment;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -201,6 +199,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
         buttonSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                trackingOpenShop.eventOpenShopSuccessClick();
                 onButtonSubmitClicked();
             }
         });
@@ -242,6 +241,11 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
             @Override
             public void onClick(@NotNull View textView) {
                 if (getActivity() != null) {
+                    if (url == URL_TNC) {
+                        trackingOpenShop.eventTncClick();
+                    } else {
+                        trackingOpenShop.eventPrivacyPolicyClick();
+                    }
                     Intent intent = ShopOpenWebViewActivity.Companion.newInstance(getActivity(), url, title);
                     startActivity(intent);
                 }
