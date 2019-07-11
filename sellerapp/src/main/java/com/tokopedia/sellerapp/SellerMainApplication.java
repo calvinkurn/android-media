@@ -250,7 +250,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     }
 
     public void initDbFlow() {
-        super.initDbFlow();
         try {
             FlowManager.getConfig();
         } catch (IllegalStateException e) {

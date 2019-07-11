@@ -13,11 +13,6 @@ import android.support.multidex.MultiDex;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
 import com.google.android.gms.security.ProviderInstaller;
-import com.raizlabs.android.dbflow.config.FlowConfig;
-import com.raizlabs.android.dbflow.config.FlowLog;
-import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.config.TkpdCoreGeneratedDatabaseHolder;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.fingerprint.LocationUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
@@ -147,8 +142,6 @@ public abstract class MainApplication extends MainRouterApplication{
         PACKAGE_NAME = getPackageName();
         isResetTickerState = true;
 
-        initDbFlow();
-
         daggerBuilder = DaggerAppComponent.builder()
                 .appModule(new AppModule(this));
         getApplicationComponent().inject(this);
@@ -198,15 +191,6 @@ public abstract class MainApplication extends MainRouterApplication{
             Fabric.with(this, new Crashlytics());
             Crashlytics.setUserIdentifier("");
         }
-    }
-
-    protected void initDbFlow() {
-        if (BuildConfig.DEBUG) {
-            FlowLog.setMinimumLoggingLevel(FlowLog.Level.V);
-        }
-        FlowManager.init(new FlowConfig.Builder(this)
-                .addDatabaseHolder(TkpdCoreGeneratedDatabaseHolder.class)
-                .build());
     }
 
     public AppComponent getApplicationComponent() {

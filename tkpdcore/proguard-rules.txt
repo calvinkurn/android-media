@@ -276,8 +276,6 @@
 -keep class com.tokopedia.tkpd.dynamicfilter.model.** { *; }
 -keep class com.tokopedia.tkpd.dynamicfilter.adapter.** { *; }
 
-# add exception for dbflow
--keep class * extends com.raizlabs.android.dbflow.config.DatabaseHolder { *; }
 -keep class com.tokopedia.tkpd.database.model.** { *; }
 
 -keep class com.tokopedia.core.product.model.**{ *; }
