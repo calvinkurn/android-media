@@ -1,7 +1,5 @@
 package com.tokopedia.loginregister.ticker.subscriber
 
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.registerinitial.view.listener.RegisterInitialContract
 import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import rx.Subscriber
@@ -18,7 +16,7 @@ open class TickerInfoRegisterSubscriber(val view: RegisterInitialContract.View):
     override fun onCompleted() {}
 
     override fun onError(e: Throwable) {
-        view.onErrorGetTickerInfo(ErrorHandler.getErrorMessage(view.context, e))
+        view.onErrorGetTickerInfo(e)
     }
 
 }

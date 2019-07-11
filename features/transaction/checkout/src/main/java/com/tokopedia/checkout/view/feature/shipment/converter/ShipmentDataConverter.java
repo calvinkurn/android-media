@@ -349,6 +349,7 @@ public class ShipmentDataConverter {
             cartItemModel.setProtectionLinkText(ppp.getProtectionLinkText());
             cartItemModel.setProtectionLinkUrl(ppp.getProtectionLinkUrl());
             cartItemModel.setProtectionOptIn(ppp.isProtectionOptIn());
+            cartItemModel.setProtectionCheckboxDisabled(ppp.isProtectionCheckboxDisabled());
         }
 
         cartItemModel.setAnalyticsProductCheckoutData(product.getAnalyticsProductCheckoutData());

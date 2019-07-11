@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.base.list.seller.view.fragment.BaseListFragment;
 import com.tokopedia.base.list.seller.view.old.NoResultDataBinder;
@@ -32,8 +33,6 @@ import com.tokopedia.topads.keyword.view.adapter.TopAdsKeywordGroupListAdapter;
 import com.tokopedia.topads.keyword.view.listener.TopAdsKeywordGroupListListener;
 import com.tokopedia.topads.keyword.view.listener.TopAdsKeywordGroupListView;
 import com.tokopedia.topads.keyword.view.presenter.TopAdsKeywordOldNewChooseGroupPresenter;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-
 
 import java.util.List;
 
@@ -48,7 +47,7 @@ public class TopAdsKeywordGroupsFragment extends BaseListFragment<TopAdsKeywordO
 
     protected BaseFilterContentFragment.Callback callback;
     @Inject
-    TopAdsKeywordOldNewChooseGroupPresenter topAdsKeywordOldNewChooseGroupPresenter;
+    TopAdsKeywordOldNewChooseGroupPresenter topAdsKeywordOldNewChooseGroupPresenter;F
     private EditText groupFilterSearch;
     private GroupAd selection;
 

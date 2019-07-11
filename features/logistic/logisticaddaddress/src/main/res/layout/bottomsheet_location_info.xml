@@ -21,7 +21,7 @@
             android:layout_width="@dimen/dp_200"
             android:layout_height="@dimen/dp_140"
             android:layout_marginTop="@dimen/dp_24"
-            android:src="@drawable/ic_invalid_location"
+            android:src="@drawable/ic_location_not_detected"
             android:contentDescription="@string/invalid_description"
             android:layout_gravity="center_horizontal"/>
         

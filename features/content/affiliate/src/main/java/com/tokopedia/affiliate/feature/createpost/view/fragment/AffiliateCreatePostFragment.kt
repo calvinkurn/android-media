@@ -1,6 +1,5 @@
 package com.tokopedia.affiliate.feature.createpost.view.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import com.google.gson.Gson
@@ -32,6 +31,7 @@ class AffiliateCreatePostFragment : BaseCreatePostFragment() {
     companion object {
         private const val AF_CREATE_POST_CACHE = "af_create_post_cache"
         private const val AF_ADD_PRODUCT = "af_add_product_%s"
+        private const val REQUEST_ATTACH_AFFILIATE_PRODUCT = 12
 
         fun createInstance(bundle: Bundle): AffiliateCreatePostFragment {
             val fragment = AffiliateCreatePostFragment()
@@ -69,5 +69,16 @@ class AffiliateCreatePostFragment : BaseCreatePostFragment() {
             initProductIds()
             isAddingProduct = false
         }
+    }
+
+    override fun updateRelatedProduct() {
+        super.updateRelatedProduct()
+        if (adapter.itemCount > 0) {
+            productAttachmentLayoutManager.scrollToPosition(adapter.itemCount - 1)
+        }
+    }
+
+    fun clearCache() {
+        localCacheHandler.clearCache()
     }
 }
