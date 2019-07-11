@@ -32,7 +32,7 @@ class GetProfileRelatedUseCase @Inject constructor(@ApplicationContext private v
     init {
         graphqlUseCase.setCacheStrategy(
             GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_30.`val`())
+                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`())
                 .setSessionIncluded(true)
                 .build()
         )
