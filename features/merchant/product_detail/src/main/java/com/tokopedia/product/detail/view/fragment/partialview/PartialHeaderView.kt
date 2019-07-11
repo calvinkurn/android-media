@@ -19,6 +19,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.product.Campaign
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_GUARANTEE
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.data.util.numberFormatted
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
@@ -35,7 +36,6 @@ class PartialHeaderView private constructor(private val view: View,
 
     companion object {
         const val ONE_SECOND = 1000L
-        const val URL_GUARANTEE = "https://www.tokopedia.com/help/article/a-1940"
         fun build(_view: View, _activity: Activity?) = PartialHeaderView(_view, _activity)
     }
 
@@ -75,7 +75,7 @@ class PartialHeaderView private constructor(private val view: View,
 
     fun renderTxtIcon(labelIc: String, colorIc: Int, imageIc: ImageSpan) {
         with(view.label_official_store) {
-            val blackString = context.getString(com.tokopedia.product.detail.R.string.product_from) + "  "
+            val blackString = context.getString(R.string.product_from) + "  "
             val startSpan = blackString.length
             val spanText = android.text.SpannableString(blackString + "   " +
                     labelIc)

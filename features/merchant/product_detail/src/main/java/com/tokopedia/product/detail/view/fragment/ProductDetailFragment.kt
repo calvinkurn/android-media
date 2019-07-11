@@ -71,6 +71,9 @@ import com.tokopedia.product.detail.common.data.model.product.Wholesale
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.product.detail.data.model.*
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PROPOSITION_GUARANTEE
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PROPOSITION_ORI
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PROPOSITION_READY
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.data.util.numberFormatted
@@ -177,13 +180,13 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private var useVariant = true
     private lateinit var varToolbar: Toolbar
     private lateinit var varPictureImage: PictureScrollingView
+    private lateinit var bottomSheet: ValuePropositionBottomSheet
 
     private var userCod: Boolean = false
     private var shopCod: Boolean = false
     private var shouldShowCod = false
     private lateinit var tradeInParams: TradeInParams
     private lateinit var tradeInBroadcastReceiver: TradeInBroadcastReceiver
-    lateinit var bottomSheet: ValuePropositionBottomSheet
 
     var loadingProgressDialog: ProgressDialog? = null
     val errorBottomsheets: ErrorBottomsheets by lazy {
@@ -219,10 +222,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         const val REQUEST_CODE_ATC_EXPRESS = 567
         const val REQUEST_CODE_LOGIN_THEN_BUY_EXPRESS = 569
         const val REQUEST_CODE_SHOP_INFO = 998
-
-        const val URL_VALUE_PROPOSITION_READY ="ttps://www.tokopedia.com/help/article/a-1937"
-        const val URL_VALUE_PROPOSITION_ORI ="ttps://www.tokopedia.com/help/article/a-1938"
-        const val URL_VALUE_PROPOSITION_GUARANTEE ="ttps://www.tokopedia.com/help/article/a-1939"
 
         const val SAVED_NOTE = "saved_note"
         const val SAVED_QUANTITY = "saved_quantity"
@@ -745,9 +744,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             R.id.btn_favorite -> onShopFavoriteClick()
             R.id.send_msg_shop, R.id.btn_topchat -> onShopChatClicked()
             R.id.shop_ava, R.id.shop_name -> gotoShopDetail()
-            R.id.container_ready -> onValuePropositionClick(1)
-            R.id.container_ori -> onValuePropositionClick(2)
-            R.id.container_guarantee -> onValuePropositionClick(3)
+            R.id.container_ready -> onValuePropositionClick(R.id.container_ready)
+            R.id.container_ori -> onValuePropositionClick(R.id.container_ori)
+            R.id.container_guarantee -> onValuePropositionClick(R.id.container_guarantee)
 
             else -> {
             }
@@ -777,26 +776,25 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
     }
 
-    private fun onValuePropositionClick(flag: Int) {
+    private fun onValuePropositionClick(view: Int) {
         val title: String
         val desc: String
         val url: String
-        when (flag) {
-            1 -> {
+        when (view) {
+            R.id.container_ready -> {
                 title = getString(R.string.value_proposition_title_ready)
                 desc = getString(R.string.value_proposition_desc_ready)
-                url = "URL_VALUE_PROPOSITION_READY"
+                url = URL_VALUE_PROPOSITION_READY
             }
-            2 -> {
+            R.id.container_ori -> {
                 title = getString(R.string.value_proposition_title_original)
                 desc = getString(R.string.value_proposition_desc_original)
-                url = "URL_VALUE_PROPOSITION_ORI"
+                url = URL_VALUE_PROPOSITION_ORI
             }
             else -> {
                 title = getString(R.string.value_proposition_title_guarantee)
                 desc = getString(R.string.value_proposition_desc_guarantee)
-                url = "URL_VALUE_PROPOSITION_GUARANTEE"
-
+                url = URL_VALUE_PROPOSITION_GUARANTEE
             }
         }
 

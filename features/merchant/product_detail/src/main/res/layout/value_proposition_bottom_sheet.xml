@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/dp_20">
+    android:paddingBottom="@dimen/dp_40">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,17 +18,17 @@
             android:id="@+id/txt_title_bs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Garansi Harga Termurah"
             android:textColor="@color/black"
-            app:typographyType="heading_3" />
+            app:typographyType="heading_3"
+            tools:text="Garansi Harga Termurah" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txt_desc_bs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_16"
-            android:text="Dapatkan harga termurah di Official Store Tokopedia. Kami akan ganti 2x selisih harga jika kamu menemukan yang lebih murah di Official Store platform lain."
-            app:typographyType="body_2" />
+            app:typographyType="body_2"
+            tools:text="Dapatkan harga termurah di Official Store Tokopedia. Kami akan ganti 2x selisih harga jika kamu menemukan yang lebih murah di Official Store platform lain." />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/learn_more_btn_bs"

@@ -61,7 +61,9 @@ class ValuePropositionBottomSheet : BottomSheets() {
         super.configView(parentView)
 
         val displaymetrics = DisplayMetrics()
-        activity!!.windowManager.defaultDisplay.getMetrics(displaymetrics)
+        activity?.also {
+            it.windowManager.defaultDisplay.getMetrics(displaymetrics)
+        }
         val widthSpec = View.MeasureSpec.makeMeasureSpec(displaymetrics.widthPixels, View.MeasureSpec.EXACTLY)
         parentView?.post {
             parentView.measure(widthSpec, 0)
