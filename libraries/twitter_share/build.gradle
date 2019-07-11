@@ -9,7 +9,7 @@ android {
 }
 
 dependencies {
-    implementation rootProject.ext.tkpdInternalLibDependencies.abstraction
-    implementation rootProject.ext.miscDependencies.twitter
+    implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.webview)
+    implementation rootProject.ext.miscDependencies.twitter
 }
