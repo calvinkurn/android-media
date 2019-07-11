@@ -173,6 +173,10 @@ public class ImagePickerBuilder implements Parcelable {
         return maxFileSizeInKB;
     }
 
+    public void setImagePickerMultipleSelectionBuilder(ImagePickerMultipleSelectionBuilder imagePickerMultipleSelectionBuilder) {
+        this.imagePickerMultipleSelectionBuilder = imagePickerMultipleSelectionBuilder;
+    }
+
     @Override
     public int describeContents() {
         return 0;

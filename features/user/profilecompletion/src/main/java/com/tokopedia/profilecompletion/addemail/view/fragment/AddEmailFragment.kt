@@ -209,6 +209,7 @@ class AddEmailFragment : BaseDaggerFragment() {
     override fun onDestroy() {
         super.onDestroy()
         viewModel.mutateAddEmailResponse.removeObservers(this)
+        viewModel.clear()
     }
 
 }

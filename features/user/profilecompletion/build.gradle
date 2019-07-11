@@ -33,6 +33,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.libraries.imageuploader)
+    implementation project(rootProject.ext.libraries.config)
 
     implementation rootProject.ext.unifyDependencies.principles
 //    implementation rootProject.ext.unifyDependencies.components

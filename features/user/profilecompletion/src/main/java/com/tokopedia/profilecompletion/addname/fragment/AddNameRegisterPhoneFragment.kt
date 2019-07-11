@@ -140,7 +140,7 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
         })
 
         btnContinue.setOnClickListener { onContinueClick() }
-        btnContinue.setOnEditorActionListener(TextView.OnEditorActionListener { v, id, event ->
+        btnContinue.setOnEditorActionListener(TextView.OnEditorActionListener { _, id, _ ->
             if (id == R.id.btn_continue || id == EditorInfo.IME_NULL) {
                 onContinueClick()
                 return@OnEditorActionListener true

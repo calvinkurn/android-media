@@ -7,14 +7,17 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueriesConstant
+import com.tokopedia.profilecompletion.data.UploadProfileImageModel
 import com.tokopedia.profilecompletion.settingprofile.data.ProfileCompletionData
 import com.tokopedia.profilecompletion.settingprofile.data.UserProfileInfoData
-import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineDispatcher
-import javax.inject.Inject
+import com.tokopedia.profilecompletion.settingprofile.domain.UploadProfilePictureUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.CoroutineDispatcher
+import rx.Subscriber
+import javax.inject.Inject
 
 /**
  * Created by Ade Fulki on 2019-07-02.
@@ -23,12 +26,14 @@ import com.tokopedia.usecase.coroutines.Success
 
 class ProfileInfoViewModel @Inject constructor(
     private val userProfileInfoUseCase: GraphqlUseCase<UserProfileInfoData>,
+    private val uploadProfilePictureUseCase : UploadProfilePictureUseCase,
     private val userSession: UserSessionInterface,
     private val rawQueries: Map<String, String>,
-    private val dispatcher: CoroutineDispatcher
+    dispatcher: CoroutineDispatcher
 ): BaseViewModel(dispatcher){
 
     val userProfileInfo = MutableLiveData<Result<ProfileCompletionData>>()
+    val uploadProfilePictureResponse = MutableLiveData<Result<UploadProfileImageModel>>()
 
     fun getUserProfileInfo(){
         val rawQuery = rawQueries[ProfileCompletionQueriesConstant.QUERY_PROFILE_COMPLETION]
@@ -51,5 +56,26 @@ class ProfileInfoViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    fun uploadProfilePicture(imagePath: String) {
+
+
+        uploadProfilePictureUseCase.execute(
+                UploadProfilePictureUseCase.createRequestParams(imagePath),
+                object : Subscriber<UploadProfileImageModel>() {
+
+            override fun onCompleted() {
+
+            }
+
+            override fun onError(e: Throwable) {
+                uploadProfilePictureResponse.value = Fail(e)
+            }
+
+            override fun onNext(result: UploadProfileImageModel) {
+                uploadProfilePictureResponse.value = Success(result)
+            }
+        })
     }
 }

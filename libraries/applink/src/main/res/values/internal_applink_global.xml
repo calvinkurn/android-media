@@ -18,5 +18,6 @@
     <string name="path_add_email">/add-email</string>
     <string name="path_add_phone">/add-phone</string>
     <string name="path_cotp">/cotp</string>
+    <string name="path_image_picker">/image-picker</string>
 
 </resources>

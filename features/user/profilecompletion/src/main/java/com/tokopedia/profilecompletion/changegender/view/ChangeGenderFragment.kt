@@ -56,7 +56,7 @@ class ChangeGenderFragment : BaseDaggerFragment() {
     }
 
     private fun setListener() {
-        radioGroup.setOnCheckedChangeListener { radioGroup: RadioGroup, i: Int ->
+        radioGroup.setOnCheckedChangeListener { _: RadioGroup, _: Int ->
             buttonSubmit.buttonCompatType = ButtonCompat.PRIMARY
         }
 
@@ -133,6 +133,8 @@ class ChangeGenderFragment : BaseDaggerFragment() {
     override fun onDestroy() {
         super.onDestroy()
         viewModel.mutateChangeGenderResponse.removeObservers(this)
+        viewModel.clear()
+
 
     }
 

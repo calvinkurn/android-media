@@ -72,5 +72,13 @@
     <string name="tokocash_after_activation">Setelah terverifikasi, TokoCash akan aktif dan bisa digunakan sebagai salah satu metode pembayaran Anda.</string>
     <string name="phone_number_already_exist">Akun lain telah menggunakan nomor ponsel ini</string>
 
+    <!-- CHANGE EMAIL -->
+    <string name="cannot_change_email">Untuk saat ini, kamu hanya bisa mengubah email akun Tokopedia dari komputer</string>
+    <string name="title_change_email_dialog">Pengubahan email</string>
+
+    <!-- UPLOAD AVATAR -->
+    <string name="failed_to_get_picture">Gagal mengambil gambar. Mohon coba kembali</string>
+    <string name="failed_to_upload_picture">Gagal mengunggah gambar. Mohon coba kembali</string>
+
 
 </resources>
