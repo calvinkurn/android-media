@@ -42,7 +42,6 @@ import com.tokopedia.otp.cotp.view.presenter.ChooseVerificationPresenter;
 import com.tokopedia.otp.cotp.view.viewlistener.SelectVerification;
 import com.tokopedia.otp.cotp.view.viewmodel.ListVerificationMethod;
 import com.tokopedia.otp.cotp.view.viewmodel.MethodItem;
-import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
@@ -63,7 +62,12 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
     protected RecyclerView methodListRecyclerView;
     protected TextView changePhoneNumberButton;
     protected VerificationMethodAdapter adapter;
-    protected VerificationPassModel passModel;
+
+    protected String phoneNumber;
+    protected String email;
+    protected int otpType;
+    protected boolean canUseOtherMethod;
+
     protected View mainView;
     protected ProgressBar loadingView;
     @Inject
@@ -102,10 +106,14 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
 
     }
 
-    public static Fragment createInstance(VerificationPassModel passModel) {
+    public static Fragment createInstance(String phoneNumber, String email,
+                                          int otpType, boolean canUseOtherMethod) {
         Fragment fragment = new ChooseVerificationMethodFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable(PASS_MODEL, passModel);
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, canUseOtherMethod);
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber);
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, email);
+        bundle.putInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, otpType);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -114,12 +122,29 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments() != null && getArguments().getParcelable(PASS_MODEL) != null) {
-            passModel = getArguments().getParcelable(PASS_MODEL);
+        if (getArguments() != null) {
+            canUseOtherMethod = getArguments().getBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, false);
+            phoneNumber = getArguments().getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "");
+            email = getArguments().getString(ApplinkConstInternalGlobal.PARAM_EMAIL, "");
+            otpType = getArguments().getInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, 0);
+        }else if (savedInstanceState != null) {
+            canUseOtherMethod = savedInstanceState.getBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, false);
+            phoneNumber = savedInstanceState.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "");
+            email = savedInstanceState.getString(ApplinkConstInternalGlobal.PARAM_EMAIL, "");
+            otpType = savedInstanceState.getInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, 0);
         } else if (getActivity() != null) {
             Log.d(ChooseVerificationMethodFragment.class.getSimpleName(), "Missing Passmodel");
             getActivity().finish();
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, canUseOtherMethod);
+        outState.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, email);
+        outState.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber);
+        outState.putInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, otpType);
     }
 
     @Nullable
@@ -149,17 +174,15 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
     }
 
     protected void initList() {
-        presenter.getMethodList(passModel.getPhoneNumber(),
-                passModel.getOtpType());
+        presenter.getMethodList(phoneNumber, otpType);
     }
 
     @Override
     public void onMethodSelected(MethodItem methodItem) {
 
         if (analytics != null
-                && methodItem != null
-                && passModel != null) {
-            analytics.eventClickMethodOtp(passModel.getOtpType(), methodItem.getModeName());
+                && methodItem != null) {
+            analytics.eventClickMethodOtp(otpType, methodItem.getModeName());
         }
         if (methodItem != null
                 && methodItem.isUsingPopUp()
@@ -281,10 +304,10 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
         }
         if (TextUtils.isEmpty(errorMessage)) {
             NetworkErrorHelper.showEmptyState(getActivity(), mainView,
-                    () -> presenter.getMethodList(passModel.getPhoneNumber(), passModel.getOtpType()));
+                    () -> presenter.getMethodList(phoneNumber, otpType));
         } else {
             NetworkErrorHelper.showEmptyState(getActivity(), mainView, errorMessage,
-                    () -> presenter.getMethodList(passModel.getPhoneNumber(), passModel.getOtpType()));
+                    () -> presenter.getMethodList(phoneNumber, otpType));
         }
     }
 

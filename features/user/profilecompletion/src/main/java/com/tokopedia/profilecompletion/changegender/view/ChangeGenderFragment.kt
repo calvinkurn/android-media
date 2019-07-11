@@ -56,7 +56,7 @@ class ChangeGenderFragment : BaseDaggerFragment() {
     }
 
     private fun setListener() {
-        radioGroup.setOnCheckedChangeListener { radioGroup: RadioGroup, i: Int ->
+        radioGroup.setOnCheckedChangeListener { _: RadioGroup, _: Int ->
             buttonSubmit.buttonCompatType = ButtonCompat.PRIMARY
         }
 
@@ -104,13 +104,13 @@ class ChangeGenderFragment : BaseDaggerFragment() {
 //        }
     }
 
-    private fun onSuccessChangeGender(data: ChangeGenderResult) {
+    private fun onSuccessChangeGender(result: ChangeGenderResult) {
         dismissLoading()
         activity?.run {
             val intent = Intent()
             val bundle = Bundle()
-            bundle.putInt(EXTRA_PROFILE_SCORE, data.changeGenderData.userProfileCompletionUpdate.completionScore)
-            bundle.putInt(EXTRA_SELECTED_GENDER, data.selectedGender)
+            bundle.putInt(EXTRA_PROFILE_SCORE, result.data.completionScore)
+            bundle.putInt(EXTRA_SELECTED_GENDER, result.selectedGender)
             intent.putExtras(bundle)
             setResult(Activity.RESULT_OK, intent)
             finish()
@@ -130,6 +130,13 @@ class ChangeGenderFragment : BaseDaggerFragment() {
         progressBar.visibility = View.GONE
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.mutateChangeGenderResponse.removeObservers(this)
+        viewModel.clear()
+
+
+    }
 
     companion object {
 

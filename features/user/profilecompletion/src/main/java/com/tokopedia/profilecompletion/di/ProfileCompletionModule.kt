@@ -13,7 +13,6 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
-
 @ProfileCompletionScope
 @Module
 class ProfileCompletionModule {
@@ -33,6 +32,6 @@ class ProfileCompletionModule {
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
     @Provides
-    @ProfileCompletionScope
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
+
 }

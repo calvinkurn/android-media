@@ -3,59 +3,64 @@ package com.tokopedia.profilecompletion.addemail.viewmodel
 import android.arch.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.profilecompletion.addemail.data.AddEmailPojo
+import com.tokopedia.profilecompletion.addphone.data.AddPhonePojo
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueriesConstant
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueriesConstant.PARAM_EMAIL
+import com.tokopedia.profilecompletion.data.ProfileCompletionQueriesConstant.PARAM_OTP_CODE
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class AddEmailViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
-                                                private val rawQueries: Map<String, String>,
-                                                val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
+class AddEmailViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
+                                            private val rawQueries: Map<String, String>,
+                                            private val graphqlUseCase: GraphqlUseCase<AddEmailPojo>)
+    : BaseViewModel(dispatcher) {
 
     val mutateAddEmailResponse = MutableLiveData<Result<AddEmailPojo>>()
 
-    fun mutateAddEmail(email: String) {
-        launchCatchError(block = {
-            val data = withContext(Dispatchers.IO) {
+    fun mutateAddEmail(email: String, otpCode: String) {
+        rawQueries[ProfileCompletionQueriesConstant.MUTATION_ADD_EMAIL]?.let { query ->
 
-                val params = mapOf(PARAM_EMAIL to email)
+            val params = mapOf(PARAM_EMAIL to email,
+                    PARAM_OTP_CODE to otpCode)
 
-                val graphqlInfoRequest = GraphqlRequest(rawQueries[ProfileCompletionQueriesConstant.MUTATION_ADD_EMAIL],
-                        AddEmailPojo::class.java, params)
+            graphqlUseCase.setTypeClass(AddEmailPojo::class.java)
+            graphqlUseCase.setRequestParams(params)
+            graphqlUseCase.setGraphqlQuery(query)
 
-                graphqlRepository.getReseponse(listOf(graphqlInfoRequest))
-            }
-
-            data.getSuccessData<AddEmailPojo>().let {
-                val errorMessage = it.data.userProfileCompletionUpdate.errorMessage
-                val isSuccess = it.data.userProfileCompletionUpdate.isSuccess
-
-                if (errorMessage.isBlank() && isSuccess) {
-                    mutateAddEmailResponse.value = Success(it)
-                } else if (!errorMessage.isBlank()) {
-                    mutateAddEmailResponse.value = Fail(MessageErrorException(errorMessage,
-                            ErrorHandlerSession.ErrorCode.WS_ERROR.toString()))
-                } else {
-                    mutateAddEmailResponse.value = Fail(RuntimeException())
-                }
-            }
-
+            graphqlUseCase.execute(
+                    onSuccessMutateAddEmail(),
+                    onErrorMutateAddEmail()
+            )
         }
-        ) {
+
+    }
+
+    private fun onErrorMutateAddEmail(): (Throwable) -> Unit {
+        return {
             it.printStackTrace()
             mutateAddEmailResponse.value = Fail(it)
         }
+    }
 
+    private fun onSuccessMutateAddEmail(): (AddEmailPojo) -> Unit {
+        return {
+            val errorMessage = it.data.errorMessage
+            val isSuccess = it.data.isSuccess
+
+            if (errorMessage.isBlank() && isSuccess) {
+                mutateAddEmailResponse.value = Success(it)
+            } else if (!errorMessage.isBlank()) {
+                mutateAddEmailResponse.value = Fail(MessageErrorException(errorMessage,
+                        ErrorHandlerSession.ErrorCode.WS_ERROR.toString()))
+            } else {
+                mutateAddEmailResponse.value = Fail(RuntimeException())
+            }
+        }
     }
 }

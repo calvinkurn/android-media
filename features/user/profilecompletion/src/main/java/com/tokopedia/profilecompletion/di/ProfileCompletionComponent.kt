@@ -12,7 +12,8 @@ import dagger.Component
 @Component(modules = [
     ProfileCompletionModule::class,
     ProfileCompletionViewModelModule::class,
-    ProfileCompletionQueryModule::class
+    ProfileCompletionQueryModule::class,
+    ImageUploadModule::class
 ], dependencies = [BaseAppComponent::class])
 interface ProfileCompletionComponent {
     fun inject(fragment: ChangeGenderFragment)

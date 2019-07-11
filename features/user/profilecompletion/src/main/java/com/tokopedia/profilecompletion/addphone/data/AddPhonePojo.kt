@@ -4,15 +4,10 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class AddPhonePojo(
-        @SerializedName("data")
-        @Expose
-        var data: AddPhoneData = AddPhoneData()
-)
-
-data class AddPhoneData(
         @SerializedName("userProfileCompletionUpdate")
         @Expose
-        var userProfileCompletionUpdate: UserProfileCompletionUpdatePhone = UserProfileCompletionUpdatePhone()
+        var data: UserProfileCompletionUpdatePhone = UserProfileCompletionUpdatePhone()
+
 )
 
 data class UserProfileCompletionUpdatePhone(

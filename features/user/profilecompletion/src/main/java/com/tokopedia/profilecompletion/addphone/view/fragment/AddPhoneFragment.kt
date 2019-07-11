@@ -20,8 +20,10 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.profilecompletion.R
+import com.tokopedia.profilecompletion.addemail.view.fragment.AddEmailFragment
 import com.tokopedia.profilecompletion.addphone.viewmodel.AddPhoneViewModel
 import com.tokopedia.profilecompletion.addphone.data.AddPhonePojo
+import com.tokopedia.profilecompletion.addphone.data.CheckPhonePojo
 import com.tokopedia.profilecompletion.di.ProfileCompletionComponent
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.usecase.coroutines.Fail
@@ -85,16 +87,23 @@ class AddPhoneFragment : BaseDaggerFragment() {
                 setErrorText(getString(R.string.wrong_phone_format))
             } else {
                 showLoading()
-                //TODO GET OTP FIRST
-//                goToVerificationActivity()
+                viewModel.mutateCheckPhone(phone)
             }
         }
     }
 
     private fun goToVerificationActivity() {
-        //TODO
+        val phone = etPhone.text.toString().trim()
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
-        intent.putExtra("is_show_choose_method", false)
+        val bundle = Bundle()
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "")
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, false)
+        bundle.putInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_PHONE_VERIFICATION)
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, "sms")
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false)
+
+        intent.putExtras(bundle)
         startActivityForResult(intent, REQUEST_COTP_PHONE_VERIFICATION)
     }
 
@@ -121,6 +130,17 @@ class AddPhoneFragment : BaseDaggerFragment() {
     }
 
     private fun setObserver() {
+
+        viewModel.mutateCheckPhoneResponse.observe(
+                this,
+                Observer {
+                    when (it) {
+                        is Success -> onSuccessCheckPhone(it.data)
+                        is Fail -> onErrorCheckPhone(it.throwable)
+                    }
+                }
+        )
+
         viewModel.mutateAddPhoneResponse.observe(
                 this,
                 Observer {
@@ -133,9 +153,24 @@ class AddPhoneFragment : BaseDaggerFragment() {
 
     }
 
+    private fun onErrorCheckPhone(throwable: Throwable) {
+        dismissLoading()
+        setErrorText(ErrorHandlerSession.getErrorMessage(throwable, context, false))
+    }
+
+    private fun onSuccessCheckPhone(pojo: CheckPhonePojo) {
+        val isExist = pojo.checkMsisdn.isExist
+
+        if (isExist) {
+            onErrorAddPhone(MessageErrorException(getString(R.string.phone_number_already_exist),
+                    ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW.toString()))
+        } else {
+            goToVerificationActivity()
+        }
+    }
+
     private fun onErrorAddPhone(throwable: Throwable) {
         dismissLoading()
-        Log.d("NISNIS", throwable.message)
         //TODO uncomment after unify is fixed
 //        view?.run {
 //            Toaster.showError(
@@ -150,7 +185,7 @@ class AddPhoneFragment : BaseDaggerFragment() {
         activity?.run {
             val intent = Intent()
             val bundle = Bundle()
-            bundle.putInt(EXTRA_PROFILE_SCORE, pojo.data.userProfileCompletionUpdate.completionScore)
+            bundle.putInt(EXTRA_PROFILE_SCORE, pojo.data.completionScore)
             intent.putExtras(bundle)
             setResult(Activity.RESULT_OK, intent)
             finish()
@@ -169,9 +204,8 @@ class AddPhoneFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessVerifyPhone(data: Intent?) {
-
         data?.extras?.run {
-            val otpCode = getString("otp", "")
+            val otpCode = getString(ApplinkConstInternalGlobal.PARAM_OTP_CODE, "")
             if (otpCode.isNotBlank()) {
                 val phone = etPhone.text.toString()
                 viewModel.mutateAddPhone(phone.trim(), otpCode)
@@ -188,12 +222,15 @@ class AddPhoneFragment : BaseDaggerFragment() {
         if (requestCode == REQUEST_COTP_PHONE_VERIFICATION
                 && resultCode == Activity.RESULT_OK) {
             onSuccessVerifyPhone(data)
+        }else{
+            dismissLoading()
         }
     }
 
     companion object {
         val EXTRA_PROFILE_SCORE = "profile_score"
         val REQUEST_COTP_PHONE_VERIFICATION = 101
+        val OTP_TYPE_PHONE_VERIFICATION = 11
 
         fun createInstance(bundle: Bundle): AddPhoneFragment {
             val fragment = AddPhoneFragment()
@@ -202,5 +239,11 @@ class AddPhoneFragment : BaseDaggerFragment() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.mutateCheckPhoneResponse.removeObservers(this)
+        viewModel.mutateAddPhoneResponse.removeObservers(this)
+        viewModel.clear()
+    }
 
 }

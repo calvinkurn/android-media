@@ -1,5 +1,5 @@
-mutation add_email($email: String!) {
-  userProfileCompletionUpdate(email: $email) {
+mutation add_email($email: String!, $otpCode: String!) {
+  userProfileCompletionUpdate(email: $email, otpCode: $otpCode) {
     isSuccess
     emailMessage
     completionScore

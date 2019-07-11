@@ -10,11 +10,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.abstraction.common.utils.view.PhoneNumberUtils
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectionBuilder
+import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.profilecompletion.R
+import com.tokopedia.profilecompletion.customview.UnifyDialog
+import com.tokopedia.profilecompletion.data.UploadProfileImageModel
 import com.tokopedia.profilecompletion.di.ProfileCompletionComponent
 import com.tokopedia.profilecompletion.settingprofile.data.ProfileCompletionData
 import com.tokopedia.profilecompletion.settingprofile.view.widget.CustomFieldSettingProfile
@@ -22,6 +29,7 @@ import com.tokopedia.profilecompletion.settingprofile.viewmodel.ProfileInfoViewM
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_setting_profile.*
+import java.io.File
 import javax.inject.Inject
 
 
@@ -30,7 +38,7 @@ import javax.inject.Inject
  * ade.hadian@tokopedia.com
  */
 
-class SettingProfileFragment: BaseDaggerFragment(){
+class SettingProfileFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -67,42 +75,119 @@ class SettingProfileFragment: BaseDaggerFragment(){
         initSettingProfileData()
     }
 
-    private fun initObserver(){
+    private fun showChangeEmailDialog() {
+        val dialog = UnifyDialog(activity as Activity, UnifyDialog.SINGLE_ACTION, UnifyDialog.NO_HEADER)
+        dialog.setTitle(getString(R.string.title_change_email_dialog))
+        dialog.setDescription(getString(R.string.cannot_change_email))
+        dialog.setOk(getString(R.string.title_ok))
+        dialog.setOkOnClickListner(View.OnClickListener { dialog.dismiss() })
+        dialog.show()
+    }
+
+    private fun initObserver() {
         profileInfoViewModel.userProfileInfo.observe(this, Observer {
             when (it) {
                 is Success -> onSuccessGetUserProfileInfo(it.data)
                 is Fail -> onErrorGetProfileInfo(it.throwable)
             }
         })
+
+        profileInfoViewModel.uploadProfilePictureResponse.observe(this, Observer {
+            when(it){
+                is Success -> onSuccessUploadProfilePicture(it.data)
+                is Fail -> onErrorUploadProfilePicture(it.throwable)
+            }
+        })
     }
 
-    private fun initSettingProfileData(){
+    private fun onErrorUploadProfilePicture(throwable: Throwable) {
+        dismissLoadingUploadProfilePicture()
+        Toast.makeText(context, "throw : " + throwable.message, Toast.LENGTH_LONG).show()
+        //TODO
+    }
+
+    private fun onSuccessUploadProfilePicture(result: UploadProfileImageModel) {
+        dismissLoadingUploadProfilePicture()
+        if(result.data?.filePath != null && result.data.filePath.isNotBlank()) {
+            ImageHandler.loadImageCircle2(context, profilePhoto, result.data.filePath)
+        }else{
+            onErrorUploadProfilePicture(MessageErrorException(getString(R.string.failed_to_upload_picture)))
+        }
+
+    }
+
+    private fun initSettingProfileData() {
         showLoading()
         profileInfoViewModel.getUserProfileInfo()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when(resultCode){
+        when (resultCode) {
             Activity.RESULT_OK -> {
-                when(requestCode){
-                    REQUEST_CODE_EDIT_PROFILE_PHOTO -> { } //TODO add action on result
-                    REQUEST_CODE_EDIT_BOD -> { } //TODO add action on result
-                    REQUEST_CODE_EDIT_EMAIL -> { } //TODO add action on result
-                    REQUEST_CODE_EDIT_PHONE -> { } //TODO add action on result
-                    else -> { } //TODO add action on result
+                when (requestCode) {
+                    REQUEST_CODE_EDIT_PROFILE_PHOTO -> {
+                        onSuccessGetProfilePhoto(data)
+                    }
+                    REQUEST_CODE_EDIT_BOD -> {
+                    } //TODO add action on result
+                    REQUEST_CODE_EDIT_EMAIL -> {
+                    } //TODO add action on result
+                    REQUEST_CODE_EDIT_PHONE -> {
+                    } //TODO add action on result
+                    else -> {
+                    } //TODO add action on result
                 }
             }
             Activity.RESULT_CANCELED -> {
-                when(requestCode){
-                    REQUEST_CODE_EDIT_PROFILE_PHOTO -> { } //TODO add action on result
-                    REQUEST_CODE_EDIT_BOD -> { } //TODO add action on result
-                    REQUEST_CODE_EDIT_EMAIL -> { } //TODO add action on result
-                    REQUEST_CODE_EDIT_PHONE -> { } //TODO add action on result
-                    else -> { } //TODO add action on result
+                when (requestCode) {
+                    REQUEST_CODE_EDIT_PROFILE_PHOTO -> {
+                    } //TODO add action on result
+                    REQUEST_CODE_EDIT_BOD -> {
+                    } //TODO add action on result
+                    REQUEST_CODE_EDIT_EMAIL -> {
+                    } //TODO add action on result
+                    REQUEST_CODE_EDIT_PHONE -> {
+                    } //TODO add action on result
+                    else -> {
+                    } //TODO add action on result
                 }
             }
-            else -> { } //TODO add action on result
+            else -> {
+            } //TODO add action on result
         }
+    }
+
+    private fun onSuccessGetProfilePhoto(data: Intent?) {
+        if (data != null) {
+            val imageUrlOrPathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
+            if (imageUrlOrPathList != null && imageUrlOrPathList.size > 0) {
+                val savedLocalImageUrl = imageUrlOrPathList[0]
+                val file = File(savedLocalImageUrl)
+                if(file.exists()) {
+                    showLoadingUploadProfilePicture()
+                    profileInfoViewModel.uploadProfilePicture(savedLocalImageUrl)
+                }else{
+                    onErrorGetProfilePhoto(MessageErrorException(getString(R.string.failed_to_get_picture)))
+                }
+            }else{
+                onErrorGetProfilePhoto(MessageErrorException(getString(R.string.failed_to_get_picture)))
+            }
+        }else{
+            onErrorGetProfilePhoto(MessageErrorException(getString(R.string.failed_to_get_picture)))
+        }
+    }
+
+    private fun showLoadingUploadProfilePicture() {
+        //TODO SHOW LOADING
+    }
+
+    private fun dismissLoadingUploadProfilePicture() {
+        //TODO
+    }
+
+
+    private fun onErrorGetProfilePhoto(errorException: Exception) {
+        //TODO show message error
     }
 
     override fun getScreenName(): String {
@@ -113,7 +198,7 @@ class SettingProfileFragment: BaseDaggerFragment(){
         getComponent(ProfileCompletionComponent::class.java).inject(this)
     }
 
-    private fun onSuccessGetUserProfileInfo(profileCompletionData: ProfileCompletionData){
+    private fun onSuccessGetUserProfileInfo(profileCompletionData: ProfileCompletionData) {
         dismissLoading()
 
         ImageHandler.loadImageCircle2(context, profilePhoto, profileCompletionData.profilePicture)
@@ -217,10 +302,10 @@ class SettingProfileFragment: BaseDaggerFragment(){
         }
     }
 
-    private fun onErrorGetProfileInfo(throwable: Throwable){
+    private fun onErrorGetProfileInfo(throwable: Throwable) {
         dismissLoading()
         view?.run {
-//            Toaster.showError(
+            //            Toaster.showError(
 //                    this,
 //                    ErrorHandlerSession.getErrorMessage(throwable, context, true),
 //                    Snackbar.LENGTH_LONG)
@@ -233,9 +318,14 @@ class SettingProfileFragment: BaseDaggerFragment(){
         profileInfoViewModel.clear()
     }
 
-    inner class EditUserProfilePhotoListener: View.OnClickListener{
+    inner class EditUserProfilePhotoListener : View.OnClickListener {
         override fun onClick(v: View?) {
-            //TODO add action on listener
+            val builder = ImagePickerBuilder.getDefaultBuilder(context)
+            val multipleSelectionBuilder = ImagePickerMultipleSelectionBuilder.getDefaultBuilder()
+            multipleSelectionBuilder.maximumNoPick = 1
+            builder.imagePickerMultipleSelectionBuilder = multipleSelectionBuilder
+            val intent = ImagePickerActivity.getIntent(context, builder)
+            startActivityForResult(intent, REQUEST_CODE_EDIT_PROFILE_PHOTO)
         }
     }
 
