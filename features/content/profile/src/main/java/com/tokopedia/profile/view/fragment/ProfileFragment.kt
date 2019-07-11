@@ -217,8 +217,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 try {
                     if (hasFeed() && newState == RecyclerView.SCROLL_STATE_IDLE) {
                         val item: Visitable<*>?
-                        // if it is GridLayoutManager will just return.
-
                         val position = when {
                             itemIsFullScreen() -> layoutManager.findLastVisibleItemPosition()
                             layoutManager.findFirstCompletelyVisibleItemPosition() != -1 -> layoutManager.findFirstCompletelyVisibleItemPosition()
@@ -247,7 +245,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 if (hasFeed()) return
                 val position = parent.getChildAdapterPosition(view)
                 val viewType = adapter.getItemViewType(position)
-                if (viewType == OtherRelatedProfileViewHolder.LAYOUT) {
+                val inGrid = viewType == OtherRelatedProfileViewHolder.LAYOUT
+                if (inGrid) {
                     val column = position % spanCount
                     if (column == 0) {
                         outRect.left = spacing
