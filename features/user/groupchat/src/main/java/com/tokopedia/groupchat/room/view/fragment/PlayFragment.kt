@@ -684,6 +684,11 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         }
         timeStampAfterPause = System.currentTimeMillis()
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            activity?.isInPictureInPictureMode.let {
+                snackBarWebSocket?.dismiss()
+            }
+        }
     }
 
     override fun onResume() {
@@ -783,6 +788,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun onDestroy() {
+
         if(::viewState.isInitialized){
             viewState?.destroy()
         }
