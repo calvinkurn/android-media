@@ -185,7 +185,7 @@ query SearchProduct(
                     original_price
                     discount_percentage
                 }
-                label_groups {
+                label_group {
                     position
                     type
                     title
