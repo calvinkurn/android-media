@@ -688,7 +688,7 @@ public class WishListImpl implements WishList {
     }
 
 
-    private class FirstSearchWishlistSubscriber extends Subscriber<GqlWishListDataResponse> {
+    private class LoadMoreSearchWishlistSubscriber extends Subscriber<GqlWishListDataResponse> {
 
         @Override
         public void onStart() {
@@ -721,7 +721,7 @@ public class WishListImpl implements WishList {
 
     }
 
-    private class LoadMoreSearchWishlistSubscriber extends Subscriber<GqlWishListDataResponse> {
+    private class FirstSearchWishlistSubscriber extends Subscriber<GqlWishListDataResponse> {
 
         @Override
         public void onStart() {
