@@ -4,13 +4,14 @@ import android.content.Context
 import android.content.Intent
 import com.tokopedia.twitter_share.view.activity.TwitterWebViewActivity
 import rx.Subscription
+import rx.schedulers.Schedulers
 import rx.subjects.PublishSubject
 import twitter4j.auth.RequestToken
 import java.net.URL
 
 class TwitterAuthenticator(
-    private val requestToken: RequestToken,
-    private val listener: TwitterAuthenticatorListener
+        private val requestToken: RequestToken,
+        private val listener: TwitterAuthenticatorListener
 ) {
 
     private lateinit var callbackUrlSubscription: Subscription
@@ -50,12 +51,14 @@ class TwitterAuthenticator(
     }
 
     private fun initSubscription(): Subscription {
-        return TwitterAuthenticator.callbackUrlSubject.subscribe { url ->
-            val (token, verifier) = processCallbackUrl(url)
-            if (token.isNotEmpty() && verifier.isNotEmpty()) {
-                listener.onAuthenticateSuccess(requestToken, token, verifier)
-            }
-            if (::callbackUrlSubscription.isInitialized && !callbackUrlSubscription.isUnsubscribed) callbackUrlSubscription.unsubscribe()
-        }
+        return TwitterAuthenticator.callbackUrlSubject
+                .subscribeOn(Schedulers.computation())
+                .subscribe { url ->
+                    val (token, verifier) = processCallbackUrl(url)
+                    if (token.isNotEmpty() && verifier.isNotEmpty()) {
+                        listener.onAuthenticateSuccess(requestToken, token, verifier)
+                    }
+                    if (::callbackUrlSubscription.isInitialized && !callbackUrlSubscription.isUnsubscribed) callbackUrlSubscription.unsubscribe()
+                }
     }
 }

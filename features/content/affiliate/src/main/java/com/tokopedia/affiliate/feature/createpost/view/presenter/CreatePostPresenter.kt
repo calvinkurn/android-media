@@ -87,6 +87,7 @@ class CreatePostPresenter @Inject constructor(
     private fun getShareHeaderText(): String {
         val shareOptions = getShareOptions()
         val shareHeaderText = shareOptions
+                .filter { it.isActivated }
                 .map { view?.getContext()?.getString(it.keyRes) }
                 .joinToString()
 
