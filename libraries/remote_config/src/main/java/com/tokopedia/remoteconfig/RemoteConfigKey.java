@@ -30,7 +30,7 @@ public class RemoteConfigKey {
     public static final String REFERRAL_WELCOME_MESSAGE = "referral_welcome_message_new";
     public static final String REFFERAL_TERMS = "referral_terms";
     public static final String REFERRAL_TITLE_DESC = "app_refferal_content";
-    public static final String APP_HIDE_SAMPAI_VIEW = "app_hide_sampai_view";
+    public static final String APP_HIDE_SAMPAI_VIEW = "android_customer_hide_sampai_view";
 
     public static final String MAINAPP_SHOW_SIMPLE_APP_RATING = "mainapp_show_simple_app_rating";
     public static final String MAINAPP_SHOW_ADVANCED_APP_RATING = "mainapp_show_advanced_app_rating";
