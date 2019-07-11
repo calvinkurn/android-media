@@ -688,7 +688,7 @@ public class WishListImpl implements WishList {
     }
 
 
-    private class LoadMoreSearchWishlistSubscriber extends Subscriber<GqlWishListDataResponse> {
+    private class FirstSearchWishlistSubscriber extends Subscriber<GqlWishListDataResponse> {
 
         @Override
         public void onStart() {
@@ -697,12 +697,15 @@ public class WishListImpl implements WishList {
 
         @Override
         public void onNext(GqlWishListDataResponse gqlWishListDataResponse) {
-            wishListView.displayLoadMore(false);
+            wishListView.displayPull(false);
             if (gqlWishListDataResponse != null) {
-                wishListView.displayPull(false);
                 data.clear();
                 dataWishlist.clear();
-                setDataWishlistOnSearch(gqlWishListDataResponse);
+                if (mPaging.getPage() == 1 && gqlWishListDataResponse.getGqlWishList().getWishlistDataList().size() == 0) {
+                    wishListView.setSearchNotFound(query);
+                } else {
+                    setDataWishlistOnSearch(gqlWishListDataResponse);
+                }
             }
         }
 
@@ -721,7 +724,7 @@ public class WishListImpl implements WishList {
 
     }
 
-    private class FirstSearchWishlistSubscriber extends Subscriber<GqlWishListDataResponse> {
+    private class LoadMoreSearchWishlistSubscriber extends Subscriber<GqlWishListDataResponse> {
 
         @Override
         public void onStart() {
@@ -732,12 +735,6 @@ public class WishListImpl implements WishList {
         public void onNext(GqlWishListDataResponse gqlWishListDataResponse) {
             wishListView.displayLoadMore(false);
             if (gqlWishListDataResponse != null) {
-                wishListView.displayPull(false);
-                if (mPaging.getPage() == 1 && gqlWishListDataResponse.getGqlWishList().getWishlistDataList().size() == 0) {
-                    data.clear();
-                    dataWishlist.clear();
-                    wishListView.setSearchNotFound(query);
-                }
                 setDataWishlistOnSearch(gqlWishListDataResponse);
             }
         }
