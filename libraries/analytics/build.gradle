@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 buildscript {
@@ -34,6 +34,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.userSession)
+    implementation rootProject.ext.analyticsDependencies.cashshield
 
     implementation rootProject.ext.firebase.core
     implementation rootProject.ext.firebase.performance

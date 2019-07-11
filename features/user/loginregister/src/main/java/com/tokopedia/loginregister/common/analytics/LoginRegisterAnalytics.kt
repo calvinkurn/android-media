@@ -5,6 +5,7 @@ import android.content.Context
 
 import com.crashlytics.android.Crashlytics
 import com.tokopedia.analytics.TrackAnalytics
+import com.tokopedia.analytics.cashshield.CashShield
 import com.tokopedia.analytics.firebase.FirebaseEvent
 import com.tokopedia.analytics.firebase.FirebaseParams
 import com.tokopedia.linker.LinkerConstants
@@ -25,6 +26,7 @@ import javax.inject.Inject
  * https://docs.google.com/spreadsheets/d/1F3IQYqqG62aSxNbeFvrxyy-Pu--ZrShh8ewMKELeKj4/edit?ts=5cca711b#gid=910823048
  */
 class LoginRegisterAnalytics @Inject constructor() {
+    private lateinit var cashShield: CashShield
 
     companion object {
 
@@ -526,7 +528,9 @@ class LoginRegisterAnalytics @Inject constructor() {
     }
 
 
-    fun eventSuccessLogin(actionLoginMethod: String, registerAnalytics: RegisterAnalytics) {
+    fun eventSuccessLogin(context: Context?, actionLoginMethod: String, registerAnalytics: RegisterAnalytics) {
+        cashShield = CashShield(context)
+        cashShield.send()
         when(actionLoginMethod){
             UserSessionInterface.LOGIN_METHOD_EMAIL -> onSuccessLoginWithEmail(registerAnalytics)
             UserSessionInterface.LOGIN_METHOD_FACEBOOK -> onSuccessLoginWithGoogle()
@@ -664,6 +668,10 @@ class LoginRegisterAnalytics @Inject constructor() {
             e.printStackTrace()
         }
 
+    }
+
+    fun onDestroy() {
+        cashShield?.cancel()
     }
 
 }

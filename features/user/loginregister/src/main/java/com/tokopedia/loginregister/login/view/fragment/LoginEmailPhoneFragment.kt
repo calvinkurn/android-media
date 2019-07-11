@@ -546,7 +546,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             activity!!.setResult(Activity.RESULT_OK)
             activity!!.finish()
 
-            analytics.eventSuccessLogin(userSession.loginMethod, registerAnalytics)
+            analytics.eventSuccessLogin(activity, userSession.loginMethod, registerAnalytics)
             setTrackingUserId(userSession.userId)
             setFCM()
         }
@@ -1012,6 +1012,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
+        analytics.onDestroy()
     }
 
     override fun onBackPressed() {

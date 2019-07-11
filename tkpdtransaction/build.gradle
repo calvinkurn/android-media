@@ -72,6 +72,7 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.webview)
+    implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.components
 }
 
