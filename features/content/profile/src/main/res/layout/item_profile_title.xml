@@ -8,9 +8,10 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/af_see_other_post"
-        android:textStyle="bold" />
+        app:typographyType="heading_5"
+        app:typographyWeight="bold"/>
 </RelativeLayout>

@@ -44,10 +44,10 @@ class FeedPostRelated {
             data class Body(
                 @SerializedName("media")
                 @Expose
-                var media: List<Medium>? = null,
+                var media: List<Medium> = listOf(),
                 @SerializedName("caption")
                 @Expose
-                var caption: Caption? = null) {
+                var caption: Caption = Caption()) {
 
                 data class Medium(
 

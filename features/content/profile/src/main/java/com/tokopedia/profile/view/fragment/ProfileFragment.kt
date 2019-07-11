@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Rect
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
 import android.support.v4.content.LocalBroadcastManager
@@ -43,6 +44,8 @@ import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
+import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
+import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
@@ -59,8 +62,6 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.kol.KolComponentInstance
-import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
-import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
 import com.tokopedia.kol.common.util.PostMenuListener
 import com.tokopedia.kol.common.util.createBottomMenu
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
@@ -79,7 +80,6 @@ import com.tokopedia.profile.ProfileModuleRouter
 import com.tokopedia.profile.R
 import com.tokopedia.profile.analytics.ProfileAnalytics
 import com.tokopedia.profile.data.pojo.affiliatequota.AffiliatePostQuota
-import com.tokopedia.profile.di.DaggerProfileComponent
 import com.tokopedia.profile.view.activity.FollowingListActivity
 import com.tokopedia.profile.view.activity.ProfileActivity
 import com.tokopedia.profile.view.adapter.factory.ProfileTypeFactoryImpl
@@ -99,8 +99,6 @@ import com.tokopedia.showcase.ShowCaseDialog
 import com.tokopedia.showcase.ShowCaseObject
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_profile.*
-import kotlinx.android.synthetic.main.fragment_profile.recyclerView
-import kotlinx.android.synthetic.main.fragment_profile_empty.*
 import java.util.*
 import javax.inject.Inject
 
@@ -148,8 +146,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
     private var isAppBarCollapse = false
-
-    private lateinit var onScrollListener: RecyclerView.OnScrollListener
 
     override lateinit var profileRouter: ProfileModuleRouter
 
@@ -304,6 +300,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             this,
             this,
             this,
+            this::onOtherProfilePostItemClick,
             userSession)
     }
 
@@ -329,6 +326,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun getUserSession(): UserSession = UserSession(context)
 
+    fun onOtherProfilePostItemClick(applink: String) {
+        RouteManager.route(context, applink)
+    }
+
     override fun onSuccessGetProfileFirstPage(element: DynamicFeedProfileViewModel, isFromLogin: Boolean) {
         presenter.cursor = element.dynamicFeedDomainModel.cursor
         onlyOnePost = element.dynamicFeedDomainModel.postList.size == 1
@@ -353,19 +354,19 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             trackKolPostImpression(visitables)
             resetLayoutManager()
         } else {
+            val isKol = element.profileHeaderViewModel.isKol
             if (element.profileHeaderViewModel.isOwner) {
                 visitables.add(getEmptyModelOwner(
                     element.profileHeaderViewModel.isShowAffiliateContent,
                     element.profileHeaderViewModel.isAffiliate))
                 resetLayoutManager()
-            } else if (element.profileHeaderViewModel.isKol){
+            } else if (isKol) {
                 // other related post will shown in grid, so change to grid layout
                 setGridLayoutManager()
-                visitables.add(NoPostCardViewModel())
+                visitables.add(NoPostCardViewModel(element.profileHeaderViewModel.name))
                 getRelatedProfile()
             } else {
-                //TODO switch comment below
-                /*visitables.add( EmptyResultViewModel().apply {
+                visitables.add(EmptyResultViewModel().apply {
                     iconRes = R.drawable.ic_af_empty
                     title = getString(R.string.profile_no_content)
                     buttonTitle = getString(R.string.profile_see_others)
@@ -377,11 +378,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                             goToExplore()
                         }
                     }
-                })*/
-                // other related post will shown in grid, so change to grid layout
-                setGridLayoutManager()
-                visitables.add(NoPostCardViewModel())
-                getRelatedProfile()
+                })
+                resetLayoutManager()
             }
         }
         renderList(visitables, !TextUtils.isEmpty(element.dynamicFeedDomainModel.cursor))
@@ -416,13 +414,13 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         recyclerView.scrollTo(0, 0)
     }
 
-    fun resetLayoutManager(){
+    fun resetLayoutManager() {
         if (recyclerView.layoutManager !is LinearLayoutManager) {
             recyclerView.layoutManager = recyclerViewLayoutManager
         }
     }
 
-    fun setGridLayoutManager(){
+    fun setGridLayoutManager() {
         if (recyclerView.layoutManager !is GridLayoutManager) {
             recyclerView.layoutManager = GridLayoutManager(getActivity(), 2).apply {
                 spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -483,7 +481,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         if (feedPostRelated != null && feedPostRelated.meta.totalItems > 0) {
             visitables.add(TitleViewModel())
             feedPostRelated.data.forEach {
-                visitables.add(OtherRelatedProfileViewModel())
+                visitables.add(OtherRelatedProfileViewModel(it))
             }
         }
         renderList(visitables, false)
@@ -1047,6 +1045,23 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                         }
                     }
                 } catch (e: Throwable) {
+                }
+            }
+        })
+        recyclerView.addItemDecoration(object : RecyclerView.ItemDecoration() {
+            val spacing = 4
+            val spanCount = 2
+            override fun getItemOffsets(outRect: Rect, view: View,
+                                        parent: RecyclerView, state: RecyclerView.State) {
+                if (recyclerView.layoutManager !is GridLayoutManager) {
+                    return
+                }
+                val position = parent.getChildAdapterPosition(view)
+                val viewType = adapter.getItemViewType(position)
+                if (viewType == OtherRelatedProfileViewHolder.LAYOUT) {
+                    val column = position % spanCount
+                    outRect.left = column * spacing / spanCount
+                    outRect.right = spacing - (column + 1) * spacing / spanCount
                 }
             }
         })

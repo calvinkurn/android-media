@@ -50,6 +50,7 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
                              private val gridItemListener: GridPostAdapter.GridItemListener,
                              private val videoViewListener: VideoViewHolder.VideoViewListener,
                              private val onEmptyItemClickedListener: EmptyAffiliateViewHolder.OnEmptyItemClickedListener,
+                             private val onOtherProfilePostItemClick: ((applink: String) -> Unit),
                              private val userSession : UserSessionInterface)
 
     : BaseAdapterTypeFactory(), ProfileTypeFactory, KolPostTypeFactory, DynamicFeedTypeFactory {
@@ -159,7 +160,7 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
             NoPostCardViewHolder.LAYOUT ->
                 NoPostCardViewHolder(parent) as AbstractViewHolder<Visitable<*>>
             OtherRelatedProfileViewHolder.LAYOUT ->
-                OtherRelatedProfileViewHolder(parent) as AbstractViewHolder<Visitable<*>>
+                OtherRelatedProfileViewHolder(parent, onOtherProfilePostItemClick) as AbstractViewHolder<Visitable<*>>
             OtherPostTitleViewHolder.LAYOUT ->
                 OtherPostTitleViewHolder(parent) as AbstractViewHolder<Visitable<*>>
             else -> super.createViewHolder(parent, type)
