@@ -1050,7 +1050,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
         })
         recyclerView.addItemDecoration(object : RecyclerView.ItemDecoration() {
-            val spacing = 4
+            val spacing = context!!.resources.getDimensionPixelOffset(R.dimen.dp_16)
+            val halfSpacing = spacing / 2
             val spanCount = 2
             override fun getItemOffsets(outRect: Rect, view: View,
                                         parent: RecyclerView, state: RecyclerView.State) {
@@ -1061,8 +1062,14 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 val viewType = adapter.getItemViewType(position)
                 if (viewType == OtherRelatedProfileViewHolder.LAYOUT) {
                     val column = position % spanCount
-                    outRect.left = column * spacing / spanCount
-                    outRect.right = spacing - (column + 1) * spacing / spanCount
+                    if (column == 0) {
+                        outRect.left = spacing
+                        outRect.right = halfSpacing
+                    } else {
+                        outRect.left = halfSpacing
+                        outRect.right = spacing
+                    }
+                    outRect.bottom = spacing
                 }
             }
         })
