@@ -3,6 +3,7 @@ package com.tokopedia.productcard.v2
 import android.content.Context
 import android.graphics.Paint
 import android.support.annotation.DimenRes
+import android.support.annotation.DrawableRes
 import android.support.annotation.IdRes
 import android.support.annotation.LayoutRes
 import android.support.constraint.ConstraintLayout
@@ -61,7 +62,12 @@ abstract class ProductCardView: BaseCustomView {
     protected var textViewPrice: Typography? = null
     protected var linearLayoutShopBadges: LinearLayout? = null
     protected var textViewShopLocation: Typography? = null
-    protected var imageRating: ImageView? = null
+    protected var linearLayoutImageRating: LinearLayout? = null
+    protected var imageViewRating1: ImageView? = null
+    protected var imageViewRating2: ImageView? = null
+    protected var imageViewRating3: ImageView? = null
+    protected var imageViewRating4: ImageView? = null
+    protected var imageViewRating5: ImageView? = null
     protected var textViewReviewCount: Typography? = null
     protected var labelCredibility: Label? = null
     protected var labelOffers: Label? = null
@@ -118,7 +124,12 @@ abstract class ProductCardView: BaseCustomView {
         textViewPrice = inflatedView.findViewById(R.id.textViewPrice)
         linearLayoutShopBadges = inflatedView.findViewById(R.id.linearLayoutShopBadges)
         textViewShopLocation = inflatedView.findViewById(R.id.textViewShopLocation)
-        imageRating = inflatedView.findViewById(R.id.imageRating)
+        linearLayoutImageRating = inflatedView.findViewById(R.id.linearLayoutImageRating)
+        imageViewRating1 = inflatedView.findViewById(R.id.imageViewRating1)
+        imageViewRating2 = inflatedView.findViewById(R.id.imageViewRating2)
+        imageViewRating3 = inflatedView.findViewById(R.id.imageViewRating3)
+        imageViewRating4 = inflatedView.findViewById(R.id.imageViewRating4)
+        imageViewRating5 = inflatedView.findViewById(R.id.imageViewRating5)
         textViewReviewCount = inflatedView.findViewById(R.id.textViewReviewCount)
         labelCredibility = inflatedView.findViewById(R.id.labelCredibility)
         labelOffers = inflatedView.findViewById(R.id.labelOffers)
@@ -270,23 +281,21 @@ abstract class ProductCardView: BaseCustomView {
     }
 
     open fun setImageRatingVisible(isVisible: Boolean) {
-        imageRating?.visibility = if (isVisible) View.VISIBLE else View.GONE
+        linearLayoutImageRating?.visibility = if (isVisible) View.VISIBLE else View.GONE
     }
 
     open fun setRating(rating: Int) {
-        imageRating?.setImageResource(getRatingDrawable(rating))
+        imageViewRating1?.setImageResource(getRatingDrawable(rating >= 1))
+        imageViewRating2?.setImageResource(getRatingDrawable(rating >= 2))
+        imageViewRating3?.setImageResource(getRatingDrawable(rating >= 3))
+        imageViewRating4?.setImageResource(getRatingDrawable(rating >= 4))
+        imageViewRating5?.setImageResource(getRatingDrawable(rating >= 5))
     }
 
-    protected open fun getRatingDrawable(param: Int): Int {
-        return when (param) {
-            0 -> R.drawable.ic_star_none
-            1 -> R.drawable.ic_star_one
-            2 -> R.drawable.ic_star_two
-            3 -> R.drawable.ic_star_three
-            4 -> R.drawable.ic_star_four
-            5 -> R.drawable.ic_star_five
-            else -> R.drawable.ic_star_none
-        }
+    @DrawableRes
+    protected open fun getRatingDrawable(isActive: Boolean): Int {
+        return if(isActive) R.drawable.product_card_ic_rating_active
+        else R.drawable.product_card_ic_rating_default
     }
 
     open fun setReviewCountVisible(isVisible: Boolean) {

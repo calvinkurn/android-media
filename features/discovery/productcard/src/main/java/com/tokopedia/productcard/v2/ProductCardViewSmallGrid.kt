@@ -98,7 +98,7 @@ class ProductCardViewSmallGrid: ProductCardView {
     }
 
     private fun getReviewCountMarginLeft(): Int {
-        return if(isViewNotNullAndVisible(imageRating)) R.dimen.dp_4
+        return if(isViewNotNullAndVisible(linearLayoutImageRating)) R.dimen.dp_4
         else R.dimen.dp_8
     }
 
@@ -125,8 +125,8 @@ class ProductCardViewSmallGrid: ProductCardView {
             isViewNotNullAndVisible(labelCredibility) -> {
                 labelCredibility
             }
-            isViewNotNullAndVisible(imageRating) -> {
-                imageRating
+            isViewNotNullAndVisible(linearLayoutImageRating) -> {
+                linearLayoutImageRating
             }
             isViewNotNullAndVisible(textViewReviewCount) -> {
                 textViewReviewCount
