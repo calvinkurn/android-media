@@ -7,8 +7,8 @@
     android:orientation="horizontal"
     android:paddingTop="@dimen/dp_12"
     android:paddingBottom="@dimen/dp_12"
-    android:paddingStart="@dimen/dp_16"
-    android:paddingEnd="@dimen/dp_16">
+    tools:paddingStart="@dimen/dp_16"
+    tools:paddingEnd="@dimen/dp_16">
 
     <ImageView
         android:id="@+id/imageShare"

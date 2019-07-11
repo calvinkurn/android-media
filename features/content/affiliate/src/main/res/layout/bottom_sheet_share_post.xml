@@ -11,7 +11,7 @@
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_16"
         android:textColor="@color/Neutral_N700"
         android:text="@string/af_share_title"
         app:typographyType="heading_4"
@@ -30,8 +30,7 @@
         android:id="@+id/shareList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_24"
-        app:has_divider_left_padding="false"/>
+        android:layout_marginTop="@dimen/dp_24"/>
 
     <LinearLayout
         android:id="@+id/shareBtn"

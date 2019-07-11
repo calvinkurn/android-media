@@ -15,5 +15,5 @@ sealed class ShareType(
 
     data class Tokopedia(val totalPerson: Int) : ShareType(R.string.af_share_tokopedia, R.drawable.ic_tokopedia, true, true, { ctx, titleRes -> ctx.getString(titleRes, totalPerson) })
     data class Facebook(val isActive: Boolean) : ShareType(R.string.af_share_facebook, R.drawable.ic_facebook, isActive, false, { ctx, titleRes -> ctx.getString(titleRes) })
-    data class Twitter(val isActive: Boolean) : ShareType(R.string.af_share_twitter, R.drawable.ic_twitter, isActive, true, { ctx, titleRes -> ctx.getString(titleRes) })
+    data class Twitter(val isActive: Boolean) : ShareType(R.string.af_share_twitter, R.drawable.ic_twitter, isActive, false, { ctx, titleRes -> ctx.getString(titleRes) })
 }
