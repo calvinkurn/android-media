@@ -657,7 +657,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     fun openShareBottomSheetDialog() {
-        presenter.shouldGetShareOptions()
+        presenter.invalidateShareOptions()
         shareDialogView.shareList.adapter = shareAdapter
         shareDialog.show()
     }

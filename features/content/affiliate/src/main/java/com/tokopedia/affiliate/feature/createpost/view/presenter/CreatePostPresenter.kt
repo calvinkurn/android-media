@@ -39,10 +39,10 @@ class CreatePostPresenter @Inject constructor(
     }
 
     override fun onAuthenticationSuccess(oAuthToken: String, oAuthSecret: String) {
-        shouldGetShareOptions()
+        invalidateShareOptions()
     }
 
-    override fun shouldGetShareOptions() {
+    override fun invalidateShareOptions() {
         view?.onGetAvailableShareTypeList(getShareOptions())
     }
 
@@ -55,7 +55,7 @@ class CreatePostPresenter @Inject constructor(
             when (type) {
                 is ShareType.Twitter -> if (!twitterManager.isAuthenticated) {
                     authenticateTwitter()
-                    shouldGetShareOptions()
+                    invalidateShareOptions()
                 } else {
                     twitterManager.shouldPostToTwitter = true
                     shouldChangeShareHeaderText()

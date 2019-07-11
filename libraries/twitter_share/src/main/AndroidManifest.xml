@@ -1,2 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.twitter_share" />
+    package="com.tokopedia.twitter_share">
+
+    <application android:label="@string/app_name">
+        <activity
+            android:name=".view.activity.TwitterWebViewActivity"
+            android:screenOrientation="portrait" />
+    </application>
+
+</manifest>

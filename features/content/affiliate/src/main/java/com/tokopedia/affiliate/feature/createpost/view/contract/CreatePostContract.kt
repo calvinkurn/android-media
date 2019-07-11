@@ -36,7 +36,7 @@ interface CreatePostContract {
     interface Presenter : CustomerPresenter<View> {
         fun fetchContentForm(idList: MutableList<String>, type: String)
 
-        fun shouldGetShareOptions()
+        fun invalidateShareOptions()
 
         fun onShareButtonClicked(type: ShareType, isChecked: Boolean)
 
