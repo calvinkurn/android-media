@@ -12,7 +12,6 @@ import android.support.v4.content.LocalBroadcastManager
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.Spannable
 import android.text.SpannableString
@@ -27,8 +26,6 @@ import android.widget.Toast
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
-import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel
-import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -149,6 +146,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     private var isAppBarCollapse = false
 
     override lateinit var profileRouter: ProfileModuleRouter
+    lateinit var layoutManager: GridLayoutManager
 
     lateinit var remoteConfig: RemoteConfig
 
@@ -354,34 +352,14 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 .forEach { it.isKol = element.profileHeaderViewModel.isKol }
             visitables.addAll(element.dynamicFeedDomainModel.postList)
             trackKolPostImpression(visitables)
-            resetLayoutManager()
         } else {
-            val isKol = element.profileHeaderViewModel.isKol
             if (element.profileHeaderViewModel.isOwner) {
                 visitables.add(getEmptyModelOwner(
                     element.profileHeaderViewModel.isShowAffiliateContent,
                     element.profileHeaderViewModel.isAffiliate))
-                resetLayoutManager()
-            } else if (isKol) {
-                // other related post will shown in grid, so change to grid layout
-                setGridLayoutManager()
+            } else {
                 visitables.add(NoPostCardViewModel(element.profileHeaderViewModel.name))
                 getRelatedProfile()
-            } else {
-                visitables.add(EmptyResultViewModel().apply {
-                    iconRes = R.drawable.ic_af_empty
-                    title = getString(R.string.profile_no_content)
-                    buttonTitle = getString(R.string.profile_see_others)
-                    callback = object : BaseEmptyViewHolder.Callback {
-                        override fun onEmptyContentItemTextClicked() {
-                        }
-
-                        override fun onEmptyButtonClicked() {
-                            goToExplore()
-                        }
-                    }
-                })
-                resetLayoutManager()
             }
         }
         renderList(visitables, !TextUtils.isEmpty(element.dynamicFeedDomainModel.cursor))
@@ -416,21 +394,13 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         recyclerView.scrollTo(0, 0)
     }
 
-    fun resetLayoutManager() {
-        if (recyclerView.layoutManager !is LinearLayoutManager) {
-            recyclerView.layoutManager = recyclerViewLayoutManager
-        }
-    }
-
-    fun setGridLayoutManager() {
-        if (recyclerView.layoutManager !is GridLayoutManager) {
-            recyclerView.layoutManager = GridLayoutManager(getActivity(), 2).apply {
-                spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-                    override fun getSpanSize(position: Int): Int {
-                        return when (adapter.getItemViewType(position)) {
-                            OtherRelatedProfileViewHolder.LAYOUT -> 1
-                            else -> 2
-                        }
+    override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
+        return GridLayoutManager(getActivity(), 2).apply {
+            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    return when (adapter.getItemViewType(position)) {
+                        OtherRelatedProfileViewHolder.LAYOUT -> 1
+                        else -> 2
                     }
                 }
             }
@@ -1016,6 +986,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
         isOwner = userId.toString() == userSession.userId
 
+        layoutManager = recyclerView.layoutManager as GridLayoutManager
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -1034,7 +1005,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     if (hasFeed() && newState == RecyclerView.SCROLL_STATE_IDLE) {
                         val item: Visitable<*>?
                         // if it is GridLayoutManager will just return.
-                        val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+
                         val position = when {
                             itemIsFullScreen() -> layoutManager.findLastVisibleItemPosition()
                             layoutManager.findFirstCompletelyVisibleItemPosition() != -1 -> layoutManager.findFirstCompletelyVisibleItemPosition()
@@ -1059,9 +1030,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             val spanCount = 2
             override fun getItemOffsets(outRect: Rect, view: View,
                                         parent: RecyclerView, state: RecyclerView.State) {
-                if (recyclerView.layoutManager !is GridLayoutManager) {
-                    return
-                }
+                // if in feed mode, will have no item decoration
+                if (hasFeed()) return
                 val position = parent.getChildAdapterPosition(view)
                 val viewType = adapter.getItemViewType(position)
                 if (viewType == OtherRelatedProfileViewHolder.LAYOUT) {
@@ -1088,7 +1058,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     internal fun itemIsFullScreen(): Boolean {
-        val layoutManager = recyclerView.layoutManager as LinearLayoutManager
         return layoutManager.findLastVisibleItemPosition() - layoutManager.findFirstVisibleItemPosition() == 0
     }
 

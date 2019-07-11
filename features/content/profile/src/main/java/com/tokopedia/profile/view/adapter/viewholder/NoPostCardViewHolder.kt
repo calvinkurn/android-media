@@ -13,7 +13,7 @@ class NoPostCardViewHolder(val v: View) : AbstractViewHolder<NoPostCardViewModel
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_profile_kol_no_post
-        val imagePath = "https://ecs7.tokopedia.net/img/android/profile/xxxhdpi/img_empty_profile.png"
+        val imagePath = "https://ecs7.tokopedia.net/img/android/empty_profile/drawable-xxxhdpi/product_image_48_x_48.png"
     }
 
     override fun bind(element: NoPostCardViewModel?) {
