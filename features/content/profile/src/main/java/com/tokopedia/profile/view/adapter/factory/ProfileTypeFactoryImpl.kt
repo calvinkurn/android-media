@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerViewHolder
@@ -32,9 +33,7 @@ import com.tokopedia.profile.view.adapter.viewholder.EmptyAffiliateViewHolder
 import com.tokopedia.profile.view.adapter.viewholder.ProfileEmptyViewHolder
 import com.tokopedia.profile.view.adapter.viewholder.ProfileHeaderViewHolder
 import com.tokopedia.profile.view.listener.ProfileEmptyContract
-import com.tokopedia.profile.view.viewmodel.EmptyAffiliateViewModel
-import com.tokopedia.profile.view.viewmodel.ProfileEmptyViewModel
-import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
+import com.tokopedia.profile.view.viewmodel.*
 import com.tokopedia.user.session.UserSessionInterface
 
 /**
@@ -106,6 +105,21 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
     }
 
     override fun setType(type: KolPostViewHolder.Type?) {
+    }
+
+    override fun type(noPostCardViewModel: NoPostCardViewModel): Int {
+        //TODO
+        return HideViewHolder.LAYOUT
+    }
+
+    override fun type(otherRelatedProfileViewModel: OtherRelatedProfileViewModel): Int {
+        //TODO
+        return HideViewHolder.LAYOUT
+    }
+
+    override fun type(titleViewModel: TitleViewModel): Int {
+        //TODO
+        return HideViewHolder.LAYOUT
     }
 
     @Suppress("UNCHECKED_CAST")

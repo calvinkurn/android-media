@@ -16,7 +16,6 @@ import com.tokopedia.profile.domain.usecase.GetDynamicFeedProfileUseCase
 import com.tokopedia.profile.domain.usecase.ShouldChangeUsernameUseCase
 import com.tokopedia.profile.view.listener.ProfileContract
 import com.tokopedia.profile.view.subscriber.*
-import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 import javax.inject.Inject
 

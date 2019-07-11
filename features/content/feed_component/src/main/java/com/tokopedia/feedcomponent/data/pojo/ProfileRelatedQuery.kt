@@ -13,15 +13,15 @@ class FeedPostRelated {
 
     @SerializedName("data")
     @Expose
-    var data: List<Datum>? = null
+    var data: List<Datum> = listOf()
     @SerializedName("meta")
     @Expose
-    var meta: Meta? = null
+    var meta: Meta = Meta()
 
     class Meta {
         @SerializedName("totalItems")
         @Expose
-        var totalItems: Int? = null
+        var totalItems: Int = 0
     }
 
     data class Datum(
