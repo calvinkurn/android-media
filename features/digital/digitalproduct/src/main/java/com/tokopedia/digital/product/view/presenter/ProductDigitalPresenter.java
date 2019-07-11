@@ -23,6 +23,7 @@ import com.tokopedia.core.network.exception.ServerErrorException;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.common.domain.interactor.GetDigitalCategoryByIdUseCase;
+import com.tokopedia.digital.common.domain.interactor.RechargePushEventRecommendationUseCase;
 import com.tokopedia.digital.common.view.ViewFactory;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.common.view.presenter.BaseDigitalPresenter;
@@ -102,6 +103,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
     private IProductDigitalInteractor productDigitalInteractor;
     private GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase;
     private DigitalGetHelpUrlUseCase digitalGetHelpUrlUseCase;
+    private RechargePushEventRecommendationUseCase rechargePushEventRecommendationUseCase;
     private String slotKey = "com.android.phone.force.slot";
     private String accoutHandleKey = "android.telecom.extra.PHONE_ACCOUNT_HANDLE";
     private Handler ussdHandler;
@@ -117,12 +119,14 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
             IProductDigitalInteractor productDigitalInteractor,
             GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase,
             DigitalGetHelpUrlUseCase digitalGetHelpUrlUseCase,
+            RechargePushEventRecommendationUseCase rechargePushEventRecommendationUseCase,
             UserSession userSession) {
         super(localCacheHandler, userSession);
         this.digitalAnalytics = digitalAnalytics;
         this.productDigitalInteractor = productDigitalInteractor;
         this.getDigitalCategoryByIdUseCase = getDigitalCategoryByIdUseCase;
         this.digitalGetHelpUrlUseCase = digitalGetHelpUrlUseCase;
+        this.rechargePushEventRecommendationUseCase = rechargePushEventRecommendationUseCase;
         this.userSession = userSession;
     }
 
@@ -678,4 +682,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter<IProductDigita
         return passData;
     }
 
+    public void trackRechargePushEventRecommendation(int categoryId, String actionType) {
+        rechargePushEventRecommendationUseCase.execute(rechargePushEventRecommendationUseCase.createRequestParams(categoryId, actionType), null);
+    }
 }
