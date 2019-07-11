@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:orientation="vertical"
+    android:background="@drawable/bg_rounded_chat_input">
+
+    <RelativeLayout
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_28"
+        android:background="@drawable/bg_rounded_chat_input">
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/txt_success_addproduct"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:text="@string/pm_label_score_verification_header"
+            android:textColor="@color/black"
+            app:fontSize="subHeadline"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:textStyle="bold" />
+
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/kyc_static_desc_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txt_success_addproduct"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:lineSpacingExtra="@dimen/sp_6"
+            android:text="@string/pm_label_score_verification_desc"
+            app:fontSize="title"
+            android:layout_marginBottom="@dimen/dp_16" />
+
+        <Button
+            android:id="@+id/btn_submit_score"
+            style="@style/Button.Submit.Green.Full"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/kyc_static_desc_1"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:textStyle="bold"
+            android:text="@string/pm_label_button_score_submit" />
+
+        <Button
+            android:id="@+id/btn_close_score"
+            style="@style/Button.Submit.White.Border.Full"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btn_submit_score"
+            android:textStyle="bold"
+            android:text="@string/pm_label_button_close" />
+
+    </RelativeLayout>
+
+
+
+</LinearLayout>
