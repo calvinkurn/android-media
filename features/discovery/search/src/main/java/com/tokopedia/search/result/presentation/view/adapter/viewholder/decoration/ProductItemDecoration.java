@@ -43,17 +43,17 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
             verticalCardViewOffset = getVerticalCardViewOffset(view);
             horizontalCardViewOffset = getHorizontalCardViewOffset(view);
 
-            outRect.left = getLeftOffset(relativePos, totalSpanCount);
+            outRect.left = getLeftOffset(view, relativePos, totalSpanCount);
             outRect.top = getTopOffset(parent, absolutePos, relativePos, totalSpanCount);
-            outRect.right = getRightOffset(relativePos, totalSpanCount);
+            outRect.right = getRightOffset(view, relativePos, totalSpanCount);
             outRect.bottom = getBottomOffset(parent, absolutePos, relativePos, totalSpanCount);
         }
     }
 
     private int getProductItemRelativePosition(RecyclerView parent, View view) {
-        if(view.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
-            return getProductItemRelativePositionStaggeredGrid(view);
-        }
+//        if(view.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
+//            return getProductItemRelativePositionStaggeredGrid(view);
+//        }
 
         return getProductItemRelativePositionNotStaggeredGrid(parent, view);
     }
@@ -107,7 +107,10 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
         return 0;
     }
 
-    private int getLeftOffset(int relativePos, int totalSpanCount) {
+    private int getLeftOffset(View view, int relativePos, int totalSpanCount) {
+        relativePos = view.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams ?
+                        getProductItemRelativePositionStaggeredGrid(view) : relativePos;
+
         return isFirstInRow(relativePos, totalSpanCount) ? spacing : getLeftOffsetNotFirstInRow();
     }
 
@@ -123,7 +126,10 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
         return (spacing / 4) - verticalCardViewOffset;
     }
 
-    private int getRightOffset(int relativePos, int totalSpanCount) {
+    private int getRightOffset(View view, int relativePos, int totalSpanCount) {
+        relativePos = view.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams ?
+                getProductItemRelativePositionStaggeredGrid(view) : relativePos;
+
         return isLastInRow(relativePos, totalSpanCount) ? spacing : getRightOffsetNotLastInRow();
     }
 
