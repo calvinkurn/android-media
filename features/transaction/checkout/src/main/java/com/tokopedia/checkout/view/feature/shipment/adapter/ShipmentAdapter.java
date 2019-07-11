@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
+import com.tokopedia.checkout.view.common.PromoActionListener;
 import com.tokopedia.checkout.view.common.viewholder.CartPromoSuggestionViewHolder;
 import com.tokopedia.checkout.view.common.viewholder.CartVoucherPromoViewHolder;
 import com.tokopedia.checkout.view.common.viewholder.ShipmentSellerCashbackViewHolder;
@@ -31,6 +32,7 @@ import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentNotifierV
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentRecipientAddressViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldTieringModel;
+import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentInsuranceTncModel;
@@ -75,6 +77,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private ArrayList<ShowCaseObject> showCaseObjectList;
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
+    private PromoActionListener promoActionListener;
 
     private List<Object> shipmentDataList;
 
@@ -102,9 +105,11 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Inject
     public ShipmentAdapter(ShipmentAdapterActionListener shipmentAdapterActionListener,
+                           PromoActionListener promoActionListener,
                            ShipmentDataRequestConverter shipmentDataRequestConverter,
                            RatesDataConverter ratesDataConverter) {
         this.shipmentAdapterActionListener = shipmentAdapterActionListener;
+        this.promoActionListener = promoActionListener;
         this.shipmentDataRequestConverter = shipmentDataRequestConverter;
         this.ratesDataConverter = ratesDataConverter;
         this.shipmentDataList = new ArrayList<>();
@@ -157,9 +162,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (viewType == ShipmentNotifierViewHolder.TYPE_VIEW_NOTIFIER_COD) {
             return new ShipmentNotifierViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == CartVoucherPromoViewHolder.TYPE_VIEW_PROMO) {
-            return new CartVoucherPromoViewHolder(view, shipmentAdapterActionListener);
+            return new CartVoucherPromoViewHolder(view, promoActionListener);
         } else if (viewType == CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION) {
-            return new CartPromoSuggestionViewHolder(view, shipmentAdapterActionListener);
+            return new CartPromoSuggestionViewHolder(view, promoActionListener);
         } else if (viewType == ShipmentRecipientAddressViewHolder.ITEM_VIEW_RECIPIENT_ADDRESS) {
             return new ShipmentRecipientAddressViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == ShipmentItemViewHolder.ITEM_VIEW_SHIPMENT_ITEM) {
@@ -217,6 +222,10 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public int getItemCount() {
         return shipmentDataList.size();
+    }
+
+    public List<Object> getShipmentDataList() {
+        return shipmentDataList;
     }
 
     @Override
@@ -1123,7 +1132,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public PromoStackingData getPromoGlobalStackData() {
         return promoGlobalStackData;
     }
-
 
     public static class RequestData {
 

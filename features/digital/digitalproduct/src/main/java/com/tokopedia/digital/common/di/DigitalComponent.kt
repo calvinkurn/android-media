@@ -12,9 +12,9 @@ import com.tokopedia.common_digital.common.data.api.DigitalRestApi
 import com.tokopedia.common_digital.common.di.DigitalCommonComponent
 import com.tokopedia.common_digital.common.di.DigitalRestApiRetrofit
 import com.tokopedia.digital.common.analytic.DigitalAnalytics
+import com.tokopedia.digital.common.domain.interactor.RechargePushEventRecommendationUseCase
 import com.tokopedia.digital.common.router.DigitalModuleRouter
 import com.tokopedia.user.session.UserSession
-
 import dagger.Component
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -28,12 +28,14 @@ interface DigitalComponent{
 
     fun globalCacheManager(): CacheManager
 
-    fun userSession(): UserSession;
+    fun userSession(): UserSession
 
     @ApplicationContext
     fun context(): Context
 
     fun abstractionRouter(): AbstractionRouter
+
+    fun digitalRechargePushEventRecommendationUseCase(): RechargePushEventRecommendationUseCase
 
     fun digitalAddToCartUseCase(): DigitalAddToCartUseCase
 

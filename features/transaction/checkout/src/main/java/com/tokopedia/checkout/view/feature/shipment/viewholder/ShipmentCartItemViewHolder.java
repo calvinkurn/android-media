@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -48,6 +47,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
     private TextView mTvPPPPrice;
     private TextView mTvPPPMore;
     private CheckBox mCbPPP;
+    private CheckBox mCbPPPDisabled;
     private LinearLayout mLlShippingWarningContainer;
     private View mSeparatorMultipleProductSameStore;
     private TextView tvErrorShipmentItemTitle;
@@ -67,6 +67,7 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
         mTvPPPPrice = itemView.findViewById(R.id.text_price_per_product);
         mTvPPPMore = itemView.findViewById(R.id.text_ppp_more);
         mCbPPP = itemView.findViewById(R.id.checkbox_ppp);
+        mCbPPPDisabled = itemView.findViewById(R.id.checkbox_ppp_disabled);
         mllProductPoliciesLayout = itemView.findViewById(R.id.layout_policy);
         mIvFreeReturnIcon = itemView.findViewById(R.id.iv_free_return_icon);
         mTvFreeReturnLabel = itemView.findViewById(R.id.tv_free_return_label);
@@ -112,13 +113,20 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
             });
             mTvPPPLinkText.setText(cartItem.getProtectionTitle());
             mTvPPPPrice.setText(cartItem.getProtectionSubTitle());
-            mCbPPP.setChecked(cartItem.isProtectionOptIn());
-            mCbPPP.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                    shipmentItemListener.notifyOnPurchaseProtectionChecked(checked, getAdapterPosition() + 1);
-                }
-            });
+
+
+            if (cartItem.isProtectionCheckboxDisabled()) {
+                mCbPPP.setVisibility(View.GONE);
+                mCbPPPDisabled.setVisibility(View.VISIBLE);
+                mCbPPPDisabled.setChecked(true);
+                mCbPPPDisabled.setClickable(false);
+            } else {
+                mCbPPPDisabled.setVisibility(View.GONE);
+                mCbPPP.setVisibility(View.VISIBLE);
+                mCbPPP.setChecked(cartItem.isProtectionOptIn());
+                mCbPPP.setClickable(true);
+                mCbPPP.setOnCheckedChangeListener((compoundButton, checked) -> shipmentItemListener.notifyOnPurchaseProtectionChecked(checked, getAdapterPosition() + 1));
+            }
         }
 
         mIvFreeReturnIcon.setVisibility(cartItem.isFreeReturn() ? View.VISIBLE : View.GONE);

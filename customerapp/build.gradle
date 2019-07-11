@@ -377,7 +377,7 @@ dependencies {
     implementation project(rootProject.ext.features.phoneVerification)
     implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.talk)
-    implementation project(rootProject.ext.features.tradeInCommon)
+    implementation project(rootProject.ext.features.basemvvm)
     implementation project(rootProject.ext.features.loginregister)
     implementation project(rootProject.ext.features.loginphone)
     implementation project(rootProject.ext.features.sessioncommon)
@@ -392,7 +392,9 @@ dependencies {
     implementation project(rootProject.ext.features.gallery)
     implementation project(rootProject.ext.features.categoryCommon)
     implementation project(rootProject.ext.features.officialStore)
+    implementation project(rootProject.ext.features.agerestriction)
     implementation project(rootProject.ext.features.onboarding)
+    implementation project(rootProject.ext.features.profileCompletion)
 
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.userSession)
@@ -465,8 +467,11 @@ dependencies {
     implementation project(rootProject.ext.libraries.cpm)
 
     implementation rootProject.ext.analyticsDependencies.appsflyer
+    implementation rootProject.ext.analyticsDependencies.moengageSdk
+    implementation rootProject.ext.analyticsDependencies.moengagePushbase
+    implementation rootProject.ext.analyticsDependencies.moengageInapp
     implementation (rootProject.ext.analyticsDependencies.moengage) {
-        exclude group: 'com.moengage', module: 'moe-push-gcm'
+        exclude group: 'com.moengage', module: 'moe-push-firebase'
     }
     implementation (rootProject.ext.analyticsDependencies.moengageMSG) {
         exclude group: 'com.android.support'
@@ -551,6 +556,12 @@ dependencies {
     implementation project(rootProject.ext.features.referral)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation project(rootProject.ext.features.kyc)
+    implementation project(rootProject.ext.libraries.webview)
+    implementation project(rootProject.ext.libraries.logger)
+    implementation (rootProject.ext.debugToolsDependencies.timber){
+        exclude group: 'org.jetbrains', module: 'annotations'
+    }
+    implementation project(rootProject.ext.features.navigationCommon)
 }
 
 

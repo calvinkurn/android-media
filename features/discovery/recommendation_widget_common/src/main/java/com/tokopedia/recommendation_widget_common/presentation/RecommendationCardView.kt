@@ -12,7 +12,10 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.ProductCardView
+import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 
@@ -33,6 +36,8 @@ class RecommendationCardView : ProductCardView {
         setWishlistButtonVisible(TextUtils.isEmpty(item.wishlistUrl))
         setWishlistButtonVisible(false)
         setRatingReviewCount(item.rating, item.countReview)
+        setBadges(item.badgesUrl)
+        setLocation(item.location)
         imageView.addOnImpressionListener(item,
                 object: ViewHintListener {
                     override fun onViewHint() {
@@ -65,8 +70,9 @@ class RecommendationCardView : ProductCardView {
 
     override fun setRatingReviewCount(rating: Int, reviewCount: Int) {
         if (rating in 1..5) {
+            setRatingVisible()
             ratingView.setImageResource(getRatingDrawable(rating))
-            reviewCountView.text = reviewCount.toString()
+            reviewCountView.text = "($reviewCount)"
         } else {
             if (fixedHeight) {
                 ratingView.visibility = View.INVISIBLE
@@ -75,6 +81,14 @@ class RecommendationCardView : ProductCardView {
                 ratingView.visibility = View.GONE
                 reviewCountView.visibility = View.GONE
             }
+        }
+    }
+
+    private fun setRatingVisible(){
+        ratingView.visibility = View.VISIBLE
+        reviewCountView.visibility = View.VISIBLE
+        if (ratingContainer != null) {
+            ratingContainer.visibility = View.VISIBLE
         }
     }
 

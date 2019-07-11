@@ -31,7 +31,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.analytics)
+    implementation rootProject.ext.unifyDependencies.components
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
+
 
     implementation rootProject.ext.playServicesDependencies.analytics
 
@@ -61,5 +63,5 @@ dependencies {
     testImplementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     testAnnotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
-    implementation rootProject.ext.libraries.unifyPrinciples
+    implementation rootProject.ext.unifyDependencies.principles
 }

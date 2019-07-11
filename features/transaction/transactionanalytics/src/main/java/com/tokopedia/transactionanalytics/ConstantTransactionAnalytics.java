@@ -56,6 +56,9 @@ public interface ConstantTransactionAnalytics {
         String CORNER_ADDRES = "tokopedia corner address";
         String EXPRESS_CHECKOUT = "express checkout";
         String COURIER_SELECTION_TRADE_IN = "courier selection trade in";
+        String WISHLIST_PAGE = "wishlist page";
+        String RECENT_VIEW = "recent view";
+        String RECOMMENDATION_PAGE = "recommendation page";
     }
 
     interface EventAction {
@@ -169,6 +172,9 @@ public interface ConstantTransactionAnalytics {
         String CLICK_CEK_KERANJANG = "click - cek keranjang";
         String VIEW_CART_LIST = "view cart list";
         String VIEW_CHECKOUT_PAGE = "view checkout page";
+        String CLICK_BELI_ON_WISHLIST = "click - beli on wishlist";
+        String CLICK_BELI_ON_RECENT_VIEW_PAGE = "click - beli on recent view page";
+        String CLICK_ADD_TO_CART_ON_PRIMARY_PRODUCT = "click add to cart on primary product";
 
         String VALIDATION_ERROR_ALAMAT_SEBAGAI_PADA_TAMBAH_ADDRESS = "validation error alamat sebagai pada + address";
         String VALIDATION_ERROR_NAMA_PADA_TAMBAH_ADDRESS = "validation error nama pada + address";
@@ -263,6 +269,11 @@ public interface ConstantTransactionAnalytics {
         String CLICK_PROMO_LOGISTIC_TICKER = "click promo logistic ticker";
         String CLICK_LANJUTKAN_TERAPKAN_PROMO = "click lanjutkan di pop up terapkan promo";
         String CLICK_BATAL_TERAPKAN_PROMO = "click batal di pop up terapkan promo";
+
+        //Promo not eligible bottomsheet
+        String CLICK_LANJUTKAN_ON_ERROR_PROMO_CONFIRMATION = "click lanjutkan on error promo confirmation";
+        String CLICK_BATAL_ON_ERROR_PROMO_CONFIRMATION = "click batal on error promo confirmation";
+        String VIEW_POP_UP_ERROR_PROMO_CONFIRMATION = "view pop up error promo confirmation";
     }
 
     interface EventLabel {
@@ -270,6 +281,7 @@ public interface ConstantTransactionAnalytics {
         String ERROR = "error";
         String NOT_SUCCESS = "not success";
         String COURIER_NOT_COMPLETE = "courier not complete";
+        String PROMO_RED_STATE = "promo red state";
         String KUOTA_PENUKARAN = "kuota penukaran";
         String FAILED = "failed";
         String CHECKLIST = "checklist";
