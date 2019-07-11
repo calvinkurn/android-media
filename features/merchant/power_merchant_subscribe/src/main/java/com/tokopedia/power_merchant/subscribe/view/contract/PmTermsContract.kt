@@ -17,7 +17,5 @@ interface PmTermsContract {
 
     interface Presenter : CustomerPresenter<View> {
         fun activatePowerMerchant()
-
-        fun autoExtendPowerMerchant()
     }
 }

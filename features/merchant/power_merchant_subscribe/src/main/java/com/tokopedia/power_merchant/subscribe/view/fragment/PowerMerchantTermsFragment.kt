@@ -6,11 +6,14 @@ import android.support.v4.app.Fragment
 import android.view.View
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.kotlin.extensions.view.hideLoading
 import com.tokopedia.kotlin.extensions.view.showErrorToaster
 import com.tokopedia.kotlin.extensions.view.showLoading
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.power_merchant.subscribe.*
+import com.tokopedia.power_merchant.subscribe.ACTION_KEY
+import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.TERMS_AND_CONDITION_URL
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.contract.PmTermsContract
 import com.tokopedia.user.session.UserSessionInterface
@@ -21,13 +24,14 @@ import javax.inject.Inject
 /**
  * @author by milhamj on 14/06/19.
  */
-class PowerMerchantTermsFragment: BaseWebViewFragment(), PmTermsContract.View {
+class PowerMerchantTermsFragment : BaseWebViewFragment(), PmTermsContract.View {
 
     @Inject
     lateinit var userSession: UserSessionInterface
     @Inject
     lateinit var presenter: PmTermsContract.Presenter
-
+    @Inject
+    lateinit var powerMerchantTracking: PowerMerchantTracking
     private var isTermsAgreed: Boolean = false
     private var action: String = ""
 
@@ -115,14 +119,11 @@ class PowerMerchantTermsFragment: BaseWebViewFragment(), PmTermsContract.View {
             onCheckBoxClicked()
         }
         activateBtn.setOnClickListener {
+            powerMerchantTracking.eventUpgradeShopWebView()
             if (!isTermsAgreed) {
                 mainView.showErrorToaster(getString(R.string.pm_terms_error_no_agreed))
             } else {
-                if (action == ACTION_ACTIVATE) {
-                    presenter.activatePowerMerchant()
-                } else if (action == ACTION_AUTO_EXTEND) {
-                    presenter.autoExtendPowerMerchant()
-                }
+                presenter.activatePowerMerchant()
             }
         }
     }

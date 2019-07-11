@@ -89,6 +89,7 @@ include "features:promo:promo_checkout_common"
 include "features:top_ads:top_ads_dashboard"
 //include "features:top_ads:top_ads_dashboard_no_op"
 include "features:top_ads:top_ads_management"
+include "features:top_ads:top_ads_autoads"
 //include "features:top_ads:top_ads_management_no_op"
 include "features:top_ads:top_ads_free_claim"
 include "features:top_ads:top_ads_management_common"
@@ -129,6 +130,7 @@ include "features:user:vote"
 
 include "features:category:tradein"
 include "features:category:tradein_common"
+include "features:fintech:merchant_lending_widget"
 
 include 'logisticanalytics'
 include 'tkpdloyalty'

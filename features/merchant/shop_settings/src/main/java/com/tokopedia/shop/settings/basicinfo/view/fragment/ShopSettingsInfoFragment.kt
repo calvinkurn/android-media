@@ -32,10 +32,11 @@ import com.tokopedia.design.component.Menus
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.design.utils.StringUtils
+import com.tokopedia.gm.common.data.source.cloud.model.GoldGetPmOsStatus
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
+import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.power_merchant.subscribe.URL_GAINS_SCORE_POINT
-import com.tokopedia.power_merchant.subscribe.URL_LEARN_MORE_BENEFIT
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.R
@@ -59,6 +60,9 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var powerMerchantTracking: PowerMerchantTracking
 
     private var needReload: Boolean = false
     private var shopBasicDataModel: ShopBasicDataModel? = null
@@ -223,9 +227,9 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         shopSettingsInfoPresenter.attachView(this)
     }
 
-    override fun onSuccessGetShopBasicData(result: Pair<ShopBasicDataModel?, ShopStatusModel?>) {
+    override fun onSuccessGetShopBasicData(result: Pair<ShopBasicDataModel?, GoldGetPmOsStatus?>) {
         val (shopBasicDataModel, shopStatusModel) = result
-        userSession.setIsGoldMerchant(!(shopStatusModel?.isRegularMerchantOrPending() ?: true))
+        userSession.setIsGoldMerchant(!(shopStatusModel?.result?.data?.isRegularMerchantOrPending() ?: true))
         this.shopBasicDataModel = shopBasicDataModel
         hideLoading()
         shopBasicDataModel?.let {
@@ -233,7 +237,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
             setUIStatus(it)
         }
         shopStatusModel?.let {
-            setUIMembership(it)
+            setUIMembership(it.result.data)
         }
     }
 
@@ -335,6 +339,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         tv_ticker_info.text = getString(R.string.regular_merchant_learn_more)
         button_activate.visibility = View.VISIBLE
         button_activate.setOnClickListener {
+            powerMerchantTracking.eventUpgradeShopSetting()
             navigateToPMSubscribe()
         }
     }
@@ -356,6 +361,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         })
         ticker_container.visibility = View.VISIBLE
         setTextViewClickSpan(tv_ticker, MethodChecker.fromHtml(getString(R.string.power_merchant_learn_more)), getString(R.string.learn_more)) {
+            powerMerchantTracking.eventLearnMoreSetting()
             RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, URL_GAINS_SCORE_POINT)
         }
         tv_ticker_info.visibility = View.GONE

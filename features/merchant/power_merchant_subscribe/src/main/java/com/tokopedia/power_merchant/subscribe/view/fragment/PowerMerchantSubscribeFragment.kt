@@ -27,8 +27,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
+import com.tokopedia.gm.common.constant.GMParamConstant.PM_SUBSCRIBE_SUCCESS
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
+import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hideLoading
 import com.tokopedia.kotlin.extensions.view.showEmptyState
@@ -58,6 +60,8 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     lateinit var presenter: PmSubscribeContract.Presenter
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
+    @Inject
+    lateinit var powerMerchantTracking:PowerMerchantTracking
     lateinit var partialMemberPmViewHolder: PartialMemberPmViewHolder
     lateinit var partialBenefitPmViewHolder: PartialBenefitPmViewHolder
     lateinit var partialTncViewHolder: PartialTncViewHolder
@@ -70,7 +74,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     private var minScore: Int = 0
     private var isSuccessActivatedPm: Boolean = false
     private var isSuccessCancellationPm: Boolean = false
-    private var isTransitionKycPage: Boolean = false
 
     private val remoteConfig: RemoteConfig by lazy {
         FirebaseRemoteConfigImpl(context)
@@ -107,6 +110,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         hideButtonActivatedPm()
         renderInitialLayout()
         button_activate_root.setOnClickListener {
+            powerMerchantTracking.eventUpgradeShopPm()
             if (getApprovalStatusPojo.kycStatus.kycStatusDetailPojo.status == 1) {
                 if (shopStatusModel.isPowerMerchantInactive()) {
                     if (shopScore < MINIMUM_SCORE_ACTIVATE_REGULAR) {
@@ -151,7 +155,10 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     private val onViewClickListener = View.OnClickListener {
         when (it.id) {
-            R.id.member_cancellation_button -> showBottomSheetCancel()
+            R.id.member_cancellation_button -> {
+                powerMerchantTracking.eventCancelMembershipPm()
+                showBottomSheetCancel()
+            }
             else -> {
 
             }
@@ -160,7 +167,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     override fun cancelMembership() {
         bottomSheetCancel.dismiss()
-        presenter.setAutoExtendOff(false)
+        presenter.setAutoExtendOff()
     }
 
     override fun onSuccessCancelMembership() {
@@ -230,6 +237,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             dialog.setContentView(R.layout.dialog_score_verification)
 
             dialog.btn_submit_score.setOnClickListener {
+                powerMerchantTracking.eventIncreaseScorePopUp()
                 RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, URL_GAINS_SCORE_POINT)
             }
             dialog.btn_close_score.setOnClickListener {
@@ -248,12 +256,12 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
                     val headerString = getString(R.string.pm_label_bs_success_header_transition)
                     val descString = getString(R.string.pm_label_bs_success_desc_transition)
                     val btnString = getString(R.string.pm_label_bs_success_button_transition)
-                    PowerMerchantSuccessBottomSheet.BottomSheetModel(headerString, descString, imgUrl, btnString)
+                    PowerMerchantSuccessBottomSheet.BottomSheetModel(headerString, descString, imgUrl, btnString, "")
                 } else {
                     val headerString = getString(R.string.pm_label_bs_success_header)
                     val descString = getString(R.string.pm_label_bs_success_desc)
                     val btnString = getString(R.string.pm_label_bs_success_button)
-                    PowerMerchantSuccessBottomSheet.BottomSheetModel(headerString, descString, imgUrl, btnString)
+                    PowerMerchantSuccessBottomSheet.BottomSheetModel(headerString, descString, imgUrl, btnString, PM_SUBSCRIBE_SUCCESS)
                 }
 
         bottomSheetSuccess = PowerMerchantSuccessBottomSheet.newInstance(bottomSheetModel)
@@ -277,7 +285,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     }
 
     override fun onSuccessGetPmInfo(powerMerchantStatus: PowerMerchantStatus) {
-        shopStatusModel = powerMerchantStatus.shopStatusModel
+        shopStatusModel = powerMerchantStatus.goldGetPmOsStatus.result.data
         getApprovalStatusPojo = powerMerchantStatus.getApprovalStatusPojo
         shopScore = powerMerchantStatus.shopScore.data.value
         minScore = powerMerchantStatus.shopScore.badgeScore
@@ -422,7 +430,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             partialTncViewHolder = PartialTncViewHolder.build(base_partial_tnc, activity)
         }
         if (!::partialBenefitPmViewHolder.isInitialized) {
-            partialBenefitPmViewHolder = PartialBenefitPmViewHolder.build(base_partial_benefit, activity)
+            partialBenefitPmViewHolder = PartialBenefitPmViewHolder.build(base_partial_benefit, activity,powerMerchantTracking)
         }
     }
 }

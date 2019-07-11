@@ -9,29 +9,22 @@ import android.support.annotation.Nullable;
 import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
-import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.gcm.NotificationModHandler;
-import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.gm.common.data.source.cloud.model.GoldGetPmOsStatus;
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel;
-import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.sellerapp.R;
+import com.tokopedia.sellerapp.dashboard.di.DaggerSellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.di.SellerDashboardComponent;
 import com.tokopedia.sellerapp.dashboard.view.fragment.DashboardFragment;
 import com.tokopedia.sellerapp.dashboard.view.presenter.SellerDashboardDrawerPresenter;
 import com.tokopedia.sellerapp.drawer.SellerDrawerAdapter;
 import com.tokopedia.sellerapp.fcm.appupdate.FirebaseRemoteAppUpdate;
-
-import com.tokopedia.sellerapp.dashboard.di.DaggerSellerDashboardComponent;
 
 import javax.inject.Inject;
 
@@ -149,10 +142,13 @@ public class DashboardActivity extends DrawerPresenterActivity
     }
 
     @Override
-    public void onSuccessGetShopInfo(ShopStatusModel shopStatusModel) {
+    public void onSuccessGetShopInfo(GoldGetPmOsStatus goldGetPmOsStatus) {
+        ShopStatusModel shopStatusModel = goldGetPmOsStatus.getResult().getData();
         SellerDrawerAdapter sellerDrawerAdapter = ((SellerDrawerAdapter) drawerHelper.getAdapter());
         boolean isGoldMerchant = shopStatusModel.isPowerMerchantActive();
+        boolean isOfficialStore = shopStatusModel.isOfficialStore();
         sellerDrawerAdapter.setGoldMerchant(isGoldMerchant);
+        sellerDrawerAdapter.setOfficialStore(isOfficialStore);
         sessionHandler.setGoldMerchant(isGoldMerchant);
     }
 
