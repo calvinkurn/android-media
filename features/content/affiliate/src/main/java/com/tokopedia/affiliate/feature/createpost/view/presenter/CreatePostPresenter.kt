@@ -67,7 +67,7 @@ class CreatePostPresenter @Inject constructor(
     }
 
     override fun postContentToOtherService(viewModel: CreatePostViewModel) {
-        twitterManager.postTweet(viewModel.caption, viewModel.fileImageList.map { File(it.path) })
+        twitterManager.postTweet(viewModel.caption, emptyList())
                 .subscribe {
                     Timber.tag("Post to Twitter").d("Success")
                 }
