@@ -276,12 +276,12 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
 
     private fun mapPostContent(cardPost: Cardpost, template: Template): MutableList<BasePostViewModel> {
         val list: MutableList<BasePostViewModel> = ArrayList()
-        if (cardPost.body.media.isNotEmpty()) {
-            cardPost.body.media = getDataMultimedia(cardPost.body.media, count)
-            if (count < 6) {
-                count++
-            }
-        }
+//        if (cardPost.body.media.isNotEmpty()) {
+//            cardPost.body.media = getDataMultimedia(cardPost.body.media, count)
+//            if (count < 6) {
+//                count++
+//            }
+//        }
         for (media in cardPost.body.media) {
             when (media.type) {
                 CONTENT_IMAGE -> list.add(mapPostImage(media))

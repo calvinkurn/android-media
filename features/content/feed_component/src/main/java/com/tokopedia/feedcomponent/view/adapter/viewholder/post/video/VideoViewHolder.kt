@@ -1,10 +1,13 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.post.video
 
+import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.util.ContentNetworkListener
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.BasePostViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
@@ -56,26 +59,44 @@ class VideoViewHolder(private val listener: VideoViewListener) : BasePostViewHol
                 }
         )
         itemView.image.loadImage(element.thumbnail)
-        if (element.canPlayVideo) {
+        if (canPlayVideo(element)) {
             playVideo(element.url)
         } else {
             stopVideo()
         }
     }
 
-    fun playVideo(url: String) {
+    private fun canPlayVideo(element: VideoViewModel): Boolean {
+        return element.canPlayVideo && ContentNetworkListener.getInstance(itemView.context).isWifiEnabled()
+    }
+
+    private fun playVideo(url: String) {
         if (!isPlaying) {
-            itemView.layout_video.visibility = View.VISIBLE
+            itemView.frame_video.visibility = View.INVISIBLE
             itemView.layout_video.setVideoURI(Uri.parse(url))
-            itemView.layout_video.setOnPreparedListener {
-                it.isLooping = true
-            }
+            itemView.layout_video.setOnPreparedListener(object: MediaPlayer.OnPreparedListener{
+                override fun onPrepared(mp: MediaPlayer) {
+                    mp.isLooping = true
+                    itemView.ic_play.visibility = View.GONE
+                    mp.setOnInfoListener(object: MediaPlayer.OnInfoListener{
+                        override fun onInfo(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
+                            Log.d("profileScroll", "video VH - oninfo rendering start")
+                            if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
+                                Log.d("profileScroll", "video VH - oninfo rendering complete")
+                                itemView.frame_video.visibility = View.VISIBLE
+                                return true
+                            }
+                            return false
+                        }
+                    })
+                }
+            })
             itemView.layout_video.start()
             isPlaying = true
         }
     }
 
-    fun stopVideo() {
+    private fun stopVideo() {
         if (isPlaying) {
             itemView.layout_video.stopPlayback()
             itemView.layout_video.visibility = View.GONE
