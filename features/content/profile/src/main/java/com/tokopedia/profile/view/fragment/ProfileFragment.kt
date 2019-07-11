@@ -358,7 +358,26 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     element.profileHeaderViewModel.isShowAffiliateContent,
                     element.profileHeaderViewModel.isAffiliate))
                 resetLayoutManager()
+            } else if (element.profileHeaderViewModel.isKol){
+                // other related post will shown in grid, so change to grid layout
+                setGridLayoutManager()
+                visitables.add(NoPostCardViewModel())
+                getRelatedProfile()
             } else {
+                //TODO switch comment below
+                /*visitables.add( EmptyResultViewModel().apply {
+                    iconRes = R.drawable.ic_af_empty
+                    title = getString(R.string.profile_no_content)
+                    buttonTitle = getString(R.string.profile_see_others)
+                    callback = object : BaseEmptyViewHolder.Callback {
+                        override fun onEmptyContentItemTextClicked() {
+                        }
+
+                        override fun onEmptyButtonClicked() {
+                            goToExplore()
+                        }
+                    }
+                })*/
                 // other related post will shown in grid, so change to grid layout
                 setGridLayoutManager()
                 visitables.add(NoPostCardViewModel())
@@ -463,7 +482,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         val visitables: ArrayList<Visitable<*>> = ArrayList()
         if (feedPostRelated != null && feedPostRelated.meta.totalItems > 0) {
             visitables.add(TitleViewModel())
-            feedPostRelated.data.map {
+            feedPostRelated.data.forEach {
                 visitables.add(OtherRelatedProfileViewModel())
             }
         }

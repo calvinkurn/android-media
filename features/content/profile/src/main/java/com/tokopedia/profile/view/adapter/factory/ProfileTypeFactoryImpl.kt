@@ -29,9 +29,7 @@ import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostYoutubeViewHolder
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.viewmodel.*
-import com.tokopedia.profile.view.adapter.viewholder.EmptyAffiliateViewHolder
-import com.tokopedia.profile.view.adapter.viewholder.ProfileEmptyViewHolder
-import com.tokopedia.profile.view.adapter.viewholder.ProfileHeaderViewHolder
+import com.tokopedia.profile.view.adapter.viewholder.*
 import com.tokopedia.profile.view.listener.ProfileEmptyContract
 import com.tokopedia.profile.view.viewmodel.*
 import com.tokopedia.user.session.UserSessionInterface
@@ -108,18 +106,15 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
     }
 
     override fun type(noPostCardViewModel: NoPostCardViewModel): Int {
-        //TODO
-        return HideViewHolder.LAYOUT
+        return NoPostCardViewHolder.LAYOUT
     }
 
     override fun type(otherRelatedProfileViewModel: OtherRelatedProfileViewModel): Int {
-        //TODO
-        return HideViewHolder.LAYOUT
+        return OtherRelatedProfileViewHolder.LAYOUT
     }
 
     override fun type(titleViewModel: TitleViewModel): Int {
-        //TODO
-        return HideViewHolder.LAYOUT
+        return OtherPostTitleViewHolder.LAYOUT
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -161,6 +156,12 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
                 TopadsShopViewHolder(parent, topadsShopListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
             EmptyAffiliateViewHolder.LAYOUT ->
                 EmptyAffiliateViewHolder(parent, onEmptyItemClickedListener) as AbstractViewHolder< Visitable<*>>
+            NoPostCardViewHolder.LAYOUT ->
+                NoPostCardViewHolder(parent) as AbstractViewHolder<Visitable<*>>
+            OtherRelatedProfileViewHolder.LAYOUT ->
+                OtherRelatedProfileViewHolder(parent) as AbstractViewHolder<Visitable<*>>
+            OtherPostTitleViewHolder.LAYOUT ->
+                OtherPostTitleViewHolder(parent) as AbstractViewHolder<Visitable<*>>
             else -> super.createViewHolder(parent, type)
         }
     }
