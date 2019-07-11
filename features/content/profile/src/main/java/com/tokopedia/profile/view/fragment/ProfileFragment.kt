@@ -29,6 +29,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.feature.onboarding.view.fragment.UsernameInputFragment
 import com.tokopedia.affiliatecommon.BROADCAST_SUBMIT_POST
@@ -58,6 +59,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
+import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
 import com.tokopedia.kol.common.util.PostMenuListener
 import com.tokopedia.kol.common.util.createBottomMenu
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
@@ -347,14 +349,29 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     .filterIsInstance<BaseKolViewModel>()
                     .forEach { it.isKol = element.profileHeaderViewModel.isKol }
             visitables.addAll(element.dynamicFeedDomainModel.postList)
+            trackKolPostImpression(visitables)
         } else {
-            visitables.add(getEmptyModel(
+            if (element.profileHeaderViewModel.isOwner) {
+                visitables.add(getEmptyModelOwner(
                     element.profileHeaderViewModel.isShowAffiliateContent,
-                    element.profileHeaderViewModel.isOwner,
-                    element.profileHeaderViewModel.isAffiliate)
-            )
+                    element.profileHeaderViewModel.isAffiliate))
+            } else {
+                visitables.add( EmptyResultViewModel().apply {
+                    iconRes = R.drawable.ic_af_empty
+                    title = getString(R.string.profile_no_content)
+                    buttonTitle = getString(R.string.profile_see_others)
+                    callback = object : BaseEmptyViewHolder.Callback {
+                        override fun onEmptyContentItemTextClicked() {
+                        }
+
+                        override fun onEmptyButtonClicked() {
+                            goToExplore()
+                        }
+                    }
+                })
+                getRelatedProfile()
+            }
         }
-        trackKolPostImpression(visitables)
         renderList(visitables, !TextUtils.isEmpty(element.dynamicFeedDomainModel.cursor))
 
         when {
@@ -419,6 +436,22 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         view?.showErrorToaster(errorMessage, R.string.title_try_again) {
             presenter.shouldChangeUsername(userSession.userId.toIntOrZero(), link)
         }
+    }
+
+    fun onErrorGetRelatedProfile(throwable: Throwable?) {
+        view?.showErrorToaster(ErrorHandler.getErrorMessage(context, throwable),
+            R.string.title_try_again) {
+            getRelatedProfile()
+        }
+    }
+
+    fun onSuccessGetRelatedProfile(feedPostRelated: FeedPostRelated?) {
+        //TODO
+    }
+
+    fun getRelatedProfile(){
+        presenter.getRelatedProfile(this::onErrorGetRelatedProfile,
+            this::onSuccessGetRelatedProfile)
     }
 
     override fun onSuccessGetProfilePost(visitables: List<Visitable<*>>, lastCursor: String) {
@@ -1396,31 +1429,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         )
     }
 
-    private fun getEmptyModel(isShowAffiliateContent: Boolean,
-                              isOwner: Boolean,
+    private fun getEmptyModelOwner(isShowAffiliateContent: Boolean,
                               isAffiliate: Boolean): Visitable<*> {
-        return if (!isShowAffiliateContent && isOwner && !isAffiliate) ProfileEmptyViewModel()
-        else getEmptyResultModel(isOwner, isAffiliate)
-    }
-
-    private fun getEmptyResultModel(isOwner: Boolean, isAffiliate: Boolean): Visitable<*> {
-        if (isOwner) {
-            return EmptyAffiliateViewModel()
-        } else {
-            val emptyResultViewModel = EmptyResultViewModel()
-            emptyResultViewModel.iconRes = R.drawable.ic_af_empty
-            emptyResultViewModel.title = getString(R.string.profile_no_content)
-            emptyResultViewModel.buttonTitle = getString(R.string.profile_see_others)
-            emptyResultViewModel.callback = object : BaseEmptyViewHolder.Callback {
-                override fun onEmptyContentItemTextClicked() {
-                }
-
-                override fun onEmptyButtonClicked() {
-                    goToExplore()
-                }
-            }
-            return emptyResultViewModel
-        }
+        return if (!isShowAffiliateContent && !isAffiliate) ProfileEmptyViewModel()
+        else EmptyAffiliateViewModel()
     }
 
     private fun onSuccessAddDeleteKolComment(rowNumber: Int, totalNewComment: Int) {
