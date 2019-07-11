@@ -3,6 +3,7 @@ package com.tokopedia.twitter_share
 import android.content.SharedPreferences
 import com.tokopedia.twitter_share.session.TwitterSession
 import rx.Observable
+import rx.schedulers.Schedulers
 import twitter4j.*
 import twitter4j.auth.AccessToken
 import twitter4j.auth.RequestToken
@@ -55,8 +56,10 @@ class TwitterManager(
         verifyAuthData(requestToken, oAuthVerifier)
     }
 
-    fun getAuthenticator(): TwitterAuthenticator {
-        return TwitterAuthenticator(getRequestTokenInstance(), this)
+    fun getAuthenticator(): Observable<TwitterAuthenticator> {
+        return Observable.fromCallable {
+            TwitterAuthenticator(getRequestTokenInstance(), this)
+        }.subscribeOn(Schedulers.io())
     }
 
     private fun verifyAuthData(requestToken: RequestToken, oAuthVerifier: String) {
@@ -84,6 +87,7 @@ class TwitterManager(
                     .map(UploadedMedia::getMediaId)
                     .toList()
                     .flatMap { ids -> updateStatus(message, ids.toLongArray()) }
+                    .subscribeOn(Schedulers.io())
         }
     }
 

@@ -5,7 +5,11 @@ import com.tokopedia.affiliate.feature.createpost.domain.usecase.GetContentFormU
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract
 import com.tokopedia.affiliate.feature.createpost.view.subscriber.GetContentFormSubscriber
 import com.tokopedia.affiliate.feature.createpost.view.type.ShareType
+import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel
 import com.tokopedia.twitter_share.TwitterManager
+import rx.android.schedulers.AndroidSchedulers
+import timber.log.Timber
+import java.io.File
 import javax.inject.Inject
 
 /**
@@ -55,8 +59,17 @@ class CreatePostPresenter @Inject constructor(
     override fun onShareButtonClicked(type: ShareType, isChecked: Boolean) {
         if (isChecked) {
             when (type) {
-                is ShareType.Twitter -> view?.onAuthenticateTwitter(twitterManager.getAuthenticator())
+                is ShareType.Twitter -> twitterManager.getAuthenticator()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe { view?.onAuthenticateTwitter(it) }
             }
         }
+    }
+
+    override fun postContentToOtherService(viewModel: CreatePostViewModel) {
+        twitterManager.postTweet(viewModel.caption, viewModel.fileImageList.map { File(it.path) })
+                .subscribe {
+                    Timber.tag("Post to Twitter").d("Success")
+                }
     }
 }

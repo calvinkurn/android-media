@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.FeedContentForm
 import com.tokopedia.affiliate.feature.createpost.view.type.ShareType
+import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel
 import com.tokopedia.twitter_share.TwitterAuthenticator
 
 /**
@@ -36,5 +37,7 @@ interface CreatePostContract {
         fun shouldGetShareOptions()
 
         fun onShareButtonClicked(type: ShareType, isChecked: Boolean)
+
+        fun postContentToOtherService(viewModel: CreatePostViewModel)
     }
 }
