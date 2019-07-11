@@ -29,6 +29,7 @@ query ContentForm($relatedID: [String], $type: String) {
       title
     }
     maxTag
+    defaultCaptions
     error
   }
 }

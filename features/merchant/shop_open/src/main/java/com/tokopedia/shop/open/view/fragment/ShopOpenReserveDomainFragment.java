@@ -198,6 +198,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
         buttonSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                trackingOpenShop.eventOpenShopSuccessClick();
                 onButtonSubmitClicked();
             }
         });
@@ -239,6 +240,11 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
             @Override
             public void onClick(@NotNull View textView) {
                 if (getActivity() != null) {
+                    if (url == URL_TNC) {
+                        trackingOpenShop.eventTncClick();
+                    } else {
+                        trackingOpenShop.eventPrivacyPolicyClick();
+                    }
                     Intent intent = ShopOpenWebViewActivity.Companion.newInstance(getActivity(), url, title);
                     startActivity(intent);
                 }

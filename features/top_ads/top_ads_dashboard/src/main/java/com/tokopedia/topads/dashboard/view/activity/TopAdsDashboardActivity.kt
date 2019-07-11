@@ -59,7 +59,7 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
 
 
     override fun getComponent(): TopAdsDashboardComponent = DaggerTopAdsDashboardComponent.builder().baseAppComponent(
-                (application as BaseMainApplication).baseAppComponent).build()
+            (application as BaseMainApplication).baseAppComponent).build()
 
     override fun onBackPressed() {
         if (isTaskRoot) {
@@ -177,17 +177,13 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
     }
 
     object DeepLinkIntents {
-        @DeepLink(ApplinkConst.SellerApp.TOPADS_DASHBOARD)
+        @DeepLink(ApplinkConst.SellerApp.TOPADS_DASHBOARD, ApplinkConst.CustomerApp.TOPADS_DASHBOARD)
         @JvmStatic
         fun getCallingApplinkIntent(context: Context, extras: Bundle): Intent {
-            if (GlobalConfig.isSellerApp()) {
-                val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
-                return getCallingIntent(context)
-                        .setData(uri.build())
-                        .putExtras(extras)
-            } else {
-                return ApplinkUtil.getSellerAppApplinkIntent(context, extras)
-            }
+            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
+            return getCallingIntent(context)
+                    .setData(uri.build())
+                    .putExtras(extras)
         }
     }
 }

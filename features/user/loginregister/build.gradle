@@ -20,11 +20,7 @@ dependencies {
     //google login
     implementation rootProject.ext.playServicesDependencies.auth
 
-    api (rootProject.ext.serviceDependencies.crashlytics) {
-        transitive = true
-    }
-
-    
+    implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.network)
@@ -34,7 +30,15 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.linker)
+    implementation project(rootProject.ext.libraries.config)
+    implementation project(rootProject.ext.libraries.iris)
+    implementation project(rootProject.ext.libraries.cmnotification)
+    implementation rootProject.ext.unifyDependencies.components
+
+    api (rootProject.ext.serviceDependencies.crashlytics) {
+        transitive = true
+    }
 
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.sessioncommon)
