@@ -183,6 +183,8 @@ public interface ConstantTransactionAnalytics {
         String VALIDATION_ERROR_KODE_POS_PADA_TAMBAH_ADDRESS = "validation error kode pos pada + address";
         String VALIDATION_ERROR_ALAMAT_PADA_TAMBAH_ADDRESS = "validation error alamat pada + address";
 
+        String VIEW_TICKER_PRICE_DECREASE = "view ticker price decrease";
+
         //PHASE 2
         String CLICK_PILIH_ALAMAT_LAIN = "click pilih alamat lain";
         String CLICK_KIRIM_KE_BANYAK_ALAMAT = "click kirim ke banyak alamat";

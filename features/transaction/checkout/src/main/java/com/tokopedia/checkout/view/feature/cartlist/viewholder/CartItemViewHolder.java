@@ -358,11 +358,13 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         divider.setVisibility((getLayoutPosition() == dataSize - 1) ? View.GONE : View.VISIBLE);
 
         String priceChangesText = data.getCartItemData().getOriginData().getPriceChangesDesc();
-        if (priceChangesText.isEmpty()) {
+        int priceChangesState = data.getCartItemData().getOriginData().getPriceChangesState();
+        if (priceChangesText.isEmpty() || priceChangesState >= 0) {
             tvPriceChanges.setVisibility(View.GONE);
         } else {
             tvPriceChanges.setVisibility(View.VISIBLE);
             tvPriceChanges.setText(priceChangesText);
+            actionListener.onCartItemShowTickerPriceDecrease(data.getCartItemData().getOriginData().getProductId());
         }
     }
 

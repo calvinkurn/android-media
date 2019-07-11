@@ -118,15 +118,13 @@
                         android:paddingTop="@dimen/dp_3"
                         android:paddingBottom="@dimen/dp_3"
                         android:layout_marginTop="@dimen/dp_4"
-                        android:layout_marginBottom="@dimen/dp_4"
                         android:textColor="@color/price_changes_color_text"
                         android:background="@drawable/bg_price_changes"
                         android:textSize="@dimen/sp_10"
                         android:textStyle="bold"
                         android:layout_below="@id/product_properties"
                         android:visibility="gone"
-                        tools:visibility="visible"
-                        tools:text="TES NIH"/>
+                        tools:visibility="visible"/>
 
                     <TextView
                         android:id="@+id/tv_product_price"
