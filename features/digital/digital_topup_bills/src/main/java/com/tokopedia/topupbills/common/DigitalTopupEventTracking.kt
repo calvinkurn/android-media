@@ -69,4 +69,16 @@ interface DigitalTopupEventTracking {
             val ACTION_FIELD_STEP2 = "click payment option button"
         }
     }
+
+    interface EnhanceEccomerce {
+        companion object {
+            internal var NAME = "name"
+            internal var ID = "id"
+            internal var PRICE = "price"
+            internal var BRAND = "brand"
+            internal var CATEGORY = "category"
+            internal var LIST = "list"
+            internal var POSITION = "position"
+        }
+    }
 }

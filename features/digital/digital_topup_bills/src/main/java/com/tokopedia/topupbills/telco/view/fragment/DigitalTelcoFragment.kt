@@ -102,11 +102,11 @@ class DigitalTelcoFragment : BaseDaggerFragment() {
 
             override fun onPageSelected(position: Int) {
                 if (position == 0) {
-                    header_view.headerLeftActive(list.get(DigitalSubMenuWidget.HEADER_LEFT))
+                    header_view.headerLeftActive(list[DigitalSubMenuWidget.HEADER_LEFT])
                 } else {
-                    header_view.headerRightActive(list.get(DigitalSubMenuWidget.HEADER_RIGHT))
+                    header_view.headerRightActive(list[DigitalSubMenuWidget.HEADER_RIGHT])
                 }
-                topupAnalytics.eventClickTelcoTab(list.get(position).label)
+                topupAnalytics.eventClickTelcoTab(list[position].label)
             }
         })
     }

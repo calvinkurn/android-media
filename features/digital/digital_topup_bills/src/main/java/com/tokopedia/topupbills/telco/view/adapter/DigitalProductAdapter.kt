@@ -28,9 +28,9 @@ class DigitalProductAdapter(val productList: List<TelcoProductDataCollection>, v
     }
 
     fun resetProductListSelected(productId: String) {
-        for (i in 0..productList.size - 1) {
-            if (productList.get(i).product.attributes.selected && !productList.get(i).key.equals(productId)) {
-                productList.get(i).product.attributes.selected = false
+        for (i in 0 until productList.size) {
+            if (productList[i].product.attributes.selected && productList[i].key != productId) {
+                productList[i].product.attributes.selected = false
                 notifyItemChanged(i)
                 break
             }
@@ -46,12 +46,12 @@ class DigitalProductAdapter(val productList: List<TelcoProductDataCollection>, v
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseProductViewHolder {
         context = parent.context
-        if (productType == TelcoProductType.PRODUCT_GRID) {
+        return if (productType == TelcoProductType.PRODUCT_GRID) {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.item_digital_product_grid, parent, false)
-            return ProductGridViewHolder(view)
+            ProductGridViewHolder(view)
         } else {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.item_digital_product_list, parent, false)
-            return ProductListViewHolder(view)
+            ProductListViewHolder(view)
         }
     }
 
@@ -59,7 +59,7 @@ class DigitalProductAdapter(val productList: List<TelcoProductDataCollection>, v
         return productList.size
     }
 
-    inner open abstract class BaseProductViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    abstract inner class BaseProductViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         protected val titleProduct: TextView = view.findViewById(R.id.title_product)
         protected val descProduct: TextView = view.findViewById(R.id.desc_product)
@@ -67,31 +67,27 @@ class DigitalProductAdapter(val productList: List<TelcoProductDataCollection>, v
         protected val productPrice: TextView = view.findViewById(R.id.product_price)
         protected lateinit var productItem: TelcoProductDataCollection
 
-        init {
-
-        }
-
         open fun bindView() {
             productItem = productList.get(adapterPosition)
-            titleProduct.setText(productItem.product.attributes.desc)
-            descProduct.setText(productItem.product.attributes.detail)
-            productPrice.setText(productItem.product.attributes.price)
+            titleProduct.text = productItem.product.attributes.desc
+            descProduct.text = productItem.product.attributes.detail
+            productPrice.text = productItem.product.attributes.price
 
             productPromoPrice.visibility = View.INVISIBLE
             productItem.product.attributes.productPromo?.run {
                 if (this.newPrice.isNotEmpty()) {
-                    productPrice.setText(this.newPrice)
-                    productPromoPrice.setText(productItem.product.attributes.price)
-                    productPromoPrice.setPaintFlags(productPromoPrice.getPaintFlags() or Paint.STRIKE_THRU_TEXT_FLAG)
+                    productPrice.text = this.newPrice
+                    productPromoPrice.text = productItem.product.attributes.price
+                    productPromoPrice.paintFlags = productPromoPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                     productPromoPrice.visibility = View.VISIBLE
                 }
             }
         }
 
         protected fun onClickProductItem() {
-            for (i in 0..productList.size - 1) {
-                if (productList.get(i).product.attributes.selected) {
-                    productList.get(i).product.attributes.selected = false
+            for (i in 0 until productList.size) {
+                if (productList[i].product.attributes.selected) {
+                    productList[i].product.attributes.selected = false
                     notifyItemChanged(i)
                     break
                 }
@@ -99,12 +95,12 @@ class DigitalProductAdapter(val productList: List<TelcoProductDataCollection>, v
 
             productItem.product.attributes.selected = true
             notifyItemChanged(adapterPosition)
-            listener.onClickItemProduct(productItem)
+            listener.onClickItemProduct(productItem, adapterPosition)
         }
 
         protected fun setItemSelected(viewGrup: ViewGroup) {
             if (productItem.product.attributes.selected) {
-                listener.onClickItemProduct(productItem)
+                listener.onClickItemProduct(productItem, adapterPosition)
                 viewGrup.setBackgroundResource(R.drawable.digital_bg_green_light_rounded)
             } else {
                 viewGrup.setBackgroundResource(R.drawable.digital_bg_transparent_round)
@@ -151,7 +147,7 @@ class DigitalProductAdapter(val productList: List<TelcoProductDataCollection>, v
     }
 
     interface ActionListener {
-        fun onClickItemProduct(itemProduct: TelcoProductDataCollection)
+        fun onClickItemProduct(itemProduct: TelcoProductDataCollection, position: Int)
         fun onClickSeeMoreProduct(itemProduct: TelcoProductDataCollection)
     }
 

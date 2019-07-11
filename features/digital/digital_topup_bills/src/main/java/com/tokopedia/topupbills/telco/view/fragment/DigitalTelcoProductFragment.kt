@@ -20,6 +20,7 @@ import com.tokopedia.topupbills.telco.data.TelcoProductComponentData
 import com.tokopedia.topupbills.telco.data.TelcoProductDataCollection
 import com.tokopedia.topupbills.telco.view.bottomsheet.DigitalProductBottomSheet
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
+import com.tokopedia.topupbills.telco.view.model.DigitalTrackProductTelco
 import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoProductViewModel
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedProductTelcoViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalTelcoProductWidget
@@ -110,9 +111,10 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         }
 
         telcoTelcoProductView.setListener(object : DigitalTelcoProductWidget.ActionListener {
-            override fun onClickProduct(itemProduct: TelcoProductDataCollection) {
+            override fun onClickProduct(itemProduct: TelcoProductDataCollection, position: Int, categoryName: String) {
                 sharedModel.setProductSelected(itemProduct)
                 sharedModel.setShowTotalPrice(true)
+                topupAnalytics.clickEnhanceCommerceProduct(itemProduct, position, categoryName)
             }
 
             override fun onSeeMoreProduct(itemProduct: TelcoProductDataCollection) {
@@ -127,6 +129,11 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                     }
                     seeMoreBottomSheet.show(it.supportFragmentManager, "")
                 }
+            }
+
+            override fun onTrackImpressionProductsList(digitalTrackProductTelcoList: List<DigitalTrackProductTelco>,
+                                                       categoryName: String) {
+                topupAnalytics.impressionEnhanceCommerceProduct(digitalTrackProductTelcoList, categoryName)
             }
         })
     }

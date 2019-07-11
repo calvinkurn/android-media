@@ -1,5 +1,8 @@
 package com.tokopedia.topupbills.common
 
+import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.topupbills.telco.data.TelcoProductDataCollection
+import com.tokopedia.topupbills.telco.view.model.DigitalTrackProductTelco
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 
@@ -117,5 +120,64 @@ class DigitalTopupAnalytics {
                 DigitalTopupEventTracking.Action.CLICK_TELCO_TAB,
                 "$headerTab"
         ))
+    }
+
+    fun impressionEnhanceCommerceProduct(digitalTrackProductTelcoList: List<DigitalTrackProductTelco>, categoryName: String) {
+        val productTelcoList = ArrayList<Any>()
+        for (i in 0 until digitalTrackProductTelcoList.size) {
+            val product = digitalTrackProductTelcoList[i]
+            productTelcoList.add(DataLayer.mapOf(
+                    DigitalTopupEventTracking.EnhanceEccomerce.NAME, product.itemProduct.product.attributes.desc,
+                    DigitalTopupEventTracking.EnhanceEccomerce.ID, product.itemProduct.product.id,
+                    DigitalTopupEventTracking.EnhanceEccomerce.PRICE, product.itemProduct.product.attributes.price,
+                    DigitalTopupEventTracking.EnhanceEccomerce.BRAND, "none",
+                    DigitalTopupEventTracking.EnhanceEccomerce.CATEGORY, categoryName,
+                    DigitalTopupEventTracking.EnhanceEccomerce.LIST, "$categoryName - product ${product.position} - " +
+                    "${product.itemProduct.product.attributes.desc}",
+                    DigitalTopupEventTracking.EnhanceEccomerce.POSITION, product.position))
+        }
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        "event", DigitalTopupEventTracking.Event.PRODUCT_VIEW,
+                        "eventCategory", DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
+                        "eventAction", DigitalTopupEventTracking.Action.PRODUCT_CARD_IMPRESSION,
+                        "eventLabel", categoryName,
+                        "ecommerce", DataLayer.mapOf(
+                            "impressions", DataLayer.mapOf(
+                                "products", productTelcoList.toArray()
+                            )
+                        )
+                )
+        )
+
+    }
+
+    fun clickEnhanceCommerceProduct(itemProduct: TelcoProductDataCollection, position: Int, categoryName: String) {
+        val trackProduct = DataLayer.mapOf(
+                DigitalTopupEventTracking.EnhanceEccomerce.NAME, itemProduct.product.attributes.desc,
+                DigitalTopupEventTracking.EnhanceEccomerce.ID, itemProduct.product.id,
+                DigitalTopupEventTracking.EnhanceEccomerce.PRICE, itemProduct.product.attributes.price,
+                DigitalTopupEventTracking.EnhanceEccomerce.BRAND, "none",
+                DigitalTopupEventTracking.EnhanceEccomerce.CATEGORY, categoryName,
+                DigitalTopupEventTracking.EnhanceEccomerce.POSITION, position)
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        "event", DigitalTopupEventTracking.Event.PRODUCT_CLICK,
+                        "eventCategory", DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
+                        "eventAction", DigitalTopupEventTracking.Action.CLICK_PRODUCT_CARD,
+                        "eventLabel", categoryName,
+                        "ecommerce", DataLayer.mapOf(
+                            "click", DataLayer.mapOf(
+                                "actionField", DataLayer.mapOf(
+                                    "list", "$categoryName - id product ${itemProduct.product.id} - " +
+                                            "position $position - ${itemProduct.product.attributes.desc}"
+                                ),
+                                "products", trackProduct
+                            )
+                        )
+                )
+        )
     }
 }
