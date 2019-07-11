@@ -75,6 +75,7 @@ class TwitterManager(
     }
 
     private fun getRequestTokenInstance(): RequestToken {
+        instance = TwitterFactory(config).instance
         return instance.getOAuthRequestToken(CALLBACK_URL)
     }
 
