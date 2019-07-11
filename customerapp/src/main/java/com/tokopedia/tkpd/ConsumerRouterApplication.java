@@ -273,6 +273,7 @@ import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivation
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationProfileActivity;
 import com.tokopedia.phoneverification.view.activity.ReferralPhoneNumberVerificationActivity;
 import com.tokopedia.product.detail.ProductDetailRouter;
+import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCategoryActivity;
 import com.tokopedia.product.manage.list.view.activity.ProductManageActivity;
 import com.tokopedia.profile.ProfileModuleRouter;
 import com.tokopedia.profile.view.activity.ProfileActivity;
@@ -3117,5 +3118,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @NonNull
     public Intent getTopAdsAddCreditIntent(@NonNull Context context) {
         return TopAdsDashboardInternalRouter.getTopAdsAddCreditIntent(context);
+    }
+
+    @Override
+    public void goToAddProduct(@NotNull Activity activity) {
+        activity.startActivity(new Intent(activity, ProductAddNameCategoryActivity.class));
     }
 }
