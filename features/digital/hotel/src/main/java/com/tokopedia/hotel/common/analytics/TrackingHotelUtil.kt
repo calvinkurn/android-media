@@ -80,7 +80,9 @@ class TrackingHotelUtil {
             map["name"] = product.name
             map["direct_payment"] = product.isDirectPayment
             map["id"] = product.id
-            map["price"] = product.roomPrice[0].priceAmount.toLong().toInt().toString()
+
+            map["price"] = if (product.roomPrice.isNotEmpty())
+                product.roomPrice.first().priceAmount.toLong().toString() else "0"
 
             list.add(map)
         }
@@ -92,7 +94,9 @@ class TrackingHotelUtil {
                     products: List<Property>){
         val hotelId = property.id
         val dayDiff = HotelUtils.countCurrentDayDifference(checkInDate)
-        val price = property.roomPrice[0].priceAmount.toLong().toString()
+
+        val price = if (property.roomPrice.isNotEmpty())
+            property.roomPrice.first().priceAmount.toLong().toString() else "0"
 
         val map = mutableMapOf<String, Any?>()
         map[EVENT] = PRODUCT_CLICK
@@ -129,7 +133,7 @@ class TrackingHotelUtil {
                 "$HOTEL_LABEL - $sortValue")
     }
 
-    fun hotelViewDetails(hotelName: String, hotelId: Int, available: Boolean, price: Int, directPayment: Boolean){
+    fun hotelViewDetails(hotelName: String, hotelId: Int, available: Boolean, price: String, directPayment: Boolean){
         val map = mutableMapOf<String, Any?>()
         map[EVENT] = VIEW_HOTEL
         map[EVENT_CATEGORY] = DIGITAL_NATIVE
