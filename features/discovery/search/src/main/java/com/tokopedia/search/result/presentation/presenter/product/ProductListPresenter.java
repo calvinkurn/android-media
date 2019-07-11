@@ -10,12 +10,14 @@ import com.tokopedia.search.result.presentation.ProductListSectionContract;
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper;
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel;
 import com.tokopedia.search.result.presentation.model.HeaderViewModel;
+import com.tokopedia.search.result.presentation.model.LabelGroupViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductViewModel;
 import com.tokopedia.search.result.presentation.presenter.abstraction.SearchSectionPresenter;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Badge;
 import com.tokopedia.topads.sdk.domain.model.Data;
+import com.tokopedia.topads.sdk.domain.model.LabelGroup;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
@@ -382,6 +384,7 @@ final class ProductListPresenter
                     item.setShopName(topAds.getShop().getName());
                     item.setOriginalPrice(topAds.getProduct().getCampaign().getOriginalPrice());
                     item.setDiscountPercentage(topAds.getProduct().getCampaign().getDiscountPercentage());
+                    item.setLabelGroupList(mapLabelGroupList(topAds.getProduct().getLabelGroupList()));
                     list.add(i, item);
                     j++;
                 }
@@ -410,6 +413,20 @@ final class ProductListPresenter
             items.add(new BadgeItemViewModel(b.getImageUrl(), b.getTitle(), b.isShow()));
         }
         return items;
+    }
+
+    private List<LabelGroupViewModel> mapLabelGroupList(List<LabelGroup> labelGroupList) {
+        List<LabelGroupViewModel> labelGroupViewModelList = new ArrayList<>();
+
+        for(LabelGroup labelGroup : labelGroupList) {
+            labelGroupViewModelList.add(
+                    new LabelGroupViewModel(
+                            labelGroup.getPosition(), labelGroup.getType(), labelGroup.getTitle()
+                    )
+            );
+        }
+
+        return labelGroupViewModelList;
     }
 
     private void loadMoreDataSubscriberOnCompleteIfViewAttached() {

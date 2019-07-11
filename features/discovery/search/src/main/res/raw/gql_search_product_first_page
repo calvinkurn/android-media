@@ -38,8 +38,6 @@ query SearchProduct(
             image_url_700
             price
             price_range
-            top_label
-            bottom_label
             wishlist
             whole_sale_price {
                 quantity_min
@@ -183,11 +181,14 @@ query SearchProduct(
                 product_new_label
                 product_cashback_rate
                 product_rating
-                top_label
-                bottom_label
                 campaign {
                     original_price
                     discount_percentage
+                }
+                label_groups {
+                    position
+                    type
+                    title
                 }
             }
             shop{

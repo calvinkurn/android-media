@@ -43,6 +43,7 @@ public class Product implements Parcelable {
     private static final String KEY_APPLINKS = "applinks";
     private static final String KEY_IMAGE_PRODUCT = "image_product";
     private static final String KEY_CAMPAIGN = "campaign";
+    private static final String KEY_LABEL_GROUP = "label_group";
 
     @SerializedName(KEY_ID)
     @Expose
@@ -139,6 +140,11 @@ public class Product implements Parcelable {
     @SerializedName(KEY_CAMPAIGN)
     @Expose
     private Campaign campaign = new Campaign();
+
+    @SerializedName(KEY_LABEL_GROUP)
+    @Expose
+    private List<LabelGroup> labelGroupList = new ArrayList<>();
+
     private boolean loaded = false;
 
     public Product() {
@@ -229,6 +235,12 @@ public class Product implements Parcelable {
         if(!object.isNull(KEY_CAMPAIGN)) {
             setCampaign(new Campaign(object.getJSONObject(KEY_CAMPAIGN)));
         }
+        if(!object.isNull(KEY_LABEL_GROUP)) {
+            JSONArray arr = object.getJSONArray(KEY_LABEL_GROUP);
+            for (int i = 0; i < arr.length(); i++) {
+                labelGroupList.add(new LabelGroup(arr.getJSONObject(i)));
+            }
+        }
     }
 
     protected Product(Parcel in) {
@@ -258,6 +270,7 @@ public class Product implements Parcelable {
         bottomLabels = in.createStringArrayList();
         imageProduct = in.readParcelable(ImageProduct.class.getClassLoader());
         campaign = in.readParcelable(Campaign.class.getClassLoader());
+        labelGroupList = in.createTypedArrayList(LabelGroup.CREATOR);
     }
 
     @Override
@@ -288,6 +301,7 @@ public class Product implements Parcelable {
         dest.writeStringList(bottomLabels);
         dest.writeParcelable(imageProduct, flags);
         dest.writeParcelable(campaign, flags);
+        dest.writeTypedList(labelGroupList);
     }
 
     @Override
@@ -521,5 +535,13 @@ public class Product implements Parcelable {
 
     public Campaign getCampaign() {
         return campaign;
+    }
+
+    public void setLabelGroupList(List<LabelGroup> labelGroupList) {
+        this.labelGroupList = labelGroupList;
+    }
+
+    public List<LabelGroup> getLabelGroupList() {
+        return this.labelGroupList;
     }
 }
