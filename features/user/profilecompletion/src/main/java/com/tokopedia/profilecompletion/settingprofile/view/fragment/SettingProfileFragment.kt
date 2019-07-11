@@ -24,6 +24,7 @@ import com.tokopedia.profilecompletion.customview.UnifyDialog
 import com.tokopedia.profilecompletion.data.UploadProfileImageModel
 import com.tokopedia.profilecompletion.di.ProfileCompletionComponent
 import com.tokopedia.profilecompletion.settingprofile.data.ProfileCompletionData
+import com.tokopedia.profilecompletion.settingprofile.view.widget.CustomFieldSettingProfile
 import com.tokopedia.profilecompletion.settingprofile.viewmodel.ProfileInfoViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -45,7 +46,6 @@ class SettingProfileFragment : BaseDaggerFragment() {
     private val profileInfoViewModel by lazy { viewModelProvider.get(ProfileInfoViewModel::class.java) }
 
     companion object {
-
         const val REQUEST_CODE_EDIT_PROFILE_PHOTO = 200
         const val REQUEST_CODE_EDIT_BOD = 201
         const val REQUEST_CODE_EDIT_EMAIL = 202
@@ -71,9 +71,6 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
         profilePhoto.setOnClickListener(EditUserProfilePhotoListener())
         btnEditProfilePhoto.setOnClickListener(EditUserProfilePhotoListener())
-        btnEditBod.setOnClickListener { } //TODO add action on listener
-        btnEditEmail.setOnClickListener { showChangeEmailDialog() }
-        btnEditPhone.setOnClickListener { } //TODO add action on listener
 
         initSettingProfileData()
     }
@@ -111,7 +108,6 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     private fun onSuccessUploadProfilePicture(result: UploadProfileImageModel) {
         dismissLoadingUploadProfilePicture()
-        Toast.makeText(context, "data new: " + result.data?.filePath, Toast.LENGTH_LONG).show()
         if(result.data?.filePath != null && result.data.filePath.isNotBlank()) {
             ImageHandler.loadImageCircle2(context, profilePhoto, result.data.filePath)
         }else{
@@ -206,16 +202,104 @@ class SettingProfileFragment : BaseDaggerFragment() {
         dismissLoading()
 
         ImageHandler.loadImageCircle2(context, profilePhoto, profileCompletionData.profilePicture)
-        name.text = profileCompletionData.fullName
-        bod.text = DateFormatUtils.formatDate(
-                DateFormatUtils.FORMAT_YYYY_MM_DD,
-                DateFormatUtils.FORMAT_DD_MMMM_YYYY,
-                profileCompletionData.birthDay)
-        gender.text = if (profileCompletionData.gender == 1) getString(R.string.profile_completion_man)
-        else getString(R.string.profile_completion_woman)
-        email.text = profileCompletionData.email
-        phone.text = PhoneNumberUtils.transform(profileCompletionData.phone)
-        phoneVerified.visibility = if (profileCompletionData.isPhoneVerified) View.VISIBLE else View.GONE
+
+        name.showFilled(
+            getString(R.string.subtitle_name_setting_profile),
+            profileCompletionData.fullName,
+            false,
+            false
+        )
+
+        if(profileCompletionData.birthDay.isEmpty()) {
+            bod.showEmpty(
+                getString(R.string.subtitle_bod_setting_profile),
+                getString(R.string.hint_bod_setting_profile),
+                false,
+                View.OnClickListener {
+                    //TODO add action on listener
+                }
+            )
+        }else{
+            bod.showFilled(
+                getString(R.string.subtitle_bod_setting_profile),
+                DateFormatUtils.formatDate(
+                    DateFormatUtils.FORMAT_YYYY_MM_DD,
+                    DateFormatUtils.FORMAT_DD_MMMM_YYYY,
+                    profileCompletionData.birthDay),
+                false,
+                true,
+                View.OnClickListener {
+                    //TODO add action on listener
+                }
+            )
+        }
+
+        if(profileCompletionData.gender == 0){
+            gender.showEmpty(
+                getString(R.string.subtitle_gender_setting_profile),
+                getString(R.string.hint_gender_setting_profile),
+                true,
+                View.OnClickListener {
+                    //TODO add action on listener
+                }
+            )
+        }else{
+            gender.showFilled(
+                getString(R.string.subtitle_gender_setting_profile),
+                if(profileCompletionData.gender == 1)
+                    getString(R.string.profile_completion_man)
+                else getString(R.string.profile_completion_woman),
+                false,
+                false,
+                View.OnClickListener {
+                    //TODO add action on listener
+                }
+            )
+        }
+
+        if(profileCompletionData.email.isEmpty()){
+            email.showEmpty(
+                getString(R.string.subtitle_email_setting_profile),
+                getString(R.string.hint_email_setting_profile),
+                getString(R.string.message_email_setting_profile),
+                false,
+                View.OnClickListener {
+                    //TODO add action on listener
+                }
+            )
+        }else{
+            email.showFilled(
+                getString(R.string.subtitle_email_setting_profile),
+                profileCompletionData.email,
+                true,
+                true,
+                View.OnClickListener {
+                    //TODO add action on listener
+                }
+            )
+        }
+
+        if(profileCompletionData.phone.isEmpty()){
+            phone.showEmpty(
+                getString(R.string.subtitle_phone_setting_profile),
+                getString(R.string.hint_phone_setting_profile),
+                getString(R.string.message_phone_setting_profile),
+                false,
+                View.OnClickListener {
+                    //TODO add action on listener
+                }
+            )
+        }else{
+            phone.showFilled(
+                getString(R.string.subtitle_phone_setting_profile),
+                PhoneNumberUtils.transform(profileCompletionData.phone),
+                profileCompletionData.isPhoneVerified,
+                true,
+                View.OnClickListener {
+                    //TODO add action on listener
+                }
+            )
+        }
     }
 
     private fun onErrorGetProfileInfo(throwable: Throwable) {

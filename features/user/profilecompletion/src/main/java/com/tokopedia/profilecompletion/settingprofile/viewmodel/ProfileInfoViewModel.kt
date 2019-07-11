@@ -42,7 +42,7 @@ class ProfileInfoViewModel @Inject constructor(
                 CacheType.CACHE_FIRST)
             graphqlCacheStrategy.setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5)
             userProfileInfoUseCase.run {
-                setCacheStrategy(graphqlCacheStrategy.build())
+//                setCacheStrategy(graphqlCacheStrategy.build())
                 setGraphqlQuery(rawQuery)
                 execute(
                     {

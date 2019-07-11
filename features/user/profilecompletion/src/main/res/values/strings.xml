@@ -31,12 +31,19 @@
 
     <!-- SETTING PROFILE -->
     <string name="title_setting_profile">Data Diri</string>
+    <string name="add_setting_profile">Tambah</string>
     <string name="change_setting_profile">Ubah</string>
     <string name="subtitle_name_setting_profile">Nama</string>
     <string name="subtitle_bod_setting_profile">Tanggal Lahir</string>
     <string name="subtitle_gender_setting_profile">Jenis Kelamin</string>
     <string name="subtitle_email_setting_profile">Email</string>
     <string name="subtitle_phone_setting_profile">Nomor Ponsel</string>
+    <string name="hint_bod_setting_profile">Pilih Tanggal</string>
+    <string name="hint_gender_setting_profile">Pilih Jenis Kelamin</string>
+    <string name="hint_email_setting_profile">Masukkan Email</string>
+    <string name="hint_phone_setting_profile">Masukkan Nomor Ponsel</string>
+    <string name="message_email_setting_profile">Jaga akun kamu tetap aman dengan menambahkan email</string>
+    <string name="message_phone_setting_profile">Jaga akun kamu tetap aman dengan menambahkan nomor ponsel</string>
 
     <!-- CHANGE GENDER -->
     <string name="title_change_gender">Tambah Jenis Kelamin</string>

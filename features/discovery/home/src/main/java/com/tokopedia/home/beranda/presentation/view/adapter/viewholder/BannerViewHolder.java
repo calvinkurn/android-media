@@ -51,6 +51,8 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
     public void bind(BannerViewModel element) {
         try {
             slidesList = element.getSlides();
+            bannerView.shouldShowSeeAllButton(!slidesList.isEmpty());
+
             List<String> promoUrls = new ArrayList<>();
             for (BannerSlidesModel slidesModel : slidesList) {
                 promoUrls.add(slidesModel.getImageUrl());
