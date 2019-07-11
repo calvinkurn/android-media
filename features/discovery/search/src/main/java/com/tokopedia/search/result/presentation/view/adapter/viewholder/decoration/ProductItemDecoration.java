@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.TopAdsViewHolder;
 import com.tokopedia.productcard.v2.ProductCardView;
 import com.tokopedia.search.R;
 
@@ -43,17 +42,17 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
             verticalCardViewOffset = getVerticalCardViewOffset(view);
             horizontalCardViewOffset = getHorizontalCardViewOffset(view);
 
-            outRect.left = getLeftOffset(view, relativePos, totalSpanCount);
+            outRect.left = getLeftOffset(relativePos, totalSpanCount);
             outRect.top = getTopOffset(parent, absolutePos, relativePos, totalSpanCount);
-            outRect.right = getRightOffset(view, relativePos, totalSpanCount);
-            outRect.bottom = getBottomOffset(parent, absolutePos, relativePos, totalSpanCount);
+            outRect.right = getRightOffset(relativePos, totalSpanCount);
+            outRect.bottom = getBottomOffsetNotBottomItem();
         }
     }
 
     private int getProductItemRelativePosition(RecyclerView parent, View view) {
-//        if(view.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
-//            return getProductItemRelativePositionStaggeredGrid(view);
-//        }
+        if(view.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams) {
+            return getProductItemRelativePositionStaggeredGrid(view);
+        }
 
         return getProductItemRelativePositionNotStaggeredGrid(parent, view);
     }
@@ -107,10 +106,7 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
         return 0;
     }
 
-    private int getLeftOffset(View view, int relativePos, int totalSpanCount) {
-        relativePos = view.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams ?
-                        getProductItemRelativePositionStaggeredGrid(view) : relativePos;
-
+    private int getLeftOffset(int relativePos, int totalSpanCount) {
         return isFirstInRow(relativePos, totalSpanCount) ? spacing : getLeftOffsetNotFirstInRow();
     }
 
@@ -126,10 +122,7 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
         return (spacing / 4) - verticalCardViewOffset;
     }
 
-    private int getRightOffset(View view, int relativePos, int totalSpanCount) {
-        relativePos = view.getLayoutParams() instanceof StaggeredGridLayoutManager.LayoutParams ?
-                getProductItemRelativePositionStaggeredGrid(view) : relativePos;
-
+    private int getRightOffset(int relativePos, int totalSpanCount) {
         return isLastInRow(relativePos, totalSpanCount) ? spacing : getRightOffsetNotLastInRow();
     }
 
@@ -162,20 +155,16 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     private boolean isProductItem(RecyclerView parent, int viewPosition) {
-        final RecyclerView.Adapter adapter = parent.getAdapter();
-        if (viewPosition < 0 || viewPosition > adapter.getItemCount() - 1) {
-            return false;
-        }
-        final int viewType = adapter.getItemViewType(viewPosition);
-        return allowedViewTypes.contains(viewType);
+        final int viewType = getRecyclerViewViewType(parent, viewPosition);
+        return viewType != -1 && allowedViewTypes.contains(viewType);
     }
 
-    private boolean isAdsItem(RecyclerView parent, int viewPosition) {
+    private int getRecyclerViewViewType(RecyclerView parent, int viewPosition) {
         final RecyclerView.Adapter adapter = parent.getAdapter();
         if (viewPosition < 0 || viewPosition > adapter.getItemCount() - 1) {
-            return false;
+            return -1;
         }
-        final int viewType = adapter.getItemViewType(viewPosition);
-        return viewType == TopAdsViewHolder.LAYOUT;
+
+        return adapter.getItemViewType(viewPosition);
     }
 }
