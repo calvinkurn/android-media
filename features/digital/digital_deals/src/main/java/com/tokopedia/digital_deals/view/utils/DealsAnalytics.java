@@ -10,10 +10,7 @@ import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 
-import java.io.ObjectStreamException;
-import java.nio.DoubleBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -166,7 +163,7 @@ public class DealsAnalytics {
     }
 
     public void sendEventEcommerce(String event, String action, String label,
-                                    HashMap<String, Object> ecommerce) {
+                                   HashMap<String, Object> ecommerce) {
         HashMap<String, Object> map = new HashMap<>();
         map.put("event", event);
         map.put("eventCategory", DIGITAL_DEALS);
@@ -177,7 +174,7 @@ public class DealsAnalytics {
     }
 
     public void sendEventEcommerceCurrentSite(String event, String action, String label,
-                                   HashMap<String, Object> ecommerce) {
+                                              HashMap<String, Object> ecommerce) {
         HashMap<String, Object> map = new HashMap<>();
         map.put("event", event);
         map.put("eventCategory", DIGITAL_DEALS);
@@ -252,7 +249,7 @@ public class DealsAnalytics {
                 event = DealsAnalytics.EVENT_VIEW_PRODUCT;
             }
             ecommerce.put(CURRENCY_CODE, IDR);
-            ecommerce.put(KEY_IMPRESSIONS, Arrays.asList(promotions));
+            ecommerce.put(KEY_IMPRESSIONS, promotions);
             sendEventEcommerce(event
                     , action
                     , label == null ? "" : label.toLowerCase(), ecommerce);
@@ -327,12 +324,12 @@ public class DealsAnalytics {
             HashMap<String, Object> actionField = new HashMap<>();
             HashMap<String, Object> ecommerce = new HashMap<>();
 
-            productMap.put(ID, String.valueOf(productItem.getBrand().getId()));
-            productMap.put(NAME, LIST_SUGGESTED_DEALS);
+            productMap.put(ID, String.valueOf(productItem.getId()));
+            productMap.put(NAME, productItem.getDisplayName());
             productMap.put(POSITION, String.valueOf(position));
-            productMap.put(CREATIVE, productItem.getBrand().getTitle());
+            productMap.put(PRICE, productItem.getSalesPrice());
+            productMap.put(BRAND, productItem.getBrand().getTitle());
             productMap.put(CATEGORY, productItem.getDisplayName());
-            productMap.put(CATEGORY_ID, String.valueOf(productItem.getId()));
 
             actionField.put(LIST, String.format("%s - %s - %s - %s", DEALS, BRAND, String.valueOf(position), productItem.getDisplayName()));
             promoClick.put(HASH_ACTION_FIELD, actionField);
@@ -407,7 +404,7 @@ public class DealsAnalytics {
             sendEventEcommerceCurrentSite(DealsAnalytics.EVENT_CHECKOUT
                     , DealsAnalytics.EVENT_CLICK_PROCEED_TO_PAYMENT
                     , String.format("%s - %s", brandName
-                            ,promo).toLowerCase(), ecommerce);
+                            , promo).toLowerCase(), ecommerce);
         } catch (Exception e) {
 
         }
@@ -479,7 +476,7 @@ public class DealsAnalytics {
                 banners.add(bannerMap);
             }
 
-            promotions.put(KEY_PROMOTIONS, Arrays.asList(banners));
+            promotions.put(KEY_PROMOTIONS, banners);
             ecommerce.put(KEY_PROMOVIEW, promotions);
             sendEventEcommerce(event, action,
                     String.format("%s - %s", creative
@@ -508,7 +505,7 @@ public class DealsAnalytics {
                 banners.add(bannerMap);
             }
 
-            promotions.put(KEY_PROMOTIONS, Arrays.asList(banners));
+            promotions.put(KEY_PROMOTIONS, banners);
             ecommerce.put(KEY_PROMOVIEW, promotions);
 
             sendEventEcommerce(event, action,
@@ -625,7 +622,7 @@ public class DealsAnalytics {
         HashMap<String, Object> ecommerce = new HashMap<>();
 
         ecommerce.put(CURRENCY_CODE, IDR);
-        ecommerce.put(KEY_IMPRESSIONS, Arrays.asList(productmap));
+        ecommerce.put(KEY_IMPRESSIONS, productmap);
         sendEventEcommerce(event, action,
                 String.format("%s - %s", categoryName, String.valueOf(index)).toLowerCase(), ecommerce);
 
@@ -647,7 +644,7 @@ public class DealsAnalytics {
             products.add(productmap);
         }
         ecommerce.put(CURRENCY_CODE, IDR);
-        ecommerce.put(KEY_IMPRESSIONS, Arrays.asList(products));
+        ecommerce.put(KEY_IMPRESSIONS, products);
         sendEventEcommerce(event, action,
                 String.format("%s - %s", categoryName, String.valueOf(index)).toLowerCase(), ecommerce);
 
@@ -674,7 +671,7 @@ public class DealsAnalytics {
             products.add(promo);
         }
 
-        promoViews.put(KEY_PROMOTIONS, Arrays.asList(products));
+        promoViews.put(KEY_PROMOTIONS, products);
         ecommerce.put(KEY_PROMOVIEW, promoViews);
         sendEventEcommerce(EVENT_PROMO_VIEW, EVENT_IMPRESSION_PROMO_BANNER,
                 String.format("%s - %s", "Product", String.valueOf(index)), ecommerce);
@@ -683,12 +680,11 @@ public class DealsAnalytics {
     public void sendRecommendedDealImpressionEvent(List<ProductItem> items, int index, String categoryName) {
         try {
             HashMap<String, Object> recommendedDeals = new HashMap<>();
-            HashMap<String, Object> impressions = new HashMap<>();
             HashMap<String, Object> ecommerce = new HashMap<>();
 
             List<HashMap<String, Object>> products = new ArrayList<>();
 
-            for (ProductItem item: items) {
+            for (ProductItem item : items) {
                 recommendedDeals.put(ID, String.valueOf(item.getId()));
                 recommendedDeals.put(NAME, item.getDisplayName());
                 recommendedDeals.put(PRICE, item.getSalesPrice());
@@ -700,9 +696,8 @@ public class DealsAnalytics {
                 products.add(recommendedDeals);
             }
 
-            impressions.put(KEY_IMPRESSIONS, Arrays.asList(products));
+            ecommerce.put(KEY_IMPRESSIONS, products);
             ecommerce.put(CURRENCY_CODE, IDR);
-            ecommerce.put(KEY_IMPRESSIONS, impressions);
 
             sendEventEcommerce(EVENT_PRODUCT_VIEW, EVENT_IMPRESSION_RECOMMENDED_DEALS,
                     String.format("%s - %s", categoryName, String.valueOf(index)).toLowerCase(), ecommerce);
@@ -759,7 +754,7 @@ public class DealsAnalytics {
         }
 
         ecommerce.put(CURRENCY_CODE, IDR);
-        ecommerce.put(KEY_IMPRESSIONS, Arrays.asList(promotionsList));
+        ecommerce.put(KEY_IMPRESSIONS, promotionsList);
 
         sendEventEcommerce(event, action,
                 String.format("%s - %s", categoryName, String.valueOf(index)).toLowerCase(), ecommerce);
