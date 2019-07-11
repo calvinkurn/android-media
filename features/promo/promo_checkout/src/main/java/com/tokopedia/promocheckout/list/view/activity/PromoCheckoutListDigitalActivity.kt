@@ -6,48 +6,34 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.constant.IRouterConstant
-import com.tokopedia.promocheckout.list.view.fragment.PromoCheckoutListDigitalFragment
+import com.tokopedia.promocheckout.common.data.entity.request.Promo
+import com.tokopedia.promocheckout.list.view.fragment.PromoCheckoutListMarketplaceFragment
 
-class PromoCheckoutListDigitalActivity : BaseSimpleActivity(){
+class PromoCheckoutListDigitalActivity : BaseSimpleActivity() {
+
     override fun getNewFragment(): Fragment {
-        return PromoCheckoutListDigitalFragment.createInstance(
+        return PromoCheckoutListMarketplaceFragment.createInstance(
                 intent?.extras?.getBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, true),
-                intent?.extras?.getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORY, ""),
-                intent?.extras?.getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CART_ID, ""),
-                intent?.extras?.getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_TRAIN_RESERVATION_CODE, ""),
-                intent?.extras?.getString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_TRAIN_RESERVATION_ID, "")
+                intent?.extras?.getString(PromoCheckoutListMarketplaceFragment.PROMO_CODE, ""),
+                intent?.extras?.getBoolean(PromoCheckoutListMarketplaceFragment.ONE_CLICK_SHIPMENT, false),
+                intent?.extras?.getInt(PromoCheckoutListMarketplaceFragment.PAGE_TRACKING, 1) ?: 1,
+                intent?.extras?.getParcelable(PromoCheckoutListMarketplaceFragment.CHECK_PROMO_FIRST_STEP_PARAM) as Promo
         )
     }
 
     companion object {
-        fun newInstanceDigital(activity: Context, categoryId: String, isCouponActive: Boolean): Intent {
-            return createInstance(activity, categoryId, isCouponActive = isCouponActive)
-        }
-
-        fun newInstanceFlight(activity: Context, categoryId: String, cartId: String, isCouponActive: Boolean): Intent {
-            return createInstance(activity, categoryId, cartId, isCouponActive)
-        }
-
-        fun newInstanceTrain(context: Context, category: String,
-                             trainReservationId: String, trainReservationCode: String, isCouponActive: Boolean): Intent {
-            return createInstance(context, category, isCouponActive = isCouponActive, trainReservationId = trainReservationId,
-                    trainReservationCode = trainReservationCode)
-        }
-
-        fun createInstance(activity: Context, categoryId: String, cartId: String = "", isCouponActive: Boolean,
-                           trainReservationId: String ="", trainReservationCode: String = "") : Intent{
+        fun newInstance(activity: Context, isCouponActive: Boolean, promoCode: String, isOneClickShipment: Boolean, pageTracking: Int,
+                        promo: Promo): Intent {
             val intent = Intent(activity, PromoCheckoutListDigitalActivity::class.java)
             val bundle = Bundle()
             bundle.putBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, isCouponActive)
-            bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CATEGORY, categoryId)
-            bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_TRAIN_RESERVATION_ID, trainReservationId)
-            bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_TRAIN_RESERVATION_CODE, trainReservationCode)
-            bundle.putString(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_CART_ID, cartId)
+            bundle.putString(PromoCheckoutListMarketplaceFragment.PROMO_CODE, promoCode)
+            bundle.putBoolean(PromoCheckoutListMarketplaceFragment.ONE_CLICK_SHIPMENT, isOneClickShipment)
+            bundle.putInt(PromoCheckoutListMarketplaceFragment.PAGE_TRACKING, pageTracking)
+            bundle.putParcelable(PromoCheckoutListMarketplaceFragment.CHECK_PROMO_FIRST_STEP_PARAM, promo)
             intent.putExtras(bundle)
             return intent
         }
-
     }
-
 
 }
