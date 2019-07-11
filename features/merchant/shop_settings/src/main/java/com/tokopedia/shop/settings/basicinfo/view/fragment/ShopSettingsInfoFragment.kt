@@ -32,6 +32,7 @@ import com.tokopedia.design.component.Menus
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.design.utils.StringUtils
+import com.tokopedia.gm.common.data.source.cloud.model.GoldGetPmOsStatus
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.graphql.data.GraphqlClient
@@ -226,9 +227,9 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         shopSettingsInfoPresenter.attachView(this)
     }
 
-    override fun onSuccessGetShopBasicData(result: Pair<ShopBasicDataModel?, ShopStatusModel?>) {
+    override fun onSuccessGetShopBasicData(result: Pair<ShopBasicDataModel?, GoldGetPmOsStatus?>) {
         val (shopBasicDataModel, shopStatusModel) = result
-        userSession.setIsGoldMerchant(!(shopStatusModel?.isRegularMerchantOrPending() ?: true))
+        userSession.setIsGoldMerchant(!(shopStatusModel?.result?.data?.isRegularMerchantOrPending() ?: true))
         this.shopBasicDataModel = shopBasicDataModel
         hideLoading()
         shopBasicDataModel?.let {
@@ -236,7 +237,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
             setUIStatus(it)
         }
         shopStatusModel?.let {
-            setUIMembership(it)
+            setUIMembership(it.result.data)
         }
     }
 

@@ -5,8 +5,8 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.gm.common.data.source.cloud.model.GoldGetPmOsStatus;
 import com.tokopedia.gm.common.data.source.cloud.model.ShopScoreResult;
-import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel;
 import com.tokopedia.gm.common.domain.interactor.GetPowerMerchantStatusNoKycUseCase;
 import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
 
@@ -16,7 +16,7 @@ import kotlin.Triple;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
-public class GetShopInfoWithScoreUseCase extends UseCase<Triple<ShopModel, ShopStatusModel, ShopScoreResult>> {
+public class GetShopInfoWithScoreUseCase extends UseCase<Triple<ShopModel, GoldGetPmOsStatus, ShopScoreResult>> {
     public static final String SHOP_ID = "shop_id";
 
     private final GetShopInfoUseCase getShopInfoUseCase;
@@ -32,7 +32,7 @@ public class GetShopInfoWithScoreUseCase extends UseCase<Triple<ShopModel, ShopS
     }
 
     @Override
-    public Observable<Triple<ShopModel, ShopStatusModel, ShopScoreResult>> createObservable(RequestParams requestParams) {
+    public Observable<Triple<ShopModel, GoldGetPmOsStatus, ShopScoreResult>> createObservable(RequestParams requestParams) {
         return Observable.zip(
                 getShopInfoUseCase.createObservable(RequestParams.EMPTY).subscribeOn(Schedulers.io()),
                 getPowerMerchantStatusNoKycUseCase.createObservable(

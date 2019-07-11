@@ -16,6 +16,7 @@ import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.gm.common.data.source.cloud.model.GoldGetPmOsStatus;
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.di.DaggerSellerDashboardComponent;
@@ -141,7 +142,8 @@ public class DashboardActivity extends DrawerPresenterActivity
     }
 
     @Override
-    public void onSuccessGetShopInfo(ShopStatusModel shopStatusModel) {
+    public void onSuccessGetShopInfo(GoldGetPmOsStatus goldGetPmOsStatus) {
+        ShopStatusModel shopStatusModel = goldGetPmOsStatus.getResult().getData();
         SellerDrawerAdapter sellerDrawerAdapter = ((SellerDrawerAdapter) drawerHelper.getAdapter());
         boolean isGoldMerchant = shopStatusModel.isPowerMerchantActive();
         boolean isOfficialStore = shopStatusModel.isOfficialStore();

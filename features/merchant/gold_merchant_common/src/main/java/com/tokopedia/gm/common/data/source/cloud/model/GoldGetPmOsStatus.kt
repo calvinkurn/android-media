@@ -3,6 +3,41 @@ package com.tokopedia.gm.common.data.source.cloud.model
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
+
+data class GoldGetPmOsStatus(
+        @SerializedName("goldGetPMOSStatus")
+        @Expose
+        val result : ShopStatusData = ShopStatusData()
+)
+
+data class ShopStatusData(
+        @SerializedName("header")
+        @Expose
+        val header : ShopStatusHeader = ShopStatusHeader(),
+
+        @SerializedName("data")
+        @Expose
+        val data : ShopStatusModel = ShopStatusModel()
+)
+
+data class ShopStatusHeader(
+        @SerializedName("process_time")
+        @Expose
+        val processTime : Float = 0F ,
+
+        @SerializedName("messages")
+        @Expose
+        val message : ArrayList<String> = arrayListOf(),
+
+        @SerializedName("reason")
+        @Expose
+        val reason : String = "",
+
+        @SerializedName("error_code")
+        @Expose
+        val errorCode : String = ""
+)
+
 data class ShopStatusModel(
         @SerializedName("official_store")
         @Expose
