@@ -3,6 +3,7 @@ package com.tokopedia.logisticaddaddress.features.addaddress;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,6 +17,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -881,9 +883,13 @@ public class AddAddressFragment extends BaseDaggerFragment
             if (i == 0 && !Character.isDigit(zipCodeTextView.getText().toString().charAt(0))) {
                 zipCodeTextView.setText("");
             }
-
             address.setPostalCode(zipCodeTextView.getText().toString());
             sendAnalyticsOnZipCodeDropdownSelectionClicked();
+
+            if (getContext() != null) {
+                InputMethodManager in = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                in.hideSoftInputFromWindow(view.getApplicationWindowToken(), 0);
+            }
         };
     }
 
