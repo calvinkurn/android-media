@@ -38,8 +38,9 @@ class OtherRelatedProfileViewHolder(val v: View,
             description.text = MethodChecker.fromHtml(content.body.caption.text)
 
             setOnClickListener {
-                if (content.body.caption.applink.isNotEmpty()) {
-                    onOtherProfilePostItemClick.invoke(content.body.caption.applink)
+                val applink = content.body.media[0].applink
+                if (applink.isNotEmpty()) {
+                    onOtherProfilePostItemClick.invoke(applink)
                 }
             }
         }

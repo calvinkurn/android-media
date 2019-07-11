@@ -329,6 +329,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     fun onOtherProfilePostItemClick(applink: String) {
         RouteManager.route(context, applink)
+        //TODO hendry tracking
     }
 
     override fun onSuccessGetProfileFirstPage(element: DynamicFeedProfileViewModel, isFromLogin: Boolean) {
@@ -481,11 +482,14 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         val visitables: ArrayList<Visitable<*>> = ArrayList()
         if (feedPostRelated != null && feedPostRelated.meta.totalItems > 0) {
             visitables.add(TitleViewModel())
-            feedPostRelated.data.forEach {
+            feedPostRelated.data
+                .filter{it.content.body.media[0].thumbnail.isNotEmpty()}
+                .forEach {
                 visitables.add(OtherRelatedProfileViewModel(it))
             }
         }
         renderList(visitables, false)
+        //TODO hendry tracking
     }
 
     fun getRelatedProfile() {

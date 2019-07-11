@@ -51,6 +51,8 @@
                 android:layout_height="wrap_content"
                 app:typographyType="body_3"
                 app:typographyWeight="bold"
+                android:maxLines="2"
+                android:ellipsize="end"
                 tools:text="Sadam Hussein" />
         </LinearLayout>
 
