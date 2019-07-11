@@ -10,13 +10,12 @@ import com.tokopedia.profile.view.viewmodel.TitleViewModel
 class OtherPostTitleViewHolder(val v: View) : AbstractViewHolder<TitleViewModel>(v) {
 
     companion object {
-        //TODO
         @LayoutRes
         val LAYOUT = R.layout.item_profile_title
     }
 
     override fun bind(element: TitleViewModel?) {
-
+        // no op
     }
 
 }
