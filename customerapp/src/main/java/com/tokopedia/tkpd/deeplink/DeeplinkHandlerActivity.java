@@ -225,7 +225,6 @@ import rx.schedulers.Schedulers;
         WebViewApplinkModule.class,
         RecommendationDeeplinkModule.class,
         TopAdsDashboardApplinkModule.class,
-        PdpApplinkModule.class,
         AutoAdsLinkModule.class
 })
 
@@ -298,7 +297,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new WebViewApplinkModuleLoader(),
                     new RecommendationDeeplinkModuleLoader(),
                     new TopAdsDashboardApplinkModuleLoader(),
-                    new PdpApplinkModuleLoader(),
                     new AutoAdsLinkModuleLoader()
             );
         }
