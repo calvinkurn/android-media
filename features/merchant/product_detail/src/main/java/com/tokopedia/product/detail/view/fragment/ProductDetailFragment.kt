@@ -72,6 +72,7 @@ import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.product.detail.data.model.*
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PROPOSITION_GUARANTEE
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PROPOSITION_GUARANTEE_7_DAYS
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PROPOSITION_ORI
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PROPOSITION_READY
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
@@ -555,6 +556,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         valuePropositionView.hideBackgroundResource = {
             base_attribute.setBackgroundResource(0)
         }
+        headerView.onGuaranteeOsClicked = {
+            onValuePropositionClick(R.id.layout_guarantee)
+        }
 
 
         open_shop.setOnClickListener {
@@ -746,7 +750,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             R.id.shop_ava, R.id.shop_name -> gotoShopDetail()
             R.id.container_ready -> onValuePropositionClick(R.id.container_ready)
             R.id.container_ori -> onValuePropositionClick(R.id.container_ori)
-            R.id.container_guarantee -> onValuePropositionClick(R.id.container_guarantee)
+            R.id.container_guarantee_7_days -> onValuePropositionClick(R.id.container_guarantee_7_days)
 
             else -> {
             }
@@ -790,6 +794,11 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 title = getString(R.string.value_proposition_title_original)
                 desc = getString(R.string.value_proposition_desc_original)
                 url = URL_VALUE_PROPOSITION_ORI
+            }
+            R.id.container_guarantee_7_days -> {
+                title = getString(R.string.value_proposition_title_guarantee_7_days)
+                desc = getString(R.string.value_proposition_desc_guarantee_7_days)
+                url = URL_VALUE_PROPOSITION_GUARANTEE_7_DAYS
             }
             else -> {
                 title = getString(R.string.value_proposition_title_guarantee)

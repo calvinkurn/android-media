@@ -46,7 +46,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/container_guarantee"
+        app:layout_constraintEnd_toStartOf="@+id/container_guarantee_7_days"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toEndOf="@+id/container_ready"
         app:layout_constraintTop_toTopOf="parent">
@@ -69,7 +69,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/container_guarantee"
+        android:id="@+id/container_guarantee_7_days"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_16"

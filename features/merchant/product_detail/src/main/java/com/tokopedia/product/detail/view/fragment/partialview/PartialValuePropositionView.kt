@@ -24,7 +24,7 @@ class PartialValuePropositionView(private val view: View, private val clickListe
                 gone()
             }
             view.container_ori.setOnClickListener(this@PartialValuePropositionView)
-            view.container_guarantee.setOnClickListener(this@PartialValuePropositionView)
+            view.container_guarantee_7_days.setOnClickListener(this@PartialValuePropositionView)
             view.container_ready.setOnClickListener(this@PartialValuePropositionView)
         }
     }

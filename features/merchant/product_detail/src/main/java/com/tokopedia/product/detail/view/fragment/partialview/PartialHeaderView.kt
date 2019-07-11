@@ -9,8 +9,6 @@ import android.text.style.ImageSpan
 import android.text.style.StyleSpan
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -19,7 +17,6 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.product.Campaign
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
-import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_GUARANTEE
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.data.util.numberFormatted
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
@@ -33,6 +30,7 @@ class PartialHeaderView private constructor(private val view: View,
 
     var onRefreshHandler: (() -> Unit)? = null
     var backToHomeHandler: (() -> Unit)? = null
+    var onGuaranteeOsClicked: (() -> Unit)? = null
 
     companion object {
         const val ONE_SECOND = 1000L
@@ -62,9 +60,7 @@ class PartialHeaderView private constructor(private val view: View,
             renderTxtIcon(labelIc, colorIc, imageIc)
             view.layout_guarantee.visible()
             view.layout_guarantee.setOnClickListener {
-                RouteManager.route(
-                        view.context,
-                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_GUARANTEE))
+                onGuaranteeOsClicked?.invoke()
             }
         } else {
             view.layout_guarantee.gone()
