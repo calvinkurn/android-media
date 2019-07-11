@@ -41,8 +41,14 @@ class TwitterManager(
             }
             .build()
 
-    private val isAuthenticated: Boolean
+    val isAuthenticated: Boolean
         get() = config.oAuthAccessToken != null && config.oAuthAccessTokenSecret != null
+
+    var shouldPostToTwitter: Boolean
+        get() = session.shouldPostToTwitter
+        set(value) {
+            session.shouldPostToTwitter = value
+        }
 
     private var instance: Twitter = TwitterFactory(config).instance
 

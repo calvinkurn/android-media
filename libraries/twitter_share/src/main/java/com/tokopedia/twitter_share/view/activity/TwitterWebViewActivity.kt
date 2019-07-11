@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.twitter_share.TwitterAuthenticator
 import com.tokopedia.twitter_share.view.fragment.TwitterWebViewFragment
 
-class TwitterWebViewActivity : BaseSimpleActivity() {
+class TwitterWebViewActivity : BaseSimpleActivity(), TwitterWebViewActivityListener {
 
     companion object {
         const val EXTRA_URL = "url"
@@ -15,7 +15,7 @@ class TwitterWebViewActivity : BaseSimpleActivity() {
         return TwitterWebViewFragment.newInstance(intent.getStringExtra(EXTRA_URL))
     }
 
-    fun onGetCallbackUrl(url: String) {
+    override fun onGetCallbackUrl(url: String) {
         TwitterAuthenticator.broadcastCallbackUrl(url)
         finish()
     }

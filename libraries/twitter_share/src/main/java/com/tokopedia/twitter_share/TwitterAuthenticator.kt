@@ -44,7 +44,7 @@ class TwitterAuthenticator(
     fun startAuthenticate(context: Context) {
         callbackUrlSubscription = initSubscription()
 
-        context.startActivity(Intent().apply {
+        context.startActivity(Intent(context, TwitterWebViewActivity::class.java).apply {
             putExtra(TwitterWebViewActivity.EXTRA_URL, requestToken.authenticationURL)
         })
     }

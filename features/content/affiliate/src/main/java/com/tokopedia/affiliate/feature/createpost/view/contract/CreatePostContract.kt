@@ -29,6 +29,8 @@ interface CreatePostContract {
         fun onGetAvailableShareTypeList(typeList: List<ShareType>)
 
         fun onAuthenticateTwitter(authenticator: TwitterAuthenticator)
+
+        fun changeShareHeaderText(text: String)
     }
 
     interface Presenter : CustomerPresenter<View> {

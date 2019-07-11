@@ -136,6 +136,10 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener, Bas
         name.text = header.title
     }
 
+    override fun updateShareHeader(text: String) {
+        shareTo.text = text
+    }
+
     override fun onBackPressed() {
         val dialog = Dialog(this, Dialog.Type.PROMINANCE)
         dialog.setTitle(getString(R.string.af_leave_warning))

@@ -69,10 +69,12 @@
                 android:textColor="@color/grey_button_compat"
                 android:textSize="@dimen/sp_12"
                 android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:includeFontPadding="false"
+                android:drawableEnd="@drawable/ic_dropdown"
+                android:drawableRight="@drawable/ic_dropdown"
                 app:typographyType="body_3"
-                tools:text="Follower saja"
-                android:drawableEnd="@drawable/ic_arrow_down_grey"
-                android:drawableRight="@drawable/ic_arrow_down_grey" />
+                tools:text="Follower saja"/>
 
         </LinearLayout>
 

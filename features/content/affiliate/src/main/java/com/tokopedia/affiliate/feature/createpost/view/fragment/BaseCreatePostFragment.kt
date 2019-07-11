@@ -650,6 +650,12 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         shareAdapter.setItems(typeList)
     }
 
+    override fun changeShareHeaderText(text: String) {
+        if (activity is CreatePostActivityListener) {
+            (activity as CreatePostActivityListener).updateShareHeader(text)
+        }
+    }
+
     fun openShareBottomSheetDialog() {
         presenter.shouldGetShareOptions()
         shareDialogView.shareList.adapter = shareAdapter

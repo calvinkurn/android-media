@@ -9,7 +9,6 @@ import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewM
 import com.tokopedia.twitter_share.TwitterManager
 import rx.android.schedulers.AndroidSchedulers
 import timber.log.Timber
-import java.io.File
 import javax.inject.Inject
 
 /**
@@ -23,6 +22,7 @@ class CreatePostPresenter @Inject constructor(
     override fun attachView(view: CreatePostContract.View?) {
         super.attachView(view)
         twitterManager.setListener(this)
+        shouldChangeShareHeaderText()
     }
 
     override fun detachView() {
@@ -39,29 +39,27 @@ class CreatePostPresenter @Inject constructor(
     }
 
     override fun onAuthenticationSuccess(oAuthToken: String, oAuthSecret: String) {
-        view?.onGetAvailableShareTypeList(
-                listOf(
-                        ShareType.Tokopedia(0),
-                        ShareType.Twitter(true)
-                )
-        )
+        shouldGetShareOptions()
     }
 
     override fun shouldGetShareOptions() {
-        view?.onGetAvailableShareTypeList(
-                listOf(
-                        ShareType.Tokopedia(0),
-                        ShareType.Twitter(false)
-                )
-        )
+        view?.onGetAvailableShareTypeList(getShareOptions())
+    }
+
+    private fun shouldChangeShareHeaderText() {
+        view?.changeShareHeaderText(getShareHeaderText())
     }
 
     override fun onShareButtonClicked(type: ShareType, isChecked: Boolean) {
         if (isChecked) {
             when (type) {
-                is ShareType.Twitter -> twitterManager.getAuthenticator()
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe { view?.onAuthenticateTwitter(it) }
+                is ShareType.Twitter -> if (!twitterManager.isAuthenticated) {
+                    authenticateTwitter()
+                    shouldGetShareOptions()
+                } else {
+                    twitterManager.shouldPostToTwitter = true
+                    shouldChangeShareHeaderText()
+                }
             }
         }
     }
@@ -71,5 +69,27 @@ class CreatePostPresenter @Inject constructor(
                 .subscribe {
                     Timber.tag("Post to Twitter").d("Success")
                 }
+    }
+
+    private fun authenticateTwitter() {
+        twitterManager.getAuthenticator()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { view?.onAuthenticateTwitter(it) }
+    }
+
+    private fun getShareOptions(): List<ShareType> {
+        return listOf(
+                ShareType.Tokopedia(0),
+                ShareType.Twitter(twitterManager.isAuthenticated)
+        )
+    }
+
+    private fun getShareHeaderText(): String {
+        val shareOptions = getShareOptions()
+        val shareHeaderText = shareOptions
+                .map { view?.getContext()?.getString(it.keyRes) }
+                .joinToString()
+
+        return if (shareOptions.size == 1) "$shareHeaderText aja" else shareHeaderText
     }
 }

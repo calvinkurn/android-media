@@ -105,9 +105,14 @@
 
     <string name="af_share_title">Share biar makin laris!</string>
     <string name="af_share_subtitle">Makin banyak yang lihat, makin cepat larisnya.</string>
-    <string name="af_share_tokopedia">Follower %d</string>
-    <string name="af_share_facebook">Post ke Facebook</string>
-    <string name="af_share_twitter">Share di Twitter</string>
+
+    <string name="af_share_tokopedia">Follower</string>
+    <string name="af_share_facebook">Facebook</string>
+    <string name="af_share_twitter">Twitter</string>
+
+    <string name="af_share_tokopedia_option">Follower %d</string>
+    <string name="af_share_facebook_option">Post ke Facebook</string>
+    <string name="af_share_twitter_option">Share di Twitter</string>
 
     <string name="af_share_next_time">Lain Kali Deh</string>
     <string name="af_share_aja">Sip, Share Aja!</string>

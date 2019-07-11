@@ -31,7 +31,7 @@
         android:layout_centerVertical="true"
         app:typographyType="body_2"
         app:typographyWeight="bold"
-        tools:text="@string/af_share_facebook"/>
+        tools:text="@string/af_share_facebook_option"/>
 
     <Switch
         android:id="@+id/toggleShare"

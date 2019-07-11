@@ -9,6 +9,8 @@ class TwitterSession(
     companion object {
         private const val ACCESS_TOKEN = "twitter_access_token"
         private const val ACCESS_TOKEN_SECRET = "twitter_access_token_secret"
+
+        private const val SHOULD_POST_TO_TWITTER = "should_post_to_twitter"
     }
 
     fun getAccessToken(): String? {
@@ -25,6 +27,14 @@ class TwitterSession(
             putString(ACCESS_TOKEN_SECRET, tokenSecret)
         }
     }
+
+    var shouldPostToTwitter: Boolean
+        get() = sharedPref.getBoolean(SHOULD_POST_TO_TWITTER, false)
+        set(value) {
+            sharedPref.edit {
+                putBoolean(SHOULD_POST_TO_TWITTER, value)
+            }
+        }
 
     private fun SharedPreferences.edit(action: SharedPreferences.Editor.() -> Unit) {
         val editor = edit()

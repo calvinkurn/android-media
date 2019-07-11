@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.webkit.WebView
 import com.tokopedia.twitter_share.TwitterManager
 import com.tokopedia.twitter_share.view.activity.TwitterWebViewActivity
+import com.tokopedia.twitter_share.view.activity.TwitterWebViewActivityListener
 import com.tokopedia.webview.BaseSessionWebViewFragment
 
 class TwitterWebViewFragment : BaseSessionWebViewFragment() {
@@ -27,7 +28,7 @@ class TwitterWebViewFragment : BaseSessionWebViewFragment() {
     private fun isCallbackUrl(url: String): Boolean {
         val isUrlTwitterCallback = url.contains(TwitterManager.OAUTH_VERIFIER) && url.contains(TwitterManager.OAUTH_TOKEN)
         if (isUrlTwitterCallback) {
-            (activity as TwitterWebViewActivity?)?.onGetCallbackUrl(url)
+            (activity as TwitterWebViewActivityListener?)?.onGetCallbackUrl(url)
         }
         return isUrlTwitterCallback
     }
