@@ -5,8 +5,6 @@ import android.webkit.WebView
 import com.tokopedia.twitter_share.TwitterManager
 import com.tokopedia.twitter_share.view.activity.TwitterWebViewActivity
 import com.tokopedia.webview.BaseSessionWebViewFragment
-import java.net.URL
-import javax.inject.Inject
 
 class TwitterWebViewFragment : BaseSessionWebViewFragment() {
 
