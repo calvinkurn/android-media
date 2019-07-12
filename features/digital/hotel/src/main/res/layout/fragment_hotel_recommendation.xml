@@ -118,7 +118,10 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="fill_parent"/>
+                android:layout_height="fill_parent"
+                android:paddingBottom="@dimen/dp_32"
+                android:clipToPadding="false"
+                />
         </LinearLayout>
 
     </LinearLayout>
