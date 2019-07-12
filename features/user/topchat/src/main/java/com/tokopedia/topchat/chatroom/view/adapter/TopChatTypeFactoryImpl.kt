@@ -8,6 +8,7 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandle
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ImageDualAnnouncementViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.SecurityInfoChatViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopChatVoucherViewHolder
@@ -47,15 +48,15 @@ open class TopChatTypeFactoryImpl(
     }
 
     override fun type(attachInvoiceSentViewModel: AttachInvoiceSentViewModel): Int {
-        return -1
+        return AttachedInvoiceViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             SecurityInfoChatViewHolder.LAYOUT -> SecurityInfoChatViewHolder(parent, securityInfoListener)
-            ImageDualAnnouncementViewHolder.LAYOUT -> ImageDualAnnouncementViewHolder(parent,
-                    imageDualAnnouncementListener)
+            ImageDualAnnouncementViewHolder.LAYOUT -> ImageDualAnnouncementViewHolder(parent, imageDualAnnouncementListener)
             TopChatVoucherViewHolder.LAYOUT -> TopChatVoucherViewHolder(parent, voucherListener)
+            AttachedInvoiceViewHolder.LAYOUT -> AttachedInvoiceViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
