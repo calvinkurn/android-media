@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.airbnb.lottie.LottieAnimationView
-import com.airbnb.lottie.model.LottieCompositionCache
 import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
