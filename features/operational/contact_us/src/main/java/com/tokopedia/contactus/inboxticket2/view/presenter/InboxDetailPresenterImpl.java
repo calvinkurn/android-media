@@ -853,7 +853,6 @@ public class InboxDetailPresenterImpl
                     mView.showErrorMessage(chipGetInboxDetail.getMessageError().get(0));
                 }
                 else {
-                    Log.i("closeTicket","sucesss");
                     mView.OnSucessfullTicketClose();
                 }
             }

@@ -53,7 +53,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class InboxDetailActivity extends InboxBaseActivity
-        implements InboxDetailContract.InboxDetailView, ImageUploadAdapter.OnSelectImageClick, View.OnClickListener, HelpFullBottomSheet.CloseSHelpFullBottomSheet, CloseComplainBottomSheet.CloseComplainBottomSheetListner,InboxDetailAdapter.ViewRplyButtonListener {
+        implements InboxDetailContract.InboxDetailView, ImageUploadAdapter.OnSelectImageClick, View.OnClickListener, HelpFullBottomSheet.CloseSHelpFullBottomSheet, CloseComplainBottomSheet.CloseComplainBottomSheetListner {
 
     private TextView tvTicketTitle;
     private TextView tvIdNum;
@@ -136,7 +136,9 @@ public class InboxDetailActivity extends InboxBaseActivity
                     getResources().getColor(R.color.orange_500), textSizeLabel));
             rvMessageList.setPadding(0, 0, 0,
                     getResources().getDimensionPixelSize(R.dimen.text_toolbar_height_collapsed));
-            //viewReplyButton.setVisibility(View.VISIBLE);
+            if(commentsItems.get(commentsItems.size()-1).getCreatedBy().getRole().equalsIgnoreCase("agent")){
+                viewReplyButton.setVisibility(View.VISIBLE);
+            }
             if (ticketDetail.isShowRating()) {
                 toggleTextToolbar(View.GONE);
                 rateCommentID = commentsItems.get(commentsItems.size() - 1).getId();
@@ -339,8 +341,6 @@ public class InboxDetailActivity extends InboxBaseActivity
                 image.setFileLoc(imagePath);
                 ((InboxDetailContract.InboxDetailPresenter) mPresenter).onImageSelect(image);
             }
-        } else if (resultCode == Activity.RESULT_OK) {
-            mPresenter.refreshLayout();
         }
     }
 
@@ -741,7 +741,6 @@ public class InboxDetailActivity extends InboxBaseActivity
             String rate = rating == 101 ? LIKE : DISLIKE;
             item.setRating(rate);
             detailAdapter.notifyItemChanged(commentPosition, item);
-            mPresenter.refreshLayout();
         }
 
         @Override
@@ -774,11 +773,6 @@ public class InboxDetailActivity extends InboxBaseActivity
         @Override
         public void OnSucessfullTicketClose () {
             mPresenter.refreshLayout();
-        }
-
-        @Override
-        public void viewRplyButtonVisibility () {
-            viewReplyButton.setVisibility(View.VISIBLE);
         }
 
     @Override
