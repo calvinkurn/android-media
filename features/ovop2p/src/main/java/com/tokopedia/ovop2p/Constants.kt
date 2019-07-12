@@ -21,10 +21,6 @@ class Constants {
         val RECIEVER_NAME = "Reciever Name"
         val PHONE = "phone"
     }
-    object AppLinks {
-        const val OVOP2PTRANSFER = "tokopedia://ovop2ptransfer"
-        const val OVOP2PTHANKYOUPAGE = "tokopedia://ovop2pthankyoupage/{transfer_id}"
-    }
 
     object Headers{
         val TRANSFER_FORM_HEADER = "Ke Sesama OVO"
@@ -56,7 +52,8 @@ class Constants {
     }
 
     object Prefixes{
-        val OVO_PREFIX = "Ovo - "
+        val OVO = "Ovo - "
+        val SALDO = "Saldo "
     }
 
     object Thresholds{

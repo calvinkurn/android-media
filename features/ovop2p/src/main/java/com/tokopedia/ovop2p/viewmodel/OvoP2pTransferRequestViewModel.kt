@@ -6,8 +6,10 @@ import android.arch.lifecycle.MutableLiveData
 import android.content.Context
 
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.ovop2p.Constants
 import com.tokopedia.ovop2p.model.OvoP2pTransferRequestBase
 import com.tokopedia.ovop2p.util.OvoP2pUtil
+import com.tokopedia.ovop2p.view.viewStates.*
 
 import java.util.HashMap
 
@@ -15,7 +17,7 @@ import rx.Subscriber
 
 class OvoP2pTransferRequestViewModel(application: Application) : AndroidViewModel(application) {
 
-    var ovoP2pTransferRequestBaseMutableLiveData = MutableLiveData<OvoP2pTransferRequestBase>()
+    var transferReqBaseMutableLiveData = MutableLiveData<TransferRequestState>()
     private var transferRequestSubscriber: Subscriber<GraphqlResponse>? = null
 
     fun makeTransferRequestCall(context: Context, transferReqMap: HashMap<String, Any>) {
@@ -29,15 +31,30 @@ class OvoP2pTransferRequestViewModel(application: Application) : AndroidViewMode
             }
 
             override fun onError(e: Throwable) {
-                //stop loading
-                ovoP2pTransferRequestBaseMutableLiveData.value = null
+                transferReqBaseMutableLiveData.value = TransferReqErrorSnkBar(Constants.Messages.GENERAL_ERROR)
             }
 
             override fun onNext(graphqlResponse: GraphqlResponse) {
                 val ovoP2pTransferRequestBase = graphqlResponse.getData<OvoP2pTransferRequestBase>(OvoP2pTransferRequestBase::class.java)
-                if (ovoP2pTransferRequestBase?.ovoP2pTransferRequest != null) {
-                    ovoP2pTransferRequestBaseMutableLiveData.value = ovoP2pTransferRequestBase
+                ovoP2pTransferRequestBase?.let {
+                    it.ovoP2pTransferRequest?.let { reqObj ->
+                        reqObj.errors?.let { errList ->
+                            if (errList.isNotEmpty()) {
+                                errList[0][Constants.Keys.MESSAGE]?.let { errMsg ->
+                                    if (errMsg.contentEquals(Constants.Messages.NON_OVO_USER)) {
+                                        transferReqBaseMutableLiveData.value = TransferReqNonOvo()
+                                    } else {
+                                        transferReqBaseMutableLiveData.value = TransferReqErrorPage(errMsg)
+                                    }
+                                    return
+                                }
+                            }
+                        }
+                        transferReqBaseMutableLiveData.value = TransferReqData(reqObj.dstAccName)
+                        return
+                    }
                 }
+                transferReqBaseMutableLiveData.value = TransferReqErrorSnkBar(Constants.Messages.GENERAL_ERROR)
             }
         }
         return transferRequestSubscriber as Subscriber<GraphqlResponse>

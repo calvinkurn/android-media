@@ -11,7 +11,6 @@ import com.tokopedia.ovop2p.Constants
 import com.tokopedia.ovop2p.R
 import com.tokopedia.ovop2p.di.OvoP2pTransferComponent
 import com.tokopedia.ovop2p.model.OvoP2pTransferThankyouBase
-import com.tokopedia.user.session.UserSession
 
 class TxnDetails : BaseDaggerFragment(){
     private lateinit var sucsMsg: TextView
@@ -89,6 +88,6 @@ class TxnDetails : BaseDaggerFragment(){
 
     private fun setSenderUserData(){
         senderName.text = ovoP2pTransferThankyouBase.ovoP2pTransferThankyou.source.name
-        senderNumber.text = Constants.Prefixes.OVO_PREFIX+ovoP2pTransferThankyouBase.ovoP2pTransferThankyou.source.phone
+        senderNumber.text = Constants.Prefixes.OVO+ovoP2pTransferThankyouBase.ovoP2pTransferThankyou.source.phone
     }
 }
