@@ -58,7 +58,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_above="@+id/cl_bottomsheet_getdistrict"
-            android:src="@drawable/ic_gps_enable" />
+            app:srcCompat="@drawable/ic_gps_enable" />
 
     </RelativeLayout>
 
@@ -69,6 +69,6 @@
         android:layout_gravity="start|top"
         android:background="?selectableItemBackgroundBorderless"
         android:contentDescription="@string/navigate_up"
-        android:src="@drawable/ic_arrow_back" />
+        app:srcCompat="@drawable/ic_arrow_back" />
 
 </android.support.design.widget.CoordinatorLayout>
