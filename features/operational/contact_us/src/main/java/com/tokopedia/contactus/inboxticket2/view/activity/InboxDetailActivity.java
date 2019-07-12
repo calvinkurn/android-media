@@ -138,6 +138,7 @@ public class InboxDetailActivity extends InboxBaseActivity
                     getResources().getDimensionPixelSize(R.dimen.text_toolbar_height_collapsed));
             if(commentsItems.get(commentsItems.size()-1).getCreatedBy().getRole().equalsIgnoreCase("agent")){
                 viewReplyButton.setVisibility(View.VISIBLE);
+                rateCommentID = commentsItems.get(commentsItems.size() - 1).getId();
             }
             if (ticketDetail.isShowRating()) {
                 toggleTextToolbar(View.GONE);
@@ -756,8 +757,8 @@ public class InboxDetailActivity extends InboxBaseActivity
                 }
             }
             if (agreed.equals("yes")) {
-                ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClick("yes", commentPosition, item.getId());
                 ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClickEmoji(0);
+                ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClick("yes", commentPosition, item.getId());
                 ((InboxDetailContract.InboxDetailPresenter) mPresenter).closeTicket();
                 closeComplainBottomSheet.dismiss();
 
