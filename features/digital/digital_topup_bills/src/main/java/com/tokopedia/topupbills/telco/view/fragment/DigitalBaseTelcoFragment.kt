@@ -27,6 +27,7 @@ import com.tokopedia.topupbills.covertContactUriToContactData
 import com.tokopedia.topupbills.telco.data.*
 import com.tokopedia.topupbills.telco.view.activity.DigitalSearchNumberActivity
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
+import com.tokopedia.topupbills.telco.view.model.DigitalTrackRecentTransactionTelco
 import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoCustomViewModel
 import com.tokopedia.topupbills.telco.view.viewmodel.TelcoCatalogMenuDetailViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
@@ -223,8 +224,14 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
     fun renderRecentTransactions(recentNumbers: List<TelcoRecommendation>) {
         if (recentNumbers.isNotEmpty()) {
             recentNumbersView.setListener(object : DigitalRecentTransactionWidget.ActionListener {
-                override fun onClickRecentNumber(telcoRecommendation: TelcoRecommendation) {
+                override fun onClickRecentNumber(telcoRecommendation: TelcoRecommendation, categoryName: String,
+                                                 position: Int) {
                     onClickItemRecentNumber(telcoRecommendation)
+                    topupAnalytics.clickEnhanceCommerceRecentTransaction(telcoRecommendation, categoryName, position)
+                }
+
+                override fun onTrackImpressionRecentList(digitalTrackRecentList: List<DigitalTrackRecentTransactionTelco>) {
+                    topupAnalytics.impressionEnhanceCommerceRecentTransaction(digitalTrackRecentList)
                 }
             })
             recentNumbersView.setRecentNumbers(recentNumbers)

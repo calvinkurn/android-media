@@ -1,5 +1,7 @@
 package com.tokopedia.topupbills.telco.data
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -37,4 +39,44 @@ class TelcoRecommendation(
         @SerializedName("operatorID")
         @Expose
         val operatorId: Int
-)
+) : Parcelable {
+        constructor(parcel: Parcel) : this(
+                parcel.readString(),
+                parcel.readString(),
+                parcel.readString(),
+                parcel.readString(),
+                parcel.readString(),
+                parcel.readString(),
+                parcel.readInt(),
+                parcel.readInt(),
+                parcel.readByte() != 0.toByte(),
+                parcel.readInt())
+
+        override fun writeToParcel(parcel: Parcel, flags: Int) {
+                parcel.writeString(iconUrl)
+                parcel.writeString(title)
+                parcel.writeString(clientNumber)
+                parcel.writeString(applink)
+                parcel.writeString(weblink)
+                parcel.writeString(type)
+                parcel.writeInt(categoryId)
+                parcel.writeInt(productId)
+                parcel.writeByte(if (isAtc) 1 else 0)
+                parcel.writeInt(operatorId)
+        }
+
+        override fun describeContents(): Int {
+                return 0
+        }
+
+        companion object CREATOR : Parcelable.Creator<TelcoRecommendation> {
+                override fun createFromParcel(parcel: Parcel): TelcoRecommendation {
+                        return TelcoRecommendation(parcel)
+                }
+
+                override fun newArray(size: Int): Array<TelcoRecommendation?> {
+                        return arrayOfNulls(size)
+                }
+        }
+
+}
