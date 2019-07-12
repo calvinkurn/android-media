@@ -23,6 +23,13 @@ class DistrictRecommendationMapper @Inject constructor() {
         return DistrictRecommendationResponseUiModel(listDistrict)
     }
 
+    fun transform(response: DistrictRecommendationResponse): DistrictRecommendationResponseUiModel {
+        return DistrictRecommendationResponseUiModel().apply {
+            listDistrict = response.keroDistrictRecommendation.district.map { mapDistrictItem(it) }
+            hasNext = response.keroDistrictRecommendation.nextAvailable
+        }
+    }
+
     private fun mapDistrictItem(district: DistrictItem): DistrictRecommendationItemUiModel {
         return DistrictRecommendationItemUiModel(
                 districtId = district.districtId,
