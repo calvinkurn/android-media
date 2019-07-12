@@ -119,7 +119,11 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     private int getTopOffset(RecyclerView parent, int absolutePos, int relativePos, int totalSpanCount) {
-        return isTopProductItem(parent, absolutePos, relativePos, totalSpanCount) ? spacing : getTopOffsetNotTopItem();
+        return isTopProductItem(parent, absolutePos, relativePos, totalSpanCount) ? getTopOffsetTopItem() : getTopOffsetNotTopItem();
+    }
+
+    private int getTopOffsetTopItem() {
+        return spacing - verticalCardViewOffset;
     }
 
     private int getTopOffsetNotTopItem() {
