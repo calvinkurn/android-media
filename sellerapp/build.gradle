@@ -144,37 +144,37 @@ android {
             }
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
             ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
-            if (allowSplit()) {
-                applicationVariants.all { variant ->
-                    variant.outputs.each { output ->
-                        String density = output.getFilter(com.android.build.OutputFile.DENSITY);
-                        output.versionCodeOverride = (getTkpdVersionCode() * 100) + getDpiId(density);
-                    }
-                    variant.assemble.doLast {
-                        variant.outputs.each { output ->
-                            if (output.zipAlign) {
-                                archiveAPK(variant, output);
-                            }
-                        }
-                    }
-                }
-            } else {
+//            if (allowSplit()) {
+//                applicationVariants.all { variant ->
+//                    variant.outputs.each { output ->
+//                        String density = output.getFilter(com.android.build.OutputFile.DENSITY);
+//                        output.versionCodeOverride = (getTkpdVersionCode() * 100) + getDpiId(density);
+//                    }
+//                    variant.assemble.doLast {
+//                        variant.outputs.each { output ->
+//                            if (output.zipAlign) {
+//                                archiveAPK(variant, output);
+//                            }
+//                        }
+//                    }
+//                }
+//            } else {
                 applicationVariants.all { variant ->
                     variant.outputs.each { output ->
                         output.versionCodeOverride = (getTkpdVersionCode() * 100);
                     }
                 }
-            }
+//            }
         }
     }
 
-    splits {
-        density {
-            enable allowSplit()
-            exclude "tvdpi", "xxxhdpi", "ldpi" //Add or modify the supported density here`
-            compatibleScreens 'small', 'normal', 'large', 'xlarge' //Discouraged to touch this
-        }
-    }
+//    splits {
+//        density {
+//            enable allowSplit()
+//            exclude "tvdpi", "xxxhdpi", "ldpi" //Add or modify the supported density here`
+//            compatibleScreens 'small', 'normal', 'large', 'xlarge' //Discouraged to touch this
+//        }
+//    }
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
