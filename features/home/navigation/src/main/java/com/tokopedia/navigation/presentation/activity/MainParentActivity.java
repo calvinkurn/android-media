@@ -30,6 +30,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -37,6 +38,11 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.airbnb.lottie.LottieComposition;
+import com.airbnb.lottie.LottieCompositionFactory;
+import com.airbnb.lottie.LottieDrawable;
+import com.airbnb.lottie.LottieListener;
+import com.airbnb.lottie.LottieTask;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
@@ -493,9 +499,24 @@ public class MainParentActivity extends BaseActivity implements
 
         registerNewFeedClickedReceiver();
 
+        showAnimationOfficialStoreMenu();
+
         if (!((BaseMainApplication) getApplication()).checkAppSignature()) {
             finish();
         }
+    }
+
+    private void showAnimationOfficialStoreMenu() {
+        Menu menu = bottomNavigation.getMenu();
+        MenuItem osMenu = menu.findItem(R.id.menu_os);
+
+        LottieDrawable osDrawable = new LottieDrawable();
+        LottieTask<LottieComposition> task = LottieCompositionFactory.fromRawRes(this, R.raw.icon_os);
+        task.addListener(result -> {
+            osDrawable.setComposition(result);
+            osDrawable.playAnimation();
+        });
+        osMenu.setIcon(osDrawable);
     }
 
     @Override
