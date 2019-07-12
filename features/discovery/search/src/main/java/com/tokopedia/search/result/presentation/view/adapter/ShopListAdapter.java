@@ -70,7 +70,7 @@ public class ShopListAdapter extends SearchSectionGeneralAdapter {
     public void removeLoading() {
         int loadingModelPosition = this.list.indexOf(loadingMoreModel);
 
-        if (loadingModelPosition != -1) {
+        if(loadingModelPosition != -1) {
             this.list.remove(loadingMoreModel);
 
             notifyItemRemoved(loadingModelPosition);
