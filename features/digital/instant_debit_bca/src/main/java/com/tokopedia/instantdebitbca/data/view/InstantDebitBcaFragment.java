@@ -110,7 +110,7 @@ public class InstantDebitBcaFragment extends BaseDaggerFragment implements Insta
         return convertObjToJsonString(deviceMap);
     }
 
-    private String convertObjToJsonString(Object obj) {
+    protected String convertObjToJsonString(Object obj) {
         JSONObject jsonObj = new JSONObject();
         Gson gsonObj = new Gson();
         String data = gsonObj.toJson(obj);

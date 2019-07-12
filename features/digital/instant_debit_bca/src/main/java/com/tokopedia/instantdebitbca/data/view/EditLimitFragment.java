@@ -9,7 +9,11 @@ import android.view.View;
 
 import com.bca.xco.widget.BCAEditXCOWidget;
 import com.bca.xco.widget.XCOEnum;
+import com.tokopedia.instantdebitbca.data.domain.NotifyDebitRegisterBcaUseCase;
 import com.tokopedia.network.utils.AuthUtil;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class EditLimitFragment extends InstantDebitBcaFragment {
 
@@ -42,6 +46,15 @@ public class EditLimitFragment extends InstantDebitBcaFragment {
     public void openWidgetBca(String accessToken) {
         widgetBca.openWidget(accessToken, AuthUtil.KEY.API_KEY_INSTANT_DEBIT_BCA, AuthUtil.KEY.API_SEED_INSTANT_DEBIT_BCA,
                 userSession.getUserId(), AuthUtil.KEY.INSTANT_DEBIT_BCA_MERCHANT_ID, xcoid);
+    }
+
+    @Override
+    public void onBCASuccess(String xcoID, String credentialType, String credentialNo, String maxLimit) {
+        Map<String, String> mapCardData = new HashMap<>();
+        mapCardData.put(NotifyDebitRegisterBcaUseCase.XCOID, xcoID);
+        mapCardData.put(NotifyDebitRegisterBcaUseCase.MAX_LIMIT, maxLimit);
+        String debitData = convertObjToJsonString(mapCardData);
+        presenter.notifyDebitRegisterBca(debitData, "");
     }
 
 }

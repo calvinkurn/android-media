@@ -33,6 +33,8 @@ public class NotifyDebitRegisterBcaUseCase extends UseCase<NotifyDebitRegisterBc
     public static final String MAX_LIMIT = "maxLimit";
     public static final String USER_AGENT = "user_agent";
     public static final String IP_ADDRESS = "ip_address";
+    public static final String ACTION = "action";
+    public static final String UPDATE = "update";
 
     public static final String MERCHANT_CODE = "merchantCode";
     public static final String DEVICE_ID = "deviceID";
@@ -90,6 +92,7 @@ public class NotifyDebitRegisterBcaUseCase extends UseCase<NotifyDebitRegisterBc
         requestParams.putString(BANK_CODE, BANK_DATA);
         requestParams.putString(CALLBACK_URL, CALLBACK_DATA);
         requestParams.putString(SIGNATURE, "");
+        requestParams.putString(NotifyDebitRegisterBcaUseCase.ACTION, NotifyDebitRegisterBcaUseCase.UPDATE);
         requestParams.putObject(DEBIT_DATA, debitDataString);
         return requestParams;
     }
