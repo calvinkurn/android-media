@@ -515,7 +515,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             feedPostRelated.data
                 .filter { it.content.body.media[0].thumbnail.isNotEmpty() }
                 .forEach {
-                    profileAnalytics.eventImpressionOtherPost(userId.toString(), it.content.tracking.authorID)
+                    //this will be changed later by DA, because efficiency
+                    //profileAnalytics.eventImpressionOtherPost(userId.toString(), it.content.tracking.authorID)
                     visitables.add(OtherRelatedProfileViewModel(it))
                 }
         }
