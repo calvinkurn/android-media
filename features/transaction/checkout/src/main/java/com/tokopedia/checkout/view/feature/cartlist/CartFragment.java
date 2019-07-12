@@ -206,8 +206,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         }
         userSession = new UserSession(getActivity());
-        cartPerformanceMonitoring = PerformanceMonitoring.start(CART_TRACE);
-        cartAllPerformanceMonitoring = PerformanceMonitoring.start(CART_ALL_TRACE);
 
         if (getActivity() != null) {
             saveInstanceCacheManager = new SaveInstanceCacheManager(getActivity(), savedInstanceState);
@@ -224,6 +222,9 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             recommendationList = saveInstanceCacheManager.get(CartRecommendationItemHolderData.class.getSimpleName(),
                     (new TypeToken<ArrayList<CartRecommendationItemHolderData>>() {
                     }).getType(), null);
+        } else {
+            cartPerformanceMonitoring = PerformanceMonitoring.start(CART_TRACE);
+            cartAllPerformanceMonitoring = PerformanceMonitoring.start(CART_ALL_TRACE);
         }
 
         dPresenter.attachView(this);
