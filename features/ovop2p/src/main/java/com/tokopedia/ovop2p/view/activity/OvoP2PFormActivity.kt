@@ -58,8 +58,8 @@ class OvoP2PFormActivity : BaseSimpleActivity(), HasComponent<OvoP2pTransferComp
     }
 
     override fun showProgressDialog() {
-//        if(!::parentView.isInitialized) parentView = findViewById(R.id.parent_view)
-//        parentView.visibility = View.GONE
+        if(!::parentView.isInitialized) parentView = findViewById(R.id.parent_view)
+        parentView.visibility = View.GONE
         if (!::loading.isInitialized) loading = findViewById(R.id.progressbar_cntnr)
         loading.visibility = View.VISIBLE
     }
@@ -67,8 +67,8 @@ class OvoP2PFormActivity : BaseSimpleActivity(), HasComponent<OvoP2pTransferComp
     override fun hideProgressDialog() {
         if (::loading.isInitialized)
             loading.visibility = View.GONE
-//        if(::parentView.isInitialized)
-//            parentView.visibility = View.VISIBLE
+        if(::parentView.isInitialized)
+            parentView.visibility = View.VISIBLE
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
