@@ -22,7 +22,7 @@
                 android:id="@+id/img_product"
                 android:layout_width="@dimen/dp_120"
                 android:layout_height="@dimen/dp_120"
-                android:src="@color/grey_300" />
+                app:srcCompat="@color/grey_300" />
 
             <ImageButton
                 android:id="@+id/img_wishlist"
