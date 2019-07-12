@@ -9,6 +9,7 @@ public interface SearchEventTracking {
         String SEARCH_RESULT = "clickSearchResult";
         String PRODUCT_VIEW = "productView";
         String PRODUCT_CLICK = "productClick";
+        String CLICK_WISHLIST = "clickWishlist";
     }
 
     interface Category {
@@ -56,6 +57,8 @@ public interface SearchEventTracking {
         String EventLongPressProduct = "click - long press product";
         String SEARCH_IMAGE_PICKER_CLICK_CAMERA = "click image search by camera";
         String SEARCH_IMAGE_PICKER_CLICK_GALLERY = "click image search by gallery";
+        String ADD_WISHLIST = "add wishlist";
+        String REMOVE_WISHLIST = "remove wishlist";
     }
 
     interface Label {

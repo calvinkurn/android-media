@@ -10,6 +10,8 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
@@ -53,7 +55,7 @@ public class GmSubscribeHomeActivity
     }
 
     public static Intent getCallingIntent(Context context) {
-        return new Intent(context, GmSubscribeHomeActivity.class);
+        return RouteManager.getIntent(context, ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE);
     }
 
     @Override
