@@ -1,6 +1,9 @@
 package com.tokopedia.topads.product.view.presenter;
 
 import com.tokopedia.abstraction.common.data.model.request.DataRequest;
+import com.tokopedia.topads.auto.data.AutoAdsUseCase;
+import com.tokopedia.topads.auto.data.entity.TopAdsAutoAdsData;
+import com.tokopedia.topads.auto.internal.AutoAdsStatus;
 import com.tokopedia.topads.common.domain.interactor.TopAdsDatePickerInteractor;
 import com.tokopedia.topads.common.view.presenter.TopAdsBaseListPresenter;
 import com.tokopedia.topads.dashboard.constant.SortTopAdsOption;
@@ -16,6 +19,7 @@ import com.tokopedia.topads.product.domain.usecase.TopAdsGetProductAdUseCase;
 import com.tokopedia.topads.product.domain.usecase.TopAdsToggleStatusUseCase;
 import com.tokopedia.topads.product.view.listener.TopAdsProductAdListView;
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
+import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -25,9 +29,12 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func2;
+import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
 
 /**
@@ -39,9 +46,11 @@ public class TopAdsProductAdListPresenter extends TopAdsBaseListPresenter<TopAds
     private final TopAdsGetProductAdUseCase topAdsGetProductAdUseCase;
     private final TopAdsToggleStatusUseCase topAdsToggleStatusUseCase;
     private final TopAdsSearchGroupAdUseCase topAdsSearchGroupAdUseCase;
+    private final AutoAdsUseCase autoAdsUseCase;
 
     private final BehaviorSubject<String> searchGroupName = BehaviorSubject.create();
     private final Subscription subscriptionSearchGroupName;
+    private Subscription subscriptionLoadAds;
 
     @Inject
     public TopAdsProductAdListPresenter(TopAdsDatePickerInteractor topAdsDatePickerInteractor,
@@ -49,11 +58,13 @@ public class TopAdsProductAdListPresenter extends TopAdsBaseListPresenter<TopAds
                                         TopAdsGetProductAdUseCase topAdsGetProductAdUseCase,
                                         TopAdsToggleStatusUseCase topAdsToggleStatusUseCase,
                                         TopAdsSearchGroupAdUseCase topAdsSearchGroupAdUseCase,
+                                        AutoAdsUseCase autoAdsUseCase,
                                         UserSessionInterface userSession) {
         super(topAdsDatePickerInteractor, topAdsAddSourceTaggingUseCase, userSession);
         this.topAdsGetProductAdUseCase = topAdsGetProductAdUseCase;
         this.topAdsToggleStatusUseCase = topAdsToggleStatusUseCase;
         this.topAdsSearchGroupAdUseCase = topAdsSearchGroupAdUseCase;
+        this.autoAdsUseCase = autoAdsUseCase;
 
         subscriptionSearchGroupName = searchGroupName
                 .debounce(300, TimeUnit.MILLISECONDS)
@@ -91,7 +102,7 @@ public class TopAdsProductAdListPresenter extends TopAdsBaseListPresenter<TopAds
 
             @Override
             public void onError(Throwable e) {
-                if(!isViewAttached()){
+                if (!isViewAttached()) {
                     return;
                 }
                 getView().onGetGroupAdListError();
@@ -109,7 +120,17 @@ public class TopAdsProductAdListPresenter extends TopAdsBaseListPresenter<TopAds
         super.detachView();
         topAdsGetProductAdUseCase.unsubscribe();
         subscriptionSearchGroupName.unsubscribe();
+        subscriptionLoadAds.unsubscribe();
         topAdsSearchGroupAdUseCase.unsubscribe();
+        autoAdsUseCase.unsubscribe();
+    }
+
+    private boolean autoAdsIsActive(int status){
+        return (status == AutoAdsStatus.STATUS_ACTIVE
+                || status == AutoAdsStatus.STATUS_IN_PROGRESS_ACTIVE
+                || status == AutoAdsStatus.STATUS_IN_PROGRESS_AUTOMANAGE
+                || status == AutoAdsStatus.STATUS_IN_PROGRESS_INACTIVE
+                || status == AutoAdsStatus.STATUS_NOT_DELIVERED);
     }
 
     public void searchAd(Date startDate, Date endDate, String keyword, int status, long groupId,
@@ -123,28 +144,50 @@ public class TopAdsProductAdListPresenter extends TopAdsBaseListPresenter<TopAds
         searchAdRequest.setGroup(groupId);
         searchAdRequest.setPage(page);
         searchAdRequest.setSort(sortId);
-        topAdsGetProductAdUseCase.execute(TopAdsGetProductAdUseCase.createRequestParams(searchAdRequest),
-                new Subscriber<PageDataResponse<List<ProductAd>>>() {
-            @Override
-            public void onCompleted() {
 
-            }
+        subscriptionLoadAds = Observable.zip(topAdsGetProductAdUseCase.getExecuteObservable(
+                TopAdsGetProductAdUseCase.createRequestParams(searchAdRequest)),
+                autoAdsUseCase.getExecuteObservable(RequestParams.EMPTY),
+                new Func2<PageDataResponse<List<ProductAd>>, TopAdsAutoAdsData, PageDataResponse<List<ProductAd>>>() {
+                    @Override
+                    public PageDataResponse<List<ProductAd>> call(PageDataResponse<List<ProductAd>> listPageDataResponse,
+                                                                  TopAdsAutoAdsData topAdsAutoAdsData) {
+                        for (ProductAd ads : listPageDataResponse.getData()) {
+                            ads.setAutoAds(autoAdsIsActive(topAdsAutoAdsData.getStatus()));
+                        }
+                        listPageDataResponse.setAutoAds(autoAdsIsActive(topAdsAutoAdsData.getStatus()));
+                        return listPageDataResponse;
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<PageDataResponse<List<ProductAd>>>() {
+                    @Override
+                    public void onCompleted() {
 
-            @Override
-            public void onError(Throwable e) {
-                if (isViewAttached()){
-                    getView().showListError(e);
-                }
-            }
+                    }
 
-            @Override
-            public void onNext(PageDataResponse<List<ProductAd>> listPageDataResponse) {
-                if (isViewAttached()){
-                    boolean hasNextData = listPageDataResponse.getPage().getPerPage()*page < listPageDataResponse.getPage().getTotal();
-                    getView().onSearchLoaded(listPageDataResponse.getData(), hasNextData);
-                }
-            }
-        });
+                    @Override
+                    public void onError(Throwable e) {
+                        if (isViewAttached()) {
+                            getView().showListError(e);
+                        }
+                    }
+
+                    @Override
+                    public void onNext(PageDataResponse<List<ProductAd>> listPageDataResponse) {
+                        if (isViewAttached()) {
+                            boolean hasNextData = listPageDataResponse.getPage().getPerPage() * page < listPageDataResponse.getPage().getTotal();
+                            getView().onSearchLoaded(listPageDataResponse.getData(), hasNextData);
+                            if(listPageDataResponse.isAutoAds()) {
+                                getView().onAutoAdsActive();
+                            } else {
+                                getView().onAutoAdsInactive();
+                            }
+                        }
+                    }
+                });
     }
 
     public void setAdActive(List<String> ids) {
@@ -186,14 +229,14 @@ public class TopAdsProductAdListPresenter extends TopAdsBaseListPresenter<TopAds
 
             @Override
             public void onError(Throwable e) {
-                if (isViewAttached()){
+                if (isViewAttached()) {
                     getView().onBulkActionError(e);
                 }
             }
 
             @Override
             public void onNext(ProductAdBulkAction productAdBulkAction) {
-                if (isViewAttached()){
+                if (isViewAttached()) {
                     getView().onBulkActionSuccess(productAdBulkAction);
                 }
             }
@@ -202,7 +245,7 @@ public class TopAdsProductAdListPresenter extends TopAdsBaseListPresenter<TopAds
 
     private List<ProductAdAction> generateProductAds(List<String> ids) {
         List<ProductAdAction> dataRequestProductAds = new ArrayList<>();
-        for (String adId : ids){
+        for (String adId : ids) {
             ProductAdAction adAction = new ProductAdAction();
             adAction.setId(adId);
             dataRequestProductAds.add(adAction);
@@ -212,7 +255,7 @@ public class TopAdsProductAdListPresenter extends TopAdsBaseListPresenter<TopAds
 
     private List<ProductAdAction> generateProductAds(List<String> ids, String groupId) {
         List<ProductAdAction> dataRequestProductAds = new ArrayList<>();
-        for (String adId : ids){
+        for (String adId : ids) {
             ProductAdAction adAction = new ProductAdAction();
             adAction.setId(adId);
             adAction.setGroupId(groupId);
