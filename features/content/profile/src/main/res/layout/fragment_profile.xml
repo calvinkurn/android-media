@@ -218,7 +218,7 @@
                                     android:layout_height="match_parent"
                                     app:srcCompat="@drawable/ic_action_back"
                                     android:layout_gravity="center"
-                                    />
+                                    android:tint="@color/white" />
 
                                 <TextView
                                     android:id="@+id/tv_name_parallax"
@@ -369,8 +369,7 @@
                                 android:layout_height="match_parent"
                                 app:srcCompat="@drawable/ic_action_back"
                                 android:layout_gravity="center"
-                                android:tint="@color/black_70"
-                                />
+                                android:tint="@color/black_70" />
 
                             <TextView
                                 android:id="@+id/tv_aff_name"
@@ -413,7 +412,8 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                    app:reverseLayout="false" />
+                    app:reverseLayout="false"
+                    android:clipToPadding="false"/>
 
             </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
