@@ -55,12 +55,6 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     protected var toUserId = "0"
     protected var source = ""
 
-
-    override fun getAdapterTypeFactory(): BaseChatTypeFactoryImpl {
-        return BaseChatTypeFactoryImpl(this,
-            this, this, this)
-    }
-
     override fun onItemClicked(t: Visitable<*>?) {
         return
     }

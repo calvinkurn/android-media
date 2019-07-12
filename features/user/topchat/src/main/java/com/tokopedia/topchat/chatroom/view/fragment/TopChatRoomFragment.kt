@@ -65,6 +65,7 @@ import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.transaction.common.sharedata.AddToCartResult
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseSimpleWebViewActivity
+import java.lang.IllegalStateException
 import javax.inject.Inject
 
 /**
@@ -433,15 +434,24 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         getViewState().clearEditText()
     }
 
+    override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
+        return TopChatTypeFactoryImpl(
+                this,
+                this,
+                this,
+                this,
+                this,
+                this,
+                this
+        )
+    }
+
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
-        return TopChatRoomAdapter(TopChatTypeFactoryImpl(
-                this,
-                this,
-                this,
-                this,
-                this,
-                this,
-                this))
+        if (adapterTypeFactory !is TopChatTypeFactoryImpl) {
+            throw IllegalStateException("getAdapterTypeFactory() must return TopChatTypeFactoryImpl")
+        }
+        val typeFactory = adapterTypeFactory as TopChatTypeFactoryImpl
+        return TopChatRoomAdapter(typeFactory)
     }
 
     override fun addDummyMessage(visitable: Visitable<*>) {

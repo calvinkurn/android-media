@@ -57,6 +57,7 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.user.session.UserSessionInterface
+import java.lang.IllegalStateException
 import javax.inject.Inject
 
 /**
@@ -65,6 +66,7 @@ import javax.inject.Inject
 class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         AttachedInvoiceSelectionListener, QuickReplyListener,
         ChatActionListBubbleListener, ChatRatingListener, TypingListener {
+
     override fun clearChatText() {
         replyEditText.setText("")
     }
@@ -105,10 +107,24 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         return view
     }
 
+    override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
+        return ChatbotTypeFactoryImpl(
+                this,
+                this,
+                this,
+                this,
+                this,
+                this,
+                this
+        )
+    }
+
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
-        return ChatbotAdapter(ChatbotTypeFactoryImpl(this,
-                this, this, this,
-                this, this, this))
+        if (adapterTypeFactory !is ChatbotTypeFactoryImpl) {
+            throw IllegalStateException("getAdapterTypeFactory() must return ChatbotTypeFactoryImpl")
+        }
+        val typeFactory = adapterTypeFactory as ChatbotTypeFactoryImpl
+        return ChatbotAdapter(typeFactory)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

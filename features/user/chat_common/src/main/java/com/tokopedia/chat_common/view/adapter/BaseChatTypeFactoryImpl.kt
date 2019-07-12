@@ -14,7 +14,7 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachm
  * @author by nisie on 27/11/18.
  */
 
-open class BaseChatTypeFactoryImpl(private val imageAnnouncementListener: ImageAnnouncementListener,
+abstract class BaseChatTypeFactoryImpl(private val imageAnnouncementListener: ImageAnnouncementListener,
                                    private val chatLinkHandlerListener: ChatLinkHandlerListener,
                                    private val imageUploadListener : ImageUploadListener,
                                    private val productAttachmentListener : ProductAttachmentListener) :
@@ -43,10 +43,6 @@ open class BaseChatTypeFactoryImpl(private val imageAnnouncementListener: ImageA
 
     override fun type(fallbackAttachmentViewModel: FallbackAttachmentViewModel): Int {
         return FallbackAttachmentViewHolder.LAYOUT
-    }
-
-    override fun type(attachInvoiceSentViewModel: AttachInvoiceSentViewModel): Int {
-        return -1
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
