@@ -88,14 +88,15 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener, Bas
 
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()
-        if (intent.extras != null) {
-            bundle.putAll(intent.extras)
-        }
         val uri = intent.data
         if (uri != null && uri.scheme == DeeplinkConstant.SCHEME_INTERNAL){
             val segmentUri = uri.pathSegments
-            bundle.putString(PARAM_POST_ID, segmentUri[segmentUri.size - 2])
-            bundle.putString(PARAM_TYPE, segmentUri[0])
+            intent.putExtra(PARAM_POST_ID, segmentUri[segmentUri.size - 2])
+            intent.putExtra(PARAM_TYPE, segmentUri[0])
+        }
+
+        if (intent.extras != null) {
+            bundle.putAll(intent.extras)
         }
 
         return when(intent?.extras?.get(PARAM_TYPE)) {
