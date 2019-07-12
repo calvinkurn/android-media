@@ -158,6 +158,7 @@ class VideoVerticalHelper constructor(
                 })
                 .build()
         playerView.show()
+        showLoadingOnly()
         setChatListHasSpaceOnTop(VERTICAL_WITH_VIDEO)
         analytics.eventVerticalVideoPlayed(viewModel?.channelId)
         startTime = System.currentTimeMillis()
