@@ -54,7 +54,7 @@
             android:background="@drawable/white_circle"
             android:clickable="true"
             android:padding="8dp"
-            android:src="@drawable/ic_arrow_right_default" />
+            android:src="@drawable/cm_ic_arrow" />
 
         <ImageView
             android:id="@+id/ivArrowLeft"
@@ -67,7 +67,7 @@
             android:clickable="true"
             android:padding="8dp"
             android:rotation="180"
-            android:src="@drawable/ic_arrow_right_default" />
+            android:src="@drawable/cm_ic_arrow" />
 
 
     </RelativeLayout>

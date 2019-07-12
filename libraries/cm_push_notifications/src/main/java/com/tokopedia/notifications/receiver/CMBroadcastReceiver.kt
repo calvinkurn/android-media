@@ -12,16 +12,23 @@ import com.tokopedia.notifications.R
 import com.tokopedia.notifications.common.*
 import com.tokopedia.notifications.factory.BaseNotification
 import com.tokopedia.notifications.factory.CMNotificationFactory
-import com.tokopedia.notifications.model.Carousel
-import com.tokopedia.notifications.model.PersistentButton
-import com.tokopedia.notifications.model.PreDefineActions
+import com.tokopedia.notifications.factory.CarouselNotification
+import com.tokopedia.notifications.factory.ProductNotification
+import com.tokopedia.notifications.model.*
 import com.tokopedia.usecase.RequestParams
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import timber.log.Timber
+import kotlin.coroutines.CoroutineContext
 
 
 /**
  * @author lalit.singh
  */
-class CMBroadcastReceiver : BroadcastReceiver() {
+class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main
 
     override fun onReceive(context: Context, intent: Intent) {
         try {
@@ -34,10 +41,6 @@ class CMBroadcastReceiver : BroadcastReceiver() {
                 when (action) {
                     CMConstant.ReceiverAction.ACTION_BUTTON -> {
                         handleActionButtonClick(context, intent, notificationId)
-                        sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, campaignId, notificationId)
-                    }
-                    CMConstant.ReceiverAction.ACTION_PRODUCT_CLICK -> {
-                        handleProductClick(context, intent, notificationId)
                         sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, campaignId, notificationId)
                     }
                     CMConstant.ReceiverAction.ACTION_PERSISTENT_CLICK -> {
@@ -56,29 +59,103 @@ class CMBroadcastReceiver : BroadcastReceiver() {
                         handleNotificationClick(context, intent, notificationId)
                         sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, campaignId, notificationId)
                     }
-                    CMConstant.ReceiverAction.ACTION_RIGHT_ARROW_CLICK -> handleCarouselButtonClick(context, intent, notificationId, true)
-                    CMConstant.ReceiverAction.ACTION_LEFT_ARROW_CLICK -> handleCarouselButtonClick(context, intent, notificationId, false)
-                    CMConstant.ReceiverAction.ACTION_CAROUSEL_IMAGE_CLICK -> {
-                        handleCarouselImageClick(context, intent, notificationId)
-                        sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, campaignId, notificationId)
-                    }
+
                     CMConstant.ReceiverAction.ACTION_GRID_CLICK -> {
                         handleGridNotificationClick(context, intent, notificationId)
                         sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, campaignId, notificationId)
                     }
+
+                    CMConstant.ReceiverAction.ACTION_CAROUSEL_MAIN_CLICK-> {
+                        handleCarouselMainClick(context, intent, notificationId)
+                        sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, campaignId, notificationId)
+                    }
+                    CMConstant.ReceiverAction.ACTION_CAROUSEL_IMAGE_CLICK -> {
+                        handleCarouselImageClick(context, intent, notificationId)
+                        sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, campaignId, notificationId)
+                    }
+                    CMConstant.ReceiverAction.ACTION_RIGHT_ARROW_CLICK ->
+                        CarouselNotification.onRightIconClick(context.applicationContext,
+                                intent.getParcelableExtra(CMConstant.EXTRA_BASE_MODEL))
+                    CMConstant.ReceiverAction.ACTION_LEFT_ARROW_CLICK ->
+                        CarouselNotification.onLeftIconClick(context.applicationContext,
+                                intent.getParcelableExtra(CMConstant.EXTRA_BASE_MODEL))
+                    CMConstant.ReceiverAction.ACTION_CAROUSEL_NOTIFICATION_DISMISS -> {
+                        clearCarouselImages(context.applicationContext)
+                    }
+
+
+                    CMConstant.ReceiverAction.ACTION_PRODUCT_CLICK -> {
+                        handleProductClick(context, intent, notificationId)
+                        sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, campaignId, notificationId)
+                    }
+                    CMConstant.ReceiverAction.ACTION_PRODUCT_COLLAPSED_CLICK -> {
+                        handleCollapsedViewClick(context, intent, notificationId)
+                        sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, campaignId, notificationId)
+                    }
+                    CMConstant.ReceiverAction.ACTION_PRODUCT_CAROUSEL_LEFT_CLICK -> {
+                        ProductNotification.onLeftIconClick(context.applicationContext,
+                                intent.getParcelableExtra(CMConstant.EXTRA_BASE_MODEL))
+                    }
+                    CMConstant.ReceiverAction.ACTION_PRODUCT_CAROUSEL_RIGHT_CLICK -> {
+                        ProductNotification.onRightIconClick(context.applicationContext,
+                                intent.getParcelableExtra(CMConstant.EXTRA_BASE_MODEL))
+                    }
+                    CMConstant.ReceiverAction.ACTION_PRODUCT_NOTIFICATION_DISMISS -> {
+                        clearProductImages(context.applicationContext)
+                    }
+
                 }
             }
         } catch (e: Exception) {
         }
     }
 
-    private fun handleProductClick(context: Context, intent: Intent, notificationId: Int) {
-        val appLinks = intent.getStringExtra(CMConstant.ReceiverExtraData.ACTION_APP_LINK)
-        val appLinkIntent = RouteManager.getIntent(context.applicationContext, appLinks)
+    private fun handleCarouselMainClick(context: Context, intent: Intent, notificationId: Int) {
+        val baseNotificationModel: BaseNotificationModel = intent.getParcelableExtra(CMConstant.EXTRA_BASE_MODEL)
+        val appLinkIntent = RouteManager.getIntent(context.applicationContext, baseNotificationModel.appLink)
         appLinkIntent.putExtras(intent.extras!!)
         startActivity(context, appLinkIntent)
         context.applicationContext.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
         NotificationManagerCompat.from(context).cancel(notificationId)
+        clearCarouselImages(context.applicationContext)
+    }
+
+    private fun handleProductClick(context: Context, intent: Intent, notificationId: Int) {
+        val productInfo: ProductInfo = intent.getParcelableExtra(CMConstant.EXTRA_PRODUCT_INFO)
+        val appLinkIntent = RouteManager.getIntent(context.applicationContext, productInfo.appLink)
+        appLinkIntent.putExtras(intent.extras!!)
+        startActivity(context, appLinkIntent)
+        context.applicationContext.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
+        NotificationManagerCompat.from(context).cancel(notificationId)
+        clearProductImages(context.applicationContext)
+    }
+
+    private fun handleCollapsedViewClick(context: Context, intent: Intent, notificationId: Int) {
+        val baseNotificationModel: BaseNotificationModel = intent.getParcelableExtra(CMConstant.EXTRA_BASE_MODEL)
+        val appLinkIntent = RouteManager.getIntent(context.applicationContext, baseNotificationModel.appLink)
+        appLinkIntent.putExtras(intent.extras!!)
+        startActivity(context, appLinkIntent)
+        context.applicationContext.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
+        NotificationManagerCompat.from(context).cancel(notificationId)
+        clearProductImages(context.applicationContext)
+    }
+
+    private fun clearProductImages(context: Context) {
+        launchCatchError(block = {
+            CarouselUtilities.deleteProductImageDirectory(context.applicationContext)
+        },
+                onError = {
+                    Timber.i(it)
+                })
+    }
+
+    private fun clearCarouselImages(context: Context) {
+        launchCatchError(block = {
+            CarouselUtilities.deleteCarouselImageDirectory(context.applicationContext)
+        },
+                onError = {
+                    Timber.i(it)
+                })
     }
 
     private fun handleGridNotificationClick(context: Context, intent: Intent, notificationId: Int) {
@@ -180,7 +257,13 @@ class CMBroadcastReceiver : BroadcastReceiver() {
         startActivity(context, appLinkIntent)
         NotificationManagerCompat.from(context.applicationContext).cancel(notificationId)
         context.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
-        CarouselUtilities.deleteCarouselImageDirectory(context)
+
+        launchCatchError(block = {
+            CarouselUtilities.deleteCarouselImageDirectory(context)
+        },
+                onError = {
+                    Timber.i(it)
+                })
     }
 
     private fun postNotification(context: Context, baseNotification: BaseNotification) {

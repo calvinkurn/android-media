@@ -36,11 +36,10 @@ abstract class BaseNotification internal constructor(protected var context: Cont
 
     protected val builder: NotificationCompat.Builder
         get() {
-            val builder: NotificationCompat.Builder
-            if (baseNotificationModel.channelName != null && !baseNotificationModel.channelName!!.isEmpty()) {
-                builder = NotificationCompat.Builder(context, baseNotificationModel.channelName!!)
+            val builder: NotificationCompat.Builder = if (baseNotificationModel.channelName != null && !baseNotificationModel.channelName!!.isEmpty()) {
+                NotificationCompat.Builder(context, baseNotificationModel.channelName!!)
             } else {
-                builder = NotificationCompat.Builder(context, CMConstant.NotificationChannel.CHANNEL_ID)
+                NotificationCompat.Builder(context, CMConstant.NotificationChannel.CHANNEL_ID)
             }
 
             if (!TextUtils.isEmpty(baseNotificationModel.subText)) {
@@ -79,12 +78,13 @@ abstract class BaseNotification internal constructor(protected var context: Cont
 
     protected val notificationBuilder: NotificationCompat.Builder
         get() {
-            val builder: NotificationCompat.Builder
-            if (baseNotificationModel.channelName != null && !baseNotificationModel.channelName!!.isEmpty()) {
-                builder = NotificationCompat.Builder(context, baseNotificationModel.channelName!!)
+
+            val builder: NotificationCompat.Builder = if (baseNotificationModel.channelName != null && !baseNotificationModel.channelName!!.isEmpty()) {
+                NotificationCompat.Builder(context, baseNotificationModel.channelName!!)
             } else {
-                builder = NotificationCompat.Builder(context, CMConstant.NotificationChannel.CHANNEL_ID)
+                NotificationCompat.Builder(context, CMConstant.NotificationChannel.CHANNEL_ID)
             }
+
             if (!TextUtils.isEmpty(baseNotificationModel.subText)) {
                 builder.setSubText(baseNotificationModel.subText)
             }
@@ -92,15 +92,25 @@ abstract class BaseNotification internal constructor(protected var context: Cont
             builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             builder.setSmallIcon(drawableIcon)
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                createNotificationChannel()
-                builder.setBadgeIconType(BADGE_ICON_SMALL)
-                builder.setNumber(1)
-            } else {
-                setNotificationSound(builder)
-                setNotificationPriorityPreOreo(builder, baseNotificationModel.priorityPreOreo)
-            }
 
+            if (baseNotificationModel.isUpdateExisting) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    silentChannel()
+                    builder.setChannelId(CMConstant.NotificationChannel.Channel_DefaultSilent_Id)
+                } else {
+                    builder.setSound(null)
+                    builder.setVibrate(null)
+                }
+            } else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    createNotificationChannel()
+                    builder.setBadgeIconType(BADGE_ICON_SMALL)
+                    builder.setNumber(1)
+                } else {
+                    setNotificationSound(builder)
+                    setNotificationPriorityPreOreo(builder, baseNotificationModel.priorityPreOreo)
+                }
+            }
             builder.setSmallIcon(drawableIcon)
             return builder
         }

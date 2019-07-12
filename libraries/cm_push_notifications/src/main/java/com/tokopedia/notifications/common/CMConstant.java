@@ -1,10 +1,16 @@
 package com.tokopedia.notifications.common;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 /**
  * Created by Ashwani Tyagi on 18/10/18.
  */
 public interface CMConstant {
     String EXTRA_NOTIFICATION_ID = "notif_id";
+    String EXTRA_BASE_MODEL = "extra_base_model";
+    String EXTRA_PRODUCT_INFO = "extra_product_info";
+    String EXTRA_CAROUSEL_ITEM = "extra_carousel_item";
 
     String EXTRA_NOTIFICATION_BUNDLE = "work_bundle";
 
@@ -16,7 +22,6 @@ public interface CMConstant {
     String APP_VERSION_CACHE_KEY = "app_version_cache_key";
     String EXTRA_CAMPAIGN_ID = "extra_campaign_id";
     String EXTRA_PRE_DEF_ACTION = "extra_pre_def_action";
-
 
 
     interface NotificationType {
@@ -64,7 +69,7 @@ public interface CMConstant {
         String CAROUSEL_INDEX = "carouselIndex";
         String IMG = "img";
         String VIBRATE = "vibrate";
-        String UPDATE = "update";
+        String UPDATE_NOTIFICATION = "update_notification";
         String GRID_DATA = "gridData";
         String SUB_TEXT = "subText";
 
@@ -75,7 +80,7 @@ public interface CMConstant {
         String CAMPAIGN_ID = "campaignId";
         String PD_ACTION = "pdAction";
         String NOTIFICATION_PRIORITY = "priorityPreOreo";
-        String PRODUCT_INFO = "product";
+        String PRODUCT_INFO_LIST = "product_info_list";
     }
 
     interface ReceiverExtraData {
@@ -84,7 +89,6 @@ public interface CMConstant {
         String ACTION_APP_LINK = "action_app_link";
         String CAROUSEL_DATA = "carousel_data";
         String CAROUSEL_DATA_ITEM = "carousel_data_item";
-
 
         String GRID_APP_LINK = "GRID_APP_LINK";
     }
@@ -106,11 +110,20 @@ public interface CMConstant {
         String ACTION_ON_COPY_COUPON_CODE = "com.tokopedia.notification.ACTION_ON_COPY_COUPON_CODE";
         String ACTION_PERSISTENT_CLICK = "com.tokopedia.notification.ACTION_PERSISTENT_CLICK";
         String ACTION_NOTIFICATION_CLICK = "com.tokopedia.notification.ACTION_NOTIFICATION_CLICK";
+
         String ACTION_RIGHT_ARROW_CLICK = "com.tokopedia.notification.ACTION_RIGHT_ARROW_CLICK";
         String ACTION_LEFT_ARROW_CLICK = "com.tokopedia.notification.ACTION_LEFT_ARROW_CLICK";
         String ACTION_CAROUSEL_IMAGE_CLICK = "com.tokopedia.notification.ACTION_CAROUSEL_IMAGE_CLICK";
+        String ACTION_CAROUSEL_MAIN_CLICK = "com.tokopedia.notification.action_carousel_main";
+        String ACTION_CAROUSEL_NOTIFICATION_DISMISS = "com.tokopedia.notification.action_carousel_dismiss";
         String ACTION_GRID_CLICK = "com.tokopedia.notification.GRID_CLICK";
-        String ACTION_PRODUCT_CLICK = "com.tokopedia.notification.PRODUCT_CLICK";
+
+        String ACTION_PRODUCT_NOTIFICATION_DISMISS = "com.tokopedia.notification.product_notification_dismiss ";
+        String ACTION_PRODUCT_CLICK = "com.tokopedia.notification.product_click";
+        String ACTION_PRODUCT_COLLAPSED_CLICK = "com.tokopedia.notification.product_collapsed_click";
+        String ACTION_PRODUCT_CAROUSEL_LEFT_CLICK = "com.tokopedia.notification.product_carousel_left_click";
+        String ACTION_PRODUCT_CAROUSEL_RIGHT_CLICK = "com.tokopedia.notification.product_carousel_right_click";
+
     }
 
     interface CouponCodeExtra {

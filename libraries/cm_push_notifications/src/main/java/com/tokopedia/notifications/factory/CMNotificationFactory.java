@@ -133,12 +133,12 @@ public class CMNotificationFactory {
             model.setCarouselIndex(data.getInt(CMConstant.PayloadKeys.CAROUSEL_INDEX, 0));
         }
         model.setVibration(data.getBoolean(CMConstant.PayloadKeys.VIBRATE, true));
-        model.setUpdateExisting(data.getBoolean(CMConstant.PayloadKeys.UPDATE, false));
+        model.setUpdateExisting(data.getBoolean(CMConstant.PayloadKeys.UPDATE_NOTIFICATION, false));
 
         List<Grid> gridList = getGridList(data);
         if (gridList != null)
             model.setGridList(gridList);
-        model.setProductInfo(getProductInfo(data));
+        model.setProductInfoList(getProductInfoList(data));
         model.setSubText(data.getString(CMConstant.PayloadKeys.SUB_TEXT));
         model.setVisualCollapsedImageUrl(data.getString(CMConstant.PayloadKeys.VISUAL_COLLAPSED_IMAGE));
         model.setVisualExpandedImageUrl(data.getString(CMConstant.PayloadKeys.VISUAL_EXPANDED_IMAGE));
@@ -204,13 +204,14 @@ public class CMNotificationFactory {
     }
 
 
-    private static ProductInfo getProductInfo(Bundle bundle){
-        String productInfoStr = bundle.getString(CMConstant.PayloadKeys.PRODUCT_INFO);
-        if (TextUtils.isEmpty(productInfoStr)) {
+    private static ArrayList<ProductInfo> getProductInfoList(Bundle bundle){
+        String productInfoListStr = bundle.getString(CMConstant.PayloadKeys.PRODUCT_INFO_LIST);
+        if (TextUtils.isEmpty(productInfoListStr)) {
             return null;
         }
         try {
-            return new Gson().fromJson(productInfoStr, ProductInfo.class);
+            Type listType = new TypeToken<ArrayList<ProductInfo>>() {}.getType();
+            return new Gson().fromJson(productInfoListStr, listType);
         } catch (Exception e) {
             Log.e(TAG, "CM-getProductInfo", e);
         }
@@ -223,8 +224,7 @@ public class CMNotificationFactory {
             return null;
         }
         try {
-            Type listType = new TypeToken<ArrayList<Grid>>() {
-            }.getType();
+            Type listType = new TypeToken<ArrayList<Grid>>() {}.getType();
             return new Gson().fromJson(persistentData, listType);
         } catch (Exception e) {
             Log.e(TAG, "CM-getGridList", e);

@@ -1,11 +1,11 @@
 package com.tokopedia.notifications.factory
 
 import android.app.Notification
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.Build
-import android.os.Parcelable
+import android.graphics.Bitmap
 import android.text.TextUtils
 import android.view.View
 import android.widget.RemoteViews
@@ -16,6 +16,11 @@ import com.tokopedia.notifications.common.CarouselUtilities
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.notifications.model.Carousel
 import com.tokopedia.notifications.receiver.CMBroadcastReceiver
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlin.coroutines.CoroutineContext
 
 /**
  * @author lalit.singh
@@ -24,72 +29,150 @@ class CarouselNotification internal constructor(context: Context, baseNotificati
     : BaseNotification(context, baseNotificationModel) {
 
     override fun createNotification(): Notification? {
+        if (baseNotificationModel.carouselList.isEmpty())
+            return null
+
         val builder = builder
         builder.setContentTitle(baseNotificationModel.title)
-        builder.setSmallIcon(drawableIcon)
-        builder.setDefaults(0)
-        builder.setAutoCancel(false)
+                .setSmallIcon(drawableIcon)
+                .setDefaults(0)
+                .setAutoCancel(false)
+                .setContentTitle(CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.title))
+                .setContentText(CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.message))
+                .setContentIntent(getMainPendingIntent())
 
-        builder.setContentTitle(CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.title))
-        builder.setContentText(CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.message))
+        if (!baseNotificationModel.isUpdateExisting)
+            CarouselUtilities.downloadCarouselImages(context, baseNotificationModel.carouselList)
 
-        if (baseNotificationModel.carouselList.size == 0)
-            return null
-        baseNotificationModel.appLink?.let {
-            builder.setContentIntent(createMainPendingIntent(baseNotificationModel, requestCode))
-        }
-
-        CarouselUtilities.downloadImages(context, baseNotificationModel.carouselList)
-
-        val remoteViews = getCarouselRemoteView(baseNotificationModel.carouselList, baseNotificationModel.carouselIndex)
-
-        remoteViews.setOnClickPendingIntent(R.id.carouselImageMain,
-                getImagePendingIntent(baseNotificationModel.carouselList[baseNotificationModel.carouselIndex], requestCode))
-
+        val remoteViews = getCarouselRemoteView()
         builder.setCustomBigContentView(remoteViews)
-        builder.setDeleteIntent(createDismissPendingIntent(baseNotificationModel.notificationId, requestCode))
+        builder.setDeleteIntent(getDismissPendingIntent())
         return builder.build()
     }
 
-    /*
-     * create RemoteViews using BaseNotificationModel
-     *
-     * */
-    private fun getCarouselRemoteView(carouselList: List<Carousel>, index: Int): RemoteViews {
+    private fun getCarouselRemoteView(): RemoteViews {
         val remoteView = RemoteViews(context.packageName, R.layout.carousel_layout)
-        val carousel = carouselList[index]
-        carousel.index = index
-        if (!TextUtils.isEmpty(carousel.text)) {
+        val currentCarouselItem = baseNotificationModel.carouselList[baseNotificationModel.carouselIndex]
+
+        if (!TextUtils.isEmpty(currentCarouselItem.text)) {
             remoteView.setViewVisibility(R.id.tvTitle, View.VISIBLE)
-            remoteView.setTextViewText(R.id.tvTitle, CMNotificationUtils.getSpannedTextFromStr(carousel.text))
+            remoteView.setTextViewText(R.id.tvTitle, CMNotificationUtils.getSpannedTextFromStr(currentCarouselItem.text))
         } else {
             remoteView.setViewVisibility(R.id.tvTitle, View.GONE)
         }
-        when (index) {
-            0 -> {
-                remoteView.setViewVisibility(R.id.ivArrowLeft, View.GONE)
-                remoteView.setViewVisibility(R.id.ivArrowRight, View.VISIBLE)
-                remoteView.setOnClickPendingIntent(R.id.ivArrowRight, getArrowClickPendingIntent(carouselList, requestCode, CMConstant.ReceiverAction.ACTION_RIGHT_ARROW_CLICK, index))
 
+        val productImage: Bitmap? = CarouselUtilities.loadImageFromStorage(currentCarouselItem.filePath)
+        productImage?.let {
+            remoteView.setImageViewBitmap(R.id.iv_banner, productImage)
+        } ?: remoteView.setImageViewBitmap(R.id.iv_banner, bitmapLargeIcon)
+
+
+        addLeftCarouselButton(remoteView)
+        addRightCarouselButton(remoteView)
+
+        when {
+            baseNotificationModel.carouselList.size == 1 -> {
+                remoteView.setViewVisibility(R.id.ivArrowLeft, View.INVISIBLE)
+                remoteView.setViewVisibility(R.id.ivArrowRight, View.INVISIBLE)
             }
-            carouselList.size - 1 -> {
+            baseNotificationModel.carouselIndex == 0 -> {
+                remoteView.setViewVisibility(R.id.ivArrowLeft, View.INVISIBLE)
+                remoteView.setViewVisibility(R.id.ivArrowRight, View.VISIBLE)
+            }
+            baseNotificationModel.carouselIndex == (baseNotificationModel.carouselList.size - 1) -> {
                 remoteView.setViewVisibility(R.id.ivArrowLeft, View.VISIBLE)
-                remoteView.setViewVisibility(R.id.ivArrowRight, View.GONE)
-                remoteView.setOnClickPendingIntent(R.id.ivArrowLeft, getArrowClickPendingIntent(carouselList, requestCode, CMConstant.ReceiverAction.ACTION_LEFT_ARROW_CLICK, index))
-
+                remoteView.setViewVisibility(R.id.ivArrowRight, View.INVISIBLE)
             }
             else -> {
                 remoteView.setViewVisibility(R.id.ivArrowLeft, View.VISIBLE)
                 remoteView.setViewVisibility(R.id.ivArrowRight, View.VISIBLE)
-                remoteView.setOnClickPendingIntent(R.id.ivArrowRight, getArrowClickPendingIntent(carouselList, requestCode, CMConstant.ReceiverAction.ACTION_RIGHT_ARROW_CLICK, index))
-                remoteView.setOnClickPendingIntent(R.id.ivArrowLeft, getArrowClickPendingIntent(carouselList, requestCode, CMConstant.ReceiverAction.ACTION_LEFT_ARROW_CLICK, index))
-
             }
         }
-        remoteView.setImageViewBitmap(R.id.iv_banner, CarouselUtilities.carouselLoadImageFromStorage(carousel.filePath))
+        remoteView.setOnClickPendingIntent(R.id.carouselImageMain, getItemPendingIntent(currentCarouselItem))
         return remoteView
     }
 
+    private fun getMainPendingIntent(): PendingIntent {
+        val intent = getBaseBroadcastIntent()
+        intent.action = CMConstant.ReceiverAction.ACTION_CAROUSEL_MAIN_CLICK
+        return getPendingIntent(intent)
+    }
+
+    private fun getDismissPendingIntent(): PendingIntent {
+        val intent = getBaseBroadcastIntent()
+        intent.action = CMConstant.ReceiverAction.ACTION_CAROUSEL_NOTIFICATION_DISMISS
+        return getPendingIntent(intent)
+    }
+
+    private fun getItemPendingIntent(carousel: Carousel): PendingIntent {
+        val intent = getBaseBroadcastIntent()
+        intent.action = CMConstant.ReceiverAction.ACTION_CAROUSEL_IMAGE_CLICK
+        intent.putExtra(CMConstant.ReceiverExtraData.CAROUSEL_DATA_ITEM, carousel)
+        return getPendingIntent(intent)
+    }
+
+    private fun addRightCarouselButton(remoteView: RemoteViews) {
+        val intent = getBaseBroadcastIntent()
+        intent.action = CMConstant.ReceiverAction.ACTION_RIGHT_ARROW_CLICK
+        remoteView.setOnClickPendingIntent(R.id.ivArrowRight, getPendingIntent(intent))
+    }
+
+    private fun addLeftCarouselButton(remoteView: RemoteViews) {
+        val intent = getBaseBroadcastIntent()
+        intent.action = CMConstant.ReceiverAction.ACTION_LEFT_ARROW_CLICK
+        remoteView.setOnClickPendingIntent(R.id.ivArrowLeft, getPendingIntent(intent))
+    }
+
+    private fun getBaseBroadcastIntent(): Intent = Intent(context, CMBroadcastReceiver::class.java).apply {
+        putExtra(CMConstant.EXTRA_BASE_MODEL, baseNotificationModel)
+        putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.notificationId)
+        putExtra(CMConstant.EXTRA_CAMPAIGN_ID, baseNotificationModel.campaignId)
+    }
+
+    private fun getPendingIntent(intent: Intent): PendingIntent =
+            PendingIntent.getBroadcast(
+                    context,
+                    requestCode,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+            )
+
+    companion object : CoroutineScope {
+        override val coroutineContext: CoroutineContext
+            get() = Dispatchers.Main
+
+        fun onLeftIconClick(context: Context, baseNotificationModel: BaseNotificationModel) {
+            baseNotificationModel.carouselIndex = baseNotificationModel.carouselIndex - 1
+            postNotification(context, baseNotificationModel)
+        }
+
+        fun onRightIconClick(context: Context, baseNotificationModel: BaseNotificationModel) {
+            baseNotificationModel.carouselIndex = baseNotificationModel.carouselIndex + 1
+            postNotification(context, baseNotificationModel)
+        }
+
+        private fun postNotification(context: Context, baseNotificationModel: BaseNotificationModel) {
+            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            launch {
+                try {
+                    baseNotificationModel.isUpdateExisting = true
+                    val notification: Notification? = withContext(Dispatchers.IO) {
+                        CarouselNotification(context, baseNotificationModel).createNotification()
+                    }
+                    if (notification == null) {
+                        notificationManager.cancel(baseNotificationModel.notificationId)
+                    } else
+                        notificationManager.notify(baseNotificationModel.notificationId, notification)
+                } catch (e: Throwable) {
+                    notificationManager.cancel(baseNotificationModel.notificationId)
+                }
+            }
+        }
+    }
+}
+
+
+/*
     private fun getArrowClickPendingIntent(carouselList: List<Carousel>, requestCode: Int, action: String, index: Int): PendingIntent {
         val resultPendingIntent: PendingIntent
         val intent = Intent(context, CMBroadcastReceiver::class.java)
@@ -99,7 +182,7 @@ class CarouselNotification internal constructor(context: Context, baseNotificati
         intent.putExtra(CMConstant.EXTRA_CAMPAIGN_ID, baseNotificationModel.campaignId)
 
         intent.putExtra(CMConstant.PayloadKeys.CHANNEL, baseNotificationModel.channelName)
-        intent.putExtra(CMConstant.PayloadKeys.UPDATE, true)
+        intent.putExtra(CMConstant.PayloadKeys.UPDATE_NOTIFICATION, true)
         intent.putExtra(CMConstant.PayloadKeys.CAROUSEL_INDEX, index)
 
         intent.putExtra(CMConstant.PayloadKeys.CAMPAIGN_ID, baseNotificationModel.campaignId)
@@ -177,4 +260,4 @@ class CarouselNotification internal constructor(context: Context, baseNotificati
         }
         return resultPendingIntent
     }
-}
+*/
