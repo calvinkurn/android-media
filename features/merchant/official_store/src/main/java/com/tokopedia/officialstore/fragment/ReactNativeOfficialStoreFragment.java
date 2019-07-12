@@ -41,7 +41,8 @@ public class ReactNativeOfficialStoreFragment extends ReactNativeFragment
             // set background color of react root view
             reactRootView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
         }
-        return super.onCreateView(inflater, container, savedInstanceState);
+        super.onCreateView(inflater, container, savedInstanceState);
+        return inflater.inflate(R.layout.fragment_dummy, container, false);
     }
 
     @Override
