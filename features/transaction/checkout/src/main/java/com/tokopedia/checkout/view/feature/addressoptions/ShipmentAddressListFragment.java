@@ -67,7 +67,6 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     public static final String ARGUMENT_ORIGIN_DIRECTION_TYPE = "ARGUMENT_ORIGIN_DIRECTION_TYPE";
     public static final int ORIGIN_DIRECTION_TYPE_FROM_MULTIPLE_ADDRESS_FORM = 1;
     public static final int ORIGIN_DIRECTION_TYPE_DEFAULT = 0;
-    public final int ADD_NEW_ADDRESS_CREATED = 3333;
     public final String EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW";
 
     private RecyclerView mRvRecipientAddressList;
@@ -440,27 +439,35 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                 case LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT:
                     onSearchReset();
                     break;
-                case ADD_NEW_ADDRESS_CREATED:
-                    RecipientAddressModel newRecipientAddAddressModel;
-                    if (data != null && data.hasExtra(EXTRA_ADDRESS_NEW)) {
-                        SaveAddressDataModel saveAddressDataModel = data.getParcelableExtra(EXTRA_ADDRESS_NEW);
-                        newRecipientAddAddressModel = new RecipientAddressModel();
-                        newRecipientAddAddressModel.setAddressName(saveAddressDataModel.getAddressName());
-                        newRecipientAddAddressModel.setDestinationDistrictId(String.valueOf(saveAddressDataModel.getDistrictId()));
-                        newRecipientAddAddressModel.setCityId(String.valueOf(saveAddressDataModel.getCityId()));
-                        newRecipientAddAddressModel.setProvinceId(String.valueOf(saveAddressDataModel.getProvinceId()));
-                        newRecipientAddAddressModel.setRecipientName(saveAddressDataModel.getReceiverName());
-                        newRecipientAddAddressModel.setRecipientPhoneNumber(saveAddressDataModel.getPhone());
-                        newRecipientAddAddressModel.setStreet(saveAddressDataModel.getFormattedAddress());
-                        newRecipientAddAddressModel.setPostalCode(saveAddressDataModel.getPostalCode());
-                    }
+                case LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED:
+                    setRecipientAddressModel(data);
+                    onSearchReset();
+                    break;
+                case LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY:
+                    RecipientAddressModel newRecipientAddAddressModelFromEmpty = setRecipientAddressModel(data);
+                    mCurrentAddress = newRecipientAddAddressModelFromEmpty;
                     onSearchReset();
                     break;
                 default:
                     break;
             }
         }
+    }
 
+    private RecipientAddressModel setRecipientAddressModel(Intent data) {
+        RecipientAddressModel newRecipientAddAddressModel = new RecipientAddressModel();
+        if (data != null && data.hasExtra(EXTRA_ADDRESS_NEW)) {
+            SaveAddressDataModel saveAddressDataModel = data.getParcelableExtra(EXTRA_ADDRESS_NEW);
+            newRecipientAddAddressModel.setAddressName(saveAddressDataModel.getAddressName());
+            newRecipientAddAddressModel.setDestinationDistrictId(String.valueOf(saveAddressDataModel.getDistrictId()));
+            newRecipientAddAddressModel.setCityId(String.valueOf(saveAddressDataModel.getCityId()));
+            newRecipientAddAddressModel.setProvinceId(String.valueOf(saveAddressDataModel.getProvinceId()));
+            newRecipientAddAddressModel.setRecipientName(saveAddressDataModel.getReceiverName());
+            newRecipientAddAddressModel.setRecipientPhoneNumber(saveAddressDataModel.getPhone());
+            newRecipientAddAddressModel.setStreet(saveAddressDataModel.getFormattedAddress());
+            newRecipientAddAddressModel.setPostalCode(saveAddressDataModel.getPostalCode());
+        }
+        return newRecipientAddAddressModel;
     }
 
     @Override
@@ -469,36 +476,38 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
             if (originDirectionType == ORIGIN_DIRECTION_TYPE_FROM_MULTIPLE_ADDRESS_FORM) {
                 checkoutAnalyticsMultipleAddress.eventClickAddressCartMultipleAddressClickPlusFromMultiple();
 
-                if (isAddNewAddressEnabled()) {
+                // TODO : remove on PR!!!!
+                // if (isAddNewAddressEnabled()) {
                     startActivityForResult(PinpointMapActivity.newInstance(getActivity(),
                             AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
                             false, 0, false, false, null,
-                            false), ADD_NEW_ADDRESS_CREATED);
+                            false), LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED);
 
-                } else {
+                /*} else {
                     startActivityForResult(
                             AddAddressActivity.createInstanceAddAddressFromCheckoutMultipleAddressForm(
                                     getActivity(), token
                             ), LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);
-                }
+                }*/
 
             } else {
                 checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickTambahAlamatBaruFromGantiAlamat();
                 checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickTambahFromAlamatPengiriman();
 
-                if (isAddNewAddressEnabled()) {
+                // TODO : remove on PR!!!!
+                // if (isAddNewAddressEnabled()) {
                     startActivityForResult(PinpointMapActivity.newInstance(getActivity(),
                             AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
                             false, 0, false, false, null,
-                            false), ADD_NEW_ADDRESS_CREATED);
+                            false), LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED);
 
-                } else {
+                /*} else {
                     startActivityForResult(
                             AddAddressActivity.createInstanceAddAddressFromCheckoutSingleAddressForm(
                                     getActivity(), token
                             ), LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE
                     );
-                }
+                }*/
             }
 
 
