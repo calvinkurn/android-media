@@ -1,5 +1,6 @@
 package com.tokopedia.navigation.presentation.activity;
 
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -12,6 +13,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Build;
@@ -28,6 +30,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -132,8 +135,6 @@ public class MainParentActivity extends BaseActivity implements
     private List<Fragment> fragmentList;
     private Notification notification;
     private Fragment currentFragment;
-    private Fragment cartFragment;
-    private Fragment emptyCartFragment;
     private boolean isUserFirstTimeLogin = false;
     private boolean doubleTapExit = false;
     private BroadcastReceiver newFeedClickedReceiver;
@@ -143,6 +144,13 @@ public class MainParentActivity extends BaseActivity implements
     private Handler handler = new Handler();
     private CoordinatorLayout fragmentContainer;
     private boolean isFirstNavigationImpression = false;
+
+    // animate icon OS
+    private MenuItem osMenu;
+    private LottieDrawable lottieOsDrawable;
+    private float OS_STATE_SELECTED = 1f;
+    private float OS_STATE_UNSELECTED = 0f;
+    private float OS_STATE_ANIMATED = 0.7f;
 
     @DeepLink({ApplinkConst.HOME, ApplinkConst.HOME_CATEGORY})
     public static Intent getApplinkIntent(Context context, Bundle bundle) {
@@ -279,6 +287,8 @@ public class MainParentActivity extends BaseActivity implements
         checkApplinkCouponCode(getIntent());
 
         initNewFeedClickReceiver();
+
+        initOsMenu();
     }
 
     private void handleAppLinkBottomNavigation(Bundle savedInstanceState) {
@@ -367,9 +377,15 @@ public class MainParentActivity extends BaseActivity implements
             LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
         }
 
-        if (position == OS_MENU && !isNewOfficialStoreEnabled()) {
-            startActivity(((GlobalNavRouter) getApplication()).getOldOfficialStore(this));
-            return false;
+        if (position == OS_MENU) {
+            if (!isNewOfficialStoreEnabled()) {
+                startActivity(((GlobalNavRouter) getApplication()).getOldOfficialStore(this));
+                return false;
+            } else {
+                setOsIconProgress(OS_STATE_SELECTED);
+            }
+        } else {
+            setOsIconProgress(OS_STATE_UNSELECTED);
         }
 
         if ((position == CART_MENU || position == ACCOUNT_MENU ) && !presenter.isUserLogin()) {
@@ -499,24 +515,11 @@ public class MainParentActivity extends BaseActivity implements
 
         registerNewFeedClickedReceiver();
 
-        showAnimationOfficialStoreMenu();
+        playAnimOsIcon();
 
         if (!((BaseMainApplication) getApplication()).checkAppSignature()) {
             finish();
         }
-    }
-
-    private void showAnimationOfficialStoreMenu() {
-        Menu menu = bottomNavigation.getMenu();
-        MenuItem osMenu = menu.findItem(R.id.menu_os);
-
-        LottieDrawable osDrawable = new LottieDrawable();
-        LottieTask<LottieComposition> task = LottieCompositionFactory.fromRawRes(this, R.raw.icon_os);
-        task.addListener(result -> {
-            osDrawable.setComposition(result);
-            osDrawable.playAnimation();
-        });
-        osMenu.setIcon(osDrawable);
     }
 
     @Override
@@ -556,7 +559,7 @@ public class MainParentActivity extends BaseActivity implements
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST, false)));
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getFeedPlusFragment(getIntent().getExtras()));
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getOfficialStoreFragment(getIntent().getExtras()));
-            cartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getCartFragment(null);
+            Fragment cartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getCartFragment(null);
             fragmentList.add(cartFragment);
             fragmentList.add(AccountHomeFragment.newInstance());
         }
@@ -941,5 +944,52 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public void onRefreshNotification() {
         presenter.getNotificationData();
+    }
+
+
+    /**
+     *
+     * Load animated icon by Lottie
+     * duration anim: 2s
+     * 1s = 60 frames
+     * + 20 frames
+     *
+     * 0f - 0.7f state default - animation - default
+     * 1 state selected
+     */
+    private void initOsMenu() {
+        Menu menu = bottomNavigation.getMenu();
+        osMenu = menu.findItem(R.id.menu_os);
+
+        lottieOsDrawable = new LottieDrawable();
+        LottieTask<LottieComposition> task = LottieCompositionFactory.fromRawRes(this, R.raw.icon_os);
+        task.addListener(result -> {
+            lottieOsDrawable.setComposition(result);
+        });
+
+        bottomNavigation.setIconMarginTop(OS_MENU, 0);
+        bottomNavigation.setIconSizeAt(OS_MENU, 55, 55);
+        osMenu.setIcon(lottieOsDrawable);
+    }
+
+    private void playAnimOsIcon() {
+        if (osMenu == null) {
+            initOsMenu();
+        }
+
+        if (osMenu.isChecked()) {
+            lottieOsDrawable.setMaxProgress(OS_STATE_SELECTED);
+        } else {
+            lottieOsDrawable.setMaxProgress(OS_STATE_ANIMATED);
+        }
+        lottieOsDrawable.playAnimation();
+    }
+
+    private void setOsIconProgress(float progress) {
+        if (osMenu == null) {
+            initOsMenu();
+        }
+        lottieOsDrawable.setMaxProgress(OS_STATE_SELECTED); // important! to reset maxProgress
+        lottieOsDrawable.setProgress(progress);
     }
 }
