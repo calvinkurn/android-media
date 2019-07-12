@@ -184,6 +184,7 @@ public interface ConstantTransactionAnalytics {
         String VALIDATION_ERROR_ALAMAT_PADA_TAMBAH_ADDRESS = "validation error alamat pada + address";
 
         String VIEW_TICKER_PRICE_DECREASE = "view ticker price decrease";
+        String VIEW_TICKER_STOCK_DECREASE_AND_ALREADY_ATC_BY_OTHER_USER = "view ticker stock decrease and already atc by other user";
 
         //PHASE 2
         String CLICK_PILIH_ALAMAT_LAIN = "click pilih alamat lain";
