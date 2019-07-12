@@ -93,4 +93,9 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/cotp
     @JvmField
     val COTP = "$INTERNAL_GLOBAL/cotp"
+
+    // ChangePhoneNumberWarningActivity
+    // tokopedia-android-internal://global/change-phone-number
+    @JvmField
+    val CHANGE_PHONE_NUMBER = "$INTERNAL_GLOBAL/change-phone-number"
 }
