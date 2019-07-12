@@ -29,6 +29,7 @@ import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
+import com.tokopedia.chat_common.view.adapter.viewholder.factory.ChatMenuFactory
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.design.component.Dialog
@@ -48,9 +49,8 @@ import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactoryImpl
-import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
-import com.tokopedia.topchat.chatroom.view.customview.TopChatViewState
-import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.TopChatChatMenuFactory
+import com.tokopedia.topchat.chatroom.view.customview.*
 import com.tokopedia.topchat.chatroom.view.listener.*
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.chatroom.view.viewmodel.ProductPreview
@@ -206,7 +206,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         }
     }
 
-
     private fun onSuccessGetExistingChatFirstTime(): (ChatroomViewModel) -> Unit {
         return {
             updateViewData(it)
@@ -271,7 +270,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         getViewState().showErrorWebSocket(b)
     }
 
-
     private fun onSuccessGetPreviousChat(): (ChatroomViewModel) -> Unit {
         return {
             renderList(it.listChat, it.canLoadMore)
@@ -305,7 +303,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun getUserSession(): UserSessionInterface {
         return session
     }
-
 
     private fun getViewState(): TopChatViewStateImpl {
         return viewState as TopChatViewStateImpl
@@ -376,7 +373,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     this,
                     this,
                     this,
-                    onAttachProductClicked(),
+                    this,
                     (activity as BaseChatToolbarActivity).getToolbar(),
                     analytics
             )
@@ -419,14 +416,12 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     }
 
-    private fun onAttachProductClicked(): () -> Unit {
-        return {
-            val intent = TopChatInternalRouter.Companion.getAttachProductIntent(activity as Activity,
-                    shopId.toString(),
-                    "",
-                    getUserSession().shopId == shopId.toString())
-            startActivityForResult(intent, TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE)
-        }
+    private fun onAttachProductClicked() {
+        val intent = TopChatInternalRouter.Companion.getAttachProductIntent(activity as Activity,
+                shopId.toString(),
+                "",
+                getUserSession().shopId == shopId.toString())
+        startActivityForResult(intent, TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE)
     }
 
     override fun clearEditText() {
@@ -491,7 +486,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun onStartTyping() {
         presenter.startTyping()
-        getViewState().minimizeTools()
     }
 
     override fun onStopTyping() {
@@ -844,5 +838,19 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         if (seenAttachedProduct.add(element.productId)) {
             analytics.eventSeenProductAttachment(element)
         }
+    }
+
+    override fun onClickAttachProduct() {
+        analytics.eventAttachProduct()
+        onAttachProductClicked()
+    }
+
+    override fun onClickImagePicker() {
+        analytics.eventPickImage()
+        pickImageToUpload()
+    }
+
+    override fun createChatMenuFactory(): ChatMenuFactory {
+        return TopChatChatMenuFactory()
     }
 }

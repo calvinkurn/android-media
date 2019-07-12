@@ -110,10 +110,6 @@ dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
-    kapt  rootProject.ext.dbDependencies.dbFlowProcessor
-    implementation rootProject.ext.dbDependencies.dbFlowCore
-    implementation rootProject.ext.dbDependencies.dbFlow
-
     implementation rootProject.ext.debugToolsDependencies.stetho
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
