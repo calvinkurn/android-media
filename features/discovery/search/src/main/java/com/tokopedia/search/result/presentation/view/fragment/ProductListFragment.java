@@ -27,6 +27,7 @@ import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.data.DataValue;
 import com.tokopedia.discovery.common.data.Filter;
 import com.tokopedia.discovery.common.data.Option;
+import com.tokopedia.discovery.common.manager.AdultManager;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
@@ -72,14 +73,11 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
-import com.tokopedia.discovery.common.manager.AdultManager;
 
 import org.json.JSONArray;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -466,24 +464,28 @@ public class ProductListFragment
 
     @Override
     public void onGlobalNavWidgetClicked(GlobalNavViewModel.Item item, String keyword) {
-        if (!TextUtils.isEmpty(item.getApplink())) {
-            RouteManager.route(getActivity(), item.getApplink());
-        } else {
-            RouteManager.route(getActivity(), item.getUrl());
-        }
+        redirectionStartActivity(item.getApplink(), item.getUrl());
+
         SearchTracking.trackEventClickGlobalNavWidgetItem(item.getGlobalNavItemAsObjectDataLayer(),
                 keyword, item.getName(), item.getApplink());
     }
 
     @Override
     public void onGlobalNavWidgetClickSeeAll(GlobalNavViewModel model) {
-        if (!TextUtils.isEmpty(model.getSeeAllApplink())) {
-            RouteManager.route(getActivity(), model.getSeeAllApplink());
-        } else {
-            RouteManager.route(getActivity(), model.getSeeAllUrl());
-        }
+        redirectionStartActivity(model.getSeeAllApplink(), model.getSeeAllUrl());
+
         SearchTracking.eventUserClickSeeAllGlobalNavWidget(model.getKeyword(),
                 model.getTitle(), model.getSeeAllApplink());
+    }
+
+    private void redirectionStartActivity(String applink, String url) {
+        if(redirectionListener == null) return;
+
+        if (!TextUtils.isEmpty(applink)) {
+            redirectionListener.startActivityWithApplink(applink);
+        } else {
+            redirectionListener.startActivityWithUrl(url);
+        }
     }
 
     @Override
