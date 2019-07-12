@@ -14,7 +14,7 @@
         android:layout_below="@+id/see_more_btn"
         android:layout_marginBottom="@dimen/dp_4"
         android:lines="1"
-        android:text="Details"
+        android:text="@string/digital_title_details"
         app:typographyType="body_2"
         app:typographyWeight="bold" />
 
@@ -35,7 +35,7 @@ Bonus 1GB Kuota Midnight (00:01-6:59) + 1GB Kuota Midnight RAFI + 3GB Videomax" 
         android:layout_below="@+id/see_more_btn"
         android:layout_marginBottom="@dimen/dp_4"
         android:lines="1"
-        android:text="Harga"
+        android:text="@string/digital_title_price"
         app:typographyType="body_2"
         app:typographyWeight="bold" />
 
