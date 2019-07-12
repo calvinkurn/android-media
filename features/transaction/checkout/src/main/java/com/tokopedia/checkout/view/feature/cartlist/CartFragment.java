@@ -1117,7 +1117,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void stopCartPerformanceTrace() {
-        if (!isTraceCartStopped) {
+        if (cartPerformanceMonitoring != null && !isTraceCartStopped) {
             cartPerformanceMonitoring.stopTrace();
             isTraceCartStopped = true;
         }
@@ -1125,7 +1125,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void stopAllCartPerformanceTrace() {
-        if (!isTraceCartAllStopped && wishLists != null && recentViewList != null && recommendationList != null) {
+        if (cartAllPerformanceMonitoring != null && !isTraceCartAllStopped && wishLists != null && recentViewList != null && recommendationList != null) {
             cartAllPerformanceMonitoring.stopTrace();
             isTraceCartAllStopped = true;
         }
