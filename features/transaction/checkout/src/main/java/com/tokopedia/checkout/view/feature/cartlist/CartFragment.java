@@ -940,6 +940,11 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
+    public void onCartItemShowTickerPriceDecrease(String productId) {
+        cartPageAnalytics.eventViewTickerPriceDecrease(productId);
+    }
+
+    @Override
     public void onCartItemShowTickerStockDecreaseAndAlreadyAtcByOtherUser(String productId) {
         cartPageAnalytics.eventViewTickerStockDecreaseAndAlreadyAtcByOtherUser(productId);
     }

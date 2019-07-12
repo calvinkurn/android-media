@@ -142,6 +142,8 @@ public class CartItemData implements Parcelable {
         private String productName;
         private int minimalQtyOrder;
         private int invenageValue;
+        private int priceChangesState;
+        private String priceChangesDesc;
         private int productInvenageByUserInCart;
         private int productInvenageByUserLastStockLessThan;
         private String productInvenageByUserText;
@@ -398,6 +400,18 @@ public class CartItemData implements Parcelable {
 
         public void setInvenageValue(int invenageValue) {
             this.invenageValue = invenageValue;
+        }
+
+        public int getPriceChangesState() { return priceChangesState; }
+
+        public void setPriceChangesState(int priceChangesState) {
+            this.priceChangesState = priceChangesState;
+        }
+
+        public String getPriceChangesDesc() { return priceChangesDesc; }
+
+        public void setPriceChangesDesc(String priceChangesDesc) {
+            this.priceChangesDesc = priceChangesDesc;
         }
 
         public int getProductInvenageByUserInCart() {

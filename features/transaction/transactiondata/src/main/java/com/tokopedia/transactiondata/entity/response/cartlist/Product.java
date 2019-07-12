@@ -94,6 +94,9 @@ public class Product {
     @SerializedName("product_switch_invenage")
     @Expose
     private int productSwitchInvenage;
+    @SerializedName("price_changes")
+    @Expose
+    private PriceChanges priceChanges;
     @SerializedName("product_invenage_total")
     @Expose
     private ProductInvenageTotal productInvenageTotal = new ProductInvenageTotal();
@@ -233,13 +236,15 @@ public class Product {
         return productInvenageValue;
     }
 
+    public int getProductSwitchInvenage() {
+        return productSwitchInvenage;
+    }
+
     public ProductInvenageTotal getProductInvenageTotal() {
         return productInvenageTotal;
     }
 
-    public int getProductSwitchInvenage() {
-        return productSwitchInvenage;
-    }
+    public PriceChanges getPriceChanges() { return priceChanges; }
 
     public int getProductPriceCurrency() {
         return productPriceCurrency;

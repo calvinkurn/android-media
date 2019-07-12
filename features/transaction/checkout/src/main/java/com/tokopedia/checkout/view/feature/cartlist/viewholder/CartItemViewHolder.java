@@ -91,6 +91,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
     private ImageView imgWishlist;
     private TextView tvEllipsize;
     private View divider;
+    private TextView tvPriceChanges;
     private TextView tvInvenageText;
     private RelativeLayout rlInvenageText;
 
@@ -138,6 +139,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         this.imgWishlist = itemView.findViewById(R.id.img_wishlist);
         this.tvEllipsize = itemView.findViewById(R.id.tv_ellipsize);
         this.divider = itemView.findViewById(R.id.holder_item_cart_divider);
+        this.tvPriceChanges = itemView.findViewById(R.id.tv_price_changes);
         this.tvInvenageText = itemView.findViewById(R.id.tv_invenage_text);
         this.rlInvenageText = itemView.findViewById(R.id.rl_invenage_text);
 
@@ -359,6 +361,16 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         });
 
         divider.setVisibility((getLayoutPosition() == dataSize - 1) ? View.GONE : View.VISIBLE);
+
+        String priceChangesText = data.getCartItemData().getOriginData().getPriceChangesDesc();
+        int priceChangesState = data.getCartItemData().getOriginData().getPriceChangesState();
+        if (priceChangesText.isEmpty() || priceChangesState >= 0) {
+            tvPriceChanges.setVisibility(View.GONE);
+        } else {
+            tvPriceChanges.setVisibility(View.VISIBLE);
+            tvPriceChanges.setText(priceChangesText);
+            actionListener.onCartItemShowTickerPriceDecrease(data.getCartItemData().getOriginData().getProductId());
+        }
 
         if (!data.getCartItemData().getOriginData().getProductInvenageByUserText().isEmpty()) {
             this.rlInvenageText.setVisibility(View.VISIBLE);
