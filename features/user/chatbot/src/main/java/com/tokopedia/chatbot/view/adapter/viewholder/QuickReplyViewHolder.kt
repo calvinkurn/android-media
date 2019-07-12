@@ -40,7 +40,7 @@ class QuickReplyViewHolder(itemView: View,
     private fun setMessage(element: QuickReplyListViewModel) {
         if (!element.message.isEmpty()) {
             message.text = MethodChecker.fromHtml(element.message)
-            if (message.text.toString().length > 170) {
+            if (message.text.toString().length > MESSAGE_LENGTH) {
 
                 mesageLayout.setBackgroundDrawable(ContextCompat.getDrawable(itemView.context, com.tokopedia.chatbot.R.drawable.left_bubble_with_stroke))
                 mesageBottom.visibility = View.VISIBLE
@@ -61,6 +61,8 @@ class QuickReplyViewHolder(itemView: View,
     }
 
     companion object {
+
+        const val MESSAGE_LENGTH= 170
 
         val LAYOUT = R.layout.quick_reply_chat_layout
     }

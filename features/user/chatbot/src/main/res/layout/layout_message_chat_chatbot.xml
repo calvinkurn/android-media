@@ -27,7 +27,7 @@
         android:layout_alignEnd="@+id/main"
         android:layout_alignRight="@+id/main"
         android:layout_below="@+id/date"
-        android:layout_marginLeft="3dp"
+        android:layout_marginLeft="@dimen/dp_3"
         android:fontFamily="sans-serif"
         android:lineSpacingExtra="3sp"
         android:textColor="@color/black_38"

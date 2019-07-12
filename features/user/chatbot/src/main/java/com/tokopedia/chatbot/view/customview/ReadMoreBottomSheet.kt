@@ -22,7 +22,7 @@ class ReadMoreBottomSheet() : BottomSheetDialogFragment() {
         val view = View.inflate(context, R.layout.read_more_bottom_sheet, null)
         val tvMsg= view.findViewById<TextView>(R.id.tv_msg)
         val ivClose = view.findViewById<ImageView>(R.id.iv_close_icon)
-        tvMsg.setText(getArguments()?.get("msg").toString())
+        tvMsg.setText(getArguments()?.get(MESSAGE).toString())
         ivClose.setOnClickListener { this.dismiss() }
 
         val linearLayout = view.findViewById<LinearLayout>(R.id.read_more_bottom_sheet)
@@ -41,10 +41,12 @@ class ReadMoreBottomSheet() : BottomSheetDialogFragment() {
 
     companion object {
 
+        const val MESSAGE = "msg"
+
         @JvmStatic
         fun createInstance(message: String): ReadMoreBottomSheet {
             val args = Bundle()
-            args.putString("msg", message)
+            args.putString(MESSAGE, message)
             val readMoreBottomSheet = ReadMoreBottomSheet()
             readMoreBottomSheet.arguments=args
             return readMoreBottomSheet
