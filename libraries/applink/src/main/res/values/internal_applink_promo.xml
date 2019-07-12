@@ -7,4 +7,5 @@
         Otherwise, do not put "/"
     -->
     <string name="path_promo_list_digital" translatable="false">/list/digital</string>
+    <string name="path_promo_detail_digital" translatable="false">/detail/digital</string>
 </resources>
