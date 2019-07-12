@@ -130,6 +130,7 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
         webView.setWebChromeClient(new MyWebViewClient());
         progressBar.setIndeterminate(true);
         WebSettings webSettings = webView.getSettings();
+        webSettings.setDomStorageEnabled(true);
         webSettings.setJavaScriptEnabled(true);
         webSettings.setBuiltInZoomControls(true);
         webSettings.setAppCacheEnabled(false);
