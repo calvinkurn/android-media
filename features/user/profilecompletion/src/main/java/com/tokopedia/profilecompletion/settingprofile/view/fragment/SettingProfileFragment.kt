@@ -339,8 +339,8 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     true,
                     View.OnClickListener {
                         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_PHONE_NUMBER)
-                        intent.putExtras(ApplinkConstInternalGlobal.PARAM_PHONE, profileCompletionData.phone)
-                        intent.putExtras(ApplinkConstInternalGlobal.PARAM_EMAIL, profileCompletionData.email)
+                        intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, profileCompletionData.phone)
+                        intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, profileCompletionData.email)
                         startActivityForResult(intent, REQUEST_CODE_EDIT_PHONE)
                     }
             )
