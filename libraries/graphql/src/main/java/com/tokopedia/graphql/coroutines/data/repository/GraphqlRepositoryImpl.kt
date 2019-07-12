@@ -18,6 +18,7 @@ import kotlin.Exception
 class GraphqlRepositoryImpl(private val graphqlCloudDataStore: GraphqlCloudDataStore,
                             private val graphqlCacheDataStore: GraphqlCacheDataStore): GraphqlRepository {
 
+
     override suspend fun getReseponse(requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy)
                 :GraphqlResponse {
         return when(cacheStrategy.type){
