@@ -20,6 +20,7 @@ open class BaseChatTypeFactoryImpl(private val imageAnnouncementListener: ImageA
                                    private val productAttachmentListener : ProductAttachmentListener) :
         BaseAdapterTypeFactory(),
         BaseChatTypeFactory {
+
     override fun type(productAttachmentViewModel: ProductAttachmentViewModel): Int {
         return ProductAttachmentViewHolder.LAYOUT;
     }
@@ -42,6 +43,10 @@ open class BaseChatTypeFactoryImpl(private val imageAnnouncementListener: ImageA
 
     override fun type(fallbackAttachmentViewModel: FallbackAttachmentViewModel): Int {
         return FallbackAttachmentViewHolder.LAYOUT
+    }
+
+    override fun type(attachInvoiceSentViewModel: AttachInvoiceSentViewModel): Int {
+        return -1
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {

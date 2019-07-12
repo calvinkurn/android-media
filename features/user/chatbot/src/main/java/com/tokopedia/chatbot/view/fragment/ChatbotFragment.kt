@@ -27,7 +27,6 @@ import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.chat_common.view.listener.TypingListener
-import com.tokopedia.chatbot.ChatbotRouter
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
 import com.tokopedia.chatbot.attachinvoice.view.resultmodel.SelectedInvoice
@@ -37,7 +36,7 @@ import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.di.DaggerChatbotComponent
-import com.tokopedia.chatbot.domain.pojo.InvoiceLinkPojo
+import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
 import com.tokopedia.chatbot.view.adapter.ChatbotAdapter

@@ -1,15 +1,13 @@
-package com.tokopedia.chatbot.data.invoice
+package com.tokopedia.chat_common.data
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.chat_common.data.AttachmentType
-import com.tokopedia.chat_common.data.SendableViewModel
-import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactory
+import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
 
 /**
  * Created by Hendri on 27/03/18.
  */
 
-class AttachInvoiceSentViewModel : SendableViewModel, Visitable<ChatbotTypeFactory> {
+class AttachInvoiceSentViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> {
 
     var imageUrl: String? = null
     var description: String? = null
@@ -114,7 +112,7 @@ class AttachInvoiceSentViewModel : SendableViewModel, Visitable<ChatbotTypeFacto
         this.totalAmount = totalAmount
     }
 
-    override fun type(typeFactory: ChatbotTypeFactory): Int {
+    override fun type(typeFactory: BaseChatTypeFactory): Int {
         return typeFactory.type(this)
     }
 

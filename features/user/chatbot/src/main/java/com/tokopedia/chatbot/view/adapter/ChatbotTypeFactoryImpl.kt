@@ -2,6 +2,7 @@ package com.tokopedia.chatbot.view.adapter
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactoryImpl
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
@@ -9,7 +10,6 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadLis
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionViewModel
-import com.tokopedia.chatbot.data.invoice.AttachInvoiceSentViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.view.adapter.viewholder.*

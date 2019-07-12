@@ -4,6 +4,7 @@ import android.text.TextUtils
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_CHAT_BALLOON_ACTION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_CHAT_RATING
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_INVOICES_SELECTION
@@ -12,15 +13,14 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY_SEND
 import com.tokopedia.chat_common.domain.mapper.WebsocketMessageMapper
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
+import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceSentPojo
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionViewModel
-import com.tokopedia.chatbot.data.invoice.AttachInvoiceSentViewModel
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
-import com.tokopedia.chatbot.domain.pojo.InvoiceSentPojo
 import com.tokopedia.chatbot.domain.pojo.invoicelist.websocket.InvoicesSelectionPojo
 import com.tokopedia.chatbot.domain.pojo.chatactionballoon.ChatActionBalloonSelectionAttachmentAttributes
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyAttachmentAttributes

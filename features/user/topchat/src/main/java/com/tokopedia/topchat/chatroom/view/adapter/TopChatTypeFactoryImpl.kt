@@ -2,6 +2,7 @@ package com.tokopedia.topchat.chatroom.view.adapter
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactoryImpl
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
@@ -43,6 +44,10 @@ open class TopChatTypeFactoryImpl(
 
     override fun type(voucherViewModel: TopChatVoucherViewModel): Int {
         return TopChatVoucherViewHolder.LAYOUT
+    }
+
+    override fun type(attachInvoiceSentViewModel: AttachInvoiceSentViewModel): Int {
+        return -1
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
