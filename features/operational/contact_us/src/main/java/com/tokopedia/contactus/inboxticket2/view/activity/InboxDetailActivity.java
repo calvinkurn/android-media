@@ -136,7 +136,7 @@ public class InboxDetailActivity extends InboxBaseActivity
                     getResources().getColor(R.color.orange_500), textSizeLabel));
             rvMessageList.setPadding(0, 0, 0,
                     getResources().getDimensionPixelSize(R.dimen.text_toolbar_height_collapsed));
-            if(commentsItems.get(commentsItems.size()-1).getCreatedBy().getRole().equalsIgnoreCase("agent")){
+            if(commentsItems.get(commentsItems.size()-1).getCreatedBy().getRole().equalsIgnoreCase("agent")&&commentsItems.get(commentsItems.size()-1).getRating().equalsIgnoreCase("")){
                 viewReplyButton.setVisibility(View.VISIBLE);
                 rateCommentID = commentsItems.get(commentsItems.size() - 1).getId();
             }
@@ -665,12 +665,7 @@ public class InboxDetailActivity extends InboxBaseActivity
         } else {
             String rating = "";
             if (view.getId() == R.id.tv_rply_button) {
-                for (int i = detailAdapter.getItemCount() - 1; i >= 0; i--) {
-                    rating = commentsItems.get(i).getRating();
-                    if (rating != null && (rating.equals("101") || rating.equals("102"))) {
-                        break;
-                    }
-                }
+                rating = commentsItems.get(commentsItems.size()-1).getRating();
                 if (rating != null && (rating.equals("101") || rating.equals("102"))) {
                     viewReplyButton.setVisibility(View.GONE);
                     textToolbar.setVisibility(View.VISIBLE);
@@ -684,29 +679,6 @@ public class InboxDetailActivity extends InboxBaseActivity
             }
         }
     }
-
-//    @Override
-//    public void onClick(View view) {
-//        String rating="";
-//        if (view.getId() == R.id.tv_rply_button) {
-//            for(int i =detailAdapter.getItemCount()-1; i>=0;i--){
-//                rating = commentsItems.get(i).getRating();
-//                if(rating!=null && (rating.equals("101")|| rating.equals("102"))){
-//                    break;
-//                }
-//            }
-//            if(rating!=null && (rating.equals("101")|| rating.equals("102"))){
-//                viewReplyButton.setVisibility(View.GONE);
-//                textToolbar.setVisibility(View.VISIBLE);
-//            }else{
-//                helpFullBottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
-//                helpFullBottomSheet.setCustomContentView( new HelpFullBottomSheet(InboxDetailActivity.this,this),"", true);
-//                helpFullBottomSheet.show();
-//                viewReplyButton.setVisibility(View.GONE);
-//                textToolbar.setVisibility(View.VISIBLE);
-//            }
-//        }
-//    }
 
         @Override
         public void onClick (String agreed){
