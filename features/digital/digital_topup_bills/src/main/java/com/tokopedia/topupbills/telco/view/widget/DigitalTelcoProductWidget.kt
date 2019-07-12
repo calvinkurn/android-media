@@ -58,7 +58,9 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
         }
         adapter.notifyDataSetChanged()
         recyclerView.layoutManager?.run {
-            this.scrollToPosition(selectedProductPos)
+            if (selectedProductPos > 0) {
+                this.scrollToPosition(selectedProductPos)
+            }
         }
         getVisibleProductItemsToUsersTracking(productList)
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {

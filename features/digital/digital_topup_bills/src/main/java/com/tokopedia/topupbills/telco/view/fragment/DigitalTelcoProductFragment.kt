@@ -141,7 +141,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
     fun onSuccessProductList(productData: TelcoProductComponentData) {
         emptyStateProductView.visibility = View.GONE
         telcoTelcoProductView.visibility = View.VISIBLE
-        var position = 0
+        var position = -1
         if (selectedProductId.isNotEmpty()) {
             for (i in 0 until productData.rechargeProductData.productDataCollections.size) {
                 if (productData.rechargeProductData.productDataCollections[i].product.id == selectedProductId) {

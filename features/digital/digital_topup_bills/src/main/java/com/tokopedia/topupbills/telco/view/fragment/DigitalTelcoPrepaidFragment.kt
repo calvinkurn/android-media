@@ -94,6 +94,11 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             it?.run {
                 productSelected = it
                 buyWidget.setTotalPrice(it.product.attributes.price)
+                it.product.attributes.productPromo?.run {
+                    if (this.newPrice.isNotEmpty()) {
+                        buyWidget.setTotalPrice(this.newPrice)
+                    }
+                }
 
                 checkoutPassData = DigitalCheckoutPassData.Builder()
                         .action(DigitalCheckoutPassData.DEFAULT_ACTION)
@@ -293,7 +298,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         setTabFromProductSelected()
         setCustomFont()
 
-        viewPager.addOnPageChangeListener(object: ViewPager.OnPageChangeListener {
+        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(p0: Int) {
 
             }
