@@ -312,6 +312,18 @@ class ProfileAnalytics @Inject constructor(private val userSessionInterface: Use
         )
     }
 
+    fun eventImpressionOtherPost(profileId: String, postUserId: String) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            getDefaultData(
+                Screen.PROFILE,
+                Event.EVENT_CLICK_SOCIAL_COMMERCE,
+                Category.USER_PROFILE_SOCIALCOMMERCE,
+                Action.IMPRESSION_OTHER_POST,
+                "$profileId - $postUserId"
+            )
+        )
+    }
+
     fun eventClickTag(isOwner: Boolean, hasMultipleContent: Boolean, activityId: String,
                       activityType: String, position: String) {
         val screen = if (isOwner) Screen.MY_PROFILE else Screen.PROFILE

@@ -12,7 +12,7 @@ import com.tokopedia.profile.view.viewmodel.OtherRelatedProfileViewModel
 import kotlinx.android.synthetic.main.item_other_profile_post.view.*
 
 class OtherRelatedProfileViewHolder(val v: View,
-                                    val onOtherProfilePostItemClick: ((applink: String) -> Unit)) : AbstractViewHolder<OtherRelatedProfileViewModel>(v) {
+                                    val onOtherProfilePostItemClick: ((applink: String, authorId: String) -> Unit)) : AbstractViewHolder<OtherRelatedProfileViewModel>(v) {
 
     companion object {
         @LayoutRes
@@ -40,7 +40,7 @@ class OtherRelatedProfileViewHolder(val v: View,
             setOnClickListener {
                 val applink = content.body.media[0].applink
                 if (applink.isNotEmpty()) {
-                    onOtherProfilePostItemClick.invoke(applink)
+                    onOtherProfilePostItemClick.invoke(applink, content.tracking.authorID)
                 }
             }
         }

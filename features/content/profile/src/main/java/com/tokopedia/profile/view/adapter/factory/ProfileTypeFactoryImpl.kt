@@ -50,7 +50,7 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
                              private val gridItemListener: GridPostAdapter.GridItemListener,
                              private val videoViewListener: VideoViewHolder.VideoViewListener,
                              private val onEmptyItemClickedListener: EmptyAffiliateViewHolder.OnEmptyItemClickedListener,
-                             private val onOtherProfilePostItemClick: ((applink: String) -> Unit),
+                             private val onOtherProfilePostItemClick: ((applink: String, authorId:String) -> Unit),
                              private val userSession : UserSessionInterface)
 
     : BaseAdapterTypeFactory(), ProfileTypeFactory, KolPostTypeFactory, DynamicFeedTypeFactory {

@@ -385,9 +385,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun getUserSession(): UserSession = UserSession(context)
 
-    fun onOtherProfilePostItemClick(applink: String) {
+    fun onOtherProfilePostItemClick(applink: String, authorId:String) {
         RouteManager.route(context, applink)
-        //TODO hendry tracking
+        profileAnalytics.eventClickOtherPost(userId.toString(), authorId)
     }
 
     override fun onSuccessGetProfileFirstPage(element: DynamicFeedProfileViewModel, isFromLogin: Boolean) {
@@ -513,13 +513,13 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         if (feedPostRelated != null && feedPostRelated.meta.totalItems > 0) {
             visitables.add(TitleViewModel())
             feedPostRelated.data
-                .filter{it.content.body.media[0].thumbnail.isNotEmpty()}
+                .filter { it.content.body.media[0].thumbnail.isNotEmpty() }
                 .forEach {
-                visitables.add(OtherRelatedProfileViewModel(it))
-            }
+                    profileAnalytics.eventImpressionOtherPost(userId.toString(), it.content.tracking.authorID)
+                    visitables.add(OtherRelatedProfileViewModel(it))
+                }
         }
         renderList(visitables, false)
-        //TODO hendry tracking
     }
 
     fun getRelatedProfile() {
@@ -1049,9 +1049,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     internal fun hasFeed(): Boolean {
         return (adapter.list != null
             && !adapter.list.isEmpty()
-            && adapter.list.size > 1
-            && adapter.list[0] !is EmptyModel
-            && adapter.list[0] !is NoPostCardViewModel)
+            && adapter.list[0] !is NoPostCardViewModel
+            && adapter.list[0] !is EmptyModel)
     }
 
     internal fun itemIsFullScreen(): Boolean {
