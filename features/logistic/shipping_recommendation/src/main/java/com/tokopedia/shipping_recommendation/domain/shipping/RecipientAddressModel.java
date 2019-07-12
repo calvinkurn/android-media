@@ -416,9 +416,9 @@ public class RecipientAddressModel implements Parcelable {
         dest.writeByte(this.isDisableMultipleAddress ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isCornerAddress ? (byte) 1 : (byte) 0);
         dest.writeString(this.cornerId);
+        dest.writeString(this.userCornerId);
         dest.writeInt(this.partnerId);
         dest.writeString(this.partnerName);
-        dest.writeString(this.userCornerId);
         dest.writeByte(this.isHeader ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isFooter ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isTradeIn ? (byte) 1 : (byte) 0);
