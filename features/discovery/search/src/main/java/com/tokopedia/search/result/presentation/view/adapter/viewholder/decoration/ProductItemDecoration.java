@@ -107,7 +107,11 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     private int getLeftOffset(int relativePos, int totalSpanCount) {
-        return isFirstInRow(relativePos, totalSpanCount) ? spacing : getLeftOffsetNotFirstInRow();
+        return isFirstInRow(relativePos, totalSpanCount) ? getLeftOffsetFirstInRow() : getLeftOffsetNotFirstInRow();
+    }
+
+    private int getLeftOffsetFirstInRow() {
+        return spacing - horizontalCardViewOffset;
     }
 
     private int getLeftOffsetNotFirstInRow() {
@@ -123,7 +127,11 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     private int getRightOffset(int relativePos, int totalSpanCount) {
-        return isLastInRow(relativePos, totalSpanCount) ? spacing : getRightOffsetNotLastInRow();
+        return isLastInRow(relativePos, totalSpanCount) ? getRightOffsetLastInRow() : getRightOffsetNotLastInRow();
+    }
+
+    private int getRightOffsetLastInRow() {
+        return spacing - horizontalCardViewOffset;
     }
 
     private int getRightOffsetNotLastInRow() {
