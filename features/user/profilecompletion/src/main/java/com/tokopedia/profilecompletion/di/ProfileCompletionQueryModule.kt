@@ -12,6 +12,7 @@ import com.tokopedia.profilecompletion.addphone.data.AddPhonePojo
 import com.tokopedia.profilecompletion.addphone.data.CheckPhonePojo
 import com.tokopedia.profilecompletion.changegender.data.ChangeGenderPojo
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueriesConstant
+import com.tokopedia.profilecompletion.settingprofile.data.SubmitProfilePictureData
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -70,6 +71,17 @@ class ProfileCompletionQueryModule {
     @Provides
     fun provideCheckPhoneGraphQlUseCase(graphqlRepository: GraphqlRepository)
             : GraphqlUseCase<CheckPhonePojo> = GraphqlUseCase(graphqlRepository)
+
+    @ProfileCompletionScope
+    @Provides
+    @IntoMap
+    @StringKey(ProfileCompletionQueriesConstant.MUTATION_CHANGE_PICTURE)
+    fun provideRawMutationChangePicture(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_change_picture)
+
+    @Provides
+    fun provideChangePictureUseCase(graphqlRepository: GraphqlRepository)
+            : GraphqlUseCase<SubmitProfilePictureData> = GraphqlUseCase(graphqlRepository)
 
     @ProfileCompletionScope
     @Provides

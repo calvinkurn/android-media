@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.profilecompletion.addphone.data.AddPhonePojo
+import com.tokopedia.profilecompletion.addphone.data.AddPhoneResult
 import com.tokopedia.profilecompletion.addphone.data.CheckPhonePojo
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueriesConstant
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueriesConstant.PARAM_MSISDN
@@ -22,7 +23,7 @@ class AddPhoneViewModel @Inject constructor(private val addPhoneGraphQlUseCase: 
                                             private val rawQueries: Map<String, String>,
                                             val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
-    val mutateAddPhoneResponse = MutableLiveData<Result<AddPhonePojo>>()
+    val mutateAddPhoneResponse = MutableLiveData<Result<AddPhoneResult>>()
     val mutateCheckPhoneResponse = MutableLiveData<Result<CheckPhonePojo>>()
 
 
@@ -39,7 +40,7 @@ class AddPhoneViewModel @Inject constructor(private val addPhoneGraphQlUseCase: 
             addPhoneGraphQlUseCase.setGraphqlQuery(query)
 
             addPhoneGraphQlUseCase.execute(
-                    onSuccessMutateAddPhone(),
+                    onSuccessMutateAddPhone(msisdn),
                     onErrorMutateAddPhone()
             )
         }
@@ -52,13 +53,13 @@ class AddPhoneViewModel @Inject constructor(private val addPhoneGraphQlUseCase: 
         }
     }
 
-    private fun onSuccessMutateAddPhone(): (AddPhonePojo) -> Unit {
+    private fun onSuccessMutateAddPhone(msisdn: String): (AddPhonePojo) -> Unit {
        return {
            val errorMessage = it.data.errorMessage
            val isSuccess = it.data.isSuccess
 
            if (errorMessage.isBlank() && isSuccess) {
-               mutateAddPhoneResponse.value = Success(it)
+               mutateAddPhoneResponse.value = Success(AddPhoneResult(it, msisdn))
            } else if (!errorMessage.isBlank()) {
                mutateAddPhoneResponse.value = Fail(MessageErrorException(errorMessage,
                        ErrorHandlerSession.ErrorCode.WS_ERROR.toString()))

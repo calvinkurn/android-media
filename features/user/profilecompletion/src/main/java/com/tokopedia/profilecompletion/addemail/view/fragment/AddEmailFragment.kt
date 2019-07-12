@@ -10,7 +10,6 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,7 +20,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addemail.viewmodel.AddEmailViewModel
-import com.tokopedia.profilecompletion.addemail.data.AddEmailPojo
+import com.tokopedia.profilecompletion.addemail.data.AddEmailResult
 import com.tokopedia.profilecompletion.di.ProfileCompletionComponent
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.usecase.coroutines.Fail
@@ -150,12 +149,13 @@ class AddEmailFragment : BaseDaggerFragment() {
 //        }
     }
 
-    private fun onSuccessAddEmail(pojo: AddEmailPojo) {
+    private fun onSuccessAddEmail(result: AddEmailResult) {
         dismissLoading()
         activity?.run {
             val intent = Intent()
             val bundle = Bundle()
-            bundle.putInt(EXTRA_PROFILE_SCORE, pojo.data.completionScore)
+            bundle.putInt(EXTRA_PROFILE_SCORE, result.addEmailPojo.data.completionScore)
+            bundle.putString(EXTRA_EMAIL, result.email)
             intent.putExtras(bundle)
             setResult(Activity.RESULT_OK, intent)
             finish()
@@ -196,6 +196,7 @@ class AddEmailFragment : BaseDaggerFragment() {
 
     companion object {
         val EXTRA_PROFILE_SCORE = "profile_score"
+        val EXTRA_EMAIL = "email"
         val REQUEST_ADD_EMAIL_COTP = 101
         val OTP_TYPE_ADD_EMAIL = 141
 

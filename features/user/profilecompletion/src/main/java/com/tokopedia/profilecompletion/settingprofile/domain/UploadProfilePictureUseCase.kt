@@ -11,8 +11,7 @@ import javax.inject.Inject
 
 
 class UploadProfilePictureUseCase @Inject
-constructor(internal var uploadImageUseCase:  UploadImageUseCase<UploadProfileImageModel>,
-            internal var submitProfilePictureUseCase : SubmitProfilePictureUseCase)
+constructor(internal var uploadImageUseCase:  UploadImageUseCase<UploadProfileImageModel>)
     : UseCase<UploadProfileImageModel>() {
 
     override fun createObservable(requestParams: RequestParams): Observable<UploadProfileImageModel> {

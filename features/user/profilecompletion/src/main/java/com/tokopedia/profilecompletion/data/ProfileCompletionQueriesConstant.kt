@@ -5,6 +5,8 @@ object ProfileCompletionQueriesConstant {
     const val MUTATION_ADD_EMAIL = "add_email"
     const val MUTATION_ADD_PHONE = "add_phone"
     const val MUTATION_CHECK_PHONE = "check_msisdn"
+    const val MUTATION_CHANGE_PICTURE = "change_picture"
+
     const val QUERY_PROFILE_COMPLETION = "profile_completion"
 
     const val PARAM_GENDER = "gender"
@@ -12,6 +14,7 @@ object ProfileCompletionQueriesConstant {
     const val PARAM_MSISDN = "msisdn"
     const val PARAM_PHONE = "phone"
     const val PARAM_OTP_CODE = "otpCode"
+    const val PARAM_PIC_OBJ = "pic_obj"
 
 
 

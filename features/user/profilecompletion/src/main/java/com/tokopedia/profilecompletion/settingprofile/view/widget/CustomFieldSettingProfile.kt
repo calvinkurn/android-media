@@ -126,7 +126,9 @@ class CustomFieldSettingProfile: LinearLayout {
 
     fun showFilled(
         subtitle: String, value: String, showVerified: Boolean, showButton: Boolean,
-        fieldClickListener: OnClickListener){
+        fieldClickListener: OnClickListener = OnClickListener {
+
+        } ){
 
         setFieldType(FILLED_FIELD)
         setSubtitle(subtitle)

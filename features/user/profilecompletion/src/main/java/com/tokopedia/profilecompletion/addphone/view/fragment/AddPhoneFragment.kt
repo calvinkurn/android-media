@@ -10,7 +10,6 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,9 +19,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.profilecompletion.R
-import com.tokopedia.profilecompletion.addemail.view.fragment.AddEmailFragment
 import com.tokopedia.profilecompletion.addphone.viewmodel.AddPhoneViewModel
-import com.tokopedia.profilecompletion.addphone.data.AddPhonePojo
+import com.tokopedia.profilecompletion.addphone.data.AddPhoneResult
 import com.tokopedia.profilecompletion.addphone.data.CheckPhonePojo
 import com.tokopedia.profilecompletion.di.ProfileCompletionComponent
 import com.tokopedia.sessioncommon.ErrorHandlerSession
@@ -180,12 +178,13 @@ class AddPhoneFragment : BaseDaggerFragment() {
 //        }
     }
 
-    private fun onSuccessAddPhone(pojo: AddPhonePojo) {
+    private fun onSuccessAddPhone(result: AddPhoneResult) {
         dismissLoading()
         activity?.run {
             val intent = Intent()
             val bundle = Bundle()
-            bundle.putInt(EXTRA_PROFILE_SCORE, pojo.data.completionScore)
+            bundle.putInt(EXTRA_PROFILE_SCORE, result.addPhonePojo.data.completionScore)
+            bundle.putString(EXTRA_PHONE, result.phoneNumber)
             intent.putExtras(bundle)
             setResult(Activity.RESULT_OK, intent)
             finish()
@@ -229,6 +228,8 @@ class AddPhoneFragment : BaseDaggerFragment() {
 
     companion object {
         val EXTRA_PROFILE_SCORE = "profile_score"
+        val EXTRA_PHONE = "phone"
+
         val REQUEST_COTP_PHONE_VERIFICATION = 101
         val OTP_TYPE_PHONE_VERIFICATION = 11
 
