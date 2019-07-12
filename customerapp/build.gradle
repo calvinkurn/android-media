@@ -333,6 +333,7 @@ dependencies {
     implementation project(rootProject.ext.features.logout)
     implementation project(rootProject.ext.features.topAdsDashboard)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
+    implementation project(rootProject.ext.features.topAdsAutoAds)
     implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.homecredit)
     implementation project(rootProject.ext.features.instantLoan)

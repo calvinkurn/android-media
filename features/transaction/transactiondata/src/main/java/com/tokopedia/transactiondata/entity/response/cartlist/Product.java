@@ -93,6 +93,9 @@ public class Product {
     @SerializedName("product_switch_invenage")
     @Expose
     private int productSwitchInvenage;
+    @SerializedName("price_changes")
+    @Expose
+    private PriceChanges priceChanges;
     @SerializedName("currency_rate")
     @Expose
     private int currencyRate;
@@ -232,6 +235,8 @@ public class Product {
     public int getProductSwitchInvenage() {
         return productSwitchInvenage;
     }
+
+    public PriceChanges getPriceChanges() { return priceChanges; }
 
     public int getProductPriceCurrency() {
         return productPriceCurrency;
