@@ -19,13 +19,10 @@ import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.onboarding.OnboardingActivity
 import com.tokopedia.onboarding.R
 import com.tokopedia.onboarding.animation.OnboardingAnimationHelper
-import com.tokopedia.onboarding.di.DaggerOnboardingComponent
 import com.tokopedia.onboarding.listener.CustomAnimationPageTransformerDelegate
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
-import java.io.IOException
-import java.nio.charset.Charset
 import javax.inject.Inject
 
 
@@ -134,23 +131,6 @@ OnboardingFragment : BaseDaggerFragment(),
         descView.text = MethodChecker.fromHtml(getDescMsg())
 
         return defaultView
-    }
-
-    private fun loadJSONFromAsset(asset: String): String {
-        val json: String?
-        try {
-            val `is` = activity!!.assets.open(asset)
-            val size = `is`.available()
-            val buffer = ByteArray(size)
-            `is`.read(buffer)
-            `is`.close()
-            json = String(buffer, Charset.defaultCharset())
-        } catch (ex: IOException) {
-            ex.printStackTrace()
-            return ""
-        }
-
-        return json
     }
 
     private fun setAnimation(defaultView: View) {
