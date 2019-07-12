@@ -41,7 +41,22 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden" />
+            android:windowSoftInputMode="stateAlwaysHidden" >
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_content"
+                    android:pathPattern="path_edit_post_affiliate"/>
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_content"
+                    android:pathPattern="path_edit_post_shop"/>
+            </intent-filter>
+        </activity>
         <activity
             android:name=".feature.createpost.view.activity.MediaPreviewActivity"
             android:label="@string/af_title_edit"

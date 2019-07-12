@@ -37,6 +37,7 @@ import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
@@ -698,7 +699,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onMenuClick(positionInFeed: Int, postId: Int, reportable: Boolean, deletable: Boolean, editable: Boolean) {
         context?.let {
-            val menus = createBottomMenu(it, deletable, reportable, false, object : PostMenuListener {
+            val menus = createBottomMenu(it, deletable, reportable, editable, object : PostMenuListener {
                 override fun onDeleteClicked() {
                     createDeleteDialog(positionInFeed, postId).show()
                 }
@@ -708,11 +709,15 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 }
 
                 override fun onEditClick() {
-
+                    goToEditPostAffiliate(postId)
                 }
             })
             menus.show()
         }
+    }
+
+    private fun goToEditPostAffiliate(postId: Int) {
+        activity?.let { RouteManager.route(it, ApplinkConstInternalContent.AFFILIATE_EDIT, postId.toString()) }
     }
 
     override fun onCaptionClick(positionInFeed: Int, redirectUrl: String) {
