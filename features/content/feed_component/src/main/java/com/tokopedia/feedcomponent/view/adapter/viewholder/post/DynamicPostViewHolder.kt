@@ -90,7 +90,7 @@ open class DynamicPostViewHolder(v: View,
         bindTitle(element.title, element.template.cardpost.title)
         bindHeader(element.id, element.header, element.template.cardpost.header)
         bindCaption(element.caption, element.template.cardpost.body)
-        bindContentList(element.id, element.contentList, element.template.cardpost.body)
+        bindContentList(element.id, element.contentList, element.template.cardpost.body, element.feedType)
         bindPostTag(element.postTag, element.template.cardpost.body, element.feedType)
         bindFooter(element.id, element.footer, element.template.cardpost.footer, isPostTagAvailable(element.postTag))
     }
@@ -106,7 +106,7 @@ open class DynamicPostViewHolder(v: View,
             PAYLOAD_COMMENT -> bindComment(element.footer.comment)
             PAYLOAD_FOLLOW -> bindFollow(element.header.followCta)
             PAYLOAD_ANIMATE_FOOTER -> animateFooter()
-            PAYLOAD_PLAY_VIDEO -> bindContentList(element.id, element.contentList, element.template.cardpost.body)
+            PAYLOAD_PLAY_VIDEO -> bindContentList(element.id, element.contentList, element.template.cardpost.body, element.feedType)
             else -> bind(element)
         }
     }
@@ -260,12 +260,13 @@ open class DynamicPostViewHolder(v: View,
 
     private fun bindContentList(postId: Int,
                                 contentList: MutableList<BasePostViewModel>,
-                                template: TemplateBody) {
+                                template: TemplateBody,
+                                feedType: String) {
         itemView.contentLayout.shouldShowWithAction(template.media) {
             contentList.forEach { it.postId = postId }
             contentList.forEach { it.positionInFeed = adapterPosition }
 
-            adapter = PostPagerAdapter(imagePostListener, youtubePostListener, pollOptionListener, gridItemListener, videoViewListener)
+            adapter = PostPagerAdapter(imagePostListener, youtubePostListener, pollOptionListener, gridItemListener, videoViewListener, feedType)
             adapter.setList(contentList)
             itemView.contentViewPager.adapter = adapter
             itemView.contentViewPager.offscreenPageLimit = adapter.count

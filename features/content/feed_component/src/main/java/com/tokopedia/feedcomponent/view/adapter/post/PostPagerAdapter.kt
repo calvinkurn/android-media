@@ -28,7 +28,8 @@ class PostPagerAdapter(private val imagePostListener: ImagePostViewHolder.ImageP
                        private val youtubePostListener: YoutubeViewHolder.YoutubePostListener,
                        private val pollOptionListener: PollAdapter.PollOptionListener,
                        private val gridItemListener: GridPostAdapter.GridItemListener,
-                       private val videoViewListener: VideoViewHolder.VideoViewListener)
+                       private val videoViewListener: VideoViewHolder.VideoViewListener,
+                       private val feedType: String)
     : PagerAdapter() {
 
     private val itemList: MutableList<BasePostViewModel> = ArrayList()
@@ -47,7 +48,7 @@ class PostPagerAdapter(private val imagePostListener: ImagePostViewHolder.ImageP
             is PollContentViewModel -> PollViewHolder(pollOptionListener) as BasePostViewHolder<BasePostViewModel>
             is GridPostViewModel -> GridPostViewHolder(gridItemListener) as BasePostViewHolder<BasePostViewModel>
             is VideoViewModel -> VideoViewHolder(videoViewListener) as BasePostViewHolder<BasePostViewModel>
-            is MultimediaGridViewModel -> MultimediaGridViewHolder() as BasePostViewHolder<BasePostViewModel>
+            is MultimediaGridViewModel -> MultimediaGridViewHolder(feedType) as BasePostViewHolder<BasePostViewModel>
             else -> throw IllegalStateException(this.javaClass.simpleName
                     .plus(" doesn't support view model of this type: ")
                     .plus(element.javaClass.simpleName))

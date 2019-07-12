@@ -50,6 +50,10 @@ data class MediaItem(
         @Expose
         val tracking: List<Tracking> = ArrayList(),
 
+        @SerializedName("videod")
+        @Expose
+        val videos: List<Video> = ArrayList(),
+
         @SerializedName("isCanPlayVideo")
         @Expose
         var isCanPlayVideo: Boolean = false

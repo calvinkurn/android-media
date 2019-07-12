@@ -3,7 +3,6 @@ package com.tokopedia.feedcomponent.util;
 import android.graphics.Rect;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -71,7 +70,6 @@ public class FeedScrollListener {
                 item.setCanPlayVideo(false);
             }
             if (isStateChanged) {
-                Log.d("profileScroll", "video notified to played");
                 recyclerView.getAdapter().notifyItemChanged(i, DynamicPostViewHolder.PAYLOAD_PLAY_VIDEO);
             }
         }
@@ -103,7 +101,6 @@ public class FeedScrollListener {
                 item.setCanPlayVideo(false);
             }
             if (isStateChanged) {
-                Log.d("profileScroll", "video notified to be played");
                 recyclerView.getAdapter().notifyItemChanged(i, DynamicPostViewHolder.PAYLOAD_PLAY_VIDEO);
             }
         }

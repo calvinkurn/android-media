@@ -3,7 +3,6 @@ package com.tokopedia.feedcomponent.view.adapter.viewholder.post.video
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
-import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 import com.tokopedia.feedcomponent.R
@@ -19,10 +18,8 @@ import kotlinx.android.synthetic.main.item_post_video.view.*
  */
 class VideoViewHolder(private val listener: VideoViewListener) : BasePostViewHolder<VideoViewModel>() {
 
-
     override var layoutRes = R.layout.item_post_video
     var isPlaying = false
-
 
     companion object {
         const val STRING_DEFAULT_TRANSCODING = "customerTrans"
@@ -80,9 +77,7 @@ class VideoViewHolder(private val listener: VideoViewListener) : BasePostViewHol
                     itemView.ic_play.visibility = View.GONE
                     mp.setOnInfoListener(object: MediaPlayer.OnInfoListener{
                         override fun onInfo(mp: MediaPlayer?, what: Int, extra: Int): Boolean {
-                            Log.d("profileScroll", "video VH - oninfo rendering start")
                             if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
-                                Log.d("profileScroll", "video VH - oninfo rendering complete")
                                 itemView.frame_video.visibility = View.VISIBLE
                                 return true
                             }

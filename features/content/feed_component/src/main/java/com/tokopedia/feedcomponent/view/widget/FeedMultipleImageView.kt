@@ -25,6 +25,8 @@ class FeedMultipleImageView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : BaseCustomView(context, attrs, defStyleAttr) {
 
+    private val TYPE_EMPTY_NON_FEED = ""
+
     private val adapter: ImageAdapter by lazy {
         ImageAdapter(mutableListOf())
     }
@@ -54,7 +56,11 @@ class FeedMultipleImageView @JvmOverloads constructor(
     }
 
     fun bind(itemList: List<MediaItem>) {
-        adapter.updateItem(itemList)
+        bind(itemList, TYPE_EMPTY_NON_FEED)
+    }
+
+    fun bind(itemList: List<MediaItem>, feedType: String) {
+        adapter.updateItem(itemList, feedType)
         rv_media.addItemDecoration(ItemOffsetDecoration(context.resources.getDimensionPixelSize(R.dimen.dp_4), adapter.itemCount))
     }
 
@@ -65,13 +71,15 @@ class FeedMultipleImageView @JvmOverloads constructor(
     private class ImageAdapter(private var itemList: MutableList<MediaItem>,
                        var fileListener: OnFileClickListener? = null): RecyclerView.Adapter<ImageAdapter.Holder>() {
 
+        private var feedType = ""
         init {
             setHasStableIds(true)
         }
 
-        fun updateItem(itemList: List<MediaItem>){
+        fun updateItem(itemList: List<MediaItem>, feedType: String){
             this.itemList.clear()
             this.itemList.addAll(itemList)
+            this.feedType = feedType
             notifyDataSetChanged()
         }
 
@@ -84,7 +92,7 @@ class FeedMultipleImageView @JvmOverloads constructor(
         }
 
         override fun onBindViewHolder(holder: Holder, position: Int) {
-            holder.bind(itemList[position])
+            holder.bind(itemList[position], feedType)
         }
 
         override fun getItemId(position: Int): Long {
@@ -94,25 +102,27 @@ class FeedMultipleImageView @JvmOverloads constructor(
         }
 
         inner class Holder(itemView: View): RecyclerView.ViewHolder(itemView) {
-             init {
+            init {
                 itemView.setOnClickListener { fileListener?.onClickItem(itemList[adapterPosition], adapterPosition) }
-             }
+            }
 
-             fun bind(item: MediaItem) {
-                 with(itemView){
-                     val btnDeleteMargin = context.resources.getDimensionPixelSize(if (itemCount == 1) R.dimen.dp_16 else R.dimen.dp_8)
-                     val layoutParams = delete.layoutParams as LayoutParams
-                     layoutParams.setMargins(btnDeleteMargin, btnDeleteMargin, btnDeleteMargin, btnDeleteMargin)
-                     delete.layoutParams = layoutParams
+            fun bind(item: MediaItem, feedType: String) {
+                with(itemView){
+                    val btnDeleteMargin = context.resources.getDimensionPixelSize(if (itemCount == 1) R.dimen.dp_16 else R.dimen.dp_8)
+                    val layoutParams = delete.layoutParams as LayoutParams
+                    layoutParams.setMargins(btnDeleteMargin, btnDeleteMargin, btnDeleteMargin, btnDeleteMargin)
+                    delete.layoutParams = layoutParams
 
-                     ImageHandler.LoadImage(itemImageView, item.thumbnail)
-                     delete.setOnClickListener { removeItem(item, adapterPosition) }
-                     delete.visibility = if (item.isSelected) View.GONE else View.VISIBLE
-                     ic_play_vid.shouldShowWithAction(item.type == TYPE_VIDEO){}
-                 }
+                    ImageHandler.LoadImage(itemImageView, item.thumbnail)
+                    delete.setOnClickListener { removeItem(item, adapterPosition) }
+                    delete.visibility = if (item.isSelected) View.GONE else View.VISIBLE
+                    ic_play_vid.shouldShowWithAction(item.type == TYPE_VIDEO && !isSingleItemFromFeed(feedType)){}
+                }
+            }
 
-             }
-
+            fun isSingleItemFromFeed(feedType: String):Boolean {
+                return feedType.isNotEmpty() && itemList.size == 1
+            }
         }
 
         private fun removeItem(media: MediaItem, position: Int) {
@@ -124,6 +134,8 @@ class FeedMultipleImageView @JvmOverloads constructor(
         companion object{
             private const val TYPE_VIDEO = "video"
         }
+
+
 
     }
 

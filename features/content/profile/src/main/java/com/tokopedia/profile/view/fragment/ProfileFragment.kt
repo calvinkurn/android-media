@@ -18,7 +18,6 @@ import android.text.TextPaint
 import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -948,12 +947,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (dy < 0) { // going up
-                    Log.d("profileScroll", "scrollUp value : "+ dy)
                     if (adapter.dataSize > 0 && isAppBarCollapse && !isOwner && !footerOthers.isVisible) {
                         showFooterOthers()
                     }
                 } else if (dy > 0) { // going down
-                    Log.d("profileScroll", "scrollDown value :" + dy)
                     if (isAppBarCollapse && !isOwner && footerOthers.isVisible) hideFootersOthers()
                 }
             }
@@ -965,9 +962,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                             && newState == RecyclerView.SCROLL_STATE_IDLE
                             && layoutManager != null) {
                         recyclerView?.let {
-                            Log.d("profileScroll", "video prepare to played")
                             FeedScrollListener.onFeedScrolled(it, adapter.list)
-                            Log.d("profileScroll", "video played")
                         }
                     }
                 } catch (e: IndexOutOfBoundsException) {
