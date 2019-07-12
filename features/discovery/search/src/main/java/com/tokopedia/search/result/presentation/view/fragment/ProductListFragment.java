@@ -672,18 +672,10 @@ public class ProductListFragment
 
     @Override
     public void onSuccessAddWishlist(String productId) {
-        searchTracking.sendGeneralEventWithUserId(SearchEventTracking.Event.PRODUCT_VIEW,
-                SearchEventTracking.Category.SEARCH_RESULT.toLowerCase(),
-                SearchEventTracking.Action.CLICK_WISHLIST,
-                generateWishlistClickEventLabel(true));
+        searchTracking.eventSuccessAddWishlistSearchResultProduct(getQueryKey(), productId);
         adapter.updateWishlistStatus(productId, true);
         enableWishlistButton(productId);
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist));
-    }
-
-    private String generateWishlistClickEventLabel(boolean isWishlisted) {
-        String action = isWishlisted ? "add" : "remove";
-        return action + " - " + getQueryKey() + " - " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", DEFAULT_LOCALE).format(new Date());
     }
 
     @Override
@@ -694,11 +686,7 @@ public class ProductListFragment
 
     @Override
     public void onSuccessRemoveWishlist(String productId) {
-        searchTracking.sendGeneralEventWithUserId(
-                SearchEventTracking.Event.PRODUCT_VIEW,
-                SearchEventTracking.Category.SEARCH_RESULT.toLowerCase(),
-                SearchEventTracking.Action.CLICK_WISHLIST,
-                generateWishlistClickEventLabel(false));
+        searchTracking.eventSuccessRemoveWishlistSearchResultProduct(getQueryKey(), productId);
         adapter.updateWishlistStatus(productId, false);
         enableWishlistButton(productId);
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
