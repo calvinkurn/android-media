@@ -386,88 +386,6 @@ public class RecipientAddressModel implements Parcelable {
         return result;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.id);
-        dest.writeInt(this.addressStatus);
-        dest.writeString(this.addressName);
-        dest.writeString(this.provinceName);
-        dest.writeString(this.postalCode);
-        dest.writeString(this.cityName);
-        dest.writeString(this.street);
-        dest.writeString(this.countryName);
-        dest.writeString(this.recipientName);
-        dest.writeString(this.recipientPhoneNumber);
-        dest.writeString(this.destinationDistrictId);
-        dest.writeString(this.destinationDistrictName);
-        dest.writeString(this.latitude);
-        dest.writeString(this.longitude);
-        dest.writeString(this.cityId);
-        dest.writeString(this.provinceId);
-        dest.writeString(this.tokenPickup);
-        dest.writeString(this.unixTime);
-        dest.writeByte(this.selected ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.stateExtraPaddingTop ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isDisableMultipleAddress ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isCornerAddress ? (byte) 1 : (byte) 0);
-        dest.writeString(this.cornerId);
-        dest.writeString(this.userCornerId);
-        dest.writeInt(this.partnerId);
-        dest.writeString(this.partnerName);
-        dest.writeByte(this.isHeader ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isFooter ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isTradeIn ? (byte) 1 : (byte) 0);
-    }
-
-    protected RecipientAddressModel(Parcel in) {
-        this.id = in.readString();
-        this.addressStatus = in.readInt();
-        this.addressName = in.readString();
-        this.provinceName = in.readString();
-        this.postalCode = in.readString();
-        this.cityName = in.readString();
-        this.street = in.readString();
-        this.countryName = in.readString();
-        this.recipientName = in.readString();
-        this.recipientPhoneNumber = in.readString();
-        this.destinationDistrictId = in.readString();
-        this.destinationDistrictName = in.readString();
-        this.latitude = in.readString();
-        this.longitude = in.readString();
-        this.cityId = in.readString();
-        this.provinceId = in.readString();
-        this.tokenPickup = in.readString();
-        this.unixTime = in.readString();
-        this.selected = in.readByte() != 0;
-        this.stateExtraPaddingTop = in.readByte() != 0;
-        this.isDisableMultipleAddress = in.readByte() != 0;
-        this.isCornerAddress = in.readByte() != 0;
-        this.cornerId = in.readString();
-        this.userCornerId = in.readString();
-        this.partnerId = in.readInt();
-        this.partnerName = in.readString();
-        this.isHeader = in.readByte() != 0;
-        this.isFooter = in.readByte() != 0;
-        this.isTradeIn = in.readByte() != 0;
-    }
-
-    public static final Creator<RecipientAddressModel> CREATOR = new Creator<RecipientAddressModel>() {
-        @Override
-        public RecipientAddressModel createFromParcel(Parcel source) {
-            return new RecipientAddressModel(source);
-        }
-
-        @Override
-        public RecipientAddressModel[] newArray(int size) {
-            return new RecipientAddressModel[size];
-        }
-    };
-
 
     public static final class Builder {
         private String id = "";
@@ -640,4 +558,86 @@ public class RecipientAddressModel implements Parcelable {
             return new RecipientAddressModel(this);
         }
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.id);
+        dest.writeInt(this.addressStatus);
+        dest.writeString(this.addressName);
+        dest.writeString(this.provinceName);
+        dest.writeString(this.postalCode);
+        dest.writeString(this.cityName);
+        dest.writeString(this.street);
+        dest.writeString(this.countryName);
+        dest.writeString(this.recipientName);
+        dest.writeString(this.recipientPhoneNumber);
+        dest.writeString(this.destinationDistrictId);
+        dest.writeString(this.destinationDistrictName);
+        dest.writeString(this.latitude);
+        dest.writeString(this.longitude);
+        dest.writeString(this.cityId);
+        dest.writeString(this.provinceId);
+        dest.writeString(this.tokenPickup);
+        dest.writeString(this.unixTime);
+        dest.writeByte(this.selected ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.stateExtraPaddingTop ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isDisableMultipleAddress ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isCornerAddress ? (byte) 1 : (byte) 0);
+        dest.writeString(this.cornerId);
+        dest.writeString(this.userCornerId);
+        dest.writeInt(this.partnerId);
+        dest.writeString(this.partnerName);
+        dest.writeByte(this.isHeader ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isFooter ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isTradeIn ? (byte) 1 : (byte) 0);
+    }
+
+    protected RecipientAddressModel(Parcel in) {
+        this.id = in.readString();
+        this.addressStatus = in.readInt();
+        this.addressName = in.readString();
+        this.provinceName = in.readString();
+        this.postalCode = in.readString();
+        this.cityName = in.readString();
+        this.street = in.readString();
+        this.countryName = in.readString();
+        this.recipientName = in.readString();
+        this.recipientPhoneNumber = in.readString();
+        this.destinationDistrictId = in.readString();
+        this.destinationDistrictName = in.readString();
+        this.latitude = in.readString();
+        this.longitude = in.readString();
+        this.cityId = in.readString();
+        this.provinceId = in.readString();
+        this.tokenPickup = in.readString();
+        this.unixTime = in.readString();
+        this.selected = in.readByte() != 0;
+        this.stateExtraPaddingTop = in.readByte() != 0;
+        this.isDisableMultipleAddress = in.readByte() != 0;
+        this.isCornerAddress = in.readByte() != 0;
+        this.cornerId = in.readString();
+        this.userCornerId = in.readString();
+        this.partnerId = in.readInt();
+        this.partnerName = in.readString();
+        this.isHeader = in.readByte() != 0;
+        this.isFooter = in.readByte() != 0;
+        this.isTradeIn = in.readByte() != 0;
+    }
+
+    public static final Creator<RecipientAddressModel> CREATOR = new Creator<RecipientAddressModel>() {
+        @Override
+        public RecipientAddressModel createFromParcel(Parcel source) {
+            return new RecipientAddressModel(source);
+        }
+
+        @Override
+        public RecipientAddressModel[] newArray(int size) {
+            return new RecipientAddressModel[size];
+        }
+    };
 }
