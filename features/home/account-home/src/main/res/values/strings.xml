@@ -173,6 +173,8 @@
     <string name="account_home_label_cancel">Batal</string>
     <string name="title_app_review_setting">Review Aplikasi</string>
     <string name="label_wallet_activation">Aktivasi TokoCash</string>
+    <string name="title_pm_card">Pengaturan Power Merchant</string>
+    <string name="desc_pm_card">Kelola toko dengan fitur ekslusif</string>
 
 
     <string name="msg_has_no_shop">Mulai dengan Tokopedia!</string>
