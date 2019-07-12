@@ -4,6 +4,7 @@ import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.topupbills.telco.data.TelcoProductDataCollection
 import com.tokopedia.topupbills.telco.data.TelcoRecommendation
 import com.tokopedia.topupbills.telco.view.model.DigitalTrackProductTelco
+import com.tokopedia.topupbills.telco.view.model.DigitalTrackPromoTelco
 import com.tokopedia.topupbills.telco.view.model.DigitalTrackRecentTransactionTelco
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -228,7 +229,7 @@ class DigitalTopupAnalytics {
                 DataLayer.mapOf(
                         "event", DigitalTopupEventTracking.Event.PRODUCT_CLICK,
                         "eventCategory", DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
-                        "eventAction", DigitalTopupEventTracking.Action.CLICK_PRODUCT_CARD,
+                        "eventAction", DigitalTopupEventTracking.Action.CLICK_RECENT_ICON,
                         "eventLabel", "$categoryName - $position",
                         "ecommerce", DataLayer.mapOf(
                         "click", DataLayer.mapOf(
@@ -242,5 +243,35 @@ class DigitalTopupAnalytics {
                 )
                 )
         )
+    }
+
+    fun impressionEnhanceCommercePromoList(digitalTrackPromoList: List<DigitalTrackPromoTelco>) {
+        val promoList = ArrayList<Any>()
+        for (i in 0 until digitalTrackPromoList.size) {
+            val promo = digitalTrackPromoList[i]
+            promoList.add(DataLayer.mapOf(
+                    DigitalTopupEventTracking.EnhanceEccomerce.ID, promo.promoItem.id,
+                    DigitalTopupEventTracking.EnhanceEccomerce.NAME, "/deals-popular suggestion",
+                    DigitalTopupEventTracking.EnhanceEccomerce.POSITION, promo.position,
+                    DigitalTopupEventTracking.EnhanceEccomerce.CREATIVE, promo.promoItem.title,
+                    DigitalTopupEventTracking.EnhanceEccomerce.CATEGORY, "none",
+                    DigitalTopupEventTracking.EnhanceEccomerce.PROMO_ID, promo.promoItem.id,
+                    DigitalTopupEventTracking.EnhanceEccomerce.PROMO_CODE, promo.promoItem.promoCode))
+        }
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        "event", DigitalTopupEventTracking.Event.PROMO_VIEW,
+                        "eventCategory", DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
+                        "eventAction", DigitalTopupEventTracking.Action.PROMO_DIGITAL_IMPRESSION,
+                        "eventLabel", "none",
+                        "ecommerce", DataLayer.mapOf(
+                        "promoView", DataLayer.mapOf(
+                        "promotions", promoList.toArray()
+                )
+                )
+                )
+        )
+
     }
 }

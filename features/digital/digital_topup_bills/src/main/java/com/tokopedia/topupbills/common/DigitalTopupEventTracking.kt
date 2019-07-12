@@ -1,7 +1,7 @@
 package com.tokopedia.topupbills.common
 
 /**
- * @author by furqan on 13/08/18.
+ * @author by resakemal on 05/07/19.
  */
 
 interface DigitalTopupEventTracking {
@@ -44,29 +44,10 @@ interface DigitalTopupEventTracking {
         }
     }
 
-    interface Label {
-        companion object {
-            val DEFAULT_EMPTY_VALUE = ""
-            val NO_PROMO = "no promo"
-            val PROMO = "no promo"
-            val SITE = "tokopediadigital"
-            val PRODUCT = "Product - "
-            val DIGITAL = "Digital"
-        }
-    }
-
-
     interface Screen {
         companion object {
-            val DIGITAL_CATEGORY = "/digital/"
-            val DIGITAL_CHECKOUT = "/digital/checkout"
-        }
-    }
-
-    interface Misc {
-        companion object {
-            val ACTION_FIELD_STEP1 = "cart page loaded"
-            val ACTION_FIELD_STEP2 = "click payment option button"
+            val DIGITAL_TELCO_PREPAID = "/digital/pra bayar"
+            val DIGITAL_TELCO_POSTPAID = "/digital/pasca bayar"
         }
     }
 
@@ -79,6 +60,9 @@ interface DigitalTopupEventTracking {
             internal var CATEGORY = "category"
             internal var LIST = "list"
             internal var POSITION = "position"
+            internal var CREATIVE = "creative"
+            internal var PROMO_ID = "promo_id"
+            internal var PROMO_CODE = "promo_code"
         }
     }
 }

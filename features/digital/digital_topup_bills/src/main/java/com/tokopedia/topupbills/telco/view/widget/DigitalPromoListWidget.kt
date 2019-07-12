@@ -10,6 +10,7 @@ import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.digital.topupbillsproduct.adapter.DigitalPromoListAdapter
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.data.TelcoPromo
+import com.tokopedia.topupbills.telco.view.model.DigitalTrackPromoTelco
 import org.jetbrains.annotations.NotNull
 
 /**
@@ -24,6 +25,7 @@ class DigitalPromoListWidget @JvmOverloads constructor(@NotNull context: Context
     private val promoList = mutableListOf<TelcoPromo>()
     private val digitalPromoListAdapter: DigitalPromoListAdapter
     private lateinit var listener: ActionListener
+    private val digitalTrackRecentPrev = mutableListOf<DigitalTrackPromoTelco>()
 
     init {
         val view = View.inflate(context, R.layout.view_digital_component_list, this)
@@ -53,10 +55,42 @@ class DigitalPromoListWidget @JvmOverloads constructor(@NotNull context: Context
         })
         this.promoList.addAll(promoList)
         digitalPromoListAdapter.notifyDataSetChanged()
+
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    getVisibleRecentItemsToUsersTracking(promoList)
+                }
+            }
+        })
+    }
+
+    fun getVisibleRecentItemsToUsersTracking(promoList: List<TelcoPromo>) {
+        val firstPos = (recyclerView.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
+        val lastPos = (recyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
+
+
+        val digitalTrackPromoList = mutableListOf<DigitalTrackPromoTelco>()
+        for (i in firstPos..lastPos) {
+            if (firstPos >= 0 && lastPos <= promoList.size - 1) {
+                digitalTrackPromoList.add(DigitalTrackPromoTelco(promoList[i], i))
+            }
+        }
+        if (digitalTrackPromoList.size > 0 &&
+                digitalTrackPromoList.size != digitalTrackRecentPrev.size &&
+                digitalTrackPromoList != digitalTrackRecentPrev) {
+            listener.onTrackImpressionPromoList(digitalTrackPromoList)
+
+            digitalTrackRecentPrev.clear()
+            digitalTrackRecentPrev.addAll(digitalTrackPromoList)
+        }
     }
 
     interface ActionListener {
         fun onCopiedPromoCode(voucherCode: String)
+
+        fun onTrackImpressionPromoList(digitalTrackPromoList: List<DigitalTrackPromoTelco>)
 
         fun onClickItemPromo(telcoPromo: TelcoPromo)
     }

@@ -20,6 +20,7 @@ import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.network.utils.ErrorHandler.getErrorMessage
 import com.tokopedia.topupbills.R
+import com.tokopedia.topupbills.common.DigitalTopupEventTracking
 import com.tokopedia.topupbills.generateRechargeCheckoutToken
 import com.tokopedia.topupbills.telco.data.*
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
@@ -77,7 +78,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     override fun getScreenName(): String {
-        return getString(R.string.digital_track_title_prepaid)
+        return DigitalTopupEventTracking.Screen.DIGITAL_TELCO_PREPAID
     }
 
     override fun initInjector() {

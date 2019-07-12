@@ -27,6 +27,7 @@ import com.tokopedia.topupbills.covertContactUriToContactData
 import com.tokopedia.topupbills.telco.data.*
 import com.tokopedia.topupbills.telco.view.activity.DigitalSearchNumberActivity
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
+import com.tokopedia.topupbills.telco.view.model.DigitalTrackPromoTelco
 import com.tokopedia.topupbills.telco.view.model.DigitalTrackRecentTransactionTelco
 import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoCustomViewModel
 import com.tokopedia.topupbills.telco.view.viewmodel.TelcoCatalogMenuDetailViewModel
@@ -274,6 +275,10 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
                         Toaster.showNormal(this,
                                 getString(R.string.digital_voucher_code_already_copied), Snackbar.LENGTH_LONG)
                     }
+                }
+
+                override fun onTrackImpressionPromoList(digitalTrackPromoList: List<DigitalTrackPromoTelco>) {
+                    topupAnalytics.impressionEnhanceCommercePromoList(digitalTrackPromoList)
                 }
 
                 override fun onClickItemPromo(telcoPromo: TelcoPromo) {
