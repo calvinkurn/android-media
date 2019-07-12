@@ -11,6 +11,7 @@ import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.shop.common.R;
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant;
+import com.tokopedia.shop.common.constant.ShopCommonParamApiConstant;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.shop.common.data.interceptor.ShopAuthInterceptor;
 import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl;
@@ -39,11 +40,6 @@ import retrofit2.Retrofit;
 
 @Module
 public class ShopCommonModule {
-    @Provides
-    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
-        return new UserSession(context);
-    }
-
     @Provides
     public CoroutineDispatcher provideMainDispatcher() {
         return Dispatchers.getMain();
@@ -144,5 +140,16 @@ public class ShopCommonModule {
     public Retrofit provideWSRetrofit(@ShopQualifier OkHttpClient okHttpClient,
                                       Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(ShopCommonUrl.BASE_WS_URL).client(okHttpClient).build();
+    }
+
+    @Provides
+    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
+    }
+
+    @Provides
+    @Named(ShopCommonParamApiConstant.QUERY_SHOP_SCORE)
+    public String provideQueryShopScore(@ApplicationContext Context context) {
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_query_shop_score);
     }
 }

@@ -9,10 +9,9 @@ import com.tokopedia.shop.settings.basicinfo.view.fragment.ShopSettingsInfoFragm
 import com.tokopedia.shop.settings.etalase.view.fragment.ShopSettingsEtalaseAddEditFragment
 import com.tokopedia.shop.settings.etalase.view.fragment.ShopSettingsEtalaseListFragment
 import com.tokopedia.shop.settings.etalase.view.fragment.ShopSettingsEtalaseReorderFragment
+import com.tokopedia.shop.settings.notes.view.fragment.ShopSettingsNotesAddEditFragment
 import com.tokopedia.shop.settings.notes.view.fragment.ShopSettingsNotesListFragment
 import com.tokopedia.shop.settings.notes.view.fragment.ShopSettingsNotesReorderFragment
-import com.tokopedia.shop.settings.notes.view.fragment.ShopSettingsNotesAddEditFragment
-
 import dagger.Component
 
 /**

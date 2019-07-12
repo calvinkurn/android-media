@@ -98,4 +98,10 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/change-phone-number
     @JvmField
     val CHANGE_PHONE_NUMBER = "$INTERNAL_GLOBAL/change-phone-number"
+
+    // WebViewActivity (Web View in library)
+    // Solution for sellerapp that does not have AppLinkWebsiteActivity
+    // Activity can have title by putting "title=.."
+    @JvmField
+    val WEBVIEW = "$INTERNAL_GLOBAL/webview?url={url}"
 }
