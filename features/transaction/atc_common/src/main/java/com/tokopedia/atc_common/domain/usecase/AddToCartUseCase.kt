@@ -15,9 +15,7 @@ import rx.Observable
  *  - Set params
  */
 
-class AddToCartUseCase : GraphqlUseCase() {
-
-    var queryString: String = ""
+class AddToCartUseCase @Inject constructor(private val queryString: String) : GraphqlUseCase() {
 
     companion object {
         const val PARAM_PRODUCT_ID = "#productID"

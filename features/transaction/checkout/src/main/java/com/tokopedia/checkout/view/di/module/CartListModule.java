@@ -140,6 +140,18 @@ public class CartListModule {
     }
 
     @Provides
+    @Named("atcMutation")
+    String provideAddToCartMutation(@ApplicationContext Context context) {
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.mutation_add_to_cart);
+    }
+
+    @Provides
+    @CartListScope
+    com.tokopedia.atc_common.domain.usecase.AddToCartUseCase provideAddToCartUseCase(@Named("atcMutation") String mutation) {
+        return new com.tokopedia.atc_common.domain.usecase.AddToCartUseCase(mutation);
+    }
+
+    @Provides
     @CartListScope
     ICartListPresenter provideICartListPresenter(GetCartListUseCase getCartListUseCase,
                                                  DeleteCartListUseCase deleteCartListUseCase,
@@ -159,14 +171,15 @@ public class CartListModule {
                                                  GetRecentViewUseCase getRecentViewUseCase,
                                                  GetWishlistUseCase getWishlistUseCase,
                                                  GetRecommendationUseCase getRecommendationUseCase,
-                                                 AddToCartUseCase addToCartUseCase) {
+                                                 AddToCartUseCase addToCartUseCase,
+                                                 com.tokopedia.atc_common.domain.usecase.AddToCartUseCase addToCartUseCase1) {
         return new CartListPresenter(getCartListUseCase, deleteCartListUseCase,
                 updateCartUseCase, resetCartGetCartListUseCase, checkPromoStackingCodeUseCase,
                 checkPromoStackingCodeMapper, checkPromoCodeCartListUseCase, compositeSubscription,
                 cartApiRequestParamGenerator, addWishListUseCase, removeWishListUseCase,
                 updateAndReloadCartUseCase, userSessionInterface, topAdsGqlUseCase,
                 clearCacheAutoApplyStackUseCase, getRecentViewUseCase, getWishlistUseCase,
-                getRecommendationUseCase, addToCartUseCase);
+                getRecommendationUseCase, addToCartUseCase, addToCartUseCase1);
     }
 
     @Provides

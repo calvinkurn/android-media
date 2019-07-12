@@ -2,6 +2,7 @@ package com.tokopedia.checkout.view.feature.cartlist;
 
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
@@ -37,6 +38,7 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartRecommendation
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartWishlistItemHolderData;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.promocheckout.common.data.entity.request.CurrentApplyCode;
 import com.tokopedia.promocheckout.common.data.entity.request.Order;
 import com.tokopedia.promocheckout.common.data.entity.request.Promo;
@@ -118,6 +120,7 @@ public class CartListPresenter implements ICartListPresenter {
     private final GetWishlistUseCase getWishlistUseCase;
     private final GetRecommendationUseCase getRecommendationUseCase;
     private final AddToCartUseCase addToCartUseCase;
+    private final com.tokopedia.atc_common.domain.usecase.AddToCartUseCase addToCartUseCase1;
     private CartListData cartListData;
     private boolean hasPerformChecklistChange;
 
@@ -140,7 +143,8 @@ public class CartListPresenter implements ICartListPresenter {
                              GetRecentViewUseCase getRecentViewUseCase,
                              GetWishlistUseCase getWishlistUseCase,
                              GetRecommendationUseCase getRecommendationUseCase,
-                             AddToCartUseCase addToCartUseCase) {
+                             AddToCartUseCase addToCartUseCase,
+                             com.tokopedia.atc_common.domain.usecase.AddToCartUseCase addToCartUseCase1) {
         this.getCartListUseCase = getCartListUseCase;
         this.compositeSubscription = compositeSubscription;
         this.deleteCartListUseCase = deleteCartListUseCase;
@@ -160,6 +164,7 @@ public class CartListPresenter implements ICartListPresenter {
         this.getWishlistUseCase = getWishlistUseCase;
         this.getRecommendationUseCase = getRecommendationUseCase;
         this.addToCartUseCase = addToCartUseCase;
+        this.addToCartUseCase1 = addToCartUseCase1;
     }
 
     @Override
@@ -193,6 +198,9 @@ public class CartListPresenter implements ICartListPresenter {
         }
         if (addToCartUseCase != null) {
             addToCartUseCase.unsubscribe();
+        }
+        if (addToCartUseCase1 != null) {
+            addToCartUseCase1.unsubscribe();
         }
         view = null;
     }
@@ -1230,21 +1238,57 @@ public class CartListPresenter implements ICartListPresenter {
             }
 
             view.showProgressLoading();
-            AddToCartRequest addToCartRequest = new AddToCartRequest.Builder()
-                    .productId(productId)
-                    .notes("")
-                    .quantity(minOrder)
-                    .shopId(shopId)
-                    .build();
+//            AddToCartRequest addToCartRequest = new AddToCartRequest.Builder()
+//                    .productId(productId)
+//                    .notes("")
+//                    .quantity(minOrder)
+//                    .shopId(shopId)
+//                    .build();
 
-            RequestParams requestParams = RequestParams.create();
-            requestParams.putObject(AddToCartUseCase.PARAM_ADD_TO_CART, addToCartRequest);
+//            RequestParams requestParams = RequestParams.create();
+//            requestParams.putObject(AddToCartUseCase.PARAM_ADD_TO_CART, addToCartRequest);
 
-            addToCartUseCase.createObservable(requestParams)
+//            addToCartUseCase.createObservable(requestParams)
+//                    .subscribeOn(Schedulers.io())
+//                    .unsubscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(new AddToCartSubscriber(view, this, productModel));
+
+            com.tokopedia.atc_common.data.model.request.AddToCartRequest addToCartRequest1 = new com.tokopedia.atc_common.data.model.request.AddToCartRequest();
+            addToCartRequest1.setProductId(productId);
+            addToCartRequest1.setShopId(shopId);
+            addToCartRequest1.setQuantity(0);
+            addToCartRequest1.setNotes("");
+//            addToCartRequest1.setLang();
+//            addToCartRequest1.setAttribution();
+//            addToCartRequest1.setListTracker();
+//            addToCartRequest1.setUcParams();
+            addToCartRequest1.setWarehouseId(0);
+            addToCartRequest1.setAtcFromExternalSource("wishlist_list");
+//            addToCartRequest1.setSCP();
+
+            addToCartUseCase1.setParams(addToCartRequest1);
+            addToCartUseCase1.createObservable(RequestParams.create())
                     .subscribeOn(Schedulers.io())
                     .unsubscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new AddToCartSubscriber(view, this, productModel));
+                    .subscribe(new Subscriber<GraphqlResponse>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Toast.makeText(view.getActivity(), "OnError", Toast.LENGTH_LONG).show();
+                        }
+
+                        @Override
+                        public void onNext(GraphqlResponse graphqlResponse) {
+                            Toast.makeText(view.getActivity(), "OnNext", Toast.LENGTH_LONG).show();
+                        }
+                    });
+
         } catch (NumberFormatException e) {
             e.printStackTrace();
             view.hideProgressLoading();

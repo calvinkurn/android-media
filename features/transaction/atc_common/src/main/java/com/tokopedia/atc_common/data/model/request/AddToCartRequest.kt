@@ -5,15 +5,15 @@ package com.tokopedia.atc_common.data.model.request
  */
 
 data class AddToCartRequest(
-        val productId: Long = 0,
-        val shopId: Int = 0,
-        val quantity: Int = 0,
-        val notes: String = "",
-        val lang: String = "",
-        val attribution: String = "",
-        val listTracker: String = "",
-        val ucParams: String = "",
-        val warehouseId: Int = 0,
-        val atcFromExternalSource: String = "",
-        val isSCP: Boolean = false
+        var productId: Long = 0,
+        var shopId: Int = 0,
+        var quantity: Int = 0,
+        var notes: String = "",
+        var lang: String = "",
+        var attribution: String = "",
+        var listTracker: String = "",
+        var ucParams: String = "",
+        var warehouseId: Int = 0,
+        var atcFromExternalSource: String = "",
+        var isSCP: Boolean = false
 )
