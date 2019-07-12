@@ -558,4 +558,22 @@ public class SearchTracking {
                 )
         );
     }
+
+    public void eventSuccessAddWishlistSearchResultProduct(String keyword, String productId) {
+        sendGeneralEventWithUserId(SearchEventTracking.Event.CLICK_WISHLIST,
+                SearchEventTracking.Category.SEARCH_RESULT.toLowerCase(),
+                SearchEventTracking.Action.ADD_WISHLIST,
+                generateWishlistClickEventLabel(keyword, productId));
+    }
+
+    public void eventSuccessRemoveWishlistSearchResultProduct(String keyword, String productId) {
+        sendGeneralEventWithUserId(SearchEventTracking.Event.CLICK_WISHLIST,
+                SearchEventTracking.Category.SEARCH_RESULT.toLowerCase(),
+                SearchEventTracking.Action.REMOVE_WISHLIST,
+                generateWishlistClickEventLabel(keyword, productId));
+    }
+
+    private String generateWishlistClickEventLabel(String keyword, String productId) {
+        return keyword + " - " + productId;
+    }
 }

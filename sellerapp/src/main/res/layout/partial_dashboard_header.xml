@@ -57,25 +57,41 @@
                     tools:text="Toko Kelontong Indonesia" />
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_8">
+                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:gravity="center_vertical">
 
-                    <com.tokopedia.gm.resource.GMImageView
-                        android:id="@+id/image_view_gm_icon"
-                        android:layout_width="@dimen/dp_16"
-                        android:layout_height="@dimen/dp_16"
-                        android:layout_gravity="center_vertical"
-                        android:visibility="gone"
-                        android:layout_marginRight="@dimen/dp_5"
-                        android:layout_marginEnd="@dimen/dp_5"
-                        tools:visibility="visible" />
+                    <android.support.v7.widget.AppCompatImageView
+                        android:id="@+id/iv_power_merchant_logo"
+                        android:layout_width="@dimen/dp_24"
+                        android:layout_height="@dimen/dp_24"
+                        tools:src="@drawable/ic_power_merchant"
+                        android:layout_marginRight="@dimen/dp_4"/>
 
                     <TextView
-                        android:id="@+id/text_view_gm_status"
-                        style="@style/TextView.Small"
-                        android:layout_gravity="center_vertical"
-                        tools:text="Regular Merchant" />
+                        android:id="@+id/tv_shop_membership_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/sp_12"
+                        android:fontFamily="sans-serif"
+                        android:textColor="#b3000000"
+                        android:lineSpacingExtra="6sp"
+                        tools:text="Regular Merchant"
+                        android:layout_marginRight="@dimen/dp_4"/>
+
+                    <TextView
+                        android:id="@+id/tv_shop_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/sp_12"
+                        android:fontFamily="sans-serif"
+                        android:textStyle="normal"
+                        android:textColor="#ae31353b"
+                        android:lineSpacingExtra="8sp"
+                        android:layout_marginLeft="@dimen/dp_4"
+                        tools:text="Aktif" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -108,12 +124,69 @@
 
     </LinearLayout>
 
-
-    <com.tokopedia.seller.shopscore.view.widget.ShopScoreWidget
-        android:id="@+id/shop_score_widget"
-        style="@style/LabelLayout"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/dp_16">
+
+        <com.tokopedia.sellerapp.dashboard.view.widget.ShopScorePMWidget
+            android:id="@+id/shop_score_widget"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:layout_height="40dp" />
+
+        <FrameLayout
+            android:id="@+id/ticker_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:layout_marginTop="@dimen/dp_8">
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/pm_ticker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/border_rectangle_yellow"
+                app:cardBackgroundColor="@color/ticker_blue"
+                app:cardPreventCornerOverlap="true"
+                app:elevation="0dp"
+                app:cardCornerRadius="@dimen/dp_8">
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/tv_ticker"
+                    style="@style/TextView.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dp_5"
+                    android:lineSpacingExtra="@dimen/sp_6"
+                    android:padding="@dimen/dp_8"
+                    tools:text="@string/pm_label_price_cashback" />
+
+                <ImageView
+                    android:id="@+id/iv_ticker_logo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_ticker_announcement_cropped" />
+
+            </android.support.v7.widget.CardView>
+        </FrameLayout>
+
+        <com.tokopedia.design.component.ButtonCompat
+            android:id="@+id/button_activate"
+            style="@style/Button.Submit.Green.Full"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="@string/upgrade_power_merchant"
+            android:textSize="14sp"
+            android:layout_marginTop="@dimen/dp_8"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -127,6 +200,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical"
+            android:clipChildren="false"
+            android:clipToPadding="false"
             android:clickable="true"
             android:foreground="?attr/selectableItemBackground">
 

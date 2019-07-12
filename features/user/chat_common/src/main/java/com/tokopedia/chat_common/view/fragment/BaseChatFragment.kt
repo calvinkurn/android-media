@@ -24,10 +24,12 @@ import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactoryImpl
+import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.BaseChatMenuViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
+import com.tokopedia.chat_common.view.fragment.BottomChatMenuFragment
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
@@ -41,7 +43,8 @@ import java.util.*
 abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     , ImageAnnouncementListener, ChatLinkHandlerListener
     , ImageUploadListener, ProductAttachmentListener, TypingListener
-    , BaseChatContract.View {
+    , BaseChatContract.View
+    , BaseChatMenuViewHolder.ChatMenuListener {
 
     open lateinit var viewState: BaseChatViewState
 
@@ -55,6 +58,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     protected var toUserId = "0"
     protected var source = ""
 
+    private val bottomChatMenu = BottomChatMenuFragment()
 
     override fun getAdapterTypeFactory(): BaseChatTypeFactoryImpl {
         return BaseChatTypeFactoryImpl(this,
@@ -71,7 +75,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewState = BaseChatViewStateImpl(view, (activity as BaseChatToolbarActivity).getToolbar(), this)
+        viewState = BaseChatViewStateImpl(view, (activity as BaseChatToolbarActivity).getToolbar(), this, this)
 
         setupViewData(arguments, savedInstanceState)
         prepareView(view)
@@ -245,4 +249,16 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     }
 
     override fun trackSeenProduct(element: ProductAttachmentViewModel) {}
+
+    override fun closeChatMenu() {
+        bottomChatMenu.dismiss()
+    }
+
+    override fun showChatMenu() {
+        bottomChatMenu.show(childFragmentManager, BottomChatMenuFragment.TAG)
+    }
+
+    override fun onClickAttachProduct() {}
+
+    override fun onClickImagePicker() {}
 }
