@@ -52,7 +52,7 @@ class TwitterAuthenticator(
 
     private fun initSubscription(): Subscription {
         return TwitterAuthenticator.callbackUrlSubject
-                .subscribeOn(Schedulers.computation())
+                .observeOn(Schedulers.io())
                 .subscribe { url ->
                     val (token, verifier) = processCallbackUrl(url)
                     if (token.isNotEmpty() && verifier.isNotEmpty()) {

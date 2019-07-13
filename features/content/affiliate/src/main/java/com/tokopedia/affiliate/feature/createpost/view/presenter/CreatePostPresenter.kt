@@ -22,7 +22,8 @@ class CreatePostPresenter @Inject constructor(
     override fun attachView(view: CreatePostContract.View?) {
         super.attachView(view)
         twitterManager.setListener(this)
-        shouldChangeShareHeaderText()
+        invalidateShareOptions()
+        postContentToOtherService(CreatePostViewModel(caption = "Jual barang"))
     }
 
     override fun detachView() {
@@ -44,6 +45,7 @@ class CreatePostPresenter @Inject constructor(
 
     override fun invalidateShareOptions() {
         view?.onGetAvailableShareTypeList(getShareOptions())
+        shouldChangeShareHeaderText()
     }
 
     private fun shouldChangeShareHeaderText() {
@@ -58,10 +60,14 @@ class CreatePostPresenter @Inject constructor(
                     invalidateShareOptions()
                 } else {
                     twitterManager.shouldPostToTwitter = true
-                    shouldChangeShareHeaderText()
                 }
             }
         }
+        else {
+            twitterManager.shouldPostToTwitter = false
+        }
+
+        shouldChangeShareHeaderText()
     }
 
     override fun postContentToOtherService(viewModel: CreatePostViewModel) {
@@ -80,17 +86,16 @@ class CreatePostPresenter @Inject constructor(
     private fun getShareOptions(): List<ShareType> {
         return listOf(
                 ShareType.Tokopedia(0),
-                ShareType.Twitter(twitterManager.isAuthenticated)
+                ShareType.Twitter(twitterManager.shouldPostToTwitter)
         )
     }
 
     private fun getShareHeaderText(): String {
-        val shareOptions = getShareOptions()
-        val shareHeaderText = shareOptions
-                .filter { it.isActivated }
+        val activeshareOptions = getShareOptions().filter { it.isActivated }
+        val shareHeaderText = activeshareOptions
                 .map { view?.getContext()?.getString(it.keyRes) }
                 .joinToString()
 
-        return if (shareOptions.size == 1) "$shareHeaderText aja" else shareHeaderText
+        return if (activeshareOptions.size == 1) "$shareHeaderText aja" else shareHeaderText
     }
 }

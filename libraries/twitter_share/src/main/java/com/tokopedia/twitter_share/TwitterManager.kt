@@ -3,6 +3,7 @@ package com.tokopedia.twitter_share
 import android.content.SharedPreferences
 import com.tokopedia.twitter_share.session.TwitterSession
 import rx.Observable
+import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import twitter4j.*
 import twitter4j.auth.AccessToken
@@ -42,7 +43,7 @@ class TwitterManager(
             .build()
 
     val isAuthenticated: Boolean
-        get() = config.oAuthAccessToken != null && config.oAuthAccessTokenSecret != null
+        get() = try { instance.oAuthAccessToken != null } catch(e: Exception) { false }
 
     var shouldPostToTwitter: Boolean
         get() = session.shouldPostToTwitter
@@ -69,9 +70,14 @@ class TwitterManager(
     }
 
     private fun verifyAuthData(requestToken: RequestToken, oAuthVerifier: String) {
-        val accessToken = getAccessToken(requestToken, oAuthVerifier)
-        saveAccessToken(accessToken)
-        listener?.onAuthenticationSuccess(accessToken.token, accessToken.tokenSecret)
+        Observable.fromCallable {
+            getAccessToken(requestToken, oAuthVerifier)
+        }.subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe { accessToken ->
+            saveAccessToken(accessToken)
+            listener?.onAuthenticationSuccess(accessToken.token, accessToken.tokenSecret)
+        }
     }
 
     private fun getRequestTokenInstance(): RequestToken {

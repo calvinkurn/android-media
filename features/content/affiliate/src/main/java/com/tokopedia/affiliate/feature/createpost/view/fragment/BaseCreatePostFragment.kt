@@ -595,7 +595,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             cacheManager.put(CreatePostViewModel.TAG, viewModel, TimeUnit.DAYS.toMillis(7))
 
             SubmitPostService.startService(it, cacheManager.id!!)
-            presenter.postContentToOtherService(viewModel)
 
             hideLoading()
 
