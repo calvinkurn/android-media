@@ -107,9 +107,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         root_view_pm.showLoading()
         hideButtonActivatedPm()
         renderInitialLayout()
-        txt_join_1.setOnClickListener {
-            setupDialogKyc()?.show()
-        }
         button_activate_root.setOnClickListener {
             powerMerchantTracking.eventUpgradeShopPm()
             if (getApprovalStatusPojo.kycStatus.kycStatusDetailPojo.status == 1) {
