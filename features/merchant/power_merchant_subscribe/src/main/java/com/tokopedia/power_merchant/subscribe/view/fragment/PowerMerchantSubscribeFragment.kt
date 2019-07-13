@@ -4,9 +4,7 @@ package com.tokopedia.power_merchant.subscribe.view.fragment
 import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.Typeface
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
@@ -109,6 +107,9 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         root_view_pm.showLoading()
         hideButtonActivatedPm()
         renderInitialLayout()
+        txt_join_1.setOnClickListener {
+            setupDialogKyc()?.show()
+        }
         button_activate_root.setOnClickListener {
             powerMerchantTracking.eventUpgradeShopPm()
             if (getApprovalStatusPojo.kycStatus.kycStatusDetailPojo.status == 1) {
@@ -207,11 +208,10 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     private fun setupDialogKyc(): Dialog? {
         context?.let {
-            val dialog = Dialog(it,android.R.style.Theme_Dialog)
+            val dialog = Dialog(it,R.style.TransparentDialog)
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
             dialog.setCancelable(false)
-            dialog.setCanceledOnTouchOutside(true);
-            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            dialog.setCanceledOnTouchOutside(true)
             dialog.setContentView(R.layout.dialog_kyc_verification)
 
             dialog.btn_submit_kyc.setOnClickListener {
@@ -229,11 +229,10 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     private fun setupDialogScore(): Dialog? {
         context?.let {
-            val dialog = Dialog(it,android.R.style.Theme_Dialog)
+            val dialog = Dialog(it,R.style.TransparentDialog)
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
             dialog.setCancelable(false)
             dialog.setCanceledOnTouchOutside(true);
-            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             dialog.setContentView(R.layout.dialog_score_verification)
 
             dialog.btn_submit_score.setOnClickListener {
