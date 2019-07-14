@@ -74,11 +74,12 @@ public class DistrictRecommendationActivity extends BaseSimpleActivity
         }
 
         Token token = getIntent().getParcelableExtra(ARGUMENT_DATA_TOKEN);
-        if (token != null) {
-            initFragment(token);
-        } else {
-            requestGetToken();
-        }
+        initFragment(token);
+//        if (token != null) {
+//            initFragment(token);
+//        } else {
+//            requestGetToken();
+//        }
 
     }
 

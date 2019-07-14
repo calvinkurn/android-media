@@ -17,6 +17,7 @@ import com.tokopedia.logisticaddaddress.data.service.MyShopAddressApi;
 import com.tokopedia.logisticaddaddress.data.source.DistrictRecommendationDataStore;
 import com.tokopedia.logisticaddaddress.data.source.ShopAddressDataSource;
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRecomToken;
+import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRecommendation;
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRequestUseCase;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.AddressViewModelMapper;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DistrictRecommendationContract;
@@ -205,9 +206,9 @@ public class DistrictRecommendationModule {
     @Provides
     @DistrictRecommendationScope
     DistrictRecommendationContract.Presenter provideDistrictRecommendationPresenter(
-            GetDistrictRequestUseCase getDistrictRequestUseCase,
+            GetDistrictRequestUseCase getDistrictRequestUseCase, GetDistrictRecommendation getDistrictRecommendation,
             AddressViewModelMapper addressViewModelMapper) {
-        return new DistrictRecommendationPresenter(getDistrictRequestUseCase, addressViewModelMapper);
+        return new DistrictRecommendationPresenter(getDistrictRequestUseCase, getDistrictRecommendation, addressViewModelMapper);
     }
 
 }

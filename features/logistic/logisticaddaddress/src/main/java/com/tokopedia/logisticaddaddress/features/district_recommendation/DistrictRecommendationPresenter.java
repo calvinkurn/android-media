@@ -1,11 +1,16 @@
 package com.tokopedia.logisticaddaddress.features.district_recommendation;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.logisticaddaddress.domain.model.AddressResponse;
+import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRecommendation;
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRequestUseCase;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
+
+import rx.Subscriber;
+import rx.functions.Action0;
 
 /**
  * Created by Irfan Khoirul on 17/11/18.
@@ -16,11 +21,14 @@ public class DistrictRecommendationPresenter extends BaseDaggerPresenter<Distric
 
     private final GetDistrictRequestUseCase getDistrictRequestUseCase;
     private final AddressViewModelMapper addressViewModelMapper;
+    private final GetDistrictRecommendation getDataNoTokenUsecase;
 
     @Inject
     public DistrictRecommendationPresenter(GetDistrictRequestUseCase getDistrictRequestUseCase,
+                                           GetDistrictRecommendation getDistrictRecommendation,
                                            AddressViewModelMapper addressViewModelMapper) {
         this.getDistrictRequestUseCase = getDistrictRequestUseCase;
+        this.getDataNoTokenUsecase = getDistrictRecommendation;
         this.addressViewModelMapper = addressViewModelMapper;
     }
 
@@ -32,7 +40,36 @@ public class DistrictRecommendationPresenter extends BaseDaggerPresenter<Distric
     @Override
     public void detachView() {
         getDistrictRequestUseCase.unsubscribe();
+        getDataNoTokenUsecase.unsubscribe();
         super.detachView();
+    }
+
+    @Override
+    public void loadData(String query, int page) {
+        getDataNoTokenUsecase.execute(query, page)
+                .doOnSubscribe(() -> getView().showLoading())
+                .doOnTerminate(() -> getView().hideLoading())
+                .subscribe(new Subscriber<AddressResponse>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        getView().showGetListError(e);
+                    }
+
+                    @Override
+                    public void onNext(AddressResponse addressResponse) {
+                        if (addressResponse.getAddresses() != null && addressResponse.getAddresses().size() > 0) {
+                            getView().renderList(addressViewModelMapper.transformToViewModel(addressResponse),
+                                    addressResponse.isNextAvailable());
+                        } else {
+                            getView().showNoResultMessage();
+                        }
+                    }
+                });
     }
 
     @Override

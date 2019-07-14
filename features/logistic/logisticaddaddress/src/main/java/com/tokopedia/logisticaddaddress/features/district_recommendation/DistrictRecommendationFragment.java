@@ -134,7 +134,9 @@ public class DistrictRecommendationFragment
                 if (token != null) {
                     presenter.loadData(searchInputView.getSearchText(), token, page);
                 } else {
-                    showNoResultMessage();
+//                    showNoResultMessage();
+                    presenter.loadData(searchInputView.getSearchText(), page);
+
                 }
             } else {
                 showMessageSection();

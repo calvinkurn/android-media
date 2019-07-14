@@ -25,6 +25,8 @@ public interface DistrictRecommendationContract {
 
     interface Presenter extends CustomerPresenter<View> {
 
+        void loadData(String query, int page);
+
         void loadData(String query, Token token, int page);
 
     }
