@@ -40,6 +40,10 @@ public class TimberWrapper {
                 DataLogConfig dataLogConfig = new Gson().fromJson(logConfigString,
                         DataLogConfig.class);
                 if(dataLogConfig != null) {
+                    LogWrapper.log(Log.ERROR, dataLogConfig.toString());
+                    LogWrapper.log(Log.ERROR, "Version Code " + GlobalConfig.VERSION_CODE + "; App min version: " + dataLogConfig.getAppVersionMin() + "; isLower: " +
+                            (dataLogConfig.isEnabled() &&
+                                    GlobalConfig.VERSION_CODE >= dataLogConfig.getAppVersionMin()));
                     if (dataLogConfig.isEnabled() &&
                             GlobalConfig.VERSION_CODE >= dataLogConfig.getAppVersionMin()) {
                         Timber.plant(new TimberReportingTree());
