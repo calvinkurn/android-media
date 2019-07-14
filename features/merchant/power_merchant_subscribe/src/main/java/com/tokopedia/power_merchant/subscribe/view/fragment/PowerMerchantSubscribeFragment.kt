@@ -206,6 +206,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     private fun setupDialogKyc(): Dialog? {
         context?.let {
             val dialog = Dialog(it)
+            dialog.window?.setBackgroundDrawableResource(R.color.transparent)
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
             dialog.setCancelable(false)
             dialog.setCanceledOnTouchOutside(true)
@@ -225,7 +226,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     private fun setupDialogScore(): Dialog? {
         context?.let {
-            val dialog = Dialog(it,R.style.TransparentDialog)
+            val dialog = Dialog(it)
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
             dialog.setCancelable(false)
             dialog.setCanceledOnTouchOutside(true);
