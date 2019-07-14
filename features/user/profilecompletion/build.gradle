@@ -58,9 +58,6 @@ dependencies {
         exclude group: 'com.android.support'
     }
 
-    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
-    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
-
     //test
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockitorCore
