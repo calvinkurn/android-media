@@ -81,9 +81,8 @@
     <string name="survei_layanan">Survei Layanan</string>
     <string name="cu_surey_layana">Survey Layana</string>
     <string name="cu_terima_kasih_atas_masukannya">Terima kasih atas masukannya</string>
-    <string name="service_priorities_officialstore_desc">Kami akan utamakan  selesaikan kendala
-terkait Official Store dengan lebih cepat. \nPelajari Selengkapnya</string>
-    <string name="tv_service_priorities_officialstore" >Layanan Priortas Official Store</string>
+    <string name="service_priorities_officialstore_desc">Kami akan utamakan &amp; selesaikan kendala terkait Official Store dengan lebih cepat. \n<b>Pelajari Selengkapnya</b></string>
+    <string name="tv_service_priorities_officialstore" >Layanan Prioritas Official Store</string>
     <string name="learn_more_link">https://www.tokopedia.com/help/article/a-0827?refid=st-1109</string>
 
 </resources>
