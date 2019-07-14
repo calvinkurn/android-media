@@ -57,6 +57,10 @@ class PermissionCheckerHelper {
         const val PERMISSION_ACCESS_FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION
         const val PERMISSION_ACCESS_COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION
         const val PERMISSION_WRITE_EXTERNAL_STORAGE = Manifest.permission.WRITE_EXTERNAL_STORAGE
+        const val PERMISSION_NFC = Manifest.permission.NFC
+        const val PERMISSION_READ_CONTACTS = Manifest.permission.READ_CONTACTS
+        const val PERMISSION_CALL_PHONE = Manifest.permission.CALL_PHONE
+        const val PERMISSION_READ_PHONE_STATE =  Manifest.permission.READ_PHONE_STATE
     }
 
     interface PermissionCheckListener {
@@ -311,7 +315,7 @@ class PermissionCheckerHelper {
                 permissionText) else rationaleText
     }
 
-    private fun hasPermission(context: Context, permissions: Array<String>): Boolean {
+    fun hasPermission(context: Context, permissions: Array<String>): Boolean {
         val iterator = permissions.iterator()
         while (iterator.hasNext()) {
             val permission = iterator.next()

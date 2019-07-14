@@ -132,12 +132,11 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.tokopedia.design.reputation.ShopReputationView
+            <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/shopReputationView"
                 android:layout_width="wrap_content"
                 android:layout_gravity="end"
-                android:layout_height="@dimen/dp_24"
-                app:srv_medal_width="@dimen/shop_page_sub_info_medal_width" />
+                android:layout_height="@dimen/dp_24"/>
 
             <TextView
                 android:id="@+id/totalPoin"

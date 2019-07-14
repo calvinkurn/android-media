@@ -4,12 +4,14 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.feature.createpost.TYPE_AFFILIATE
 import com.tokopedia.affiliate.feature.createpost.TYPE_CONTENT_SHOP
 import com.tokopedia.affiliate.feature.createpost.view.fragment.AffiliateCreatePostFragment
+import com.tokopedia.affiliate.feature.createpost.view.fragment.BaseCreatePostFragment
 import com.tokopedia.affiliate.feature.createpost.view.fragment.ContentCreatePostFragment
 import com.tokopedia.affiliate.feature.createpost.view.listener.CreatePostActivityListener
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.HeaderViewModel
@@ -20,7 +22,20 @@ import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import kotlinx.android.synthetic.main.activity_create_post.*
 
-class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener {
+class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener, BaseCreatePostFragment.OnCreatePostCallBack {
+
+    override fun invalidatePostMenu(isPostEnabled: Boolean) {
+        this.isPostEnabled = isPostEnabled
+        if (isPostEnabled){
+            action_post.isEnabled = true
+            action_post.setTextColor(ContextCompat.getColor(this, R.color.green_500))
+        } else {
+            action_post.isEnabled = false
+            action_post.setTextColor(ContextCompat.getColor(this, R.color.grey_500))
+        }
+    }
+
+    private var isPostEnabled = false
 
     companion object {
         const val PARAM_PRODUCT_ID = "product_id"
@@ -97,6 +112,14 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener {
         setContentView(layoutRes)
         backBtn.setOnClickListener {
             onBackPressed()
+        }
+        action_post.setOnClickListener {
+            if (isPostEnabled){
+                val fragment = supportFragmentManager
+                        .findFragmentByTag("TAG_FRAGMENT") as? BaseCreatePostFragment ?:
+                return@setOnClickListener
+                fragment.saveDraftAndSubmit()
+            }
         }
     }
 

@@ -12,7 +12,6 @@
         android:layout_marginLeft="@dimen/dp_10"
         android:layout_marginRight="@dimen/dp_10"
         android:drawablePadding="@dimen/dp_5"
-        android:drawableRight="@drawable/arrow_drop_down"
         android:gravity="center_vertical"
         android:textColor="@color/grey_800"
         tools:text="TEST AJA" />

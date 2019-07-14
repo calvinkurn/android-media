@@ -9,6 +9,7 @@ public interface SearchEventTracking {
         String SEARCH_RESULT = "clickSearchResult";
         String PRODUCT_VIEW = "productView";
         String PRODUCT_CLICK = "productClick";
+        String CLICK_WISHLIST = "clickWishlist";
     }
 
     interface Category {
@@ -24,6 +25,8 @@ public interface SearchEventTracking {
         String FILTER_JOURNEY = "filter journey";
         String SORT = "Sort";
         String FILTER = "Filter";
+        String SORT_BY = "sort by";
+        String EventSearchResult = "search result";
     }
 
     interface Action {
@@ -36,7 +39,7 @@ public interface SearchEventTracking {
         String CAMERA_SEARCH_RESULT = "query search by camera";
         String QUICK_FILTER = "quick filter";
         String CLICK_WISHLIST = "click - wishlist";
-        String CLICK_PRODUCT = "click-product";
+        String CLICK_PRODUCT = "click - product";
         String CLICK_SHOP = "click - shop";
         String CLICK_BAR = "click - bar - ";
         String CLICK_CHANGE_GRID = "click - ";
@@ -50,6 +53,16 @@ public interface SearchEventTracking {
         String CLICK_LIHAT_SEMUA = "click lihat semua ";
         String NO_SEARCH_RESULT = "no search result";
         String CLICK_FILTER = "click filter";
+        String SORT_BY = "sort by";
+        String EventLongPressProduct = "click - long press product";
+        String SEARCH_IMAGE_PICKER_CLICK_CAMERA = "click image search by camera";
+        String SEARCH_IMAGE_PICKER_CLICK_GALLERY = "click image search by gallery";
+        String ADD_WISHLIST = "add wishlist";
+        String REMOVE_WISHLIST = "remove wishlist";
+    }
+
+    interface Label {
+        String LabelKeywordProduct = "Keyword: %s - product id: %s";
     }
 
     interface MOENGAGE {

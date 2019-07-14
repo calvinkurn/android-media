@@ -12,9 +12,11 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent;
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
 import com.tokopedia.loginregister.registerinitial.view.fragment.RegisterInitialFragment;
+import com.tokopedia.loginregister.registerinitial.view.listener.RegisterInitialContract;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -25,7 +27,7 @@ public class RegisterInitialActivity extends BaseSimpleActivity implements HasCo
 
     @Override
     protected Fragment getNewFragment() {
-        return RegisterInitialFragment.createInstance();
+        return RegisterInitialFragment.Companion.createInstance();
     }
 
     public static Intent getCallingIntent(Context context) {
@@ -59,5 +61,16 @@ public class RegisterInitialActivity extends BaseSimpleActivity implements HasCo
     public LoginRegisterComponent getComponent() {
         return DaggerLoginRegisterComponent.builder().baseAppComponent(((BaseMainApplication)
                 getApplication()).getBaseAppComponent()).build();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().findFragmentById(R.id.parent_view) instanceof
+                RegisterInitialContract.View) {
+            ((RegisterInitialContract.View) getSupportFragmentManager().findFragmentById(R.id
+                    .parent_view)).onBackPressed();
+        }
+
+        super.onBackPressed();
     }
 }

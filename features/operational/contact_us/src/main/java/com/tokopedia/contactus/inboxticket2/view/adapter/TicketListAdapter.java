@@ -3,6 +3,7 @@ package com.tokopedia.contactus.inboxticket2.view.adapter;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -12,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.contactus.R;
-import com.tokopedia.contactus.R2;
 import com.tokopedia.contactus.inboxticket2.domain.TicketsItem;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract;
 import com.tokopedia.contactus.inboxticket2.view.fragment.ServicePrioritiesBottomSheet;
@@ -21,10 +21,6 @@ import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.OnLongClick;
 
 public class TicketListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<TicketsItem> itemList;
@@ -151,26 +147,32 @@ public class TicketListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
-    class TicketItemHolder extends RecyclerView.ViewHolder implements ServicePrioritiesBottomSheet.CloseServicePrioritiesBottomSheet{
-        @BindView(R2.id.checkbox_delete)
-        AppCompatCheckBox checkboxDelete;
-        @BindView(R2.id.tv_ticket_status)
-        TextView tvTicketStatus;
-        @BindView(R2.id.tv_ticket_title)
-        TextView tvTicketTitle;
-        @BindView(R2.id.tv_ticket_desc)
-        TextView tvTicketDesc;
-        @BindView(R2.id.tv_ticket_date)
-        TextView tvTicketDate;
-        @BindView(R2.id.tv_priority_label)
-        TextView tvPrioritylabel;
+    class TicketItemHolder extends RecyclerView.ViewHolder implements ServicePrioritiesBottomSheet.CloseServicePrioritiesBottomSheet {
+
+        private AppCompatCheckBox checkboxDelete;
+        private TextView tvTicketStatus;
+        private TextView tvTicketTitle;
+        private TextView tvTicketDesc;
+        private TextView tvTicketDate;
+        private TextView tvPrioritylabel;
+        ConstraintLayout layoutItemTicket;
         private boolean isOfficialStore = false;
         private CloseableBottomSheetDialog servicePrioritiesBottomSheet;
 
-
         TicketItemHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            findingViewsId(itemView);
+        }
+
+        private void findingViewsId(View view) {
+            checkboxDelete = view.findViewById(R.id.checkbox_delete);
+            tvTicketStatus = view.findViewById(R.id.tv_ticket_status);
+            tvTicketTitle = view.findViewById(R.id.tv_ticket_title);
+            tvTicketDesc = view.findViewById(R.id.tv_ticket_desc);
+            tvTicketDate = view.findViewById(R.id.tv_ticket_date);
+            tvPrioritylabel = view.findViewById(R.id.tv_priority_label);
+            layoutItemTicket = view.findViewById(R.id.layout_item_ticket);
+
         }
 
         void bindViewHolder(TicketsItem item) {
@@ -219,16 +221,26 @@ public class TicketListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 tvPrioritylabel.setVisibility(View.GONE);
                 isOfficialStore = false;
             }
+
+            layoutItemTicket.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    clickItem();
+                }
+            });
+
+            layoutItemTicket.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    return false;
+                }
+            });
+
+
         }
 
-        @OnClick(R2.id.layout_item_ticket)
         void clickItem() {
             mPresenter.onClickTicket(getAdapterPosition(), isOfficialStore);
-        }
-
-        @OnLongClick(R2.id.layout_item_ticket)
-        boolean onLongClick() {
-            return false;
         }
 
         @Override
@@ -241,7 +253,6 @@ public class TicketListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         private FooterViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
         }
     }
 }

@@ -98,4 +98,7 @@
     
     <color name="purple">#7a08c9</color>
 
+    <color name="grey_button_compat">#ae31353b</color>
+
+
 </resources>

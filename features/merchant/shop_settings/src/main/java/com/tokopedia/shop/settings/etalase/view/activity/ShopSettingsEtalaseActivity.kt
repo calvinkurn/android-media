@@ -15,6 +15,9 @@ import com.tokopedia.shop.settings.etalase.view.fragment.ShopSettingsEtalaseReor
 import kotlinx.android.synthetic.main.partial_toolbar_save_button.*
 import java.util.*
 
+/**
+ * Deeplink: SHOP_SETTINGS_ETALASE
+ */
 class ShopSettingsEtalaseActivity : BaseSimpleActivity(),
         ShopSettingsEtalaseListFragment.OnShopSettingsEtalaseFragmentListener,
         ShopSettingsEtalaseReorderFragment.OnShopSettingsEtalaseReorderFragmentListener {

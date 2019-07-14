@@ -30,6 +30,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicCha
 
 import java.util.Date;
 
+import timber.log.Timber;
+
 /**
  * Created by henrypriyono on 31/01/18.
  */
@@ -41,7 +43,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
     private TextView homeChannelTitle;
     private TextView seeAllButton;
     private HomeCategoryListener listener;
-    private static CountDownView countDownView;
+    private CountDownView countDownView;
     private String sprintSaleExpiredText;
     private CountDownView.CountDownListener countDownListener;
     private ItemAdapter itemAdapter;
@@ -56,7 +58,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
         this.listener = listener;
         initResources(itemView.getContext());
         findViews(itemView);
-        itemAdapter = new ItemAdapter(itemView.getContext(), listener);
+        itemAdapter = new ItemAdapter(itemView.getContext(), listener, countDownView);
         recyclerView.setAdapter(itemAdapter);
     }
 
@@ -130,18 +132,24 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
         return DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO.equals(channel.getLayout());
     }
 
+    private static boolean isOrganicLego(DynamicHomeChannel.Channels channel) {
+        return DynamicHomeChannel.Channels.LAYOUT_ORGANIC.equals(channel.getLayout());
+    }
+
     private static class ItemAdapter extends RecyclerView.Adapter<ItemViewHolder> {
 
         private final HomeCategoryListener listener;
         private final Context context;
+        private final CountDownView countDownView;
         private DynamicHomeChannel.Channels channel;
         private DynamicHomeChannel.Grid[] list;
 
 
-        public ItemAdapter(Context context, HomeCategoryListener listener) {
+        public ItemAdapter(Context context, HomeCategoryListener listener, CountDownView countDownView) {
             this.listener = listener;
             this.list = new DynamicHomeChannel.Grid[0];
             this.context = context;
+            this.countDownView = countDownView;
         }
 
         public void setChannel(DynamicHomeChannel.Channels channel) {
@@ -177,11 +185,16 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                                         channel.getEnhanceClickSprintSaleHomePage(position, countDownView.getCurrentCountDown()));
                                 String attr = channel.getHomeAttribution(position + 1, channel.getGrids()[position].getId());
                                 listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid), attr);
-                            } else if(isSprintSaleLego(channel)){
+                            } else if(isSprintSaleLego(channel)) {
                                 HomePageTracking.eventEnhancedClickSprintSaleProduct(context,
                                         channel.getEnhanceClickSprintSaleLegoHomePage(position));
                                 String attr = channel.getHomeAttribution(position + 1, channel.getGrids()[position].getId());
                                 listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid), attr);
+                            } else if(isOrganicLego(channel)){
+                                    HomePageTracking.eventEnhancedClickSprintSaleProduct(context,
+                                            channel.getEnhanceClickSprintSaleLegoHomePage(position));
+                                    String attr = channel.getHomeAttribution(position + 1, channel.getGrids()[position].getId());
+                                    listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid), attr);
                             } else  {
                                 HomePageTracking.eventEnhancedClickDynamicChannelHomePage(context,
                                         channel.getEnhanceClickDynamicChannelHomePage(grid, position + 1));

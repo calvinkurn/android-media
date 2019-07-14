@@ -17,6 +17,7 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
     private double totalWeight;
     private double shippingFee;
     private double insuranceFee;
+    private double priorityFee;
     private int totalPurchaseProtectionItem;
     private double purchaseProtectionFee;
     private double additionalFee;
@@ -113,6 +114,14 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
         return totalPurchaseProtectionItem;
     }
 
+    public double getPriorityFee() {
+        return priorityFee;
+    }
+
+    public void setPriorityFee(double priorityFee) {
+        this.priorityFee = priorityFee;
+    }
+
     public void setTotalPurchaseProtectionItem(int totalPurchaseProtectionItem) {
         this.totalPurchaseProtectionItem = totalPurchaseProtectionItem;
     }
@@ -178,6 +187,7 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
         dest.writeDouble(this.totalWeight);
         dest.writeDouble(this.shippingFee);
         dest.writeDouble(this.insuranceFee);
+        dest.writeDouble(this.priorityFee);
         dest.writeDouble(this.promoPrice);
         dest.writeString(this.promoMessage);
         dest.writeDouble(this.additionalFee);
@@ -197,6 +207,7 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
         this.totalWeight = in.readDouble();
         this.shippingFee = in.readDouble();
         this.insuranceFee = in.readDouble();
+        this.priorityFee = in.readDouble();
         this.promoPrice = in.readDouble();
         this.promoMessage = in.readString();
         this.additionalFee = in.readDouble();

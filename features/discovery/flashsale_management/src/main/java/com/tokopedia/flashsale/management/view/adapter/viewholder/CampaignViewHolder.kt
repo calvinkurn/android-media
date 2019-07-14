@@ -12,6 +12,7 @@ import com.tokopedia.flashsale.management.ekstension.loadUrl
 import com.tokopedia.flashsale.management.ekstension.setTextDrawableColor
 import com.tokopedia.flashsale.management.view.viewmodel.CampaignViewModel
 import kotlinx.android.synthetic.main.item_campaign.view.*
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 
 class CampaignViewHolder(itemView: View) : AbstractViewHolder<CampaignViewModel>(itemView) {
 
@@ -19,6 +20,7 @@ class CampaignViewHolder(itemView: View) : AbstractViewHolder<CampaignViewModel>
         itemView.tvCampaignType.text = campaignViewModel.campaignType
         itemView.tvCampaignName.text = campaignViewModel.name
         itemView.tvCampaignDate.text = campaignViewModel.campaignPeriod
+        itemView.tvCampaignDate.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(itemView.context, R.drawable.ic_time), null, null, null)
         with(itemView.tvStatus){
             text = campaignViewModel.status
             val (colorText, colorBg) = FlashSaleConstant.statusColorList[campaignViewModel.status.toLowerCase()] ?:
@@ -27,6 +29,7 @@ class CampaignViewHolder(itemView: View) : AbstractViewHolder<CampaignViewModel>
 
             val bgDrawable = background.mutate() as GradientDrawable
             bgDrawable.setColor(ContextCompat.getColor(context, colorBg))
+            setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(context, R.drawable.ic_status_dot), null, null, null)
             bgDrawable.invalidateSelf()
 
         }

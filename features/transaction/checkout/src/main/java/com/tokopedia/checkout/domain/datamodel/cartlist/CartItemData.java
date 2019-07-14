@@ -23,6 +23,7 @@ public class CartItemData implements Parcelable {
     private String errorMessageTitle;
     private String errorMessageDescription;
     private boolean isDisableAllProducts;
+    private boolean isFulfillment;
 
     public boolean isFulfillment() {
         return isFulfillment;
@@ -31,8 +32,6 @@ public class CartItemData implements Parcelable {
     public void setFulfillment(boolean fulfillment) {
         isFulfillment = fulfillment;
     }
-
-    private boolean isFulfillment;
 
     public boolean isSingleChild() {
         return singleChild;
@@ -143,6 +142,11 @@ public class CartItemData implements Parcelable {
         private String productName;
         private int minimalQtyOrder;
         private int invenageValue;
+        private int priceChangesState;
+        private String priceChangesDesc;
+        private int productInvenageByUserInCart;
+        private int productInvenageByUserLastStockLessThan;
+        private String productInvenageByUserText;
         private double pricePlan;
         private int pricePlanInt;
         private int priceCurrency;
@@ -179,6 +183,8 @@ public class CartItemData implements Parcelable {
         private String officialStoreLogoUrl;
         private String preOrderInfo;
         private String cartString;
+        private boolean checkboxState;
+        private int warehouseId;
 
         public String getTrackerAttribution() {
             return trackerAttribution;
@@ -396,6 +402,42 @@ public class CartItemData implements Parcelable {
             this.invenageValue = invenageValue;
         }
 
+        public int getPriceChangesState() { return priceChangesState; }
+
+        public void setPriceChangesState(int priceChangesState) {
+            this.priceChangesState = priceChangesState;
+        }
+
+        public String getPriceChangesDesc() { return priceChangesDesc; }
+
+        public void setPriceChangesDesc(String priceChangesDesc) {
+            this.priceChangesDesc = priceChangesDesc;
+        }
+
+        public int getProductInvenageByUserInCart() {
+            return productInvenageByUserInCart;
+        }
+
+        public void setProductInvenageByUserInCart(int productInvenageByUserInCart) {
+            this.productInvenageByUserInCart = productInvenageByUserInCart;
+        }
+
+        public int getProductInvenageByUserLastStockLessThan() {
+            return productInvenageByUserLastStockLessThan;
+        }
+
+        public void setProductInvenageByUserLastStockLessThan(int productInvenageByUserLastStockLessThan) {
+            this.productInvenageByUserLastStockLessThan = productInvenageByUserLastStockLessThan;
+        }
+
+        public String getProductInvenageByUserText() {
+            return productInvenageByUserText;
+        }
+
+        public void setProductInvenageByUserText(String productInvenageByUserText) {
+            this.productInvenageByUserText = productInvenageByUserText;
+        }
+
         public List<WholesalePrice> getWholesalePrice() {
             return wholesalePrice;
         }
@@ -516,6 +558,22 @@ public class CartItemData implements Parcelable {
             this.cartString = cartString;
         }
 
+        public boolean isCheckboxState() {
+            return checkboxState;
+        }
+
+        public void setCheckboxState(boolean checkboxState) {
+            this.checkboxState = checkboxState;
+        }
+
+        public int getWarehouseId() {
+            return warehouseId;
+        }
+
+        public void setWarehouseId(int warehouseId) {
+            this.warehouseId = warehouseId;
+        }
+
         public OriginData() {
         }
 
@@ -567,6 +625,8 @@ public class CartItemData implements Parcelable {
             dest.writeString(this.officialStoreLogoUrl);
             dest.writeString(this.preOrderInfo);
             dest.writeString(this.cartString);
+            dest.writeByte(this.checkboxState ? (byte) 1 : (byte) 0);
+            dest.writeInt(this.warehouseId);
         }
 
         protected OriginData(Parcel in) {
@@ -611,6 +671,8 @@ public class CartItemData implements Parcelable {
             this.officialStoreLogoUrl = in.readString();
             this.preOrderInfo = in.readString();
             this.cartString = in.readString();
+            this.checkboxState = in.readByte() != 0;
+            this.warehouseId = in.readInt();
         }
 
         public static final Creator<OriginData> CREATOR = new Creator<OriginData>() {

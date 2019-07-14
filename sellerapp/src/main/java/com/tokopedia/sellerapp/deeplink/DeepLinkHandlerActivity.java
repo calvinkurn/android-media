@@ -5,9 +5,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
+import com.tokopedia.applink.DeeplinkMapper;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.SessionApplinkModule;
 import com.tokopedia.applink.SessionApplinkModuleLoader;
 import com.tokopedia.chatbot.applink.ChatbotApplinkModule;
@@ -17,7 +20,6 @@ import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModuleL
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModuleLoader;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
 import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
@@ -52,6 +54,8 @@ import com.tokopedia.product.detail.applink.ProductDetailApplinkModule;
 import com.tokopedia.product.detail.applink.ProductDetailApplinkModuleLoader;
 import com.tokopedia.topads.applink.TopAdsApplinkModule;
 import com.tokopedia.topads.applink.TopAdsApplinkModuleLoader;
+import com.tokopedia.topads.auto.internal.AutoAdsLinkModule;
+import com.tokopedia.topads.auto.internal.AutoAdsLinkModuleLoader;
 import com.tokopedia.topads.dashboard.data.applink.TopAdsDashboardApplinkModule;
 import com.tokopedia.topads.dashboard.data.applink.TopAdsDashboardApplinkModuleLoader;
 import com.tokopedia.topchat.deeplink.TopChatAppLinkModule;
@@ -65,6 +69,8 @@ import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModul
 import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModuleLoader;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModule;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleLoader;
+import com.tokopedia.power_merchant.subscribe.applink.PowerMerchantSubscribeDeeplinkModule;
+import com.tokopedia.power_merchant.subscribe.applink.PowerMerchantSubscribeDeeplinkModuleLoader;
 
 /**
  * @author rizkyfadillah on 26/07/17.
@@ -93,7 +99,9 @@ import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleL
         PhoneVerificationApplinkModule.class,
         ChangePasswordDeeplinkModule.class,
         UserIdentificationApplinkModule.class,
-        ChatbotApplinkModule.class
+        ChatbotApplinkModule.class,
+        PowerMerchantSubscribeDeeplinkModule.class,
+        AutoAdsLinkModule.class
 })
 
 public class DeepLinkHandlerActivity extends AppCompatActivity {
@@ -124,7 +132,9 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new PhoneVerificationApplinkModuleLoader(),
                 new ChangePasswordDeeplinkModuleLoader(),
                 new UserIdentificationApplinkModuleLoader(),
-                new ChatbotApplinkModuleLoader()
+                new ChatbotApplinkModuleLoader(),
+                new PowerMerchantSubscribeDeeplinkModuleLoader(),
+                new AutoAdsLinkModuleLoader()
         );
     }
 
@@ -149,18 +159,39 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
     }
 
     private void processApplink(DeepLinkDelegate deepLinkDelegate, DeepLinkAnalyticsImpl presenter) {
-        Intent intent = getIntent();
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        Uri applink = intent.getData();
+        Uri applink = getIntent().getData();
         presenter.processUTM(this, applink);
-        if (deepLinkDelegate.supportsUri(applink.toString())) {
-            deepLinkDelegate.dispatchFrom(this, intent);
+
+        if (applink == null) {
+            return;
+        }
+
+        String applinkString = applink.toString();
+
+        //map applink to internal if any
+        String mappedDeeplink = DeeplinkMapper.getRegisteredNavigation(this, applinkString);
+        if (!TextUtils.isEmpty(mappedDeeplink)) {
+            routeToApplink(deepLinkDelegate, mappedDeeplink);
+        } else {
+            routeToApplink(deepLinkDelegate, applinkString);
+        }
+    }
+
+    private void routeToApplink(DeepLinkDelegate deepLinkDelegate, String applinkString) {
+        if (deepLinkDelegate.supportsUri(applinkString)) {
+            getIntent().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            deepLinkDelegate.dispatchFrom(this, getIntent());
             if (getIntent().getExtras() != null) {
                 Bundle bundle = getIntent().getExtras();
                 eventPersonalizedClicked(bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
             }
+        } else {
+            Intent intent = RouteManager.getIntent(this, applinkString);
+            startActivity(intent);
+            this.finish();
         }
     }
+
 
     public void eventPersonalizedClicked(String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
