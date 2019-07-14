@@ -136,7 +136,7 @@ class ShopSettingsEtalaseReorderFragment : BaseListFragment<ShopEtalaseViewModel
         val message = ErrorHandler.getErrorMessage(context, throwable)
         ToasterError.make(activity!!.findViewById(android.R.id.content),
                 message, BaseToaster.LENGTH_LONG)
-                .setAction(getString(R.string.close)) {
+                .setAction(getString(com.tokopedia.design.R.string.close)) {
                     // no-op
                 }.show()
     }

@@ -168,9 +168,9 @@ class ShopSettingsEtalaseListFragment : BaseSearchListFragment<BaseShopEtalaseVi
     override fun getEmptyDataViewModel(): Visitable<*> {
         val searchText = searchInputView.searchText
 
-        if (TextUtils.isEmpty(searchText)) {
+        if (TextUtils.isEmpty(searchText)) {ShopSettingsNotesListFragment
             val emptyModel = EmptyModel()
-            emptyModel.iconRes = R.drawable.ic_empty_state
+            emptyModel.iconRes = com.tokopedia.design.R.drawable.ic_empty_state
             emptyModel.title = getString(R.string.shop_has_no_etalase)
             emptyModel.content = getString(R.string.shop_etalase_info)
             emptyModel.buttonTitleRes = R.string.shop_settings_add_etalase

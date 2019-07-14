@@ -125,10 +125,10 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
                         setTitle(getString(R.string.remove_schedule))
                         setDesc(getString(R.string.remove_schedule_message))
                         setBtnOk(getString(R.string.action_delete))
-                        setBtnCancel(getString(R.string.cancel))
+                        setBtnCancel(getString(com.tokopedia.design.R.string.cancel))
                         setOnOkClickListener {
                             //remove schedule
-                            showSubmitLoading(getString(R.string.title_loading))
+                            showSubmitLoading(getString(com.tokopedia.abstraction.R.string.title_loading))
                             shopSettingsInfoPresenter.updateShopSchedule(
                                     if (shopBasicDataModel!!.isClosed)
                                         ShopScheduleActionDef.CLOSED
@@ -256,7 +256,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
         val logoUrl = shopBasicDataModel.logo
         if (TextUtils.isEmpty(logoUrl)) {
-            ivShopLogo.setImageResource(R.drawable.ic_shop_default_empty)
+            ivShopLogo.setImageResource(com.tokopedia.design.R.drawable.ic_shop_default_empty)
         } else {
             ImageHandler.LoadImage(ivShopLogo, logoUrl)
         }
@@ -336,10 +336,10 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
             vgMembershipContainer.setOnClickListener(null)
         } else if (shopBasicDataModel.isOfficialStore) {
-            ivShopMembership.setImageResource(R.drawable.ic_badge_shop_official)
-            val padding = resources.getDimensionPixelOffset(R.dimen.dp_8)
+            ivShopMembership.setImageResource(com.tokopedia.design.R.drawable.ic_badge_shop_official)
+            val padding = resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_8)
             ivShopMembership.setPadding(padding, padding, padding, padding)
-            tvMembershipName.text = getString(R.string.label_official_store)
+            tvMembershipName.text = getString(com.tokopedia.design.R.string.label_official_store)
             tvMembershipDescription.text = getString(R.string.valid_until_x,
                     toReadableString(FORMAT_DATE, shopBasicDataModel.expired ?: ""))
             vgMembershipContainer.setOnClickListener(null)

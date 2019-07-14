@@ -189,7 +189,7 @@ class ShopEditBasicInfoActivity : BaseSimpleActivity(), UpdateShopSettingsInfoPr
         if (TextUtils.isEmpty(savedLocalImageUrl)) {
             val logoUrl = shopBasicDataModel.logo
             if (TextUtils.isEmpty(logoUrl)) {
-                ivLogo.setImageResource(R.drawable.ic_camera_add)
+                ivLogo.setImageResource(com.tokopedia.design.R.drawable.ic_camera_add)
             } else {
                 ImageHandler.LoadImage(ivLogo, logoUrl)
             }
@@ -207,7 +207,7 @@ class ShopEditBasicInfoActivity : BaseSimpleActivity(), UpdateShopSettingsInfoPr
         val message = ErrorHandler.getErrorMessage(this, throwable)
         ToasterError.make(findViewById(android.R.id.content),
                 message, BaseToaster.LENGTH_INDEFINITE)
-                .setAction(getString(R.string.title_try_again)) { loadShopBasicData() }.show()
+                .setAction(getString(com.tokopedia.abstraction.R.string.title_try_again)) { loadShopBasicData() }.show()
     }
 
     override fun onErrorUploadShopImage(throwable: Throwable) {
