@@ -9,8 +9,7 @@
         <item name="colorAccent">@color/pm_cb_color</item>
         <item name="android:textColorSecondary">@color/pm_cb_color</item>
     </style>
-    <style name="TransparentDialog" parent="Theme.AppCompat.Light.Dialog">
-        <item name="android:windowBackground">@android:color/transparent</item>
+    <style name="TransparentDialog" parent="Theme.AppCompat.Dialog">
         <item name="android:background">@android:color/transparent</item>
     </style>
 </resources>
