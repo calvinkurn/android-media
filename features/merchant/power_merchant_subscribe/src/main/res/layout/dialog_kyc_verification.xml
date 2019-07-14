@@ -1,54 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_rounded_chat_input"
-    android:padding="@dimen/dp_28">
+    android:padding="24dp"
+    android:background="@color/transparent"
+    android:orientation="vertical">
 
-    <com.tokopedia.design.component.TextViewCompat
-        android:id="@+id/txt_kyc_header_1"
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/dp_16"
-        android:gravity="center"
-        android:text="@string/pm_label_kyc_verification_header"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        app:fontSize="subHeadline" />
+        android:background="@drawable/bg_rounded_chat_input"
+        android:padding="@dimen/dp_28"
+        android:layout_centerHorizontal="true">
 
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/txt_kyc_header_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:gravity="center"
+            android:text="@string/pm_label_kyc_verification_header"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            app:fontSize="subHeadline" />
 
-    <com.tokopedia.design.component.TextViewCompat
-        android:id="@+id/txt_kyc_static_desc_1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/txt_kyc_header_1"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/dp_24"
-        android:gravity="center"
-        android:text="@string/pm_label_kyc_verification_desc_1"
-        app:fontSize="title"
-        app:textViewTheme="lightSecondary" />
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/txt_kyc_static_desc_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txt_kyc_header_1"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/dp_24"
+            android:gravity="center"
+            android:text="@string/pm_label_kyc_verification_desc_1"
+            app:fontSize="title"
+            app:textViewTheme="lightSecondary" />
 
-    <Button
-        android:id="@+id/btn_submit_kyc"
-        style="@style/Button.Submit.Green.Full"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/txt_kyc_static_desc_1"
-        android:layout_marginBottom="@dimen/dp_10"
-        android:text="@string/pm_label_transition_period_button"
-        android:textStyle="bold" />
+        <Button
+            android:id="@+id/btn_submit_kyc"
+            style="@style/Button.Submit.Green.Full"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_kyc_static_desc_1"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:text="@string/pm_label_transition_period_button"
+            android:textStyle="bold" />
 
-    <Button
-        android:id="@+id/btn_close_kyc"
-        style="@style/Button.Submit.White.Border.Full"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/btn_submit_kyc"
-        android:text="@string/pm_label_button_close"
-        android:textStyle="bold" />
+        <Button
+            android:id="@+id/btn_close_kyc"
+            style="@style/Button.Submit.White.Border.Full"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btn_submit_kyc"
+            android:text="@string/pm_label_button_close"
+            android:textStyle="bold" />
 
+    </RelativeLayout>
 </RelativeLayout>

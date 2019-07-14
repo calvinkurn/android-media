@@ -208,11 +208,11 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     private fun setupDialogKyc(): Dialog? {
         context?.let {
             val dialog = Dialog(it)
+            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
             dialog.setCancelable(false)
             dialog.setCanceledOnTouchOutside(true)
             dialog.setContentView(R.layout.dialog_kyc_verification)
-            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             dialog.btn_submit_kyc.setOnClickListener {
                 RouteManager.route(context, ApplinkConst.KYC_SELLER_DASHBOARD)
                 activity?.finish()
