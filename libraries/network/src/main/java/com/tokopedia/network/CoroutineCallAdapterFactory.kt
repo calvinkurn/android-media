@@ -14,7 +14,7 @@ class CoroutineCallAdapterFactory private constructor(): CallAdapter.Factory() {
         operator fun invoke() = CoroutineCallAdapterFactory()
     }
 
-    override fun get(returnType: Type, annotations: Array<out Annotation>, retrofit: Retrofit): CallAdapter<*, *>? {
+    override fun get(returnType: Type, annotations: Array<out Annotation>, retrofit: Retrofit): CallAdapter<*>? {
         if (Deferred::class.java != getRawType(returnType)) return null
 
         if (returnType !is ParameterizedType){
@@ -35,9 +35,9 @@ class CoroutineCallAdapterFactory private constructor(): CallAdapter.Factory() {
         }
     }
 
-    private class BodyCallAdapter<T>(private val responseType: Type): CallAdapter<T, Deferred<T>> {
+    private class BodyCallAdapter<T>(private val responseType: Type): CallAdapter<Deferred<T>> {
 
-        override fun adapt(call: Call<T>): Deferred<T> {
+        override fun <R : Any?> adapt(call: Call<R>): Deferred<T> {
             val deferred = CompletableDeferred<T>()
 
             deferred.invokeOnCompletion {
@@ -46,15 +46,15 @@ class CoroutineCallAdapterFactory private constructor(): CallAdapter.Factory() {
                 }
             }
 
-            call.enqueue(object : Callback<T> {
-                override fun onFailure(call: Call<T>?, t: Throwable) {
+            call.enqueue(object : Callback<R> {
+                override fun onFailure(call: Call<R>?, t: Throwable) {
                     deferred.cancel(t)
                 }
 
-                override fun onResponse(call: Call<T>, response: Response<T>) {
+                override fun onResponse(call: Call<R>, response: Response<R>) {
 
                     if (response.isSuccessful){
-                        deferred.complete(response.body()!!)
+                        deferred.complete(response.body() as T)
                     } else {
                         deferred.cancel(HttpException(response))
                     }
@@ -67,9 +67,9 @@ class CoroutineCallAdapterFactory private constructor(): CallAdapter.Factory() {
         override fun responseType(): Type = responseType
     }
 
-    private class ResponseCallAdapter<T>(private val responseType: Type): CallAdapter<T, Deferred<Response<T>>> {
+    private class ResponseCallAdapter<T>(private val responseType: Type): CallAdapter<Deferred<Response<T>>> {
 
-        override fun adapt(call: Call<T>): Deferred<Response<T>> {
+        override fun <R : Any?> adapt(call: Call<R>): Deferred<Response<T>> {
             val deferred = CompletableDeferred<Response<T>>()
 
             deferred.invokeOnCompletion {
@@ -78,12 +78,12 @@ class CoroutineCallAdapterFactory private constructor(): CallAdapter.Factory() {
                 }
             }
 
-            call.enqueue(object : Callback<T> {
-                override fun onFailure(call: Call<T>?, t: Throwable) {
+            call.enqueue(object : Callback<R> {
+                override fun onFailure(call: Call<R>?, t: Throwable) {
                     deferred.cancel(t)
                 }
 
-                override fun onResponse(call: Call<T>, response: Response<T>) {
+                override fun onResponse(call: Call<R>, response: Response<R>) {
 
                     if (response.isSuccessful){
                         deferred.complete(response as Response<T>)
