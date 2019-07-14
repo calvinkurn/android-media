@@ -396,6 +396,8 @@ dependencies {
     implementation project(rootProject.ext.features.agerestriction)
     implementation project(rootProject.ext.features.onboarding)
     implementation project(rootProject.ext.features.profileCompletion)
+    implementation project(rootProject.ext.features.powerMerchantSubscribe)
+
 
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.userSession)

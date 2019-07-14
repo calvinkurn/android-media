@@ -156,6 +156,8 @@ import com.tokopedia.useridentification.applink.UserIdentificationApplinkModule;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleLoader;
 import com.tokopedia.webview.WebViewApplinkModule;
 import com.tokopedia.webview.WebViewApplinkModuleLoader;
+import com.tokopedia.power_merchant.subscribe.applink.PowerMerchantSubscribeDeeplinkModule;
+import com.tokopedia.power_merchant.subscribe.applink.PowerMerchantSubscribeDeeplinkModuleLoader;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -225,7 +227,8 @@ import rx.schedulers.Schedulers;
         WebViewApplinkModule.class,
         RecommendationDeeplinkModule.class,
         TopAdsDashboardApplinkModule.class,
-        AutoAdsLinkModule.class
+        AutoAdsLinkModule.class,
+        PowerMerchantSubscribeDeeplinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity implements DefferedDeeplinkCallback {
@@ -297,7 +300,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new WebViewApplinkModuleLoader(),
                     new RecommendationDeeplinkModuleLoader(),
                     new TopAdsDashboardApplinkModuleLoader(),
-                    new AutoAdsLinkModuleLoader()
+                    new AutoAdsLinkModuleLoader(),
+                    new PowerMerchantSubscribeDeeplinkModuleLoader()
             );
         }
 
