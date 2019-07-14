@@ -54,6 +54,8 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                     && homeData.getSlides().getSlides() != null
                     && !homeData.getSlides().getSlides().isEmpty()) {
                 list.add(mappingBanner(homeData.getSlides().getSlides(), homeData.isCache()));
+            } else {
+                list.add(mappingBanner(new ArrayList<BannerSlidesModel>(), homeData.isCache()));
             }
 
             if (homeData.getTicker() != null

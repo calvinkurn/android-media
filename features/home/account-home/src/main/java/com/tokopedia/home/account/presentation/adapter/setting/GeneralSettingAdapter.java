@@ -19,6 +19,8 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private static final int TYPE_GENERAL = 0;
     private static final int TYPE_SWITCH = 1;
 
+    private static final int POSITION_UNDEFINED = -1;
+
     private List<SettingItemViewModel> settingItems;
     private OnSettingItemClicked listener;
     private SwitchSettingListener switchSettingListener;
@@ -34,6 +36,26 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     public void setSwitchSettingListener(SwitchSettingListener switchSettingListener) {
         this.switchSettingListener = switchSettingListener;
+    }
+
+    public void updateSettingItem(int settingId) {
+        int position = findSwitchPosition(settingId);
+        if (position != POSITION_UNDEFINED) {
+            SettingItemViewModel settingItemViewModel =
+                    settingItems.get(position);
+            if (settingItemViewModel instanceof SwitchSettingItemViewModel) {
+                notifyItemChanged(position);
+            }
+        }
+    }
+
+    private int findSwitchPosition(int settingId) {
+        for (int i = 0; i<settingItems.size() ; i++) {
+            if (settingId == settingItems.get(i).getId()) {
+                return i;
+            }
+        }
+        return POSITION_UNDEFINED;
     }
 
     @Override
@@ -105,9 +127,11 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         private TextView titleTextView;
         private TextView summaryextView;
         private Switch aSwitch;
+        private View view;
 
         public SwitchSettingViewHolder(View itemView) {
             super(itemView);
+            view = itemView;
             titleTextView = itemView.findViewById(R.id.title);
             summaryextView = itemView.findViewById(R.id.subtitle);
             aSwitch = itemView.findViewById(R.id.switchWidget);
@@ -122,7 +146,18 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         public void bind(SwitchSettingItemViewModel item){
             titleTextView.setText(item.getTitle());
             summaryextView.setText(item.getSubtitle());
-            aSwitch.setChecked(switchSettingListener != null && switchSettingListener.isSwitchSelected(item.getId()));
+
+            boolean switchState = switchSettingListener.isSwitchSelected(item.getId());
+            aSwitch.setChecked(switchSettingListener != null && switchState);
+
+            if (item.isUseOnClick()) {
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        switchSettingListener.onClicked(item.getId(), switchState);
+                    }
+                });
+            }
         }
     }
 
@@ -133,5 +168,6 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public interface SwitchSettingListener{
         boolean isSwitchSelected(int settingId);
         void onChangeChecked(int settingId, boolean value);
+        void onClicked(int settingId, boolean currentValue);
     }
 }

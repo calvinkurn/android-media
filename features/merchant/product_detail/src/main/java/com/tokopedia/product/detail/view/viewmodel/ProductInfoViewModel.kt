@@ -32,10 +32,6 @@ import com.tokopedia.product.detail.data.model.installment.InstallmentResponse
 import com.tokopedia.product.detail.data.model.purchaseprotection.PPItemDetailRequest
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
 import com.tokopedia.product.detail.data.model.review.Review
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCodStatus
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.product.detail.data.model.shopfeature.ShopFeatureResponse
 import com.tokopedia.product.detail.data.model.talk.Talk
 import com.tokopedia.product.detail.data.model.talk.TalkList
@@ -49,6 +45,10 @@ import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
 import com.tokopedia.recommendation_widget_common.data.mapper.RecommendationEntityMapper
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCodStatus
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -74,8 +74,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
     val p2Login = MutableLiveData<ProductInfoP2Login>()
     val productInfoP3resp = MutableLiveData<ProductInfoP3>()
 
-    val loadOtherProduct = MutableLiveData<RequestDataState<List<ProductOther>>>()
-    val loadTopAdsProduct = MutableLiveData<RequestDataState<RecommendationWidget>>()
+    val loadTopAdsProduct = MutableLiveData<RequestDataState<List<RecommendationWidget>>>()
 
     var multiOrigin : WarehouseInfo = WarehouseInfo()
     val userId: String
@@ -88,7 +87,6 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
     fun getProductInfo(productParams: ProductParams, forceRefresh: Boolean = false) {
         if (forceRefresh){
-            loadOtherProduct.value = null
             loadTopAdsProduct.value = null
             lazyNeedForceUpdate = true
         }
@@ -555,7 +553,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             const val KEY_XSOURCE = "xSource"
             const val KEY_PAGE_NUMBER = "pageNumber"
             const val DEFAULT_PAGE_NUMBER = 1
-            const val DEFAULT_PAGE_NAME = "pdp"
+            const val DEFAULT_PAGE_NAME = "pdp_1,pdp_2,pdp_3,pdp_4"
         }
 
         private object ParamAffiliate {
@@ -574,10 +572,6 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
     fun loadMore() {
         val product = (productInfoP1Resp.value ?: return) as? Success ?: return
         launch {
-            val otherProductDef = if ((loadOtherProduct.value as? Loaded)?.data as? Success == null) {
-                loadOtherProduct.value = Loading
-                doLoadOtherProduct(product.data.productInfo)
-            } else null
 
             val topAdsProductDef = if (GlobalConfig.isCustomerApp() &&
                     (loadTopAdsProduct.value as? Loaded)?.data as? Success == null){
@@ -586,28 +580,11 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
             } else null
 
-            otherProductDef?.await()?.let { loadOtherProduct.value = it }
             topAdsProductDef?.await()?.let {
                 val recommendationWidget = RecommendationEntityMapper.mappingToRecommendationModel((it.data as? Success)?.data?: return@launch)
-                loadTopAdsProduct.value = Loaded(Success(recommendationWidget.get(0)))
+                loadTopAdsProduct.value = Loaded(Success(recommendationWidget))
             }
             lazyNeedForceUpdate = false
-        }
-    }
-
-    private fun doLoadOtherProduct(productInfo: ProductInfo) = async(Dispatchers.IO) {
-        val otherProductParams = mapOf(KEY_PARAM to String.format(PARAMS_OTHER_PRODUCT_TEMPLATE,
-                productInfo.basic.shopID, productInfo.basic.id))
-        val otherProductRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_OTHER_PRODUCT],
-                ProductOther.Response::class.java, otherProductParams)
-        val cacheStrategy = GraphqlCacheStrategy.Builder(if (lazyNeedForceUpdate) CacheType.ALWAYS_CLOUD
-                else CacheType.CACHE_FIRST).build()
-
-        try {
-            Loaded(Success(graphqlRepository.getReseponse(listOf(otherProductRequest), cacheStrategy)
-                    .getSuccessData<ProductOther.Response>().result.products))
-        } catch (t: Throwable){
-            Loaded(Fail(t))
         }
     }
 

@@ -17,10 +17,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.analytics.RecommendationPageTracking
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
-import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
-import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselDataModel
-import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
 import com.tokopedia.home_recom.model.datamodel.TitleDataModel
+import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
+import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselDataModel
+import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
 import com.tokopedia.home_recom.model.datamodel.HomeRecommendationDataModel
 import com.tokopedia.home_recom.model.entity.ProductDetailData
 import com.tokopedia.home_recom.view.adapter.HomeRecommendationAdapter
@@ -183,9 +183,9 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
                 .commit()
     }
 
-    private fun mapDataModel(listRecommendationModelDummy: List<RecommendationWidget>): List<HomeRecommendationDataModel>{
+    private fun mapDataModel(listRecommendationModel: List<RecommendationWidget>): List<HomeRecommendationDataModel>{
         val list = ArrayList<HomeRecommendationDataModel>()
-        listRecommendationModelDummy.forEach { recommendationWidget ->
+        listRecommendationModel.forEach { recommendationWidget ->
             when(recommendationWidget.layoutType){
                 TYPE_SCROLL -> {
                     list.add(TitleDataModel(recommendationWidget.title))
@@ -234,21 +234,22 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
 
     fun onClickAddWishlist(item: RecommendationItem) {
         if(recommendationWidgetViewModel.isLoggedIn()){
-            RecommendationPageTracking.eventUserClickProductToWishlistForUserLogin(true)
+            RecommendationPageTracking.eventUserClickRecommendationWishlistForLogin(true, getHeaderName(item))
         }else{
-            RecommendationPageTracking.eventUserClickProductToWishlistForNonLogin()
+            RecommendationPageTracking.eventUserClickRecommendationWishlistForNonLogin(getHeaderName(item))
         }
     }
 
     fun onClickRemoveWishlist(item: RecommendationItem) {
         if(recommendationWidgetViewModel.isLoggedIn()){
-            RecommendationPageTracking.eventUserClickProductToWishlistForUserLogin(false)
+            RecommendationPageTracking.eventUserClickRecommendationWishlistForLogin(false, getHeaderName(item))
         }else{
-            RecommendationPageTracking.eventUserClickProductToWishlistForNonLogin()
+            RecommendationPageTracking.eventUserClickRecommendationWishlistForNonLogin(getHeaderName(item))
         }
     }
 
     private fun getHeaderName(item: RecommendationItem): String{
+        if(item.header.isNotBlank()) return item.header
         var header = ""
         val data = adapter.data
         val itemFoundAtStaggeredGridLayoutManager = data.any { it is RecommendationItemDataModel && it.productItem.productId == item.productId }

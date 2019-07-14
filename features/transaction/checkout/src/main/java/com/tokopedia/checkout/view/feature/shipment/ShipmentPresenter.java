@@ -425,11 +425,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0
         );
         Map<String, Object> eeDataLayer = generateCheckoutAnalyticsDataLayer(checkoutRequest, step);
-        String transactionId = "";
-        if (checkoutData != null) {
-            transactionId = checkoutData.getTransactionId();
+        if (eeDataLayer != null) {
+            String transactionId = "";
+            if (checkoutData != null) {
+                transactionId = checkoutData.getTransactionId();
+            }
+            analyticsActionListener.sendEnhancedEcommerceAnalyticsCheckout(eeDataLayer, transactionId, eventAction, eventLabel);
         }
-        analyticsActionListener.sendEnhancedEcommerceAnalyticsCheckout(eeDataLayer, transactionId, eventAction, eventLabel);
     }
 
     @Override
@@ -569,9 +571,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         RecipientAddressModel newAddress = getView().getShipmentDataConverter()
                 .getRecipientAddressModel(cartShipmentAddressFormData);
         if (!cartShipmentAddressFormData.isMultiple()) {
-            if (!checkHaveSameCurrentCodAddress(newAddress.getCornerId())) {
-                setRecipientAddressModel(newAddress);
-            }
+            setRecipientAddressModel(newAddress);
         } else {
             setRecipientAddressModel(null);
         }
@@ -609,12 +609,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         isShowOnboarding = cartShipmentAddressFormData.isShowOnboarding();
         isIneligbilePromoDialogEnabled = cartShipmentAddressFormData.isIneligbilePromoDialogEnabled();
-    }
-
-    private boolean checkHaveSameCurrentCodAddress(String cornerId) {
-        RecipientAddressModel curr = getRecipientAddressModel();
-        if (curr == null) return false;
-        return (curr.isCornerAddress()) && (curr.getCornerId().equals(cornerId));
     }
 
     @Override
@@ -1005,40 +999,46 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
             EnhancedECommerceCheckout enhancedECommerceCheckout = new EnhancedECommerceCheckout();
             for (DataCheckoutRequest dataCheckoutRequest : checkoutRequest.data) {
-                for (ShopProductCheckoutRequest shopProductCheckoutRequest : dataCheckoutRequest.shopProducts) {
-                    for (ProductDataCheckoutRequest productDataCheckoutRequest : shopProductCheckoutRequest.productData) {
-                        EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData =
-                                new EnhancedECommerceProductCartMapData();
-                        enhancedECommerceProductCartMapData.setProductName(productDataCheckoutRequest.getProductName());
-                        enhancedECommerceProductCartMapData.setProductID(String.valueOf(productDataCheckoutRequest.getProductId()));
-                        enhancedECommerceProductCartMapData.setPrice(productDataCheckoutRequest.getProductPrice());
-                        enhancedECommerceProductCartMapData.setBrand(productDataCheckoutRequest.getProductBrand());
-                        enhancedECommerceProductCartMapData.setCategory(productDataCheckoutRequest.getProductCategory());
-                        enhancedECommerceProductCartMapData.setVariant(productDataCheckoutRequest.getProductVariant());
-                        enhancedECommerceProductCartMapData.setQty(productDataCheckoutRequest.getProductQuantity());
-                        enhancedECommerceProductCartMapData.setShopId(productDataCheckoutRequest.getProductShopId());
-                        enhancedECommerceProductCartMapData.setShopName(productDataCheckoutRequest.getProductShopName());
-                        enhancedECommerceProductCartMapData.setShopType(productDataCheckoutRequest.getProductShopType());
-                        enhancedECommerceProductCartMapData.setCategoryId(productDataCheckoutRequest.getProductCategoryId());
-                        enhancedECommerceProductCartMapData.setDimension38(productDataCheckoutRequest.getProductAttribution());
-                        enhancedECommerceProductCartMapData.setDimension40(productDataCheckoutRequest.getProductListName());
-                        enhancedECommerceProductCartMapData.setDimension45(String.valueOf(productDataCheckoutRequest.getCartId()));
-                        enhancedECommerceProductCartMapData.setDimension54(getFulfillmentStatus(shopProductCheckoutRequest.getShopId()));
-                        enhancedECommerceProductCartMapData.setDimension12(shopProductCheckoutRequest.shippingInfo.analyticsDataShippingCourierPrice);
-                        enhancedECommerceProductCartMapData.setWarehouseId(productDataCheckoutRequest.getWarehouseId());
-                        enhancedECommerceProductCartMapData.setProductWeight(productDataCheckoutRequest.getProductWeight());
-                        enhancedECommerceProductCartMapData.setPromoCode(productDataCheckoutRequest.getPromoCode());
-                        enhancedECommerceProductCartMapData.setPromoDetails(productDataCheckoutRequest.getPromoDetails());
-                        enhancedECommerceProductCartMapData.setCartId(String.valueOf(productDataCheckoutRequest.getCartId()));
-                        enhancedECommerceProductCartMapData.setBuyerAddressId(productDataCheckoutRequest.getBuyerAddressId());
-                        enhancedECommerceProductCartMapData.setShippingDuration(productDataCheckoutRequest.getShippingDuration());
-                        enhancedECommerceProductCartMapData.setCourier(productDataCheckoutRequest.getCourier());
-                        enhancedECommerceProductCartMapData.setShippingPrice(productDataCheckoutRequest.getShippingPrice());
-                        enhancedECommerceProductCartMapData.setCodFlag(productDataCheckoutRequest.getCodFlag());
-                        enhancedECommerceProductCartMapData.setTokopediaCornerFlag(productDataCheckoutRequest.getTokopediaCornerFlag());
-                        enhancedECommerceProductCartMapData.setIsFulfillment(productDataCheckoutRequest.getIsFulfillment());
+                if (dataCheckoutRequest != null) {
+                    for (ShopProductCheckoutRequest shopProductCheckoutRequest : dataCheckoutRequest.shopProducts) {
+                        if (shopProductCheckoutRequest != null) {
+                            for (ProductDataCheckoutRequest productDataCheckoutRequest : shopProductCheckoutRequest.productData) {
+                                if (productDataCheckoutRequest != null) {
+                                    EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData =
+                                            new EnhancedECommerceProductCartMapData();
+                                    enhancedECommerceProductCartMapData.setProductName(productDataCheckoutRequest.getProductName());
+                                    enhancedECommerceProductCartMapData.setProductID(String.valueOf(productDataCheckoutRequest.getProductId()));
+                                    enhancedECommerceProductCartMapData.setPrice(productDataCheckoutRequest.getProductPrice());
+                                    enhancedECommerceProductCartMapData.setBrand(productDataCheckoutRequest.getProductBrand());
+                                    enhancedECommerceProductCartMapData.setCategory(productDataCheckoutRequest.getProductCategory());
+                                    enhancedECommerceProductCartMapData.setVariant(productDataCheckoutRequest.getProductVariant());
+                                    enhancedECommerceProductCartMapData.setQty(productDataCheckoutRequest.getProductQuantity());
+                                    enhancedECommerceProductCartMapData.setShopId(productDataCheckoutRequest.getProductShopId());
+                                    enhancedECommerceProductCartMapData.setShopName(productDataCheckoutRequest.getProductShopName());
+                                    enhancedECommerceProductCartMapData.setShopType(productDataCheckoutRequest.getProductShopType());
+                                    enhancedECommerceProductCartMapData.setCategoryId(productDataCheckoutRequest.getProductCategoryId());
+                                    enhancedECommerceProductCartMapData.setDimension38(productDataCheckoutRequest.getProductAttribution());
+                                    enhancedECommerceProductCartMapData.setDimension40(productDataCheckoutRequest.getProductListName());
+                                    enhancedECommerceProductCartMapData.setDimension45(String.valueOf(productDataCheckoutRequest.getCartId()));
+                                    enhancedECommerceProductCartMapData.setDimension54(getFulfillmentStatus(shopProductCheckoutRequest.getShopId()));
+                                    enhancedECommerceProductCartMapData.setDimension12(shopProductCheckoutRequest.shippingInfo.analyticsDataShippingCourierPrice);
+                                    enhancedECommerceProductCartMapData.setWarehouseId(productDataCheckoutRequest.getWarehouseId());
+                                    enhancedECommerceProductCartMapData.setProductWeight(productDataCheckoutRequest.getProductWeight());
+                                    enhancedECommerceProductCartMapData.setPromoCode(productDataCheckoutRequest.getPromoCode());
+                                    enhancedECommerceProductCartMapData.setPromoDetails(productDataCheckoutRequest.getPromoDetails());
+                                    enhancedECommerceProductCartMapData.setCartId(String.valueOf(productDataCheckoutRequest.getCartId()));
+                                    enhancedECommerceProductCartMapData.setBuyerAddressId(productDataCheckoutRequest.getBuyerAddressId());
+                                    enhancedECommerceProductCartMapData.setShippingDuration(productDataCheckoutRequest.getShippingDuration());
+                                    enhancedECommerceProductCartMapData.setCourier(productDataCheckoutRequest.getCourier());
+                                    enhancedECommerceProductCartMapData.setShippingPrice(productDataCheckoutRequest.getShippingPrice());
+                                    enhancedECommerceProductCartMapData.setCodFlag(productDataCheckoutRequest.getCodFlag());
+                                    enhancedECommerceProductCartMapData.setTokopediaCornerFlag(productDataCheckoutRequest.getTokopediaCornerFlag());
+                                    enhancedECommerceProductCartMapData.setIsFulfillment(productDataCheckoutRequest.getIsFulfillment());
 
-                        enhancedECommerceCheckout.addProduct(enhancedECommerceProductCartMapData.getProduct());
+                                    enhancedECommerceCheckout.addProduct(enhancedECommerceProductCartMapData.getProduct());
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -1767,9 +1767,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         ShippingParam shippingParam = getShippingParam(shipmentDetailData);
 
         int counter = codData == null ? -1 : codData.getCounterCod();
-        String cornerId = "";
+        boolean cornerId = false;
         if (getRecipientAddressModel() != null) {
-            cornerId = getRecipientAddressModel().getCornerId();
+            cornerId = getRecipientAddressModel().isCornerAddress();
         }
 
         getCourierRecommendationUseCase.execute(query, counter, cornerId, shippingParam, spId, 0,
