@@ -43,15 +43,10 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
     private ErrorNetworkReceiver logoutNetworkReceiver;
     private BroadcastReceiver inappReceiver;
-    private LocalCacheHandler cache;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Timber.e("Test Error Message 1");
-        Timber.e(new MessageErrorException("a"), "Test Error Message 2");
-        Timber.w("Test Error Message 3");
-        Timber.w(new MessageErrorException("a"), "Test Error Message 4");
         logoutNetworkReceiver = new ErrorNetworkReceiver();
         inappReceiver = new BroadcastReceiver() {
             @Override
@@ -109,12 +104,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
         TrackApp.getInstance().getGTM().sendScreenAuthenticated( getScreenName());
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        cache = null;
-    }
-
     private void registerForceLogoutReceiver() {
         logoutNetworkReceiver.setReceiver(this);
         IntentFilter filter = new IntentFilter();
@@ -147,7 +136,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     @Override
     public void onServerError() {
         final Snackbar snackBar = SnackbarManager.make(this,
-                getString(R.string.msg_server_error_2), Snackbar.LENGTH_INDEFINITE)
+                getString(R.string.msg_server_error_2),Snackbar.LENGTH_INDEFINITE)
                 .setAction(R.string.action_report, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

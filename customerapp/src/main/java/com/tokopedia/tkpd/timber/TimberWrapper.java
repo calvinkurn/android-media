@@ -28,26 +28,18 @@ public class TimberWrapper {
 
     public static void initByConfig(@NonNull RemoteConfig remoteConfig){
         Timber.uprootAll();
-        LogWrapper.log(Log.ERROR, "init By Config");
         boolean isDebug = BuildConfig.DEBUG;
         if (isDebug) {
             Timber.plant(new TimberDebugTree());
-            LogWrapper.log(Log.ERROR, "Debug");
         } else {
             String logConfigString = remoteConfig.getString(ANDROID_CUSTOMER_APP_LOG_CONFIG);
-            LogWrapper.log(Log.ERROR, logConfigString);
             if (!TextUtils.isEmpty(logConfigString)) {
                 DataLogConfig dataLogConfig = new Gson().fromJson(logConfigString,
                         DataLogConfig.class);
                 if(dataLogConfig != null) {
-                    LogWrapper.log(Log.ERROR, dataLogConfig.toString());
-                    LogWrapper.log(Log.ERROR, "Version Code " + GlobalConfig.VERSION_CODE + "; App min version: " + dataLogConfig.getAppVersionMin() + "; isLower: " +
-                            (dataLogConfig.isEnabled() &&
-                                    GlobalConfig.VERSION_CODE >= dataLogConfig.getAppVersionMin()));
                     if (dataLogConfig.isEnabled() &&
                             GlobalConfig.VERSION_CODE >= dataLogConfig.getAppVersionMin()) {
                         Timber.plant(new TimberReportingTree());
-                        LogWrapper.log(Log.ERROR, "Plant reporting tree");
                     }
                 }
             }

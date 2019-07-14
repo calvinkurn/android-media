@@ -17,11 +17,9 @@ import timber.log.Timber;
 public class TimberReportingTree extends Timber.DebugTree {
     @Override
     protected void log(int priority, String tag, @NonNull String message, Throwable t) {
-        LogWrapper.log(Log.ERROR, "Timber try to log");
         if (priority == Log.VERBOSE || priority == Log.DEBUG) {
             return;
         }
-        LogWrapper.log(Log.ERROR, "Timber log error or warn");
         // throwable is concatenated to message. This will be fixed in Timber next major release
         // https://github.com/JakeWharton/timber/issues/142
         LogWrapper.log(priority, tag + " " + message);
