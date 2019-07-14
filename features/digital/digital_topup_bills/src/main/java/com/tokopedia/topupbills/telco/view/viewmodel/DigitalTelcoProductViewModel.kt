@@ -8,6 +8,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.topupbills.telco.data.TelcoProductComponentData
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -36,8 +37,12 @@ class DigitalTelcoProductViewModel @Inject constructor(private val graphqlReposi
             }.getSuccessData<TelcoProductComponentData>()
 
             onLoading(false)
-            data.productType = productType
-            onSuccess(data)
+            if (data.rechargeProductData.productDataCollections.isEmpty()) {
+                onError(MessageErrorException())
+            } else {
+                data.productType = productType
+                onSuccess(data)
+            }
         }) {
             onLoading(false)
             onError(it)

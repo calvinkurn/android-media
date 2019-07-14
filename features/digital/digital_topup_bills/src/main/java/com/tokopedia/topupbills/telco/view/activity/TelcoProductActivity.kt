@@ -4,9 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.text.TextUtils
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.telco.view.fragment.DigitalBaseTelcoFragment
 import com.tokopedia.topupbills.telco.view.fragment.DigitalTelcoFragment
 import com.tokopedia.topupbills.telco.view.model.DigitalTelcoExtraParam
 
@@ -45,7 +43,6 @@ class TelcoProductActivity : BaseTelcoActivity() {
             intent.putExtra(PARAM_CLIENT_NUMBER, clientNumber)
             return intent
         }
-
     }
 
     override fun onBackPressed() {

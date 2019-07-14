@@ -13,6 +13,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.DigitalTopupAnalytics
@@ -121,8 +122,9 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                 topupAnalytics.eventClickSeeMore(itemProduct.product.attributes.categoryId)
 
                 activity?.let {
-                    val seeMoreBottomSheet = DigitalProductBottomSheet.newInstance(itemProduct.product.attributes.desc,
-                            itemProduct.product.attributes.detail,
+                    val seeMoreBottomSheet = DigitalProductBottomSheet.newInstance(
+                            itemProduct.product.attributes.info,
+                            MethodChecker.fromHtml(itemProduct.product.attributes.detail).toString(),
                             itemProduct.product.attributes.price)
                     seeMoreBottomSheet.setDismissListener {
                         topupAnalytics.eventCloseDetailProduct(itemProduct.product.attributes.categoryId)
@@ -155,8 +157,8 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
     }
 
     fun onErrorProductList(throwable: Throwable) {
-        titleEmptyState.setText(getString(R.string.title_telco_product_empty_state, titleProduct))
-        descEmptyState.setText(getString(R.string.desc_telco_product_empty_state, titleProduct.toLowerCase()))
+        titleEmptyState.text = getString(R.string.title_telco_product_empty_state, titleProduct)
+        descEmptyState.text = getString(R.string.desc_telco_product_empty_state, titleProduct.toLowerCase())
         emptyStateProductView.visibility = View.VISIBLE
         telcoTelcoProductView.visibility = View.GONE
     }

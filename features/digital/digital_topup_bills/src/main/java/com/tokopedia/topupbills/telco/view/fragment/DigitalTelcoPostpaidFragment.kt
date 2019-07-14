@@ -1,5 +1,6 @@
 package com.tokopedia.topupbills.telco.view.fragment
 
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.design.widget.Snackbar
@@ -25,6 +26,7 @@ import com.tokopedia.topupbills.telco.view.fragment.DigitalSearchNumberFragment.
 import com.tokopedia.topupbills.telco.view.listener.ClientNumberPostpaidListener
 import com.tokopedia.topupbills.telco.view.model.DigitalTelcoExtraParam
 import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoEnquiryViewModel
+import com.tokopedia.topupbills.telco.view.viewmodel.SharedProductTelcoViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
 import com.tokopedia.topupbills.telco.view.widget.DigitalPostpaidClientNumberWidget
 import com.tokopedia.topupbills.telco.view.widget.DigitalTelcoBuyWidget
@@ -47,12 +49,14 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     private val categoryId = TelcoCategoryType.CATEGORY_PASCABAYAR
 
     private lateinit var inputNumberActionType: InputNumberActionType
+    private lateinit var sharedModel: SharedProductTelcoViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.let {
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
             enquiryViewModel = viewModelProvider.get(DigitalTelcoEnquiryViewModel::class.java)
+            sharedModel = viewModelProvider.get(SharedProductTelcoViewModel::class.java)
         }
     }
 
@@ -77,9 +81,9 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_digital_telco_postpaid, container, false)
         mainContainer = view.findViewById(R.id.main_container)
-        recentNumbersView = view.findViewById(R.id.recent_numbers)
+        recentNumbersWidget = view.findViewById(R.id.recent_numbers)
         postpaidClientNumberWidget = view.findViewById(R.id.telco_input_number)
-        promoListView = view.findViewById(R.id.promo_widget)
+        promoListWidget = view.findViewById(R.id.promo_widget)
         buyWidget = view.findViewById(R.id.buy_widget)
         tickerView = view.findViewById(R.id.ticker_view)
         layoutProgressBar = view.findViewById(R.id.layout_progress_bar)
@@ -94,6 +98,15 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         renderClientNumber()
         getCatalogMenuDetail()
         getDataFromBundle()
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        sharedModel.promoItem.observe(this, Observer {
+            it?.run {
+                    promoListWidget.notifyPromoItemChanges(this)
+            }
+        })
     }
 
     fun getInputFilterDataCollections() {
@@ -140,8 +153,8 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 topupAnalytics.eventClearInputNumber()
 
                 postpaidClientNumberWidget.resetClientNumberPostpaid()
-                recentNumbersView.visibility = View.VISIBLE
-                promoListView.visibility = View.VISIBLE
+                recentNumbersWidget.visibility = View.VISIBLE
+                promoListWidget.visibility = View.VISIBLE
                 buyWidget.setVisibilityLayout(false)
             }
 
@@ -218,19 +231,19 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     fun onLoadingMenuDetail(showLoading: Boolean) {
         if (showLoading) {
             layoutProgressBar.visibility = View.VISIBLE
-            recentNumbersView.visibility = View.GONE
-            promoListView.visibility = View.GONE
+            recentNumbersWidget.visibility = View.GONE
+            promoListWidget.visibility = View.GONE
         } else {
             layoutProgressBar.visibility = View.GONE
-            recentNumbersView.visibility = View.VISIBLE
-            promoListView.visibility = View.VISIBLE
+            recentNumbersWidget.visibility = View.VISIBLE
+            promoListWidget.visibility = View.VISIBLE
         }
     }
 
     fun onSuccessEnquiry(telcoEnquiryData: TelcoEnquiryData) {
         postpaidClientNumberWidget.showEnquiryResultPostpaid(telcoEnquiryData)
-        recentNumbersView.visibility = View.GONE
-        promoListView.visibility = View.GONE
+        recentNumbersWidget.visibility = View.GONE
+        promoListWidget.visibility = View.GONE
 
         buyWidget.setTotalPrice(telcoEnquiryData.enquiry.attributes.price)
         buyWidget.setVisibilityLayout(true)
@@ -245,6 +258,10 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         view?.run {
             Toaster.showError(this, ErrorHandler.getErrorMessage(activity, throwable), Snackbar.LENGTH_LONG)
         }
+    }
+
+    override fun clickCopyOnPromoCode(promoId: Int) {
+        sharedModel.setPromoSelected(promoId)
     }
 
     override fun setInputNumberFromContact(contactNumber: String) {

@@ -12,7 +12,7 @@ class DigitalTelcoProductTabAdapter(val tabList: List<DigitalTabTelcoItem>, fm: 
     : FragmentStatePagerAdapter(fm) {
 
     override fun getItem(position: Int): Fragment {
-        return tabList.get(position).fragment
+        return tabList[position].fragment
     }
 
     override fun getCount(): Int {
@@ -20,6 +20,6 @@ class DigitalTelcoProductTabAdapter(val tabList: List<DigitalTabTelcoItem>, fm: 
     }
 
     override fun getPageTitle(position: Int): CharSequence? {
-        return tabList.get(position).title
+        return tabList[position].title
     }
 }

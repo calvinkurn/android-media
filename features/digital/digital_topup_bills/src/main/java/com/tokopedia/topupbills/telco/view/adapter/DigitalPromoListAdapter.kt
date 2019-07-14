@@ -1,4 +1,4 @@
-package com.tokopedia.digital.topupbillsproduct.adapter
+package com.tokopedia.topupbills.telco.view.adapter
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
@@ -24,6 +24,16 @@ class DigitalPromoListAdapter(val digitalPromoList: List<TelcoPromo>) :
 
     fun setListener(listener: ActionListener) {
         this.listener = listener
+    }
+
+    fun resetPromoListSelected(promoId: Int) {
+        for (i in 0 until digitalPromoList.size) {
+            if (digitalPromoList[i].voucherCodeCopied && digitalPromoList[i].id != promoId) {
+                digitalPromoList[i].voucherCodeCopied = false
+                notifyItemChanged(i)
+                break
+            }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PromoItemViewHolder {
@@ -56,9 +66,9 @@ class DigitalPromoListAdapter(val digitalPromoList: List<TelcoPromo>) :
             }
 
             btnCopyPromo.setOnClickListener {
-                for (i in 0..digitalPromoList.size - 1) {
-                    if (digitalPromoList.get(i).voucherCodeCopied) {
-                        digitalPromoList.get(i).voucherCodeCopied = false
+                for (i in 0 until digitalPromoList.size) {
+                    if (digitalPromoList[i].voucherCodeCopied) {
+                        digitalPromoList[i].voucherCodeCopied = false
                         notifyItemChanged(i)
                         break
                     }
@@ -66,24 +76,24 @@ class DigitalPromoListAdapter(val digitalPromoList: List<TelcoPromo>) :
 
                 telcoPromo.voucherCodeCopied = true
                 notifyItemChanged(adapterPosition)
-                listener.onClickPromoCode(telcoPromo.promoCode)
+                listener.onClickPromoCode(telcoPromo.id, telcoPromo.promoCode)
             }
         }
 
         fun bind() {
-            telcoPromo = digitalPromoList.get(adapterPosition)
+            telcoPromo = digitalPromoList[adapterPosition]
             description.text = telcoPromo.title
             promoCode.text = telcoPromo.promoCode
 
             if (telcoPromo.voucherCodeCopied) {
                 container.setBackgroundResource(R.drawable.digital_bg_transparent_border_green)
                 btnCopyPromo.setBackgroundResource(R.drawable.digital_bg_green_rounded)
-                btnCopyPromo.setText(context.getString(R.string.text_has_copied_promo_code))
+                btnCopyPromo.text = context.getString(R.string.text_has_copied_promo_code)
                 btnCopyPromo.setTextColor(context.resources.getColorFromResources(context, R.color.white))
             } else {
                 container.setBackgroundResource(R.drawable.digital_bg_transparent_round)
                 btnCopyPromo.setBackgroundResource(R.drawable.digital_bg_transparent_border_green)
-                btnCopyPromo.setText(context.getString(R.string.text_copy_promo_code))
+                btnCopyPromo.text = context.getString(R.string.text_copy_promo_code)
                 btnCopyPromo.setTextColor(context.resources.getColorFromResources(context, R.color.tkpd_main_green))
             }
 
@@ -97,7 +107,7 @@ class DigitalPromoListAdapter(val digitalPromoList: List<TelcoPromo>) :
     }
 
     interface ActionListener {
-        fun onClickPromoCode(voucherCode: String)
+        fun onClickPromoCode(promoId: Int, voucherCode: String)
 
         fun onClickPromoItem(telcoPromo: TelcoPromo)
     }

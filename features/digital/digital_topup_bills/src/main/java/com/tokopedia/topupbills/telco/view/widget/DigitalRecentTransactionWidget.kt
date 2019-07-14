@@ -7,7 +7,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.design.base.BaseCustomView
-import com.tokopedia.digital.topupbillsproduct.adapter.DigitalRecentNumbersAdapter
+import com.tokopedia.topupbills.telco.view.adapter.DigitalRecentNumbersAdapter
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.data.TelcoRecommendation
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType

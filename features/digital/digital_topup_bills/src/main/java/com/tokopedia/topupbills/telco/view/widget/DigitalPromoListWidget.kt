@@ -7,9 +7,9 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.design.base.BaseCustomView
-import com.tokopedia.digital.topupbillsproduct.adapter.DigitalPromoListAdapter
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.data.TelcoPromo
+import com.tokopedia.topupbills.telco.view.adapter.DigitalPromoListAdapter
 import com.tokopedia.topupbills.telco.view.model.DigitalTrackPromoTelco
 import org.jetbrains.annotations.NotNull
 
@@ -23,7 +23,7 @@ class DigitalPromoListWidget @JvmOverloads constructor(@NotNull context: Context
     private val recyclerView: RecyclerView
     private val titleWidget: TextView
     private val promoList = mutableListOf<TelcoPromo>()
-    private val digitalPromoListAdapter: DigitalPromoListAdapter
+    private lateinit var digitalPromoListAdapter: DigitalPromoListAdapter
     private lateinit var listener: ActionListener
     private val digitalTrackRecentPrev = mutableListOf<DigitalTrackPromoTelco>()
 
@@ -31,10 +31,6 @@ class DigitalPromoListWidget @JvmOverloads constructor(@NotNull context: Context
         val view = View.inflate(context, R.layout.view_digital_component_list, this)
         recyclerView = view.findViewById(R.id.recycler_view)
         titleWidget = view.findViewById(R.id.title_component)
-
-        digitalPromoListAdapter = DigitalPromoListAdapter(promoList)
-        recyclerView.adapter = digitalPromoListAdapter
-        recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
     }
 
     fun setListener(listener: ActionListener) {
@@ -44,9 +40,14 @@ class DigitalPromoListWidget @JvmOverloads constructor(@NotNull context: Context
     fun setPromoList(promoList: List<TelcoPromo>) {
         titleWidget.visibility = View.VISIBLE
         titleWidget.text = context.getString(R.string.title_promo)
+
+        digitalPromoListAdapter = DigitalPromoListAdapter(promoList)
+        recyclerView.adapter = digitalPromoListAdapter
+        recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+
         digitalPromoListAdapter.setListener(object : DigitalPromoListAdapter.ActionListener {
-            override fun onClickPromoCode(voucherCode: String) {
-                listener.onCopiedPromoCode(voucherCode)
+            override fun onClickPromoCode(promoId: Int, voucherCode: String) {
+                listener.onCopiedPromoCode(promoId, voucherCode)
             }
 
             override fun onClickPromoItem(telcoPromo: TelcoPromo) {
@@ -87,8 +88,14 @@ class DigitalPromoListWidget @JvmOverloads constructor(@NotNull context: Context
         }
     }
 
+    fun notifyPromoItemChanges(promoId: Int) {
+        if (::digitalPromoListAdapter.isInitialized) {
+            digitalPromoListAdapter.resetPromoListSelected(promoId)
+        }
+    }
+
     interface ActionListener {
-        fun onCopiedPromoCode(voucherCode: String)
+        fun onCopiedPromoCode(promoId: Int, voucherCode: String)
 
         fun onTrackImpressionPromoList(digitalTrackPromoList: List<DigitalTrackPromoTelco>)
 
