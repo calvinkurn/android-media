@@ -125,7 +125,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
                         setTitle(getString(R.string.remove_schedule))
                         setDesc(getString(R.string.remove_schedule_message))
                         setBtnOk(getString(R.string.action_delete))
-                        setBtnCancel(getString(com.tokopedia.design.R.string.cancel))
+                        setBtnCancel(getString(com.tokopedia.abstraction.R.string.cancel))
                         setOnOkClickListener {
                             //remove schedule
                             showSubmitLoading(getString(com.tokopedia.abstraction.R.string.title_loading))
