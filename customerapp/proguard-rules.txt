@@ -388,3 +388,5 @@
 -dontwarn com.rapid7.**
 -keep class ch.qos.** { *; }
 -keep class com.rapid7.** { *; }
+
+-keepnames class com.rapid7.jul.LogentriesHandler
