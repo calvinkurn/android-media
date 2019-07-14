@@ -4,9 +4,7 @@ package com.tokopedia.power_merchant.subscribe.view.fragment
 import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.Typeface
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
@@ -208,7 +206,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     private fun setupDialogKyc(): Dialog? {
         context?.let {
             val dialog = Dialog(it)
-            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
             dialog.setCancelable(false)
             dialog.setCanceledOnTouchOutside(true)
