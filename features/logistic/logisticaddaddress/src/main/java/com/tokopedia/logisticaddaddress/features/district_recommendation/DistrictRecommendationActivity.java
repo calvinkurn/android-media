@@ -42,12 +42,6 @@ public class DistrictRecommendationActivity extends BaseSimpleActivity
 
     private CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
 
-    @Inject
-    GetDistrictRecomToken getTokenUsecase;
-
-    @Inject
-    UserSessionInterface userSession;
-
     public static Intent createInstanceIntent(Activity activity, com.tokopedia.logisticaddaddress.domain.model.Token token) {
         return newInstance(activity, new TokenMapper().convertTokenModel(token));
     }
@@ -62,12 +56,6 @@ public class DistrictRecommendationActivity extends BaseSimpleActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         checkoutAnalyticsChangeAddress = new CheckoutAnalyticsChangeAddress();
-        DistrictRecommendationComponent districtRecommendationComponent =
-                DaggerDistrictRecommendationComponent.builder()
-                        .baseAppComponent(getComponent())
-                        .build();
-        districtRecommendationComponent.inject(this);
-
         if (getSupportActionBar() != null) {
             getSupportActionBar().setElevation(0);
             toolbar.setNavigationIcon(R.drawable.ic_close);
@@ -75,12 +63,6 @@ public class DistrictRecommendationActivity extends BaseSimpleActivity
 
         Token token = getIntent().getParcelableExtra(ARGUMENT_DATA_TOKEN);
         initFragment(token);
-//        if (token != null) {
-//            initFragment(token);
-//        } else {
-//            requestGetToken();
-//        }
-
     }
 
     @Override
@@ -114,52 +96,12 @@ public class DistrictRecommendationActivity extends BaseSimpleActivity
         checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickXPojokKananKotaAtauKecamatanPadaTambahAddress();
     }
 
-    private void requestGetToken() {
-        Map<String, String> params = new HashMap<>();
-        params = AuthUtil.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), params);
-
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(GetDistrictRecomToken.PARAM_AUTH, params);
-
-        ProgressDialog progress = new ProgressDialog(this);
-        progress.setCancelable(false);
-        progress.setMessage(getString(R.string.title_loading));
-        progress.setIndeterminate(true);
-        progress.show();
-
-        getTokenUsecase.execute(requestParams, new Subscriber<Token>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                progress.dismiss();
-                showErrorState();
-            }
-
-            @Override
-            public void onNext(Token token) {
-                progress.dismiss();
-                if (token != null) {
-                    initFragment(token);
-                } else {
-                    showErrorState();
-                }
-            }
-        });
-    }
-
     private void initFragment(Token token) {
-        Fragment fragment = DistrictRecommendationFragment.newInstance(token);
+        Fragment fragment = (token != null) ? DistrictRecommendationFragment.newInstance(token) :
+                DistrictRecommendationFragment.newInstance();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.parent_view, fragment, getTagFragment())
                 .commit();
-    }
-
-    private void showErrorState() {
-        NetworkErrorHelper.showEmptyState(this, findViewById(R.id.container), this::requestGetToken);
     }
 
 }

@@ -48,7 +48,6 @@ public class DistrictRecommendationPresenter extends BaseDaggerPresenter<Distric
     public void loadData(String query, int page) {
         getDataNoTokenUsecase.execute(query, page)
                 .doOnSubscribe(() -> getView().showLoading())
-                .doOnTerminate(() -> getView().hideLoading())
                 .subscribe(new Subscriber<AddressResponse>() {
                     @Override
                     public void onCompleted() {
@@ -57,16 +56,23 @@ public class DistrictRecommendationPresenter extends BaseDaggerPresenter<Distric
 
                     @Override
                     public void onError(Throwable e) {
-                        getView().showGetListError(e);
+                        e.printStackTrace();
+                        if (getView() != null) {
+                            getView().hideLoading();
+                            getView().showGetListError(e);
+                        }
                     }
 
                     @Override
                     public void onNext(AddressResponse addressResponse) {
-                        if (addressResponse.getAddresses() != null && addressResponse.getAddresses().size() > 0) {
-                            getView().renderList(addressViewModelMapper.transformToViewModel(addressResponse),
-                                    addressResponse.isNextAvailable());
-                        } else {
-                            getView().showNoResultMessage();
+                        if (getView() != null) {
+                            getView().hideLoading();
+                            if (addressResponse.getAddresses() != null && addressResponse.getAddresses().size() > 0) {
+                                getView().renderList(addressViewModelMapper.transformToViewModel(addressResponse),
+                                        addressResponse.isNextAvailable());
+                            } else {
+                                getView().showNoResultMessage();
+                            }
                         }
                     }
                 });

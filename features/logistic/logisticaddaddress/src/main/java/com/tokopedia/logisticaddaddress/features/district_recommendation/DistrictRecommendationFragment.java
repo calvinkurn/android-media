@@ -52,6 +52,7 @@ public class DistrictRecommendationFragment
 
     private TextView tvMessage;
     private SwipeToRefresh swipeRefreshLayout;
+    private Token mToken;
 
     @Inject
     UserSessionInterface userSession;
@@ -62,12 +63,19 @@ public class DistrictRecommendationFragment
     @Inject
     DistrictRecommendationContract.Presenter presenter;
 
+    public static DistrictRecommendationFragment newInstance() {
+        return new DistrictRecommendationFragment();
+    }
+
     public static DistrictRecommendationFragment newInstance(Token token) {
         DistrictRecommendationFragment fragment = new DistrictRecommendationFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARGUMENT_DATA_TOKEN, token);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    public DistrictRecommendationFragment() {
     }
 
     @Override
@@ -87,6 +95,14 @@ public class DistrictRecommendationFragment
         transactionAnalyticsDistrictRecommendation = (ITransactionAnalyticsDistrictRecommendation) context;
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mToken = getArguments().getParcelable(ARGUMENT_DATA_TOKEN);
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -99,7 +115,6 @@ public class DistrictRecommendationFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        showMessageSection();
         showInitialLoadMessage();
         searchInputView.setSearchHint(getString(R.string.hint_district_recommendation_search));
         searchInputView.setDelayTextChanged(DEBOUNCE_DELAY_IN_MILIS);
@@ -126,20 +141,16 @@ public class DistrictRecommendationFragment
 
     @Override
     public void loadData(int page) {
-        if (getActivity() != null && getArguments() != null && isAdded()) {
+        if (isAdded()) {
             if (!TextUtils.isEmpty(searchInputView.getSearchText()) &&
                     searchInputView.getSearchText().length() >= MINIMUM_SEARCH_KEYWORD_CHAR) {
-                hideMessageSection();
-                Token token = getArguments().getParcelable(ARGUMENT_DATA_TOKEN);
-                if (token != null) {
-                    presenter.loadData(searchInputView.getSearchText(), token, page);
+                if (mToken != null) {
+                    presenter.loadData(searchInputView.getSearchText(), mToken, page);
                 } else {
-//                    showNoResultMessage();
                     presenter.loadData(searchInputView.getSearchText(), page);
 
                 }
             } else {
-                showMessageSection();
                 showInitialLoadMessage();
             }
         }
@@ -198,35 +209,30 @@ public class DistrictRecommendationFragment
 
     @Override
     public void showLoading() {
-        hideMessageSection();
+        setMessageSection(false);
         super.showLoading();
     }
 
     @Override
     public void hideLoading() {
-        hideMessageSection();
+        setMessageSection(false);
         super.hideLoading();
     }
 
     @Override
     public void showNoResultMessage() {
         tvMessage.setText(getString(R.string.message_search_address_no_result));
-        showMessageSection();
+        setMessageSection(true);
     }
 
     @Override
     public void showInitialLoadMessage() {
         tvMessage.setText(getString(R.string.message_advice_search_address));
-        showMessageSection();
+        setMessageSection(true);
     }
 
-    private void hideMessageSection() {
-        tvMessage.setVisibility(View.GONE);
-        swipeRefreshLayout.setVisibility(View.VISIBLE);
-    }
-
-    private void showMessageSection() {
-        swipeRefreshLayout.setVisibility(View.GONE);
-        tvMessage.setVisibility(View.VISIBLE);
+    private void setMessageSection(boolean active) {
+        tvMessage.setVisibility(active ? View.VISIBLE : View.GONE);
+        swipeRefreshLayout.setVisibility(active ? View.GONE : View.VISIBLE);
     }
 }

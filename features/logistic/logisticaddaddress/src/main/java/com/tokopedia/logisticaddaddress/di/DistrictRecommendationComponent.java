@@ -13,6 +13,4 @@ import dagger.Component;
 @Component(modules = DistrictRecommendationModule.class, dependencies = BaseAppComponent.class)
 public interface DistrictRecommendationComponent {
     void inject(DistrictRecommendationFragment districtRecommendationFragment);
-
-    void inject(DistrictRecommendationActivity districtRecommendationActivity);
 }
