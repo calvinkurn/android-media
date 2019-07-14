@@ -7,11 +7,12 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictRecommendationMapper
+import com.tokopedia.logisticaddaddress.domain.model.AddressResponse
 import com.tokopedia.logisticaddaddress.domain.model.district_recommendation.DistrictRecommendationResponse
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_recommendation.DistrictRecommendationItemUiModel
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_recommendation.DistrictRecommendationResponseUiModel
 import com.tokopedia.network.exception.MessageErrorException
 import rx.Observable
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import javax.inject.Inject
 
 class GetDistrictRecommendation @Inject constructor(
@@ -19,12 +20,12 @@ class GetDistrictRecommendation @Inject constructor(
         val gql: GraphqlUseCase,
         val mapper: DistrictRecommendationMapper) {
 
-    fun execute(query: String, page: Int): Observable<DistrictRecommendationResponseUiModel> {
+    fun execute(query: String, page: Int): Observable<AddressResponse> {
         val param: Map<String, String> = mapOf(
-                "#keyQuery" to query,
-                "#numPage" to page.toString()
+                "query" to query,
+                "page" to page.toString()
         )
-        val gqlQuery = GraphqlHelper.loadRawString(context.resources, R.raw.district_recommendation)
+        val gqlQuery = GraphqlHelper.loadRawString(context.resources, R.raw.district_recommendation_new)
         val gqlRequest = GraphqlRequest(gqlQuery, DistrictRecommendationResponse::class.java, param)
 
         gql.clearRequest()
@@ -37,7 +38,13 @@ class GetDistrictRecommendation @Inject constructor(
                             gqlResponse.getError(DistrictRecommendationResponse::class.java)[0].message
                     )
                 }
-                .map { mapper.transform(it) }
+                .map { mapper.transformViewModel(it) }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+    }
+
+    fun unsubscribe() {
+        gql.unsubscribe()
     }
 
 }
