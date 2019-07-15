@@ -23,7 +23,7 @@ class GetDyanamicAutoSelecetedFilterUseCase @Inject constructor(private val getH
 
             t1?.forEach {
                 if (it!!.filterKey.equals(KEY_OFFICIAL_FLAG)) {
-                    flag = it.filterKey!!.toBoolean()
+                    flag = it.filterValue!!.toBoolean()
                 }
             }
             DynamicFilterModel(t2.data, t2.processTime, t2.status, flag)
