@@ -15,8 +15,7 @@ import javax.inject.Inject;
 /**
  * @author by nisie on 10/25/18.
  */
-public class RegisterEmailPresenter extends BaseDaggerPresenter<RegisterEmailContract.View>
-        implements RegisterEmailContract.Presenter {
+public class RegisterEmailPresenter extends BaseDaggerPresenter<RegisterEmailContract.View> implements RegisterEmailContract.Presenter {
 
     private RegisterEmailUseCase registerEmailUseCase;
 
@@ -26,8 +25,7 @@ public class RegisterEmailPresenter extends BaseDaggerPresenter<RegisterEmailCon
     }
 
     @Override
-    public void onRegisterClicked(String email, String name, String password, String
-            confirmPassword, String phone, int isAutoVerify) {
+    public void onRegisterClicked(String email, String name, String password, String confirmPassword, int isAutoVerify) {
         getView().resetError();
         getView().showLoadingProgress();
         getView().dropKeyboard();
@@ -37,16 +35,15 @@ public class RegisterEmailPresenter extends BaseDaggerPresenter<RegisterEmailCon
                         name,
                         password,
                         confirmPassword,
-                        phone,
                         isAutoVerify
                 ),
                 new RegisterEmailSubscriber(getView(),
-                        email, name, phone, password));
+                        email, name, password));
 
     }
 
     @Override
-    public boolean isCanRegister(String name, String email, String password, String phone) {
+    public boolean isCanRegister(String name, String email, String password) {
         boolean isValid = true;
 
         int PASSWORD_MINIMUM_LENGTH = 6;
@@ -54,16 +51,6 @@ public class RegisterEmailPresenter extends BaseDaggerPresenter<RegisterEmailCon
             isValid = false;
         } else if (password.length() < PASSWORD_MINIMUM_LENGTH) {
             isValid = false;
-        }
-
-        if (TextUtils.isEmpty(phone)) {
-            isValid = false;
-        } else {
-            boolean validatePhoneNumber = RegisterUtil.isValidPhoneNumber(phone.replace("-",
-                    ""));
-            if (!validatePhoneNumber) {
-                isValid = false;
-            }
         }
 
         if (TextUtils.isEmpty(name)) {

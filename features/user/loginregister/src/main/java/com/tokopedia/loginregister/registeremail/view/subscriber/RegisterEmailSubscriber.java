@@ -26,15 +26,13 @@ public class RegisterEmailSubscriber extends Subscriber<RegisterEmailPojo> {
     private final RegisterEmailContract.View viewListener;
     private final String email;
     private final String name;
-    private final String phone;
     private final String password;
 
     public RegisterEmailSubscriber(RegisterEmailContract.View viewListener,
-                                   String email, String name, String phone, String password) {
+                                   String email, String name, String password) {
         this.viewListener = viewListener;
         this.email = email;
         this.name = name;
-        this.phone = phone;
         this.password = password;
     }
 
@@ -71,7 +69,7 @@ public class RegisterEmailSubscriber extends Subscriber<RegisterEmailPojo> {
     @Override
     public void onNext(RegisterEmailPojo registerEmailPojo) {
         if (registerEmailPojo.getIsSuccess() == 1) {
-            viewListener.onSuccessRegister(registerEmailPojo, name, email, phone);
+            viewListener.onSuccessRegister(registerEmailPojo, name, email);
             checkSmartRegister(registerEmailPojo);
         } else {
             viewListener.onErrorRegister(
