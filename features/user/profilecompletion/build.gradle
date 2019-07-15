@@ -38,7 +38,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.config)
 
     implementation rootProject.ext.unifyDependencies.principles
-//    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.components
 
     implementation project(rootProject.ext.features.sessioncommon)
 

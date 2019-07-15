@@ -7,6 +7,7 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,6 +31,8 @@ import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.settingprofile.data.ProfileCompletionData
 import com.tokopedia.profilecompletion.settingprofile.data.UploadProfilePictureResult
 import com.tokopedia.profilecompletion.settingprofile.viewmodel.ProfileInfoViewModel
+import com.tokopedia.sessioncommon.ErrorHandlerSession
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_setting_profile.*
@@ -159,7 +162,10 @@ class SettingProfileFragment : BaseDaggerFragment() {
     private fun onSuccessAddGender(data: Intent?) {
         data?.extras?.run {
             val genderResult = getInt(ChangeGenderFragment.EXTRA_SELECTED_GENDER, 1)
-            //TODO SHOW TOAST SUCCESS
+
+            view?.run{
+                Toaster.showNormal(this, getString(R.string.success_add_gender), Snackbar.LENGTH_LONG)
+            }
             gender.showFilled(
                     getString(R.string.subtitle_gender_setting_profile),
                     if (genderResult == 1)
@@ -175,7 +181,9 @@ class SettingProfileFragment : BaseDaggerFragment() {
         data?.extras?.run {
             val phoneString = getString(AddPhoneFragment.EXTRA_PHONE, "")
             if (phoneString.isNotBlank()) {
-                //TODO SHOW TOAST SUCCESS
+                view?.run{
+                    Toaster.showNormal(this, getString(R.string.success_add_phone), Snackbar.LENGTH_LONG)
+                }
                 phone.showFilled(
                         getString(R.string.subtitle_phone_setting_profile),
                         PhoneNumberUtils.transform(phoneString),
@@ -194,7 +202,9 @@ class SettingProfileFragment : BaseDaggerFragment() {
         data?.extras?.run {
             val emailString = getString(AddEmailFragment.EXTRA_EMAIL, "")
             if (emailString.isNotBlank()) {
-                //TODO SHOW TOAST SUCCESS
+                view?.run{
+                    Toaster.showNormal(this, getString(R.string.success_add_email), Snackbar.LENGTH_LONG)
+                }
                 email.showFilled(
                         getString(R.string.subtitle_email_setting_profile),
                         emailString,
@@ -339,9 +349,9 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     true,
                     View.OnClickListener {
 
-                        if(profileCompletionData.isPhoneVerified) {
+                        if (profileCompletionData.isPhoneVerified) {
                             goToChangePhone(profileCompletionData.phone, profileCompletionData.email)
-                        }else{
+                        } else {
                             goToVerifyPhone(profileCompletionData.phone, profileCompletionData.email)
 
                         }
@@ -365,10 +375,10 @@ class SettingProfileFragment : BaseDaggerFragment() {
     private fun onErrorGetProfileInfo(throwable: Throwable) {
         dismissLoading()
         view?.run {
-            //            Toaster.showError(
-//                    this,
-//                    ErrorHandlerSession.getErrorMessage(throwable, context, true),
-//                    Snackbar.LENGTH_LONG)
+            Toaster.showError(
+                    this,
+                    ErrorHandlerSession.getErrorMessage(throwable, context, true),
+                    Snackbar.LENGTH_LONG)
         }
     }
 

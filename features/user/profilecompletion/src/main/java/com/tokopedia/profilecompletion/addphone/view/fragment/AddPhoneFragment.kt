@@ -7,6 +7,7 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -24,6 +25,7 @@ import com.tokopedia.profilecompletion.addphone.data.AddPhoneResult
 import com.tokopedia.profilecompletion.addphone.data.CheckPhonePojo
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.sessioncommon.ErrorHandlerSession
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_add_phone.*
@@ -169,13 +171,12 @@ class AddPhoneFragment : BaseDaggerFragment() {
 
     private fun onErrorAddPhone(throwable: Throwable) {
         dismissLoading()
-        //TODO uncomment after unify is fixed
-//        view?.run {
-//            Toaster.showError(
-//                    this,
-//                    ErrorHandlerSession.getErrorMessage(throwable, context, true),
-//                    Snackbar.LENGTH_LONG)
-//        }
+        view?.run {
+            Toaster.showError(
+                    this,
+                    ErrorHandlerSession.getErrorMessage(throwable, context, true),
+                    Snackbar.LENGTH_LONG)
+        }
     }
 
     private fun onSuccessAddPhone(result: AddPhoneResult) {
