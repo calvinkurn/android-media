@@ -166,7 +166,6 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         }
 
         etSearch.run {
-            isFocusableInTouchMode = true
             setOnClickListener {
                 AddNewAddressAnalytics.eventClickFieldCariLokasi()
             }
@@ -192,17 +191,17 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
                 override fun afterTextChanged(s: Editable) {
                 }
             })
+
+            isFocusableInTouchMode = true
+            isFocusable = true
+            requestFocus()
+            AddNewAddressUtils.showKeyboard(context)
         }
 
         rlCurrentLocation.setOnClickListener {
             AddNewAddressUtils.hideKeyboard(etSearch, context)
             actionListener.useCurrentLocation()
             dismiss()
-        }
-
-        etSearch.run {
-            requestFocus()
-            AddNewAddressUtils.showKeyboard(this, context, SHOW_FORCED)
         }
     }
 

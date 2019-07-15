@@ -106,8 +106,8 @@ object AddNewAddressUtils {
     }
 
     @JvmStatic
-    fun showKeyboard(et: EditText, context: Context?, flag: Int) {
+    fun showKeyboard(context: Context?) {
         val imm = context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.showSoftInput(et, flag)
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
     }
 }
