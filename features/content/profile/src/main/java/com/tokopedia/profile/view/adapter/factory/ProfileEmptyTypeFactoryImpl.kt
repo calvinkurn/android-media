@@ -4,13 +4,12 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.profile.view.adapter.viewholder.ProfileEmptyViewHolder
 import com.tokopedia.profile.view.adapter.viewholder.ProfileHeaderViewHolder
 import com.tokopedia.profile.view.listener.ProfileEmptyContract
-import com.tokopedia.profile.view.viewmodel.EmptyAffiliateViewModel
-import com.tokopedia.profile.view.viewmodel.ProfileEmptyViewModel
-import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
+import com.tokopedia.profile.view.viewmodel.*
 
 /**
  * @author by yfsx on 14/03/19.
@@ -23,15 +22,27 @@ class ProfileEmptyTypeFactoryImpl(private val viewListener: ProfileEmptyContract
     }
 
     override fun type(viewModel: ProfileEmptyViewModel): Int {
-        return 0
+        return HideViewHolder.LAYOUT
     }
 
     override fun type(dynamicPostViewModel: DynamicPostViewModel): Int {
-        return 0
+        return HideViewHolder.LAYOUT
     }
 
     override fun type(emptyAffiliateViewModel: EmptyAffiliateViewModel): Int {
-        return 0
+        return HideViewHolder.LAYOUT
+    }
+
+    override fun type(noPostCardViewModel: NoPostCardViewModel): Int {
+        return HideViewHolder.LAYOUT
+    }
+
+    override fun type(otherRelatedProfileViewModel: OtherRelatedProfileViewModel): Int {
+        return HideViewHolder.LAYOUT
+    }
+
+    override fun type(emptyAffiliateViewModel: TitleViewModel): Int {
+        return HideViewHolder.LAYOUT
     }
 
     @Suppress("UNCHECKED_CAST")

@@ -1,5 +1,5 @@
-query ContentForm($relatedID: [String], $type: String) {
-  feed_content_form(relatedID: $relatedID, type: $type) {
+query ContentForm($relatedID: [String], $type: String, $id: String) {
+  feed_content_form(relatedID: $relatedID, type: $type, ID: $id) {
     token
     type
     defaultPlaceholder

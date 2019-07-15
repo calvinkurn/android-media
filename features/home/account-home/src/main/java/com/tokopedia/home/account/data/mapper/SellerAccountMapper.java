@@ -16,6 +16,7 @@ import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuTitleViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.PowerMerchantCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.SellerEmptyViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.SellerSaldoViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
@@ -178,6 +179,14 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
 
         menuTitle = new MenuTitleViewModel(context.getString(R.string.title_menu_other_features));
         items.add(menuTitle);
+
+        if (!accountModel.getShopInfo().getInfo().getShopIsOfficial().equals("1")) {
+            PowerMerchantCardViewModel powerMerchantCardViewModel = new PowerMerchantCardViewModel();
+            powerMerchantCardViewModel.setTitleText(context.getString(R.string.title_pm_card));
+            powerMerchantCardViewModel.setDescText(context.getString(R.string.desc_pm_card));
+            powerMerchantCardViewModel.setIconRes(R.drawable.ic_pm_line_shades);
+            items.add(powerMerchantCardViewModel);
+        }
 
         menuList = new MenuListViewModel();
         menuList.setMenu(context.getString(R.string.title_menu_opportunity));

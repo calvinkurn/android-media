@@ -5,6 +5,7 @@ package com.tokopedia.logisticaddaddress;
  */
 public class AddressConstants {
 
+    public static final String SCREEN_ADD_ADDRESS_FORM = "Add Address Form";
 
     public static final String SCREEN_MANAGE_ADDRESS = "People Edit Address";
 

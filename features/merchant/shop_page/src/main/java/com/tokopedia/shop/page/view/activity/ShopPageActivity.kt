@@ -533,6 +533,10 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         if (f != null && f is ShopProductListLimitedFragment) {
             f.clearCache()
         }
+        val feedfragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(TAB_POSITION_FEED)
+        if (feedfragment != null && feedfragment is FeedShopFragment){
+            feedfragment.setRefresh()
+        }
         getShopInfo(true)
         swipeToRefresh.isRefreshing = true
     }

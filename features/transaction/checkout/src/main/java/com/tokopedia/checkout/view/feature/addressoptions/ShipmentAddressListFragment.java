@@ -33,7 +33,7 @@ import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity;
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics;
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity;
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_address.SaveAddressDataModel;
-import com.tokopedia.logisticcommon.LogisticCommonConstant;
+import com.tokopedia.logisticdata.data.constant.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.address.Destination;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
