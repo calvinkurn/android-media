@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.atc_common.data.model.request.AddToCartRequest;
 import com.tokopedia.checkout.domain.datamodel.DeleteAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.ResetAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.addtocart.AddToCartDataResponseModel;
@@ -24,7 +25,7 @@ import com.tokopedia.checkout.domain.usecase.GetRecentViewUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateAndReloadCartUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
-import com.tokopedia.checkout.view.feature.cartlist.subscriber.AddToCartSubscriber1;
+import com.tokopedia.checkout.view.feature.cartlist.subscriber.AddToCartSubscriber;
 import com.tokopedia.checkout.view.feature.cartlist.subscriber.CheckPromoFirstStepAfterClashSubscriber;
 import com.tokopedia.checkout.view.feature.cartlist.subscriber.ClearCacheAutoApplyAfterClashSubscriber;
 import com.tokopedia.checkout.view.feature.cartlist.subscriber.ClearCacheAutoApplySubscriber;
@@ -37,7 +38,6 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartRecommendation
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartWishlistItemHolderData;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
-import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.promocheckout.common.data.entity.request.CurrentApplyCode;
 import com.tokopedia.promocheckout.common.data.entity.request.Order;
 import com.tokopedia.promocheckout.common.data.entity.request.Promo;
@@ -49,7 +49,6 @@ import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsGqlUseCase;
-import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceAdd;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
@@ -1215,63 +1214,41 @@ public class CartListPresenter implements ICartListPresenter {
 
     @Override
     public void processAddToCart(Object productModel) {
-        try {
-            int productId = 0;
-            int shopId = 0;
-            String externalSource = "";
-            if (productModel instanceof CartWishlistItemHolderData) {
-                CartWishlistItemHolderData cartWishlistItemHolderData = (CartWishlistItemHolderData) productModel;
-                productId = Integer.parseInt(cartWishlistItemHolderData.getId());
-                shopId = Integer.parseInt(cartWishlistItemHolderData.getShopId());
-                externalSource = AddToCartRequest.ATC_FROM_WISHLIST;
-            } else if (productModel instanceof CartRecentViewItemHolderData) {
-                CartRecentViewItemHolderData cartRecentViewItemHolderData = (CartRecentViewItemHolderData) productModel;
-                productId = Integer.parseInt(cartRecentViewItemHolderData.getId());
-                shopId = Integer.parseInt(cartRecentViewItemHolderData.getShopId());
-                externalSource = AddToCartRequest.ATC_FROM_RECENT_VIEW;
-            } else if (productModel instanceof CartRecommendationItemHolderData) {
-                CartRecommendationItemHolderData cartRecommendationItemHolderData = (CartRecommendationItemHolderData) productModel;
-                productId = cartRecommendationItemHolderData.getRecommendationItem().getProductId();
-                shopId = cartRecommendationItemHolderData.getRecommendationItem().getShopId();
-                externalSource = AddToCartRequest.ATC_FROM_RECOMMENDATION;
-            }
-
-            view.showProgressLoading();
-//            AddToCartRequest addToCartRequest = new AddToCartRequest.Builder()
-//                    .productId(productId)
-//                    .notes("")
-//                    .quantity(0) // Always be 0 (request from backend)
-//                    .warehouseId(0) // Always be 0 (request from backend)
-//                    .shopId(shopId)
-//                    .build();
-
-//            RequestParams requestParams = RequestParams.create();
-//            requestParams.putObject(AddToCartUseCase.PARAM_ADD_TO_CART, addToCartRequest);
-
-//            addToCartUseCase.createObservable(requestParams)
-//                    .subscribeOn(Schedulers.io())
-//                    .unsubscribeOn(Schedulers.io())
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribe(new AddToCartSubscriber(view, this, productModel));
-
-            com.tokopedia.atc_common.data.model.request.AddToCartRequest addToCartRequest1 = new com.tokopedia.atc_common.data.model.request.AddToCartRequest();
-            addToCartRequest1.setProductId(productId);
-            addToCartRequest1.setShopId(shopId);
-            addToCartRequest1.setQuantity(0);
-            addToCartRequest1.setNotes("");
-            addToCartRequest1.setWarehouseId(0);
-            addToCartRequest1.setAtcFromExternalSource(externalSource);
-
-            addToCartUseCase1.setParams(addToCartRequest1);
-            addToCartUseCase1.createObservable(RequestParams.create())
-                    .subscribeOn(Schedulers.io())
-                    .unsubscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new AddToCartSubscriber1(view, this, productModel));
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-            view.hideProgressLoading();
+        int productId = 0;
+        int shopId = 0;
+        String externalSource = "";
+        if (productModel instanceof CartWishlistItemHolderData) {
+            CartWishlistItemHolderData cartWishlistItemHolderData = (CartWishlistItemHolderData) productModel;
+            productId = Integer.parseInt(cartWishlistItemHolderData.getId());
+            shopId = Integer.parseInt(cartWishlistItemHolderData.getShopId());
+            externalSource = AddToCartRequest.Companion.getATC_FROM_WISHLIST();
+        } else if (productModel instanceof CartRecentViewItemHolderData) {
+            CartRecentViewItemHolderData cartRecentViewItemHolderData = (CartRecentViewItemHolderData) productModel;
+            productId = Integer.parseInt(cartRecentViewItemHolderData.getId());
+            shopId = Integer.parseInt(cartRecentViewItemHolderData.getShopId());
+            externalSource = AddToCartRequest.Companion.getATC_FROM_RECENT_VIEW();
+        } else if (productModel instanceof CartRecommendationItemHolderData) {
+            CartRecommendationItemHolderData cartRecommendationItemHolderData = (CartRecommendationItemHolderData) productModel;
+            productId = cartRecommendationItemHolderData.getRecommendationItem().getProductId();
+            shopId = cartRecommendationItemHolderData.getRecommendationItem().getShopId();
+            externalSource = AddToCartRequest.Companion.getATC_FROM_RECOMMENDATION();
         }
+
+        view.showProgressLoading();
+        AddToCartRequest addToCartRequest = new AddToCartRequest();
+        addToCartRequest.setProductId(productId);
+        addToCartRequest.setShopId(shopId);
+        addToCartRequest.setQuantity(0);
+        addToCartRequest.setNotes("");
+        addToCartRequest.setWarehouseId(0);
+        addToCartRequest.setAtcFromExternalSource(externalSource);
+
+        addToCartUseCase1.setParams(addToCartRequest);
+        addToCartUseCase1.createObservable(RequestParams.create())
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new AddToCartSubscriber(view, this, productModel));
     }
 
     @Override

@@ -16,4 +16,10 @@ data class AddToCartRequest(
         var warehouseId: Int = 0,
         var atcFromExternalSource: String = "",
         var isSCP: Boolean = false
-)
+) {
+    companion object {
+        val ATC_FROM_WISHLIST = "wishlist_list"
+        val ATC_FROM_RECENT_VIEW = "last_seen_list"
+        val ATC_FROM_RECOMMENDATION = "recommendation_list"
+    }
+}
