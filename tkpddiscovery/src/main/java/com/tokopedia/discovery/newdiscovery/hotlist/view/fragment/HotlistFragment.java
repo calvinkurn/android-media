@@ -986,6 +986,12 @@ public class HotlistFragment extends BrowseSectionFragment
     }
 
     @Override
+    public void setOfficialSelected(Boolean officialSelectedFlag) {
+        super.setOfficialSelected(officialSelectedFlag);
+        onQuickFilterSelected("official", "true");
+    }
+
+    @Override
     public void renderDynamicFilter(DynamicFilterModel pojo) {
         super.renderDynamicFilter(pojo);
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
@@ -1012,6 +1018,9 @@ public class HotlistFragment extends BrowseSectionFragment
                     CustomViewRoundedQuickFilterItem quickFilterItem = new CustomViewRoundedQuickFilterItem();
                     quickFilterItem.setName(optionList.get(i).getName());
                     quickFilterItem.setType(optionList.get(i).getKey() + "=" + optionList.get(i).getValue());
+                    if (optionList.get(i).getKey().equals("official")) {
+                        quickFilterItem.setSelected(true);
+                    }
                     this.quickFilterItems.add(quickFilterItem);
                 }
             }

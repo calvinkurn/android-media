@@ -44,6 +44,7 @@ public class GetDynamicFilterSubscriber extends Subscriber<DynamicFilterModel> {
         if (dynamicFilterModel != null) {
             storeLocalFilter(dynamicFilterModel);
             view.renderDynamicFilter(dynamicFilterModel);
+            view.setOfficialSelected(dynamicFilterModel.getOfficialSelectedFlag());
         } else {
             view.renderFailGetDynamicFilter();
         }

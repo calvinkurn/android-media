@@ -1,11 +1,12 @@
 package com.tokopedia.discovery.newdiscovery.domain.usecase;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.discovery.common.data.DynamicFilterModel;
 import com.tokopedia.discovery.newdiscovery.data.repository.AttributeRepository;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import rx.Observable;
 
@@ -20,12 +21,15 @@ public class GetDynamicFilterUseCase extends UseCase<DynamicFilterModel> {
     public GetDynamicFilterUseCase(ThreadExecutor threadExecutor,
                                    PostExecutionThread postExecutionThread,
                                    AttributeRepository repository) {
-        super(threadExecutor, postExecutionThread);
+       // super(threadExecutor, postExecutionThread);
         this.repository = repository;
     }
 
     @Override
     public Observable<DynamicFilterModel> createObservable(RequestParams requestParams) {
-        return repository.getDynamicFilter(requestParams.getParameters());
+        TKPDMapParam<String,Object> tkpdMapParam = new TKPDMapParam<>();
+        tkpdMapParam.putAll(requestParams.getParameters());
+
+        return repository.getDynamicFilter(tkpdMapParam);
     }
 }

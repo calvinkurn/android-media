@@ -7,6 +7,7 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDyanamicAutoSelecetedFilterUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.discovery.newdiscovery.hotlist.domain.usecase.GetHotlistInitializeUseCase;
@@ -52,6 +53,9 @@ public class HotlistFragmentPresenter extends BrowseSectionFragmentPresenterImpl
 
     @Inject
     UserSessionInterface userSession;
+
+    @Inject
+    GetDyanamicAutoSelecetedFilterUseCase getDyanamicAutoSelecetedFilterUseCase;
 
     private final Context context;
 
@@ -110,7 +114,10 @@ public class HotlistFragmentPresenter extends BrowseSectionFragmentPresenterImpl
 
     @Override
     protected void getFilterFromNetwork(RequestParams requestParams) {
-        getDynamicFilterUseCase.execute(requestParams, new GetDynamicFilterSubscriber(getView()));
+        com.tokopedia.usecase.RequestParams requestParamsNew = new com.tokopedia.usecase.RequestParams();
+        requestParamsNew.putAll(requestParams.getParameters());
+        requestParamsNew.putString("productKey",getView().getHotlistAlias());
+        getDyanamicAutoSelecetedFilterUseCase.execute(requestParamsNew,new GetDynamicFilterSubscriber(getView()));
     }
 
     @Override
