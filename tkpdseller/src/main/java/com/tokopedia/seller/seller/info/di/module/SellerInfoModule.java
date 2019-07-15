@@ -41,6 +41,6 @@ public class SellerInfoModule {
     @Named("SELLER_CENTER_RAW")
     @Provides
     public String provideRawSellerCenter(@ApplicationContext Context context){
-        return GraphqlHelper.loadRawString(context.getResources(), R.raw.gold_merchant_status);
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.notifcenter_list_raw);
     }
 }

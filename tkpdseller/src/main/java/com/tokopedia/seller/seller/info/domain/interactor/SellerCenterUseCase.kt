@@ -34,7 +34,7 @@ class SellerCenterUseCase @Inject constructor(private val graphqlUseCase: Graphq
     }
 
     override fun createObservable(requestParams: RequestParams): Observable<ResponseSellerInfoModel> {
-        val graphqlRequest = GraphqlRequest(rawQuery, ResponseSellerInfoModel::class.java, requestParams?.parameters)
+        val graphqlRequest = GraphqlRequest(rawQuery, ResponseSellerInfoModel::class.java, requestParams.parameters)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
 
@@ -53,6 +53,4 @@ class SellerCenterUseCase @Inject constructor(private val graphqlUseCase: Graphq
             data
         }
     }
-
-
 }
