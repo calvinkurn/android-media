@@ -1238,9 +1238,9 @@ public class CartListPresenter implements ICartListPresenter {
         addToCartRequestParams.setWarehouseId(0);
         addToCartRequestParams.setAtcFromExternalSource(externalSource);
 
-        RequestParams requestParams = new RequestParams();
+        RequestParams requestParams = RequestParams.create();
         requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams);
-        addToCartUseCase.createObservable(RequestParams.create())
+        addToCartUseCase.createObservable(requestParams)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
