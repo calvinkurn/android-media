@@ -25,6 +25,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -64,11 +65,7 @@ class SubmitPostService : JobIntentService() {
                 CreatePostViewModel::class.java
         ) ?: return
         val notifId = Random().nextInt()
-        notificationManager = getNotificationManager(id,
-                viewModel.authorType,
-                viewModel.completeImageList.firstOrNull()?.path?:"",
-                notifId,
-                viewModel.completeImageList.size)
+        notificationManager = getNotificationManager(notifId, viewModel)
         submitPostUseCase.notificationManager = notificationManager
 
         submitPostUseCase.execute(SubmitPostUseCase.createRequestParams(
@@ -92,8 +89,10 @@ class SubmitPostService : JobIntentService() {
 
     private fun isTypeAffiliate(authorType: String) = authorType == TYPE_AFFILIATE
 
-    private fun getNotificationManager(draftId: String, authorType: String, firstImage: String,
-                                       notifId: Int, maxCount: Int): SubmitPostNotificationManager {
+    private fun getNotificationManager(notifId: Int, viewModel: CreatePostViewModel): SubmitPostNotificationManager {
+        val authorType = viewModel.authorType
+        val firstImage = viewModel.completeImageList.firstOrNull()?.path ?: ""
+        val maxCount = viewModel.completeImageList.size
 
         val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         return object : SubmitPostNotificationManager(notifId, maxCount, firstImage, manager,
@@ -111,7 +110,7 @@ class SubmitPostService : JobIntentService() {
             }
 
             override fun getFailedIntent(errorMessage: String): PendingIntent {
-                val message = if (errorMessage.contains(context.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown_short), false))
+                val message = if (!errorMessage.contains(context.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown_short), false))
                     errorMessage
                 else
                     context.getString(R.string.af_error_create_post)
@@ -123,9 +122,12 @@ class SubmitPostService : JobIntentService() {
                     ApplinkConst.CONTENT_DRAFT_POST
                 }
 
+                val cacheManager = SaveInstanceCacheManager(context, true)
+                cacheManager.put(CreatePostViewModel.TAG, viewModel, TimeUnit.DAYS.toMillis(7))
+
                 val intent = RouteManager.getIntent(
                         context,
-                        applink.replace(DRAFT_ID_PARAM, draftId)
+                        applink.replace(DRAFT_ID_PARAM, cacheManager.id!!)
                                 .plus("?$CREATE_POST_ERROR_MSG=$message")
                 )
 
