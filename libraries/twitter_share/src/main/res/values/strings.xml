@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Twitter Share</string>
+
+    <string name="log_in_with_twitter">Log in With Twitter</string>
 </resources>
