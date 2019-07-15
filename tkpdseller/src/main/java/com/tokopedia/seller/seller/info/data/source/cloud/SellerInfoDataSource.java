@@ -1,7 +1,7 @@
 package com.tokopedia.seller.seller.info.data.source.cloud;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.seller.seller.info.data.model.ResponseSellerInfoModel;
+import com.tokopedia.seller.seller.info.data.model.ResponseSellerInfoModelA;
 import com.tokopedia.seller.seller.info.data.source.SellerInfoApi;
 import com.tokopedia.seller.shopscore.data.common.GetData;
 
@@ -21,8 +21,8 @@ public class SellerInfoDataSource {
         this.sellerInfoApi = sellerInfoApi;
     }
 
-    public Observable<ResponseSellerInfoModel> getSellerInfoList(RequestParams requestParams){
+    public Observable<ResponseSellerInfoModelA> getSellerInfoList(RequestParams requestParams){
         return sellerInfoApi.listSellerInfo(requestParams.getParamsAllValueInString())
-                .map(new GetData<ResponseSellerInfoModel>());
+                .map(new GetData<ResponseSellerInfoModelA>());
     }
 }
