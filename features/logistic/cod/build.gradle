@@ -40,5 +40,5 @@ dependencies {
 
     implementation project(rootProject.ext.features.transactiondata)
     implementation project(rootProject.ext.features.transactionanalytics)
-    implementation project(rootProject.ext.features.logisticanalytics)
+    implementation project(rootProject.ext.features.logisticdata)
 }
