@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.events.R;
+import com.tokopedia.events.data.source.EventsUrl;
 import com.tokopedia.events.domain.model.EventsCategoryDomain;
 import com.tokopedia.events.domain.model.EventsItemDomain;
 import com.tokopedia.events.domain.model.LikeUpdateResultDomain;
@@ -34,7 +35,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -374,7 +374,7 @@ public class Utils {
         share.putExtra(Intent.EXTRA_SUBJECT,
                 String.format(context.getResources().getString(R.string.check_this_out),
                         title));
-        share.putExtra(Intent.EXTRA_TEXT, "https://www.tokopedia.com/events/detail/" + URL);
+        share.putExtra(Intent.EXTRA_TEXT, EventsUrl.AppLink.EVENTS + "/" + URL);
         context.startActivity(Intent.createChooser(share, "Share Event!"));
     }
 

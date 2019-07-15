@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center_horizontal"
-    android:orientation="vertical"
-    android:background="@drawable/bg_rounded_chat_input">
+    android:layout_width="match_parent"
+    android:minWidth="@dimen/dp_350"
+    android:layout_height="match_parent"
+    >
 
     <RelativeLayout
-        android:layout_width="350dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp_28"
-        android:background="@drawable/bg_rounded_chat_input">
+        android:padding="@dimen/dp_28">
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/txt_kyc_header_1"
@@ -19,14 +17,12 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/dp_16"
             android:gravity="center"
             android:text="@string/pm_label_kyc_verification_header"
             android:textColor="@color/black"
-            app:fontSize="subHeadline"
             android:textStyle="bold"
-            android:layout_marginBottom="@dimen/dp_16"
-            />
-
+            app:fontSize="subHeadline" />
 
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/txt_kyc_static_desc_1"
@@ -34,12 +30,11 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/txt_kyc_header_1"
             android:layout_centerHorizontal="true"
-            android:gravity="center"
             android:layout_marginBottom="@dimen/dp_24"
+            android:gravity="center"
             android:text="@string/pm_label_kyc_verification_desc_1"
             app:fontSize="title"
-            app:textViewTheme="lightSecondary"
-            />
+            app:textViewTheme="lightSecondary" />
 
         <Button
             android:id="@+id/btn_submit_kyc"
@@ -48,8 +43,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/txt_kyc_static_desc_1"
             android:layout_marginBottom="@dimen/dp_10"
-            android:textStyle="bold"
-            android:text="@string/pm_label_transition_period_button" />
+            android:text="@string/pm_label_transition_period_button"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/btn_close_kyc"
@@ -57,11 +52,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/btn_submit_kyc"
-            android:textStyle="bold"
-            android:text="@string/pm_label_button_close" />
+            android:text="@string/pm_label_button_close"
+            android:textStyle="bold" />
 
     </RelativeLayout>
-
-
-
 </LinearLayout>

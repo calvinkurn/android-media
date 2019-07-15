@@ -195,6 +195,9 @@ public class CartMapper implements ICartMapper {
                 cartItemDataOrigin.setInvenageValue(data.getProduct().getProductInvenageValue());
                 cartItemDataOrigin.setPriceChangesState(data.getProduct().getPriceChanges().getChangesState());
                 cartItemDataOrigin.setPriceChangesDesc(data.getProduct().getPriceChanges().getDescription());
+                cartItemDataOrigin.setProductInvenageByUserText(data.getProduct().getProductInvenageTotal().getByUserText().getComplete());
+                cartItemDataOrigin.setProductInvenageByUserInCart(data.getProduct().getProductInvenageTotal().getByUser().getInCart());
+                cartItemDataOrigin.setProductInvenageByUserLastStockLessThan(data.getProduct().getProductInvenageTotal().getByUser().getLastStockLessThan());
                 cartItemDataOrigin.setFreeReturn(data.getProduct().getIsFreereturns() == 1);
                 cartItemDataOrigin.setTrackerAttribution(data.getProduct().getProductTrackerData().getAttribution());
                 cartItemDataOrigin.setTrackerListName(data.getProduct().getProductTrackerData().getTrackerListName());

@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginTop="8dp"
-            android:src="@drawable/ic_power_merchant_subscribe"
+            app:srcCompat="@drawable/ic_power_merchant_subscribe"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -63,7 +63,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="@dimen/dp_16"
-            android:src="@drawable/ic_market"
+            app:srcCompat="@drawable/ic_market"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView6" />
 
@@ -89,7 +89,7 @@
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_16"
-            android:src="@drawable/ic_topads_credit"
+            app:srcCompat="@drawable/ic_topads_credit"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView7" />
 
@@ -116,7 +116,7 @@
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_16"
-            android:src="@drawable/ic_cost_management"
+            app:srcCompat="@drawable/ic_cost_management"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView8" />
 
@@ -181,7 +181,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_ticker_warning_cropped" />
+                app:srcCompat="@drawable/ic_ticker_warning_cropped" />
         </android.support.v7.widget.CardView>
     </FrameLayout>
 
