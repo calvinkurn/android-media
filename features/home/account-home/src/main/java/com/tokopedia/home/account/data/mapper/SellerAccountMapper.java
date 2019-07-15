@@ -276,6 +276,7 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         shopCard.setShopName(accountModel.getShopInfo().getInfo().getShopName());
         shopCard.setShopImageUrl(accountModel.getShopInfo().getInfo().getShopAvatar());
         shopCard.setGoldMerchant(accountModel.getShopInfo().getOwner().getGoldMerchant());
+        shopCard.setShopIsOfficial(accountModel.getShopInfo().getInfo().getShopIsOfficial());
         shopCard.setDataDeposit(dataDeposit);
 
         if (accountModel.getReputationShops() != null && accountModel.getReputationShops().size() > 0) {

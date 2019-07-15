@@ -30,7 +30,10 @@ public class ShopCardViewHolder extends AbstractViewHolder<ShopCardViewModel> {
     public void bind(ShopCardViewModel element) {
         shopCardView.setShopName(element.getShopName());
         shopCardView.setShopImage(element.getShopImageUrl());
-        if (element.getGoldMerchant()) {
+        if (element.getShopIsOfficial().equals("1")) {
+            shopCardView.setBadgeImage(R.drawable.ic_badge_shop_official);
+
+        } else if (element.getGoldMerchant()) {
             shopCardView.setBadgeImage(GMConstant.getGMDrawableResource(itemView.getContext()));
         }
         shopCardView.setShopReputation(element.getReputationImageUrl());
@@ -43,6 +46,6 @@ public class ShopCardViewHolder extends AbstractViewHolder<ShopCardViewModel> {
                 () -> listener.onKycLinkClicked(element.getVerificationStatus()));
 
         shopCardView.setTopAdsDeposit(element.getDataDeposit());
-        shopCardView.setOnClickTopAdsView(v-> listener.onTopAdsMenuClicked());
+        shopCardView.setOnClickTopAdsView(v -> listener.onTopAdsMenuClicked());
     }
 }
