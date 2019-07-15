@@ -217,7 +217,10 @@ open class GetExistingChatMapper @Inject constructor() {
                 invoiceSentPojo.invoiceLink.attributes.imageUrl,
                 invoiceSentPojo.invoiceLink.attributes.totalAmount,
                 !pojo.isOpposite,
-                pojo.isRead
+                pojo.isRead,
+                invoiceSentPojo.invoiceLink.attributes.statusId,
+                invoiceSentPojo.invoiceLink.attributes.status,
+                invoiceSentPojo.invoiceLink.attributes.code
         )
 
     }

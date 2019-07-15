@@ -12,6 +12,9 @@ class AttachInvoiceSentViewModel : SendableViewModel, Visitable<BaseChatTypeFact
     var imageUrl: String? = null
     var description: String? = null
     var totalAmount: String? = null
+    var statusId: Int? = null
+    var status: String? = null
+    var invoiceId: String? = null
 
     /**
      * Constructor for WebSocket.
@@ -65,24 +68,43 @@ class AttachInvoiceSentViewModel : SendableViewModel, Visitable<BaseChatTypeFact
      * @param totalAmount    total amount
      * !! startTime is not returned from API
      */
-    constructor(msgId: String,
-                fromUid: String,
-                from: String,
-                fromRole: String,
-                attachmentId: String,
-                attachmentType: String,
-                replyTime: String,
-                message: String,
-                description: String,
-                imageUrl: String,
-                totalAmount: String,
-                isSender: Boolean,
-                isRead: Boolean) : super(msgId, fromUid, from, fromRole,
-            attachmentId, attachmentType, replyTime, "", isRead,
-            false, isSender, message) {
+    constructor(
+            msgId: String,
+            fromUid: String,
+            from: String,
+            fromRole: String,
+            attachmentId: String,
+            attachmentType: String,
+            replyTime: String,
+            message: String,
+            description: String,
+            imageUrl: String,
+            totalAmount: String,
+            isSender: Boolean,
+            isRead: Boolean,
+            statusId: Int,
+            status: String,
+            invoiceId: String
+    ) : super(
+            msgId,
+            fromUid,
+            from,
+            fromRole,
+            attachmentId,
+            attachmentType,
+            replyTime,
+            "",
+            isRead,
+            false,
+            isSender,
+            message
+    ) {
         this.description = description
         this.imageUrl = imageUrl
         this.totalAmount = totalAmount
+        this.statusId = statusId
+        this.status = status
+        this.invoiceId = invoiceId
     }
 
     /**
