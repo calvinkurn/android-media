@@ -8,12 +8,12 @@ import com.tokopedia.profilecompletion.settingprofile.view.fragment.SettingProfi
 import dagger.Component
 
 
-@ProfileCompletionScope
+@ProfileCompletionSettingScope
 @Component(modules = [
     ProfileCompletionSettingModule::class,
     ProfileCompletionViewModelModule::class,
     ProfileCompletionQueryModule::class,
-    ImageUploadModule::class
+    ImageUploadSettingProfileModule::class
 ], dependencies = [BaseAppComponent::class])
 interface ProfileCompletionSettingComponent {
     fun inject(fragment: ChangeGenderFragment)

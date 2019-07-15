@@ -13,21 +13,21 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
-@ProfileCompletionScope
+@ProfileCompletionSettingScope
 @Module
 class ProfileCompletionSettingModule {
 
     @Provides
     fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
 
-    @ProfileCompletionScope
+    @ProfileCompletionSettingScope
     @Provides
     fun provideGraphqlUseCase(graphqlRepository: GraphqlRepository)
         : GraphqlUseCase<UserProfileInfoData> = GraphqlUseCase<UserProfileInfoData>(graphqlRepository).apply {
             setTypeClass(UserProfileInfoData::class.java)
         }
 
-    @ProfileCompletionScope
+    @ProfileCompletionSettingScope
     @Provides
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 

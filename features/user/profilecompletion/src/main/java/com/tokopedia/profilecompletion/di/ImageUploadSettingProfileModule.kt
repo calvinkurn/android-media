@@ -31,9 +31,9 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-@ProfileCompletionScope
+@ProfileCompletionSettingScope
 @Module
-class ImageUploadModule {
+class ImageUploadSettingProfileModule {
     private val GSON_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ"
     private val NET_READ_TIMEOUT = 100
     private val NET_WRITE_TIMEOUT = 100
