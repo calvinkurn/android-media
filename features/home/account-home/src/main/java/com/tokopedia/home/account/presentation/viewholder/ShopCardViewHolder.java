@@ -32,7 +32,6 @@ public class ShopCardViewHolder extends AbstractViewHolder<ShopCardViewModel> {
         shopCardView.setShopImage(element.getShopImageUrl());
         if (element.getShopIsOfficial().equals("1")) {
             shopCardView.setBadgeImage(R.drawable.ic_badge_shop_official);
-
         } else if (element.getGoldMerchant()) {
             shopCardView.setBadgeImage(GMConstant.getGMDrawableResource(itemView.getContext()));
         }
