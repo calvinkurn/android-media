@@ -7,13 +7,13 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.profilecompletion.changegender.view.ChangeGenderFragment
 import com.tokopedia.profilecompletion.di.DaggerProfileCompletionComponent
-import com.tokopedia.profilecompletion.di.ProfileCompletionComponent
+import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 
 /**
  * @author by nisie on 22/04/19.
  * For navigate: use {@link ApplinkConstInternalGlobal.PROFILE_COMPLETION}
  */
-class ProfileCompletionActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionComponent> {
+class ProfileCompletionActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSettingComponent> {
 
 
     override fun getNewFragment(): Fragment {
@@ -24,7 +24,7 @@ class ProfileCompletionActivity : BaseSimpleActivity(), HasComponent<ProfileComp
         return ChangeGenderFragment.createInstance(bundle)
     }
 
-    override fun getComponent(): ProfileCompletionComponent {
+    override fun getComponent(): ProfileCompletionSettingComponent {
         return DaggerProfileCompletionComponent.builder().baseAppComponent(
                 (application as BaseMainApplication).baseAppComponent).build()
     }

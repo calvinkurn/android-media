@@ -21,7 +21,7 @@ import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addemail.viewmodel.AddEmailViewModel
 import com.tokopedia.profilecompletion.addemail.data.AddEmailResult
-import com.tokopedia.profilecompletion.di.ProfileCompletionComponent
+import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -43,7 +43,7 @@ class AddEmailFragment : BaseDaggerFragment() {
     }
 
     override fun initInjector() {
-        getComponent(ProfileCompletionComponent::class.java).inject(this)
+        getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
     }
 
 

@@ -26,7 +26,7 @@ import com.tokopedia.profilecompletion.addemail.view.fragment.AddEmailFragment
 import com.tokopedia.profilecompletion.addphone.view.fragment.AddPhoneFragment
 import com.tokopedia.profilecompletion.changegender.view.ChangeGenderFragment
 import com.tokopedia.profilecompletion.customview.UnifyDialog
-import com.tokopedia.profilecompletion.di.ProfileCompletionComponent
+import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.settingprofile.data.ProfileCompletionData
 import com.tokopedia.profilecompletion.settingprofile.data.UploadProfilePictureResult
 import com.tokopedia.profilecompletion.settingprofile.viewmodel.ProfileInfoViewModel
@@ -237,7 +237,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
     }
 
     override fun initInjector() {
-        getComponent(ProfileCompletionComponent::class.java).inject(this)
+        getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
     }
 
     private fun onSuccessGetUserProfileInfo(profileCompletionData: ProfileCompletionData) {

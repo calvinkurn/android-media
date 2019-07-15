@@ -22,7 +22,7 @@ import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addphone.viewmodel.AddPhoneViewModel
 import com.tokopedia.profilecompletion.addphone.data.AddPhoneResult
 import com.tokopedia.profilecompletion.addphone.data.CheckPhonePojo
-import com.tokopedia.profilecompletion.di.ProfileCompletionComponent
+import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -44,7 +44,7 @@ class AddPhoneFragment : BaseDaggerFragment() {
     }
 
     override fun initInjector() {
-        getComponent(ProfileCompletionComponent::class.java).inject(this)
+        getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
     }
 
 

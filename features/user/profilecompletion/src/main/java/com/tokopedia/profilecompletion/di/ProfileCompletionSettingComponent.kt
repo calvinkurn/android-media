@@ -15,7 +15,7 @@ import dagger.Component
     ProfileCompletionQueryModule::class,
     ImageUploadModule::class
 ], dependencies = [BaseAppComponent::class])
-interface ProfileCompletionComponent {
+interface ProfileCompletionSettingComponent {
     fun inject(fragment: ChangeGenderFragment)
     fun inject(fragment: AddEmailFragment)
     fun inject(fragment: AddPhoneFragment)

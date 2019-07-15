@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.profilecompletion.di.ProfileCompletionComponent
+import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.di.DaggerProfileCompletionComponent
 import com.tokopedia.profilecompletion.settingprofile.view.fragment.SettingProfileFragment
 
@@ -15,9 +15,9 @@ import com.tokopedia.profilecompletion.settingprofile.view.fragment.SettingProfi
  * For navigate: use {@link ApplinkConstInternalGlobal.SETTING_PROFILE}
  */
 
-class SettingProfileActivity: BaseSimpleActivity(), HasComponent<ProfileCompletionComponent> {
+class SettingProfileActivity: BaseSimpleActivity(), HasComponent<ProfileCompletionSettingComponent> {
 
-    override fun getComponent(): ProfileCompletionComponent = DaggerProfileCompletionComponent
+    override fun getComponent(): ProfileCompletionSettingComponent = DaggerProfileCompletionComponent
         .builder().baseAppComponent((application as BaseMainApplication).baseAppComponent).build()
 
     override fun getNewFragment(): Fragment {
