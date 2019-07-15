@@ -37,10 +37,12 @@ import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
+import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
@@ -57,7 +59,6 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.kol.KolComponentInstance
-import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.kol.common.util.PostMenuListener
 import com.tokopedia.kol.common.util.createBottomMenu
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
@@ -372,7 +373,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 when {
                     isAutomaticOpenShareUser() -> {
                         shareLink(element.profileHeaderViewModel.link)
-                        profileAnalytics.eventClickBagikanProfile(isOwner, userId.toString())
+                        profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
                     }
                     onlyOnePost -> showShowCaseDialog(shareProfile)
                     else -> showAfterPostToaster(affiliatePostQuota?.number != 0)
@@ -698,7 +699,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onMenuClick(positionInFeed: Int, postId: Int, reportable: Boolean, deletable: Boolean, editable: Boolean) {
         context?.let {
-            val menus = createBottomMenu(it, deletable, reportable, false, object : PostMenuListener {
+            val menus = createBottomMenu(it, deletable, reportable, editable, object : PostMenuListener {
                 override fun onDeleteClicked() {
                     createDeleteDialog(positionInFeed, postId).show()
                 }
@@ -708,11 +709,15 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 }
 
                 override fun onEditClick() {
-
+                    goToEditPostAffiliate(postId)
                 }
             })
             menus.show()
         }
+    }
+
+    private fun goToEditPostAffiliate(postId: Int) {
+        context?.let { RouteManager.route(it, ApplinkConstInternalContent.AFFILIATE_EDIT, postId.toString()) }
     }
 
     override fun onCaptionClick(positionInFeed: Int, redirectUrl: String) {
@@ -736,7 +741,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String,
                               url: String, iamgeUrl: String) {
         activity?.let {
-            val linkerData = constructShareData("","", url, String.format("%s %s", description, "%s"), title)
+            val linkerData = constructShareData("", "", url, String.format("%s %s", description, "%s"), title)
+            profileAnalytics.eventClickSharePostIni(isOwner, userId.toString())
             ShareBottomSheets().show(fragmentManager!!, linkerData, isOwner, userId.toString(), false)
         }
     }
@@ -947,7 +953,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 super.onScrolled(recyclerView, dx, dy)
                 if (dy < 0) { // going up
                     if (adapter.dataSize > 0 && isAppBarCollapse && !isOwner && !footerOthers.isVisible) {
-                       showFooterOthers()
+                        showFooterOthers()
                     }
                 } else if (dy > 0) { // going down
                     if (isAppBarCollapse && !isOwner && footerOthers.isVisible) hideFootersOthers()
@@ -992,7 +998,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     private fun showFooterOthers() {
         footerOthers.show()
-        if (profileHeader?.isFollowed == true){
+        if (profileHeader?.isFollowed == true) {
             footerOthersText.text = getString(R.string.sticky_footer_following)
             footerOthersFollow.hide()
             footerOthersShareText.show()
@@ -1013,6 +1019,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                         String.format(getString(R.string.profile_share_text),
                                 it.link),
                         String.format(getString(R.string.profile_share_title)))
+                profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
                 ShareBottomSheets().show(fragmentManager!!, linkerData, isOwner, userId.toString(), true)
             }
         }
@@ -1048,7 +1055,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         iv_back.setOnClickListener {
             activity?.finish()
         }
-        app_bar_layout.addOnOffsetChangedListener (AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
+        app_bar_layout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
             try {
                 toolbar.let {
                     if (Math.abs(verticalOffset) >= appBarLayout.totalScrollRange) {
@@ -1080,6 +1087,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                         String.format(getString(R.string.profile_share_text),
                                 element.link),
                         String.format(getString(R.string.profile_share_title)))
+                profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
                 ShareBottomSheets().show(fragmentManager!!, linkerData, isOwner, userId.toString(), true)
             }
         } else {
@@ -1305,7 +1313,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
 
             shareProfile.setOnClickListener {
-                profileAnalytics.eventClickBagikanProfile(isOwner, userId.toString())
+                profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
 
                 val linkerData = constructShareData(
                         headerViewModel.name,
