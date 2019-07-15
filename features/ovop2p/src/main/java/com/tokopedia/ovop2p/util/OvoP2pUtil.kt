@@ -83,8 +83,9 @@ object OvoP2pUtil {
     }
 
     fun extractNumbersFromString(srcStr: String): String {
+        var numStr = srcStr.split("-").toString()
         val p = Pattern.compile("\\d+")
-        val m = p.matcher(srcStr)
+        val m = p.matcher(numStr)
         var result = ""
         while (m.find()) {
             result += m.group()

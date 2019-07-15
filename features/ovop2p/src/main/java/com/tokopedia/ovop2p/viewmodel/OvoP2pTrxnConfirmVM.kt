@@ -40,30 +40,21 @@ class OvoP2pTrxnConfirmVM(application: Application) : AndroidViewModel(applicati
 
             override fun onNext(graphqlResponse: GraphqlResponse) {
                 val ovoP2pTransferConfirmBase = graphqlResponse.getData<OvoP2pTransferConfirmBase>(OvoP2pTransferConfirmBase::class.java)
-                if (ovoP2pTransferConfirmBase != null) {
-                    ovoP2pTransferConfirmBase?.let {
-                        it.ovoP2pTransferConfirm?.let { confObj ->
-                            confObj.errors?.let { errList ->
-                                if(errList.isNotEmpty()){
-                                    txnConfirmMutableLiveData.value = errList[0][Constants.Keys.MESSAGE]?.let {
-                                        errMsg ->
-                                        TransferConfErrorPage(errMsg)
-                                    }
-                                    return
-                                }
+                ovoP2pTransferConfirmBase?.ovoP2pTransferConfirm?.let { confObj ->
+                    confObj.errors?.let { errList ->
+                        if (errList.isNotEmpty()) {
+                            txnConfirmMutableLiveData.value = errList[0][Constants.Keys.MESSAGE]?.let { errMsg ->
+                                TransferConfErrorPage(errMsg)
                             }
-                            if(!TextUtils.isEmpty(confObj.pinUrl)){
+                        } else {
+                            if (!TextUtils.isEmpty(confObj.pinUrl)) {
                                 txnConfirmMutableLiveData.value = OpenPinChlngWebView(confObj.pinUrl)
-                            }
-                            else{
+                            } else {
                                 txnConfirmMutableLiveData.value = GoToThankYouPage(confObj.transferId)
                             }
-                            return
                         }
                     }
-                    txnConfirmMutableLiveData.value = TransferConfErrorSnkBar(Constants.Messages.GENERAL_ERROR)
-                }
-                else{
+                } ?: run {
                     txnConfirmMutableLiveData.value = TransferConfErrorSnkBar(Constants.Messages.GENERAL_ERROR)
                 }
             }

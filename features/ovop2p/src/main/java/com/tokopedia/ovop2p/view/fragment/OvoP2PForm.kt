@@ -376,8 +376,7 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
     private fun checkRcvrPhnNoValidity(rcvrPhnNoStr: String): Boolean {
         var rcvrPhnNoValid = false
         if (!TextUtils.isEmpty(rcvrPhnNoStr)) {
-            rcvrPhnNo = OvoP2pUtil.checkValidRcvrPhoneEntry(rcvrPhnNoStr, rcvrPhnNo)
-            rcvrPhnNo = OvoP2pUtil.extractNumbersFromString(rcvrPhnNo)
+            rcvrPhnNo = OvoP2pUtil.extractNumbersFromString(rcvrPhnNoStr)
             if (!TextUtils.isEmpty(rcvrPhnNo)) {
                 rcvrPhnNoValid = true
             }
@@ -386,7 +385,9 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
     }
 
     private fun changeProceedBtnState(enteredAmtStr: String, rcvrPhnNoStr: String) {
-        var enable = checkRcvrAmtValidity(enteredAmtStr) && checkRcvrPhnNoValidity(rcvrPhnNoStr)
+        var isAmtValid = checkRcvrAmtValidity(enteredAmtStr)
+        var isPhnNoValid = checkRcvrPhnNoValidity(rcvrPhnNoStr)
+        var enable =  isAmtValid && isPhnNoValid
         proceedBtn.isEnabled = enable
     }
 

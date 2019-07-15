@@ -28,34 +28,31 @@ class GetWalletBalanceViewModel(application: Application) : AndroidViewModel(app
         }
     }
 
-    private fun getWalletDataSubscriber(): Subscriber<GraphqlResponse>{
-        walletBalanceSubscriber =  (object : Subscriber<GraphqlResponse>() {
+    private fun getWalletDataSubscriber(): Subscriber<GraphqlResponse> {
+        walletBalanceSubscriber = (object : Subscriber<GraphqlResponse>() {
             override fun onCompleted() {
 
             }
 
             override fun onError(e: Throwable) {
-                walletLiveData?.value = WalletError(Constants.Messages.GENERAL_ERROR)
+                walletLiveData.value = WalletError(Constants.Messages.GENERAL_ERROR)
             }
 
             override fun onNext(graphqlResponse: GraphqlResponse) {
                 val walletData = graphqlResponse.getData<WalletDataBase>(WalletDataBase::class.java)
-                if (walletData != null) {
-                    walletData.wallet.let { wallet ->
-                        wallet?.errors?.let {
-                            if(it.isNotEmpty()){
-                                walletLiveData?.value = WalletError(it[0].message)
-                                return
-                            }
+                walletData?.wallet?.let { walletObj ->
+                    walletObj.errors?.let {errList ->
+                        if (errList.isNotEmpty()) {
+                            walletLiveData.value = WalletError(errList[0].message)
                         }
-                        var cashBal = wallet?.cashBalance ?: ""
-                        cashBal =  Constants.Prefixes.SALDO + cashBal
-                        var sndrAmt = wallet?.rawCashBalance?.toLong() ?: 0
-                        walletLiveData?.value = WalletData(cashBal, sndrAmt)
+                    } ?: run {
+                        var cashBal = walletObj.cashBalance
+                        cashBal = Constants.Prefixes.SALDO + cashBal
+                        var sndrAmt = walletObj.rawCashBalance.toLong()
+                        walletLiveData.value = WalletData(cashBal, sndrAmt)
                     }
-                }
-                else{
-                    walletLiveData?.value = WalletError(Constants.Messages.GENERAL_ERROR)
+                } ?: run {
+                    walletLiveData.value = WalletError(Constants.Messages.GENERAL_ERROR)
                 }
             }
         })

@@ -37,29 +37,28 @@ class OvoP2pTxnThankYouOvoUsrVM(application: Application) : AndroidViewModel(app
             }
 
             override fun onError(e: Throwable?) {
-                transferThankyouLiveData?.value = ThankYouErrSnkBar(Constants.Messages.GENERAL_ERROR)
+                transferThankyouLiveData.value = ThankYouErrSnkBar(Constants.Messages.GENERAL_ERROR)
             }
 
             override fun onNext(graphqlResponse: GraphqlResponse?) {
                 val ovoP2pTransferConfirmBase = graphqlResponse?.getData<OvoP2pTransferThankyouBase>(OvoP2pTransferThankyouBase::class.java)
-                ovoP2pTransferConfirmBase?.let { thnkUbaseObj ->
-                    thnkUbaseObj.ovoP2pTransferThankyou?.let { trnsfrDataObj ->
-                        {
-                            trnsfrDataObj.errors?.let { errList ->
-                                {
-                                    if (errList.isNotEmpty()) {
-                                        transferThankyouLiveData.value = errList[0][Constants.Keys.MESSAGE]?.let {
-                                            ThankYouErrPage(it)
-                                        }
-                                    }
+                ovoP2pTransferConfirmBase?.ovoP2pTransferThankyou?.let {
+                    it.errors?.let { errList ->
+                        if (errList.isNotEmpty()) {
+                            errList[0].let { errMap ->
+                                errMap[Constants.Keys.MESSAGE]?.let { errMsg ->
+                                    transferThankyouLiveData.value = ThankYouErrPage(errMsg)
                                 }
                             }
-                            transferThankyouLiveData.value = ThankYouSucs(thnkUbaseObj)
+                        } else {
+                            transferThankyouLiveData.value = ThankYouSucs(ovoP2pTransferConfirmBase)
                         }
+                    } ?: run{
+                        transferThankyouLiveData.value = ThankYouSucs(ovoP2pTransferConfirmBase)
                     }
+                } ?: run {
                     transferThankyouLiveData.value = ThankYouErrSnkBar(Constants.Messages.GENERAL_ERROR)
                 }
-                transferThankyouLiveData.value = ThankYouErrSnkBar(Constants.Messages.GENERAL_ERROR)
             }
         }
         return transferThankyouSubscriber as Subscriber<GraphqlResponse>

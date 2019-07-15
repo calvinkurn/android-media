@@ -36,25 +36,23 @@ class OvoP2pTransferRequestViewModel(application: Application) : AndroidViewMode
 
             override fun onNext(graphqlResponse: GraphqlResponse) {
                 val ovoP2pTransferRequestBase = graphqlResponse.getData<OvoP2pTransferRequestBase>(OvoP2pTransferRequestBase::class.java)
-                ovoP2pTransferRequestBase?.let {
-                    it.ovoP2pTransferRequest?.let { reqObj ->
-                        reqObj.errors?.let { errList ->
-                            if (errList.isNotEmpty()) {
-                                errList[0][Constants.Keys.MESSAGE]?.let { errMsg ->
-                                    if (errMsg.contentEquals(Constants.Messages.NON_OVO_USER)) {
-                                        transferReqBaseMutableLiveData.value = TransferReqNonOvo()
-                                    } else {
-                                        transferReqBaseMutableLiveData.value = TransferReqErrorPage(errMsg)
-                                    }
-                                    return
+                ovoP2pTransferRequestBase?.ovoP2pTransferRequest?.let { reqObj ->
+                    reqObj.errors?.let { errList ->
+                        if (errList.isNotEmpty()) {
+                            errList[0][Constants.Keys.MESSAGE]?.let { errMsg ->
+                                if (errMsg.contentEquals(Constants.Messages.NON_OVO_USER)) {
+                                    transferReqBaseMutableLiveData.value = TransferReqNonOvo()
+                                } else {
+                                    transferReqBaseMutableLiveData.value = TransferReqErrorPage(errMsg)
                                 }
                             }
+                        } else {
+                            transferReqBaseMutableLiveData.value = TransferReqData(reqObj.dstAccName)
                         }
-                        transferReqBaseMutableLiveData.value = TransferReqData(reqObj.dstAccName)
-                        return
                     }
+                } ?: run {
+                    transferReqBaseMutableLiveData.value = TransferReqErrorSnkBar(Constants.Messages.GENERAL_ERROR)
                 }
-                transferReqBaseMutableLiveData.value = TransferReqErrorSnkBar(Constants.Messages.GENERAL_ERROR)
             }
         }
         return transferRequestSubscriber as Subscriber<GraphqlResponse>
