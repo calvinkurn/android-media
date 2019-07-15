@@ -58,7 +58,11 @@ data class DataList(
 
         @SerializedName("section_id")
         @Expose
-        val sectionId: Int = 0,
+        val sectionId: String = "",
+
+        @SerializedName("type_link")
+        @Expose
+        val typeLink: Int = 0,
 
         @SerializedName("section_key")
         @Expose
