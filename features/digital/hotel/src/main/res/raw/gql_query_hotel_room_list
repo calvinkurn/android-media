@@ -3,10 +3,14 @@ query PropertySearchRoom($data:PropertySearchRoomRequest!){
     propertyID
     rooms{
       ID
+      available
+      roomQtyRequired
       breakfastInfo{
         isBreakFastIncluded
         mealPlan
         breakFast
+        icon
+        iconUrl
       }
       occupancyInfo{
         maxOccupancy
@@ -20,9 +24,12 @@ query PropertySearchRoom($data:PropertySearchRoomRequest!){
       refundInfo{
         isRefundAble
         refundStatus
+        icon
+        iconUrl
       }
       creditcardInfo{
         isCCRequired
+        isCCDomesticRequired
         info
       }
       numberRoomLeft
@@ -61,10 +68,12 @@ query PropertySearchRoom($data:PropertySearchRoomRequest!){
         facility{
           name
           icon
+          iconUrl
         }
         mainFacility{
           name
           icon
+          iconUrl
         }
         roomImages{
           urlMax300

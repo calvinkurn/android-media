@@ -275,11 +275,16 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
                             pricing: List<HotelOrderDetail.PaymentData>,
                             paymentData: List<HotelOrderDetail.PaymentData>) {
 
-        var paymentAdapter = TitleTextAdapter(TitleTextAdapter.HORIZONTAL_LAYOUT)
-        payment_info_recycler_view.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        payment_info_recycler_view.adapter = paymentAdapter
-        for (item in payMethod) {
-            paymentAdapter.addData(TitleContent(item.label, item.value))
+        if (payMethod.isEmpty()) {
+            payment_info_recycler_view.visibility = View.GONE
+            payment_seperator_1.visibility = View.GONE
+        } else {
+            var paymentAdapter = TitleTextAdapter(TitleTextAdapter.HORIZONTAL_LAYOUT)
+            payment_info_recycler_view.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+            payment_info_recycler_view.adapter = paymentAdapter
+            for (item in payMethod) {
+                paymentAdapter.addData(TitleContent(item.label, item.value))
+            }
         }
 
         var faresAdapter = TitleTextAdapter(TitleTextAdapter.HORIZONTAL_LAYOUT)

@@ -347,6 +347,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
 
     fun goToLoginPage() {
         if (activity != null) {
+            progressDialog.dismiss()
             RouteManager.route(context, ApplinkConst.LOGIN)
         }
     }

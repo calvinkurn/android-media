@@ -38,7 +38,7 @@
             android:layout_marginTop="@dimen/dp_24" />
 
         <View
-            android:id="@+id/seperator_1"
+            android:id="@+id/payment_seperator_1"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
             android:layout_marginTop="@dimen/dp_16"
@@ -52,7 +52,7 @@
             android:layout_marginTop="@dimen/dp_16" />
 
         <View
-            android:id="@+id/seperator_2"
+            android:id="@+id/payment_seperator_2"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
             android:layout_marginTop="@dimen/dp_16"
