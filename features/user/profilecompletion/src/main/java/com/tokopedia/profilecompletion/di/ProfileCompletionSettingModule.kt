@@ -15,7 +15,7 @@ import kotlinx.coroutines.Dispatchers
 
 @ProfileCompletionScope
 @Module
-class ProfileCompletionModule {
+class ProfileCompletionSettingModule {
 
     @Provides
     fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository

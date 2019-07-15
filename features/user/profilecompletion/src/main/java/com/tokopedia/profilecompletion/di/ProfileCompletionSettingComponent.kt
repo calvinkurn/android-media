@@ -10,7 +10,7 @@ import dagger.Component
 
 @ProfileCompletionScope
 @Component(modules = [
-    ProfileCompletionModule::class,
+    ProfileCompletionSettingModule::class,
     ProfileCompletionViewModelModule::class,
     ProfileCompletionQueryModule::class,
     ImageUploadModule::class
