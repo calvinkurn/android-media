@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmering
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeFeedLoadingMoreViewHolder;
 import com.tokopedia.home.beranda.presentation.presenter.HomeFeedContract;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeFeedViewHolder;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.BannerFeedViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedViewModel;
 import com.tokopedia.topads.sdk.view.ImpressedImageView;
 
@@ -23,6 +24,10 @@ public class HomeFeedTypeFactory extends BaseAdapterTypeFactory {
 
     public int type(HomeFeedViewModel viewModel) {
         return HomeFeedViewHolder.LAYOUT;
+    }
+
+    public int type(BannerFeedViewModel viewModel) {
+        return BannerFeedViewModel.Companion.getLAYOUT();
     }
 
     @Override

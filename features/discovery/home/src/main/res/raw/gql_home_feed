@@ -38,6 +38,19 @@ query getHomeRecom($recomID: Int!, $count: Int!, $page: Int!){
             image_url
           }
       }
+      banner {
+            id
+            name
+            image_url
+            url
+            applink
+            bu_attribution
+            creative_name
+            target
+      }
+      position {
+            type
+      }
       has_next_page
     }
   }
