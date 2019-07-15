@@ -44,7 +44,6 @@ class ProfileInfoViewModel @Inject constructor(
         if (!rawQuery.isNullOrEmpty()) {
             val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(
                     CacheType.CACHE_FIRST)
-            graphqlCacheStrategy.setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5)
             userProfileInfoUseCase.run {
                 setCacheStrategy(graphqlCacheStrategy.build())
                 setGraphqlQuery(rawQuery)

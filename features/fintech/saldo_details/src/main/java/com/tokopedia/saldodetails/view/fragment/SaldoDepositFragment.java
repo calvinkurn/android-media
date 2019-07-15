@@ -25,6 +25,8 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.activity.SaldoDepositActivity;
 import com.tokopedia.saldodetails.contract.SaldoDetailContract;
@@ -356,8 +358,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
                 .setTitle(getActivity().getString(R.string.sp_alert_not_verified_yet_title))
                 .setMessage(getActivity().getString(R.string.sp_alert_not_verified_yet_body))
                 .setPositiveButton(getActivity().getString(R.string.sp_alert_not_verified_yet_positive), (dialog, which) -> {
-                    Intent intent = ((SaldoDetailsRouter) getActivity().getApplicationContext())
-                            .getProfileSettingIntent(getActivity());
+                    Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.SETTING_PROFILE);
                     startActivity(intent);
                     dialog.dismiss();
                 })

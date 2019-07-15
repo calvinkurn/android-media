@@ -104,4 +104,10 @@ object ApplinkConstInternalGlobal {
     // Activity can have title by putting "title=.."
     @JvmField
     val WEBVIEW = "$INTERNAL_GLOBAL/webview?url={url}"
+
+    // PhoneVerificationProfileActivity
+    // tokopedia-android-internal://global/setting-profile-phone-verification
+    @JvmField
+    val SETTING_PROFILE_PHONE_VERIFICATION = "$INTERNAL_GLOBAL/setting-profile-phone-verification"
+
 }

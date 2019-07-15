@@ -215,7 +215,6 @@ import com.tokopedia.seller.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.seller.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.updateinactivephone.activity.ChangeInactiveFormRequestActivity;
 import com.tokopedia.user.session.UserSession;
-import com.tokopedia.withdraw.WithdrawRouter;
 import com.tokopedia.withdraw.view.activity.WithdrawActivity;
 
 import org.jetbrains.annotations.NotNull;
@@ -245,7 +244,7 @@ public abstract class SellerRouterApplication extends MainApplication
         MitraToppersRouter, AbstractionRouter, ShopModuleRouter,
         ApplinkRouter, ImageUploaderRouter, ILogisticUploadAwbRouter,
         NetworkRouter, TopChatRouter, ProductEditModuleRouter, TopAdsWebViewRouter, ContactUsModuleRouter,
-        ChangePasswordRouter, WithdrawRouter, GmSubscribeModuleRouter,
+        ChangePasswordRouter, GmSubscribeModuleRouter,
         PaymentSettingRouter, TalkRouter, PhoneVerificationRouter,
         TopAdsDashboardRouter,
         TopAdsManagementRouter,
@@ -1144,11 +1143,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void setStringRemoteConfigLocal(String key, String value) {
         remoteConfig.setString(key, value);
-    }
-
-    @Override
-    public Intent getProfileSettingIntent(Context context) {
-        return ManagePeopleProfileActivity.createIntent(context);
     }
 
     @Override

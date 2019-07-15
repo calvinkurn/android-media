@@ -338,13 +338,28 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     profileCompletionData.isPhoneVerified,
                     true,
                     View.OnClickListener {
-                        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_PHONE_NUMBER)
-                        intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, profileCompletionData.phone)
-                        intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, profileCompletionData.email)
-                        startActivityForResult(intent, REQUEST_CODE_EDIT_PHONE)
+
+                        if(profileCompletionData.isPhoneVerified) {
+                            goToChangePhone(profileCompletionData.phone, profileCompletionData.email)
+                        }else{
+                            goToVerifyPhone(profileCompletionData.phone, profileCompletionData.email)
+
+                        }
                     }
             )
         }
+    }
+
+    private fun goToVerifyPhone(phone: String, email: String) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.SETTING_PROFILE_PHONE_VERIFICATION)
+        startActivityForResult(intent, REQUEST_CODE_EDIT_PHONE)
+    }
+
+    private fun goToChangePhone(phone: String, email: String) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_PHONE_NUMBER)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, phone)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
+        startActivityForResult(intent, REQUEST_CODE_EDIT_PHONE)
     }
 
     private fun onErrorGetProfileInfo(throwable: Throwable) {
