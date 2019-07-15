@@ -46,8 +46,6 @@ class SellerCenterUseCase @Inject constructor(private val graphqlUseCase: Graphq
                 throw RuntimeException()
             } else if (error.isNotEmpty() && error.first().message.isNotEmpty()) {
                 throw MessageErrorException(error.first().message)
-            } else if (data.notifData.list.isEmpty()) {
-                throw MessageErrorException("list is empty or wrong pojo")
             }
 
             data
