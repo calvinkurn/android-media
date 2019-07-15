@@ -44,7 +44,7 @@ class ContentCreatePostFragment : BaseCreatePostFragment() {
     }
 
     override fun fetchContentForm() {
-        presenter.fetchContentForm(viewModel.productIdList, viewModel.authorType)
+        presenter.fetchContentForm(viewModel.productIdList, viewModel.authorType, viewModel.postId)
     }
 
     override fun onSuccessGetContentForm(feedContentForm: FeedContentForm) {
