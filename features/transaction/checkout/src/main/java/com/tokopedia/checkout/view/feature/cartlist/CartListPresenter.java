@@ -2,7 +2,6 @@ package com.tokopedia.checkout.view.feature.cartlist;
 
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
@@ -25,7 +24,7 @@ import com.tokopedia.checkout.domain.usecase.GetRecentViewUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateAndReloadCartUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
-import com.tokopedia.checkout.view.feature.cartlist.subscriber.AddToCartSubscriber;
+import com.tokopedia.checkout.view.feature.cartlist.subscriber.AddToCartSubscriber1;
 import com.tokopedia.checkout.view.feature.cartlist.subscriber.CheckPromoFirstStepAfterClashSubscriber;
 import com.tokopedia.checkout.view.feature.cartlist.subscriber.ClearCacheAutoApplyAfterClashSubscriber;
 import com.tokopedia.checkout.view.feature.cartlist.subscriber.ClearCacheAutoApplySubscriber;
@@ -50,7 +49,6 @@ import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsGqlUseCase;
-import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceAdd;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
@@ -1272,22 +1270,7 @@ public class CartListPresenter implements ICartListPresenter {
                     .subscribeOn(Schedulers.io())
                     .unsubscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<GraphqlResponse>() {
-                        @Override
-                        public void onCompleted() {
-
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            Toast.makeText(view.getActivity(), "OnError", Toast.LENGTH_LONG).show();
-                        }
-
-                        @Override
-                        public void onNext(GraphqlResponse graphqlResponse) {
-                            Toast.makeText(view.getActivity(), "OnNext", Toast.LENGTH_LONG).show();
-                        }
-                    });
+                    .subscribe(new AddToCartSubscriber1(view, this, productModel));
 
         } catch (NumberFormatException e) {
             e.printStackTrace();
