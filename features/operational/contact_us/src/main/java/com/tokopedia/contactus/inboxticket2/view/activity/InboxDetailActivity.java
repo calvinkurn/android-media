@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
@@ -12,6 +13,7 @@ import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -729,8 +731,6 @@ public class InboxDetailActivity extends InboxBaseActivity
                 }
             }
             if (agreed.equals("yes")) {
-                ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClickEmoji(0);
-                ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClick("yes", commentPosition, item.getId());
                 ((InboxDetailContract.InboxDetailPresenter) mPresenter).closeTicket();
                 closeComplainBottomSheet.dismiss();
 
@@ -745,7 +745,15 @@ public class InboxDetailActivity extends InboxBaseActivity
 
         @Override
         public void OnSucessfullTicketClose () {
-            mPresenter.refreshLayout();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mPresenter.refreshLayout();
+                    Log.d("refressh","refresah");
+                }
+            }, 4000);
+           // mPresenter.refreshLayout();
+            ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClickEmoji(0);
         }
 
     @Override

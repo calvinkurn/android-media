@@ -3,6 +3,7 @@ package com.tokopedia.contactus.inboxticket2.view.presenter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.os.Handler;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -138,7 +139,13 @@ public class InboxDetailPresenterImpl
             mView.showMessage(mView.getActivity().getString(R.string.cu_terima_kasih_atas_masukannya));
             mView.showIssueClosed();
             isIssueClosed = true;
-            getTicketDetails();
+         new Handler().postDelayed(new Runnable() {
+             @Override
+             public void run() {
+                 getTicketDetails();
+             }
+         }, 4000);
+
         }
     }
 
