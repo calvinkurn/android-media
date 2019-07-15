@@ -918,12 +918,14 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         val menuCart = it.findItem(R.id.action_cart)
 //                        menuCart.icon = ContextCompat.getDrawable(this, R.drawable.ic_product_cart_counter_dark)
 //                        setBadgeMenuCart(menuCart)
-//                        LottieComposition.Factory.fromRawFile(context!!, R.raw.anim_cart) { composition ->
-//                            val icon = LottieDrawable()
-//                            icon.composition = composition
-//                            menuCart.icon = icon
-//                            setBadgeMenuCart(menuCart)
-//                        }
+                        LottieComposition.Factory.fromRawFile(context!!, R.raw.anim_cart) { composition ->
+                            val icon = LottieDrawable()
+                            icon.composition = composition
+                            menuCart.icon = icon
+                            icon.repeatCount = 3000
+                            icon.playAnimation()
+                            setBadgeMenuCart(menuCart)
+                        }
                     }
                 }
 
