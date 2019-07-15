@@ -92,6 +92,7 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
+    implementation rootProject.ext.unifyDependencies.components
 }
 
 apply from: '../../../publish_local.gradle'
