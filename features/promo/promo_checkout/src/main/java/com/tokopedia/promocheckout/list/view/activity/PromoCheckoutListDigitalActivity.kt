@@ -15,20 +15,17 @@ class PromoCheckoutListDigitalActivity : BaseSimpleActivity() {
         return PromoCheckoutListDigitalFragment.createInstance(
                 intent?.extras?.getBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, true),
                 intent?.extras?.getString(PromoCheckoutListDigitalFragment.PROMO_CODE, ""),
-                intent?.extras?.getInt(PromoCheckoutListDigitalFragment.PAGE_TRACKING, 1) ?: 1,
-                intent?.extras?.getParcelable(PromoCheckoutListDigitalFragment.CHECK_PROMO_FIRST_STEP_PARAM) as Promo
+                intent?.extras?.getInt(PromoCheckoutListDigitalFragment.PAGE_TRACKING, 1) ?: 1
         )
     }
 
     companion object {
-        fun newInstance(activity: Context, isCouponActive: Boolean, promoCode: String, pageTracking: Int,
-                        promo: Promo): Intent {
+        fun newInstance(activity: Context, isCouponActive: Boolean, promoCode: String, pageTracking: Int): Intent {
             val intent = Intent(activity, PromoCheckoutListDigitalActivity::class.java)
             val bundle = Bundle()
             bundle.putBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, isCouponActive)
             bundle.putString(PromoCheckoutListDigitalFragment.PROMO_CODE, promoCode)
             bundle.putInt(PromoCheckoutListDigitalFragment.PAGE_TRACKING, pageTracking)
-            bundle.putParcelable(PromoCheckoutListDigitalFragment.CHECK_PROMO_FIRST_STEP_PARAM, promo)
             intent.putExtras(bundle)
             return intent
         }

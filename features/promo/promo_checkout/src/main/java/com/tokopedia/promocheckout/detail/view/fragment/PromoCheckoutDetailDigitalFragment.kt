@@ -27,7 +27,7 @@ class PromoCheckoutDetailDigitalFragment : BasePromoCheckoutDetailFragment() {
     lateinit var trackingPromoCheckoutUtil: TrackingPromoCheckoutUtil
 
     var pageTracking: Int = 1
-    var promo: Promo? = null
+    var promo: Promo? = Promo()
     lateinit var progressDialog: ProgressDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -131,14 +131,12 @@ class PromoCheckoutDetailDigitalFragment : BasePromoCheckoutDetailFragment() {
         val PAGE_TRACKING = "PAGE_TRACKING"
         val CHECK_PROMO_CODE_FIRST_STEP_PARAM = "CHECK_PROMO_CODE_FIRST_STEP_PARAM"
 
-        fun createInstance(codeCoupon: String, isUse: Boolean, pageTracking: Int,
-                           promo: Promo): PromoCheckoutDetailDigitalFragment {
+        fun createInstance(codeCoupon: String, isUse: Boolean, pageTracking: Int): PromoCheckoutDetailDigitalFragment {
             val promoCheckoutDetailFragment = PromoCheckoutDetailDigitalFragment()
             val bundle = Bundle()
             bundle.putString(EXTRA_KUPON_CODE, codeCoupon)
             bundle.putBoolean(EXTRA_IS_USE, isUse)
             bundle.putInt(PAGE_TRACKING, pageTracking)
-            bundle.putParcelable(CHECK_PROMO_CODE_FIRST_STEP_PARAM, promo)
             promoCheckoutDetailFragment.arguments = bundle
             return promoCheckoutDetailFragment
         }

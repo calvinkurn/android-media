@@ -39,7 +39,7 @@ class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), PromoC
 
     lateinit var progressDialog: ProgressDialog
     var pageTracking: Int = 1
-    private var promo: Promo? = null
+    private var promo: Promo? = Promo()
 
     override var serviceId: String = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING
 
@@ -47,7 +47,6 @@ class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), PromoC
         isCouponActive = arguments?.getBoolean(IS_COUPON_ACTIVE) ?: true
         promoCode = arguments?.getString(PROMO_CODE) ?: ""
         pageTracking = arguments?.getInt(PAGE_TRACKING) ?: 1
-        promo = arguments?.getParcelable(CHECK_PROMO_FIRST_STEP_PARAM)
         super.onCreate(savedInstanceState)
         promoCheckoutListDigitalPresenter.attachView(this)
     }
@@ -171,14 +170,12 @@ class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), PromoC
         val PAGE_TRACKING = "PAGE_TRACKING"
         val CHECK_PROMO_FIRST_STEP_PARAM = "CHECK_PROMO_FIRST_STEP_PARAM"
 
-        fun createInstance(isCouponActive: Boolean?, promoCode: String?, pageTracking: Int,
-                           promo: Promo): PromoCheckoutListDigitalFragment {
+        fun createInstance(isCouponActive: Boolean?, promoCode: String?, pageTracking: Int): PromoCheckoutListDigitalFragment {
             val promoCheckoutListMarketplaceFragment = PromoCheckoutListDigitalFragment()
             val bundle = Bundle()
             bundle.putBoolean(IS_COUPON_ACTIVE, isCouponActive ?: true)
             bundle.putString(PROMO_CODE, promoCode ?: "")
             bundle.putInt(PAGE_TRACKING, pageTracking)
-            bundle.putParcelable(CHECK_PROMO_FIRST_STEP_PARAM, promo)
             promoCheckoutListMarketplaceFragment.arguments = bundle
             return promoCheckoutListMarketplaceFragment
         }

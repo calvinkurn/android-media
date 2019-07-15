@@ -13,8 +13,7 @@ class PromoCheckoutDetailDigitalActivity : BaseSimpleActivity() {
         return PromoCheckoutDetailDigitalFragment.createInstance(
                 intent.getStringExtra(PromoCheckoutDetailMarketplaceFragment.EXTRA_KUPON_CODE),
                 intent.getBooleanExtra(PromoCheckoutDetailMarketplaceFragment.EXTRA_IS_USE, false),
-                intent.getIntExtra(PromoCheckoutDetailMarketplaceFragment.PAGE_TRACKING, 1),
-                intent.getParcelableExtra(PromoCheckoutDetailMarketplaceFragment.CHECK_PROMO_CODE_FIRST_STEP_PARAM)
+                intent.getIntExtra(PromoCheckoutDetailMarketplaceFragment.PAGE_TRACKING, 1)
         )
     }
 
@@ -24,7 +23,6 @@ class PromoCheckoutDetailDigitalActivity : BaseSimpleActivity() {
             intent.putExtra(PromoCheckoutDetailMarketplaceFragment.EXTRA_KUPON_CODE, codeCoupon)
             intent.putExtra(PromoCheckoutDetailMarketplaceFragment.EXTRA_IS_USE, isUse)
             intent.putExtra(PromoCheckoutDetailMarketplaceFragment.PAGE_TRACKING, pageTracking)
-            intent.putExtra(PromoCheckoutDetailMarketplaceFragment.CHECK_PROMO_CODE_FIRST_STEP_PARAM, promo)
             return intent
         }
     }
