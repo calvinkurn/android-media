@@ -127,12 +127,13 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        DaggerRegisterEmailComponent daggerLoginComponent =
+        DaggerRegisterEmailComponent daggerRegisterEmailComponent =
                 (DaggerRegisterEmailComponent) DaggerRegisterEmailComponent
-                        .builder().loginRegisterComponent(getComponent(LoginRegisterComponent.class))
+                        .builder()
+                        .loginRegisterComponent(getComponent(LoginRegisterComponent.class))
                         .build();
 
-        daggerLoginComponent.inject(this);
+        daggerRegisterEmailComponent.inject(this);
     }
 
     @Override

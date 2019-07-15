@@ -37,8 +37,13 @@ public class RegisterEmailPresenter extends BaseDaggerPresenter<RegisterEmailCon
                         confirmPassword,
                         isAutoVerify
                 ),
-                new RegisterEmailSubscriber(getView(),
-                        email, name, password));
+                new RegisterEmailSubscriber(
+                        getView(),
+                        email,
+                        name,
+                        password
+                )
+        );
 
     }
 
