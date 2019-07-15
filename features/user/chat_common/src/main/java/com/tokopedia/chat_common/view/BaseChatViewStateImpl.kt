@@ -15,6 +15,7 @@ import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.BaseChatMenuViewHolder
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import rx.Observable
@@ -29,7 +30,8 @@ import java.util.concurrent.TimeUnit
 open class BaseChatViewStateImpl(
         @NonNull open val view: View,
         open val toolbar: Toolbar,
-        private val typingListener: TypingListener
+        private val typingListener: TypingListener,
+        private val chatMenuListener: BaseChatMenuViewHolder.ChatMenuListener
 ) : BaseChatViewState {
 
     protected lateinit var recyclerView: RecyclerView
@@ -39,10 +41,7 @@ open class BaseChatViewStateImpl(
     protected lateinit var actionBox: LinearLayout
     protected lateinit var sendButton: View
     protected lateinit var notifier: View
-
-    protected lateinit var pickerButton: View
-    protected lateinit var maximizeButton: View
-    protected lateinit var attachProductButton: View
+    protected lateinit var chatMenuButton: ImageView
 
     protected lateinit var replyWatcher: Observable<String>
     protected lateinit var replyIsTyping: Observable<Boolean>
@@ -56,10 +55,7 @@ open class BaseChatViewStateImpl(
         actionBox = view.findViewById(R.id.add_comment_area)
         sendButton = view.findViewById(R.id.send_but)
         notifier = view.findViewById(R.id.notifier)
-
-        pickerButton = view.findViewById(R.id.image_picker)
-        maximizeButton = view.findViewById(R.id.maximize)
-        attachProductButton = view.findViewById(R.id.add_url)
+        chatMenuButton = view.findViewById(R.id.iv_chat_menu)
 
         (recyclerView.layoutManager as LinearLayoutManager).stackFromEnd = false
         (recyclerView.layoutManager as LinearLayoutManager).reverseLayout = true
@@ -86,6 +82,10 @@ open class BaseChatViewStateImpl(
                     typingListener.onStopTyping()
                     isTyping = false
                 }
+
+        chatMenuButton.setOnClickListener {
+            chatMenuListener.showChatMenu()
+        }
     }
 
     override fun updateHeader(chatroomViewModel: ChatroomViewModel, onToolbarClicked: () -> Unit) {

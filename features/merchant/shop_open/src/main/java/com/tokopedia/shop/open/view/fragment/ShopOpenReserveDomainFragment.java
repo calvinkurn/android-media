@@ -36,9 +36,8 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
-import com.tokopedia.district_recommendation.domain.model.Address;
-import com.tokopedia.district_recommendation.domain.model.Token;
-import com.tokopedia.district_recommendation.view.DistrictRecommendationContract;
+import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress;
+import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.PrefixEditText;
@@ -71,8 +70,9 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
 
     public static final int MIN_SHOP_NAME_LENGTH = 3;
     public static final int MIN_SHOP_DOMAIN_LENGTH = 3;
-    public static final int REQUEST_CODE__EDIT_ADDRESS = 1235;
+    public static final int REQUEST_CODE_DISTRICTRECOMMENDATION = 1235;
     public static final int REQUEST_CODE_POSTAL_CODE = 1515;
+    private static final String EXTRA_DISTRICTRECOMMENDATION = "district_recommendation_address";
     public static final String VALIDATE_DOMAIN_NAME_SHOP = "validate_domain_name_shop";
     public static final String VALIDATE_DOMAIN_SUGGESTION_SHOP = "shop_domain_suggestion";
     public static final String URL_TNC = "https://www.tokopedia.com/terms.pl";
@@ -407,8 +407,8 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
 
     @Override
     public void onSuccessGetToken(Token token) {
-        logisticRouter.navigateToEditAddressActivityRequest(ShopOpenReserveDomainFragment.this
-                , REQUEST_CODE__EDIT_ADDRESS, token);
+        Intent intent = logisticRouter.getDistrictRecommendationIntent(getActivity(), token);
+        startActivityForResult(intent, REQUEST_CODE_DISTRICTRECOMMENDATION);
     }
 
     private void sendErrorTracking(String errorMessage) {
@@ -482,9 +482,9 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
                         openShopAddressViewHolder.updatePostalCodeView(postalCode);
                     }
                 } break;
-            case REQUEST_CODE__EDIT_ADDRESS:
+            case REQUEST_CODE_DISTRICTRECOMMENDATION:
                 if (resultCode == Activity.RESULT_OK && data != null) {
-                    Address address = data.getParcelableExtra(DistrictRecommendationContract.Constant.INTENT_DATA_ADDRESS);
+                    DistrictRecommendationAddress address = data.getParcelableExtra(EXTRA_DISTRICTRECOMMENDATION);
                     if (address != null) {
                         isDistrictChoosen = true;
                         clearFocus();

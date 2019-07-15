@@ -104,10 +104,14 @@ class FeedMultipleImageView @JvmOverloads constructor(
                      layoutParams.setMargins(btnDeleteMargin, btnDeleteMargin, btnDeleteMargin, btnDeleteMargin)
                      delete.layoutParams = layoutParams
 
-                     ImageHandler.LoadImage(itemImageView, item.thumbnail)
+                     ImageHandler.loadImageFit2(context, itemImageView, item.thumbnail)
                      delete.setOnClickListener { removeItem(item, adapterPosition) }
                      delete.visibility = if (item.isSelected) View.GONE else View.VISIBLE
-                     ic_play_vid.shouldShowWithAction(item.type == TYPE_VIDEO){}
+                     ic_play_vid.shouldShowWithAction(item.type == TYPE_VIDEO){
+                         val modLength = context.resources.getDimensionPixelSize(if (itemCount == 1) R.dimen.dp_72 else R.dimen.dp_36)
+                         ic_play_vid.layoutParams.width = modLength
+                         ic_play_vid.layoutParams.height = modLength
+                     }
                  }
 
              }

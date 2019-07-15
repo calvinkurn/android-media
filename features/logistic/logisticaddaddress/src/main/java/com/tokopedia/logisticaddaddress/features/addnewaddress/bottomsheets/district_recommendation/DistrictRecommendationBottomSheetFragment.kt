@@ -232,4 +232,9 @@ class DistrictRecommendationBottomSheetFragment : BottomSheets(),
             }
         }
     }
+
+    override fun onDetach() {
+        super.onDetach()
+        presenter.detachView()
+    }
 }

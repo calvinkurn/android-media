@@ -201,15 +201,6 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
-    public void eventClickAtcCourierSelectionClickPilihMetodePembayaranSuccess() {
-        sendEventCategoryActionLabel(
-                EventName.CLICK_ATC,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
-                EventLabel.SUCCESS
-        );
-    }
-
     public void eventClickAtcCourierSelectionClickPilihMetodePembayaranNotSuccess(String errorMessage) {
         sendEventCategoryActionLabel(
                 EventName.CLICK_ATC,
