@@ -68,7 +68,6 @@ public class MyApplication extends BaseMainApplication
         super.onCreate();
         FlowManager.init(new FlowConfig.Builder(this)
                 .build());
-        //FlowManager.initModule(TkpdCacheApiGeneratedDatabaseHolder.class);
         initCacheApi();
     }
 
