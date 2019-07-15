@@ -37,12 +37,13 @@ import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
-import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
+import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
@@ -217,11 +218,24 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 try {
                     if (hasFeed() && newState == RecyclerView.SCROLL_STATE_IDLE) {
                         val item: Visitable<*>?
-                        val position = when {
-                            itemIsFullScreen() -> layoutManager.findLastVisibleItemPosition()
-                            layoutManager.findFirstCompletelyVisibleItemPosition() != -1 -> layoutManager.findFirstCompletelyVisibleItemPosition()
-                            layoutManager.findLastCompletelyVisibleItemPosition() != -1 -> layoutManager.findLastCompletelyVisibleItemPosition()
-                            else -> 0
+
+                        val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
+                        val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+                        val isItemFullScreen = lastVisibleItemPosition - firstVisibleItemPosition == 0
+                        val position = if (isItemFullScreen) {
+                            lastVisibleItemPosition
+                        } else {
+                            val findFirstCompletelyVisibleItemPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
+                            if (findFirstCompletelyVisibleItemPosition != -1) {
+                                findFirstCompletelyVisibleItemPosition
+                            } else {
+                                val findLastCompletelyVisibleItemPosition = layoutManager.findLastCompletelyVisibleItemPosition()
+                                if (findLastCompletelyVisibleItemPosition != -1) {
+                                    findLastCompletelyVisibleItemPosition
+                                } else {
+                                    0
+                                }
+                            }
                         }
                         item = adapter.list[position]
 
@@ -385,7 +399,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun getUserSession(): UserSession = UserSession(context)
 
-    fun onOtherProfilePostItemClick(applink: String, authorId:String) {
+    fun onOtherProfilePostItemClick(applink: String, authorId: String) {
         RouteManager.route(context, applink)
         profileAnalytics.eventClickOtherPost(userId.toString(), authorId)
     }
@@ -418,7 +432,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     element.profileHeaderViewModel.isShowAffiliateContent,
                     element.profileHeaderViewModel.isAffiliate))
             } else {
-                visitables.add(NoPostCardViewModel(element.profileHeaderViewModel.name))
+                visitables.add(NoPostCardViewModel(element.profileHeaderViewModel.name,
+                    element.profileHeaderViewModel.isKol,
+                    element.profileHeaderViewModel.isAffiliate))
                 getRelatedProfile()
             }
         }
@@ -805,7 +821,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onMenuClick(positionInFeed: Int, postId: Int, reportable: Boolean, deletable: Boolean, editable: Boolean) {
         context?.let {
-            val menus = createBottomMenu(it, deletable, reportable, false, object : PostMenuListener {
+            val menus = createBottomMenu(it, deletable, reportable, editable, object : PostMenuListener {
                 override fun onDeleteClicked() {
                     createDeleteDialog(positionInFeed, postId).show()
                 }
@@ -815,11 +831,15 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 }
 
                 override fun onEditClick() {
-
+                    goToEditPostAffiliate(postId)
                 }
             })
             menus.show()
         }
+    }
+
+    private fun goToEditPostAffiliate(postId: Int) {
+        context?.let { RouteManager.route(it, ApplinkConstInternalContent.AFFILIATE_EDIT, postId.toString()) }
     }
 
     override fun onCaptionClick(positionInFeed: Int, redirectUrl: String) {
@@ -1045,6 +1065,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         remoteConfig = FirebaseRemoteConfigImpl(context)
 
         isOwner = userId.toString() == userSession.userId
+
     }
 
     internal fun hasFeed(): Boolean {
@@ -1052,10 +1073,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             && !adapter.list.isEmpty()
             && adapter.list[0] !is NoPostCardViewModel
             && adapter.list[0] !is EmptyModel)
-    }
-
-    internal fun itemIsFullScreen(): Boolean {
-        return layoutManager.findLastVisibleItemPosition() - layoutManager.findFirstVisibleItemPosition() == 0
     }
 
     private fun showFooterOthers() {

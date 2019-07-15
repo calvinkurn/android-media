@@ -6,7 +6,7 @@ import com.tokopedia.profile.view.adapter.factory.ProfileTypeFactory
 /**
  * Model to show the the profile has no post (empty)
  */
-class NoPostCardViewModel(val name: String) : Visitable<ProfileTypeFactory> {
+class NoPostCardViewModel(val name: String, val isKol:Boolean, val isAffiliate:Boolean) : Visitable<ProfileTypeFactory> {
     override fun type(typeFactory: ProfileTypeFactory?): Int {
         return typeFactory?.type(this) ?: 0
     }
