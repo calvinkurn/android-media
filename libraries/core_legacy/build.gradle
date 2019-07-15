@@ -79,9 +79,8 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.firebase.config
 
-    annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
-    implementation rootProject.ext.dbDependencies.dbFlowCore
-    implementation rootProject.ext.dbDependencies.dbFlow
+    implementation rootProject.ext.dbDependencies.dbRoomRuntime
+    annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
