@@ -81,10 +81,24 @@
             android:maxWidth="@dimen/chat_width"
             android:padding="@dimen/dp_10"
             android:textColor="@color/white"
+            android:ellipsize="end"
             android:textColorLink="@color/white"
             android:textIsSelectable="true"
             android:textSize="@dimen/sp_14"
-            tools:text="Gukguk meong meongaksjdkajshdkajhsdkajhsdkajhsdaksdjhaksjhkahsdk"/>
+            android:maxLines="5"
+            tools:text="Gukguk meong meongaksjdkajshdkajhsdkajhsdkajhsdaksdjhaksjhkahsdk
+fskjdfas
+dsfklasjd
+sdfjlkas
+sdlkfja
+
+sdkfjalkjdf
+asdlkfjlaks
+sdflkjlasdfj
+asdflkjasdflk
+asdfjaslkdfj
+sadflkjaslfjaskldfj
+sadflsdkfjlasj"/>
 
     </RelativeLayout>
 

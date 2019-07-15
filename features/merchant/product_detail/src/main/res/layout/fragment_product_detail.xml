@@ -55,10 +55,10 @@
             <android.support.v7.widget.Toolbar
                 android:id="@+id/search_pdp_toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
+                android:layout_height="@dimen/dp_50"
                 android:background="@color/white"
                 android:gravity="top"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
@@ -67,6 +67,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="@dimen/dp_8"
+                    android:background="@drawable/bg_search"
                     android:layout_toStartOf="@+id/btn_wishlist"
                     android:layout_toLeftOf="@+id/btn_wishlist"
                     android:orientation="horizontal"
@@ -76,7 +77,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginStart="4dp"
                         android:layout_marginLeft="4dp"
                         app:srcCompat="@drawable/ic_search_bar" />
 
