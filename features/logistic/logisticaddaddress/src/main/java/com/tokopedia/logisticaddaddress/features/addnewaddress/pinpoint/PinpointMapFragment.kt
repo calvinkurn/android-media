@@ -77,7 +77,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     private var addNewAddressComponent: AddNewAddressComponent? = null
     private var isChangesRequested: Boolean? = null
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
-    private val SCREEN_NAME = "/user/address/create/cart/pinpoint1"
     private var continueWithLocation: Boolean? = false
 
     @Inject
@@ -337,7 +336,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     }
 
     private fun showAutocompleteGeocodeBottomSheet(lat: Double, long: Double, search: String) {
-        activity?.let { AddNewAddressAnalytics.sendScreenName(it, SCREEN_NAME) }
         val autocompleteGeocodeBottomSheetFragment =
                 AutocompleteBottomSheetFragment.newInstance(lat, long, search)
         autocompleteGeocodeBottomSheetFragment.setActionListener(this)

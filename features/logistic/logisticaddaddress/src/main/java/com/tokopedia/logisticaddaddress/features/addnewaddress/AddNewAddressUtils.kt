@@ -13,6 +13,7 @@ import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.view.View
 import android.view.ViewTreeObserver
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.TextView
 import com.google.android.gms.location.LocationRequest
@@ -21,6 +22,8 @@ import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.maps.model.LatLng
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.logisticaddaddress.R
+import android.widget.EditText
+
 
 /**
  * Created by fwidjaja on 2019-06-22.
@@ -94,5 +97,17 @@ object AddNewAddressUtils {
             isGpsOn = isLocationEnabled(it) && isGpsOn
         }
         return isGpsOn
+    }
+
+    @JvmStatic
+    fun hideKeyboard(et : EditText, context: Context?) {
+        val inputMethodManager = context?.getSystemService(Activity.INPUT_METHOD_SERVICE)
+        (inputMethodManager as InputMethodManager).hideSoftInputFromWindow(et.windowToken, 0)
+    }
+
+    @JvmStatic
+    fun showKeyboard(et: EditText, context: Context?, flag: Int) {
+        val imm = context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(et, flag)
     }
 }

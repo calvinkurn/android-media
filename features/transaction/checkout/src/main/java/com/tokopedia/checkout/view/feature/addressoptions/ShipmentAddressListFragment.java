@@ -30,6 +30,7 @@ import com.tokopedia.checkout.view.feature.addressoptions.recyclerview.ShipmentA
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.logisticaddaddress.AddressConstants;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity;
+import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics;
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity;
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_address.SaveAddressDataModel;
 import com.tokopedia.logisticcommon.LogisticCommonConstant;
@@ -51,6 +52,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.checkout.CartConstant.SCREEN_NAME_CART_EXISTING_USER;
 import static com.tokopedia.checkout.view.feature.addressoptions.CartAddressChoiceActivity.EXTRA_CURRENT_ADDRESS;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_ADD_NEW_ADDRESS_KEY;
 
@@ -478,6 +480,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
                 // TODO : remove on PR!!!!
                 // if (isAddNewAddressEnabled()) {
+                    AddNewAddressAnalytics.sendScreenName(getActivity(), SCREEN_NAME_CART_EXISTING_USER);
                     startActivityForResult(PinpointMapActivity.newInstance(getActivity(),
                             AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
                             false, 0, false, false, null,
@@ -496,6 +499,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
                 // TODO : remove on PR!!!!
                 // if (isAddNewAddressEnabled()) {
+                AddNewAddressAnalytics.sendScreenName(getActivity(), SCREEN_NAME_CART_EXISTING_USER);
                     startActivityForResult(PinpointMapActivity.newInstance(getActivity(),
                             AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
                             false, 0, false, false, null,
