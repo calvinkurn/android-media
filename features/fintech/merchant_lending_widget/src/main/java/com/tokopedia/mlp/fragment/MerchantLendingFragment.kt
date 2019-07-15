@@ -98,20 +98,13 @@ class MerchantLendingFragment : BaseDaggerFragment(),MLPWidgetAdapterCallBack {
 
     fun observeData() {
         merchantLendingViewModel.getCategoryList().observe(this, Observer { leWidgetData ->
-            if (leWidgetData?.leWidget?.widgets?.isEmpty()!!){
-                line.hide()
-                tv_title_widget.hide()
-                iv_collapsewidget.hide()
-                ll_recyclercontainer.hide()
-                line2.hide()
-                parentContainer.hide()
-            }
-            else {
+
+            if (leWidgetData?.leWidget?.widgets?.isEmpty()!!) {
+                view?.visibility=View.GONE
+            } else {
                 leWidgetData.leWidget.widgets.let {
                     val lengthDataLeWidget: Int = it.size
-
                     for (widgetNo in 0 until lengthDataLeWidget) {
-
                         widgetList.clear()
                         widgetList.addAll(it as List<WidgetsItem>)
                         widget_container.adapter.notifyDataSetChanged()
