@@ -7,6 +7,7 @@ import com.tokopedia.affiliate.feature.createpost.view.subscriber.GetContentForm
 import com.tokopedia.affiliate.feature.createpost.view.type.ShareType
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel
 import com.tokopedia.twitter_share.TwitterManager
+import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import timber.log.Timber
 import javax.inject.Inject
@@ -19,16 +20,19 @@ class CreatePostPresenter @Inject constructor(
         private val twitterManager: TwitterManager
 ) : BaseDaggerPresenter<CreatePostContract.View>(), CreatePostContract.Presenter, TwitterManager.TwitterManagerListener {
 
+    private val twitterSubscription: MutableList<Subscription> = mutableListOf()
+
     override fun attachView(view: CreatePostContract.View?) {
         super.attachView(view)
         twitterManager.setListener(this)
         invalidateShareOptions()
-        postContentToOtherService(CreatePostViewModel(caption = "Jual barang"))
+        postContentToOtherService(CreatePostViewModel(caption = "Jual barang di https://news.detik.com"))
     }
 
     override fun detachView() {
         super.detachView()
         getContentFormUseCase.unsubscribe()
+        twitterSubscription.forEach(Subscription::unsubscribe)
     }
 
     override fun fetchContentForm(idList: MutableList<String>, type: String) {
@@ -40,6 +44,7 @@ class CreatePostPresenter @Inject constructor(
     }
 
     override fun onAuthenticationSuccess(oAuthToken: String, oAuthSecret: String) {
+        twitterManager.shouldPostToTwitter = true
         invalidateShareOptions()
     }
 
@@ -62,8 +67,7 @@ class CreatePostPresenter @Inject constructor(
                     twitterManager.shouldPostToTwitter = true
                 }
             }
-        }
-        else {
+        } else {
             twitterManager.shouldPostToTwitter = false
         }
 
@@ -71,16 +75,21 @@ class CreatePostPresenter @Inject constructor(
     }
 
     override fun postContentToOtherService(viewModel: CreatePostViewModel) {
-        twitterManager.postTweet(viewModel.caption, emptyList())
-                .subscribe {
-                    Timber.tag("Post to Twitter").d("Success")
-                }
+        twitterSubscription.add(
+                twitterManager.postTweet(viewModel.caption)
+                        .subscribe(
+                                { Timber.tag("Post to Twitter").d("Success") },
+                                { Timber.tag("Post to Twitter").e(it) }
+                        )
+        )
     }
 
     private fun authenticateTwitter() {
-        twitterManager.getAuthenticator()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { view?.onAuthenticateTwitter(it) }
+        twitterSubscription.add(
+                twitterManager.getAuthenticator()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe { view?.onAuthenticateTwitter(it) }
+        )
     }
 
     private fun getShareOptions(): List<ShareType> {
@@ -91,11 +100,11 @@ class CreatePostPresenter @Inject constructor(
     }
 
     private fun getShareHeaderText(): String {
-        val activeshareOptions = getShareOptions().filter { it.isActivated }
-        val shareHeaderText = activeshareOptions
+        val activeShareOptions = getShareOptions().filter { it.isActivated }
+        val shareHeaderText = activeShareOptions
                 .map { view?.getContext()?.getString(it.keyRes) }
                 .joinToString()
 
-        return if (activeshareOptions.size == 1) "$shareHeaderText aja" else shareHeaderText
+        return if (activeShareOptions.size == 1) "$shareHeaderText aja" else shareHeaderText
     }
 }

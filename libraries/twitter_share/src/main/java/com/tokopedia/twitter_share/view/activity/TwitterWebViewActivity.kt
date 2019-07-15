@@ -16,7 +16,16 @@ class TwitterWebViewActivity : BaseSimpleActivity(), TwitterWebViewActivityListe
     }
 
     override fun onGetCallbackUrl(url: String) {
-        TwitterAuthenticator.broadcastCallbackUrl(url)
+        TwitterAuthenticator.broadcastState(
+                TwitterAuthenticator.TwitterAuthenticationState.Success(url)
+        )
         finish()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        TwitterAuthenticator.broadcastState(
+                TwitterAuthenticator.TwitterAuthenticationState.Cancel
+        )
     }
 }

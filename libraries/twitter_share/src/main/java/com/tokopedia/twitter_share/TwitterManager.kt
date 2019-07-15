@@ -24,8 +24,6 @@ class TwitterManager(
     companion object {
         const val OAUTH_VERIFIER = "oauth_verifier"
         const val OAUTH_TOKEN = "oauth_token"
-
-        private const val CALLBACK_URL = "https://localhost"
     }
 
     private val session: TwitterSession = TwitterSession(twitterPrefs)
@@ -51,7 +49,7 @@ class TwitterManager(
             session.shouldPostToTwitter = value
         }
 
-    private var instance: Twitter = TwitterFactory(config).instance
+    private var instance: Twitter = getTwitterInstance()
 
     private var listener: TwitterManagerListener? = null
 
@@ -59,31 +57,29 @@ class TwitterManager(
         this.listener = listener
     }
 
-    override fun onAuthenticateSuccess(requestToken: RequestToken, oAuthToken: String, oAuthVerifier: String) {
-        verifyAuthData(requestToken, oAuthVerifier)
+    override fun onAuthenticateSuccess(twitterInstance: Twitter, requestToken: RequestToken, oAuthToken: String, oAuthVerifier: String) {
+        verifyAuthData(twitterInstance, requestToken, oAuthVerifier)
     }
 
     fun getAuthenticator(): Observable<TwitterAuthenticator> {
         return Observable.fromCallable {
-            TwitterAuthenticator(getRequestTokenInstance(), this)
+            TwitterAuthenticator(getTwitterInstance(), this)
         }.subscribeOn(Schedulers.io())
     }
 
-    private fun verifyAuthData(requestToken: RequestToken, oAuthVerifier: String) {
+    private fun verifyAuthData(twitterInstance: Twitter, requestToken: RequestToken, oAuthVerifier: String) {
         Observable.fromCallable {
             getAccessToken(requestToken, oAuthVerifier)
         }.subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe { accessToken ->
+            instance = twitterInstance
             saveAccessToken(accessToken)
             listener?.onAuthenticationSuccess(accessToken.token, accessToken.tokenSecret)
         }
     }
 
-    private fun getRequestTokenInstance(): RequestToken {
-        instance = TwitterFactory(config).instance
-        return instance.getOAuthRequestToken(CALLBACK_URL)
-    }
+    private fun getTwitterInstance() = TwitterFactory(config).instance
 
     private fun getAccessToken(requestToken: RequestToken, oAuthVerifier: String): AccessToken {
         return instance.getOAuthAccessToken(requestToken, oAuthVerifier)
@@ -93,7 +89,14 @@ class TwitterManager(
         session.setAccessTokenAndSecret(accessToken.token, accessToken.tokenSecret)
     }
 
-    fun postTweet(message: String, fileList: List<File>): Observable<Status> {
+    /**
+     * To show cards when posting tweets, you should add some meta in the directed url
+     * Error on duplicate tweets posted
+     *
+     * @see <a href="https://developer.twitter.com/en/docs/tweets/optimize-with-cards/guides/getting-started">Twitter API Docs</a>
+     * @see <a href="https://cards-dev.twitter.com/validator">Twitter Card Validator</a>
+     */
+    fun postTweet(message: String, fileList: List<File> = emptyList()): Observable<Status> {
         return doIfAuthenticated {
             return@doIfAuthenticated Observable.from(fileList)
                     .concatMap(::uploadMedia)

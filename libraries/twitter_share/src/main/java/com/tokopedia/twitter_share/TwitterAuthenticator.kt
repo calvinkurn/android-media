@@ -6,25 +6,34 @@ import com.tokopedia.twitter_share.view.activity.TwitterWebViewActivity
 import rx.Subscription
 import rx.schedulers.Schedulers
 import rx.subjects.PublishSubject
+import twitter4j.Twitter
 import twitter4j.auth.RequestToken
 import java.net.URL
 
 class TwitterAuthenticator(
-        private val requestToken: RequestToken,
+        private val twitterInstance: Twitter,
         private val listener: TwitterAuthenticatorListener
 ) {
 
+    private val requestToken = twitterInstance.getOAuthRequestToken(CALLBACK_URL)
     private lateinit var callbackUrlSubscription: Subscription
 
     interface TwitterAuthenticatorListener {
-        fun onAuthenticateSuccess(requestToken: RequestToken, oAuthToken: String, oAuthVerifier: String)
+        fun onAuthenticateSuccess(twitterInstance: Twitter, requestToken: RequestToken, oAuthToken: String, oAuthVerifier: String)
+    }
+
+    sealed class TwitterAuthenticationState {
+        data class Success(val url: String): TwitterAuthenticationState()
+        object Cancel: TwitterAuthenticationState()
     }
 
     companion object {
-        private val callbackUrlSubject = PublishSubject.create<String>()
+        private const val CALLBACK_URL = "https://localhost"
 
-        fun broadcastCallbackUrl(callbackUrl: String) {
-            callbackUrlSubject.onNext(callbackUrl)
+        private val callbackUrlSubject = PublishSubject.create<TwitterAuthenticationState>()
+
+        fun broadcastState(state: TwitterAuthenticationState) {
+            callbackUrlSubject.onNext(state)
         }
     }
 
@@ -53,10 +62,18 @@ class TwitterAuthenticator(
     private fun initSubscription(): Subscription {
         return TwitterAuthenticator.callbackUrlSubject
                 .observeOn(Schedulers.io())
-                .subscribe { url ->
-                    val (token, verifier) = processCallbackUrl(url)
-                    if (token.isNotEmpty() && verifier.isNotEmpty()) {
-                        listener.onAuthenticateSuccess(requestToken, token, verifier)
+                .subscribe { state ->
+                    when (state) {
+                        is TwitterAuthenticationState.Success -> {
+                            val (token, verifier) = processCallbackUrl(state.url)
+                            if (token.isNotEmpty() && verifier.isNotEmpty()) {
+                                listener.onAuthenticateSuccess(twitterInstance, requestToken, token, verifier)
+                            }
+
+                        }
+                        is TwitterAuthenticationState.Cancel -> {
+
+                        }
                     }
                     if (::callbackUrlSubscription.isInitialized && !callbackUrlSubscription.isUnsubscribed) callbackUrlSubscription.unsubscribe()
                 }
