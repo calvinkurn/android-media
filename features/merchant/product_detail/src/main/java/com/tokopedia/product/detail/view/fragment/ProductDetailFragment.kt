@@ -926,7 +926,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 //                            icon.playAnimation()
 //                            setBadgeMenuCart(menuCart)
 //                        }
-//                    }
+                    }
                 }
 
                 varToolbar.overflowIcon = ContextCompat.getDrawable(activity!!, R.drawable.ic_product_more_dark)
