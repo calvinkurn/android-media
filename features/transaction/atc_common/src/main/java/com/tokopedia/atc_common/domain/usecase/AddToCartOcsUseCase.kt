@@ -16,20 +16,26 @@ import javax.inject.Inject
  * Created by Irfan Khoirul on 2019-07-10.
  */
 
-class AddToCartOneClickShipmentUseCase @Inject constructor(private val queryString: String,
-                                                           private val gson: Gson,
-                                                           private val graphqlUseCase: GraphqlUseCase) : UseCase<AddToCartDataModel>() {
+class AddToCartOcsUseCase @Inject constructor(private val queryString: String,
+                                              private val gson: Gson,
+                                              private val graphqlUseCase: GraphqlUseCase) : UseCase<AddToCartDataModel>() {
 
-    val variables = HashMap<String, Any?>()
+    companion object {
+        const val REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST = "REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST"
+    }
 
-    fun setParams(ocsRequestParams: AddToCartOcsRequestParams) {
+    private fun getParams(ocsRequestParams: AddToCartOcsRequestParams): HashMap<String, Any?> {
+        val variables = HashMap<String, Any?>()
         val jsonTreeAtcRequest = gson.toJsonTree(ocsRequestParams)
         val jsonObjectAtcRequest = jsonTreeAtcRequest.asJsonObject
         variables["params"] = jsonObjectAtcRequest
+
+        return variables
     }
 
-    override fun createObservable(p0: RequestParams?): Observable<AddToCartDataModel> {
-        val graphqlRequest = GraphqlRequest(queryString, AddToCartOcsGqlResponse::class.java, variables)
+    override fun createObservable(requestParams: RequestParams?): Observable<AddToCartDataModel> {
+        val addToCartRequest = requestParams?.getObject(AddToCartOcsUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST) as AddToCartOcsRequestParams
+        val graphqlRequest = GraphqlRequest(queryString, AddToCartOcsGqlResponse::class.java, getParams(addToCartRequest))
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map {

@@ -16,6 +16,7 @@ import rx.Observable;
  * @author Irfan Khoirul on 31/10/18.
  */
 
+@Deprecated
 public class AddToCartOneClickShipmentUseCase extends UseCase<AddToCartDataResponse> {
     public static final String PARAM_ADD_TO_CART = "PARAM_ADD_TO_CART";
 

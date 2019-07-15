@@ -8,32 +8,32 @@ import com.google.gson.annotations.SerializedName
 
 data class AddToCartOcsRequestParams(
         @SerializedName("product_id")
-        var productId: Long,
+        var productId: Long = 0,
 
         @SerializedName("shop_id")
-        var shopId: Int,
+        var shopId: Int = 0,
 
         @SerializedName("quantity")
-        var quantity: Int,
+        var quantity: Int = 0,
 
         @SerializedName("notes")
-        var notes: Int,
+        var notes: String = "",
 
         @SerializedName("warehouse_id")
-        var warehouseId: Int,
+        var warehouseId: Int = 0,
 
         @SerializedName("customer_id")
-        var customerId: Int,
+        var customerId: Int = 0,
 
         @SerializedName("tracker_attribution")
-        var trackerAttribution: String,
+        var trackerAttribution: String = "",
 
         @SerializedName("tracker_list_name")
-        var trackerListName: String,
+        var trackerListName: String = "",
 
         @SerializedName("ut_param")
-        var utParam: String,
+        var utParam: String = "",
 
         @SerializedName("is_trade_in")
-        var isTradeIn: Boolean
+        var isTradeIn: Boolean = false
 )
