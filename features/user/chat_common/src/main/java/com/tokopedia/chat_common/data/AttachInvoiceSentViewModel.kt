@@ -32,23 +32,43 @@ class AttachInvoiceSentViewModel : SendableViewModel, Visitable<BaseChatTypeFact
      * @param description    invoice description
      * @param totalAmount    total amount
      */
-    constructor(msgId: String,
-                fromUid: String,
-                from: String,
-                fromRole: String,
-                attachmentId: String,
-                attachmentType: String,
-                replyTime: String,
-                startTime: String,
-                message: String,
-                description: String,
-                imageUrl: String,
-                totalAmount: String,
-                isSender: Boolean) : super(msgId, fromUid, from, fromRole,
-            attachmentId, attachmentType, replyTime, startTime, false, false, isSender, message) {
+    constructor(
+            msgId: String,
+            fromUid: String,
+            from: String,
+            fromRole: String,
+            attachmentId: String,
+            attachmentType: String,
+            replyTime: String,
+            startTime: String,
+            message: String,
+            description: String,
+            imageUrl: String,
+            totalAmount: String,
+            isSender: Boolean,
+            statusId: Int,
+            status: String,
+            invoiceId: String
+    ) : super(
+            msgId,
+            fromUid,
+            from,
+            fromRole,
+            attachmentId,
+            attachmentType,
+            replyTime,
+            startTime,
+            false,
+            false,
+            isSender,
+            message
+    ) {
         this.description = description
         this.imageUrl = imageUrl
         this.totalAmount = totalAmount
+        this.statusId = statusId
+        this.status = status
+        this.invoiceId = invoiceId
     }
 
     /**

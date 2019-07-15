@@ -42,7 +42,6 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
     override fun mapAttachmentMessage(pojo: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
         return when (pojo.attachment?.type) {
             TYPE_QUICK_REPLY -> convertToQuickReplyModel(pojo, jsonAttributes)
-            TYPE_INVOICE_SEND -> convertToInvoiceSent(pojo, jsonAttributes)
             TYPE_INVOICES_SELECTION -> convertToInvoiceSelection(pojo, jsonAttributes)
             TYPE_CHAT_BALLOON_ACTION -> convertToChatActionSelectionBubbleModel(pojo, jsonAttributes)
             TYPE_QUICK_REPLY_SEND -> convertToMessageViewModel(pojo)
@@ -107,29 +106,6 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
         )
 
     }
-
-    private fun convertToInvoiceSent(pojo: ChatSocketPojo, jsonAttribute: JsonObject):
-            AttachInvoiceSentViewModel {
-        val invoiceSentPojo = GsonBuilder().create().fromJson<InvoiceSentPojo>(jsonAttribute,
-                InvoiceSentPojo::class.java)
-        return AttachInvoiceSentViewModel(
-                pojo.msgId.toString(),
-                pojo.fromUid,
-                pojo.from,
-                pojo.fromRole,
-                pojo.attachment!!.id,
-                pojo.attachment!!.type,
-                pojo.message.timeStampUnixNano,
-                pojo.startTime,
-                invoiceSentPojo.invoiceLink.attributes.title,
-                invoiceSentPojo.invoiceLink.attributes.description,
-                invoiceSentPojo.invoiceLink.attributes.imageUrl,
-                invoiceSentPojo.invoiceLink.attributes.totalAmount,
-                !pojo.isOpposite
-        )
-
-    }
-
 
     private fun convertToChatActionSelectionBubbleModel(pojo: ChatSocketPojo, jsonAttribute: JsonObject): ChatActionSelectionBubbleViewModel {
         val pojoAttribute = GsonBuilder().create().fromJson<ChatActionBalloonSelectionAttachmentAttributes>(jsonAttribute, ChatActionBalloonSelectionAttachmentAttributes::class.java)
