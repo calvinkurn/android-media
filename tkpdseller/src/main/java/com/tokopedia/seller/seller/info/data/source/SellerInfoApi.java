@@ -1,7 +1,7 @@
 package com.tokopedia.seller.seller.info.data.source;
 
 import com.tokopedia.seller.seller.info.constant.SellerInfoConstant;
-import com.tokopedia.seller.seller.info.data.model.ResponseSellerInfoModel;
+import com.tokopedia.seller.seller.info.data.model.ResponseSellerInfoModelA;
 
 import java.util.Map;
 
@@ -16,5 +16,5 @@ import rx.Observable;
 
 public interface SellerInfoApi {
     @GET(SellerInfoConstant.LIST)
-    Observable<Response<ResponseSellerInfoModel>> listSellerInfo(@QueryMap Map<String, String> params);
+    Observable<Response<ResponseSellerInfoModelA>> listSellerInfo(@QueryMap Map<String, String> params);
 }

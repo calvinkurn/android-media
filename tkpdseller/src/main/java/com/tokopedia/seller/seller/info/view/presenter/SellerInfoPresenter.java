@@ -2,9 +2,9 @@ package com.tokopedia.seller.seller.info.view.presenter;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.seller.seller.info.data.model.DataList;
 import com.tokopedia.seller.seller.info.data.model.ResponseSellerInfoModel;
-import com.tokopedia.seller.seller.info.domain.interactor.SellerInfoUseCase;
+import com.tokopedia.seller.seller.info.domain.interactor.SellerCenterUseCase;
 import com.tokopedia.seller.seller.info.view.SellerInfoView;
 import com.tokopedia.seller.seller.info.view.model.SellerInfoModel;
 
@@ -20,64 +20,62 @@ import rx.Subscriber;
  */
 
 public class SellerInfoPresenter extends BaseDaggerPresenter<SellerInfoView> {
-    SellerInfoUseCase sellerInfoUseCase;
+    private SellerCenterUseCase sellerCenterUseCase;
 
     @Inject
-    public SellerInfoPresenter(SellerInfoUseCase sellerInfoUseCase) {
-        this.sellerInfoUseCase = sellerInfoUseCase;
+    public SellerInfoPresenter(SellerCenterUseCase sellerCenterUseCase) {
+        this.sellerCenterUseCase = sellerCenterUseCase;
     }
 
-    public void getSellerInfoList(int page){
-        final RequestParams requestParams = RequestParams.create();
-        requestParams.putString("page",Integer.toString(page));
+    public void getSellerInfoList(int page) {
+        sellerCenterUseCase.execute(SellerCenterUseCase.Companion.createRequestParams(page, ""),
+                new Subscriber<ResponseSellerInfoModel>() {
+                    @Override
+                    public void onCompleted() {
 
-        sellerInfoUseCase.execute(requestParams, new Subscriber<ResponseSellerInfoModel>() {
-            @Override
-            public void onCompleted() {
+                    }
 
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        CommonUtils.dumper(e);
+                        if (isViewAttached()) {
+                            getView().onLoadSearchError(e);
+                        }
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-                CommonUtils.dumper(e);
-                if (isViewAttached()) {
-                    getView().onLoadSearchError(e);
-                }
-            }
+                    @Override
+                    public void onNext(ResponseSellerInfoModel response) {
+                        if (isViewAttached()) {
+                            List<SellerInfoModel> result = conv(response);
 
-            @Override
-            public void onNext(ResponseSellerInfoModel response ) {
-                if(isViewAttached()){
-                    List<SellerInfoModel> result = conv(response);
-
-                    getView().onSearchLoaded(result, result.size(), response.getData().getPaging().isHasNext());
-                }
-            }
-        });
+                            getView().onSearchLoaded(result, result.size(), response.getNotifData().getPaging().getHasNext());
+                        }
+                    }
+                });
     }
 
-    private List<SellerInfoModel> conv(ResponseSellerInfoModel response){
+    private List<SellerInfoModel> conv(ResponseSellerInfoModel response) {
         List<SellerInfoModel> res = new ArrayList<>();
-        for (ResponseSellerInfoModel.List list : response.getData().getList()) {
+        for (DataList list : response.getNotifData().getList()) {
             res.add(conv(list));
         }
         return res;
     }
 
-    private SellerInfoModel conv(ResponseSellerInfoModel.List list){
+    private SellerInfoModel conv(DataList list) {
         SellerInfoModel sellerInfoModel = new SellerInfoModel();
         sellerInfoModel.setContent(list.getContent());
         sellerInfoModel.setCreateTimeUnix(list.getCreateTimeUnix());
         sellerInfoModel.setTitle(list.getTitle());
-        sellerInfoModel.setInfoThumbnailUrl(list.getInfoThumbnailUrl());
-        sellerInfoModel.setExternalLink(list.getExternalLink());
-        sellerInfoModel.setRead(list.isIsRead());
+        sellerInfoModel.setInfoThumbnailUrl(list.getDataNotification().getInfoThumbnailUrl());
+        sellerInfoModel.setExternalLink(list.getDataNotification().getDesktopLink());
+        sellerInfoModel.setRead(list.getReadStatusInfo());
         sellerInfoModel.setStatus(list.getStatus());
 
         SellerInfoModel.Section section = new SellerInfoModel.Section();
-        section.setIconUrl(list.getSection().getIconUrl());
-        section.setName(list.getSection().getName());
-        section.setSectionId(list.getSection().getSectionId());
+        section.setIconUrl(list.getSectionIcon());
+        section.setName(list.getSectionName());
+        section.setSectionId(list.getSectionId());
 
         sellerInfoModel.setSection(section);
         return sellerInfoModel;
