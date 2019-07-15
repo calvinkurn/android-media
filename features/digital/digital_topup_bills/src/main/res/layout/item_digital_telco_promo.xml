@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/dp_5"
+    app:cardCornerRadius="@dimen/dp_5"
+    app:cardElevation="@dimen/dp_2">
+
+    <LinearLayout
+        android:id="@+id/promo_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/desc_promo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginRight="@dimen/dp_12"
+            android:lines="2"
+            android:textColor="@color/Neutral_N700_96"
+            app:typographyType="body_3"
+            tools:text="Cashback hingga Rp400.000 (khusus pengguna baru). SK lengkap klik di sini." />
+
+        <RelativeLayout
+            android:id="@+id/layout_promo_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible">
+
+            <ImageView
+                android:id="@+id/img_voucher"
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_16"
+                android:layout_alignTop="@+id/btn_copy_promo"
+                android:layout_alignBottom="@id/btn_copy_promo"
+                android:layout_marginLeft="@dimen/dp_12"
+                android:gravity="center_vertical"
+                android:src="@drawable/digital_ic_voucher" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/title_promo_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/btn_copy_promo"
+                android:layout_alignBottom="@id/btn_copy_promo"
+                android:layout_marginLeft="@dimen/dp_5"
+                android:layout_marginRight="@dimen/dp_5"
+                android:layout_toRightOf="@+id/img_voucher"
+                android:gravity="center_vertical"
+                android:text="@string/title_promo_code"
+                android:textColor="@color/Neutral_N700_96"
+                app:typographyType="body_3" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/promo_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/btn_copy_promo"
+                android:layout_alignBottom="@id/btn_copy_promo"
+                android:layout_toRightOf="@+id/title_promo_code"
+                android:gravity="center_vertical"
+                android:textColor="@color/tkpd_main_orange"
+                app:typographyType="body_3"
+                app:typographyWeight="bold"
+                tools:text="TOPED" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/btn_copy_promo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/promo_code"
+                android:layout_marginLeft="@dimen/dp_12"
+                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginRight="@dimen/dp_12"
+                android:lineHeight="@dimen/sp_16"
+                android:paddingLeft="@dimen/dp_8"
+                android:paddingTop="@dimen/dp_4"
+                android:paddingRight="@dimen/dp_8"
+                android:paddingBottom="@dimen/dp_4"
+                app:typographyType="heading_6"
+                tools:background="@drawable/digital_bg_green_rounded"
+                tools:text="Disalin"
+                tools:textColor="@color/white" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_12" />
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>
+
+
