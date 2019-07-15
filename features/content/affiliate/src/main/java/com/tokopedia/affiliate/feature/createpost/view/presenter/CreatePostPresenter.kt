@@ -42,7 +42,7 @@ class CreatePostPresenter @Inject constructor(
         view?.showLoading()
         getFeedUseCase.execute(GetDynamicFeedUseCase.createRequestParams(
                 if (isAffiliate) userSession.userId else userSession.shopId,
-                source = "detail", sourceId = postId), object : Subscriber<FeedDetail?>() {
+                source = PARAM_DETAIL, sourceId = postId), object : Subscriber<FeedDetail?>() {
             override fun onNext(t: FeedDetail?) {
                 if (t == null) onError(Throwable(MESSAGE_POST_NOT_FOUND))
                 else view?.onSuccessGetPostEdit(t)
@@ -59,5 +59,6 @@ class CreatePostPresenter @Inject constructor(
 
     companion object{
         private const val MESSAGE_POST_NOT_FOUND = "Post tidak ditemukan"
+        private const val PARAM_DETAIL = "detail"
     }
 }
