@@ -227,8 +227,8 @@ class ProductInfoFragment : BaseDaggerFragment() {
     private fun onClickWishlist(){
         fab_detail.setOnClickListener {
             if (primaryProductViewModel.isLoggedIn()) {
+                RecommendationPageTracking.eventUserClickProductToWishlistForUserLogin(!it.isActivated)
                 if (it.isActivated) {
-                    RecommendationPageTracking.eventAddWishlistOnProductRecommendationLogin()
                     productDataModel.productDetailData.id.let {
                         primaryProductViewModel.removeWishList(it.toString(),
                                 onSuccessRemoveWishlist = this::onSuccessRemoveWishlist,
@@ -236,7 +236,6 @@ class ProductInfoFragment : BaseDaggerFragment() {
                     }
 
                 } else {
-                    RecommendationPageTracking.eventRemoveWishlistOnProductRecommendationLogin()
                     productDataModel.productDetailData.id.let {
                         primaryProductViewModel.addWishList(it.toString(),
                                 onSuccessAddWishlist = this::onSuccessAddWishlist,
@@ -244,7 +243,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
                     }
                 }
             } else {
-                RecommendationPageTracking.eventAddWishlistOnProductRecommendationNonLogin()
+                RecommendationPageTracking.eventUserClickProductToWishlistForNonLogin()
                 RouteManager.route(activity, ApplinkConst.LOGIN)
             }
         }

@@ -10,6 +10,7 @@ import com.tokopedia.attachproduct.view.activity.AttachProductActivity
  * @author by milhamj on 01/03/19.
  */
 class ContentCreatePostFragment : BaseCreatePostFragment() {
+    private var isAddingProduct = false
 
     private var shouldGoAttachProduct = false
 
@@ -76,6 +77,7 @@ class ContentCreatePostFragment : BaseCreatePostFragment() {
     }
 
     private fun getAttachProductResult(data: Intent?) {
+        isAddingProduct = true
         val products = data?.getParcelableArrayListExtra<ResultProduct>(
                 AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)
                 ?: arrayListOf()
@@ -83,5 +85,14 @@ class ContentCreatePostFragment : BaseCreatePostFragment() {
             viewModel.productIdList.add(it.productId.toString())
         }
         fetchContentForm()
+    }
+
+    override fun updateRelatedProduct(){
+        super.updateRelatedProduct()
+        if (isAddingProduct){
+            productSmoothScroller.targetPosition = adapter.itemCount - 1
+            productAttachmentLayoutManager.startSmoothScroll(productSmoothScroller)
+            isAddingProduct = false
+        }
     }
 }

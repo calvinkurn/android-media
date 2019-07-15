@@ -30,7 +30,7 @@
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:contentDescription="@string/information_icon"
-            android:src="@drawable/ic_info_black" />
+            app:srcCompat="@drawable/ic_info_black" />
 
         <TextView
             android:layout_width="wrap_content"

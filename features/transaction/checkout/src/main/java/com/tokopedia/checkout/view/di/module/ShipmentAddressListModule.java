@@ -50,12 +50,6 @@ public class ShipmentAddressListModule {
 
     @Provides
     @ShipmentAddressListScope
-    ShipmentAddressListAdapter provideCartAddressListAdapter() {
-        return new ShipmentAddressListAdapter(actionListener);
-    }
-
-    @Provides
-    @ShipmentAddressListScope
     UserSessionInterface provideUserSessionInterface() {
         return new UserSession(context);
     }
