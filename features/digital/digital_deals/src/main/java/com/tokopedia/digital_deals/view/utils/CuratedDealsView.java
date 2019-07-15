@@ -74,6 +74,12 @@ public class CuratedDealsView extends LinearLayout implements DealsCategoryAdapt
 
         if (categoryItem.getItems() != null && categoryItem.getItems().size() > 0) {
             dealTitle.setText(categoryItem.getTitle());
+            curatedDealsRecyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+            categoryAdapter = new DealsCategoryAdapter(categoryItem.getItems(), DealsCategoryAdapter.HOME_PAGE, this, IS_SHORT_LAYOUT);
+            categoryAdapter.setDealsHomeLayout(true);
+            categoryAdapter.setDealType(DealsAnalytics.CURATED_DEALS);
+            categoryAdapter.setHomePosition(homePosition);
+            curatedDealsRecyclerView.setAdapter(categoryAdapter);
             if (categoryItem.getItems().size() >= 9) {
                 seeAllCuratedDeals.setVisibility(VISIBLE);
                 seeAllCuratedDeals.setOnClickListener(new View.OnClickListener() {
@@ -85,12 +91,6 @@ public class CuratedDealsView extends LinearLayout implements DealsCategoryAdapt
                     }
                 });
             }
-            curatedDealsRecyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-            categoryAdapter = new DealsCategoryAdapter(categoryItem.getItems(), DealsCategoryAdapter.HOME_PAGE, this, IS_SHORT_LAYOUT);
-            categoryAdapter.setDealsHomeLayout(true);
-            categoryAdapter.setDealType(DealsAnalytics.CURATED_DEALS);
-            categoryAdapter.setHomePosition(homePosition);
-            curatedDealsRecyclerView.setAdapter(categoryAdapter);
         }
 
     }

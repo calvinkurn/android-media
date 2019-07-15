@@ -22,7 +22,7 @@
                 android:id="@+id/img_product"
                 android:layout_width="@dimen/dp_120"
                 android:layout_height="@dimen/dp_120"
-                android:src="@color/grey_300" />
+                app:srcCompat="@color/grey_300" />
 
             <ImageButton
                 android:id="@+id/img_wishlist"
@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:background="@drawable/bg_round_button_with_shadow"
-                android:src="@drawable/ic_wishlist_checkout_on" />
+                app:srcCompat="@drawable/ic_wishlist_checkout_on" />
 
         </FrameLayout>
 

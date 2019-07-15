@@ -111,11 +111,11 @@ public class EnhancedECommerceProductCartMapData {
     }
 
     public void setBrand(String brand) {
-        Product.put(KEY_BRAND, !TextUtils.isEmpty(brand) ? brand : DEFAULT_VALUE_NONE_OTHER);
+        Product.put(KEY_BRAND, brand != null ? brand : DEFAULT_VALUE_NONE_OTHER);
     }
 
     public void setVariant(String variant) {
-        Product.put(KEY_VARIANT, !TextUtils.isEmpty(variant) ? variant : DEFAULT_VALUE_NONE_OTHER);
+        Product.put(KEY_VARIANT, variant != null ? variant : DEFAULT_VALUE_NONE_OTHER);
     }
 
     public Map<String, Object> getProduct() {
@@ -135,7 +135,7 @@ public class EnhancedECommerceProductCartMapData {
     }
 
     public void setCategoryId(String categoryId) {
-        Product.put(KEY_CATEGORY_ID, !TextUtils.isEmpty(categoryId) ? categoryId : DEFAULT_VALUE_NONE_OTHER);
+        Product.put(KEY_CATEGORY_ID, categoryId != null ? categoryId : DEFAULT_VALUE_NONE_OTHER);
     }
 
     public void setCartId(String cartId) {

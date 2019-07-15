@@ -144,6 +144,9 @@ public class CartItemData implements Parcelable {
         private int invenageValue;
         private int priceChangesState;
         private String priceChangesDesc;
+        private int productInvenageByUserInCart;
+        private int productInvenageByUserLastStockLessThan;
+        private String productInvenageByUserText;
         private double pricePlan;
         private int pricePlanInt;
         private int priceCurrency;
@@ -409,6 +412,30 @@ public class CartItemData implements Parcelable {
 
         public void setPriceChangesDesc(String priceChangesDesc) {
             this.priceChangesDesc = priceChangesDesc;
+        }
+
+        public int getProductInvenageByUserInCart() {
+            return productInvenageByUserInCart;
+        }
+
+        public void setProductInvenageByUserInCart(int productInvenageByUserInCart) {
+            this.productInvenageByUserInCart = productInvenageByUserInCart;
+        }
+
+        public int getProductInvenageByUserLastStockLessThan() {
+            return productInvenageByUserLastStockLessThan;
+        }
+
+        public void setProductInvenageByUserLastStockLessThan(int productInvenageByUserLastStockLessThan) {
+            this.productInvenageByUserLastStockLessThan = productInvenageByUserLastStockLessThan;
+        }
+
+        public String getProductInvenageByUserText() {
+            return productInvenageByUserText;
+        }
+
+        public void setProductInvenageByUserText(String productInvenageByUserText) {
+            this.productInvenageByUserText = productInvenageByUserText;
         }
 
         public List<WholesalePrice> getWholesalePrice() {

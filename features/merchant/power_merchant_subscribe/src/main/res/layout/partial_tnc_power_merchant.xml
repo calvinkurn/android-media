@@ -33,7 +33,7 @@
             android:id="@+id/checked_green_kyc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_green_oval"
+            app:srcCompat="@drawable/ic_green_oval"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_gravity="center"
             app:layout_constraintTop_toBottomOf="@+id/appCompatTextView" />
@@ -64,7 +64,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_green_oval"
+            app:srcCompat="@drawable/ic_green_oval"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/appCompatTextView" />
 
