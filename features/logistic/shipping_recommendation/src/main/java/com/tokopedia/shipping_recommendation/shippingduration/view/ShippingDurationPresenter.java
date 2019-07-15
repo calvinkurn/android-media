@@ -20,7 +20,6 @@ import com.tokopedia.shipping_recommendation.domain.shipping.ShippingRecommendat
 import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -67,18 +66,18 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
     }
 
     @Override
-    public void loadCourierRecommendation(ShippingParam shippingParam, int selectedServiceId, List<ShopShipment> shopShipmentList, int codHistory, String cornerId) {
+    public void loadCourierRecommendation(ShippingParam shippingParam, int selectedServiceId, List<ShopShipment> shopShipmentList, int codHistory, boolean isCorner) {
         if (getView() != null) {
             getView().showLoading();
             String query = GraphqlHelper.loadRawString(getView().getActivity().getResources(), R.raw.rates_v3_query);
-            loadDuration(0, selectedServiceId, codHistory, cornerId, shopShipmentList, query, shippingParam);
+            loadDuration(0, selectedServiceId, codHistory, isCorner, shopShipmentList, query, shippingParam);
         }
     }
 
     @Override
     public void loadCourierRecommendation(ShipmentDetailData shipmentDetailData,
                                           int selectedServiceId,
-                                          List<ShopShipment> shopShipmentList, int codHistory, String cornerId) {
+                                          List<ShopShipment> shopShipmentList, int codHistory, boolean isCorner) {
         if (getView() != null) {
             getView().showLoading();
             String query = GraphqlHelper.loadRawString(getView().getActivity().getResources(), R.raw.rates_v3_query);
@@ -87,12 +86,12 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
             if (shipmentDetailData.getSelectedCourier() != null) {
                 selectedSpId = shipmentDetailData.getSelectedCourier().getShipperProductId();
             }
-            loadDuration(selectedSpId, selectedServiceId, codHistory, cornerId, shopShipmentList, query, shippingParam);
+            loadDuration(selectedSpId, selectedServiceId, codHistory, isCorner, shopShipmentList, query, shippingParam);
         }
     }
 
-    private void loadDuration(int selectedSpId, int selectedServiceId, int codHistory, String cornerId, List<ShopShipment> shopShipmentList, String query, ShippingParam shippingParam) {
-        getCourierRecommendationUseCase.execute(query, codHistory, cornerId, shippingParam, selectedSpId, selectedServiceId, shopShipmentList,
+    private void loadDuration(int selectedSpId, int selectedServiceId, int codHistory, boolean isCorner, List<ShopShipment> shopShipmentList, String query, ShippingParam shippingParam) {
+        getCourierRecommendationUseCase.execute(query, codHistory, isCorner, shippingParam, selectedSpId, selectedServiceId, shopShipmentList,
                 new Subscriber<ShippingRecommendationData>() {
                     @Override
                     public void onCompleted() {

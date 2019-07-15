@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.support.design.widget.AppBarLayout
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.text.TextUtils
@@ -205,7 +206,8 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         initAdapter()
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        appBarLayout.addOnOffsetChangedListener { _, verticalOffset -> swipeToRefresh.isEnabled = (verticalOffset == 0) }
+        appBarLayout.addOnOffsetChangedListener (AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+            swipeToRefresh.isEnabled = (verticalOffset == 0)})
 
         viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
         viewPager.adapter = shopPageViewPagerAdapter
@@ -503,6 +505,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         this.createPostUrl = createPostUrl
         if (isShowFeed && isFeedShopPageEnabled) {
             addFeed()
+            viewPager.currentItem = if (tabPosition == TAB_POSITION_INFO) getShopInfoPosition() else tabPosition
         }
     }
 
