@@ -36,9 +36,9 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.domain.datamodel.addtocart.AddToCartDataResponseModel;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
@@ -2089,7 +2089,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void triggerSendEnhancedEcommerceAddToCartSuccess(AddToCartDataResponseModel addToCartDataResponseModel, Object productModel) {
+    public void triggerSendEnhancedEcommerceAddToCartSuccess(AddToCartDataModel addToCartDataResponseModel, Object productModel) {
         Map<String, Object> stringObjectMap = null;
         String eventCategory = "";
         String eventAction = "";

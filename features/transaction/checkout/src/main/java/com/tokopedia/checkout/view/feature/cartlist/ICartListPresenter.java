@@ -1,6 +1,6 @@
 package com.tokopedia.checkout.view.feature.cartlist;
 
-import com.tokopedia.checkout.domain.datamodel.addtocart.AddToCartDataResponseModel;
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
@@ -72,10 +72,10 @@ public interface ICartListPresenter {
 
     void processAddToCart(Object productModel);
 
-    Map<String, Object> generateAddToCartEnhanceEcommerceDataLayer(CartWishlistItemHolderData cartWishlistItemHolderData, AddToCartDataResponseModel addToCartDataResponseModel);
+    Map<String, Object> generateAddToCartEnhanceEcommerceDataLayer(CartWishlistItemHolderData cartWishlistItemHolderData, AddToCartDataModel addToCartDataResponseModel);
 
-    Map<String, Object> generateAddToCartEnhanceEcommerceDataLayer(CartRecentViewItemHolderData cartRecentViewItemHolderData, AddToCartDataResponseModel addToCartDataResponseModel);
+    Map<String, Object> generateAddToCartEnhanceEcommerceDataLayer(CartRecentViewItemHolderData cartRecentViewItemHolderData, AddToCartDataModel addToCartDataResponseModel);
 
-    Map<String, Object> generateAddToCartEnhanceEcommerceDataLayer(CartRecommendationItemHolderData cartRecommendationItemHolderData, AddToCartDataResponseModel addToCartDataResponseModel);
+    Map<String, Object> generateAddToCartEnhanceEcommerceDataLayer(CartRecommendationItemHolderData cartRecommendationItemHolderData, AddToCartDataModel addToCartDataResponseModel);
 
 }

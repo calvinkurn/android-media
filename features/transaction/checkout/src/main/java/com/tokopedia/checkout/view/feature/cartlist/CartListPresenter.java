@@ -7,10 +7,10 @@ import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.atc_common.data.model.request.AddToCartRequest;
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase;
 import com.tokopedia.checkout.domain.datamodel.DeleteAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.ResetAndRefreshCartListData;
-import com.tokopedia.checkout.domain.datamodel.addtocart.AddToCartDataResponseModel;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
@@ -1237,7 +1237,8 @@ public class CartListPresenter implements ICartListPresenter {
         addToCartRequest.setWarehouseId(0);
         addToCartRequest.setAtcFromExternalSource(externalSource);
 
-        addToCartUseCase.setParams(addToCartRequest);
+        RequestParams requestParams = new RequestParams();
+        requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequest);
         addToCartUseCase.createObservable(RequestParams.create())
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
@@ -1247,7 +1248,7 @@ public class CartListPresenter implements ICartListPresenter {
 
     @Override
     public Map<String, Object> generateAddToCartEnhanceEcommerceDataLayer(CartWishlistItemHolderData cartWishlistItemHolderData,
-                                                                          AddToCartDataResponseModel addToCartDataResponseModel) {
+                                                                          AddToCartDataModel addToCartDataResponseModel) {
         Map<String, Object> stringObjectMap = new HashMap<>();
         EnhancedECommerceActionField enhancedECommerceActionField = new EnhancedECommerceActionField();
         enhancedECommerceActionField.setList(EnhancedECommerceActionField.LIST_WISHLIST);
@@ -1278,7 +1279,7 @@ public class CartListPresenter implements ICartListPresenter {
 
     @Override
     public Map<String, Object> generateAddToCartEnhanceEcommerceDataLayer(CartRecentViewItemHolderData cartRecentViewItemHolderData,
-                                                                          AddToCartDataResponseModel addToCartDataResponseModel) {
+                                                                          AddToCartDataModel addToCartDataResponseModel) {
         Map<String, Object> stringObjectMap = new HashMap<>();
         EnhancedECommerceActionField enhancedECommerceActionField = new EnhancedECommerceActionField();
         enhancedECommerceActionField.setList(EnhancedECommerceActionField.LIST_RECENT_VIEW);
@@ -1306,7 +1307,7 @@ public class CartListPresenter implements ICartListPresenter {
 
     @Override
     public Map<String, Object> generateAddToCartEnhanceEcommerceDataLayer(CartRecommendationItemHolderData cartRecommendationItemHolderData,
-                                                                          AddToCartDataResponseModel addToCartDataResponseModel) {
+                                                                          AddToCartDataModel addToCartDataResponseModel) {
         Map<String, Object> stringObjectMap = new HashMap<>();
         EnhancedECommerceActionField enhancedECommerceActionField = new EnhancedECommerceActionField();
         enhancedECommerceActionField.setList(EnhancedECommerceActionField.LIST_RECOMMENDATION);
