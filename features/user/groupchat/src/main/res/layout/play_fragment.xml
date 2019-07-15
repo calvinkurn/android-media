@@ -499,14 +499,6 @@
                 android:orientation="vertical"/>
         </RelativeLayout>
 
-        <!--<FrameLayout-->
-            <!--android:id="@+id/dim_video_vertical"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:background="#ae31353b"-->
-            <!--android:visibility="gone"-->
-            <!--android:elevation="@dimen/dp_3"/>-->
-
         <LinearLayout
             android:id="@+id/video_buffer_container"
             android:layout_width="@dimen/dp_0"

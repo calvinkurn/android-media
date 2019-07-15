@@ -12,6 +12,7 @@ import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics
+import com.tokopedia.groupchat.common.design.OverflowMenuItemDecoration
 import com.tokopedia.groupchat.room.view.adapter.OverflowMenuAdapter
 import com.tokopedia.groupchat.room.view.viewmodel.OverflowMenuButtonViewModel
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -55,7 +56,7 @@ class OverflowMenuHelper(
                 }
             }
             menuDialog = createMenuDialog()
-            overflowMenuDialog.setCustomContentView(menuDialog, "", true)
+            overflowMenuDialog.setCustomContentView(menuDialog, "", false)
         }
         createOverflowMenu()
         overflowMenuDialog.show()
@@ -66,6 +67,7 @@ class OverflowMenuHelper(
         val recyclerView = overflowMenuDialog.findViewById<RecyclerView>(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = menuAdapter
+        recyclerView.addItemDecoration(OverflowMenuItemDecoration(context))
         return overflowMenuDialog
     }
 
@@ -125,7 +127,10 @@ class OverflowMenuHelper(
         list.add(infoMenu)
 
         if (videoVerticalQuality > 0) {
-            list.add(qualityMenu)
+            val verticalVideoVisibility = videoVerticalContainer?.isVisible
+            verticalVideoVisibility?.let {
+                if(it) list.add(qualityMenu)
+            }
         }
 
         if(!viewModel?.videoId.isNullOrBlank()) {

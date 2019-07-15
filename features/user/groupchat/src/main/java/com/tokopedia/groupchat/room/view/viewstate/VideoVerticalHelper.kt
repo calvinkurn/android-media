@@ -25,7 +25,7 @@ import com.tokopedia.videoplayer.view.player.VideoPlayerListener
 /**
  * @author : Steven 28/05/19
  */
-class VideoVerticalHelper constructor(
+class VideoVerticalHelper (
         model: ChannelInfoViewModel?,
         var bufferContainer: View,
         var fragmentManager: FragmentManager,
@@ -33,7 +33,8 @@ class VideoVerticalHelper constructor(
         var rootView: View,
         var setChatListHasSpaceOnTop: (Int) -> Unit,
         var backgroundHelper: PlayBackgroundHelper,
-        var analytics: GroupChatAnalytics
+        var analytics: GroupChatAnalytics,
+        var gradientBackground: View
 ): PlayBaseHelper(model) {
 
     companion object {
@@ -158,6 +159,7 @@ class VideoVerticalHelper constructor(
                 })
                 .build()
         playerView.show()
+        gradientBackground.hide()
         showLoadingOnly()
         setChatListHasSpaceOnTop(VERTICAL_WITH_VIDEO)
         analytics.eventVerticalVideoPlayed(viewModel?.channelId)
@@ -167,6 +169,7 @@ class VideoVerticalHelper constructor(
     fun stopVideo() {
         player?.stop()
         playerView.hide()
+        gradientBackground.show()
         setChatListHasSpaceOnTop(VERTICAL_WITHOUT_VIDEO)
         backgroundHelper.resetBackground()
         hideContainer()

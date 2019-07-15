@@ -128,8 +128,9 @@ open class PlayViewStateImpl(
     private var spaceChatVideo: View = view.findViewById(R.id.top_space_guideline)
     private var interactionGuideline = view.findViewById<FrameLayout>(R.id.interaction_button_guideline)
     private var bufferContainer = view.findViewById<View>(R.id.video_buffer_container)
-//    private var bufferDimContainer = view.findViewById<View>(R.id.dim_video_vertical)
     private var videoFragment = fragmentManager.findFragmentById(R.id.video_container) as GroupChatVideoFragment
+    private var gradientBackground = view.findViewById<View>(R.id.top_guideline)
+
 
     private lateinit var overlayDialog: CloseableBottomSheetDialog
     private lateinit var pinnedMessageDialog: CloseableBottomSheetDialog
@@ -272,7 +273,9 @@ open class PlayViewStateImpl(
                 rootView,
                 setChatListHasSpaceOnTop(),
                 backgroundHelper,
-                analytics
+                analytics,
+                gradientBackground
+
         )
         videoHorizontalHelper = VideoHorizontalHelper(
                 viewModel,
