@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.profilecompletion.changegender.view.ChangeGenderFragment
-import com.tokopedia.profilecompletion.di.DaggerProfileCompletionComponent
+import com.tokopedia.profilecompletion.di.DaggerProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 
 
@@ -25,7 +25,7 @@ class ChangeGenderActivity : BaseSimpleActivity(), HasComponent<ProfileCompletio
     }
 
     override fun getComponent(): ProfileCompletionSettingComponent {
-        return DaggerProfileCompletionComponent.builder().baseAppComponent(
+        return DaggerProfileCompletionSettingComponent.builder().baseAppComponent(
                 (application as BaseMainApplication).baseAppComponent).build()
     }
 
