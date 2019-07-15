@@ -26,7 +26,7 @@ class CreatePostPresenter @Inject constructor(
         super.attachView(view)
         twitterManager.setListener(this)
         invalidateShareOptions()
-        postContentToOtherService(CreatePostViewModel(caption = "Jual barang di https://news.detik.com"))
+        postContentToOtherService(CreatePostViewModel(caption = "Jual barang di https://www.tokopedia.com https://news.detik.com"))
     }
 
     override fun detachView() {
@@ -75,13 +75,15 @@ class CreatePostPresenter @Inject constructor(
     }
 
     override fun postContentToOtherService(viewModel: CreatePostViewModel) {
-        twitterSubscription.add(
-                twitterManager.postTweet(viewModel.caption)
-                        .subscribe(
-                                { Timber.tag("Post to Twitter").d("Success") },
-                                { Timber.tag("Post to Twitter").e(it) }
-                        )
-        )
+        if (twitterManager.shouldPostToTwitter) {
+            twitterSubscription.add(
+                    twitterManager.postTweet(viewModel.caption)
+                            .subscribe(
+                                    { Timber.tag("Post to Twitter").d("Success") },
+                                    { Timber.tag("Post to Twitter").e(it) }
+                            )
+            )
+        }
     }
 
     private fun authenticateTwitter() {

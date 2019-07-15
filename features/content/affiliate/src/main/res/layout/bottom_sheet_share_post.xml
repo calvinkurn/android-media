@@ -11,7 +11,6 @@
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
         android:textColor="@color/Neutral_N700"
         android:text="@string/af_share_title"
         app:typographyType="heading_4"
@@ -34,12 +33,13 @@
 
     <LinearLayout
         android:id="@+id/shareBtn"
-        style="@style/FavButton"
-        android:background="@color/Green_G500"
+        android:background="@drawable/bg_af_btn_share"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_40"
+        android:layout_height="@dimen/dp_48"
         android:orientation="horizontal"
-        android:padding="@dimen/dp_10"
+        android:gravity="center"
+        android:clickable="true"
+        android:focusable="true"
         android:layout_marginTop="@dimen/dp_16">
 
         <com.tokopedia.unifyprinciples.Typography
@@ -49,7 +49,6 @@
             android:text="@string/af_share_aja"
             android:textColor="@color/WhiteText"
             app:typographyType="heading_5"
-            android:lineSpacingExtra="5sp"
             tools:text="Sip, Share Aja!"/>
     </LinearLayout>
 
