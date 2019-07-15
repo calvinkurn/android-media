@@ -1,7 +1,7 @@
 package com.tokopedia.topupbills.common
 
 /**
- * @author by furqan on 13/08/18.
+ * @author by resakemal on 05/07/19.
  */
 
 interface DigitalTopupEventTracking {
@@ -26,6 +26,7 @@ interface DigitalTopupEventTracking {
         companion object {
             val INPUT_MANUAL_NUMBER = "input manual number"
             val INPUT_FROM_CONTACT = "input from contact"
+            val CLICK_ON_CONTACT = "click on contact number"
             val INPUT_FROM_WIDGET = "input from widget"
             val INPUT_FROM_FAVORITE_NUMBER = "input from favorite number"
             val CLEAR_INPUT_NUMBER = "click x on input number"
@@ -39,32 +40,29 @@ interface DigitalTopupEventTracking {
             val CLICK_RECENT_ICON = "click recent icon"
             val PROMO_DIGITAL_IMPRESSION = "impression promo digital"
             val COPY_PROMO_DIGITAL = "click salin promo digital"
+            val CLICK_TELCO_CATEGORY = "click on telco category"
         }
     }
-
-    interface Label {
-        companion object {
-            val DEFAULT_EMPTY_VALUE = ""
-            val NO_PROMO = "no promo"
-            val PROMO = "no promo"
-            val SITE = "tokopediadigital"
-            val PRODUCT = "Product - "
-            val DIGITAL = "Digital"
-        }
-    }
-
 
     interface Screen {
         companion object {
-            val DIGITAL_CATEGORY = "/digital/"
-            val DIGITAL_CHECKOUT = "/digital/checkout"
+            val DIGITAL_TELCO_PREPAID = "/digital/pra bayar"
+            val DIGITAL_TELCO_POSTPAID = "/digital/pasca bayar"
         }
     }
 
-    interface Misc {
+    interface EnhanceEccomerce {
         companion object {
-            val ACTION_FIELD_STEP1 = "cart page loaded"
-            val ACTION_FIELD_STEP2 = "click payment option button"
+            internal var NAME = "name"
+            internal var ID = "id"
+            internal var PRICE = "price"
+            internal var BRAND = "brand"
+            internal var CATEGORY = "category"
+            internal var LIST = "list"
+            internal var POSITION = "position"
+            internal var CREATIVE = "creative"
+            internal var PROMO_ID = "promo_id"
+            internal var PROMO_CODE = "promo_code"
         }
     }
 }

@@ -13,6 +13,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.DigitalTopupAnalytics
@@ -20,6 +21,7 @@ import com.tokopedia.topupbills.telco.data.TelcoProductComponentData
 import com.tokopedia.topupbills.telco.data.TelcoProductDataCollection
 import com.tokopedia.topupbills.telco.view.bottomsheet.DigitalProductBottomSheet
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
+import com.tokopedia.topupbills.telco.view.model.DigitalTrackProductTelco
 import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoProductViewModel
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedProductTelcoViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalTelcoProductWidget
@@ -110,17 +112,19 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         }
 
         telcoTelcoProductView.setListener(object : DigitalTelcoProductWidget.ActionListener {
-            override fun onClickProduct(itemProduct: TelcoProductDataCollection) {
+            override fun onClickProduct(itemProduct: TelcoProductDataCollection, position: Int, categoryName: String) {
                 sharedModel.setProductSelected(itemProduct)
                 sharedModel.setShowTotalPrice(true)
+                topupAnalytics.clickEnhanceCommerceProduct(itemProduct, position, categoryName)
             }
 
             override fun onSeeMoreProduct(itemProduct: TelcoProductDataCollection) {
                 topupAnalytics.eventClickSeeMore(itemProduct.product.attributes.categoryId)
 
                 activity?.let {
-                    val seeMoreBottomSheet = DigitalProductBottomSheet.newInstance(itemProduct.product.attributes.desc,
-                            itemProduct.product.attributes.detail,
+                    val seeMoreBottomSheet = DigitalProductBottomSheet.newInstance(
+                            itemProduct.product.attributes.info,
+                            MethodChecker.fromHtml(itemProduct.product.attributes.detail).toString(),
                             itemProduct.product.attributes.price)
                     seeMoreBottomSheet.setDismissListener {
                         topupAnalytics.eventCloseDetailProduct(itemProduct.product.attributes.categoryId)
@@ -128,13 +132,18 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                     seeMoreBottomSheet.show(it.supportFragmentManager, "")
                 }
             }
+
+            override fun onTrackImpressionProductsList(digitalTrackProductTelcoList: List<DigitalTrackProductTelco>,
+                                                       categoryName: String) {
+                topupAnalytics.impressionEnhanceCommerceProduct(digitalTrackProductTelcoList, categoryName)
+            }
         })
     }
 
     fun onSuccessProductList(productData: TelcoProductComponentData) {
         emptyStateProductView.visibility = View.GONE
         telcoTelcoProductView.visibility = View.VISIBLE
-        var position = 0
+        var position = -1
         if (selectedProductId.isNotEmpty()) {
             for (i in 0 until productData.rechargeProductData.productDataCollections.size) {
                 if (productData.rechargeProductData.productDataCollections[i].product.id == selectedProductId) {
@@ -148,8 +157,8 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
     }
 
     fun onErrorProductList(throwable: Throwable) {
-        titleEmptyState.setText(getString(R.string.title_telco_product_empty_state, titleProduct))
-        descEmptyState.setText(getString(R.string.desc_telco_product_empty_state, titleProduct.toLowerCase()))
+        titleEmptyState.text = getString(R.string.title_telco_product_empty_state, titleProduct)
+        descEmptyState.text = getString(R.string.desc_telco_product_empty_state, titleProduct.toLowerCase())
         emptyStateProductView.visibility = View.VISIBLE
         telcoTelcoProductView.visibility = View.GONE
     }

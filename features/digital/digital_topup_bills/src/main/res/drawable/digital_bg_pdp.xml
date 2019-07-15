@@ -22,13 +22,29 @@
       android:pathData="M320,1v63h-69C251,64 253,-1 320,1z"
       android:fillColor="#E5F9EC"/>
   <path
-      android:pathData="M0,6v58h320V30c0,0 -49.1,31.8 -113.6,25.4c0,0 -57.9,-0.6 -111.7,-32C94.8,23.4 48,-0.1 0,6z">
+      android:pathData="M0,0.9V64h320V30c0,0 -49.1,31.8 -113.6,25.4c0,0 -57.9,-0.6 -111.7,-32C94.8,23.4 48,-5.2 0,0.9z">
     <aapt:attr name="android:fillColor">
       <gradient 
-          android:startY="34.4944"
+          android:startY="32.0124"
           android:startX="0"
-          android:endY="34.4944"
+          android:endY="32.0124"
           android:endX="320"
+          android:type="linear">
+        <item android:offset="0" android:color="#FFEAFEEE"/>
+        <item android:offset="1" android:color="#FFCEF0EE"/>
+      </gradient>
+    </aapt:attr>
+  </path>
+  <path
+      android:pathData="M320,6v58H0V30c0,0 49.1,31.8 113.6,25.4c0,0 57.9,-0.6 111.7,-32C225.2,23.4 272,-0.1 320,6z"
+      android:strokeAlpha="0.4"
+      android:fillAlpha="0.4">
+    <aapt:attr name="android:fillColor">
+      <gradient 
+          android:startY="34.4946"
+          android:startX="320"
+          android:endY="34.4946"
+          android:endX="0"
           android:type="linear">
         <item android:offset="0" android:color="#FFEAFEEE"/>
         <item android:offset="1" android:color="#FFCEF0EE"/>

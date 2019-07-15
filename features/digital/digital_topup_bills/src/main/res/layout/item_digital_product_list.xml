@@ -42,7 +42,7 @@
             android:layout_below="@+id/desc_product"
             android:layout_marginBottom="@dimen/dp_4"
             android:lines="1"
-            android:text="see more"
+            android:text="@string/digital_see_more_btn"
             android:textColor="@color/tkpd_main_green"
             app:typographyType="body_3"
             app:typographyWeight="bold" />

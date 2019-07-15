@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.topupbills.R
+import com.tokopedia.topupbills.common.DigitalTopupAnalytics
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.view.adapter.DigitalTelcoProductTabAdapter
@@ -17,16 +18,20 @@ import com.tokopedia.topupbills.telco.view.model.DigitalTabTelcoItem
 import com.tokopedia.topupbills.telco.view.model.DigitalTelcoExtraParam
 import com.tokopedia.topupbills.telco.view.widget.DigitalSubMenuWidget
 import kotlinx.android.synthetic.main.fragment_digital_telco.*
+import javax.inject.Inject
 
 /**
  * Created by nabillasabbaha on 06/05/19.
  */
 class DigitalTelcoFragment : BaseDaggerFragment() {
 
-    var posCurrentTabExtraParam = DigitalSubMenuWidget.HEADER_LEFT
+    private var posCurrentTabExtraParam = DigitalSubMenuWidget.HEADER_LEFT
+
+    @Inject
+    lateinit var topupAnalytics: DigitalTopupAnalytics
 
     override fun getScreenName(): String {
-        return getString(R.string.digital_track_title_page)
+        return ""
     }
 
     override fun initInjector() {
@@ -37,8 +42,7 @@ class DigitalTelcoFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_digital_telco, container, false)
-        return view
+        return inflater.inflate(R.layout.fragment_digital_telco, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -97,10 +101,11 @@ class DigitalTelcoFragment : BaseDaggerFragment() {
 
             override fun onPageSelected(position: Int) {
                 if (position == 0) {
-                    header_view.headerLeftActive(list.get(DigitalSubMenuWidget.HEADER_LEFT))
+                    header_view.headerLeftActive(list[DigitalSubMenuWidget.HEADER_LEFT])
                 } else {
-                    header_view.headerRightActive(list.get(DigitalSubMenuWidget.HEADER_RIGHT))
+                    header_view.headerRightActive(list[DigitalSubMenuWidget.HEADER_RIGHT])
                 }
+                topupAnalytics.eventClickTelcoTab(list[position].label)
             }
         })
     }

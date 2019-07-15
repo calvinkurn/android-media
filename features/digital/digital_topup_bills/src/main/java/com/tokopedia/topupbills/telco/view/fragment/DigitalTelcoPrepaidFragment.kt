@@ -20,6 +20,7 @@ import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.network.utils.ErrorHandler.getErrorMessage
 import com.tokopedia.topupbills.R
+import com.tokopedia.topupbills.common.DigitalTopupEventTracking
 import com.tokopedia.topupbills.generateRechargeCheckoutToken
 import com.tokopedia.topupbills.telco.data.*
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
@@ -77,7 +78,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     override fun getScreenName(): String {
-        return getString(R.string.digital_track_title_prepaid)
+        return DigitalTopupEventTracking.Screen.DIGITAL_TELCO_PREPAID
     }
 
     override fun initInjector() {
@@ -93,6 +94,11 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             it?.run {
                 productSelected = it
                 buyWidget.setTotalPrice(it.product.attributes.price)
+                it.product.attributes.productPromo?.run {
+                    if (this.newPrice.isNotEmpty()) {
+                        buyWidget.setTotalPrice(this.newPrice)
+                    }
+                }
 
                 checkoutPassData = DigitalCheckoutPassData.Builder()
                         .action(DigitalCheckoutPassData.DEFAULT_ACTION)
@@ -116,14 +122,19 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 buyWidget.setVisibilityLayout(it)
             }
         })
+        sharedModel.promoItem.observe(this, Observer {
+            it?.run {
+                promoListWidget.notifyPromoItemChanges(this)
+            }
+        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_digital_telco_prepaid, container, false)
         mainContainer = view.findViewById(R.id.main_container)
-        recentNumbersView = view.findViewById(R.id.recent_numbers)
+        recentNumbersWidget = view.findViewById(R.id.recent_numbers)
         telcoClientNumberWidget = view.findViewById(R.id.telco_input_number)
-        promoListView = view.findViewById(R.id.promo_widget)
+        promoListWidget = view.findViewById(R.id.promo_widget)
         viewPager = view.findViewById(R.id.product_view_pager)
         tabLayout = view.findViewById(R.id.tab_layout)
         buyWidget = view.findViewById(R.id.buy_widget)
@@ -187,18 +198,21 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                         topupAnalytics.eventInputNumberManual(selectedCategoryId, operatorName)
                     }
                     InputNumberActionType.CONTACT -> {
-                        topupAnalytics.eventInputNumberContact(selectedCategoryId, operatorName)
+                        topupAnalytics.eventInputNumberContactPicker(selectedCategoryId, operatorName)
                     }
                     InputNumberActionType.FAVORITE -> {
                         topupAnalytics.eventInputNumberFavorites(selectedCategoryId, operatorName)
+                    }
+                    InputNumberActionType.CONTACT_HOMEPAGE -> {
+                        topupAnalytics.eventClickOnContactPickerHomepage(selectedCategoryId, operatorName)
                     }
                 }
 
                 renderViewPager(selectedOperator.operator.id)
                 telcoClientNumberWidget.setIconOperator(selectedOperator.operator.attributes.imageUrl)
 
-                recentNumbersView.visibility = View.GONE
-                promoListView.visibility = View.GONE
+                recentNumbersWidget.visibility = View.GONE
+                promoListWidget.visibility = View.GONE
                 tabLayout.visibility = View.VISIBLE
                 viewPager.visibility = View.VISIBLE
                 separator.visibility = View.VISIBLE
@@ -219,12 +233,12 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     fun onLoadingMenuDetail(showLoading: Boolean) {
         if (showLoading) {
             layoutProgressBar.visibility = View.VISIBLE
-            recentNumbersView.visibility = View.GONE
-            promoListView.visibility = View.GONE
+            recentNumbersWidget.visibility = View.GONE
+            promoListWidget.visibility = View.GONE
         } else {
             layoutProgressBar.visibility = View.GONE
-            recentNumbersView.visibility = View.VISIBLE
-            promoListView.visibility = View.VISIBLE
+            recentNumbersWidget.visibility = View.VISIBLE
+            promoListWidget.visibility = View.VISIBLE
         }
     }
 
@@ -249,8 +263,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 topupAnalytics.eventClearInputNumber()
 
                 separator.visibility = View.GONE
-                recentNumbersView.visibility = View.VISIBLE
-                promoListView.visibility = View.VISIBLE
+                recentNumbersWidget.visibility = View.VISIBLE
+                promoListWidget.visibility = View.VISIBLE
                 tabLayout.visibility = View.GONE
                 viewPager.visibility = View.GONE
                 sharedModel.setShowTotalPrice(false)
@@ -268,7 +282,12 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     override fun setInputNumberFromContact(contactNumber: String) {
+        inputNumberActionType = InputNumberActionType.CONTACT_HOMEPAGE
         telcoClientNumberWidget.setInputNumber(contactNumber)
+    }
+
+    override fun clickCopyOnPromoCode(promoId: Int) {
+        sharedModel.setPromoSelected(promoId)
     }
 
     fun renderViewPager(operatorId: String) {
@@ -287,6 +306,20 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         tabLayout.setupWithViewPager(viewPager)
         setTabFromProductSelected()
         setCustomFont()
+
+        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(p0: Int) {
+
+            }
+
+            override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {
+
+            }
+
+            override fun onPageSelected(pos: Int) {
+                topupAnalytics.eventClickTelcoPrepaidCategory(listProductTab.get(pos).title)
+            }
+        })
     }
 
     fun setCustomFont() {

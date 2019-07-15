@@ -1,4 +1,4 @@
-package com.tokopedia.digital.topupbillsproduct.adapter
+package com.tokopedia.topupbills.telco.view.adapter
 
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView

@@ -27,6 +27,8 @@ import com.tokopedia.topupbills.covertContactUriToContactData
 import com.tokopedia.topupbills.telco.data.*
 import com.tokopedia.topupbills.telco.view.activity.DigitalSearchNumberActivity
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
+import com.tokopedia.topupbills.telco.view.model.DigitalTrackPromoTelco
+import com.tokopedia.topupbills.telco.view.model.DigitalTrackRecentTransactionTelco
 import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoCustomViewModel
 import com.tokopedia.topupbills.telco.view.viewmodel.TelcoCatalogMenuDetailViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
@@ -46,8 +48,8 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
 
     protected lateinit var mainContainer: NestedScrollView
     protected lateinit var tickerView: Ticker
-    protected lateinit var recentNumbersView: DigitalRecentTransactionWidget
-    protected lateinit var promoListView: DigitalPromoListWidget
+    protected lateinit var recentNumbersWidget: DigitalRecentTransactionWidget
+    protected lateinit var promoListWidget: DigitalPromoListWidget
     protected lateinit var checkoutPassData: DigitalCheckoutPassData
     protected lateinit var customViewModel: DigitalTelcoCustomViewModel
     protected lateinit var catalogMenuDetailViewModel: TelcoCatalogMenuDetailViewModel
@@ -167,7 +169,7 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
         }
     }
 
-    fun navigateToCart() {
+    private fun navigateToCart() {
         val intent = RouteManager.getIntent(activity, ApplinkConsInternalDigital.CART_DIGITAL)
         intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, checkoutPassData)
         startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL)
@@ -220,17 +222,23 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
 
     protected abstract fun handleCallbackSearchNumberCancel()
 
-    fun renderRecentTransactions(recentNumbers: List<TelcoRecommendation>) {
+    private fun renderRecentTransactions(recentNumbers: List<TelcoRecommendation>) {
         if (recentNumbers.isNotEmpty()) {
-            recentNumbersView.setListener(object : DigitalRecentTransactionWidget.ActionListener {
-                override fun onClickRecentNumber(telcoRecommendation: TelcoRecommendation) {
+            recentNumbersWidget.setListener(object : DigitalRecentTransactionWidget.ActionListener {
+                override fun onClickRecentNumber(telcoRecommendation: TelcoRecommendation, categoryName: String,
+                                                 position: Int) {
                     onClickItemRecentNumber(telcoRecommendation)
+                    topupAnalytics.clickEnhanceCommerceRecentTransaction(telcoRecommendation, categoryName, position)
+                }
+
+                override fun onTrackImpressionRecentList(digitalTrackRecentList: List<DigitalTrackRecentTransactionTelco>) {
+                    topupAnalytics.impressionEnhanceCommerceRecentTransaction(digitalTrackRecentList)
                 }
             })
-            recentNumbersView.setRecentNumbers(recentNumbers)
-            recentNumbersView.visibility = View.VISIBLE
+            recentNumbersWidget.setRecentNumbers(recentNumbers)
+            recentNumbersWidget.visibility = View.VISIBLE
         } else {
-            recentNumbersView.visibility = View.GONE
+            recentNumbersWidget.visibility = View.GONE
         }
     }
 
@@ -251,22 +259,30 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
 
     protected abstract fun onClickItemRecentNumber(telcoRecommendation: TelcoRecommendation)
 
-    fun renderPromoList(promos: List<TelcoPromo>) {
+    private fun renderPromoList(promos: List<TelcoPromo>) {
         if (promos.isNotEmpty()) {
-            promoListView.visibility = View.VISIBLE
-            promoListView.setListener(object : DigitalPromoListWidget.ActionListener {
-                override fun onCopiedPromoCode(voucherCode: String) {
+            promoListWidget.visibility = View.VISIBLE
+            promoListWidget.setListener(object : DigitalPromoListWidget.ActionListener {
+                override fun onCopiedPromoCode(promoId: Int, voucherCode: String) {
+                    clickCopyOnPromoCode(promoId)
                     topupAnalytics.eventClickCopyPromoCode(voucherCode, promos.indexOfFirst { it.promoCode == voucherCode })
 
-                    val clipboard = activity!!.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                    val clip = ClipData.newPlainText(
-                            CLIP_DATA_VOUCHER_CODE_DIGITAL, voucherCode
-                    )
-                    clipboard.primaryClip = clip
-                    view?.run {
-                        Toaster.showNormal(this,
-                                getString(R.string.digital_voucher_code_already_copied), Snackbar.LENGTH_LONG)
+                    activity?.let {
+                        val clipboard = it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                        val clip = ClipData.newPlainText(
+                                CLIP_DATA_VOUCHER_CODE_DIGITAL, voucherCode
+                        )
+                        clipboard.primaryClip = clip
+
+                        view?.run {
+                            Toaster.showNormal(this,
+                                    getString(R.string.digital_voucher_code_already_copied), Snackbar.LENGTH_LONG)
+                        }
                     }
+                }
+
+                override fun onTrackImpressionPromoList(digitalTrackPromoList: List<DigitalTrackPromoTelco>) {
+                    topupAnalytics.impressionEnhanceCommercePromoList(digitalTrackPromoList)
                 }
 
                 override fun onClickItemPromo(telcoPromo: TelcoPromo) {
@@ -275,11 +291,13 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
                     }
                 }
             })
-            promoListView.setPromoList(promos)
+            promoListWidget.setPromoList(promos)
         } else {
-            promoListView.visibility = View.GONE
+            promoListWidget.visibility = View.GONE
         }
     }
+
+    abstract fun clickCopyOnPromoCode(promoId: Int)
 
     abstract fun setInputNumberFromContact(contactNumber: String)
 
