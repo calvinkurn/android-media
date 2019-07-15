@@ -1,4 +1,4 @@
-package com.tokopedia.home_recom.testViewModel
+package com.tokopedia.home_recom.viewModel
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.content.Context
@@ -10,6 +10,7 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -22,13 +23,13 @@ import org.mockito.Mockito.`when`
 import org.mockito.Mockito.times
 import org.powermock.core.classloader.annotations.PrepareForTest
 import org.powermock.modules.junit4.PowerMockRunner
-import rx.Observable
 
 /**
  * Created by Lukas on 2019-07-08
  */
 @RunWith(PowerMockRunner::class)
 @PrepareForTest(PrimaryProductViewModel::class)
+@ExperimentalCoroutinesApi
 class PrimaryProductTestViewModel {
 
     @get:Rule
@@ -49,8 +50,8 @@ class PrimaryProductTestViewModel {
     @Mock
     lateinit var addWishListUseCase: AddWishListUseCase
 
-    private val PRODUCT_ID = "[]"
-    private val DEFAULT_ERROR_MESSAGE = "ERROR_MESSAGE"
+    private val productId = "316960043"
+    private val defaultErrorMessage = "ERROR_MESSAGE"
 
     @Before
     fun setup(){
@@ -67,7 +68,7 @@ class PrimaryProductTestViewModel {
         }
         `when`(spy.addWishList(mockString, null, mockInvoke)).thenAnswer{
             val completion = it.arguments[2] as ((message: String?) -> Unit)
-            completion.invoke(PRODUCT_ID)
+            completion.invoke(productId)
             null
         }
         spy.addWishList(mockString, null, mockInvoke)
@@ -79,12 +80,12 @@ class PrimaryProductTestViewModel {
         val spy = Mockito.spy(viewModel)
         val mockInvoke = mock<(String?) -> Unit>()
         `when`(mockInvoke.invoke(Matchers.any())).thenAnswer {
-            Assert.assertEquals(it.arguments[0], DEFAULT_ERROR_MESSAGE)
+            Assert.assertEquals(it.arguments[0], defaultErrorMessage)
             null
         }
         `when`(spy.addWishList(mockString, mockInvoke, null)).thenAnswer{
             val completion = it.arguments[1] as ((errorMessage: String?) -> Unit)
-            completion.invoke(DEFAULT_ERROR_MESSAGE)
+            completion.invoke(defaultErrorMessage)
             null
         }
         spy.addWishList(mockString, mockInvoke, null)
@@ -96,12 +97,12 @@ class PrimaryProductTestViewModel {
         val spy = Mockito.spy(viewModel)
         val mockInvoke = mock<(String?) -> Unit>()
         `when`(mockInvoke.invoke(Matchers.any())).thenAnswer {
-            Assert.assertEquals(it.arguments[0], PRODUCT_ID)
+            Assert.assertEquals(it.arguments[0], productId)
             null
         }
         `when`(spy.removeWishList(mockString, mockInvoke, null)).thenAnswer{
             val completion = it.arguments[1] as ((message: String?) -> Unit)
-            completion.invoke(PRODUCT_ID)
+            completion.invoke(productId)
             null
         }
         spy.removeWishList(mockString, mockInvoke, null)
@@ -113,12 +114,12 @@ class PrimaryProductTestViewModel {
         val spy = Mockito.spy(viewModel)
         val mockInvoke = mock<(String?) -> Unit>()
         `when`(mockInvoke.invoke(Matchers.any())).thenAnswer {
-            Assert.assertEquals(it.arguments[0], DEFAULT_ERROR_MESSAGE)
+            Assert.assertEquals(it.arguments[0], defaultErrorMessage)
             null
         }
         `when`(spy.removeWishList(mockString, null, mockInvoke)).thenAnswer{
             val completion = it.arguments[2] as ((errorMessage: String?) -> Unit)
-            completion.invoke(DEFAULT_ERROR_MESSAGE)
+            completion.invoke(defaultErrorMessage)
             null
         }
         spy.removeWishList(mockString, null, mockInvoke)
@@ -141,10 +142,10 @@ class PrimaryProductTestViewModel {
     fun testOverrideUseCaseErrorRemoveWishlist(){
         `when`(removeWishListUseCase.createObservable(any(), any(), any())).thenAnswer {
             val listener = it.arguments[2] as WishListActionListener
-            listener.onErrorAddWishList(DEFAULT_ERROR_MESSAGE, PRODUCT_ID)
+            listener.onErrorAddWishList(defaultErrorMessage, productId)
         }
-        viewModel.removeWishList(PRODUCT_ID, null, {
-            Assert.assertEquals(it, DEFAULT_ERROR_MESSAGE)
+        viewModel.removeWishList(productId, null, {
+            Assert.assertEquals(it, defaultErrorMessage)
         })
     }
 
@@ -152,10 +153,10 @@ class PrimaryProductTestViewModel {
     fun testOverrideUseCaseSuccessRemoveWishlist(){
         `when`(removeWishListUseCase.createObservable(any(), any(), any())).thenAnswer {
             val listener = it.arguments[2] as WishListActionListener
-            listener.onSuccessAddWishlist(PRODUCT_ID)
+            listener.onSuccessAddWishlist(productId)
         }
-        viewModel.removeWishList(PRODUCT_ID, {
-            Assert.assertEquals(it, PRODUCT_ID)
+        viewModel.removeWishList(productId, {
+            Assert.assertEquals(it, productId)
         }, null)
     }
 
@@ -163,10 +164,10 @@ class PrimaryProductTestViewModel {
     fun testOverrideUseCaseErrorAddWishlist(){
         `when`(addWishListUseCase.createObservable(any(), any(), any())).thenAnswer {
             val listener = it.arguments[2] as WishListActionListener
-            listener.onErrorAddWishList(DEFAULT_ERROR_MESSAGE, PRODUCT_ID)
+            listener.onErrorAddWishList(defaultErrorMessage, productId)
         }
-        viewModel.addWishList(PRODUCT_ID, {
-            Assert.assertEquals(it, DEFAULT_ERROR_MESSAGE)
+        viewModel.addWishList(productId, {
+            Assert.assertEquals(it, defaultErrorMessage)
         }, null)
     }
 
@@ -174,10 +175,10 @@ class PrimaryProductTestViewModel {
     fun testOverrideUseCaseSuccessAddWishlist(){
         `when`(addWishListUseCase.createObservable(any(), any(), any())).thenAnswer {
             val listener = it.arguments[2] as WishListActionListener
-            listener.onSuccessAddWishlist(PRODUCT_ID)
+            listener.onSuccessAddWishlist(productId)
         }
-        viewModel.addWishList(PRODUCT_ID, null, {
-            Assert.assertEquals(it, PRODUCT_ID)
+        viewModel.addWishList(productId, null, {
+            Assert.assertEquals(it, productId)
         })
     }
 

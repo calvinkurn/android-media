@@ -1,6 +1,14 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 
+android{
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
+}
+
 repositories {
 }
 
