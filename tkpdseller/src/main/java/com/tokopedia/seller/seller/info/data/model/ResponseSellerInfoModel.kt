@@ -12,7 +12,7 @@ data class ResponseSellerInfoModel(
 data class NotifCenterDetail(
         @SerializedName("list")
         @Expose
-        val list: ArrayList<DataList> = arrayListOf(),
+        val list: List<DataList> = listOf(),
 
         @SerializedName("paging")
         @Expose
