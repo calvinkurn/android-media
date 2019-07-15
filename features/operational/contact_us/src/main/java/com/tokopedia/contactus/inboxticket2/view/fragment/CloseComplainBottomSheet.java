@@ -32,15 +32,15 @@ public class CloseComplainBottomSheet extends FrameLayout implements View.OnClic
     @Override
     public void onClick(View view) {
         if(view.getId()==R.id.tv_no_button){
-            closeBottomSheetListener.onClickComplain("no");
+            closeBottomSheetListener.onClickComplain(false);
         }else if(view.getId()==R.id.tv_yes_button){
-            closeBottomSheetListener.onClickComplain("yes");
+            closeBottomSheetListener.onClickComplain(true);
         }
 
     }
 
 
     public interface CloseComplainBottomSheetListner {
-        void onClickComplain(String agreed);
+        void onClickComplain(boolean agreed);
     }
 }

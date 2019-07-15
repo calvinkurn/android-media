@@ -18,7 +18,7 @@ import com.tokopedia.design.R;
  * @author by nisie on 2/23/18.
  */
 
-public class  CloseableBottomSheetDialog extends BottomSheetDialog {
+public class CloseableBottomSheetDialog extends BottomSheetDialog {
 
     Context context;
     private CloseClickedListener closeListener;

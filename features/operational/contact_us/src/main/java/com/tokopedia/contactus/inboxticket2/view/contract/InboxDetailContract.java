@@ -49,7 +49,7 @@ public interface InboxDetailContract {
 
         String getCommentID();
 
-        void showErrorMessage(String o);
+        void showErrorMessage(String error);
 
         void onSuccessSubmitOfRating(int rating, int commentPosition);
 
@@ -83,7 +83,7 @@ public interface InboxDetailContract {
 
         void onClickEmoji(int number);
 
-        void onClick(String agreed,int commentPosition, String commentId);
+        void onClick(boolean agreed,int commentPosition, String commentId);
 
         void closeTicket();
 

@@ -75,6 +75,8 @@ import static com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContra
 public class InboxDetailPresenterImpl
         implements InboxDetailContract.InboxDetailPresenter, CustomEditText.Listener {
 
+    public static final int KEY_LIKED = 101;
+    public static final int KEY_DISLIKED = 102;
     private InboxDetailContract.InboxDetailView mView;
     private Tickets mTicketDetail;
     private GetTicketDetailUseCase mUsecase;
@@ -802,9 +804,9 @@ public class InboxDetailPresenterImpl
     }
 
     @Override
-    public void onClick(String agreed, int commentPosition, String commentId) {
+    public void onClick(boolean agreed, int commentPosition, String commentId) {
 
-        int RATING = agreed.equals("yes")? 101:102;
+        int RATING = agreed ? KEY_LIKED:KEY_DISLIKED;
 
 
         RequestParams requestParams = submitRatingUseCase.createRequestParams(commentId,RATING+"","-");

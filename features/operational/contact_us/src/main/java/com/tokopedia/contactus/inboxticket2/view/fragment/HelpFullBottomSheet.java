@@ -33,15 +33,15 @@ public class HelpFullBottomSheet extends FrameLayout implements View.OnClickList
     @Override
     public void onClick(View view) {
         if(view.getId()==R.id.tv_no_button){
-            closeBottomSheetListener.onClick("no");
+            closeBottomSheetListener.onClick(false);
         }else if(view.getId()==R.id.tv_yes_button){
-            closeBottomSheetListener.onClick("yes");
+            closeBottomSheetListener.onClick(true);
         }
 
     }
 
 
     public interface CloseSHelpFullBottomSheet {
-        void onClick(String agreed);
+        void onClick(boolean agreed);
     }
 }

@@ -18,7 +18,7 @@
         android:layout_height="@dimen/dp_56">
 
       <TextView
-          android:id="@+id/tv_rply_button"
+          android:id="@+id/tv_reply_button"
           android:layout_width="match_parent"
           android:layout_height="@dimen/dp_40"
           android:layout_marginRight="@dimen/dp_16"
@@ -26,7 +26,7 @@
           android:layout_gravity="center"
           android:background="@drawable/bg_button_state"
           android:gravity="center"
-          android:text="Balas"
+          android:text="@string/balas"
           android:textColor="@color/white"
           android:textSize="@dimen/sp_14"
           android:textStyle="bold"

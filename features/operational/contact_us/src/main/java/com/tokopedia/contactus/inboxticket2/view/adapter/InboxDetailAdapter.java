@@ -213,7 +213,7 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
                     }else{
                         ratingThumbsUp.setColorFilter(ContextCompat.getColor(mContext, R.color.g_500));
                         ratingThumbsDown.setVisibility(View.GONE);
-                        mPresenter.onClick("yes",position,item.getId());
+                        mPresenter.onClick(true,position,item.getId());
                     }
 
                 }
@@ -226,7 +226,7 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
                     }else{
                     ratingThumbsDown.setColorFilter(ContextCompat.getColor(mContext, R.color.red_600));
                     ratingThumbsUp.setVisibility(View.GONE);
-                    mPresenter.onClick("no",position,item.getId());
+                    mPresenter.onClick(false,position,item.getId());
                     }
                 }
             });

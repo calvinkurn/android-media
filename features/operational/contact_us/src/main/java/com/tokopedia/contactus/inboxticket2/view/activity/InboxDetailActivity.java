@@ -57,6 +57,10 @@ import rx.schedulers.Schedulers;
 public class InboxDetailActivity extends InboxBaseActivity
         implements InboxDetailContract.InboxDetailView, ImageUploadAdapter.OnSelectImageClick, View.OnClickListener, HelpFullBottomSheet.CloseSHelpFullBottomSheet, CloseComplainBottomSheet.CloseComplainBottomSheetListner {
 
+    public static final String KEY_LIKED = "101";
+    public static final String KEY_DIS_LIKED = "102";
+    public static final int INT_KEY_LIKED = 101;
+    public static final int DELAY_FOUR_MILLIS = 4000;
     private TextView tvTicketTitle;
     private TextView tvIdNum;
     private RecyclerView rvMessageList;
@@ -93,8 +97,6 @@ public class InboxDetailActivity extends InboxBaseActivity
     public static final String PARAM_TICKET_ID = "ticket_id";
     public static final String PARAM_TICKET_T_ID = "id";
     public static final String IS_OFFICIAL_STORE = "is_official_store";
-    private static final String LIKE = "101";
-    private static final String DISLIKE = "102";
     private CloseableBottomSheetDialog helpFullBottomSheet, closeComplainBottomSheet;
 
     List<CommentsItem> commentsItems = new ArrayList<>();
@@ -238,7 +240,7 @@ public class InboxDetailActivity extends InboxBaseActivity
         findingViewsId();
         rvMessageList.setLayoutManager(layoutManager);
         editText.setListener(((InboxDetailContract.InboxDetailPresenter) mPresenter).getSearchListener());
-        tvReplyButton = findViewById(R.id.tv_rply_button);
+        tvReplyButton = findViewById(R.id.tv_reply_button);
         viewReplyButton = findViewById(R.id.view_rply_botton_before_csat_rating);
         tvReplyButton.setOnClickListener(this);
         settingClickListner();
@@ -395,8 +397,8 @@ public class InboxDetailActivity extends InboxBaseActivity
     }
 
     @Override
-    public void showErrorMessage(String o) {
-        ToasterError.make(getRootView(), o).show();
+    public void showErrorMessage(String error) {
+        ToasterError.make(getRootView(), error).show();
     }
 
     void sendMessage() {
@@ -666,9 +668,9 @@ public class InboxDetailActivity extends InboxBaseActivity
             onClickNextPrev(view);
         } else {
             String rating = "";
-            if (view.getId() == R.id.tv_rply_button) {
+            if (view.getId() == R.id.tv_reply_button) {
                 rating = commentsItems.get(commentsItems.size()-1).getRating();
-                if (rating != null && (rating.equals("101") || rating.equals("102"))) {
+                if (rating != null && (rating.equals(KEY_LIKED) || rating.equals(KEY_DIS_LIKED))) {
                     viewReplyButton.setVisibility(View.GONE);
                     textToolbar.setVisibility(View.VISIBLE);
                 } else {
@@ -683,7 +685,7 @@ public class InboxDetailActivity extends InboxBaseActivity
     }
 
         @Override
-        public void onClick (String agreed){
+        public void onClick (boolean agreed){
             CommentsItem item = null;
             int commentPosition = 0;
             for (int i = detailAdapter.getItemCount() - 1; i >= 0; i--) {
@@ -694,17 +696,15 @@ public class InboxDetailActivity extends InboxBaseActivity
                     break;
                 }
             }
-            if (agreed.equals("yes")) {
+            if (agreed) {
                 closeComplainBottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
                 closeComplainBottomSheet.setCustomContentView(new CloseComplainBottomSheet(InboxDetailActivity.this, this), "", true);
                 closeComplainBottomSheet.show();
-                //viewHelpRate.setVisibility(View.VISIBLE);
                 viewReplyButton.setVisibility(View.GONE);
-                ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClick("yes", commentPosition, item.getId());
+                ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClick(true, commentPosition, item.getId());
                 helpFullBottomSheet.dismiss();
             } else {
-                ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClick("no", commentPosition, item.getId());
-                //viewReplyButton.setVisibility(View.GONE);
+                ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClick(false, commentPosition, item.getId());
                 textToolbar.setVisibility(View.VISIBLE);
                 helpFullBottomSheet.dismiss();
             }
@@ -713,24 +713,14 @@ public class InboxDetailActivity extends InboxBaseActivity
         @Override
         public void onSuccessSubmitOfRating ( int rating, int commentPosition){
             CommentsItem item = commentsItems.get(commentPosition);
-            String rate = rating == 101 ? LIKE : DISLIKE;
+            String rate = rating == INT_KEY_LIKED ? KEY_LIKED : KEY_DIS_LIKED;
             item.setRating(rate);
             detailAdapter.notifyItemChanged(commentPosition, item);
         }
 
         @Override
-        public void onClickComplain (String agreed){
-            CommentsItem item = null;
-            int commentPosition = 0;
-            for (int i = detailAdapter.getItemCount() - 1; i >= 0; i--) {
-                CommentsItem item1 = commentsItems.get(i);
-                if (item1.getCreatedBy().getRole().equals("agent")) {
-                    item = item1;
-                    commentPosition = i;
-                    break;
-                }
-            }
-            if (agreed.equals("yes")) {
+        public void onClickComplain (boolean agreed){
+            if (agreed) {
                 ((InboxDetailContract.InboxDetailPresenter) mPresenter).closeTicket();
                 closeComplainBottomSheet.dismiss();
 
@@ -749,10 +739,8 @@ public class InboxDetailActivity extends InboxBaseActivity
                 @Override
                 public void run() {
                     mPresenter.refreshLayout();
-                    Log.d("refressh","refresah");
                 }
-            }, 4000);
-           // mPresenter.refreshLayout();
+            }, DELAY_FOUR_MILLIS);
             ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClickEmoji(0);
         }
 

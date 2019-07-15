@@ -225,7 +225,7 @@ dinilaiwbckwbvkbwvwkwbkjewvrrevervrevrvvvrvrrevrvrvevebvwv" />
     <include
         android:id="@+id/view_rply_botton_before_csat_rating"
         layout="@layout/rply_button_bottom"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
         android:elevation="@dimen/dp_8"
         android:visibility="gone"
