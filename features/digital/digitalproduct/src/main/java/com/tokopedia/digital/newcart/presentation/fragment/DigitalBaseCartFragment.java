@@ -287,7 +287,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 231) { //TODO: Set request code constant in promo checkout common
+        if (requestCode == 230 || requestCode == 231) { //TODO: Set request code constant in promo checkout common
             Bundle bundle = data.getExtras();
             if (bundle != null) {
                 PromoStackingData promoData = bundle.getParcelable(TickerCheckoutUtilKt.getEXTRA_PROMO_DATA());
