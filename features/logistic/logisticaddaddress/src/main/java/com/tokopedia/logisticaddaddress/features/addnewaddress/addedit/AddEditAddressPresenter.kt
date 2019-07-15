@@ -61,4 +61,9 @@ class AddEditAddressPresenter @Inject constructor(private val context: Context,
             addAddressUseCase.execute(RequestParams.create(), AddAddressSubscriber(view, addAddressMapper, it, typeForm))
         }
     }
+
+    override fun detachView() {
+        super.detachView()
+        addAddressUseCase.unsubscribe()
+    }
 }

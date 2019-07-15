@@ -4,7 +4,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
-import com.tokopedia.district_recommendation.domain.model.Token;
+import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.seller.logistic.GetOpenShopTokenUseCase;
 import com.tokopedia.shop.open.data.model.response.CreateShop;
 import com.tokopedia.shop.open.data.model.response.ValidateShopDomainSuggestionHeader;

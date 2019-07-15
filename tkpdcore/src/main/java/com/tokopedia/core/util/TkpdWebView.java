@@ -46,19 +46,6 @@ public class TkpdWebView extends WebView {
     }
 
     @Override
-    public void loadUrl(String url) {
-        if(WebViewHelper.isUrlValid(url)){
-            loadAuthUrl(url);
-        }else {
-            if(!GlobalConfig.DEBUG)
-                Crashlytics.log(
-                        getContext().getString(R.string.error_message_url_invalid_crashlytics) + url);
-
-            super.loadUrl(TokopediaUrl.getInstance().getMOBILEWEB());
-        }
-    }
-
-    @Override
     public void loadUrl(String url, Map<String, String> additionalHttpHeaders) {
         if(WebViewHelper.isUrlValid(url)){
             super.loadUrl(url, additionalHttpHeaders);
@@ -66,7 +53,7 @@ public class TkpdWebView extends WebView {
             if(!GlobalConfig.DEBUG)
                 Crashlytics.log(getContext().getString(R.string.error_message_url_invalid_crashlytics) + url);
 
-            super.loadUrl(TokopediaUrl.getInstance().getMOBILEWEB());
+            super.loadUrl(url);
         }
     }
 

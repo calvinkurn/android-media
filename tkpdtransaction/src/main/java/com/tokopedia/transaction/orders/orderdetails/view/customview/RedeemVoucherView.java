@@ -60,7 +60,7 @@ public class RedeemVoucherView extends LinearLayout {
         if (voucherCount > 0) {
             voucherNumber.setText(String.format("%s %s", context.getResources().getString(R.string.event_ticket_voucher_number_multiple), (voucherCount+ 1)));
         } else {
-            voucherNumber.setText(context.getResources().getString(R.string.event_ticket_voucher_number_multiple));
+            voucherNumber.setText(context.getResources().getString(R.string.event_ticket_voucher_number));
         }
 
         renderRedeemButton(actionButton);

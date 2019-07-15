@@ -94,7 +94,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     private DealsCategoryAdapter dealsAdapter;
     private int adapterPosition = -1;
     private boolean forceRefresh;
-    public static final String SEARCH_TEXT = "search_text";
+    public static final String SEARCH_TEXT = "search_name";
     private TextView toolbarTitle;
     private TextView searchInputView;
     private ImageView backArrow;
@@ -168,7 +168,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         recyclerViewDeals.setAdapter(dealsAdapter);
         searchText = getArguments().getString(SEARCH_TEXT);
         if (!TextUtils.isEmpty(searchText)) {
-            searchInputView.setText(searchText);
+            searchInputView.setText(String.format(getContext().getResources().getString(R.string.search_input_hint_category), searchText.toLowerCase()));
         }
         toolbarTitle.setOnClickListener(this);
         KeyboardHandler.DropKeyboard(getContext(), searchInputView);
