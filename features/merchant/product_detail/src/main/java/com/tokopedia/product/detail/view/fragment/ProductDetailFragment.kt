@@ -922,6 +922,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                             val icon = LottieDrawable()
                             icon.composition = composition
                             menuCart.icon = icon
+                            setBadgeMenuCart(menuCart)
                         }
                     }
                 }
@@ -1789,7 +1790,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     shouldShowCartAnimation = false
                     if (menuCart.icon is LottieDrawable) {
                         val icon = menuCart.icon as LottieDrawable
-                        icon.startAnimation()
+                        icon.playAnimation()
                     }
                 }
             }
