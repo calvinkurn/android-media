@@ -4,7 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.discovery.R
-import com.tokopedia.discovery.newdiscovery.domain.model.filter.FilterValueResponse
+import com.tokopedia.discovery.newdiscovery.domain.model.filter.Data
 import com.tokopedia.discovery.newdiscovery.domain.model.filter.QueriesItem
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -18,14 +18,13 @@ class GetHotListFilterValueUseCase @Inject constructor(@ApplicationContext priva
                                                        , private val graphqlUseCase: GraphqlUseCase) : UseCase<List<QueriesItem?>?>() {
     override fun createObservable(requestParams: RequestParams?): Observable<List<QueriesItem?>?> {
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
-                R.raw.hotlist_detail), FilterValueResponse::class.java, requestParams!!.parameters, false)
+                R.raw.hotlist_detail), Data::class.java, requestParams!!.parameters, false)
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
 
         return graphqlUseCase.createObservable(requestParams).map {
-
-            ((it.getData(FilterValueResponse::class.java)) as FilterValueResponse).data?.hotlistDetail?.queries
+            ((it.getData(Data::class.java)) as Data).hotlistDetail?.queries
 
         }
     }
