@@ -241,7 +241,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
             val addCartParam = mapToAddCartParam(hotelRoomListPageModel, room)
             put(HotelRoomDetailFragment.EXTRA_ROOM_DATA, HotelRoomDetailModel(room, addCartParam))
         }
-        startActivityForResult(HotelRoomDetailActivity.getCallingIntent(context!!, objectId), RESULT_ROOM_DETAIL)
+        startActivityForResult(HotelRoomDetailActivity.getCallingIntent(context!!, objectId, roomList.indexOf(room)), RESULT_ROOM_DETAIL)
     }
 
     fun mapToAddCartParam(hotelRoomListPageModel: HotelRoomListPageModel, room: HotelRoom): HotelAddCartParam {
