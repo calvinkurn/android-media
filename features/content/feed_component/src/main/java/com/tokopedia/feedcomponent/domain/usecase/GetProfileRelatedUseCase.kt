@@ -16,6 +16,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
 import javax.inject.Inject
+import javax.inject.Named
 import javax.inject.Provider
 
 /**
@@ -24,7 +25,7 @@ import javax.inject.Provider
  *
  * Example case: when user see the blank KOL profile, it will show other peoples' profile in list
  */
-class GetProfileRelatedUseCase @Inject constructor(@ApplicationContext private val context: Context,
+class GetProfileRelatedUseCase @Inject constructor(@Named(PROFILE_RELATED_KEY) private val query: String,
                                                    graphqlUseCaseProvider: Provider<GraphqlUseCase>)
     : UseCase<FeedPostRelated>() {
 
@@ -38,11 +39,6 @@ class GetProfileRelatedUseCase @Inject constructor(@ApplicationContext private v
     }
 
     override fun createObservable(requestParams: RequestParams?): Observable<FeedPostRelated> {
-        val query: String = GraphqlHelper.loadRawString(
-            context.resources,
-            R.raw.query_profile_related
-        )
-
         val graphqlRequest = GraphqlRequest(query, ProfileRelatedQuery::class.java, requestParams?.parameters)
 
         graphqlUseCase.clearRequest()
@@ -57,6 +53,7 @@ class GetProfileRelatedUseCase @Inject constructor(@ApplicationContext private v
 
     companion object {
         const val PARAM_ACTIVITY_ID = "activityID"
+        const val PROFILE_RELATED_KEY = "profileRelated"
         @JvmOverloads
         fun createRequestParams(activityId: String?):
             RequestParams {
