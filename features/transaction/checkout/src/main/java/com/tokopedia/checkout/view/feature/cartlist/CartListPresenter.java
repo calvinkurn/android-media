@@ -1259,13 +1259,8 @@ public class CartListPresenter implements ICartListPresenter {
             addToCartRequest1.setShopId(shopId);
             addToCartRequest1.setQuantity(0);
             addToCartRequest1.setNotes("");
-//            addToCartRequest1.setLang();
-//            addToCartRequest1.setAttribution();
-//            addToCartRequest1.setListTracker();
-//            addToCartRequest1.setUcParams();
             addToCartRequest1.setWarehouseId(0);
-            addToCartRequest1.setAtcFromExternalSource("wishlist_list");
-//            addToCartRequest1.setSCP();
+            addToCartRequest1.setAtcFromExternalSource(externalSource);
 
             addToCartUseCase1.setParams(addToCartRequest1);
             addToCartUseCase1.createObservable(RequestParams.create())
