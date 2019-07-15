@@ -18,8 +18,8 @@ import rx.Observable;
 import rx.functions.Func1;
 
 public class CloseTicketByUserUseCase extends UseCase<ChipGetInboxDetail> {
-    Context context;
-    GraphqlUseCase graphqlUseCase;
+    private Context context;
+    private GraphqlUseCase graphqlUseCase;
     private static final String CASEID = "caseID" ;
     private static final String SOURCE = "source" ;
 

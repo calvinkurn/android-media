@@ -87,8 +87,8 @@ public class InboxDetailActivity extends InboxBaseActivity
     private TextView tvNoTicket;
     private TextView tvOkButton;
     private ConstraintLayout rootView;
-    View viewReplyButton;
-    TextView tvReplyButton;
+    private View viewReplyButton;
+    private TextView tvReplyButton;
     private ImageUploadAdapter imageUploadAdapter;
     private InboxDetailAdapter detailAdapter;
     private LinearLayoutManager layoutManager;
@@ -364,17 +364,18 @@ public class InboxDetailActivity extends InboxBaseActivity
     }
 
     void onEmojiClick(View v) {
-        if (v.getId() == R.id.btn_inactive_1) {
-            ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClickEmoji(1);
-        } else if (v.getId() == R.id.btn_inactive_2) {
-            ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClickEmoji(2);
-        } else if (v.getId() == R.id.btn_inactive_3) {
-            ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClickEmoji(3);
-        } else if (v.getId() == R.id.btn_inactive_4) {
-            ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClickEmoji(4);
-        } else if (v.getId() == R.id.btn_inactive_5) {
-            ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClickEmoji(5);
-
+        int id = v.getId();
+        InboxDetailContract.InboxDetailPresenter presenter = (InboxDetailContract.InboxDetailPresenter) mPresenter;
+        if (id == R.id.btn_inactive_1) {
+            presenter.onClickEmoji(1);
+        } else if (id == R.id.btn_inactive_2) {
+            presenter.onClickEmoji(2);
+        } else if (id == R.id.btn_inactive_3) {
+            presenter.onClickEmoji(3);
+        } else if (id == R.id.btn_inactive_4) {
+            presenter.onClickEmoji(4);
+        } else if (id == R.id.btn_inactive_5) {
+            presenter.onClickEmoji(5);
         }
     }
 

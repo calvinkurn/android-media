@@ -167,8 +167,7 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
                 tvCollapsedTime.setVisibility(View.GONE);
 
                 if(!mPresenter.getTicketStatus().equalsIgnoreCase(utils.CLOSED) && item.getCreatedBy().getRole().equals("agent")&&(item.getRating()==null|| item.getRating().equals(""))){
-                      ratingThumbsUp.setVisibility(View.VISIBLE);
-                      ratingThumbsDown.setVisibility(View.VISIBLE);
+                      settingRatingButtonsVisibility(View.VISIBLE);
                       ratingThumbsUp.clearColorFilter();
                       ratingThumbsDown.clearColorFilter();
                 }
@@ -198,16 +197,13 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
                 tvComment.setText("");
                 tvCollapsedTime.setText(item.getShortTime());
                 tvCollapsedTime.setVisibility(View.VISIBLE);
-                ratingThumbsUp.setVisibility(View.GONE);
-                ratingThumbsDown.setVisibility(View.GONE);
+                settingRatingButtonsVisibility(View.GONE);
                 tvComment.setVisibility(View.GONE);
                 rvAttachedImage.setVisibility(View.GONE);
             }
 
 
-            ratingThumbsUp.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            ratingThumbsUp.setOnClickListener((View v)-> {
                     if(item.getRating()!= null &&(item.getRating().equals(KEY_LIKED)||item.getRating().equals(KEY_DIS_LIKED))){
 
                     }else{
@@ -215,22 +211,22 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
                         ratingThumbsDown.setVisibility(View.GONE);
                         mPresenter.onClick(true,position,item.getId());
                     }
-
-                }
             });
 
-            ratingThumbsDown.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            ratingThumbsDown.setOnClickListener((View v)-> {
                     if(item.getRating().equals(KEY_LIKED)||item.getRating().equals(KEY_DIS_LIKED)){
                     }else{
                     ratingThumbsDown.setColorFilter(ContextCompat.getColor(mContext, R.color.red_600));
                     ratingThumbsUp.setVisibility(View.GONE);
                     mPresenter.onClick(false,position,item.getId());
                     }
-                }
             });
 
+        }
+
+        private void settingRatingButtonsVisibility(int visibility) {
+            ratingThumbsUp.setVisibility(visibility);
+            ratingThumbsDown.setVisibility(visibility);
         }
 
         void toggleCollapse() {
