@@ -1,7 +1,7 @@
 package com.tokopedia.seller.seller.info.domain;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.seller.seller.info.data.model.ResponseSellerInfoModelA;
+import com.tokopedia.seller.seller.info.data.model.ResponseSellerInfoModel;
 
 import rx.Observable;
 
@@ -10,5 +10,5 @@ import rx.Observable;
  */
 
 public interface SellerInfoRepository {
-    Observable<ResponseSellerInfoModelA> getSellerInfoList(RequestParams requestParams);
+    Observable<ResponseSellerInfoModel> getSellerInfoList(RequestParams requestParams);
 }

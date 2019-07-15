@@ -7,13 +7,47 @@ package com.tokopedia.seller.seller.info.data.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ResponseSellerInfoModelA {
+public class ResponseSellerInfoModel {
+
+    @SerializedName("links")
+    @Expose
+    private Links links;
+    @SerializedName("status")
+    @Expose
+    private String status;
+    @SerializedName("server_process_time")
+    @Expose
+    private double serverProcessTime;
     @SerializedName("data")
     @Expose
     private Data data;
     @SerializedName("server")
     @Expose
     private String server;
+
+    public Links getLinks() {
+        return links;
+    }
+
+    public void setLinks(Links links) {
+        this.links = links;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public double getServerProcessTime() {
+        return serverProcessTime;
+    }
+
+    public void setServerProcessTime(double serverProcessTime) {
+        this.serverProcessTime = serverProcessTime;
+    }
 
     public Data getData() {
         return data;
@@ -54,6 +88,22 @@ public class ResponseSellerInfoModelA {
 
         public void setList(java.util.List<List> list) {
             this.list = list;
+        }
+
+    }
+
+    public static class Links {
+
+        @SerializedName("self")
+        @Expose
+        private String self;
+
+        public String getSelf() {
+            return self;
+        }
+
+        public void setSelf(String self) {
+            this.self = self;
         }
 
     }

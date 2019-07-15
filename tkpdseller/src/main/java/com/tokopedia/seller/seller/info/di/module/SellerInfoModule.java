@@ -1,18 +1,11 @@
 package com.tokopedia.seller.seller.info.di.module;
 
-import android.content.Context;
-
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
-import com.tokopedia.seller.R;
 import com.tokopedia.seller.seller.info.data.repository.SellerInfoRepositoryImpl;
 import com.tokopedia.seller.seller.info.data.source.SellerInfoApi;
 import com.tokopedia.seller.seller.info.data.source.cloud.SellerInfoDataSource;
 import com.tokopedia.seller.seller.info.di.scope.SellerInfoScope;
 import com.tokopedia.seller.seller.info.domain.SellerInfoRepository;
-
-import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
@@ -35,12 +28,5 @@ public class SellerInfoModule {
     @Provides
     public SellerInfoRepository provideSellerInfoRepository(SellerInfoDataSource sellerInfoDataSource){
         return new SellerInfoRepositoryImpl(sellerInfoDataSource);
-    }
-
-    @Named("SELLER_CENTER_RAW")
-    @Provides
-    public String provideRawSellerCenter(@ApplicationContext Context context){
-        return GraphqlHelper.loadRawString(context.getResources(), R.raw.gold_merchant_status);
-
     }
 }

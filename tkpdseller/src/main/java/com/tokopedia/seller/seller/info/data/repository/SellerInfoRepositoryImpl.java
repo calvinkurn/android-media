@@ -1,7 +1,7 @@
 package com.tokopedia.seller.seller.info.data.repository;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.seller.seller.info.data.model.ResponseSellerInfoModelA;
+import com.tokopedia.seller.seller.info.data.model.ResponseSellerInfoModel;
 import com.tokopedia.seller.seller.info.data.source.cloud.SellerInfoDataSource;
 import com.tokopedia.seller.seller.info.domain.SellerInfoRepository;
 
@@ -19,7 +19,7 @@ public class SellerInfoRepositoryImpl implements SellerInfoRepository {
     }
 
     @Override
-    public Observable<ResponseSellerInfoModelA> getSellerInfoList(RequestParams requestParams){
+    public Observable<ResponseSellerInfoModel> getSellerInfoList(RequestParams requestParams){
         return sellerInfoDataSource.getSellerInfoList(requestParams);
     }
 }
