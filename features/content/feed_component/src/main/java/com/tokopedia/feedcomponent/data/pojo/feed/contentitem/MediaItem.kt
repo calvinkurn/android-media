@@ -50,7 +50,7 @@ data class MediaItem(
         @Expose
         val tracking: List<Tracking> = ArrayList(),
 
-        @SerializedName("videod")
+        @SerializedName("videos")
         @Expose
         val videos: List<Video> = ArrayList(),
 
