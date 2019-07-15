@@ -26,6 +26,8 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.text.TextUtils
 import android.view.*
+import com.airbnb.lottie.LottieComposition
+import com.airbnb.lottie.LottieDrawable
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -198,6 +200,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private var userInputQuantity = 0
     private var userInputVariant: String? = null
     private var delegateTradeInTracking = false
+
+    private var shouldShowCartAnimation = false
 
     private lateinit var initToolBarMethod:()-> Unit
     private val productDetailTracking: ProductDetailTracking by lazy {
@@ -912,8 +916,13 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     if (it.size() > 2) {
                         it.findItem(R.id.action_share).icon = ContextCompat.getDrawable(this, R.drawable.ic_product_share_dark)
                         val menuCart = it.findItem(R.id.action_cart)
-                        menuCart.icon = ContextCompat.getDrawable(this, R.drawable.ic_product_cart_counter_dark)
-                        setBadgeMenuCart(menuCart)
+//                        menuCart.icon = ContextCompat.getDrawable(this, R.drawable.ic_product_cart_counter_dark)
+//                        setBadgeMenuCart(menuCart)
+                        LottieComposition.Factory.fromRawFile(context!!, R.raw.anim_cart) { composition ->
+                            val icon = LottieDrawable()
+                            icon.composition = composition
+                            menuCart.icon = icon
+                        }
                     }
                 }
 
@@ -1045,6 +1054,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     if (data.hasExtra(NormalCheckoutFragment.RESULT_ATC_SUCCESS_MESSAGE)) {
                         val successMessage = data.getStringExtra(NormalCheckoutFragment.RESULT_ATC_SUCCESS_MESSAGE)
                         showSnackbarSuccessAtc(successMessage)
+                        shouldShowCartAnimation = true
                         updateCartNotification()
                     }
 
@@ -1762,16 +1772,25 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         activity?.run {
             val cartCount = (application as ProductDetailRouter).getCartCount(this)
             if (cartCount > 0) {
-                if (menuCart.icon is LayerDrawable) {
-                    val icon = menuCart.icon as LayerDrawable
-                    val badge = CountDrawable(context)
-                    badge.setCount(if (cartCount > 99) {
-                        getString(R.string.pdp_label_cart_count_max)
-                    } else {
-                        cartCount.toString()
-                    })
-                    icon.mutate()
-                    icon.setDrawableByLayerId(R.id.ic_cart_count, badge)
+//                if (menuCart.icon is LayerDrawable) {
+//                    val icon = menuCart.icon as LayerDrawable
+//                    val badge = CountDrawable(context)
+//                    badge.setCount(if (cartCount > 99) {
+//                        getString(R.string.pdp_label_cart_count_max)
+//                    } else {
+//                        cartCount.toString()
+//                    })
+//                    icon.mutate()
+//                    icon.setDrawableByLayerId(R.id.ic_cart_count, badge)
+//                }
+//                if (val icon = menuCart.icon is LottieDrawable) {
+//                }
+                if (shouldShowCartAnimation) {
+                    shouldShowCartAnimation = false
+                    if (menuCart.icon is LottieDrawable) {
+                        val icon = menuCart.icon as LottieDrawable
+                        icon.startAnimation()
+                    }
                 }
             }
         }
