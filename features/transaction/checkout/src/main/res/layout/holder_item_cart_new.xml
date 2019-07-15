@@ -91,12 +91,11 @@
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_product_price"
-                        style="@style/TextMidMedium"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/product_properties"
                         android:layout_marginTop="@dimen/dp_4"
-                        android:textColor="@color/orange_red"
+                        android:textColor="@color/price_label"
                         app:typographyType="body_3"
                         app:typographyWeight="bold"
                         tools:text="Rp 200.000" />
@@ -121,7 +120,6 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="@dimen/dp_18"
                                 android:layout_marginEnd="@dimen/dp_18"
-                                android:background="@drawable/bg_round_button_with_shadow"
                                 app:srcCompat="@drawable/ic_wishlist_checkout_on" />
 
                             <ImageView
@@ -154,8 +152,8 @@
 
                             <ImageView
                                 android:id="@+id/btn_qty_plus"
-                                android:layout_width="@dimen/dp_32"
-                                android:layout_height="@dimen/dp_32"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
                                 app:srcCompat="@drawable/bg_button_counter_plus"
                                 tools:ignore="ContentDescription" />
 

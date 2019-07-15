@@ -167,7 +167,7 @@
                                     android:gravity="end"
                                     android:textColor="@color/orange_red"
                                     android:textSize="@dimen/sp_16"
-                                    app:typographyType="heading_4"
+                                    app:typographyType="heading_5"
                                     app:typographyWeight="bold"
                                     tools:text="Rp600.000" />
 

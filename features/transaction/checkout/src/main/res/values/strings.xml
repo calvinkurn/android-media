@@ -310,4 +310,6 @@
     <string name="checkout_module_title_recent_view">Terakhir Dilihat</string>
     <string name="checkout_module_title_recommendation">Rekomendasi</string>
 
+    <string name="label_toko">Toko: </string>
+
 </resources>

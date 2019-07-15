@@ -4,7 +4,11 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -96,7 +100,12 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         renderErrorItemHeader(cartShopHolderData);
         renderWarningItemHeader(cartShopHolderData);
 
-        tvShopName.setText(cartShopHolderData.getShopGroupData().getShopName());
+        String labelShop = tvShopName.getContext().getResources().getString(R.string.label_toko);
+        String shopName = cartShopHolderData.getShopGroupData().getShopName();
+        String finalLabelShop = labelShop + " " + shopName;
+        Spannable sb = new SpannableString(finalLabelShop);
+        sb.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), finalLabelShop.indexOf(shopName), finalLabelShop.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tvShopName.setText(sb, TextView.BufferType.SPANNABLE);
         tvShopName.setOnClickListener(v -> actionListener.onCartShopNameClicked(cartShopHolderData));
 
         if (cartShopHolderData.getShopGroupData().isOfficialStore() || cartShopHolderData.getShopGroupData().isGoldMerchant()) {

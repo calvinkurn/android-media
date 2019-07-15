@@ -12,5 +12,6 @@
     <color name="button_change_courier">#42b549</color>
     <color name="button_change_courier_disabled">#7031353b</color>
     <color name="button_checkout">#FA581D</color>
+    <color name="price_label">#FA591D</color>
 </resources>
 

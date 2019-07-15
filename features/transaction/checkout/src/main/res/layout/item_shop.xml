@@ -50,16 +50,16 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_shop_name"
-                    style="@style/TextSmallMediumBlack70"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dp_4"
                     android:layout_marginRight="@dimen/dp_4"
-                    android:textSize="@dimen/sp_14"
-                    android:textStyle="bold"
-                    tools:text="Loaa Store df" />
+                    android:textSize="@dimen/sp_12"
+                    tools:text="Loaa Store df"
+                    app:typographyType="heading_6"
+                    app:typographyWeight="reguler"/>
 
                 <ImageView
                     android:id="@+id/img_shop_badge"
