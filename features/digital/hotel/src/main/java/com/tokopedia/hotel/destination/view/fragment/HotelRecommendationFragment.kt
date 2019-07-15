@@ -5,7 +5,9 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
+import android.location.LocationManager
 import android.os.Bundle
+import android.provider.Settings
 import android.support.v4.view.ViewCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -16,11 +18,10 @@ import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
@@ -46,7 +47,7 @@ import javax.inject.Inject
  * @author by jessica on 25/03/19
  */
 
-class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearchTypeFactory>(), RecentSearchListener {
+class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearchTypeFactory>(), RecentSearchListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -136,7 +137,8 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
                     showGetListError(it.throwable)
                     showOnlyList(true)
                 }
-            } })
+            }
+        })
 
         destinationViewModel.recentSearch.observe(this, android.arch.lifecycle.Observer {
             when (it) {
@@ -149,21 +151,24 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
                     showGetListError(it.throwable)
                     showOnlyList(true)
                 }
-            } })
-
-        destinationViewModel.longLat.observe(this, android.arch.lifecycle.Observer {when (it) {
-            is Success -> onClickCurrentLocation(lang = it.data.first, lat = it.data.second)
-            is Fail -> {
-                NetworkErrorHelper.showRedSnackbar(activity, getString(R.string.hotel_destination_error_get_location))
             }
-        }
+        })
+
+        destinationViewModel.longLat.observe(this, android.arch.lifecycle.Observer {
+            when (it) {
+                is Success -> onClickCurrentLocation(lang = it.data.first, lat = it.data.second)
+                is Fail -> checkGPS()
+            }
         })
 
         destinationViewModel.deleteSuccess.observe(this, android.arch.lifecycle.Observer {
             when (it) {
-                true -> { }
-                false -> { }
-        }})
+                true -> {
+                }
+                false -> {
+                }
+            }
+        })
     }
 
     fun onClickCurrentLocation(lang: Double, lat: Double) {
@@ -235,6 +240,36 @@ class HotelRecommendationFragment: BaseListFragment<PopularSearch, PopularSearch
         adapter.errorNetworkModel.subErrorMessage = ErrorHandlerHotel.getErrorMessage(context, throwable)
         adapter.errorNetworkModel.onRetryListener = this
         adapter.showErrorNetwork()
+    }
+
+    private fun checkGPS() {
+        val locationManager = context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            showDialogEnableGPS()
+        } else {
+            onErrorGetLocation()
+        }
+    }
+
+    private fun showDialogEnableGPS() {
+        val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
+        dialog.setTitle(getString(R.string.hotel_recommendation_gps_dialog_title))
+        dialog.setDesc(getString(R.string.hotel_recommendation_gps_dialog_desc))
+        dialog.setBtnOk(getString(R.string.hotel_recommendation_gps_dialog_ok))
+        dialog.setBtnCancel(getString(R.string.hotel_recommendation_gps_dialog_cancel))
+        dialog.setOnOkClickListener {
+            startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+            dialog.dismiss()
+        }
+        dialog.setOnCancelClickListener {
+            onErrorGetLocation()
+            dialog.dismiss()
+        }
+    }
+
+    private fun onErrorGetLocation() {
+        NetworkErrorHelper.showRedSnackbar(activity, getString(R.string.hotel_destination_error_get_location))
     }
 
     companion object {
