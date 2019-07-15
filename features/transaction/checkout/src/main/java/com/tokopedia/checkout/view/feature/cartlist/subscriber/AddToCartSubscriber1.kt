@@ -8,7 +8,6 @@ import com.tokopedia.checkout.view.feature.cartlist.ICartListPresenter
 import com.tokopedia.checkout.view.feature.cartlist.ICartListView
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.transactiondata.apiservice.CartResponseErrorException
-import com.tokopedia.transactiondata.entity.response.addtocart.AddToCartDataResponse
 import rx.Subscriber
 
 /**
@@ -49,15 +48,19 @@ class AddToCartSubscriber1(val view: ICartListView?,
                 dataModel.quantity = addToCartGqlResponse.addToCartResponse.data.quantity
 
                 val addToCartDataModel = AddToCartDataResponseModel()
-                addToCartDataModel.success = response.success
-                addToCartDataModel.message = response.message
+                addToCartDataModel.success = addToCartGqlResponse.addToCartResponse.data.success
+                addToCartDataModel.message = addToCartGqlResponse.addToCartResponse.data.message
                 addToCartDataModel.data = dataModel
 
                 view.triggerSendEnhancedEcommerceAddToCartSuccess(addToCartDataModel, productModel)
                 presenter.processInitialGetCartData("0", false, false)
-                view.showToastMessageGreen(response.message[0])
+                if (addToCartGqlResponse.addToCartResponse.data.message.size > 0) {
+                    view.showToastMessageGreen(addToCartGqlResponse.addToCartResponse.data.message[0])
+                }
             } else {
-                view.showToastMessageRed(response.message[0])
+                if (addToCartGqlResponse.addToCartResponse.errorMessage.size > 0) {
+                    view.showToastMessageRed(addToCartGqlResponse.addToCartResponse.errorMessage[0])
+                }
             }
         }
     }
