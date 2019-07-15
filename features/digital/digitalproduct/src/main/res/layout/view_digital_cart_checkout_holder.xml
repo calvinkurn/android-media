@@ -7,20 +7,10 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
-        android:background="@drawable/bg_line_separator" />
-
     <com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
         android:id="@+id/promo_ticker_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
-        android:background="@drawable/bg_line_separator" />
 
     <LinearLayout
         android:id="@+id/container_checkout"
