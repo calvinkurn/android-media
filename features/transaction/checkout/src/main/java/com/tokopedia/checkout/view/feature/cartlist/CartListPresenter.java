@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.atc_common.data.model.request.AddToCartRequest;
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase;
 import com.tokopedia.checkout.domain.datamodel.DeleteAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.ResetAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.addtocart.AddToCartDataResponseModel;
@@ -17,7 +18,6 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateAndRefreshCartList
 import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.WholesalePrice;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
-import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
@@ -118,7 +118,6 @@ public class CartListPresenter implements ICartListPresenter {
     private final GetWishlistUseCase getWishlistUseCase;
     private final GetRecommendationUseCase getRecommendationUseCase;
     private final AddToCartUseCase addToCartUseCase;
-    private final com.tokopedia.atc_common.domain.usecase.AddToCartUseCase addToCartUseCase1;
     private CartListData cartListData;
     private boolean hasPerformChecklistChange;
 
@@ -141,8 +140,7 @@ public class CartListPresenter implements ICartListPresenter {
                              GetRecentViewUseCase getRecentViewUseCase,
                              GetWishlistUseCase getWishlistUseCase,
                              GetRecommendationUseCase getRecommendationUseCase,
-                             AddToCartUseCase addToCartUseCase,
-                             com.tokopedia.atc_common.domain.usecase.AddToCartUseCase addToCartUseCase1) {
+                             AddToCartUseCase addToCartUseCase) {
         this.getCartListUseCase = getCartListUseCase;
         this.compositeSubscription = compositeSubscription;
         this.deleteCartListUseCase = deleteCartListUseCase;
@@ -162,7 +160,6 @@ public class CartListPresenter implements ICartListPresenter {
         this.getWishlistUseCase = getWishlistUseCase;
         this.getRecommendationUseCase = getRecommendationUseCase;
         this.addToCartUseCase = addToCartUseCase;
-        this.addToCartUseCase1 = addToCartUseCase1;
     }
 
     @Override
@@ -196,9 +193,6 @@ public class CartListPresenter implements ICartListPresenter {
         }
         if (addToCartUseCase != null) {
             addToCartUseCase.unsubscribe();
-        }
-        if (addToCartUseCase1 != null) {
-            addToCartUseCase1.unsubscribe();
         }
         view = null;
     }
@@ -1243,8 +1237,8 @@ public class CartListPresenter implements ICartListPresenter {
         addToCartRequest.setWarehouseId(0);
         addToCartRequest.setAtcFromExternalSource(externalSource);
 
-        addToCartUseCase1.setParams(addToCartRequest);
-        addToCartUseCase1.createObservable(RequestParams.create())
+        addToCartUseCase.setParams(addToCartRequest);
+        addToCartUseCase.createObservable(RequestParams.create())
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

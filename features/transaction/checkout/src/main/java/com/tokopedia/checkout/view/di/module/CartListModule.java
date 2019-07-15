@@ -6,8 +6,8 @@ import android.support.v7.widget.RecyclerView;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase;
 import com.tokopedia.checkout.R;
-import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
@@ -147,8 +147,8 @@ public class CartListModule {
 
     @Provides
     @CartListScope
-    com.tokopedia.atc_common.domain.usecase.AddToCartUseCase provideAddToCartUseCase(@Named("atcMutation") String mutation) {
-        return new com.tokopedia.atc_common.domain.usecase.AddToCartUseCase(mutation);
+    AddToCartUseCase provideAddToCartUseCase(@Named("atcMutation") String mutation) {
+        return new AddToCartUseCase(mutation);
     }
 
     @Provides
@@ -171,15 +171,14 @@ public class CartListModule {
                                                  GetRecentViewUseCase getRecentViewUseCase,
                                                  GetWishlistUseCase getWishlistUseCase,
                                                  GetRecommendationUseCase getRecommendationUseCase,
-                                                 AddToCartUseCase addToCartUseCase,
-                                                 com.tokopedia.atc_common.domain.usecase.AddToCartUseCase addToCartUseCase1) {
+                                                 AddToCartUseCase addToCartUseCase) {
         return new CartListPresenter(getCartListUseCase, deleteCartListUseCase,
                 updateCartUseCase, resetCartGetCartListUseCase, checkPromoStackingCodeUseCase,
                 checkPromoStackingCodeMapper, checkPromoCodeCartListUseCase, compositeSubscription,
                 cartApiRequestParamGenerator, addWishListUseCase, removeWishListUseCase,
                 updateAndReloadCartUseCase, userSessionInterface, topAdsGqlUseCase,
                 clearCacheAutoApplyStackUseCase, getRecentViewUseCase, getWishlistUseCase,
-                getRecommendationUseCase, addToCartUseCase, addToCartUseCase1);
+                getRecommendationUseCase, addToCartUseCase);
     }
 
     @Provides
