@@ -1,7 +1,8 @@
 package com.tokopedia.instantdebitbca.data.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.instantdebitbca.data.view.InstantDebitBcaFragment;
+import com.tokopedia.instantdebitbca.data.view.fragment.EditLimitFragment;
+import com.tokopedia.instantdebitbca.data.view.fragment.InstantDebitBcaFragment;
 
 import dagger.Component;
 
@@ -13,4 +14,5 @@ import dagger.Component;
 public interface InstantDebitBcaComponent {
 
     void inject(InstantDebitBcaFragment instantDebitBcaFragment);
+    void inject(EditLimitFragment editLimitFragment);
 }

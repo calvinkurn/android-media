@@ -1,4 +1,4 @@
-package com.tokopedia.instantdebitbca.data.view;
+package com.tokopedia.instantdebitbca.data.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -21,6 +21,9 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.instantdebitbca.R;
 import com.tokopedia.instantdebitbca.data.di.InstantDebitBcaComponent;
 import com.tokopedia.instantdebitbca.data.domain.NotifyDebitRegisterBcaUseCase;
+import com.tokopedia.instantdebitbca.data.view.activity.InstantDebitBcaActivity;
+import com.tokopedia.instantdebitbca.data.view.interfaces.InstantDebitBcaContract;
+import com.tokopedia.instantdebitbca.data.view.presenter.InstantDebitBcaPresenter;
 import com.tokopedia.instantdebitbca.data.view.utils.DeviceUtil;
 import com.tokopedia.instantdebitbca.data.view.utils.InstantDebitBcaInstance;
 import com.tokopedia.network.utils.AuthUtil;

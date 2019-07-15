@@ -1,4 +1,4 @@
-package com.tokopedia.instantdebitbca.data.view;
+package com.tokopedia.instantdebitbca.data.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,9 +7,10 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.instantdebitbca.data.view.fragment.EditLimitFragment;
 import com.tokopedia.instantdebitbca.data.view.utils.ApplinkConstant;
 
-public class BcaEditLimitActivity extends InstantDebitBcaActivity{
+public class BcaEditLimitActivity extends InstantDebitBcaActivity {
 
     public static final String XCOID = "xcoid";
 

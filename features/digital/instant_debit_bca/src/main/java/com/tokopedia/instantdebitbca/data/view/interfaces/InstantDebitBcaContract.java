@@ -1,4 +1,4 @@
-package com.tokopedia.instantdebitbca.data.view;
+package com.tokopedia.instantdebitbca.data.view.interfaces;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
@@ -22,6 +22,7 @@ public interface InstantDebitBcaContract {
         void getAccessTokenBca();
 
         void notifyDebitRegisterBca(String debitData, String deviceId);
+        void notifyDebitRegisterEditLimit(String debitData, String deviceId);
 
         void onDestroy();
     }

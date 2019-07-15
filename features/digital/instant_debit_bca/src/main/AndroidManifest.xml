@@ -11,14 +11,14 @@
         android:supportsRtl="true">
 
         <activity
-            android:name=".data.view.InstantDebitBcaActivity"
+            android:name=".data.view.activity.InstantDebitBcaActivity"
             android:label="@string/instant_debit_bca_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustResize" />
 
         <activity
-            android:name=".data.view.BcaEditLimitActivity"
+            android:name=".data.view.activity.BcaEditLimitActivity"
             android:label="@string/instant_debit_bca_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"

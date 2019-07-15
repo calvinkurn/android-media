@@ -1,4 +1,4 @@
-mutation debitRegisterBca($merchantCode : String!, $action : String!, $bankCode : String!, $callbackUrl : String!, $signature : String!, $debitData : String!){
+mutation notifyDebitRegister($merchantCode : String!, $action : String!, $bankCode : String!, $callbackUrl : String!, $signature : String!, $debitData : String!){
     notifyDebitRegister(merchantCode : $merchantCode, action : $action, bankCode : $bankCode, callbackUrl : $callbackUrl, signature : $signature, debitData : $debitData) {
     success
     processTime

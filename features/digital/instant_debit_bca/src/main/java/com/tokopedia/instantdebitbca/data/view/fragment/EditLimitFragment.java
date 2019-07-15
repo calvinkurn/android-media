@@ -1,4 +1,4 @@
-package com.tokopedia.instantdebitbca.data.view;
+package com.tokopedia.instantdebitbca.data.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -10,6 +10,7 @@ import android.view.View;
 import com.bca.xco.widget.BCAEditXCOWidget;
 import com.bca.xco.widget.XCOEnum;
 import com.tokopedia.instantdebitbca.data.domain.NotifyDebitRegisterBcaUseCase;
+import com.tokopedia.instantdebitbca.data.view.activity.BcaEditLimitActivity;
 import com.tokopedia.network.utils.AuthUtil;
 
 import java.util.HashMap;
@@ -54,7 +55,7 @@ public class EditLimitFragment extends InstantDebitBcaFragment {
         mapCardData.put(NotifyDebitRegisterBcaUseCase.XCOID, xcoID);
         mapCardData.put(NotifyDebitRegisterBcaUseCase.MAX_LIMIT, maxLimit);
         String debitData = convertObjToJsonString(mapCardData);
-        presenter.notifyDebitRegisterBca(debitData, "");
+        presenter.notifyDebitRegisterEditLimit(debitData, "");
     }
 
 }
