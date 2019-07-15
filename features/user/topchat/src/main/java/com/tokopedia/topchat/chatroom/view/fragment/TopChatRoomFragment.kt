@@ -463,8 +463,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private fun onSendingMessage(sendMessage: String, startTime: String): () -> Unit {
         return {
-            getViewState().onSendingMessage(messageId, getUserSession().userId, getUserSession()
-                    .name, sendMessage, startTime)
             analytics.eventSendMessage()
             getViewState().scrollToBottom()
             clearEditText()
