@@ -332,6 +332,7 @@ dependencies {
     implementation project(rootProject.ext.features.logout)
     implementation project(rootProject.ext.features.topAdsDashboard)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
+    implementation project(rootProject.ext.features.topAdsAutoAds)
     implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.homecredit)
     implementation project(rootProject.ext.features.instantLoan)
@@ -375,7 +376,7 @@ dependencies {
     implementation project(rootProject.ext.features.phoneVerification)
     implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.talk)
-    implementation project(rootProject.ext.features.tradeInCommon)
+    implementation project(rootProject.ext.features.basemvvm)
     implementation project(rootProject.ext.features.loginregister)
     implementation project(rootProject.ext.features.loginphone)
     implementation project(rootProject.ext.features.sessioncommon)
@@ -390,7 +391,11 @@ dependencies {
     implementation project(rootProject.ext.features.gallery)
     implementation project(rootProject.ext.features.categoryCommon)
     implementation project(rootProject.ext.features.officialStore)
+    implementation project(rootProject.ext.features.agerestriction)
     implementation project(rootProject.ext.features.onboarding)
+    implementation project(rootProject.ext.features.profileCompletion)
+    implementation project(rootProject.ext.features.powerMerchantSubscribe)
+
 
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.userSession)
@@ -557,6 +562,7 @@ dependencies {
     implementation (rootProject.ext.debugToolsDependencies.timber){
         exclude group: 'org.jetbrains', module: 'annotations'
     }
+    implementation project(rootProject.ext.features.navigationCommon)
 }
 
 

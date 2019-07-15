@@ -9,7 +9,6 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.design.widget.TextInputEditText
 import android.support.v4.app.Fragment
-import android.support.v7.widget.AppCompatImageButton
 import android.text.SpannableString
 import android.text.TextPaint
 import android.text.TextUtils
@@ -27,18 +26,25 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
-import com.tokopedia.loginregister.LoginRegisterRouter
+import com.tokopedia.iris.Iris
+import com.tokopedia.iris.IrisAnalytics
+import com.tokopedia.linker.LinkerConstants
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.model.UserData
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.activation.view.activity.ActivationActivity
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
@@ -52,20 +58,19 @@ import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.presenter.LoginEmailPhonePresenter
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.loginthirdparty.google.SmartLockActivity
-import com.tokopedia.loginregister.loginthirdparty.webview.WebViewLoginFragment
 import com.tokopedia.loginregister.registeremail.view.activity.RegisterEmailActivity
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
 import com.tokopedia.loginregister.registerinitial.view.customview.PartialRegisterInputView
 import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.welcomepage.WelcomePageActivity
+import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
-import com.tokopedia.sessioncommon.data.model.GetUserInfoData
-import com.tokopedia.sessioncommon.data.model.SecurityPojo
+import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.di.SessionModule
-import com.tokopedia.sessioncommon.view.LoginSuccessRouter
+import com.tokopedia.sessioncommon.network.TokenErrorException
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
@@ -84,43 +89,27 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter;
 class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.View {
 
     private val ID_ACTION_REGISTER = 111
-    val RC_SIGN_IN_GOOGLE = 7777
 
     private val REQUEST_SMART_LOCK = 101
     private val REQUEST_SAVE_SMART_LOCK = 102
-    private val REQUEST_LOGIN_WEBVIEW = 103
     private val REQUEST_SECURITY_QUESTION = 104
     private val REQUESTS_CREATE_PASSWORD = 106
     private val REQUEST_ACTIVATE_ACCOUNT = 107
     private val REQUEST_VERIFY_PHONE = 108
     private val REQUEST_ADD_NAME = 109
     private val REQUEST_CHOOSE_ACCOUNT = 110
-    private val REQUEST_NO_TOKOCASH_ACCOUNT = 111
     private val REQUEST_LOGIN_PHONE = 112
     private val REQUEST_REGISTER_PHONE = 113
     private val REQUEST_ADD_NAME_REGISTER_PHONE = 114
     private val REQUEST_WELCOME_PAGE = 115
     private val REQUEST_LOGIN_GOOGLE = 116
 
-    val IS_AUTO_LOGIN = "auto_login"
-    val AUTO_LOGIN_METHOD = "method"
-
-    val AUTO_LOGIN_EMAIL = "email"
-    val AUTO_LOGIN_PASS = "pw"
-
-    val IS_AUTO_FILL = "auto_fill"
-    val AUTO_FILL_EMAIL = "email"
-    val IS_FROM_REGISTER = "is_from_register"
-
-    val FACEBOOK = "facebook"
-    val GPLUS = "gplus"
-    val PHONE_NUMBER = "tokocash"
-
     private val LOGIN_LOAD_TRACE = "gb_login_trace"
     private val LOGIN_SUBMIT_TRACE = "gb_submit_login_trace"
 
     private var isTraceStopped: Boolean = false
     private lateinit var performanceMonitoring: PerformanceMonitoring
+    private lateinit var mIris: Iris
 
     private lateinit var callbackManager: CallbackManager
     private lateinit var mGoogleSignInClient: GoogleSignInClient
@@ -138,9 +127,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    //*For analytics
-    private var actionLoginMethod: String = ""
-
     private lateinit var partialRegisterInputView: PartialRegisterInputView
     private lateinit var loginLayout: LinearLayout
     private lateinit var loginButtonsContainer: LinearLayout
@@ -150,6 +136,20 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     private lateinit var tickerAnnouncement: Ticker
 
     companion object {
+
+        val IS_AUTO_LOGIN = "auto_login"
+        val AUTO_LOGIN_METHOD = "method"
+
+        val AUTO_LOGIN_EMAIL = "email"
+        val AUTO_LOGIN_PASS = "pw"
+
+        val IS_AUTO_FILL = "auto_fill"
+        val AUTO_FILL_EMAIL = "email"
+        val IS_FROM_REGISTER = "is_from_register"
+
+        val FACEBOOK = "facebook"
+        val GPLUS = "gplus"
+
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = LoginEmailPhoneFragment()
             fragment.arguments = bundle
@@ -173,7 +173,9 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     override fun onStart() {
         super.onStart()
-        analytics.trackScreen(activity, screenName)
+        activity?.run {
+            analytics.trackScreen(this, screenName)
+        }
     }
 
     override fun onResume() {
@@ -191,10 +193,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         }
     }
 
-    override fun trackErrorLoginEmail() {
-        analytics.trackClickOnLoginButtonError()
-    }
-
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         menu!!.add(Menu.NONE, ID_ACTION_REGISTER, 0, "")
         val menuItem = menu.findItem(ID_ACTION_REGISTER)
@@ -210,7 +208,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         if (activity != null) {
             drawable = TextDrawable(activity!!)
             drawable.text = resources.getString(R.string.register)
-            drawable.setTextColor(resources.getColor(R.color.tkpd_main_green))
+            drawable.setTextColor(MethodChecker.getColor(context, R.color.tkpd_main_green))
         }
         return drawable
     }
@@ -219,7 +217,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         val id = item!!.itemId
         if (id == ID_ACTION_REGISTER) {
             registerAnalytics.trackClickTopSignUpButton()
-
             goToRegisterInitial()
             return true
         }
@@ -241,6 +238,10 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
         performanceMonitoring = PerformanceMonitoring.start(LOGIN_LOAD_TRACE)
 
+        context?.run {
+            mIris = IrisAnalytics.getInstance(this)
+        }
+
     }
 
     override fun onCreateView(inflater: LayoutInflater,
@@ -260,6 +261,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        clearData()
         prepareView()
         showLoadingDiscover()
         context?.run {
@@ -272,27 +274,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             when (arguments!!.getInt(AUTO_LOGIN_METHOD)) {
                 LoginActivity.METHOD_FACEBOOK -> onLoginFacebookClick()
                 LoginActivity.METHOD_GOOGLE -> onLoginGoogleClick()
-                LoginActivity.METHOD_WEBVIEW -> {
-                    if (arguments != null
-                            && arguments!!.getString(LoginActivity.AUTO_WEBVIEW_NAME, "").isNotBlank()
-                            && arguments!!.getString(LoginActivity.AUTO_WEBVIEW_URL, "").isNotBlank()) {
-                        val name = arguments!!.getString(LoginActivity.AUTO_WEBVIEW_NAME, "")
-                        val url = arguments!!.getString(LoginActivity.AUTO_WEBVIEW_URL, "")
-                        onLoginWebviewClick(name, url)
-                    }
-                }
-                LoginActivity.METHOD_EMAIL -> {
-                    actionLoginMethod = LoginRegisterAnalytics.ACTION_LOGIN_EMAIL
-                    val email = arguments!!.getString(AUTO_LOGIN_EMAIL, "")
-                    val pw = arguments!!.getString(AUTO_LOGIN_PASS, "")
-                    partialRegisterInputView.showLoginEmailView(email)
-                    emailPhoneEditText.setText(email)
-                    passwordEditText.setText(pw)
-                    presenter.login(email, pw)
-                    activity?.let {
-                        analytics.eventClickLoginButton(it.applicationContext)
-                    }
-                }
+                LoginActivity.METHOD_EMAIL -> onLoginEmailClick()
                 else -> showSmartLock()
             }
         } else {
@@ -300,6 +282,23 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         }
 
         presenter.getTickerInfo()
+    }
+
+    private fun clearData() {
+        userSession.logoutSession()
+    }
+
+    private fun onLoginEmailClick() {
+        val email = arguments!!.getString(AUTO_LOGIN_EMAIL, "")
+        val pw = arguments!!.getString(AUTO_LOGIN_PASS, "")
+        partialRegisterInputView.showLoginEmailView(email)
+        emailPhoneEditText.setText(email)
+        passwordEditText.setText(pw)
+        presenter.loginEmail(email, pw)
+        activity?.let {
+            analytics.eventClickLoginEmailButton(it.applicationContext)
+        }
+
     }
 
     private fun showSmartLock() {
@@ -327,7 +326,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     private fun prepareView() {
-        emailPhoneEditText.setOnEditorActionListener { textView, id, keyEvent ->
+        emailPhoneEditText.setOnEditorActionListener { _, id, _ ->
             if (id == EditorInfo.IME_ACTION_DONE) {
                 showLoadingLogin()
                 analytics.trackClickOnNext()
@@ -347,11 +346,10 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
         passwordEditText.setOnEditorActionListener { textView, id, keyEvent ->
             if (id == EditorInfo.IME_ACTION_DONE) {
-                actionLoginMethod = LoginRegisterAnalytics.ACTION_LOGIN_EMAIL
-                presenter.login(emailPhoneEditText.text.toString().trim(),
+                presenter.loginEmail(emailPhoneEditText.text.toString().trim(),
                         passwordEditText.text.toString())
                 activity?.let {
-                    analytics.eventClickLoginButton(it.applicationContext)
+                    analytics.eventClickLoginEmailButton(it.applicationContext)
                     KeyboardHandler.hideSoftKeyboard(it)
                 }
                 performanceMonitoring = PerformanceMonitoring.start(LOGIN_SUBMIT_TRACE)
@@ -361,7 +359,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             }
         }
 
-        partialRegisterInputView.findViewById<TextView>(R.id.change_button).setOnClickListener { it ->
+        partialRegisterInputView.findViewById<TextView>(R.id.change_button).setOnClickListener {
             val email = emailPhoneEditText.text.toString()
             onChangeButtonClicked()
             emailPhoneEditText.setText(email)
@@ -414,21 +412,22 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     private fun goToForgotPassword() {
-        (activity?.applicationContext as? LoginRegisterRouter)?.run {
-            val intent = getForgotPasswordIntent(activity, emailPhoneEditText.text.toString().trim())
-            intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
-            startActivity(intent)
-            analytics.eventClickForgotPasswordFromLogin(activity!!.applicationContext)
-        }
+
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.FORGOT_PASSWORD)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, emailPhoneEditText.text.toString().trim())
+        intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
+        startActivity(intent)
+        analytics.eventClickForgotPasswordFromLogin(activity!!.applicationContext)
+
     }
 
-    override fun onSuccessDiscoverLogin(listProvider: ArrayList<DiscoverItemViewModel>) {
+    override fun onSuccessDiscoverLogin(providers: ArrayList<DiscoverItemViewModel>) {
 
         val layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
         layoutParams.setMargins(0, 20, 0, 15)
         loginButtonsContainer.removeAllViews()
-        listProvider.forEach {
+        providers.forEach {
             val tv = LoginTextView(activity, MethodChecker.getColor(context, R.color.white))
             tv.tag = it.id
             tv.setText(it.name)
@@ -451,17 +450,11 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             tv.setOnClickListener { onLoginFacebookClick() }
         } else if (discoverItemViewModel.id.equals(GPLUS, ignoreCase = true)) {
             tv.setOnClickListener { onLoginGoogleClick() }
-        } else run {
-            tv.setOnClickListener { v ->
-                onLoginWebviewClick(discoverItemViewModel.name,
-                        discoverItemViewModel.url)
-            }
         }
     }
 
     private fun onLoginGoogleClick() {
         if (activity != null) {
-            actionLoginMethod = LoginRegisterAnalytics.ACTION_LOGIN_GOOGLE
 
             analytics.eventClickLoginGoogle(activity!!.applicationContext)
 
@@ -473,29 +466,9 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     private fun onLoginFacebookClick() {
         if (activity != null) {
-            actionLoginMethod = LoginRegisterAnalytics.ACTION_LOGIN_FACEBOOK
-
             analytics.eventClickLoginFacebook(activity!!.applicationContext)
             presenter.getFacebookCredential(this, callbackManager)
         }
-    }
-
-    private fun onLoginWebviewClick(name: String, url: String) {
-
-        actionLoginMethod = LoginRegisterAnalytics.ACTION_LOGIN_WEBVIEW + name
-        analytics.eventClickLoginWebview(name)
-
-        if (fragmentManager != null && activity != null) {
-            val fragmentTransaction = fragmentManager!!.beginTransaction()
-            val newFragment = WebViewLoginFragment.createInstance(url, name)
-            newFragment.setTargetFragment(this, REQUEST_LOGIN_WEBVIEW)
-            fragmentTransaction.add(newFragment, "dialog")
-            fragmentTransaction.commitAllowingStateLoss()
-
-            activity!!.window.setSoftInputMode(
-                    WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
-        }
-
     }
 
     override fun getFacebookCredentialListener(): GetFacebookCredentialSubscriber.GetFacebookCredentialListener {
@@ -503,7 +476,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
             override fun onErrorGetFacebookCredential(e: Exception) {
                 if (isAdded && activity != null) {
-                    NetworkErrorHelper.showSnackbar(activity, ErrorHandler.getErrorMessage(context, e))
+                    onErrorLogin(ErrorHandler.getErrorMessage(context, e))
                 }
             }
 
@@ -568,123 +541,76 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         }.showRetrySnackbar()
     }
 
-    override fun getLoginRouter(): LoginSuccessRouter {
-        return object : LoginSuccessRouter {
-            override fun onGoToActivationPage(email: String) {
-                val intent = ActivationActivity.getCallingIntent(activity,
-                        email, passwordEditText.text.toString())
-                startActivityForResult(intent, REQUEST_ACTIVATE_ACCOUNT)
-            }
-
-            override fun onForbidden() {
-                ForbiddenActivity.startActivity(activity)
-            }
-
-            override fun onErrorLogin(errorMessage: String) {
-                dismissLoadingLogin()
-                NetworkErrorHelper.showSnackbar(activity, errorMessage)
-            }
-
-            override fun onGoToCreatePasswordPage(info: GetUserInfoData) {
-                if (activity != null) {
-                    val intent = (activity!!.applicationContext as ApplinkRouter).getApplinkIntent(activity, ApplinkConst.CREATE_PASSWORD)
-                    intent.putExtra("name", info.fullName)
-                    intent.putExtra("user_id", info.userId.toString())
-                    startActivityForResult(intent, REQUESTS_CREATE_PASSWORD)
-                }
-            }
-
-            override fun onGoToPhoneVerification() {
-                if (activity != null) {
-                    val intent = (activity!!.applicationContext as ApplinkRouter)
-                            .getApplinkIntent(activity, ApplinkConst.PHONE_VERIFICATION)
-                    startActivityForResult(intent, REQUEST_VERIFY_PHONE)
-                }
-            }
-
-            override fun onGoToSecurityQuestion(securityPojo: SecurityPojo, fullName: String, email: String, phone: String) {
-                val intent = VerificationActivity.getShowChooseVerificationMethodIntent(
-                        activity, RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION, phone, email)
-                startActivityForResult(intent, REQUEST_SECURITY_QUESTION)
-            }
-
-            override fun logUnknownError(message: Throwable) {
-                try {
-                    Crashlytics.logException(message)
-                } catch (e: IllegalStateException) {
-                    e.printStackTrace()
-                }
-
-            }
-        }
-    }
-
     override fun onSuccessLogin() {
+        dismissLoadingLogin()
+
+        if (emailPhoneEditText.text.isNotBlank())
+            userSession.autofillUserData = emailPhoneEditText.text.toString()
+
         if (activity != null) {
             activity!!.setResult(Activity.RESULT_OK)
             activity!!.finish()
 
-            analytics.eventSuccessLogin(actionLoginMethod)
-            (activity!!.applicationContext as LoginRegisterRouter).setTrackingUserId(userSession.userId, activity!!.applicationContext)
-            (activity!!.applicationContext as LoginRegisterRouter).onLoginSuccess()
+            analytics.eventSuccessLogin(userSession.loginMethod, registerAnalytics)
+            setTrackingUserId(userSession.userId)
+            setFCM()
         }
     }
 
-    override fun onErrorLogin(errorMessage: String?) {
-        if (!TextUtils.isEmpty(actionLoginMethod)) {
-            analytics.eventFailedLogin(actionLoginMethod)
+    private fun setFCM() {
+        CMPushNotificationManager.instance
+                .refreshFCMTokenFromForeground(userSession.deviceId, true)
+    }
+
+    private fun setTrackingUserId(userId: String) {
+        try {
+            TkpdAppsFlyerMapper.getInstance(activity?.applicationContext).mapAnalytics()
+            TrackApp.getInstance().gtm.pushUserId(userId)
+            if (!GlobalConfig.DEBUG && Crashlytics.getInstance() != null)
+                Crashlytics.setUserIdentifier(userId)
+
+            if (userSession.isLoggedIn) {
+                val userData = UserData()
+                userData.userId = userSession.userId
+                userData.email = userSession.email
+                userData.phoneNumber = userSession.phoneNumber
+
+                //Identity Event
+                LinkerManager.getInstance().sendEvent(
+                        LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_IDENTITY, userData))
+
+                //Login Event
+                LinkerManager.getInstance().sendEvent(
+                        LinkerUtils.createGenericRequest(LinkerConstants.EVENT_LOGIN_VAL, userData))
+            }
+
+            if (::mIris.isInitialized) {
+                mIris.setUserId(userId)
+                mIris.setDeviceId(userSession.deviceId)
+            }
+
+            TrackApp.getInstance().moEngage.setMoEUserAttributesLogin(
+                    userSession.userId,
+                    userSession.name,
+                    userSession.email,
+                    userSession.phoneNumber,
+                    userSession.isGoldMerchant,
+                    userSession.shopName,
+                    userSession.shopId,
+                    userSession.hasShop(),
+                    LoginRegisterAnalytics.LABEL_EMAIL
+            )
+
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
+    }
+
+    fun onErrorLogin(errorMessage: String?) {
+        analytics.eventFailedLogin(userSession.loginMethod)
 
         dismissLoadingLogin()
         NetworkErrorHelper.showSnackbar(activity, errorMessage)
-    }
-
-    override fun onSuccessLoginSosmed(loginMethod: String?) {
-        dismissLoadingLogin()
-
-        analytics.trackEventSuccessLoginSosmed(loginMethod)
-        TrackApp.getInstance().moEngage.setMoEUserAttributesLogin(
-                userSession.userId,
-                userSession.name,
-                userSession.email,
-                userSession.phoneNumber,
-                userSession.isGoldMerchant,
-                userSession.shopName,
-                userSession.shopId,
-                userSession.hasShop(),
-                loginMethod
-        )
-        onSuccessLogin()
-    }
-
-    private fun onSuccessLoginPhoneNumber() {
-        actionLoginMethod = "phone"
-        dismissLoadingLogin()
-
-        analytics.trackLoginPhoneNumberSuccess()
-        analytics.eventSuccessLogin(actionLoginMethod)
-
-        TrackApp.getInstance().moEngage.setMoEUserAttributesLogin(
-                userSession.userId,
-                userSession.name,
-                userSession.email,
-                userSession.phoneNumber,
-                userSession.isGoldMerchant,
-                userSession.shopName,
-                userSession.shopId,
-                userSession.hasShop(),
-                actionLoginMethod
-        )
-
-        if(emailPhoneEditText.text.isNotBlank())
-            userSession.autofillUserData = emailPhoneEditText.text.toString()
-
-        onSuccessLogin()
-    }
-
-    override fun onErrorLoginSosmed(loginMethodName: String, errorMessage: String) {
-        analytics.trackEventFailedLoginSosmed(loginMethodName)
-        onErrorLogin(errorMessage)
     }
 
     override fun isFromRegister(): Boolean {
@@ -710,15 +636,19 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     override fun goToLoginPhoneVerifyPage(phoneNumber: String) {
+        userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
+
         analytics.trackLoginPhoneNumber()
         activity?.let {
             val intent = VerificationActivity.getShowChooseVerificationMethodIntent(it,
                     RequestOtpUseCase.OTP_TYPE_LOGIN_PHONE_NUMBER, phoneNumber, "")
             startActivityForResult(intent, REQUEST_LOGIN_PHONE)
         }
+
     }
 
     override fun goToRegisterPhoneVerifyPage(phoneNumber: String) {
+        userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
 
         activity?.let {
             val intent = VerificationActivity.getShowChooseVerificationMethodIntent(
@@ -736,9 +666,9 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         dismissLoadingLogin()
         partialRegisterInputView.showLoginEmailView(email)
         partialActionButton.setOnClickListener {
-            presenter.login(email, passwordEditText.text.toString())
+            presenter.loginEmail(email, passwordEditText.text.toString())
             activity?.let {
-                analytics.eventClickLoginButton(it.applicationContext)
+                analytics.eventClickLoginEmailButton(it.applicationContext)
                 KeyboardHandler.hideSoftKeyboard(it)
             }
         }
@@ -784,19 +714,13 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         partialRegisterInputView.onErrorValidate(getString(resId))
     }
 
-    override fun onGoToAddName() {
-        if (activity != null) {
-            val intent = (activity!!.applicationContext as ApplinkRouter)
-                    .getApplinkIntent(activity, ApplinkConst.ADD_NAME_PROFILE)
-            startActivityForResult(intent, REQUEST_ADD_NAME)
-        }
-    }
-
     override fun setSmartLock() {
-        if (emailPhoneEditText.text.isNotBlank() && passwordEditText.text.isNotBlank()) {
-            saveSmartLock(SmartLockActivity.RC_SAVE_SECURITY_QUESTION,
-                    emailPhoneEditText.text.toString(),
-                    passwordEditText.text.toString())
+        passwordEditText.text?.let {
+            if (emailPhoneEditText.text.isNotBlank() && it.isNotBlank()) {
+                saveSmartLock(SmartLockActivity.RC_SAVE_SECURITY_QUESTION,
+                        emailPhoneEditText.text.toString(),
+                        it.toString())
+            }
         }
     }
 
@@ -812,26 +736,140 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         startActivityForResult(intent, REQUEST_SAVE_SMART_LOCK)
     }
 
-    override fun onSuccessLoginEmail() {
-        dismissLoadingLogin()
-        analytics.eventSuccessLoginEmail()
-        analytics.trackClickOnLoginButtonSuccess()
-        TrackApp.getInstance().moEngage.setMoEUserAttributesLogin(
-                userSession.userId,
-                userSession.name,
-                userSession.email,
-                userSession.phoneNumber,
-                userSession.isGoldMerchant,
-                userSession.shopName,
-                userSession.shopId,
-                userSession.hasShop(),
-                LoginRegisterAnalytics.LABEL_EMAIL
-        )
+    override fun onErrorLoginEmail(email: String): (Throwable) -> Unit {
+        return {
+            analytics.trackClickOnLoginButtonError()
+            stopTrace()
 
-        if(emailPhoneEditText.text.isNotBlank())
-            userSession.autofillUserData = emailPhoneEditText.text.toString()
+            if (isEmailNotActive(it, email)) {
+                onGoToActivationPage(email)
+            } else if (it is TokenErrorException && !it.errorDescription.isEmpty()) {
+                onErrorLogin(it.errorDescription)
+            } else {
+                ErrorHandlerSession.getErrorMessage(object : ErrorHandlerSession.ErrorForbiddenListener {
+                    override fun onForbidden() {
+                        onGoToForbiddenPage()
+                    }
 
-        onSuccessLogin()
+                    override fun onError(errorMessage: String) {
+                        onErrorLogin(errorMessage)
+
+                        context?.run {
+                            if (!TextUtils.isEmpty(it.message)
+                                    && errorMessage.contains(this.getString(R.string
+                                            .default_request_error_unknown))) {
+                                analytics.logUnknownError(it)
+                            }
+                        }
+
+                    }
+                }, it, context)
+            }
+        }
+    }
+
+    override fun onGoToForbiddenPage() {
+        ForbiddenActivity.startActivity(activity)
+    }
+
+    override fun onSuccessGetUserInfo(): (ProfilePojo) -> Unit {
+        return {
+
+            val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
+
+            if (it.profileInfo.fullName.contains(CHARACTER_NOT_ALLOWED)) {
+                onGoToChangeName()
+            } else {
+                onSuccessLogin()
+            }
+        }
+    }
+
+    override fun onErrorGetUserInfo(): (Throwable) -> Unit {
+        return {
+            onErrorLogin(ErrorHandlerSession.getErrorMessage(it, context, true))
+
+        }
+    }
+
+    override fun onGoToCreatePassword(): (String, String) -> Unit {
+        return { fullName: String, userId: String ->
+            val intent = RouteManager.getIntent(context, ApplinkConst.CREATE_PASSWORD)
+            intent.putExtra("name", fullName)
+            intent.putExtra("user_id", userId)
+            startActivityForResult(intent, REQUESTS_CREATE_PASSWORD)
+        }
+    }
+
+    override fun onGoToPhoneVerification(): () -> Unit {
+        return {
+            val intent = RouteManager.getIntent(context, ApplinkConst.PHONE_VERIFICATION)
+            startActivityForResult(intent, REQUEST_VERIFY_PHONE)
+        }
+    }
+
+    override fun onGoToActivationPage(email: String): (MessageErrorException) -> Unit {
+        return {
+            val intent = ActivationActivity.getCallingIntent(activity,
+                    email, passwordEditText.text.toString())
+            startActivityForResult(intent, REQUEST_ACTIVATE_ACCOUNT)
+        }
+    }
+
+    override fun onGoToSecurityQuestion(email: String): () -> Unit {
+        return {
+            val intent = VerificationActivity.getShowChooseVerificationMethodIntent(
+                    activity, RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION, "", email)
+            startActivityForResult(intent, REQUEST_SECURITY_QUESTION)
+        }
+    }
+
+    //Flow should not be possible
+    override fun onGoToActivationPageAfterRelogin(): (MessageErrorException) -> Unit {
+        return {
+            dismissLoadingLogin()
+            onErrorLogin(ErrorHandlerSession.getErrorMessage(it, context, false))
+        }
+    }
+
+    //Flow should not be possible
+    override fun onGoToSecurityQuestionAfterRelogin(): () -> Unit {
+        return {
+            dismissLoadingLogin()
+            onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW, context))
+        }
+    }
+
+    override fun onErrorReloginAfterSQ(validateToken: String): (Throwable) -> Unit {
+        return {
+            dismissLoadingLogin()
+            analytics.eventFailedLogin(userSession.loginMethod)
+            NetworkErrorHelper.createSnackbarWithAction(activity,
+                    ErrorHandlerSession.getErrorMessage(it, context, true)) {
+                presenter.reloginAfterSQ(validateToken)
+            }.showRetrySnackbar()
+        }
+    }
+
+    override fun onErrorLoginFacebook(email: String): (Throwable) -> Unit {
+        return {
+            onErrorLogin(ErrorHandlerSession.getErrorMessage(it, context, true))
+        }
+    }
+
+    override fun onErrorLoginGoogle(email: String?): (Throwable) -> Unit {
+        return {
+            onErrorLogin(ErrorHandlerSession.getErrorMessage(it, context, true))
+        }
+    }
+
+    protected fun isEmailNotActive(e: Throwable, email: String): Boolean {
+        val NOT_ACTIVATED = "belum diaktivasi"
+        return (e is TokenErrorException
+                && !e.errorDescription.isEmpty()
+                && e.errorDescription
+                .toLowerCase().contains(NOT_ACTIVATED)
+                && !TextUtils.isEmpty(email))
     }
 
     private fun goToChooseAccountPage(accessToken: String, phoneNumber: String) {
@@ -855,10 +893,10 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                     && data.extras!!.getString(SmartLockActivity.PASSWORD) != null) run {
                 emailPhoneEditText.setText(data.extras!!.getString(SmartLockActivity.USERNAME))
                 emailPhoneEditText.setSelection(emailPhoneEditText.text.length)
-                presenter.login(data.extras!!.getString(SmartLockActivity.USERNAME),
-                        data.extras!!.getString(SmartLockActivity.PASSWORD))
+                presenter.loginEmail(data.extras!!.getString(SmartLockActivity.USERNAME, ""),
+                        data.extras!!.getString(SmartLockActivity.PASSWORD, ""))
                 activity?.let {
-                    analytics.eventClickLoginButton(it.applicationContext)
+                    analytics.eventClickLoginEmailButton(it.applicationContext)
                 }
             } else if (requestCode == REQUEST_SMART_LOCK
                     && resultCode == SmartLockActivity.RC_READ
@@ -868,25 +906,36 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             } else if (requestCode == REQUEST_LOGIN_GOOGLE && data != null) run {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(data)
                 handleGoogleSignInResult(task)
-            } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
-                onSuccessLogin()
+            } else if (requestCode == REQUEST_SECURITY_QUESTION
+                    && resultCode == Activity.RESULT_OK
+                    && data != null
+                    && data.extras != null
+                    && data.extras!!.getString(ApplinkConstInternalGlobal.PARAM_UUID) != null) {
+                val validateToken = data.extras!!.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
+                presenter.reloginAfterSQ(validateToken)
             } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_CANCELED) {
                 dismissLoadingLogin()
                 activity!!.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
                 onSuccessLogin()
             } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_CANCELED) {
+                analytics.eventFailedLogin(userSession.loginMethod)
                 dismissLoadingLogin()
                 activity!!.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_OK) {
                 onSuccessLogin()
             } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_CANCELED) {
+                analytics.eventFailedLogin(userSession.loginMethod)
                 dismissLoadingLogin()
                 activity!!.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUEST_VERIFY_PHONE) {
                 onSuccessLogin()
-            } else if (requestCode == REQUEST_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
-                goToAddName()
+            } else if (requestCode == REQUEST_REGISTER_PHONE
+                    && resultCode == Activity.RESULT_OK && data != null
+                    && data.extras != null) {
+                val uuid = data.extras!!.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
+                val msisdn = data.extras!!.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
+                goToAddNameFromRegisterPhone(uuid, msisdn)
             } else if (requestCode == REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
                 startActivityForResult(WelcomePageActivity.newInstance(activity),
                         REQUEST_WELCOME_PAGE)
@@ -894,8 +943,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 if (resultCode == Activity.RESULT_OK) {
                     goToProfileCompletionPage()
                 } else {
-                    activity!!.setResult(Activity.RESULT_OK)
-                    activity!!.finish()
+                    onSuccessLogin()
                 }
             } else if (requestCode == REQUEST_LOGIN_PHONE
                     && resultCode == Activity.RESULT_OK
@@ -907,7 +955,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                     goToChooseAccountPage(accessToken, phoneNumber)
                 }
             } else if (requestCode == REQUEST_CHOOSE_ACCOUNT && resultCode == Activity.RESULT_OK) {
-                onSuccessLoginPhoneNumber()
+                onSuccessLogin()
             } else if (requestCode == REQUEST_LOGIN_PHONE
                     || requestCode == REQUEST_CHOOSE_ACCOUNT) {
                 analytics.trackLoginPhoneNumberFailed()
@@ -919,6 +967,14 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         }
     }
 
+    private fun goToAddNameFromRegisterPhone(uuid: String, msisdn: String) {
+        val applink = ApplinkConstInternalGlobal.ADD_NAME_REGISTER
+        val intent = RouteManager.getIntent(context, applink)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, msisdn)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, uuid)
+        startActivityForResult(intent, REQUEST_ADD_NAME_REGISTER_PHONE)
+    }
+
     /**
      * Please refer to the
      * [class reference for][com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes]
@@ -926,13 +982,20 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     private fun handleGoogleSignInResult(completedTask: Task<GoogleSignInAccount>) {
         try {
             val account = completedTask.getResult(ApiException::class.java)
-            val accessToken = account!!.idToken
-            val email = account.email
-            presenter.loginGoogle(accessToken, email)
+            if (account != null && account.idToken != null) {
+                val accessToken: String = account.idToken!!
+                val email = account.email
+                if (email != null) {
+                    presenter.loginGoogle(accessToken, email)
+                } else {
+                    onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.EMPTY_EMAIL, context))
+                }
+            } else {
+                onErrorLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(ErrorHandlerSession.ErrorCode.EMPTY_ACCESS_TOKEN, context))
+            }
         } catch (e: ApiException) {
-            onErrorLoginSosmed(LoginRegisterAnalytics.GOOGLE,
-                    String.format(getString(R.string.loginregister_failed_login_google),
-                            e.statusCode.toString())
+            onErrorLogin(String.format(getString(R.string.loginregister_failed_login_google),
+                    e.statusCode.toString())
             )
         }
 
@@ -940,35 +1003,20 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     private fun goToProfileCompletionPage() {
         if (activity != null) {
-            (activity!!.applicationContext as ApplinkRouter).goToApplinkActivity(activity, ApplinkConst.PROFILE_COMPLETION)
+            RouteManager.route(context, ApplinkConst.PROFILE_COMPLETION)
         }
     }
 
-    private fun goToAddName() {
+    private fun onGoToChangeName() {
         if (activity != null) {
-            var applink = ApplinkConst.ADD_NAME_REGISTER
-            applink = applink.replace("{phone}", emailPhoneEditText.text.toString())
-            val intent = (activity!!.applicationContext as ApplinkRouter).getApplinkIntent(activity, applink)
-            startActivityForResult(intent, REQUEST_ADD_NAME_REGISTER_PHONE)
+            val intent = RouteManager.getIntent(context, ApplinkConst.ADD_NAME_PROFILE)
+            startActivityForResult(intent, REQUEST_ADD_NAME)
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
-    }
-
-
-    override fun setAutoCompleteAdapter(listId: ArrayList<String>?) {
-        //NOT IMPLEMENTED
-    }
-
-    override fun disableArrow() {
-        //NOT IMPLEMENTED
-    }
-
-    override fun enableArrow() {
-        //NOT IMPLEMENTED
     }
 
     override fun onBackPressed() {
@@ -1029,7 +1077,9 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         }
     }
 
-    override fun onErrorGetTickerInfo(error: String) {}
+    override fun onErrorGetTickerInfo(error: Throwable) {
+        error.printStackTrace()
+    }
 
     private fun getTickerType(hexColor: String): Int {
         return when (hexColor) {

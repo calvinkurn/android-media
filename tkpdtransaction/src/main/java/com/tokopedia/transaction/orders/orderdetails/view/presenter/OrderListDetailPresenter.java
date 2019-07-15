@@ -82,8 +82,9 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     String fromPayment = null;
     String orderId;
 
-    private String Insurance_File_Name = "E-policy Asuransi";
+    private String Insurance_File_Name = "Invoice";
     public String pdfUri = " ";
+    private boolean isdownloadable = false;
 
     @Inject
     public OrderListDetailPresenter(GraphqlUseCase orderDetailsUseCase) {
@@ -190,6 +191,13 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                                     } else {
                                         view.setActionButton(position, actionButtonList);
                                     }
+                            }
+                        } else {
+                            if (response != null) {
+                                ActionButtonList data = response.getData(ActionButtonList.class);
+                                actionButtonList = data.getActionButtonList();
+                                if (actionButtonList != null && actionButtonList.size() > 0)
+                                getView().setActionButtons(actionButtonList);
                             }
                         }
                     }
@@ -366,7 +374,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     }
 
 
-    public void updateOrderCancelReason(String cancelReason, String orderId, int cancelOrReplacement, String url) {
+    public void updateOrderCancelReason(String cancelReason, String orderId,
+                                        int cancelOrReplacement, String url) {
         if (getView() == null || getView().getAppContext() == null)
             return;
 
@@ -506,16 +515,25 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         });
         downloadHelper.downloadFile(this::isdownloadable);
     }
-
-    private Boolean isdownloadable(String uri ){
+    private Boolean isdownloadable(String uri ) {
         Pattern pattern = Pattern.compile("^.+\\.([pP][dD][fF])$");
         Matcher matcher = pattern.matcher(uri);
-        return matcher.find();
+        return (matcher.find() || this.isdownloadable);
     }
 
     public void sendThankYouEvent(MetaDataInfo metaDataInfo) {
         if ("true".equalsIgnoreCase(this.fromPayment)) {
             orderListAnalytics.sendThankYouEvent(metaDataInfo.getEntityProductId(), metaDataInfo.getEntityProductName(), metaDataInfo.getTotalTicketPrice(), metaDataInfo.getTotalTicketCount(), orderId);
+        }
+    }
+
+    public void setDownloadableFlag(boolean isdownloadable) {
+        this.isdownloadable = isdownloadable;
+    }
+
+    public void setDownloadableFileName(String fileName) {
+        if (!TextUtils.isEmpty(fileName)) {
+            Insurance_File_Name = fileName;
         }
     }
 }
