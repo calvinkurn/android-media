@@ -110,10 +110,10 @@ class SubmitPostService : JobIntentService() {
             }
 
             override fun getFailedIntent(errorMessage: String): PendingIntent {
-                val message = if (!errorMessage.contains(context.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown_short), false))
-                    errorMessage
-                else
+                val message = if (errorMessage.contains(context.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown_short), false))
                     context.getString(R.string.af_error_create_post)
+                else
+                    errorMessage
 
 
                 val applink = if (authorType == TYPE_AFFILIATE) {
