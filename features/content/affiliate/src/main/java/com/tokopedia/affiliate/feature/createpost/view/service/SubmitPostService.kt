@@ -77,7 +77,8 @@ class SubmitPostService : JobIntentService() {
                 if (isTypeAffiliate(viewModel.authorType)) userSession.userId
                 else userSession.shopId,
                 viewModel.caption,
-                viewModel.fileImageList.map { it.path to it.type },
+                (if (viewModel.fileImageList.isEmpty()) viewModel.urlImageList
+                else viewModel.fileImageList).map { it.path to it.type },
                 if (isTypeAffiliate(viewModel.authorType)) viewModel.adIdList
                 else viewModel.productIdList
         ), getSubscriber())

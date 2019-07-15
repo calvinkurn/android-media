@@ -19,5 +19,5 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            tools:text="@string/another_product_title"/>
+            tools:text="@string/recom_another_product_title"/>
 </android.support.constraint.ConstraintLayout>

@@ -9,6 +9,5 @@
     <string name="hello_label_static">sudah siap</string>
     <string name="hello_user_name">Hore! <![CDATA[<b>%1$s</b>]]>, tokomu</string>
     <string name="message_advice_search_postal_code">Untuk mempersingkat waktu, isi dengan kode pos tujuan pengiriman</string>
-
-
+    <string name="message_no_result_address">Tidak menemukan data, harap mencari berdasarkan kota, kabupaten atau kecamatan Anda</string>
 </resources>

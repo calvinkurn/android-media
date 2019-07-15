@@ -12,7 +12,7 @@ import com.tokopedia.webview.BaseSessionWebViewFragment;
  */
 @DeepLink(ApplinkConst.SELLER_CENTER)
 public class SellerCenterActivity extends BaseSimpleActivity {
-    private static final String SELLER_CENTER_URL = "https://seller.tokopedia.com/";
+    private static final String SELLER_CENTER_URL = "https://seller.tokopedia.com/edu/";
 
     @Override
     protected Fragment getNewFragment() {
