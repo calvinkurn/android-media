@@ -1,7 +1,6 @@
 package com.tokopedia.shop.open.view.fragment;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -36,7 +35,6 @@ import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress;
-import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.common.widget.PrefixEditText;
 import com.tokopedia.shop.open.R;
 import com.tokopedia.shop.open.analytic.ShopOpenTracking;
@@ -239,18 +237,6 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
 
             }
         };
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    protected void onAttachListener(Context context) {
-        super.onAttachListener(context);
-        if (context.getApplicationContext() instanceof LogisticRouter) {
-        }
     }
 
     @Override
