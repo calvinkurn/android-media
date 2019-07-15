@@ -10,9 +10,6 @@ class PromoCheckoutLastSeenModel(
         @SerializedName("id")
         @Expose
         val id: Int,
-        @SerializedName("img_url")
-        @Expose
-        val urlBannerPromo: String,
         @SerializedName("title")
         @Expose
         val title: String,
@@ -21,11 +18,10 @@ class PromoCheckoutLastSeenModel(
         val subtitle: String,
         @SerializedName("promo_code")
         @Expose
-        val promoCode: String,
-        var voucherCodeCopied: Boolean = false
+        val promoCode: String
 ) {
         class Response(
-                @SerializedName("promoModels")
+                @SerializedName("rechargePromoBanner")
                 @Expose
                 var promoModels: List<PromoCheckoutLastSeenModel> = listOf()
         )

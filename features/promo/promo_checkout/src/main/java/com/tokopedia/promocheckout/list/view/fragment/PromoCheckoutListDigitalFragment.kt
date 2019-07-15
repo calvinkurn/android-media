@@ -23,20 +23,20 @@ import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailDigit
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListModule
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListMarketplaceContract
-import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListMarketplacePresenter
 import kotlinx.android.synthetic.main.fragment_promo_checkout_list.*
 import com.tokopedia.promocheckout.list.di.DaggerPromoCheckoutListComponent
+import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListDigitalContract
+import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListDigitalPresenter
 import javax.inject.Inject
 
-class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), PromoCheckoutListMarketplaceContract.View {
+class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), PromoCheckoutListDigitalContract.View {
 
     @Inject
-    lateinit var promoCheckoutListMarketplacePresenter: PromoCheckoutListMarketplacePresenter
+    lateinit var promoCheckoutListDigitalPresenter: PromoCheckoutListDigitalPresenter
 
     @Inject
     lateinit var trackingPromoCheckoutUtil: TrackingPromoCheckoutUtil
 
-    private var isOneClickShipment: Boolean = false
     lateinit var progressDialog: ProgressDialog
     var pageTracking: Int = 1
     private var promo: Promo? = null
@@ -46,11 +46,10 @@ class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), PromoC
     override fun onCreate(savedInstanceState: Bundle?) {
         isCouponActive = arguments?.getBoolean(IS_COUPON_ACTIVE) ?: true
         promoCode = arguments?.getString(PROMO_CODE) ?: ""
-        isOneClickShipment = arguments?.getBoolean(ONE_CLICK_SHIPMENT) ?: false
         pageTracking = arguments?.getInt(PAGE_TRACKING) ?: 1
         promo = arguments?.getParcelable(CHECK_PROMO_FIRST_STEP_PARAM)
         super.onCreate(savedInstanceState)
-        promoCheckoutListMarketplacePresenter.attachView(this)
+        promoCheckoutListDigitalPresenter.attachView(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -67,11 +66,11 @@ class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), PromoC
             trackingPromoCheckoutUtil.checkoutClickCoupon(promoCheckoutListModel?.code ?: "")
         }
         startActivityForResult(PromoCheckoutDetailDigitalActivity.createIntent(
-                activity, promoCheckoutListModel?.code, oneClickShipment = isOneClickShipment, pageTracking = pageTracking, promo = promo), REQUEST_CODE_DETAIL_PROMO)
+                activity, promoCheckoutListModel?.code, pageTracking = pageTracking, promo = promo), REQUEST_CODE_DETAIL_PROMO)
     }
 
     override fun onPromoCodeUse(promoCode: String) {
-        promoCheckoutListMarketplacePresenter.checkPromoStackingCode(promoCode, isOneClickShipment, promo)
+        promoCheckoutListDigitalPresenter.checkPromoStackingCode(promoCode, promo)
     }
 
     override fun showProgressLoading() {
@@ -161,7 +160,7 @@ class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), PromoC
     }
 
     override fun onDestroyView() {
-        promoCheckoutListMarketplacePresenter.detachView()
+        promoCheckoutListDigitalPresenter.detachView()
         super.onDestroyView()
     }
 
@@ -169,17 +168,15 @@ class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), PromoC
         val REQUEST_CODE_DETAIL_PROMO = 231
         val IS_COUPON_ACTIVE = "IS_COUPON_ACTIVE"
         val PROMO_CODE = "PROMO_CODE"
-        val ONE_CLICK_SHIPMENT = "ONE_CLICK_SHIPMENT"
         val PAGE_TRACKING = "PAGE_TRACKING"
         val CHECK_PROMO_FIRST_STEP_PARAM = "CHECK_PROMO_FIRST_STEP_PARAM"
 
-        fun createInstance(isCouponActive: Boolean?, promoCode: String?, oneClickShipment: Boolean?, pageTracking: Int,
+        fun createInstance(isCouponActive: Boolean?, promoCode: String?, pageTracking: Int,
                            promo: Promo): PromoCheckoutListDigitalFragment {
             val promoCheckoutListMarketplaceFragment = PromoCheckoutListDigitalFragment()
             val bundle = Bundle()
             bundle.putBoolean(IS_COUPON_ACTIVE, isCouponActive ?: true)
             bundle.putString(PROMO_CODE, promoCode ?: "")
-            bundle.putBoolean(ONE_CLICK_SHIPMENT, oneClickShipment ?: false)
             bundle.putInt(PAGE_TRACKING, pageTracking)
             bundle.putParcelable(CHECK_PROMO_FIRST_STEP_PARAM, promo)
             promoCheckoutListMarketplaceFragment.arguments = bundle

@@ -227,7 +227,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     }
 
     protected void renderBaseCart(CartDigitalInfoData cartDigitalInfoData) {
-        setHachikoPromoVisibility(cartDigitalInfoData);
+        setPromoTickerVisibility(cartDigitalInfoData);
 
         renderCartInfo(cartDigitalInfoData);
 
@@ -272,16 +272,11 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         getView().renderAdditionalInfo(new ArrayList<>(cartDigitalInfoData.getAdditionalInfos()));
     }
 
-    private void setHachikoPromoVisibility(CartDigitalInfoData cartDigitalInfoData) {
+    private void setPromoTickerVisibility(CartDigitalInfoData cartDigitalInfoData) {
         if (cartDigitalInfoData.getAttributes().isEnableVoucher()) {
-            getView().renderHachikoCart();
-            if (cartDigitalInfoData.getAttributes().isCouponActive() == COUPON_ACTIVE) {
-                getView().renderHachikoPromoAndCouponLabel();
-            } else {
-                getView().renderHachikoPromoLabelOnly();
-            }
+            getView().renderPromoTicker();
         } else {
-            getView().hideHachikoCart();
+            getView().hidePromoTicker();
         }
     }
 
@@ -396,7 +391,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     }
 
     private void renderVoucherInfoData(VoucherDigital voucherDigital) {
-        getView().renderHachikoVoucher(
+        getView().renderPromoVoucher(
                 voucherDigital.getAttributeVoucher().getVoucherCode(),
                 voucherDigital.getAttributeVoucher().getMessage());
         renderIfHasDiscount(voucherDigital);
@@ -435,7 +430,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     }
 
     private void renderCouponInfoData(VoucherDigital voucherDigital) {
-        getView().renderHachikoCoupon(
+        getView().renderPromoCoupon(
                 voucherDigital.getAttributeVoucher().getTitle(),
                 voucherDigital.getAttributeVoucher().getMessage(),
                 voucherDigital.getAttributeVoucher().getVoucherCode()
@@ -460,17 +455,16 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
                 getView().navigateToCouponNotActive(passData.getCategoryId());
             }
         } else {
-            getView().hideHachikoCart();
+            getView().hidePromoTicker();
         }
     }
 
     @Override
-    public void onReceiveVoucherCode(String code, String message, long discount, int isCoupon) {
+    public void onReceiveVoucherCode(String code, String message, int isCoupon) {
         if (isViewAttached()){
             VoucherDigital voucherDigital = new VoucherDigital();
             VoucherAttributeDigital voucherAttributeDigital = new VoucherAttributeDigital();
             voucherAttributeDigital.setVoucherCode(code);
-            voucherAttributeDigital.setDiscountAmountPlain(discount);
             voucherAttributeDigital.setMessage(message);
             voucherAttributeDigital.setIsCoupon(isCoupon);
             voucherDigital.setAttributeVoucher(voucherAttributeDigital);
@@ -479,14 +473,13 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     }
 
     @Override
-    public void onReceiveCoupon(String couponTitle, String couponMessage, String couponCode, long couponDiscountAmount, int isCoupon) {
+    public void onReceiveCoupon(String couponTitle, String couponMessage, String couponCode, int isCoupon) {
         if (isViewAttached()){
             VoucherDigital voucherDigital = new VoucherDigital();
             VoucherAttributeDigital voucherAttributeDigital = new VoucherAttributeDigital();
             voucherAttributeDigital.setIsCoupon(isCoupon);
             voucherAttributeDigital.setTitle(couponTitle);
             voucherAttributeDigital.setVoucherCode(couponCode);
-            voucherAttributeDigital.setDiscountAmountPlain(couponDiscountAmount);
             voucherAttributeDigital.setMessage(couponMessage);
             voucherDigital.setAttributeVoucher(voucherAttributeDigital);
             renderCouponAndVoucher(voucherDigital);

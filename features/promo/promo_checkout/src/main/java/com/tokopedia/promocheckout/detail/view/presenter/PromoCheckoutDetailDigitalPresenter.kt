@@ -21,7 +21,7 @@ import rx.Subscriber
 class PromoCheckoutDetailDigitalPresenter(private val getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
                                           private val checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase,
                                           private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase) :
-        BaseDaggerPresenter<PromoCheckoutDetailContract.View>(), PromoCheckoutDetailContract.Presenter {
+        BaseDaggerPresenter<PromoCheckoutDetailContract.View>(), PromoCheckoutDetailDigitalContract.Presenter {
 
     private val paramGlobal = "global"
     private val statusOK = "OK"
@@ -60,9 +60,9 @@ class PromoCheckoutDetailDigitalPresenter(private val getDetailCouponMarketplace
 
     override fun validatePromoStackingUse(promoCode: String, promo: Promo?, isFromLoadDetail: Boolean) { }
 
-    override fun getDetailPromo(codeCoupon: String, oneClickShipment: Boolean, promo: Promo?) {
+    override fun getDetailPromo(codeCoupon: String, promo: Promo?) {
         view.showLoading()
-        getDetailCouponMarketplaceUseCase.execute(getDetailCouponMarketplaceUseCase.createRequestParams(codeCoupon, oneClickShipment = oneClickShipment),
+        getDetailCouponMarketplaceUseCase.execute(getDetailCouponMarketplaceUseCase.createRequestParams(codeCoupon),
                 object : Subscriber<GraphqlResponse>() {
 
                     override fun onError(e: Throwable) {

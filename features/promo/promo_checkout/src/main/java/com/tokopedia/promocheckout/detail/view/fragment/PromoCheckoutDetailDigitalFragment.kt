@@ -21,12 +21,11 @@ import javax.inject.Inject
 
 class PromoCheckoutDetailDigitalFragment : BasePromoCheckoutDetailFragment() {
     @Inject
-    lateinit var promoCheckoutDetailMarketplacePresenter: PromoCheckoutDetailDigitalPresenter
+    lateinit var promoCheckoutDetailDigitalPresenter: PromoCheckoutDetailDigitalPresenter
 
     @Inject
     lateinit var trackingPromoCheckoutUtil: TrackingPromoCheckoutUtil
 
-    private var isOneClickShipment: Boolean = false
     var pageTracking: Int = 1
     var promo: Promo? = null
     lateinit var progressDialog: ProgressDialog
@@ -35,7 +34,6 @@ class PromoCheckoutDetailDigitalFragment : BasePromoCheckoutDetailFragment() {
         super.onCreate(savedInstanceState)
         codeCoupon = arguments?.getString(EXTRA_KUPON_CODE, "") ?: ""
         isUse = arguments?.getBoolean(EXTRA_IS_USE, false) ?: false
-        isOneClickShipment = arguments?.getBoolean(ONE_CLICK_SHIPMENT, false) ?: false
         pageTracking = arguments?.getInt(PAGE_TRACKING, 1) ?: 1
         promo = arguments?.getParcelable(CHECK_PROMO_CODE_FIRST_STEP_PARAM)
     }
@@ -48,11 +46,11 @@ class PromoCheckoutDetailDigitalFragment : BasePromoCheckoutDetailFragment() {
 
     override fun loadData() {
         super.loadData()
-        promoCheckoutDetailMarketplacePresenter.getDetailPromo(codeCoupon, isOneClickShipment, promo)
+        promoCheckoutDetailDigitalPresenter.getDetailPromo(codeCoupon, promo = promo)
     }
 
     override fun onClickUse() {
-        promoCheckoutDetailMarketplacePresenter.validatePromoStackingUse(codeCoupon, promo, false)
+        promoCheckoutDetailDigitalPresenter.validatePromoStackingUse(codeCoupon, promo, false)
     }
 
     override fun onClickCancel() {
@@ -61,7 +59,7 @@ class PromoCheckoutDetailDigitalFragment : BasePromoCheckoutDetailFragment() {
         } else {
             trackingPromoCheckoutUtil.checkoutClickCancelPromoCoupon(codeCoupon)
         }
-        promoCheckoutDetailMarketplacePresenter.cancelPromo(codeCoupon)
+        promoCheckoutDetailDigitalPresenter.cancelPromo(codeCoupon)
     }
 
     override fun onSuccessValidatePromoStacking(data: DataUiModel) {
@@ -106,7 +104,7 @@ class PromoCheckoutDetailDigitalFragment : BasePromoCheckoutDetailFragment() {
                 .promoCheckoutDetailModule(PromoCheckoutDetailModule())
                 .build()
                 .inject(this)
-        promoCheckoutDetailMarketplacePresenter.attachView(this)
+        promoCheckoutDetailDigitalPresenter.attachView(this)
     }
 
     override fun hideProgressLoading() {
@@ -122,7 +120,7 @@ class PromoCheckoutDetailDigitalFragment : BasePromoCheckoutDetailFragment() {
     }
 
     override fun onDestroy() {
-        promoCheckoutDetailMarketplacePresenter.detachView()
+        promoCheckoutDetailDigitalPresenter.detachView()
         super.onDestroy()
     }
 
@@ -133,13 +131,12 @@ class PromoCheckoutDetailDigitalFragment : BasePromoCheckoutDetailFragment() {
         val PAGE_TRACKING = "PAGE_TRACKING"
         val CHECK_PROMO_CODE_FIRST_STEP_PARAM = "CHECK_PROMO_CODE_FIRST_STEP_PARAM"
 
-        fun createInstance(codeCoupon: String, isUse: Boolean, oneClickShipment: Boolean, pageTracking: Int,
+        fun createInstance(codeCoupon: String, isUse: Boolean, pageTracking: Int,
                            promo: Promo): PromoCheckoutDetailDigitalFragment {
             val promoCheckoutDetailFragment = PromoCheckoutDetailDigitalFragment()
             val bundle = Bundle()
             bundle.putString(EXTRA_KUPON_CODE, codeCoupon)
             bundle.putBoolean(EXTRA_IS_USE, isUse)
-            bundle.putBoolean(ONE_CLICK_SHIPMENT, oneClickShipment)
             bundle.putInt(PAGE_TRACKING, pageTracking)
             bundle.putParcelable(CHECK_PROMO_CODE_FIRST_STEP_PARAM, promo)
             promoCheckoutDetailFragment.arguments = bundle

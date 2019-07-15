@@ -23,19 +23,15 @@ public interface DigitalBaseContract {
 
         CartDigitalInfoData getCartInfoData();
 
-        void renderHachikoCart();
+        void renderPromoTicker();
 
-        void renderHachikoPromoAndCouponLabel();
+        void hidePromoTicker();
 
-        void renderHachikoPromoLabelOnly();
-
-        void hideHachikoCart();
-
-        void renderHachikoCoupon(String title, String message, String voucherCode);
+        void renderPromoCoupon(String title, String message, String voucherCode);
 
         void enableVoucherDiscount(long discountAmountPlain);
 
-        void renderHachikoVoucher(String voucherCode, String message);
+        void renderPromoVoucher(String voucherCode, String message);
 
         void renderDetailMainInfo(List<CartItemDigital> mainInfo);
 
@@ -123,12 +119,11 @@ public interface DigitalBaseContract {
 
         void onUseVoucherButtonClicked();
 
-        void onReceiveVoucherCode(String code, String message, long discount, int isCoupon);
+        void onReceiveVoucherCode(String code, String message, int isCoupon);
 
         void onReceiveCoupon(String couponTitle,
                              String couponMessage,
                              String couponCode,
-                             long couponDiscountAmount,
                              int isCoupon);
 
         void onClearVoucher();

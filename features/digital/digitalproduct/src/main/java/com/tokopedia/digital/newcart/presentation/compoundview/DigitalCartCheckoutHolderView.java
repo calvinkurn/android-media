@@ -11,15 +11,15 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.tokopedia.design.base.BaseCustomView;
-import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.digital.R;
+import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 
 public class DigitalCartCheckoutHolderView extends BaseCustomView {
 
-    private VoucherCartHachikoView voucherCartHachikoView;
+    private TickerCheckoutView promoTickerView;
     private AppCompatTextView totalPaymentTextView;
     private AppCompatButton checkoutButton;
     private LinearLayout checkoutContainer;
@@ -49,7 +49,7 @@ public class DigitalCartCheckoutHolderView extends BaseCustomView {
                 R.layout.view_digital_cart_checkout_holder, this, true
         );
 
-        voucherCartHachikoView = view.findViewById(R.id.voucher_cart_holder_view);
+        promoTickerView = view.findViewById(R.id.promo_ticker_view);
         totalPaymentTextView = view.findViewById(R.id.tv_total_payment);
         checkoutButton = view.findViewById(R.id.btn_checkout);
         checkoutContainer = view.findViewById(R.id.container_checkout);
@@ -72,28 +72,29 @@ public class DigitalCartCheckoutHolderView extends BaseCustomView {
         this.actionListener = actionListener;
     }
 
-    public void setVoucherActionListener(VoucherCartHachikoView.ActionListener voucherActionListener) {
-        voucherCartHachikoView.setActionListener(voucherActionListener);
+    public void setPromoTickerActionListener(TickerCheckoutView.ActionListener actionListener) {
+        promoTickerView.setActionListener(actionListener);
     }
 
-    public void showHachikoCart() {
-        voucherCartHachikoView.setVisibility(VISIBLE);
+    public void showPromoTicker() {
+        promoTickerView.setVisibility(VISIBLE);
     }
 
-    public void setHachikoPromoAndCouponLabel() {
-        voucherCartHachikoView.setPromoAndCouponLabel();
+//    public void setHachikoPromoAndCouponLabel() {
+//        voucherCartHachikoView.setPromoAndCouponLabel();
+//    }
+//
+//    public void setHachikoPromoLabelOnly() {
+//        voucherCartHachikoView.setPromoLabelOnly();
+//    }
+
+    public void hidePromoTicker() {
+        promoTickerView.setVisibility(GONE);
     }
 
-    public void setHachikoPromoLabelOnly() {
-        voucherCartHachikoView.setPromoLabelOnly();
-    }
-
-    public void hideHachikoCart() {
-        voucherCartHachikoView.setVisibility(GONE);
-    }
-
-    public void setHachikoCoupon(String title, String message, String voucherCode) {
-        voucherCartHachikoView.setCoupon(title, message, voucherCode);
+    public void setPromoInfo(String title, String message) {
+        promoTickerView.setTitle(title);
+        promoTickerView.setDesc(message);
     }
 
     public void enableVoucherDiscount(long voucherDiscount) {
@@ -121,10 +122,6 @@ public class DigitalCartCheckoutHolderView extends BaseCustomView {
         totalPaymentTextView.setText(getStringIdrFormat((double) pricePlain));
     }
 
-    public void setVoucher(String voucherCode, String message) {
-        voucherCartHachikoView.setVoucher(voucherCode, message);
-    }
-
 
     public void renderCheckout(long pricePlain) {
         this.pricePlain = pricePlain;
@@ -133,7 +130,7 @@ public class DigitalCartCheckoutHolderView extends BaseCustomView {
     }
 
     public int getVoucherViewHeight() {
-        return voucherCartHachikoView.getMeasuredHeight();
+        return promoTickerView.getMeasuredHeight();
     }
 
 
@@ -148,10 +145,6 @@ public class DigitalCartCheckoutHolderView extends BaseCustomView {
 
     public void disableCheckoutButton() {
         checkoutButton.setEnabled(false);
-    }
-
-    public String getVoucherCode() {
-        return voucherCartHachikoView.getVoucherCode();
     }
 
     public long getDiscountPricePlain() {
