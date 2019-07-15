@@ -21,10 +21,6 @@ class NormalCheckoutModule {
 
     @Provides
     @NormalCheckoutScope
-    fun providesGson(): Gson = Gson()
-
-    @Provides
-    @NormalCheckoutScope
     @Named("atcMutation")
     fun provideAddToCartMutation(@ApplicationContext context: Context):
             String = GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_to_cart)
