@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.atc_common.data.model.request.AddToCartRequest;
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase;
 import com.tokopedia.checkout.domain.datamodel.DeleteAndRefreshCartListData;
@@ -1208,6 +1208,8 @@ public class CartListPresenter implements ICartListPresenter {
 
     @Override
     public void processAddToCart(Object productModel) {
+        view.showProgressLoading();
+
         int productId = 0;
         int shopId = 0;
         String externalSource = "";
@@ -1215,30 +1217,29 @@ public class CartListPresenter implements ICartListPresenter {
             CartWishlistItemHolderData cartWishlistItemHolderData = (CartWishlistItemHolderData) productModel;
             productId = Integer.parseInt(cartWishlistItemHolderData.getId());
             shopId = Integer.parseInt(cartWishlistItemHolderData.getShopId());
-            externalSource = AddToCartRequest.Companion.getATC_FROM_WISHLIST();
+            externalSource = AddToCartRequestParams.Companion.getATC_FROM_WISHLIST();
         } else if (productModel instanceof CartRecentViewItemHolderData) {
             CartRecentViewItemHolderData cartRecentViewItemHolderData = (CartRecentViewItemHolderData) productModel;
             productId = Integer.parseInt(cartRecentViewItemHolderData.getId());
             shopId = Integer.parseInt(cartRecentViewItemHolderData.getShopId());
-            externalSource = AddToCartRequest.Companion.getATC_FROM_RECENT_VIEW();
+            externalSource = AddToCartRequestParams.Companion.getATC_FROM_RECENT_VIEW();
         } else if (productModel instanceof CartRecommendationItemHolderData) {
             CartRecommendationItemHolderData cartRecommendationItemHolderData = (CartRecommendationItemHolderData) productModel;
             productId = cartRecommendationItemHolderData.getRecommendationItem().getProductId();
             shopId = cartRecommendationItemHolderData.getRecommendationItem().getShopId();
-            externalSource = AddToCartRequest.Companion.getATC_FROM_RECOMMENDATION();
+            externalSource = AddToCartRequestParams.Companion.getATC_FROM_RECOMMENDATION();
         }
 
-        view.showProgressLoading();
-        AddToCartRequest addToCartRequest = new AddToCartRequest();
-        addToCartRequest.setProductId(productId);
-        addToCartRequest.setShopId(shopId);
-        addToCartRequest.setQuantity(0);
-        addToCartRequest.setNotes("");
-        addToCartRequest.setWarehouseId(0);
-        addToCartRequest.setAtcFromExternalSource(externalSource);
+        AddToCartRequestParams addToCartRequestParams = new AddToCartRequestParams();
+        addToCartRequestParams.setProductId(productId);
+        addToCartRequestParams.setShopId(shopId);
+        addToCartRequestParams.setQuantity(0);
+        addToCartRequestParams.setNotes("");
+        addToCartRequestParams.setWarehouseId(0);
+        addToCartRequestParams.setAtcFromExternalSource(externalSource);
 
         RequestParams requestParams = new RequestParams();
-        requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequest);
+        requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams);
         addToCartUseCase.createObservable(RequestParams.create())
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())

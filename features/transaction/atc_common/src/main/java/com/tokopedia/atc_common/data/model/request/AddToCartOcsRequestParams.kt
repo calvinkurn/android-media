@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
  * Created by Irfan Khoirul on 2019-07-15.
  */
 
-data class AddToCartParams(
+data class AddToCartOcsRequestParams(
         @SerializedName("product_id")
         var productId: Long,
 

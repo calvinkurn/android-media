@@ -1,7 +1,7 @@
 package com.tokopedia.atc_common.domain.usecase
 
 import com.google.gson.Gson
-import com.tokopedia.atc_common.data.model.request.AddToCartParams
+import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.response.AddToCartOcsGqlResponse
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
@@ -22,8 +22,8 @@ class AddToCartOneClickShipmentUseCase @Inject constructor(private val queryStri
 
     val variables = HashMap<String, Any?>()
 
-    fun setParams(params: AddToCartParams) {
-        val jsonTreeAtcRequest = gson.toJsonTree(params)
+    fun setParams(ocsRequestParams: AddToCartOcsRequestParams) {
+        val jsonTreeAtcRequest = gson.toJsonTree(ocsRequestParams)
         val jsonObjectAtcRequest = jsonTreeAtcRequest.asJsonObject
         variables["params"] = jsonObjectAtcRequest
     }

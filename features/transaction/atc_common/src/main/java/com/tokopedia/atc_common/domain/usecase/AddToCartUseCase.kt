@@ -1,6 +1,6 @@
 package com.tokopedia.atc_common.domain.usecase
 
-import com.tokopedia.atc_common.data.model.request.AddToCartRequest
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.data.model.response.AddToCartGqlResponse
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
@@ -35,26 +35,26 @@ class AddToCartUseCase @Inject constructor(private val queryString: String,
         private const val PARAM_IS_SCP = "#isSCP"
     }
 
-    private fun getParams(addToCartRequest: AddToCartRequest): String {
+    private fun getParams(addToCartRequestParams: AddToCartRequestParams): String {
         var stringQueryBuilder = StringBuilder(queryString)
-        stringQueryBuilder.replaceParam(stringQueryBuilder, PARAM_PRODUCT_ID, addToCartRequest.productId.toString())
-                .replaceParam(stringQueryBuilder, PARAM_SHOP_ID, addToCartRequest.shopId.toString())
-                .replaceParam(stringQueryBuilder, PARAM_QUANTITY, addToCartRequest.quantity.toString())
-                .replaceParam(stringQueryBuilder, PARAM_NOTES, addToCartRequest.notes)
-                .replaceParam(stringQueryBuilder, PARAM_LANG, addToCartRequest.lang)
-                .replaceParam(stringQueryBuilder, PARAM_ATTRIBUTION, addToCartRequest.attribution)
-                .replaceParam(stringQueryBuilder, PARAM_LIST_TRACKER, addToCartRequest.listTracker)
-                .replaceParam(stringQueryBuilder, PARAM_UC_PARAMS, addToCartRequest.ucParams)
-                .replaceParam(stringQueryBuilder, PARAM_WAREHOUSE_ID, addToCartRequest.warehouseId.toString())
-                .replaceParam(stringQueryBuilder, PARAM_ATC_FROM_EXTERNAL_SOURCE, addToCartRequest.atcFromExternalSource)
-                .replaceParam(stringQueryBuilder, PARAM_IS_SCP, addToCartRequest.isSCP.toString())
+        stringQueryBuilder.replaceParam(stringQueryBuilder, PARAM_PRODUCT_ID, addToCartRequestParams.productId.toString())
+                .replaceParam(stringQueryBuilder, PARAM_SHOP_ID, addToCartRequestParams.shopId.toString())
+                .replaceParam(stringQueryBuilder, PARAM_QUANTITY, addToCartRequestParams.quantity.toString())
+                .replaceParam(stringQueryBuilder, PARAM_NOTES, addToCartRequestParams.notes)
+                .replaceParam(stringQueryBuilder, PARAM_LANG, addToCartRequestParams.lang)
+                .replaceParam(stringQueryBuilder, PARAM_ATTRIBUTION, addToCartRequestParams.attribution)
+                .replaceParam(stringQueryBuilder, PARAM_LIST_TRACKER, addToCartRequestParams.listTracker)
+                .replaceParam(stringQueryBuilder, PARAM_UC_PARAMS, addToCartRequestParams.ucParams)
+                .replaceParam(stringQueryBuilder, PARAM_WAREHOUSE_ID, addToCartRequestParams.warehouseId.toString())
+                .replaceParam(stringQueryBuilder, PARAM_ATC_FROM_EXTERNAL_SOURCE, addToCartRequestParams.atcFromExternalSource)
+                .replaceParam(stringQueryBuilder, PARAM_IS_SCP, addToCartRequestParams.isSCP.toString())
 
         return stringQueryBuilder.toString()
     }
 
 
     override fun createObservable(requestParams: RequestParams?): Observable<AddToCartDataModel> {
-        val addToCartRequest = requestParams?.getObject(REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST) as AddToCartRequest
+        val addToCartRequest = requestParams?.getObject(REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST) as AddToCartRequestParams
 
         val graphqlRequest = GraphqlRequest(getParams(addToCartRequest), AddToCartGqlResponse::class.java)
         graphqlUseCase.addRequest(graphqlRequest)

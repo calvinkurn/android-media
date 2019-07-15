@@ -4,7 +4,7 @@ package com.tokopedia.atc_common.data.model.request
  * Created by Irfan Khoirul on 2019-07-10.
  */
 
-data class AddToCartRequest(
+data class AddToCartRequestParams(
         var productId: Long = 0,
         var shopId: Int = 0,
         var quantity: Int = 0,
