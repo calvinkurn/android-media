@@ -30,6 +30,7 @@ class AddToCartOneClickShipmentUseCase @Inject constructor(private val queryStri
 
     override fun createObservable(p0: RequestParams?): Observable<AddToCartDataModel> {
         val graphqlRequest = GraphqlRequest(queryString, AddToCartOcsGqlResponse::class.java, variables)
+        graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map {
             val addToCartGqlResponse = it.getData<AddToCartOcsGqlResponse>(AddToCartOcsGqlResponse::class.java)

@@ -57,6 +57,7 @@ class AddToCartUseCase @Inject constructor(private val queryString: String,
         val addToCartRequest = requestParams?.getObject(REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST) as AddToCartRequestParams
 
         val graphqlRequest = GraphqlRequest(getParams(addToCartRequest), AddToCartGqlResponse::class.java)
+        graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map {
             val addToCartGqlResponse = it.getData<AddToCartGqlResponse>(AddToCartGqlResponse::class.java)
