@@ -11,6 +11,7 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartWishlistItemHo
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
 import com.tokopedia.transactiondata.insurance.entity.request.InsuranceShopsData;
+import com.tokopedia.transactiondata.insurance.entity.request.UpdateInsuranceProductApplicationDetails;
 import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShops;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
@@ -30,7 +31,7 @@ public interface ICartListPresenter {
 
     void processInitialGetCartData(String cartId, boolean initialLoad, boolean forceInitialLoad);
 
-    void processDeleteCartItem(List<CartItemData> allCartItemData, List<CartItemData> removedCartItems, ArrayList<String> appliedPromocodeList, boolean addWishList);
+    void processDeleteCartItem(List<CartItemData> allCartItemData, List<CartItemData> removedCartItems, ArrayList<String> appliedPromocodeList, boolean addWishList, boolean removeInsurance);
 
     void processToUpdateCartData(List<CartItemData> cartItemDataList, List<CartShopHolderData> cartShopHolderDataList);
 
@@ -85,6 +86,8 @@ public interface ICartListPresenter {
     void getInsuranceTechCart();
 
     void processDeleteCartInsurance(InsuranceCartShops insuranceCartShops);
+
+    void updateInsuranceProductData(InsuranceCartShops insuranceCartShops, ArrayList<UpdateInsuranceProductApplicationDetails> list);
 
     void setAllInsuranceProductsChecked(ArrayList<InsuranceCartShops> insuranceCartShops, boolean isChecked);
 

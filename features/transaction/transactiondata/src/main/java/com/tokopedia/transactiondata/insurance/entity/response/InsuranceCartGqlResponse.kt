@@ -1,5 +1,7 @@
 package com.tokopedia.transactiondata.insurance.entity.response
 
+import android.os.Parcelable
+import androidx.versionedparcelable.VersionedParcelize
 import com.google.gson.annotations.SerializedName
 
 data class InsuranceCartGqlResponse(

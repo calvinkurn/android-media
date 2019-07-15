@@ -37,6 +37,7 @@ import com.tokopedia.topads.sdk.domain.interactor.TopAdsGqlUseCase;
 import com.tokopedia.transactiondata.insurance.usecase.GetInsuranceCartUseCase;
 import com.tokopedia.transactiondata.insurance.usecase.GetInsuranceRecommendationUsecase;
 import com.tokopedia.transactiondata.insurance.usecase.RemoveInsuranceProductUsecase;
+import com.tokopedia.transactiondata.insurance.usecase.UpdateInsuranceProductDataUsecase;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -128,6 +129,12 @@ public class CartListModule {
 
     @Provides
     @CartListScope
+    UpdateInsuranceProductDataUsecase getUpdateInsuranceProductDataUsecase(@ApplicationContext Context context) {
+        return new UpdateInsuranceProductDataUsecase(context);
+    }
+
+    @Provides
+    @CartListScope
     CheckPromoStackingCodeUseCase provideCheckPromoStackingCodeUseCase(@ApplicationContext Context context) {
         return new CheckPromoStackingCodeUseCase(context.getResources());
     }
@@ -187,6 +194,7 @@ public class CartListModule {
                                                  AddToCartUseCase addToCartUseCase,
                                                  GetInsuranceCartUseCase getInsuranceCartUseCase,
                                                  RemoveInsuranceProductUsecase removeInsuranceProductUsecase,
+                                                 UpdateInsuranceProductDataUsecase updateInsuranceProductDataUsecase,
                                                  GetInsuranceRecommendationUsecase getInsuranceRecommendationUsecase) {
         return new CartListPresenter(getCartListUseCase,
                 deleteCartListUseCase,
@@ -209,6 +217,7 @@ public class CartListModule {
                 clearCacheAutoApplyStackUseCase,
                 getInsuranceCartUseCase,
                 removeInsuranceProductUsecase,
+                updateInsuranceProductDataUsecase,
                 getInsuranceRecommendationUsecase);
     }
 

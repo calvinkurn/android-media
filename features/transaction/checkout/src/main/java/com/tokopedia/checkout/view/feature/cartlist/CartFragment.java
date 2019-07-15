@@ -100,8 +100,10 @@ import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
-import com.tokopedia.transactiondata.insurance.entity.request.InsuranceShopsData;
+import com.tokopedia.transactiondata.insurance.entity.request.UpdateInsuranceProductApplicationDetails;
+import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartDigitalProduct;
 import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartResponse;
+import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShopItems;
 import com.tokopedia.transactiondata.insurance.entity.response.InsuranceCartShops;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -461,7 +463,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             final com.tokopedia.design.component.Dialog dialog = getDialogDeleteConfirmation(toBeDeletedCartItemDataList.size());
             dialog.setOnOkClickListener(v -> {
                 if (toBeDeletedCartItemDataList.size() > 0) {
-                    dPresenter.processDeleteCartItem(allCartItemDataList, toBeDeletedCartItemDataList, getAppliedPromoCodeList(toBeDeletedCartItemDataList), true);
+                    dPresenter.processDeleteCartItem(allCartItemDataList, toBeDeletedCartItemDataList, getAppliedPromoCodeList(toBeDeletedCartItemDataList), true, true);
                     sendAnalyticsOnClickConfirmationRemoveCartSelectedWithAddToWishList(
                             dPresenter.generateCartDataAnalytics(
                                     toBeDeletedCartItemDataList, EnhancedECommerceCartMapData.REMOVE_ACTION
@@ -476,7 +478,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                     // TODO: 1/7/19 remove insurance products as well
 
 
-                    dPresenter.processDeleteCartItem(allCartItemDataList, toBeDeletedCartItemDataList, getAppliedPromoCodeList(toBeDeletedCartItemDataList), false);
+                    dPresenter.processDeleteCartItem(allCartItemDataList, toBeDeletedCartItemDataList, getAppliedPromoCodeList(toBeDeletedCartItemDataList), false, true);
                     sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
                             dPresenter.generateCartDataAnalytics(
                                     toBeDeletedCartItemDataList, EnhancedECommerceCartMapData.REMOVE_ACTION
@@ -575,9 +577,12 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         if (saveInstanceCacheManager != null) {
             saveInstanceCacheManager.onSave(outState);
             saveInstanceCacheManager.put(CartListData.class.getSimpleName(), cartListData);
-            saveInstanceCacheManager.put(CartWishlistItemHolderData.class.getSimpleName(), new ArrayList<>(wishLists));
-            saveInstanceCacheManager.put(CartRecentViewItemHolderData.class.getSimpleName(), new ArrayList<>(recentViewList));
-            saveInstanceCacheManager.put(CartRecommendationItemHolderData.class.getSimpleName(), new ArrayList<>(recommendationList));
+            if (wishLists != null)
+                saveInstanceCacheManager.put(CartWishlistItemHolderData.class.getSimpleName(), new ArrayList<>(wishLists));
+            if (recentViewList != null)
+                saveInstanceCacheManager.put(CartRecentViewItemHolderData.class.getSimpleName(), new ArrayList<>(recentViewList));
+            if (recommendationList != null)
+                saveInstanceCacheManager.put(CartRecommendationItemHolderData.class.getSimpleName(), new ArrayList<>(recommendationList));
         }
     }
 
@@ -592,10 +597,25 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         }
         ArrayList<CartItemData> cartItemDatas = new ArrayList<>(Collections.singletonList(cartItemHolderData.getCartItemData()));
         List<CartItemData> allCartItemDataList = cartAdapter.getAllCartItemData();
-        final com.tokopedia.design.component.Dialog dialog = getDialogDeleteConfirmation(1);
+
+        // TODO: 12/7/19 check if any insurance products in cart is present
+
+        final com.tokopedia.design.component.Dialog dialog;
+
+        boolean insurancePresent = cartAdapter.getInsuranceCartShops().isEmpty() && cartAdapter.getSelectedRecommendedInsuranceList().isEmpty();
+        boolean removeAllItem = allCartItemDataList.size() == cartItemDatas.size();
+        boolean removeInsurance = insurancePresent && removeAllItem;
+
+        if (removeInsurance) {
+            dialog = getInsuranceDialogDeleteConfirmation();
+        } else {
+            dialog = getDialogDeleteConfirmation(1);
+        }
+
+
         dialog.setOnOkClickListener(view -> {
             if (cartItemDatas.size() > 0) {
-                dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, appliedPromoCodes, true);
+                dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, appliedPromoCodes, true, removeInsurance);
                 sendAnalyticsOnClickConfirmationRemoveCartSelectedWithAddToWishList(
                         dPresenter.generateCartDataAnalytics(
                                 cartItemDatas, EnhancedECommerceCartMapData.REMOVE_ACTION
@@ -606,7 +626,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         });
         dialog.setOnCancelClickListener(view -> {
             if (cartItemDatas.size() > 0) {
-                dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, appliedPromoCodes, false);
+                dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, appliedPromoCodes, false, removeInsurance);
                 sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
                         dPresenter.generateCartDataAnalytics(
                                 cartItemDatas, EnhancedECommerceCartMapData.REMOVE_ACTION
@@ -867,7 +887,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         final com.tokopedia.design.component.Dialog dialog = getDialogDeleteConfirmation(toBeDeletedCartItem.size());
         dialog.setOnOkClickListener(view -> {
             if (toBeDeletedCartItem.size() > 0) {
-                dPresenter.processDeleteCartItem(allCartItemDataList, toBeDeletedCartItem, appliedPromoCodes, true);
+                dPresenter.processDeleteCartItem(allCartItemDataList, toBeDeletedCartItem, appliedPromoCodes, true, false);
                 sendAnalyticsOnClickConfirmationRemoveCartConstrainedProductWithAddToWishList(
                         dPresenter.generateCartDataAnalytics(
                                 toBeDeletedCartItem, EnhancedECommerceCartMapData.REMOVE_ACTION
@@ -878,7 +898,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         });
         dialog.setOnCancelClickListener(view -> {
             if (toBeDeletedCartItem.size() > 0) {
-                dPresenter.processDeleteCartItem(allCartItemDataList, toBeDeletedCartItem, appliedPromoCodes, false);
+                dPresenter.processDeleteCartItem(allCartItemDataList, toBeDeletedCartItem, appliedPromoCodes, false, false);
                 sendAnalyticsOnClickConfirmationRemoveCartConstrainedProductNoAddToWishList(
                         dPresenter.generateCartDataAnalytics(
                                 toBeDeletedCartItem, EnhancedECommerceCartMapData.REMOVE_ACTION
@@ -1087,28 +1107,32 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 if (cartListData.getAdsModel() != null) {
                     cartAdapter.mappingTopAdsModel(cartListData.getAdsModel());
                 }
-                // TODO: 17/6/19 get insurance recommendation products
-                // TODO: 18/6/19 check if cartdata list is not empty and accordingly get insurance cart
 
                 if (cartListData.getShopGroupDataList() != null && !cartListData.getShopGroupDataList().isEmpty()) {
                     dPresenter.getInsuranceTechCart();
                     dPresenter.getInsuranceRecommendationProducts(cartListData);
                 }
 
-            /*if (cartListData.getAdsModel() != null) {
-                cartAdapter.mappingTopAdsModel(cartListData.getAdsModel());
-            }
-            dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
-            if (cbSelectAll != null) {
-                cbSelectAll.setChecked(cartListData.isAllSelected());
-            }
+
+                if (cartListData.getAdsModel() != null) {
+                    cartAdapter.mappingTopAdsModel(cartListData.getAdsModel());
+                }
+                dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList(), cartAdapter.getInsuranceCartShops());
+                if (cbSelectAll != null) {
+                    cbSelectAll.setChecked(cartListData.isAllSelected());
+                }
 
                 cartAdapter.checkForShipmentForm();
-                onCartNotEmpty();
-                cartPageAnalytics.eventViewCartListFinishRender();
-            }
 
-            cartPageAnalytics.eventViewCartListFinishRender();*/
+                if (toolbar != null) {
+                    setVisibilityRemoveButton(true);
+                } else {
+                    if (getActivity() != null && !mIsMenuVisible && !cartListData.getShopGroupDataList().isEmpty()) {
+                        mIsMenuVisible = true;
+                        getActivity().invalidateOptionsMenu();
+                    }
+                }
+                cartPageAnalytics.eventViewCartListFinishRender();
 
                 if (recentViewList == null) {
                     dPresenter.processGetRecentViewData();
@@ -1136,6 +1160,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                         getActivity().invalidateOptionsMenu();
                     }
                 }
+
 
             }
         }
@@ -1478,6 +1503,22 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         dialog.getAlertDialog().setCanceledOnTouchOutside(true);
         return dialog;
     }
+
+
+    @NonNull
+    private com.tokopedia.design.component.Dialog getInsuranceDialogDeleteConfirmation() {
+        final com.tokopedia.design.component.Dialog dialog =
+                new com.tokopedia.design.component.Dialog(getActivity(),
+                        com.tokopedia.design.component.Dialog.Type.LONG_PROMINANCE);
+        dialog.setTitle(getString(R.string.label_dialog_title_delete_item));
+        dialog.setDesc(getString(R.string.label_dialog_message_remove_cart_multiple_item_with_insurance));
+        dialog.setBtnOk(getString(R.string.label_dialog_action_delete_and_add_to_wishlist));
+        dialog.setBtnCancel(getString(R.string.label_dialog_action_delete));
+        dialog.getAlertDialog().setCancelable(true);
+        dialog.getAlertDialog().setCanceledOnTouchOutside(true);
+        return dialog;
+    }
+
 
     @Override
     public void onProductItemClicked(int position, Product product) {
@@ -1853,6 +1894,15 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     boolean firstTime = true;
 
     @Override
+    public InsuranceCartShops getInsuranceCartShopData() {
+        try {
+            return cartAdapter.getInsuranceCartShops().get(0);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Override
     public void renderInsuranceCartData(InsuranceCartResponse insuranceCartResponse, boolean isRecommendation) {
 
         // TODO: 18/6/19 render insurance cart data on ui, both micro and macro, if is_product_level == true,
@@ -1867,11 +1917,21 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 if (!insuranceCartShops.getShopItemsList().isEmpty()) {
                     cartAdapter.addInsuranceDataList(insuranceCartShops, isRecommendation);
                 }
+
+                for (InsuranceCartShopItems insuranceCartShopItems : insuranceCartShops.getShopItemsList()) {
+                    for (InsuranceCartDigitalProduct insuranceCartDigitalProduct : insuranceCartShopItems.getDigitalProductList()) {
+                        if (insuranceCartDigitalProduct.isProductLevel()) {
+
+//                            cartAdapter.getAllCartShopHolderData();
+
+                        }
+                    }
+                }
             }
         }
 
         if (!firstTime) {
-            if (cartListData.getAdsModel() != null) {
+            /*if (cartListData.getAdsModel() != null) {
                 cartAdapter.mappingTopAdsModel(cartListData.getAdsModel());
             }
             dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList(), cartAdapter.getInsuranceCartShops());
@@ -1890,6 +1950,33 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 }
             }
             cartPageAnalytics.eventViewCartListFinishRender();
+
+            if (recentViewList == null) {
+                dPresenter.processGetRecentViewData();
+            } else {
+                renderRecentView(null);
+            }
+
+            if (wishLists == null) {
+                dPresenter.processGetWishlistData();
+            } else {
+                renderWishlist(null);
+            }
+
+            if (recommendationList == null) {
+                dPresenter.processGetRecommendationData(endlessRecyclerViewScrollListener.getCurrentPage());
+            } else {
+                renderRecommendation(null);
+            }
+
+            if (toolbar != null) {
+                setVisibilityRemoveButton(!cartListData.getShopGroupDataList().isEmpty());
+            } else {
+                if (getActivity() != null && !mIsMenuVisible && !cartListData.getShopGroupDataList().isEmpty()) {
+                    mIsMenuVisible = true;
+                    getActivity().invalidateOptionsMenu();
+                }
+            }*/
         }
 
         firstTime = false;
@@ -2050,6 +2137,11 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 alertDialog.dismiss();
             }
         });
+    }
+
+    @Override
+    public void updateInsuranceProductData(InsuranceCartShops insuranceCartShops, ArrayList<UpdateInsuranceProductApplicationDetails> updateInsuranceProductApplicationDetailsArrayList) {
+        dPresenter.updateInsuranceProductData(insuranceCartShops, updateInsuranceProductApplicationDetailsArrayList);
     }
 
     @Override

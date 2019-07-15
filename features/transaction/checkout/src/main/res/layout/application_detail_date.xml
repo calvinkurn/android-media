@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/dp_24"
+    android:layout_marginBottom="@dimen/dp_12"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="6sp"
+        android:textColor="#ae31353b"
+        android:textSize="12sp"
+        tools:text="Nama Lengkap (Sesuai KTP)" />
+
+    <TextView
+        android:id="@+id/sub_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="6sp"
+        android:layout_marginTop="@dimen/dp_4"
+        android:drawableRight="@drawable/ic_arrow_drop_down_grey_checkout_module"
+        android:textColor="#f531353b"
+        android:textSize="16sp"
+        tools:text="Andrew Ignatius Sugijanto" />
+
+</LinearLayout>

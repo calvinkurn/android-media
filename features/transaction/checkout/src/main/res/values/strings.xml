@@ -165,6 +165,7 @@
     <string name="label_dialog_action_delete_all">Hapus Semua</string>
     <string name="label_dialog_message_remove_cart_item">Barang ini akan dihapus dari keranjang belanja Anda</string>
     <string name="label_dialog_message_remove_cart_multiple_item" formatted="false">Barang yang terpilih (%s) akan dihapus dari keranjang Anda</string>
+    <string name="label_dialog_message_remove_cart_multiple_item_with_insurance">Karena pembeliannya harus disertai min. 1 barang lain, produk asuransi akan ikut terhapus dan nggak bisa ditambah ke Wishlist.</string>
     <string name="label_delete_cart_item_success">Produk berhasil dihapus dari keranjang</string>
     <string name="label_delete_cart_item_failed">Gagal menghapus produk dari keranjang</string>
     <string name="label_delete_cart_tem">Hapus</string>

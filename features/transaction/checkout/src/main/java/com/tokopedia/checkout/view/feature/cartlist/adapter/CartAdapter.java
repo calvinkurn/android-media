@@ -492,11 +492,14 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public void addInsuranceDataList(InsuranceCartShops insuranceCartShops, boolean isRecommendation) {
+        allInsuranceProductsList.clear();
         allInsuranceProductsList.add(insuranceCartShops);
 
         if (isRecommendation) {
+            insuranceRecommendationList.clear();
             insuranceRecommendationList.add(insuranceCartShops);
         } else {
+            insuranceCartList.clear();
             insuranceCartList.add(insuranceCartShops);
         }
 
@@ -591,7 +594,8 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         for (Object item : cartDataList) {
             if (item instanceof CartEmptyHolderData ||
                     item instanceof CartShopHolderData ||
-                    item instanceof CartRecentViewHolderData) {
+                    item instanceof CartRecentViewHolderData ||
+                    item instanceof InsuranceCartShops) {
                 wishlistIndex = cartDataList.indexOf(item);
             }
         }
@@ -608,7 +612,8 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     item instanceof CartShopHolderData ||
                     item instanceof CartRecentViewHolderData ||
                     item instanceof CartWishlistHolderData ||
-                    item instanceof CartRecommendationItemHolderData) {
+                    item instanceof CartRecommendationItemHolderData ||
+                    item instanceof InsuranceCartShops) {
                 recommendationIndex = cartDataList.indexOf(item);
             }
         }
