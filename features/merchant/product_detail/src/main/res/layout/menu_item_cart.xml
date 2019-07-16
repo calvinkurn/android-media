@@ -19,6 +19,7 @@
         android:id="@+id/cart_image_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:scaleType="fitCenter"
         android:src="@drawable/ic_product_cart_counter_dark" />
 
 </com.tokopedia.product.detail.view.widget.SquareHFrameLayout>
