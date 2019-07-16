@@ -20,6 +20,7 @@ import com.tokopedia.contactus.R;
 
 public class ServicePrioritiesBottomSheet extends FrameLayout implements View.OnClickListener {
 
+    public static final String LEARN_MORE_TEXT = "Pelajari Selengkapnya";
     private Context mContext;
     private final CloseServicePrioritiesBottomSheet closeServicePrioritiesBottomSheet;
 
@@ -37,7 +38,7 @@ public class ServicePrioritiesBottomSheet extends FrameLayout implements View.On
         TextView close = helpfullView.findViewById(R.id.txt_close);
         String text = mContext.getString(R.string.service_priorities_officialstore_desc);
         SpannableString spannableString = new SpannableString(text);
-        int startIndexOfLink = text.indexOf("Pelajari Selengkapnya");
+        int startIndexOfLink = text.indexOf(LEARN_MORE_TEXT);
         spannableString.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View view) {
@@ -52,7 +53,7 @@ public class ServicePrioritiesBottomSheet extends FrameLayout implements View.On
                 ds.setUnderlineText(false);
                 ds.setColor(getResources().getColor(R.color.green_250)); // specific color for this link
             }
-        }, startIndexOfLink, startIndexOfLink + "Pelajariseleng Kapnya".length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }, startIndexOfLink, startIndexOfLink + LEARN_MORE_TEXT.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         link.setHighlightColor(Color.TRANSPARENT);
         link.setMovementMethod(LinkMovementMethod.getInstance());
 

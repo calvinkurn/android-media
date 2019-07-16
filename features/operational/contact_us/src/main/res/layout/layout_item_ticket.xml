@@ -105,7 +105,7 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_10"
             android:textStyle="normal"
-            android:text="Layanan Prioritas"
+            android:text="@string/layanan_prioritas"
             android:textColor="@color/purple"
             android:visibility="gone"
             android:layout_marginStart="@dimen/dp_8"
