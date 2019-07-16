@@ -61,6 +61,7 @@ public class InboxDetailActivity extends InboxBaseActivity
     public static final String KEY_DIS_LIKED = "102";
     public static final int INT_KEY_LIKED = 101;
     public static final int DELAY_FOUR_MILLIS = 4000;
+    public static final String SNACKBAR_OK = "Ok";
     private TextView tvTicketTitle;
     private TextView tvIdNum;
     private RecyclerView rvMessageList;
@@ -736,19 +737,33 @@ public class InboxDetailActivity extends InboxBaseActivity
 
         @Override
         public void OnSucessfullTicketClose () {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mPresenter.refreshLayout();
-                }
-            }, DELAY_FOUR_MILLIS);
+            Observable.timer(DELAY_FOUR_MILLIS,TimeUnit.MILLISECONDS)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<Long>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(Long aLong) {
+                            mPresenter.refreshLayout();
+                        }
+                    });
+
             ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClickEmoji(0);
         }
 
     @Override
     public void showMessage(String message) {
         super.showMessage(message);
-        Toaster.Companion.showNormalWithAction(rootView, message, Snackbar.LENGTH_LONG, "Ok", v1 -> {
+        Toaster.Companion.showNormalWithAction(rootView, message, Snackbar.LENGTH_LONG, SNACKBAR_OK, v1 -> {
         });
     }
 }

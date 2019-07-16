@@ -59,6 +59,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -77,6 +78,7 @@ public class InboxDetailPresenterImpl
 
     public static final int KEY_LIKED = 101;
     public static final int KEY_DISLIKED = 102;
+    public static final int DELAY_FOUR_MILLIS = 4000;
     private InboxDetailContract.InboxDetailView mView;
     private Tickets mTicketDetail;
     private GetTicketDetailUseCase mUsecase;
@@ -141,12 +143,26 @@ public class InboxDetailPresenterImpl
             mView.showMessage(mView.getActivity().getString(R.string.cu_terima_kasih_atas_masukannya));
             mView.showIssueClosed();
             isIssueClosed = true;
-         new Handler().postDelayed(new Runnable() {
-             @Override
-             public void run() {
-                 getTicketDetails();
-             }
-         }, 4000);
+
+         Observable.timer(DELAY_FOUR_MILLIS, TimeUnit.MILLISECONDS)
+                 .subscribeOn(Schedulers.io())
+                 .observeOn(AndroidSchedulers.mainThread())
+                 .subscribe(new Subscriber<Long>() {
+                     @Override
+                     public void onCompleted() {
+
+                     }
+
+                     @Override
+                     public void onError(Throwable e) {
+
+                     }
+
+                     @Override
+                     public void onNext(Long aLong) {
+                         getTicketDetails();
+                     }
+                 });
 
         }
     }
