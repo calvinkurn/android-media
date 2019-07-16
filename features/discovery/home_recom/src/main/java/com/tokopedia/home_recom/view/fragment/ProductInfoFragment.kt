@@ -152,7 +152,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
                 pb_add_to_cart.show()
                 addToCart(
                         success = { result ->
-                            recommendationItem.cartId = (result["cartId"] as String).toInt()
+                            recommendationItem.cartId = (result[CART_ID] as Long).toInt()
                             RecommendationPageTracking.eventUserClickAddToCart(recommendationItem)
                             pb_add_to_cart.hide()
                             if(result.containsKey(STATUS) && !(result[STATUS] as Boolean)){
