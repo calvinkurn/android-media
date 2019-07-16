@@ -26,6 +26,7 @@ import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.SearchSectionContract;
 import com.tokopedia.search.result.presentation.ShopListSectionContract;
 import com.tokopedia.search.result.presentation.model.ShopViewModel;
+import com.tokopedia.search.result.presentation.model.ShopViewModelKt;
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionGeneralAdapter;
 import com.tokopedia.search.result.presentation.view.adapter.ShopListAdapter;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ShopListItemDecoration;
@@ -343,6 +344,23 @@ public class ShopListFragment
         SearchTracking.eventSearchResultShopItemClick(getActivity(), getSearchParameter().getSearchQuery(), shopItem.getShopName(),
                 shopItem.getPage(), shopItem.getPosition());
         startActivityForResult(intent, REQUEST_CODE_GOTO_SHOP_DETAIL);
+    }
+
+    @Override
+    public void onItemClicked(ShopViewModelKt.ShopItem shopItem) {
+        if(redirectionListener == null) return;
+
+        SearchTracking.eventSearchResultShopItemClick(getActivity(), getSearchParameter().getSearchQuery(), shopItem.getShopName(),
+                shopItem.getPage(), shopItem.getPosition());
+
+        redirectionListener.startActivityWithApplink(shopItem.getShopApplink());
+    }
+
+    @Override
+    public void onProductItemClicked(String applink) {
+        if(redirectionListener == null) return;
+
+        redirectionListener.startActivityWithApplink(applink);
     }
 
     @Override

@@ -9,4 +9,7 @@
 
     <color name="color_item_preview_border">#e0e0e0</color>
     <color name="black_54">#8a000000</color>
+
+    <color name="shop_item_product_price_color">#ff5722</color>
+    <color name="shop_item_product_empty_color">#f3f4f5</color>
 </resources>

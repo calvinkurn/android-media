@@ -40,7 +40,7 @@ public class ShopViewModel implements Parcelable {
         this.shopItemList = shopItemList;
     }
 
-    public static class ShopViewItem implements Parcelable, Visitable<ShopListTypeFactory> {
+    public static class ShopViewItem implements Parcelable {
         private String shopGoldShop;
         private String shopDescription;
         private String shopLucky;
@@ -281,11 +281,6 @@ public class ShopViewModel implements Parcelable {
         }
 
         public ShopViewItem() {
-        }
-
-        @Override
-        public int type(ShopListTypeFactory typeFactory) {
-            return typeFactory.type(this);
         }
 
         @Override
