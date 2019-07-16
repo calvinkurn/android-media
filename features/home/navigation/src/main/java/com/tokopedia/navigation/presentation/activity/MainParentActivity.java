@@ -283,8 +283,6 @@ public class MainParentActivity extends BaseActivity implements
         checkApplinkCouponCode(getIntent());
 
         initNewFeedClickReceiver();
-
-        initOsMenu();
     }
 
     private void handleAppLinkBottomNavigation(Bundle savedInstanceState) {
@@ -511,8 +509,6 @@ public class MainParentActivity extends BaseActivity implements
 
         registerNewFeedClickedReceiver();
 
-        playAnimOsIcon();
-
         if (!((BaseMainApplication) getApplication()).checkAppSignature()) {
             finish();
         }
@@ -666,6 +662,9 @@ public class MainParentActivity extends BaseActivity implements
 
     @Override
     public void onReadytoShowBoarding(ArrayList<ShowCaseObject> showCaseObjects) {
+
+        playAnimOsIcon(); // show animation icon
+
         final String showCaseTag = MainParentActivity.class.getName() + ".bottomNavigation";
         if (ShowCasePreference.hasShown(this, showCaseTag) || showCaseDialog != null
                 || showCaseObjects == null) {
