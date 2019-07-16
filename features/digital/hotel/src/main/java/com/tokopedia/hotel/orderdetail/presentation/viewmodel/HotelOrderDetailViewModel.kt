@@ -17,8 +17,6 @@ import javax.inject.Named
  */
 
 class HotelOrderDetailViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
-                                                    @Named("dummy_order_detail")
-                                                    private val dummyOrderDetail: String,
                                                     private val useCase: GetHotelOrderDetailUseCase) : BaseViewModel(dispatcher) {
 
     val orderDetailData = MutableLiveData<Result<HotelOrderDetail>>()
@@ -27,8 +25,6 @@ class HotelOrderDetailViewModel @Inject constructor(dispatcher: CoroutineDispatc
         launch {
             orderDetailData.value = useCase.execute(rawQuery, orderId, orderCategory, true)
         }
-//        val gson = Gson()
-//        orderDetailData.value = Success(gson.fromJson(dummyOrderDetail, HotelOrderDetail.Response::class.java).response)
     }
 
 }

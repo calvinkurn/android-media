@@ -30,6 +30,7 @@ query PropertySearchRoom($data:PropertySearchRoomRequest!){
       creditcardInfo{
         isCCRequired
         isCCDomesticRequired
+        header
         info
       }
       numberRoomLeft
