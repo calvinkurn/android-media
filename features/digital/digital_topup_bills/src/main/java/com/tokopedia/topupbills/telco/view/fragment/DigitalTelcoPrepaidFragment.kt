@@ -408,18 +408,20 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     private fun showOnBoarding() {
-        val showcaseTag = javaClass.name + ".BroadcastMessage"
-        if (ShowCasePreference.hasShown(activity!!, showcaseTag)) {
-            return
-        }
+        activity?.run {
+            val showcaseTag = javaClass.name + ".BroadcastMessage"
+            if (ShowCasePreference.hasShown(this, showcaseTag)) {
+                return
+            }
 
-        val showCaseDialog = generateShowcaseDialog()
-        val showCaseList = ArrayList<ShowCaseObject>()
-        showCaseList.add(ShowCaseObject(telcoClientNumberWidget, getString(R.string.Telco_title_showcase_client_number),
-                getString(R.string.telco_label_showcase_client_number)))
-        showCaseList.add(ShowCaseObject(promoListWidget, getString(R.string.telco_title_showcase_promo),
-                getString(R.string.telco_label_showcase_promo)))
-        showCaseDialog.show(activity, showcaseTag, showCaseList)
+            val showCaseDialog = generateShowcaseDialog()
+            val showCaseList = ArrayList<ShowCaseObject>()
+            showCaseList.add(ShowCaseObject(telcoClientNumberWidget, getString(R.string.Telco_title_showcase_client_number),
+                    getString(R.string.telco_label_showcase_client_number)))
+            showCaseList.add(ShowCaseObject(promoListWidget, getString(R.string.telco_title_showcase_promo),
+                    getString(R.string.telco_label_showcase_promo)))
+            showCaseDialog.show(activity, showcaseTag, showCaseList)
+        }
     }
 
     private fun generateShowcaseDialog(): ShowCaseDialog {
