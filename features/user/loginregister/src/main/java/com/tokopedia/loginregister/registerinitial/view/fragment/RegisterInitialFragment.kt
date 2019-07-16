@@ -281,7 +281,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
             registerButton.setBorderColor(MethodChecker.getColor(activity, R.color.black_38))
             registerButton.setRoundCorner(10)
             registerButton.setImageResource(R.drawable.ic_email)
-            registerButton.setOnClickListener { v ->
+            registerButton.setOnClickListener {
                 TrackApp.getInstance().moEngage.sendRegistrationStartEvent(LoginRegisterAnalytics.LABEL_EMAIL)
                 goToRegisterEmailPage()
 
@@ -315,7 +315,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
     }
 
     protected fun setViewListener() {
-        loginButton.setOnClickListener { v ->
+        loginButton.setOnClickListener {
             registerAnalytics.trackClickBottomSignInButton()
             activity?.run {
                 finish()
@@ -535,8 +535,8 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
                                            loginTextView: LoginTextView) {
 
         when (discoverItemViewModel.id.toLowerCase()) {
-            FACEBOOK -> loginTextView.setOnClickListener { v -> onRegisterFacebookClick() }
-            GPLUS -> loginTextView.setOnClickListener { v -> onRegisterGoogleClick() }
+            FACEBOOK -> loginTextView.setOnClickListener { onRegisterFacebookClick() }
+            GPLUS -> loginTextView.setOnClickListener { onRegisterGoogleClick() }
         }
     }
 
@@ -597,14 +597,14 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
                     String.format(resources.getString(
                             R.string.email_already_registered_info), email))
             dialog.setBtnOk(getString(R.string.already_registered_yes))
-            dialog.setOnOkClickListener { v ->
+            dialog.setOnOkClickListener {v ->
                 registerAnalytics.trackClickYesButtonRegisteredEmailDialog()
                 dialog.dismiss()
                 startActivity(LoginActivity.DeepLinkIntents.getIntentLoginFromRegister(it, email))
                 it.finish()
             }
             dialog.setBtnCancel(getString(R.string.already_registered_no))
-            dialog.setOnCancelClickListener { v ->
+            dialog.setOnCancelClickListener {
                 registerAnalytics.trackClickChangeButtonRegisteredEmailDialog()
                 dialog.dismiss()
             }
@@ -621,14 +621,14 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
                 String.format(resources.getString(
                         R.string.reigster_page_phone_number_already_registered_info), phone))
         dialog.setBtnOk(getString(R.string.already_registered_yes))
-        dialog.setOnOkClickListener { v ->
+        dialog.setOnOkClickListener {
             registerAnalytics.trackClickYesButtonRegisteredPhoneDialog()
             dialog.dismiss()
             phoneNumber = phone
             goToVerifyAccountPage(phoneNumber)
         }
         dialog.setBtnCancel(getString(R.string.already_registered_no))
-        dialog.setOnCancelClickListener { v ->
+        dialog.setOnCancelClickListener {
             registerAnalytics.trackClickChangeButtonRegisteredPhoneDialog()
             dialog.dismiss()
         }
@@ -667,13 +667,13 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         dialog.setTitle(phone)
         dialog.setDesc(resources.getString(R.string.phone_number_not_registered_info))
         dialog.setBtnOk(getString(R.string.proceed_with_phone_number))
-        dialog.setOnOkClickListener { v ->
+        dialog.setOnOkClickListener {
             registerAnalytics.trackClickYesButtonPhoneDialog()
             dialog.dismiss()
             goToVerificationPhoneRegister(phone)
         }
         dialog.setBtnCancel(getString(R.string.already_registered_no))
-        dialog.setOnCancelClickListener { v ->
+        dialog.setOnCancelClickListener {
             registerAnalytics.trackClickChangeButtonPhoneDialog()
             dialog.dismiss()
         }
@@ -821,7 +821,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
                 })
             }
-            tickerAnnouncement.setOnClickListener { v ->
+            tickerAnnouncement.setOnClickListener {
                 registerAnalytics.trackClickTicker()
             }
 
