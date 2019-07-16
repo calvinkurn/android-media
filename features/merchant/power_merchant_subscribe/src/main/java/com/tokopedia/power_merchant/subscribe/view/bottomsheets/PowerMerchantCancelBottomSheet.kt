@@ -2,6 +2,7 @@ package com.tokopedia.power_merchant.subscribe.view.bottomsheets
 
 import android.app.Dialog
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.View
 import android.widget.Button
 import android.widget.FrameLayout
@@ -57,6 +58,18 @@ class PowerMerchantCancelBottomSheet : BottomSheets() {
     override fun title(): String {
         super.title()
         return ""
+    }
+
+    override fun configView(parentView: View?) {
+        super.configView(parentView)
+
+        val displaymetrics = DisplayMetrics()
+        activity!!.windowManager.defaultDisplay.getMetrics(displaymetrics)
+        val widthSpec = View.MeasureSpec.makeMeasureSpec(displaymetrics.widthPixels, View.MeasureSpec.EXACTLY)
+        parentView?.post {
+            parentView.measure(widthSpec, 0)
+            updateHeight(parentView.measuredHeight)
+        }
     }
 
     override fun initView(view: View) {
