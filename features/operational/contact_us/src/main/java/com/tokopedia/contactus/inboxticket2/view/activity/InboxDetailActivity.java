@@ -62,6 +62,7 @@ public class InboxDetailActivity extends InboxBaseActivity
     public static final int INT_KEY_LIKED = 101;
     public static final int DELAY_FOUR_MILLIS = 4000;
     public static final String SNACKBAR_OK = "Ok";
+    public static final String ROLE_TYPE_AGENT = "agent";
     private TextView tvTicketTitle;
     private TextView tvIdNum;
     private RecyclerView rvMessageList;
@@ -141,7 +142,7 @@ public class InboxDetailActivity extends InboxBaseActivity
                     getResources().getColor(R.color.orange_500), textSizeLabel));
             rvMessageList.setPadding(0, 0, 0,
                     getResources().getDimensionPixelSize(R.dimen.text_toolbar_height_collapsed));
-            if(commentsItems.get(commentsItems.size()-1).getCreatedBy().getRole().equalsIgnoreCase("agent")&&commentsItems.get(commentsItems.size()-1).getRating().equalsIgnoreCase("")){
+            if(commentsItems.get(commentsItems.size()-1).getCreatedBy().getRole().equalsIgnoreCase(ROLE_TYPE_AGENT)&&commentsItems.get(commentsItems.size()-1).getRating().equalsIgnoreCase("")){
                 viewReplyButton.setVisibility(View.VISIBLE);
                 rateCommentID = commentsItems.get(commentsItems.size() - 1).getId();
             }

@@ -94,6 +94,7 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
 
     class DetailViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        public static final String ROLE_TYPE_AGENT = "agent";
         ImageView ivProfile;
         private TextView tvName;
         private TextView tvDateRecent;
@@ -166,13 +167,13 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
                 tvCollapsedTime.setText("");
                 tvCollapsedTime.setVisibility(View.GONE);
 
-                if(!mPresenter.getTicketStatus().equalsIgnoreCase(utils.CLOSED) && item.getCreatedBy().getRole().equals("agent")&&(item.getRating()==null|| item.getRating().equals(""))){
+                if(!mPresenter.getTicketStatus().equalsIgnoreCase(utils.CLOSED) && item.getCreatedBy().getRole().equals(ROLE_TYPE_AGENT)&&(item.getRating()==null|| item.getRating().equals(""))){
                       settingRatingButtonsVisibility(View.VISIBLE);
                       ratingThumbsUp.clearColorFilter();
                       ratingThumbsDown.clearColorFilter();
                 }
 
-                if((mPresenter.getTicketStatus().equalsIgnoreCase(utils.CLOSED) && item.getRating()!=null && !item.getRating().equals(KEY_LIKED) && !item.getRating().equals(KEY_DIS_LIKED))|| !item.getCreatedBy().getRole().equals("agent")|| item.getId()==null){
+                if((mPresenter.getTicketStatus().equalsIgnoreCase(utils.CLOSED) && item.getRating()!=null && !item.getRating().equals(KEY_LIKED) && !item.getRating().equals(KEY_DIS_LIKED))|| !item.getCreatedBy().getRole().equals(ROLE_TYPE_AGENT)|| item.getId()==null){
                       ratingThumbsUp.setVisibility(View.GONE);
                       ratingThumbsDown.setVisibility(View.GONE);
                 }
