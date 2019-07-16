@@ -295,7 +295,7 @@ class DigitalTopupAnalytics {
                         "event", DigitalTopupEventTracking.Event.PROMO_CLICK,
                         "eventCategory", DigitalTopupEventTracking.Category.DIGITAL_HOMEPAGE,
                         "eventAction", DigitalTopupEventTracking.Action.CLICK_PROMO_DIGITAL,
-                        "eventLabel", "${telcoPromo.title} - position $position",
+                        "eventLabel", "${telcoPromo.title} - $position",
                         "ecommerce", DataLayer.mapOf(
                         "promoClick", DataLayer.mapOf(
                         "promotions", promoList.toArray()
