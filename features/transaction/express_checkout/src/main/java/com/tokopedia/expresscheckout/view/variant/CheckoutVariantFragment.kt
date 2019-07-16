@@ -57,8 +57,6 @@ import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourie
 import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourierBottomsheetListener
 import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationBottomsheet
 import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationBottomsheetListener
-import com.tokopedia.transaction.common.sharedata.AddToCartRequest
-import com.tokopedia.transaction.common.sharedata.AddToCartResult
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics
 import com.tokopedia.transactionanalytics.ExpressCheckoutAnalyticsTracker

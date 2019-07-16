@@ -6,13 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
-import com.tokopedia.transaction.common.sharedata.AddToCartResult;
-
-import java.util.ArrayList;
-
-import rx.Observable;
-
 /**
  * @author by nisie on 5/18/18.
  */

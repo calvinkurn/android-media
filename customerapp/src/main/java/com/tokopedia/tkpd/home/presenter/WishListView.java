@@ -6,7 +6,6 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.tkpd.home.wishlist.domain.model.GqlWishListDataResponse;
 import com.tokopedia.core.network.entity.wishlist.Wishlist;
 import com.tokopedia.core.var.RecyclerViewItem;
-import com.tokopedia.transaction.common.sharedata.AddToCartResult;
 
 import java.util.List;
 

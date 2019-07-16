@@ -10,7 +10,6 @@ import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.topchat.chatroom.view.viewmodel.ProductPreview
 import com.tokopedia.topchat.common.TopChatRouter
-import com.tokopedia.transaction.common.sharedata.AddToCartResult
 
 /**
  * @author : Steven 11/12/18

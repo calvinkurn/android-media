@@ -55,7 +55,6 @@ import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
-import com.tokopedia.transaction.common.sharedata.AddToCartResult;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsAddToCart;
 
 import java.util.ArrayList;
