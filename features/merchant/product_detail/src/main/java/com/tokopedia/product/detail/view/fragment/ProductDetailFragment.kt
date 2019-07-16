@@ -12,7 +12,6 @@ import android.content.IntentFilter
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Rect
-import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -26,8 +25,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.text.TextUtils
 import android.view.*
-import com.airbnb.lottie.LottieComposition
-import com.airbnb.lottie.LottieDrawable
+import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -94,8 +92,8 @@ import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
 import com.tokopedia.product.detail.view.viewmodel.Loaded
 import com.tokopedia.product.detail.view.viewmodel.Loading
 import com.tokopedia.product.detail.view.viewmodel.ProductInfoViewModel
-import com.tokopedia.product.detail.view.widget.CountDrawable
 import com.tokopedia.product.detail.view.widget.PictureScrollingView
+import com.tokopedia.product.detail.view.widget.SquareHFrameLayout
 import com.tokopedia.product.detail.view.widget.ValuePropositionBottomSheet
 import com.tokopedia.product.report.view.dialog.ReportDialogFragment
 import com.tokopedia.product.share.ProductData
@@ -915,9 +913,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 menu?.let {
                     if (it.size() > 2) {
                         it.findItem(R.id.action_share).icon = ContextCompat.getDrawable(this, R.drawable.ic_product_share_dark)
-//                        val menuCart = it.findItem(R.id.action_cart)
+                        val menuCart = it.findItem(R.id.action_cart)
 //                        menuCart.icon = ContextCompat.getDrawable(this, R.drawable.ic_product_cart_counter_dark)
-//                        setBadgeMenuCart(menuCart)
+                        setBadgeMenuCart(menuCart)
 //                        LottieComposition.Factory.fromRawFile(context!!, R.raw.anim_cart) { composition ->
 //                            val icon = LottieDrawable()
 //                            icon.composition = composition
@@ -1775,6 +1773,16 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         activity?.run {
             val cartCount = (application as ProductDetailRouter).getCartCount(this)
             if (cartCount > 0) {
+                val actionView = menuCart.actionView
+                if (actionView is SquareHFrameLayout) {
+                    val lottieCartView = actionView.findViewById<LottieAnimationView>(R.id.lottie_cart_view)
+                    if (shouldShowCartAnimation) {
+                        shouldShowCartAnimation = false
+                        lottieCartView.playAnimation()
+                    } else {
+                        lottieCartView.progress = 1.0f
+                    }
+                }
 //                if (menuCart.icon is LayerDrawable) {
 //                    val icon = menuCart.icon as LayerDrawable
 //                    val badge = CountDrawable(context)
