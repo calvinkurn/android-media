@@ -222,6 +222,8 @@ public class MainParentActivity extends BaseActivity implements
                     ApplinkConstInternalMarketplace.ONBOARDING);
             startActivity(intent);
             finish();
+
+            playAnimOsIcon(); // show animation icon
         }
     }
 
@@ -662,9 +664,6 @@ public class MainParentActivity extends BaseActivity implements
 
     @Override
     public void onReadytoShowBoarding(ArrayList<ShowCaseObject> showCaseObjects) {
-
-        playAnimOsIcon(); // show animation icon
-
         final String showCaseTag = MainParentActivity.class.getName() + ".bottomNavigation";
         if (ShowCasePreference.hasShown(this, showCaseTag) || showCaseDialog != null
                 || showCaseObjects == null) {
