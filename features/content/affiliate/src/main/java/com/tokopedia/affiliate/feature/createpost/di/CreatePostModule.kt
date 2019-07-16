@@ -17,7 +17,6 @@ import com.tokopedia.imageuploader.domain.UploadImageRepository
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils
 import com.tokopedia.twitter_share.TwitterManager
-import com.tokopedia.twitter_share.session.TwitterPreference
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videouploader.data.UploadVideoApi
@@ -97,7 +96,7 @@ class CreatePostModule(private val context: Context) {
 
     @Provides
     @CreatePostScope
-    fun provideTwitterManager(@ApplicationContext context: Context): TwitterManager {
-        return TwitterManager(TwitterPreference.getSharedPreferences(context))
+    fun provideTwitterManager(userSession: UserSessionInterface): TwitterManager {
+        return TwitterManager(userSession)
     }
 }

@@ -1,7 +1,6 @@
 package com.tokopedia.twitter_share
 
-import android.content.SharedPreferences
-import com.tokopedia.twitter_share.session.TwitterSession
+import com.tokopedia.user.session.UserSessionInterface
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -13,7 +12,7 @@ import twitter4j.conf.ConfigurationBuilder
 import java.io.File
 
 class TwitterManager(
-    twitterPrefs: SharedPreferences
+    private val userSession: UserSessionInterface
 ) : TwitterAuthenticator.TwitterAuthenticatorListener {
 
     interface TwitterManagerListener {
@@ -26,14 +25,12 @@ class TwitterManager(
         const val OAUTH_TOKEN = "oauth_token"
     }
 
-    private val session: TwitterSession = TwitterSession(twitterPrefs)
-
     private val config: Configuration = ConfigurationBuilder()
             .setOAuthConsumerKey(BuildConfig.TWITTER_API_KEY)
             .setOAuthConsumerSecret(BuildConfig.TWITTER_API_SECRET_KEY)
             .apply {
-                val accessToken = session.getAccessToken()
-                val tokenSecret = session.getAccessTokenSecret()
+                val accessToken = userSession.twitterAccessToken
+                val tokenSecret = userSession.twitterAccessTokenSecret
 
                 if (accessToken != null) setOAuthAccessToken(accessToken)
                 if (tokenSecret != null) setOAuthAccessTokenSecret(tokenSecret)
@@ -41,12 +38,12 @@ class TwitterManager(
             .build()
 
     val isAuthenticated: Boolean
-        get() = session.getAccessToken() != null && session.getAccessTokenSecret() != null
+        get() = userSession.twitterAccessToken != null && userSession.twitterAccessTokenSecret != null
 
     var shouldPostToTwitter: Boolean
-        get() = session.shouldPostToTwitter
+        get() = userSession.twitterShouldPost
         set(value) {
-            session.shouldPostToTwitter = value
+            userSession.twitterShouldPost = value
         }
 
     private var instance: Twitter = getTwitterInstance()
@@ -86,7 +83,7 @@ class TwitterManager(
     }
 
     private fun saveAccessToken(accessToken: AccessToken) {
-        session.setAccessTokenAndSecret(accessToken.token, accessToken.tokenSecret)
+        userSession.setTwitterAccessTokenAndSecret(accessToken.token, accessToken.tokenSecret)
     }
 
     /**
