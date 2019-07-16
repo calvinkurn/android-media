@@ -1571,6 +1571,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     model.getId(),
                     postTagItem,
                     itemPosition,
+                    model.getHeader().getFollowCta().getAuthorType(),
                     model.getTrackingPostModel()
             );
         }
@@ -1757,6 +1758,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                                 postViewModel.getId(),
                                 postViewModel.getPostTag().getItems().get(j),
                                 j,
+                                postViewModel.getHeader().getFollowCta().getAuthorType(),
                                 trackingPostModel);
                     }
                 }

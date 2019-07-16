@@ -70,7 +70,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
     }
 
     object ListSource {
-        const val FEED = "/feed - produk di post"
+        const val FEED = "/feed - produk di post - %s"
         const val MY_PROFILE_PAGE = "/my profile page - produk di post"
         const val USER_PROFILE_PAGE = "/user profile page - produk di post"
         const val MY_PROFILE_PAGE_DETAIL = "/my profile page detail - produk di post"
@@ -207,6 +207,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
             postId: Int,
             postTag: PostTagItem,
             postTagPosition: Int,
+            author: String,
             trackingModel: TrackingPostModel) {
         getBasicViewPostTagEvent(
                 Screen.FEED,
@@ -215,13 +216,14 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
                 postTag,
                 postTagPosition,
                 trackingModel,
-                ListSource.FEED)
+                String.format(ListSource.FEED, author))
     }
 
     fun trackClickPostTagFeed(
             postId: Int,
             postTag: PostTagItem,
             postTagPosition: Int,
+            author: String,
             trackingModel: TrackingPostModel) {
         getBasicClickPostTagEvent(
                 Screen.FEED,
@@ -230,7 +232,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
                 postTag,
                 postTagPosition,
                 trackingModel,
-                ListSource.FEED)
+                String.format(ListSource.FEED, author))
     }
 
     fun trackViewPostTagProfileSelf(
