@@ -150,8 +150,9 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
     }
 
     fun onErrorProductList(throwable: Throwable) {
-        titleEmptyState.text = getString(R.string.title_telco_product_empty_state, titleProduct)
-        descEmptyState.text = getString(R.string.desc_telco_product_empty_state, titleProduct.toLowerCase())
+        titleEmptyState.text = getString(R.string.title_telco_product_empty_state, titleProduct.toLowerCase())
+        descEmptyState.text = getString(R.string.desc_telco_product_empty_state,
+                titleProduct.toLowerCase(), titleProduct.toLowerCase())
         emptyStateProductView.visibility = View.VISIBLE
         telcoTelcoProductView.visibility = View.GONE
     }
