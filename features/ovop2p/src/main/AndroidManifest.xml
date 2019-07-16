@@ -10,7 +10,7 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data
-                    android:scheme="@string/tokopedia_scheme"
+                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_ovop2ptransfer" />
             </intent-filter>
         </activity>
