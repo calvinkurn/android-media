@@ -71,7 +71,7 @@ public class OrderListAnalytics {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, LOAD_MORE_EVENT_ACTION, eventLabel));
     }
 
-    public void sendThankYouEvent(int entityProductId, String entityProductName, int totalTicketPrice, int quantity, String orderId) {
+    public void sendThankYouEvent(int entityProductId, String entityProductName, int totalTicketPrice, int quantity, String brandName, String orderId) {
         Map<String, Object> products = new HashMap<>();
         Map<String, Object> purchase = new HashMap<>();
         Map<String, Object> ecommerce = new HashMap<>();
@@ -93,7 +93,7 @@ public class OrderListAnalytics {
         map.put("event", EVENT_TRANSACTION);
         map.put("eventCategory", EVENT_CARTEGORY);
         map.put("eventAction", ACTION);
-        map.put("eventLabel", LABEL);
+        map.put("eventLabel", brandName);
         map.put("currentSite", "tokopediadigital");
         map.put("ecommerce", ecommerce);
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(map);

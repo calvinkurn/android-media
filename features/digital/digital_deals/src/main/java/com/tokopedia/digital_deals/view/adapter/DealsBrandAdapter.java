@@ -55,17 +55,21 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             if (!holder1.isShown()) {
                 holder1.setShown(true);
                 itemsForGA.add(brandItems.get(holder1.getIndex()));
-                if (isPopularBrands && itemsForGA != null && itemsForGA.size() == 5) {
+                int  itemsToSend = (brandItems.size() - 1) - holder1.getAdapterPosition();
+                if (isPopularBrands && itemsForGA != null && (itemsToSend < 5 || itemsForGA.size() == 5)) {
                     dealsAnalytics.sendEcommerceBrand(itemsForGA,
                             holder1.getIndex(), brandItems.get(holder1.getIndex()).getTitle(), DealsAnalytics.EVENT_PROMO_VIEW, DealsAnalytics.EVENT_IMPRESSION_POPULAR_BRAND_HOME, DealsAnalytics.DEALS_HOME_PAGE);
+                    itemsForGA.clear();
 
-                } else if (isBrandNative && itemsForGA != null && itemsForGA.size() == 5) {
+                } else if (isBrandNative && itemsForGA != null && (itemsToSend < 5 || itemsForGA.size() == 5)) {
                     dealsAnalytics.sendBrandImpressionEvent(itemsForGA,
                             holder1.getIndex(), brandItems.get(holder1.getIndex()).getTitle(), DealsAnalytics.EVENT_PROMO_VIEW, DealsAnalytics.EVENT_IMPRESSION_POPULAR_BRAND_ALL, DealsAnalytics.DEALS_HOME_PAGE);
+                    itemsForGA.clear();
                 } else {
-                    if (itemsForGA != null && itemsForGA.size() == 5)
+                    if (itemsForGA != null && (itemsToSend < 5 || itemsForGA.size() == 5))
                     dealsAnalytics.sendEcommerceBrand(itemsForGA,
                             holder1.getIndex(), brandItems.get(holder1.getIndex()).getTitle(), DealsAnalytics.EVENT_PROMO_VIEW, DealsAnalytics.EVENT_IMPRESSION_POPULAR_BRAND_CATEGORY, DealsAnalytics.DEALS_HOME_PAGE);
+                    itemsForGA.clear();
                 }
             }
         }
