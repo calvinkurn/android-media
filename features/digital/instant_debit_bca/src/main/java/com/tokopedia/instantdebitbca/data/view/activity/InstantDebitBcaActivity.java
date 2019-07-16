@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -18,6 +19,7 @@ import com.tokopedia.instantdebitbca.data.view.utils.ApplinkConstant;
 public class InstantDebitBcaActivity extends BaseSimpleActivity implements InstantDebitBcaFragment.ActionListener {
 
     public static final String CALLBACK_URL = "callbackUrl";
+    private int finishDelay = 5000;
 
     @DeepLink({ApplinkConstant.INSTANT_DEBIT_BCA_APPLINK})
     public static Intent intentForTaskStackBuilderMethods(Context context, Bundle extras) {
@@ -43,6 +45,11 @@ public class InstantDebitBcaActivity extends BaseSimpleActivity implements Insta
             Intent intentRegisteredApplink = RouteManager.getIntent(getApplicationContext(), applinkUrl);
             startActivity(intentRegisteredApplink);
         }
-        finish();
+        finishWithDelay();
+    }
+
+    private void finishWithDelay(){
+        Handler handler = new Handler();
+        handler.postDelayed(() -> finish(), finishDelay);
     }
 }
