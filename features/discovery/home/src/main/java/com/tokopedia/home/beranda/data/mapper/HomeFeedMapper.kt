@@ -28,9 +28,13 @@ class HomeFeedMapper : Func1<GraphqlResponse, HomeFeedListModel> {
         val visitables = mutableListOf<Visitable<HomeFeedTypeFactory>>()
 
         val productStack = Stack<HomeFeedViewModel>()
+        //reverse stack because to get the first in
+        Collections.reverse(productStack)
         productStack.addAll(convertToHomeProductFeedModel(recommendationProduct.product))
 
         val bannerStack = Stack<BannerFeedViewModel>()
+        //reverse stack because to get the first in
+        Collections.reverse(productStack)
         bannerStack.addAll(convertToHomeBannerFeedModel(recommendationProduct.banners))
 
         recommendationProduct.layoutTypes.forEachIndexed { index, layoutType ->
