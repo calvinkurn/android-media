@@ -48,6 +48,7 @@ class CheckoutVariantPresenter @Inject constructor(private val doAtcExpressUseCa
         doAtcExpressUseCase.unsubscribe()
         getCourierRecommendationUseCase.unsubscribe()
         doCheckoutExpressUseCase.unsubscribe()
+        addToCartOcsUseCase.unsubscribe()
         super.detachView()
     }
 

@@ -696,8 +696,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     private fun onSuccessBuyFromProdAttachment(): (addToCartResult: AddToCartDataModel) -> Unit {
         return {
             showSnackbarAddToCart(it)
-            activity?.startActivity((activity!!.application as TopChatRouter)
-                    .getCartIntent(activity))
+            if (it.status == "OK" && it.data.success == 1) {
+                activity?.startActivity((activity!!.application as TopChatRouter)
+                        .getCartIntent(activity))
+            }
         }
     }
 

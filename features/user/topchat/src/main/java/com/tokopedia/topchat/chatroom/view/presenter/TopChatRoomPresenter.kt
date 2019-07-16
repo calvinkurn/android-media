@@ -524,6 +524,7 @@ class TopChatRoomPresenter @Inject constructor(
         deleteMessageListUseCase.unsubscribe()
         changeChatBlockSettingUseCase.unsubscribe()
         getShopFollowingUseCase.unsubscribe()
+        addToCartUseCase.unsubscribe()
         if(::addToCardSubscriber.isInitialized) {
             addToCardSubscriber.unsubscribe()
         }

@@ -552,6 +552,11 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         }
     }
 
+    override fun onDestroy() {
+        viewModel.unsubscribe()
+        super.onDestroy()
+    }
+
     private fun doCheckoutAction(action: Int) {
         when (action) {
             ATC_ONLY -> addToCart()

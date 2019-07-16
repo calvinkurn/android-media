@@ -158,6 +158,11 @@ class NormalCheckoutViewModel @Inject constructor(private val graphqlRepository:
                     })
         }
     }
+
+    fun unsubscribe() {
+        addToCartUseCase.unsubscribe()
+        addToCartOcsUseCase.unsubscribe()
+    }
 }
 
 inline fun <reified T> GraphqlResponse.getSuccessData(): T {

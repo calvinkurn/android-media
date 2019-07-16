@@ -456,6 +456,9 @@ public class WishListImpl implements WishList {
         if (removeWishListUseCase != null) {
             removeWishListUseCase.unsubscribe();
         }
+        if (addToCartUseCase != null) {
+            addToCartUseCase.unsubscribe();
+        }
     }
 
     @Override
