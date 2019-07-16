@@ -140,7 +140,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         com.tokopedia.config.GlobalConfig.HOME_ACTIVITY_CLASS_NAME = DashboardActivity.class.getName();
         com.tokopedia.config.GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME = DeepLinkHandlerActivity.class.getName();
         com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME = DeepLinkActivity.class.getName();
-        setVersionCode();
         try {
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             com.tokopedia.core.util.GlobalConfig.VERSION_NAME = pInfo.versionName;
