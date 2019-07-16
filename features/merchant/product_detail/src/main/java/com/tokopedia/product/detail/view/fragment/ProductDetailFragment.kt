@@ -28,6 +28,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.text.TextUtils
 import android.view.*
+import android.widget.ImageView
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
@@ -1768,20 +1769,21 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         activity?.run {
             val cartCount = (application as ProductDetailRouter).getCartCount(this)
             if (cartCount > 0) {
+                val actionView = menuCart.actionView
+                val cartImageView = actionView.findViewById<ImageView>(R.id.cart_image_view)
+                val lottieCartView = actionView.findViewById<LottieAnimationView>(R.id.cart_lottie_view)
                 if (shouldShowCartAnimation) {
                     shouldShowCartAnimation = false
-                    menuCart.setActionView(R.layout.menu_item_cart)
-                    if (menuCart.actionView is SquareHFrameLayout) {
-                        val lottieCartView = menuCart.actionView.findViewById<LottieAnimationView>(R.id.lottie_cart_view)
+//                    menuCart.setActionView(R.layout.menu_item_cart)
+                    if (actionView is SquareHFrameLayout) {
                         lottieCartView.addAnimatorListener(object : Animator.AnimatorListener {
                             override fun onAnimationRepeat(animator: Animator?) {}
 
                             override fun onAnimationEnd(animator: Animator?) {
                                 activity?.run {
-                                    menuCart.actionView = null
-                                    menuCart.icon = ContextCompat.getDrawable(this, R.drawable.ic_product_cart_counter_dark)
-                                    if (menuCart.icon is LayerDrawable) {
-                                        val icon = menuCart.icon as LayerDrawable
+                                    val drawable = ContextCompat.getDrawable(this, R.drawable.ic_product_cart_counter_dark)
+                                    if (drawable is LayerDrawable) {
+                                        val icon = drawable as LayerDrawable
                                         val badge = CountDrawable(context)
                                         badge.setCount(if (cartCount > 99) {
                                             getString(R.string.pdp_label_cart_count_max)
@@ -1790,6 +1792,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                                         })
                                         icon.mutate()
                                         icon.setDrawableByLayerId(R.id.ic_cart_count, badge)
+                                        cartImageView.setImageDrawable(icon)
+                                        lottieCartView.visibility = View.INVISIBLE
+                                        cartImageView.visibility = View.VISIBLE
                                     }
                                 }
                             }
@@ -1798,13 +1803,15 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
                             override fun onAnimationStart(animator: Animator?) {}
                         })
+                        cartImageView.visibility = View.INVISIBLE
+                        lottieCartView.visibility = View.VISIBLE
                         lottieCartView.playAnimation()
                     }
                 } else {
-                    menuCart.actionView = null
-                    menuCart.icon = ContextCompat.getDrawable(this, R.drawable.ic_product_cart_counter_dark)
-                    if (menuCart.icon is LayerDrawable) {
-                        val icon = menuCart.icon as LayerDrawable
+//                    menuCart.actionView = null
+                    val drawable = ContextCompat.getDrawable(this, R.drawable.ic_product_cart_counter_dark)
+                    if (drawable is LayerDrawable) {
+                        val icon = drawable as LayerDrawable
                         val badge = CountDrawable(context)
                         badge.setCount(if (cartCount > 99) {
                             getString(R.string.pdp_label_cart_count_max)
@@ -1813,6 +1820,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         })
                         icon.mutate()
                         icon.setDrawableByLayerId(R.id.ic_cart_count, badge)
+                        cartImageView.setImageDrawable(icon)
+                        lottieCartView.visibility = View.INVISIBLE
+                        cartImageView.visibility = View.VISIBLE
                     }
                 }
 //                if (val icon = menuCart.icon is LottieDrawable) {

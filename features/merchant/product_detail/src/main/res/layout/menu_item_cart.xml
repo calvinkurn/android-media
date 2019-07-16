@@ -3,15 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:paddingTop="12dp"
-    android:paddingBottom="12dp">
+    android:paddingTop="4dp"
+    android:paddingBottom="4dp">
 
     <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/lottie_cart_view"
+        android:id="@+id/cart_lottie_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:scaleType="fitCenter"
+        android:visibility="invisible"
         app:lottie_autoPlay="false"
         app:lottie_rawRes="@raw/anim_cart" />
+
+    <ImageView
+        android:id="@+id/cart_image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_product_cart_counter_dark" />
 
 </com.tokopedia.product.detail.view.widget.SquareHFrameLayout>
