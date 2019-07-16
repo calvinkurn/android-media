@@ -210,8 +210,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         setHasOptionsMenu(true)
         val view = inflater.inflate(R.layout.fragment_initial_register, parent, false)
         optionTitle = view.findViewById(R.id.register_option_title)
-        partialRegisterInputView = view.findViewById(R.id
-                .register_input_view)
+        partialRegisterInputView = view.findViewById(R.id.register_input_view)
         registerContainer = view.findViewById(R.id.register_container)
         registerButton = view.findViewById(R.id.register)
         loginButton = view.findViewById(R.id.login_button)
@@ -537,7 +536,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
         when (discoverItemViewModel.id.toLowerCase()) {
             FACEBOOK -> loginTextView.setOnClickListener { v -> onRegisterFacebookClick() }
-            GPLUS -> loginTextView.setOnClickListener { v -> onRegisterGooglelick() }
+            GPLUS -> loginTextView.setOnClickListener { v -> onRegisterGoogleClick() }
         }
     }
 
@@ -550,7 +549,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
     }
 
-    private fun onRegisterGooglelick() {
+    private fun onRegisterGoogleClick() {
         activity?.let {
             registerAnalytics.trackClickGoogleButton(it.applicationContext)
             TrackApp.getInstance().moEngage.sendRegistrationStartEvent(LoginRegisterAnalytics.LABEL_GMAIL)

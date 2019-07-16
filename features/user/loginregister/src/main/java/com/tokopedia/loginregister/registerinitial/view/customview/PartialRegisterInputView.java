@@ -75,6 +75,8 @@ public class PartialRegisterInputView extends BaseCustomView {
     }
 
     public void renderData() {
+        tvMessage.setText(tvMessage.getContext().getString(R.string.deafult_placeholder));
+
         etInputEmailPhone.addTextChangedListener(watcher(wrapperEmailPhone));
         etPassword.addTextChangedListener(watcher(wrapperPassword));
 
@@ -168,7 +170,6 @@ public class PartialRegisterInputView extends BaseCustomView {
         wrapperEmailPhone.setLabel(wrapperEmailPhone.getContext().getString(R.string.phone_or_email_input));
         etInputEmailPhone.setText("");
         etInputEmailPhone.setEnabled(true);
-        tvMessage.setText(tvMessage.getContext().getString(R.string.sample_placeholder));
 
     }
 
