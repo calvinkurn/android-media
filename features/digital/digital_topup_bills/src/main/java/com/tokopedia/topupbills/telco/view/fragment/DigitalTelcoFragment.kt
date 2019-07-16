@@ -111,7 +111,7 @@ class DigitalTelcoFragment : BaseDaggerFragment() {
     }
 
     fun onBackPressed() {
-        val currentFragment = (menu_view_pager.adapter as DigitalTelcoProductTabAdapter).getItem(menu_view_pager.currentItem)
+        val currentFragment = (menu_view_pager.adapter as DigitalTelcoProductTabAdapter).getRegisteredFragment(menu_view_pager.currentItem)
         (currentFragment as DigitalBaseTelcoFragment).onBackPressed()
     }
 
