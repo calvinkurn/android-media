@@ -38,7 +38,7 @@ class BannerFeedViewModel(
                 DATA_NAME, name,
                 DATA_CREATIVE, buAttribution+"_"+creativeName,
                 DATA_CREATIVE_URL, imageUrl,
-                DATA_POSITION, position,
+                DATA_POSITION, position.toString(),
                 DATA_PROMO_ID, "",
                 DATA_PROMO_CODE, ""
         )
