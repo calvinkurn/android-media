@@ -41,28 +41,29 @@ class AddToCartOcsUseCase @Inject constructor(@Named("atcOcsMutation") private v
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map {
             val addToCartGqlResponse = it.getData<AddToCartOcsGqlResponse>(AddToCartOcsGqlResponse::class.java)
+            addToCartGqlResponse.let {
+                val dataModel = DataModel()
+                dataModel.success = it.addToCartResponse.data.success
+                dataModel.cartId = it.addToCartResponse.data.cartId
+                dataModel.productId = it.addToCartResponse.data.productId
+                dataModel.quantity = it.addToCartResponse.data.quantity
+                dataModel.notes = it.addToCartResponse.data.notes
+                dataModel.shopId = it.addToCartResponse.data.shopId
+                dataModel.customerId = it.addToCartResponse.data.customerId
+                dataModel.warehouseId = it.addToCartResponse.data.warehouseId
+                dataModel.trackerAttribution = it.addToCartResponse.data.trackerAttribution
+                dataModel.trackerListName = it.addToCartResponse.data.trackerListName
+                dataModel.ucUtParam = it.addToCartResponse.data.ucUtParam
+                dataModel.isTradeIn = it.addToCartResponse.data.isTradeIn
+                dataModel.message = it.addToCartResponse.data.message
 
-            val dataModel = DataModel()
-            dataModel.success = addToCartGqlResponse.addToCartResponse.data.success
-            dataModel.cartId = addToCartGqlResponse.addToCartResponse.data.cartId
-            dataModel.productId = addToCartGqlResponse.addToCartResponse.data.productId
-            dataModel.quantity = addToCartGqlResponse.addToCartResponse.data.quantity
-            dataModel.notes = addToCartGqlResponse.addToCartResponse.data.notes
-            dataModel.shopId = addToCartGqlResponse.addToCartResponse.data.shopId
-            dataModel.customerId = addToCartGqlResponse.addToCartResponse.data.customerId
-            dataModel.warehouseId = addToCartGqlResponse.addToCartResponse.data.warehouseId
-            dataModel.trackerAttribution = addToCartGqlResponse.addToCartResponse.data.trackerAttribution
-            dataModel.trackerListName = addToCartGqlResponse.addToCartResponse.data.trackerListName
-            dataModel.ucUtParam = addToCartGqlResponse.addToCartResponse.data.ucUtParam
-            dataModel.isTradeIn = addToCartGqlResponse.addToCartResponse.data.isTradeIn
-            dataModel.message = addToCartGqlResponse.addToCartResponse.data.message
+                val addToCartDataModel = AddToCartDataModel()
+                addToCartDataModel.status = it.addToCartResponse.status
+                addToCartDataModel.errorMessage = it.addToCartResponse.errorMessage
+                addToCartDataModel.data = dataModel
 
-            val addToCartDataModel = AddToCartDataModel()
-            addToCartDataModel.status = addToCartGqlResponse.addToCartResponse.status
-            addToCartDataModel.errorMessage = addToCartGqlResponse.addToCartResponse.errorMessage
-            addToCartDataModel.data = dataModel
-
-            addToCartDataModel
+                addToCartDataModel
+            }
         }
 
     }
