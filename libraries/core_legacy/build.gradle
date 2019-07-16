@@ -98,6 +98,4 @@ dependencies {
     implementation "com.moengage:integration-verifier:1.0.00"
 }
 
-apply plugin: 'com.google.gms.google-services'
 apply from: '../../publish_local.gradle'
-com.google.gms.googleservices.GoogleServicesPlugin.config.disableVersionCheck = true
