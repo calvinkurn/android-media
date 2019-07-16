@@ -60,7 +60,7 @@
     <string name="profile_completion_end_message">Selamat! Akun Anda telah terverifikasi</string>
     <string name="profile_completion_end_subtext">Kini akun Anda menjadi lebih aman dan nikmati promo menarik hanya untuk Verified Account</string>
     <string name="see_your_profile">Lihat Profil Anda</string>
-    <string name="success_add_gender">Sukses menambahkan jenis kelamin</string>
+    <string name="success_add_gender">Jenis kelamin berhasil diubah</string>
 
     <!-- ADD EMAIL -->
     <string name="title_add_email">Tambah Email</string>
@@ -69,7 +69,7 @@
     <string name="we_will_send_email_verification_code">Kami akan mengirimkan kode verifikasi melalui email</string>
     <string name="error_field_required">Harus diisi</string>
     <string name="wrong_email_format">Format email salah</string>
-    <string name="success_add_email">Sukses menambahkan email</string>
+    <string name="success_add_email">Email berhasil ditambah</string>
 
     <!-- ADD PHONE -->
     <string name="title_add_phone">Tambah Nomor Ponsel</string>
@@ -79,7 +79,10 @@
     <string name="wrong_phone_format">Format nomor ponsel salah</string>
     <string name="tokocash_after_activation">Setelah terverifikasi, TokoCash akan aktif dan bisa digunakan sebagai salah satu metode pembayaran Anda.</string>
     <string name="phone_number_already_exist">Akun lain telah menggunakan nomor ponsel ini</string>
-    <string name="success_add_phone">Sukses menambahkan nomor telepon</string>
+    <string name="success_add_phone">Nomor telepon berhasil ditambah</string>
+
+    <!-- CHANGE PHONE -->
+    <string name="success_change_phone_number">Nomor telepon berhasil diubah</string>
 
     <!-- CHANGE EMAIL -->
     <string name="cannot_change_email">Untuk saat ini, kamu hanya bisa mengubah email akun Tokopedia dari komputer</string>
@@ -88,6 +91,7 @@
     <!-- UPLOAD AVATAR -->
     <string name="failed_to_get_picture">Gagal mengambil gambar. Mohon coba kembali</string>
     <string name="failed_to_upload_picture">Gagal mengunggah gambar. Mohon coba kembali</string>
+    <string name="success_change_profile_picture">Foto profil berhasil diubah</string>
 
 
 </resources>

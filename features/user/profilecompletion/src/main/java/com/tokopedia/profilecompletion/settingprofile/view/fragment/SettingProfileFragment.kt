@@ -1,6 +1,5 @@
 package com.tokopedia.profilecompletion.settingprofile.view.fragment
 
-//import com.tokopedia.unifycomponents.Toaster
 import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
@@ -11,7 +10,6 @@ import android.support.design.widget.Snackbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -98,13 +96,21 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     private fun onErrorUploadProfilePicture(throwable: Throwable) {
         dismissLoading()
-        Toast.makeText(context, "throw : " + throwable.message, Toast.LENGTH_LONG).show()
+        view?.run {
+            Toaster.showError(
+                    this,
+                    ErrorHandlerSession.getErrorMessage(throwable, context, false),
+                    Snackbar.LENGTH_LONG)
+        }
     }
 
     private fun onSuccessUploadProfilePicture(result: UploadProfilePictureResult) {
         dismissLoading()
 
         if (result.uploadProfileImageModel.data.filePath.isNotBlank()) {
+            view?.run {
+                Toaster.showNormal(this, getString(R.string.success_change_profile_picture), Snackbar.LENGTH_LONG)
+            }
             ImageHandler.loadImageCircle2(context, profilePhoto,
                     result.uploadProfileImageModel.data.filePath)
         } else {
@@ -128,7 +134,8 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     REQUEST_CODE_EDIT_BOD -> {
                     } //TODO add action on result
                     REQUEST_CODE_EDIT_PHONE -> {
-                    } //TODO add action on result
+                        onSuccessEditPhone(data)
+                    }
                     REQUEST_CODE_ADD_EMAIL -> {
                         onSuccessAddEmail(data)
                     }
@@ -138,32 +145,30 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     REQUEST_CODE_ADD_GENDER -> {
                         onSuccessAddGender(data)
                     }
-                    else -> {
-                    } //TODO add action on result
                 }
             }
-            Activity.RESULT_CANCELED -> {
-                when (requestCode) {
-                    REQUEST_CODE_EDIT_PROFILE_PHOTO -> {
-                    } //TODO add action on result
-                    REQUEST_CODE_EDIT_BOD -> {
-                    } //TODO add action on result
-                    REQUEST_CODE_EDIT_PHONE -> {
-                    } //TODO add action on result
-                    else -> {
-                    } //TODO add action on result
-                }
-            }
-            else -> {
-            } //TODO add action on result
         }
+    }
+
+    private fun onSuccessEditPhone(data: Intent?) {
+        refreshProfile()
+        view?.run {
+            Toaster.showNormal(this, getString(R.string.success_change_phone_number), Snackbar.LENGTH_LONG)
+        }
+    }
+
+    private fun refreshProfile() {
+        showLoading(true)
+        profileInfoViewModel.getUserProfileInfo()
     }
 
     private fun onSuccessAddGender(data: Intent?) {
         data?.extras?.run {
             val genderResult = getInt(ChangeGenderFragment.EXTRA_SELECTED_GENDER, 1)
 
-            view?.run{
+            //TODO ADE GENDER IS STILL SHOWING EMPTY
+
+            view?.run {
                 Toaster.showNormal(this, getString(R.string.success_add_gender), Snackbar.LENGTH_LONG)
             }
             gender.showFilled(
@@ -181,7 +186,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
         data?.extras?.run {
             val phoneString = getString(AddPhoneFragment.EXTRA_PHONE, "")
             if (phoneString.isNotBlank()) {
-                view?.run{
+                view?.run {
                     Toaster.showNormal(this, getString(R.string.success_add_phone), Snackbar.LENGTH_LONG)
                 }
                 phone.showFilled(
@@ -202,7 +207,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
         data?.extras?.run {
             val emailString = getString(AddEmailFragment.EXTRA_EMAIL, "")
             if (emailString.isNotBlank()) {
-                view?.run{
+                view?.run {
                     Toaster.showNormal(this, getString(R.string.success_add_email), Snackbar.LENGTH_LONG)
                 }
                 email.showFilled(
