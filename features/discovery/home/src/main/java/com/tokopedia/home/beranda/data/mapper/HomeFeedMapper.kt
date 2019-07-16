@@ -40,7 +40,7 @@ class HomeFeedMapper : Func1<GraphqlResponse, HomeFeedListModel> {
                 visitables.add(bannerStack.pop())
             }
         }
-        return HomeFeedListModel(visitables as List<Visitable<Any>>?, recommendationProduct.hasNextPage)
+        return HomeFeedListModel(visitables, recommendationProduct.hasNextPage)
     }
 
     private fun convertToHomeBannerFeedModel(banners: List<Banner>): List<BannerFeedViewModel> {
@@ -57,7 +57,8 @@ class HomeFeedMapper : Func1<GraphqlResponse, HomeFeedListModel> {
                             banner.applink,
                             banner.buAttribution,
                             banner.creativeName,
-                            banner.target
+                            banner.target,
+                            position
                     )
             )
         }

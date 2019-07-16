@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringGridViewHolder;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeBannerFeedViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeFeedLoadingMoreViewHolder;
 import com.tokopedia.home.beranda.presentation.presenter.HomeFeedContract;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeFeedViewHolder;
@@ -34,6 +35,8 @@ public class HomeFeedTypeFactory extends BaseAdapterTypeFactory {
     public AbstractViewHolder createViewHolder(View parent, int type) {
         if (type == HomeFeedViewHolder.LAYOUT) {
             return new HomeFeedViewHolder(parent, view);
+        } else if (type == BannerFeedViewModel.Companion.getLAYOUT()) {
+            return new HomeBannerFeedViewHolder(parent, view);
         } else if (type == LoadingShimmeringGridViewHolder.LAYOUT) {
             return new LoadingShimmeringGridViewHolder(parent);
         } else if (type == HomeFeedLoadingMoreViewHolder.LAYOUT) {

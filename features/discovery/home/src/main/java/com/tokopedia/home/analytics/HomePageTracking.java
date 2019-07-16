@@ -8,6 +8,7 @@ import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.home.beranda.data.model.Promotion;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.BannerFeedViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedViewModel;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
@@ -868,5 +869,60 @@ public class HomePageTracking {
                     LABEL_EMPTY
             );
         }
+    }
+
+    public static void eventImpressionOnBannerFeed(
+            TrackingQueue trackingQueue,
+            BannerFeedViewModel bannerFeedViewModel,
+            String tabName) {
+
+        if (trackingQueue == null) {
+            return;
+        }
+
+        Map<String, Object> data = DataLayer.mapOf(
+                EVENT, PROMO_VIEW,
+                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                EVENT_ACTION, "impression on banner inside recommendation tab",
+                EVENT_LABEL, tabName,
+                ECOMMERCE, DataLayer.mapOf(
+                        PROMO_VIEW, DataLayer.mapOf(
+                                PROMOTIONS,
+                                convertBannerFeedViewModelListToObjectData(bannerFeedViewModel, tabName)
+                        )
+                )
+        );
+        trackingQueue.putEETracking((HashMap<String, Object>) data);
+    }
+
+    private static List<Object> convertBannerFeedViewModelListToObjectData(
+            BannerFeedViewModel bannerFeedViewModel,
+            String tabName
+    ) {
+        List<Object> objects = new ArrayList<>();
+        objects.add(bannerFeedViewModel.convertBannerFeedModelToDataLayer());
+        return objects;
+    }
+
+    public static void eventClickOnBannerFeed(
+            Context context,
+            BannerFeedViewModel bannerFeedViewModel,
+            String tabName) {
+
+        ContextAnalytics tracker = getTracker(context);
+
+        Map<String, Object> data = DataLayer.mapOf(
+                EVENT, PROMO_VIEW,
+                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                EVENT_ACTION, "click on banner inside recommendation tab",
+                EVENT_LABEL, tabName,
+                ECOMMERCE, DataLayer.mapOf(
+                        PROMO_CLICK, DataLayer.mapOf(
+                                PROMOTIONS,
+                                convertBannerFeedViewModelListToObjectData(bannerFeedViewModel, tabName)
+                        )
+                )
+        );
+        tracker.sendEnhanceEcommerceEvent(data);
     }
 }
