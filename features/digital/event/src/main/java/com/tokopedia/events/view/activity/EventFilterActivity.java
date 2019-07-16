@@ -13,16 +13,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.events.R;
-import com.tokopedia.events.R2;
 import com.tokopedia.events.view.contractor.EventFilterContract;
 import com.tokopedia.events.view.contractor.ICloseFragement;
 import com.tokopedia.events.view.fragment.CategoryFilterFragment;
 import com.tokopedia.events.view.fragment.TimeFilterFragment;
 import com.tokopedia.events.view.presenter.EventFilterPresenterImpl;
 import com.tokopedia.events.view.utils.Utils;
-
-import butterknife.BindView;
-import butterknife.OnClick;
 
 import static com.tokopedia.events.view.contractor.EventFilterContract.CATEGORY_ARRAY;
 import static com.tokopedia.events.view.contractor.EventFilterContract.CATEGORY_ID;
@@ -32,25 +28,18 @@ import static com.tokopedia.events.view.contractor.EventFilterContract.TIME_VALU
 public class EventFilterActivity
         extends EventBaseActivity
         implements EventFilterContract.EventFilterView,
-        CategoryFilterFragment.CategorySelectedListener, TimeFilterFragment.OnSelectTimeFilterListener, ICloseFragement {
-    @BindView(R2.id.iv_close_filter)
+        CategoryFilterFragment.CategorySelectedListener, TimeFilterFragment.OnSelectTimeFilterListener, ICloseFragement, View.OnClickListener {
     ImageView ivCloseFilter;
-    @BindView(R2.id.tv_filter_calendar)
     TextView tvFilterCalendar;
-    @BindView(R2.id.item_calendar)
     TextView itemCalendar;
-    @BindView(R2.id.delete_calendar)
     View deleteCalendar;
-    @BindView(R2.id.selected_filter1)
     LinearLayout selectedTime;
-    @BindView(R2.id.tv_filter_category)
     TextView tvFilterCategory;
-    @BindView(R2.id.item_category)
     TextView itemCategory;
-    @BindView(R2.id.delete_category)
     View deleteCategory;
-    @BindView(R2.id.selected_filter2)
     LinearLayout selectedCategory;
+    TextView resetBtn;
+    TextView simpanBtn;
     private EventFilterPresenterImpl filterPresenter;
 
     public static Intent getCallingIntent(Activity activity) {
@@ -112,6 +101,29 @@ public class EventFilterActivity
     }
 
     @Override
+    void setupVariables() {
+        ivCloseFilter = findViewById(R.id.iv_close_filter);
+        tvFilterCalendar = findViewById(R.id.tv_filter_calendar);
+        itemCalendar = findViewById(R.id.item_calendar);
+        deleteCalendar = findViewById(R.id.delete_calendar);
+        selectedTime = findViewById(R.id.selected_filter1);
+        tvFilterCategory = findViewById(R.id.tv_filter_category);
+        itemCategory = findViewById(R.id.item_category);
+        deleteCategory = findViewById(R.id.delete_category);
+        selectedCategory = findViewById(R.id.selected_filter2);
+        resetBtn = findViewById(R.id.tv_reset);
+        simpanBtn = findViewById(R.id.tv_simpan);
+
+        deleteCalendar.setOnClickListener(this);
+        deleteCategory.setOnClickListener(this);
+        ivCloseFilter.setOnClickListener(this);
+        tvFilterCategory.setOnClickListener(this);
+        tvFilterCalendar.setOnClickListener(this);
+        resetBtn.setOnClickListener(this);
+        simpanBtn.setOnClickListener(this);
+    }
+
+    @Override
     public void setCategory(String category) {
         filterPresenter.setCategoryFilter(category);
         for (int i = 0; i < CATEGORY_ID.length; i++) {
@@ -124,26 +136,6 @@ public class EventFilterActivity
             selectedCategory.setVisibility(View.GONE);
         else
             selectedCategory.setVisibility(View.VISIBLE);
-    }
-
-    @OnClick({R2.id.delete_calendar,
-            R2.id.delete_category,
-            R2.id.tv_reset,
-            R2.id.iv_close_filter})
-    void onClickListener(View v) {
-        int id = v.getId();
-        if (id == R.id.delete_calendar) {
-            filterPresenter.deleteCalendarFilter();
-            itemCalendar.setText("");
-            selectedTime.setVisibility(View.GONE);
-        } else if (id == R.id.delete_category) {
-            filterPresenter.deleteCategoryFilter();
-            itemCategory.setText("");
-            selectedCategory.setVisibility(View.GONE);
-        } else if (id == R.id.tv_reset)
-            filterPresenter.onClickResetFilter();
-        else if (id == R.id.iv_close_filter)
-            onBackPressed();
     }
 
     @Override
@@ -169,23 +161,38 @@ public class EventFilterActivity
         filterPresenter.setTimeRangeFilter(timerange, startdate);
     }
 
-    @OnClick(R2.id.tv_simpan)
-    void onSubmitFilters() {
-        filterPresenter.setFilters();
-    }
-
-    @OnClick({R2.id.tv_filter_category,
-            R2.id.tv_filter_calendar})
-    void onClickFilterType(View v) {
-        int id = v.getId();
-        if (id == R.id.tv_filter_calendar)
-            filterPresenter.onClickCalendar();
-        else
-            filterPresenter.onClickCategory();
-    }
-
     @Override
     public void closeFragmentSelf() {
         getSupportFragmentManager().popBackStack();
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.delete_calendar ||
+                v.getId() == R.id.delete_category ||
+                v.getId() == R.id.tv_reset ||
+                v.getId() == R.id.iv_close_filter) {
+            int id = v.getId();
+            if (id == R.id.delete_calendar) {
+                filterPresenter.deleteCalendarFilter();
+                itemCalendar.setText("");
+                selectedTime.setVisibility(View.GONE);
+            } else if (id == R.id.delete_category) {
+                filterPresenter.deleteCategoryFilter();
+                itemCategory.setText("");
+                selectedCategory.setVisibility(View.GONE);
+            } else if (id == R.id.tv_reset)
+                filterPresenter.onClickResetFilter();
+            else if (id == R.id.iv_close_filter)
+                onBackPressed();
+        } else if (v.getId() == R.id.tv_simpan) {
+            filterPresenter.setFilters();
+        } else if (v.getId() == R.id.tv_filter_category || v.getId() == R.id.tv_filter_calendar) {
+            int id = v.getId();
+            if (id == R.id.tv_filter_calendar)
+                filterPresenter.onClickCalendar();
+            else
+                filterPresenter.onClickCategory();
+        }
     }
 }

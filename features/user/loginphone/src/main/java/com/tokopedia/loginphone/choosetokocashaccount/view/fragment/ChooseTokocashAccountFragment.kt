@@ -332,6 +332,7 @@ class ChooseTokocashAccountFragment : BaseDaggerFragment(), ChooseTokocashAccoun
                         userDetail,
                         viewModel.phoneNumber)
             } else {
+                dismissLoadingProgress()
                 adapter.setList(accountList.accountListPojo.userDetails)
                 message.text = promptText
             }

@@ -1,7 +1,7 @@
 package com.tokopedia.shop.open.view.listener;
 
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.district_recommendation.domain.model.Token;
+import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 
 /**

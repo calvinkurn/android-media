@@ -95,8 +95,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
             seeAllView.show(getActivity().getSupportFragmentManager(), SeeAllView.class.getName());
         } else if (applink.equals(AccountConstants.Navigation.TOPADS)
                 && getContext().getApplicationContext() instanceof AccountHomeRouter) {
-            ((AccountHomeRouter) getContext().getApplicationContext()).gotoTopAdsDashboard
-                    (getContext());
+            ((AccountHomeRouter) getContext().getApplicationContext()).gotoTopAdsDashboard(getContext());
         } else if (applink.equals(AccountConstants.Navigation.TRAIN_ORDER_LIST)
                 && getContext().getApplicationContext() instanceof AccountHomeRouter) {
             getActivity().startActivity(((AccountHomeRouter) getContext().getApplicationContext()).getTrainOrderListIntent

@@ -7,9 +7,9 @@ import com.google.gson.Gson;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.district_recommendation.domain.model.Address;
-import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress;
+import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.seller.shopsettings.shipping.fragment.EditShippingViewListener;
 import com.tokopedia.seller.shopsettings.shipping.fragment.FragmentEditShipping;
 import com.tokopedia.seller.shopsettings.shipping.interactor.EditShippingInteractorImpl;
@@ -65,7 +65,7 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
 
     private OpenShopData openShopModel;
 
-    private Address selectedAddress;
+    private DistrictRecommendationAddress selectedAddress;
 
     public EditShippingPresenterImpl(EditShippingViewListener view) {
         this.view = view;
@@ -249,7 +249,7 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
 
             String selectedAddressStr = model.getOpenShopHashMap().get(EditShippingPresenter.SELECTED_ADDRESS);
             if (selectedAddressStr != null && selectedAddressStr.length() > 0) {
-                selectedAddress = new Gson().fromJson(selectedAddressStr, Address.class);
+                selectedAddress = new Gson().fromJson(selectedAddressStr, DistrictRecommendationAddress.class);
 
                 view.setLocationProvinceCityDistrict(selectedAddress.getProvinceName(),
                         selectedAddress.getCityName(), selectedAddress.getDistrictName());
@@ -637,12 +637,12 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
     }
 
     @Override
-    public void setSelectedAddress(Address address) {
+    public void setSelectedAddress(DistrictRecommendationAddress address) {
         selectedAddress = address;
     }
 
     @Override
-    public Address getselectedAddress() {
+    public DistrictRecommendationAddress getselectedAddress() {
         return selectedAddress;
     }
 
