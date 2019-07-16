@@ -1,7 +1,6 @@
 package com.tokopedia.notifications.receiver
 
 import android.app.Activity
-import android.app.NotificationManager
 import android.content.*
 import android.support.v4.app.NotificationManagerCompat
 import android.text.TextUtils
@@ -10,8 +9,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.commonpromo.PromoCodeAutoApplyUseCase
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.common.*
-import com.tokopedia.notifications.factory.BaseNotification
-import com.tokopedia.notifications.factory.CMNotificationFactory
 import com.tokopedia.notifications.factory.CarouselNotification
 import com.tokopedia.notifications.factory.ProductNotification
 import com.tokopedia.notifications.model.*
@@ -39,10 +36,22 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
             val campaignId = intent.getIntExtra(CMConstant.EXTRA_CAMPAIGN_ID, 0)
             if (null != action) {
                 when (action) {
+
+                    CMConstant.ReceiverAction.ACTION_ON_NOTIFICATION_DISMISS -> {
+                        NotificationManagerCompat.from(context).cancel(notificationId)
+                        sendPushEvent(context, IrisAnalyticsEvents.PUSH_DISMISSED, campaignId, notificationId)
+                    }
+
+                    CMConstant.ReceiverAction.ACTION_NOTIFICATION_CLICK -> {
+                        handleNotificationClick(context, intent, notificationId)
+                        sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, campaignId, notificationId)
+                    }
+
                     CMConstant.ReceiverAction.ACTION_BUTTON -> {
                         handleActionButtonClick(context, intent, notificationId)
                         sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, campaignId, notificationId)
                     }
+
                     CMConstant.ReceiverAction.ACTION_PERSISTENT_CLICK -> {
                         handlePersistentClick(context, intent)
                         sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, campaignId, notificationId)
@@ -51,58 +60,72 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                         cancelPersistentNotification(context, notificationId)
                         sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, campaignId, notificationId)
                     }
-                    CMConstant.ReceiverAction.ACTION_ON_NOTIFICATION_DISMISS -> {
-                        NotificationManagerCompat.from(context).cancel(notificationId)
-                        sendPushEvent(context, IrisAnalyticsEvents.PUSH_DISMISSED, campaignId, notificationId)
-                    }
-                    CMConstant.ReceiverAction.ACTION_NOTIFICATION_CLICK -> {
-                        handleNotificationClick(context, intent, notificationId)
-                        sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, campaignId, notificationId)
-                    }
+
 
                     CMConstant.ReceiverAction.ACTION_GRID_CLICK -> {
                         handleGridNotificationClick(context, intent, notificationId)
                         sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, campaignId, notificationId)
                     }
 
-                    CMConstant.ReceiverAction.ACTION_CAROUSEL_MAIN_CLICK-> {
+                    CMConstant.ReceiverAction.ACTION_GRID_MAIN_CLICK -> {
+                        handleMainClick(context, intent, notificationId)
+                        sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, campaignId, notificationId)
+                    }
+
+                    /*Image Carousel Handling*/
+                    CMConstant.ReceiverAction.ACTION_CAROUSEL_MAIN_CLICK -> {
+                        //has Base Notification Model
                         handleCarouselMainClick(context, intent, notificationId)
                         sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, campaignId, notificationId)
                     }
                     CMConstant.ReceiverAction.ACTION_CAROUSEL_IMAGE_CLICK -> {
+                        //has Base Notification Model
                         handleCarouselImageClick(context, intent, notificationId)
                         sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, campaignId, notificationId)
                     }
-                    CMConstant.ReceiverAction.ACTION_RIGHT_ARROW_CLICK ->
+                    CMConstant.ReceiverAction.ACTION_RIGHT_ARROW_CLICK -> {
+                        //has Base Notification Model
                         CarouselNotification.onRightIconClick(context.applicationContext,
                                 intent.getParcelableExtra(CMConstant.EXTRA_BASE_MODEL))
-                    CMConstant.ReceiverAction.ACTION_LEFT_ARROW_CLICK ->
+                    }
+                    CMConstant.ReceiverAction.ACTION_LEFT_ARROW_CLICK -> {
+                        //has Base Notification Model
                         CarouselNotification.onLeftIconClick(context.applicationContext,
                                 intent.getParcelableExtra(CMConstant.EXTRA_BASE_MODEL))
-                    CMConstant.ReceiverAction.ACTION_CAROUSEL_NOTIFICATION_DISMISS -> {
-                        clearCarouselImages(context.applicationContext)
                     }
 
+                    CMConstant.ReceiverAction.ACTION_CAROUSEL_NOTIFICATION_DISMISS -> {
+                        //has Base Notification Model
+                        clearCarouselImages(context.applicationContext)
+                    }
+                    /*Image Carousel Handling*/
 
+                    /*Product Info Carousel Click Handling*/
                     CMConstant.ReceiverAction.ACTION_PRODUCT_CLICK -> {
+                        //has Base Notification Model
                         handleProductClick(context, intent, notificationId)
                         sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, campaignId, notificationId)
                     }
                     CMConstant.ReceiverAction.ACTION_PRODUCT_COLLAPSED_CLICK -> {
+                        //has Base Notification Model
                         handleCollapsedViewClick(context, intent, notificationId)
                         sendPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, campaignId, notificationId)
                     }
                     CMConstant.ReceiverAction.ACTION_PRODUCT_CAROUSEL_LEFT_CLICK -> {
+                        //has Base Notification Model
                         ProductNotification.onLeftIconClick(context.applicationContext,
                                 intent.getParcelableExtra(CMConstant.EXTRA_BASE_MODEL))
                     }
                     CMConstant.ReceiverAction.ACTION_PRODUCT_CAROUSEL_RIGHT_CLICK -> {
+                        //has Base Notification Model
                         ProductNotification.onRightIconClick(context.applicationContext,
                                 intent.getParcelableExtra(CMConstant.EXTRA_BASE_MODEL))
                     }
                     CMConstant.ReceiverAction.ACTION_PRODUCT_NOTIFICATION_DISMISS -> {
+                        //has Base Notification Model
                         clearProductImages(context.applicationContext)
                     }
+                    /*Product Info Carousel Click Handling*/
 
                 }
             }
@@ -110,13 +133,17 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
         }
     }
 
-    private fun handleCarouselMainClick(context: Context, intent: Intent, notificationId: Int) {
+    private fun handleMainClick(context: Context, intent: Intent, notificationId: Int) {
         val baseNotificationModel: BaseNotificationModel = intent.getParcelableExtra(CMConstant.EXTRA_BASE_MODEL)
         val appLinkIntent = RouteManager.getIntent(context.applicationContext, baseNotificationModel.appLink)
         appLinkIntent.putExtras(intent.extras!!)
         startActivity(context, appLinkIntent)
         context.applicationContext.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
         NotificationManagerCompat.from(context).cancel(notificationId)
+    }
+
+    private fun handleCarouselMainClick(context: Context, intent: Intent, notificationId: Int) {
+        handleMainClick(context, intent, notificationId)
         clearCarouselImages(context.applicationContext)
     }
 
@@ -131,12 +158,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
     }
 
     private fun handleCollapsedViewClick(context: Context, intent: Intent, notificationId: Int) {
-        val baseNotificationModel: BaseNotificationModel = intent.getParcelableExtra(CMConstant.EXTRA_BASE_MODEL)
-        val appLinkIntent = RouteManager.getIntent(context.applicationContext, baseNotificationModel.appLink)
-        appLinkIntent.putExtras(intent.extras!!)
-        startActivity(context, appLinkIntent)
-        context.applicationContext.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
-        NotificationManagerCompat.from(context).cancel(notificationId)
+        handleMainClick(context, intent, notificationId)
         clearProductImages(context.applicationContext)
     }
 
@@ -159,11 +181,11 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
     }
 
     private fun handleGridNotificationClick(context: Context, intent: Intent, notificationId: Int) {
-        val appLinks = intent.getStringExtra(CMConstant.ReceiverExtraData.ACTION_APP_LINK)
-        val appLinkIntent = RouteManager.getIntent(context.applicationContext, appLinks)
+        context.applicationContext.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
+        val grid: Grid = intent.getParcelableExtra(CMConstant.ReceiverExtraData.EXTRA_GRID_DATA)
+        val appLinkIntent = RouteManager.getIntent(context.applicationContext, grid.appLink)
         appLinkIntent.putExtras(intent.extras!!)
         startActivity(context, appLinkIntent)
-        context.applicationContext.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
         NotificationManagerCompat.from(context).cancel(notificationId)
     }
 
@@ -177,8 +199,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
     private fun handlePersistentClick(context: Context, intent: Intent) {
         context.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
         if (intent.hasExtra(CMConstant.ReceiverExtraData.PERSISTENT_BUTTON_DATA)) {
-            val persistentButton = intent.getParcelableExtra<PersistentButton>(CMConstant.ReceiverExtraData.PERSISTENT_BUTTON_DATA)
-                    ?: return
+            val persistentButton: PersistentButton = intent.getParcelableExtra(CMConstant.ReceiverExtraData.PERSISTENT_BUTTON_DATA)
             if (persistentButton.isAppLogo) {
                 CMEvents.postGAEvent(PersistentEvent.EVENT, PersistentEvent.EVENT_CATEGORY,
                         PersistentEvent.EVENT_ACTION_LOGO_CLICK, persistentButton.appLink!!)
@@ -202,13 +223,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
     }
 
     private fun handleNotificationClick(context: Context, intent: Intent, notificationId: Int) {
-        val appLinks = intent.getStringExtra(CMConstant.ReceiverExtraData.ACTION_APP_LINK)
-        val appLinkIntent = RouteManager.getIntent(context.applicationContext, appLinks)
-        appLinkIntent.putExtras(intent.extras!!)
-        startActivity(context, appLinkIntent)
-
-        NotificationManagerCompat.from(context.applicationContext).cancel(notificationId)
-        context.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
+        handleMainClick(context, intent, notificationId)
         if (intent.hasExtra(CMConstant.CouponCodeExtra.COUPON_CODE)) {
             val coupon = intent.getStringExtra(CMConstant.CouponCodeExtra.COUPON_CODE)
             if (!TextUtils.isEmpty(coupon))
@@ -217,37 +232,18 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
     }
 
     private fun handleActionButtonClick(context: Context, intent: Intent, notificationId: Int) {
-        if (intent.hasExtra(CMConstant.EXTRA_PRE_DEF_ACTION)) {
-            val preDefineActions = intent.getParcelableExtra<PreDefineActions>(CMConstant.EXTRA_PRE_DEF_ACTION)
-            handleShareActionButtonClick(context, preDefineActions)
-        } else {
-            if (!intent.hasExtra(CMConstant.ReceiverExtraData.ACTION_BUTTON_APP_LINK))
-                return
-            val appLinks = intent.getStringExtra(CMConstant.ReceiverExtraData.ACTION_BUTTON_APP_LINK)
-            val appLinkIntent = RouteManager.getIntent(context.applicationContext, appLinks)
-            appLinkIntent.putExtras(intent.extras!!)
-            startActivity(context, appLinkIntent)
+        val actionButton: ActionButton? = intent.getParcelableExtra(CMConstant.ReceiverExtraData.ACTION_BUTTON_EXTRA)
+        actionButton?.apply {
+            pdActions?.let {
+                handleShareActionButtonClick(context, it)
+            } ?: let {
+                val appLinkIntent = RouteManager.getIntent(context.applicationContext, it.appLink)
+                appLinkIntent.putExtras(intent.extras!!)
+                startActivity(context, appLinkIntent)
+            }
         }
         NotificationManagerCompat.from(context.applicationContext).cancel(notificationId)
         context.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
-    }
-
-    private fun handleCarouselButtonClick(context: Context, intent: Intent, notificationId: Int, isNext: Boolean) {
-        try {
-            val carouselList = intent.getParcelableArrayListExtra<Carousel>(CMConstant.ReceiverExtraData.CAROUSEL_DATA)
-            var index = intent.getIntExtra(CMConstant.PayloadKeys.CAROUSEL_INDEX, 0)
-            if (null == carouselList || carouselList.size == 0)
-                return
-            index = if (isNext) index + 1 else index - 1
-            val bundle = intent.extras
-            bundle!!.putString(CMConstant.PayloadKeys.NOTIFICATION_ID, notificationId.toString())
-            bundle.putInt(CMConstant.PayloadKeys.CAROUSEL_INDEX, index)
-            bundle.putString(CMConstant.PayloadKeys.NOTIFICATION_TYPE, CMConstant.NotificationType.CAROUSEL_NOTIFICATION)
-            val baseNotification = CMNotificationFactory.getNotification(context.applicationContext, bundle)
-            postNotification(context, baseNotification!!)
-        } catch (e: Exception) {
-        }
-
     }
 
     private fun handleCarouselImageClick(context: Context, intent: Intent, notificationId: Int) {
@@ -264,12 +260,6 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                 onError = {
                     Timber.i(it)
                 })
-    }
-
-    private fun postNotification(context: Context, baseNotification: BaseNotification) {
-        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val notification = baseNotification.createNotification()
-        notificationManager.notify(baseNotification.baseNotificationModel.notificationId, notification)
     }
 
     private fun startActivity(context: Context, intent: Intent) {
@@ -295,7 +285,6 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
             context.applicationContext.startActivity(sharingIntent)
         } catch (e: ActivityNotFoundException) {
         }
-
     }
 
     private fun applyPromoCode(context: Context, promoCode: String) {
@@ -307,3 +296,59 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
     }
 
 }
+
+/*private fun handleActionButtonClick(context: Context, intent: Intent, notificationId: Int) {
+        val actionButton: ActionButton? = intent.getParcelableExtra(CMConstant.ReceiverExtraData.ACTION_BUTTON_EXTRA)
+        actionButton?.apply {
+            pdActions?.let {
+                handleShareActionButtonClick(context, it)
+            } ?: let {
+                val appLinkIntent = RouteManager.getIntent(context.applicationContext, it.appLink)
+                appLinkIntent.putExtras(intent.extras!!)
+                startActivity(context, appLinkIntent)
+            }
+        }
+
+        /*if (intent.hasExtra(CMConstant.EXTRA_PRE_DEF_ACTION)) {
+            val preDefineActions = intent.getParcelableExtra<PreDefineActions>(CMConstant.EXTRA_PRE_DEF_ACTION)
+            handleShareActionButtonClick(context, preDefineActions)
+        } else {
+            if (!intent.hasExtra(CMConstant.ReceiverExtraData.ACTION_BUTTON_APP_LINK))
+                return
+            val appLinks = intent.getStringExtra(CMConstant.ReceiverExtraData.ACTION_BUTTON_APP_LINK)
+            val appLinkIntent = RouteManager.getIntent(context.applicationContext, appLinks)
+            appLinkIntent.putExtras(intent.extras!!)
+            startActivity(context, appLinkIntent)
+        }*/
+
+        NotificationManagerCompat.from(context.applicationContext).cancel(notificationId)
+        context.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
+    }*/
+
+/*
+    private fun handleCarouselButtonClick(context: Context, intent: Intent, notificationId: Int, isNext: Boolean) {
+        try {
+            val carouselList = intent.getParcelableArrayListExtra<Carousel>(CMConstant.ReceiverExtraData.CAROUSEL_DATA)
+            var index = intent.getIntExtra(CMConstant.PayloadKeys.CAROUSEL_INDEX, 0)
+            if (null == carouselList || carouselList.size == 0)
+                return
+            index = if (isNext) index + 1 else index - 1
+            val bundle = intent.extras
+            bundle!!.putString(CMConstant.PayloadKeys.NOTIFICATION_ID, notificationId.toString())
+            bundle.putInt(CMConstant.PayloadKeys.CAROUSEL_INDEX, index)
+            bundle.putString(CMConstant.PayloadKeys.NOTIFICATION_TYPE, CMConstant.NotificationType.CAROUSEL_NOTIFICATION)
+            val baseNotification = CMNotificationFactory.getNotification(context.applicationContext, bundle)
+            postNotification(context, baseNotification!!)
+        } catch (e: Exception) {
+        }
+
+    }*/
+
+/*
+
+    private fun postNotification(context: Context, baseNotification: BaseNotification) {
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notification = baseNotification.createNotification()
+        notificationManager.notify(baseNotification.baseNotificationModel.notificationId, notification)
+    }
+*/

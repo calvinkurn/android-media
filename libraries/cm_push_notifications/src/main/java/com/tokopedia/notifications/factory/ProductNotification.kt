@@ -4,7 +4,6 @@ import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
 import android.support.v4.app.NotificationCompat
 import android.text.TextUtils
@@ -14,10 +13,8 @@ import com.tokopedia.notifications.R
 import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.common.CMNotificationUtils
 import com.tokopedia.notifications.common.CarouselUtilities
-
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.notifications.model.ProductInfo
-import com.tokopedia.notifications.receiver.CMBroadcastReceiver
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -63,11 +60,11 @@ internal class ProductNotification(applicationContext: Context, baseNotification
         remoteView.setTextViewText(R.id.tv_collapse_title, CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.title))
         remoteView.setTextViewText(R.id.tv_collapsed_message, CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.message))
         baseNotificationModel.appLink?.let {
-            remoteView.setOnClickPendingIntent(R.id.collapseMainView, getMainPendingIntent())
+            remoteView.setOnClickPendingIntent(R.id.collapseMainView, getCollapsedPendingIntent())
         }
     }
 
-    private fun setExpandViewData(remoteView: RemoteViews, currentProductInfo: ProductInfo, bitmap: Bitmap?)  {
+    private fun setExpandViewData(remoteView: RemoteViews, currentProductInfo: ProductInfo, bitmap: Bitmap?) {
         setCollapseViewData(remoteView)
         bitmap?.let {
             remoteView.setImageViewBitmap(R.id.iv_productImage, it)
@@ -116,52 +113,36 @@ internal class ProductNotification(applicationContext: Context, baseNotification
         }
     }
 
-    private fun getMainPendingIntent(): PendingIntent {
-        val intent = getBaseBroadcastIntent()
+    private fun getCollapsedPendingIntent(): PendingIntent {
+        val intent = getBaseBroadcastIntent(context, baseNotificationModel)
         intent.action = CMConstant.ReceiverAction.ACTION_PRODUCT_COLLAPSED_CLICK
-        return getPendingIntent(intent)
+        return getPendingIntent(context, intent, requestCode)
     }
 
     private fun getDismissPendingIntent(): PendingIntent {
-        val intent = getBaseBroadcastIntent()
+        val intent = getBaseBroadcastIntent(context, baseNotificationModel)
         intent.action = CMConstant.ReceiverAction.ACTION_PRODUCT_NOTIFICATION_DISMISS
-        return getPendingIntent(intent)
+        return getPendingIntent(context, intent, requestCode)
     }
 
     private fun getProductPendingIntent(productInfo: ProductInfo): PendingIntent {
-        val intent = getBaseBroadcastIntent()
+        val intent = getBaseBroadcastIntent(context, baseNotificationModel)
         intent.action = CMConstant.ReceiverAction.ACTION_PRODUCT_CLICK
         intent.putExtra(CMConstant.EXTRA_PRODUCT_INFO, productInfo)
-        return getPendingIntent(intent)
+        return getPendingIntent(context, intent, requestCode)
     }
 
     private fun addRightCarouselButton(remoteView: RemoteViews) {
-        val intent = getBaseBroadcastIntent()
+        val intent = getBaseBroadcastIntent(context, baseNotificationModel)
         intent.action = CMConstant.ReceiverAction.ACTION_PRODUCT_CAROUSEL_RIGHT_CLICK
-        remoteView.setOnClickPendingIntent(R.id.ivArrowRight, getPendingIntent(intent))
+        remoteView.setOnClickPendingIntent(R.id.ivArrowRight, getPendingIntent(context, intent, requestCode))
     }
 
     private fun addLeftCarouselButton(remoteView: RemoteViews) {
-        val intent = getBaseBroadcastIntent()
+        val intent = getBaseBroadcastIntent(context, baseNotificationModel)
         intent.action = CMConstant.ReceiverAction.ACTION_PRODUCT_CAROUSEL_LEFT_CLICK
-        remoteView.setOnClickPendingIntent(R.id.ivArrowLeft, getPendingIntent(intent))
+        remoteView.setOnClickPendingIntent(R.id.ivArrowLeft, getPendingIntent(context, intent, requestCode))
     }
-
-    private fun getBaseBroadcastIntent(): Intent = Intent(context, CMBroadcastReceiver::class.java).apply {
-        putExtra(CMConstant.EXTRA_BASE_MODEL, baseNotificationModel)
-        putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.notificationId)
-        putExtra(CMConstant.EXTRA_CAMPAIGN_ID, baseNotificationModel.campaignId)
-    }
-
-
-    private fun getPendingIntent(intent: Intent): PendingIntent =
-            PendingIntent.getBroadcast(
-                    context,
-                    requestCode,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
-            )
-
 
     companion object : CoroutineScope {
         override val coroutineContext: CoroutineContext

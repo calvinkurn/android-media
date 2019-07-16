@@ -42,41 +42,53 @@ public class CMNotificationFactory {
         BaseNotificationModel baseNotificationModel = convertToBaseModel(bundle);
 
         if (CMConstant.NotificationType.SILENT_PUSH.equals(baseNotificationModel.getType())) {
-            handleSilentPush(context,baseNotificationModel);
+            handleSilentPush(context, baseNotificationModel);
             return null;
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && isChannelBlocked(context, baseNotificationModel)) {
             //todo notify to server for Blocked Channel By User.
         } else {
+            if (baseNotificationModel.getType() == null)
+                return null;
             switch (baseNotificationModel.getType()) {
+
                 case CMConstant.NotificationType.GENERAL:
                     if (CMNotificationUtils.INSTANCE.hasActionButton(baseNotificationModel)) {
                         return new ActionNotification(context.getApplicationContext(), baseNotificationModel);
                     }
                     return (new GeneralNotification(context.getApplicationContext(), baseNotificationModel));
-                case CMConstant.NotificationType.GRID_NOTIFICATION:
-                    return (new GridNotification(context.getApplicationContext(), baseNotificationModel));
+
                 case CMConstant.NotificationType.ACTION_BUTTONS:
                     return new ActionNotification(context.getApplicationContext(), baseNotificationModel);
+
                 case CMConstant.NotificationType.BIG_IMAGE:
                     if (CMNotificationUtils.INSTANCE.hasActionButton(baseNotificationModel)) {
                         return new ActionNotification(context.getApplicationContext(), baseNotificationModel);
                     }
                     return (new ImageNotification(context.getApplicationContext(), baseNotificationModel));
+
                 case CMConstant.NotificationType.PERSISTENT:
                     CMEvents.postGAEvent(PersistentEvent.EVENT_VIEW_NOTIFICATION, PersistentEvent.EVENT_CATEGORY,
                             PersistentEvent.EVENT_ACTION_PUSH_RECEIVED, PersistentEvent.EVENT_LABEL);
                     return (new PersistentNotification(context.getApplicationContext(), baseNotificationModel));
+
+                case CMConstant.NotificationType.GRID_NOTIFICATION:
+                    return (new GridNotification(context.getApplicationContext(), baseNotificationModel));
+
+                case CMConstant.NotificationType.CAROUSEL_NOTIFICATION:
+                    return (new CarouselNotification(context.getApplicationContext(), baseNotificationModel));
+
+                case CMConstant.NotificationType.VISUAL_NOTIIFICATION:
+                    return new VisualNotification(context.getApplicationContext(), baseNotificationModel);
+
+                case CMConstant.NotificationType.PRODUCT_NOTIIFICATION:
+                    return new ProductNotification(context.getApplicationContext(), baseNotificationModel);
+
                 case CMConstant.NotificationType.DELETE_NOTIFICATION:
                     cancelNotification(context, baseNotificationModel.getNotificationId());
                     return null;
-                case CMConstant.NotificationType.CAROUSEL_NOTIFICATION:
-                    return (new CarouselNotification(context.getApplicationContext(), baseNotificationModel));
-                case CMConstant.NotificationType.VISUAL_NOTIIFICATION:
-                    return new VisualNotification(context.getApplicationContext(), baseNotificationModel);
-                case CMConstant.NotificationType.PRODUCT_NOTIIFICATION:
-                    return new ProductNotification(context.getApplicationContext(), baseNotificationModel);
+
             }
         }
         return null;
@@ -178,7 +190,8 @@ public class CMNotificationFactory {
         }
         try {
             Gson gson = new Gson();
-            Type actionButtonListType = new TypeToken<ArrayList<ActionButton>>(){}.getType();
+            Type actionButtonListType = new TypeToken<ArrayList<ActionButton>>() {
+            }.getType();
             List<ActionButton> actionButtonList = gson.fromJson(actions, actionButtonListType);
             return actionButtonList;
         } catch (Exception e) {
@@ -204,13 +217,14 @@ public class CMNotificationFactory {
     }
 
 
-    private static ArrayList<ProductInfo> getProductInfoList(Bundle bundle){
+    private static ArrayList<ProductInfo> getProductInfoList(Bundle bundle) {
         String productInfoListStr = bundle.getString(CMConstant.PayloadKeys.PRODUCT_INFO_LIST);
         if (TextUtils.isEmpty(productInfoListStr)) {
             return null;
         }
         try {
-            Type listType = new TypeToken<ArrayList<ProductInfo>>() {}.getType();
+            Type listType = new TypeToken<ArrayList<ProductInfo>>() {
+            }.getType();
             return new Gson().fromJson(productInfoListStr, listType);
         } catch (Exception e) {
             Log.e(TAG, "CM-getProductInfo", e);
@@ -224,7 +238,8 @@ public class CMNotificationFactory {
             return null;
         }
         try {
-            Type listType = new TypeToken<ArrayList<Grid>>() {}.getType();
+            Type listType = new TypeToken<ArrayList<Grid>>() {
+            }.getType();
             return new Gson().fromJson(persistentData, listType);
         } catch (Exception e) {
             Log.e(TAG, "CM-getGridList", e);

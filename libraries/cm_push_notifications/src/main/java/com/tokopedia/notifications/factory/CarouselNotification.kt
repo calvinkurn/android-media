@@ -4,7 +4,6 @@ import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
 import android.text.TextUtils
 import android.view.View
@@ -15,7 +14,6 @@ import com.tokopedia.notifications.common.CMNotificationUtils
 import com.tokopedia.notifications.common.CarouselUtilities
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.notifications.model.Carousel
-import com.tokopedia.notifications.receiver.CMBroadcastReceiver
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -39,7 +37,7 @@ class CarouselNotification internal constructor(context: Context, baseNotificati
                 .setAutoCancel(false)
                 .setContentTitle(CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.title))
                 .setContentText(CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.message))
-                .setContentIntent(getMainPendingIntent())
+                .setContentIntent(getCollapsedPendingIntent())
 
         if (!baseNotificationModel.isUpdateExisting)
             CarouselUtilities.downloadCarouselImages(context, baseNotificationModel.carouselList)
@@ -92,50 +90,36 @@ class CarouselNotification internal constructor(context: Context, baseNotificati
         return remoteView
     }
 
-    private fun getMainPendingIntent(): PendingIntent {
-        val intent = getBaseBroadcastIntent()
+    private fun getCollapsedPendingIntent(): PendingIntent {
+        val intent = getBaseBroadcastIntent(context, baseNotificationModel)
         intent.action = CMConstant.ReceiverAction.ACTION_CAROUSEL_MAIN_CLICK
-        return getPendingIntent(intent)
+        return getPendingIntent(context, intent, requestCode)
     }
 
     private fun getDismissPendingIntent(): PendingIntent {
-        val intent = getBaseBroadcastIntent()
+        val intent = getBaseBroadcastIntent(context, baseNotificationModel)
         intent.action = CMConstant.ReceiverAction.ACTION_CAROUSEL_NOTIFICATION_DISMISS
-        return getPendingIntent(intent)
+        return getPendingIntent(context, intent, requestCode)
     }
 
     private fun getItemPendingIntent(carousel: Carousel): PendingIntent {
-        val intent = getBaseBroadcastIntent()
+        val intent = getBaseBroadcastIntent(context, baseNotificationModel)
         intent.action = CMConstant.ReceiverAction.ACTION_CAROUSEL_IMAGE_CLICK
         intent.putExtra(CMConstant.ReceiverExtraData.CAROUSEL_DATA_ITEM, carousel)
-        return getPendingIntent(intent)
+        return getPendingIntent(context, intent, requestCode)
     }
 
     private fun addRightCarouselButton(remoteView: RemoteViews) {
-        val intent = getBaseBroadcastIntent()
+        val intent = getBaseBroadcastIntent(context, baseNotificationModel)
         intent.action = CMConstant.ReceiverAction.ACTION_RIGHT_ARROW_CLICK
-        remoteView.setOnClickPendingIntent(R.id.ivArrowRight, getPendingIntent(intent))
+        remoteView.setOnClickPendingIntent(R.id.ivArrowRight, getPendingIntent(context, intent, requestCode))
     }
 
     private fun addLeftCarouselButton(remoteView: RemoteViews) {
-        val intent = getBaseBroadcastIntent()
+        val intent = getBaseBroadcastIntent(context, baseNotificationModel)
         intent.action = CMConstant.ReceiverAction.ACTION_LEFT_ARROW_CLICK
-        remoteView.setOnClickPendingIntent(R.id.ivArrowLeft, getPendingIntent(intent))
+        remoteView.setOnClickPendingIntent(R.id.ivArrowLeft, getPendingIntent(context, intent, requestCode))
     }
-
-    private fun getBaseBroadcastIntent(): Intent = Intent(context, CMBroadcastReceiver::class.java).apply {
-        putExtra(CMConstant.EXTRA_BASE_MODEL, baseNotificationModel)
-        putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.notificationId)
-        putExtra(CMConstant.EXTRA_CAMPAIGN_ID, baseNotificationModel.campaignId)
-    }
-
-    private fun getPendingIntent(intent: Intent): PendingIntent =
-            PendingIntent.getBroadcast(
-                    context,
-                    requestCode,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
-            )
 
     companion object : CoroutineScope {
         override val coroutineContext: CoroutineContext
@@ -170,94 +154,3 @@ class CarouselNotification internal constructor(context: Context, baseNotificati
         }
     }
 }
-
-
-/*
-    private fun getArrowClickPendingIntent(carouselList: List<Carousel>, requestCode: Int, action: String, index: Int): PendingIntent {
-        val resultPendingIntent: PendingIntent
-        val intent = Intent(context, CMBroadcastReceiver::class.java)
-        intent.action = action
-
-        intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.notificationId)
-        intent.putExtra(CMConstant.EXTRA_CAMPAIGN_ID, baseNotificationModel.campaignId)
-
-        intent.putExtra(CMConstant.PayloadKeys.CHANNEL, baseNotificationModel.channelName)
-        intent.putExtra(CMConstant.PayloadKeys.UPDATE_NOTIFICATION, true)
-        intent.putExtra(CMConstant.PayloadKeys.CAROUSEL_INDEX, index)
-
-        intent.putExtra(CMConstant.PayloadKeys.CAMPAIGN_ID, baseNotificationModel.campaignId)
-        intent.putExtra(CMConstant.PayloadKeys.NOTIFICATION_ID, baseNotificationModel.notificationId)
-
-        baseNotificationModel.icon?.let {
-            intent.putExtra(CMConstant.PayloadKeys.ICON, baseNotificationModel.icon)
-        }
-
-        baseNotificationModel.tribeKey?.let {
-            intent.putExtra(CMConstant.PayloadKeys.TRIBE_KEY, baseNotificationModel.tribeKey)
-        }
-
-        baseNotificationModel.title?.let {
-            intent.putExtra(CMConstant.PayloadKeys.TITLE, baseNotificationModel.title)
-        }
-
-        baseNotificationModel.detailMessage?.let {
-            intent.putExtra(CMConstant.PayloadKeys.DESCRIPTION, baseNotificationModel.detailMessage)
-        }
-        baseNotificationModel.message?.let {
-            intent.putExtra(CMConstant.PayloadKeys.MESSAGE, baseNotificationModel.message)
-        }
-        baseNotificationModel.appLink?.let {
-            intent.putExtra(CMConstant.PayloadKeys.APP_LINK, baseNotificationModel.appLink)
-
-        }
-
-        baseNotificationModel.subText?.let {
-            intent.putExtra(CMConstant.PayloadKeys.SUB_TEXT, baseNotificationModel.subText)
-        }
-
-
-        intent.putParcelableArrayListExtra(CMConstant.ReceiverExtraData.CAROUSEL_DATA, carouselList as ArrayList<out Parcelable>)
-        resultPendingIntent = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            PendingIntent.getBroadcast(
-                    context,
-                    requestCode,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
-            )
-        } else {
-            PendingIntent.getBroadcast(
-                    context,
-                    requestCode,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
-            )
-        }
-        return resultPendingIntent
-    }
-
-    private fun getImagePendingIntent(carousel: Carousel, requestCode: Int): PendingIntent {
-        val resultPendingIntent: PendingIntent
-        val intent = Intent(context, CMBroadcastReceiver::class.java)
-        intent.action = CMConstant.ReceiverAction.ACTION_CAROUSEL_IMAGE_CLICK
-        intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.notificationId)
-        intent.putExtra(CMConstant.EXTRA_CAMPAIGN_ID, baseNotificationModel.campaignId)
-        intent.putExtra(CMConstant.ReceiverExtraData.CAROUSEL_DATA_ITEM, carousel)
-        intent.putExtras(getBundle(baseNotificationModel))
-        resultPendingIntent = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            PendingIntent.getBroadcast(
-                    context,
-                    requestCode,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
-            )
-        } else {
-            PendingIntent.getBroadcast(
-                    context,
-                    requestCode,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
-            )
-        }
-        return resultPendingIntent
-    }
-*/

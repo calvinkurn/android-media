@@ -1,9 +1,11 @@
 package com.tokopedia.notifications.factory
 
-import android.app.*
+import android.app.Notification
 import android.app.Notification.BADGE_ICON_SMALL
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
-import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -248,6 +250,8 @@ abstract class BaseNotification internal constructor(protected var context: Cont
             BitmapFactory.decodeResource(context.resources, drawableLargeIcon)
         } catch (e: IllegalArgumentException) {
             BitmapFactory.decodeResource(context.resources, drawableLargeIcon)
+        } catch (e: Throwable) {
+            BitmapFactory.decodeResource(context.resources, drawableLargeIcon)
         }
 
     }
@@ -272,63 +276,97 @@ abstract class BaseNotification internal constructor(protected var context: Cont
     }
 
     internal fun createMainPendingIntent(baseNotificationModel: BaseNotificationModel, requestCode: Int): PendingIntent {
-        var intent = Intent(context, CMBroadcastReceiver::class.java)
+        var intent = getBaseBroadcastIntent(context, baseNotificationModel)
         intent.action = CMConstant.ReceiverAction.ACTION_NOTIFICATION_CLICK
-        intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.notificationId)
-        intent.putExtra(CMConstant.EXTRA_CAMPAIGN_ID, baseNotificationModel.campaignId)
-        intent.putExtra(CMConstant.ReceiverExtraData.ACTION_APP_LINK, baseNotificationModel.appLink)
         intent.putExtras(getBundle(baseNotificationModel))
-        intent = getCouponCode(intent)
-        return PendingIntent.getBroadcast(
-                    context,
-                    requestCode,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
-            )
+        intent = getCouponCode(baseNotificationModel, intent)
+        return getPendingIntent(context, intent, requestCode)
     }
 
     internal fun createDismissPendingIntent(notificationId: Int, requestCode: Int): PendingIntent {
-        val intent = Intent(context, CMBroadcastReceiver::class.java)
+        val intent = getBaseBroadcastIntent(context, baseNotificationModel)
         intent.action = CMConstant.ReceiverAction.ACTION_ON_NOTIFICATION_DISMISS
-        intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, notificationId)
-        return PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        return getPendingIntent(context, intent, requestCode)
     }
 
-    protected fun getBundle(baseNotificationModel: BaseNotificationModel): Bundle {
-        var bundle = Bundle()
-        if (baseNotificationModel.videoPushModel != null) {
-            bundle = jsonToBundle(bundle, baseNotificationModel.videoPushModel)
-        }
-        if (baseNotificationModel.customValues != null) {
-            bundle = jsonToBundle(bundle, baseNotificationModel.customValues)
-        }
-        return bundle
-    }
-
-    private fun jsonToBundle(bundle: Bundle, jsonObject: JSONObject?): Bundle {
-        try {
-            val iterator = jsonObject!!.keys()
-            while (iterator.hasNext()) {
-                val key = iterator.next() as String
-                val value = jsonObject.getString(key)
-                bundle.putString(key, value)
-            }
-        } catch (e: Exception) {
-
-        }
-
-        return bundle
-    }
-
-    private fun getCouponCode(intent: Intent): Intent {
-
-        if (baseNotificationModel.customValues != null)
-            intent.putExtra(CMConstant.CouponCodeExtra.COUPON_CODE, baseNotificationModel.customValues!!.optString(CMConstant.CustomValuesKeys.COUPON_CODE))
-        return intent
-    }
 
     companion object {
         private const val CM_REQUEST_CODE = "cm_request_code"
+
+        fun getBaseBroadcastIntent(context: Context, baseNotificationModel: BaseNotificationModel):
+                Intent = Intent(context, CMBroadcastReceiver::class.java).apply {
+            putExtra(CMConstant.EXTRA_BASE_MODEL, baseNotificationModel)
+            putExtras(getBundle(baseNotificationModel))
+            putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.notificationId)
+            putExtra(CMConstant.EXTRA_CAMPAIGN_ID, baseNotificationModel.campaignId)
+        }
+
+        /**
+         * getBundle will return a Bundle
+         * it bill create Bundle only if VideoPushModel or CustomValues
+         *
+         **/
+        private fun getBundle(baseNotificationModel: BaseNotificationModel): Bundle {
+            var bundle = Bundle()
+            baseNotificationModel.videoPushModel?.let {
+                bundle = jsonToBundle(bundle, baseNotificationModel.videoPushModel)
+            }
+            baseNotificationModel.customValues?.let {
+                bundle = jsonToBundle(bundle, baseNotificationModel.videoPushModel)
+            }
+            return bundle
+        }
+
+        /**
+         *
+         *
+         * */
+        private fun jsonToBundle(bundle: Bundle, jsonObject: JSONObject?): Bundle {
+            try {
+                val iterator = jsonObject!!.keys()
+                while (iterator.hasNext()) {
+                    val key = iterator.next() as String
+                    val value = jsonObject.getString(key)
+                    bundle.putString(key, value)
+                }
+            } catch (e: Exception) {
+
+            }
+
+            return bundle
+        }
+
+        fun getPendingIntent(context: Context, intent: Intent, requestCode: Int): PendingIntent =
+                PendingIntent.getBroadcast(
+                        context,
+                        requestCode,
+                        intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                )
+
+        fun getCouponCode(baseNotificationModel: BaseNotificationModel, intent: Intent): Intent {
+            if (baseNotificationModel.customValues != null)
+                intent.putExtra(CMConstant.CouponCodeExtra.COUPON_CODE,
+                        baseNotificationModel.customValues!!.optString(CMConstant.CustomValuesKeys.COUPON_CODE))
+            return intent
+        }
     }
 
 }
+
+/*
+        intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.notificationId)
+        intent.putExtra(CMConstant.EXTRA_CAMPAIGN_ID, baseNotificationModel.campaignId)
+        intent.putExtra(CMConstant.ReceiverExtraData.ACTION_APP_LINK, baseNotificationModel.appLink)*/
+
+/*
+* internal fun createMainPendingIntent(baseNotificationModel: BaseNotificationModel, requestCode: Int): PendingIntent {
+        var intent = getBaseBroadcastIntent(context, baseNotificationModel)
+        intent.action = CMConstant.ReceiverAction.ACTION_NOTIFICATION_CLICK/*
+        intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.notificationId)
+        intent.putExtra(CMConstant.EXTRA_CAMPAIGN_ID, baseNotificationModel.campaignId)
+        intent.putExtra(CMConstant.ReceiverExtraData.ACTION_APP_LINK, baseNotificationModel.appLink)*/
+        intent.putExtras(getBundle(baseNotificationModel))
+        intent = getCouponCode(baseNotificationModel, intent)
+        return getPendingIntent(context, intent, requestCode)
+    }*/
