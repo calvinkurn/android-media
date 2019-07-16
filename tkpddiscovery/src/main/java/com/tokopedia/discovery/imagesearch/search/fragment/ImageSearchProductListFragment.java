@@ -233,9 +233,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     private List<Visitable> initMappingProduct() {
         List<Visitable> list = new ArrayList<>();
-        HeaderViewModel headerViewModel = new HeaderViewModel();
-        headerViewModel.setSuggestionModel(productViewModel.getSuggestionModel());
-        list.add(headerViewModel);
         list.addAll(productViewModel.getProductList());
         return list;
     }
