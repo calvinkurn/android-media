@@ -52,11 +52,13 @@ class GetContentFormUseCase @Inject internal constructor(
     companion object {
         private const val PARAM_TYPE = "type"
         private const val PARAM_RELATED_ID = "relatedID"
+        private const val PARAM_POST_ID = "id"
 
-        fun createRequestParams(relatedIds: MutableList<String>, type: String): RequestParams {
+        fun createRequestParams(relatedIds: MutableList<String>, type: String, postId: String): RequestParams {
             val requestParams = RequestParams.create()
             requestParams.putObject(PARAM_RELATED_ID, relatedIds)
             requestParams.putString(PARAM_TYPE, type)
+            requestParams.putString(PARAM_POST_ID, postId)
             return requestParams
         }
     }

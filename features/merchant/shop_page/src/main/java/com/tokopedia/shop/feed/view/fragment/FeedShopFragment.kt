@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
@@ -76,6 +77,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     private lateinit var createPostUrl: String
     private lateinit var shopId: String
     private var isLoading = false
+    private var isForceRefresh = false
 
     @Inject
     lateinit var presenter: FeedShopContract.Presenter
@@ -211,7 +213,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         if (shopId.isNotEmpty() && !isLoading) {
             isLoading = true
             if (isLoadingInitialData) {
-                presenter.getFeedFirstPage(shopId, false)
+                presenter.getFeedFirstPage(shopId, isForceRefresh)
             } else {
                 presenter.getFeed(shopId)
             }
@@ -226,6 +228,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onSuccessGetFeedFirstPage(element: List<Visitable<*>>, lastCursor: String, whitelistDomain: WhitelistDomain) {
         val dataList = ArrayList<Visitable<*>>()
+        isForceRefresh = true
         isLoading = false
         if (element.isNotEmpty()) {
             if (shopId.equals(userSession.shopId) && !whitelistDomain.authors.isEmpty()) {
@@ -406,7 +409,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onMenuClick(positionInFeed: Int, postId: Int, reportable: Boolean, deletable: Boolean, editable: Boolean) {
         context?.let {
-            val menus = createBottomMenu(it, deletable, reportable, false, object : PostMenuListener {
+            val menus = createBottomMenu(it, deletable, reportable, editable, object : PostMenuListener {
                 override fun onDeleteClicked() {
                     createDeleteDialog(positionInFeed, postId).show()
                 }
@@ -416,11 +419,15 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 }
 
                 override fun onEditClick() {
-
+                    goToEditPostShop(postId)
                 }
             })
             menus.show()
         }
+    }
+
+    private fun goToEditPostShop(postId: Int) {
+        context?.let { RouteManager.route(it, ApplinkConstInternalContent.SHOP_POST_EDIT, postId.toString()) }
     }
 
     override fun onCaptionClick(positionInFeed: Int, redirectUrl: String) {
@@ -653,6 +660,10 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     private fun showToast(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
+
+    fun setRefresh() {
+        isForceRefresh = true
     }
 
 }

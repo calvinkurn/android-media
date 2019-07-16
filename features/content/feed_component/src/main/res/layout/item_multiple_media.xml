@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_loading_image"
+            app:srcCompat="@drawable/ic_loading_image"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintTop_toTopOf="parent"
@@ -39,8 +39,8 @@
             tools:ignore="ContentDescription" />
 
         <ImageView android:id="@+id/ic_play_vid"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dp_72"
+            android:layout_height="@dimen/dp_72"
             android:layout_gravity="center"
             android:visibility="gone"
             app:srcCompat="@drawable/ic_play_button"

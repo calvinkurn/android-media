@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
-import com.tokopedia.events.R2;
 import com.tokopedia.events.view.contractor.EventBookTicketContract;
 import com.tokopedia.events.view.fragment.FragmentAddTickets;
 import com.tokopedia.events.view.fragment.LocationDateBottomSheetFragment;
@@ -26,38 +25,22 @@ import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
 import com.tokopedia.events.view.viewmodel.SchedulesViewModel;
 
-import butterknife.BindView;
-import butterknife.OnClick;
-
 public class EventBookTicketActivity
-        extends EventBaseActivity implements EventBookTicketContract.EventBookTicketView {
+        extends EventBaseActivity implements EventBookTicketContract.EventBookTicketView, View.OnClickListener {
 
 
-    @BindView(R2.id.pay_tickets)
     View buttonPayTickets;
-    @BindView(R2.id.button_textview)
     TextView buttonTextview;
-    @BindView(R2.id.progress_bar_layout)
     View progressBarLayout;
-    @BindView(R2.id.prog_bar)
     ProgressBar progBar;
-    @BindView(R2.id.imgv_seating_layout)
     ImageView imgvSeatingLayout;
-    @BindView(R2.id.main_content)
     FrameLayout mainContent;
-    @BindView(R2.id.seating_layout_card)
     View seatMap;
-    @BindView(R2.id.ticketcount)
     TextView ticketCount;
-    @BindView(R2.id.totalprice)
     TextView totalPrice;
-    @BindView(R2.id.tv_ubah_jadwal)
     TextView tvUbahJadwal;
-    @BindView(R2.id.tv_location_bta)
     TextView tvLocation;
-    @BindView(R2.id.tv_day_time_bta)
     TextView tvDate;
-    @BindView(R2.id.button_count_layout)
     View buttonCountLayout;
 
     EventBookTicketContract.BookTicketPresenter bookTicketPresenter;
@@ -99,6 +82,26 @@ public class EventBookTicketActivity
     }
 
     @Override
+    void setupVariables() {
+        toolbar = findViewById(R.id.toolbar_book_ticket);
+        buttonPayTickets = findViewById(R.id.pay_tickets);
+        buttonTextview = findViewById(R.id.button_textview);
+        progressBarLayout = findViewById(R.id.progress_bar_layout);
+        progBar = findViewById(R.id.prog_bar);
+        imgvSeatingLayout = findViewById(R.id.imgv_seating_layout);
+        mainContent = findViewById(R.id.main_content);
+        seatMap = findViewById(R.id.seating_layout_card);
+        ticketCount = findViewById(R.id.ticketcount);
+        totalPrice = findViewById(R.id.totalprice);
+        tvUbahJadwal = findViewById(R.id.tv_ubah_jadwal);
+        tvLocation = findViewById(R.id.tv_location_bta);
+        tvDate = findViewById(R.id.tv_day_time_bta);
+        buttonCountLayout = findViewById(R.id.button_count_layout);
+        buttonPayTickets.setOnClickListener(this);
+        tvUbahJadwal.setOnClickListener(this);
+    }
+
+    @Override
     public void renderFromDetails(EventsDetailsViewModel detailsViewModel) {
         toolbar.setTitle(detailsViewModel.getTitle());
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black);
@@ -106,17 +109,18 @@ public class EventBookTicketActivity
         if (detailsViewModel.getSchedulesViewModels() != null) {
             if (detailsViewModel.getSchedulesViewModels().size() > 1) {
                 tvUbahJadwal.setVisibility(View.VISIBLE);
-            } else
+            } else {
                 tvUbahJadwal.setVisibility(View.GONE);
+            }
+            tvLocation.setText(detailsViewModel.getSchedulesViewModels().get(0).getCityName());
+            if (detailsViewModel.getTimeRange() != null && detailsViewModel.getTimeRange().length() > 1)
+                tvDate.setText(Utils.getSingletonInstance().convertEpochToString(detailsViewModel.getSchedulesViewModels().get(0).getStartDate()));
+            else
+                tvDate.setVisibility(View.GONE);
+            setFragmentData(detailsViewModel.getSchedulesViewModels().get(0));
         } else {
             tvUbahJadwal.setVisibility(View.GONE);
         }
-        tvLocation.setText(detailsViewModel.getSchedulesViewModels().get(0).getCityName());
-        if (detailsViewModel.getTimeRange() != null && detailsViewModel.getTimeRange().length() > 1)
-            tvDate.setText(Utils.getSingletonInstance().convertEpochToString(detailsViewModel.getSchedulesViewModels().get(0).getStartDate()));
-        else
-            tvDate.setVisibility(View.GONE);
-        setFragmentData(detailsViewModel.getSchedulesViewModels().get(0));
     }
 
     @Override
@@ -203,21 +207,6 @@ public class EventBookTicketActivity
         super.onResume();
     }
 
-    @OnClick(R2.id.pay_tickets)
-    void payTickets() {
-        bookTicketPresenter.payTicketsClick(title);
-    }
-
-    @OnClick(R2.id.tv_ubah_jadwal)
-    void selectLocationDate() {
-        if (locationFragment == null)
-            locationFragment = new LocationDateBottomSheetFragment();
-
-        locationFragment.setData(bookTicketPresenter.getLocationDateModels());
-        locationFragment.setPresenter(bookTicketPresenter);
-        locationFragment.show(getSupportFragmentManager(), "bottomsheetfragment");
-    }
-
     @Override
     public void onBackPressed() {
         mPresenter.onBackPressed();
@@ -243,5 +232,19 @@ public class EventBookTicketActivity
     @Override
     protected Fragment getNewFragment() {
         return null;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.pay_tickets) {
+            bookTicketPresenter.payTicketsClick(title);
+        } else if (v.getId() == R.id.tv_ubah_jadwal) {
+            if (locationFragment == null)
+                locationFragment = new LocationDateBottomSheetFragment();
+
+            locationFragment.setData(bookTicketPresenter.getLocationDateModels());
+            locationFragment.setPresenter(bookTicketPresenter);
+            locationFragment.show(getSupportFragmentManager(), "bottomsheetfragment");
+        }
     }
 }

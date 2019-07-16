@@ -58,6 +58,7 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
         super.detachView()
         getDistrictUseCase.unsubscribe()
         autofillUseCase.unsubscribe()
+        districtBoundaryUseCase.unsubscribe()
     }
 
     fun clearCacheGetDistrict() {
