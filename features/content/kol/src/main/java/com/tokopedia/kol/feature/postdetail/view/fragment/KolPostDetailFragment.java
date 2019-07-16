@@ -263,6 +263,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                             dynamicPostViewModel.getId(),
                             dynamicPostViewModel.getPostTag().getItems().get(i),
                             i,
+                            dynamicPostViewModel.getHeader().getFollowCta().getAuthorType(),
                             dynamicPostViewModel.getTrackingPostModel());
                 }
 
@@ -813,6 +814,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                             dynamicPostViewModel.getId(),
                             dynamicPostViewModel.getPostTag().getItems().get(i),
                             i,
+                            dynamicPostViewModel.getHeader().getFollowCta().getAuthorType(),
                             dynamicPostViewModel.getTrackingPostModel());
                 }
             }

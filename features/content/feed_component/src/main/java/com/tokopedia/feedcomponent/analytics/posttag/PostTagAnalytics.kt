@@ -74,7 +74,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
         const val MY_PROFILE_PAGE = "/my profile page - produk di post"
         const val USER_PROFILE_PAGE = "/user profile page - produk di post"
         const val MY_PROFILE_PAGE_DETAIL = "/my profile page detail - produk di post"
-        const val USER_PROFILE_PAGE_DETAIL = "/user profile page detail - produk di post"
+        const val USER_PROFILE_PAGE_DETAIL = "/user profile page detail - produk di post - %s"
     }
 
     private fun getBasicViewPostTagEvent(screenName: String,
@@ -329,6 +329,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
             postId: Int,
             postTag: PostTagItem,
             postTagPosition: Int,
+            author: String,
             trackingModel: TrackingPostModel) {
         getBasicViewPostTagEvent(
                 Screen.PROFILE_DETAIL,
@@ -337,13 +338,14 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
                 postTag,
                 postTagPosition,
                 trackingModel,
-                ListSource.USER_PROFILE_PAGE_DETAIL)
+                String.format(ListSource.USER_PROFILE_PAGE_DETAIL, author))
     }
 
     fun trackClickPostTagProfileDetailOther(
             postId: Int,
             postTag: PostTagItem,
             postTagPosition: Int,
+            author: String,
             trackingModel: TrackingPostModel) {
         getBasicClickPostTagEvent(
                 Screen.PROFILE_DETAIL,
@@ -352,7 +354,7 @@ class PostTagAnalytics @Inject constructor(private val userSessionInterface: Use
                 postTag,
                 postTagPosition,
                 trackingModel,
-                ListSource.USER_PROFILE_PAGE_DETAIL)
+                String.format(ListSource.USER_PROFILE_PAGE_DETAIL, author))
     }
 
 }
