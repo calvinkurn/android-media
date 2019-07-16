@@ -222,8 +222,6 @@ public class MainParentActivity extends BaseActivity implements
                     ApplinkConstInternalMarketplace.ONBOARDING);
             startActivity(intent);
             finish();
-
-            playAnimOsIcon(); // show animation icon
         }
     }
 
@@ -372,7 +370,10 @@ public class MainParentActivity extends BaseActivity implements
             Intent intent = new Intent(BROADCAST_FEED);
             LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
         }
-
+        if ((position == CART_MENU || position == ACCOUNT_MENU ) && !presenter.isUserLogin()) {
+            RouteManager.route(this, ApplinkConst.LOGIN);
+            return false;
+        }
         if (position == OS_MENU) {
             if (!isNewOfficialStoreEnabled()) {
                 startActivity(((GlobalNavRouter) getApplication()).getOldOfficialStore(this));
@@ -384,10 +385,6 @@ public class MainParentActivity extends BaseActivity implements
             setOsIconProgress(OS_STATE_UNSELECTED);
         }
 
-        if ((position == CART_MENU || position == ACCOUNT_MENU ) && !presenter.isUserLogin()) {
-            RouteManager.route(this, ApplinkConst.LOGIN);
-            return false;
-        }
 
         hideStatusBar();
 
@@ -582,16 +579,13 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     @Override
-    public void onStartLoading() {
-    }
+    public void onStartLoading() { }
 
     @Override
-    public void onError(String message) {
-    }
+    public void onError(String message) { }
 
     @Override
-    public void onHideLoading() {
-    }
+    public void onHideLoading() { }
 
     @Override
     public Context getContext() {
@@ -664,6 +658,9 @@ public class MainParentActivity extends BaseActivity implements
 
     @Override
     public void onReadytoShowBoarding(ArrayList<ShowCaseObject> showCaseObjects) {
+
+        playAnimOsIcon(); // show animation icon
+
         final String showCaseTag = MainParentActivity.class.getName() + ".bottomNavigation";
         if (ShowCasePreference.hasShown(this, showCaseTag) || showCaseDialog != null
                 || showCaseObjects == null) {
