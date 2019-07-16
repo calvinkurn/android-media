@@ -154,7 +154,7 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
 
     override fun setupDialog(dialog: Dialog?, style: Int) {
         super.setupDialog(dialog, style)
-        val btnClose = getDialog().findViewById<ImageButton>(com.tokopedia.design.R.id.btn_close)
+        val btnClose = getDialog().findViewById<ImageView>(com.tokopedia.design.R.id.btn_close)
         btnClose.setOnClickListener { dismiss() }
     }
 
