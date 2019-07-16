@@ -9,14 +9,11 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.di.BerandaComponent;
@@ -29,14 +26,15 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeFeedAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeFeedTypeFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeFeedItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedViewModel;
-import com.tokopedia.home.constant.ConstantKey;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
-
-import java.util.List;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function2;
+import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 
@@ -55,7 +53,7 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
     HomeFeedPresenter presenter;
 
     @Inject
-    UserSessionInterface userSession;
+    UserSession userSession;
 
     private TrackingQueue homeTrackingQueue;
 
@@ -163,6 +161,8 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
     }
 
     private void initListeners() {
+        if(getView() == null) return;
+
         getRecyclerView(getView()).addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -223,21 +223,11 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
                     userSession.isLoggedIn(),
                     homeFeedViewModel.getPosition());
         }
-        goToProductDetail(homeFeedViewModel.getProductId(),
-                homeFeedViewModel.getImageUrl(),
-                homeFeedViewModel.getProductName(), homeFeedViewModel.getPrice());
+        goToProductDetail(homeFeedViewModel.getProductId());
     }
 
-    private void goToProductDetail(String productId, String imageSourceSingle, String name, String price) {
+    private void goToProductDetail(String productId) {
         RouteManager.route(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
-    }
-
-    private Intent getProductIntent(String productId) {
-        if (getContext() != null) {
-            return RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
-        } else {
-            return null;
-        }
     }
 
     @Override
@@ -300,6 +290,18 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
                     model.getPosition());
         } else {
             hitHomeFeedImpressionTracker(model);
+        }
+    }
+
+    @Override
+    public void onWishlistClick(@NotNull HomeFeedViewModel homeFeedViewModel,
+                                int position,
+                                boolean isAddWishlist,
+                                @NotNull Function2<? super Boolean, ? super Throwable, Unit> responseWishlist) {
+        if (isAddWishlist) {
+            presenter.addWishlist(homeFeedViewModel, responseWishlist);
+        } else {
+            presenter.removeWishlist(homeFeedViewModel, responseWishlist);
         }
     }
 
