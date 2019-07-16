@@ -83,7 +83,7 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
 
     protected abstract fun onErrorCustomData(error: Throwable)
 
-    fun onSuccessCatalogMenuDetail(catalogMenuDetailData: TelcoCatalogMenuDetailData) {
+    open fun onSuccessCatalogMenuDetail(catalogMenuDetailData: TelcoCatalogMenuDetailData) {
         renderPromoList(catalogMenuDetailData.catalogMenuDetailData.promos)
         renderRecentTransactions(catalogMenuDetailData.catalogMenuDetailData.recommendations)
         renderTicker(catalogMenuDetailData.catalogMenuDetailData.tickers)
@@ -123,6 +123,7 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
         } else {
             tickerView.visibility = View.GONE
         }
+
     }
 
     fun navigateContact() {
