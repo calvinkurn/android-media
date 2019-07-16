@@ -1,13 +1,11 @@
 package com.tokopedia.graphql.coroutines.data.source
 
+import com.google.gson.JsonElement
 import com.google.gson.JsonArray
 import com.tokopedia.graphql.FingerprintManager
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.graphql.GraphqlConstant
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponseInternal
+import com.tokopedia.graphql.data.model.*
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -37,11 +35,13 @@ class GraphqlCloudDataStore(private val api: GraphqlApi,
             launch(Dispatchers.IO) {
                 when (cacheStrategy.type) {
                     CacheType.CACHE_FIRST, CacheType.ALWAYS_CLOUD -> {
-                        if (!isError(graphqlResponseInternal)) {
-                            cacheManager.save(fingerprintManager.generateFingerPrint(requests.toString(),
-                                cacheStrategy.isSessionIncluded),
-                                graphqlResponseInternal.originalResponse.toString(),
-                                cacheStrategy.expiryTime)
+                        graphqlResponseInternal.originalResponse.forEachIndexed { index, jsonElement ->
+                            if (!isError(jsonElement)) {
+                                cacheManager.save(fingerprintManager.generateFingerPrint(requests[index].toString(),
+                                        cacheStrategy.isSessionIncluded),
+                                        jsonElement.toString(),
+                                        cacheStrategy.expiryTime)
+                            }
                         }
                     }
                     else -> {
@@ -52,18 +52,14 @@ class GraphqlCloudDataStore(private val api: GraphqlApi,
         }
     }
 
-    fun isError(graphqlResponseInternal: GraphqlResponseInternal): Boolean {
-        var index = 0
-        for (item in graphqlResponseInternal.originalResponse) {
-            try {
-                val error = item.asJsonObject.get(GraphqlConstant.GqlApiKeys.ERROR)
-                if (error != null && !error.isJsonNull) {
-                    return true
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
+    fun isError(jsonElement: JsonElement): Boolean {
+        try {
+            val error = jsonElement.asJsonObject.get(GraphqlConstant.GqlApiKeys.ERROR)
+            if (error != null && !error.isJsonNull) {
+                return true
             }
-            index++
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
         return false
     }

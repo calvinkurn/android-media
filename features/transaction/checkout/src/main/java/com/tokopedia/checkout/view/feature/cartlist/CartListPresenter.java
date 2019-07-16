@@ -1210,31 +1210,33 @@ public class CartListPresenter implements ICartListPresenter {
     public void processAddToCart(Object productModel) {
         try {
             int productId = 0;
-            int minOrder = 0;
             int shopId = 0;
+            String externalSource = "";
             if (productModel instanceof CartWishlistItemHolderData) {
                 CartWishlistItemHolderData cartWishlistItemHolderData = (CartWishlistItemHolderData) productModel;
                 productId = Integer.parseInt(cartWishlistItemHolderData.getId());
-                minOrder = cartWishlistItemHolderData.getMinOrder();
                 shopId = Integer.parseInt(cartWishlistItemHolderData.getShopId());
+                externalSource = AddToCartRequest.ATC_FROM_WISHLIST;
             } else if (productModel instanceof CartRecentViewItemHolderData) {
                 CartRecentViewItemHolderData cartRecentViewItemHolderData = (CartRecentViewItemHolderData) productModel;
                 productId = Integer.parseInt(cartRecentViewItemHolderData.getId());
-                minOrder = cartRecentViewItemHolderData.getMinOrder();
                 shopId = Integer.parseInt(cartRecentViewItemHolderData.getShopId());
+                externalSource = AddToCartRequest.ATC_FROM_RECENT_VIEW;
             } else if (productModel instanceof CartRecommendationItemHolderData) {
                 CartRecommendationItemHolderData cartRecommendationItemHolderData = (CartRecommendationItemHolderData) productModel;
                 productId = cartRecommendationItemHolderData.getRecommendationItem().getProductId();
-                minOrder = cartRecommendationItemHolderData.getRecommendationItem().getMinOrder();
                 shopId = cartRecommendationItemHolderData.getRecommendationItem().getShopId();
+                externalSource = AddToCartRequest.ATC_FROM_RECOMMENDATION;
             }
 
             view.showProgressLoading();
             AddToCartRequest addToCartRequest = new AddToCartRequest.Builder()
                     .productId(productId)
                     .notes("")
-                    .quantity(minOrder)
+                    .quantity(0) // Always be 0 (request from backend)
+                    .warehouseId(0) // Always be 0 (request from backend)
                     .shopId(shopId)
+                    .atcFromExternalSource(externalSource)
                     .build();
 
             RequestParams requestParams = RequestParams.create();
@@ -1269,6 +1271,9 @@ public class CartListPresenter implements ICartListPresenter {
         enhancedECommerceProductCartMapData.setPicture(cartWishlistItemHolderData.getImageUrl());
         enhancedECommerceProductCartMapData.setUrl(cartWishlistItemHolderData.getUrl());
         enhancedECommerceProductCartMapData.setDimension45(String.valueOf(addToCartDataResponseModel.getData().getCartId()));
+        enhancedECommerceProductCartMapData.setBrand("");
+        enhancedECommerceProductCartMapData.setCategoryId("");
+        enhancedECommerceProductCartMapData.setVariant("");
 
         EnhancedECommerceAdd enhancedECommerceAdd = new EnhancedECommerceAdd();
         enhancedECommerceAdd.setActionField(enhancedECommerceActionField.getActionFieldMap());
@@ -1294,6 +1299,9 @@ public class CartListPresenter implements ICartListPresenter {
         enhancedECommerceProductCartMapData.setDimension57(cartRecentViewItemHolderData.getShopName());
         enhancedECommerceProductCartMapData.setDimension59(cartRecentViewItemHolderData.getShopType());
         enhancedECommerceProductCartMapData.setDimension77(String.valueOf(addToCartDataResponseModel.getData().getCartId()));
+        enhancedECommerceProductCartMapData.setBrand("");
+        enhancedECommerceProductCartMapData.setCategoryId("");
+        enhancedECommerceProductCartMapData.setVariant("");
 
         EnhancedECommerceAdd enhancedECommerceAdd = new EnhancedECommerceAdd();
         enhancedECommerceAdd.setActionField(enhancedECommerceActionField.getActionFieldMap());
@@ -1320,6 +1328,9 @@ public class CartListPresenter implements ICartListPresenter {
         enhancedECommerceProductCartMapData.setShopType(cartRecommendationItemHolderData.getRecommendationItem().getShopType());
         enhancedECommerceProductCartMapData.setShopName(cartRecommendationItemHolderData.getRecommendationItem().getShopName());
         enhancedECommerceProductCartMapData.setDimension45(String.valueOf(addToCartDataResponseModel.getData().getCartId()));
+        enhancedECommerceProductCartMapData.setBrand("");
+        enhancedECommerceProductCartMapData.setCategoryId("");
+        enhancedECommerceProductCartMapData.setVariant("");
 
         EnhancedECommerceAdd enhancedECommerceAdd = new EnhancedECommerceAdd();
         enhancedECommerceAdd.setActionField(enhancedECommerceActionField.getActionFieldMap());

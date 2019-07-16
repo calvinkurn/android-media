@@ -43,6 +43,7 @@
 /features/top_ads/top_ads_management/                   @tokopedia/minion-stuart
 /features/top_ads/top_ads_management_common/            @tokopedia/minion-stuart
 /features/top_ads/top_ads_management_sourcetagging/     @tokopedia/minion-stuart
+/features/top_ads/top_ads_autoads/     @tokopedia/minion-dave
 
 /features/digital/flight/               @tokopedia/minion-mark
 /features/digital/train/               @tokopedia/minion-mark

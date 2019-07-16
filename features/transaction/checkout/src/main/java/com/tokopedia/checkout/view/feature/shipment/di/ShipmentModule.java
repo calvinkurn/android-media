@@ -35,7 +35,7 @@ import com.tokopedia.checkout.view.feature.shipment.ShipmentPresenter;
 import com.tokopedia.checkout.view.feature.shipment.converter.RatesDataConverter;
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataRequestConverter;
-import com.tokopedia.logisticanalytics.CodAnalytics;
+import com.tokopedia.logisticdata.data.analytics.CodAnalytics;
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeFinalUseCase;
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
