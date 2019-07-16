@@ -31,7 +31,21 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.fragment_product_info.*
+import kotlinx.android.synthetic.main.fragment_product_info.product_name
+import kotlinx.android.synthetic.main.fragment_product_info.badge
+import kotlinx.android.synthetic.main.fragment_product_info.fab_detail
+import kotlinx.android.synthetic.main.fragment_product_info.product_price
+import kotlinx.android.synthetic.main.fragment_product_info.location
+import kotlinx.android.synthetic.main.fragment_product_info.product_image
+import kotlinx.android.synthetic.main.fragment_product_info.product_card
+import kotlinx.android.synthetic.main.fragment_product_info.rating
+import kotlinx.android.synthetic.main.fragment_product_info.review_count
+import kotlinx.android.synthetic.main.fragment_product_info.product_slashed_price
+import kotlinx.android.synthetic.main.fragment_product_info.product_discount
+import kotlinx.android.synthetic.main.fragment_product_info.buy_now
+import kotlinx.android.synthetic.main.fragment_product_info.pb_buy_now
+import kotlinx.android.synthetic.main.fragment_product_info.add_to_cart
+import kotlinx.android.synthetic.main.fragment_product_info.pb_add_to_cart
 import javax.inject.Inject
 
 class ProductInfoFragment : BaseDaggerFragment() {
@@ -152,7 +166,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
                 pb_add_to_cart.show()
                 addToCart(
                         success = { result ->
-                            recommendationItem.cartId = (result[CART_ID] as Long).toInt()
+                            recommendationItem.cartId = result[CART_ID] as Int
                             RecommendationPageTracking.eventUserClickAddToCart(recommendationItem)
                             pb_add_to_cart.hide()
                             if(result.containsKey(STATUS) && !(result[STATUS] as Boolean)){
