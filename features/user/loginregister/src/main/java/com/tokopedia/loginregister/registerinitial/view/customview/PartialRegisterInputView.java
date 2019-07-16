@@ -75,6 +75,7 @@ public class PartialRegisterInputView extends BaseCustomView {
     }
 
     public void renderData() {
+        tvMessage.setVisibility(VISIBLE);
         tvMessage.setText(tvMessage.getContext().getString(R.string.deafult_placeholder));
 
         etInputEmailPhone.addTextChangedListener(watcher(wrapperEmailPhone));
@@ -143,10 +144,12 @@ public class PartialRegisterInputView extends BaseCustomView {
 
     private void hideError() {
         tvError.setText("");
+        tvMessage.setVisibility(VISIBLE);
     }
 
     private void showError() {
         tvError.setVisibility(VISIBLE);
+        tvMessage.setVisibility(GONE);
     }
 
     public void showLoginEmailView(@NotNull String email) {
