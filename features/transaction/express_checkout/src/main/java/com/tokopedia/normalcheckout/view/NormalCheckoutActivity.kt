@@ -18,7 +18,11 @@ import com.tokopedia.tradein.model.TradeInParams
 open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener {
     companion object {
         const val EXTRA_SHOP_ID = "shop_id"
+        const val EXTRA_CATEGORY_ID = "category_id"
+        const val EXTRA_CATEGORY_NAME = "category_name"
         const val EXTRA_PRODUCT_ID = "product_id"
+        const val EXTRA_PRODUCT_TITLE = "product_title"
+        const val EXTRA_PRODUCT_PRICE = "product_price"
         const val EXTRA_NOTES = "notes"
         const val EXTRA_QUANTITY = "quantity"
         const val EXTRA_SELECTED_VARIANT_ID = "selected_variant_id"
@@ -31,7 +35,7 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
         private const val TRACKER_ATTRIBUTION = "tracker_attribution"
         private const val TRACKER_LIST_NAME = "tracker_list_name"
         private var tradeInParams: TradeInParams? = null
-        private lateinit var normalCheckoutFragment : NormalCheckoutFragment
+        private lateinit var normalCheckoutFragment: NormalCheckoutFragment
 
         /**
          * shopID: mandatory
@@ -39,8 +43,8 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
          *
          */
         @JvmStatic
-        fun getIntent(context: Context, shopId: String, productId: String,
-                      notes: String? = "", quantity: Int? = 0,
+        fun getIntent(context: Context, shopId: String, categoryId: String, categoryName: String, productId: String,
+                      productTitle: String?, productPrice: Float?, notes: String? = "", quantity: Int? = 0,
                       selectedVariantId: String? = null,
                       @ProductAction action: Int = ATC_AND_BUY,
                       placeholderProductImage: String? = "",
@@ -48,10 +52,14 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
                       trackerListName: String? = "",
                       shopType: String? = "",
                       shopName: String? = "",
-                      isOneClickShipment:Boolean): Intent {
+                      isOneClickShipment: Boolean): Intent {
             return Intent(context, NormalCheckoutActivity::class.java).apply {
                 putExtra(EXTRA_SHOP_ID, shopId)
+                putExtra(EXTRA_CATEGORY_ID, categoryId)
+                putExtra(EXTRA_CATEGORY_NAME, categoryName)
                 putExtra(EXTRA_PRODUCT_ID, productId)
+                putExtra(EXTRA_PRODUCT_TITLE, productTitle)
+                putExtra(EXTRA_PRODUCT_PRICE, productPrice)
                 putExtra(EXTRA_NOTES, notes)
                 putExtra(EXTRA_QUANTITY, quantity)
                 putExtra(EXTRA_SELECTED_VARIANT_ID, selectedVariantId)
@@ -76,19 +84,24 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
         val bundle = intent.extras
         tradeInParams = intent.getParcelableExtra(EXTRA_TRADE_IN_PARAMS)
         bundle?.run {
-            normalCheckoutFragment = NormalCheckoutFragment.createInstance(getString(EXTRA_SHOP_ID),
-                getString(EXTRA_PRODUCT_ID),
-                getString(EXTRA_NOTES),
-                getInt(EXTRA_QUANTITY),
-                getString(EXTRA_SELECTED_VARIANT_ID),
-                getInt(EXTRA_ACTION),
-                getString(EXTRA_PRODUCT_IMAGE),
-                getString(TRACKER_ATTRIBUTION),
-                getString(TRACKER_LIST_NAME),
-                getString(EXTRA_SHOP_TYPE),
-                getString(EXTRA_SHOP_NAME),
-                getBoolean(EXTRA_OCS),
-                tradeInParams)
+            normalCheckoutFragment = NormalCheckoutFragment.createInstance(
+                    getString(EXTRA_SHOP_ID),
+                    getString(EXTRA_CATEGORY_ID),
+                    getString(EXTRA_CATEGORY_NAME),
+                    getString(EXTRA_PRODUCT_ID),
+                    getString(EXTRA_PRODUCT_TITLE),
+                    getFloat(EXTRA_PRODUCT_PRICE),
+                    getString(EXTRA_NOTES),
+                    getInt(EXTRA_QUANTITY),
+                    getString(EXTRA_SELECTED_VARIANT_ID),
+                    getInt(EXTRA_ACTION),
+                    getString(EXTRA_PRODUCT_IMAGE),
+                    getString(TRACKER_ATTRIBUTION),
+                    getString(TRACKER_LIST_NAME),
+                    getString(EXTRA_SHOP_TYPE),
+                    getString(EXTRA_SHOP_NAME),
+                    getBoolean(EXTRA_OCS),
+                    tradeInParams)
             return normalCheckoutFragment
         }
         return Fragment()

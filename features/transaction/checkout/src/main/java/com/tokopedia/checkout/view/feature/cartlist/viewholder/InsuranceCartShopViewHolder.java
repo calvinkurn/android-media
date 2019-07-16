@@ -67,8 +67,6 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
         boolean isInsuranceSelected = insuranceCartDigitalProduct.getOptIn();
         cbSelectInsurance.setChecked(isInsuranceSelected);
 
-        insuranceCartDigitalProduct.getProductInfo();
-
         if (!TextUtils.isEmpty(insuranceCartDigitalProduct.getProductInfo().getTitle())) {
             tvInsuranceTitle.setText(insuranceCartDigitalProduct.getProductInfo().getTitle());
         } else {
@@ -79,7 +77,7 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
             ImageHandler.loadImage(ivInsuranceIcon.getContext(), ivInsuranceIcon, insuranceCartDigitalProduct.getProductInfo().getIconUrl(), R.drawable.ic_modal_toko);
         }
 
-        if (TextUtils.isEmpty(insuranceCartDigitalProduct.getProductInfo().getLinkDetailInfoTitle())) {
+        /*if (TextUtils.isEmpty(insuranceCartDigitalProduct.getProductInfo().getLinkDetailInfoTitle())) {
             tvInsuranceInfo.setVisibility(View.GONE);
         } else {
             tvInsuranceInfo.setVisibility(View.VISIBLE);
@@ -92,7 +90,7 @@ public class InsuranceCartShopViewHolder extends RecyclerView.ViewHolder {
 
                 }
             });
-        }
+        }*/
 
         if (!insuranceCartDigitalProduct.getApplicationDetails().isEmpty()) {
 

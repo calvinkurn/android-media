@@ -75,9 +75,6 @@ data class InsuranceCartProductInfo(
         @SerializedName("sub_title")
         var subTitle: String,
 
-        @SerializedName("link_detail_info_title")
-        var linkDetailInfoTitle: String,
-
         @SerializedName("description")
         var description: String,
 
@@ -129,11 +126,11 @@ data class InsuranceApplicationValidation(
         @SerializedName("id")
         var validationId: Int,
 
-        @SerializedName("type")
-        var type: String,
-
         @SerializedName("value")
         var validationValue: String,
+
+        @SerializedName("type")
+        var type: String,
 
         @SerializedName("error_message")
         var validationErrorMessage: String

@@ -3,11 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/dp_24"
+    android:layout_marginTop="@dimen/dp_26"
     android:layout_marginBottom="@dimen/dp_12"
-    android:orientation="vertical"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16">
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/title"
@@ -22,11 +20,16 @@
         android:id="@+id/sub_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:lineSpacingExtra="6sp"
         android:layout_marginTop="@dimen/dp_4"
         android:drawableRight="@drawable/ic_arrow_drop_down_grey_checkout_module"
+        android:lineSpacingExtra="6sp"
         android:textColor="#f531353b"
         android:textSize="16sp"
         tools:text="Andrew Ignatius Sugijanto" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:background="@color/grey_300" />
 
 </LinearLayout>

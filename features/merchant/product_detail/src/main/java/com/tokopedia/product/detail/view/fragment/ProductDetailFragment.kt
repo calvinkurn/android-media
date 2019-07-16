@@ -585,7 +585,11 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     ?: false
                 val intent = NormalCheckoutActivity.getIntent(it,
                         basic.shopID.toString(),
+                        category.id,
+                        category.name,
                         parentProductId,
+                        basic.name,
+                        productInfo?.basic?.price,
                         userInputNotes,
                         userInputQuantity,
                         userInputVariant,

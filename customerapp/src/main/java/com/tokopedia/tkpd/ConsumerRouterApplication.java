@@ -393,6 +393,7 @@ import com.tokopedia.transactiondata.entity.response.addtocart.AddToCartDataResp
 import com.tokopedia.transactiondata.entity.response.cod.Data;
 import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam;
+import com.tokopedia.transactiondata.insurance.usecase.GetInsuranceRecommendationUsecase;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -1772,6 +1773,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                     .createObservable(requestParams)
                     .map(this::mapAddToCartResult);
         }
+    }
+
+    @NotNull
+    @Override
+    public GetInsuranceRecommendationUsecase getInsuranceRecommendationUsecase() {
+        return CartComponentInjector.newInstance(this).getInsuranceRecommendationUsecase();
     }
 
     @NotNull

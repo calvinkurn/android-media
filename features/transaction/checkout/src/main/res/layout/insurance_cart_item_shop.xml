@@ -73,6 +73,7 @@
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_8"
         android:lineSpacingExtra="6sp"
+        android:visibility="gone"
         android:text="Info"
         android:textColor="#03ac0e"
         android:textSize="@dimen/sp_12"

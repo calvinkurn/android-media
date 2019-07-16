@@ -6,15 +6,16 @@ import com.tokopedia.expresscheckout.view.variant.viewmodel.*
 import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_AVAILABLE
 import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_SELECTED
 import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_SELECTED
-import com.tokopedia.product.detail.common.data.model.product.Picture
-import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef.ACTIVE
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef.WAREHOUSE
+import com.tokopedia.product.detail.common.data.model.product.Picture
+import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.variant.Child
 import com.tokopedia.product.detail.common.data.model.variant.Option
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.Variant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
+import com.tokopedia.transactiondata.insurance.entity.response.*
 import kotlin.math.roundToInt
 
 object ModelMapper {
@@ -22,6 +23,7 @@ object ModelMapper {
     fun convertVariantToModels(productInfo: ProductInfo,
                                multiorigin: MultiOriginWarehouse?,
                                productVariant: ProductVariant?,
+                               insuranceRecommendation: InsuranceRecommendationViewModel?,
                                noteString: String?, quantity: Int = 0): ArrayList<Visitable<*>> {
         val dataList: ArrayList<Visitable<*>> = ArrayList()
         dataList.add(convertToProductViewModel(productInfo, multiorigin))
@@ -39,6 +41,9 @@ object ModelMapper {
         }
         dataList.add(convertToQuantityViewModel(productInfo, quantity))
         dataList.add(convertToNoteViewModel(noteString))
+        insuranceRecommendation?.run {
+            dataList.add(insuranceRecommendation)
+        }
         return dataList
     }
 
@@ -46,59 +51,59 @@ object ModelMapper {
                                selectedVariant: Child?,
                                variantRef: List<Variant>? = null): ProductInfo {
         return originalProductInfo.copy(
-            basic = originalProductInfo.basic.copy(
-                id = selectedVariant?.productId ?: 0,
-                price = selectedVariant?.price ?: 0f,
-                name = if (selectedVariant == null) {
-                    originalProductInfo.basic.name
+                basic = originalProductInfo.basic.copy(
+                        id = selectedVariant?.productId ?: 0,
+                        price = selectedVariant?.price ?: 0f,
+                        name = if (selectedVariant == null) {
+                            originalProductInfo.basic.name
+                        } else {
+                            selectedVariant.name
+                        },
+                        minOrder = selectedVariant?.stock?.minimumOrder ?: 0,
+                        maxOrder = selectedVariant?.stock?.maximumOrder ?: 0,
+                        status = if (selectedVariant?.isBuyable == true) {
+                            ACTIVE
+                        } else {
+                            WAREHOUSE
+                        },
+                        sku = selectedVariant?.sku ?: "",
+                        isEligibleCod = selectedVariant?.isCod ?: false
+                ),
+                pictures = if (selectedVariant?.hasPicture == true) {
+                    val list = mutableListOf<Picture>()
+                    val variantPicture = Picture(urlOriginal =
+                    selectedVariant.picture?.original ?: "",
+                            urlThumbnail = selectedVariant.picture?.thumbnail ?: "",
+                            url300 = selectedVariant.picture?.thumbnail ?: "")
+                    list.add(variantPicture)
+                    list
                 } else {
-                    selectedVariant.name
+                    originalProductInfo.pictures
                 },
-                minOrder = selectedVariant?.stock?.minimumOrder ?: 0,
-                maxOrder = selectedVariant?.stock?.maximumOrder ?: 0,
-                status = if (selectedVariant?.isBuyable == true) {
-                    ACTIVE
+                campaign = if (selectedVariant?.campaign?.activeAndHasId == true) {
+                    originalProductInfo.campaign.copy(
+                            id = selectedVariant.campaign?.campaignID ?: "",
+                            isActive = selectedVariant.campaign?.isActive ?: false,
+                            originalPrice = selectedVariant.campaign?.originalPrice ?: 0f,
+                            discountedPrice = selectedVariant.campaign?.discountedPrice ?: 0f,
+                            percentage = selectedVariant.campaign?.discountedPercentage ?: 0f,
+                            startDate = selectedVariant.campaign?.startDate ?: "",
+                            endDate = selectedVariant.campaign?.endDate ?: ""
+                    )
                 } else {
-                    WAREHOUSE
+                    originalProductInfo.campaign
                 },
-                sku = selectedVariant?.sku ?: "",
-                isEligibleCod = selectedVariant?.isCod ?: false
-            ),
-            pictures = if (selectedVariant?.hasPicture == true) {
-                val list = mutableListOf<Picture>()
-                val variantPicture = Picture(urlOriginal =
-                selectedVariant.picture?.original ?: "",
-                        urlThumbnail = selectedVariant.picture?.thumbnail ?: "",
-                        url300 = selectedVariant.picture?.thumbnail ?: "")
-                list.add(variantPicture)
-                list
-            } else {
-                originalProductInfo.pictures
-            },
-            campaign = if (selectedVariant?.campaign?.activeAndHasId == true) {
-                originalProductInfo.campaign.copy(
-                    id = selectedVariant.campaign?.campaignID ?: "",
-                    isActive = selectedVariant.campaign?.isActive ?: false,
-                    originalPrice = selectedVariant.campaign?.originalPrice ?: 0f,
-                    discountedPrice = selectedVariant.campaign?.discountedPrice ?: 0f,
-                    percentage = selectedVariant.campaign?.discountedPercentage ?: 0f,
-                    startDate = selectedVariant.campaign?.startDate ?: "",
-                    endDate = selectedVariant.campaign?.endDate ?: ""
+                stock = originalProductInfo.stock.copy(
+                        useStock = selectedVariant?.stock?.alwaysAvailable == true ||
+                                (selectedVariant?.stock?.isLimitedStock == true && (selectedVariant.stock?.stock
+                                        ?: 0) > 0),
+                        value = selectedVariant?.stock?.stock ?: 0,
+                        stockWording = selectedVariant?.stock?.stockWordingHTML ?: ""
+                ),
+                variant = originalProductInfo.variant.copy(
+                        isVariant = true,
+                        parentID = originalProductInfo.parentProductId
                 )
-            } else {
-                originalProductInfo.campaign
-            },
-            stock = originalProductInfo.stock.copy(
-                useStock = selectedVariant?.stock?.alwaysAvailable == true ||
-                    (selectedVariant?.stock?.isLimitedStock == true && (selectedVariant.stock?.stock
-                        ?: 0) > 0),
-                value = selectedVariant?.stock?.stock ?: 0,
-                stockWording = selectedVariant?.stock?.stockWordingHTML ?: ""
-            ),
-            variant = originalProductInfo.variant.copy(
-                isVariant = true,
-                parentID = originalProductInfo.parentProductId
-            )
         )
     }
 
@@ -113,6 +118,90 @@ object ModelMapper {
         }
         return noteViewModel
     }
+
+    fun convertToInsuranceRecommendationViewModel(insuranceRecommendation: InsuranceRecommendationGqlResponse): InsuranceRecommendationViewModel {
+
+        val insuranceCartShopsViewModelList = ArrayList<InsuranceCartShopsViewModel>()
+
+
+        for (data: InsuranceCartShops in insuranceRecommendation.data.cartShopsList) {
+
+            val insuranceCartShopsViewModel = InsuranceCartShopsViewModel()
+            insuranceCartShopsViewModel.shopId = data.shopId
+
+            val shopItemsList = ArrayList<InsuranceCartShopItemsViewModel>()
+
+            for (dataItems: InsuranceCartShopItems in data.shopItemsList) {
+
+                val insuranceCartShopItemsViewModel = InsuranceCartShopItemsViewModel()
+                insuranceCartShopItemsViewModel.productId = dataItems.productId
+                val list = ArrayList<InsuranceCartDigitalProductViewModel>()
+                for (digitalProduct: InsuranceCartDigitalProduct in dataItems.digitalProductList) {
+
+                    val insuranceCartProductInfoViewModel = InsuranceCartProductInfoViewModel()
+                    insuranceCartProductInfoViewModel.description = digitalProduct.productInfo.description
+                    insuranceCartProductInfoViewModel.iconUrl = digitalProduct.productInfo.iconUrl
+                    insuranceCartProductInfoViewModel.subTitle = digitalProduct.productInfo.subTitle
+                    insuranceCartProductInfoViewModel.webLinkHtml = digitalProduct.productInfo.webLinkHtml
+                    insuranceCartProductInfoViewModel.title = digitalProduct.productInfo.title
+                    insuranceCartProductInfoViewModel.tickerText = digitalProduct.productInfo.tickerText
+
+
+                    val applicationDetailList = ArrayList<InsuranceProductApplicationDetailsViewModel>()
+
+                    for (applicationDetails: InsuranceProductApplicationDetails in digitalProduct.applicationDetails) {
+                        val insuranceProductApplicationDetailsViewModel = InsuranceProductApplicationDetailsViewModel()
+                        insuranceProductApplicationDetailsViewModel.id = applicationDetails.id
+                        insuranceProductApplicationDetailsViewModel.isRequired = applicationDetails.isRequired
+                        insuranceProductApplicationDetailsViewModel.label = applicationDetails.label
+                        insuranceProductApplicationDetailsViewModel.placeHolder = applicationDetails.placeHolder
+                        insuranceProductApplicationDetailsViewModel.value = applicationDetails.value
+                        insuranceProductApplicationDetailsViewModel.type = applicationDetails.type
+                        val valueList = ArrayList<InsuranceApplicationValueViewModel>()
+                        for (value: InsuranceApplicationValue in applicationDetails.valuesList) {
+                            val insuranceApplicationValueViewModel = InsuranceApplicationValueViewModel()
+                            insuranceApplicationValueViewModel.value = value.value
+                            insuranceApplicationValueViewModel.valuesId = value.valuesId
+                            valueList.add(insuranceApplicationValueViewModel)
+                        }
+                        insuranceProductApplicationDetailsViewModel.valuesList = valueList
+                        val validationList = ArrayList<InsuranceApplicationValidationViewModel>()
+                        for (validation: InsuranceApplicationValidation in applicationDetails.validationsList) {
+                            val insuranceApplicationValidationViewModel = InsuranceApplicationValidationViewModel()
+                            insuranceApplicationValidationViewModel.type = validation.type
+                            insuranceApplicationValidationViewModel.validationErrorMessage = validation.validationErrorMessage
+                            insuranceApplicationValidationViewModel.validationId = validation.validationId
+                            insuranceApplicationValidationViewModel.validationValue = validation.validationValue
+                            validationList.add(insuranceApplicationValidationViewModel)
+                        }
+                        insuranceProductApplicationDetailsViewModel.validationsList = validationList
+                        applicationDetailList.add(insuranceProductApplicationDetailsViewModel)
+                    }
+
+                    val insuranceCartDigitalProductViewModel = InsuranceCartDigitalProductViewModel(digitalProduct.digitalProductId,
+                            digitalProduct.cartItemId,
+                            digitalProduct.typeId,
+                            digitalProduct.pricePerProduct,
+                            digitalProduct.totalPrice,
+                            digitalProduct.optIn,
+                            digitalProduct.isProductLevel,
+                            digitalProduct.isSellerMoney,
+                            digitalProduct.isApplicationNeeded,
+                            digitalProduct.isNew,
+                            insuranceCartProductInfoViewModel,
+                            applicationDetailList)
+
+                    list.add(insuranceCartDigitalProductViewModel)
+                }
+                insuranceCartShopItemsViewModel.digitalProductList = list
+                shopItemsList.add(insuranceCartShopItemsViewModel)
+            }
+            insuranceCartShopsViewModel.shopItemsList = shopItemsList
+            insuranceCartShopsViewModelList.add(insuranceCartShopsViewModel)
+        }
+        return InsuranceRecommendationViewModel(insuranceCartShopsViewModelList)
+    }
+
 
     /**
      * convert the product Info to ProductViewModel
@@ -130,7 +219,7 @@ object ModelMapper {
             productInfo.basic.maxOrder > 0 -> productInfo.basic.maxOrder
             else -> MAX_QUANTITY
         }
-        productViewModel.productPrice = if (multiorigin != null && multiorigin.warehouseInfo.id.isNotBlank()){
+        productViewModel.productPrice = if (multiorigin != null && multiorigin.warehouseInfo.id.isNotBlank()) {
             multiorigin.price
         } else if (productInfo.hasActiveCampaign && productInfo.campaign.discountedPrice > 0) {
             productInfo.campaign.discountedPrice.roundToInt()
@@ -138,7 +227,7 @@ object ModelMapper {
             productInfo.basic.price.roundToInt()
         }
 
-        productViewModel.originalPrice = if (multiorigin != null && multiorigin.warehouseInfo.id.isNotBlank()){
+        productViewModel.originalPrice = if (multiorigin != null && multiorigin.warehouseInfo.id.isNotBlank()) {
             productInfo.basic.price.roundToInt()
         } else if (productInfo.hasActiveCampaign && productInfo.campaign.originalPrice > 0) {
             productInfo.campaign.originalPrice.roundToInt()
@@ -167,9 +256,9 @@ object ModelMapper {
         var level = 0
         for (variantModel: Variant in variantModels) {
             val typeVariantViewModel =
-                convertToTypeVariantViewModel(productVariant, variantModel, selectedProduct, level,
-                    (level + 1) == variantModels.size)
-                    ?: continue
+                    convertToTypeVariantViewModel(productVariant, variantModel, selectedProduct, level,
+                            (level + 1) == variantModels.size)
+                            ?: continue
             level++
             variantViewModelList.add(typeVariantViewModel)
         }
@@ -190,12 +279,12 @@ object ModelMapper {
         quantityViewModel.isStateError = false
 
         quantityViewModel.maxOrderQuantity =
-            when {
-                productInfo.stock.useStock && productInfo.stock.value > 0 ->
-                    productInfo.stock.value
-                productInfo.basic.maxOrder > 0 -> productInfo.basic.maxOrder
-                else -> MAX_QUANTITY
-            }
+                when {
+                    productInfo.stock.useStock && productInfo.stock.value > 0 ->
+                        productInfo.stock.value
+                    productInfo.basic.maxOrder > 0 -> productInfo.basic.maxOrder
+                    else -> MAX_QUANTITY
+                }
         quantityViewModel.minOrderQuantity = if (productInfo.basic.minOrder > 0) productInfo.basic.minOrder else 1
         quantityViewModel.orderQuantity = if (quantity > 0) quantity else quantityViewModel.minOrderQuantity
         quantityViewModel.stockWording = productInfo.stock.stockWording
@@ -220,19 +309,19 @@ object ModelMapper {
         val isSelectedProductBuyable = selectedProduct.isBuyable
         for (optionModel: Option in optionModels) {
             optionVariantViewModels.add(
-                convertToOptionVariantViewModel(optionModel, variantModel.v ?: 0,
-                    childrenModel, selectedOptionsIds, isSelectedProductBuyable, variantLevel, isLeaf)
+                    convertToOptionVariantViewModel(optionModel, variantModel.v ?: 0,
+                            childrenModel, selectedOptionsIds, isSelectedProductBuyable, variantLevel, isLeaf)
             )
         }
         typeVariantViewModel.variantId = variantModel.v ?: 0
         typeVariantViewModel.variantOptions = optionVariantViewModels
         typeVariantViewModel.variantName = variantModel.name ?: ""
         typeVariantViewModel.variantGuideline =
-            if (variantModel.isSizeIdentifier && productVariant.sizeChart.isNotEmpty()) {
-                productVariant.sizeChart
-            } else {
-                ""
-            }
+                if (variantModel.isSizeIdentifier && productVariant.sizeChart.isNotEmpty()) {
+                    productVariant.sizeChart
+                } else {
+                    ""
+                }
         typeVariantViewModel.variantIdentifier = variantModel.identifier ?: ""
         return typeVariantViewModel
     }
@@ -281,7 +370,7 @@ object ModelMapper {
             } else if (!isLeaf) {
                 for (childModel: Child in childrenModel) {
                     if (childModel.isBuyable &&
-                        childModel.optionIds.get(variantLevel) == optionVariantViewModel.optionId) {
+                            childModel.optionIds.get(variantLevel) == optionVariantViewModel.optionId) {
                         optionVariantViewModel.currentState = STATE_SELECTED
                         break
                     }
@@ -290,7 +379,7 @@ object ModelMapper {
         } else {
             for (childModel: Child in childrenModel) {
                 if (childModel.isBuyable &&
-                    childModel.optionIds.get(variantLevel) == optionVariantViewModel.optionId) {
+                        childModel.optionIds.get(variantLevel) == optionVariantViewModel.optionId) {
                     if (partialSelectedListByLevel.isEmpty()) {
                         // no need to check more. This will be enabled, since it is the first level
                         optionVariantViewModel.currentState = STATE_NOT_SELECTED

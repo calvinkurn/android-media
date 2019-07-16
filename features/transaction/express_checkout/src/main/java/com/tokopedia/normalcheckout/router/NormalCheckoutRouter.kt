@@ -10,6 +10,7 @@ import com.tokopedia.transaction.common.sharedata.AddToCartRequest
 import com.tokopedia.transaction.common.sharedata.AddToCartResult
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest
+import com.tokopedia.transactiondata.insurance.usecase.GetInsuranceRecommendationUsecase
 import com.tokopedia.usecase.RequestParams
 import rx.Observable
 import java.security.PublicKey
@@ -21,6 +22,7 @@ import java.security.PublicKey
 interface NormalCheckoutRouter {
 
     fun addToCartProduct(addToCartRequest: AddToCartRequest, isOneClickShipment: Boolean): Observable<AddToCartResult>
+    fun getInsuranceRecommendationUsecase(): GetInsuranceRecommendationUsecase
     fun getCheckoutIntent(context: Context, shipmentFormRequest: ShipmentFormRequest): Intent
     fun getCheckoutIntent(context: Context, deviceid: String): Intent
     fun getCartIntent(context: Context): Intent
