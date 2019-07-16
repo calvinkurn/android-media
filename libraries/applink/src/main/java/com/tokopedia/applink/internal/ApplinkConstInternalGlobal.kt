@@ -52,5 +52,9 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val FORGOT_PASSWORD = "$INTERNAL_GLOBAL/forgot-password"
 
-
+    // WebViewActivity (Web View in library)
+    // Solution for sellerapp that does not have AppLinkWebsiteActivity
+    // Activity can have title by putting "title=.."
+    @JvmField
+    val WEBVIEW = "$INTERNAL_GLOBAL/webview?url={url}"
 }

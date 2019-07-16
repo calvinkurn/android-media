@@ -42,7 +42,6 @@ dependencies {
     implementation project(rootProject.ext.features.transactioncommon)
     implementation project(rootProject.ext.features.transactionanalytics)
     implementation project(rootProject.ext.features.logisticdata)
-    implementation project(rootProject.ext.features.logisticCommon)
     implementation project(rootProject.ext.features.shippingRecommendation)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.productDetailCommon)

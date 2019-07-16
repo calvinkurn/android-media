@@ -7,11 +7,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.TaskStackBuilder;
 import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.view.activity.model.DealDetailPassData;
@@ -33,15 +31,9 @@ public class DealDetailsActivity extends DealsBaseActivity implements DealFragme
 
     @DeepLink({DealsUrl.AppLink.DIGITAL_DEALS_DETAILS})
 
-    public static TaskStackBuilder getInstanceIntentAppLinkBackToHome(Context context, Bundle extras) {
+    public static Intent getInstanceIntentAppLinkBackToHome(Context context, Bundle extras) {
         String deepLink = extras.getString(DeepLink.URI);
-        Intent destination;
-
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-
-        Intent homeIntent = ((DealsModuleRouter) context.getApplicationContext()).getHomeIntent(context);
-        taskStackBuilder.addNextIntent(homeIntent);
-        taskStackBuilder.addNextIntent(new Intent(context, DealsHomeActivity.class));
+        Intent destination = new Intent();
 
         Uri.Builder uri = Uri.parse(deepLink).buildUpon();
 
@@ -50,8 +42,7 @@ public class DealDetailsActivity extends DealsBaseActivity implements DealFragme
                 .setData(uri.build())
                 .putExtras(extras);
 
-        taskStackBuilder.addNextIntent(destination);
-        return taskStackBuilder;
+        return destination;
     }
 
     public static Intent getCallingIntent(Activity activity,

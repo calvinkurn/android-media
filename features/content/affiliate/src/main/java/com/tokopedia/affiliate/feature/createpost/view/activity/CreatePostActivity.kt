@@ -20,6 +20,7 @@ import com.tokopedia.affiliate.feature.createpost.view.type.ShareType
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.HeaderViewModel
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
+import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
@@ -28,19 +29,15 @@ import kotlinx.android.synthetic.main.activity_create_post.*
 import kotlinx.android.synthetic.main.bottom_sheet_share_post.view.*
 
 class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener, BaseCreatePostFragment.OnCreatePostCallBack {
+    private var postId: String? = null
 
     override fun invalidatePostMenu(isPostEnabled: Boolean) {
-        this.isPostEnabled = isPostEnabled
         if (isPostEnabled){
-            action_post.isEnabled = true
             action_post.setTextColor(ContextCompat.getColor(this, R.color.green_500))
         } else {
-            action_post.isEnabled = false
             action_post.setTextColor(ContextCompat.getColor(this, R.color.grey_500))
         }
     }
-
-    private var isPostEnabled = false
 
     companion object {
         const val PARAM_PRODUCT_ID = "product_id"
@@ -96,9 +93,17 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener, Bas
 
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()
+        val uri = intent.data
+        if (uri != null && uri.scheme == DeeplinkConstant.SCHEME_INTERNAL){
+            val segmentUri = uri.pathSegments
+            intent.putExtra(PARAM_POST_ID, segmentUri[segmentUri.size - 2])
+            intent.putExtra(PARAM_TYPE, segmentUri[0])
+        }
+
         if (intent.extras != null) {
             bundle.putAll(intent.extras)
         }
+
         return when(intent?.extras?.get(PARAM_TYPE)) {
             TYPE_AFFILIATE -> AffiliateCreatePostFragment.createInstance(bundle)
             TYPE_CONTENT_SHOP -> ContentCreatePostFragment.createInstance(bundle)
@@ -119,12 +124,10 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener, Bas
             onBackPressed()
         }
         action_post.setOnClickListener {
-            if (isPostEnabled){
-                val fragment = supportFragmentManager
-                        .findFragmentByTag("TAG_FRAGMENT") as? BaseCreatePostFragment ?:
-                return@setOnClickListener
-                fragment.saveDraftAndSubmit()
-            }
+            val fragment = supportFragmentManager
+                    .findFragmentByTag("TAG_FRAGMENT") as? BaseCreatePostFragment ?:
+            return@setOnClickListener
+            fragment.saveDraftAndSubmit()
         }
         shareTo.setOnClickListener { openShareBottomSheetDialog() }
     }
@@ -147,6 +150,9 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener, Bas
         dialog.setBtnOk(getString(R.string.af_leave_title))
         dialog.setBtnCancel(getString(R.string.af_continue))
         dialog.setOnOkClickListener{
+            (supportFragmentManager.findFragmentByTag("TAG_FRAGMENT") as? AffiliateCreatePostFragment)?.let {
+                it.clearCache()
+            }
             dialog.dismiss()
             super.onBackPressed()
         }

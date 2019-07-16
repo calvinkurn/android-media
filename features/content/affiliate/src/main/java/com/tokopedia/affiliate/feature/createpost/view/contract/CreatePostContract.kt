@@ -8,6 +8,7 @@ import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.FeedC
 import com.tokopedia.affiliate.feature.createpost.view.type.ShareType
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel
 import com.tokopedia.twitter_share.TwitterAuthenticator
+import com.tokopedia.affiliate.feature.createpost.domain.entity.FeedDetail
 
 /**
  * @author by milhamj on 9/26/18.
@@ -26,6 +27,10 @@ interface CreatePostContract {
 
         fun onErrorNoQuota()
 
+        fun onSuccessGetPostEdit(feedDetail: FeedDetail)
+
+        fun onErrorGetPostEdit(e: Throwable?)
+
         fun onGetAvailableShareTypeList(typeList: List<ShareType>)
 
         fun onAuthenticateTwitter(authenticator: TwitterAuthenticator)
@@ -34,12 +39,14 @@ interface CreatePostContract {
     }
 
     interface Presenter : CustomerPresenter<View> {
-        fun fetchContentForm(idList: MutableList<String>, type: String)
-
         fun invalidateShareOptions()
 
         fun onShareButtonClicked(type: ShareType, isChecked: Boolean)
 
         fun postContentToOtherService(viewModel: CreatePostViewModel)
+
+        fun fetchContentForm(idList: MutableList<String>, type: String, postId: String)
+
+        fun getFeedDetail(postId: String, isAffiliate: Boolean)
     }
 }

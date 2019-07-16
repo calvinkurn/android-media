@@ -405,6 +405,9 @@ public class SearchProductModel {
         @SerializedName("labels")
         @Expose
         private List<Label> labels = null;
+        @SerializedName("label_groups")
+        @Expose
+        private List<LabelGroup> labelGroups = new ArrayList<>();
         @SerializedName("badges")
         @Expose
         private List<Badge> badges = null;
@@ -512,6 +515,10 @@ public class SearchProductModel {
             return labels;
         }
 
+        public List<LabelGroup> getLabelGroupList() {
+            return labelGroups;
+        }
+
         public List<Badge> getBadges() {
             return badges;
         }
@@ -578,6 +585,32 @@ public class SearchProductModel {
 
         public Shop getShop() {
             return shop;
+        }
+    }
+
+    public static class LabelGroup {
+        @SerializedName("position")
+        @Expose
+        private String position;
+
+        public String getPosition() {
+            return position;
+        }
+
+        @SerializedName("type")
+        @Expose
+        private String type;
+
+        public String getType() {
+            return type;
+        }
+
+        @SerializedName("title")
+        @Expose
+        private String title;
+
+        public String getTitle() {
+            return title;
         }
     }
 
@@ -699,7 +732,10 @@ public class SearchProductModel {
         private boolean goldmerchant;
         @SerializedName("is_official")
         @Expose
-        private boolean official;
+        private boolean isOfficial;
+        @SerializedName("is_power_badge")
+        @Expose
+        private boolean isPowerBadge;
 
         public String getId() {
             return id;
@@ -734,7 +770,11 @@ public class SearchProductModel {
         }
 
         public boolean isOfficial() {
-            return official;
+            return isOfficial;
+        }
+
+        public boolean isPowerBadge() {
+            return isPowerBadge;
         }
     }
 
