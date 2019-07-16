@@ -20,8 +20,7 @@
         style="@style/HintTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:hintEnabled="false"
-        android:layout_marginBottom="@dimen/dp_24">
+        app:hintEnabled="false">
 
         <EditText
             android:id="@+id/et_label_address"
@@ -31,7 +30,10 @@
             android:inputType="text"
             android:textColor="#ae31353b"
             android:imeOptions="actionDone"
-            android:maxLines="1"/>
+            android:maxLines="1"
+            android:overScrollMode="always"
+            android:scrollbarStyle="insideInset"
+            android:scrollbars="vertical"/>
 
     </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
@@ -47,6 +49,7 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/sp_12"
         android:textColor="@color/label_grey"
+        android:layout_marginTop="@dimen/dp_24"
         android:text="@string/add_new_address_name_label"/>
 
     <com.tokopedia.design.text.TkpdHintTextInputLayout
@@ -65,7 +68,10 @@
             android:inputType="text"
             android:textColor="#ae31353b"
             android:imeOptions="actionDone"
-            android:maxLines="1"/>
+            android:maxLines="1"
+            android:overScrollMode="always"
+            android:scrollbarStyle="insideInset"
+            android:scrollbars="vertical"/>
 
     </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
@@ -92,7 +98,10 @@
             android:hint="@string/et_no_ponsel_hint"
             android:textColor="#ae31353b"
             android:imeOptions="actionDone"
-            android:maxLines="1"/>
+            android:maxLines="1"
+            android:overScrollMode="always"
+            android:scrollbarStyle="insideInset"
+            android:scrollbars="vertical"/>
 
     </com.tokopedia.design.text.TkpdHintTextInputLayout>
 

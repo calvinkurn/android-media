@@ -708,4 +708,21 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         );
     }
 
+    public void eventViewTickerPriceDecrease(String productId) {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_ATC,
+                EventCategory.CART,
+                EventAction.VIEW_TICKER_PRICE_DECREASE,
+                productId
+        );
+    }
+
+    public void eventViewTickerStockDecreaseAndAlreadyAtcByOtherUser(String productId) {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_ATC,
+                EventCategory.CART,
+                EventAction.VIEW_TICKER_STOCK_DECREASE_AND_ALREADY_ATC_BY_OTHER_USER,
+                productId
+        );
+    }
 }

@@ -1,17 +1,18 @@
-query PointHistoryQuery($page: Int, $page_size: Int) {
-  point_history : hachikoPointHistory(page: $page, page_size: $page_size) {
-    total_data
-    point_histories {
-      transaction_id
-      create_time
-      create_time_desc
+query PointHistory($page: Int, $pageSize: Int) {
+  pointHistory: tokopointsPointHistory(input: {page: $page, pageSize: $pageSize}) {
+    items: pointHistory {
+      id
+      createTime
+      createTimeDesc
       title
       notes
-      member_points
-      reward_points
-      history_type
+      memberPoints
+      rewardPoints
+      historyType
       icon
     }
-    has_next
+    pageInfo {
+      hasNext
+    }
   }
 }

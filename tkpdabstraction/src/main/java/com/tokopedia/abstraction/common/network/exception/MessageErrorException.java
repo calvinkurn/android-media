@@ -5,7 +5,9 @@ import java.io.IOException;
 /**
  * Created by normansyahputa on 1/16/17.
  * this class represent message error delivered by web service.
+ * Use {com.tokopedia.network.exception.MessageErrorException} instead of this class
  */
+@Deprecated
 public class MessageErrorException extends IOException {
     private String errorCode;
 

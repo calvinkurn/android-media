@@ -3,7 +3,7 @@
     <!-- attach product -->
     <string name="string_attach_product_add_product_now">Tambah Produk Sekarang</string>
     <string name="string_attach_product_empty_product">Toko ini belum memiliki produk</string>
-    <string name="string_attach_product_warning_max_product_format">Maksimal melampirkan %1$s produk</string>
+    <string name="string_attach_product_warning_max_product_format">Hanya bisa masukkan %1$s barang ya.</string>
     <string name="string_attach_product_send_button_text">Kirim (%1$s/%2$s)</string>
     <string name="string_attach_product_search_placeholder_text">Cari produk di semua etalase</string>
     <string name="string_attach_product_activity_title">Lampirkan Produk</string>

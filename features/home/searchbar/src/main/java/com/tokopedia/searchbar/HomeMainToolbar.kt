@@ -179,7 +179,7 @@ class HomeMainToolbar : MainToolbar {
         editTextSearch.setSingleLine()
         editTextSearch.ellipsize = TextUtils.TruncateAt.END
         editTextSearch.setOnClickListener {
-            searchBarAnalytics.eventTrackingSearchBar()
+            searchBarAnalytics.eventTrackingSearchBar(screenName)
             if(placeholder.isEmpty()){
                 RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
             }else{
