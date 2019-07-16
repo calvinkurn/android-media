@@ -191,7 +191,6 @@ import com.tokopedia.home.beranda.data.model.UserTier;
 import com.tokopedia.home.beranda.helper.StartSnapHelper;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SpacingItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
-import com.tokopedia.home_recom.router.HomeRecommendationRouter;
 import com.tokopedia.homecredit.view.fragment.FragmentCardIdCamera;
 import com.tokopedia.homecredit.view.fragment.FragmentSelfieIdCamera;
 import com.tokopedia.imageuploader.ImageUploaderRouter;
