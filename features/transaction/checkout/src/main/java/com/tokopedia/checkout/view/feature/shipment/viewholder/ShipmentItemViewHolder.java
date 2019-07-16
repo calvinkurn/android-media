@@ -49,6 +49,7 @@ import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentDetailData;
 import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,7 +91,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private LinearLayout layoutWarning;
     private TextView tvWarningTitle;
     private TextView tvWarningDescription;
-    private TextView tvShopName;
+    private Typography tvShopName;
     private LinearLayout llShippingWarningContainer;
     private ImageView ivProductImage;
     private TextView tvProductName;
@@ -110,28 +111,28 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private TextView tvPPPMore;
     private CheckBox cbPPP;
     private CheckBox cbPPPDisabled;
-    private TextView tvAddressName;
-    private TextView tvAddressStatus;
-    private TextView tvRecipientName;
-    private TextView tvRecipientAddress;
-    private TextView tvRecipientPhone;
+    private Typography tvAddressName;
+    private Typography tvAddressStatus;
+    private Typography tvRecipientName;
+    private Typography tvRecipientAddress;
+    private Typography tvRecipientPhone;
     private LinearLayout addressLayout;
     private RecyclerView rvCartItem;
-    private TextViewCompat tvExpandOtherProduct;
+    private Typography tvExpandOtherProduct;
     private RelativeLayout rlExpandOtherProduct;
     private TextView chooseCourierButton;
     private LinearLayout llShipmentOptionViewLayout;
     private ImageView ivDetailOptionChevron;
-    private TextView tvSubTotalPrice;
+    private Typography tvSubTotalPrice;
     private RelativeLayout rlCartSubTotal;
-    private TextView tvTotalItem;
-    private TextView tvTotalItemPrice;
-    private TextView tvShippingFee;
-    private TextView tvShippingFeePrice;
-    private TextView tvInsuranceFee;
-    private TextView tvInsuranceFeePrice;
-    private TextView tvProtectionLabel;
-    private TextView tvProtectionFee;
+    private Typography tvTotalItem;
+    private Typography tvTotalItemPrice;
+    private Typography tvShippingFee;
+    private Typography tvShippingFeePrice;
+    private Typography tvInsuranceFee;
+    private Typography tvInsuranceFeePrice;
+    private Typography tvProtectionLabel;
+    private Typography tvProtectionFee;
     private RelativeLayout rlShipmentCost;
     private LinearLayout llSelectedCourier;
     private TextView tvCourierName;
@@ -154,8 +155,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private LinearLayout llShipmpingType;
     private TextView tvShippingTypeName;
     private TextView tvShippingEtd;
-    private TextView tvAdditionalFee;
-    private TextView tvAdditionalFeePrice;
+    private Typography tvAdditionalFee;
+    private Typography tvAdditionalFeePrice;
     private TextView tvLabelInsurance;
     private ImageView imgShopBadge;
     private TextView tvDash;
@@ -216,8 +217,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private TextView tvPrioritasTicker;
     private LinearLayout llPrioritasTicker;
     private RelativeLayout llPrioritas;
-    private TextView tvPrioritasFee;
-    private TextView tvPrioritasFeePrice;
+    private Typography tvPrioritasFee;
+    private Typography tvPrioritasFeePrice;
     private ImageView imgPriorityTnc;
     private TextView tvPrioritasInfo;
     private boolean isPriorityChecked = false;
@@ -490,7 +491,16 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             imgShopBadge.setVisibility(View.GONE);
         }
 
-        tvShopName.setText(shipmentCartItemModel.getShopName());
+        String labelShop = tvShopName.getContext().getResources().getString(R.string.label_toko) + " ";
+        String shopName = shipmentCartItemModel.getShopName();
+
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+        builder.append(labelShop);
+        int start = labelShop.length();
+        builder.append(shopName);
+        builder.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        tvShopName.setText(builder, TextView.BufferType.SPANNABLE);
     }
 
     private void renderPromoMerchant(ShipmentCartItemModel shipmentCartItemModel) {

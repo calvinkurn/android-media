@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -50,19 +51,22 @@
 
             </LinearLayout>
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_select_cod"
                 style="@style/button_payment"
                 android:layout_marginEnd="4dp"
                 android:layout_marginRight="4dp"
-                android:background="@drawable/bg_button_white_orange_border"
+                android:background="@drawable/bg_button_white_red_border"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
                 android:text="@string/label_pay_cod"
-                android:textColor="@color/tkpd_main_orange"
-                android:visibility="gone" />
+                android:textColor="@color/price_label"
+                android:visibility="gone"
+                tools:visibility="visible"
+                app:typographyType="heading_6"
+                app:typographyWeight="bold"/>
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_select_payment_method"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_40"
@@ -71,16 +75,18 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginBottom="@dimen/dp_10"
-                android:background="@drawable/transaction_checkout_orange_button_rounded"
-                android:fontFamily="sans-serif-medium"
+                android:background="@drawable/transaction_checkout_red_button_rounded"
                 android:gravity="center"
                 android:paddingStart="@dimen/dp_20"
                 android:paddingLeft="@dimen/dp_20"
                 android:paddingEnd="@dimen/dp_20"
                 android:paddingRight="@dimen/dp_20"
+                android:paddingTop="@dimen/dp_5"
+                android:paddingBottom="@dimen/dp_5"
                 android:text="@string/label_choose_payment"
                 android:textColor="@color/white"
-                android:textSize="@dimen/sp_14" />
+                app:typographyType="heading_5"
+                app:typographyWeight="bold" />
 
         </LinearLayout>
 

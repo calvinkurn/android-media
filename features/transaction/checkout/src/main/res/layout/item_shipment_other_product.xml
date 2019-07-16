@@ -31,17 +31,18 @@
         android:foreground="?selectableItemBackground"
         android:orientation="horizontal">
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_expand_other_product"
-            style="@style/TextSmallMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:gravity="center"
             android:padding="@dimen/dp_16"
-            android:textColor="@color/medium_green"
+            android:textColor="@color/address_green"
             app:drawableRightCompat="@drawable/ic_keyboard_arrow_down_24dp"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
             tools:text="+3 Produk Lainnya" />
 
     </RelativeLayout>

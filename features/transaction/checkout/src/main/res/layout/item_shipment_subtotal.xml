@@ -15,13 +15,14 @@
         android:foreground="?selectableItemBackground"
         android:padding="@dimen/dp_16">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_cart_sub_total"
-            style="@style/TextSmallMediumBlack54"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:text="@string/label_sub_total"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
             tools:ignore="SmallSp" />
 
         <ImageView
@@ -36,21 +37,20 @@
             app:srcCompat="@drawable/ic_keyboard_arrow_down_24dp"
             tools:ignore="ContentDescription" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_sub_total_price"
-            android:textColor="@color/orange_red"
-            android:textSize="@dimen/sp_14"
-            android:textStyle="bold"
+            android:textColor="@color/price_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/iv_detail_option_chevron"
             android:layout_toStartOf="@id/iv_detail_option_chevron"
+            app:typographyType="heading_5"
+            app:typographyWeight="bold"
             tools:text="Rp200.000" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_shipment_option"
-            style="@style/TextSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
@@ -62,6 +62,8 @@
             android:gravity="end"
             android:textColor="@color/medium_green"
             android:visibility="gone"
+            app:typographyType="small"
+            app:typographyWeight="reguler"
             tools:text="Go-send Instan" />
 
     </RelativeLayout>
@@ -75,15 +77,16 @@
         android:visibility="visible"
         tools:visibility="visible">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_total_item"
-            style="@style/TextSmallNormalBlack54"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_16"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
             tools:text="Harga (1 Barang)" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_total_item_price"
             style="@style/TextSmallMediumBlack70"
             android:layout_width="wrap_content"
@@ -93,122 +96,134 @@
             android:layout_toEndOf="@id/tv_total_item"
             android:layout_toRightOf="@id/tv_total_item"
             android:gravity="end"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
             tools:text="Rp1.400.000" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_shipping_fee"
-            style="@style/TextSmallNormalBlack54"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_total_item"
             android:layout_marginBottom="@dimen/dp_16"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
             tools:text="Ongkos Kirim (1kg)" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_shipping_fee_price"
-            style="@style/TextSmallMediumBlack70"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_below="@id/tv_total_item"
             android:gravity="end"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
             tools:text="Rp10.000" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_insurance_fee"
-            style="@style/TextSmallNormalBlack54"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_shipping_fee"
             android:layout_marginBottom="@dimen/dp_16"
-            android:text="@string/label_insurance_price" />
+            android:text="@string/label_insurance_price"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_insurance_fee_price"
-            style="@style/TextSmallMediumBlack70"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_below="@id/tv_shipping_fee"
             android:gravity="end"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
             tools:text="Rp 20.000" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_purchase_protection_label"
-            style="@style/TextSmallNormalBlack54"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_insurance_fee"
             android:layout_marginBottom="@dimen/dp_16"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
             tools:text="Proteksi Produk (3 Barang)" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_purchase_protection_fee"
-            style="@style/TextSmallMediumBlack70"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_below="@id/tv_insurance_fee"
             android:gravity="end"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
             tools:text="Rp 2.000" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_additional_fee"
-            style="@style/TextSmallNormalBlack54"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_purchase_protection_label"
             android:layout_marginBottom="@dimen/dp_16"
-            android:text="@string/label_seller_additional_cost" />
+            android:text="@string/label_seller_additional_cost"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_additional_fee_price"
-            style="@style/TextSmallMediumBlack70"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_below="@id/tv_purchase_protection_label"
             android:gravity="end"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
             tools:text="Rp 19.000" />
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_priority_fee"
-            style="@style/TextSmallNormalBlack54"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_additional_fee"
             android:layout_marginBottom="@dimen/dp_16"
-            android:text="@string/label_order_priority_cost" />
+            android:text="@string/label_order_priority_cost"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"/>
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_priority_fee_price"
-            style="@style/TextSmallMediumBlack70"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_below="@id/tv_additional_fee"
             android:gravity="end"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
             tools:text="Rp 19.000" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_promo_text"
-            style="@style/TextSmallNormalBlack54"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_additional_fee"
             android:layout_marginBottom="@dimen/dp_16"
             android:text="@string/label_promo"
             android:visibility="gone"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
             tools:text="Promo bla bla bla" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_promo_price"
-            style="@style/TextSmallMediumBlack70"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -216,6 +231,8 @@
             android:layout_below="@id/tv_insurance_fee"
             android:gravity="end"
             android:visibility="gone"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
             tools:text="Rp100.000" />
 
     </RelativeLayout>

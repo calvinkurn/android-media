@@ -155,7 +155,8 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:lineSpacingExtra="4sp"
-                                    app:typographyType="body_3"
+                                    android:textColor="@color/text_black"
+                                    app:typographyType="body_2"
                                     app:typographyWeight="bold"
                                     android:text="@string/label_price_total" />
 
@@ -163,11 +164,9 @@
                                     android:id="@+id/tv_total_prices"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:fontFamily="sans-serif-medium"
                                     android:gravity="end"
-                                    android:textColor="@color/orange_red"
-                                    android:textSize="@dimen/sp_16"
-                                    app:typographyType="heading_5"
+                                    android:textColor="@color/price_label"
+                                    app:typographyType="heading_4"
                                     app:typographyWeight="bold"
                                     tools:text="Rp600.000" />
 
@@ -180,12 +179,10 @@
                                 android:layout_gravity="center_vertical"
                                 android:layout_margin="@dimen/dp_10"
                                 android:background="@drawable/transaction_checkout_red_button_rounded"
-                                android:fontFamily="sans-serif-medium"
                                 android:gravity="center"
                                 android:textAllCaps="false"
                                 android:textColor="@color/white"
-                                android:textSize="@dimen/sp_14"
-                                app:typographyType="heading_6"
+                                app:typographyType="heading_5"
                                 app:typographyWeight="bold"
                                 tools:text="Checkout" />
 

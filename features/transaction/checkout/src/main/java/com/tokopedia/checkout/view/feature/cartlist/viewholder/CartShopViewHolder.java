@@ -25,6 +25,7 @@ import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
+import com.tokopedia.unifyprinciples.Typography;
 
 import rx.subscriptions.CompositeSubscription;
 
@@ -40,10 +41,10 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
     private FrameLayout flShopItemContainer;
     private LinearLayout llShopContainer;
     private CheckBox cbSelectShop;
-    private TextView tvShopName;
+    private Typography tvShopName;
     private ImageView imgShopBadge;
     private ImageView imgFulfillment;
-    private TextView tvFulfillDistrict;
+    private Typography tvFulfillDistrict;
     private RecyclerView rvCartItem;
     private LinearLayout layoutError;
     private TextView tvErrorTitle;
@@ -100,12 +101,17 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         renderErrorItemHeader(cartShopHolderData);
         renderWarningItemHeader(cartShopHolderData);
 
-        String labelShop = tvShopName.getContext().getResources().getString(R.string.label_toko);
+        String labelShop = tvShopName.getContext().getResources().getString(R.string.label_toko) + " ";
         String shopName = cartShopHolderData.getShopGroupData().getShopName();
-        String finalLabelShop = labelShop + " " + shopName;
-        Spannable sb = new SpannableString(finalLabelShop);
-        sb.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), finalLabelShop.indexOf(shopName), finalLabelShop.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        tvShopName.setText(sb, TextView.BufferType.SPANNABLE);
+
+        SpannableStringBuilder completeLabelShop = new SpannableStringBuilder();
+        completeLabelShop.append(labelShop);
+        int start = labelShop.length() + 1;
+        completeLabelShop.append(shopName);
+        completeLabelShop.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, completeLabelShop.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        System.out.println("## completeLabelShop = "+completeLabelShop+", start = "+start+", end  = "+completeLabelShop.length());
+
+        tvShopName.setText(completeLabelShop);
         tvShopName.setOnClickListener(v -> actionListener.onCartShopNameClicked(cartShopHolderData));
 
         if (cartShopHolderData.getShopGroupData().isOfficialStore() || cartShopHolderData.getShopGroupData().isGoldMerchant()) {

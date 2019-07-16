@@ -18,6 +18,7 @@ import com.tokopedia.checkout.view.common.utils.QuantityTextWatcher;
 import com.tokopedia.checkout.view.common.utils.QuantityWrapper;
 import com.tokopedia.checkout.view.feature.multipleaddressform.MultipleAddressItemAdapter;
 import com.tokopedia.checkout.view.feature.shipment.util.Utils;
+import com.tokopedia.unifyprinciples.Typography;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -48,12 +49,12 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
 
     private TextView shippingIndex;
     private ImageView deleteButton;
-    private TextView addressTitle;
-    private TextView addressReceiverName;
-    private TextView address;
+    private Typography addressTitle;
+    private Typography addressReceiverName;
+    private Typography address;
     private TextView addressStatus;
     private View borderLine;
-    private TextView phoneNumber;
+    private Typography phoneNumber;
     private TextView tvChangeRecipientAddress;
     private EditText etNotesForSeller;
     private ImageView btnQtyMin;

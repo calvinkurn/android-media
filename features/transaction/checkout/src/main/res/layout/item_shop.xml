@@ -58,7 +58,8 @@
                     android:layout_marginRight="@dimen/dp_4"
                     android:textSize="@dimen/sp_12"
                     tools:text="Loaa Store df"
-                    app:typographyType="heading_6"
+                    android:textColor="@color/text_black"
+                    app:typographyType="body_2"
                     app:typographyWeight="reguler"/>
 
                 <ImageView
@@ -78,15 +79,17 @@
                     app:srcCompat="@drawable/ic_logistic_logistic_fulfillment_normal_16" />
             </LinearLayout>
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_fulfill_district"
-                style="@style/TextSmallMediumBlack38"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/ll"
                 android:layout_toEndOf="@+id/cb_select_shop"
                 android:layout_toRightOf="@+id/cb_select_shop"
-                tools:text="Tangerang Selatan" />
+                tools:text="Tangerang Selatan"
+                android:textColor="@color/subtext_black"
+                app:typographyType="small"
+                app:typographyWeight="reguler"/>
 
         </RelativeLayout>
 
