@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.seller.seller.info.constant.*
 import com.tokopedia.seller.seller.info.data.model.ResponseSellerInfoModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
@@ -12,17 +13,10 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class SellerCenterUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase,
-                                              @Named("SELLER_CENTER_RAW") private val rawQuery: String)
+                                              @Named(SELLER_CENTER_RAW) private val rawQuery: String)
     : UseCase<ResponseSellerInfoModel>() {
 
     companion object {
-        const val PAGE_KEY = "page"
-        const val TYPE_ID_KEY = "typeId"
-        const val TAG_ID_KEY = "tagId"
-        const val LAST_NOTIF_ID_KEY = "lastNotifId"
-        const val TYPE_ID_PARAM_SELLER = 2
-        const val TAG_ID_PARAM_NO_FILTER = 0
-
         fun createRequestParams(page: Int, lastNotifId: String): RequestParams {
             return RequestParams.create().apply {
                 putInt(PAGE_KEY, page)
