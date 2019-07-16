@@ -34,7 +34,7 @@ class BannerFeedViewModel(
 
     fun convertBannerFeedModelToDataLayer(): Any {
         return DataLayer.mapOf(
-                DATA_ID, id,
+                DATA_ID, id.toString(),
                 DATA_NAME, name,
                 DATA_CREATIVE, buAttribution+"_"+creativeName,
                 DATA_CREATIVE_URL, imageUrl,

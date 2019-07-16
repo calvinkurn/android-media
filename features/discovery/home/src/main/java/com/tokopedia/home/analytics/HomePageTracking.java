@@ -912,7 +912,7 @@ public class HomePageTracking {
         ContextAnalytics tracker = getTracker(context);
 
         Map<String, Object> data = DataLayer.mapOf(
-                EVENT, PROMO_VIEW,
+                EVENT, PROMO_CLICK,
                 EVENT_CATEGORY, CATEGORY_HOME_PAGE,
                 EVENT_ACTION, "click on banner inside recommendation tab",
                 EVENT_LABEL, tabName,
