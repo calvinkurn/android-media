@@ -1759,27 +1759,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 });
     }
 
-    /**
-     * Deprecated. Please use :
-     * {@link com.tokopedia.atc_common.domain.usecase.AddToCartUseCase} or
-     * {@link com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase}
-     */
-    @Deprecated
-    @Override
-    public Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest, boolean isOneClickShipment) {
-        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
-        requestParams.putObject(AddToCartUseCase.PARAM_ADD_TO_CART, addToCartRequest);
-        if (isOneClickShipment) {
-            return CartComponentInjector.newInstance(this).getAddToCartUseCaseOneClickShipment()
-                    .createObservable(requestParams)
-                    .map(this::mapAddToCartResult);
-        } else {
-            return CartComponentInjector.newInstance(this).getAddToCartUseCase()
-                    .createObservable(requestParams)
-                    .map(this::mapAddToCartResult);
-        }
-    }
-
     @NotNull
     @Override
     public Observable<CheckoutData> checkoutProduct(@NotNull CheckoutRequest checkoutRequest, boolean isOneClickShipment, boolean isExpressCheckout) {

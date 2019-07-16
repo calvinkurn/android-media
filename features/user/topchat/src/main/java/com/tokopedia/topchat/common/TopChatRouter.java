@@ -32,8 +32,6 @@ public interface TopChatRouter {
 
     Intent getShopPageIntent(Context context, String shopId);
 
-    Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest, boolean isOneClickShipment);
-
     Intent getCartIntent(Activity activity);
 
 }

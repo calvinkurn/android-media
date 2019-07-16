@@ -6,6 +6,9 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_END_TYPING
@@ -72,7 +75,8 @@ class TopChatRoomPresenter @Inject constructor(
         private var deleteMessageListUseCase: DeleteMessageListUseCase,
         private var changeChatBlockSettingUseCase: ChangeChatBlockSettingUseCase,
         private var getShopFollowingUseCase: GetShopFollowingUseCase,
-        private var toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase)
+        private var toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
+        private var addToCartUseCase: AddToCartUseCase)
     : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper), TopChatContract.Presenter {
 
     override fun clearText() {
@@ -86,7 +90,7 @@ class TopChatRoomPresenter @Inject constructor(
     private var isUploading: Boolean = false
     private var dummyList: ArrayList<Visitable<*>>
     var thisMessageId: String = ""
-    private lateinit var addToCardSubscriber : Subscriber<AddToCartResult>
+    private lateinit var addToCardSubscriber : Subscriber<AddToCartDataModel>
 
     init {
         mSubscription = CompositeSubscription()
@@ -406,29 +410,31 @@ class TopChatRoomPresenter @Inject constructor(
             router: TopChatRouter,
             element: ProductAttachmentViewModel,
             onError: (Throwable) -> Unit,
-            onSuccess: (addToCartResult: AddToCartResult) -> Unit,
+            onSuccess: (addToCartResult: AddToCartDataModel) -> Unit,
             shopId: Int
     ) {
         addToCardSubscriber = addToCartSubscriber(onError, onSuccess)
 
-        router.addToCartProduct(
-                AddToCartRequest.Builder()
-                        .productId(Integer.parseInt(element.productId.toString()))
-                        .notes("")
-                        .quantity(1)
-                        .shopId(shopId)
-                        .build(),
-                false).subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
+        val addToCartRequestParams = AddToCartRequestParams()
+        addToCartRequestParams.productId = Integer.parseInt(element.productId.toString()).toLong()
+        addToCartRequestParams.shopId = shopId
+        addToCartRequestParams.quantity = 1
+        addToCartRequestParams.notes = ""
+
+        val requestParams = RequestParams.create()
+        requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)
+        addToCartUseCase.createObservable(requestParams)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(addToCardSubscriber)
     }
 
     private fun addToCartSubscriber(
             onError: (Throwable) -> Unit,
-            onSuccess: (addToCartResult: AddToCartResult) -> Unit
-    ): Subscriber<AddToCartResult> {
-        return object : Subscriber<AddToCartResult>() {
+            onSuccess: (addToCartResult: AddToCartDataModel) -> Unit
+    ): Subscriber<AddToCartDataModel> {
+        return object : Subscriber<AddToCartDataModel>() {
             override fun onCompleted() {
 
             }
@@ -437,7 +443,7 @@ class TopChatRoomPresenter @Inject constructor(
                 onError(e)
             }
 
-            override fun onNext(addToCartResult: AddToCartResult) {
+            override fun onNext(addToCartResult: AddToCartDataModel) {
                 onSuccess(addToCartResult)
             }
         }

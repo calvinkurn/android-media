@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.chat_common.BaseChatFragment
@@ -678,21 +679,21 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         }
     }
 
-    private fun onSuccessAddToCart(): (addToCartResult: AddToCartResult) -> Unit {
+    private fun onSuccessAddToCart(): (addToCartResult: AddToCartDataModel) -> Unit {
         return {
             showSnackbarAddToCart(it)
         }
     }
 
-    private fun showSnackbarAddToCart(it: AddToCartResult) {
-        if(it.isSuccess) {
-            ToasterNormal.make(view, it.message, ToasterNormal.LENGTH_LONG).show()
-        }else {
-            ToasterError.make(view, it.message, ToasterNormal.LENGTH_LONG).show()
+    private fun showSnackbarAddToCart(it: AddToCartDataModel) {
+        if (it.status == "OK" && it.data.success == 1) {
+            ToasterNormal.make(view, it.data.message[0], ToasterNormal.LENGTH_LONG).show()
+        } else {
+            ToasterError.make(view, it.errorMessage[0], ToasterNormal.LENGTH_LONG).show()
         }
     }
 
-    private fun onSuccessBuyFromProdAttachment(): (addToCartResult: AddToCartResult) -> Unit {
+    private fun onSuccessBuyFromProdAttachment(): (addToCartResult: AddToCartDataModel) -> Unit {
         return {
             showSnackbarAddToCart(it)
             activity?.startActivity((activity!!.application as TopChatRouter)

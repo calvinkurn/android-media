@@ -10,6 +10,8 @@ import com.tokopedia.abstraction.common.network.exception.HeaderErrorListRespons
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
 import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
 import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -22,6 +24,7 @@ import com.tokopedia.imageuploader.utils.ImageUploaderUtils
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.data.factory.MessageFactory
 import com.tokopedia.topchat.chatlist.data.mapper.DeleteMessageMapper
 import com.tokopedia.topchat.chatlist.data.mapper.GetMessageMapper
@@ -205,6 +208,19 @@ class ChatModule {
                                      chatSettingsAnalytics: ChatSettingsAnalytics):
             ChatSettingsInterface.Presenter {
         return ChatSettingsPresenter(graphqlUseCase, chatSettingsAnalytics)
+    }
+
+    @ChatScope
+    @Provides
+    @Named("atcMutation")
+    fun provideAddToCartMutation(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_to_cart)
+    }
+
+    @ChatScope
+    @Provides
+    fun provideAddToCartUseCase(@Named("atcMutation") mutation: String, graphqlUseCase: GraphqlUseCase): AddToCartUseCase {
+        return AddToCartUseCase(mutation, graphqlUseCase)
     }
 
 }
