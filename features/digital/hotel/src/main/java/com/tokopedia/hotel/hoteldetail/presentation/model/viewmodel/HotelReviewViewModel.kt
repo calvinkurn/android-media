@@ -8,6 +8,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.hotel.hoteldetail.presentation.model.HotelReviewParam
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
@@ -23,7 +24,7 @@ class HotelReviewViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
 
     val reviewResult = MutableLiveData<Result<HotelReview.ReviewData>>()
 
-    fun getReview(query: String, hotelReviewParam: HotelReviewParam, dummy: String = "") {
+    fun getReview(query: String, hotelReviewParam: HotelReviewParam) {
         val dataParams = mapOf(PARAM_REVIEW_KEY to hotelReviewParam)
         launchCatchError(block = {
             val data = withContext(Dispatchers.Default) {
@@ -32,10 +33,7 @@ class HotelReviewViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
             }.getSuccessData<HotelReview.Response>()
             reviewResult.value = Success(data = data.propertyReview)
         }) {
-            it.printStackTrace()
-            val gson = Gson()
-            reviewResult.value = Success(gson.fromJson(dummy,
-                    HotelReview.Response::class.java).propertyReview)
+            reviewResult.value = Fail(it)
         }
     }
 

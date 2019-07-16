@@ -229,9 +229,9 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                 R.drawable.ic_pay_at_hotel_cc else R.drawable.ic_pay_at_hotel_no_cc
             pay_at_hotel_icon.setBackgroundResource(iconId)
 
-            val spannableString = SpannableString(" " + hotelRoom.creditCardInfo.creditCardInfo
-                    + getString(R.string.hotel_room_detail_pay_at_hotel_desc))
-            spannableString.setSpan(StyleSpan(Typeface.BOLD), 1, 1 + hotelRoom.creditCardInfo.creditCardInfo.length,
+            val spannableString = SpannableString(" " + hotelRoom.creditCardInfo.header
+                    + "\n" + hotelRoom.creditCardInfo.creditCardInfo)
+            spannableString.setSpan(StyleSpan(Typeface.BOLD), 1, 1 + hotelRoom.creditCardInfo.header.length,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             spannableString.setSpan(LeadingMarginSpan.Standard(50, 0), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             pay_at_hotel_title.text = getString(R.string.hotel_room_detail_pay_at_hotel)

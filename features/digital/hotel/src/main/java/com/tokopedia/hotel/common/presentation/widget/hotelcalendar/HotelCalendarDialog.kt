@@ -66,7 +66,10 @@ class HotelCalendarDialog : RoundedBottomSheetDialogFragment(), HasComponent<Hot
             hotelCalendarDialogViewModel = viewModelProvider.get(HotelCalendarDialogViewModel::class.java)
         }
 
-        hotelCalendarDialogViewModel.getTravelHolidayDate()
+        arguments?.let {
+            if (it.getString(ARG_SELECTED_DATE) != null)
+                selectedDate = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, it.getString(ARG_SELECTED_DATE))
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -80,6 +83,8 @@ class HotelCalendarDialog : RoundedBottomSheetDialogFragment(), HasComponent<Hot
         super.onViewCreated(view, savedInstanceState)
 
         loading_progress_bar.visibility = View.VISIBLE
+
+        hotelCalendarDialogViewModel.getTravelHolidayDate()
 
         hotelCalendarDialogViewModel.holidayResult.observe(this, Observer {
             loading_progress_bar.visibility = View.GONE
@@ -116,14 +121,13 @@ class HotelCalendarDialog : RoundedBottomSheetDialogFragment(), HasComponent<Hot
         yesterday.set(Calendar.SECOND, 0)
         yesterday.set(Calendar.MILLISECOND, 0)
 
+        calendar.init(yesterday.time, nextYear.time, legends)
+                .inMode(CalendarPickerView.SelectionMode.RANGE)
+                .maxRange(30)
 
         val defaultIndLocale = Locale("id", "ID")
         val dateFormat = SimpleDateFormat("E, d MMM", defaultIndLocale)
         dateFormat.timeZone = TimeZone.getDefault()
-
-        calendar.init(yesterday.time, nextYear.time, legends)
-                .inMode(CalendarPickerView.SelectionMode.RANGE)
-                .maxRange(30)
 
         var dateIn: Date? = null
         if (selectedDate != null) {
@@ -146,6 +150,7 @@ class HotelCalendarDialog : RoundedBottomSheetDialogFragment(), HasComponent<Hot
                     date_out.setText(dateFormat.format(date))
                     date_out.requestFocus()
                     if (listener != null) listener!!.onDateClick(dateIn!!, date)
+                    date_out.isSelected = true
 
                     GlobalScope.launch {
                         delay(300)
@@ -156,6 +161,7 @@ class HotelCalendarDialog : RoundedBottomSheetDialogFragment(), HasComponent<Hot
                     date_out.setText("")
                     date_in.setText(dateFormat.format(date))
                     date_in.requestFocus()
+                    date_in.isSelected = true
                 }
             }
 
@@ -176,5 +182,17 @@ class HotelCalendarDialog : RoundedBottomSheetDialogFragment(), HasComponent<Hot
 
     interface OnDateClickListener {
         fun onDateClick(dateIn: Date, dateOut: Date)
+    }
+
+    companion object {
+
+        const val ARG_SELECTED_DATE = "arg_selected_date"
+
+        fun getInstance(selectedDate: String?): HotelCalendarDialog =
+                HotelCalendarDialog().also {
+                    it.arguments = Bundle().apply {
+                        putString(ARG_SELECTED_DATE, selectedDate)
+                    }
+                }
     }
 }

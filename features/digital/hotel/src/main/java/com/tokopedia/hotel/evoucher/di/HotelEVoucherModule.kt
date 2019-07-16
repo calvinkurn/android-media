@@ -17,13 +17,6 @@ import javax.inject.Named
 @HotelEVoucherScope
 class HotelEVoucherModule {
 
-    @Provides
-    @HotelEVoucherScope
-    @Named("dummy_order_detail")
-    fun provideDummySearchResult(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.dummy_hotel_order_detail)
-
-
     @HotelEVoucherScope
     @Provides
     fun provideMultiRequestGraphqlUseCase(graphqlRepository: com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository): MultiRequestGraphqlUseCase =
