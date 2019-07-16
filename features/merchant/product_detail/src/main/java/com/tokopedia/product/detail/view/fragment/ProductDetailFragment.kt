@@ -25,10 +25,13 @@ import android.support.v4.app.FragmentActivity
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v4.util.ArrayMap
+import android.support.v4.view.ViewCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.text.TextUtils
 import android.view.*
+import android.view.animation.Animation
+import android.view.animation.ScaleAnimation
 import android.widget.ImageView
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator
@@ -1795,7 +1798,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                                 override fun onAnimationRepeat(animator: Animator?) {}
 
                                 override fun onAnimationEnd(animator: Animator?) {
-                                    showBadgeMenuCart(cartCount, cartImageView, lottieCartView)
+                                    showBadgeMenuCart(cartCount, cartImageView, lottieCartView, true)
                                     shouldShowCartAnimation = false
                                 }
 
@@ -1808,14 +1811,14 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                             lottieCartView.playAnimation()
                         }
                     } else {
-                        showBadgeMenuCart(cartCount, cartImageView, lottieCartView)
+                        showBadgeMenuCart(cartCount, cartImageView, lottieCartView, false)
                     }
                 }
             }
         }
     }
 
-    private fun showBadgeMenuCart(cartCount: Int, cartImageView: ImageView, lottieCartView: LottieAnimationView) {
+    private fun showBadgeMenuCart(cartCount: Int, cartImageView: ImageView, lottieCartView: LottieAnimationView, animate: Boolean) {
         activity?.run {
             val drawable = ContextCompat.getDrawable(activity!!, R.drawable.ic_product_cart_counter_dark)
             if (drawable is LayerDrawable) {
@@ -1829,8 +1832,28 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 icon.mutate()
                 icon.setDrawableByLayerId(R.id.ic_cart_count, badge)
                 cartImageView.setImageDrawable(icon)
-                lottieCartView.visibility = View.INVISIBLE
-                cartImageView.visibility = View.VISIBLE
+                if (animate) {
+                    val scaleAnimation = ScaleAnimation(1f, 1.5f, 1f, 1.5f)
+                    scaleAnimation.fillAfter = false
+                    scaleAnimation.duration = 1000
+                    scaleAnimation.setAnimationListener(object : Animation.AnimationListener {
+                        override fun onAnimationRepeat(p0: Animation?) {
+                        }
+
+                        override fun onAnimationEnd(p0: Animation?) {
+                            lottieCartView.visibility = View.INVISIBLE
+                            cartImageView.visibility = View.VISIBLE
+                        }
+
+                        override fun onAnimationStart(p0: Animation?) {
+                            cartImageView.animate().alpha(1.0f).setDuration(1000).start()
+                        }
+                    })
+                    lottieCartView.startAnimation(scaleAnimation)
+                } else {
+                    lottieCartView.visibility = View.INVISIBLE
+                    cartImageView.visibility = View.VISIBLE
+                }
             }
         }
     }
