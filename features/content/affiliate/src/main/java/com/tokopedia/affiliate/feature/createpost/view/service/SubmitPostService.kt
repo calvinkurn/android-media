@@ -127,7 +127,7 @@ class SubmitPostService : JobIntentService() {
 
                 val intent = RouteManager.getIntent(
                         context,
-                        applink.replace(DRAFT_ID_PARAM, cacheManager.id!!)
+                        applink.replace(DRAFT_ID_PARAM, cacheManager.id ?: "0")
                                 .plus("?$CREATE_POST_ERROR_MSG=$message")
                 )
 
