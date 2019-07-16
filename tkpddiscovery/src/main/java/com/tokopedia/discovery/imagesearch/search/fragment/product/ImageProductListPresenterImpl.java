@@ -23,7 +23,6 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.Scheduler;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -35,6 +34,7 @@ import rx.schedulers.Schedulers;
 public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProductListFragmentView> implements ImageProductListPresenter {
 
     private static final int ITEM_COUNT_PER_PAGE = 12;
+    private static final long LOAD_MORE_DELAY_MS = 1000;
     @Inject
     ProductWishlistUrlUseCase wishlistUrlUseCase;
     @Inject
@@ -70,10 +70,18 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
 
     @Override
     public void loadMoreData(int page) {
+        List<Visitable> responseList = new ArrayList<>();
+
         int fromIndex = page * ITEM_COUNT_PER_PAGE;
         int toIndex = fromIndex + ITEM_COUNT_PER_PAGE;
-        Observable.just(dataList.subList(fromIndex, toIndex))
-                .delay(1000, TimeUnit.MILLISECONDS)
+        toIndex = toIndex > dataList.size() ? dataList.size() : toIndex;
+
+        if (fromIndex < dataList.size()) {
+            responseList.addAll(dataList.subList(fromIndex, toIndex));
+        }
+
+        Observable.just(responseList)
+                .delay(LOAD_MORE_DELAY_MS, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<Visitable>>() {
@@ -89,7 +97,11 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
 
                     @Override
                     public void onNext(List<Visitable> visitables) {
-                        getView().appendProductList(visitables);
+                        if (!visitables.isEmpty()) {
+                            getView().appendProductList(visitables);
+                        } else {
+                            getView().unSetTopAdsEndlessListener();
+                        }
                     }
                 });
     }

@@ -224,7 +224,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
             setHeaderTopAds(false);
         } else {
             presenter.initData(initMappingProduct());
-            topAdsRecyclerAdapter.showLoading();
             presenter.loadMoreData(0);
             setHeaderTopAds(true);
         }
