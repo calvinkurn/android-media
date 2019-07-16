@@ -20,9 +20,6 @@ public interface TopChatRouter {
 
     String EXTRA_SHOP_STATUS_FAVORITE_FROM_SHOP = "SHOP_STATUS_FAVOURITE";
 
-    void openImagePreviewFromChat(Context context, ArrayList<String> listImage, ArrayList<String>
-            imageDesc, String title, String date);
-
     Intent getHomeIntent(Context context);
 
     boolean isIndicatorVisible();

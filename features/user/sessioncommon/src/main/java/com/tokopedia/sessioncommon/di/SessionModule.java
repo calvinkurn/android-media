@@ -1,6 +1,8 @@
 package com.tokopedia.sessioncommon.di;
 
 import android.content.Context;
+import android.os.Build;
+import android.content.res.Resources;
 
 import com.example.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
 import com.readystatesoftware.chuck.ChuckInterceptor;
@@ -10,6 +12,7 @@ import com.tokopedia.abstraction.common.network.exception.HeaderErrorListRespons
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.DebugInterceptor;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
@@ -17,6 +20,7 @@ import com.tokopedia.sessioncommon.data.GetProfileApi;
 import com.tokopedia.sessioncommon.data.MakeLoginApi;
 import com.tokopedia.sessioncommon.data.SessionCommonUrl;
 import com.tokopedia.sessioncommon.data.TokenApi;
+import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase;
 import com.tokopedia.sessioncommon.network.AccountsBearerInterceptor;
 import com.tokopedia.sessioncommon.network.BasicInterceptor;
 import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor;
@@ -29,6 +33,7 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
@@ -44,6 +49,12 @@ public class SessionModule {
     private static final String SESSION_COMMON = "Session";
 
     public static final String SESSION_MODULE = "Session";
+
+    @SessionCommonScope
+    @Provides
+    Resources provideResources(@ApplicationContext Context context) {
+        return context.getResources();
+    }
 
     @Named(SESSION_MODULE)
     @SessionCommonScope
@@ -103,8 +114,8 @@ public class SessionModule {
                                             HttpLoggingInterceptor httpLoggingInterceptor,
                                             FingerprintInterceptor fingerprintInterceptor) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        builder.addInterceptor(fingerprintInterceptor);
         builder.addInterceptor(tkpdAuthInterceptor);
+        builder.addInterceptor(fingerprintInterceptor);
         builder.addInterceptor(new HeaderErrorResponseInterceptor(HeaderErrorListResponse.class));
         builder.addInterceptor(accountsBearerInterceptor);
         builder.addInterceptor(new ErrorResponseInterceptor(TkpdV4ResponseError.class));
@@ -133,6 +144,11 @@ public class SessionModule {
         builder.addInterceptor(new AkamaiBotInterceptor());
         builder.addInterceptor(new HeaderErrorResponseInterceptor(HeaderErrorListResponse.class));
         builder.addInterceptor(new ErrorResponseInterceptor(TokenErrorResponse.class));
+        builder.addInterceptor(chain -> {
+            Request.Builder newRequest = chain.request().newBuilder();
+            newRequest.addHeader("User-Agent", getUserAgent());
+            return chain.proceed(newRequest.build());
+        });
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(chuckInterceptor);
@@ -141,6 +157,11 @@ public class SessionModule {
         }
 
         return builder.build();
+    }
+
+    private static final String userAgentFormat = "TkpdConsumer/%s (%s;)";
+    public static String getUserAgent(){
+        return String.format(userAgentFormat, GlobalConfig.VERSION_NAME, "Android "+ Build.VERSION.RELEASE);
     }
 
     @SessionCommonScope

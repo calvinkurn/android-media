@@ -27,8 +27,7 @@ public class CacheDBModule {
 
     @Provides
     @LoyaltyScope
-    ITokoPointDBService provideITokoPointDBService(@LoyaltyModuleQualifier Gson gson,
-                                                   AbstractionRouter abstractionRouter) {
-        return new TokoPointDBService(abstractionRouter.getGlobalCacheManager(), gson);
+    ITokoPointDBService provideITokoPointDBService(@LoyaltyModuleQualifier Gson gson) {
+        return new TokoPointDBService(gson);
     }
 }

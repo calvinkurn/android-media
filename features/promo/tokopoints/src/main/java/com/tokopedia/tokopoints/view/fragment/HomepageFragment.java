@@ -276,6 +276,8 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
     private void initViews(@NonNull View view) {
         mContainerMain = view.findViewById(R.id.container_main);
         mTextMembershipValue = view.findViewById(R.id.text_membership_value);
+        mTextMembershipValue.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable
+                (getActivity(), R.drawable.ic_arrow_right_grey), null);
         mTextPoints = view.findViewById(R.id.text_my_points_value);
         mTextLoyalty = view.findViewById(R.id.text_loyalty_value);
         mImgEgg = view.findViewById(R.id.img_egg);
@@ -707,14 +709,6 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
             }
         });
-
-        if (coupons.isEmpty()) {
-            mPresenter.setPagerSelectedItem(TAB_CATALOG);
-        } else {
-            mPresenter.setPagerSelectedItem(TAB_COUPON);
-        }
-
-        mPagerPromos.setCurrentItem(mPresenter.getPagerSelectedItem());
     }
 
     private void decorateDialog(AlertDialog dialog) {

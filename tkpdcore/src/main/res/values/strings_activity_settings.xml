@@ -27,7 +27,7 @@
     <string name="pref_about_privacy_title">Kebijakan Privasi</string>
     <string name="pref_about_share_title">Bagikan</string>
     <string name="pref_about_review_title">Review</string>
-    <string name="pref_about_contact_us_title">Hubungi Kami</string>
+    <string name="pref_about_contact_us_title">Pusat Bantuan</string>
     <string name="pref_about_dev_option_title">Developer Options</string>
 
 </resources>

@@ -8,6 +8,7 @@ import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.SettingGroupChat
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
+import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -17,7 +18,7 @@ import com.tokopedia.user.session.UserSessionInterface
  */
 interface PlayContract {
     interface View : BaseListViewListener<Visitable<*>>, CustomerView {
-        fun onOpenWebSocket()
+        fun onOpenWebSocket(refreshInfo: Boolean)
         fun setSnackBarConnectingWebSocket()
         fun setSnackBarRetryConnectingWebSocket()
         fun onLoginClicked(channelId: String?)
@@ -33,8 +34,7 @@ interface PlayContract {
         fun showOverlayDialog(it: OverlayViewModel)
         fun closeOverlayDialog()
         fun addIncomingMessage(it: Visitable<*>)
-        fun onDynamicIconClicked(it: DynamicButtonsViewModel.Button)
-        fun onFloatingIconClicked(it: DynamicButtonsViewModel.Button, applink: String)
+        fun onFloatingIconClicked(it: DynamicButton, applink: String)
         fun updateDynamicButton(it: DynamicButtonsViewModel)
         fun onBackgroundUpdated(it: BackgroundViewModel)
         fun openRedirectUrl(generateLink: String)
@@ -46,7 +46,13 @@ interface PlayContract {
     }
 
     interface Presenter: CustomerPresenter<View> {
-        fun openWebSocket(userSession: UserSessionInterface, channelId: String, groupChatToken: String, settingGroupChat: SettingGroupChat?)
+        fun openWebSocket(
+                userSession: UserSessionInterface,
+                channelId: String,
+                groupChatToken: String,
+                settingGroupChat: SettingGroupChat?,
+                needRefreshInfo: Boolean
+        )
         fun sendMessage(
                 viewModel: PendingChatViewModel,
                 afterSendMessage: () -> Unit,
@@ -55,7 +61,8 @@ interface PlayContract {
         )
 
         fun getPlayInfo(channelId: String?, onSuccessGetInfo: (ChannelInfoViewModel) -> Unit,
-                        onErrorGetInfo: (String) -> Unit)
+                        onErrorGetInfo: (String) -> Unit,
+                        onNoInternetConnection: () -> Unit)
         fun getDynamicButtons(channelId: String?, onSuccessGetDynamicButtons:
         (DynamicButtonsViewModel) -> Unit, onErrorGetDynamicButtons: (String) -> Unit)
 

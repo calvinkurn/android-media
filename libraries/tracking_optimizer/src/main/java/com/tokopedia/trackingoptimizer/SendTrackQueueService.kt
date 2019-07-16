@@ -10,9 +10,9 @@ import android.os.Build
 import android.os.IBinder
 import android.os.PersistableBundle
 import com.tokopedia.trackingoptimizer.repository.TrackingRepository
-import kotlinx.coroutines.experimental.CoroutineExceptionHandler
-import kotlinx.coroutines.experimental.CoroutineScope
-import kotlin.coroutines.experimental.CoroutineContext
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by hendry on 27/12/18.

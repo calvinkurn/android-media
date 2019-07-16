@@ -22,6 +22,16 @@ public class CartItemData implements Parcelable {
     private String warningMessageDescription;
     private String errorMessageTitle;
     private String errorMessageDescription;
+    private boolean isDisableAllProducts;
+    private boolean isFulfillment;
+
+    public boolean isFulfillment() {
+        return isFulfillment;
+    }
+
+    public void setFulfillment(boolean fulfillment) {
+        isFulfillment = fulfillment;
+    }
 
     public boolean isSingleChild() {
         return singleChild;
@@ -111,6 +121,14 @@ public class CartItemData implements Parcelable {
         this.parentHasErrorOrWarning = parentHasError;
     }
 
+    public boolean isDisableAllProducts() {
+        return isDisableAllProducts;
+    }
+
+    public void setDisableAllProducts(boolean disableAllProducts) {
+        isDisableAllProducts = disableAllProducts;
+    }
+
     public static class OriginData implements Parcelable {
         public static final int CURRENCY_IDR = 1;
         public static final int CURRENCY_USD = 2;
@@ -124,6 +142,11 @@ public class CartItemData implements Parcelable {
         private String productName;
         private int minimalQtyOrder;
         private int invenageValue;
+        private int priceChangesState;
+        private String priceChangesDesc;
+        private int productInvenageByUserInCart;
+        private int productInvenageByUserLastStockLessThan;
+        private String productInvenageByUserText;
         private double pricePlan;
         private int pricePlanInt;
         private int priceCurrency;
@@ -160,6 +183,8 @@ public class CartItemData implements Parcelable {
         private String officialStoreLogoUrl;
         private String preOrderInfo;
         private String cartString;
+        private boolean checkboxState;
+        private int warehouseId;
 
         public String getTrackerAttribution() {
             return trackerAttribution;
@@ -377,6 +402,42 @@ public class CartItemData implements Parcelable {
             this.invenageValue = invenageValue;
         }
 
+        public int getPriceChangesState() { return priceChangesState; }
+
+        public void setPriceChangesState(int priceChangesState) {
+            this.priceChangesState = priceChangesState;
+        }
+
+        public String getPriceChangesDesc() { return priceChangesDesc; }
+
+        public void setPriceChangesDesc(String priceChangesDesc) {
+            this.priceChangesDesc = priceChangesDesc;
+        }
+
+        public int getProductInvenageByUserInCart() {
+            return productInvenageByUserInCart;
+        }
+
+        public void setProductInvenageByUserInCart(int productInvenageByUserInCart) {
+            this.productInvenageByUserInCart = productInvenageByUserInCart;
+        }
+
+        public int getProductInvenageByUserLastStockLessThan() {
+            return productInvenageByUserLastStockLessThan;
+        }
+
+        public void setProductInvenageByUserLastStockLessThan(int productInvenageByUserLastStockLessThan) {
+            this.productInvenageByUserLastStockLessThan = productInvenageByUserLastStockLessThan;
+        }
+
+        public String getProductInvenageByUserText() {
+            return productInvenageByUserText;
+        }
+
+        public void setProductInvenageByUserText(String productInvenageByUserText) {
+            this.productInvenageByUserText = productInvenageByUserText;
+        }
+
         public List<WholesalePrice> getWholesalePrice() {
             return wholesalePrice;
         }
@@ -497,6 +558,22 @@ public class CartItemData implements Parcelable {
             this.cartString = cartString;
         }
 
+        public boolean isCheckboxState() {
+            return checkboxState;
+        }
+
+        public void setCheckboxState(boolean checkboxState) {
+            this.checkboxState = checkboxState;
+        }
+
+        public int getWarehouseId() {
+            return warehouseId;
+        }
+
+        public void setWarehouseId(int warehouseId) {
+            this.warehouseId = warehouseId;
+        }
+
         public OriginData() {
         }
 
@@ -548,6 +625,8 @@ public class CartItemData implements Parcelable {
             dest.writeString(this.officialStoreLogoUrl);
             dest.writeString(this.preOrderInfo);
             dest.writeString(this.cartString);
+            dest.writeByte(this.checkboxState ? (byte) 1 : (byte) 0);
+            dest.writeInt(this.warehouseId);
         }
 
         protected OriginData(Parcel in) {
@@ -592,6 +671,8 @@ public class CartItemData implements Parcelable {
             this.officialStoreLogoUrl = in.readString();
             this.preOrderInfo = in.readString();
             this.cartString = in.readString();
+            this.checkboxState = in.readByte() != 0;
+            this.warehouseId = in.readInt();
         }
 
         public static final Creator<OriginData> CREATOR = new Creator<OriginData>() {
@@ -825,24 +906,32 @@ public class CartItemData implements Parcelable {
         dest.writeParcelable(this.originData, flags);
         dest.writeParcelable(this.updatedData, flags);
         dest.writeParcelable(this.errorData, flags);
-        dest.writeByte(this.isError ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.isWarning ? (byte) 1 : (byte) 0);
         dest.writeByte(this.singleChild ? (byte) 1 : (byte) 0);
         dest.writeByte(this.parentHasErrorOrWarning ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isError ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isWarning ? (byte) 1 : (byte) 0);
         dest.writeString(this.warningMessageTitle);
+        dest.writeString(this.warningMessageDescription);
         dest.writeString(this.errorMessageTitle);
+        dest.writeString(this.errorMessageDescription);
+        dest.writeByte(this.isDisableAllProducts ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isFulfillment ? (byte) 1 : (byte) 0);
     }
 
     protected CartItemData(Parcel in) {
         this.originData = in.readParcelable(OriginData.class.getClassLoader());
         this.updatedData = in.readParcelable(UpdatedData.class.getClassLoader());
         this.errorData = in.readParcelable(MessageErrorData.class.getClassLoader());
-        this.isError = in.readByte() != 0;
-        this.isWarning = in.readByte() != 0;
         this.singleChild = in.readByte() != 0;
         this.parentHasErrorOrWarning = in.readByte() != 0;
+        this.isError = in.readByte() != 0;
+        this.isWarning = in.readByte() != 0;
         this.warningMessageTitle = in.readString();
+        this.warningMessageDescription = in.readString();
         this.errorMessageTitle = in.readString();
+        this.errorMessageDescription = in.readString();
+        this.isDisableAllProducts = in.readByte() != 0;
+        this.isFulfillment = in.readByte() != 0;
     }
 
     public static final Creator<CartItemData> CREATOR = new Creator<CartItemData>() {

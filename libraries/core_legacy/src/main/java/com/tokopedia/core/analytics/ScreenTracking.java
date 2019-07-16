@@ -1,28 +1,23 @@
 package com.tokopedia.core.analytics;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.text.TextUtils;
 
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
 import com.tkpd.library.utils.legacy.CommonUtils;
-//import com.tkpd.library.utils.legacy.CurrencyFormatHelper;
 import com.tkpd.library.utils.legacy.CurrencyFormatHelper;
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
-import com.tokopedia.core.analytics.container.AppsflyerContainer;
-import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
-import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.AFAdsIDCallback;
-//import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 
 import java.util.HashMap;
 import java.util.Map;
+
+//import com.tkpd.library.utils.legacy.CurrencyFormatHelper;
+//import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 
 /**
  * @author by Herdi_WORK on 25.10.16.
@@ -57,16 +52,6 @@ public class ScreenTracking extends TrackingUtils {
             e.printStackTrace();
         }
     }
-    public static void sendScreen(Context context, String screenName, String deepLink) {
-        try {
-            ScreenTrackingBuilder
-                    .newInstance(screenName)
-                    .setDeepLinkUrl(deepLink)
-                    .execute(context);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     public static void screen(Context context, String screen) {
         if (TextUtils.isEmpty(screen)) {
@@ -86,48 +71,38 @@ public class ScreenTracking extends TrackingUtils {
     }
 
     public static void sendAFPDPEvent(Context context, final ProductDetailData data, final String eventName) {
-        if (context == null)
-            return;
-        Context appContext = context.getApplicationContext();
-        if (appContext instanceof AbstractionRouter) {
-            CacheManager cacheManager = ((AbstractionRouter) appContext).getGlobalCacheManager();
-            final AnalyticsCacheHandler analHandler = new AnalyticsCacheHandler(cacheManager);
-            TrackApp.getInstance().getAppsFlyer().getAdsID(new AFAdsIDCallback() {
-                @Override
-                public void onGetAFAdsID(String adsID) {
-                    String productID = data.getInfo().getProductId() + "";
-                    String productPrice = CurrencyFormatHelper.convertRupiahToInt(data.getInfo().getProductPrice()) + "";
+        TrackApp.getInstance().getAppsFlyer().getAdsID(new AFAdsIDCallback() {
+            @Override
+            public void onGetAFAdsID(String adsID) {
+                String productID = data.getInfo().getProductId() + "";
+                String productPrice = CurrencyFormatHelper.convertRupiahToInt(data.getInfo().getProductPrice()) + "";
 
-                    Map<String, Object> values = new HashMap<>();
-                    values.put(Jordan.AF_KEY_ADS_ID, adsID);
-                    values.put(AFInAppEventParameterName.DESCRIPTION, Jordan.AF_SCREEN_PRODUCT);
-                    values.put(AFInAppEventParameterName.CONTENT_ID, productID);
-                    values.put(AFInAppEventParameterName.CONTENT_TYPE, Jordan.AF_VALUE_PRODUCTTYPE);
-                    values.put(AFInAppEventParameterName.PRICE, productPrice);
-                    values.put(AFInAppEventParameterName.CURRENCY, "IDR");
-                    values.put(AFInAppEventParameterName.QUANTITY, 1);
-                    if (!analHandler.isAdsIdAvailable()) {
-                        analHandler.setAdsId(adsID);
+                Map<String, Object> values = new HashMap<>();
+                values.put(Jordan.AF_KEY_ADS_ID, adsID);
+                values.put(AFInAppEventParameterName.DESCRIPTION, Jordan.AF_SCREEN_PRODUCT);
+                values.put(AFInAppEventParameterName.CONTENT_ID, productID);
+                values.put(AFInAppEventParameterName.CONTENT_TYPE, Jordan.AF_VALUE_PRODUCTTYPE);
+                values.put(AFInAppEventParameterName.PRICE, productPrice);
+                values.put(AFInAppEventParameterName.CURRENCY, "IDR");
+                values.put(AFInAppEventParameterName.QUANTITY, 1);
+
+                if (data.getBreadcrumb() != null && data.getBreadcrumb().size() > 0) {
+                    int size = data.getBreadcrumb().size();
+                    for (int i = 1; i <= size; i++) {
+                        values.put("level" + i + "_name", data.getBreadcrumb().get(size - i).getDepartmentName());
+                        values.put("level" + i + "_id", data.getBreadcrumb().get(size - i).getDepartmentId());
                     }
-
-                    if (data.getBreadcrumb() != null && data.getBreadcrumb().size() > 0) {
-                        int size = data.getBreadcrumb().size();
-                        for (int i = 1; i <= size; i++) {
-                            values.put("level" + i + "_name", data.getBreadcrumb().get(size - i).getDepartmentName());
-                            values.put("level" + i + "_id", data.getBreadcrumb().get(size - i).getDepartmentId());
-                        }
-                    }
-
-                    CommonUtils.dumper(TAG + "Appsflyer data " + adsID + " " + productID + " " + productPrice);
-                    TrackApp.getInstance().getAppsFlyer().sendTrackEvent(eventName, values);
                 }
 
-                @Override
-                public void onErrorAFAdsID() {
-                    CommonUtils.dumper(TAG + "Appsflyer error cant get advertisment ID");
-                }
-            });
-        }
+                CommonUtils.dumper(TAG + "Appsflyer data " + adsID + " " + productID + " " + productPrice);
+                TrackApp.getInstance().getAppsFlyer().sendTrackEvent(eventName, values);
+            }
+
+            @Override
+            public void onErrorAFAdsID() {
+                CommonUtils.dumper(TAG + "Appsflyer error cant get advertisment ID");
+            }
+        });
     }
 
     public static void eventDiscoveryScreenAuth(Context context, String departmentId) {

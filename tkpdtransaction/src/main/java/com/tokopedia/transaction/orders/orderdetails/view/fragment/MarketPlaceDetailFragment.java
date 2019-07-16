@@ -72,7 +72,6 @@ import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDet
 import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
 import com.tokopedia.transaction.orders.orderlist.data.ConditionalInfo;
 import com.tokopedia.transaction.orders.orderlist.data.PaymentData;
-import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -209,9 +208,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         statusLihat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = OrderHistoryActivity
-                        .createInstance(getActivity(), getArguments().getString(KEY_ORDER_ID), 1);
-                startActivity(intent);
+                startActivity(((UnifiedOrderListRouter) getActivity().getApplication()).getOrderHistoryIntent(
+                        getActivity(), getArguments().getString(KEY_ORDER_ID)
+                ));
             }
         });
     }
@@ -287,13 +286,15 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             doubleTextView.setTopText(detail.label());
             doubleTextView.setTopTextColor(getContext().getResources().getColor(R.color.font_black_secondary_54));
             doubleTextView.setBottomText(detail.value());
-            doubleTextView.setBottomTextColor(getContext().getResources().getColor(R.color.black_seventy_percent_));
+            doubleTextView.setBottomTextColor(getContext().getResources().getColor(R.color.black_70_new));
             doubleTextView.setBottomTextStyle("bold");
             doubleTextView.setBottomTextSize(TEXT_SIZE_MEDIUM);
         } else {
             doubleTextView.setTopText(detail.label());
             String text = detail.value() + NO_SANIN_NEXT_LINE;
             SpannableString spannableString = new SpannableString(text);
+            doubleTextView.setBottomTextColor(getContext().getResources().getColor(R.color.black_70_new));
+            doubleTextView.setBottomTextSize(TEXT_SIZE_MEDIUM);
             int startIndexOfLink = text.indexOf("Salin");
             spannableString.setSpan(new ClickableSpan() {
                 @Override
@@ -354,6 +355,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(pricing.label());
         doubleTextView.setTopTextColor(getContext().getResources().getColor(R.color.font_black_secondary_54));
+        doubleTextView.setTopTextSize(TEXT_SIZE_MEDIUM);
         doubleTextView.setBottomText(pricing.value());
         doubleTextView.setBottomTextColor(getContext().getResources().getColor(R.color.black_70));
         doubleTextView.setBottomTextSize(TEXT_SIZE_MEDIUM);
@@ -464,6 +466,11 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         totalPrice.removeAllViews();
         actionBtnLayout.removeAllViews();
         paymentMethod.removeAllViews();
+    }
+
+    @Override
+    public void askPermission() {
+
     }
 
     @Override
@@ -699,8 +706,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     }
 
     @Override
-    public void setContactUs(final ContactUs contactUs) {
-        String text = Html.fromHtml(contactUs.helpText()).toString();
+    public void setContactUs(final ContactUs contactUs, String helpLink) {
+        String text = getResources().getString(R.string.contact_us_text);
         SpannableString spannableString = new SpannableString(text);
         int startIndexOfLink = text.indexOf("disini");
         spannableString.setSpan(new ClickableSpan() {
@@ -709,7 +716,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 try {
                     startActivity(((UnifiedOrderListRouter) getActivity()
                             .getApplication()).getWebviewActivityWithIntent(getContext(),
-                            URLEncoder.encode(contactUs.helpUrl(), ORDER_LIST_URL_ENCODING)));
+                            URLEncoder.encode(helpLink, ORDER_LIST_URL_ENCODING)));
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
@@ -724,7 +731,6 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         }, startIndexOfLink, startIndexOfLink + "disini".length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         helpLabel.setHighlightColor(Color.TRANSPARENT);
         helpLabel.setMovementMethod(LinkMovementMethod.getInstance());
-
         helpLabel.setText(spannableString, TextView.BufferType.SPANNABLE);
     }
 

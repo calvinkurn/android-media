@@ -7,6 +7,8 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.Spannable
 import android.text.SpannableStringBuilder
+import android.view.MenuItem
+import android.view.Menu
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.browse.DigitalBrowseComponentInstance
@@ -19,13 +21,24 @@ import com.tokopedia.browse.homepage.di.DigitalBrowseHomeComponent
 import com.tokopedia.browse.homepage.presentation.fragment.DigitalBrowseMarketplaceFragment
 import com.tokopedia.browse.homepage.presentation.fragment.DigitalBrowseServiceFragment
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.browse.R
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.browse.categoryNavigation.view.BaseCategoryBrowseActivity
+import com.tokopedia.navigation_common.category.CategoryNavigationConfig
 import javax.inject.Inject
 
 class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<DigitalBrowseHomeComponent> {
-
-    @Inject lateinit var digitalBrowseAnalytics: DigitalBrowseAnalytics
+    @Inject
+    lateinit var digitalBrowseAnalytics: DigitalBrowseAnalytics
 
     private var fragmentDigital: Fragment? = null
+
+    private var autocompleteParam = ""
+
+    private val AUTOCOMPLETE_BELANJA = "belanja"
+
+    private val AUTOCOMPLETE_LAYANAN = "homenav"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,10 +64,11 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
     }
 
     override fun getNewFragment(): Fragment? {
-
         if (Integer.parseInt(intent.getStringExtra(EXTRA_TYPE)) == TYPE_BELANJA) {
+            autocompleteParam = AUTOCOMPLETE_BELANJA
             fragmentDigital = DigitalBrowseMarketplaceFragment.fragmentInstance
         } else if (Integer.parseInt(intent.getStringExtra(EXTRA_TYPE)) == TYPE_LAYANAN) {
+            autocompleteParam = AUTOCOMPLETE_LAYANAN
             fragmentDigital = if (intent.hasExtra(EXTRA_TAB)) {
                 DigitalBrowseServiceFragment.getFragmentInstance(
                         Integer.parseInt(intent.getStringExtra(EXTRA_TAB)))
@@ -64,6 +78,24 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
         }
 
         return fragmentDigital
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        getMenuInflater().inflate(R.menu.menu_digital_browse_search, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.action_search) {
+            onSearchClicked()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    fun onSearchClicked() {
+        digitalBrowseAnalytics.eventClickOnSearchTopNav(screenName)
+        RouteManager.route(this, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE_WITH_NAVSOURCE, autocompleteParam)
     }
 
     private fun setupToolbar() {
@@ -97,7 +129,7 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
         val TYPE_LAYANAN = 2
 
         val TITLE_BELANJA = "Belanja di Tokopedia"
-        val TITLE_LAYANAN = "Lainnya"
+        val TITLE_LAYANAN = "Semua Kategori"
 
         val LAYANAN_SCREEN = "/digital"
         val DEFAULT_SCREEN = "/kategori-belanja"
@@ -106,26 +138,43 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
     }
 
     override fun getScreenName(): String =
-        if(Integer.parseInt(intent.getStringExtra(EXTRA_TYPE)) == TYPE_LAYANAN){
-             LAYANAN_SCREEN
-        } else {
-            DEFAULT_SCREEN
+            if (Integer.parseInt(intent.getStringExtra(EXTRA_TYPE)) == TYPE_LAYANAN) {
+                LAYANAN_SCREEN
+            } else {
+                DEFAULT_SCREEN
+            }
+
+    object DeepLinkIntents {
+        lateinit var intent: Intent
+
+        @JvmStatic
+        @DeepLink(ApplinkConstant.DIGITAL_BROWSE)
+        fun getCallingIntent(context: Context, extras: Bundle): Intent {
+            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
+            intent = Intent(context, DigitalBrowseHomeActivity::class.java)
+
+            if (!extras.containsKey(EXTRA_TITLE)) {
+                if (Integer.parseInt(extras.getString(EXTRA_TYPE)) == TYPE_BELANJA) {
+                    extras.putString(EXTRA_TITLE, TITLE_BELANJA)
+                    return CategoryNavigationConfig.updateCategoryConfig(context, ::openNewBelanja, ::openOldBelanja)
+                } else if (Integer.parseInt(extras.getString(EXTRA_TYPE)) == TYPE_LAYANAN) {
+                    intent = Intent(context, DigitalBrowseHomeActivity::class.java)
+                    extras.putString(EXTRA_TITLE, TITLE_LAYANAN)
+                }
+            }
+
+            return intent.setData(uri.build()).putExtras(extras)
         }
 
-}
-
-@DeepLink(ApplinkConstant.DIGITAL_BROWSE)
-fun getCallingIntent(context: Context, extras: Bundle): Intent {
-    val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
-    val intent = Intent(context, DigitalBrowseHomeActivity::class.java)
-
-    if (!extras.containsKey(DigitalBrowseHomeActivity.EXTRA_TITLE)) {
-        if (Integer.parseInt(extras.getString(DigitalBrowseHomeActivity.EXTRA_TYPE)) == DigitalBrowseHomeActivity.TYPE_BELANJA) {
-            extras.putString(DigitalBrowseHomeActivity.EXTRA_TITLE, DigitalBrowseHomeActivity.TITLE_BELANJA)
-        } else if (Integer.parseInt(extras.getString(DigitalBrowseHomeActivity.EXTRA_TYPE)) == DigitalBrowseHomeActivity.TYPE_LAYANAN) {
-            extras.putString(DigitalBrowseHomeActivity.EXTRA_TITLE, DigitalBrowseHomeActivity.TITLE_LAYANAN)
+        fun openNewBelanja(context: Context): Intent {
+            return BaseCategoryBrowseActivity.newIntent(context)
         }
+
+        fun openOldBelanja(context: Context): Intent {
+            return intent
+        }
+
     }
 
-    return intent.setData(uri.build()).putExtras(extras)
+
 }

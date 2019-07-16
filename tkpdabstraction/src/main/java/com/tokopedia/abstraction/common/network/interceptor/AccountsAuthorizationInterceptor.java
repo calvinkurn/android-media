@@ -29,8 +29,8 @@ public class AccountsAuthorizationInterceptor implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request.Builder newRequest = chain.request().newBuilder();
-        newRequest = addAccountsAuthorizationHeader(newRequest);
-
+        newRequest.removeHeader(KEY_ACCOUNTS_AUTHORIZATION);
+        addAccountsAuthorizationHeader(newRequest);
         return chain.proceed(newRequest.build());
     }
 

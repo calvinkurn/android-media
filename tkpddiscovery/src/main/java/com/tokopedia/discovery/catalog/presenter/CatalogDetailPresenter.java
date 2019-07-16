@@ -36,7 +36,7 @@ public class CatalogDetailPresenter implements ICatalogDetailPresenter {
 
     public CatalogDetailPresenter(IDetailCatalogView iDetailCatalogView) {
         this.catalogView = iDetailCatalogView;
-        this.dataInteractor = new CatalogDataInteractor();
+        this.dataInteractor = new CatalogDataInteractor(iDetailCatalogView.getContext());
     }
 
 

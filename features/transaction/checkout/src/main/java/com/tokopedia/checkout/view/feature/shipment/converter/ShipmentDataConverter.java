@@ -12,8 +12,10 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Product;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.PurchaseProtectionPlanData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Shop;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.UserAddress;
+import com.tokopedia.checkout.view.feature.shipment.util.Utils;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.promocheckout.common.view.uimodel.MessageUiModel;
+import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
@@ -30,6 +32,8 @@ import java.util.List;
 public class ShipmentDataConverter {
 
     private static final int PRIME_ADDRESS = 2;
+    private static final String MERCHANT_VOUCHER_TYPE = "merchant";
+    private static final String LOGISTIC_VOUCHER_TYPE = "logistic";
 
     public RecipientAddressModel getRecipientAddressModel(CartShipmentAddressFormData cartShipmentAddressFormData) {
         if (cartShipmentAddressFormData.getGroupAddress() != null && cartShipmentAddressFormData.getGroupAddress().size() > 0) {
@@ -97,6 +101,7 @@ public class ShipmentDataConverter {
         recipientAddress.setSelected(userAddress.getStatus() == PRIME_ADDRESS);
         recipientAddress.setCornerId(String.valueOf(userAddress.getCornerId()));
         recipientAddress.setTradeIn(isTradeIn);
+        recipientAddress.setCornerAddress(userAddress.isCorner());
 
         return recipientAddress;
     }
@@ -113,6 +118,7 @@ public class ShipmentDataConverter {
                     shipmentCartItemModel = new ShipmentCartItemModel();
                     shipmentCartItemModel.setUseCourierRecommendation(cartShipmentAddressFormData
                             .isUseCourierRecommendation());
+                    shipmentCartItemModel.setHidingCourier(cartShipmentAddressFormData.isHidingCourier());
                     shipmentCartItemModel.setIsBlackbox(cartShipmentAddressFormData.getIsBlackbox());
                     shipmentCartItemModel.setAddressId(cartShipmentAddressFormData.getGroupAddress()
                             .get(addressIndex).getUserAddress().getAddressId());
@@ -122,7 +128,16 @@ public class ShipmentDataConverter {
                         if (cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrders() != null) {
                             for (VoucherOrdersItemData voucherOrdersItemData : cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrders()) {
                                 if (groupShop.getCartString().equalsIgnoreCase(voucherOrdersItemData.getUniqueId())) {
-                                    shipmentCartItemModel.setVoucherOrdersItemUiModel(convertFromVoucherOrdersItem(voucherOrdersItemData));
+                                    if (voucherOrdersItemData.getType().equalsIgnoreCase(MERCHANT_VOUCHER_TYPE)) {
+                                        shipmentCartItemModel.setVoucherOrdersItemUiModel(convertFromVoucherOrdersItem(voucherOrdersItemData));
+                                    } else if (voucherOrdersItemData.getType().equalsIgnoreCase(LOGISTIC_VOUCHER_TYPE)) {
+                                        VoucherLogisticItemUiModel voucherLogisticItemUiModel = new VoucherLogisticItemUiModel();
+                                        voucherLogisticItemUiModel.setCode(voucherOrdersItemData.getCode());
+                                        voucherLogisticItemUiModel.setCouponDesc(voucherOrdersItemData.getTitleDescription());
+                                        voucherLogisticItemUiModel.setCouponAmount(Utils.getFormattedCurrency(voucherOrdersItemData.getDiscountAmount()));
+                                        voucherLogisticItemUiModel.setMessage(convertFromMessage(voucherOrdersItemData.getMessageData()));
+                                        shipmentCartItemModel.setVoucherLogisticItemUiModel(voucherLogisticItemUiModel);
+                                    }
                                 }
                             }
                         }
@@ -145,6 +160,7 @@ public class ShipmentDataConverter {
                 shipmentCartItemModel = new ShipmentCartItemModel();
                 shipmentCartItemModel.setUseCourierRecommendation(cartShipmentAddressFormData.isUseCourierRecommendation());
                 shipmentCartItemModel.setIsBlackbox(cartShipmentAddressFormData.getIsBlackbox());
+                shipmentCartItemModel.setHidingCourier(cartShipmentAddressFormData.isHidingCourier());
                 shipmentCartItemModel.setAddressId(cartShipmentAddressFormData.getGroupAddress()
                         .get(0).getUserAddress().getAddressId());
 
@@ -152,7 +168,19 @@ public class ShipmentDataConverter {
                     if (cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrders() != null) {
                         for (VoucherOrdersItemData voucherOrdersItemData : cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrders()) {
                             if (groupShop.getCartString().equalsIgnoreCase(voucherOrdersItemData.getUniqueId())) {
-                                shipmentCartItemModel.setVoucherOrdersItemUiModel(convertFromVoucherOrdersItem(voucherOrdersItemData));
+                                if (voucherOrdersItemData.getType().equalsIgnoreCase(MERCHANT_VOUCHER_TYPE)) {
+                                    shipmentCartItemModel.setVoucherOrdersItemUiModel(convertFromVoucherOrdersItem(voucherOrdersItemData));
+                                } else if (voucherOrdersItemData.getType().equalsIgnoreCase(LOGISTIC_VOUCHER_TYPE)) {
+                                    VoucherLogisticItemUiModel voucherLogisticItemUiModel = new VoucherLogisticItemUiModel();
+                                    voucherLogisticItemUiModel.setCode(voucherOrdersItemData.getCode());
+                                    voucherLogisticItemUiModel.setCouponDesc(voucherOrdersItemData.getTitleDescription());
+                                    voucherLogisticItemUiModel.setCouponAmount(Utils.getFormattedCurrency(voucherOrdersItemData.getDiscountAmount()));
+                                    voucherLogisticItemUiModel.setMessage(convertFromMessage(voucherOrdersItemData.getMessageData()));
+                                    shipmentCartItemModel.setVoucherLogisticItemUiModel(voucherLogisticItemUiModel);
+                                } else {
+                                    shipmentCartItemModel.setVoucherOrdersItemUiModel(null);
+                                    shipmentCartItemModel.setVoucherLogisticItemUiModel(null);
+                                }
                             }
                         }
                     }
@@ -170,6 +198,8 @@ public class ShipmentDataConverter {
 
         return shipmentCartItemModels;
     }
+
+
 
     private void setCartItemModelError(ShipmentCartItemModel shipmentCartItemModel) {
         if (shipmentCartItemModel.isAllItemError()) {
@@ -209,6 +239,7 @@ public class ShipmentDataConverter {
         shipmentCartItemModel.setDropshiperPhone(groupShop.getDropshipperPhone());
         shipmentCartItemModel.setInsurance(groupShop.isUseInsurance());
         shipmentCartItemModel.setHasPromoList(groupShop.isHasPromoList());
+        shipmentCartItemModel.setSaveStateFlag(groupShop.isSaveStateFlag());
 
         List<Product> products = groupShop.getProducts();
         List<CartItemModel> cartItemModels = convertFromProductList(products);
@@ -221,7 +252,21 @@ public class ShipmentDataConverter {
 
         // set promo merchant
         if (groupShop.getShop().getVoucherOrdersItemData() != null) {
-            shipmentCartItemModel.setVoucherOrdersItemUiModel(convertFromVoucherOrdersItem(groupShop.getShop().getVoucherOrdersItemData()));
+            if (groupShop.getShop().getVoucherOrdersItemData().getType().equalsIgnoreCase(MERCHANT_VOUCHER_TYPE)) {
+                shipmentCartItemModel.setVoucherOrdersItemUiModel(convertFromVoucherOrdersItem(groupShop.getShop().getVoucherOrdersItemData()));
+            } else if (groupShop.getShop().getVoucherOrdersItemData().getType().equalsIgnoreCase(LOGISTIC_VOUCHER_TYPE)) {
+                VoucherLogisticItemUiModel voucherLogisticItemUiModel = new VoucherLogisticItemUiModel();
+                voucherLogisticItemUiModel.setCode(groupShop.getShop().getVoucherOrdersItemData().getCode());
+                voucherLogisticItemUiModel.setCouponDesc(groupShop.getShop().getVoucherOrdersItemData().getTitleDescription());
+                voucherLogisticItemUiModel.setCouponAmount(Utils.getFormattedCurrency(groupShop.getShop().getVoucherOrdersItemData().getDiscountAmount()));
+                voucherLogisticItemUiModel.setCashbackAmount(groupShop.getShop().getVoucherOrdersItemData().getCashbackWalletAmount());
+                voucherLogisticItemUiModel.setDiscountAmount(groupShop.getShop().getVoucherOrdersItemData().getDiscountAmount());
+                voucherLogisticItemUiModel.setMessage(convertFromMessage(groupShop.getShop().getVoucherOrdersItemData().getMessageData()));
+                shipmentCartItemModel.setVoucherLogisticItemUiModel(voucherLogisticItemUiModel);
+            } else {
+                shipmentCartItemModel.setVoucherOrdersItemUiModel(null);
+                shipmentCartItemModel.setVoucherLogisticItemUiModel(null);
+            }
         }
 
         shipmentCartItemModel.setShipmentCartData(new RatesDataConverter()
@@ -304,6 +349,7 @@ public class ShipmentDataConverter {
             cartItemModel.setProtectionLinkText(ppp.getProtectionLinkText());
             cartItemModel.setProtectionLinkUrl(ppp.getProtectionLinkUrl());
             cartItemModel.setProtectionOptIn(ppp.isProtectionOptIn());
+            cartItemModel.setProtectionCheckboxDisabled(ppp.isProtectionCheckboxDisabled());
         }
 
         cartItemModel.setAnalyticsProductCheckoutData(product.getAnalyticsProductCheckoutData());

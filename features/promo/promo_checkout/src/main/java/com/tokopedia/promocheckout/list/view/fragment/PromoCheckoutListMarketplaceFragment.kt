@@ -15,10 +15,7 @@ import com.tokopedia.promocheckout.common.analytics.FROM_CART
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException
-import com.tokopedia.promocheckout.common.util.EXTRA_CLASHING_DATA
-import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
-import com.tokopedia.promocheckout.common.util.RESULT_CLASHING
-import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
+import com.tokopedia.promocheckout.common.util.*
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
@@ -111,9 +108,10 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
         val intent = Intent()
         val typePromo = if (data.isCoupon == PromoStackingData.VALUE_COUPON) PromoStackingData.TYPE_COUPON else PromoStackingData.TYPE_VOUCHER
         val promoStackingData = PromoStackingData(typePromo, data.codes[0],
-                data.message.text, data.titleDescription,
+                data.message.text, data.titleDescription, "",
                 data.cashbackWalletAmount, data.message.state.mapToStatePromoStackingCheckout())
         intent.putExtra(EXTRA_PROMO_DATA, promoStackingData)
+        intent.putExtra(EXTRA_INPUT_TYPE, INPUT_TYPE_PROMO_CODE)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
     }
@@ -144,7 +142,10 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
                 val clashingInfoDetailUiModel: ClashingInfoDetailUiModel? = bundle?.getParcelable(EXTRA_CLASHING_DATA);
                 intent.putExtra(EXTRA_CLASHING_DATA, clashingInfoDetailUiModel)
                 activity?.setResult(RESULT_CLASHING, intent)
-                activity?.finish()
+
+                if (clashingInfoDetailUiModel != null) {
+                    activity?.finish()
+                }
             }
         }
         super.onActivityResult(requestCode, resultCode, data)

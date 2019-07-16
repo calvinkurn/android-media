@@ -7,33 +7,28 @@ import android.os.Parcelable
  * Created by alvarisi on 3/29/18.
  */
 
-class CartAutoApplyVoucher : Parcelable {
-    var isSuccess: Boolean = false
-    var code: String? = null
-    var isCoupon: Int = 0
-    var discountAmount: Long = 0
-    var title: String? = null
-    var messageSuccess: String? = null
-    var promoId: Long = 0
+class CartAutoApplyVoucher(
+        var isSuccess: Boolean = false,
+        var code: String? = null,
+        var isCoupon: Int = 0,
+        var discountAmount: Long = 0,
+        var title: String? = null,
+        var messageSuccess: String? = null,
+        var promoId: Long = 0
+) : Parcelable {
 
-    constructor() {}
-
-    protected constructor(`in`: Parcel) {
-        isSuccess = `in`.readByte().toInt() != 0
-        code = `in`.readString()
-        isCoupon = `in`.readInt()
-        discountAmount = `in`.readLong()
-        title = `in`.readString()
-        messageSuccess = `in`.readString()
-        promoId = `in`.readLong()
+    constructor(parcel: Parcel) : this(
+            parcel.readByte() != 0.toByte(),
+            parcel.readString(),
+            parcel.readInt(),
+            parcel.readLong(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readLong()) {
     }
 
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    override fun writeToParcel(parcel: Parcel, i: Int) {
-        parcel.writeByte((if (isSuccess) 1 else 0).toByte())
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeByte(if (isSuccess) 1 else 0)
         parcel.writeString(code)
         parcel.writeInt(isCoupon)
         parcel.writeLong(discountAmount)
@@ -42,9 +37,13 @@ class CartAutoApplyVoucher : Parcelable {
         parcel.writeLong(promoId)
     }
 
+    override fun describeContents(): Int {
+        return 0
+    }
+
     companion object CREATOR : Parcelable.Creator<CartAutoApplyVoucher> {
-        override fun createFromParcel(`in`: Parcel): CartAutoApplyVoucher {
-            return CartAutoApplyVoucher(`in`)
+        override fun createFromParcel(parcel: Parcel): CartAutoApplyVoucher {
+            return CartAutoApplyVoucher(parcel)
         }
 
         override fun newArray(size: Int): Array<CartAutoApplyVoucher?> {

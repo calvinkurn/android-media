@@ -46,6 +46,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import javax.inject.Inject;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class SaldoDepositFragment extends BaseDaggerFragment
         implements SaldoDetailContract.View {
@@ -229,7 +230,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         saldoTypeLL = view.findViewById(R.id.saldo_type_ll);
         merchantDetailLL = view.findViewById(R.id.merchant_details_ll);
         merchantStatusLL = view.findViewById(R.id.merchant_status_ll);
-        saldoDepositExpandIV.setImageDrawable(getResources().getDrawable(R.drawable.ic_arrow_up_grey));
+        saldoDepositExpandIV.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_arrow_up_grey));
 
         if (expandLayout) {
             saldoTypeLL.setVisibility(View.VISIBLE);
@@ -428,8 +429,6 @@ public class SaldoDepositFragment extends BaseDaggerFragment
     @Override
     public void hideUserFinancialStatusLayout() {
         merchantStatusLL.setVisibility(View.GONE);
-        hideSaldoPrioritasFragment();
-        hideMerchantCreditLineFragment();
     }
 
     private void showBottomSheetInfoDialog(boolean isSellerClicked) {

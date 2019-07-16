@@ -8,9 +8,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.expresscheckout.R
 import com.tokopedia.normalcheckout.constant.ATC_AND_BUY
 import com.tokopedia.normalcheckout.constant.ProductAction
-import model.TradeInParams
-import view.viewcontrollers.TradeInHomeActivity
-import viewmodel.IAccessRequestListener
+import com.tokopedia.tradein_common.IAccessRequestListener
+import com.tokopedia.tradein.model.TradeInParams
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
@@ -27,6 +26,7 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
         const val EXTRA_ACTION = "action"
         const val EXTRA_SHOP_TYPE = "shop_type"
         const val EXTRA_SHOP_NAME = "shop_name"
+        const val EXTRA_OCS = "ocs"
         const val EXTRA_TRADE_IN_PARAMS = "trade_in_params"
         private const val TRACKER_ATTRIBUTION = "tracker_attribution"
         private const val TRACKER_LIST_NAME = "tracker_list_name"
@@ -47,7 +47,8 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
                       trackerAttribution: String? = "",
                       trackerListName: String? = "",
                       shopType: String? = "",
-                      shopName: String? = ""): Intent {
+                      shopName: String? = "",
+                      isOneClickShipment:Boolean): Intent {
             return Intent(context, NormalCheckoutActivity::class.java).apply {
                 putExtra(EXTRA_SHOP_ID, shopId)
                 putExtra(EXTRA_PRODUCT_ID, productId)
@@ -60,6 +61,7 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
                 putExtra(TRACKER_LIST_NAME, trackerListName)
                 putExtra(EXTRA_SHOP_TYPE, shopType)
                 putExtra(EXTRA_SHOP_NAME, shopName)
+                putExtra(EXTRA_OCS, isOneClickShipment)
             }
         }
     }
@@ -85,6 +87,7 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
                 getString(TRACKER_LIST_NAME),
                 getString(EXTRA_SHOP_TYPE),
                 getString(EXTRA_SHOP_NAME),
+                getBoolean(EXTRA_OCS),
                 tradeInParams)
             return normalCheckoutFragment
         }

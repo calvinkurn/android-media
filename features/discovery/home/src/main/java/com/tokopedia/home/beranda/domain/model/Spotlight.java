@@ -37,7 +37,7 @@ public class Spotlight {
         this.homeAttribution = homeAttribution;
     }
 
-    public Map<String, Object> getEnhanceImpressionSpotlightHomePage(int position) {
+    public Map<String, Object> getEnhanceImpressionSpotlightHomePage() {
         List<Object> list = convertPromoEnhanceSpotlight();
         return DataLayer.mapOf(
                 "event", "promoView",
@@ -62,7 +62,7 @@ public class Spotlight {
                 SpotlightItem item = spotlights.get(i);
                 list.add(
                         DataLayer.mapOf(
-                                "id", item.getId(),
+                                "id", String.valueOf(item.getId()),
                                 "name", promoName,
                                 "creative", item.getTitle(),
                                 "creative_url", item.getBackgroundImageUrl(),

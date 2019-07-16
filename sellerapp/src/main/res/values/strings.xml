@@ -9,6 +9,15 @@
     <!-- TODO: Remove or change this placeholder text -->
 
     <string name="drawer_title_top_ads">TopAds</string>
+    <string name="showcase_title_1_power_merchant">Status Power Merchant Aktif</string>
+    <string name="showcase_desc_1_power_merchant">Pantau dan tingkatkan reputasi tokomu dengan pilihan fitur eksklusif Power Merchant.</string>
+
+    <string name="showcase_title_2_power_merchant">Ini adalah Skor Performa Tokomu</string>
+    <string name="showcase_desc_2_power_merchant">Rutin cek dan jaga skor performa di atas 75.</string>
+
+    <string name="showcase_btn_next">Lanjut</string>
+    <string name="showcase_btn_prev">Kembali</string>
+    <string name="showcase_btn_finish">Mengerti</string>
 
     <string name="title_push_notif_general">Notifikasi baru dari Tokopedia</string>
     <string name="header_review_reputation">penalti reputasi</string>
@@ -29,4 +38,29 @@
     <string name="transaction_success">Transaksi Sukses</string>
     <string name="featured_product_desc_should_gold_merchant">Pilih 5 produk terbaik Anda untuk ditampilkan di halaman toko. Dapatkan akses Produk Unggulan dengan berlangganan %1$s.</string>
     <string name="drawer_title_flash_sale">Flash Sale</string>
+    <string name="title_dialog_tokopedia_app_not_valid">Aplikasi Tokopedia tidak valid</string>
+    <string name="title_message_install_from_playstore">Install Tokopedia dari Google Play Store untuk melanjutkan</string>
+
+    <!--Power Merchant-->
+    <string name="score_of_total_score" translatable="false"><![CDATA[<b>%1$d</b>/%2$d]]></string>
+    <string name="bracket_format">(%1$s)</string>
+    <string name="regular_merchant_ticker"><![CDATA[Siap upgrade menjadi <b>Power Merchant</b> dengan poin minimum <b>75</b>.]]></string>
+    <string name="tip_increase_score">Tip Meningkatkan Poin</string>
+    <string name="power_merchant_ticker_with_tip"><![CDATA[Pertahankan poin minimum <b>75</b> untuk tetap menjadi <b>Power Merchant</b>.]]></string>
+
+    <string name="pm_popup_active_title">Selamat! Kamu sudah menjadi Power Merchant</string>
+    <string name="pm_popup_active_desc"><![CDATA[Tingkatkan penjualan tokomu dengan menggunakan fitur eksklusif <b>Power Merchant.</b>]]></string>
+    <string name="pm_popup_active_btn">Mulai</string>
+
+    <string name="pm_popup_idle_title">Power Merchant kamu dinonaktifkan</string>
+    <string name="pm_popup_idle_desc"><![CDATA[Tingkatkan kembali performa tokomu minimum <b>75</b> dan lengkapi syarat & ketentuan Power Merchant.]]></string>
+    <string name="pm_popup_idle_btn">Tingkatkan Skor Toko</string>
+
+    <string name="pm_popup_deactivated_title">Yaah, layanan Power Merchant kamu berakhir</string>
+    <string name="pm_popup_deactivated_desc">Segera kembali jadi Power Merchant agar semakin mudah mengoptimalkan penjualanmu.</string>
+    <string name="pm_popup_deactivated_btn">Upgrade Tokomu</string>
+
+    <string name="pm_popup_regular_title">Power Merchant kini bebas biaya bulanan!</string>
+    <string name="pm_popup_regular_desc">Tingkatkan penjualanmu dengan Power Merchant, hanya bayar biaya layanan 1% dari setiap produk terjual.</string>
+    <string name="pm_popup_regular_btn">Upgrade Tokomu</string>
 </resources>

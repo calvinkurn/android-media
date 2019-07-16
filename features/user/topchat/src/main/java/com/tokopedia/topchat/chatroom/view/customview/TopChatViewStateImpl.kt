@@ -1,11 +1,16 @@
 package com.tokopedia.topchat.chatroom.view.customview
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.content.Context
 import android.os.Parcelable
 import android.support.annotation.NonNull
+import android.support.constraint.ConstraintLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -13,15 +18,19 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.util.ChatTimeConverter
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
+import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.BaseChatMenuViewHolder
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.view.adapter.ProductPreviewAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.listener.HeaderMenuListener
 import com.tokopedia.topchat.chatroom.view.listener.ImagePickerListener
 import com.tokopedia.topchat.chatroom.view.listener.SendButtonListener
+import com.tokopedia.topchat.chatroom.view.viewmodel.ProductPreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatAdapter
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactory
@@ -40,23 +49,21 @@ class TopChatViewStateImpl(
         private val sendListener: SendButtonListener,
         private val templateListener: ChatTemplateListener,
         private val imagePickerListener: ImagePickerListener,
-        private val onAttachProductClicked: () -> Unit,
+        chatMenuListener: BaseChatMenuViewHolder.ChatMenuListener,
         toolbar: Toolbar,
         val analytics: TopChatAnalytics
-) : BaseChatViewStateImpl(view, toolbar, typingListener), TopChatViewState {
-
-    private var attachButton: ImageView = view.findViewById(R.id.add_url)
-    private var maximize: View = view.findViewById(R.id.maximize)
+) : BaseChatViewStateImpl(view, toolbar, typingListener, chatMenuListener), TopChatViewState {
     private var templateRecyclerView: RecyclerView = view.findViewById(R.id.list_template)
     private var headerMenuButton: ImageButton = toolbar.findViewById(R.id.header_menu)
     private var chatBlockLayout: View = view.findViewById(R.id.chat_blocked_layout)
+    private var productPreviewContainer: ConstraintLayout = view.findViewById(R.id.cl_product_preview)
+    private var productPreviewRecyclerView = view.findViewById<RecyclerView>(R.id.rv_product_preview)
 
+    lateinit var productPreviewAdapter: ProductPreviewAdapter
     lateinit var templateAdapter: TemplateChatAdapter
-    lateinit var templateChatTypeFactory: TemplateChatTypeFactory
-    var isUploading: Boolean = false
-    var isFirstTime: Boolean = true
-    var isShopFollowed: Boolean = false
     lateinit var chatRoomViewModel: ChatroomViewModel
+
+    var isShopFollowed: Boolean = false
 
     init {
         initView()
@@ -72,8 +79,6 @@ class TopChatViewStateImpl(
             }
         }
 
-        maximize.setOnClickListener { maximizeTools() }
-
         sendButton.setOnClickListener {
             sendListener.onSendClicked(replyEditText.text.toString(),
                     SendableViewModel.generateStartTime())
@@ -85,44 +90,39 @@ class TopChatViewStateImpl(
         templateRecyclerView.adapter = templateAdapter
         templateRecyclerView.visibility = View.GONE
 
-        pickerButton.setOnClickListener {
-            analytics.eventPickImage()
-            imagePickerListener.pickImageToUpload()
-        }
+        initProductPreviewLayout()
+    }
 
-        attachButton.setOnClickListener {
-            analytics.eventAttachProduct()
-            onAttachProductClicked()
+    private fun initProductPreviewLayout() {
+        productPreviewAdapter = ProductPreviewAdapter(onEmptyProductPreview())
+        productPreviewRecyclerView.apply {
+            setHasFixedSize(true)
+            adapter = productPreviewAdapter
         }
+    }
+
+    private fun onEmptyProductPreview(): () -> Unit {
+        return {
+            hideProductPreviewLayout()
+            sendListener.onEmptyProductPreview()
+        }
+    }
+
+    private fun hideProductPreviewLayout() {
+        productPreviewContainer.animate()
+                .translationY(productPreviewContainer.height.toFloat())
+                .setDuration(300)
+                .alpha(0f)
+                .setInterpolator(AccelerateDecelerateInterpolator())
+                .setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator?) {
+                        productPreviewContainer.visibility = View.GONE
+                    }
+                })
     }
 
     override fun onSetCustomMessage(customMessage: String) {
         replyEditText.setText(customMessage)
-    }
-
-    fun minimizeTools() {
-        maximize.visibility = View.VISIBLE
-        pickerButton.visibility = View.GONE
-        attachButton.visibility = View.GONE
-    }
-
-    private fun maximizeTools() {
-        maximize.visibility = View.GONE
-        pickerButton.visibility = View.VISIBLE
-        attachButton.visibility = View.VISIBLE
-    }
-
-    fun setDefault() {
-        sendButton.requestFocus()
-    }
-
-    fun setNonReplyable() {
-        actionBox?.visibility = View.GONE
-
-    }
-
-    fun setReplyable() {
-        actionBox?.visibility = View.VISIBLE
     }
 
     override fun getAdapter(): TopChatRoomAdapter {
@@ -137,14 +137,6 @@ class TopChatViewStateImpl(
         getAdapter().addNewMessage(visitable)
     }
 
-    fun setActionable(actionable: Boolean) {
-        val count = actionBox.childCount
-        for (i in 0 until count) {
-            actionBox.getChildAt(i).isEnabled = actionable
-
-        }
-    }
-
     fun onSuccessLoadFirstTime(viewModel: ChatroomViewModel,
                                onToolbarClicked: () -> Unit,
                                headerMenuListener: HeaderMenuListener,
@@ -157,7 +149,6 @@ class TopChatViewStateImpl(
         showLastTimeOnline(viewModel)
         setHeaderMenuButton(headerMenuListener, alertDialog)
         showReplyBox(viewModel.replyable)
-        showActionButtons()
         checkShowQuickReply(viewModel)
         onCheckChatBlocked(viewModel.headerModel.role, viewModel.headerModel.name, viewModel
                 .blockedStatus, onUnblockChatClicked)
@@ -167,17 +158,36 @@ class TopChatViewStateImpl(
     private fun showLastTimeOnline(viewModel: ChatroomViewModel) {
         val onlineDesc = toolbar.findViewById<TextView>(R.id.subtitle)
         val onlineStats = toolbar.findViewById<View>(R.id.online_status)
+        val lastOnlineTimeStamp = getShopLastTimeOnlineTimeStamp(viewModel)
 
-        val string = ChatTimeConverter.getRelativeDate(view.context, viewModel.headerModel.lastTimeOnline)
-        onlineDesc.text = string
-        onlineDesc.visibility = View.VISIBLE
-
-        if (viewModel.headerModel.label == ChatRoomHeaderViewModel.Companion.TAG_OFFICIAL) {
+        if (isOfficialStore(viewModel)) {
             onlineStats.visibility = View.GONE
+            onlineDesc.visibility = View.GONE
         } else {
             onlineStats.visibility = View.VISIBLE
+            if (lastOnlineTimeStamp != 0L) {
+                val onlineDescStatus = getOnlineDescStatus(view.context, viewModel)
+                onlineDesc.visibility = View.VISIBLE
+                onlineDesc.text = onlineDescStatus
+            } else {
+                onlineDesc.visibility = View.GONE
+            }
         }
     }
+
+    private fun getOnlineDescStatus(context: Context, viewModel: ChatroomViewModel): String {
+        return if (viewModel.headerModel.isOnline) {
+            context.getString(R.string.online)
+        } else {
+            ChatTimeConverter.getRelativeDate(view.context, getShopLastTimeOnlineTimeStamp(viewModel))
+        }
+    }
+
+    private fun getShopLastTimeOnlineTimeStamp(viewModel: ChatroomViewModel): Long {
+        return viewModel.headerModel.lastTimeOnline.toLongOrZero()
+    }
+
+    private fun isOfficialStore(viewModel: ChatroomViewModel) = viewModel.headerModel.isOfficialStore()
 
     private fun setHeaderMenuButton(headerMenuListener: HeaderMenuListener, alertDialog: Dialog) {
         headerMenuButton.visibility = View.VISIBLE
@@ -197,14 +207,12 @@ class TopChatViewStateImpl(
             } else {
                 view.context.getString(R.string.follow_store)
             }
-            listMenu.add(Menus.ItemMenus(profileText, R.drawable.ic_plus_add))
+            listMenu.add(Menus.ItemMenus(profileText, R.drawable.ic_system_action_plus_normal_24))
         }
 
-        listMenu.add(Menus.ItemMenus(view.context.getString(R.string.delete_conversation),
-                R.drawable.ic_trash))
-
-        listMenu.add(Menus.ItemMenus(view.context.getString(R.string.chat_incoming_settings), R.drawable
-                .ic_chat_settings))
+        listMenu.add(Menus.ItemMenus(view.context.getString(R.string.chat_incoming_settings), R.drawable.ic_chat_settings))
+        listMenu.add(Menus.ItemMenus(view.context.getString(R.string.chat_report_user), R.drawable.ic_chat_report))
+        listMenu.add(Menus.ItemMenus(view.context.getString(R.string.delete_conversation), R.drawable.ic_trash))
 
         headerMenu.itemMenuList = listMenu
         headerMenu.setActionText(view.context.getString(R.string.cancel_bottom_sheet))
@@ -216,13 +224,16 @@ class TopChatViewStateImpl(
                         showDeleteChatDialog(headerMenuListener, alertDialog)
                     }
                     itemMenus.title == view.context.getString(R.string.follow_store) -> {
-                        headerMenuListener.onGoToShop()
+                        headerMenuListener.followUnfollowShop(true)
                     }
                     itemMenus.title == view.context.getString(R.string.already_follow_store) -> {
-                        headerMenuListener.onGoToShop()
+                        headerMenuListener.followUnfollowShop(false)
                     }
                     itemMenus.title == view.context.getString(R.string.chat_incoming_settings) -> {
                         headerMenuListener.onGoToChatSetting(chatroomViewModel.blockedStatus)
+                    }
+                    itemMenus.title == view.context.getString(R.string.chat_report_user) -> {
+                        headerMenuListener.onGoToReportUser()
                     }
                     else -> {
                     }
@@ -357,13 +368,6 @@ class TopChatViewStateImpl(
         myAlertDialog.show()
     }
 
-
-    private fun showActionButtons() {
-        pickerButton.visibility = View.VISIBLE
-        attachProductButton.visibility = View.VISIBLE
-        maximizeButton.visibility = View.GONE
-    }
-
     override fun showErrorWebSocket(b: Boolean) {
         notifier.visibility = View.VISIBLE
         val title = notifier.findViewById<TextView>(R.id.title)
@@ -407,5 +411,41 @@ class TopChatViewStateImpl(
         scrollDownWhenInBottom()
     }
 
+    override fun showProductPreview(productPreview: ProductPreview) {
+        productPreviewContainer.visibility = View.VISIBLE
+        productPreviewAdapter.updateProduct(productPreview)
+    }
+
+    override fun clearProductPreview() {
+        productPreviewAdapter.clearProductPreview()
+    }
+
+    override fun focusOnReply() {
+        replyEditText.requestFocus()
+    }
+
+    override fun sendAnalyticsClickBuyNow(element: ProductAttachmentViewModel) {
+        analytics.eventClickBuyProductAttachment(
+                element.blastId.toString(),
+                element.productName,
+                element.productId.toString(),
+                element.productPrice,
+                1,
+                element.shopId.toString(),
+                chatRoomViewModel.headerModel.name
+        )
+    }
+
+    override fun sendAnalyticsClickATC(element: ProductAttachmentViewModel) {
+        analytics.eventClickAddToCartProductAttachment(
+                element.blastId.toString(),
+                element.productName,
+                element.productId.toString(),
+                element.productPrice,
+                1,
+                element.shopId.toString(),
+                chatRoomViewModel.headerModel.name
+        )
+    }
 }
 

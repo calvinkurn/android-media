@@ -14,6 +14,7 @@ import android.webkit.WebViewClient;
 
 import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
@@ -207,8 +208,7 @@ public class SessionHandler {
     }
 
     private static void deleteCacheBalanceTokoCash() {
-        GlobalCacheManager cacheBalanceTokoCash = new GlobalCacheManager();
-        cacheBalanceTokoCash.delete(TkpdCache.Key.KEY_TOKOCASH_BALANCE_CACHE);
+        PersistentCacheManager.instance.delete(TkpdCache.Key.KEY_TOKOCASH_BALANCE_CACHE);
     }
 
     private static void logoutInstagram(Context context) {
@@ -320,11 +320,8 @@ public class SessionHandler {
      */
     @Deprecated
     public static boolean isGoldMerchant(Context context) {
-        Boolean isGoldMerchant = false;
-        SharedPreferences sharedPrefs = context.getSharedPreferences(SHOP_DOMAIN, Context.MODE_PRIVATE);
-        int isGM = sharedPrefs.getInt(IS_GOLD_MERCHANT, -1);
-        isGoldMerchant = (isGM != (-1) && isGM != 0);
-        return isGoldMerchant;
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getBoolean(IS_GOLD_MERCHANT, false);
     }
 
     /**
@@ -333,9 +330,9 @@ public class SessionHandler {
      * @param goldMerchant
      */
     public static void setGoldMerchant(Context context, int goldMerchant) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(SHOP_DOMAIN, Context.MODE_PRIVATE);
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         Editor edit = sharedPrefs.edit();
-        edit.putInt(IS_GOLD_MERCHANT, goldMerchant);
+        edit.putBoolean(IS_GOLD_MERCHANT, goldMerchant!= -1 && goldMerchant!= 0);
         edit.apply();
     }
 
@@ -650,9 +647,13 @@ public class SessionHandler {
     }
 
     public void setGoldMerchant(int goldMerchant) {
-        SharedPreferences sharedPrefs = this.context.getSharedPreferences(SHOP_DOMAIN, Context.MODE_PRIVATE);
+        setGoldMerchant(goldMerchant!= -1 && goldMerchant!= 0);
+    }
+
+    public void setGoldMerchant(boolean isGoldMerchant) {
+        SharedPreferences sharedPrefs = this.context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         Editor edit = sharedPrefs.edit();
-        edit.putInt(IS_GOLD_MERCHANT, goldMerchant);
+        edit.putBoolean(IS_GOLD_MERCHANT, isGoldMerchant);
         edit.apply();
     }
 

@@ -1,8 +1,10 @@
 package com.tokopedia.product.detail.data.util
 
 object ProductTrackingConstant {
+    const val USER_NON_LOGIN = "non login"
+
     object Category {
-        const val PDP = "product petail page"
+        const val PDP = "product detail page"
         const val PRODUCT_PAGE = "Product Page"
     }
 
@@ -10,8 +12,8 @@ object ProductTrackingConstant {
         const val CLICK = "click"
         const val CLICK_CART_BUTTON_VARIANT = "click - cart button on sticky header"
         const val PRODUCT_CLICK = "productClick"
-        const val TOPADS_CLICK = "click - top ads"
-        const val TOPADS_IMPRESSION = "impression - top ads"
+        const val TOPADS_CLICK = "click - product recommendation"
+        const val TOPADS_IMPRESSION = "impression - product recommendation"
         const val CLICK_BY_ME = "click - by.me"
     }
 
@@ -60,5 +62,12 @@ object ProductTrackingConstant {
     object Message {
         const val EVENT = "clickMessageShop"
         const val LABEL = "Message Shop"
+    }
+
+    object PageNameRecommendation {
+        const val PDP_1 = "pdp_1"
+        const val PDP_2 = "pdp_2"
+        const val PDP_3 = "pdp_3"
+        const val PDP_4 = "pdp_4"
     }
 }

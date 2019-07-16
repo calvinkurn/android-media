@@ -1,5 +1,7 @@
 package com.tokopedia.transaction.orders.orderdetails.view.presenter;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.res.Resources;
 import android.text.TextUtils;
 import android.util.Log;
@@ -16,8 +18,10 @@ import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.kotlin.util.DownloadHelper;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.opportunity.data.pojo.CancelReplacementPojo;
+import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButtonList;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
@@ -25,14 +29,16 @@ import com.tokopedia.transaction.orders.orderdetails.data.DataResponseCommon;
 import com.tokopedia.transaction.orders.orderdetails.data.DetailsData;
 import com.tokopedia.transaction.orders.orderdetails.data.Flags;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
+import com.tokopedia.transaction.orders.orderdetails.data.MetaDataInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.OrderDetails;
 import com.tokopedia.transaction.orders.orderdetails.data.PayMethod;
 import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
 import com.tokopedia.transaction.orders.orderdetails.domain.FinishOrderUseCase;
 import com.tokopedia.transaction.orders.orderdetails.domain.PostCancelReasonUseCase;
+import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
 import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
-import com.tokopedia.transaction.purchase.detail.model.buyagain.ResponseBuyAgain;
+import com.tokopedia.transaction.common.sharedata.buyagain.ResponseBuyAgain;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 
@@ -40,9 +46,12 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
+import kotlin.jvm.functions.Function0;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -68,6 +77,14 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     OrderListDetailContract.ActionInterface view;
     String orderCategory;
     OrderDetails orderDetails;
+    @Inject
+    OrderListAnalytics orderListAnalytics;
+    String fromPayment = null;
+    String orderId;
+
+    private String Insurance_File_Name = "Invoice";
+    public String pdfUri = " ";
+    private boolean isdownloadable = false;
 
     @Inject
     public OrderListDetailPresenter(GraphqlUseCase orderDetailsUseCase) {
@@ -80,6 +97,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             return;
 
         this.orderCategory = orderCategory;
+        this.fromPayment = fromPayment;
+        this.orderId = orderId;
         getView().showProgressBar();
         GraphqlRequest graphqlRequest;
         Map<String, Object> variables = new HashMap<>();
@@ -172,6 +191,13 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                                     } else {
                                         view.setActionButton(position, actionButtonList);
                                     }
+                            }
+                        } else {
+                            if (response != null) {
+                                ActionButtonList data = response.getData(ActionButtonList.class);
+                                actionButtonList = data.getActionButtonList();
+                                if (actionButtonList != null && actionButtonList.size() > 0)
+                                getView().setActionButtons(actionButtonList);
                             }
                         }
                     }
@@ -319,7 +345,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             getView().setPricing(pricing);
         }
         getView().setPaymentData(details.paymentData());
-//        getView().setContactUs(details.contactUs());
+        getView().setContactUs(details.contactUs(),details.getHelpLink());
 
         if (!(orderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || orderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE))) {
             if (details.actionButtons().size() == 2) {
@@ -348,7 +374,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     }
 
 
-    public void updateOrderCancelReason(String cancelReason, String orderId, int cancelOrReplacement, String url) {
+    public void updateOrderCancelReason(String cancelReason, String orderId,
+                                        int cancelOrReplacement, String url) {
         if (getView() == null || getView().getAppContext() == null)
             return;
 
@@ -469,5 +496,44 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             buyAgainUseCase.unsubscribe();
         }
         super.detachView();
+    }
+
+    public void onClick(String uri) {
+        pdfUri = uri;
+        if (isdownloadable(uri)) {
+            getView().askPermission();
+        } else {
+            ((UnifiedOrderListRouter) getView().getAppContext().getApplicationContext()).actionOpenGeneralWebView((Activity) getView().getAppContext(), uri);
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    public void permissionGrantedContinueDownload() {
+        DownloadHelper downloadHelper = new DownloadHelper(getView().getAppContext(), pdfUri, Insurance_File_Name, () -> {
+            // download success call back
+
+        });
+        downloadHelper.downloadFile(this::isdownloadable);
+    }
+    private Boolean isdownloadable(String uri ) {
+        Pattern pattern = Pattern.compile("^.+\\.([pP][dD][fF])$");
+        Matcher matcher = pattern.matcher(uri);
+        return (matcher.find() || this.isdownloadable);
+    }
+
+    public void sendThankYouEvent(MetaDataInfo metaDataInfo) {
+        if ("true".equalsIgnoreCase(this.fromPayment)) {
+            orderListAnalytics.sendThankYouEvent(metaDataInfo.getEntityProductId(), metaDataInfo.getEntityProductName(), metaDataInfo.getTotalTicketPrice(), metaDataInfo.getTotalTicketCount(), orderId);
+        }
+    }
+
+    public void setDownloadableFlag(boolean isdownloadable) {
+        this.isdownloadable = isdownloadable;
+    }
+
+    public void setDownloadableFileName(String fileName) {
+        if (!TextUtils.isEmpty(fileName)) {
+            Insurance_File_Name = fileName;
+        }
     }
 }

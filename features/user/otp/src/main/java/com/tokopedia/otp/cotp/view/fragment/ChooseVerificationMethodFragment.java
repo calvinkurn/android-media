@@ -27,8 +27,10 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.component.Dialog;
-import com.tokopedia.otp.OtpModuleRouter;
 import com.tokopedia.otp.R;
 import com.tokopedia.otp.common.OTPAnalytics;
 import com.tokopedia.otp.common.di.DaggerOtpComponent;
@@ -253,19 +255,21 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
     }
 
     private void goToProfileSetting() {
-        if (getActivity() != null && getActivity().getApplicationContext() instanceof OtpModuleRouter) {
-            Intent intent = ((OtpModuleRouter) getActivity().getApplicationContext())
-                    .getProfileSettingIntent(getActivity());
+        if (getActivity() != null) {
+            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.SETTING_PROFILE);
             startActivity(intent);
             getActivity().finish();
         }
     }
 
     private void goToRequestChangePhoneNumberUploadKTP() {
-        if (getActivity() != null && getActivity().getApplicationContext() instanceof OtpModuleRouter) {
-            Intent intent = ((OtpModuleRouter) getActivity().getApplicationContext())
-                    .getChangePhoneNumberRequestIntent(getActivity(), userSession.getTemporaryUserId(),
-                            userSession.getTempPhoneNumber());
+        if (getActivity() != null) {
+            Intent intent = RouteManager.getIntent(getActivity(),
+                    ApplinkConstInternalGlobal.CHANGE_INACTIVE_PHONE_FORM);
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_CIPF_USER_ID,
+                    userSession.getTemporaryUserId());
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_CIPF_OLD_PHONE,
+                    userSession.getTempPhoneNumber());
             startActivity(intent);
         }
     }

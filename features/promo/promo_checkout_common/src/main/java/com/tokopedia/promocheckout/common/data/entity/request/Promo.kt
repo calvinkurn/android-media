@@ -13,6 +13,9 @@ data class Promo(
         @SerializedName("codes")
         var codes: ArrayList<String>? = null,
 
+        @SerializedName("current_apply_code")
+        var currentApplyCode: CurrentApplyCode? = null,
+
         @SerializedName("cart_type")
         var cartType: String? = null,
 
@@ -38,6 +41,7 @@ data class Promo(
             arrayListOf<String>().apply {
                 parcel.readList(this, String::class.java.classLoader)
             },
+            parcel.readParcelable(CurrentApplyCode::class.java.classLoader),
             parcel.readString(),
             parcel.readValue(Int::class.java.classLoader) as? Int,
             parcel.readValue(Int::class.java.classLoader) as? Int,
@@ -51,6 +55,7 @@ data class Promo(
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeList(codes)
+        parcel.writeParcelable(currentApplyCode, flags)
         parcel.writeString(cartType)
         parcel.writeValue(skipApply)
         parcel.writeValue(isSuggested)

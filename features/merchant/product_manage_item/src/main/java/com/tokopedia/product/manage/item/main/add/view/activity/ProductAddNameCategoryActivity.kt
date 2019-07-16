@@ -1,42 +1,33 @@
 package com.tokopedia.product.manage.item.main.add.view.activity
 
-import android.Manifest
-import android.annotation.TargetApi
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.v4.app.Fragment
-import com.airbnb.deeplinkdispatch.DeepLink
 import com.tkpd.library.ui.utilities.TkpdProgressDialog
 import com.tkpd.library.utils.CommonUtils
-
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.core.gcm.Constants
-import com.tokopedia.core.gcm.utils.ApplinkUtils
-import com.tokopedia.core.router.SellerAppRouter
-import com.tokopedia.core.router.home.HomeRouter
-import com.tokopedia.core.util.GlobalConfig
-import com.tokopedia.core.util.RequestPermissionUtil
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.core.util.SessionHandler
+import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.product.manage.item.R
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent
 import com.tokopedia.product.manage.item.main.add.view.fragment.ProductAddNameCategoryFragment
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment
 import com.tokopedia.product.manage.item.main.base.view.listener.ProductAddImageView
 import com.tokopedia.product.manage.item.main.base.view.presenter.ProductAddImagePresenter
-import com.tokopedia.product.manage.item.utils.ProductEditModuleRouter
-import permissions.dispatcher.*
+import com.tokopedia.product.manage.item.utils.ProductEditItemComponentInstance
 
-@RuntimePermissions
 open class ProductAddNameCategoryActivity : BaseSimpleActivity(), HasComponent<ProductComponent>, ProductAddImageView {
     var tkpdProgressDialog: TkpdProgressDialog? = null
     private var productAddImagePresenter: ProductAddImagePresenter? = null
     private var imageUrls: ArrayList<String>? = null
     private val MAX_IMAGES = 5
+    private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     val IMAGE = "image/"
     val IMAGE_OR_VIDEO = "*/"
 
@@ -45,7 +36,7 @@ open class ProductAddNameCategoryActivity : BaseSimpleActivity(), HasComponent<P
         supportActionBar?.title =""
     }
   
-    override fun getComponent() = (application as ProductEditModuleRouter).productComponent
+    override fun getComponent() = ProductEditItemComponentInstance.getComponent(application)
 
     override fun getNewFragment(): Fragment = ProductAddNameCategoryFragment.createInstance(imageUrls)
 
@@ -58,8 +49,6 @@ open class ProductAddNameCategoryActivity : BaseSimpleActivity(), HasComponent<P
         inflateFragment()
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     fun handleImageUrlFromExternal() {
         showProgressDialog()
         val oriImageUrls = intent.getStringArrayListExtra(BaseProductAddEditFragment.EXTRA_IMAGES)
@@ -73,8 +62,6 @@ open class ProductAddNameCategoryActivity : BaseSimpleActivity(), HasComponent<P
         createProductAddFragment()
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     fun handleImageUrlImplicitSingle() {
         val imageUri = intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)
         val imageUris = ArrayList<Uri>()
@@ -82,8 +69,6 @@ open class ProductAddNameCategoryActivity : BaseSimpleActivity(), HasComponent<P
         processMultipleImage(imageUris)
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     fun handleImageUrlImplicitMultiple() {
         val imageUris = intent.getParcelableArrayListExtra<Uri>(Intent.EXTRA_STREAM)
         if (CommonUtils.checkCollectionNotNull<ArrayList<Uri>>(imageUris)) {
@@ -93,45 +78,54 @@ open class ProductAddNameCategoryActivity : BaseSimpleActivity(), HasComponent<P
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
-    fun showDeniedForExternalStorage() {
-        RequestPermissionUtil.onPermissionDenied(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-        createProductAddFragment()
-    }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
-    fun showNeverAskForExternalStorage() {
-        RequestPermissionUtil.onNeverAskAgain(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-        createProductAddFragment()
-    }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
-    fun showRationaleForExternalStorage(request: PermissionRequest) {
-        request.proceed()
-    }
-
     override fun setupFragment(savedInstance: Bundle?) {
+        permissionCheckerHelper = PermissionCheckerHelper()
         if (fragment != null) {
             return
         }
         if (checkExplicitImageUrls()) {
-            ProductAddNameCategoryActivityPermissionsDispatcher.handleImageUrlFromExternalWithCheck(this)
+            permissionHelper { handleImageUrlFromExternal() }
         } else if (checkImplicitImageUrls()) {
             // because it comes form implicit Uris, check if already login and has shop
             if (validateHasLoginAndShop()) {
                 val intent = intent
                 if (intent != null && intent.action != null) {
                     when (intent.action) {
-                        Intent.ACTION_SEND -> ProductAddNameCategoryActivityPermissionsDispatcher.handleImageUrlImplicitSingleWithCheck(this)
-                        Intent.ACTION_SEND_MULTIPLE -> ProductAddNameCategoryActivityPermissionsDispatcher.handleImageUrlImplicitMultipleWithCheck(this)
+                        Intent.ACTION_SEND -> permissionHelper { handleImageUrlImplicitSingle() }
+                        Intent.ACTION_SEND_MULTIPLE -> permissionHelper { handleImageUrlImplicitMultiple() }
                     }
                 }
             }
         } else { // no image urls, create it directly
             createProductAddFragment()
+        }
+    }
+
+    private fun permissionHelper(grantedPermission: () -> Unit){
+        permissionCheckerHelper.checkPermission(this, PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE, object : PermissionCheckerHelper.PermissionCheckListener{
+            override fun onPermissionDenied(permissionText: String) {
+                createProductAddFragment()
+
+            }
+
+            override fun onNeverAskAgain(permissionText: String) {
+                createProductAddFragment()
+            }
+
+
+            override fun onPermissionGranted() {
+                grantedPermission()
+            }
+
+        })
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            permissionCheckerHelper.onRequestPermissionsResult(this,
+                    requestCode, permissions,
+                    grantResults)
         }
     }
 
@@ -165,10 +159,12 @@ open class ProductAddNameCategoryActivity : BaseSimpleActivity(), HasComponent<P
                 return false
             }
         } else {
-            val intentLogin = (application as ProductEditModuleRouter).getLoginIntent(this)
-            startActivity(intentLogin)
-            finish()
-            return false
+            val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
+            intent?.run {
+                startActivity(intent)
+                finish()
+                return false
+            }
         }
         return true
     }
@@ -231,41 +227,6 @@ open class ProductAddNameCategoryActivity : BaseSimpleActivity(), HasComponent<P
             val intent = Intent(context, ProductAddNameCategoryActivity::class.java)
             intent.putStringArrayListExtra(BaseProductAddEditFragment.EXTRA_IMAGES, productImages)
             return intent
-        }
-    }
-
-    object DeeplinkIntent{
-        @DeepLink(Constants.Applinks.PRODUCT_ADD)
-        @JvmStatic
-        fun getCallingApplinkAddProductMainAppIntent(context: Context, extras: Bundle): Intent {
-            var intent: Intent? = null
-            if (SessionHandler.isUserHasShop(context)) {
-                intent = Intent(context, ProductAddNameCategoryActivity::class.java)
-            } else {
-                if (GlobalConfig.isSellerApp()) {
-                    intent = SellerAppRouter.getSellerHomeActivity(context)
-                } else {
-                    intent = HomeRouter.getHomeActivityInterfaceRouter(context)
-                }
-            }
-            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
-            return intent!!
-                    .setData(uri.build())
-                    .putExtras(extras)
-        }
-
-        @DeepLink(Constants.Applinks.SellerApp.PRODUCT_ADD)
-        @JvmStatic
-        fun getCallingApplinkIntent(context: Context, extras: Bundle): Intent {
-            if (GlobalConfig.isSellerApp()) {
-                val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
-                val intent = Intent(context, ProductAddNameCategoryActivity::class.java)
-                return intent
-                        .setData(uri.build())
-                        .putExtras(extras)
-            } else {
-                return ApplinkUtils.getSellerAppApplinkIntent(context, extras)
-            }
         }
     }
 }

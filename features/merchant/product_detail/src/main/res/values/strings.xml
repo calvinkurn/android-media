@@ -9,7 +9,7 @@
     <string name="label_product_variant">Varian Produk</string>
     <string name="label_choose_product_variant"><![CDATA[Pilih warna & ukuran]]></string>
     <string name="label_product_info">Informasi Produk</string>
-    <string name="label_min_order">Min. Pemesanan</string>
+    <string name="label_order_min">Pemesanan Min.</string>
     <string name="label_pre_order">Waktu Preorder</string>
     <string name="label_product_condition">Kondisi</string>
     <string name="label_read_detail">Baca Selengkapnya</string>
@@ -24,7 +24,7 @@
     <string name="template_review">%1$d Ulasan</string>
     <string name="template_success_rate">%1$s%% (%2$s produk)</string>
     <string name="template_talk">%1$d Diskusi</string>
-    <string name="template_preorder_time">%1$d Hari</string>
+    <string name="template_preorder_time">%1$d %2$s</string>
     <string name="template_min_order">%1$d Buah</string>
     <string name="buy_now">Beli Sekarang</string>
     <string name="add_product_to_cart">Tambah ke Keranjang</string>
@@ -33,8 +33,10 @@
     <string name="promote_topads">Iklan TopAds</string>
     <string name="no_stock">Stok Kosong</string>
     <string name="action_preorder">PREORDER</string>
-    <string name="product_from">Produk dari</string>
-    <string name="from_official_store_label">Brand Resmi</string>
+    <string name="product_from">Produk</string>
+    <string name="from_official_store_label">Official Store</string>
+    <string name="from_power_badge_label">Power Merchant</string>
+
     <string name="label_cart">Keranjang</string>
     <string name="label_move_to_warehouse">Gudangkan</string>
     <string name="label_move_to_etalase">Ke Etalase</string>
@@ -96,7 +98,7 @@
     <string name="button_affiliate">Buat Post</string>
     <string name="affiliate_get_commission">Raih Komisi</string>
     <string name="priority_order_label">Order Prioritas</string>
-    <string name="purchase_protection_label">Proteksi Gadget</string>
+    <string name="purchase_protection_label">Proteksi Produk</string>
     <string name="title_cod">Bayar di Tempat</string>
     <string name="cod_content">Bayar ke kurir saat pesanan diterima. Tersedia di beberapa kota tertentu</string>
     <string name="installment_template">Bunga %1$s%% mulai dari %2$s</string>
@@ -112,4 +114,17 @@
     <string name="product_is_at_status_x">Product berada dalam status %1$s</string>
     <string name="service_by_tokopedia">Dilayani oleh Tokopedia</string>
     <string name="multiorigin_desc">Barang dikirim dari lokasi penyimpanan terdekat.</string>
+    <string name="pdp_search_hint">Cari %s di Tokopedia</string>
+    <string name="label_prescription">Obat Keras</string>
+
+    <string name="value_proposition_learn_more">Pelajari Selengkapnya</string>
+    <string name="value_proposition_title_guarantee">Garansi Harga Termurah</string>
+    <string name="value_proposition_title_guarantee_7_days">Garansi 7 Hari</string>
+    <string name="value_proposition_desc_guarantee_7_days">Barang rusak, hilang saat pengiriman, atau tidak sesuai deskripsi? Laporkan segera dan kami akan kembalikan uangmu dalam 7 hari.</string>
+    <string name="value_proposition_desc_guarantee">Dapatkan harga termurah di Official Store Tokopedia. Kami akan ganti 2x selisih harga jika kamu menemukan yang lebih murah di Official Store platform lain.</string>
+    <string name="value_proposition_title_ready">Pasti ready</string>
+    <string name="value_proposition_desc_ready">Stok barang di Official Store dijamin tersedia. Transaksi dibatalkan penjual? Kami akan beri kamu cashback sebagai kompensasi.</string>
+    <string name="value_proposition_title_original">Pasti ori</string>
+    <string name="value_proposition_desc_original">Semua barang di Official Store Tokopedia dijamin asli. Kalau terbukti palsu, uangmu akan dikembalikan 2x lipat.</string>
+
 </resources>

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,14 +12,8 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.widget.Toolbar;
 import android.text.Html;
-import android.text.Layout;
-import android.text.SpannableString;
-import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.style.AlignmentSpan;
-import android.text.style.StyleSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,15 +30,10 @@ import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
-import com.tokopedia.events.R2;
-import com.tokopedia.events.data.source.EventsUrl;
 import com.tokopedia.events.ScanQrCodeRouter;
-import com.tokopedia.events.di.DaggerEventComponent;
-import com.tokopedia.events.di.EventComponent;
-import com.tokopedia.events.di.EventModule;
+import com.tokopedia.events.data.source.EventsUrl;
 import com.tokopedia.events.domain.model.scanticket.ScanResponseInfo;
 import com.tokopedia.events.view.contractor.EventsDetailsContract;
-import com.tokopedia.events.view.presenter.EventsDetailsPresenter;
 import com.tokopedia.events.view.utils.CurrencyUtil;
 import com.tokopedia.events.view.utils.EventsAnalytics;
 import com.tokopedia.events.view.utils.EventsGAConst;
@@ -56,57 +44,35 @@ import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
 
 import at.blogc.android.views.ExpandableTextView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 
 public class EventDetailsActivity extends EventBaseActivity implements
-        EventsDetailsContract.EventDetailsView {
+        EventsDetailsContract.EventDetailsView, View.OnClickListener {
 
 
-    @BindView(R2.id.event_detail_banner)
-    ImageView eventDetailBanner;
-    @BindView(R2.id.tv_expandable_description)
-    ExpandableTextView tvExpandableDescription;
-    @BindView(R2.id.seemorebutton)
-    TextView seemorebutton;
-    @BindView(R2.id.seemorebutton_tnc)
-    TextView seemorebuttonTnC;
-    @BindView(R2.id.down_arrow)
-    ImageView ivArrowSeating;
-    @BindView(R2.id.tv_expandable_tnc)
-    ExpandableTextView tvExpandableTermsNCondition;
-    @BindView(R2.id.event_time)
-    LinearLayout timeView;
-    @BindView(R2.id.event_location)
-    LinearLayout locationView;
-    @BindView(R2.id.event_address)
-    LinearLayout addressView;
-    @BindView(R2.id.text_view_title)
-    TextView textViewTitle;
-    @BindView(R2.id.btn_book)
-    View btnBook;
-    @BindView(R2.id.progress_bar_layout)
-    View progressBarLayout;
-    @BindView(R2.id.prog_bar)
-    ProgressBar progBar;
-    @BindView(R2.id.main_content)
-    FrameLayout mainContent;
-    @BindView(R2.id.button_textview)
-    TextView buttonTextView;
-    @BindView(R2.id.expand_view)
-    LinearLayout expandLayout;
-    @BindView(R2.id.expand_view_tnc)
-    LinearLayout expandTnc;
-    @BindView(R2.id.down_arrow_tnc)
-    ImageView ivArrowSeatingTnC;
-    @BindView(R2.id.tv_event_price)
-    TextView eventPrice;
-
-    ImageTextViewHolder timeHolder;
-    ImageTextViewHolder locationHolder;
-    ImageTextViewHolder addressHolder;
+    private ImageView eventDetailBanner;
+    private ExpandableTextView tvExpandableDescription;
+    private TextView seemorebutton;
+    private TextView seemorebuttonTnC;
+    private ImageView ivArrowSeating;
+    private ExpandableTextView tvExpandableTermsNCondition;
+    private LinearLayout timeView;
+    private LinearLayout locationView;
+    private LinearLayout addressView;
+    private TextView textViewTitle;
+    private View btnBook;
+    private View progressBarLayout;
+    private ProgressBar progBar;
+    private FrameLayout mainContent;
+    private TextView buttonTextView;
+    private LinearLayout expandLayout;
+    private LinearLayout expandTnc;
+    private ImageView ivArrowSeatingTnC;
+    private TextView eventPrice;
+    private TextView dateRangeName, cityName, address;
+    private ImageView dateImageView, cityImageView, addressImageView;
+    private ImageTextViewHolder timeHolder;
+    private ImageTextViewHolder locationHolder;
+    private ImageTextViewHolder addressHolder;
     private Menu mMenu;
 
 
@@ -150,26 +116,9 @@ public class EventDetailsActivity extends EventBaseActivity implements
     }
 
 
-    protected void bindCustomViews() {
-        timeHolder = new ImageTextViewHolder();
-        locationHolder = new ImageTextViewHolder();
-        addressHolder = new ImageTextViewHolder();
-
-        ButterKnife.bind(timeHolder, timeView);
-        ButterKnife.bind(locationHolder, locationView);
-        ButterKnife.bind(addressHolder, addressView);
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        timeHolder = new ImageTextViewHolder();
-        locationHolder = new ImageTextViewHolder();
-        addressHolder = new ImageTextViewHolder();
-
-        ButterKnife.bind(timeHolder, timeView);
-        ButterKnife.bind(locationHolder, locationView);
-        ButterKnife.bind(addressHolder, addressView);
 
         tvExpandableDescription.setInterpolator(new OvershootInterpolator());
         tvExpandableTermsNCondition.setInterpolator(new OvershootInterpolator());
@@ -198,6 +147,42 @@ public class EventDetailsActivity extends EventBaseActivity implements
                 }
             }
         });
+    }
+
+    @Override
+    void setupVariables() {
+        eventDetailBanner = findViewById(R.id.event_detail_banner);
+        tvExpandableDescription = findViewById(R.id.tv_expandable_description);
+        seemorebutton = findViewById(R.id.seemorebutton);
+        seemorebuttonTnC = findViewById(R.id.seemorebutton_tnc);
+        ivArrowSeating = findViewById(R.id.down_arrow);
+        tvExpandableTermsNCondition = findViewById(R.id.tv_expandable_tnc);
+        timeView = findViewById(R.id.event_time);
+        locationView = findViewById(R.id.event_location_detail);
+        addressView = findViewById(R.id.event_address);
+        textViewTitle = findViewById(R.id.text_view_title);
+        btnBook = findViewById(R.id.btn_book);
+        progressBarLayout = findViewById(R.id.progress_bar_layout);
+        progBar = findViewById(R.id.prog_bar);
+        mainContent = findViewById(R.id.main_content);
+        buttonTextView = findViewById(R.id.button_textview);
+        expandLayout = findViewById(R.id.expand_view);
+        expandTnc = findViewById(R.id.expand_view_tnc);
+        ivArrowSeatingTnC = findViewById(R.id.down_arrow_tnc);
+        eventPrice = findViewById(R.id.tv_event_price);
+        View view = findViewById(R.id.event_detail_card).findViewById(R.id.event_details_layout);
+        dateRangeName = view.findViewById(R.id.event_time).findViewById(R.id.textview_holder_small);
+        dateImageView = view.findViewById(R.id.event_time).findViewById(R.id.image_holder_small);
+
+        cityName = view.findViewById(R.id.event_location_detail).findViewById(R.id.textview_holder_small);
+        cityImageView = view.findViewById(R.id.event_location_detail).findViewById(R.id.image_holder_small);
+
+        address = view.findViewById(R.id.event_address).findViewById(R.id.textview_holder_small);
+        addressImageView = view.findViewById(R.id.event_address).findViewById(R.id.image_holder_small);
+
+        expandLayout.setOnClickListener(this);
+        expandTnc.setOnClickListener(this);
+        btnBook.setOnClickListener(this);
     }
 
     @Override
@@ -240,9 +225,15 @@ public class EventDetailsActivity extends EventBaseActivity implements
             timeView.setVisibility(View.GONE);
         }
 
-        setHolder(R.drawable.ic_time, dateRange, timeHolder);
-        setHolder(R.drawable.ic_placeholder, homedata.getCityName(), locationHolder);
-        setHolder(R.drawable.ic_skyline, homedata.getCityName(), addressHolder);
+        dateImageView.setImageResource(R.drawable.ic_time);
+        dateRangeName.setText(dateRange);
+
+        cityName.setText(homedata.getCityName());
+        cityImageView.setImageResource(R.drawable.ic_placeholder);
+
+        address.setText(homedata.getCityName());
+        addressImageView.setImageResource(R.drawable.ic_skyline);
+
         textViewTitle.setText(homedata.getTitle());
         tvExpandableDescription.setText(Html.fromHtml(homedata.getLongRichDesc()));
 
@@ -282,13 +273,24 @@ public class EventDetailsActivity extends EventBaseActivity implements
         toolbar.setTitle(data.getTitle());
         ImageHandler.loadImageCover2(eventDetailBanner, data.getImageApp());
 
-        if (data.getTimeRange() != null && data.getTimeRange().length() > 3)
-            setHolder(R.drawable.ic_time, data.getTimeRange(), timeHolder);
+        if (data.getTimeRange() != null && data.getTimeRange().length() > 3) {
+            dateRangeName.setText(data.getTimeRange());
+            dateImageView.setImageResource(R.drawable.ic_time);
+        }
         else
             timeView.setVisibility(View.GONE);
 
-        setHolder(R.drawable.ic_placeholder, data.getCityName(), locationHolder);
-        setHolder(R.drawable.ic_skyline, data.getAddress(), addressHolder);
+        if (data.getSchedulesViewModels() != null && data.getSchedulesViewModels().size() > 0) {
+            if (!TextUtils.isEmpty(data.getSchedulesViewModels().get(0).getaDdress())) {
+                address.setText(data.getSchedulesViewModels().get(0).getaDdress());
+                addressImageView.setImageResource(R.drawable.ic_skyline);
+            }
+            if (!TextUtils.isEmpty(data.getSchedulesViewModels().get(0).getCityName())) {
+                cityName.setText(data.getSchedulesViewModels().get(0).getCityName());
+                cityImageView.setImageResource(R.drawable.ic_placeholder);
+            }
+        }
+
         textViewTitle.setText(data.getTitle());
         if (data.getLongRichDesc() != null && !TextUtils.isEmpty(data.getLongRichDesc()))
             tvExpandableDescription.setText(Html.fromHtml(data.getLongRichDesc()));
@@ -344,48 +346,10 @@ public class EventDetailsActivity extends EventBaseActivity implements
         mMenu.findItem(R.id.action_scan_qr_code).setVisible(canScanCode);
     }
 
-    @OnClick(R2.id.expand_view)
-    void setSeemorebutton() {
-        if (tvExpandableDescription.isExpanded()) {
-            seemorebutton.setText(R.string.expand);
-            ivArrowSeating.animate().rotation(0f);
-            eventsAnalytics.eventDigitalEventTracking("deskripsi - " + getString(R.string.collapse),
-                    textViewTitle.getText().toString());
-        } else {
-            seemorebutton.setText(R.string.collapse);
-            ivArrowSeating.animate().rotation(180f);
-            eventsAnalytics.eventDigitalEventTracking("deskripsi - " + getString(R.string.expand),
-                    textViewTitle.getText().toString());
-        }
-        tvExpandableDescription.toggle();
-    }
-
-    @OnClick(R2.id.expand_view_tnc)
-    void setSeemorebuttontnc() {
-        if (tvExpandableTermsNCondition.isExpanded()) {
-            seemorebuttonTnC.setText(R.string.expand);
-            ivArrowSeatingTnC.animate().rotation(0f);
-            eventsAnalytics.eventDigitalEventTracking("syarat dan ketentuan - " + getString(R.string.collapse),
-                    textViewTitle.getText().toString());
-
-        } else {
-            seemorebuttonTnC.setText(R.string.collapse);
-            ivArrowSeatingTnC.animate().rotation(180f);
-            eventsAnalytics.eventDigitalEventTracking("syarat dan ketentuan - " + getString(R.string.expand),
-                    textViewTitle.getText().toString());
-        }
-        tvExpandableTermsNCondition.toggle();
-    }
-
-    @OnClick(R2.id.btn_book)
-    void book() {
-        eventsDetailsPresenter.bookBtnClick();
-    }
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        eventsAnalytics.eventDigitalEventTracking( EventsGAConst.EVENT_CLICK_BACK, getScreenName());
+        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_BACK, getScreenName());
     }
 
     @Override
@@ -410,5 +374,39 @@ public class EventDetailsActivity extends EventBaseActivity implements
             startActivity(intent);
         }
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.expand_view) {
+            if (tvExpandableDescription.isExpanded()) {
+                seemorebutton.setText(R.string.expand);
+                ivArrowSeating.animate().rotation(0f);
+                eventsAnalytics.eventDigitalEventTracking("deskripsi - " + getString(R.string.collapse),
+                        textViewTitle.getText().toString());
+            } else {
+                seemorebutton.setText(R.string.collapse);
+                ivArrowSeating.animate().rotation(180f);
+                eventsAnalytics.eventDigitalEventTracking("deskripsi - " + getString(R.string.expand),
+                        textViewTitle.getText().toString());
+            }
+            tvExpandableDescription.toggle();
+        } else if (v.getId() == R.id.expand_view_tnc) {
+            if (tvExpandableTermsNCondition.isExpanded()) {
+                seemorebuttonTnC.setText(R.string.expand);
+                ivArrowSeatingTnC.animate().rotation(0f);
+                eventsAnalytics.eventDigitalEventTracking("syarat dan ketentuan - " + getString(R.string.collapse),
+                        textViewTitle.getText().toString());
+
+            } else {
+                seemorebuttonTnC.setText(R.string.collapse);
+                ivArrowSeatingTnC.animate().rotation(180f);
+                eventsAnalytics.eventDigitalEventTracking("syarat dan ketentuan - " + getString(R.string.expand),
+                        textViewTitle.getText().toString());
+            }
+            tvExpandableTermsNCondition.toggle();
+        } else if (v.getId() == R.id.btn_book) {
+            eventsDetailsPresenter.bookBtnClick();
+        }
     }
 }

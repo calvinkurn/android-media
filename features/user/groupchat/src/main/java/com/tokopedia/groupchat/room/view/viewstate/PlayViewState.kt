@@ -3,9 +3,11 @@ package com.tokopedia.groupchat.room.view.viewstate
 import android.content.Context
 import android.support.v4.app.FragmentManager
 import android.support.v7.widget.Toolbar
+import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
+import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
 
@@ -15,6 +17,7 @@ import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewMod
 interface PlayViewState {
 
     fun onSuccessGetInfoFirstTime(it: ChannelInfoViewModel, childFragmentManager: FragmentManager)
+    fun onSuccessGetInfo(it: ChannelInfoViewModel, childFragmentManager: FragmentManager)
 
     fun loadImageChannelBanner(context: Context, bannerUrl: String?, blurredBannerUrl: String?)
     fun setToolbarData(title: String?, bannerUrl: String?, totalView: String?, blurredBannerUrl: String?)
@@ -46,8 +49,8 @@ interface PlayViewState {
     fun onErrorGetInfo(it: String)
     fun onReceiveOverlayMessageFromWebsocket(it: ChannelInfoViewModel)
     fun onReceiveCloseOverlayMessageFromWebsocket()
-    fun onShowOverlayCTAFromDynamicButton(it: DynamicButtonsViewModel.Button)
-    fun onShowOverlayWebviewFromDynamicButton(it: DynamicButtonsViewModel.Button)
+    fun onShowOverlayCTAFromDynamicButton(it: DynamicButton)
+    fun onShowOverlayWebviewFromDynamicButton(it: DynamicButton)
     fun setBottomView()
     fun onStickyComponentUpdated(stickyComponentViewModel: StickyComponentViewModel)
     fun onErrorGetStickyComponent()
@@ -56,4 +59,8 @@ interface PlayViewState {
     fun onSprintSaleReceived(it: SprintSaleAnnouncementViewModel)
     fun onShowOverlayFromVoteComponent(voteUrl: String)
     fun autoPlayVideo()
+    fun onNoInternetConnection()
+    fun onInteractiveButtonClicked(anchorView: LottieAnimationView)
+    fun onInteractiveButtonViewed(anchorView: LottieAnimationView)
+
 }

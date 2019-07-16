@@ -11,11 +11,15 @@ import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.domain.getusecase.GetAllBrandsUseCase;
+import com.tokopedia.digital_deals.domain.getusecase.GetAllCategoriesUseCase;
+import com.tokopedia.digital_deals.domain.getusecase.GetLocationListRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetNextBrandPageUseCase;
 import com.tokopedia.digital_deals.view.contractor.AllBrandsContract;
 import com.tokopedia.digital_deals.view.model.Brand;
+import com.tokopedia.digital_deals.view.model.CategoryItem;
 import com.tokopedia.digital_deals.view.model.Page;
 import com.tokopedia.digital_deals.view.model.response.AllBrandsResponse;
+import com.tokopedia.digital_deals.view.model.response.LocationResponse;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
@@ -40,15 +44,17 @@ public class AllBrandsPresenter extends BaseDaggerPresenter<AllBrandsContract.Vi
 
     private GetAllBrandsUseCase getAllBrandsUseCase;
     private GetNextBrandPageUseCase getNextAllBrandPageUseCase;
+    private GetLocationListRequestUseCase getLocationListRequestUseCase;
     private List<Brand> brands;
     private Page page;
     private RequestParams searchNextParams = RequestParams.create();
 
 
     @Inject
-    public AllBrandsPresenter(GetAllBrandsUseCase getAllBrandsUseCase, GetNextBrandPageUseCase getNextBrandPageUseCase, DealsAnalytics dealsAnalytics) {
+    public AllBrandsPresenter(GetAllBrandsUseCase getAllBrandsUseCase, GetNextBrandPageUseCase getNextBrandPageUseCase, GetLocationListRequestUseCase getLocationListRequestUseCase, DealsAnalytics dealsAnalytics) {
         this.getAllBrandsUseCase = getAllBrandsUseCase;
         this.getNextAllBrandPageUseCase = getNextBrandPageUseCase;
+        this.getLocationListRequestUseCase = getLocationListRequestUseCase;
         this.dealAnalytics = dealsAnalytics;
     }
 
@@ -60,6 +66,7 @@ public class AllBrandsPresenter extends BaseDaggerPresenter<AllBrandsContract.Vi
     public void onDestroy() {
         getAllBrandsUseCase.unsubscribe();
         getNextAllBrandPageUseCase.unsubscribe();
+        getLocationListRequestUseCase.unsubscribe();
     }
 
 
@@ -109,7 +116,7 @@ public class AllBrandsPresenter extends BaseDaggerPresenter<AllBrandsContract.Vi
                 DataResponse data = restResponse.getData();
                 AllBrandsResponse brandsResponse = (AllBrandsResponse) data.getData();
                 getView().hideProgressBar();
-
+                getView().removeFooter();
                 brands = brandsResponse.getBrands();
                 page = brandsResponse.getPage();
                 getNextPageUrl();
@@ -195,23 +202,13 @@ public class AllBrandsPresenter extends BaseDaggerPresenter<AllBrandsContract.Vi
     @Override
     public void searchTextChanged(String searchText) {
         SEARCH_SUBMITTED = false;
-        if (searchText != null && !searchText.equals("")) {
-            if (searchText.length() > 0) {
-                getBrandListBySearch(searchText);
-            }
-            if (searchText.length() == 0) {
-                getView().renderBrandList(brands, SEARCH_SUBMITTED);
-            }
-        } else {
-            getView().renderBrandList(brands, SEARCH_SUBMITTED);
-        }
+        getAllBrands();
     }
 
     @Override
     public void searchSubmitted(String searchText) {
         SEARCH_SUBMITTED = true;
-        getBrandListBySearch(searchText);
-
+        getAllBrands();
     }
 
     public void sendEventClick(String action, String label) {
@@ -220,5 +217,41 @@ public class AllBrandsPresenter extends BaseDaggerPresenter<AllBrandsContract.Vi
 
     public void sendEventView(String action, String label) {
         dealAnalytics.sendEventDealsDigitalView(action, label);
+    }
+
+    public void getLocations() {
+        getLocationListRequestUseCase.setRequestParams(RequestParams.EMPTY);
+        getLocationListRequestUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+                CommonUtils.dumper("enter onCompleted");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                CommonUtils.dumper("enter error");
+                e.printStackTrace();
+                NetworkErrorHelper.showEmptyState(getView().getActivity(), getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        getLocations();
+                    }
+                });
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                Type token = new TypeToken<DataResponse<LocationResponse>>() {
+                }.getType();
+                RestResponse restResponse = typeRestResponseMap.get(token);
+                DataResponse dataResponse = restResponse.getData();
+                LocationResponse locationResponse = (LocationResponse) dataResponse.getData();
+                getView().startLocationFragment(locationResponse.getLocations());
+            }
+        });
+    }
+
+    public void sendScreenNameEvent(String screenName) {
+        dealAnalytics.sendScreenNameEvent(screenName);
     }
 }
