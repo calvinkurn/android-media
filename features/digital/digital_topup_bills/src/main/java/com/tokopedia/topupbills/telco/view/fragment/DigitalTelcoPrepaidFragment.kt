@@ -186,7 +186,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     override fun onSuccessCatalogMenuDetail(catalogMenuDetailData: TelcoCatalogMenuDetailData) {
         super.onSuccessCatalogMenuDetail(catalogMenuDetailData)
-        checkNeedToShowCasing()
+        showOnBoarding()
     }
 
     override fun onSuccessCustomData(telcoData: TelcoCustomComponentData) {
@@ -407,7 +407,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         })
     }
 
-    private fun checkNeedToShowCasing() {
+    private fun showOnBoarding() {
         val showcaseTag = javaClass.name + ".BroadcastMessage"
         if (ShowCasePreference.hasShown(activity!!, showcaseTag)) {
             return
