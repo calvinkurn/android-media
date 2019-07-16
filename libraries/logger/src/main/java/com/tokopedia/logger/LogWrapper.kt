@@ -35,7 +35,7 @@ class LogWrapper(val application: Application) : CoroutineScope {
      */
     private fun info(message: String) {
         launch {
-            logger.info(message)
+            logger?.info(message)
         }
     }
 
@@ -46,7 +46,7 @@ class LogWrapper(val application: Application) : CoroutineScope {
      */
     private fun warning(message: String) {
         launch {
-            logger.warning(message)
+            logger?.warning(message)
         }
     }
 
@@ -56,7 +56,7 @@ class LogWrapper(val application: Application) : CoroutineScope {
      */
     private fun severe(message: String) {
         launch {
-            logger.severe(message)
+            logger?.severe(message)
         }
     }
 
@@ -73,7 +73,7 @@ class LogWrapper(val application: Application) : CoroutineScope {
 
     private fun logThrowable(level: Level, message: String, throwable: Throwable) {
         launch {
-            logger.log(LogRecord(level, message).apply {
+            logger?.log(LogRecord(level, message).apply {
                 this.thrown = throwable
             })
         }
@@ -100,15 +100,14 @@ class LogWrapper(val application: Application) : CoroutineScope {
 
     companion object {
         var instance: LogWrapper? = null
-        val logger: Logger by lazy {
-            val logManager = LogManager.getLogManager()
-            logManager.readConfiguration(instance!!.application.resources.openRawResource(R.raw.logging))
-            logManager.getLogger(Logger.GLOBAL_LOGGER_NAME)
-        }
+        var logger: Logger? = null
 
         @JvmStatic
         fun init(application: Application) {
             instance = LogWrapper(application)
+            val logManager = LogManager.getLogManager()
+            logManager.readConfiguration(application.resources.openRawResource(R.raw.logging))
+            logger = logManager.getLogger(Logger.GLOBAL_LOGGER_NAME)
         }
 
         /**
@@ -142,7 +141,7 @@ class LogWrapper(val application: Application) : CoroutineScope {
                 return
             }
             instance?.run {
-                val messageWithUser =  buildUserMessage()+ "\n" + (message ?: "")
+                val messageWithUser = buildUserMessage() + "\n" + (message ?: "")
                 if (throwable != null) {
                     logThrowable(level, messageWithUser, throwable)
                 } else {
