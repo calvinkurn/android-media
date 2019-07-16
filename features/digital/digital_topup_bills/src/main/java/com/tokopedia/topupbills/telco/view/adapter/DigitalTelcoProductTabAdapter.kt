@@ -28,9 +28,9 @@ class DigitalTelcoProductTabAdapter(val tabList: List<DigitalTabTelcoItem>, fm: 
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        val o = super.instantiateItem(container, position)
-        registeredFragments.put(position, o as Fragment)
-        return o
+        val fragment = super.instantiateItem(container, position)
+        registeredFragments.put(position, fragment as Fragment)
+        return fragment
     }
 
     override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
