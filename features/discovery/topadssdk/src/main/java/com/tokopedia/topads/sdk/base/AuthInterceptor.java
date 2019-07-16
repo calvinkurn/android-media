@@ -5,7 +5,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.Map;
 
@@ -17,7 +17,7 @@ public class AuthInterceptor extends TkpdAuthInterceptor {
     private static final String PARAM_DATE = "Date";
     private static final String PARAM_BEARER = "Bearer";
 
-    public AuthInterceptor(Context context, NetworkRouter networkRouter, UserSession userSession) {
+    public AuthInterceptor(Context context, NetworkRouter networkRouter, UserSessionInterface userSession) {
         super(context, networkRouter, userSession);
     }
 
