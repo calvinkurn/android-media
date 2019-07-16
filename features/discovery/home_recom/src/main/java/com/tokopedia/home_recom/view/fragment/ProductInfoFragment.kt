@@ -63,10 +63,6 @@ class ProductInfoFragment : BaseDaggerFragment() {
         getComponent(HomeRecommendationComponent::class.java).inject(this)
     }
 
-    private val CART_ID = "cartId"
-    private val MESSAGE = "message"
-    private val STATUS  = "status"
-
     companion object{
         fun newInstance(dataModel: ProductInfoDataModel) = ProductInfoFragment().apply {
             this.productDataModel = dataModel
@@ -74,6 +70,10 @@ class ProductInfoFragment : BaseDaggerFragment() {
 
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
         private const val WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition"
+
+        val CART_ID = "cartId"
+        val MESSAGE = "message"
+        val STATUS = "status"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

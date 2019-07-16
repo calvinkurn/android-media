@@ -5,6 +5,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.home_recom.view.fragment.ProductInfoFragment
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
@@ -93,13 +94,13 @@ class PrimaryProductViewModel @Inject constructor(private val graphqlRepository:
                     override fun onNext(addToCartResult: AddToCartDataModel) {
                         val result = HashMap<String, Any>()
 
-                        if (addToCartResult.status == "OK" && addToCartResult.data.success == 1) {
-                            result["status"] = true
-                            result["cartId"] = addToCartResult.data.cartId
-                            result["message"] = addToCartResult.data.message
+                        if (addToCartResult.status.equals(AddToCartDataModel.STATUS_OK, true) && addToCartResult.data.success == 1) {
+                            result[ProductInfoFragment.STATUS] = true
+                            result[ProductInfoFragment.CART_ID] = addToCartResult.data.cartId
+                            result[ProductInfoFragment.MESSAGE] = addToCartResult.data.message
                         } else {
-                            result["status"] = false
-                            result["message"] = addToCartResult.errorMessage
+                            result[ProductInfoFragment.STATUS] = false
+                            result[ProductInfoFragment.MESSAGE] = addToCartResult.errorMessage
                         }
                         success(result)
                     }

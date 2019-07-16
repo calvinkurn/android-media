@@ -685,7 +685,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     private fun showSnackbarAddToCart(it: AddToCartDataModel) {
-        if (it.status == "OK" && it.data.success == 1) {
+        if (it.status.equals(AddToCartDataModel.STATUS_OK, true) && it.data.success == 1) {
             ToasterNormal.make(view, it.data.message[0], ToasterNormal.LENGTH_LONG).show()
         } else {
             ToasterError.make(view, it.errorMessage[0], ToasterNormal.LENGTH_LONG).show()
@@ -695,7 +695,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     private fun onSuccessBuyFromProdAttachment(): (addToCartResult: AddToCartDataModel) -> Unit {
         return {
             showSnackbarAddToCart(it)
-            if (it.status == "OK" && it.data.success == 1) {
+            if (it.status.equals(AddToCartDataModel.STATUS_OK, true) && it.data.success == 1) {
                 activity?.startActivity((activity!!.application as TopChatRouter)
                         .getCartIntent(activity))
             }

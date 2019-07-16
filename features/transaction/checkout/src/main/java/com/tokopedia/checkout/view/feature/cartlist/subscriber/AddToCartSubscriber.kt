@@ -34,7 +34,7 @@ class AddToCartSubscriber(val view: ICartListView?,
     override fun onNext(addToCartDataModel: AddToCartDataModel) {
         if (view != null) {
             view.hideProgressLoading()
-            if (addToCartDataModel.status == "OK" && addToCartDataModel.data.success == 1) {
+            if (addToCartDataModel.status.equals(AddToCartDataModel.STATUS_OK, true) && addToCartDataModel.data.success == 1) {
                 view.triggerSendEnhancedEcommerceAddToCartSuccess(addToCartDataModel, productModel)
                 presenter.processInitialGetCartData("0", false, false)
                 if (addToCartDataModel.data.message.size > 0) {

@@ -716,7 +716,7 @@ public class WishListImpl implements WishList {
                 });
 
                 wishListView.dismissProgressDialog();
-                if (addToCartResult.getStatus().equalsIgnoreCase("OK") && addToCartResult.getData().getSuccess() == 1) {
+                if (addToCartResult.getStatus().equalsIgnoreCase(AddToCartDataModel.STATUS_OK) && addToCartResult.getData().getSuccess() == 1) {
                     wishListView.showAddToCartMessage(addToCartResult.getData().getMessage().get(0));
                 } else {
                     wishListView.showAddToCartErrorMessage(addToCartResult.getErrorMessage().get(0));
