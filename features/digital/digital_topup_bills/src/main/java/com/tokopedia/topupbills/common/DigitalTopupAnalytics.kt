@@ -193,7 +193,7 @@ class DigitalTopupAnalytics {
             recentList.add(DataLayer.mapOf(
                     DigitalTopupEventTracking.EnhanceEccomerce.NAME, recentItem.itemRecent.clientNumber,
                     DigitalTopupEventTracking.EnhanceEccomerce.ID, "none",
-                    DigitalTopupEventTracking.EnhanceEccomerce.PRICE, recentItem.itemRecent.title,
+                    DigitalTopupEventTracking.EnhanceEccomerce.PRICE, "0",
                     DigitalTopupEventTracking.EnhanceEccomerce.BRAND, "none",
                     DigitalTopupEventTracking.EnhanceEccomerce.CATEGORY, recentItem.categoryName,
                     DigitalTopupEventTracking.EnhanceEccomerce.LIST, "category ${recentItem.categoryName} - " +
@@ -223,7 +223,7 @@ class DigitalTopupAnalytics {
         recentList.add(DataLayer.mapOf(
                 DigitalTopupEventTracking.EnhanceEccomerce.NAME, itemRecent.clientNumber,
                 DigitalTopupEventTracking.EnhanceEccomerce.ID, "none",
-                DigitalTopupEventTracking.EnhanceEccomerce.PRICE, itemRecent.title,
+                DigitalTopupEventTracking.EnhanceEccomerce.PRICE, "0",
                 DigitalTopupEventTracking.EnhanceEccomerce.BRAND, "none",
                 DigitalTopupEventTracking.EnhanceEccomerce.CATEGORY, categoryName,
                 DigitalTopupEventTracking.EnhanceEccomerce.POSITION, position))
