@@ -147,12 +147,6 @@ public class CartListModule {
 
     @Provides
     @CartListScope
-    AddToCartUseCase provideAddToCartUseCase(@Named("atcMutation") String mutation, GraphqlUseCase graphqlUseCase) {
-        return new AddToCartUseCase(mutation, graphqlUseCase);
-    }
-
-    @Provides
-    @CartListScope
     ICartListPresenter provideICartListPresenter(GetCartListUseCase getCartListUseCase,
                                                  DeleteCartListUseCase deleteCartListUseCase,
                                                  UpdateCartUseCase updateCartUseCase,

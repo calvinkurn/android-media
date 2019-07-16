@@ -11,12 +11,13 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
 import javax.inject.Inject
+import javax.inject.Named
 
 /**
  * Created by Irfan Khoirul on 2019-07-10.
  */
 
-class AddToCartUseCase @Inject constructor(private val queryString: String,
+class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val queryString: String,
                                            private val graphqlUseCase: GraphqlUseCase) : UseCase<AddToCartDataModel>() {
 
     companion object {
