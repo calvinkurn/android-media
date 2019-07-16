@@ -1,0 +1,11 @@
+mutation rechargeCheckVoucher($data: RechargeInputVoucher!) {
+    rechargeCheckVoucher(voucher: $data) {
+        data {
+          message {
+            text
+          }
+          code
+          is_coupon
+        }
+    }
+}
