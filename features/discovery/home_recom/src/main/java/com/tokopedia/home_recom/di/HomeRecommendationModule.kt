@@ -62,4 +62,12 @@ class HomeRecommendationModule {
     fun providePrimaryProductRawQuery(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources,
                     R.raw.gql_primary_product)
+
+    @Provides
+    @HomeRecommendationScope
+    @Named("atcMutation")
+    internal fun provideAddToCartMutation(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_to_cart)
+    }
+
 }

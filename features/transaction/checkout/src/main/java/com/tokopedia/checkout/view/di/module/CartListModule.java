@@ -126,6 +126,7 @@ public class CartListModule {
     }
 
     @Provides
+    @CartListScope
     @Named("recommendationQuery")
     String provideRecommendationRawQuery(@ApplicationContext Context context) {
         return GraphqlHelper.loadRawString(context.getResources(), R.raw.query_recommendation_widget);
@@ -140,6 +141,7 @@ public class CartListModule {
     }
 
     @Provides
+    @CartListScope
     @Named("atcMutation")
     String provideAddToCartMutation(@ApplicationContext Context context) {
         return GraphqlHelper.loadRawString(context.getResources(), R.raw.mutation_add_to_cart);
