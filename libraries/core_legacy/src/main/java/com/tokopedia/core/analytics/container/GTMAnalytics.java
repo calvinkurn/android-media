@@ -325,7 +325,19 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     public void pushClickEECommerce(Bundle bundle){
+        // replace list
+        bundle.putString(FirebaseAnalytics.Param.ITEM_LIST, bundle.getString("list"));
         logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle, context);
+    }
+
+    @Override
+    public void pushEECommerce(String param, Bundle bundle) {
+        super.pushEECommerce(param, bundle);
+        if(param != null){
+            bundle.putString(FirebaseAnalytics.Param.ITEM_LIST, param);
+        }
+
+        pushClickEECommerce(bundle);
     }
 
     public void pushGeneralGTMV5(Map<String, Object> params){

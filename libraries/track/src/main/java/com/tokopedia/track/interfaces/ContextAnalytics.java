@@ -95,4 +95,5 @@ public abstract class ContextAnalytics implements Analytics {
     public void pushGeneralGTMV5(String event, String category, String action, String label){}
     public void pushGeneralGTMV5(Map<String, Object> params){}
     public void pushClickEECommerce(Bundle bundle){}
+    public void pushEECommerce(String param, Bundle bundle){}
 }

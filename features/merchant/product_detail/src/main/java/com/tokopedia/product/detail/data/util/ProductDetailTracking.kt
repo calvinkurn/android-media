@@ -389,12 +389,13 @@ class ProductDetailTracking() {
                 "true non diagnostic"
             else
                 "false"
+
         TrackApp.getInstance()?.gtm?.sendEnhanceEcommerceEvent(DataLayer.mapOf(
             "event", "viewProduct",
             "eventCategory", "product page",
             "eventAction", "view product page",
             "eventLabel", getEnhanceShopType(shopInfo?.goldOS) + " - " + shopInfo?.shopCore?.name + " - " + productInfo?.basic?.name,
-            "ecommerce", DataLayer.mapOf(
+                "ecommerce", DataLayer.mapOf(
             "currencyCode", "IDR",
             "detail", DataLayer.mapOf(
             "products", DataLayer.listOf(
