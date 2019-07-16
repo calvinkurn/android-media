@@ -27,8 +27,6 @@ public interface TransactionRouter {
 
     boolean getEnableFingerprintPayment();
 
-    Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest, boolean isOneClickShipment);
-
     interface CartNotificationListener {
         void onDataReady();
     }
