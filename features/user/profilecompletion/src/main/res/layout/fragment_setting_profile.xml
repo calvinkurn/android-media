@@ -87,7 +87,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:visibility="visible"
+                    android:layout_marginTop="@dimen/dp_8"
                     app:closeButtonVisibility="gone"
+                    android:layout_gravity="center_vertical"
                     app:tickerType="warning"
                     app:tickerShapeType="full"/>
             </LinearLayout>
