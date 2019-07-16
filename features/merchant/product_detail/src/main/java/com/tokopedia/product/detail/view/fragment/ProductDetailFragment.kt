@@ -918,8 +918,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 menu?.let {
                     if (it.size() > 2) {
                         it.findItem(R.id.action_share).icon = ContextCompat.getDrawable(this, R.drawable.ic_product_share_dark)
-                        val menuCart = it.findItem(R.id.action_cart)
-                        setBadgeMenuCart(menuCart)
+//                        val menuCart = it.findItem(R.id.action_cart)
+//                        setBadgeMenuCart(menuCart)
                     }
                 }
 
@@ -1773,7 +1773,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 val cartImageView = actionView.findViewById<ImageView>(R.id.cart_image_view)
                 val lottieCartView = actionView.findViewById<LottieAnimationView>(R.id.cart_lottie_view)
                 if (shouldShowCartAnimation) {
-                    shouldShowCartAnimation = false
 //                    menuCart.setActionView(R.layout.menu_item_cart)
                     if (actionView is SquareHFrameLayout) {
                         lottieCartView.addAnimatorListener(object : Animator.AnimatorListener {
@@ -1795,6 +1794,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                                         cartImageView.setImageDrawable(icon)
                                         lottieCartView.visibility = View.INVISIBLE
                                         cartImageView.visibility = View.VISIBLE
+                                        shouldShowCartAnimation = false
                                     }
                                 }
                             }
