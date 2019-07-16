@@ -183,10 +183,8 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     fun renderProductFromCustomData() {
         try {
             if (postpaidClientNumberWidget.getInputNumber().isNotEmpty()) {
-                val prefixClientNumber = postpaidClientNumberWidget.getInputNumber().substring(0, 4)
-
                 operatorSelected = this.operatorData.rechargeCustomData.customDataCollections.filter {
-                    it.value.equals(prefixClientNumber)
+                    postpaidClientNumberWidget.getInputNumber().startsWith(it.value)
                 }.single()
                 val operatorName = operatorSelected.operator.attributes.name
                 when (inputNumberActionType) {
