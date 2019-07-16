@@ -78,6 +78,7 @@ import javax.inject.Inject
 class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAdapterTypeFactory>(),
         NormalCheckoutContract.View, CheckoutVariantActionListener {
 
+    private var isInsuranceSelected: Boolean = false
     private var insuranceRecommendationViewModel = InsuranceRecommendationViewModel()
     //    private lateinit var insuranceRecommendationGqlResponse: InsuranceRecommendationGqlResponse
     private var productPrice: Float? = 0f
@@ -800,6 +801,10 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
 //        addinsurance product to cart as well
 
+        if(isInsuranceSelected) {
+
+        }
+
         tempQuantity = quantity
         isTradeIn = 0
         addToCart(false, onFinish = { message: String?, cartId: String? ->
@@ -1066,6 +1071,10 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         outState.putString(EXTRA_SELECTED_VARIANT_ID, selectedVariantId)
         outState.putInt(EXTRA_QUANTITY, quantity)
         outState.putString(EXTRA_NOTES, notes)
+    }
+
+    override fun onInsuranceSelectedStateChanged(isSelected: Boolean) {
+        isInsuranceSelected = isSelected
     }
 
     override fun showData(viewModels: ArrayList<Visitable<*>>) { /* no op we use onSuccess */

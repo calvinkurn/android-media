@@ -951,6 +951,9 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         }
     }
 
+    override fun onInsuranceSelectedStateChanged(isSelected: Boolean) {
+    }
+
     override fun onNoCourierAvailable(message: String?) {
 
     }

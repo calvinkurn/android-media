@@ -20,6 +20,8 @@ import java.util.regex.Pattern
 
 class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVariantActionListener) : AbstractViewHolder<InsuranceRecommendationViewModel>(view) {
 
+    private var isInsuranceSelected = false
+
     companion object {
         val LAYOUT = R.layout.item_insurance_recommendation_product_page
     }
@@ -34,7 +36,7 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
             val insuranceCartShopItemsViewModel = element.cartShopsList[0].shopItemsList[0]
             val insuranceCartDigitalProductViewModel = insuranceCartShopItemsViewModel.digitalProductList[0]
 
-            val isInsuranceSelected = insuranceCartDigitalProductViewModel.optIn
+            isInsuranceSelected = insuranceCartDigitalProductViewModel.optIn
 
             itemView.insurance_checkbox.setChecked(isInsuranceSelected)
 
@@ -106,22 +108,31 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
 
 
             itemView.insurance_checkbox.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
-                insuranceCartDigitalProductViewModel.optIn = isChecked
 
-                if (isChecked) {
-                    applicationDetailsView.visibility = View.VISIBLE
-                    itemView.tv_description.visibility = View.GONE
+                run {
+                    insuranceCartDigitalProductViewModel.optIn = isChecked
+                    isInsuranceSelected = isChecked
 
-                } else {
-                    applicationDetailsView.visibility = View.GONE
-                    itemView.tv_description.visibility = View.VISIBLE
+                    if (isChecked) {
+                        applicationDetailsView.visibility = View.VISIBLE
+                        itemView.tv_description.visibility = View.GONE
+
+                    } else {
+                        applicationDetailsView.visibility = View.GONE
+                        itemView.tv_description.visibility = View.VISIBLE
+                    }
+                    listener.onInsuranceSelectedStateChanged(isChecked)
                 }
-//                insuranceItemActionlistener.onInsuranceSelectStateChanges()
+
             })
 
         }
     }
 
+
+    fun isInsuranceSelected(): Boolean {
+        return isInsuranceSelected
+    }
 
     private fun setValidateListener() {
         if (validateViews()) {
