@@ -64,12 +64,15 @@ class PowerMerchantCancelBottomSheet : BottomSheets() {
         super.configView(parentView)
 
         val displaymetrics = DisplayMetrics()
-        activity!!.windowManager.defaultDisplay.getMetrics(displaymetrics)
-        val widthSpec = View.MeasureSpec.makeMeasureSpec(displaymetrics.widthPixels, View.MeasureSpec.EXACTLY)
-        parentView?.post {
-            parentView.measure(widthSpec, 0)
-            updateHeight(parentView.measuredHeight)
+        activity?.run {
+            windowManager.defaultDisplay.getMetrics(displaymetrics)
+            val widthSpec = View.MeasureSpec.makeMeasureSpec(displaymetrics.widthPixels, View.MeasureSpec.EXACTLY)
+            parentView?.post {
+                parentView.measure(widthSpec, 0)
+                updateHeight(parentView.measuredHeight)
+            }
         }
+
     }
 
     override fun initView(view: View) {
