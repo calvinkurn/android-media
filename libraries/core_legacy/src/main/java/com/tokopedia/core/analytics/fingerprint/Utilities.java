@@ -13,7 +13,11 @@ import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
 
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.R;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -67,6 +71,13 @@ public class Utilities {
         } finally {
             if (process != null) process.destroy();
         }
+    }
+
+    public static String isNakama(UserSessionInterface userSession){
+        if(userSession != null && CommonUtils.checkStringNotNull(userSession.getEmail()))
+            return userSession.getEmail().contains("tokokopedia") ? "Yes" : "No";
+        else
+            return "No";
     }
 
     public static boolean isDeviceEmulated() {
