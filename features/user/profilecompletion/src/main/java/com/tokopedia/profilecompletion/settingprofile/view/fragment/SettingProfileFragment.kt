@@ -31,8 +31,11 @@ import com.tokopedia.profilecompletion.settingprofile.data.UploadProfilePictureR
 import com.tokopedia.profilecompletion.settingprofile.viewmodel.ProfileInfoViewModel
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_setting_profile.*
 import java.io.File
 import javax.inject.Inject
@@ -46,15 +49,20 @@ import javax.inject.Inject
 class SettingProfileFragment : BaseDaggerFragment() {
 
     @Inject
+    lateinit var userSession: UserSessionInterface
+    @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val profileInfoViewModel by lazy { viewModelProvider.get(ProfileInfoViewModel::class.java) }
 
     lateinit var overlayView: View
+    lateinit var tickerPhoneVerification: Ticker
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_setting_profile, container, false)
         overlayView = view.findViewById(R.id.overlay_view)
+        tickerPhoneVerification = view.findViewById(R.id.ticker_phone_verification)
         return view
     }
 
@@ -108,6 +116,8 @@ class SettingProfileFragment : BaseDaggerFragment() {
         dismissLoading()
 
         if (result.uploadProfileImageModel.data.filePath.isNotBlank()) {
+            userSession.profilePicture = result.uploadProfileImageModel.data.filePath
+
             view?.run {
                 Toaster.showNormal(this, getString(R.string.success_change_profile_picture), Snackbar.LENGTH_LONG)
             }
@@ -256,6 +266,9 @@ class SettingProfileFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessGetUserProfileInfo(profileCompletionData: ProfileCompletionData) {
+        userSession.phoneNumber = profileCompletionData.phone
+        userSession.email = profileCompletionData.email
+
         dismissLoading()
 
         ImageHandler.loadImageCircle2(context, profilePhoto, profileCompletionData.profilePicture)
@@ -353,19 +366,36 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     profileCompletionData.isPhoneVerified,
                     true,
                     View.OnClickListener {
-
                         if (profileCompletionData.isPhoneVerified) {
                             goToChangePhone(profileCompletionData.phone, profileCompletionData.email)
                         } else {
-                            goToVerifyPhone(profileCompletionData.phone, profileCompletionData.email)
-
+                            goToVerifyPhone()
                         }
                     }
             )
+
+            if (profileCompletionData.isPhoneVerified) {
+                tickerPhoneVerification.visibility = View.GONE
+            } else {
+                tickerPhoneVerification.visibility = View.VISIBLE
+                tickerPhoneVerification.setHtmlDescription(
+                        getString(R.string.ticker_phone_verification)
+                )
+                tickerPhoneVerification.setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(link: CharSequence?) {
+                        goToVerifyPhone()
+                    }
+
+                    override fun onDismiss() {
+                    }
+
+                })
+
+            }
         }
     }
 
-    private fun goToVerifyPhone(phone: String, email: String) {
+    private fun goToVerifyPhone() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.SETTING_PROFILE_PHONE_VERIFICATION)
         startActivityForResult(intent, REQUEST_CODE_EDIT_PHONE)
     }

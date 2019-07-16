@@ -81,6 +81,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_24"/>
+
+                <com.tokopedia.unifycomponents.ticker.Ticker
+                    android:id="@+id/ticker_phone_verification"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    app:closeButtonVisibility="gone"
+                    app:tickerType="warning"
+                    app:tickerShapeType="full"/>
             </LinearLayout>
         </android.support.constraint.ConstraintLayout>
     </ScrollView>

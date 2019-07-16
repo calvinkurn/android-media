@@ -42,10 +42,7 @@ class ProfileInfoViewModel @Inject constructor(
     fun getUserProfileInfo() {
         val rawQuery = rawQueries[ProfileCompletionQueriesConstant.QUERY_PROFILE_COMPLETION]
         if (!rawQuery.isNullOrEmpty()) {
-            val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(
-                    CacheType.CACHE_FIRST)
             userProfileInfoUseCase.run {
-                setCacheStrategy(graphqlCacheStrategy.build())
                 setGraphqlQuery(rawQuery)
                 execute(
                         {

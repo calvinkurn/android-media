@@ -92,6 +92,7 @@
     <string name="failed_to_get_picture">Gagal mengambil gambar. Mohon coba kembali</string>
     <string name="failed_to_upload_picture">Gagal mengunggah gambar. Mohon coba kembali</string>
     <string name="success_change_profile_picture">Foto profil berhasil diubah</string>
+    <string name="ticker_phone_verification">Jaga akun kamu tetap aman dengan &lt;font color=\'#42b549\'&gt;&lt;a href=\'tokopedia-android-internal://global/setting-profile-phone-verification\'&gt;Verifikasi Nomor Ponsel&lt;/a&gt;&lt;/font&gt;.</string>
 
 
 </resources>
