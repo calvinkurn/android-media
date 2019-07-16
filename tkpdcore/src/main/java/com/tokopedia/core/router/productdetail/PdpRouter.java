@@ -30,8 +30,6 @@ public interface PdpRouter {
 
     Intent getProductReputationIntent(Context context, String productId, String productName);
 
-    Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest, boolean isOneClickShipment);
-
     Intent getCartIntent(Activity activity);
 
     Intent getCheckoutIntent(Context context, ShipmentFormRequest shipmentFormRequest);

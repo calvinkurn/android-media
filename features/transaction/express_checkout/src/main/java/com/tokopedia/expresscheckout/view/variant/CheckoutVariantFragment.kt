@@ -628,10 +628,6 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         activity?.finish()
     }
 
-    override fun getAddToCartObservable(addToCartRequest: AddToCartRequest): Observable<AddToCartResult> {
-        return router.addToCartProduct(addToCartRequest, true)
-    }
-
     override fun getCheckoutObservable(checkoutRequest: CheckoutRequest): Observable<CheckoutData> {
         return router.checkoutProduct(checkoutRequest, true, true)
     }

@@ -26,8 +26,6 @@ interface ExpressCheckoutRouter {
 
     fun getCheckoutIntent(context: Context, shiomentFormRequest: ShipmentFormRequest): Intent
 
-    fun addToCartProduct(addToCartRequest: AddToCartRequest, isOneClickShipment: Boolean): Observable<AddToCartResult>
-
     fun checkoutProduct(checkoutRequest: CheckoutRequest, isOneClickShipment: Boolean, isExpressCheckout: Boolean): Observable<CheckoutData>
 
     fun updateAddress(requestParams: RequestParams): Observable<String>

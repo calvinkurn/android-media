@@ -12,7 +12,5 @@ public interface TradeInRouter {
     Intent getCheckoutIntent(Context context, String deviceid);
 
     Intent getKYCIntent(Context context,int projectId);
-
-    Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest, boolean isOneClickShipment);
 }
 
