@@ -1,0 +1,156 @@
+package com.tokopedia.instantdebitbca.data.view.fragment
+
+import android.content.Context
+import android.os.Bundle
+import android.support.v4.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.RelativeLayout
+
+import com.bca.xco.widget.BCARegistrasiXCOWidget
+import com.bca.xco.widget.BCAXCOListener
+import com.bca.xco.widget.XCOEnum
+import com.google.gson.Gson
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.instantdebitbca.R
+import com.tokopedia.instantdebitbca.data.di.InstantDebitBcaComponent
+import com.tokopedia.instantdebitbca.data.domain.NotifyDebitRegisterBcaUseCase
+import com.tokopedia.instantdebitbca.data.view.activity.InstantDebitBcaActivity
+import com.tokopedia.instantdebitbca.data.view.interfaces.InstantDebitBcaContract
+import com.tokopedia.instantdebitbca.data.view.presenter.InstantDebitBcaPresenter
+import com.tokopedia.instantdebitbca.data.view.utils.DeviceUtil
+import com.tokopedia.instantdebitbca.data.view.utils.InstantDebitBcaInstance
+import com.tokopedia.network.utils.AuthUtil
+import com.tokopedia.user.session.UserSessionInterface
+
+import org.json.JSONObject
+
+import java.util.HashMap
+
+import javax.inject.Inject
+
+/**
+ * Created by nabillasabbaha on 25/03/19.
+ */
+open class InstantDebitBcaFragment @Inject constructor(): BaseDaggerFragment(), InstantDebitBcaContract.View, BCAXCOListener {
+
+    @Inject
+    lateinit var presenter: InstantDebitBcaPresenter
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    protected lateinit var layoutWidget: RelativeLayout
+    private var widgetBca: BCARegistrasiXCOWidget? = null
+    private var listener: ActionListener? = null
+    private var applinkUrl: String? = null
+
+    private val deviceId: String
+        get() {
+            val deviceMap = HashMap<String, String>()
+            deviceMap[NotifyDebitRegisterBcaUseCase.USER_AGENT] = DeviceUtil.userAgent
+            deviceMap[NotifyDebitRegisterBcaUseCase.IP_ADDRESS] = DeviceUtil.localIpAddress
+            return convertObjToJsonString(deviceMap)
+        }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.fragment_instant_debit_bca, container, false)
+        layoutWidget = view.findViewById(R.id.layoutWidget)
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        applinkUrl = arguments!!.getString(InstantDebitBcaActivity.CALLBACK_URL)
+        presenter.getAccessTokenBca()
+        createAndSetBcaWidget()
+    }
+
+    override fun createAndSetBcaWidget() {
+        widgetBca = BCARegistrasiXCOWidget(activity, XCOEnum.ENVIRONMENT.DEV)
+        widgetBca!!.setListener(this)
+        layoutWidget.addView(widgetBca)
+    }
+
+    override fun initInjector() {
+        GraphqlClient.init(activity!!)
+        val instantDebitBcaComponent = InstantDebitBcaInstance.getComponent(activity!!.application)
+        instantDebitBcaComponent.inject(this)
+        presenter.attachView(this)
+    }
+
+    override fun getScreenName(): String? {
+        return null
+    }
+
+    override fun openWidgetBca(accessToken: String) {
+        widgetBca!!.openWidget(accessToken, AuthUtil.KEY.API_KEY_INSTANT_DEBIT_BCA, AuthUtil.KEY.API_SEED_INSTANT_DEBIT_BCA,
+                userSession.userId, AuthUtil.KEY.INSTANT_DEBIT_BCA_MERCHANT_ID)
+    }
+
+    override fun showErrorMessage(throwable: Throwable) {
+        NetworkErrorHelper.showRedCloseSnackbar(activity, ErrorHandler.getErrorMessage(activity, throwable))
+    }
+
+    protected fun convertObjToJsonString(obj: Any): String {
+        val jsonObj = JSONObject()
+        val gsonObj = Gson()
+        val data = gsonObj.toJson(obj)
+        data.replace("\"", "\\\"")
+        return data
+    }
+
+    override fun onBCASuccess(xcoID: String, credentialType: String, credentialNo: String, maxLimit: String) {
+        val mapCardData = HashMap<String, String>()
+        mapCardData[NotifyDebitRegisterBcaUseCase.XCOID] = xcoID
+        mapCardData[NotifyDebitRegisterBcaUseCase.CREDENTIAL_TYPE] = credentialType
+        mapCardData[NotifyDebitRegisterBcaUseCase.CREDENTIAL_NO] = credentialNo
+        mapCardData[NotifyDebitRegisterBcaUseCase.MAX_LIMIT] = maxLimit
+        val debitData = convertObjToJsonString(mapCardData)
+
+        presenter.notifyDebitRegisterBca(debitData, deviceId)
+    }
+
+    override fun onBCATokenExpired(tokenStatus: String) {
+
+    }
+
+    override fun onBCARegistered(xcoID: String) {
+
+    }
+
+    override fun onBCACloseWidget() {
+
+    }
+
+    override fun redirectPageAfterRegisterBca() {
+        listener!!.redirectPage(applinkUrl)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.onDestroy()
+    }
+
+    override fun onAttachActivity(context: Context) {
+        listener = context as ActionListener
+    }
+
+    interface ActionListener {
+        fun redirectPage(applinkUrl: String?)
+    }
+
+    companion object {
+
+        fun newInstance(context: Context, callbackUrl: String): Fragment {
+            val fragment = InstantDebitBcaFragment()
+            val bundle = Bundle()
+            bundle.putString(InstantDebitBcaActivity.CALLBACK_URL, callbackUrl)
+            fragment.arguments = bundle
+            return fragment
+        }
+    }
+}
