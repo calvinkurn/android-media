@@ -78,7 +78,7 @@ public class SimilarSearchActivity extends BaseSimpleActivity implements Similar
                     @Override
                     public void onAnimationEnd(Animation animation) {
                         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                        transaction.remove(getFragment()). commit();
+                        transaction.remove(getFragment()). commitAllowingStateLoss();
                         finish();
                     }
 

@@ -25,6 +25,7 @@ import com.tokopedia.common_digital.cart.view.model.cart.UserInputPriceDigital;
 import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
 import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData;
 import com.tokopedia.common_digital.common.DigitalRouter;
+import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.voucher.VoucherCartHachikoView;
@@ -389,7 +390,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public void closeViewWithMessageAlert(String message) {
         Intent intent = new Intent();
-        intent.putExtra(DigitalRouter.Companion.getEXTRA_MESSAGE(), message);
+        intent.putExtra(DigitalExtraParam.EXTRA_MESSAGE, message);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }

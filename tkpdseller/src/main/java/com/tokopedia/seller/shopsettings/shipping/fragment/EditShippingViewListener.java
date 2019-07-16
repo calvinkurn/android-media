@@ -2,7 +2,7 @@ package com.tokopedia.seller.shopsettings.shipping.fragment;
 
 import android.content.Context;
 
-import com.tokopedia.district_recommendation.domain.model.Address;
+import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress;
 import com.tokopedia.seller.shopsettings.shipping.model.editshipping.Courier;
 import com.tokopedia.seller.shopsettings.shipping.model.editshipping.ShopShipping;
 
@@ -72,7 +72,7 @@ public interface EditShippingViewListener {
 
     void refreshLocationViewListener(ShopShipping updatedShopInfo);
 
-    void refreshLocationViewListener(Address address);
+    void refreshLocationViewListener(DistrictRecommendationAddress address);
 
     void locationDialogTimeoutListener();
 

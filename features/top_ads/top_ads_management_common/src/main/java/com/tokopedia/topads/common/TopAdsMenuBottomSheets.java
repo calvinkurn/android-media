@@ -70,13 +70,8 @@ public class TopAdsMenuBottomSheets extends BottomSheets {
     @Override
     public void setupDialog(Dialog dialog, int style) {
         super.setupDialog(dialog, style);
-        ImageButton btnClose = getDialog().findViewById(com.tokopedia.design.R.id.btn_close);
-        btnClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-            }
-        });
+        View btnClose = getDialog().findViewById(com.tokopedia.design.R.id.btn_close);
+        btnClose.setOnClickListener(v -> dismiss());
     }
 
     @Override

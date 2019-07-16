@@ -24,7 +24,7 @@ public class MessageViewHolder extends BaseChatViewHolder<MessageViewModel> {
     private static final String ROLE_USER = "User";
 
     private Context context;
-    private TextView message;
+    protected TextView message;
     private ImageView chatStatus;
     private View chatBalloon;
     private TextView name;
@@ -65,7 +65,7 @@ public class MessageViewHolder extends BaseChatViewHolder<MessageViewModel> {
         }
     }
 
-    private void setChatLeft(View chatBalloon) {
+    protected void setChatLeft(View chatBalloon) {
         chatBalloon.setBackground(context.getResources().getDrawable(R.drawable
                 .left_bubble));
         setAlignParent(RelativeLayout.ALIGN_PARENT_LEFT, chatBalloon);
@@ -83,7 +83,7 @@ public class MessageViewHolder extends BaseChatViewHolder<MessageViewModel> {
         view.setLayoutParams(params);
     }
 
-    private void setChatRight(View chatBalloon) {
+    protected void setChatRight(View chatBalloon) {
         chatBalloon.setBackground(context.getResources().getDrawable(R.drawable
                 .right_bubble));
         setAlignParent(RelativeLayout.ALIGN_PARENT_RIGHT, chatBalloon);
