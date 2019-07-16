@@ -53,7 +53,6 @@ import com.tokopedia.changepassword.ChangePasswordRouter;
 import com.tokopedia.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.chatbot.ChatbotRouter;
 import com.tokopedia.checkout.CartConstant;
-import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckoutUseCase;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
@@ -382,15 +381,12 @@ import com.tokopedia.train.common.util.TrainDateUtil;
 import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
 import com.tokopedia.train.reviewdetail.domain.TrainCheckVoucherUseCase;
 import com.tokopedia.transaction.common.TransactionRouter;
-import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
-import com.tokopedia.transaction.common.sharedata.AddToCartResult;
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transaction.others.CreditCardFingerPrintUseCase;
 import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
-import com.tokopedia.transactiondata.entity.response.addtocart.AddToCartDataResponse;
 import com.tokopedia.transactiondata.entity.response.cod.Data;
 import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam;
@@ -514,8 +510,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ProductDetailRouter,
         OvoPayWithQrRouter,
         TopAdsAutoRouter,
-        KYCRouter,
-        HomeRecommendationRouter {
+        KYCRouter {
 
 
     private final static int IRIS_ROW_LIMIT = 50;
@@ -1776,24 +1771,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return CartComponentInjector.newInstance(this).getEditAddressUseCase().createObservable(requestParams);
     }
 
-    @NonNull
-    private AddToCartResult mapAddToCartResult(AddToCartDataResponse addToCartDataResponse) {
-        List<String> messageList = addToCartDataResponse.getMessage();
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < messageList.size(); i++) {
-            String string = messageList.get(i);
-            stringBuilder.append(string);
-            stringBuilder.append(" ");
-        }
-        return new AddToCartResult.Builder()
-                .message(stringBuilder.toString())
-                .success(addToCartDataResponse.getSuccess() == 1)
-                .cartId(addToCartDataResponse.getData() != null
-                        ? String.valueOf(addToCartDataResponse.getData().getCartId())
-                        : "")
-                .build();
-    }
-
     @Override
     public Intent getCartIntent(Activity activity) {
         Intent intent = new Intent(activity, CartActivity.class);
@@ -3016,39 +2993,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getMaintenancePageIntent() {
         return MaintenancePage.createIntentFromNetwork(getAppContext());
-    }
-
-    @NotNull
-    @Override
-    public Observable<Map<String, Object>> getNormalCheckoutIntent(int productId, int quantity, int shopId, boolean isOneClickShipment) {
-        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
-
-        AddToCartRequest request = new AddToCartRequest.Builder()
-                .productId(productId)
-                .notes("")
-                .quantity(quantity)
-                .shopId(shopId)
-                .build();
-        requestParams.putObject(AddToCartUseCase.PARAM_ADD_TO_CART, request);
-        if (isOneClickShipment) {
-            return CartComponentInjector.newInstance(this).getAddToCartUseCaseOneClickShipment()
-                    .createObservable(requestParams)
-                    .map(this::mapAddToCartResultToHashMap);
-        } else {
-            return CartComponentInjector.newInstance(this).getAddToCartUseCase()
-                    .createObservable(requestParams)
-                    .map(this::mapAddToCartResultToHashMap);
-        }
-    }
-
-    private Map<String, Object> mapAddToCartResultToHashMap(AddToCartDataResponse addToCartDataResponse){
-        HashMap<String, Object> map = new HashMap<>();
-        AddToCartResult addToCartResult = mapAddToCartResult(addToCartDataResponse);
-        map.put("status", addToCartResult.isSuccess());
-        map.put("message", addToCartResult.getMessage());
-        map.put("cartId", addToCartResult.getCartId());
-        map.put("source", addToCartResult.getSource());
-        return map;
     }
 
     @SuppressLint("MissingPermission")

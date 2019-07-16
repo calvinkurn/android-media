@@ -16,11 +16,11 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.analytics.RecommendationPageTracking
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
-import com.tokopedia.home_recom.router.HomeRecommendationRouter
 import com.tokopedia.home_recom.util.RecommendationPageErrorHandler
 import com.tokopedia.home_recom.viewmodel.PrimaryProductViewModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
@@ -31,23 +31,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.fragment_product_info.product_name
-import kotlinx.android.synthetic.main.fragment_product_info.badge
-import kotlinx.android.synthetic.main.fragment_product_info.fab_detail
-import kotlinx.android.synthetic.main.fragment_product_info.product_price
-import kotlinx.android.synthetic.main.fragment_product_info.location
-import kotlinx.android.synthetic.main.fragment_product_info.product_image
-import kotlinx.android.synthetic.main.fragment_product_info.product_card
-import kotlinx.android.synthetic.main.fragment_product_info.rating
-import kotlinx.android.synthetic.main.fragment_product_info.review_count
-import kotlinx.android.synthetic.main.fragment_product_info.product_slashed_price
-import kotlinx.android.synthetic.main.fragment_product_info.product_discount
-import kotlinx.android.synthetic.main.fragment_product_info.buy_now
-import kotlinx.android.synthetic.main.fragment_product_info.pb_buy_now
-import kotlinx.android.synthetic.main.fragment_product_info.add_to_cart
-import kotlinx.android.synthetic.main.fragment_product_info.pb_add_to_cart
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
+import kotlinx.android.synthetic.main.fragment_product_info.*
 import javax.inject.Inject
 
 class ProductInfoFragment : BaseDaggerFragment() {
@@ -253,25 +237,13 @@ class ProductInfoFragment : BaseDaggerFragment() {
             success: (Map<String, Any>) -> Unit,
             error: (Throwable) -> Unit
     ){
-        context?.let { context ->
-            (context.applicationContext as HomeRecommendationRouter).getNormalCheckoutIntent(
-                    productId = productDataModel.productDetailData.id,
-                    shopId = productDataModel.productDetailData.shop.id,
-                    quantity =  productDataModel.productDetailData.minOrder,
-                    isOneClickShipment = false
-            ).subscribeOn(Schedulers.newThread())
-                    .unsubscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe (
-                            { result ->
-                                success.invoke(result)
-                            },
-                            {
-                                it.printStackTrace()
-                                error.invoke(it)
-                            }
-                    )
-        }
+        val addToCartRequestParams = AddToCartRequestParams()
+        addToCartRequestParams.productId = productDataModel.productDetailData.id.toLong()
+        addToCartRequestParams.shopId = productDataModel.productDetailData.shop.id
+        addToCartRequestParams.quantity = productDataModel.productDetailData.minOrder
+        addToCartRequestParams.notes = ""
+
+        primaryProductViewModel.addToCart(addToCartRequestParams, success, error)
     }
 
     private fun onErrorRemoveWishList(errorMessage: String?) {
