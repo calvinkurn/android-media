@@ -285,7 +285,8 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
                     topupAnalytics.impressionEnhanceCommercePromoList(digitalTrackPromoList)
                 }
 
-                override fun onClickItemPromo(telcoPromo: TelcoPromo) {
+                override fun onClickItemPromo(telcoPromo: TelcoPromo, position: Int) {
+                    topupAnalytics.clickEnhanceCommercePromo(telcoPromo, position)
                     if (!TextUtils.isEmpty(telcoPromo.urlBannerPromo)) {
                         RouteManager.route(activity, telcoPromo.urlBannerPromo)
                     }

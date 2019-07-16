@@ -95,7 +95,6 @@ class DigitalProductAdapter(val productList: List<TelcoProductDataCollection>, v
 
             productItem.product.attributes.selected = true
             notifyItemChanged(adapterPosition)
-            listener.onClickItemProduct(productItem, adapterPosition)
         }
 
         protected fun setItemSelected(viewGrup: ViewGroup) {

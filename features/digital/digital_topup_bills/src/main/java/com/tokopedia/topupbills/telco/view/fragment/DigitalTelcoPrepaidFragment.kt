@@ -177,11 +177,9 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     fun renderProductFromCustomData() {
         try {
             if (telcoClientNumberWidget.getInputNumber().isNotEmpty()) {
-                val prefixClientNumber = telcoClientNumberWidget.getInputNumber().substring(0, 4)
-
-                selectedOperator = this.operatorData.rechargeCustomData.customDataCollections.filter {
-                    it.value == prefixClientNumber
-                }.single()
+                selectedOperator = this.operatorData.rechargeCustomData.customDataCollections.single {
+                    telcoClientNumberWidget.getInputNumber().startsWith(it.value)
+                }
                 val operatorName = selectedOperator.operator.attributes.name
                 when (inputNumberActionType) {
                     InputNumberActionType.MANUAL -> {
