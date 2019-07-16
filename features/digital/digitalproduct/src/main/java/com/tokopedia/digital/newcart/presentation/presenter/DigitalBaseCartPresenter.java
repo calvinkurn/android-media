@@ -383,17 +383,10 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     }
 
     protected void renderCouponAndVoucher(VoucherDigital voucherDigital) {
-        if (voucherDigital.getAttributeVoucher().getIsCoupon() == 1) {
-            renderCouponInfoData(voucherDigital);
-        } else {
-            renderVoucherInfoData(voucherDigital);
-        }
-    }
-
-    private void renderVoucherInfoData(VoucherDigital voucherDigital) {
-        getView().renderPromoVoucher(
-                voucherDigital.getAttributeVoucher().getVoucherCode(),
-                voucherDigital.getAttributeVoucher().getMessage());
+        getView().renderPromo(
+                voucherDigital.getAttributeVoucher().getTitle(),
+                voucherDigital.getAttributeVoucher().getMessage()
+        );
         renderIfHasDiscount(voucherDigital);
     }
 
@@ -429,15 +422,6 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         return kursIndonesia.format(value).replace(",", ".");
     }
 
-    private void renderCouponInfoData(VoucherDigital voucherDigital) {
-        getView().renderPromoCoupon(
-                voucherDigital.getAttributeVoucher().getTitle(),
-                voucherDigital.getAttributeVoucher().getMessage(),
-                voucherDigital.getAttributeVoucher().getVoucherCode()
-        );
-        renderIfHasDiscount(voucherDigital);
-    }
-
     @Override
     public void onUseVoucherButtonClicked() {
         CartDigitalInfoData cartDigitalInfoData = getView().getCartInfoData();
@@ -460,20 +444,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     }
 
     @Override
-    public void onReceiveVoucherCode(String code, String message, int isCoupon) {
-        if (isViewAttached()){
-            VoucherDigital voucherDigital = new VoucherDigital();
-            VoucherAttributeDigital voucherAttributeDigital = new VoucherAttributeDigital();
-            voucherAttributeDigital.setVoucherCode(code);
-            voucherAttributeDigital.setMessage(message);
-            voucherAttributeDigital.setIsCoupon(isCoupon);
-            voucherDigital.setAttributeVoucher(voucherAttributeDigital);
-            renderCouponAndVoucher(voucherDigital);
-        }
-    }
-
-    @Override
-    public void onReceiveCoupon(String couponTitle, String couponMessage, String couponCode, int isCoupon) {
+    public void onReceivePromoCode(String couponTitle, String couponMessage, String couponCode, int isCoupon) {
         if (isViewAttached()){
             VoucherDigital voucherDigital = new VoucherDigital();
             VoucherAttributeDigital voucherAttributeDigital = new VoucherAttributeDigital();

@@ -92,9 +92,10 @@ public class DigitalCartCheckoutHolderView extends BaseCustomView {
         promoTickerView.setVisibility(GONE);
     }
 
-    public void setPromoInfo(String title, String message) {
+    public void setPromoInfo(String title, String message, TickerCheckoutView.State state) {
         promoTickerView.setTitle(title);
         promoTickerView.setDesc(message);
+        promoTickerView.setState(state);
     }
 
     public void enableVoucherDiscount(long voucherDiscount) {

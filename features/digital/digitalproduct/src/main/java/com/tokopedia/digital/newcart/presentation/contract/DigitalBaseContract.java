@@ -27,11 +27,9 @@ public interface DigitalBaseContract {
 
         void hidePromoTicker();
 
-        void renderPromoCoupon(String title, String message, String voucherCode);
+        void renderPromo(String title, String message);
 
         void enableVoucherDiscount(long discountAmountPlain);
-
-        void renderPromoVoucher(String voucherCode, String message);
 
         void renderDetailMainInfo(List<CartItemDigital> mainInfo);
 
@@ -119,9 +117,7 @@ public interface DigitalBaseContract {
 
         void onUseVoucherButtonClicked();
 
-        void onReceiveVoucherCode(String code, String message, int isCoupon);
-
-        void onReceiveCoupon(String couponTitle,
+        void onReceivePromoCode(String couponTitle,
                              String couponMessage,
                              String couponCode,
                              int isCoupon);

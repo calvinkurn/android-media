@@ -242,7 +242,7 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
         containerLayout.setLayoutParams(
                 layoutParams
         );
-        if (selectedDeals.size() == 0 && !promoCode.isEmpty()) {
+        if (selectedDeals.size() == 0 && !promoData.getPromoCode().isEmpty()) {
             containerLayout.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             targetHeight = containerLayout.getMeasuredHeight();
             containerLayout.getLayoutParams().height = currentHeight;
@@ -490,22 +490,12 @@ public class DigitalDealCheckoutFragment extends DigitalBaseCartFragment<Digital
     }
 
     @Override
-    public void renderPromoCoupon(String title, String message, String voucherCode) {
-        super.renderPromoCoupon(title, message, voucherCode);
+    public void renderPromo(String title, String message) {
+        super.renderPromo(title, message);
         if (!isCartDetailViewVisible()) {
             containerLayout.setLayoutParams(new FrameLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         }
-    }
-
-    @Override
-    public void renderPromoVoucher(String voucherCode, String message) {
-        super.renderPromoVoucher(voucherCode, message);
-        if (!isCartDetailViewVisible()) {
-            containerLayout.setLayoutParams(new FrameLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        }
-
     }
 
 

@@ -21,7 +21,6 @@ import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIden
 import com.tokopedia.common_digital.cart.view.activity.InstantCheckoutActivity;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartAdditionalInfo;
-import com.tokopedia.common_digital.cart.view.model.cart.CartAutoApplyVoucher;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.common_digital.cart.view.model.cart.CartItemDigital;
 import com.tokopedia.common_digital.cart.view.model.cart.UserInputPriceDigital;
@@ -48,7 +47,8 @@ import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
-import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
+import com.tokopedia.promocheckout.common.view.model.PromoData;
+import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
 
 import java.util.List;
@@ -77,7 +77,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     private static final String DIGITAL_CHECKOUT_TRACE = "dg_checkout";
     private SaveInstanceCacheManager saveInstanceCacheManager;
     private DigitalAnalytics digitalAnalytics;
-    protected String promoCode;
+    protected PromoData promoData;
 
     private static final String EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER = "EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER";
 
@@ -128,20 +128,14 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     }
 
     @Override
-    public void renderPromoCoupon(String title, String message, String voucherCode) {
+    public void renderPromo(String title, String message) {
         checkoutHolderView.setPromoTickerActionListener(this);
-        checkoutHolderView.setPromoInfo(title, message);
+        checkoutHolderView.setPromoInfo(title, message, promoData.getState());
     }
 
     @Override
     public void enableVoucherDiscount(long discountAmountPlain) {
         checkoutHolderView.enableVoucherDiscount(discountAmountPlain);
-    }
-
-    @Override
-    public void renderPromoVoucher(String voucherCode, String message) {
-        checkoutHolderView.setPromoTickerActionListener(this);
-        checkoutHolderView.setPromoInfo(voucherCode, message);
     }
 
     @Override
@@ -156,7 +150,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public CheckoutDataParameter.Builder getCheckoutDataParameter() {
-        checkoutDataParameterBuilder.voucherCode(promoCode);
+        if (promoData != null) checkoutDataParameterBuilder.voucherCode(promoData.getPromoCode());
         return checkoutDataParameterBuilder;
     }
 
@@ -207,7 +201,16 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         digitalAnalytics.eventclickUseVoucher(cartDigitalInfoData.getAttributes().getCategoryName());
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_LIST_DIGITAL);
         intent.putExtra("EXTRA_COUPON_ACTIVE", cartDigitalInfoData.getAttributes().isCouponActive());
+        intent.putExtra("EXTRA_PROMO_DIGITAL_MODEL", getPromoDigitalModel());
         startActivityForResult(intent, 230);
+    }
+
+    private PromoDigitalModel getPromoDigitalModel() {
+        return new PromoDigitalModel(
+                getProductId(),
+                cartPassData.getClientNumber(),
+                cartDigitalInfoData.getAttributes().getPricePlain()
+        );
     }
 
     @Override
@@ -217,17 +220,18 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void onClickDetailPromo() {
-        CartAutoApplyVoucher cartVoucherData = cartDigitalInfoData.getAttributes().getAutoApplyVoucher();
         Intent intent;
-        if (cartVoucherData.isCoupon() == 0) {
+        String promoCode = promoData.getPromoCode();
+        if (promoData.getTypePromo() == 1) {
             intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_LIST_DIGITAL);
-            intent.putExtra("PROMO_CODE", cartVoucherData.getCode());
+            intent.putExtra("PROMO_CODE", promoCode);
             intent.putExtra("EXTRA_COUPON_ACTIVE", cartDigitalInfoData.getAttributes().isCouponActive());
         } else {
             intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_DETAIL_DIGITAL);
             intent.putExtra("EXTRA_IS_USE", true);
-            intent.putExtra("EXTRA_KUPON_CODE", cartVoucherData.getCode());
+            intent.putExtra("EXTRA_KUPON_CODE", promoCode);
         }
+        intent.putExtra("EXTRA_PROMO_DIGITAL_MODEL", getPromoDigitalModel());
         startActivityForResult(intent, 231);
     }
 
@@ -287,17 +291,11 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 230 || requestCode == 231) { //TODO: Set request code constant in promo checkout common
+        if ((requestCode == 230 || requestCode == 231) && resultCode == Activity.RESULT_OK) { //TODO: Set request code constant in promo checkout common
             Bundle bundle = data.getExtras();
             if (bundle != null) {
-                PromoStackingData promoData = bundle.getParcelable(TickerCheckoutUtilKt.getEXTRA_PROMO_DATA());
-                promoCode = promoData.getPromoCode();
-                String inputType = bundle.getString(TickerCheckoutUtilKt.getEXTRA_INPUT_TYPE());
-                if (inputType == TickerCheckoutUtilKt.getINPUT_TYPE_PROMO_CODE()) {
-                    presenter.onReceiveVoucherCode(promoData.getPromoCode(), promoData.getDescription(), 0);
-                } else if (inputType == TickerCheckoutUtilKt.getINPUT_TYPE_COUPON()) {
-                    presenter.onReceiveCoupon(promoData.getTitle(), promoData.getDescription(), promoData.getPromoCode(), 1);
-                }
+                promoData = bundle.getParcelable(TickerCheckoutUtilKt.getEXTRA_PROMO_DATA());
+                presenter.onReceivePromoCode(promoData.getTitle(), promoData.getDescription(), promoData.getPromoCode(), promoData.getTypePromo());
             }
         } else if (requestCode == TopPayActivity.REQUEST_CODE) {
             switch (resultCode) {
