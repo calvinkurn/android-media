@@ -10,10 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.discovery.common.data.Option;
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
@@ -22,14 +20,15 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductListAdapter;
 import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductListFragmentView;
 import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductListPresenter;
 import com.tokopedia.discovery.imagesearch.search.fragment.product.adapter.typefactory.ImageProductListTypeFactoryImpl;
+import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
@@ -38,7 +37,6 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionGeneral
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.ProductItemDecoration;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ProductListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.NetworkParamHelper;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GlobalNavViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
@@ -62,7 +60,6 @@ import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -92,7 +89,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     @Inject
     UserSessionInterface userSession;
 
-    private GCMHandler gcmHandler;
     private Config topAdsConfig;
     private ImageProductListAdapter adapter;
     protected TopAdsRecyclerAdapter topAdsRecyclerAdapter;
@@ -102,7 +98,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     private GridLayoutManager gridLayoutManager;
 
     private RedirectionListener redirectionListener;
-    private static final int MAXIMUM_PRODUCT_COUNT_FOR_ONE_EVENT = 12;
 
     public int spanCount;
     private TrackingQueue trackingQueue;
@@ -126,7 +121,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         } else {
             loadDataFromArguments();
         }
-        gcmHandler = new GCMHandler(getContext());
         trackingQueue = new TrackingQueue(getContext());
     }
 
@@ -160,10 +154,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     public String getScreenNameId() {
         return SCREEN_IMAGE_SEARCH_TAB;
-    }
-
-    protected void reloadData() {
-
     }
 
     @Nullable
@@ -225,7 +215,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         topAdsRecyclerAdapter.setOnLoadListener(new TopAdsRecyclerAdapter.OnLoadListener() {
             @Override
             public void onLoad(int page, int totalCount) {
-                topAdsRecyclerAdapter.hideLoading();
+                presenter.loadMoreData(page - 1);
             }
         });
 
@@ -233,7 +223,9 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
             setEmptyProduct();
             setHeaderTopAds(false);
         } else {
-            setProductList(initMappingProduct());
+            presenter.initData(initMappingProduct());
+            topAdsRecyclerAdapter.showLoading();
+            presenter.loadMoreData(0);
             setHeaderTopAds(true);
         }
         topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
@@ -409,27 +401,22 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public void setProductList(List<Visitable> list) {
-        sendImageTrackingDataInChunks(list);
+    public void appendProductList(List<Visitable> list) {
+        sendImageTrackingData(list);
+        topAdsRecyclerAdapter.hideLoading();
         adapter.appendItems(list);
     }
 
-    private void sendImageTrackingDataInChunks(List<Visitable> list) {
+    private void sendImageTrackingData(List<Visitable> list) {
         if (list != null && list.size() > 0) {
             List<Object> dataLayerList = new ArrayList<>();
-            for (int j = 0; j < list.size(); ) {
-                int count = 0;
-                dataLayerList.clear();
-                while (count < MAXIMUM_PRODUCT_COUNT_FOR_ONE_EVENT && j < list.size()) {
-                    count++;
-                    if (list.get(j) instanceof ProductItem) {
-                        ProductItem productItem = (ProductItem)list.get(j);
-                        dataLayerList.add(productItem.getProductAsObjectDataLayerForImageSearchImpression());
-                    }
-                    j++;
+            for (int j = 0; j < list.size(); j++) {
+                if (list.get(j) instanceof ProductItem) {
+                    ProductItem productItem = (ProductItem)list.get(j);
+                    dataLayerList.add(productItem.getProductAsObjectDataLayerForImageSearchImpression());
                 }
-                SearchTracking.eventImpressionImageSearchResultProduct(getActivity(), dataLayerList);
             }
+            SearchTracking.eventImpressionImageSearchResultProduct(getActivity(), dataLayerList);
         }
     }
 
@@ -448,58 +435,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     @Override
     public void enableWishlistButton(String productId) {
         adapter.setWishlistButtonEnabled(productId, true);
-    }
-
-
-    @Override
-    public void showNetworkError(final int startRow) {
-        if (adapter.isListEmpty()) {
-            NetworkErrorHelper.showEmptyState(getActivity(), getView(), new NetworkErrorHelper.RetryClickedListener() {
-                @Override
-                public void onRetryClicked() {
-                    reloadData();
-                }
-            });
-        } else {
-            NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-                @Override
-                public void onRetryClicked() {
-                    adapter.setStartFrom(startRow);
-                    loadMoreProduct(startRow);
-                }
-            }).showRetrySnackbar();
-        }
-    }
-
-    private void loadMoreProduct(final int startRow) {
-        SearchParameter searchParameter =
-                generateLoadMoreParameter(startRow, productViewModel.getQuery());
-
-        HashMap<String, String> additionalParams
-                = NetworkParamHelper.getParamMap(productViewModel.getAdditionalParams());
-
-        presenter.loadMoreData(searchParameter, additionalParams);
-    }
-
-    private SearchParameter generateLoadMoreParameter(int startRow, String query) {
-        SearchParameter searchParameter = getSearchParameter();
-        searchParameter.set(SearchApiConst.UNIQUE_ID, generateUniqueId());
-        searchParameter.set(SearchApiConst.USER_ID, generateUserId());
-        searchParameter.setSearchQuery(query);
-        searchParameter.set(SearchApiConst.START, String.valueOf(startRow));
-        searchParameter.set(SearchApiConst.SC, getSearchParameter().get(SearchApiConst.SC));
-
-        return searchParameter;
-    }
-
-    private String generateUserId() {
-        return userSession.isLoggedIn() ? userSession.getUserId() : "0";
-    }
-
-    private String generateUniqueId() {
-        return userSession.isLoggedIn() ?
-                AuthUtil.md5(userSession.getUserId()) :
-                AuthUtil.md5(gcmHandler.getRegistrationId());
     }
 
     @Override

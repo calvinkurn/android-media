@@ -5,32 +5,28 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.base.domain.DefaultSubscriber;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
-import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.ProductWishlistUrlUseCase;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.ProductViewModelHelper;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import rx.Observable;
+import rx.Scheduler;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by sachinbansal on 4/13/18.
@@ -38,6 +34,7 @@ import rx.Subscriber;
 
 public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProductListFragmentView> implements ImageProductListPresenter {
 
+    private static final int ITEM_COUNT_PER_PAGE = 12;
     @Inject
     ProductWishlistUrlUseCase wishlistUrlUseCase;
     @Inject
@@ -48,7 +45,7 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
     RemoveWishListUseCase removeWishlistActionUseCase;
     private WishListActionListener wishListActionListener;
     private Context context;
-
+    private List<Visitable> dataList = new ArrayList<>();
 
     public ImageProductListPresenterImpl(Context context) {
         this.context = context;
@@ -65,58 +62,37 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
         this.wishListActionListener = wishlistActionListener;
     }
 
+    @Override
+    public void initData(List<Visitable> data) {
+        dataList.clear();
+        dataList.addAll(data);
+    }
 
     @Override
-    public void loadMoreData(final SearchParameter searchParameter, HashMap<String, String> additionalParams) {
-        RequestParams requestParams = GetProductUseCase.createInitializeSearchParam(searchParameter);
-        removeDefaultCategoryParam(requestParams);
-
-        getProductUseCase.execute(requestParams,
-                new DefaultSubscriber<SearchResultModel>() {
-                    @Override
-                    public void onStart() {
-                        getView().setTopAdsEndlessListener();
-                        getView().incrementStart();
-                    }
-
-                    @Override
-                    public void onNext(SearchResultModel searchResultModel) {
-                        ProductViewModel productViewModel
-                                = ProductViewModelHelper.convertToProductViewModel(searchResultModel);
-                        if (isViewAttached()) {
-                            if (productViewModel.getProductList().isEmpty()) {
-                                getView().unSetTopAdsEndlessListener();
-                            } else {
-                                List<Visitable> list = new ArrayList<Visitable>();
-                                list.addAll(productViewModel.getProductList());
-                                getView().setProductList(list);
-                                if (getView().isEvenPage()) {
-                                }
-                                if (getView().getStartFrom() >= searchResultModel.getTotalData()) {
-                                    getView().unSetTopAdsEndlessListener();
-                                }
-                            }
-                            getView().storeTotalData(searchResultModel.getTotalData());
-                        }
-                    }
-
+    public void loadMoreData(int page) {
+        int fromIndex = page * ITEM_COUNT_PER_PAGE;
+        int toIndex = fromIndex + ITEM_COUNT_PER_PAGE;
+        Observable.just(dataList.subList(fromIndex, toIndex))
+                .delay(1000, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<Visitable>>() {
                     @Override
                     public void onCompleted() {
-                        if (isViewAttached()) {
-                            getView().hideRefreshLayout();
-                        }
+
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        if (isViewAttached()) {
-                            getView().hideRefreshLayout();
-                            getView().showNetworkError(searchParameter.getInteger(SearchApiConst.START));
-                        }
+
+                    }
+
+                    @Override
+                    public void onNext(List<Visitable> visitables) {
+                        getView().appendProductList(visitables);
                     }
                 });
     }
-
 
     @Override
     public void handleWishlistButtonClicked(ProductItem productItem) {
@@ -180,11 +156,4 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
     private void removeWishlist(String productId, String userId) {
         removeWishlistActionUseCase.createObservable(productId, userId, wishListActionListener);
     }
-
-    private void removeDefaultCategoryParam(RequestParams params) {
-        if (params.getString(BrowseApi.SC, "").equals(BrowseApi.DEFAULT_VALUE_OF_PARAMETER_SC)) {
-            params.clearValue(BrowseApi.SC);
-        }
-    }
-
 }
