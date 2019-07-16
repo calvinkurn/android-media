@@ -1,5 +1,7 @@
 package com.tokopedia.product.detail.view.fragment
 
+import android.animation.Animator
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ProgressDialog
@@ -12,6 +14,7 @@ import android.content.IntentFilter
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Rect
+import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -92,6 +95,7 @@ import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
 import com.tokopedia.product.detail.view.viewmodel.Loaded
 import com.tokopedia.product.detail.view.viewmodel.Loading
 import com.tokopedia.product.detail.view.viewmodel.ProductInfoViewModel
+import com.tokopedia.product.detail.view.widget.CountDrawable
 import com.tokopedia.product.detail.view.widget.PictureScrollingView
 import com.tokopedia.product.detail.view.widget.SquareHFrameLayout
 import com.tokopedia.product.detail.view.widget.ValuePropositionBottomSheet
@@ -1778,22 +1782,46 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     val lottieCartView = actionView.findViewById<LottieAnimationView>(R.id.lottie_cart_view)
                     if (shouldShowCartAnimation) {
                         shouldShowCartAnimation = false
+                        lottieCartView.addAnimatorListener(object : Animator.AnimatorListener {
+                            override fun onAnimationRepeat(animator: Animator?) {}
+
+                            override fun onAnimationEnd(animator: Animator?) {
+                                activity?.run {
+                                    menuCart.icon = ContextCompat.getDrawable(this, R.drawable.ic_product_cart_counter_dark)
+                                    if (menuCart.icon is LayerDrawable) {
+                                        val icon = menuCart.icon as LayerDrawable
+                                        val badge = CountDrawable(context)
+                                        badge.setCount(if (cartCount > 99) {
+                                            getString(R.string.pdp_label_cart_count_max)
+                                        } else {
+                                            cartCount.toString()
+                                        })
+                                        icon.mutate()
+                                        icon.setDrawableByLayerId(R.id.ic_cart_count, badge)
+                                    }
+                                }
+                            }
+
+                            override fun onAnimationCancel(animator: Animator?) {}
+
+                            override fun onAnimationStart(animator: Animator?) {}
+                        })
                         lottieCartView.playAnimation()
                     } else {
-                        lottieCartView.progress = 1.0f
+                        menuCart.icon = ContextCompat.getDrawable(this, R.drawable.ic_product_cart_counter_dark)
+                        if (menuCart.icon is LayerDrawable) {
+                            val icon = menuCart.icon as LayerDrawable
+                            val badge = CountDrawable(context)
+                            badge.setCount(if (cartCount > 99) {
+                                getString(R.string.pdp_label_cart_count_max)
+                            } else {
+                                cartCount.toString()
+                            })
+                            icon.mutate()
+                            icon.setDrawableByLayerId(R.id.ic_cart_count, badge)
+                        }
                     }
                 }
-//                if (menuCart.icon is LayerDrawable) {
-//                    val icon = menuCart.icon as LayerDrawable
-//                    val badge = CountDrawable(context)
-//                    badge.setCount(if (cartCount > 99) {
-//                        getString(R.string.pdp_label_cart_count_max)
-//                    } else {
-//                        cartCount.toString()
-//                    })
-//                    icon.mutate()
-//                    icon.setDrawableByLayerId(R.id.ic_cart_count, badge)
-//                }
 //                if (val icon = menuCart.icon is LottieDrawable) {
 //                }
 //                if (shouldShowCartAnimation) {
