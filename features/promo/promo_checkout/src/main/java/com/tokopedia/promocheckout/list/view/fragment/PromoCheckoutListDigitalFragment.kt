@@ -13,20 +13,20 @@ import com.tokopedia.abstraction.constant.IRouterConstant
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.analytics.FROM_CART
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
-import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException
 import com.tokopedia.promocheckout.common.util.*
-import com.tokopedia.promocheckout.common.view.model.PromoStackingData
+import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
+import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailDigitalActivity
+import com.tokopedia.promocheckout.list.di.DaggerPromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListModule
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
-import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListMarketplaceContract
-import kotlinx.android.synthetic.main.fragment_promo_checkout_list.*
-import com.tokopedia.promocheckout.list.di.DaggerPromoCheckoutListComponent
+import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListDigitalContract
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListDigitalPresenter
+import kotlinx.android.synthetic.main.fragment_promo_checkout_list.*
 import javax.inject.Inject
 
 class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), PromoCheckoutListDigitalContract.View {
@@ -38,14 +38,14 @@ class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), PromoC
     lateinit var trackingPromoCheckoutUtil: TrackingPromoCheckoutUtil
 
     lateinit var progressDialog: ProgressDialog
+    lateinit var promoDigitalModel: PromoDigitalModel
     var pageTracking: Int = 1
-    private var promo: Promo? = Promo()
 
     override var serviceId: String = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        isCouponActive = arguments?.getBoolean(IS_COUPON_ACTIVE) ?: true
-        promoCode = arguments?.getString(PROMO_CODE) ?: ""
+        isCouponActive = arguments?.getBoolean(EXTRA_IS_COUPON_ACTIVE) ?: true
+        promoDigitalModel = arguments?.getParcelable(EXTRA_PROMO_DIGITAL_MODEL) ?: PromoDigitalModel()
         pageTracking = arguments?.getInt(PAGE_TRACKING) ?: 1
         super.onCreate(savedInstanceState)
         promoCheckoutListDigitalPresenter.attachView(this)
@@ -64,12 +64,12 @@ class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), PromoC
         } else {
             trackingPromoCheckoutUtil.checkoutClickCoupon(promoCheckoutListModel?.code ?: "")
         }
-        startActivityForResult(PromoCheckoutDetailDigitalActivity.createIntent(
-                activity, promoCheckoutListModel?.code, pageTracking = pageTracking, promo = promo), REQUEST_CODE_DETAIL_PROMO)
+        startActivityForResult(PromoCheckoutDetailDigitalActivity.newInstance(
+                activity, promoCheckoutListModel?.code, false, promoDigitalModel, pageTracking), REQUEST_CODE_DETAIL_PROMO)
     }
 
     override fun onPromoCodeUse(promoCode: String) {
-        promoCheckoutListDigitalPresenter.checkPromoStackingCode(promoCode, promo)
+        promoCheckoutListDigitalPresenter.checkPromoStackingCode(promoCode, promoDigitalModel)
     }
 
     override fun showProgressLoading() {
@@ -104,11 +104,11 @@ class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), PromoC
             trackingPromoCheckoutUtil.checkoutClickUsePromoCodeSuccess(data.codes[0])
         }
         val intent = Intent()
-        val typePromo = if (data.isCoupon == PromoStackingData.VALUE_COUPON) PromoStackingData.TYPE_COUPON else PromoStackingData.TYPE_VOUCHER
-        val promoStackingData = PromoStackingData(typePromo, data.codes[0],
-                data.message.text, data.titleDescription, "",
-                data.cashbackWalletAmount, data.message.state.mapToStatePromoStackingCheckout())
-        intent.putExtra(EXTRA_PROMO_DATA, promoStackingData)
+        val typePromo = if (data.isCoupon == PromoData.VALUE_COUPON) PromoData.TYPE_COUPON else PromoData.TYPE_VOUCHER
+        val promoData = PromoData(typePromo, data.codes[0],
+                data.message.text, data.titleDescription,
+                data.cashbackWalletAmount, data.message.state.mapToStatePromoCheckout())
+        intent.putExtra(EXTRA_PROMO_DATA, promoData)
         intent.putExtra(EXTRA_INPUT_TYPE, INPUT_TYPE_PROMO_CODE)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
@@ -127,6 +127,10 @@ class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), PromoC
         } else {
             trackingPromoCheckoutUtil.checkoutImpressionCoupon(promoCheckoutListModel?.code ?: "")
         }
+    }
+
+    override fun onClickItemLastSeen(promoCheckoutLastSeenModel: PromoCheckoutLastSeenModel) {
+        promoCheckoutListDigitalPresenter.checkPromoStackingCode(promoCheckoutLastSeenModel.promoCode, promoDigitalModel)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -149,6 +153,13 @@ class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), PromoC
         super.onActivityResult(requestCode, resultCode, data)
     }
 
+    override fun loadData(page: Int) {
+        if(isCouponActive) {
+            promoCheckoutListPresenter.getListPromo(serviceId, categoryId, page, resources)
+            promoCheckoutListDigitalPresenter.getListLastSeen(listOf(categoryId), resources)
+        }
+    }
+
     override fun initInjector() {
         super.initInjector()
         DaggerPromoCheckoutListComponent.builder()
@@ -165,16 +176,17 @@ class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), PromoC
 
     companion object {
         val REQUEST_CODE_DETAIL_PROMO = 231
-        val IS_COUPON_ACTIVE = "IS_COUPON_ACTIVE"
-        val PROMO_CODE = "PROMO_CODE"
+        val EXTRA_IS_COUPON_ACTIVE = "EXTRA_IS_COUPON_ACTIVE"
+        val EXTRA_PROMO_CODE = "EXTRA_PROMO_CODE"
+        val EXTRA_PROMO_DIGITAL_MODEL = "EXTRA_PROMO_DIGITAL_MODEL"
         val PAGE_TRACKING = "PAGE_TRACKING"
-        val CHECK_PROMO_FIRST_STEP_PARAM = "CHECK_PROMO_FIRST_STEP_PARAM"
 
-        fun createInstance(isCouponActive: Boolean?, promoCode: String?, pageTracking: Int): PromoCheckoutListDigitalFragment {
+        fun createInstance(isCouponActive: Boolean?, promoCode: String?, promoDigitalModel: PromoDigitalModel, pageTracking: Int): PromoCheckoutListDigitalFragment {
             val promoCheckoutListMarketplaceFragment = PromoCheckoutListDigitalFragment()
             val bundle = Bundle()
-            bundle.putBoolean(IS_COUPON_ACTIVE, isCouponActive ?: true)
-            bundle.putString(PROMO_CODE, promoCode ?: "")
+            bundle.putBoolean(EXTRA_IS_COUPON_ACTIVE, isCouponActive ?: true)
+            bundle.putString(EXTRA_PROMO_CODE, promoCode ?: "")
+            bundle.putParcelable(EXTRA_PROMO_DIGITAL_MODEL, promoDigitalModel)
             bundle.putInt(PAGE_TRACKING, pageTracking)
             promoCheckoutListMarketplaceFragment.arguments = bundle
             return promoCheckoutListMarketplaceFragment

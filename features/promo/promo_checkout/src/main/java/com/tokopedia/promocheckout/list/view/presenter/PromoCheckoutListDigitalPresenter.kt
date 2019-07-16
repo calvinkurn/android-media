@@ -1,74 +1,64 @@
 package com.tokopedia.promocheckout.list.view.presenter
 
-import android.text.TextUtils
+import android.content.res.Resources
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.promocheckout.common.data.entity.request.CurrentApplyCode
-import com.tokopedia.promocheckout.common.data.entity.request.Promo
-import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
-import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
-import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
-import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
+import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.promocheckout.R
+import com.tokopedia.promocheckout.common.domain.CheckVoucherDigitalUseCase
+import com.tokopedia.promocheckout.common.domain.mapper.CheckVoucherDigitalMapper
+import com.tokopedia.promocheckout.common.domain.model.CheckVoucherDigital
+import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
+import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
+import java.util.*
 
-class PromoCheckoutListDigitalPresenter(private val checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase, val checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper) : BaseDaggerPresenter<PromoCheckoutListDigitalContract.View>(), PromoCheckoutListDigitalContract.Presenter {
+class PromoCheckoutListDigitalPresenter(private val graphqlUseCase: GraphqlUseCase,
+                                        private val checkVoucherUseCase: CheckVoucherDigitalUseCase,
+                                        val checkVoucherDigitalMapper: CheckVoucherDigitalMapper) : BaseDaggerPresenter<PromoCheckoutListDigitalContract.View>(), PromoCheckoutListDigitalContract.Presenter {
 
-    private val paramGlobal = "global"
     private val statusOK = "OK"
 
-    override fun checkPromoStackingCode(promoCode: String, promo: Promo?) {
-        if (promo == null) return
+    override fun getListLastSeen(categoryIDs: List<Int>, resources: Resources) {
+        val variables = HashMap<String, Any>()
+        variables.put(CATEGORY_IDS, categoryIDs.toString())
+        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
+                R.raw.promo_checkout_last_seen), PromoCheckoutLastSeenModel.Response::class.java, variables, false)
+        graphqlUseCase.clearRequest()
+        graphqlUseCase.addRequest(graphqlRequest)
+        graphqlUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
+            override fun onCompleted() {
 
-        if (TextUtils.isEmpty(promoCode)) {
-            view.onErrorEmptyPromoCode()
-            return
-        } else {
-            // Clear all merchant promo
-            promo.orders?.forEach { order ->
-                order.codes = ArrayList()
             }
-            // Set promo global
-            val codes = ArrayList<String>()
-            codes.add(promoCode)
-            promo.codes = codes
 
-            var currentApplyCode: CurrentApplyCode? = null
-            if (promoCode.isNotEmpty()) {
-                currentApplyCode = CurrentApplyCode(
-                        promoCode,
-                        paramGlobal
-                )
+            override fun onError(e: Throwable) {
+                if (isViewAttached) {
+                    view.showGetListLastSeenError(e)
+                }
             }
-            promo.currentApplyCode = currentApplyCode
-        }
+
+            override fun onNext(objects: GraphqlResponse) {
+                val lastSeenPromoData = objects.getData<PromoCheckoutLastSeenModel.Response>(PromoCheckoutLastSeenModel.Response::class.java)
+                view.renderListLastSeen(lastSeenPromoData.promoModels)
+            }
+        })
+    }
+
+    override fun checkPromoStackingCode(promoCode: String, promoDigitalModel: PromoDigitalModel) {
         view.showProgressLoading()
 
-        checkPromoStackingCodeUseCase.setParams(promo)
-        checkPromoStackingCodeUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
-            override fun onNext(t: GraphqlResponse?) {
+        checkVoucherUseCase.execute(checkVoucherUseCase.createRequestParams(promoCode, promoDigitalModel), object : Subscriber<GraphqlResponse>() {
+            override fun onNext(objects: GraphqlResponse) {
                 view.hideProgressLoading()
-
-                val responseGetPromoStack = checkPromoStackingCodeMapper.call(t)
-                if (responseGetPromoStack.status.equals(statusOK, true)) {
-                    if (responseGetPromoStack.data.clashings.isClashedPromos) {
-                        view?.onClashCheckPromo(responseGetPromoStack.data.clashings)
-                    } else {
-                        responseGetPromoStack.data.codes.forEach {
-                            if (it.equals(promoCode, true)) {
-                                if (responseGetPromoStack.data.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
-                                    view?.hideProgressLoading()
-                                    view.onErrorCheckPromoCode(MessageErrorException(responseGetPromoStack.data.message.text))
-                                } else {
-                                    view.onSuccessCheckPromoStackingCode(responseGetPromoStack.data)
-                                }
-                            }
-                        }
-                    }
+                val checkVoucherData = objects.getData<CheckVoucherDigital.Response>(CheckVoucherDigital.Response::class.java).response
+                if (checkVoucherData.voucherData.success) {
+                    view.onSuccessCheckPromoStackingCode(checkVoucherDigitalMapper.mapData(checkVoucherData.voucherData))
                 } else {
-                    val message = responseGetPromoStack.data.message.text
-                    view.onErrorCheckPromoCode(MessageErrorException(message))
+                    view.onErrorCheckPromoCode(MessageErrorException(checkVoucherData.errors.getOrNull(0)?.status))
                 }
             }
 
@@ -88,7 +78,11 @@ class PromoCheckoutListDigitalPresenter(private val checkPromoStackingCodeUseCas
     }
 
     override fun detachView() {
-        checkPromoStackingCodeUseCase.unsubscribe()
+        checkVoucherUseCase.unsubscribe()
         super.detachView()
+    }
+
+    companion object {
+        const val CATEGORY_IDS = "categoryIDs"
     }
 }

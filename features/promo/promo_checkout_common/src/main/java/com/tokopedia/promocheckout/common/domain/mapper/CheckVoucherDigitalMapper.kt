@@ -1,10 +1,9 @@
 package com.tokopedia.promocheckout.common.domain.mapper
 
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.promocheckout.common.domain.model.CheckVoucherDigitalData
 import com.tokopedia.promocheckout.common.domain.model.Message
-import com.tokopedia.promocheckout.common.domain.model.promostacking.response.*
-import com.tokopedia.promocheckout.common.view.uimodel.*
+import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
+import com.tokopedia.promocheckout.common.view.uimodel.MessageUiModel
 import javax.inject.Inject
 
 open class CheckVoucherDigitalMapper @Inject constructor() {

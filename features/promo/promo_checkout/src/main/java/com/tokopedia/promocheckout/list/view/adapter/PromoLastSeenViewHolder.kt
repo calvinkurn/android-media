@@ -13,6 +13,6 @@ class PromoLastSeenViewHolder(val view : View, val listenerLastSeen: ListenerLas
     }
 
     interface ListenerLastSeen{
-        fun onClickItemLastSeen(promoCheckoutLastSeenModelModel: PromoCheckoutLastSeenModel)
+        fun onClickItemLastSeen(promoCheckoutLastSeenModel: PromoCheckoutLastSeenModel)
     }
 }

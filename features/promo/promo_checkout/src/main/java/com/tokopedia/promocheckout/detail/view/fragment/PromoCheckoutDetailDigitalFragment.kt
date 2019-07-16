@@ -1,5 +1,6 @@
 package com.tokopedia.promocheckout.detail.view.fragment
 
+import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
@@ -9,11 +10,11 @@ import com.tokopedia.abstraction.common.utils.view.CommonUtils
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.analytics.FROM_CART
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
-import com.tokopedia.promocheckout.common.data.entity.request.Promo
-import com.tokopedia.promocheckout.common.util.EXTRA_CLASHING_DATA
-import com.tokopedia.promocheckout.common.util.RESULT_CLASHING
+import com.tokopedia.promocheckout.common.util.*
+import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
+import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import com.tokopedia.promocheckout.detail.di.DaggerPromoCheckoutDetailComponent
 import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailModule
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailDigitalPresenter
@@ -26,16 +27,16 @@ class PromoCheckoutDetailDigitalFragment : BasePromoCheckoutDetailFragment() {
     @Inject
     lateinit var trackingPromoCheckoutUtil: TrackingPromoCheckoutUtil
 
+    lateinit var promoDigitalModel: PromoDigitalModel
     var pageTracking: Int = 1
-    var promo: Promo? = Promo()
     lateinit var progressDialog: ProgressDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         codeCoupon = arguments?.getString(EXTRA_KUPON_CODE, "") ?: ""
         isUse = arguments?.getBoolean(EXTRA_IS_USE, false) ?: false
+        promoDigitalModel = arguments?.getParcelable(EXTRA_PROMO_DIGITAL_MODEL) ?: PromoDigitalModel()
         pageTracking = arguments?.getInt(PAGE_TRACKING, 1) ?: 1
-        promo = arguments?.getParcelable(CHECK_PROMO_CODE_FIRST_STEP_PARAM)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -46,11 +47,11 @@ class PromoCheckoutDetailDigitalFragment : BasePromoCheckoutDetailFragment() {
 
     override fun loadData() {
         super.loadData()
-        promoCheckoutDetailDigitalPresenter.getDetailPromo(codeCoupon, promo = promo)
+        promoCheckoutDetailDigitalPresenter.getDetailPromo(codeCoupon)
     }
 
     override fun onClickUse() {
-        promoCheckoutDetailDigitalPresenter.validatePromoStackingUse(codeCoupon, promo, false)
+        promoCheckoutDetailDigitalPresenter.checkVoucher(codeCoupon, promoDigitalModel)
     }
 
     override fun onClickCancel() {
@@ -68,7 +69,15 @@ class PromoCheckoutDetailDigitalFragment : BasePromoCheckoutDetailFragment() {
         } else {
             trackingPromoCheckoutUtil.checkoutClickUsePromoCouponSuccess(data.codes[0])
         }
-        super.onSuccessValidatePromoStacking(data)
+        val intent = Intent()
+        val typePromo = PromoData.TYPE_COUPON
+        val promoData = PromoData(typePromo, data.codes[0],
+                data.message.text, data.titleDescription,
+                data.cashbackWalletAmount, data.message.state.mapToStatePromoCheckout())
+        intent.putExtra(EXTRA_PROMO_DATA, promoData)
+        intent.putExtra(EXTRA_INPUT_TYPE, INPUT_TYPE_PROMO_CODE)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
     }
 
     override fun onClashCheckPromo(clasingInfoDetailUiModel: ClashingInfoDetailUiModel) {
@@ -127,15 +136,15 @@ class PromoCheckoutDetailDigitalFragment : BasePromoCheckoutDetailFragment() {
     companion object {
         val EXTRA_KUPON_CODE = "EXTRA_KUPON_CODE"
         val EXTRA_IS_USE = "EXTRA_IS_USE"
-        val ONE_CLICK_SHIPMENT = "ONE_CLICK_SHIPMENT"
+        val EXTRA_PROMO_DIGITAL_MODEL = "EXTRA_PROMO_DIGITAL_MODEL"
         val PAGE_TRACKING = "PAGE_TRACKING"
-        val CHECK_PROMO_CODE_FIRST_STEP_PARAM = "CHECK_PROMO_CODE_FIRST_STEP_PARAM"
 
-        fun createInstance(codeCoupon: String, isUse: Boolean, pageTracking: Int): PromoCheckoutDetailDigitalFragment {
+        fun createInstance(codeCoupon: String, isUse: Boolean, promoDigitalModel: PromoDigitalModel, pageTracking: Int): PromoCheckoutDetailDigitalFragment {
             val promoCheckoutDetailFragment = PromoCheckoutDetailDigitalFragment()
             val bundle = Bundle()
             bundle.putString(EXTRA_KUPON_CODE, codeCoupon)
             bundle.putBoolean(EXTRA_IS_USE, isUse)
+            bundle.putParcelable(EXTRA_PROMO_DIGITAL_MODEL, promoDigitalModel)
             bundle.putInt(PAGE_TRACKING, pageTracking)
             promoCheckoutDetailFragment.arguments = bundle
             return promoCheckoutDetailFragment

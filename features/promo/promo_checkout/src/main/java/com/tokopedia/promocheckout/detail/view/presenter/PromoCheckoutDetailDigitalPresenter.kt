@@ -1,30 +1,23 @@
 package com.tokopedia.promocheckout.detail.view.presenter
 
-import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.promocheckout.common.data.entity.request.CurrentApplyCode
-import com.tokopedia.promocheckout.common.data.entity.request.Promo
-import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
+import com.tokopedia.promocheckout.common.domain.CheckVoucherDigitalUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.GetDetailCouponMarketplaceUseCase
-import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
+import com.tokopedia.promocheckout.common.domain.mapper.CheckVoucherDigitalMapper
+import com.tokopedia.promocheckout.common.domain.model.CheckVoucherDigital
 import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStackResponse
-import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
-import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
-import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
+import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import com.tokopedia.promocheckout.detail.model.DataPromoCheckoutDetail
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 
 class PromoCheckoutDetailDigitalPresenter(private val getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
-                                          private val checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase,
+                                          private val checkVoucherDigitalUseCase: CheckVoucherDigitalUseCase,
+                                          val checkVoucherDigitalMapper: CheckVoucherDigitalMapper,
                                           private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase) :
         BaseDaggerPresenter<PromoCheckoutDetailContract.View>(), PromoCheckoutDetailDigitalContract.Presenter {
-
-    private val paramGlobal = "global"
-    private val statusOK = "OK"
 
     override fun cancelPromo(codeCoupon: String) {
         view.showProgressLoading()
@@ -58,9 +51,35 @@ class PromoCheckoutDetailDigitalPresenter(private val getDetailCouponMarketplace
 
     }
 
-    override fun validatePromoStackingUse(promoCode: String, promo: Promo?, isFromLoadDetail: Boolean) { }
+    override fun checkVoucher(promoCode: String, promoDigitalModel: PromoDigitalModel) {
+        view.showProgressLoading()
 
-    override fun getDetailPromo(codeCoupon: String, promo: Promo?) {
+        checkVoucherDigitalUseCase.execute(checkVoucherDigitalUseCase.createRequestParams(promoCode, promoDigitalModel), object : Subscriber<GraphqlResponse>() {
+            override fun onNext(objects: GraphqlResponse) {
+                val checkVoucherData = objects.getData<CheckVoucherDigital.Response>(CheckVoucherDigital.Response::class.java).response
+                if (checkVoucherData.voucherData.success) {
+                    view.onSuccessValidatePromoStacking(checkVoucherDigitalMapper.mapData(checkVoucherData.voucherData))
+                } else {
+                    view.onErrorValidatePromoStacking(com.tokopedia.network.exception.MessageErrorException(checkVoucherData.errors.getOrNull(0)?.status))
+                }
+            }
+
+            override fun onCompleted() {
+
+            }
+
+            override fun onError(e: Throwable) {
+                if (isViewAttached) {
+                    view.hideProgressLoading()
+                    view.onErrorValidatePromoStacking(e)
+                }
+            }
+
+        })
+
+    }
+
+    override fun getDetailPromo(codeCoupon: String) {
         view.showLoading()
         getDetailCouponMarketplaceUseCase.execute(getDetailCouponMarketplaceUseCase.createRequestParams(codeCoupon),
                 object : Subscriber<GraphqlResponse>() {
@@ -87,7 +106,7 @@ class PromoCheckoutDetailDigitalPresenter(private val getDetailCouponMarketplace
 
     override fun detachView() {
         getDetailCouponMarketplaceUseCase.unsubscribe()
-        checkPromoStackingCodeUseCase.unsubscribe()
+        checkVoucherDigitalUseCase.unsubscribe()
         clearCacheAutoApplyStackUseCase.unsubscribe()
         super.detachView()
     }

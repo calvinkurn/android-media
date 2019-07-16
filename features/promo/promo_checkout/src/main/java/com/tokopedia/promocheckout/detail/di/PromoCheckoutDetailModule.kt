@@ -2,13 +2,14 @@ package com.tokopedia.promocheckout.detail.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
+import com.tokopedia.promocheckout.common.domain.CheckVoucherDigitalUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.GetDetailCouponMarketplaceUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
+import com.tokopedia.promocheckout.common.domain.mapper.CheckVoucherDigitalMapper
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailDigitalPresenter
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailPresenter
 import dagger.Module
@@ -25,6 +26,12 @@ class PromoCheckoutDetailModule {
 
     @PromoCheckoutDetailScope
     @Provides
+    fun provideCheckVoucherDigitalUseCase(@ApplicationContext context: Context): CheckVoucherDigitalUseCase {
+        return CheckVoucherDigitalUseCase(context.resources)
+    }
+
+    @PromoCheckoutDetailScope
+    @Provides
     fun provideMarketplacePresenter(getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
                          checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase,
                          checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper,
@@ -35,9 +42,10 @@ class PromoCheckoutDetailModule {
     @PromoCheckoutDetailScope
     @Provides
     fun provideDigitalPresenter(getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
-                         checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase,
-                         clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase): PromoCheckoutDetailDigitalPresenter {
-        return PromoCheckoutDetailDigitalPresenter(getDetailCouponMarketplaceUseCase, checkPromoStackingCodeUseCase, clearCacheAutoApplyStackUseCase)
+                                checkVoucherDigitalUseCase: CheckVoucherDigitalUseCase,
+                                checkVoucherDigitalMapper: CheckVoucherDigitalMapper,
+                                clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase): PromoCheckoutDetailDigitalPresenter {
+        return PromoCheckoutDetailDigitalPresenter(getDetailCouponMarketplaceUseCase, checkVoucherDigitalUseCase, checkVoucherDigitalMapper, clearCacheAutoApplyStackUseCase)
     }
 
     @PromoCheckoutDetailScope

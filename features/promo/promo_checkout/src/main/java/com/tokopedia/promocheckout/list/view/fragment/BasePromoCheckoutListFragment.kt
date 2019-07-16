@@ -94,7 +94,7 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
     /* hold cos api not ready yet
        promoCheckoutListPresenter.getListLastSeen(resources)
     */
-    override fun onClickItemLastSeen(promoCheckoutLastSeenModelModel: PromoCheckoutLastSeenModel) {
+    override fun onClickItemLastSeen(promoCheckoutLastSeenModel: PromoCheckoutLastSeenModel) {
 
     }
 
