@@ -18,15 +18,15 @@ class GetDyanamicAutoSelecetedFilterUseCase @Inject constructor(private val getH
         return Observable.zip(
                 getHotListFilterValueUseCase.createObservable(getHotListFilterValueUseCase.createRequestParams(productAlias)).subscribeOn(Schedulers.io()),
                 getDynamicFilterUseCase.createObservable(requestParams).subscribeOn(Schedulers.io())
-        ) { t1, t2 ->
+        ) { queriesItemList, dynamicFilterModel ->
             var flag: Boolean = false
 
-            t1?.forEach {
+            queriesItemList?.forEach {
                 if (it!!.filterKey.equals(KEY_OFFICIAL_FLAG)) {
                     flag = it.filterValue!!.toBoolean()
                 }
             }
-            DynamicFilterModel(t2.data, t2.processTime, t2.status, flag)
+            DynamicFilterModel(dynamicFilterModel.data, dynamicFilterModel.processTime, dynamicFilterModel.status, flag)
         }
     }
 
