@@ -10,5 +10,5 @@ import com.google.gson.annotations.SerializedName
 data class AddToCartOcsGqlResponse(
         @SerializedName("atcOCS")
         @Expose
-        val addToCartResponse: AddToCartResponse
+        val addToCartResponse: AddToCartResponse = AddToCartResponse()
 )

@@ -10,53 +10,53 @@ import com.google.gson.annotations.SerializedName
 data class DataResponse(
         @SerializedName("success")
         @Expose
-        val success: Int,
+        val success: Int = 0,
 
         @SerializedName("cart_id")
         @Expose
-        val cartId: Long,
+        val cartId: Long = 0,
 
         @SerializedName("product_id")
         @Expose
-        val productId: Int,
+        val productId: Int = 0,
 
         @SerializedName("quantity")
         @Expose
-        val quantity: Int,
+        val quantity: Int = 0,
 
         @SerializedName("notes")
         @Expose
-        val notes: String,
+        val notes: String = "",
 
         @SerializedName("shop_id")
         @Expose
-        val shopId: Int,
+        val shopId: Int = 0,
 
         @SerializedName("customer_id")
         @Expose
-        val customerId: Int,
+        val customerId: Int = 0,
 
         @SerializedName("warehouse_id")
         @Expose
-        val warehouseId: Int,
+        val warehouseId: Int = 0,
 
         @SerializedName("tracker_attribution")
         @Expose
-        val trackerAttribution: String,
+        val trackerAttribution: String = "",
 
         @SerializedName("tracker_list_name")
         @Expose
-        val trackerListName: String,
+        val trackerListName: String = "",
 
         @SerializedName("uc_ut_param")
         @Expose
-        val ucUtParam: String,
+        val ucUtParam: String = "",
 
         @SerializedName("is_trade_in")
         @Expose
-        val isTradeIn: Boolean,
+        val isTradeIn: Boolean = false,
 
         @SerializedName("message")
         @Expose
-        val message: ArrayList<String>
+        val message: ArrayList<String> = arrayListOf()
 )
