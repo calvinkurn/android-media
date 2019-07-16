@@ -317,6 +317,6 @@
     <string name="must_insert_email_or_phone">Nomor Ponsel atau Email harus diisi</string>
     <string name="change_2">Ubah</string>
     <string name="loginregister_failed_login_google">Akun gagal terautentikasi (%s). Mohon coba kembali.</string>
-  <string name="deafult_placeholder">Contoh: 08123456789</string>
+  <string name="default_placeholder">Contoh: 08123456789</string>
 
 </resources>

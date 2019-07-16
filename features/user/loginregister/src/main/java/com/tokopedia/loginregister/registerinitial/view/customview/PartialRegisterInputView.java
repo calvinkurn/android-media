@@ -76,7 +76,7 @@ public class PartialRegisterInputView extends BaseCustomView {
 
     public void renderData() {
         tvMessage.setVisibility(VISIBLE);
-        tvMessage.setText(tvMessage.getContext().getString(R.string.deafult_placeholder));
+        tvMessage.setText(tvMessage.getContext().getString(R.string.default_placeholder));
 
         etInputEmailPhone.addTextChangedListener(watcher(wrapperEmailPhone));
         etPassword.addTextChangedListener(watcher(wrapperPassword));
