@@ -48,6 +48,7 @@ import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactoryImpl
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
 import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewState
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
@@ -66,6 +67,7 @@ import com.tokopedia.transaction.common.sharedata.AddToCartResult
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseSimpleWebViewActivity
 import java.lang.IllegalStateException
+import java.net.URLEncoder
 import javax.inject.Inject
 
 /**
@@ -75,7 +77,7 @@ import javax.inject.Inject
 class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         , TypingListener, SendButtonListener, ImagePickerListener, ChatTemplateListener,
         HeaderMenuListener, DualAnnouncementListener, SecurityInfoListener,
-        TopChatVoucherListener {
+        TopChatVoucherListener, InvoiceThumbnailListener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -436,6 +438,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
         return TopChatTypeFactoryImpl(
+                this,
                 this,
                 this,
                 this,
@@ -854,5 +857,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         if (seenAttachedProduct.add(element.productId)) {
             analytics.eventSeenProductAttachment(element)
         }
+    }
+
+    override fun onClickInvoiceThumbnail(url: String, id: String) {
+        val encodedUrl = URLEncoder.encode(url, "UTF-8")
+        onGoToWebView(encodedUrl, id)
     }
 }

@@ -9,6 +9,7 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncem
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ImageDualAnnouncementViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.SecurityInfoChatViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopChatVoucherViewHolder
@@ -26,7 +27,8 @@ open class TopChatTypeFactoryImpl(
         productAttachmentListener: ProductAttachmentListener,
         private val imageDualAnnouncementListener: DualAnnouncementListener,
         private val securityInfoListener: SecurityInfoListener,
-        private val voucherListener: TopChatVoucherListener
+        private val voucherListener: TopChatVoucherListener,
+        private val invoiceThumbnailListener: InvoiceThumbnailListener
 ) : BaseChatTypeFactoryImpl(
         imageAnnouncementListener,
         chatLinkHandlerListener,
@@ -56,7 +58,7 @@ open class TopChatTypeFactoryImpl(
             SecurityInfoChatViewHolder.LAYOUT -> SecurityInfoChatViewHolder(parent, securityInfoListener)
             ImageDualAnnouncementViewHolder.LAYOUT -> ImageDualAnnouncementViewHolder(parent, imageDualAnnouncementListener)
             TopChatVoucherViewHolder.LAYOUT -> TopChatVoucherViewHolder(parent, voucherListener)
-            AttachedInvoiceViewHolder.LAYOUT -> AttachedInvoiceViewHolder(parent)
+            AttachedInvoiceViewHolder.LAYOUT -> AttachedInvoiceViewHolder(parent, invoiceThumbnailListener)
             else -> super.createViewHolder(parent, type)
         }
     }

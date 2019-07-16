@@ -15,6 +15,7 @@ class AttachInvoiceSentViewModel : SendableViewModel, Visitable<BaseChatTypeFact
     var statusId: Int? = null
     var status: String? = null
     var invoiceId: String? = null
+    var invoiceUrl: String? = null
 
     /**
      * Constructor for WebSocket.
@@ -48,7 +49,8 @@ class AttachInvoiceSentViewModel : SendableViewModel, Visitable<BaseChatTypeFact
             isSender: Boolean,
             statusId: Int,
             status: String,
-            invoiceId: String
+            invoiceId: String,
+            invoiceUrl: String
     ) : super(
             msgId,
             fromUid,
@@ -69,6 +71,7 @@ class AttachInvoiceSentViewModel : SendableViewModel, Visitable<BaseChatTypeFact
         this.statusId = statusId
         this.status = status
         this.invoiceId = invoiceId
+        this.invoiceUrl = invoiceUrl
     }
 
     /**
@@ -104,7 +107,8 @@ class AttachInvoiceSentViewModel : SendableViewModel, Visitable<BaseChatTypeFact
             isRead: Boolean,
             statusId: Int,
             status: String,
-            invoiceId: String
+            invoiceId: String,
+            invoiceUrl: String
     ) : super(
             msgId,
             fromUid,
@@ -125,6 +129,7 @@ class AttachInvoiceSentViewModel : SendableViewModel, Visitable<BaseChatTypeFact
         this.statusId = statusId
         this.status = status
         this.invoiceId = invoiceId
+        this.invoiceUrl = invoiceUrl
     }
 
     /**

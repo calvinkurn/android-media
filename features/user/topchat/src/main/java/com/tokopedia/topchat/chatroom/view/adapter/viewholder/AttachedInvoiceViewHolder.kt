@@ -15,7 +15,7 @@ import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.topchat.R
 import com.tokopedia.unifycomponents.Label
 
-class AttachedInvoiceViewHolder(itemView: View) : BaseChatViewHolder<AttachInvoiceSentViewModel>(itemView) {
+class AttachedInvoiceViewHolder(itemView: View, private val invoiceThumbnailListener: InvoiceThumbnailListener) : BaseChatViewHolder<AttachInvoiceSentViewModel>(itemView) {
 
     private val container: RelativeLayout? = itemView.findViewById(R.id.rl_container)
     private val chatBubble: ConstraintLayout? = itemView.findViewById(R.id.cl_chat_bubble)
@@ -24,11 +24,16 @@ class AttachedInvoiceViewHolder(itemView: View) : BaseChatViewHolder<AttachInvoi
     private val invoiceId : TextView? = itemView.findViewById(R.id.tv_invoice_id)
     private val price : TextView? = itemView.findViewById(R.id.tv_price)
 
+    interface InvoiceThumbnailListener {
+        fun onClickInvoiceThumbnail(url: String, id: String)
+    }
+
     override fun bind(viewModel: AttachInvoiceSentViewModel?) {
         if (viewModel == null) return
         super.bind(viewModel)
         alignLayout(viewModel)
         bindViewWithModel(viewModel)
+        assignInteraction(viewModel)
     }
 
     private fun alignLayout(viewModel: AttachInvoiceSentViewModel) {
@@ -58,6 +63,14 @@ class AttachedInvoiceViewHolder(itemView: View) : BaseChatViewHolder<AttachInvoi
         status?.text = viewModel.status
         invoiceId?.text = viewModel.invoiceId
         price?.text = viewModel.totalAmount
+    }
+
+    private fun assignInteraction(viewModel: AttachInvoiceSentViewModel) {
+        itemView.setOnClickListener {
+            viewModel.invoiceUrl?.let {
+                invoiceThumbnailListener.onClickInvoiceThumbnail(it, it)
+            }
+        }
     }
 
     companion object {
