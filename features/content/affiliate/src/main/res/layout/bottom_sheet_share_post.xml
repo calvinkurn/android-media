@@ -11,19 +11,18 @@
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Neutral_N700"
+        android:textColor="@color/Neutral_N700_96"
         android:text="@string/af_share_title"
-        app:typographyType="heading_4"
-        tools:text="Share biar makin laris!"/>
+        android:layout_marginTop="@dimen/dp_4"
+        app:typographyType="heading_4"/>
     
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_2"
-        android:textColor="@color/Neutral_N700"
+        android:textColor="@color/Neutral_N700_96"
         android:text="@string/af_share_subtitle"
-        app:typographyType="body_3"
-        tools:text="Makin banyak yang lihat, makin cepat larisnya."/>
+        app:typographyType="body_3"/>
 
     <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
         android:id="@+id/shareList"

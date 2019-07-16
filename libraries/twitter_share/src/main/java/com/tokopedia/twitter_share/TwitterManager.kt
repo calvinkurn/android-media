@@ -41,7 +41,7 @@ class TwitterManager(
             .build()
 
     val isAuthenticated: Boolean
-        get() = try { instance.oAuthAccessToken != null } catch(e: Exception) { false }
+        get() = session.getAccessToken() != null && session.getAccessTokenSecret() != null
 
     var shouldPostToTwitter: Boolean
         get() = session.shouldPostToTwitter
