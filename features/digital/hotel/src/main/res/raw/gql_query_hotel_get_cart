@@ -1,4 +1,5 @@
 query PropertyCart($data: PropertyGetCartRequest!) {
+  status
   propertyGetCart(input: $data) {
     cartID
     cart {

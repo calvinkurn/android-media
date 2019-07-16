@@ -1,4 +1,5 @@
 query OrderDetailsQuery($orderCategoryStr: String, $orderId: String) {
+  status
   orderDetails(orderCategoryStr: $orderCategoryStr, orderId: $orderId) {
     status {
       status
