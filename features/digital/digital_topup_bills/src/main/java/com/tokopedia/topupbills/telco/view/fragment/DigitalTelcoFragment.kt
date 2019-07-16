@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.DigitalTopupAnalytics
+import com.tokopedia.topupbills.common.DigitalTopupEventTracking
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.view.adapter.DigitalTelcoProductTabAdapter
@@ -26,12 +27,11 @@ import javax.inject.Inject
 class DigitalTelcoFragment : BaseDaggerFragment() {
 
     private var posCurrentTabExtraParam = DigitalSubMenuWidget.HEADER_LEFT
-
     @Inject
     lateinit var topupAnalytics: DigitalTopupAnalytics
 
-    override fun getScreenName(): String {
-        return ""
+    override fun getScreenName(): String? {
+        return null
     }
 
     override fun initInjector() {
@@ -88,7 +88,7 @@ class DigitalTelcoFragment : BaseDaggerFragment() {
             }
         })
         header_view.setHeader(list)
-        header_view.setHeaderActive(list.get(posCurrentTabExtraParam), posCurrentTabExtraParam)
+        configHeaderActive(posCurrentTabExtraParam, list)
 
         menu_view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {
@@ -100,14 +100,20 @@ class DigitalTelcoFragment : BaseDaggerFragment() {
             }
 
             override fun onPageSelected(position: Int) {
-                if (position == 0) {
-                    header_view.headerLeftActive(list[DigitalSubMenuWidget.HEADER_LEFT])
-                } else {
-                    header_view.headerRightActive(list[DigitalSubMenuWidget.HEADER_RIGHT])
-                }
+                configHeaderActive(position, list)
                 topupAnalytics.eventClickTelcoTab(list[position].label)
             }
         })
+    }
+
+    fun configHeaderActive(position: Int, list: List<DigitalProductSubMenu>) {
+        if (position == 0) {
+            header_view.headerLeftActive(list[DigitalSubMenuWidget.HEADER_LEFT])
+            topupAnalytics.trackScreenNameTelco(DigitalTopupEventTracking.Screen.DIGITAL_TELCO_PREPAID)
+        } else {
+            header_view.headerRightActive(list[DigitalSubMenuWidget.HEADER_RIGHT])
+            topupAnalytics.trackScreenNameTelco(DigitalTopupEventTracking.Screen.DIGITAL_TELCO_POSTPAID)
+        }
     }
 
     fun onBackPressed() {

@@ -274,4 +274,8 @@ class DigitalTopupAnalytics {
         )
 
     }
+
+    fun trackScreenNameTelco(screenName: String) {
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
+    }
 }

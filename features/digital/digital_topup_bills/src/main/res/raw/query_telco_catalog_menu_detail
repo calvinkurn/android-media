@@ -1,4 +1,5 @@
 query catalogMenuDetail($menuID: Int!){
+  status
   rechargeCatalogMenuDetail(menuID: $menuID, platformID: 5) {
     recommendations {
       iconUrl

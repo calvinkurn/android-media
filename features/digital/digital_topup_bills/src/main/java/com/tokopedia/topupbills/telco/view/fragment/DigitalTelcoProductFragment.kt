@@ -48,13 +48,6 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
     @Inject
     lateinit var topupAnalytics: DigitalTopupAnalytics
 
-    override fun onStart() {
-        context?.let {
-            GraphqlClient.init(it)
-        }
-        super.onStart()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.let {

@@ -13,10 +13,8 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.common.DigitalTopupEventTracking
 import com.tokopedia.topupbills.generateRechargeCheckoutToken
 import com.tokopedia.topupbills.telco.data.*
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
@@ -60,15 +58,8 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
-    override fun onStart() {
-        context?.let {
-            GraphqlClient.init(it)
-        }
-        super.onStart()
-    }
-
-    override fun getScreenName(): String {
-        return DigitalTopupEventTracking.Screen.DIGITAL_TELCO_POSTPAID
+    override fun getScreenName(): String? {
+        return null
     }
 
     override fun initInjector() {
@@ -104,7 +95,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         super.onActivityCreated(savedInstanceState)
         sharedModel.promoItem.observe(this, Observer {
             it?.run {
-                    promoListWidget.notifyPromoItemChanges(this)
+                promoListWidget.notifyPromoItemChanges(this)
             }
         })
     }
@@ -120,7 +111,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                 R.raw.query_telco_catalog_menu_detail), this::onLoadingMenuDetail,
                 this::onSuccessCatalogMenuDetail, this::onErrorCatalogMenuDetail)
         catalogMenuDetailViewModel.getFavNumbersPostpaid(GraphqlHelper.loadRawString(resources,
-                R.raw.temp_query_fav_number_digital), this::onSuccessFavNumbers, this::onErrorFavNumbers)
+                R.raw.query_fav_number_digital), this::onSuccessFavNumbers, this::onErrorFavNumbers)
     }
 
     fun getDataFromBundle() {
