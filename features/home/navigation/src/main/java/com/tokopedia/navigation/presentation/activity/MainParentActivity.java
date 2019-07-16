@@ -29,7 +29,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.view.menu.MenuItemImpl;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
@@ -71,8 +70,6 @@ import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
@@ -97,23 +94,22 @@ public class MainParentActivity extends BaseActivity implements
     public static final int HOME_MENU = 0;
     public static final int FEED_MENU = 1;
     public static final int OS_MENU = 2;
-    private static final String OFFICIAL_STORE = "Official Store";
     public static final int CART_MENU = 3;
     public static final int ACCOUNT_MENU = 4;
     public static final int RECOMENDATION_LIST = 5;
-    private static final int EXIT_DELAY_MILLIS = 2000;
-    private static final String IS_RECURRING_APPLINK = "IS_RECURRING_APPLINK";
     public static final String DEFAULT_NO_SHOP = "0";
     public static final String BROADCAST_FEED = "BROADCAST_FEED";
     public static final String PARAM_BROADCAST_NEW_FEED = "PARAM_BROADCAST_NEW_FEED";
     public static final String PARAM_BROADCAST_NEW_FEED_CLICKED = "PARAM_BROADCAST_NEW_FEED_CLICKED";
-
+    public static final String SCROLL_RECOMMEND_LIST = "recommend_list";
+    private static final String OFFICIAL_STORE = "Official Store";
+    private static final int EXIT_DELAY_MILLIS = 2000;
+    private static final String IS_RECURRING_APPLINK = "IS_RECURRING_APPLINK";
     private static final String SHORTCUT_BELI_ID = "Beli";
     private static final String SHORTCUT_DIGITAL_ID = "Bayar";
     private static final String SHORTCUT_SHARE_ID = "Share";
     private static final String SHORTCUT_SHOP_ID = "Jual";
     private static final String ANDROID_CUSTOMER_NEW_OS_HOME_ENABLED = "android_customer_new_os_home_enabled";
-
     @Inject
     UserSessionInterface userSession;
     @Inject
@@ -122,7 +118,6 @@ public class MainParentActivity extends BaseActivity implements
     GlobalNavAnalytics globalNavAnalytics;
     @Inject
     ApplicationUpdate appUpdate;
-
     private BottomNavigation bottomNavigation;
     private ShowCaseDialog showCaseDialog;
     private List<Fragment> fragmentList;
@@ -134,8 +129,6 @@ public class MainParentActivity extends BaseActivity implements
     private boolean doubleTapExit = false;
     private BroadcastReceiver newFeedClickedReceiver;
     private SharedPreferences cacheManager;
-    private RemoteConfig remoteConfig;
-
     private Handler handler = new Handler();
     private CoordinatorLayout fragmentContainer;
     private boolean isFirstNavigationImpression = false;
@@ -160,19 +153,13 @@ public class MainParentActivity extends BaseActivity implements
         return intent;
     }
 
-    @DeepLink({ ApplinkConst.OFFICIAL_STORES, ApplinkConst.OFFICIAL_STORE })
+    @DeepLink({ApplinkConst.OFFICIAL_STORES, ApplinkConst.OFFICIAL_STORE})
     public static Intent getApplinkOfficialStoreIntent(Context context, Bundle bundle) {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-        if(remoteConfig.getBoolean(ANDROID_CUSTOMER_NEW_OS_HOME_ENABLED, false)) {
-            Intent intent = start(context);
-            intent.putExtra(ARGS_TAB_POSITION, OS_MENU);
-            return intent;
-        } else {
-            return ((GlobalNavRouter) context.getApplicationContext()).getOldOfficialStore(context);
-        }
+        Intent intent = start(context);
+        intent.putExtra(ARGS_TAB_POSITION, OS_MENU);
+        return intent;
     }
 
-    public static final String SCROLL_RECOMMEND_LIST = "recommend_list";
     @DeepLink({ApplinkConst.HOME_RECOMMENDATION})
     public static Intent getApplinkRecommendationEvent(Context context) {
         Intent intent = start(context);
@@ -184,6 +171,17 @@ public class MainParentActivity extends BaseActivity implements
     public static Intent start(Context context) {
         return new Intent(context, MainParentActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+    }
+
+    public static void setWindowFlag(Activity activity, final int bits, boolean on) {
+        Window win = activity.getWindow();
+        WindowManager.LayoutParams winParams = win.getAttributes();
+        if (on) {
+            winParams.flags |= bits;
+        } else {
+            winParams.flags &= ~bits;
+        }
+        win.setAttributes(winParams);
     }
 
     @Override
@@ -238,9 +236,9 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         try {
-           super.onRestoreInstanceState(savedInstanceState);
+            super.onRestoreInstanceState(savedInstanceState);
         } catch (Exception e) {
-           reloadPage();
+            reloadPage();
         }
     }
 
@@ -363,12 +361,7 @@ public class MainParentActivity extends BaseActivity implements
             LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
         }
 
-        if (position == OS_MENU && !isNewOfficialStoreEnabled()) {
-            startActivity(((GlobalNavRouter) getApplication()).getOldOfficialStore(this));
-            return false;
-        }
-
-        if ((position == CART_MENU || position == ACCOUNT_MENU ) && !presenter.isUserLogin()) {
+        if ((position == CART_MENU || position == ACCOUNT_MENU) && !presenter.isUserLogin()) {
             RouteManager.route(this, ApplinkConst.LOGIN);
             return false;
         }
@@ -420,17 +413,6 @@ public class MainParentActivity extends BaseActivity implements
             setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
-    }
-
-    public static void setWindowFlag(Activity activity, final int bits, boolean on) {
-        Window win = activity.getWindow();
-        WindowManager.LayoutParams winParams = win.getAttributes();
-        if (on) {
-            winParams.flags |= bits;
-        } else {
-            winParams.flags &= ~bits;
-        }
-        win.setAttributes(winParams);
     }
 
     private void selectFragment(Fragment fragment) {
@@ -674,7 +656,7 @@ public class MainParentActivity extends BaseActivity implements
                         bottomNavigation.getLeft(),
                         bottomNavTopPos,
                         bottomNavigation.getRight(),
-                        bottomNavBottomPos} ));
+                        bottomNavBottomPos}));
         showcases.addAll(showCaseObjects);
 
         showCaseDialog.show(this, showCaseTag, showcases);
@@ -699,7 +681,7 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
-    private void checkAppUpdateRemoteConfig(){
+    private void checkAppUpdateRemoteConfig() {
         appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
             @Override
             public void onNeedUpdate(DetailUpdate detail) {
@@ -909,14 +891,6 @@ public class MainParentActivity extends BaseActivity implements
                 e.printStackTrace();
             }
         }
-    }
-
-    private boolean isNewOfficialStoreEnabled() {
-        if(remoteConfig == null) {
-            remoteConfig = new FirebaseRemoteConfigImpl(this);
-        }
-
-        return remoteConfig.getBoolean(ANDROID_CUSTOMER_NEW_OS_HOME_ENABLED, false);
     }
 
     @Override
