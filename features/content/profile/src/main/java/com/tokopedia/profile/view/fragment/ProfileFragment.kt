@@ -1104,7 +1104,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                         String.format(getString(R.string.profile_share_title)))
                 profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
                 isShareProfile = true
-                share(it.link)
+                showShareBottomSheets()
             }
         }
     }
@@ -1173,7 +1173,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                         String.format(getString(R.string.profile_share_title)))
                 profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
                 isShareProfile = true
-                share(element.link)
+                showShareBottomSheets()
             }
         } else {
             iv_action_parallax.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_af_graph))
