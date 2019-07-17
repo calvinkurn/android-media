@@ -261,6 +261,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        clearData()
         prepareView()
         showLoadingDiscover()
         context?.run {
@@ -281,6 +282,10 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         }
 
         presenter.getTickerInfo()
+    }
+
+    private fun clearData() {
+        userSession.logoutSession()
     }
 
     private fun onLoginEmailClick() {

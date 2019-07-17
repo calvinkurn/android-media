@@ -5,8 +5,7 @@ import android.support.v7.widget.RecyclerView;
 
 import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
-import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
-import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
+import com.tokopedia.checkout.domain.usecase.DeleteCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartUseCase;
@@ -32,8 +31,7 @@ import static org.mockito.Mockito.mock;
 public class TestCartListModule {
     private final CartListAdapter.ActionListener cartListActionListener;
     private GetCartListUseCase getCartListUseCase;
-    private DeleteCartUseCase deleteCartUseCase;
-    private DeleteCartGetCartListUseCase deleteCartGetCartListUseCase;
+    private DeleteCartListUseCase deleteCartListUseCase;
     private UpdateCartUseCase updateCartUseCase;
     private ResetCartGetCartListUseCase resetCartGetCartListUseCase;
     private ResetCartUseCase resetCartUseCase;
@@ -54,8 +52,7 @@ public class TestCartListModule {
     @Provides
     @CartListScope
     ICartListPresenter provideICartListPresenter(GetCartListUseCase getCartListUseCase,
-                                                 DeleteCartUseCase deleteCartUseCase,
-                                                 DeleteCartGetCartListUseCase deleteCartGetCartListUseCase,
+                                                 DeleteCartListUseCase deleteCartListUseCase,
                                                  UpdateCartUseCase updateCartUseCase,
                                                  ResetCartGetCartListUseCase resetCartGetCartListUseCase,
                                                  CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
@@ -64,8 +61,8 @@ public class TestCartListModule {
                                                  CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase) {
 
         return new CartListPresenter(
-                getGetCartListUseCase(), deleteCartUseCase,
-                deleteCartGetCartListUseCase, updateCartUseCase,
+                getGetCartListUseCase(),
+                deleteCartListUseCase, updateCartUseCase,
                 resetCartGetCartListUseCase,
                 checkPromoCodeCartListUseCase, compositeSubscription,
                 cartApiRequestParamGenerator, cancelAutoApplyCouponUseCase

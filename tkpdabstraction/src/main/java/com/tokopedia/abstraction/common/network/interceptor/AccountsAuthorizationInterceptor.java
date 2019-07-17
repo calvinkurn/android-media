@@ -30,7 +30,7 @@ public class AccountsAuthorizationInterceptor implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         Request.Builder newRequest = chain.request().newBuilder();
         newRequest.removeHeader(KEY_ACCOUNTS_AUTHORIZATION);
-        newRequest = addAccountsAuthorizationHeader(newRequest);
+        addAccountsAuthorizationHeader(newRequest);
         return chain.proceed(newRequest.build());
     }
 

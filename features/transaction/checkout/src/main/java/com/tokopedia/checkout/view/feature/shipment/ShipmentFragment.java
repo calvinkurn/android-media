@@ -38,6 +38,7 @@ import com.tokopedia.checkout.domain.datamodel.promostacking.MessageData;
 import com.tokopedia.checkout.domain.datamodel.promostacking.VoucherOrdersItemData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
+import com.tokopedia.checkout.view.common.PromoActionListener;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutFragment;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemTickerErrorHolderData;
 import com.tokopedia.checkout.view.di.component.CartComponent;
@@ -67,8 +68,8 @@ import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.design.component.Tooltip;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
-import com.tokopedia.logisticanalytics.CodAnalytics;
-import com.tokopedia.logisticcommon.LogisticCommonConstant;
+import com.tokopedia.logisticdata.data.analytics.CodAnalytics;
+import com.tokopedia.logisticdata.data.constant.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
@@ -137,7 +138,7 @@ import static com.tokopedia.transactiondata.constant.Constant.EXTRA_CHECKOUT_REQ
  * Originaly authored by Aghny, Angga, Kris
  */
 
-public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentContract.View,
+public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentContract.View, PromoActionListener,
         ShipmentContract.AnalyticsActionListener, ShipmentAdapterActionListener, CourierBottomsheet.ActionListener,
         ShippingDurationBottomsheetListener, ShippingCourierBottomsheetListener,
         MerchantVoucherListBottomSheetFragment.ActionListener, ClashBottomSheetFragment.ActionListener,
@@ -730,11 +731,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         } else {
             NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
         }
-    }
-
-    @Override
-    public void sendAnalyticsChoosePaymentMethodSuccess() {
-        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickPilihMetodePembayaranSuccess();
     }
 
     @Override
@@ -1886,12 +1882,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             startActivityForResult(checkoutModuleRouter.getPromoCheckoutListIntentWithCode(dataGlobal.getPromoCodeSafe(),
                     true, isOneClickShipment(), TrackingPromoCheckoutConstantKt.getFROM_CART(), promo), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
         }
-    }
-
-    @Override
-    public void onCartItemTickerErrorActionClicked(CartItemTickerErrorHolderData data,
-                                                   int position) {
-
     }
 
     @Override

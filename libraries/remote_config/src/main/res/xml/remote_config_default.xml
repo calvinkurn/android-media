@@ -316,4 +316,8 @@
         <key>android_enable_gtm_refresh</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>android_power_merchant_f1_enabled</key>
+        <value>false</value>
+    </entry>
 </defaultsMap>

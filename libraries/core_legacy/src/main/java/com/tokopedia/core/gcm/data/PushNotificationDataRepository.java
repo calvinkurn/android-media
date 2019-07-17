@@ -57,12 +57,7 @@ public class PushNotificationDataRepository implements PushNotificationRepositor
                                 .createDiskPushNotificationDataStore()
                                 .deviceRegistration()
                 )
-                .first(new Func1<DeviceRegistrationDataResponse, Boolean>() {
-                    @Override
-                    public Boolean call(DeviceRegistrationDataResponse response) {
-                        return !TextUtils.isEmpty(response.getDeviceRegistration());
-                    }
-                });
+                .first(response -> !TextUtils.isEmpty(response.getDeviceRegistration()));
     }
 
     @Override
@@ -76,12 +71,7 @@ public class PushNotificationDataRepository implements PushNotificationRepositor
     public Observable<List<MessagePushNotification>> getSavedMessagePushNotification() {
         return mPushNotificationDataStoreFactory.createDiskPushNotificationDataStore()
                 .getPushSavedPushNotificationWithOrderBy(Constants.ARG_NOTIFICATION_APPLINK_MESSAGE, true)
-                .map(new Func1<List<PushNotification>, List<MessagePushNotification>>() {
-                    @Override
-                    public List<MessagePushNotification> call(List<PushNotification> pushNotifications) {
-                        return mPushNotificationMapper.transformMessage(pushNotifications);
-                    }
-                });
+                .map(mPushNotificationMapper::transformMessage);
     }
 
     @Override
@@ -92,29 +82,10 @@ public class PushNotificationDataRepository implements PushNotificationRepositor
     }
 
     @Override
-    public Observable<Boolean> storePushNotification(String category, String response, String customIndex) {
-        return mPushNotificationDataStoreFactory
-                .createDiskPushNotificationDataStore()
-                .savePushNotification(category, response, customIndex);
-    }
-
-    @Override
-    public Observable<Boolean> storePushNotification(String category, String response) {
-        return mPushNotificationDataStoreFactory
-                .createDiskPushNotificationDataStore()
-                .savePushNotification(category, response);
-    }
-
-    @Override
     public Observable<List<DiscussionPushNotification>> getSavedDiscussionPushNotification() {
         return mPushNotificationDataStoreFactory.createDiskPushNotificationDataStore()
                 .getPushSavedPushNotificationWithOrderBy(Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION, true)
-                .map(new Func1<List<PushNotification>, List<DiscussionPushNotification>>() {
-                    @Override
-                    public List<DiscussionPushNotification> call(List<PushNotification> pushNotifications) {
-                        return mPushNotificationMapper.transformDiscussion(pushNotifications);
-                    }
-                });
+                .map(mPushNotificationMapper::transformDiscussion);
     }
 
     @Override
