@@ -698,7 +698,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
 
                     @Override
                     public void onNext(Long aLong) {
-
+                        mPresenter.fetchLatestStatus(Arrays.asList(data.getId()))
                     }
                 });
 
