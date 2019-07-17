@@ -277,7 +277,7 @@
             android:id="@+id/labelOffers"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
-            android:layout_marginTop="@dimen/dp_2"
+            android:layout_marginTop="@dimen/dp_4"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
             android:visibility="gone"

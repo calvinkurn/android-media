@@ -107,7 +107,7 @@ class ProductCardViewBigGrid: ProductCardView {
 
         labelOffersTopConstraintView?.let {
             setViewConstraint(
-                    labelOffers.id, ConstraintSet.TOP, it.id, ConstraintSet.BOTTOM, R.dimen.dp_8
+                    labelOffers.id, ConstraintSet.TOP, it.id, ConstraintSet.BOTTOM, R.dimen.dp_4
             )
         }
     }
