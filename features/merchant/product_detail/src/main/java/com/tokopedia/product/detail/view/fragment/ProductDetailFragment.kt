@@ -922,6 +922,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     if (it.size() > 2) {
                         it.findItem(R.id.action_share).icon = ContextCompat.getDrawable(this, R.drawable.ic_product_share_dark)
                         val menuCart = it.findItem(R.id.action_cart)
+                        menuCart.actionView.findViewById<ImageView>(R.id.cart_image_view).setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_product_cart_counter_dark))
                         setBadgeMenuCart(menuCart)
                     }
                 }
@@ -952,8 +953,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     if (it.size() > 2) {
                         it.findItem(R.id.action_share).icon = ContextCompat.getDrawable(this, R.drawable.ic_product_share_light)
                         val menuCart = it.findItem(R.id.action_cart)
-                        menuCart.setActionView(null)
-                        menuCart.icon = ContextCompat.getDrawable(this, R.drawable.ic_product_cart_counter_light)
+//                        menuCart.setActionView(null)
+//                        menuCart.icon = ContextCompat.getDrawable(this, R.drawable.ic_product_cart_counter_light)
+                        menuCart.actionView.findViewById<ImageView>(R.id.cart_image_view).setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_product_cart_counter_light))
                         setBadgeMenuCart(menuCart)
                     }
                 }
@@ -1827,7 +1829,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private fun showBadgeMenuCart(cartImageView: ImageView, lottieCartView: LottieAnimationView, animate: Boolean) {
         activity?.run {
             val cartCount = (application as ProductDetailRouter).getCartCount(this)
-            val drawable = ContextCompat.getDrawable(this, R.drawable.ic_product_cart_counter_dark)
+//            val drawable = ContextCompat.getDrawable(this, R.drawable.ic_product_cart_counter_dark)
+            val drawable = cartImageView.drawable
             if (drawable is LayerDrawable) {
                 val icon = drawable
                 val badge = CountDrawable(this)
@@ -1838,7 +1841,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 })
                 icon.mutate()
                 icon.setDrawableByLayerId(R.id.ic_cart_count, badge)
-                cartImageView.setImageDrawable(icon)
+//                cartImageView.setImageDrawable(icon)
                 if (animate) {
                     val alphaAnimation = AlphaAnimation(1f, 0f)
                     val scaleAnimation = ScaleAnimation(1f, 2f, 1f, 2f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
