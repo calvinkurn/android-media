@@ -32,6 +32,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
+import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.item_dynamic_post.view.*
@@ -48,6 +49,7 @@ open class DynamicPostViewHolder(v: View,
                                  private val pollOptionListener: PollAdapter.PollOptionListener,
                                  private val gridItemListener: GridPostAdapter.GridItemListener,
                                  private val videoViewListener: VideoViewHolder.VideoViewListener,
+                                 private val feedMultipleImageViewListener: FeedMultipleImageView.FeedMultipleImageViewListener,
                                  private val userSession: UserSessionInterface)
     : AbstractViewHolder<DynamicPostViewModel>(v) {
 
@@ -266,7 +268,13 @@ open class DynamicPostViewHolder(v: View,
             contentList.forEach { it.postId = postId }
             contentList.forEach { it.positionInFeed = adapterPosition }
 
-            adapter = PostPagerAdapter(imagePostListener, youtubePostListener, pollOptionListener, gridItemListener, videoViewListener, feedType)
+            adapter = PostPagerAdapter(imagePostListener,
+                    youtubePostListener,
+                    pollOptionListener,
+                    gridItemListener,
+                    videoViewListener,
+                    feedMultipleImageViewListener,
+                    feedType)
             adapter.setList(contentList)
             itemView.contentViewPager.adapter = adapter
             itemView.contentViewPager.offscreenPageLimit = adapter.count

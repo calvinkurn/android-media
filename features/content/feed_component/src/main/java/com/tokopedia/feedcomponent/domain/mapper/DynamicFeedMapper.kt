@@ -45,6 +45,7 @@ import javax.inject.Inject
 class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFeedDomainModel> {
 
     var count = 1;
+
     companion object {
         private const val TYPE_CARDRECOM = "cardrecom"
         private const val TYPE_CARDPOST = "cardpost"
@@ -448,25 +449,5 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
             ))
         }
         return trackingList
-    }
-
-    private fun getDataMultimedia(mediaList : List<Media>, count: Int): List<Media> {
-        var newMediaList: ArrayList<Media> = ArrayList()
-        for (media: Media in mediaList) {
-            val newMediaItemList: ArrayList<MediaItem> = ArrayList()
-            media.type = CONTENT_MULTIMEDIA
-            for (i in 1..count) {
-               newMediaItemList.add(mappingMultimediaMediaItem())
-            }
-            media.mediaItems = newMediaItemList
-            newMediaList.add(media)
-        }
-        return newMediaList
-    }
-
-    private fun mappingMultimediaMediaItem(): MediaItem {
-        var mediaItem = MediaItem()
-        mediaItem.thumbnail = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/4/19/1592907/1592907_e1fde789-3c9e-4478-9f6d-aaed7ab0a1aa_2000_2000.jpg"
-        return mediaItem
     }
 }

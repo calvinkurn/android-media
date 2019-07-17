@@ -56,5 +56,9 @@ data class MediaItem(
 
         @SerializedName("isCanPlayVideo")
         @Expose
-        var isCanPlayVideo: Boolean = false
+        var isCanPlayVideo: Boolean = false,
+
+        @SerializedName("positionInFeed")
+        @Expose
+        var positionInFeed: Int = 0
 )

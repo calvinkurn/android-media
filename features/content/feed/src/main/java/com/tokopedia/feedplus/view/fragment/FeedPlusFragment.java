@@ -73,6 +73,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.recommendation.TrackingRecomme
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel;
 import com.tokopedia.feedcomponent.view.widget.CardTitleView;
+import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.activity.TransparentVideoActivity;
@@ -149,7 +150,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
         YoutubeViewHolder.YoutubePostListener,
         PollAdapter.PollOptionListener,
         GridPostAdapter.GridItemListener,
-        VideoViewHolder.VideoViewListener {
+        VideoViewHolder.VideoViewListener,
+        FeedMultipleImageView.FeedMultipleImageViewListener {
 
     private static final int OPEN_DETAIL = 54;
     private static final int OPEN_KOL_COMMENT = 101;

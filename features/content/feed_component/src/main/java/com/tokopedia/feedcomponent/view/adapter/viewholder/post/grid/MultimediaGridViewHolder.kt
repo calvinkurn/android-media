@@ -11,12 +11,14 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.MediaItem
 import com.tokopedia.feedcomponent.util.ContentNetworkListener
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.BasePostViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.MultimediaGridViewModel
+import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import kotlinx.android.synthetic.main.item_post_multimedia.view.*
 
 /**
  * @author by yoasfs on 2019-07-01
  */
-class MultimediaGridViewHolder(private val feedType: String)
+class MultimediaGridViewHolder(private val feedMultipleImageViewListener: FeedMultipleImageView.FeedMultipleImageViewListener,
+                               private val feedType: String)
     : BasePostViewHolder<MultimediaGridViewModel>() {
 
     var isPlaying = false
@@ -24,6 +26,9 @@ class MultimediaGridViewHolder(private val feedType: String)
     override var layoutRes: Int = R.layout.item_post_multimedia
 
     override fun bind(element: MultimediaGridViewModel) {
+        element.mediaItemList.forEach{
+            it.positionInFeed = element.positionInFeed
+        }
         itemView.feedMultipleImageView.viewTreeObserver.addOnGlobalLayoutListener(
                 object : ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
@@ -42,6 +47,7 @@ class MultimediaGridViewHolder(private val feedType: String)
                 }
         )
         itemView.feedMultipleImageView.bind(element.mediaItemList, feedType)
+        itemView.feedMultipleImageView.setFeedMultipleImageViewListener(feedMultipleImageViewListener)
         if (isSingleItemVideo(element)) {
             val mediaItem = element.mediaItemList.get(0)
             if (canPlayVideo(mediaItem)) {

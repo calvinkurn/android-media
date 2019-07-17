@@ -19,6 +19,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.image.ImagePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.youtube.YoutubeViewModel
+import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.feedcomponent.view.widget.WrapContentViewPager
 
 /**
@@ -29,6 +30,7 @@ class PostPagerAdapter(private val imagePostListener: ImagePostViewHolder.ImageP
                        private val pollOptionListener: PollAdapter.PollOptionListener,
                        private val gridItemListener: GridPostAdapter.GridItemListener,
                        private val videoViewListener: VideoViewHolder.VideoViewListener,
+                       private val feedMultipleImageViewListener: FeedMultipleImageView.FeedMultipleImageViewListener,
                        private val feedType: String)
     : PagerAdapter() {
 
@@ -48,7 +50,7 @@ class PostPagerAdapter(private val imagePostListener: ImagePostViewHolder.ImageP
             is PollContentViewModel -> PollViewHolder(pollOptionListener) as BasePostViewHolder<BasePostViewModel>
             is GridPostViewModel -> GridPostViewHolder(gridItemListener) as BasePostViewHolder<BasePostViewModel>
             is VideoViewModel -> VideoViewHolder(videoViewListener) as BasePostViewHolder<BasePostViewModel>
-            is MultimediaGridViewModel -> MultimediaGridViewHolder(feedType) as BasePostViewHolder<BasePostViewModel>
+            is MultimediaGridViewModel -> MultimediaGridViewHolder(feedMultipleImageViewListener, feedType) as BasePostViewHolder<BasePostViewModel>
             else -> throw IllegalStateException(this.javaClass.simpleName
                     .plus(" doesn't support view model of this type: ")
                     .plus(element.javaClass.simpleName))

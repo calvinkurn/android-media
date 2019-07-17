@@ -13,6 +13,8 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.MediaItem
+import com.tokopedia.feedcomponent.data.pojo.track.Tracking
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import kotlinx.android.synthetic.main.item_multiple_media.view.*
@@ -68,8 +70,14 @@ class FeedMultipleImageView @JvmOverloads constructor(
         adapter.fileListener = listener
     }
 
+    fun setFeedMultipleImageViewListener(listener: FeedMultipleImageViewListener) {
+        adapter.feedMultipleImageViewListener = listener
+    }
+
     private class ImageAdapter(private var itemList: MutableList<MediaItem>,
-                       var fileListener: OnFileClickListener? = null): RecyclerView.Adapter<ImageAdapter.Holder>() {
+                               var fileListener: OnFileClickListener? = null,
+                               var feedMultipleImageViewListener: FeedMultipleImageViewListener? = null)
+        : RecyclerView.Adapter<ImageAdapter.Holder>() {
 
         private var feedType = ""
         init {
@@ -103,7 +111,14 @@ class FeedMultipleImageView @JvmOverloads constructor(
 
         inner class Holder(itemView: View): RecyclerView.ViewHolder(itemView) {
             init {
-                itemView.setOnClickListener { fileListener?.onClickItem(itemList[adapterPosition], adapterPosition) }
+                itemView.setOnClickListener {
+                    val media = itemList[adapterPosition]
+                    fileListener?.onClickItem(media, adapterPosition)
+                    feedMultipleImageViewListener?.onImageClick(media.positionInFeed, adapterPosition, media.applink)
+                    if (media.tracking.isNotEmpty()) {
+                        feedMultipleImageViewListener?.onAffiliateTrackClicked(mapTrackingData(media.tracking), true)
+                    }
+                }
             }
 
             fun bind(item: MediaItem, feedType: String) {
@@ -125,6 +140,21 @@ class FeedMultipleImageView @JvmOverloads constructor(
 
              }
 
+
+            private fun mapTrackingData(trackList: List<Tracking>): MutableList<TrackingViewModel> {
+                val trackingList: MutableList<TrackingViewModel> = ArrayList()
+
+                for (track in trackList) {
+                    trackingList.add(TrackingViewModel(
+                            track.clickURL,
+                            track.viewURL,
+                            track.type,
+                            track.source
+                    ))
+                }
+                return trackingList
+            }
+
             fun isSingleItemFromFeed(feedType: String):Boolean {
                 return feedType.isNotEmpty() && itemList.size == 1
             }
@@ -141,8 +171,15 @@ class FeedMultipleImageView @JvmOverloads constructor(
         }
     }
 
+
     interface OnFileClickListener{
         fun onDeleteItem(item: MediaItem, position: Int)
         fun onClickItem(item: MediaItem, position: Int)
+    }
+
+    interface FeedMultipleImageViewListener{
+        fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String)
+
+        fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean)
     }
 }
