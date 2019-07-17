@@ -39,6 +39,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
     private lateinit var progressBar: ProgressBar
     private lateinit var sharedModel: SharedProductTelcoViewModel
     private lateinit var productViewModel: DigitalTelcoProductViewModel
+    private lateinit var selectedOperatorName: String
 
     private var titleProduct: String = ""
     private var selectedProductId: String = ""
@@ -96,6 +97,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
             val operatorId = it.getString(OPERATOR_ID)
             val componentId = it.getInt(COMPONENT_TYPE)
             selectedProductId = it.getString(SELECTED_PRODUCT_ID)
+            selectedOperatorName = it.getString(OPERATOR_NAME)
 
             var mapParam = HashMap<String, kotlin.Any>()
             mapParam.put(KEY_COMPONENT_ID, componentId)
@@ -105,10 +107,10 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         }
 
         telcoTelcoProductView.setListener(object : DigitalTelcoProductWidget.ActionListener {
-            override fun onClickProduct(itemProduct: TelcoProductDataCollection, position: Int, categoryName: String) {
+            override fun onClickProduct(itemProduct: TelcoProductDataCollection, position: Int) {
                 sharedModel.setProductSelected(itemProduct)
                 sharedModel.setShowTotalPrice(true)
-                topupAnalytics.clickEnhanceCommerceProduct(itemProduct, position, categoryName)
+                topupAnalytics.clickEnhanceCommerceProduct(itemProduct, position, selectedOperatorName)
             }
 
             override fun onSeeMoreProduct(itemProduct: TelcoProductDataCollection) {
@@ -126,9 +128,8 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                 }
             }
 
-            override fun onTrackImpressionProductsList(digitalTrackProductTelcoList: List<DigitalTrackProductTelco>,
-                                                       categoryName: String) {
-                topupAnalytics.impressionEnhanceCommerceProduct(digitalTrackProductTelcoList, categoryName)
+            override fun onTrackImpressionProductsList(digitalTrackProductTelcoList: List<DigitalTrackProductTelco>) {
+                topupAnalytics.impressionEnhanceCommerceProduct(digitalTrackProductTelcoList)
             }
         })
     }
@@ -174,11 +175,13 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         val COMPONENT_NAME = "component_name"
         val OPERATOR_ID = "operator_Id"
         val SELECTED_PRODUCT_ID = "selected_product_id"
+        val OPERATOR_NAME = "operator_name"
 
         val KEY_COMPONENT_ID = "componentID"
         val KEY_OPERATOR_ID = "operatorID"
 
-        fun newInstance(componentType: Int, componentName: String, operatorId: String, productType: Int,
+        fun newInstance(componentType: Int, componentName: String, operatorId: String,
+                        operatorName: String, productType: Int,
                         selectedProductId: String): Fragment {
             val fragment = DigitalTelcoProductFragment()
             val bundle = Bundle()
@@ -187,6 +190,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
             bundle.putString(OPERATOR_ID, operatorId)
             bundle.putString(COMPONENT_NAME, componentName)
             bundle.putString(SELECTED_PRODUCT_ID, selectedProductId)
+            bundle.putString(OPERATOR_NAME, operatorName)
             fragment.arguments = bundle
             return fragment
         }

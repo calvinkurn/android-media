@@ -42,7 +42,7 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
         adapter = DigitalProductAdapter(productList, productType)
         adapter.setListener(object : DigitalProductAdapter.ActionListener {
             override fun onClickItemProduct(itemProduct: TelcoProductDataCollection, position: Int) {
-                listener.onClickProduct(itemProduct, position, getCategoryName(itemProduct.product.attributes.categoryId))
+                listener.onClickProduct(itemProduct, position)
             }
 
             override fun onClickSeeMoreProduct(itemProduct: TelcoProductDataCollection) {
@@ -87,29 +87,18 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
 
 
         val digitalTrackProductTelcoList = mutableListOf<DigitalTrackProductTelco>()
-        var categoryName = ""
         for (i in firstPos..lastPos) {
             if (firstPos >= 0 && lastPos <= productList.size - 1) {
-                categoryName = getCategoryName(productList[i].product.attributes.categoryId)
                 digitalTrackProductTelcoList.add(DigitalTrackProductTelco(productList[i], i))
             }
         }
         if (digitalTrackProductTelcoList.size > 0 &&
                 digitalTrackProductTelcoList.size != digitalTrackTelcoPrev.size &&
                 digitalTrackProductTelcoList != digitalTrackTelcoPrev) {
-            listener.onTrackImpressionProductsList(digitalTrackProductTelcoList, categoryName)
+            listener.onTrackImpressionProductsList(digitalTrackProductTelcoList)
 
             digitalTrackTelcoPrev.clear()
             digitalTrackTelcoPrev.addAll(digitalTrackProductTelcoList)
-        }
-    }
-
-    fun getCategoryName(categoryId: Int): String {
-        return when (categoryId) {
-            TelcoCategoryType.CATEGORY_PULSA -> TelcoComponentName.PRODUCT_PULSA
-            TelcoCategoryType.CATEGORY_PAKET_DATA -> TelcoComponentName.PRODUCT_PAKET_DATA
-            TelcoCategoryType.CATEGORY_ROAMING -> TelcoComponentName.PRODUCT_ROAMING
-            else -> TelcoComponentName.PRODUCT_PULSA
         }
     }
 
@@ -120,10 +109,9 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
     }
 
     interface ActionListener {
-        fun onClickProduct(itemProduct: TelcoProductDataCollection, position: Int, categoryName: String)
+        fun onClickProduct(itemProduct: TelcoProductDataCollection, position: Int)
         fun onSeeMoreProduct(itemProduct: TelcoProductDataCollection)
-        fun onTrackImpressionProductsList(digitalTrackProductTelcoList: List<DigitalTrackProductTelco>,
-                                          categoryName: String)
+        fun onTrackImpressionProductsList(digitalTrackProductTelcoList: List<DigitalTrackProductTelco>)
     }
 
     companion object {

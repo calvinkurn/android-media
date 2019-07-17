@@ -40,6 +40,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var enquiryViewModel: DigitalTelcoEnquiryViewModel
     private lateinit var layoutProgressBar: RelativeLayout
     private lateinit var operatorSelected: TelcoCustomDataCollection
+    private lateinit var selectedTelcoRecommendation: TelcoRecommendation
 
     private val favNumberList = mutableListOf<TelcoFavNumber>()
     private var operatorData: TelcoCustomComponentData =
@@ -198,7 +199,13 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                         topupAnalytics.eventInputNumberFavorites(categoryId, operatorName)
                     }
                     InputNumberActionType.CONTACT_HOMEPAGE -> {
-                        topupAnalytics.eventClickOnContactPickerHomepage(categoryId, operatorName)
+                        topupAnalytics.eventInputNumberContactPicker(categoryId, operatorName)
+                    }
+                    InputNumberActionType.LATEST_TRANSACTION -> {
+                        if (::selectedTelcoRecommendation.isInitialized) {
+                            topupAnalytics.clickEnhanceCommerceRecentTransaction(selectedTelcoRecommendation,
+                                    operatorName, selectedTelcoRecommendation.position)
+                        }
                     }
                 }
 
@@ -206,7 +213,8 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
             }
         } catch (exception: Exception) {
             view?.run {
-                Toaster.showError(this, ErrorHandler.getErrorMessage(activity, exception), Snackbar.LENGTH_LONG)
+                postpaidClientNumberWidget.setErrorInputNumber(
+                        getString(R.string.telco_number_error_not_found))
             }
         }
     }
@@ -271,6 +279,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     override fun onClickItemRecentNumber(telcoRecommendation: TelcoRecommendation) {
         inputNumberActionType = InputNumberActionType.LATEST_TRANSACTION
         postpaidClientNumberWidget.setInputNumber(telcoRecommendation.clientNumber)
+        this.selectedTelcoRecommendation = telcoRecommendation
     }
 
     override fun setFavNumbers(data: TelcoRechargeFavNumberData) {
