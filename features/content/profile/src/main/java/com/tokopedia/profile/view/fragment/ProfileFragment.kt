@@ -1095,7 +1095,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
         footerOthersShare.setOnClickListener {
             profileHeader?.let {
-                val linkerData = constructShareData(
+                linkerData = constructShareData(
                         it.name,
                         it.avatar,
                         it.link,
@@ -1164,7 +1164,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             iv_action_parallax.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_share_white))
             iv_action.gone()
             View.OnClickListener {
-                val linkerData = constructShareData(
+                linkerData = constructShareData(
                         element.name,
                         element.avatar,
                         element.link,
@@ -1400,7 +1400,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             shareProfile.setOnClickListener {
                 profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
 
-                val linkerData = constructShareData(
+                linkerData = constructShareData(
                         headerViewModel.name,
                         headerViewModel.avatar,
                         headerViewModel.link,
