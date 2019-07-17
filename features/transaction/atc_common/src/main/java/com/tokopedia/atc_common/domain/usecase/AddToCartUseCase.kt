@@ -59,25 +59,25 @@ class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val que
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map {
             val addToCartGqlResponse = it.getData<AddToCartGqlResponse>(AddToCartGqlResponse::class.java)
-            addToCartGqlResponse.let {
+            addToCartGqlResponse.addToCartResponse.let {
                 val dataModel = DataModel()
-                dataModel.success = it.addToCartResponse.data.success
-                dataModel.cartId = it.addToCartResponse.data.cartId
-                dataModel.productId = it.addToCartResponse.data.productId
-                dataModel.quantity = it.addToCartResponse.data.quantity
-                dataModel.notes = it.addToCartResponse.data.notes
-                dataModel.shopId = it.addToCartResponse.data.shopId
-                dataModel.customerId = it.addToCartResponse.data.customerId
-                dataModel.warehouseId = it.addToCartResponse.data.warehouseId
-                dataModel.trackerAttribution = it.addToCartResponse.data.trackerAttribution
-                dataModel.trackerListName = it.addToCartResponse.data.trackerListName
-                dataModel.ucUtParam = it.addToCartResponse.data.ucUtParam
-                dataModel.isTradeIn = it.addToCartResponse.data.isTradeIn
-                dataModel.message = it.addToCartResponse.data.message
+                dataModel.success = it.data.success
+                dataModel.cartId = it.data.cartId
+                dataModel.productId = it.data.productId
+                dataModel.quantity = it.data.quantity
+                dataModel.notes = it.data.notes
+                dataModel.shopId = it.data.shopId
+                dataModel.customerId = it.data.customerId
+                dataModel.warehouseId = it.data.warehouseId
+                dataModel.trackerAttribution = it.data.trackerAttribution
+                dataModel.trackerListName = it.data.trackerListName
+                dataModel.ucUtParam = it.data.ucUtParam
+                dataModel.isTradeIn = it.data.isTradeIn
+                dataModel.message = it.data.message
 
                 val addToCartDataModel = AddToCartDataModel()
-                addToCartDataModel.status = it.addToCartResponse.status
-                addToCartDataModel.errorMessage = it.addToCartResponse.errorMessage
+                addToCartDataModel.status = it.status
+                addToCartDataModel.errorMessage = it.errorMessage
                 addToCartDataModel.data = dataModel
 
                 addToCartDataModel
