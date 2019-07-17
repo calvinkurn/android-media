@@ -7,26 +7,26 @@ class CheckVoucherDigital (
 
     @SerializedName("data")
     @Expose
-    val voucherData: CheckVoucherDigitalData = CheckVoucherDigitalData(),
+    var voucherData: CheckVoucherDigitalData = CheckVoucherDigitalData(),
 
     @SerializedName("errors")
     @Expose
-    val errors: List<Error> = listOf()
+    var errors: List<Error> = listOf()
 
 ) {
     class Response(
             @SerializedName("rechargeCheckVoucher")
             @Expose
-            val response: CheckVoucherDigital = CheckVoucherDigital()
+            var response: CheckVoucherDigital = CheckVoucherDigital()
     )
 
     class Error(
             @SerializedName("status")
             @Expose
-            val status: String = "",
+            var status: String = "",
 
             @SerializedName("title")
             @Expose
-            val title: String = ""
+            var title: String = ""
     )
 }

@@ -150,7 +150,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public CheckoutDataParameter.Builder getCheckoutDataParameter() {
-        if (promoData != null) checkoutDataParameterBuilder.voucherCode(promoData.getPromoCode());
+        if (promoData != null && promoData.getState() == TickerCheckoutView.State.ACTIVE) checkoutDataParameterBuilder.voucherCode(promoData.getPromoCode());
         return checkoutDataParameterBuilder;
     }
 
@@ -207,6 +207,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     private PromoDigitalModel getPromoDigitalModel() {
         return new PromoDigitalModel(
+                Integer.parseInt(cartPassData.getCategoryId()),
                 getProductId(),
                 cartPassData.getClientNumber(),
                 cartDigitalInfoData.getAttributes().getPricePlain()
@@ -224,7 +225,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         String promoCode = promoData.getPromoCode();
         if (promoData.getTypePromo() == 1) {
             intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_LIST_DIGITAL);
-            intent.putExtra("PROMO_CODE", promoCode);
+            intent.putExtra("EXTRA_PROMO_CODE", promoCode);
             intent.putExtra("EXTRA_COUPON_ACTIVE", cartDigitalInfoData.getAttributes().isCouponActive());
         } else {
             intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_DETAIL_DIGITAL);

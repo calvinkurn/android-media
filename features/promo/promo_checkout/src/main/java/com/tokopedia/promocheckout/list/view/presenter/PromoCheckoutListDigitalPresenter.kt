@@ -11,6 +11,8 @@ import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.domain.CheckVoucherDigitalUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckVoucherDigitalMapper
 import com.tokopedia.promocheckout.common.domain.model.CheckVoucherDigital
+import com.tokopedia.promocheckout.common.domain.model.CheckVoucherDigitalData
+import com.tokopedia.promocheckout.common.domain.model.Message
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
 import com.tokopedia.usecase.RequestParams
@@ -21,11 +23,9 @@ class PromoCheckoutListDigitalPresenter(private val graphqlUseCase: GraphqlUseCa
                                         private val checkVoucherUseCase: CheckVoucherDigitalUseCase,
                                         val checkVoucherDigitalMapper: CheckVoucherDigitalMapper) : BaseDaggerPresenter<PromoCheckoutListDigitalContract.View>(), PromoCheckoutListDigitalContract.Presenter {
 
-    private val statusOK = "OK"
-
     override fun getListLastSeen(categoryIDs: List<Int>, resources: Resources) {
         val variables = HashMap<String, Any>()
-        variables.put(CATEGORY_IDS, categoryIDs.toString())
+        variables.put(CATEGORY_IDS, categoryIDs)
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
                 R.raw.promo_checkout_last_seen), PromoCheckoutLastSeenModel.Response::class.java, variables, false)
         graphqlUseCase.clearRequest()
@@ -54,7 +54,19 @@ class PromoCheckoutListDigitalPresenter(private val graphqlUseCase: GraphqlUseCa
         checkVoucherUseCase.execute(checkVoucherUseCase.createRequestParams(promoCode, promoDigitalModel), object : Subscriber<GraphqlResponse>() {
             override fun onNext(objects: GraphqlResponse) {
                 view.hideProgressLoading()
-                val checkVoucherData = objects.getData<CheckVoucherDigital.Response>(CheckVoucherDigital.Response::class.java).response
+//                val checkVoucherData = objects.getData<CheckVoucherDigital.Response>(CheckVoucherDigital.Response::class.java).response
+
+                val checkVoucherData = CheckVoucherDigital()
+                val checkVoucherDataVoucher = CheckVoucherDigitalData()
+                checkVoucherDataVoucher.success = true
+                checkVoucherDataVoucher.code = "TEST"
+                val message = Message()
+                message.text = "test description"
+                message.state = "green"
+                checkVoucherDataVoucher.message = message
+                checkVoucherDataVoucher.titleDescription = "Diskon voucher: TEST"
+                checkVoucherData.voucherData = checkVoucherDataVoucher
+
                 if (checkVoucherData.voucherData.success) {
                     view.onSuccessCheckPromoStackingCode(checkVoucherDigitalMapper.mapData(checkVoucherData.voucherData))
                 } else {

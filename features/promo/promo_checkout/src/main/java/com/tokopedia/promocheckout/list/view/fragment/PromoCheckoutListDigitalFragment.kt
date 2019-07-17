@@ -45,7 +45,9 @@ class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), PromoC
 
     override fun onCreate(savedInstanceState: Bundle?) {
         isCouponActive = arguments?.getBoolean(EXTRA_IS_COUPON_ACTIVE) ?: true
+        promoCode = arguments?.getString(EXTRA_PROMO_CODE) ?: ""
         promoDigitalModel = arguments?.getParcelable(EXTRA_PROMO_DIGITAL_MODEL) ?: PromoDigitalModel()
+        categoryId = promoDigitalModel.categoryId
         pageTracking = arguments?.getInt(PAGE_TRACKING) ?: 1
         super.onCreate(savedInstanceState)
         promoCheckoutListDigitalPresenter.attachView(this)
@@ -69,7 +71,7 @@ class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), PromoC
     }
 
     override fun onPromoCodeUse(promoCode: String) {
-        promoCheckoutListDigitalPresenter.checkPromoStackingCode(promoCode, promoDigitalModel)
+        if (promoCode.isNotEmpty()) promoCheckoutListDigitalPresenter.checkPromoStackingCode(promoCode, promoDigitalModel)
     }
 
     override fun showProgressLoading() {

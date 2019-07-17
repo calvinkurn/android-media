@@ -1,5 +1,5 @@
 query rechargePromoBanner($categoryIDs: [Int]!){
-  rechargePromoBanner(deviceID: 2, partnerID: 5, categoryIDs: $categoryIDs) {
+  rechargePromoBanner(categoryIDs: $categoryIDs) {
     id
     title
     subtitle

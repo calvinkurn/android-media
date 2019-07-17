@@ -4,11 +4,13 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class PromoDigitalModel(
+	var categoryId: Int = 0,
 	var productId: Int = 0,
 	var clientNumber: String = "",
 	var price: Long = 0
 ) : Parcelable {
 	constructor(parcel: Parcel) : this(
+			parcel.readInt(),
 			parcel.readInt(),
 			parcel.readString() ?: "",
 			parcel.readLong())
