@@ -102,4 +102,10 @@ public interface ICartListView extends IBaseView {
     void hideItemLoading();
 
     void triggerSendEnhancedEcommerceAddToCartSuccess(AddToCartDataResponseModel addToCartDataResponseModel, Object productModel);
+
+    void setHasTriedToLoadWishList();
+
+    void setHasTriedToLoadRecentView();
+
+    void setHasTriedToLoadRecommendation();
 }
