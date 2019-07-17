@@ -562,10 +562,10 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             llValid = itemView.findViewById(R.id.ll_valid);
             itemView.findViewById(R.id.divider1).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             progressBar = itemView.findViewById(R.id.prog_bar);
-            tvRightTypeofEvents = itemView.findViewById(R.id.right_text1);
-            tvRightAddress = itemView.findViewById(R.id.right_text2);
-            tvRightCategoryTicket = itemView.findViewById(R.id.right_text3);
-            tvRightNumberOfBooking = itemView.findViewById(R.id.right_text4);
+            tvRightTypeofEvents = itemView.findViewById(R.id.right_event);
+            tvRightAddress = itemView.findViewById(R.id.right_address);
+            tvRightCategoryTicket = itemView.findViewById(R.id.right_category_ticket);
+            tvRightNumberOfBooking = itemView.findViewById(R.id.right_total_ticket);
             llTanggalEvent = itemView.findViewById(R.id.ll_tanggal_event);
             tvEventDate = itemView.findViewById(R.id.tv_start_date);
             tapActionLayout = itemView.findViewById(R.id.tapAction);
@@ -592,33 +592,33 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     llValid.setVisibility(View.GONE);
                 }
                 if (TextUtils.isEmpty(metaDataInfo.getEntityProductName())) {
-                    itemView.findViewById(R.id.ll_details1).setVisibility(View.GONE);
+                    itemView.findViewById(R.id.ll_event).setVisibility(View.GONE);
                 } else {
                     hasViews = true;
                     tvRightTypeofEvents.setText(metaDataInfo.getEntityProductName());
                 }
                 if (metaDataInfo.getEntityPackages() != null && metaDataInfo.getEntityPackages().size() > 0) {
                     if (TextUtils.isEmpty(metaDataInfo.getEntityPackages().get(0).getAddress())) {
-                        itemView.findViewById(R.id.ll_details2).setVisibility(View.GONE);
+                        itemView.findViewById(R.id.ll_address).setVisibility(View.GONE);
                     } else {
                         hasViews = true;
                         tvRightAddress.setText(metaDataInfo.getEntityPackages().get(0).getAddress());
                     }
                 } else {
-                    itemView.findViewById(R.id.ll_details2).setVisibility(View.GONE);
+                    itemView.findViewById(R.id.ll_address).setVisibility(View.GONE);
                 }
                 if (metaDataInfo.getEntityPackages() != null && metaDataInfo.getEntityPackages().size() > 0) {
                     if (TextUtils.isEmpty(metaDataInfo.getEntityPackages().get(0).getDisplayName())) {
-                        itemView.findViewById(R.id.ll_details3).setVisibility(View.GONE);
+                        itemView.findViewById(R.id.ll_category_ticket).setVisibility(View.GONE);
                     } else {
                         tvRightCategoryTicket.setText(metaDataInfo.getEntityPackages().get(0).getDisplayName());
                         hasViews = true;
                     }
                 } else {
-                    itemView.findViewById(R.id.ll_details3).setVisibility(View.GONE);
+                    itemView.findViewById(R.id.ll_category_ticket).setVisibility(View.GONE);
                 }
                 if (item.getQuantity() == 0) {
-                    itemView.findViewById(R.id.ll_details4).setVisibility(View.GONE);
+                    itemView.findViewById(R.id.ll_total_ticket).setVisibility(View.GONE);
                 } else {
                     hasViews = true;
                     tvRightNumberOfBooking.setText(String.valueOf(metaDataInfo.getTotalTicketCount()));
@@ -698,7 +698,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         private void setActionButtonClick(TextView view, ActionButton actionButton) {
             if (actionButton.getControl().equalsIgnoreCase(KEY_REDIRECT)) {
-                if (!actionButton.getBody().equals("") && !actionButton.getBody().getAppURL().equals("")) {
+                if (!TextUtils.isEmpty(actionButton.getBody().toString())&& !TextUtils.isEmpty(actionButton.getBody().getAppURL())) {
                     if (view == null)
                         RouteManager.route(context, actionButton.getBody().getAppURL());
                     else
@@ -719,16 +719,16 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             tapActionTextView.setText(actionButton.getLabel());
             GradientDrawable shape = new GradientDrawable();
             shape.setShape(GradientDrawable.RECTANGLE);
-            if (!actionButton.getActionColor().getBackground().equals("")) {
+            if (!TextUtils.isEmpty(actionButton.getActionColor().getBackground())) {
                 shape.setColor(android.graphics.Color.parseColor(actionButton.getActionColor().getBackground()));
             } else {
                 shape.setColor(context.getResources().getColor(R.color.green_nob));
             }
-            if (!actionButton.getActionColor().getBorder().equals("")) {
+            if (!TextUtils.isEmpty(actionButton.getActionColor().getBorder())) {
                 shape.setStroke(1, android.graphics.Color.parseColor(actionButton.getActionColor().getBorder()));
             }
             tapActionTextView.setBackground(shape);
-            if (!actionButton.getActionColor().getTextColor().equals("")) {
+            if (!TextUtils.isEmpty(actionButton.getActionColor().getTextColor())) {
                 tapActionTextView.setTextColor(android.graphics.Color.parseColor(actionButton.getActionColor().getTextColor()));
             } else {
                 tapActionTextView.setTextColor(Color.WHITE);

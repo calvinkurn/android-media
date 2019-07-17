@@ -45,7 +45,7 @@
         android:id="@+id/divider1"
         android:layout_width="match_parent"
         android:layout_height="3dp"
-        android:layout_below="@+id/ll_details4"
+        android:layout_below="@+id/ll_total_ticket"
         android:layout_marginLeft="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_8"
@@ -53,7 +53,7 @@
 
 
     <LinearLayout
-        android:id="@+id/ll_details1"
+        android:id="@+id/ll_event"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_8"
@@ -62,14 +62,14 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/left_text1"
+            android:id="@+id/left_event"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/type_of_ticket_events" />
 
         <TextView
-            android:id="@+id/right_text1"
+            android:id="@+id/right_event"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -80,7 +80,7 @@
         android:id="@+id/ll_tanggal_event"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/ll_details1"
+        android:layout_below="@+id/ll_event"
         android:layout_marginLeft="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_8"
@@ -103,7 +103,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/ll_details2"
+        android:id="@+id/ll_address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/ll_tanggal_event"
@@ -113,14 +113,14 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/left_text2"
+            android:id="@+id/left_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/address" />
 
         <TextView
-            android:id="@+id/right_text2"
+            android:id="@+id/right_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -128,24 +128,24 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/ll_details3"
+        android:id="@+id/ll_category_ticket"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/ll_details2"
+        android:layout_below="@+id/ll_address"
         android:layout_marginLeft="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_8"
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/left_text3"
+            android:id="@+id/left_category_ticket"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/category_ticket" />
 
         <TextView
-            android:id="@+id/right_text3"
+            android:id="@+id/right_category_ticket"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -153,24 +153,24 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/ll_details4"
+        android:id="@+id/ll_total_ticket"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/ll_details3"
+        android:layout_below="@+id/ll_category_ticket"
         android:layout_marginLeft="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_8"
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/left_text4"
+            android:id="@+id/left_total_ticket"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/number_of_bookings" />
 
         <TextView
-            android:id="@+id/right_text4"
+            android:id="@+id/right_total_ticket"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
