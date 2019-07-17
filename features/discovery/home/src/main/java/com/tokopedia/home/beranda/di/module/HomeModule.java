@@ -33,10 +33,14 @@ import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
+import com.tokopedia.topads.sdk.di.TopAdsWishlistModule;
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Named;
 
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 import dagger.Module;
 import dagger.Provides;
 import kotlinx.coroutines.CoroutineDispatcher;
@@ -46,7 +50,7 @@ import kotlinx.coroutines.Dispatchers;
  * @author by errysuprayogi on 11/28/17.
  */
 
-@Module
+@Module(includes = TopAdsWishlistModule.class)
 public class HomeModule {
 
     @HomeScope
@@ -63,8 +67,14 @@ public class HomeModule {
     }
 
     @Provides
-    protected HomeFeedPresenter homeFeedPresenter() {
-        return new HomeFeedPresenter();
+    protected HomeFeedPresenter homeFeedPresenter(
+            GetHomeFeedUseCase getHomeFeedUseCase,
+            AddWishListUseCase addWishListUseCase,
+            RemoveWishListUseCase removeWishListUseCase,
+            TopAdsWishlishedUseCase topAdsWishlishedUseCase,
+            UserSessionInterface userSessionInterface
+    ) {
+        return new HomeFeedPresenter(userSessionInterface, getHomeFeedUseCase, addWishListUseCase, removeWishListUseCase, topAdsWishlishedUseCase);
     }
 
     protected HomePresenter realHomePresenter(UserSessionInterface userSession,
@@ -119,7 +129,16 @@ public class HomeModule {
         return new GetFeedTabUseCase(context, graphqlUseCase, feedTabMapper);
     }
 
+    @Provides
+    AddWishListUseCase provideAddWishlistUseCase(@ApplicationContext Context context){
+        return new AddWishListUseCase(context);
+    }
 
+
+    @Provides
+    RemoveWishListUseCase provideRemoveWishListUseCase(@ApplicationContext Context context){
+        return new RemoveWishListUseCase(context);
+    }
 
     @Provides
     FeedTabMapper feedTabMapper() {

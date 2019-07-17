@@ -38,6 +38,8 @@ public class HomeFeedViewModel extends ImpressHolder implements Visitable<HomeFe
     private boolean isTopAds;
     private List<Badge> badges;
     private String location;
+    private String wishlistUrl;
+    private boolean isWishList;
 
     public HomeFeedViewModel(String productId,
                              String productName,
@@ -55,7 +57,9 @@ public class HomeFeedViewModel extends ImpressHolder implements Visitable<HomeFe
                              boolean isTopAds,
                              int position,
                              List<Badge> badges,
-                             String location) {
+                             String location,
+                             String wishlistUrl,
+                             boolean isWishList) {
         this.productId = productId;
         this.productName = productName;
         this.categoryBreadcrumbs = categoryBreadcrumbs;
@@ -73,6 +77,8 @@ public class HomeFeedViewModel extends ImpressHolder implements Visitable<HomeFe
         this.position = position;
         this.badges = badges;
         this.location = location;
+        this.wishlistUrl = wishlistUrl;
+        this.isWishList = isWishList;
     }
 
     public String getProductId() {
@@ -153,6 +159,14 @@ public class HomeFeedViewModel extends ImpressHolder implements Visitable<HomeFe
 
     public String getLocation() {
         return location;
+    }
+
+    public String getWishlistUrl(){ return wishlistUrl; }
+
+    public boolean isWishList() { return isWishList; }
+
+    public void setWishList(boolean value){
+        isWishList = value;
     }
 
     @Override

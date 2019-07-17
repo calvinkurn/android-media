@@ -24,8 +24,7 @@ import dagger.Component;
         ApiModule.class,
         HomeModule.class,
         ShopModule.class,
-        ViewModelModule.class,
-        TopAdsWishlistModule.class
+        ViewModelModule.class
 }, dependencies = BaseAppComponent.class)
 public interface BerandaComponent {
 

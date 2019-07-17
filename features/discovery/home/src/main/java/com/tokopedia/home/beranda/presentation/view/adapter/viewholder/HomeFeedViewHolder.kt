@@ -1,11 +1,14 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder
 
+import android.app.Activity
 import android.support.annotation.LayoutRes
 import android.support.design.widget.Snackbar
 import android.view.LayoutInflater
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.domain.gql.feed.Badge
 import com.tokopedia.home.beranda.presentation.presenter.HomeFeedContract
@@ -41,8 +44,10 @@ class HomeFeedViewHolder(itemView: View, private val homeFeedView: HomeFeedContr
                 setSlashedPriceVisible(true)
                 setLabelDiscountVisible(true)
             }
-            setImageRatingVisible(true)
-            setReviewCountVisible(true)
+            if(element.rating > 0 && element.countReview > 0) {
+                setImageRatingVisible(true)
+                setReviewCountVisible(true)
+            }
             setShopBadgesVisible(true)
             setShopLocationVisible(true)
             setButtonWishlistVisible(true)
@@ -64,10 +69,16 @@ class HomeFeedViewHolder(itemView: View, private val homeFeedView: HomeFeedContr
                 homeFeedView.onWishlistClick(element, adapterPosition, !it.isActivated){ isSuccess, throwable ->
                     if(isSuccess){
                         it.isActivated = !it.isActivated
+                        element.isWishList = it.isActivated
                         setButtonWishlistImage(it.isActivated)
+                        if(it.isActivated){
+                            showSuccessAddWishlist((context as Activity).findViewById(android.R.id.content), getString(R.string.msg_success_add_wishlist))
+                        } else {
+                            showSuccessRemoveWishlist((context as Activity).findViewById(android.R.id.content), getString(R.string.msg_success_remove_wishlist))
+                        }
                     } else {
                         Toaster.showError(
-                                findViewById(android.R.id.content),
+                                this.rootView.findViewById(android.R.id.content),
                                 ErrorHandler.getErrorMessage(it.context, throwable),
                                 Snackbar.LENGTH_LONG)
                     }
@@ -83,4 +94,15 @@ class HomeFeedViewHolder(itemView: View, private val homeFeedView: HomeFeedContr
             productCardView.addShopBadge(view)
         }
     }
+
+    private fun showSuccessAddWishlist(view: View, message: String){
+        Snackbar.make(view, message, Snackbar.LENGTH_LONG)
+                .setAction(R.string.go_to_wishlist) { RouteManager.route(view.context, ApplinkConst.WISHLIST) }
+                .show()
+    }
+
+    private fun showSuccessRemoveWishlist(view: View, message: String){
+        Snackbar.make(view, message, Snackbar.LENGTH_LONG).show()
+    }
+
 }

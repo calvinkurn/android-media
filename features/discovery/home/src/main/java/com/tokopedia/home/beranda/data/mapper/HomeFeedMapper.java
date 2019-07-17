@@ -57,7 +57,9 @@ public class HomeFeedMapper implements Func1<GraphqlResponse, HomeFeedListModel>
                     product.getIsTopads(),
                     (position+1),
                     product.getBadges(),
-                    product.getShop().getCity()
+                    product.getShop().getCity(),
+                    product.getWishlistUrl(),
+                    product.getIsWishlist()
                     ));
         }
         return homeFeedViewModels;

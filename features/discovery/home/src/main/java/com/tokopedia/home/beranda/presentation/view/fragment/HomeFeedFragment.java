@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.home.R;
@@ -53,7 +54,7 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
     HomeFeedPresenter presenter;
 
     @Inject
-    UserSession userSession;
+    UserSessionInterface userSession;
 
     private TrackingQueue homeTrackingQueue;
 
@@ -298,10 +299,14 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
                                 int position,
                                 boolean isAddWishlist,
                                 @NotNull Function2<? super Boolean, ? super Throwable, Unit> responseWishlist) {
-        if (isAddWishlist) {
-            presenter.addWishlist(homeFeedViewModel, responseWishlist);
-        } else {
-            presenter.removeWishlist(homeFeedViewModel, responseWishlist);
+        if(presenter.isLogin()) {
+            if (isAddWishlist) {
+                presenter.addWishlist(homeFeedViewModel, responseWishlist);
+            } else {
+                presenter.removeWishlist(homeFeedViewModel, responseWishlist);
+            }
+        }else {
+            RouteManager.route(getContext(), ApplinkConst.LOGIN);
         }
     }
 
