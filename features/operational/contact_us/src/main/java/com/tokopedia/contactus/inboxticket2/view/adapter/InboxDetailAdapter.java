@@ -174,8 +174,7 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
                 }
 
                 if((mPresenter.getTicketStatus().equalsIgnoreCase(utils.CLOSED) && item.getRating()!=null && !item.getRating().equals(KEY_LIKED) && !item.getRating().equals(KEY_DIS_LIKED))|| !item.getCreatedBy().getRole().equals(ROLE_TYPE_AGENT)|| item.getId()==null){
-                      ratingThumbsUp.setVisibility(View.GONE);
-                      ratingThumbsDown.setVisibility(View.GONE);
+                      settingRatingButtonsVisibility(View.GONE);
                 }
                 if (searchMode) {
                     tvComment.setText(utils.getHighlightText(searchText, item.getMessagePlaintext()));
@@ -204,23 +203,20 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
             }
 
 
-            ratingThumbsUp.setOnClickListener((View v)-> {
-                    if(item.getRating()!= null &&(item.getRating().equals(KEY_LIKED)||item.getRating().equals(KEY_DIS_LIKED))){
-
-                    }else{
-                        ratingThumbsUp.setColorFilter(ContextCompat.getColor(mContext, R.color.g_500));
-                        ratingThumbsDown.setVisibility(View.GONE);
-                        mPresenter.onClick(true,position,item.getId());
-                    }
+            ratingThumbsUp.setOnClickListener((View v) -> {
+                if(item.getRating() != null && !(item.getRating().equals(KEY_LIKED) || item.getRating().equals(KEY_DIS_LIKED))) {
+                    ratingThumbsUp.setColorFilter(ContextCompat.getColor(mContext, R.color.g_500));
+                    ratingThumbsDown.setVisibility(View.GONE);
+                    mPresenter.onClick(true, position, item.getId());
+                }
             });
 
-            ratingThumbsDown.setOnClickListener((View v)-> {
-                    if(item.getRating().equals(KEY_LIKED)||item.getRating().equals(KEY_DIS_LIKED)){
-                    }else{
+            ratingThumbsDown.setOnClickListener((View v) -> {
+                if(item.getRating() != null && !(item.getRating().equals(KEY_LIKED) || item.getRating().equals(KEY_DIS_LIKED))) {
                     ratingThumbsDown.setColorFilter(ContextCompat.getColor(mContext, R.color.red_600));
                     ratingThumbsUp.setVisibility(View.GONE);
-                    mPresenter.onClick(false,position,item.getId());
-                    }
+                    mPresenter.onClick(false, position, item.getId());
+                }
             });
 
         }
