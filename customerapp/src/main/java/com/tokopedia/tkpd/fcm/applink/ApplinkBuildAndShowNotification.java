@@ -2,17 +2,13 @@ package com.tokopedia.tkpd.fcm.applink;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.gcm.NotificationConfiguration;
 import com.tokopedia.core.gcm.data.PushNotificationDataRepository;
 import com.tokopedia.core.gcm.domain.PushNotificationRepository;
 import com.tokopedia.core.gcm.domain.usecase.GetSavedDiscussionPushNotificationUseCase;
 import com.tokopedia.core.gcm.domain.usecase.GetSavedMessagePushNotificationUseCase;
-import com.tokopedia.core.gcm.domain.usecase.GetSavedPushNotificationUseCase;
-import com.tokopedia.core.gcm.model.ApplinkNotificationPass;
 import com.tokopedia.core.gcm.notification.applink.ApplinkPushNotificationBuildAndShow;
 import com.tokopedia.core.gcm.notification.applink.ApplinkTypeFactory;
 import com.tokopedia.core.gcm.notification.applink.ApplinkTypeFactoryList;
