@@ -46,6 +46,7 @@ import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
+import com.tokopedia.feedcomponent.util.FeedScrollListener
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
@@ -60,9 +61,6 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.kol.KolComponentInstance
-import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
-import com.tokopedia.feedcomponent.util.FeedScrollListener
-import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
 import com.tokopedia.kol.common.util.PostMenuListener
 import com.tokopedia.kol.common.util.createBottomMenu
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
@@ -1069,7 +1067,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
         isOwner = userId.toString() == userSession.userId
 
-        layoutManager = recyclerView.layoutManager as LinearLayoutManager
+        layoutManager = recyclerView.layoutManager as GridLayoutManager
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
