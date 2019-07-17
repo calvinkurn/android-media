@@ -952,6 +952,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     if (it.size() > 2) {
                         it.findItem(R.id.action_share).icon = ContextCompat.getDrawable(this, R.drawable.ic_product_share_light)
                         val menuCart = it.findItem(R.id.action_cart)
+                        menuCart.setActionView(null)
                         menuCart.icon = ContextCompat.getDrawable(this, R.drawable.ic_product_cart_counter_light)
                         setBadgeMenuCart(menuCart)
                     }
