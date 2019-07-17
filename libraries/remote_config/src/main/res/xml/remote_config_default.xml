@@ -316,4 +316,8 @@
         <key>android_power_merchant_f1_enabled</key>
         <value>false</value>
     </entry>
+    <entry>
+        <key>android_customer_enable_telco_pdp</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>

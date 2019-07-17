@@ -83,7 +83,7 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
 
     protected abstract fun onErrorCustomData(error: Throwable)
 
-    fun onSuccessCatalogMenuDetail(catalogMenuDetailData: TelcoCatalogMenuDetailData) {
+    open fun onSuccessCatalogMenuDetail(catalogMenuDetailData: TelcoCatalogMenuDetailData) {
         renderPromoList(catalogMenuDetailData.catalogMenuDetailData.promos)
         renderRecentTransactions(catalogMenuDetailData.catalogMenuDetailData.recommendations)
         renderTicker(catalogMenuDetailData.catalogMenuDetailData.tickers)
@@ -123,6 +123,7 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
         } else {
             tickerView.visibility = View.GONE
         }
+
     }
 
     fun navigateContact() {
@@ -285,7 +286,8 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
                     topupAnalytics.impressionEnhanceCommercePromoList(digitalTrackPromoList)
                 }
 
-                override fun onClickItemPromo(telcoPromo: TelcoPromo) {
+                override fun onClickItemPromo(telcoPromo: TelcoPromo, position: Int) {
+                    topupAnalytics.clickEnhanceCommercePromo(telcoPromo, position)
                     if (!TextUtils.isEmpty(telcoPromo.urlBannerPromo)) {
                         RouteManager.route(activity, telcoPromo.urlBannerPromo)
                     }

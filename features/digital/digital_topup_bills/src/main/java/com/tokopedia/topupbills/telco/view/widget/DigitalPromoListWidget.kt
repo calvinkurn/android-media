@@ -50,8 +50,8 @@ class DigitalPromoListWidget @JvmOverloads constructor(@NotNull context: Context
                 listener.onCopiedPromoCode(promoId, voucherCode)
             }
 
-            override fun onClickPromoItem(telcoPromo: TelcoPromo) {
-                listener.onClickItemPromo(telcoPromo)
+            override fun onClickPromoItem(telcoPromo: TelcoPromo, position: Int) {
+                listener.onClickItemPromo(telcoPromo, position)
             }
         })
         this.promoList.addAll(promoList)
@@ -99,7 +99,7 @@ class DigitalPromoListWidget @JvmOverloads constructor(@NotNull context: Context
 
         fun onTrackImpressionPromoList(digitalTrackPromoList: List<DigitalTrackPromoTelco>)
 
-        fun onClickItemPromo(telcoPromo: TelcoPromo)
+        fun onClickItemPromo(telcoPromo: TelcoPromo, position: Int)
     }
 
 }

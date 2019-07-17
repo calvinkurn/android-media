@@ -38,7 +38,10 @@ class TelcoRecommendation(
         val isAtc: Boolean = false,
         @SerializedName("operatorID")
         @Expose
-        val operatorId: Int
+        val operatorId: Int,
+        @SerializedName("description")
+        @Expose
+        val description: String = ""
 ) : Parcelable {
         constructor(parcel: Parcel) : this(
                 parcel.readString(),
@@ -50,7 +53,8 @@ class TelcoRecommendation(
                 parcel.readInt(),
                 parcel.readInt(),
                 parcel.readByte() != 0.toByte(),
-                parcel.readInt())
+                parcel.readInt(),
+                parcel.readString())
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
                 parcel.writeString(iconUrl)
@@ -63,6 +67,7 @@ class TelcoRecommendation(
                 parcel.writeInt(productId)
                 parcel.writeByte(if (isAtc) 1 else 0)
                 parcel.writeInt(operatorId)
+                parcel.writeString(description)
         }
 
         override fun describeContents(): Int {

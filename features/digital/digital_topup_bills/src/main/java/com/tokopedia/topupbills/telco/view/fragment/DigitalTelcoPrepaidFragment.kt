@@ -17,10 +17,12 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.network.utils.ErrorHandler.getErrorMessage
+import com.tokopedia.showcase.ShowCaseBuilder
+import com.tokopedia.showcase.ShowCaseDialog
+import com.tokopedia.showcase.ShowCaseObject
+import com.tokopedia.showcase.ShowCasePreference
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.common.DigitalTopupEventTracking
 import com.tokopedia.topupbills.generateRechargeCheckoutToken
 import com.tokopedia.topupbills.telco.data.*
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
@@ -38,6 +40,7 @@ import com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
 import com.tokopedia.topupbills.telco.view.widget.DigitalTelcoBuyWidget
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_digital_telco_prepaid.*
+import java.util.ArrayList
 
 /**
  * Created by nabillasabbaha on 11/04/19.
@@ -60,14 +63,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private var selectedProductId = ""
     private var selectedCategoryId = 0
 
-
-    override fun onStart() {
-        context?.let {
-            GraphqlClient.init(it)
-        }
-        super.onStart()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.let {
@@ -77,8 +72,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
-    override fun getScreenName(): String {
-        return DigitalTopupEventTracking.Screen.DIGITAL_TELCO_PREPAID
+    override fun getScreenName(): String? {
+        return null
     }
 
     override fun initInjector() {
@@ -165,7 +160,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 R.raw.query_telco_catalog_menu_detail),
                 this::onLoadingMenuDetail, this::onSuccessCatalogMenuDetail, this::onErrorCatalogMenuDetail)
         catalogMenuDetailViewModel.getFavNumbersPrepaid(GraphqlHelper.loadRawString(resources,
-                R.raw.temp_query_fav_number_digital), this::onSuccessFavNumbers, this::onErrorFavNumbers)
+                R.raw.query_fav_number_digital), this::onSuccessFavNumbers, this::onErrorFavNumbers)
     }
 
     fun getDataFromBundle() {
@@ -179,6 +174,11 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
+    override fun onSuccessCatalogMenuDetail(catalogMenuDetailData: TelcoCatalogMenuDetailData) {
+        super.onSuccessCatalogMenuDetail(catalogMenuDetailData)
+        showOnBoarding()
+    }
+
     override fun onSuccessCustomData(telcoData: TelcoCustomComponentData) {
         this.operatorData = telcoData
         renderProductFromCustomData()
@@ -187,11 +187,9 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     fun renderProductFromCustomData() {
         try {
             if (telcoClientNumberWidget.getInputNumber().isNotEmpty()) {
-                val prefixClientNumber = telcoClientNumberWidget.getInputNumber().substring(0, 4)
-
-                selectedOperator = this.operatorData.rechargeCustomData.customDataCollections.filter {
-                    it.value.equals(prefixClientNumber)
-                }.single()
+                selectedOperator = this.operatorData.rechargeCustomData.customDataCollections.single {
+                    telcoClientNumberWidget.getInputNumber().startsWith(it.value)
+                }
                 val operatorName = selectedOperator.operator.attributes.name
                 when (inputNumberActionType) {
                     InputNumberActionType.MANUAL -> {
@@ -303,6 +301,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 TelcoComponentName.PRODUCT_ROAMING))
         val pagerAdapter = DigitalTelcoProductTabAdapter(listProductTab, childFragmentManager)
         viewPager.adapter = pagerAdapter
+        viewPager.offscreenPageLimit = 3
         tabLayout.setupWithViewPager(viewPager)
         setTabFromProductSelected()
         setCustomFont()
@@ -397,6 +396,36 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         })
     }
 
+    private fun showOnBoarding() {
+        activity?.run {
+            val showcaseTag = javaClass.name + ".BroadcastMessage"
+            if (ShowCasePreference.hasShown(this, showcaseTag)) {
+                return
+            }
+
+            val showCaseDialog = generateShowcaseDialog()
+            val showCaseList = ArrayList<ShowCaseObject>()
+            showCaseList.add(ShowCaseObject(telcoClientNumberWidget, getString(R.string.Telco_title_showcase_client_number),
+                    getString(R.string.telco_label_showcase_client_number)))
+            showCaseList.add(ShowCaseObject(promoListWidget, getString(R.string.telco_title_showcase_promo),
+                    getString(R.string.telco_label_showcase_promo)))
+            showCaseDialog.show(activity, showcaseTag, showCaseList)
+        }
+    }
+
+    private fun generateShowcaseDialog(): ShowCaseDialog {
+        return ShowCaseBuilder()
+                .backgroundContentColorRes(R.color.black)
+                .shadowColorRes(R.color.shadow)
+                .textColorRes(R.color.grey_400)
+                .textSizeRes(R.dimen.sp_12)
+                .titleTextSizeRes(R.dimen.sp_16)
+                .finishStringRes(R.string.finish)
+                .clickable(true)
+                .useArrow(true)
+                .build()
+    }
+
     override fun onDestroy() {
         sharedModel.clear()
         super.onDestroy()
@@ -430,7 +459,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     companion object {
-
+        private const val MAX_OFF_SCREEN_LIMIT = 3
         private const val EXTRA_PARAM = "extra_param"
         const val TAB_FONT_NUNITO_SANS = "fonts/NunitoSans-ExtraBold.ttf"
 
