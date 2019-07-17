@@ -69,7 +69,6 @@ dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
-    implementation(group: 'com.bca.widget', name: 'oneclick', version: '1.0', ext: 'aar')
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation project(rootProject.ext.libraries.commonNetwork)
 
