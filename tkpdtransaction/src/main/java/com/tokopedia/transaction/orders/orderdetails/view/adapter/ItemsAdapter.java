@@ -48,12 +48,14 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public static final String CONTENT_TYPE = "application/pdf";
     public static final String KEY_QRCODE = "qrcode";
     private static final int DEALS_CATEGORY_ID = 35;
+    private static final int EVENTS_CATEGORY_ID = 32;
     private boolean isShortLayout;
     private List<Items> itemsList;
     private Context context;
     public static final int ITEM_DEALS = 1;
     public static final int ITEM_DEALS_SHORT = 2;
     public static final int ITEM_EVENTS = 3;
+    private static final int ITEM_DEFAULT = 4;
     private String Insurance_File_Name = "E-policy Asuransi";
     OrderListDetailPresenter presenter;
     private String categoryDeals = "deal";
@@ -101,6 +103,10 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 v = inflater.inflate(R.layout.voucher_item_card_events, parent, false);
                 holder = new ItemViewHolder(v, viewType);
                 break;
+            case ITEM_DEFAULT:
+                v = inflater.inflate(R.layout.voucher_item_default, parent, false);
+                holder = new DefaultViewHolder(v, viewType);
+                break;
             default:
                 break;
         }
@@ -111,8 +117,13 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         this.position = position;
-        ((ItemViewHolder) holder).setIndex(position);
-        ((ItemViewHolder) holder).bindData(itemsList.get(position), holder.getItemViewType());
+        if(holder instanceof  ItemViewHolder) {
+            ((ItemViewHolder) holder).setIndex(position);
+            ((ItemViewHolder) holder).bindData(itemsList.get(position), holder.getItemViewType());
+        } else{
+            ((DefaultViewHolder) holder).setIndex(position);
+            ((DefaultViewHolder) holder).bindData(itemsList.get(position), holder.getItemViewType());
+        }
     }
 
     @Override
@@ -122,8 +133,10 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 return ITEM_DEALS_SHORT;
             else
                 return ITEM_DEALS;
-        } else {
+        } else if(itemsList.get(position).getCategoryID() == EVENTS_CATEGORY_ID){
             return ITEM_EVENTS;
+        } else {
+            return ITEM_DEFAULT;
         }
     }
 
@@ -518,4 +531,231 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     }
 
+    private class DefaultViewHolder extends RecyclerView.ViewHolder {
+        private View itemView;
+        private TextView validDate;
+        private ProgressBar progressBar;
+        private CustomTicketView customTicketView1;
+        private CustomTicketView customTicketView2;
+        private View clCard;
+        private View llValid;
+        private View llTanggalEvent;
+        private TextView tvEventDate;
+        private TextView tvRightTypeofEvents;
+        private TextView tvRightAddress;
+        private TextView tvRightCategoryTicket;
+        private TextView tvRightNumberOfBooking;
+        private LinearLayout tapActionLayout;
+        private LinearLayout actionLayout;
+        private TextView tvValidTill;
+        private int index;
+
+        public DefaultViewHolder(View itemView, int itemType) {
+            super(itemView);
+            this.itemView = itemView;
+            customTicketView1 = itemView.findViewById(R.id.customView1);
+            customTicketView2 = itemView.findViewById(R.id.customView2);
+
+            tvValidTill = itemView.findViewById(R.id.tv_valid_till);
+            validDate = itemView.findViewById(R.id.tv_valid_till_date);
+            clCard = itemView.findViewById(R.id.cl_card);
+            llValid = itemView.findViewById(R.id.ll_valid);
+            itemView.findViewById(R.id.divider1).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+            progressBar = itemView.findViewById(R.id.prog_bar);
+            tvRightTypeofEvents = itemView.findViewById(R.id.right_text1);
+            tvRightAddress = itemView.findViewById(R.id.right_text2);
+            tvRightCategoryTicket = itemView.findViewById(R.id.right_text3);
+            tvRightNumberOfBooking = itemView.findViewById(R.id.right_text4);
+            llTanggalEvent = itemView.findViewById(R.id.ll_tanggal_event);
+            tvEventDate = itemView.findViewById(R.id.tv_start_date);
+            tapActionLayout = itemView.findViewById(R.id.tapAction);
+            actionLayout = itemView.findViewById(R.id.actionButton);
+        }
+
+        void bindData(final Items item, int itemType) {
+            MetaDataInfo metaDataInfo = null;
+            boolean hasViews=false;
+
+            if (item.getMetaData() != null) {
+                Gson gson = new Gson();
+                metaDataInfo = gson.fromJson(item.getMetaData(), MetaDataInfo.class);
+            }
+
+            if (metaDataInfo != null) {
+                presenter.sendThankYouEvent(metaDataInfo);
+                setEventDetails.setDetailTitle(context.getResources().getString(R.string.purchase_detail));
+                if (!TextUtils.isEmpty(metaDataInfo.getEndDate())) {
+                    validDate.setText(" ".concat(metaDataInfo.getEndDate()));
+                    llValid.setVisibility(View.VISIBLE);
+                    hasViews = true;
+                } else {
+                    llValid.setVisibility(View.GONE);
+                }
+                if (TextUtils.isEmpty(metaDataInfo.getEntityProductName())) {
+                    itemView.findViewById(R.id.ll_details1).setVisibility(View.GONE);
+                } else {
+                    hasViews = true;
+                    tvRightTypeofEvents.setText(metaDataInfo.getEntityProductName());
+                }
+                if (metaDataInfo.getEntityPackages() != null && metaDataInfo.getEntityPackages().size() > 0) {
+                    if (TextUtils.isEmpty(metaDataInfo.getEntityPackages().get(0).getAddress())) {
+                        itemView.findViewById(R.id.ll_details2).setVisibility(View.GONE);
+                    } else {
+                        hasViews = true;
+                        tvRightAddress.setText(metaDataInfo.getEntityPackages().get(0).getAddress());
+                    }
+                } else {
+                    itemView.findViewById(R.id.ll_details2).setVisibility(View.GONE);
+                }
+                if (metaDataInfo.getEntityPackages() != null && metaDataInfo.getEntityPackages().size() > 0) {
+                    if (TextUtils.isEmpty(metaDataInfo.getEntityPackages().get(0).getDisplayName())) {
+                        itemView.findViewById(R.id.ll_details3).setVisibility(View.GONE);
+                    } else {
+                        tvRightCategoryTicket.setText(metaDataInfo.getEntityPackages().get(0).getDisplayName());
+                        hasViews = true;
+                    }
+                } else {
+                    itemView.findViewById(R.id.ll_details3).setVisibility(View.GONE);
+                }
+                if (item.getQuantity() == 0) {
+                    itemView.findViewById(R.id.ll_details4).setVisibility(View.GONE);
+                } else {
+                    hasViews = true;
+                    tvRightNumberOfBooking.setText(String.valueOf(metaDataInfo.getTotalTicketCount()));
+                }
+                if (!TextUtils.isEmpty(metaDataInfo.getStartDate())) {
+                    hasViews = true;
+                    tvEventDate.setText(" ".concat(metaDataInfo.getStartDate()));
+                    llTanggalEvent.setVisibility(View.VISIBLE);
+                } else {
+                    llTanggalEvent.setVisibility(View.GONE);
+                }
+                if (item.getTapActions() != null && item.getTapActions().size() > 0 && !item.isTapActionsLoaded()) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    tapActionLayout.setVisibility(View.GONE);
+                    presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, getIndex(), true);
+                }
+                if(!hasViews){
+                    customTicketView1.setVisibility(View.GONE);
+                    itemView.findViewById(R.id.divider1).setVisibility(View.GONE);
+                }
+
+                if (item.isTapActionsLoaded()) {
+                    progressBar.setVisibility(View.GONE);
+                    if (item.getTapActions() == null || item.getTapActions().size() == 0) {
+                        tapActionLayout.setVisibility(View.GONE);
+                    } else {
+                        tapActionLayout.setVisibility(View.VISIBLE);
+                        tapActionLayout.removeAllViews();
+                        int size = item.getTapActions().size();
+                        for (int i = 0; i < size; i++) {
+                            ActionButton actionButton = item.getTapActions().get(i);
+                            TextView tapActionTextView = renderActionButtons(i, actionButton, item);
+                            if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
+                                presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, getIndex(), true);
+                            } else {
+                                setActionButtonClick(tapActionTextView, actionButton);
+                            }
+                            tapActionLayout.addView(tapActionTextView);
+                        }
+                    }
+                } else if (item.getTapActions() == null || item.getTapActions().size() == 0) {
+                    progressBar.setVisibility(View.GONE);
+                }
+
+                if (item.getActionButtons() == null || item.getActionButtons().size() == 0) {
+                    actionLayout.setVisibility(View.GONE);
+                } else {
+                    actionLayout.setVisibility(View.VISIBLE);
+                    actionLayout.removeAllViews();
+                    int size = item.getActionButtons().size();
+                    for (int i = 0; i < size; i++) {
+                        ActionButton actionButton = item.getActionButtons().get(i);
+
+                        TextView actionTextView = renderActionButtons(i, actionButton, item);
+                        if (!actionButton.getControl().equalsIgnoreCase(KEY_TEXT)) {
+                            if (item.isActionButtonLoaded()) {
+                                setActionButtonClick(null, actionButton);
+                            } else {
+                                actionTextView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
+                                            presenter.setActionButton(item.getActionButtons(), ItemsAdapter.this, getIndex(), false);
+                                        } else {
+                                            setActionButtonClick(actionTextView, actionButton);
+                                        }
+
+                                    }
+                                });
+                            }
+                        }
+                        actionLayout.addView(actionTextView);
+                    }
+                }
+            }
+        }
+
+        private void setActionButtonClick(TextView view, ActionButton actionButton) {
+            if (actionButton.getControl().equalsIgnoreCase(KEY_REDIRECT)) {
+                if (!actionButton.getBody().equals("") && !actionButton.getBody().getAppURL().equals("")) {
+                    if (view == null)
+                        RouteManager.route(context, actionButton.getBody().getAppURL());
+                    else
+                        view.setOnClickListener(getActionButtonClickListener(actionButton.getBody().getAppURL()));
+                }
+            }
+        }
+
+        private TextView renderActionButtons(int position, ActionButton actionButton, Items item) {
+
+            TextView tapActionTextView = new TextView(context);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            params.setMargins(0, (int) context.getResources().getDimension(R.dimen.dp_8), 0, 0);
+            tapActionTextView.setPadding((int) context.getResources().getDimension(R.dimen.dp_16), (int) context.getResources().getDimension(R.dimen.dp_16), (int) context.getResources().getDimension(R.dimen.dp_16), (int) context.getResources().getDimension(R.dimen.dp_16));
+            tapActionTextView.setLayoutParams(params);
+            tapActionTextView.setTextColor(Color.WHITE);
+            tapActionTextView.setGravity(Gravity.CENTER_HORIZONTAL);
+            tapActionTextView.setText(actionButton.getLabel());
+            GradientDrawable shape = new GradientDrawable();
+            shape.setShape(GradientDrawable.RECTANGLE);
+            if (!actionButton.getActionColor().getBackground().equals("")) {
+                shape.setColor(android.graphics.Color.parseColor(actionButton.getActionColor().getBackground()));
+            } else {
+                shape.setColor(context.getResources().getColor(R.color.green_nob));
+            }
+            if (!actionButton.getActionColor().getBorder().equals("")) {
+                shape.setStroke(1, android.graphics.Color.parseColor(actionButton.getActionColor().getBorder()));
+            }
+            tapActionTextView.setBackground(shape);
+            if (!actionButton.getActionColor().getTextColor().equals("")) {
+                tapActionTextView.setTextColor(android.graphics.Color.parseColor(actionButton.getActionColor().getTextColor()));
+            } else {
+                tapActionTextView.setTextColor(Color.WHITE);
+            }
+
+
+            if (position == item.getTapActions().size() - 1 && (item.getActionButtons() != null || item.getActionButtons().size() == 0)) {
+                float radius = context.getResources().getDimension(R.dimen.dp_4);
+                shape.setCornerRadii(new float[]{0, 0, 0, 0, radius, radius, radius, radius});
+
+            } else {
+
+                shape.setCornerRadius(context.getResources().getDimension(R.dimen.dp_4));
+            }
+
+            tapActionTextView.setBackground(shape);
+
+            return tapActionTextView;
+        }
+
+
+        public int getIndex() {
+            return index;
+        }
+
+        public void setIndex(int index) {
+            this.index = index;
+        }
+    }
 }
