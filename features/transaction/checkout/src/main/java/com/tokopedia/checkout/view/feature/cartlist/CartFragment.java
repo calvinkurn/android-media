@@ -629,7 +629,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void onCartItemProductClicked(CartItemHolderData cartItemHolderData, int position, int parentPosition) {
         sendAnalyticsOnClickProductNameCartItem(cartItemHolderData.getCartItemData().getOriginData().getProductName());
-        navigateToActivity(getProductIntent(cartItemHolderData.getCartItemData().getOriginData().getProductId()));
+        navigateToActivityRequest(getProductIntent(cartItemHolderData.getCartItemData().getOriginData().getProductId()), NAVIGATION_PDP);
     }
 
     private Intent getProductIntent(String productId) {
@@ -1459,7 +1459,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void onProductItemClicked(int position, Product product) {
-        navigateToActivity(getProductIntent(product.getId()));
+        navigateToActivityRequest(getProductIntent(product.getId()), NAVIGATION_PDP);
     }
 
     @Override
@@ -1480,7 +1480,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             if (dPresenter.getCartListData() != null && dPresenter.getCartListData().getShopGroupDataList().size() > 0) {
                 showMainContainer();
             }
-            dPresenter.processInitialGetCartData(getCartId(), cartListData == null, false);
+            dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true);
             String promo = checkoutModuleRouter.checkoutModuleRouterGetAutoApplyCouponBranchUtil();
             if (!TextUtils.isEmpty(promo)) {
                 dPresenter.processCheckPromoCodeFromSuggestedPromo(promo, true);
