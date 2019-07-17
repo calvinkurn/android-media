@@ -310,6 +310,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 TelcoProductType.PRODUCT_LIST, selectedProductId), TelcoComponentName.PRODUCT_ROAMING))
         val pagerAdapter = DigitalTelcoProductTabAdapter(listProductTab, childFragmentManager)
         viewPager.adapter = pagerAdapter
+        viewPager.offscreenPageLimit = 3
         tabLayout.setupWithViewPager(viewPager)
         setTabFromProductSelected()
         setCustomFont()
@@ -468,7 +469,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     companion object {
-
+        private const val MAX_OFF_SCREEN_LIMIT = 3
         private const val EXTRA_PARAM = "extra_param"
         const val TAB_FONT_NUNITO_SANS = "fonts/NunitoSans-ExtraBold.ttf"
 
