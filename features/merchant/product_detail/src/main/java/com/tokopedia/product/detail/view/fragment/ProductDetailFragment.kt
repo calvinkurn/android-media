@@ -1794,21 +1794,25 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     }
                     if (shouldShowCartAnimation) {
                         if (actionView is SquareHFrameLayout) {
-                            lottieCartView.addAnimatorListener(object : Animator.AnimatorListener {
-                                override fun onAnimationRepeat(animator: Animator?) {}
+                            if (lottieCartView.visibility != View.VISIBLE) {
+                                lottieCartView.addAnimatorListener(object : Animator.AnimatorListener {
+                                    override fun onAnimationRepeat(animator: Animator?) {}
 
-                                override fun onAnimationEnd(animator: Animator?) {
-                                    showBadgeMenuCart(cartCount, cartImageView, lottieCartView, true)
-                                    shouldShowCartAnimation = false
+                                    override fun onAnimationEnd(animator: Animator?) {
+                                        showBadgeMenuCart(cartCount, cartImageView, lottieCartView, true)
+                                        shouldShowCartAnimation = false
+                                    }
+
+                                    override fun onAnimationCancel(animator: Animator?) {}
+
+                                    override fun onAnimationStart(animator: Animator?) {}
+                                })
+                                cartImageView.visibility = View.INVISIBLE
+                                lottieCartView.visibility = View.VISIBLE
+                                if (!lottieCartView.isAnimating) {
+                                    lottieCartView.playAnimation()
                                 }
-
-                                override fun onAnimationCancel(animator: Animator?) {}
-
-                                override fun onAnimationStart(animator: Animator?) {}
-                            })
-                            cartImageView.visibility = View.INVISIBLE
-                            lottieCartView.visibility = View.VISIBLE
-                            lottieCartView.playAnimation()
+                            }
                         }
                     } else {
                         showBadgeMenuCart(cartCount, cartImageView, lottieCartView, false)
