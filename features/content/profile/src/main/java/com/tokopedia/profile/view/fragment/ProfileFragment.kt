@@ -457,7 +457,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             successPost -> {
                 when {
                     isAutomaticOpenShareUser() -> {
-                        share(element.profileHeaderViewModel.link)
+                        checkShouldChangeUsername(element.profileHeaderViewModel.link)
                         profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
                     }
                     onlyOnePost -> showShowCaseDialog(shareProfile)
@@ -466,7 +466,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 successPost = false
             }
             openShare -> {
-                share(element.profileHeaderViewModel.link)
+                checkShouldChangeUsername(element.profileHeaderViewModel.link)
                 openShare = false
             }
         }
@@ -869,7 +869,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             linkerData = constructShareData("", "", url, String.format("%s %s", description, "%s"), title)
             profileAnalytics.eventClickSharePostIni(isOwner, userId.toString())
             isShareProfile = false
-            share(url)
+            checkShouldChangeUsername(url)
         }
     }
 
@@ -1408,7 +1408,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                                 headerViewModel.link),
                         String.format(getString(R.string.profile_share_title)))
                 isShareProfile = true
-                share(headerViewModel.link)
+                checkShouldChangeUsername(headerViewModel.link)
             }
             shareProfile.setOnLongClickListener {
                 showToast(getString(R.string.profile_share_this_profile))
@@ -1461,7 +1461,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 .build()
     }
 
-    private fun share(link: String) {
+    private fun checkShouldChangeUsername(link: String) {
         if (shouldChangeUsername()) {
             presenter.shouldChangeUsername(userSession.userId.toIntOrZero(), link)
         } else {
