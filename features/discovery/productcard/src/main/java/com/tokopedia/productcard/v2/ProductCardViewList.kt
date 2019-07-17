@@ -136,27 +136,4 @@ class ProductCardViewList: ProductCardView {
             else -> null
         }
     }
-
-    override fun setLabelPromoType(promoLabelType: String) {
-        super.setLabelPromoType(promoLabelType)
-        setLabelPromoCornerRadius()
-    }
-
-    private fun setLabelPromoCornerRadius() {
-        val labelPromoBackground = labelPromo?.background?.mutate()
-
-        if (labelPromoBackground != null
-                && labelPromoBackground is GradientDrawable) {
-            setLabelPromoBackgroundCornerRadii(labelPromoBackground)
-        }
-    }
-
-    private fun setLabelPromoBackgroundCornerRadii(labelPromoBackground: GradientDrawable) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            val bottomCornerRadius = getDimensionPixelSize(R.dimen.dp_8).toFloat()
-
-            labelPromoBackground.cornerRadii =
-                    floatArrayOf(0f, 0f, 0f, 0f, bottomCornerRadius, bottomCornerRadius, bottomCornerRadius, bottomCornerRadius)
-        }
-    }
 }

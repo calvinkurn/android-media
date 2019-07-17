@@ -147,28 +147,4 @@ class ProductCardViewSmallGrid: ProductCardView {
             ImageHandler.loadImageCircle2(context, imageShop, imageUrl)
         }
     }
-
-    override fun setLabelPromoType(promoLabelType: String) {
-        super.setLabelPromoType(promoLabelType)
-        setLabelPromoCornerRadius()
-    }
-
-    private fun setLabelPromoCornerRadius() {
-        val labelPromoBackground = labelPromo?.background?.mutate()
-
-        if (labelPromoBackground != null
-                && labelPromoBackground is GradientDrawable) {
-            setLabelPromoBackgroundCornerRadii(labelPromoBackground)
-        }
-    }
-
-    private fun setLabelPromoBackgroundCornerRadii(labelPromoBackground: GradientDrawable) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            val cornerRadii =
-                    labelPromoBackground.cornerRadii ?: floatArrayOf(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f)
-
-            labelPromoBackground.cornerRadii =
-                    floatArrayOf(0f, 0f, cornerRadii[2], cornerRadii[3], 0f, 0f, 0f, 0f)
-        }
-    }
 }
