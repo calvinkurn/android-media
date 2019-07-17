@@ -17,6 +17,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel;
 import com.tokopedia.feedcomponent.view.widget.CardTitleView;
+import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView;
 import com.tokopedia.kol.feature.comment.view.adapter.typefactory.KolCommentTypeFactory;
 import com.tokopedia.kol.feature.comment.view.adapter.viewholder.KolCommentViewHolder;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
@@ -55,6 +56,7 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     private final PollAdapter.PollOptionListener pollOptionListener;
     private final GridPostAdapter.GridItemListener gridItemListener;
     private final VideoViewHolder.VideoViewListener videoViewListener;
+    private final FeedMultipleImageView.FeedMultipleImageViewListener feedMultipleImageViewListener;
     private final KolComment.View.SeeAll seeAll;
     private final UserSessionInterface userSession;
     private final KolPostDetailContract.View mainView;
@@ -69,6 +71,7 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
                                         PollAdapter.PollOptionListener pollOptionListener,
                                         GridPostAdapter.GridItemListener gridItemListener,
                                         VideoViewHolder.VideoViewListener videoViewListener,
+                                        FeedMultipleImageView.FeedMultipleImageViewListener feedMultipleImageViewListener,
                                         UserSessionInterface userSession) {
         this.mainView = mainView;
         this.kolCommentListener = kolCommentListener;
@@ -80,6 +83,7 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
         this.pollOptionListener = pollOptionListener;
         this.gridItemListener = gridItemListener;
         this.videoViewListener = videoViewListener;
+        this.feedMultipleImageViewListener = feedMultipleImageViewListener;
         this.userSession = userSession;
     }
 
@@ -149,7 +153,8 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
         if (viewType == DynamicPostViewHolder.Companion.getLAYOUT()) {
             abstractViewHolder = new KolPostDetailViewHolder(view,
                     listener, cardTitleListener, imagePostListener, youtubePostListener,
-                    pollOptionListener, gridItemListener, videoViewListener, userSession
+                    pollOptionListener, gridItemListener, videoViewListener,
+                    feedMultipleImageViewListener, userSession
             );
         } else if (viewType == KolCommentViewHolder.LAYOUT)
             abstractViewHolder = new KolCommentViewHolder(view, kolCommentListener);
