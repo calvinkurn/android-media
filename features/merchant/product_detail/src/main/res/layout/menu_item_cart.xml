@@ -6,6 +6,13 @@
     android:paddingTop="4dp"
     android:paddingBottom="4dp">
 
+    <ImageView
+        android:id="@+id/cart_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_product_cart_counter_dark" />
+
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/cart_lottie_view"
         android:layout_width="wrap_content"
@@ -14,12 +21,5 @@
         android:visibility="invisible"
         app:lottie_autoPlay="false"
         app:lottie_rawRes="@raw/anim_cart" />
-
-    <ImageView
-        android:id="@+id/cart_image_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerInside"
-        android:src="@drawable/ic_product_cart_counter_dark" />
 
 </com.tokopedia.product.detail.view.widget.SquareHFrameLayout>
