@@ -962,20 +962,24 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void playAnimOsIcon() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return;
+        }
+
         if (osMenu == null) {
             initOsMenu();
         }
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            lottieOsDrawable.setProgress(OS_STATE_UNSELECTED);
-        } else {
-            lottieOsDrawable.setMaxProgress(OS_STATE_ANIMATED);
-            lottieOsDrawable.setRepeatCount(1);
-            lottieOsDrawable.playAnimation();
-        }
+        lottieOsDrawable.setMaxProgress(OS_STATE_ANIMATED);
+        lottieOsDrawable.setRepeatCount(1);
+        lottieOsDrawable.playAnimation();
     }
 
     private void setOsIconProgress(float progress) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return;
+        }
+
         if (osMenu == null) {
             initOsMenu();
         }
