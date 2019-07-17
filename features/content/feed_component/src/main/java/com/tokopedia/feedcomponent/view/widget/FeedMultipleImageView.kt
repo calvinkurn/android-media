@@ -139,9 +139,6 @@ class FeedMultipleImageView @JvmOverloads constructor(
         companion object{
             private const val TYPE_VIDEO = "video"
         }
-
-
-
     }
 
     interface OnFileClickListener{

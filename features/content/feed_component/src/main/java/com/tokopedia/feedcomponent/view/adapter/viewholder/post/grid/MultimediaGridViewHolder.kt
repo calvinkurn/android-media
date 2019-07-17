@@ -24,7 +24,6 @@ class MultimediaGridViewHolder(private val feedType: String)
     override var layoutRes: Int = R.layout.item_post_multimedia
 
     override fun bind(element: MultimediaGridViewModel) {
-        itemView.feedMultipleImageView.bind(element.mediaItemList, feedType)
         itemView.feedMultipleImageView.viewTreeObserver.addOnGlobalLayoutListener(
                 object : ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
@@ -37,10 +36,13 @@ class MultimediaGridViewHolder(private val feedType: String)
                         }
 
                         itemView.feedMultipleImageView.layoutParams.height = FrameLayout.LayoutParams.WRAP_CONTENT
+                        itemView.image.layoutParams.height = itemView.feedMultipleImageView.layoutParams.height
                         itemView.feedMultipleImageView.requestLayout()
+                        itemView.image.requestLayout()
                     }
                 }
         )
+        itemView.feedMultipleImageView.bind(element.mediaItemList, feedType)
         if (isSingleItemVideo(element)) {
             val mediaItem = element.mediaItemList.get(0)
             if (canPlayVideo(mediaItem)) {
@@ -48,6 +50,18 @@ class MultimediaGridViewHolder(private val feedType: String)
             } else {
                 stopVideo()
             }
+        }
+    }
+
+    private fun getContentListHeight(cardWidth: Int, itemCount: Int): Int {
+        return when(itemCount) {
+            1 -> cardWidth
+            2 -> cardWidth / 2
+            3 -> cardWidth / 3
+            4 -> cardWidth
+            5 -> (cardWidth / 2) + (cardWidth / 3)
+            6 -> cardWidth * 2 / 3
+            else -> 0
         }
     }
 

@@ -4,6 +4,7 @@ import android.graphics.Rect;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.FrameLayout;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.feedcomponent.R;
@@ -81,9 +82,9 @@ public class FeedScrollListener {
         Rect rowRect = new Rect();
         layoutManager.findViewByPosition(i).getGlobalVisibleRect(rowRect);
         Rect videoViewRect = new Rect();
-        layoutManager.findViewByPosition(i).findViewById(R.id.image).getGlobalVisibleRect(videoViewRect);
         View imageView = layoutManager.findViewByPosition(i).findViewById(R.id.image);
-        if (imageView != null) {
+        imageView.getGlobalVisibleRect(videoViewRect);
+        if (imageView != null && imageView.getHeight() != 0) {
             int percentVideo = 0;
             if (rowRect.bottom >= rvRect.bottom) {
                 int visibleVideo = rvRect.bottom - videoViewRect.top;
@@ -116,7 +117,12 @@ public class FeedScrollListener {
     }
 
     private static VideoViewModel getVideoCardViewModel(List<Visitable> list, int position) {
-        return (VideoViewModel) ((DynamicPostViewModel)list.get(position)).getContentList().get(0);
+        try {
+            return (VideoViewModel) ((DynamicPostViewModel)list.get(position)).getContentList().get(0);
+        } catch (Exception e) {
+            e.getLocalizedMessage();
+        }
+        return null;
     }
 
     private static MediaItem getVideoCardItemViewModel(List<Visitable> list, int position) {
