@@ -109,7 +109,7 @@ class ShareBottomSheets: BottomSheets(), ShareAdapter.OnItemClickListener {
     }
 
     override fun getLayoutResourceId(): Int {
-        return R.layout.bottomsheet_share
+        return R.layout.bottomsheet_feed_share
     }
 
     override fun state(): BottomSheetsState {
