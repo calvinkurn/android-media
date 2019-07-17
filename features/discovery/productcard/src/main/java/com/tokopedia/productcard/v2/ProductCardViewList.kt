@@ -148,7 +148,7 @@ class ProductCardViewList: ProductCardView {
     private fun setImageTopAdsConstraintIfVisible(imageTopAds: ImageView) {
         textViewShopLocation?.let { textViewShopLocation ->
             if(isViewNotNullAndVisible(textViewShopLocation) && isTextLocationIsAtBottomOfCard()) {
-                setViewConstraint(imageTopAds.id, ConstraintSet.START, textViewShopLocation.id, ConstraintSet.END, R.dimen.dp_8)
+                setViewConstraint(imageTopAds.id, ConstraintSet.TOP, textViewShopLocation.id, ConstraintSet.TOP, R.dimen.dp_0)
             }
         }
     }
