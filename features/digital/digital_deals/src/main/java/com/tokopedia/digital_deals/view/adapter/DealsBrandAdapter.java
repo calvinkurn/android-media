@@ -3,6 +3,7 @@ package com.tokopedia.digital_deals.view.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,7 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     DealsAnalytics dealsAnalytics;
     private boolean fromSearchResult;
     private boolean isBrandNative;
+    private String pageType;
 
 
     public DealsBrandAdapter(List<Brand> brandItems, int itemViewType) {
@@ -60,12 +62,11 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     dealsAnalytics.sendEcommerceBrand(itemsForGA,
                             holder1.getIndex(), brandItems.get(holder1.getIndex()).getTitle(), DealsAnalytics.EVENT_PROMO_VIEW, DealsAnalytics.EVENT_IMPRESSION_POPULAR_BRAND_HOME, DealsAnalytics.DEALS_HOME_PAGE);
                     itemsForGA.clear();
-
-                } else if (isBrandNative && itemsForGA != null && (itemsToSend < 5 || itemsForGA.size() == 5)) {
-                    dealsAnalytics.sendBrandImpressionEvent(itemsForGA,
+                } else if (isBrandNative) {
+                    dealsAnalytics.sendBrandImpressionEvent(brandItems,
                             holder1.getIndex(), brandItems.get(holder1.getIndex()).getTitle(), DealsAnalytics.EVENT_PROMO_VIEW, DealsAnalytics.EVENT_IMPRESSION_POPULAR_BRAND_ALL, DealsAnalytics.DEALS_HOME_PAGE);
                     itemsForGA.clear();
-                } else {
+                } else if (!TextUtils.isEmpty(pageType) && pageType.equalsIgnoreCase("category")){
                     if (itemsForGA != null && (itemsToSend < 5 || itemsForGA.size() == 5))
                     dealsAnalytics.sendEcommerceBrand(itemsForGA,
                             holder1.getIndex(), brandItems.get(holder1.getIndex()).getTitle(), DealsAnalytics.EVENT_PROMO_VIEW, DealsAnalytics.EVENT_IMPRESSION_POPULAR_BRAND_CATEGORY, DealsAnalytics.DEALS_HOME_PAGE);
@@ -88,6 +89,10 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     public void setBrandNativePage(boolean isBrandNative) {
         this.isBrandNative = isBrandNative;
+    }
+
+    public void setPageType(String pageType) {
+        this.pageType = pageType;
     }
 
 

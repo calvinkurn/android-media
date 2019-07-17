@@ -347,7 +347,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                         if (dealType.equalsIgnoreCase(DealsAnalytics.TRENDING_DEALS)) {
                             dealsAnalytics.sendTrendingDealImpression(DealsAnalytics.EVENT_PRODUCT_VIEW, DealsAnalytics.EVENT_IMPRESSION_TRENDING_DEALS, itemsForGA, holder1.getIndex(), categoryName);
                             itemsForGA.clear();
-                        } else {
+                        } else if (dealType.equalsIgnoreCase(DealsAnalytics.CURATED_DEALS)){
                             dealsAnalytics.sendTrendingDealImpression(DealsAnalytics.EVENT_PRODUCT_VIEW,
                                     String.format("%s - %s", DealsAnalytics.EVENT_IMPRESSION_CURATED_DEALS, String.valueOf(this.homePosition)), itemsForGA, holder1.getIndex(), categoryName);
                             itemsForGA.clear();
