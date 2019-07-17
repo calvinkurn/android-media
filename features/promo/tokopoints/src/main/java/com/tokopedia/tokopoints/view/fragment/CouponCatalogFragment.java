@@ -58,9 +58,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class CouponCatalogFragment extends BaseDaggerFragment implements CouponCatalogContract.View, View.OnClickListener {
     private static final String FPM_DETAIL_TOKOPOINT = "ft_tokopoint_detail";
@@ -698,7 +696,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
 
                     @Override
                     public void onNext(Long aLong) {
-                        mPresenter.fetchLatestStatus(Arrays.asList(data.getId()))
+                        mPresenter.fetchLatestStatus(Arrays.asList(data.getId()));
                     }
                 });
 
