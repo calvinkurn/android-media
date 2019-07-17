@@ -973,6 +973,7 @@ public class MainParentActivity extends BaseActivity implements
         } else {
             lottieOsDrawable.setMaxProgress(OS_STATE_ANIMATED);
         }
+        lottieOsDrawable.setRepeatCount(1);
         lottieOsDrawable.playAnimation();
     }
 
