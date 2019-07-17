@@ -14,7 +14,7 @@ data class DataResponse(
 
         @SerializedName("cart_id")
         @Expose
-        val cartId: Long = 0,
+        val cartId: Int = 0,
 
         @SerializedName("product_id")
         @Expose

@@ -1780,7 +1780,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         cartPageAnalytics.eventViewPromoAutoApply();
     }
 
-    private void notifyBottomCartParent() {
+    @Override
+    public void notifyBottomCartParent() {
         if (getActivity() instanceof CartNotifyListener) {
             ((CartNotifyListener) getActivity()).onNotifyCart();
         }

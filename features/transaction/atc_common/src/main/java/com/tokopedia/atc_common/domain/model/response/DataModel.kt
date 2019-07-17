@@ -6,7 +6,7 @@ package com.tokopedia.atc_common.domain.model.response
 
 data class DataModel(
         var success: Int = 0,
-        var cartId: Long = 0,
+        var cartId: Int = 0,
         var productId: Int = 0,
         var quantity: Int = 0,
         var notes: String = "",
