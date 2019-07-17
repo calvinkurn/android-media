@@ -9,6 +9,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.SimpleItemAnimator
@@ -78,9 +79,12 @@ import javax.inject.Inject
 class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAdapterTypeFactory>(),
         NormalCheckoutContract.View, CheckoutVariantActionListener {
 
+    private var isErrorInInsurance: Boolean = false
     private var isInsuranceSelected: Boolean = false
     private var insuranceRecommendationViewModel = InsuranceRecommendationViewModel()
-    //    private lateinit var insuranceRecommendationGqlResponse: InsuranceRecommendationGqlResponse
+
+    private var selectedInsuranceProduct = InsuranceRecommendationViewModel()
+
     private var productPrice: Float? = 0f
     private lateinit var insuranceRecommendationRequest: InsuranceRecommendationRequest
     @Inject
@@ -589,12 +593,17 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             override fun onNext(graphqlResponse: GraphqlResponse?) {
 
                 graphqlResponse?.run {
-                    Toast.makeText(context, "Insurance Recommendation Success", Toast.LENGTH_SHORT).show()
 
                     if (graphqlResponse.getSuccessData<InsuranceRecommendationGqlResponse>() != null) {
 
                         insuranceRecommendationViewModel = ModelMapper.convertToInsuranceRecommendationViewModel(graphqlResponse.getData(InsuranceRecommendationGqlResponse::class.java))
-//                        insuranceRecommendationGqlResponse = graphqlResponse.getData(InsuranceRecommendationGqlResponse::class.java)
+
+                        insuranceRecommendationViewModel?.run {
+                            if (!this.cartShopsList.isNullOrEmpty()) {
+                                adapter.addSingleDataViewModel(this)
+                                adapter.notifyDataSetChanged()
+                            }
+                        }
                     }
                 }
             }
@@ -801,12 +810,23 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
 //        addinsurance product to cart as well
 
-        if(isInsuranceSelected) {
+        if (isInsuranceSelected &&
+                !selectedInsuranceProduct.cartShopsList.isNullOrEmpty() &&
+                !selectedInsuranceProduct.cartShopsList[0].shopItemsList.isNullOrEmpty()) {
 
+            if (isErrorInInsurance) {
+                Toast.makeText(context, "Please Enter Correct Application Details for insurance", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "application detail valid", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            Toast.makeText(context, "Insurance not selected", Toast.LENGTH_SHORT).show()
+            return
         }
 
         tempQuantity = quantity
         isTradeIn = 0
+
         addToCart(false, onFinish = { message: String?, cartId: String? ->
             onFinishAddToCart(message)
             selectedProductInfo?.run {
@@ -934,10 +954,13 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     override fun loadData(page: Int) {
-        if (viewModel.isUserSessionActive()) {
-            getInsuranceRecommendationProducts()
-        }
         viewModel.getProductInfo(ProductParams(productId, null, null), resources)
+
+        Handler().postDelayed({
+            if (viewModel.isUserSessionActive()) {
+                getInsuranceRecommendationProducts()
+            }
+        }, 1000)
     }
 
     override fun onChangeVariant(selectedOptionViewModel: OptionVariantViewModel) {
@@ -999,7 +1022,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         selectedProductInfo = getSelectedProductInfo(originalProduct, selectedVariantId)
         selectedProductInfo?.let {
             val viewModels = ModelMapper.convertVariantToModels(it, viewModel.selectedwarehouse,
-                    originalProduct.productVariant, insuranceRecommendationViewModel, notes, quantity)
+                    originalProduct.productVariant, notes, quantity)
             fragmentViewModel.viewModels = viewModels
             quantity = fragmentViewModel.getQuantityViewModel()?.orderQuantity
                     ?: 0
@@ -1073,7 +1096,12 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         outState.putString(EXTRA_NOTES, notes)
     }
 
-    override fun onInsuranceSelectedStateChanged(isSelected: Boolean) {
+    override fun setErrorInInsuranceSelection(value: Boolean) {
+        this.isErrorInInsurance = value
+    }
+
+    override fun onInsuranceSelectedStateChanged(element: InsuranceRecommendationViewModel?, isSelected: Boolean) {
+        this.selectedInsuranceProduct = element ?: InsuranceRecommendationViewModel()
         isInsuranceSelected = isSelected
     }
 

@@ -32,4 +32,16 @@
         android:layout_height="@dimen/dp_1"
         android:background="@color/grey_300" />
 
+    <TextView
+        android:id="@+id/error_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:gravity="end"
+        android:textColor="@color/red_500"
+        android:textSize="@dimen/sp_12"
+        android:textStyle="normal"
+        android:visibility="invisible"
+        tools:visibility="visible"/>
+
 </LinearLayout>

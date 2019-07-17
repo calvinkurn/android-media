@@ -16,13 +16,17 @@ query GetInsureTechCart($data: TransactionalUserInfo) {
             is_application_needed
             is_new
             product_info{
-              title
-              sub_title
-              link_detail_info_title
-              description
-              icon_url
-              web_link_html
-              ticker_text
+                title
+                sub_title
+                detail_info_title
+                description
+                section_title
+                ticker_text
+                icon_url
+                app_link_url
+                link_name
+                web_link_url
+                info_text
             }
             application_details{
               id

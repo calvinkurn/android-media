@@ -89,6 +89,7 @@ data class InsuranceCartDigitalProductViewModel(
         var totalPrice: Long,
         var optIn: Boolean,
         var isProductLevel: Boolean,
+        var isPurchaseProtection: Boolean,
         var isSellerMoney: Boolean,
         var isApplicationNeeded: Boolean,
         var isNew: Boolean,
@@ -122,6 +123,7 @@ data class InsuranceCartDigitalProductViewModel(
             parcel?.readByte() != 0.toByte(),
             parcel?.readByte() != 0.toByte(),
             parcel?.readByte() != 0.toByte(),
+            parcel?.readByte() != 0.toByte(),
             parcel?.readParcelable<InsuranceCartProductInfoViewModel>(InsuranceCartProductInfoViewModel::class.java.classLoader)!!,
             arrayListOf<InsuranceProductApplicationDetailsViewModel>().apply {
                 parcel?.readList(this, InsuranceProductApplicationDetailsViewModel::class.java.classLoader)
@@ -137,6 +139,7 @@ data class InsuranceCartDigitalProductViewModel(
         parcel.writeLong(totalPrice)
         parcel.writeByte(if (optIn) 1 else 0)
         parcel.writeByte(if (isProductLevel) 1 else 0)
+        parcel.writeByte(if (isPurchaseProtection) 1 else 0)
         parcel.writeByte(if (isSellerMoney) 1 else 0)
         parcel.writeByte(if (isApplicationNeeded) 1 else 0)
         parcel.writeByte(if (isNew) 1 else 0)
@@ -155,8 +158,13 @@ data class InsuranceCartProductInfoViewModel(
         var subTitle: String,
         var description: String,
         var iconUrl: String,
-        var webLinkHtml: String,
-        var tickerText: String
+        var tickerText: String,
+        var detailInfoTitle: String,
+        var sectionTitle: String,
+        var webLinkUrl: String,
+        var infoText: String,
+        var appLinkUrl: String,
+        var linkName: String
 
 ) : Parcelable {
     companion object {
@@ -180,6 +188,11 @@ data class InsuranceCartProductInfoViewModel(
             parcel?.readString() ?: "",
             parcel?.readString() ?: "",
             parcel?.readString() ?: "",
+            parcel?.readString() ?: "",
+            parcel?.readString() ?: "",
+            parcel?.readString() ?: "",
+            parcel?.readString() ?: "",
+            parcel?.readString() ?: "",
             parcel?.readString() ?: ""
     )
 
@@ -188,8 +201,13 @@ data class InsuranceCartProductInfoViewModel(
         parcel.writeString(subTitle)
         parcel.writeString(description)
         parcel.writeString(iconUrl)
-        parcel.writeString(webLinkHtml)
         parcel.writeString(tickerText)
+        parcel.writeString(detailInfoTitle)
+        parcel.writeString(sectionTitle)
+        parcel.writeString(webLinkUrl)
+        parcel.writeString(infoText)
+        parcel.writeString(appLinkUrl)
+        parcel.writeString(linkName)
     }
 
     override fun describeContents(): Int {

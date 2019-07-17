@@ -1,7 +1,5 @@
 package com.tokopedia.transactiondata.insurance.entity.response
 
-import android.os.Parcelable
-import androidx.versionedparcelable.VersionedParcelize
 import com.google.gson.annotations.SerializedName
 
 data class InsuranceCartGqlResponse(
@@ -52,6 +50,9 @@ data class InsuranceCartDigitalProduct(
         @SerializedName("is_product_level")
         var isProductLevel: Boolean,
 
+        @SerializedName("is_purchase_protection")
+        var isPurchaseProtection: Boolean,
+
         @SerializedName("is_seller_money")
         var isSellerMoney: Boolean,
 
@@ -75,17 +76,32 @@ data class InsuranceCartProductInfo(
         @SerializedName("sub_title")
         var subTitle: String,
 
+        @SerializedName("detail_info_title")
+        var detailInfoTitle: String,
+
         @SerializedName("description")
         var description: String,
+
+        @SerializedName("section_title")
+        var sectionTitle: String,
 
         @SerializedName("icon_url")
         var iconUrl: String,
 
-        @SerializedName("web_link_html")
-        var webLinkHtml: String,
+        @SerializedName("web_link_url")
+        var webLinkUrl: String,
 
         @SerializedName("ticker_text")
-        var tickerText: String
+        var tickerText: String,
+
+        @SerializedName("info_text")
+        var infoText: String,
+
+        @SerializedName("app_link_url")
+        var appLinkUrl: String,
+
+        @SerializedName("link_name")
+        var linkName: String
 )
 
 data class InsuranceProductApplicationDetails(

@@ -23,7 +23,7 @@ object ModelMapper {
     fun convertVariantToModels(productInfo: ProductInfo,
                                multiorigin: MultiOriginWarehouse?,
                                productVariant: ProductVariant?,
-                               insuranceRecommendation: InsuranceRecommendationViewModel?,
+                               /*insuranceRecommendation: InsuranceRecommendationViewModel?,*/
                                noteString: String?, quantity: Int = 0): ArrayList<Visitable<*>> {
         val dataList: ArrayList<Visitable<*>> = ArrayList()
         dataList.add(convertToProductViewModel(productInfo, multiorigin))
@@ -41,9 +41,10 @@ object ModelMapper {
         }
         dataList.add(convertToQuantityViewModel(productInfo, quantity))
         dataList.add(convertToNoteViewModel(noteString))
-        insuranceRecommendation?.run {
-            dataList.add(insuranceRecommendation)
-        }
+        /*insuranceRecommendation?.run {
+            if (!this.cartShopsList.isNullOrEmpty())
+                dataList.add(insuranceRecommendation)
+        }*/
         return dataList
     }
 
@@ -142,9 +143,15 @@ object ModelMapper {
                     insuranceCartProductInfoViewModel.description = digitalProduct.productInfo.description
                     insuranceCartProductInfoViewModel.iconUrl = digitalProduct.productInfo.iconUrl
                     insuranceCartProductInfoViewModel.subTitle = digitalProduct.productInfo.subTitle
-                    insuranceCartProductInfoViewModel.webLinkHtml = digitalProduct.productInfo.webLinkHtml
+                    insuranceCartProductInfoViewModel.webLinkUrl = digitalProduct.productInfo.webLinkUrl
                     insuranceCartProductInfoViewModel.title = digitalProduct.productInfo.title
                     insuranceCartProductInfoViewModel.tickerText = digitalProduct.productInfo.tickerText
+
+                    insuranceCartProductInfoViewModel.detailInfoTitle = digitalProduct.productInfo.detailInfoTitle
+                    insuranceCartProductInfoViewModel.sectionTitle = digitalProduct.productInfo.sectionTitle
+                    insuranceCartProductInfoViewModel.appLinkUrl = digitalProduct.productInfo.appLinkUrl
+                    insuranceCartProductInfoViewModel.linkName = digitalProduct.productInfo.linkName
+                    insuranceCartProductInfoViewModel.infoText = digitalProduct.productInfo.infoText
 
 
                     val applicationDetailList = ArrayList<InsuranceProductApplicationDetailsViewModel>()
@@ -185,6 +192,7 @@ object ModelMapper {
                             digitalProduct.totalPrice,
                             digitalProduct.optIn,
                             digitalProduct.isProductLevel,
+                            digitalProduct.isPurchaseProtection,
                             digitalProduct.isSellerMoney,
                             digitalProduct.isApplicationNeeded,
                             digitalProduct.isNew,

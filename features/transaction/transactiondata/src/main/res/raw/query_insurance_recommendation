@@ -17,13 +17,15 @@ query getTransactionalProducts($digitalProducts: InsuretechDigitalProductRequest
           product_info{
             title
             sub_title
+            detail_info_title
             description
             section_title
             ticker_text
             icon_url
             app_link_url
             link_name
-            web_link_html
+            web_link_url
+            info_text
           }
           application_details{
             id
