@@ -1839,7 +1839,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 icon.setDrawableByLayerId(R.id.ic_cart_count, badge)
                 cartImageView.setImageDrawable(icon)
                 if (animate) {
-                    val alphaAnimation = AlphaAnimation(0f, 1f)
+                    val alphaAnimation = AlphaAnimation(1f, 0f)
                     val scaleAnimation = ScaleAnimation(1f, 2f, 1f, 2f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
                     scaleAnimation.fillAfter = false
                     val animationSet = AnimationSet(false)
