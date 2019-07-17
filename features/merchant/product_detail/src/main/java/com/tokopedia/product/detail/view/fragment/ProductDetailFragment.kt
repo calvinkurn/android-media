@@ -30,7 +30,9 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.text.TextUtils
 import android.view.*
+import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
+import android.view.animation.AnimationSet
 import android.view.animation.ScaleAnimation
 import android.widget.ImageView
 import com.airbnb.lottie.LottieAnimationView
@@ -1837,12 +1839,17 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 icon.setDrawableByLayerId(R.id.ic_cart_count, badge)
                 cartImageView.setImageDrawable(icon)
                 if (animate) {
+                    val alphaAnimation = AlphaAnimation(0f, 1f)
                     val scaleAnimation = ScaleAnimation(1f, 2f, 1f, 2f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
                     scaleAnimation.fillAfter = false
-                    scaleAnimation.duration = 1000
-                    scaleAnimation.setAnimationListener(object : Animation.AnimationListener {
-                        override fun onAnimationRepeat(p0: Animation?) {
-                        }
+                    val animationSet = AnimationSet(false)
+                    animationSet.addAnimation(alphaAnimation)
+                    animationSet.addAnimation(scaleAnimation)
+                    animationSet.duration = 1000
+                    animationSet.fillAfter = false
+                    animationSet.fillBefore = false
+                    animationSet.setAnimationListener(object : Animation.AnimationListener {
+                        override fun onAnimationRepeat(p0: Animation?) {}
 
                         override fun onAnimationEnd(p0: Animation?) {
                             lottieCartView.clearAnimation()
@@ -1851,16 +1858,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                             cartImageView.visibility = View.VISIBLE
                         }
 
-                        override fun onAnimationStart(p0: Animation?) {
-                            lottieCartView.animate()
-                                    .setDuration(1000)
-                                    .alpha(0.0f)
-                            cartImageView.animate()
-                                    .setDuration(1000)
-                                    .alpha(1.0f)
-                        }
+                        override fun onAnimationStart(p0: Animation?) {}
                     })
-                    lottieCartView.startAnimation(scaleAnimation)
+                    lottieCartView.startAnimation(animationSet)
                 } else {
                     lottieCartView.visibility = View.INVISIBLE
                     cartImageView.visibility = View.VISIBLE
