@@ -39,8 +39,7 @@ class ProductAttachmentAdapter(private val products: MutableList<RelatedProductI
         fun bind(relatedProductItem: RelatedProductItem) {
             with(itemView){
                 val layoutParams = card_product_attachment.layoutParams
-                layoutParams.width = if (itemCount == 1) ViewGroup.LayoutParams.MATCH_PARENT
-                                     else context.resources.getDimensionPixelSize(R.dimen.dp_260)
+                layoutParams.width = if (itemCount == 1) fullWidth else standardWidth
                 card_product_attachment.layoutParams = layoutParams
 
                 image_product.loadImageWithoutPlaceholder(relatedProductItem.image)
@@ -54,6 +53,12 @@ class ProductAttachmentAdapter(private val products: MutableList<RelatedProductI
                 delete.setOnClickListener { removeProduct(adapterPosition) }
             }
         }
+
+        val fullWidth = with(itemView.context.resources){
+            displayMetrics.widthPixels - getDimensionPixelSize(R.dimen.dp_16) * 2
+        }
+
+        val standardWidth = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_260)
     }
 
     private fun removeProduct(adapterPosition: Int) {

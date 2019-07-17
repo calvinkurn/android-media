@@ -18,7 +18,7 @@
         android:layout_marginLeft="@dimen/dp_4"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:text="@string/another_product_title"/>
+        tools:text="@string/recom_another_product_title"/>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list"
         android:layout_width="match_parent"

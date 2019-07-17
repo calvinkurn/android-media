@@ -128,15 +128,20 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         if (currentSearch?.isNotEmpty() == true) {
             etSearch.apply {
                 setText(currentSearch.toString())
-                setSelectAllOnFocus(true)
+                selectAll()
                 requestFocus()
+                setListenerClearBtn()
                 setSelection(etSearch.text.length)
-                showKeyboard()
+                showKeyboard(etSearch)
             }
             currentSearch?.let {
                 loadAutocomplete(it)
             }
         } else {
+            etSearch.requestFocus()
+            showKeyboard(etSearch)
+            icCloseBtn.visibility = View.GONE
+
             if (currentLat != 0.0 && currentLong != 0.0) {
                 context?.let {
                     if (AddNewAddressUtils.isLocationEnabled(it)) {
@@ -153,6 +158,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
                         doLoadAutocompleteGeocode()
                     } else {
                         rlCurrentLocation.setOnClickListener {
+                            hideKeyboard(etSearch)
                             showLocationInfoBottomSheet()
                         }
                     }
@@ -173,8 +179,9 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
                 override fun onTextChanged(s: CharSequence, start: Int, before: Int,
                                            count: Int) {
                     if (s.isNotEmpty()) {
+                        icCloseBtn.visibility = View.VISIBLE
                         val input = "$s"
-                        showClearBtn()
+                        setListenerClearBtn()
                         handler.postDelayed({
                             loadAutocomplete(input)
                         }, 500)
@@ -189,12 +196,13 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         }
 
         rlCurrentLocation.setOnClickListener {
+            hideKeyboard(etSearch)
             actionListener.useCurrentLocation()
             dismiss()
         }
     }
 
-    private fun showClearBtn() {
+    private fun setListenerClearBtn() {
         icCloseBtn.setOnClickListener {
             etSearch.setText("")
             hideListPointOfInterest()
@@ -215,6 +223,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         parentView?.findViewById<View>(R.id.btn_close)?.setOnClickListener {
             AddNewAddressAnalytics.eventClickBackArrowOnInputAddress()
             onCloseButtonClick()
+            hideKeyboard(etSearch)
         }
     }
 
@@ -275,6 +284,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
     override fun onPoiListClicked(placeId: String) {
         context?.let {
             placeId.run {
+                hideKeyboard(etSearch)
                 actionListener.onGetPlaceId(placeId)
                 dismiss()
             }
@@ -282,14 +292,14 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         AddNewAddressAnalytics.eventClickAddressSuggestionFromSuggestionList()
     }
 
-    private fun hideKeyboard() {
+    private fun hideKeyboard(et : EditText) {
         val inputMethodManager = context?.getSystemService(Activity.INPUT_METHOD_SERVICE)
-        (inputMethodManager as InputMethodManager).hideSoftInputFromWindow(view?.windowToken, 0)
+        (inputMethodManager as InputMethodManager).hideSoftInputFromWindow(et.windowToken, 0)
     }
 
-    private fun showKeyboard() {
+    private fun showKeyboard(et: EditText) {
         val imm = context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+        imm.showSoftInput(et, 0)
     }
 
     private fun showLocationInfoBottomSheet() {

@@ -407,7 +407,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         if (GlobalConfig.isSellerApp()) {
             RouteManager.route(context, ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE)
         } else {
-            RouteManager.route(context, ApplinkConstInternalMarketplace.GOLD_MERCHANT_REDIRECT)
+            RouteManager.route(context, ApplinkConst.POWER_MERCHANT_SUBSCRIBE)
         }
     }
 
