@@ -44,6 +44,7 @@ class ProductCardViewSmallGrid: ProductCardView {
         setLocationMarginLeft()
         setReviewCountMarginLeft()
         setLabelOffersConstraint()
+        setImageTopAdsConstraint()
     }
 
     private fun setProductNameMarginTop() {
@@ -136,6 +137,29 @@ class ProductCardViewSmallGrid: ProductCardView {
             }
             else -> null
         }
+    }
+
+    private fun setImageTopAdsConstraint() {
+        imageTopAds?.let { imageTopAds ->
+            if (isViewNotNullAndVisible(imageTopAds)) {
+                setImageTopAdsConstraintIfVisible(imageTopAds)
+            }
+        }
+    }
+
+    private fun setImageTopAdsConstraintIfVisible(imageTopAds: ImageView) {
+        textViewShopLocation?.let { textViewShopLocation ->
+            if(isViewNotNullAndVisible(textViewShopLocation) && isTextLocationIsAtBottomOfCard()) {
+                setViewConstraint(imageTopAds.id, ConstraintSet.START, textViewShopLocation.id, ConstraintSet.END, R.dimen.dp_8)
+            }
+        }
+    }
+
+    private fun isTextLocationIsAtBottomOfCard(): Boolean {
+        return !isViewNotNullAndVisible(labelCredibility)
+                && !isViewNotNullAndVisible(linearLayoutImageRating)
+                && !isViewNotNullAndVisible(textViewReviewCount)
+                && !isViewNotNullAndVisible(labelOffers)
     }
 
     fun setImageShopVisible(isVisible: Boolean) {

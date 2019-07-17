@@ -6,6 +6,7 @@ import android.os.Build
 import android.support.constraint.ConstraintSet
 import android.util.AttributeSet
 import android.view.View
+import android.widget.ImageView
 import com.tokopedia.productcard.R
 import com.tokopedia.unifycomponents.Label
 
@@ -34,6 +35,7 @@ class ProductCardViewBigGrid: ProductCardView {
         setLocationMarginLeft()
         setReviewCountMarginLeft()
         setLabelOffersConstraint()
+        setImageTopAdsConstraint()
     }
 
     private fun setProductNameMarginTop() {
@@ -126,5 +128,28 @@ class ProductCardViewBigGrid: ProductCardView {
             }
             else -> null
         }
+    }
+
+    private fun setImageTopAdsConstraint() {
+        imageTopAds?.let { imageTopAds ->
+            if (isViewNotNullAndVisible(imageTopAds)) {
+                setImageTopAdsConstraintIfVisible(imageTopAds)
+            }
+        }
+    }
+
+    private fun setImageTopAdsConstraintIfVisible(imageTopAds: ImageView) {
+        textViewShopLocation?.let { textViewShopLocation ->
+            if(isViewNotNullAndVisible(textViewShopLocation) && isTextLocationIsAtBottomOfCard()) {
+                setViewConstraint(imageTopAds.id, ConstraintSet.START, textViewShopLocation.id, ConstraintSet.END, R.dimen.dp_8)
+            }
+        }
+    }
+
+    private fun isTextLocationIsAtBottomOfCard(): Boolean {
+        return !isViewNotNullAndVisible(labelCredibility)
+                && !isViewNotNullAndVisible(linearLayoutImageRating)
+                && !isViewNotNullAndVisible(textViewReviewCount)
+                && !isViewNotNullAndVisible(labelOffers)
     }
 }

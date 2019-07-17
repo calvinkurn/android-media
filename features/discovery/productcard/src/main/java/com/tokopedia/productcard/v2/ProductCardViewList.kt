@@ -1,12 +1,11 @@
 package com.tokopedia.productcard.v2
 
 import android.content.Context
-import android.graphics.drawable.GradientDrawable
-import android.os.Build
 import android.support.constraint.ConstraintSet
 import android.support.v7.widget.CardView
 import android.util.AttributeSet
 import android.view.View
+import android.widget.ImageView
 import com.tokopedia.productcard.R
 import com.tokopedia.unifycomponents.Label
 
@@ -43,6 +42,7 @@ class ProductCardViewList: ProductCardView {
         setLocationMarginLeft()
         setReviewCountMarginLeft()
         setLabelOffersConstraint()
+        setImageTopAdsConstraint()
     }
 
     private fun setProductNameMarginTop() {
@@ -135,5 +135,28 @@ class ProductCardViewList: ProductCardView {
             }
             else -> null
         }
+    }
+
+    private fun setImageTopAdsConstraint() {
+        imageTopAds?.let { imageTopAds ->
+            if (isViewNotNullAndVisible(imageTopAds)) {
+                setImageTopAdsConstraintIfVisible(imageTopAds)
+            }
+        }
+    }
+
+    private fun setImageTopAdsConstraintIfVisible(imageTopAds: ImageView) {
+        textViewShopLocation?.let { textViewShopLocation ->
+            if(isViewNotNullAndVisible(textViewShopLocation) && isTextLocationIsAtBottomOfCard()) {
+                setViewConstraint(imageTopAds.id, ConstraintSet.START, textViewShopLocation.id, ConstraintSet.END, R.dimen.dp_8)
+            }
+        }
+    }
+
+    private fun isTextLocationIsAtBottomOfCard(): Boolean {
+        return !isViewNotNullAndVisible(labelCredibility)
+                && !isViewNotNullAndVisible(linearLayoutImageRating)
+                && !isViewNotNullAndVisible(textViewReviewCount)
+                && !isViewNotNullAndVisible(labelOffers)
     }
 }
