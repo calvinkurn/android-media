@@ -53,6 +53,8 @@ import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+
 import javax.inject.Inject;
 
 import static com.tokopedia.core.gcm.Constants.FROM_APP_SHORTCUTS;
