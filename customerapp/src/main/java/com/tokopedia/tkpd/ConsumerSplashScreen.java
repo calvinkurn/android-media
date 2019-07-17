@@ -41,7 +41,6 @@ public class ConsumerSplashScreen extends SplashScreen {
     public static final String WARM_TRACE = "gl_warm_start";
     public static final String SPLASH_TRACE = "gl_splash_screen";
 
-    private static final java.lang.String KEY_SPLASH_IMAGE_URL = "app_splash_image_url";
     private View mainLayout;
 
     private PerformanceMonitoring warmTrace;
@@ -61,13 +60,7 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        isApkTempered = false;
-        try {
-            getResources().getDrawable(R.drawable.launch_screen);
-        } catch (Exception e) {
-            isApkTempered = true;
-            setTheme(R.style.Theme_Tokopedia3_PlainGreen);
-        }
+        checkApkTempered();
 
         startWarmStart();
         startSplashTrace();
@@ -87,6 +80,16 @@ public class ConsumerSplashScreen extends SplashScreen {
                 .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(this.getApplicationContext()), false);
 
 
+    }
+
+    private void checkApkTempered() {
+        isApkTempered = false;
+        try {
+            getResources().getDrawable(R.drawable.launch_screen);
+        } catch (Exception e) {
+            isApkTempered = true;
+            setTheme(R.style.Theme_Tokopedia3_PlainGreen);
+        }
     }
 
     @Override
@@ -118,9 +121,6 @@ public class ConsumerSplashScreen extends SplashScreen {
     }
 
     private void renderDynamicImage() {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
-        String imageUrl = remoteConfig.getString(KEY_SPLASH_IMAGE_URL);
-
         if (TextUtils.isEmpty(imageUrl)) {
             return;
         }
@@ -147,8 +147,7 @@ public class ConsumerSplashScreen extends SplashScreen {
                                     mainLayout.setBackground(new BitmapDrawable(getResources(), resource));
                                 }
                             }
-                        } catch (Exception ex) {
-                        }
+                        } catch (Exception ignored) { }
                     }
 
                     @Override

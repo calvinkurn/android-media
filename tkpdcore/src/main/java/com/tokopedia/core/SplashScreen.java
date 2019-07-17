@@ -17,12 +17,17 @@ import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.data.DataManagerImpl;
 import com.tokopedia.cachemanager.PersistentCacheManager;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
+import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.service.DownloadService;
+import com.tokopedia.core.util.PasswordGenerator;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
@@ -32,13 +37,6 @@ import com.tokopedia.linker.model.LinkerDeeplinkResult;
 import com.tokopedia.linker.model.LinkerError;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.service.DownloadService;
-import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.PasswordGenerator;
-import com.tokopedia.core.util.PasswordGenerator.PGListener;
-import com.tokopedia.core.util.SessionHandler;
-
 
 
 /**
@@ -50,10 +48,6 @@ import com.tokopedia.core.util.SessionHandler;
  */
 public class SplashScreen extends AppCompatActivity implements DownloadResultReceiver.Receiver{
 
-    public static final int TIME_DELAY = 300;
-    public static final String IS_LOADING = "IS_LOADING";
-    public static final String RE_INIT_DATA_FOR_THE_FIRST_TIME = "RE-INIT-DATA-FOR-THE-FIRST-TIME";
-    public static final int WEEK_IN_SECONDS = 604800;
     public static final int DAYS_IN_SECONDS = 86400;
     public static final int OVERLAY_PERMISSION_REQ_CODE = 1080;
     private PasswordGenerator Pgenerator;
@@ -94,13 +88,6 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-//        new DiscoveryInteractorImpl().editProductDetail(this, "45469593", "", "");
-        //  moveToHome();
-    }
-
-    @Override
     protected void onStart() {
         super.onStart();
         getBranchDefferedDeeplink();
@@ -108,40 +95,23 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     }
 
     protected void moveToHome() {
-//        new android.os.Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
         Pgenerator = new PasswordGenerator(SplashScreen.this);
         InitNew();
         registerFCMDeviceID();
         finishSplashScreen();
     }
-//        }, TIME_DELAY);
 
 
     private void InitNew() {
         if (Pgenerator.getAppId() == null) {
+            Pgenerator.generateAPPID(status -> {
 
-            //message.setText(R.string.title_first_time);
-            Pgenerator.generateAPPID(new PGListener() {
-
-                @Override
-                public void onSuccess(int status) {
-//                    finishSplashScreen();
-
-                }
             });
-        } else {
-//            finishSplashScreen();
         }
     }
 
     private GCMHandlerListener getGCMHandlerListener() {
-        return new GCMHandlerListener() {
-            @Override
-            public void onGCMSuccess(String regId) {
-                //bypassV2Login();
-            }
+        return regId -> {
         };
     }
 
@@ -191,9 +161,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == OVERLAY_PERMISSION_REQ_CODE) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (!Settings.canDrawOverlays(this)) {
-                    // SYSTEM_ALERT_WINDOW permission not granted...
-                }
+                Settings.canDrawOverlays(this);// SYSTEM_ALERT_WINDOW permission not granted...
             }
         }
     }
