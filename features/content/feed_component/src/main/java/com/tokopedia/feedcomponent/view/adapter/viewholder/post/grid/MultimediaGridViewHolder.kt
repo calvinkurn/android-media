@@ -36,9 +36,8 @@ class MultimediaGridViewHolder(private val feedType: String)
                         }
 
                         itemView.feedMultipleImageView.layoutParams.height = FrameLayout.LayoutParams.WRAP_CONTENT
-                        itemView.image.layoutParams.height = itemView.feedMultipleImageView.layoutParams.height
                         itemView.feedMultipleImageView.requestLayout()
-                        itemView.image.requestLayout()
+                        itemView.image.visibility = View.GONE
                     }
                 }
         )
@@ -50,18 +49,6 @@ class MultimediaGridViewHolder(private val feedType: String)
             } else {
                 stopVideo()
             }
-        }
-    }
-
-    private fun getContentListHeight(cardWidth: Int, itemCount: Int): Int {
-        return when(itemCount) {
-            1 -> cardWidth
-            2 -> cardWidth / 2
-            3 -> cardWidth / 3
-            4 -> cardWidth
-            5 -> (cardWidth / 2) + (cardWidth / 3)
-            6 -> cardWidth * 2 / 3
-            else -> 0
         }
     }
 
