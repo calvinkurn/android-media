@@ -101,13 +101,24 @@ class LogWrapper(val application: Application) : CoroutineScope {
     companion object {
         var instance: LogWrapper? = null
         var logger: Logger? = null
+            get() {
+                if (field == null) {
+                    initLogger()
+                }
+                return field
+            }
+
+        fun initLogger(){
+            instance?.let {
+                val logManager = LogManager.getLogManager()
+                logManager.readConfiguration(it.application.resources.openRawResource(R.raw.logging))
+                logger = logManager.getLogger(Logger.GLOBAL_LOGGER_NAME)
+            }
+        }
 
         @JvmStatic
         fun init(application: Application) {
             instance = LogWrapper(application)
-            val logManager = LogManager.getLogManager()
-            logManager.readConfiguration(application.resources.openRawResource(R.raw.logging))
-            logger = logManager.getLogger(Logger.GLOBAL_LOGGER_NAME)
         }
 
         /**
