@@ -5,7 +5,7 @@
                 android:layout_height="wrap_content">
 
     <include
-        layout="@layout/base_chat_layout"
+        layout="@layout/quick_reply_base_chat_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

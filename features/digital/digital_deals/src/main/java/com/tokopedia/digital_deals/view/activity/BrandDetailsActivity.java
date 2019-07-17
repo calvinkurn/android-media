@@ -5,16 +5,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.TaskStackBuilder;
 import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.view.fragment.BrandDetailsFragment;
-import com.tokopedia.digital_deals.view.fragment.DealDetailsFragment;
 import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
 
@@ -22,15 +18,8 @@ public class BrandDetailsActivity extends DealsBaseActivity {
 
 
     @DeepLink({DealsUrl.AppLink.DIGITAL_DEALS_BRAND})
-    public static TaskStackBuilder getInstanceIntentAppLinkBackToHome(Context context, Bundle extras) {
-        Intent destination;
-
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-
-        Intent homeIntent = ((DealsModuleRouter) context.getApplicationContext()).getHomeIntent(context);
-        taskStackBuilder.addNextIntent(homeIntent);
-        taskStackBuilder.addNextIntent(new Intent(context, DealsHomeActivity.class));
-
+    public static Intent getInstanceIntentAppLinkBackToHome(Context context, Bundle extras) {
+        Intent destination = new Intent();
         if (extras != null) {
             String deepLink = extras.getString(DeepLink.URI);
             Uri.Builder uri = Uri.parse(deepLink).buildUpon();
@@ -44,9 +33,8 @@ public class BrandDetailsActivity extends DealsBaseActivity {
                     .setData(uri.build())
                     .putExtras(extras);
 
-            taskStackBuilder.addNextIntent(destination);
         }
-        return taskStackBuilder;
+        return destination;
     }
 
     @Override

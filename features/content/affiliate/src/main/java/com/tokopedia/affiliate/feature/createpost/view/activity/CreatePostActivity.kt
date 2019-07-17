@@ -16,6 +16,7 @@ import com.tokopedia.affiliate.feature.createpost.view.fragment.ContentCreatePos
 import com.tokopedia.affiliate.feature.createpost.view.listener.CreatePostActivityListener
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.HeaderViewModel
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
@@ -23,6 +24,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import kotlinx.android.synthetic.main.activity_create_post.*
 
 class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener, BaseCreatePostFragment.OnCreatePostCallBack {
+    private var postId: String? = null
 
     override fun invalidatePostMenu(isPostEnabled: Boolean) {
         if (isPostEnabled){
@@ -86,9 +88,17 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener, Bas
 
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()
+        val uri = intent.data
+        if (uri != null && uri.scheme == DeeplinkConstant.SCHEME_INTERNAL){
+            val segmentUri = uri.pathSegments
+            intent.putExtra(PARAM_POST_ID, segmentUri[segmentUri.size - 2])
+            intent.putExtra(PARAM_TYPE, segmentUri[0])
+        }
+
         if (intent.extras != null) {
             bundle.putAll(intent.extras)
         }
+
         return when(intent?.extras?.get(PARAM_TYPE)) {
             TYPE_AFFILIATE -> AffiliateCreatePostFragment.createInstance(bundle)
             TYPE_CONTENT_SHOP -> ContentCreatePostFragment.createInstance(bundle)
