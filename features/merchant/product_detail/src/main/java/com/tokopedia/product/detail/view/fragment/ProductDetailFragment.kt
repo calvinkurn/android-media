@@ -1833,7 +1833,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 icon.setDrawableByLayerId(R.id.ic_cart_count, badge)
                 cartImageView.setImageDrawable(icon)
                 if (animate) {
-                    val scaleAnimation = ScaleAnimation(1f, 1.7f, 1f, 1.7f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
+                    val scaleAnimation = ScaleAnimation(1f, 2f, 1f, 2f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
                     scaleAnimation.fillAfter = false
                     scaleAnimation.duration = 1000
                     scaleAnimation.setAnimationListener(object : Animation.AnimationListener {
@@ -1841,12 +1841,19 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         }
 
                         override fun onAnimationEnd(p0: Animation?) {
+                            lottieCartView.clearAnimation()
+                            cartImageView.clearAnimation()
                             lottieCartView.visibility = View.INVISIBLE
                             cartImageView.visibility = View.VISIBLE
                         }
 
                         override fun onAnimationStart(p0: Animation?) {
-                            cartImageView.animate().alpha(1.0f).setDuration(1000).start()
+                            lottieCartView.animate()
+                                    .setDuration(1000)
+                                    .alpha(0.0f)
+                            cartImageView.animate()
+                                    .setDuration(1000)
+                                    .alpha(1.0f)
                         }
                     })
                     lottieCartView.startAnimation(scaleAnimation)
