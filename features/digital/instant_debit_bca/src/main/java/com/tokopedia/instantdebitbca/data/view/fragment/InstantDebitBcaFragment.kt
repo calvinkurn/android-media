@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
-
 import com.bca.xco.widget.BCARegistrasiXCOWidget
 import com.bca.xco.widget.BCAXCOListener
 import com.bca.xco.widget.XCOEnum
@@ -17,7 +16,6 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.instantdebitbca.R
-import com.tokopedia.instantdebitbca.data.di.InstantDebitBcaComponent
 import com.tokopedia.instantdebitbca.data.domain.NotifyDebitRegisterBcaUseCase
 import com.tokopedia.instantdebitbca.data.view.activity.InstantDebitBcaActivity
 import com.tokopedia.instantdebitbca.data.view.interfaces.InstantDebitBcaContract
@@ -26,11 +24,8 @@ import com.tokopedia.instantdebitbca.data.view.utils.DeviceUtil
 import com.tokopedia.instantdebitbca.data.view.utils.InstantDebitBcaInstance
 import com.tokopedia.network.utils.AuthUtil
 import com.tokopedia.user.session.UserSessionInterface
-
 import org.json.JSONObject
-
-import java.util.HashMap
-
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -103,12 +98,12 @@ open class InstantDebitBcaFragment @Inject constructor(): BaseDaggerFragment(), 
         return data
     }
 
-    override fun onBCASuccess(xcoID: String, credentialType: String, credentialNo: String, maxLimit: String) {
+    override fun onBCASuccess(xcoID: String?, credentialType: String?, credentialNo: String?, maxLimit: String?) {
         val mapCardData = HashMap<String, String>()
-        mapCardData[NotifyDebitRegisterBcaUseCase.XCOID] = xcoID
-        mapCardData[NotifyDebitRegisterBcaUseCase.CREDENTIAL_TYPE] = credentialType
-        mapCardData[NotifyDebitRegisterBcaUseCase.CREDENTIAL_NO] = credentialNo
-        mapCardData[NotifyDebitRegisterBcaUseCase.MAX_LIMIT] = maxLimit
+        mapCardData[NotifyDebitRegisterBcaUseCase.XCOID] = xcoID ?: ""
+        mapCardData[NotifyDebitRegisterBcaUseCase.CREDENTIAL_TYPE] = credentialType ?: ""
+        mapCardData[NotifyDebitRegisterBcaUseCase.CREDENTIAL_NO] = credentialNo ?: ""
+        mapCardData[NotifyDebitRegisterBcaUseCase.MAX_LIMIT] = maxLimit ?: ""
         val debitData = convertObjToJsonString(mapCardData)
 
         presenter.notifyDebitRegisterBca(debitData, deviceId)

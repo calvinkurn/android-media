@@ -36,10 +36,10 @@ class EditLimitFragment @Inject constructor(): InstantDebitBcaFragment() {
                 userSession!!.userId, AuthUtil.KEY.INSTANT_DEBIT_BCA_MERCHANT_ID, xcoid)
     }
 
-    override fun onBCASuccess(xcoID: String, credentialType: String, credentialNo: String, maxLimit: String) {
+    override fun onBCASuccess(xcoID: String?, credentialType: String?, credentialNo: String?, maxLimit: String?) {
         val mapCardData = HashMap<String, String>()
-        mapCardData[NotifyDebitRegisterBcaUseCase.XCOID] = xcoID
-        mapCardData[NotifyDebitRegisterBcaUseCase.MAX_LIMIT] = maxLimit
+        mapCardData[NotifyDebitRegisterBcaUseCase.XCOID] = xcoID ?: ""
+        mapCardData[NotifyDebitRegisterBcaUseCase.MAX_LIMIT] = maxLimit ?: ""
         val debitData = convertObjToJsonString(mapCardData)
         presenter!!.notifyDebitRegisterEditLimit(debitData, "")
     }
