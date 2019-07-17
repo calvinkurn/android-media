@@ -93,7 +93,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     private val shareDialog: CloseableBottomSheetDialog by lazy {
-        CloseableBottomSheetDialog.createInstance(context).apply {
+        CloseableBottomSheetDialog.createInstanceRounded(context).apply {
             setContentView(shareDialogView)
         }
     }
