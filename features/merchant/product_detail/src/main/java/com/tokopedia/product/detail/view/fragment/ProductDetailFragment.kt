@@ -829,7 +829,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     private fun initView() {
-        val appShowSearchPDP = remoteConfig.getBoolean(RemoteConfigKey.REMOTE_CONFIG_APP_SHOW_SEARCH_BAR_PDP, false)
+        val appShowSearchPDP = remoteConfig.getBoolean(RemoteConfigKey.REMOTE_CONFIG_APP_SHOW_SEARCH_BAR_PDP, true)
         if(appShowSearchPDP) {
             initShowSearchPDP()
         }else {
