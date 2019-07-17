@@ -37,7 +37,6 @@ dependencies {
 
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.seller)
-    implementation project(rootProject.ext.features.logisticdistrictrecommendation)
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.logisticdata)
 
@@ -51,9 +50,6 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.parcelerApi
     kapt  rootProject.ext.miscDependencies.parceler
-
-    implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    kapt  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor

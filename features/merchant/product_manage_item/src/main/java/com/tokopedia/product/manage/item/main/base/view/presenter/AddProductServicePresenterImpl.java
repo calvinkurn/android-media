@@ -2,7 +2,7 @@ package com.tokopedia.product.manage.item.main.base.view.presenter;
 
 import android.text.TextUtils;
 
-import com.tokopedia.imagepicker.common.util.ImageUtils;
+import com.tokopedia.imagepicker.common.util.FileUtils;
 import com.tokopedia.product.manage.item.common.util.DraftNotFoundException;
 import com.tokopedia.product.manage.item.main.base.data.exception.UploadProductException;
 import com.tokopedia.product.manage.item.main.base.data.model.ProductPictureViewModel;
@@ -75,7 +75,7 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter {
     }
 
     private void submitProduct(final long draftProductId, final ProductViewModel productViewModel, final ProductSubmitNotificationListener notificationCountListener) {
-        submitProductUseCase.execute(SubmitProductUseCase.createParams(productViewModel, notificationCountListener), new Subscriber<Boolean>() {
+        submitProductUseCase.execute(SubmitProductUseCase.createParams(productViewModel, notificationCountListener), new Subscriber<Integer>() {
             @Override
             public void onCompleted() {
 
@@ -93,11 +93,12 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter {
             }
 
             @Override
-            public void onNext(Boolean aBoolean) {
+            public void onNext(Integer productId) {
                 notificationCountListener.addProgress();
                 deleteSingleDraftProductUseCase.executeSync(DeleteSingleDraftProductUseCase.createRequestParams(draftProductId));
                 deletePictureCacheList(productViewModel);
                 notificationCountListener.addProgress();
+                notificationCountListener.getProductViewModel().setProductId(productId.toString());
                 getView().onSuccessAddProduct(notificationCountListener);
             }
         });
@@ -119,7 +120,7 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter {
             }
         }
         if (pathToDeleteList.size() > 0) {
-            ImageUtils.deleteFilesInTokopediaFolder(pathToDeleteList);
+            FileUtils.deleteFilesInTokopediaFolder(pathToDeleteList);
         }
     }
 

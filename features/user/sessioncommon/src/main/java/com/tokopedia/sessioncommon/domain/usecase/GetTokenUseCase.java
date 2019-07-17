@@ -22,6 +22,7 @@ import rx.functions.Action1;
  * from @link {@link com.tokopedia.sessioncommon.network.TokenErrorResponse}}
  * in onError
  */
+@Deprecated
 public class GetTokenUseCase extends UseCase<TokenViewModel> {
 
     public static final String GRANT_TYPE = "grant_type";

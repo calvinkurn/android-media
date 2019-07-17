@@ -6,6 +6,9 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Irfan Khoirul on 21/09/18.
  */
@@ -33,9 +36,21 @@ public class RecentView implements Parcelable {
     @SerializedName("shop_id")
     @Expose
     private String shopId;
+    @SerializedName("shop_name")
+    @Expose
+    private String shopName;
     @SerializedName("product_price")
     @Expose
     private String productPrice;
+    @SerializedName("wishlist")
+    @Expose
+    private boolean wishlist;
+    @SerializedName("shop_location")
+    @Expose
+    private String shopLocation;
+    @SerializedName("badges")
+    @Expose
+    private List<Badge> badges = new ArrayList<>();
 
     public RecentView() {
     }
@@ -48,7 +63,11 @@ public class RecentView implements Parcelable {
         productReviewCount = in.readInt();
         productImage = in.readString();
         shopId = in.readString();
+        shopName = in.readString();
         productPrice = in.readString();
+        wishlist = in.readByte() != 0;
+        shopLocation = in.readString();
+        badges = in.createTypedArrayList(Badge.CREATOR);
     }
 
     @Override
@@ -60,7 +79,11 @@ public class RecentView implements Parcelable {
         dest.writeInt(productReviewCount);
         dest.writeString(productImage);
         dest.writeString(shopId);
+        dest.writeString(shopName);
         dest.writeString(productPrice);
+        dest.writeByte((byte) (wishlist ? 1 : 0));
+        dest.writeString(shopLocation);
+        dest.writeTypedList(badges);
     }
 
     @Override
@@ -142,5 +165,37 @@ public class RecentView implements Parcelable {
 
     public void setProductPrice(String productPrice) {
         this.productPrice = productPrice;
+    }
+
+    public boolean isWishlist() {
+        return wishlist;
+    }
+
+    public void setWishlist(boolean wishlist) {
+        this.wishlist = wishlist;
+    }
+
+    public String getShopLocation() {
+        return shopLocation;
+    }
+
+    public void setShopLocation(String shopLocation) {
+        this.shopLocation = shopLocation;
+    }
+
+    public List<Badge> getBadges() {
+        return badges;
+    }
+
+    public void setBadges(List<Badge> badges) {
+        this.badges = badges;
+    }
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
     }
 }

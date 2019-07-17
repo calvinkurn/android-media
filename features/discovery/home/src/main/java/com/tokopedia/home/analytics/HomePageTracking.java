@@ -110,6 +110,11 @@ public class HomePageTracking {
     public static final String NON_LOGIN = "non login";
     public static final String QR_CODE = "qr code";
     public static final String OVO = "ovo";
+    public static final String EVENT_ACTION_CLICK_ON_ALLOW_GEOLOCATION = "click on allow geolocation";
+    public static final String EVENT_ACTION_CLICK_ON_NOT_ALLOW_GEOLOCATION = "click on not allow geolocation";
+    public static final String EVENT_ACTION_CLICK_ON_GEOLOCATION_COMPONENT = "click on geolocation component";
+    public static final String EVENT_ACTION_CLICK_CLOSE_ON_GEOLOCATION_COMPONENT = "click close on geolocation component";
+    public static final String EVENT_ACTION_CLICK_ON_ATUR = "click on atur";
 
     public static ContextAnalytics getTracker(Context context) {
         return TrackApp.getInstance().getGTM();
@@ -799,6 +804,68 @@ public class HomePageTracking {
                     CATEGORY_HOME_PAGE,
                     "click on bu widget tab",
                     headerName
+            );
+        }
+    }
+
+    //on permission
+    public static void eventClickAllowGeolocation(Context context) {
+        ContextAnalytics tracker = getTracker(context);
+        if (tracker != null) {
+            tracker.sendGeneralEvent(
+                    EVENT_CLICK_HOME_PAGE,
+                    CATEGORY_HOME_PAGE,
+                    EVENT_ACTION_CLICK_ON_ALLOW_GEOLOCATION,
+                    LABEL_EMPTY
+            );
+        }
+    }
+
+    //on permission
+    public static void eventClickNotAllowGeolocation(Context context) {
+        ContextAnalytics tracker = getTracker(context);
+        if (tracker != null) {
+            tracker.sendGeneralEvent(
+                    EVENT_CLICK_HOME_PAGE,
+                    CATEGORY_HOME_PAGE,
+                    EVENT_ACTION_CLICK_ON_NOT_ALLOW_GEOLOCATION,
+                    LABEL_EMPTY
+            );
+        }
+    }
+
+    public static void eventClickGeolocationComponent(Context context) {
+        ContextAnalytics tracker = getTracker(context);
+        if (tracker != null) {
+            tracker.sendGeneralEvent(
+                    EVENT_CLICK_HOME_PAGE,
+                    CATEGORY_HOME_PAGE,
+                    EVENT_ACTION_CLICK_ON_GEOLOCATION_COMPONENT,
+                    LABEL_EMPTY
+            );
+        }
+    }
+
+    public static void eventClickCloseGeolocationComponent(Context context) {
+        ContextAnalytics tracker = getTracker(context);
+        if (tracker != null) {
+            tracker.sendGeneralEvent(
+                    EVENT_CLICK_HOME_PAGE,
+                    CATEGORY_HOME_PAGE,
+                    EVENT_ACTION_CLICK_CLOSE_ON_GEOLOCATION_COMPONENT,
+                    LABEL_EMPTY
+            );
+        }
+    }
+
+    public static void eventClickOnAtur(Context context) {
+        ContextAnalytics tracker = getTracker(context);
+        if (tracker != null) {
+            tracker.sendGeneralEvent(
+                    EVENT_CLICK_HOME_PAGE,
+                    CATEGORY_HOME_PAGE,
+                    EVENT_ACTION_CLICK_ON_ATUR,
+                    LABEL_EMPTY
             );
         }
     }

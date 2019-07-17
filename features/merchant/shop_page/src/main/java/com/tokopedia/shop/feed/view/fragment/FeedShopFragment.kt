@@ -3,6 +3,7 @@ package com.tokopedia.shop.feed.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
@@ -18,6 +19,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
@@ -58,6 +60,7 @@ import com.tokopedia.shop.feed.view.contract.FeedShopContract
 import com.tokopedia.shop.feed.view.model.EmptyFeedShopViewModel
 import com.tokopedia.shop.feed.view.model.WhitelistViewModel
 import com.tokopedia.user.session.UserSession
+import kotlinx.android.synthetic.main.fragment_feed_shop.*
 import javax.inject.Inject
 
 /**
@@ -79,6 +82,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     private lateinit var createPostUrl: String
     private lateinit var shopId: String
     private var isLoading = false
+    private var isForceRefresh = false
 
     @Inject
     lateinit var presenter: FeedShopContract.Presenter
@@ -130,6 +134,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     private fun initVar() {
+        hideFAB()
         arguments?.let {
             shopId = it.getString(PARAM_SHOP_ID) ?: ""
         }
@@ -191,7 +196,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         if (shopId.isNotEmpty() && !isLoading) {
             isLoading = true
             if (isLoadingInitialData) {
-                presenter.getFeedFirstPage(shopId, false)
+                presenter.getFeedFirstPage(shopId, isForceRefresh)
             } else {
                 presenter.getFeed(shopId)
             }
@@ -206,10 +211,13 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onSuccessGetFeedFirstPage(element: List<Visitable<*>>, lastCursor: String, whitelistDomain: WhitelistDomain) {
         val dataList = ArrayList<Visitable<*>>()
+        isForceRefresh = true
         isLoading = false
         if (element.isNotEmpty()) {
-            if (shopId.equals(userSession.shopId)) {
-                dataList.add(0, WhitelistViewModel(whitelistDomain))
+            if (shopId.equals(userSession.shopId) && !whitelistDomain.authors.isEmpty()) {
+                showFAB(whitelistDomain)
+            } else {
+                hideFAB()
             }
             dataList.addAll(element)
             renderList(dataList, lastCursor.isNotEmpty())
@@ -218,6 +226,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             renderList(dataList)
         }
         trackImpression(dataList)
+
     }
 
     override fun onSuccessGetFeedNotLoginFirstPage(element: List<Visitable<*>>, lastCursor: String) {
@@ -383,7 +392,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onMenuClick(positionInFeed: Int, postId: Int, reportable: Boolean, deletable: Boolean, editable: Boolean) {
         context?.let {
-            val menus = createBottomMenu(it, deletable, reportable, false, object : PostMenuListener {
+            val menus = createBottomMenu(it, deletable, reportable, editable, object : PostMenuListener {
                 override fun onDeleteClicked() {
                     createDeleteDialog(positionInFeed, postId).show()
                 }
@@ -393,11 +402,15 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 }
 
                 override fun onEditClick() {
-
+                    goToEditPostShop(postId)
                 }
             })
             menus.show()
         }
+    }
+
+    private fun goToEditPostShop(postId: Int) {
+        context?.let { RouteManager.route(it, ApplinkConstInternalContent.SHOP_POST_EDIT, postId.toString()) }
     }
 
     override fun onCaptionClick(positionInFeed: Int, redirectUrl: String) {
@@ -499,6 +512,19 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                     it,
                     postId))
         }
+    }
+
+    fun hideFAB() {
+        fab_feed.hide()
+    }
+
+    fun showFAB(whitelistDomain: WhitelistDomain) {
+        fab_feed.show()
+        val author = whitelistDomain.authors.get(0)
+        fab_feed.setOnClickListener {
+            onGoToLink(author.link)
+        }
+
     }
 
     fun updateShopInfo(shopInfo: ShopInfo) {
@@ -617,6 +643,10 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     private fun showToast(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
+
+    fun setRefresh() {
+        isForceRefresh = true
     }
 
 }

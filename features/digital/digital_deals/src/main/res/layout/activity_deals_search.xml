@@ -39,7 +39,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="@dimen/dp_16"
-                        android:src="@drawable/toolbar_back_black" />
+                        app:srcCompat="@drawable/toolbar_back_black" />
 
 
                     <com.tokopedia.digital_deals.view.customview.SearchInputView
@@ -47,7 +47,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/dp_40"
                         android:layout_marginLeft="@dimen/dp_4"
-
                         android:layout_marginTop="@dimen/dp_7"
                         android:layout_marginRight="@dimen/dp_16"
                         android:layout_marginBottom="@dimen/dp_7" />
@@ -91,7 +90,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_16"
-                        android:drawableRight="@drawable/location_arrow_down"
                         android:layout_marginRight="@dimen/dp_16"
                         android:drawablePadding="@dimen/dp_4"
                         android:textColor="@color/clr_f531353b"
@@ -151,6 +149,23 @@
                 android:visibility="gone"
                 android:padding="@dimen/dp_8"
                 app:layout_scrollFlags="scroll" />
+
+            <TextView
+                android:id="@+id/num_of_brands"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_green_selected_border"
+                android:text="@string/brand_count_text"
+                android:textSize="@dimen/sp_12"
+                android:textColor="#03ac0e"
+                android:gravity="center"
+                android:visibility="gone"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginBottom="@dimen/dp_4"
+                app:layout_scrollFlags="scroll"
+                android:padding="@dimen/dp_8"/>
 
             <LinearLayout
                 android:id="@+id/no_brands"
@@ -223,7 +238,7 @@
                     android:layout_width="@dimen/dp_121"
                     android:layout_height="@dimen/dp_85"
                     android:layout_gravity="center_horizontal"
-                    android:src="@drawable/empty_search_illustration_big" />
+                    app:srcCompat="@drawable/empty_search_illustration_big" />
 
                 <TextView
                     style="@style/TextView.Medium.FontMedium.BlackPrimary"

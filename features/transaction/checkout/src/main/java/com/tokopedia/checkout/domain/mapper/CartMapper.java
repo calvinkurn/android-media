@@ -193,6 +193,11 @@ public class CartMapper implements ICartMapper {
                 cartItemDataOrigin.setFavorite(false);
                 cartItemDataOrigin.setMinimalQtyOrder(data.getProduct().getProductMinOrder());
                 cartItemDataOrigin.setInvenageValue(data.getProduct().getProductInvenageValue());
+                cartItemDataOrigin.setPriceChangesState(data.getProduct().getPriceChanges().getChangesState());
+                cartItemDataOrigin.setPriceChangesDesc(data.getProduct().getPriceChanges().getDescription());
+                cartItemDataOrigin.setProductInvenageByUserText(data.getProduct().getProductInvenageTotal().getByUserText().getComplete());
+                cartItemDataOrigin.setProductInvenageByUserInCart(data.getProduct().getProductInvenageTotal().getByUser().getInCart());
+                cartItemDataOrigin.setProductInvenageByUserLastStockLessThan(data.getProduct().getProductInvenageTotal().getByUser().getLastStockLessThan());
                 cartItemDataOrigin.setFreeReturn(data.getProduct().getIsFreereturns() == 1);
                 cartItemDataOrigin.setTrackerAttribution(data.getProduct().getProductTrackerData().getAttribution());
                 cartItemDataOrigin.setTrackerListName(data.getProduct().getProductTrackerData().getTrackerListName());
@@ -214,6 +219,7 @@ public class CartMapper implements ICartMapper {
                 cartItemDataOrigin.setShopId(String.valueOf(shopGroup.getShop().getShopId()));
                 cartItemDataOrigin.setShopType(generateShopType(shopGroup.getShop()));
                 cartItemDataOrigin.setWishlisted(data.getProduct().isWishlisted());
+                cartItemDataOrigin.setWarehouseId(shopGroup.getWarehouse().getWarehouseId());
                 if (data.getProduct().getWholesalePrice() != null) {
                     List<WholesalePrice> wholesalePrices = new ArrayList<>();
                     for (com.tokopedia.transactiondata.entity.response.cartlist.WholesalePrice wholesalePriceDataModel : data.getProduct().getWholesalePrice()) {
