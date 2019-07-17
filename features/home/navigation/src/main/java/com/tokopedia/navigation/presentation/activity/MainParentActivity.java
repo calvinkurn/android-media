@@ -385,7 +385,6 @@ public class MainParentActivity extends BaseActivity implements
             setOsIconProgress(OS_STATE_UNSELECTED);
         }
 
-
         hideStatusBar();
 
         Fragment fragment = fragmentList.get(position);
@@ -949,17 +948,16 @@ public class MainParentActivity extends BaseActivity implements
      * 1 state selected
      */
     private void initOsMenu() {
+        bottomNavigation.setIconMarginTop(OS_MENU, 0);
+        bottomNavigation.setIconSizeAt(OS_MENU, 55, 55);
+
         Menu menu = bottomNavigation.getMenu();
         osMenu = menu.findItem(R.id.menu_os);
 
         lottieOsDrawable = new LottieDrawable();
         LottieTask<LottieComposition> task = LottieCompositionFactory.fromRawRes(this, R.raw.icon_os);
-        task.addListener(result -> {
-            lottieOsDrawable.setComposition(result);
-        });
+        task.addListener(result -> lottieOsDrawable.setComposition(result));
 
-        bottomNavigation.setIconMarginTop(OS_MENU, 0);
-        bottomNavigation.setIconSizeAt(OS_MENU, 55, 55);
         osMenu.setIcon(lottieOsDrawable);
     }
 
@@ -967,12 +965,7 @@ public class MainParentActivity extends BaseActivity implements
         if (osMenu == null) {
             initOsMenu();
         }
-
-        if (osMenu.isChecked()) {
-            lottieOsDrawable.setMaxProgress(OS_STATE_SELECTED);
-        } else {
-            lottieOsDrawable.setMaxProgress(OS_STATE_ANIMATED);
-        }
+        lottieOsDrawable.setMaxProgress(OS_STATE_ANIMATED);
         lottieOsDrawable.setRepeatCount(1);
         lottieOsDrawable.playAnimation();
     }
