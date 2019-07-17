@@ -5,6 +5,7 @@ import android.os.Build
 import android.util.Log
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.user.session.UserSession
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -27,7 +28,11 @@ import kotlin.coroutines.CoroutineContext
  */
 class LogWrapper(val application: Application) : CoroutineScope {
     override val coroutineContext: CoroutineContext
-        get() = Dispatchers.IO
+        get() = Dispatchers.IO + handler
+
+    val handler: CoroutineExceptionHandler by lazy {
+        CoroutineExceptionHandler { _, ex -> }
+    }
 
     /**
      * To give "INFO" message log to logging server
