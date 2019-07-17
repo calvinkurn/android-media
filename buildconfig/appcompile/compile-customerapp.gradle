@@ -24,6 +24,7 @@ include "features:digital:digital_browse"
 include "features:digital:digital_deals"
 include "features:digital:event"
 include "features:digital:digitalproduct"
+include "features:digital:digital_topup_bills"
 include "features:digital:flight"
 //include "features:digital:flight_no_op"
 include "features:digital:train"
@@ -67,9 +68,7 @@ include "features:kyc"
 include "features:logistic:tracking"
 //include 'features:logistic:tracking_no_op'
 include "features:logistic:logisticaddaddress"
-include "features:logistic:district_recommendation"
 include "features:logistic:logisticdata"
-include "features:logistic:logisticanalytics"
 include "features:logistic:cod"
 include "features:logistic:shipping_recommendation"
 include "features:logistic:logisticuploadawb"
@@ -77,9 +76,6 @@ include "features:logistic:logisticuploadawb"
 include "features:logistic:logisticinputreceiptshipment"
 //include 'features:logistic:logisticinputreceiptshipment_no_op'
 include "features:logistic:logisticlistaddress"
-include "features:logistic:logisticgeolocation"
-//include 'features:logistic:logisticgeolocation_no_op'
-include "features:logistic:logisticcommon"
 include "features:logistic:logisticinsurance"
 //include "features:logistic:logisticinsurance_no_op"
 
@@ -175,7 +171,6 @@ include "features:user:vote"
 include "features:fintech:ovo_pay_with_qr"
 include "features:discovery:home_recom"
 
-include 'logisticanalytics'
 include 'tkpdfeed'
 include 'tkpdcore'
 include 'tkpdinbox'
