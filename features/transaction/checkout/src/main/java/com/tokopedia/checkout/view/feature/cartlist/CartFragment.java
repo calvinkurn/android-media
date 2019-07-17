@@ -130,6 +130,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     private static final int NO_ELEVATION = 0;
     private static final String CART_TRACE = "mp_cart";
     private static final String CART_ALL_TRACE = "mp_cart_all";
+    private static final int NAVIGATION_PDP = 64728;
     public static final int GO_TO_DETAIL = 2;
     public static final int GO_TO_LIST = 1;
     private boolean FLAG_BEGIN_SHIPMENT_PROCESS = false;
@@ -662,7 +663,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void onProductClicked(@NotNull String productId) {
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.PRODUCT_INFO, productId);
-        startActivity(intent);
+        startActivityForResult(intent, NAVIGATION_PDP);
     }
 
     @Override
@@ -1479,7 +1480,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             if (dPresenter.getCartListData() != null && dPresenter.getCartListData().getShopGroupDataList().size() > 0) {
                 showMainContainer();
             }
-            dPresenter.processInitialGetCartData(getCartId(), true, false);
+            dPresenter.processInitialGetCartData(getCartId(), cartListData == null, false);
             String promo = checkoutModuleRouter.checkoutModuleRouterGetAutoApplyCouponBranchUtil();
             if (!TextUtils.isEmpty(promo)) {
                 dPresenter.processCheckPromoCodeFromSuggestedPromo(promo, true);
@@ -1498,6 +1499,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             case ShipmentActivity.REQUEST_CODE:
                 onResultFromRequestCodeCartShipment(resultCode, data);
                 break;
+            case NAVIGATION_PDP:
+                dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true);
         }
     }
 
