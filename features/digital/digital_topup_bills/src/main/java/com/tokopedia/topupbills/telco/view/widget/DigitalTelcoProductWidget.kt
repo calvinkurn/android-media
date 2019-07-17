@@ -49,6 +49,7 @@ class DigitalTelcoProductWidget @JvmOverloads constructor(context: Context, attr
                 listener.onSeeMoreProduct(itemProduct)
             }
         })
+        recyclerView.isNestedScrollingEnabled = false
         recyclerView.adapter = adapter
         if (productType == TelcoProductType.PRODUCT_GRID) {
             recyclerView.layoutManager = GridLayoutManager(context, 2)
