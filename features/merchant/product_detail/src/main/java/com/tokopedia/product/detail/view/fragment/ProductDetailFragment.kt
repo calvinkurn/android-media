@@ -953,8 +953,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     if (it.size() > 2) {
                         it.findItem(R.id.action_share).icon = ContextCompat.getDrawable(this, R.drawable.ic_product_share_light)
                         val menuCart = it.findItem(R.id.action_cart)
-//                        menuCart.setActionView(null)
-//                        menuCart.icon = ContextCompat.getDrawable(this, R.drawable.ic_product_cart_counter_light)
                         menuCart.actionView.findViewById<ImageView>(R.id.cart_image_view).tag = R.drawable.ic_product_cart_counter_light
                         setBadgeMenuCart(menuCart)
                     }
@@ -1775,53 +1773,36 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun setBadgeMenuCart(menuCart: MenuItem) {
         activity?.run {
-            if (menuCart.icon != null) {
-                val cartCount = (application as ProductDetailRouter).getCartCount(this)
-                if (cartCount > 0) {
-                    if (menuCart.icon is LayerDrawable) {
-                        val icon = menuCart.icon as LayerDrawable
-                        val badge = CountDrawable(context)
-                        badge.setCount(if (cartCount > 99) {
-                            getString(R.string.pdp_label_cart_count_max)
-                        } else {
-                            cartCount.toString()
+            val actionView = menuCart.actionView
+            val cartImageView = actionView.findViewById<ImageView>(R.id.cart_image_view)
+            val lottieCartView = actionView.findViewById<LottieAnimationView>(R.id.cart_lottie_view)
+            cartImageView.setOnClickListener {
+                gotoCart()
+            }
+            if (shouldShowCartAnimation) {
+                if (actionView is SquareHFrameLayout) {
+                    if (lottieCartView.visibility != View.VISIBLE) {
+                        lottieCartView.addAnimatorListener(object : Animator.AnimatorListener {
+                            override fun onAnimationRepeat(animator: Animator?) {}
+
+                            override fun onAnimationEnd(animator: Animator?) {
+                                showBadgeMenuCart(cartImageView, lottieCartView, true)
+                                shouldShowCartAnimation = false
+                            }
+
+                            override fun onAnimationCancel(animator: Animator?) {}
+
+                            override fun onAnimationStart(animator: Animator?) {}
                         })
-                        icon.mutate()
-                        icon.setDrawableByLayerId(R.id.ic_cart_count, badge)
+                        cartImageView.visibility = View.INVISIBLE
+                        lottieCartView.visibility = View.VISIBLE
+                        if (!lottieCartView.isAnimating) {
+                            lottieCartView.playAnimation()
+                        }
                     }
                 }
             } else {
-                val actionView = menuCart.actionView
-                val cartImageView = actionView.findViewById<ImageView>(R.id.cart_image_view)
-                val lottieCartView = actionView.findViewById<LottieAnimationView>(R.id.cart_lottie_view)
-                cartImageView.setOnClickListener {
-                    gotoCart()
-                }
-                if (shouldShowCartAnimation) {
-                    if (actionView is SquareHFrameLayout) {
-                        if (lottieCartView.visibility != View.VISIBLE) {
-                            lottieCartView.addAnimatorListener(object : Animator.AnimatorListener {
-                                override fun onAnimationRepeat(animator: Animator?) {}
-
-                                override fun onAnimationEnd(animator: Animator?) {
-                                    showBadgeMenuCart(cartImageView, lottieCartView, true)
-                                    shouldShowCartAnimation = false
-                                }
-
-                                override fun onAnimationCancel(animator: Animator?) {}
-
-                                override fun onAnimationStart(animator: Animator?) {}
-                            })
-                            cartImageView.visibility = View.INVISIBLE
-                            lottieCartView.visibility = View.VISIBLE
-                            if (!lottieCartView.isAnimating) {
-                                lottieCartView.playAnimation()
-                            }
-                        }
-                    }
-                } else {
-                    showBadgeMenuCart(cartImageView, lottieCartView, false)
-                }
+                showBadgeMenuCart(cartImageView, lottieCartView, false)
             }
         }
     }
@@ -1829,10 +1810,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private fun showBadgeMenuCart(cartImageView: ImageView, lottieCartView: LottieAnimationView, animate: Boolean) {
         activity?.run {
             val cartCount = (application as ProductDetailRouter).getCartCount(this)
-//            val drawable = ContextCompat.getDrawable(this, R.drawable.ic_product_cart_counter_dark)
-            val drawable = ContextCompat.getDrawable(this, cartImageView.tag as Int)
-            if (drawable is LayerDrawable) {
-                val icon = drawable
+            val icon = ContextCompat.getDrawable(this, cartImageView.tag as Int)
+            if (icon is LayerDrawable) {
                 val badge = CountDrawable(this)
                 badge.setCount(if (cartCount > 99) {
                     getString(R.string.pdp_label_cart_count_max)
