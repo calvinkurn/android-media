@@ -194,6 +194,8 @@ class SettingProfileFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessAddPhone(data: Intent?) {
+        phone.setOnClickListener {  }
+
         data?.extras?.run {
             val phoneString = getString(AddPhoneFragment.EXTRA_PHONE, "")
             if (phoneString.isNotBlank()) {
@@ -270,11 +272,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
         val fileSize = Integer.parseInt((file.length() / DEFAULT_ONE_MEGABYTE).toString())
 
-        return if (fileSize >= MAX_FILE_SIZE) {
-            false
-        } else {
-            true
-        }
+        return fileSize < MAX_FILE_SIZE
     }
 
     private fun onErrorGetProfilePhoto(errorException: Exception) {
@@ -379,10 +377,12 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     getString(R.string.message_phone_setting_profile),
                     false,
                     View.OnClickListener {
-                        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE)
-                        startActivityForResult(intent, REQUEST_CODE_ADD_PHONE)
+                        goToAddPhone()
                     }
             )
+            phone.setOnClickListener {
+                goToAddPhone()
+            }
             tickerPhoneVerification.visibility = View.GONE
         } else {
             phone.showFilled(
@@ -398,6 +398,8 @@ class SettingProfileFragment : BaseDaggerFragment() {
                         }
                     }
             )
+
+            phone.setOnClickListener {  }
 
             if (profileCompletionData.isPhoneVerified) {
                 tickerPhoneVerification.visibility = View.GONE
@@ -418,6 +420,11 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
             }
         }
+    }
+
+    private fun goToAddPhone() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE)
+        startActivityForResult(intent, REQUEST_CODE_ADD_PHONE)
     }
 
     private fun goToVerifyPhone() {
