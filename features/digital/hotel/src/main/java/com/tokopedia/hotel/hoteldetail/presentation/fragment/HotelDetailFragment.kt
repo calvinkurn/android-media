@@ -249,7 +249,7 @@ class HotelDetailFragment : HotelBaseFragment() {
 
         for ((imageIndex, item) in images.withIndex()) {
             imageList.add(item.urlOriginal)
-            thumbnailImageList.add(item.urlSquare6)
+            thumbnailImageList.add(item.urlMax300)
 
             when (imageCounter) {
                 0 -> {
