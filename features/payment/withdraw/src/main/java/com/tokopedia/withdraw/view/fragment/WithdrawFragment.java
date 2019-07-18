@@ -522,7 +522,9 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     @Override
     public void onDestroy() {
         presenter.detachView();
-        subscription.unsubscribe();
+        if(subscription!=null) {
+            subscription.unsubscribe();
+        }
         super.onDestroy();
     }
 
