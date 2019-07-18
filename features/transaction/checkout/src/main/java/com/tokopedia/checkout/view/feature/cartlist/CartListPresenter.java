@@ -208,10 +208,10 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public void processInitialGetCartData(String cartId, boolean initialLoad, boolean forceInitialLoad) {
+    public void processInitialGetCartData(String cartId, boolean initialLoad, boolean isLoadingTypeRefresh) {
         if (initialLoad) {
             view.renderLoadGetCartData();
-        } else if (!forceInitialLoad) {
+        } else if (!isLoadingTypeRefresh) {
             view.showProgressLoading();
         }
 

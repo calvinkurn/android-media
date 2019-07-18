@@ -1500,6 +1500,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 onResultFromRequestCodeCartShipment(resultCode, data);
                 break;
             case NAVIGATION_PDP:
+                refreshHandler.setRefreshing(true);
                 dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true);
         }
     }
