@@ -41,6 +41,7 @@ import com.tokopedia.track.TrackApp;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -164,7 +165,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
                         return true;
                     }
                 })
-                .subscribe();
+                .subscribe(ignored -> {}, throwable -> {});
     }
 
     @Override
