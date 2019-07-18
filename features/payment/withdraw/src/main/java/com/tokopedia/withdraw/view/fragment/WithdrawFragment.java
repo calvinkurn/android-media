@@ -336,6 +336,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         Subscription enableSubscription = allField.subscribe(PropertiesEventsWatcher.enabledFrom(withdrawButton), Throwable::printStackTrace);
         Subscription proceedSubscription = allField.subscribe(aBoolean -> canProceed((TextView) withdrawButton, aBoolean), Throwable::printStackTrace);
 
+        subscription = new CompositeSubscription();
         subscription.add(enableSubscription);
         subscription.add(proceedSubscription);
 
