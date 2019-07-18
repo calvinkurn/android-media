@@ -34,6 +34,7 @@ import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText;
 import com.tokopedia.contactus.inboxticket2.view.fragment.CloseComplainBottomSheet;
 import com.tokopedia.contactus.inboxticket2.view.fragment.HelpFullBottomSheet;
 import com.tokopedia.contactus.inboxticket2.view.fragment.ImageViewerFragment;
+import com.tokopedia.contactus.inboxticket2.view.fragment.ServicePrioritiesBottomSheet;
 import com.tokopedia.contactus.inboxticket2.view.utils.Utils;
 import com.tokopedia.contactus.orderquery.data.ImageUpload;
 import com.tokopedia.contactus.orderquery.view.adapter.ImageUploadAdapter;
@@ -55,7 +56,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class InboxDetailActivity extends InboxBaseActivity
-        implements InboxDetailContract.InboxDetailView, ImageUploadAdapter.OnSelectImageClick, View.OnClickListener, HelpFullBottomSheet.CloseSHelpFullBottomSheet, CloseComplainBottomSheet.CloseComplainBottomSheetListner {
+        implements InboxDetailContract.InboxDetailView, ImageUploadAdapter.OnSelectImageClick, View.OnClickListener, ServicePrioritiesBottomSheet.CloseServicePrioritiesBottomSheet, HelpFullBottomSheet.CloseSHelpFullBottomSheet, CloseComplainBottomSheet.CloseComplainBottomSheetListner {
 
     public static final String KEY_LIKED = "101";
     public static final String KEY_DIS_LIKED = "102";
@@ -99,8 +100,7 @@ public class InboxDetailActivity extends InboxBaseActivity
     public static final String PARAM_TICKET_ID = "ticket_id";
     public static final String PARAM_TICKET_T_ID = "id";
     public static final String IS_OFFICIAL_STORE = "is_official_store";
-    private CloseableBottomSheetDialog helpFullBottomSheet, closeComplainBottomSheet;
-
+    private CloseableBottomSheetDialog helpFullBottomSheet, closeComplainBottomSheet,servicePrioritiesBottomSheet;
     List<CommentsItem> commentsItems = new ArrayList<>();
 
     @DeepLink(ApplinkConst.TICKET_DETAIL)
@@ -187,7 +187,9 @@ public class InboxDetailActivity extends InboxBaseActivity
             tvPriorityLabel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //opn tooltip
+                    servicePrioritiesBottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
+                    servicePrioritiesBottomSheet.setCustomContentView( new ServicePrioritiesBottomSheet(InboxDetailActivity.this,InboxDetailActivity.this),"", false);
+                    servicePrioritiesBottomSheet.show();
                 }
             });
         }
@@ -766,6 +768,11 @@ public class InboxDetailActivity extends InboxBaseActivity
         super.showMessage(message);
         Toaster.Companion.showNormalWithAction(rootView, message, Snackbar.LENGTH_LONG, SNACKBAR_OK, v1 -> {
         });
+    }
+
+    @Override
+    public void onClickClose() {
+        servicePrioritiesBottomSheet.dismiss();
     }
 }
 

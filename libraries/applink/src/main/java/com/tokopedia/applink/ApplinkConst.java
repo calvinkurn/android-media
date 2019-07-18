@@ -238,6 +238,8 @@ public interface ApplinkConst {
     String CATEGORY_BELANJA = "tokopedia://category_belanja/{CATEGORY_NAME}";
     String CATEGORY_BELANJA_DEFAULT = "tokopedia://category_belanja/";
 
+    String POWER_MERCHANT_SUBSCRIBE = "tokopedia://power_merchant/subscribe";
+
     String CATEGORY = "tokopedia://category";
     String QRSCAN = "tokopedia://scanqr";
 
@@ -257,9 +259,11 @@ public interface ApplinkConst {
         String GOLD_MERCHANT = "sellerapp://gold";
         String SELLER_APP_HOME = "sellerapp://home";
         String TOPADS_DASHBOARD = "sellerapp://topads";
+        String POWER_MERCHANT_SUBSCRIBE = "sellerapp://power_merchant/subscribe";
         String TOPADS_PRODUCT_DETAIL = "sellerapp://topads/product/{ad_id}";
         String TOPADS_PRODUCT_DETAIL_CONSTS = "sellerapp://topads/product";
         String BROWSER = "sellerapp://browser";
+        String TOPADS_AUTOADS = "sellerapp://topads/autoads";
     }
 
     interface Query {

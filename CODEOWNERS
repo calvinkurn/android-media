@@ -43,6 +43,7 @@
 /features/top_ads/top_ads_management/                   @tokopedia/minion-stuart
 /features/top_ads/top_ads_management_common/            @tokopedia/minion-stuart
 /features/top_ads/top_ads_management_sourcetagging/     @tokopedia/minion-stuart
+/features/top_ads/top_ads_autoads/     @tokopedia/minion-dave
 
 /features/digital/flight/               @tokopedia/minion-mark
 /features/digital/train/               @tokopedia/minion-mark
@@ -90,6 +91,7 @@
 /features/user/changephonenumber                @tokopedia/minion-kevin
 /features/user/onboarding                       @tokopedia/minion-kevin
 /features/user/phoneverification                @tokopedia/minion-kevin
+/features/user/updateinactivephone              @tokopedia/minion-kevin
 /features/user/user_identification/             @tokopedia/minion-kevin
 /features/user/user_identification_common/      @tokopedia/minion-kevin
 /features/user/user_identification_no_op/       @tokopedia/minion-kevin
@@ -121,7 +123,6 @@
 /libraries/user_session/                @tokopedia/minion-kevin
 /libraries/youtubeutils/                @tokopedia/minion-stuart
 
-/features/user/updateinactivephone      @tokopedia/india-android-team
 /libraries/common_network/              @tokopedia/core-team
 
 /features/digital/event                 @tokopedia/minion-darth

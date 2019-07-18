@@ -559,9 +559,15 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         if (saveInstanceCacheManager != null) {
             saveInstanceCacheManager.onSave(outState);
             saveInstanceCacheManager.put(CartListData.class.getSimpleName(), cartListData);
-            saveInstanceCacheManager.put(CartWishlistItemHolderData.class.getSimpleName(), new ArrayList<>(wishLists));
-            saveInstanceCacheManager.put(CartRecentViewItemHolderData.class.getSimpleName(), new ArrayList<>(recentViewList));
-            saveInstanceCacheManager.put(CartRecommendationItemHolderData.class.getSimpleName(), new ArrayList<>(recommendationList));
+            if (wishLists != null) {
+                saveInstanceCacheManager.put(CartWishlistItemHolderData.class.getSimpleName(), new ArrayList<>(wishLists));
+            }
+            if (recentViewList != null) {
+                saveInstanceCacheManager.put(CartRecentViewItemHolderData.class.getSimpleName(), new ArrayList<>(recentViewList));
+            }
+            if (recommendationList != null) {
+                saveInstanceCacheManager.put(CartRecommendationItemHolderData.class.getSimpleName(), new ArrayList<>(recommendationList));
+            }
         }
     }
 
@@ -940,6 +946,16 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
+    public void onCartItemShowTickerPriceDecrease(String productId) {
+        cartPageAnalytics.eventViewTickerPriceDecrease(productId);
+    }
+
+    @Override
+    public void onCartItemShowTickerStockDecreaseAndAlreadyAtcByOtherUser(String productId) {
+        cartPageAnalytics.eventViewTickerStockDecreaseAndAlreadyAtcByOtherUser(productId);
+    }
+
+    @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
         startActivityForResult(intent, requestCode);
     }
@@ -1111,7 +1127,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void stopCartPerformanceTrace() {
-        if (!isTraceCartStopped) {
+        if (cartPerformanceMonitoring != null && !isTraceCartStopped) {
             cartPerformanceMonitoring.stopTrace();
             isTraceCartStopped = true;
         }
@@ -1119,7 +1135,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void stopAllCartPerformanceTrace() {
-        if (!isTraceCartAllStopped && wishLists != null && recentViewList != null && recommendationList != null) {
+        if (cartAllPerformanceMonitoring != null && !isTraceCartAllStopped && wishLists != null && recentViewList != null && recommendationList != null) {
             cartAllPerformanceMonitoring.stopTrace();
             isTraceCartAllStopped = true;
         }

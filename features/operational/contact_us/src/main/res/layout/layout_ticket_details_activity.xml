@@ -103,23 +103,45 @@
     </android.support.v7.widget.Toolbar>
 
     <TextView
+        android:id="@+id/tv_priority_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="19dp"
+        android:drawableLeft="@drawable/resized_priority_label_image"
+        android:drawablePadding="@dimen/dp_minus2"
+        android:gravity="center"
+        android:fontFamily="sans-serif-medium"
+        android:text="Layanan Prioritas"
+        android:textColor="@color/purple"
+        android:textSize="@dimen/sp_10"
+        android:lineSpacingExtra="@dimen/sp_2"
+        android:textStyle="normal"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+    <TextView
         android:id="@+id/tv_ticket_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_7"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
         android:fontFamily="sans-serif"
         android:lineSpacingExtra="5sp"
         android:paddingBottom="@dimen/dp_4"
         android:textColor="@color/black_70"
         android:textSize="@dimen/sp_17"
         android:textStyle="normal"
+        app:layout_goneMarginTop="@dimen/dp_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintTop_toBottomOf="@+id/tv_priority_label"
         tools:text="Prifikasi dan
 dinilaiwbckwbvkbwvwkwbkjewvrrevervrevrvvvrvrrevrvrvevebvwv" />
 
@@ -135,25 +157,6 @@ dinilaiwbckwbvkbwvwkwbkjewvrrevervrevrvvvrvrrevrvrvevebvwv" />
         app:layout_constraintStart_toStartOf="@+id/tv_ticket_title"
         app:layout_constraintTop_toBottomOf="@+id/tv_ticket_title"
         tools:text="ID: #00079468" />
-
-    <TextView
-        android:id="@+id/tv_priority_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_10"
-        android:textStyle="normal"
-        android:text="Prioritas"
-        android:visibility="gone"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:lineSpacingExtra="6sp"
-        android:gravity="center"
-        android:drawablePadding="@dimen/dp_4"
-        android:layout_marginTop="@dimen/dp_10"
-        android:drawableLeft="@drawable/priority_label_img"
-        app:layout_constraintTop_toBottomOf="@id/tv_ticket_title"
-        app:layout_constraintLeft_toRightOf="@+id/tv_id_num"/>
-
 
     <TextView
         android:id="@+id/tv_view_transaction"

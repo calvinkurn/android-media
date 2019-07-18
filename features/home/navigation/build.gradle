@@ -34,13 +34,13 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
 
-
     implementation rootProject.ext.playServicesDependencies.analytics
 
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
+    implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid

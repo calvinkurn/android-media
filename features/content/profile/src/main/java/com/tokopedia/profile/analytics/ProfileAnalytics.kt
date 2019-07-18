@@ -66,8 +66,10 @@ class ProfileAnalytics @Inject constructor(private val userSessionInterface: Use
         const val CLICK_UNFOLLOW = "click unfollow"
         const val CLICK_LIKE_ATTEMPT = "click like"
         const val CLICK_COMMENT_ATTEMPT = "click comment"
-        const val CLICK_SHARE_THIS_PROFILE = "click option bagikan profil"
-        const val CLICK_SHARE_THIS_POST = "click option bagikan post"
+        const val CLICK_SHARE_THIS_PROFILE = "click bagikan profile ini"
+        const val CLICK_SHARE_THIS_POST = "click share post ini"
+        const val CLICK_SHARE_THIS_PROFILE_OPTION = "click option bagikan profil"
+        const val CLICK_SHARE_THIS_POST_OPTION = "click option bagikan post"
         const val CLICK_SEE_DETAIL = "click lihat detail"
         const val CLICK_STATISTIC_PROFILE = "click statistics"
         const val CLICK_TAG = "click-%s-user-all-%s-tag"
@@ -81,6 +83,8 @@ class ProfileAnalytics @Inject constructor(private val userSessionInterface: Use
         const val CLICK_ADD_RECCOMENDATION = "click tambah kurasi"
         const val CLICK_STATISTIC = "click affiliate statistic"
         const val CLICK_EMPTY_CTA = "cta byme"
+        const val IMPRESSION_OTHER_POST = "impression post lainnya"
+        const val CLICK_OTHER_POST = "click post lainnya"
     }
 
     object Label {
@@ -102,15 +106,15 @@ class ProfileAnalytics @Inject constructor(private val userSessionInterface: Use
     private fun getDefaultData(screenName: String, event: String, category: String, action: String,
                                label: String): MutableMap<String, Any> {
         return mutableMapOf(SCREEN_NAME to screenName,
-                EVENT to event,
-                CATEGORY to category,
-                ACTION to action,
-                LABEL to label,
-                USER_ID to userSessionInterface.userId)
+            EVENT to event,
+            CATEGORY to category,
+            ACTION to action,
+            LABEL to label,
+            USER_ID to userSessionInterface.userId)
     }
 
     private fun setCustomDimensions(data: MutableMap<String, Any>, position: String)
-            : MutableMap<String, Any> {
+        : MutableMap<String, Any> {
         data[CONTENT_POSITION] = position
         return data
     }
@@ -134,13 +138,13 @@ class ProfileAnalytics @Inject constructor(private val userSessionInterface: Use
         val screen = if (isOwner) Screen.MY_PROFILE else Screen.PROFILE
         val category = if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                getDefaultData(
-                        screen,
-                        Event.EVENT_CLICK_SOCIAL_COMMERCE,
-                        category,
-                        Action.CLICK_FOLLOWING,
-                        profileId
-                )
+            getDefaultData(
+                screen,
+                Event.EVENT_CLICK_SOCIAL_COMMERCE,
+                category,
+                Action.CLICK_FOLLOWING,
+                profileId
+            )
         )
     }
 
@@ -148,13 +152,13 @@ class ProfileAnalytics @Inject constructor(private val userSessionInterface: Use
         val screen = if (isOwner) Screen.MY_PROFILE else Screen.PROFILE
         val category = if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                getDefaultData(
-                        screen,
-                        Event.EVENT_CLICK_SOCIAL_COMMERCE,
-                        category,
-                        Action.CLICK_FOLLOW,
-                        profileId
-                )
+            getDefaultData(
+                screen,
+                Event.EVENT_CLICK_SOCIAL_COMMERCE,
+                category,
+                Action.CLICK_FOLLOW,
+                profileId
+            )
         )
     }
 
@@ -162,13 +166,13 @@ class ProfileAnalytics @Inject constructor(private val userSessionInterface: Use
         val screen = if (isOwner) Screen.MY_PROFILE else Screen.PROFILE
         val category = if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                getDefaultData(
-                        screen,
-                        Event.EVENT_CLICK_SOCIAL_COMMERCE,
-                        category,
-                        Action.CLICK_UNFOLLOW,
-                        profileId
-                )
+            getDefaultData(
+                screen,
+                Event.EVENT_CLICK_SOCIAL_COMMERCE,
+                category,
+                Action.CLICK_UNFOLLOW,
+                profileId
+            )
         )
     }
 
@@ -176,13 +180,13 @@ class ProfileAnalytics @Inject constructor(private val userSessionInterface: Use
         val screen = if (isOwner) Screen.MY_PROFILE else Screen.PROFILE
         val category = if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                getDefaultData(
-                        screen,
-                        Event.EVENT_CLICK_SOCIAL_COMMERCE,
-                        category,
-                        Action.CLICK_LIKE_ATTEMPT,
-                        profileId
-                )
+            getDefaultData(
+                screen,
+                Event.EVENT_CLICK_SOCIAL_COMMERCE,
+                category,
+                Action.CLICK_LIKE_ATTEMPT,
+                profileId
+            )
         )
     }
 
@@ -190,13 +194,13 @@ class ProfileAnalytics @Inject constructor(private val userSessionInterface: Use
         val screen = if (isOwner) Screen.MY_PROFILE else Screen.PROFILE
         val category = if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                getDefaultData(
-                        screen,
-                        Event.EVENT_CLICK_SOCIAL_COMMERCE,
-                        category,
-                        Action.CLICK_COMMENT_ATTEMPT,
-                        profileId
-                )
+            getDefaultData(
+                screen,
+                Event.EVENT_CLICK_SOCIAL_COMMERCE,
+                category,
+                Action.CLICK_COMMENT_ATTEMPT,
+                profileId
+            )
         )
     }
 
@@ -204,13 +208,13 @@ class ProfileAnalytics @Inject constructor(private val userSessionInterface: Use
         val screen = if (isOwner) Screen.MY_PROFILE else Screen.PROFILE
         val category = if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                getDefaultData(
-                        screen,
-                        Event.EVENT_CLICK_SOCIAL_COMMERCE,
-                        category,
-                        "click follow - sticky bottom bar",
-                        profileId
-                )
+            getDefaultData(
+                screen,
+                Event.EVENT_CLICK_SOCIAL_COMMERCE,
+                category,
+                "click follow - sticky bottom bar",
+                profileId
+            )
         )
     }
 
@@ -218,72 +222,123 @@ class ProfileAnalytics @Inject constructor(private val userSessionInterface: Use
         val screen = if (isOwner) Screen.MY_PROFILE else Screen.PROFILE
         val category = if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                getDefaultData(
-                        screen,
-                        Event.EVENT_CLICK_SOCIAL_COMMERCE,
-                        category,
-                        "click unfollow - sticky bottom bar",
-                        profileId
-                )
+            getDefaultData(
+                screen,
+                Event.EVENT_CLICK_SOCIAL_COMMERCE,
+                category,
+                "click unfollow - sticky bottom bar",
+                profileId
+            )
         )
     }
 
-    fun eventClickShareProfileIni(isOwner: Boolean, profileId: String, source: String) {
+    fun eventClickShareProfileIni(isOwner: Boolean, profileId: String) {
         val screen = if (isOwner) Screen.MY_PROFILE else Screen.PROFILE
         val category = if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                getDefaultData(
-                        screen,
-                        Event.EVENT_CLICK_SOCIAL_COMMERCE,
-                        category,
-                        Action.CLICK_SHARE_THIS_PROFILE + " - " + source,
-                        profileId
-                )
+            getDefaultData(
+                screen,
+                Event.EVENT_CLICK_SOCIAL_COMMERCE,
+                category,
+                Action.CLICK_SHARE_THIS_PROFILE,
+                profileId
+            )
         )
     }
 
-    fun eventClickSharePostIni(isOwner: Boolean, profileId: String, source: String) {
+    fun eventClickSharePostIni(isOwner: Boolean, profileId: String) {
         val screen = if (isOwner) Screen.MY_PROFILE else Screen.PROFILE
         val category = if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                getDefaultData(
-                        screen,
-                        Event.EVENT_CLICK_SOCIAL_COMMERCE,
-                        category,
-                        Action.CLICK_SHARE_THIS_POST + " - " + source,
-                        profileId
-                )
+            getDefaultData(
+                screen,
+                Event.EVENT_CLICK_SOCIAL_COMMERCE,
+                category,
+                Action.CLICK_SHARE_THIS_POST,
+                profileId
+            )
+        )
+    }
+
+    fun eventClickShareProfileOpsiIni(isOwner: Boolean, profileId: String, source: String) {
+        val screen = if (isOwner) Screen.MY_PROFILE else Screen.PROFILE
+        val category = if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            getDefaultData(
+                screen,
+                Event.EVENT_CLICK_SOCIAL_COMMERCE,
+                category,
+                Action.CLICK_SHARE_THIS_PROFILE_OPTION + " - " + source,
+                profileId
+            )
+        )
+    }
+
+    fun eventClickSharePostOpsiIni(isOwner: Boolean, profileId: String, source: String) {
+        val screen = if (isOwner) Screen.MY_PROFILE else Screen.PROFILE
+        val category = if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            getDefaultData(
+                screen,
+                Event.EVENT_CLICK_SOCIAL_COMMERCE,
+                category,
+                Action.CLICK_SHARE_THIS_POST_OPTION + " - " + source,
+                profileId
+            )
         )
     }
 
     fun eventClickStatistic(profileId: String) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                getDefaultData(
-                        Screen.MY_PROFILE,
-                        Event.EVENT_CLICK_SOCIAL_COMMERCE,
-                        Category.MY_PROFILE_SOCIALCOMMERCE,
-                        Action.CLICK_STATISTIC_PROFILE,
-                        profileId
-                )
+            getDefaultData(
+                Screen.MY_PROFILE,
+                Event.EVENT_CLICK_SOCIAL_COMMERCE,
+                Category.MY_PROFILE_SOCIALCOMMERCE,
+                Action.CLICK_STATISTIC_PROFILE,
+                profileId
+            )
         )
     }
 
+    fun eventClickOtherPost(profileId: String, postUserId: String) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            getDefaultData(
+                Screen.PROFILE,
+                Event.EVENT_CLICK_SOCIAL_COMMERCE,
+                Category.USER_PROFILE_SOCIALCOMMERCE,
+                Action.CLICK_OTHER_POST,
+                "$profileId - $postUserId"
+            )
+        )
+    }
+
+    fun eventImpressionOtherPost(profileId: String, postUserId: String) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            getDefaultData(
+                Screen.PROFILE,
+                Event.EVENT_CLICK_SOCIAL_COMMERCE,
+                Category.USER_PROFILE_SOCIALCOMMERCE,
+                Action.IMPRESSION_OTHER_POST,
+                "$profileId - $postUserId"
+            )
+        )
+    }
 
     fun eventClickTag(isOwner: Boolean, hasMultipleContent: Boolean, activityId: String,
                       activityType: String, position: String) {
         val screen = if (isOwner) Screen.MY_PROFILE else Screen.PROFILE
         val category = if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE
         val action = String.format(
-                Action.CLICK_TAG,
-                singleOrMultiple(hasMultipleContent),
-                activityType
+            Action.CLICK_TAG,
+            singleOrMultiple(hasMultipleContent),
+            activityType
         )
         val data = getDefaultData(
-                screen,
-                Event.EVENT_CLICK_SOCIAL_COMMERCE,
-                category,
-                action,
-                activityId
+            screen,
+            Event.EVENT_CLICK_SOCIAL_COMMERCE,
+            category,
+            action,
+            activityId
         )
         setCustomDimensions(data, position)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(data)
@@ -291,36 +346,36 @@ class ProfileAnalytics @Inject constructor(private val userSessionInterface: Use
 
 
     fun eventClickCard(templateType: String, activityName: String,
-                           trackingType: String, mediaType: String, tagsType: String,
-                           redirectUrl: String, element: String, totalContent: Int,
-                           postId: Int, position: Int, contentPosition: String, userId: Int, isOwner: Boolean) {
+                       trackingType: String, mediaType: String, tagsType: String,
+                       redirectUrl: String, element: String, totalContent: Int,
+                       postId: Int, position: Int, contentPosition: String, userId: Int, isOwner: Boolean) {
         val screen = if (isOwner) Screen.MY_PROFILE else Screen.PROFILE
         val category = if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE
         val name = if (isOwner) Category.MY_PROFILE_PAGE else Category.USER_PROFILE_PAGE
         val promotionList = ArrayList<ProfileEnhancedTracking.Promotion>()
         promotionList.add(ProfileEnhancedTracking.Promotion(
-                postId,
-                String.format(FORMAT_PROMOTION_NAME,
-                        name,
-                        activityName,
-                        tagsType,
-                        singleOrMultiple(totalContent)),
-                redirectUrl + DASH + contentPosition,
-                position,
-                "",
-                0,
-                "")
+            postId,
+            String.format(FORMAT_PROMOTION_NAME,
+                name,
+                activityName,
+                tagsType,
+                singleOrMultiple(totalContent)),
+            redirectUrl + DASH + contentPosition,
+            position,
+            "",
+            0,
+            "")
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                getEventEcommerceClick(
-                        screen,
-                        category,
-                        ACTION_CLICK.toLowerCase() + DASH + templateType + DASH
-                                + activityName + DASH + trackingType + DASH + element,
-                        mediaType,
-                        promotionList,
-                        userId
-                )
+            getEventEcommerceClick(
+                screen,
+                category,
+                ACTION_CLICK.toLowerCase() + DASH + templateType + DASH
+                    + activityName + DASH + trackingType + DASH + element,
+                mediaType,
+                promotionList,
+                userId
+            )
         )
     }
 
@@ -334,147 +389,132 @@ class ProfileAnalytics @Inject constructor(private val userSessionInterface: Use
         val name = if (isOwner) Category.MY_PROFILE_PAGE else Category.USER_PROFILE_PAGE
         val promotionList = ArrayList<ProfileEnhancedTracking.Promotion>()
         promotionList.add(ProfileEnhancedTracking.Promotion(
-                postId,
-                String.format(FORMAT_PROMOTION_NAME,
-                        name,
-                        activityName,
-                        tagsType,
-                        singleOrMultiple(totalContent)),
-                String.format("%s - 0", redirectUrl),
-                position,
-                "",
-                0,
-                "")
+            postId,
+            String.format(FORMAT_PROMOTION_NAME,
+                name,
+                activityName,
+                tagsType,
+                singleOrMultiple(totalContent)),
+            String.format("%s - 0", redirectUrl),
+            position,
+            "",
+            0,
+            "")
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                getEventEcommerceView(
-                        screen,
-                        category,
-                        ACTION_IMPRESSION.toLowerCase() + DASH + templateType + DASH
-                                + activityName + DASH + trackingType,
-                        mediaType,
-                        promotionList,
-                        userId
-                )
-        )
-    }
-
-    fun eventClickBagikanProfile(isOwner: Boolean, profileId: String) {
-        val screen = if (isOwner) Screen.MY_PROFILE else Screen.PROFILE
-        val category = if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE
-        val name = if (isOwner) Category.MY_PROFILE_PAGE else Category.USER_PROFILE_PAGE
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                getDefaultData(
-                        screen,
-                        Event.EVENT_CLICK_SOCIAL_COMMERCE,
-                        category,
-                        Action.CLICK_BAGIKAN_PROFILE,
-                        profileId
-                )
+            getEventEcommerceView(
+                screen,
+                category,
+                ACTION_IMPRESSION.toLowerCase() + DASH + templateType + DASH
+                    + activityName + DASH + trackingType,
+                mediaType,
+                promotionList,
+                userId
+            )
         )
     }
 
     fun eventClickLike(hasMultipleContent: Boolean, activityId: String, activityType: String) {
         val action = String.format(
-                Action.CLICK_LIKE,
-                singleOrMultiple(hasMultipleContent),
-                activityType
+            Action.CLICK_LIKE,
+            singleOrMultiple(hasMultipleContent),
+            activityType
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                getDefaultData(
-                        Screen.PROFILE,
-                        Event.EVENT_CLICK_SOCIAL_COMMERCE,
-                        Category.USER_PROFILE_SOCIALCOMMERCE,
-                        action,
-                        activityId
-                )
+            getDefaultData(
+                Screen.PROFILE,
+                Event.EVENT_CLICK_SOCIAL_COMMERCE,
+                Category.USER_PROFILE_SOCIALCOMMERCE,
+                action,
+                activityId
+            )
         )
     }
 
     fun eventClickUnlike(hasMultipleContent: Boolean, activityId: String, activityType: String) {
         val action = String.format(
-                Action.CLICK_UNLIKE,
-                singleOrMultiple(hasMultipleContent),
-                activityType
+            Action.CLICK_UNLIKE,
+            singleOrMultiple(hasMultipleContent),
+            activityType
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                getDefaultData(
-                        Screen.PROFILE,
-                        Event.EVENT_CLICK_SOCIAL_COMMERCE,
-                        Category.USER_PROFILE_SOCIALCOMMERCE,
-                        action,
-                        activityId
-                )
+            getDefaultData(
+                Screen.PROFILE,
+                Event.EVENT_CLICK_SOCIAL_COMMERCE,
+                Category.USER_PROFILE_SOCIALCOMMERCE,
+                action,
+                activityId
+            )
         )
     }
 
     fun eventClickComment(hasMultipleContent: Boolean, activityId: String, activityType: String) {
         val action = String.format(
-                Action.CLICK_COMMENT,
-                singleOrMultiple(hasMultipleContent),
-                activityType
+            Action.CLICK_COMMENT,
+            singleOrMultiple(hasMultipleContent),
+            activityType
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                getDefaultData(
-                        Screen.PROFILE,
-                        Event.EVENT_CLICK_SOCIAL_COMMERCE,
-                        Category.USER_PROFILE_SOCIALCOMMERCE,
-                        action,
-                        activityId
-                )
+            getDefaultData(
+                Screen.PROFILE,
+                Event.EVENT_CLICK_SOCIAL_COMMERCE,
+                Category.USER_PROFILE_SOCIALCOMMERCE,
+                action,
+                activityId
+            )
         )
     }
 
     fun eventClickAfterFollow(name: String) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                getDefaultData(
-                        Screen.PROFILE,
-                        Event.EVENT_CLICK_TOP_PROFILE,
-                        Category.KOL_TOP_PROFILE,
-                        Action.CLICK_PROMPT,
-                        String.format(Label.GO_TO_FEED_FORMAT, name)
-                )
+            getDefaultData(
+                Screen.PROFILE,
+                Event.EVENT_CLICK_TOP_PROFILE,
+                Category.KOL_TOP_PROFILE,
+                Action.CLICK_PROMPT,
+                String.format(Label.GO_TO_FEED_FORMAT, name)
+            )
         )
     }
 
     fun eventClickTambahGambar(hasMultipleContent: Boolean, activityId: String,
                                activityType: String) {
         val action = String.format(
-                Action.CLICK_ADD_IMAGE,
-                singleOrMultiple(hasMultipleContent),
-                activityType
+            Action.CLICK_ADD_IMAGE,
+            singleOrMultiple(hasMultipleContent),
+            activityType
         )
         val data = getDefaultData(
-                Screen.MY_PROFILE,
-                Event.EVENT_CLICK_SOCIAL_COMMERCE,
-                Category.MY_PROFILE_SOCIALCOMMERCE,
-                action,
-                activityId
+            Screen.MY_PROFILE,
+            Event.EVENT_CLICK_SOCIAL_COMMERCE,
+            Category.MY_PROFILE_SOCIALCOMMERCE,
+            action,
+            activityId
         )
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(data)
     }
 
     fun eventClickTambahRekomendasi() {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                getDefaultData(
-                        Screen.MY_PROFILE,
-                        Event.EVENT_CLICK_SOCIAL_COMMERCE,
-                        Category.MY_PROFILE_SOCIALCOMMERCE,
-                        Action.CLICK_ADD_RECCOMENDATION,
-                        ""
-                )
+            getDefaultData(
+                Screen.MY_PROFILE,
+                Event.EVENT_CLICK_SOCIAL_COMMERCE,
+                Category.MY_PROFILE_SOCIALCOMMERCE,
+                Action.CLICK_ADD_RECCOMENDATION,
+                ""
+            )
         )
     }
 
     fun eventClickEmptyStateCta() {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                getDefaultData(
-                        Screen.MY_PROFILE,
-                        Event.EVENT_CLICK_SOCIAL_COMMERCE,
-                        Category.MY_PROFILE_SOCIALCOMMERCE,
-                        Action.CLICK_EMPTY_CTA,
-                        ""
-                )
+            getDefaultData(
+                Screen.MY_PROFILE,
+                Event.EVENT_CLICK_SOCIAL_COMMERCE,
+                Category.MY_PROFILE_SOCIALCOMMERCE,
+                Action.CLICK_EMPTY_CTA,
+                ""
+            )
         )
     }
 
@@ -485,14 +525,14 @@ class ProfileAnalytics @Inject constructor(private val userSessionInterface: Use
                                       promotions: List<ProfileEnhancedTracking.Promotion>,
                                       userId: Int): Map<String, Any> {
         return DataLayer.mapOf(
-                SCREEN_NAME, screenName,
-                EVENT_NAME, PROMO_VIEW,
-                EVENT_CATEGORY, category,
-                EVENT_ACTION, action,
-                EVENT_LABEL, label,
-                KEY_USER_ID, userId,
-                KEY_USER_ID_MOD, userId % 50,
-                EVENT_ECOMMERCE, ProfileEnhancedTracking.Ecommerce.getEcommerceView(promotions)
+            SCREEN_NAME, screenName,
+            EVENT_NAME, PROMO_VIEW,
+            EVENT_CATEGORY, category,
+            EVENT_ACTION, action,
+            EVENT_LABEL, label,
+            KEY_USER_ID, userId,
+            KEY_USER_ID_MOD, userId % 50,
+            EVENT_ECOMMERCE, ProfileEnhancedTracking.Ecommerce.getEcommerceView(promotions)
         )
     }
 
@@ -503,14 +543,14 @@ class ProfileAnalytics @Inject constructor(private val userSessionInterface: Use
                                        promotions: List<ProfileEnhancedTracking.Promotion>,
                                        userId: Int): Map<String, Any> {
         return DataLayer.mapOf(
-                SCREEN_NAME, screenName,
-                EVENT_NAME, PROMO_CLICK,
-                EVENT_CATEGORY, category,
-                EVENT_ACTION, action,
-                EVENT_LABEL, label,
-                KEY_USER_ID, userId,
-                KEY_USER_ID_MOD, userId % 50,
-                EVENT_ECOMMERCE, ProfileEnhancedTracking.Ecommerce.getEcommerceClick(promotions)
+            SCREEN_NAME, screenName,
+            EVENT_NAME, PROMO_CLICK,
+            EVENT_CATEGORY, category,
+            EVENT_ACTION, action,
+            EVENT_LABEL, label,
+            KEY_USER_ID, userId,
+            KEY_USER_ID_MOD, userId % 50,
+            EVENT_ECOMMERCE, ProfileEnhancedTracking.Ecommerce.getEcommerceClick(promotions)
         )
     }
 }
