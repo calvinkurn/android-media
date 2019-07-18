@@ -10,6 +10,7 @@ import android.widget.FrameLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.design.viewpagerindicator.CirclePageIndicator
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics
@@ -17,6 +18,7 @@ import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
 import com.tokopedia.kotlin.extensions.view.debug
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.videoplayer.state.*
 import com.tokopedia.videoplayer.utils.sendViewToBack
 import com.tokopedia.videoplayer.view.player.TkpdVideoPlayer
@@ -25,7 +27,7 @@ import com.tokopedia.videoplayer.view.player.VideoPlayerListener
 /**
  * @author : Steven 28/05/19
  */
-class VideoVerticalHelper (
+class VideoVerticalHelper constructor (
         model: ChannelInfoViewModel?,
         var bufferContainer: View,
         var fragmentManager: FragmentManager,
@@ -34,7 +36,8 @@ class VideoVerticalHelper (
         var setChatListHasSpaceOnTop: (Int) -> Unit,
         var backgroundHelper: PlayBackgroundHelper,
         var analytics: GroupChatAnalytics,
-        var gradientBackground: View
+        var gradientBackground: View,
+        var liveIndicator: View
 ): PlayBaseHelper(model) {
 
     companion object {
@@ -190,6 +193,7 @@ class VideoVerticalHelper (
         }
         playVideoSource(video)
         backgroundHelper.setEmptyBackground()
+        liveIndicator.showWithCondition(videoStreamViewModel.isActive)
     }
 
     fun isVideoShown(): Boolean {

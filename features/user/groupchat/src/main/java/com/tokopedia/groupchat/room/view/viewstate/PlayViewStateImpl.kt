@@ -274,7 +274,8 @@ open class PlayViewStateImpl(
                 setChatListHasSpaceOnTop(),
                 backgroundHelper,
                 analytics,
-                gradientBackground
+                gradientBackground,
+                liveIndicator
 
         )
         videoHorizontalHelper = VideoHorizontalHelper(
