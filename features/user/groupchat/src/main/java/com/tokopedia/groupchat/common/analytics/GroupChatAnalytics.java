@@ -871,7 +871,7 @@ public class GroupChatAnalytics {
 
     //#VV1
     public void eventWatchVerticalVideo(String channelId, String duration) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData("",
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_VIEW_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION_VERTICAL_VIDEO_DURATION,
                 channelId +" - "+duration
@@ -879,7 +879,7 @@ public class GroupChatAnalytics {
     }
     //#VV2
     public void eventVerticalVideoPlayed(String channelId) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData("",
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION_VERTICAL_VIDEO_PLAYED,
                 channelId
@@ -887,7 +887,7 @@ public class GroupChatAnalytics {
     }
     //#VV3
     public void eventClickHideVerticalVideo(String channelId) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData("",
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION_VERTICAL_VIDEO_HIDE,
                 channelId
@@ -895,7 +895,7 @@ public class GroupChatAnalytics {
     }
     //#VV4
     public void eventClickShowVerticalVideo(String channelId) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData("",
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION_VERTICAL_VIDEO_SHOW,
                 channelId
@@ -903,7 +903,7 @@ public class GroupChatAnalytics {
     }
     //#VV5
     public void eventClickChangeQualityVerticalVideo(String channelId, String resolution) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData("",
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION_VERTICAL_VIDEO_QUALITY_CHANGED,
                 channelId +" - "+resolution
@@ -911,7 +911,7 @@ public class GroupChatAnalytics {
     }
     //#VV6
     public void eventClickInfoVerticalVideo(String channelId) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData("",
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION_CLICK_INFO_VIDEO_CHANNEL,
                 channelId
@@ -919,7 +919,7 @@ public class GroupChatAnalytics {
     }
     //#VV7
     public void eventChannelToPip(String channelId) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData("",
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION_CHANNEL_TO_PIP,
                 channelId
@@ -927,7 +927,7 @@ public class GroupChatAnalytics {
     }
     //#VV8
     public void eventPipToChannel(String channelId) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData("",
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_PIP,
                 EVENT_ACTION_PIP_TO_CHANNEL,
                 channelId
@@ -935,7 +935,7 @@ public class GroupChatAnalytics {
     }
     //#VV9
     public void eventPipClosed(String channelId) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData("",
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_PIP,
                 EVENT_ACTION_CLICK_CLOSE_PIP,
                 channelId
