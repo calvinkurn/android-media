@@ -10,9 +10,11 @@ import com.tokopedia.recommendation_widget_common.presentation.RecommendationCar
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 
-class RecommendationProductAdapter(private var product: RecommendationWidget,
-                                   private val userActiveListener: UserActiveListener,
-                                   private var pageName: String) : RecyclerView.Adapter<RecommendationProductAdapter.RecommendationProductViewHolder>() {
+class RecommendationProductAdapter(
+       private var product: RecommendationWidget,
+       private val userActiveListener: UserActiveListener,
+       private var pageName: String
+) : RecyclerView.Adapter<RecommendationProductAdapter.RecommendationProductViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecommendationProductViewHolder {
         return RecommendationProductViewHolder(parent.inflateLayout(R.layout.item_product_recommendation))
@@ -51,6 +53,9 @@ class RecommendationProductAdapter(private var product: RecommendationWidget,
             productDetailTracking.eventRecommendationClick(item, adapterPosition, userActiveListener.isUserSessionActive,pageName,product.title)
         }
 
+        override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit?) {
+            //do nothing
+        }
     }
 
     interface UserActiveListener{

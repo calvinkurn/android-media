@@ -234,17 +234,15 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
         }
     }
 
-    fun onClickAddWishlist(item: RecommendationItem) {
+    override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
         if(recommendationWidgetViewModel.isLoggedIn()){
-            RecommendationPageTracking.eventUserClickRecommendationWishlistForLogin(true, getHeaderName(item))
-        }else{
-            RecommendationPageTracking.eventUserClickRecommendationWishlistForNonLogin(getHeaderName(item))
-        }
-    }
-
-    fun onClickRemoveWishlist(item: RecommendationItem) {
-        if(recommendationWidgetViewModel.isLoggedIn()){
-            RecommendationPageTracking.eventUserClickRecommendationWishlistForLogin(false, getHeaderName(item))
+            if(isAddWishlist){
+                recommendationWidgetViewModel.addWishlist(item, callback)
+                RecommendationPageTracking.eventUserClickRecommendationWishlistForLogin(true, getHeaderName(item))
+            } else {
+                recommendationWidgetViewModel.removeWishlist(item, callback)
+                RecommendationPageTracking.eventUserClickRecommendationWishlistForLogin(false, getHeaderName(item))
+            }
         }else{
             RecommendationPageTracking.eventUserClickRecommendationWishlistForNonLogin(getHeaderName(item))
         }

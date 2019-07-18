@@ -98,5 +98,6 @@ class RecommendationCardView : ProductCardView {
         fun onImpressionOrganic(item: RecommendationItem)
         fun onClickTopAds(item: RecommendationItem)
         fun onClickOrganic(item: RecommendationItem)
+        fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: ((Boolean, Throwable?) -> Unit))
     }
 }
