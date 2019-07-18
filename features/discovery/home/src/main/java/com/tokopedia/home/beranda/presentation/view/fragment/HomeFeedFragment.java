@@ -301,11 +301,14 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
                                 @NotNull Function2<? super Boolean, ? super Throwable, Unit> responseWishlist) {
         if(presenter.isLogin()) {
             if (isAddWishlist) {
+                HomePageTracking.eventClickWishlistOnProductRecommendation(getActivity(), tabName);
                 presenter.addWishlist(homeFeedViewModel, responseWishlist);
             } else {
+                HomePageTracking.eventClickRemoveWishlistOnProductRecommendation(getActivity(), tabName);
                 presenter.removeWishlist(homeFeedViewModel, responseWishlist);
             }
         }else {
+            HomePageTracking.eventClickWishlistOnProductRecommendationForNonLogin(getActivity(), tabName);
             RouteManager.route(getContext(), ApplinkConst.LOGIN);
         }
     }
