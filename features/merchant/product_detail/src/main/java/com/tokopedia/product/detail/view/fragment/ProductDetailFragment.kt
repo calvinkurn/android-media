@@ -128,6 +128,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_product_detail.*
+import kotlinx.android.synthetic.main.menu_item_cart.view.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.*
 import kotlinx.android.synthetic.main.partial_most_helpful_review_view.*
 import kotlinx.android.synthetic.main.partial_product_detail_header.*
@@ -930,7 +931,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     if (it.size() > 2) {
                         it.findItem(R.id.action_share).icon = ContextCompat.getDrawable(this, R.drawable.ic_product_share_dark)
                         val menuCart = it.findItem(R.id.action_cart)
-                        menuCart.actionView.findViewById<ImageView>(R.id.cart_image_view).tag = R.drawable.ic_product_cart_counter_dark
+                        menuCart.actionView.cart_image_view.tag = R.drawable.ic_product_cart_counter_dark
                         setBadgeMenuCart(menuCart)
                     }
                 }
@@ -961,7 +962,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     if (it.size() > 2) {
                         it.findItem(R.id.action_share).icon = ContextCompat.getDrawable(this, R.drawable.ic_product_share_light)
                         val menuCart = it.findItem(R.id.action_cart)
-                        menuCart.actionView.findViewById<ImageView>(R.id.cart_image_view).tag = R.drawable.ic_product_cart_counter_light
+                        menuCart.actionView.cart_image_view.tag = R.drawable.ic_product_cart_counter_light
                         setBadgeMenuCart(menuCart)
                     }
                 }
@@ -1782,8 +1783,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private fun setBadgeMenuCart(menuCart: MenuItem) {
         activity?.run {
             val actionView = menuCart.actionView
-            val cartImageView = actionView.findViewById<ImageView>(R.id.cart_image_view)
-            val lottieCartView = actionView.findViewById<LottieAnimationView>(R.id.cart_lottie_view)
+            val cartImageView = actionView.cart_image_view
+            val lottieCartView = actionView.cart_lottie_view
             cartImageView.setOnClickListener {
                 gotoCart()
             }
