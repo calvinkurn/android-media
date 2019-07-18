@@ -13,7 +13,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cod.R
 import com.tokopedia.cod.di.DaggerCodComponent
-import com.tokopedia.logisticanalytics.CodAnalytics
+import com.tokopedia.logisticdata.data.analytics.CodAnalytics
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCheckout

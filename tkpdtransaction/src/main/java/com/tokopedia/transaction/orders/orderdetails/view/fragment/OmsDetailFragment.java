@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
@@ -56,6 +57,7 @@ import com.tokopedia.transaction.orders.orderdetails.data.ShopInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.Status;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
 import com.tokopedia.transaction.orders.orderdetails.di.OrderDetailsComponent;
+import com.tokopedia.transaction.orders.orderdetails.view.activity.OrderListwebViewActivity;
 import com.tokopedia.transaction.orders.orderdetails.view.adapter.ItemsAdapter;
 import com.tokopedia.transaction.orders.orderdetails.view.customview.BookingCodeView;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailContract;
@@ -67,6 +69,7 @@ import com.tokopedia.unifycomponents.Toaster;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -300,13 +303,14 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
             spannableString.setSpan(new ClickableSpan() {
                 @Override
                 public void onClick(View view) {
+                    Intent intent = null;
                     try {
-                        startActivity(((UnifiedOrderListRouter) getActivity().getApplication())
-                                .getWebviewActivityWithIntent(getContext(), URLEncoder.encode(
-                                        getResources().getString(R.string.contact_us_applink), ORDER_LIST_URL_ENCODING)));
+                        intent = OrderListwebViewActivity.getWebViewIntent(getContext(), URLDecoder.decode(
+                                getContext().getResources().getString(R.string.contact_us_applink), "UTF-8"), "Help Centre");
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
+                    startActivity(intent);
                 }
 
                 @Override

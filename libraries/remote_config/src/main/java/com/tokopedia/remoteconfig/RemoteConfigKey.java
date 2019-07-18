@@ -30,6 +30,7 @@ public class RemoteConfigKey {
     public static final String REFERRAL_WELCOME_MESSAGE = "referral_welcome_message_new";
     public static final String REFFERAL_TERMS = "referral_terms";
     public static final String REFERRAL_TITLE_DESC = "app_refferal_content";
+    public static final String APP_HIDE_SAMPAI_VIEW = "android_customer_hide_sampai_view";
 
     public static final String MAINAPP_SHOW_SIMPLE_APP_RATING = "mainapp_show_simple_app_rating";
     public static final String MAINAPP_SHOW_ADVANCED_APP_RATING = "mainapp_show_advanced_app_rating";
@@ -125,6 +126,10 @@ public class RemoteConfigKey {
     public static final String REMOTE_CONFIG_APP_SHOW_SEARCH_BAR_PDP = "app_show_search_bar_pdp";
 
     public static final String ENABLE_ADD_NEW_ADDRESS_KEY = "android_customer_enable_add_new_address";
+    public static final String ENABLE_GTM_REFRESH = "android_enable_gtm_refresh";
+    public static final String APP_CHANGE_PARAMETER_ROW = "mainapp_change_parameter_row";
 
+    public static final String MAINAPP_ENABLE_DIGITAL_TELCO_PDP = "android_customer_enable_telco_pdp";
+    
     public static final String ANDROID_PM_F1_ENABLED = "android_power_merchant_f1_enabled";
 }

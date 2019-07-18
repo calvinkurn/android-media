@@ -1,37 +1,32 @@
 package com.tokopedia.core.gcm.database.model;
 
-import com.raizlabs.android.dbflow.annotation.Column;
-import com.raizlabs.android.dbflow.annotation.ConflictAction;
-import com.raizlabs.android.dbflow.annotation.PrimaryKey;
-import com.raizlabs.android.dbflow.annotation.Table;
-import com.raizlabs.android.dbflow.structure.BaseModel;
-import com.tokopedia.core.database.CoreLegacyDbFlowDatabase;
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 
 /**
  * Created by alvarisi on 2/22/17.
  */
-@Table(database = CoreLegacyDbFlowDatabase.class, insertConflict = ConflictAction.REPLACE, updateConflict = ConflictAction.REPLACE)
-public class DbPushNotification extends BaseModel {
+@Entity
+public class DbPushNotification {
 
-    @Column
-    @PrimaryKey(autoincrement = true)
+    @PrimaryKey(autoGenerate = true)
     private long id;
 
-    @Column
+    @ColumnInfo(name = "category")
     private String category;
 
-    @Column
+    @ColumnInfo(name = "response")
     private String response;
 
-    @Column
+    @ColumnInfo(name = "customIndex")
     private String customIndex;
 
-    @Column
+    @ColumnInfo(name = "serverId")
     private String serverId;
 
     public DbPushNotification() {
     }
-
 
     public void setResponse(String response) {
         this.response = response;

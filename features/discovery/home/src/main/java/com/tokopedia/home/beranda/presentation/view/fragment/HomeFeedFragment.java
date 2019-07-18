@@ -11,12 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.di.BerandaComponent;
@@ -29,18 +28,15 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeFeedAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeFeedTypeFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeFeedItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedViewModel;
-import com.tokopedia.home.constant.ConstantKey;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSessionInterface;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
-public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFeedTypeFactory>
+public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFactory>, HomeFeedTypeFactory>
         implements HomeFeedContract.View {
 
     public static final String ARG_TAB_INDEX = "ARG_TAB_INDEX";
@@ -151,9 +147,8 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
 
     @NonNull
     @Override
-    protected BaseListAdapter<HomeFeedViewModel, HomeFeedTypeFactory> createAdapterInstance() {
+    protected BaseListAdapter<Visitable<HomeFeedTypeFactory>, HomeFeedTypeFactory> createAdapterInstance() {
         HomeFeedAdapter homeFeedAdapter = new HomeFeedAdapter(getAdapterTypeFactory());
-        homeFeedAdapter.setOnAdapterInteractionListener(this);
         return homeFeedAdapter;
     }
 
@@ -193,39 +188,8 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
     }
 
     @Override
-    public void onItemClicked(HomeFeedViewModel homeFeedViewModel) {
-        if (userSession.isLoggedIn()) {
-            if (!homeFeedViewModel.isTopAds()) {
-                HomePageTracking.eventClickOnHomeProductFeedForLoggedInUser(
-                        getActivity(),
-                        homeFeedViewModel,
-                        tabName.toLowerCase()
-                );
-            }
-        } else {
-            if (!homeFeedViewModel.isTopAds()) {
-                HomePageTracking.eventClickOnHomeProductFeedForNonLoginUser(
-                        getActivity(),
-                        homeFeedViewModel,
-                        tabName.toLowerCase()
-                );
-            }
-        }
-        if (homeFeedViewModel.isTopAds()) {
-            new ImpresionTask().execute(homeFeedViewModel.getClickUrl());
-            Product p = new Product();
-            p.setId(homeFeedViewModel.getProductId());
-            p.setName(homeFeedViewModel.getProductName());
-            p.setPriceFormat(homeFeedViewModel.getPrice());
-            TopAdsGtmTracker.getInstance().eventRecomendationProductClick(getContext(), p,
-                    tabName.toLowerCase(), homeFeedViewModel.getRecommendationType(),
-                    homeFeedViewModel.getCategoryBreadcrumbs(),
-                    userSession.isLoggedIn(),
-                    homeFeedViewModel.getPosition());
-        }
-        goToProductDetail(homeFeedViewModel.getProductId(),
-                homeFeedViewModel.getImageUrl(),
-                homeFeedViewModel.getProductName(), homeFeedViewModel.getPrice());
+    public void onItemClicked(Visitable<HomeFeedTypeFactory> homeFeedViewModel) {
+
     }
 
     private void goToProductDetail(String productId, String imageSourceSingle, String name, String price) {
@@ -304,6 +268,42 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
     }
 
     @Override
+    public void onProductClick(HomeFeedViewModel homeFeedViewModel, int position) {
+        if (userSession.isLoggedIn()) {
+            if (!homeFeedViewModel.isTopAds()) {
+                HomePageTracking.eventClickOnHomeProductFeedForLoggedInUser(
+                        getActivity(),
+                        homeFeedViewModel,
+                        tabName.toLowerCase()
+                );
+            }
+        } else {
+            if (!homeFeedViewModel.isTopAds()) {
+                HomePageTracking.eventClickOnHomeProductFeedForNonLoginUser(
+                        getActivity(),
+                        homeFeedViewModel,
+                        tabName.toLowerCase()
+                );
+            }
+        }
+        if (homeFeedViewModel.isTopAds()) {
+            new ImpresionTask().execute(homeFeedViewModel.getClickUrl());
+            Product p = new Product();
+            p.setId(homeFeedViewModel.getProductId());
+            p.setName(homeFeedViewModel.getProductName());
+            p.setPriceFormat(homeFeedViewModel.getPrice());
+            TopAdsGtmTracker.getInstance().eventRecomendationProductClick(getContext(), p,
+                    tabName.toLowerCase(), homeFeedViewModel.getRecommendationType(),
+                    homeFeedViewModel.getCategoryBreadcrumbs(),
+                    userSession.isLoggedIn(),
+                    homeFeedViewModel.getPosition());
+        }
+        goToProductDetail(homeFeedViewModel.getProductId(),
+                homeFeedViewModel.getImageUrl(),
+                homeFeedViewModel.getProductName(), homeFeedViewModel.getPrice());
+    }
+
+    @Override
     public void onPause() {
         if(homeTrackingQueue != null) {
             TopAdsGtmTracker.getInstance().eventRecomendationProductView(homeTrackingQueue,
@@ -311,5 +311,15 @@ public class HomeFeedFragment extends BaseListFragment<HomeFeedViewModel, HomeFe
             homeTrackingQueue.sendAll();
         }
         super.onPause();
+    }
+
+    @Override
+    public TrackingQueue getTrackingQueue() {
+        return homeTrackingQueue;
+    }
+
+    @Override
+    public String getTabName() {
+        return tabName;
     }
 }

@@ -56,9 +56,10 @@ class CreatePostImagePickerActivity : ImagePickerActivity() {
                     .toList()
                     .map { it.path })
 
+            /** Hide IG Since It's not working right now */
             val builder = ImagePickerBuilder(
                     context.getString(R.string.title_af_image_picker),
-                    intArrayOf(TYPE_GALLERY, TYPE_CAMERA, TYPE_INSTAGRAM),
+                    intArrayOf(TYPE_GALLERY, TYPE_CAMERA),
                     GalleryType.IMAGE_ONLY,
                     DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                     DEFAULT_MIN_RESOLUTION,

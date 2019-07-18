@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.district_recommendation.R
+import com.tokopedia.design.R
 import com.tokopedia.shop.open.view.fragment.ShopOpenPostalCodeChooserFragment
 
 /**
