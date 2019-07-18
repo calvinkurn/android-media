@@ -1047,7 +1047,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public boolean isInstantLoanEnabled() {
-        return remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_INSTANT_LOAN, true);
+        return remoteConfig.getBoolean(RemoteConfigKey.SHOW_INSTANT_LOAN, true);
     }
 
     public void sendScreenName(@NonNull String screenName) {

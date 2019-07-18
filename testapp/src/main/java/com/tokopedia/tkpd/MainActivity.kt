@@ -8,8 +8,6 @@ import android.widget.EditText
 import android.widget.Toast
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.application.MyApplication
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.network.utils.AuthUtil
@@ -21,6 +19,8 @@ import rx.Observable
 import rx.Observer
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
+import timber.log.Timber
+import java.net.UnknownHostException
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -43,6 +43,8 @@ class MainActivity : AppCompatActivity() {
             val userSession = UserSession(application.applicationContext)
             if (userSession.isLoggedIn) {
                 Toast.makeText(this@MainActivity, "already login", Toast.LENGTH_LONG).show()
+                goTo()
+
             } else {
                 DataSource.getLoginService(application as MyApplication).getToken(hashMapOf(
                     "username" to userName,
@@ -132,6 +134,7 @@ class MainActivity : AppCompatActivity() {
 
                         override fun onNext(t: Boolean?) {
                             Toast.makeText(this@MainActivity, "success login", Toast.LENGTH_LONG).show()
+                            goTo()
                         }
 
                         override fun onCompleted() {
@@ -181,8 +184,15 @@ class MainActivity : AppCompatActivity() {
         val button = findViewById<Button>(R.id.button)
 
         button.setOnClickListener {
-            RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
+            goTo()
         }
+    }
+
+    fun goTo() {
+        /* @example: open groupchat module;
+         * startActivity(PlayActivity.getCallingIntent(this, "668", true))
+         * or, you can use route like this:
+         * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS) */
     }
 
 }

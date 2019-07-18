@@ -4,6 +4,7 @@
     <dimen name="dp_minus8">-8dp</dimen>
     <dimen name="dp_minus6">-6dp</dimen> <!-- not recommended -->
     <dimen name="dp_minus4">-4dp</dimen>
+    <dimen name="dp_minus2">-2dp</dimen>
     <dimen name="dp_0">0dp</dimen>
     <dimen name="dp_1">1dp</dimen>
     <dimen name="dp_2">2dp</dimen>
@@ -57,6 +58,7 @@
     <dimen name="dp_110">110dp</dimen> <!-- not recommended -->
     <dimen name="dp_112">112dp</dimen> <!-- not recommended -->
     <dimen name="dp_120">120dp</dimen>
+    <dimen name="dp_130">130dp</dimen>
     <dimen name="dp_128">128dp</dimen> <!-- not recommended -->
     <dimen name="dp_140">140dp</dimen> <!-- not recommended -->
     <dimen name="dp_145">145dp</dimen> <!-- not recommended -->
@@ -68,8 +70,10 @@
     <dimen name="dp_220">220dp</dimen> <!-- not recommended -->
     <dimen name="dp_230">230dp</dimen> <!-- not recommended -->
     <dimen name="dp_240">240dp</dimen> <!-- not recommended -->
+    <dimen name="dp_282">282dp</dimen>
     <dimen name="dp_288">288dp</dimen> <!-- not recommended -->
-    <dimen name="dp_121">121dp</dimen> <!-- not recommended -->
+    <dimen name="dp_121">121dp</dimen>
+    <dimen name="dp_182">182dp</dimen><!-- not recommended -->
     <dimen name="dp_250">250dp</dimen> <!-- not recommended -->
     <dimen name="dp_260">260dp</dimen> <!-- not recommended -->
     <dimen name="dp_280">280dp</dimen> <!-- not recommended -->
@@ -79,6 +83,7 @@
     <dimen name="dp_350">350dp</dimen> <!-- not recommended -->
     <dimen name="dp_500">500dp</dimen> <!-- not recommended -->
 
+    <dimen name="sp_2">2sp</dimen>
     <dimen name="sp_5">5sp</dimen> <!-- not recommended -->
     <dimen name="sp_4">4sp</dimen> <!-- not recommended -->
     <dimen name="sp_6">6sp</dimen> <!-- not recommended -->
