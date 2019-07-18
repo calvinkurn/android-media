@@ -16,8 +16,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -174,7 +174,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         if (hotelRoom.roomInfo.roomImages.isNotEmpty()) {
             val roomImageUrls300 = hotelRoom.roomInfo.roomImages.map { it.url300 }
             val roomImageUrls = hotelRoom.roomInfo.roomImages.map { it.urlOriginal }
-            val roomImageUrlsSquare = hotelRoom.roomInfo.roomImages.map { it.urlSquare }
+            val roomImageUrlsSquare = hotelRoom.roomInfo.roomImages.map { it.url300 }
 
             if (roomImageUrls300.size >= 5) room_detail_images.setImages(roomImageUrls300.subList(0,5))
             else room_detail_images.setImages(roomImageUrls300)
