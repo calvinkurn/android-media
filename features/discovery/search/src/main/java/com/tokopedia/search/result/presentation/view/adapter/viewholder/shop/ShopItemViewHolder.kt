@@ -45,7 +45,7 @@ class ShopItemViewHolder(
         initShopLocation(shopViewItem)
         initImageShopReputation(shopViewItem)
         initTextShopCredibilityInfo(shopViewItem)
-        initProductPreview(shopViewItem)
+//        initProductPreview(shopViewItem)
 
         finishBindShopItem()
     }
@@ -86,7 +86,7 @@ class ShopItemViewHolder(
 
     private fun initImageShopReputation(shopViewItem: ShopViewModel.ShopItem) {
         itemView.imageViewShopReputation?.let { imageViewShopReputation ->
-            ImageHandler.LoadImage(imageViewShopReputation, shopViewItem.reputationImageUri)
+            ImageHandler.loadImage(context, imageViewShopReputation, shopViewItem.reputationImageUri, -1)
         }
     }
 
@@ -97,10 +97,10 @@ class ShopItemViewHolder(
     private fun getShopCredibilityInfo(shopViewItem: ShopViewModel.ShopItem): String {
         return when {
             shopViewItem.shopTotalTransaction != "" -> {
-                context.getString(R.string.shop_total_transaction, shopViewItem.shopTotalTransaction)
+                "| " + context.getString(R.string.shop_total_transaction, shopViewItem.shopTotalTransaction)
             }
             shopViewItem.shopTotalFavorite != "" -> {
-                context.getString(R.string.shop_total_favorite, shopViewItem.shopTotalFavorite)
+                "| " + context.getString(R.string.shop_total_favorite, shopViewItem.shopTotalFavorite)
             }
             else -> {
                 ""
@@ -152,7 +152,7 @@ class ShopItemViewHolder(
 
     @DimenRes
     private fun getTextViewShopNameMarginLeft(): Int {
-        return if (itemView.imageViewShopBadge?.visibility == View.GONE) R.dimen.dp_8 else R.dimen.dp_2
+        return if (itemView.imageViewShopBadge?.visibility == View.VISIBLE) R.dimen.dp_2 else R.dimen.dp_8
     }
 
     private fun setViewMargins(@IdRes viewId: Int, anchor: Int, marginDp: Int) {
