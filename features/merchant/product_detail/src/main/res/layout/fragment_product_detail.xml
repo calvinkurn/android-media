@@ -55,10 +55,10 @@
             <android.support.v7.widget.Toolbar
                 android:id="@+id/search_pdp_toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_50"
+                android:layout_height="?attr/actionBarSize"
                 android:background="@color/white"
                 android:gravity="top"
-                android:visibility="visible"
+                android:visibility="gone"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
