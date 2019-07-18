@@ -415,14 +415,6 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     }
 
     @Override
-    public Context getActivityContext() {
-        if (getActivity() != null)
-            return getActivity();
-        else
-            return null;
-    }
-
-    @Override
     public void setPayMethodInfo(PayMethod payMethod) {
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(payMethod.getLabel());

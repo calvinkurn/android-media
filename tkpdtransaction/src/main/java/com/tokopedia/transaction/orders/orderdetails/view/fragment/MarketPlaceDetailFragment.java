@@ -817,14 +817,6 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     }
 
     @Override
-    public Context getActivityContext() {
-        if (getActivity() != null)
-            return getActivity();
-        else
-            return null;
-    }
-
-    @Override
     public void onDestroyView() {
         presenter.detachView();
         super.onDestroyView();

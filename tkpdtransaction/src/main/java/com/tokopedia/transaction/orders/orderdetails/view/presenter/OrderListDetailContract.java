@@ -65,7 +65,7 @@ public interface OrderListDetailContract {
 
         Context getAppContext();
 
-        Context getActivityContext();
+        Context getActivity();
 
         void setPayMethodInfo(PayMethod payMethod);
 
