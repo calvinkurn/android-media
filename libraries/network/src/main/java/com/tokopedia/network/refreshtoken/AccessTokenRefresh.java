@@ -66,7 +66,7 @@ public class AccessTokenRefresh {
         TokenModel model = null;
         if (tokenResponse != null) {
             model = new GsonBuilder().create().fromJson(tokenResponse, TokenModel.class);
-            userSession.setToken(model.getAccessToken(), model.getTokenType());
+            userSession.setToken(model.getAccessToken(), model.getTokenType(), model.getRefreshToken());
         }
 
         if (model != null) {
