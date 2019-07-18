@@ -88,7 +88,7 @@ android {
             java.srcDir sharedTestDir
         }
         androidTest {
-            java.srcDir sharedTestDir
+            java.srcDirs += ["${project(rootProject.ext.features.logisticaddaddress).projectDir}/src/androidTest/java"]
         }
         debug.setRoot('build-types/debug')
         release.setRoot('build-types/release')
@@ -210,6 +210,12 @@ dependencies {
     implementation (rootProject.ext.debugToolsDependencies.timber){
         exclude group: 'org.jetbrains', module: 'annotations'
     }
+
+    androidTestImplementation(rootProject.ext.testDependencies.espressoContrib, {
+        exclude group: 'com.android.support', module: 'appcompat'
+        exclude group: 'com.android.support', module: 'support-v4'
+        exclude module: 'recyclerview-v7'
+    })
 }
 
 repositories {

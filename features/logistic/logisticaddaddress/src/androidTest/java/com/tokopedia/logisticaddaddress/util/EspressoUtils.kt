@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.util
+package com.tokopedia.logisticaddaddress.util
 
 import android.support.test.espresso.matcher.BoundedMatcher
 import android.support.v7.widget.RecyclerView
@@ -20,7 +20,7 @@ object EspressoUtils {
             }
 
             override fun matchesSafely(view: RecyclerView): Boolean {
-                val adapter = view.adapter
+                val adapter = view.adapter!!
                 for (position in 0 until adapter.itemCount) {
                     val type = adapter.getItemViewType(position)
                     val holder = adapter.createViewHolder(view, type)

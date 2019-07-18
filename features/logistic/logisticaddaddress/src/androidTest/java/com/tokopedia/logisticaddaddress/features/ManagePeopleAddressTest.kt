@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.manage
+package com.tokopedia.logisticaddaddress.features
 
 import android.support.test.espresso.Espresso.onData
 import android.support.test.espresso.Espresso.onView
@@ -15,8 +15,8 @@ import android.support.v7.widget.RecyclerView
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DistrictRecommendationViewHolder
 import com.tokopedia.logisticaddaddress.features.manage.ManagePeopleAddressActivity
 import com.tokopedia.tkpd.R
-import com.tokopedia.tkpd.util.EspressoUtils.childAtPosition
-import com.tokopedia.tkpd.util.EspressoUtils.rvHasItem
+import com.tokopedia.logisticaddaddress.util.EspressoUtils.childAtPosition
+import com.tokopedia.logisticaddaddress.util.EspressoUtils.rvHasItem
 import org.hamcrest.Matchers.*
 import org.junit.Rule
 import org.junit.Test
