@@ -7,7 +7,7 @@ import android.os.Parcelable
  * Created by Irfan Khoirul on 2019-07-18.
  */
 
-data class TrackingDetails(
+data class TrackingDetail(
         var productId: Int = 0,
         var promoCodesTracking: String = "",
         var promoDetailsTracking: String = ""
@@ -28,12 +28,12 @@ data class TrackingDetails(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<TrackingDetails> {
-        override fun createFromParcel(parcel: Parcel): TrackingDetails {
-            return TrackingDetails(parcel)
+    companion object CREATOR : Parcelable.Creator<TrackingDetail> {
+        override fun createFromParcel(parcel: Parcel): TrackingDetail {
+            return TrackingDetail(parcel)
         }
 
-        override fun newArray(size: Int): Array<TrackingDetails?> {
+        override fun newArray(size: Int): Array<TrackingDetail?> {
             return arrayOfNulls(size)
         }
     }

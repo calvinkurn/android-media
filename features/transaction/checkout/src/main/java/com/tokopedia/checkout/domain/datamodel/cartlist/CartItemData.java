@@ -185,6 +185,8 @@ public class CartItemData implements Parcelable {
         private String cartString;
         private boolean checkboxState;
         private int warehouseId;
+        private String promoCodes;
+        private String promoDetails;
 
         public String getTrackerAttribution() {
             return trackerAttribution;
@@ -574,6 +576,22 @@ public class CartItemData implements Parcelable {
             this.warehouseId = warehouseId;
         }
 
+        public String getPromoCodes() {
+            return promoCodes;
+        }
+
+        public void setPromoCodes(String promoCodes) {
+            this.promoCodes = promoCodes;
+        }
+
+        public String getPromoDetails() {
+            return promoDetails;
+        }
+
+        public void setPromoDetails(String promoDetails) {
+            this.promoDetails = promoDetails;
+        }
+
         public OriginData() {
         }
 
@@ -627,6 +645,8 @@ public class CartItemData implements Parcelable {
             dest.writeString(this.cartString);
             dest.writeByte(this.checkboxState ? (byte) 1 : (byte) 0);
             dest.writeInt(this.warehouseId);
+            dest.writeString(this.promoCodes);
+            dest.writeString(this.promoDetails);
         }
 
         protected OriginData(Parcel in) {
@@ -673,6 +693,8 @@ public class CartItemData implements Parcelable {
             this.cartString = in.readString();
             this.checkboxState = in.readByte() != 0;
             this.warehouseId = in.readInt();
+            this.promoCodes = in.readString();
+            this.promoDetails = in.readString();
         }
 
         public static final Creator<OriginData> CREATOR = new Creator<OriginData>() {

@@ -87,6 +87,7 @@ import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel;
+import com.tokopedia.promocheckout.common.view.uimodel.TrackingDetail;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
@@ -1870,6 +1871,17 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                         break;
                     }
                 }
+                if (responseGetPromoStackUiModel.getData().getTrackingDetail().size() > 0) {
+                    for (TrackingDetail trackingDetail : responseGetPromoStackUiModel.getData().getTrackingDetail()) {
+                        for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
+                            if (String.valueOf(trackingDetail.getProductId()).equalsIgnoreCase(cartItemHolderData.getCartItemData().getOriginData().getProductId())) {
+                                cartItemHolderData.getCartItemData().getOriginData().setPromoCodes(trackingDetail.getPromoCodesTracking());
+                                cartItemHolderData.getCartItemData().getOriginData().setPromoDetails(trackingDetail.getPromoDetailsTracking());
+                            }
+                        }
+                    }
+                }
+
             }
         }
 

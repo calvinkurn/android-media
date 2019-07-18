@@ -1107,28 +1107,8 @@ public class CartListPresenter implements ICartListPresenter {
         enhancedECommerceProductCartMapData.setWarehouseId(String.valueOf(cartItemData.getOriginData().getWarehouseId()));
         enhancedECommerceProductCartMapData.setProductWeight(String.valueOf(cartItemData.getOriginData().getWeightPlan()));
         enhancedECommerceProductCartMapData.setCartId(String.valueOf(cartItemData.getOriginData().getCartId()));
-
-        StringBuilder promoCodes = new StringBuilder();
-        StringBuilder promoDetails = new StringBuilder();
-        PromoStackingData promoStackingGlobalData = view.getPromoStackingGlobalData();
-        if (promoStackingGlobalData != null && !TextUtils.isEmpty(promoStackingGlobalData.getPromoCode())) {
-            promoCodes.append(promoStackingGlobalData.getPromoCode());
-            promoDetails.append(TickerCheckoutUtilKt.revertMapToStatePromoStackingCheckout(promoStackingGlobalData.getState()));
-        }
-        if (cartShopHolderData != null && cartShopHolderData.getShopGroupData().getVoucherOrdersItemData() != null &&
-                !TextUtils.isEmpty(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getCode()) &&
-                cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getMessageData() != null) {
-            if (!TextUtils.isEmpty(promoCodes)) {
-                promoCodes.append("|");
-            }
-            promoCodes.append(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getCode());
-            if (!TextUtils.isEmpty(promoDetails)) {
-                promoDetails.append("|");
-            }
-            promoDetails.append(cartShopHolderData.getShopGroupData().getVoucherOrdersItemData().getMessageData().getState());
-        }
-        enhancedECommerceProductCartMapData.setPromoCode(promoCodes.toString());
-        enhancedECommerceProductCartMapData.setPromoDetails(promoDetails.toString());
+        enhancedECommerceProductCartMapData.setPromoCode(cartItemData.getOriginData().getPromoCodes());
+        enhancedECommerceProductCartMapData.setPromoDetails(cartItemData.getOriginData().getPromoDetails());
         return enhancedECommerceProductCartMapData;
     }
 

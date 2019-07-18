@@ -6,13 +6,13 @@ import com.google.gson.annotations.SerializedName
  * Created by Irfan Khoirul on 2019-07-18.
  */
 
-data class TrackingDetails(
+data class TrackingDetail(
         @field:SerializedName("product_id")
         val productId: Int = 0,
 
         @field:SerializedName("promo_codes_tracking")
-        val promoCodesTracking: String = "",
+        val promoCodesTracking: String = "THIS_IS_PROMO_CODES",
 
         @field:SerializedName("promo_details_tracking")
-        val promoDetailsTracking: String = ""
+        val promoDetailsTracking: String = "THIS_IS_PROMO_DETAILS"
 )
