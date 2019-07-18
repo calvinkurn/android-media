@@ -922,7 +922,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     if (it.size() > 2) {
                         it.findItem(R.id.action_share).icon = ContextCompat.getDrawable(this, R.drawable.ic_product_share_dark)
                         val menuCart = it.findItem(R.id.action_cart)
-                        menuCart.actionView.findViewById<ImageView>(R.id.cart_image_view).setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_product_cart_counter_dark))
+                        menuCart.actionView.findViewById<ImageView>(R.id.cart_image_view).tag = R.drawable.ic_product_cart_counter_dark
                         setBadgeMenuCart(menuCart)
                     }
                 }
@@ -955,7 +955,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         val menuCart = it.findItem(R.id.action_cart)
 //                        menuCart.setActionView(null)
 //                        menuCart.icon = ContextCompat.getDrawable(this, R.drawable.ic_product_cart_counter_light)
-                        menuCart.actionView.findViewById<ImageView>(R.id.cart_image_view).setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_product_cart_counter_light))
+                        menuCart.actionView.findViewById<ImageView>(R.id.cart_image_view).tag = R.drawable.ic_product_cart_counter_light
                         setBadgeMenuCart(menuCart)
                     }
                 }
@@ -1830,7 +1830,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         activity?.run {
             val cartCount = (application as ProductDetailRouter).getCartCount(this)
 //            val drawable = ContextCompat.getDrawable(this, R.drawable.ic_product_cart_counter_dark)
-            val drawable = cartImageView.drawable
+            val drawable = ContextCompat.getDrawable(this, cartImageView.tag as Int)
             if (drawable is LayerDrawable) {
                 val icon = drawable
                 val badge = CountDrawable(this)
