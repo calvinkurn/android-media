@@ -163,18 +163,17 @@ public class PartialRegisterInputView extends BaseCustomView {
 
         etInputEmailPhone.setText(email);
         etInputEmailPhone.setEnabled(false);
-
     }
 
     public void showDefaultView() {
         wrapperPassword.setVisibility(View.GONE);
         btnForgotPassword.setVisibility(View.GONE);
         btnChange.setVisibility(View.GONE);
+        tvMessage.setVisibility(GONE);
 
         wrapperEmailPhone.setLabel(wrapperEmailPhone.getContext().getString(R.string.phone_or_email_input));
         etInputEmailPhone.setText("");
         etInputEmailPhone.setEnabled(true);
-
     }
 
     public void resetErrorWrapper() {
