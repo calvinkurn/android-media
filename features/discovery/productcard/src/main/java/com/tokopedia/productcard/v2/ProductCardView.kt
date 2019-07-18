@@ -17,6 +17,9 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.productcard.R
+import com.tokopedia.productcard.utils.applyConstraintSet
+import com.tokopedia.productcard.utils.getDimensionPixelSize
+import com.tokopedia.productcard.utils.isVisible
 import com.tokopedia.topads.sdk.domain.model.ImpressHolder
 import com.tokopedia.topads.sdk.view.ImpressedImageView
 import com.tokopedia.unifycomponents.Label
@@ -339,21 +342,9 @@ abstract class ProductCardView: BaseCustomView {
     }
 
     protected open fun setViewMargins(@IdRes viewId: Int, anchor: Int, marginDp: Int) {
-        applyConstraintSetToConstraintLayoutProductCard { constraintSet ->
+        constraintLayoutProductCard.applyConstraintSet { constraintSet ->
             val marginPixel = getDimensionPixelSize(marginDp)
             constraintSet.setMargin(viewId, anchor, marginPixel)
-        }
-    }
-
-    private fun applyConstraintSetToConstraintLayoutProductCard(
-            configureConstraintSet: (constraintSet: ConstraintSet) -> Unit
-    ) {
-        constraintLayoutProductCard?.let {
-            val constraintSet = ConstraintSet()
-
-            constraintSet.clone(it)
-            configureConstraintSet(constraintSet)
-            constraintSet.applyTo(it)
         }
     }
 
@@ -364,7 +355,7 @@ abstract class ProductCardView: BaseCustomView {
         endSide: Int,
         @DimenRes marginDp: Int
     ) {
-        applyConstraintSetToConstraintLayoutProductCard { constraintSet ->
+        constraintLayoutProductCard.applyConstraintSet { constraintSet ->
             val marginPixel = getDimensionPixelSize(marginDp)
             constraintSet.connect(startLayoutId, startSide, endLayoutId, endSide, marginPixel)
         }
@@ -372,9 +363,5 @@ abstract class ProductCardView: BaseCustomView {
 
     protected open fun isViewNotNullAndVisible(view: View?): Boolean {
         return view != null && view.visibility == View.VISIBLE
-    }
-
-    protected open fun getDimensionPixelSize(@DimenRes id: Int): Int {
-        return context.resources.getDimensionPixelSize(id)
     }
 }
