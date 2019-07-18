@@ -99,3 +99,4 @@ dependencies {
 }
 
 apply from: '../../publish_local.gradle'
+apply plugin: 'com.google.gms.google-services'
