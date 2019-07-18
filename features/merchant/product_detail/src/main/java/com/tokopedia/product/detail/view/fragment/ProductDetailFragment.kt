@@ -1178,10 +1178,12 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             productDetailTracking.eventClickAffiliate(productInfoViewModel.userId, productInfo!!.basic.shopID,
                     pdpAffiliate.productId.toString(), isRegularPdp)
             if (productInfoViewModel.isUserSessionActive()) {
-                RouteManager.route(it,
+                RouteManager.getIntent(it,
                         ApplinkConst.AFFILIATE_CREATE_POST,
                         pdpAffiliate.productId.toString(),
                         pdpAffiliate.adId.toString())
+                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        .let(::startActivity)
                 it.setResult(Activity.RESULT_OK)
                 it.finish()
             } else {
