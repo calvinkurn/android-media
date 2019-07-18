@@ -251,25 +251,20 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     private void trackImpression(DynamicPostViewModel dynamicPostViewModel) {
         if (dynamicPostViewModel.getPostTag().getTotalItems() != 0 && !dynamicPostViewModel.getPostTag().getItems().isEmpty()) {
-            for (int i = 0; i < dynamicPostViewModel.getPostTag().getTotalItems(); i++) {
-                if (isOwner()) {
-                    postTagAnalytics.trackViewPostTagProfileDetailSelf(
-                            dynamicPostViewModel.getId(),
-                            dynamicPostViewModel.getPostTag().getItems().get(i),
-                            i,
-                            dynamicPostViewModel.getTrackingPostModel());
-                } else {
-                    postTagAnalytics.trackViewPostTagProfileDetailOther(
-                            dynamicPostViewModel.getId(),
-                            dynamicPostViewModel.getPostTag().getItems().get(i),
-                            i,
-                            dynamicPostViewModel.getHeader().getFollowCta().getAuthorType(),
-                            dynamicPostViewModel.getTrackingPostModel());
-                }
-
-                onAffiliateTrackClicked(dynamicPostViewModel.getTracking(), false);
+            if (isOwner()) {
+                postTagAnalytics.trackViewPostTagProfileDetailSelf(
+                        dynamicPostViewModel.getId(),
+                        dynamicPostViewModel.getPostTag().getItems(),
+                        dynamicPostViewModel.getTrackingPostModel());
+            } else {
+                postTagAnalytics.trackViewPostTagProfileDetailOther(
+                        dynamicPostViewModel.getId(),
+                        dynamicPostViewModel.getPostTag().getItems(),
+                        dynamicPostViewModel.getHeader().getFollowCta().getAuthorType(),
+                        dynamicPostViewModel.getTrackingPostModel());
             }
         }
+        onAffiliateTrackClicked(dynamicPostViewModel.getTracking(), false);
     }
 
     private boolean isOwner() {

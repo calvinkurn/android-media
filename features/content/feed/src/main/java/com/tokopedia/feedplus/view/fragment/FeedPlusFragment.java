@@ -1753,14 +1753,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
                 if (postViewModel.getPostTag().getTotalItems() != 0
                         && postViewModel.getPostTag().getItems().size() != 0) {
-                    for (int j = 0; j< postViewModel.getPostTag().getTotalItems(); j++) {
-                        postTagAnalytics.trackViewPostTagFeed(
-                                postViewModel.getId(),
-                                postViewModel.getPostTag().getItems().get(j),
-                                j,
-                                postViewModel.getHeader().getFollowCta().getAuthorType(),
-                                trackingPostModel);
-                    }
+                    postTagAnalytics.trackViewPostTagFeed(
+                            postViewModel.getId(),
+                            postViewModel.getPostTag().getItems(),
+                            postViewModel.getHeader().getFollowCta().getAuthorType(),
+                            trackingPostModel);
                 }
                 onAffiliateTrackClicked(postViewModel.getTracking(), false);
 
