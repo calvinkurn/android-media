@@ -194,8 +194,6 @@ class SettingProfileFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessAddPhone(data: Intent?) {
-        phone.setOnClickListener {  }
-
         data?.extras?.run {
             val phoneString = getString(AddPhoneFragment.EXTRA_PHONE, "")
             if (phoneString.isNotBlank()) {
@@ -245,8 +243,6 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
                 if (!file.exists()) {
                     onErrorGetProfilePhoto(MessageErrorException(getString(R.string.failed_to_get_picture)))
-                } else if (!imageIsValid(file)) {
-                    onErrorGetProfilePhoto(MessageErrorException(getString(R.string.error_oversize_avatar_image)))
                 } else {
                     showLoading(true)
                     profileInfoViewModel.uploadProfilePicture(savedLocalImageUrl)
@@ -258,21 +254,6 @@ class SettingProfileFragment : BaseDaggerFragment() {
         } else {
             onErrorGetProfilePhoto(MessageErrorException(getString(R.string.failed_to_get_picture)))
         }
-    }
-
-    private fun imageIsValid(file: File): Boolean {
-        val MAX_FILE_SIZE: Long = 2048
-        val DEFAULT_ONE_MEGABYTE: Long = 1024
-
-        val options = BitmapFactory.Options()
-        options.inJustDecodeBounds = true
-        BitmapFactory.decodeFile(file.absolutePath, options)
-        val imageHeight = options.outHeight
-        val imageWidth = options.outWidth
-
-        val fileSize = Integer.parseInt((file.length() / DEFAULT_ONE_MEGABYTE).toString())
-
-        return fileSize < MAX_FILE_SIZE
     }
 
     private fun onErrorGetProfilePhoto(errorException: Exception) {
@@ -375,14 +356,11 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     getString(R.string.subtitle_phone_setting_profile),
                     getString(R.string.hint_phone_setting_profile),
                     getString(R.string.message_phone_setting_profile),
-                    false,
+                    true,
                     View.OnClickListener {
                         goToAddPhone()
                     }
             )
-            phone.setOnClickListener {
-                goToAddPhone()
-            }
             tickerPhoneVerification.visibility = View.GONE
         } else {
             phone.showFilled(
@@ -398,8 +376,6 @@ class SettingProfileFragment : BaseDaggerFragment() {
                         }
                     }
             )
-
-            phone.setOnClickListener {  }
 
             if (profileCompletionData.isPhoneVerified) {
                 tickerPhoneVerification.visibility = View.GONE
@@ -457,7 +433,9 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     inner class EditUserProfilePhotoListener : View.OnClickListener {
         override fun onClick(v: View?) {
+            val MAX_SIZE = 2048
             val builder = ImagePickerBuilder.getDefaultBuilder(context)
+            builder.maxFileSizeInKB = 2048
             val multipleSelectionBuilder = ImagePickerMultipleSelectionBuilder.getDefaultBuilder()
             multipleSelectionBuilder.maximumNoPick = 1
             builder.imagePickerMultipleSelectionBuilder = multipleSelectionBuilder
