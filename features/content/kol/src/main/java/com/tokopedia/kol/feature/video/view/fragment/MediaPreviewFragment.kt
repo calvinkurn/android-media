@@ -1,0 +1,183 @@
+package com.tokopedia.kol.feature.video.view.fragment
+
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
+import android.graphics.PorterDuff
+import android.os.Bundle
+import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.design.component.UnifyButton
+import com.tokopedia.design.utils.CurrencyFormatHelper
+import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter
+import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
+import com.tokopedia.kol.R
+import com.tokopedia.kol.common.di.KolComponent
+import com.tokopedia.kol.common.util.TimeConverter
+import com.tokopedia.kol.feature.post.view.viewmodel.PostDetailFooterModel
+import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel
+import com.tokopedia.kol.feature.video.view.viewmodel.FeedMediaPreviewViewModel
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_media_preview.*
+import javax.inject.Inject
+
+class MediaPreviewFragment: BaseDaggerFragment() {
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var mediaPreviewViewModel: FeedMediaPreviewViewModel
+
+    override fun getScreenName(): String? = null
+
+    override fun initInjector() {
+        getComponent(KolComponent::class.java).inject(this)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        mediaPreviewViewModel.postDetailLive.observe(this, Observer {
+            when(it){
+                is Success -> onSuccessGetDetail(it.data)
+                is Fail -> onErrorGetDetail(it.throwable)
+            }
+        })
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        activity?.let {
+            mediaPreviewViewModel = ViewModelProviders.of(this, viewModelFactory)[FeedMediaPreviewViewModel::class.java]
+            mediaPreviewViewModel.postId = arguments?.getString(ARG_POST_ID, "0") ?: "0"
+        }
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_media_preview, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        action_back.setOnClickListener { activity?.onBackPressed() }
+        mediaPreviewViewModel.getPostDetail()
+    }
+
+    override fun onDestroy() {
+        mediaPreviewViewModel.postDetailLive.removeObservers(this)
+        mediaPreviewViewModel.clear()
+        super.onDestroy()
+    }
+
+    private fun onSuccessGetDetail(data: PostDetailViewModel) {
+        val dynamicPost = data.dynamicPostViewModel.postList.firstOrNull() as DynamicPostViewModel?
+        dynamicPost?.let {
+            bindToolbar(it)
+            bindTags(it)
+        }
+        bindFooter(data.footerModel, dynamicPost?.template?.cardpost?.footer)
+    }
+
+    private fun bindTags(dynamicPostViewModel: DynamicPostViewModel) {
+        val tags = dynamicPostViewModel.postTag
+
+        if (tags.totalItems > 1){
+            tag_count.text = getString(R.string.kol_total_post_tag, tags.totalItems)
+            tag_count.visible()
+            tag_picture.gone()
+            val minRate = tags.items.filter { it.rating > 0 }.map { it.rating }.min() ?: 0
+
+            tag_rating.shouldShowWithAction(minRate > 0){
+                tag_rating.rating = minRate.toFloat()
+            }
+
+            val minPrice = tags.items.map { CurrencyFormatHelper.convertRupiahToInt(it.price) }.min() ?: 0
+            tag_title.text = getString(R.string.kol_template_start_price,
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(minPrice, true))
+
+            button_tag_action.text = getString(R.string.kol_see_product)
+            button_tag_action.buttonType = UnifyButton.Type.MAIN
+
+            action_favorite.gone()
+        } else {
+            tag_count.gone()
+            tag_rating.shouldShowWithAction(tags.items[0].rating > 0){
+                tag_rating.rating = tags.items[0].rating.toFloat()
+            }
+
+            tag_title.text = tags.items[0].price
+            if (mediaPreviewViewModel.isMyOwnPost(dynamicPostViewModel.header.followCta.authorID)){
+                button_tag_action.text = getString(R.string.kol_see_product)
+                button_tag_action.buttonType = UnifyButton.Type.MAIN
+                action_favorite.gone()
+            } else {
+                button_tag_action.text = getString(R.string.string_posttag_buy)
+                button_tag_action.buttonType = UnifyButton.Type.TRANSACTION
+                action_favorite.visible()
+
+                context?.let {
+                    action_favorite.setImageDrawable(ContextCompat.getDrawable(it,
+                            if (tags.items[0].isWishlisted) R.drawable.ic_wishlist_checked
+                            else R.drawable.ic_wishlist_unchecked))
+                }
+            }
+            tag_picture.loadImageRounded(tags.items[0].thumbnail, resources.getDimension(R.dimen.dp_8))
+            tag_picture.visible()
+        }
+        button_tag_action.visible()
+    }
+
+    private fun bindToolbar(dynamicPost: DynamicPostViewModel) {
+        val templateHeader = dynamicPost.template.cardpost.header
+        val header = dynamicPost.header
+        authorImage.shouldShowWithAction(templateHeader.avatar && header.avatar.isNotBlank()){
+            authorImage.loadImageCircle(header.avatar)
+        }
+        authorBadge.shouldShowWithAction(templateHeader.avatarBadge && header.avatarBadgeImage.isNotBlank()){
+            authorBadge.loadImage(header.avatarBadgeImage, R.drawable.error_drawable)
+        }
+        authorTitle.shouldShowWithAction(templateHeader.avatarTitle && header.avatarTitle.isNotBlank()){
+            authorTitle.text = header.avatarTitle
+        }
+        authorSubtitile.shouldShowWithAction(templateHeader.avatarDate && header.avatarDate.isNotBlank()){
+            authorSubtitile.text = TimeConverter.generateTime(context, header.avatarDate)
+        }
+    }
+
+    private fun bindFooter(footer: PostDetailFooterModel, template: TemplateFooter?) {
+        groupLike.shouldShowWithAction(template?.like == true){
+            label_like.text = if (footer.totalLike > 0) footer.totalLike.toString()
+                else getString(R.string.kol_action_like)
+            val color = context?.let { ContextCompat.getColor(it,
+                    if (footer.isLiked) R.color.Green_G500 else R.color.white ) }
+            color?.let {
+                icon_thumb.setColorFilter(it, PorterDuff.Mode.MULTIPLY)
+                label_like.setTextColor(it)
+            }
+
+        }
+        groupComment.shouldShowWithAction(template?.comment == true){
+            label_comment.text = if (footer.totalComment > 0) footer.totalComment.toString()
+                else getString(R.string.kol_action_comment)
+        }
+
+        groupShare.showWithCondition(template?.share == true)
+    }
+
+    private fun onErrorGetDetail(throwable: Throwable) {
+
+    }
+
+    companion object{
+        const val ARG_POST_ID = "post_id"
+
+        @JvmStatic
+        fun createInstance(postId: String): Fragment = MediaPreviewFragment().apply {
+            arguments = Bundle().also { it.putString(ARG_POST_ID, postId) }
+        }
+    }
+}

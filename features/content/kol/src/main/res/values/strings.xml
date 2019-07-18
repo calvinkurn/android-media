@@ -72,4 +72,7 @@
     <string name="kol_report">Laporkan</string>
     <string name="kol_report_error">Tidak dapat melaporkan konten, silakan coba lagi</string>
     <string name="kol_duplicate">Laporanmu sedang diproses</string>
+    <string name="kol_total_post_tag">%1$d barang</string>
+    <string name="kol_template_start_price">Mulai dari %1$s</string>
+    <string name="kol_see_product">Lihat</string>
 </resources>

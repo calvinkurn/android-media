@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/overlay_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_8"
+        android:minHeight="?android:attr/actionBarSize"
+        android:background="@color/black"
+        android:alpha="0.75">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/action_back"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            app:srcCompat="@drawable/ic_action_back"
+            app:tint="@color/white"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/authorImage"
+            android:layout_width="@dimen/dp_32"
+            android:layout_height="@dimen/dp_32"
+            android:adjustViewBounds="true"
+            android:background="@drawable/bg_circle_gray_border"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            tools:src="@tools:sample/avatars"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/action_back"
+            app:layout_constraintStart_toEndOf="@+id/action_back"/>
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/authorBadge"
+            android:layout_width="@dimen/dp_14"
+            android:layout_height="@dimen/dp_14"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:visibility="visible"
+            app:layout_constraintStart_toEndOf="@+id/authorImage"
+            app:layout_constraintLeft_toRightOf="@+id/authorImage"
+            app:layout_constraintTop_toTopOf="@+id/authorTitle"
+            app:layout_constraintBottom_toBottomOf="@+id/authorTitle"
+            tools:src="@tools:sample/avatars"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/authorTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            app:layout_goneMarginRight="@dimen/dp_16"
+            app:layout_goneMarginEnd="@dimen/dp_16"
+            app:typographyType="heading_4"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/authorBadge"
+            app:layout_constraintStart_toEndOf="@+id/authorBadge"
+            app:layout_constraintRight_toLeftOf="@+id/action_more"
+            app:layout_constraintEnd_toStartOf="@+id/action_more"
+            app:layout_constraintBottom_toTopOf="@+id/authorSubtitile"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="Febrian Putra Muhammad Ilham Jamaludin Andhika Kuma Djaffri Febby Mulia"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/authorSubtitile"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            app:typographyType="body_3"
+            app:layout_constraintTop_toBottomOf="@+id/authorTitle"
+            app:layout_constraintStart_toEndOf="@+id/authorImage"
+            app:layout_constraintLeft_toRightOf="@+id/authorImage"
+            app:layout_constraintEnd_toEndOf="@+id/authorTitle"
+            app:layout_constraintRight_toRightOf="@+id/authorTitle"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:text="12 October pukul 13.55 2018 akhir kiamat semua dunia akan musnah"/>
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/action_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:srcCompat="@drawable/ic_three_dots_more_menu"
+            app:tint="@color/white"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/overlay_tags"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:padding="@dimen/dp_16"
+        android:background="@color/black"
+        android:alpha="0.75">
+        
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/tag_picture"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
+            android:adjustViewBounds="true"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="@+id/button_tag_action"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/button_tag_action"
+            tools:src="@tools:sample/avatars"
+            tools:visibility="visible"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tag_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:lineSpacingExtra="@dimen/spacing_lvl2"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            app:layout_goneMarginStart="@dimen/dp_0"
+            app:layout_goneMarginLeft="@dimen/dp_0"
+            app:typographyType="heading_5"
+            app:layout_constraintTop_toTopOf="@+id/button_tag_action"
+            app:layout_constraintStart_toEndOf="@+id/tag_picture"
+            app:layout_constraintLeft_toRightOf="@+id/tag_picture"
+            app:layout_constraintBottom_toTopOf="@+id/tag_rating"
+            app:layout_constraintEnd_toStartOf="@+id/action_favorite"
+            app:layout_constraintRight_toLeftOf="@+id/action_favorite"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="Rp10.000.000"/>
+
+        <RatingBar
+            style="@style/RatingBar.Small"
+            android:id="@+id/tag_rating"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:numStars="5"
+            android:visibility="gone"
+            android:layout_marginTop="@dimen/dp_4"
+            app:layout_constraintTop_toBottomOf="@+id/tag_title"
+            app:layout_constraintStart_toStartOf="@+id/tag_title"
+            app:layout_constraintLeft_toLeftOf="@+id/tag_title"
+            app:layout_constraintEnd_toEndOf="@+id/tag_title"
+            app:layout_constraintRight_toRightOf="@+id/tag_title"
+            app:layout_constraintBottom_toTopOf="@+id/tag_count"
+            app:layout_constraintHorizontal_bias="0"
+            tools:rating="4"
+            tools:visibility="visible"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tag_count"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:lineSpacingExtra="@dimen/sp_4"
+            android:textColor="@color/clr_aeffffff"
+            android:layout_marginTop="@dimen/dp_4"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
+            app:layout_constraintTop_toBottomOf="@+id/tag_rating"
+            app:layout_constraintStart_toStartOf="@+id/tag_title"
+            app:layout_constraintLeft_toLeftOf="@+id/tag_title"
+            app:layout_constraintEnd_toEndOf="@+id/tag_title"
+            app:layout_constraintRight_toRightOf="@+id/tag_title"
+            app:layout_constraintBottom_toBottomOf="@+id/button_tag_action"
+            tools:text="17 barang"
+            tools:visibility="visible"/>
+
+        <com.tokopedia.design.component.UnifyButton
+            android:id="@+id/button_tag_action"
+            android:layout_width="wrap_content"
+            android:minWidth="@dimen/dp_85"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_28"
+            android:text="@string/label_see_all"
+            android:visibility="gone"
+            app:buttonVariant="filled"
+            app:buttonType="main"
+            app:btnSize="small"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/icon_thumb" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/action_favorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:visibility="gone"
+            app:srcCompat="@drawable/ic_wishlist_checked"
+            app:tint="@color/Neutral_N600"
+            app:layout_constraintTop_toTopOf="@+id/button_tag_action"
+            app:layout_constraintBottom_toBottomOf="@+id/button_tag_action"
+            app:layout_constraintEnd_toStartOf="@+id/button_tag_action"
+            app:layout_constraintRight_toLeftOf="@+id/button_tag_action"
+            tools:visibility="visible"/>
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/icon_thumb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_24"
+            app:srcCompat="@drawable/ic_thumb_white"
+            app:tint="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/label_like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:text="@string/kol_action_like"
+            app:typographyWeight="reguler"
+            app:typographyType="body_3"
+            app:layout_constraintTop_toTopOf="@+id/icon_thumb"
+            app:layout_constraintStart_toEndOf="@+id/icon_thumb"
+            app:layout_constraintLeft_toRightOf="@+id/icon_thumb"
+            app:layout_constraintBottom_toBottomOf="@+id/icon_thumb"/>
+
+        <android.support.constraint.Group
+            android:id="@+id/groupLike"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:constraint_referenced_ids="icon_thumb,label_like"/>
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/icon_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginStart="@dimen/dp_12"
+            app:srcCompat="@drawable/ic_comment"
+            app:tint="@color/white"
+            app:layout_constraintTop_toTopOf="@+id/icon_thumb"
+            app:layout_constraintBottom_toBottomOf="@+id/icon_thumb"
+            app:layout_constraintStart_toEndOf="@+id/label_like"
+            app:layout_constraintLeft_toRightOf="@+id/label_like"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/label_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:text="@string/kol_action_comment"
+            app:typographyWeight="reguler"
+            app:typographyType="body_3"
+            app:layout_constraintTop_toTopOf="@+id/icon_thumb"
+            app:layout_constraintStart_toEndOf="@+id/icon_comment"
+            app:layout_constraintLeft_toRightOf="@+id/icon_comment"
+            app:layout_constraintBottom_toBottomOf="@+id/icon_thumb"/>
+
+        <android.support.constraint.Group
+            android:id="@+id/groupComment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:constraint_referenced_ids="icon_comment,label_comment"/>
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/icon_share"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginStart="@dimen/dp_12"
+            app:srcCompat="@drawable/ic_share_white"
+            app:layout_constraintTop_toTopOf="@+id/icon_thumb"
+            app:layout_constraintBottom_toBottomOf="@+id/icon_thumb"
+            app:layout_constraintStart_toEndOf="@+id/label_comment"
+            app:layout_constraintLeft_toRightOf="@+id/label_comment"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/label_share"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:text="@string/kol_action_share"
+            app:typographyWeight="reguler"
+            app:typographyType="body_3"
+            app:layout_constraintTop_toTopOf="@+id/icon_thumb"
+            app:layout_constraintStart_toEndOf="@+id/icon_share"
+            app:layout_constraintLeft_toRightOf="@+id/icon_share"
+            app:layout_constraintBottom_toBottomOf="@+id/icon_thumb"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintHorizontal_bias="0" />
+
+        <android.support.constraint.Group
+            android:id="@+id/groupShare"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:constraint_referenced_ids="icon_share,label_share"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+</RelativeLayout>

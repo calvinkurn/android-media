@@ -46,6 +46,7 @@ import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
+import com.tokopedia.kol.feature.video.view.activity.MediaPreviewActivity
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
@@ -71,7 +72,6 @@ import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
 import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity.PARAM_POST_ID
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity
-import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.profile.ProfileModuleRouter
@@ -1014,13 +1014,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    override fun onVideoPlayerClicked(
-        positionInFeed: Int,
-        contentPosition: Int,
-        postId: String) {
-        startActivity(VideoDetailActivity.getInstance(
-            activity!!,
-            postId))
+    override fun onVideoPlayerClicked(positionInFeed: Int, contentPosition: Int, postId: String) {
+        activity?.let { startActivity(MediaPreviewActivity.createIntent(it, postId))}
 
     }
 

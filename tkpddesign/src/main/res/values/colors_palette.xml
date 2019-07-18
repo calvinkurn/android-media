@@ -95,6 +95,10 @@
     <color name="ic_back_color">#26000000</color>
 
     <color name="grey_button_compat">#ae31353b</color>
-
+    <color name="unify_G500">#03AC0E</color>
+    <color name="unify_Y500">#FA591D</color>
+    <color name="unify_N75">#E5E7E9</color>
+    <color name="unify_N700_32">#5231353B</color>
+    <color name="unify_N700_44">#7031353B</color>
 
 </resources>

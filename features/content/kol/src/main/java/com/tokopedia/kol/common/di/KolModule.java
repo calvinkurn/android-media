@@ -21,6 +21,8 @@ import java.util.concurrent.TimeUnit;
 
 import dagger.Module;
 import dagger.Provides;
+import kotlinx.coroutines.CoroutineDispatcher;
+import kotlinx.coroutines.Dispatchers;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -102,6 +104,12 @@ public class KolModule {
     @KolChuckQualifier
     public Interceptor provideChuckInterceptory(@ApplicationContext Context context) {
         return new ChuckInterceptor(context);
+    }
+
+    @KolScope
+    @Provides
+    public CoroutineDispatcher provideDispatcher(){
+        return Dispatchers.getMain();
     }
 
 }
