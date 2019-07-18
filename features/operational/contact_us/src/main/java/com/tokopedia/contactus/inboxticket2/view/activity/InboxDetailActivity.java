@@ -27,9 +27,11 @@ import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract;
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText;
 import com.tokopedia.contactus.inboxticket2.view.fragment.ImageViewerFragment;
+import com.tokopedia.contactus.inboxticket2.view.fragment.ServicePrioritiesBottomSheet;
 import com.tokopedia.contactus.inboxticket2.view.utils.Utils;
 import com.tokopedia.contactus.orderquery.data.ImageUpload;
 import com.tokopedia.contactus.orderquery.view.adapter.ImageUploadAdapter;
+import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
@@ -45,7 +47,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class InboxDetailActivity extends InboxBaseActivity
-        implements InboxDetailContract.InboxDetailView, ImageUploadAdapter.OnSelectImageClick, View.OnClickListener {
+        implements InboxDetailContract.InboxDetailView, ImageUploadAdapter.OnSelectImageClick, ServicePrioritiesBottomSheet.CloseServicePrioritiesBottomSheet, View.OnClickListener {
+
 
     private TextView tvTicketTitle;
     private TextView tvIdNum;
@@ -80,6 +83,7 @@ public class InboxDetailActivity extends InboxBaseActivity
     public static final String PARAM_TICKET_ID = "ticket_id";
     public static final String PARAM_TICKET_T_ID = "id";
     public static final String IS_OFFICIAL_STORE = "is_official_store";
+    private CloseableBottomSheetDialog servicePrioritiesBottomSheet;
 
     @DeepLink(ApplinkConst.TICKET_DETAIL)
     public static TaskStackBuilder getCallingIntent(Context context, Bundle bundle) {
@@ -161,7 +165,9 @@ public class InboxDetailActivity extends InboxBaseActivity
             tvPriorityLabel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //opn tooltip
+                    servicePrioritiesBottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
+                    servicePrioritiesBottomSheet.setCustomContentView( new ServicePrioritiesBottomSheet(InboxDetailActivity.this,InboxDetailActivity.this),"", false);
+                    servicePrioritiesBottomSheet.show();
                 }
             });
         }
@@ -635,5 +641,10 @@ public class InboxDetailActivity extends InboxBaseActivity
         }else if(id==R.id.iv_next_down||id==R.id.iv_previous_up){
             onClickNextPrev(view);
         }
+    }
+
+    @Override
+    public void onClickClose() {
+        servicePrioritiesBottomSheet.dismiss();
     }
 }
