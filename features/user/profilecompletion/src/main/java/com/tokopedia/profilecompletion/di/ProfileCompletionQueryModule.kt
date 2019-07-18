@@ -3,7 +3,6 @@ package com.tokopedia.profilecompletion.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.profilecompletion.R
@@ -12,21 +11,18 @@ import com.tokopedia.profilecompletion.addphone.data.AddPhonePojo
 import com.tokopedia.profilecompletion.addphone.data.CheckPhonePojo
 import com.tokopedia.profilecompletion.changegender.data.ChangeGenderPojo
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueriesConstant
-import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.profilecompletion.settingprofile.data.SubmitProfilePictureData
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 
 
-@ProfileCompletionScope
+@ProfileCompletionSettingScope
 @Module
 class ProfileCompletionQueryModule {
 
-    @ProfileCompletionScope
+    @ProfileCompletionSettingScope
     @Provides
     @IntoMap
     @StringKey(ProfileCompletionQueriesConstant.MUTATION_CHANGE_GENDER)
@@ -37,7 +33,7 @@ class ProfileCompletionQueryModule {
     fun provideChangeGenderGraphQlUseCase(graphqlRepository: GraphqlRepository)
             : GraphqlUseCase<ChangeGenderPojo> = GraphqlUseCase(graphqlRepository)
 
-    @ProfileCompletionScope
+    @ProfileCompletionSettingScope
     @Provides
     @IntoMap
     @StringKey(ProfileCompletionQueriesConstant.MUTATION_ADD_EMAIL)
@@ -49,7 +45,7 @@ class ProfileCompletionQueryModule {
     fun provideAddEmailGraphQlUseCase(graphqlRepository: GraphqlRepository)
             : GraphqlUseCase<AddEmailPojo> = GraphqlUseCase(graphqlRepository)
 
-    @ProfileCompletionScope
+    @ProfileCompletionSettingScope
     @Provides
     @IntoMap
     @StringKey(ProfileCompletionQueriesConstant.MUTATION_ADD_PHONE)
@@ -60,7 +56,7 @@ class ProfileCompletionQueryModule {
     fun provideAddPhoneGraphQlUseCase(graphqlRepository: GraphqlRepository)
             : GraphqlUseCase<AddPhonePojo> = GraphqlUseCase(graphqlRepository)
 
-    @ProfileCompletionScope
+    @ProfileCompletionSettingScope
     @Provides
     @IntoMap
     @StringKey(ProfileCompletionQueriesConstant.MUTATION_CHECK_PHONE)
@@ -71,7 +67,18 @@ class ProfileCompletionQueryModule {
     fun provideCheckPhoneGraphQlUseCase(graphqlRepository: GraphqlRepository)
             : GraphqlUseCase<CheckPhonePojo> = GraphqlUseCase(graphqlRepository)
 
-    @ProfileCompletionScope
+    @ProfileCompletionSettingScope
+    @Provides
+    @IntoMap
+    @StringKey(ProfileCompletionQueriesConstant.MUTATION_CHANGE_PICTURE)
+    fun provideRawMutationChangePicture(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_change_picture)
+
+    @Provides
+    fun provideChangePictureUseCase(graphqlRepository: GraphqlRepository)
+            : GraphqlUseCase<SubmitProfilePictureData> = GraphqlUseCase(graphqlRepository)
+
+    @ProfileCompletionSettingScope
     @Provides
     @IntoMap
     @StringKey(ProfileCompletionQueriesConstant.QUERY_PROFILE_COMPLETION)

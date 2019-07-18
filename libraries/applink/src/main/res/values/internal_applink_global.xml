@@ -15,9 +15,11 @@
     <string name="path_profile_completion">/profile-completion</string>
     <string name="path_setting_profile">/setting-profile</string>
     <string name="path_change_gender">/change-gender</string>
+    <string name="path_change_phone_number">/change-phone-number</string>
     <string name="path_add_email">/add-email</string>
     <string name="path_add_phone">/add-phone</string>
     <string name="path_cotp">/cotp</string>
     <string name="path_image_picker">/image-picker</string>
-
+    <string name="path_webview" translatable="false">/webview</string>
+    <string name="path_setting_profile_phone_verification" translatable="false">/setting-profile-phone-verification</string>
 </resources>

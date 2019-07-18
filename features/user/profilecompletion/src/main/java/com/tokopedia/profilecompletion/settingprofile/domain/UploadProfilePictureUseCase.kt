@@ -1,7 +1,9 @@
 package com.tokopedia.profilecompletion.settingprofile.domain
 
+import com.tokopedia.imageuploader.di.qualifier.ImageUploaderQualifier
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.profilecompletion.data.UploadProfileImageModel
+import com.tokopedia.profilecompletion.di.ProfileCompletionQualifier
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import okhttp3.RequestBody
@@ -11,8 +13,8 @@ import javax.inject.Inject
 
 
 class UploadProfilePictureUseCase @Inject
-constructor(internal var uploadImageUseCase:  UploadImageUseCase<UploadProfileImageModel>,
-            internal var submitProfilePictureUseCase : SubmitProfilePictureUseCase)
+constructor(@ProfileCompletionQualifier
+                internal var uploadImageUseCase:  UploadImageUseCase<UploadProfileImageModel>)
     : UseCase<UploadProfileImageModel>() {
 
     override fun createObservable(requestParams: RequestParams): Observable<UploadProfileImageModel> {

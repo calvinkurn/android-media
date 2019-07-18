@@ -9,10 +9,10 @@ import com.google.gson.annotations.SerializedName
 
 data class UploadProfileImageModel(@SerializedName("data")
                                     @Expose
-                                    val data: Data? = null,
+                                    val data: Data = Data(),
                                    @SerializedName("status")
                                     @Expose
-                                    private val status: String? = null) {
+                                    private val status: String = "") {
 
     data class Data(@SerializedName("file_path")
                     @Expose

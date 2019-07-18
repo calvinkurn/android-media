@@ -13,10 +13,10 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 
 @Module
-@ProfileCompletionScope
+@ProfileCompletionSettingScope
 abstract class ProfileCompletionViewModelModule {
     @Binds
-    @ProfileCompletionScope
+    @ProfileCompletionSettingScope
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
     @Binds

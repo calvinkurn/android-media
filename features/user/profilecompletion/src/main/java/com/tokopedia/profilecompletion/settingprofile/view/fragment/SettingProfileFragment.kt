@@ -1,33 +1,42 @@
 package com.tokopedia.profilecompletion.settingprofile.view.fragment
 
-//import com.tokopedia.unifycomponents.Toaster
 import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.abstraction.common.utils.view.PhoneNumberUtils
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectionBuilder
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.profilecompletion.R
+import com.tokopedia.profilecompletion.addemail.view.fragment.AddEmailFragment
+import com.tokopedia.profilecompletion.addphone.view.fragment.AddPhoneFragment
+import com.tokopedia.profilecompletion.changegender.view.ChangeGenderFragment
 import com.tokopedia.profilecompletion.customview.UnifyDialog
-import com.tokopedia.profilecompletion.data.UploadProfileImageModel
-import com.tokopedia.profilecompletion.di.ProfileCompletionComponent
+import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.settingprofile.data.ProfileCompletionData
-import com.tokopedia.profilecompletion.settingprofile.view.widget.CustomFieldSettingProfile
+import com.tokopedia.profilecompletion.settingprofile.data.UploadProfilePictureResult
 import com.tokopedia.profilecompletion.settingprofile.viewmodel.ProfileInfoViewModel
+import com.tokopedia.sessioncommon.ErrorHandlerSession
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_setting_profile.*
 import java.io.File
 import javax.inject.Inject
@@ -41,32 +50,26 @@ import javax.inject.Inject
 class SettingProfileFragment : BaseDaggerFragment() {
 
     @Inject
+    lateinit var userSession: UserSessionInterface
+    @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val profileInfoViewModel by lazy { viewModelProvider.get(ProfileInfoViewModel::class.java) }
 
-    companion object {
-        const val REQUEST_CODE_EDIT_PROFILE_PHOTO = 200
-        const val REQUEST_CODE_EDIT_BOD = 201
-        const val REQUEST_CODE_EDIT_EMAIL = 202
-        const val REQUEST_CODE_EDIT_PHONE = 203
-
-        fun createInstance(bundle: Bundle): SettingProfileFragment {
-            val fragment = SettingProfileFragment()
-            fragment.arguments = bundle
-            return fragment
-        }
-    }
+    lateinit var overlayView: View
+    lateinit var tickerPhoneVerification: Ticker
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_setting_profile, container, false)
+        overlayView = view.findViewById(R.id.overlay_view)
+        tickerPhoneVerification = view.findViewById(R.id.ticker_phone_verification)
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        overlayView.setOnClickListener { }
         initObserver()
 
         profilePhoto.setOnClickListener(EditUserProfilePhotoListener())
@@ -93,7 +96,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
         })
 
         profileInfoViewModel.uploadProfilePictureResponse.observe(this, Observer {
-            when(it){
+            when (it) {
                 is Success -> onSuccessUploadProfilePicture(it.data)
                 is Fail -> onErrorUploadProfilePicture(it.throwable)
             }
@@ -101,16 +104,27 @@ class SettingProfileFragment : BaseDaggerFragment() {
     }
 
     private fun onErrorUploadProfilePicture(throwable: Throwable) {
-        dismissLoadingUploadProfilePicture()
-        Toast.makeText(context, "throw : " + throwable.message, Toast.LENGTH_LONG).show()
-        //TODO
+        dismissLoading()
+        view?.run {
+            Toaster.showError(
+                    this,
+                    ErrorHandlerSession.getErrorMessage(throwable, context, false),
+                    Snackbar.LENGTH_LONG)
+        }
     }
 
-    private fun onSuccessUploadProfilePicture(result: UploadProfileImageModel) {
-        dismissLoadingUploadProfilePicture()
-        if(result.data?.filePath != null && result.data.filePath.isNotBlank()) {
-            ImageHandler.loadImageCircle2(context, profilePhoto, result.data.filePath)
-        }else{
+    private fun onSuccessUploadProfilePicture(result: UploadProfilePictureResult) {
+        dismissLoading()
+
+        if (result.uploadProfileImageModel.data.filePath.isNotBlank()) {
+            userSession.profilePicture = result.uploadProfileImageModel.data.filePath
+
+            view?.run {
+                Toaster.showNormal(this, getString(R.string.success_change_profile_picture), Snackbar.LENGTH_LONG)
+            }
+            ImageHandler.loadImageCircle2(context, profilePhoto,
+                    result.uploadProfileImageModel.data.filePath)
+        } else {
             onErrorUploadProfilePicture(MessageErrorException(getString(R.string.failed_to_upload_picture)))
         }
 
@@ -130,30 +144,93 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     }
                     REQUEST_CODE_EDIT_BOD -> {
                     } //TODO add action on result
-                    REQUEST_CODE_EDIT_EMAIL -> {
-                    } //TODO add action on result
                     REQUEST_CODE_EDIT_PHONE -> {
-                    } //TODO add action on result
-                    else -> {
-                    } //TODO add action on result
+                        onSuccessEditPhone(data)
+                    }
+                    REQUEST_CODE_ADD_EMAIL -> {
+                        onSuccessAddEmail(data)
+                    }
+                    REQUEST_CODE_ADD_PHONE -> {
+                        onSuccessAddPhone(data)
+                    }
+                    REQUEST_CODE_ADD_GENDER -> {
+                        onSuccessAddGender(data)
+                    }
                 }
             }
-            Activity.RESULT_CANCELED -> {
-                when (requestCode) {
-                    REQUEST_CODE_EDIT_PROFILE_PHOTO -> {
-                    } //TODO add action on result
-                    REQUEST_CODE_EDIT_BOD -> {
-                    } //TODO add action on result
-                    REQUEST_CODE_EDIT_EMAIL -> {
-                    } //TODO add action on result
-                    REQUEST_CODE_EDIT_PHONE -> {
-                    } //TODO add action on result
-                    else -> {
-                    } //TODO add action on result
-                }
+        }
+    }
+
+    private fun onSuccessEditPhone(data: Intent?) {
+        refreshProfile()
+        view?.run {
+            Toaster.showNormal(this, getString(R.string.success_change_phone_number), Snackbar.LENGTH_LONG)
+        }
+    }
+
+    private fun refreshProfile() {
+        showLoading(true)
+        profileInfoViewModel.getUserProfileInfo()
+    }
+
+    private fun onSuccessAddGender(data: Intent?) {
+        data?.extras?.run {
+            val genderResult = getInt(ChangeGenderFragment.EXTRA_SELECTED_GENDER, 1)
+
+            //TODO ADE GENDER IS STILL SHOWING EMPTY
+
+            view?.run {
+                Toaster.showNormal(this, getString(R.string.success_add_gender), Snackbar.LENGTH_LONG)
             }
-            else -> {
-            } //TODO add action on result
+            gender.showFilled(
+                    getString(R.string.subtitle_gender_setting_profile),
+                    if (genderResult == 1)
+                        getString(R.string.profile_completion_man)
+                    else getString(R.string.profile_completion_woman),
+                    false,
+                    false
+            )
+        }
+    }
+
+    private fun onSuccessAddPhone(data: Intent?) {
+        data?.extras?.run {
+            val phoneString = getString(AddPhoneFragment.EXTRA_PHONE, "")
+            if (phoneString.isNotBlank()) {
+                view?.run {
+                    Toaster.showNormal(this, getString(R.string.success_add_phone), Snackbar.LENGTH_LONG)
+                }
+                phone.showFilled(
+                        getString(R.string.subtitle_phone_setting_profile),
+                        PhoneNumberUtils.transform(phoneString),
+                        true,
+                        true,
+                        View.OnClickListener {
+                            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE)
+                            startActivityForResult(intent, REQUEST_CODE_ADD_PHONE)
+                        }
+                )
+            }
+        }
+    }
+
+    private fun onSuccessAddEmail(data: Intent?) {
+        data?.extras?.run {
+            val emailString = getString(AddEmailFragment.EXTRA_EMAIL, "")
+            if (emailString.isNotBlank()) {
+                view?.run {
+                    Toaster.showNormal(this, getString(R.string.success_add_email), Snackbar.LENGTH_LONG)
+                }
+                email.showFilled(
+                        getString(R.string.subtitle_email_setting_profile),
+                        emailString,
+                        true,
+                        true,
+                        View.OnClickListener {
+                            showChangeEmailDialog()
+                        }
+                )
+            }
         }
     }
 
@@ -163,28 +240,21 @@ class SettingProfileFragment : BaseDaggerFragment() {
             if (imageUrlOrPathList != null && imageUrlOrPathList.size > 0) {
                 val savedLocalImageUrl = imageUrlOrPathList[0]
                 val file = File(savedLocalImageUrl)
-                if(file.exists()) {
-                    showLoadingUploadProfilePicture()
-                    profileInfoViewModel.uploadProfilePicture(savedLocalImageUrl)
-                }else{
+
+                if (!file.exists()) {
                     onErrorGetProfilePhoto(MessageErrorException(getString(R.string.failed_to_get_picture)))
+                } else {
+                    showLoading(true)
+                    profileInfoViewModel.uploadProfilePicture(savedLocalImageUrl)
                 }
-            }else{
+
+            } else {
                 onErrorGetProfilePhoto(MessageErrorException(getString(R.string.failed_to_get_picture)))
             }
-        }else{
+        } else {
             onErrorGetProfilePhoto(MessageErrorException(getString(R.string.failed_to_get_picture)))
         }
     }
-
-    private fun showLoadingUploadProfilePicture() {
-        //TODO SHOW LOADING
-    }
-
-    private fun dismissLoadingUploadProfilePicture() {
-        //TODO
-    }
-
 
     private fun onErrorGetProfilePhoto(errorException: Exception) {
         //TODO show message error
@@ -195,120 +265,163 @@ class SettingProfileFragment : BaseDaggerFragment() {
     }
 
     override fun initInjector() {
-        getComponent(ProfileCompletionComponent::class.java).inject(this)
+        getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
     }
 
     private fun onSuccessGetUserProfileInfo(profileCompletionData: ProfileCompletionData) {
+        userSession.phoneNumber = profileCompletionData.phone
+        userSession.email = profileCompletionData.email
+
         dismissLoading()
 
         ImageHandler.loadImageCircle2(context, profilePhoto, profileCompletionData.profilePicture)
 
         name.showFilled(
-            getString(R.string.subtitle_name_setting_profile),
-            profileCompletionData.fullName,
-            false,
-            false
+                getString(R.string.subtitle_name_setting_profile),
+                profileCompletionData.fullName,
+                false,
+                false
         )
 
-        if(profileCompletionData.birthDay.isEmpty()) {
+        if (profileCompletionData.birthDay.isEmpty()) {
             bod.showEmpty(
-                getString(R.string.subtitle_bod_setting_profile),
-                getString(R.string.hint_bod_setting_profile),
-                false,
-                View.OnClickListener {
-                    //TODO add action on listener
-                }
+                    getString(R.string.subtitle_bod_setting_profile),
+                    getString(R.string.hint_bod_setting_profile),
+                    false,
+                    View.OnClickListener {
+                        //TODO add action on listener
+                    }
             )
-        }else{
+        } else {
             bod.showFilled(
-                getString(R.string.subtitle_bod_setting_profile),
-                DateFormatUtils.formatDate(
-                    DateFormatUtils.FORMAT_YYYY_MM_DD,
-                    DateFormatUtils.FORMAT_DD_MMMM_YYYY,
-                    profileCompletionData.birthDay),
-                false,
-                true,
-                View.OnClickListener {
-                    //TODO add action on listener
-                }
+                    getString(R.string.subtitle_bod_setting_profile),
+                    DateFormatUtils.formatDate(
+                            DateFormatUtils.FORMAT_YYYY_MM_DD,
+                            DateFormatUtils.FORMAT_DD_MMMM_YYYY,
+                            profileCompletionData.birthDay),
+                    false,
+                    true,
+                    View.OnClickListener {
+                        //TODO add action on listener
+                    }
             )
         }
 
-        if(profileCompletionData.gender == 0){
+        if (profileCompletionData.gender != 1 && profileCompletionData.gender != 2) {
             gender.showEmpty(
-                getString(R.string.subtitle_gender_setting_profile),
-                getString(R.string.hint_gender_setting_profile),
-                true,
-                View.OnClickListener {
-                    //TODO add action on listener
-                }
+                    getString(R.string.subtitle_gender_setting_profile),
+                    getString(R.string.hint_gender_setting_profile),
+                    true,
+                    View.OnClickListener {
+                        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_GENDER)
+                        startActivityForResult(intent, REQUEST_CODE_ADD_GENDER)
+                    }
             )
-        }else{
+        } else {
             gender.showFilled(
-                getString(R.string.subtitle_gender_setting_profile),
-                if(profileCompletionData.gender == 1)
-                    getString(R.string.profile_completion_man)
-                else getString(R.string.profile_completion_woman),
-                false,
-                false,
-                View.OnClickListener {
-                    //TODO add action on listener
-                }
+                    getString(R.string.subtitle_gender_setting_profile),
+                    if (profileCompletionData.gender == 1)
+                        getString(R.string.profile_completion_man)
+                    else getString(R.string.profile_completion_woman),
+                    false,
+                    false
             )
         }
 
-        if(profileCompletionData.email.isEmpty()){
+        if (profileCompletionData.email.isEmpty()) {
             email.showEmpty(
-                getString(R.string.subtitle_email_setting_profile),
-                getString(R.string.hint_email_setting_profile),
-                getString(R.string.message_email_setting_profile),
-                false,
-                View.OnClickListener {
-                    //TODO add action on listener
-                }
+                    getString(R.string.subtitle_email_setting_profile),
+                    getString(R.string.hint_email_setting_profile),
+                    getString(R.string.message_email_setting_profile),
+                    false,
+                    View.OnClickListener {
+                        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_EMAIL)
+                        startActivityForResult(intent, REQUEST_CODE_ADD_EMAIL)
+                    }
             )
-        }else{
+        } else {
             email.showFilled(
-                getString(R.string.subtitle_email_setting_profile),
-                profileCompletionData.email,
-                true,
-                true,
-                View.OnClickListener {
-                    //TODO add action on listener
-                }
+                    getString(R.string.subtitle_email_setting_profile),
+                    profileCompletionData.email,
+                    true,
+                    true,
+                    View.OnClickListener {
+                        showChangeEmailDialog()
+                    }
             )
         }
 
-        if(profileCompletionData.phone.isEmpty()){
+        if (profileCompletionData.phone.isEmpty()) {
             phone.showEmpty(
-                getString(R.string.subtitle_phone_setting_profile),
-                getString(R.string.hint_phone_setting_profile),
-                getString(R.string.message_phone_setting_profile),
-                false,
-                View.OnClickListener {
-                    //TODO add action on listener
-                }
+                    getString(R.string.subtitle_phone_setting_profile),
+                    getString(R.string.hint_phone_setting_profile),
+                    getString(R.string.message_phone_setting_profile),
+                    true,
+                    View.OnClickListener {
+                        goToAddPhone()
+                    }
             )
-        }else{
+            tickerPhoneVerification.visibility = View.GONE
+        } else {
             phone.showFilled(
-                getString(R.string.subtitle_phone_setting_profile),
-                PhoneNumberUtils.transform(profileCompletionData.phone),
-                profileCompletionData.isPhoneVerified,
-                true,
-                View.OnClickListener {
-                    //TODO add action on listener
-                }
+                    getString(R.string.subtitle_phone_setting_profile),
+                    PhoneNumberUtils.transform(profileCompletionData.phone),
+                    profileCompletionData.isPhoneVerified,
+                    true,
+                    View.OnClickListener {
+                        if (profileCompletionData.isPhoneVerified) {
+                            goToChangePhone(profileCompletionData.phone, profileCompletionData.email)
+                        } else {
+                            goToVerifyPhone()
+                        }
+                    }
             )
+
+            if (profileCompletionData.isPhoneVerified) {
+                tickerPhoneVerification.visibility = View.GONE
+            } else {
+                tickerPhoneVerification.visibility = View.VISIBLE
+                tickerPhoneVerification.setHtmlDescription(
+                        getString(R.string.ticker_phone_verification)
+                )
+                tickerPhoneVerification.setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(link: CharSequence?) {
+                        goToVerifyPhone()
+                    }
+
+                    override fun onDismiss() {
+                    }
+
+                })
+
+            }
         }
+    }
+
+    private fun goToAddPhone() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE)
+        startActivityForResult(intent, REQUEST_CODE_ADD_PHONE)
+    }
+
+    private fun goToVerifyPhone() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.SETTING_PROFILE_PHONE_VERIFICATION)
+        startActivityForResult(intent, REQUEST_CODE_EDIT_PHONE)
+    }
+
+    private fun goToChangePhone(phone: String, email: String) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_PHONE_NUMBER)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, phone)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
+        startActivityForResult(intent, REQUEST_CODE_EDIT_PHONE)
     }
 
     private fun onErrorGetProfileInfo(throwable: Throwable) {
         dismissLoading()
         view?.run {
-            //            Toaster.showError(
-//                    this,
-//                    ErrorHandlerSession.getErrorMessage(throwable, context, true),
-//                    Snackbar.LENGTH_LONG)
+            Toaster.showError(
+                    this,
+                    ErrorHandlerSession.getErrorMessage(throwable, context, true),
+                    Snackbar.LENGTH_LONG)
         }
     }
 
@@ -320,7 +433,9 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     inner class EditUserProfilePhotoListener : View.OnClickListener {
         override fun onClick(v: View?) {
+            val MAX_SIZE = 2048
             val builder = ImagePickerBuilder.getDefaultBuilder(context)
+            builder.maxFileSizeInKB = 2048
             val multipleSelectionBuilder = ImagePickerMultipleSelectionBuilder.getDefaultBuilder()
             multipleSelectionBuilder.maximumNoPick = 1
             builder.imagePickerMultipleSelectionBuilder = multipleSelectionBuilder
@@ -329,13 +444,38 @@ class SettingProfileFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showLoading() {
-        mainView.visibility = View.GONE
+    private fun showLoading(isOverlay: Boolean = false) {
+        if (isOverlay) {
+            overlayView.visibility = View.VISIBLE
+        } else {
+            mainView.visibility = View.GONE
+        }
+
         progressBar.visibility = View.VISIBLE
     }
 
     private fun dismissLoading() {
+        overlayView.visibility = View.GONE
         mainView.visibility = View.VISIBLE
         progressBar.visibility = View.GONE
+    }
+
+    companion object {
+        const val REQUEST_CODE_EDIT_PROFILE_PHOTO = 200
+        const val REQUEST_CODE_EDIT_BOD = 201
+        const val REQUEST_CODE_EDIT_EMAIL = 202 //No Implementation yet
+        const val REQUEST_CODE_EDIT_PHONE = 203
+
+        const val REQUEST_CODE_ADD_BOD = 301
+        const val REQUEST_CODE_ADD_EMAIL = 302
+        const val REQUEST_CODE_ADD_PHONE = 303
+        const val REQUEST_CODE_ADD_GENDER = 304
+
+
+        fun createInstance(bundle: Bundle): SettingProfileFragment {
+            val fragment = SettingProfileFragment()
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 }

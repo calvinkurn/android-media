@@ -19,6 +19,8 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.widget.DividerItemDecoration
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.payment.setting.add.view.activity.AddCreditCardActivity
 import com.tokopedia.payment.setting.authenticate.view.activity.AuthenticateCreditCardActivity
@@ -153,7 +155,8 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
         dialog.setBtnCancel(getString(R.string.payment_label_cancel_dialog_verif))
         dialog.setOnOkClickListener {
             activity?.run {
-                this@SettingListPaymentFragment.startActivityForResult(paymentSettingRouter?.getProfileSettingIntent(this), REQUEST_CODE_VERIF_PHONE)
+                val intent = RouteManager.getIntent(applicationContext, ApplinkConstInternalGlobal.SETTING_PROFILE)
+                this@SettingListPaymentFragment.startActivityForResult(intent, REQUEST_CODE_VERIF_PHONE)
             }
             dialog.dismiss()
         }

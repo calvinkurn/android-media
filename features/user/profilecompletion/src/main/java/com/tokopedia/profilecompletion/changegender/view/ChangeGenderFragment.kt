@@ -6,6 +6,7 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +18,9 @@ import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.changegender.data.ChangeGenderResult
 import com.tokopedia.profilecompletion.changegender.viewmodel.ChangeGenderViewModel
-import com.tokopedia.profilecompletion.di.ProfileCompletionComponent
+import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
+import com.tokopedia.sessioncommon.ErrorHandlerSession
+import com.tokopedia.unifycomponents.Toaster
 //import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -39,7 +42,7 @@ class ChangeGenderFragment : BaseDaggerFragment() {
     }
 
     override fun initInjector() {
-        getComponent(ProfileCompletionComponent::class.java).inject(this)
+        getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
     }
 
 
@@ -94,14 +97,12 @@ class ChangeGenderFragment : BaseDaggerFragment() {
 
     private fun onErrorChangeGender(throwable: Throwable) {
         dismissLoading()
-        Log.d("NISNIS", throwable.message)
-        //TODO uncomment after unify is fixed
-//        view?.run {
-//            Toaster.showError(
-//                    this,
-//                    ErrorHandlerSession.getErrorMessage(throwable, context, true),
-//                    Snackbar.LENGTH_LONG)
-//        }
+        view?.run {
+            Toaster.showError(
+                    this,
+                    ErrorHandlerSession.getErrorMessage(throwable, context, true),
+                    Snackbar.LENGTH_LONG)
+        }
     }
 
     private fun onSuccessChangeGender(result: ChangeGenderResult) {

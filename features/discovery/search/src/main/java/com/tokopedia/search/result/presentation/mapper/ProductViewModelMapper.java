@@ -9,6 +9,7 @@ import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.GuidedSearchViewModel;
 import com.tokopedia.search.result.presentation.model.LabelItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
+import com.tokopedia.search.result.presentation.model.LabelGroupViewModel;
 import com.tokopedia.search.result.presentation.model.ProductViewModel;
 import com.tokopedia.search.result.presentation.model.RelatedSearchViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
@@ -43,14 +44,15 @@ public class ProductViewModelMapper {
         productViewModel.setShareUrl(searchProduct.getShareUrl());
         productViewModel.setSuggestionModel(createSuggestionModel(searchProduct));
         productViewModel.setTotalData(searchProduct.getCount());
-        productViewModel.setQuerySafe(searchProduct.isQuerySafe());
+        productViewModel.setIsQuerySafe(searchProduct.isQuerySafe());
         if (searchProductModel.getDynamicFilterModel() != null) {
             productViewModel.setDynamicFilterModel(searchProductModel.getDynamicFilterModel());
         }
         if (searchProductModel.getQuickFilterModel() != null) {
             productViewModel.setQuickFilterModel(searchProductModel.getQuickFilterModel());
         }
-        productViewModel.setAdditionalParams(searchProductModel.getSearchProduct().getAdditionalParams());
+        productViewModel.setAdditionalParams(searchProduct.getAdditionalParams());
+
         return productViewModel;
     }
 
@@ -155,7 +157,6 @@ public class ProductViewModelMapper {
         productItem.setShopName(productModel.getShop().getName());
         productItem.setShopCity(productModel.getShop().getCity());
         productItem.setGoldMerchant(productModel.getShop().isGoldmerchant());
-        productItem.setOfficial(productModel.getShop().isOfficial());
         productItem.setWishlisted(productModel.isWishlist());
         productItem.setBadgesList(convertToBadgesItemList(productModel.getBadges()));
         productItem.setLabelList(convertToLabelsItemList(productModel.getLabels()));
@@ -165,6 +166,9 @@ public class ProductViewModelMapper {
         productItem.setCategoryID(productModel.getCategoryId());
         productItem.setCategoryName(productModel.getCategoryName());
         productItem.setCategoryBreadcrumb(productModel.getCategoryBreadcrumb());
+        productItem.setLabelGroupList(convertToLabelGroupList(productModel.getLabelGroupList()));
+        productItem.setIsShopPowerBadge(productModel.getShop().isPowerBadge());
+        productItem.setIsShopOfficialStore(productModel.getShop().isOfficial());
         return productItem;
     }
 
@@ -198,6 +202,26 @@ public class ProductViewModelMapper {
         labelItem.setTitle(labelModel.getTitle());
         labelItem.setColor(labelModel.getColor());
         return labelItem;
+    }
+
+    private List<LabelGroupViewModel> convertToLabelGroupList(List<SearchProductModel.LabelGroup> labelGroupModelList) {
+        List<LabelGroupViewModel> labelGroupViewModelList = new ArrayList<>();
+        for(SearchProductModel.LabelGroup labelGroupModel : labelGroupModelList) {
+            labelGroupViewModelList.add(convertToLabelGroupViewModel(labelGroupModel));
+        }
+
+        return labelGroupViewModelList;
+    }
+
+    private LabelGroupViewModel convertToLabelGroupViewModel(SearchProductModel.LabelGroup labelGroupModel) {
+        LabelGroupViewModel labelGroupViewModel =
+                new LabelGroupViewModel(
+                        labelGroupModel.getPosition(),
+                        labelGroupModel.getType(),
+                        labelGroupModel.getTitle()
+                );
+
+        return labelGroupViewModel;
     }
 
     private SuggestionViewModel createSuggestionModel(SearchProductModel.SearchProduct searchProduct) {

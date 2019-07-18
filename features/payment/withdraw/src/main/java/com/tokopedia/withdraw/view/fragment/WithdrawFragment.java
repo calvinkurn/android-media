@@ -34,6 +34,9 @@ import com.tokopedia.abstraction.common.utils.view.EventsWatcher;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.common.utils.view.PropertiesEventsWatcher;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.design.component.ToasterError;
@@ -548,8 +551,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                 .setMessage(getActivity().getString(R.string.alert_not_verified_yet_body))
                 .setPositiveButton(getActivity().getString(R.string.alert_not_verified_yet_positive), (dialog, which) -> {
                     if (getActivity() != null) {
-                        Intent intent = ((WithdrawRouter) getActivity().getApplicationContext())
-                                .getProfileSettingIntent(getActivity());
+                        Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.SETTING_PROFILE);
                         startActivity(intent);
                         getActivity().finish();
                     }

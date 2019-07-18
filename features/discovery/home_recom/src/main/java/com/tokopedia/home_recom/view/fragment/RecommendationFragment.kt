@@ -59,6 +59,8 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     private val SAVED_PRODUCT_ID = "saved_product_id"
 
     companion object{
+        private val RECOMMENDATION_APP_LINK = "https://tokopedia.com/rekomendasi/%s"
+
         fun newInstance(productId: String = "") = RecommendationFragment().apply {
             this.productId = productId
         }
@@ -124,7 +126,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     private fun loadData(){
         activity?.let{
             if(productId.isNotBlank()) {
-                recommendationWidgetViewModel.getPrimaryProduct(productId, it)
+                recommendationWidgetViewModel.getPrimaryProduct(productId)
                 recommendationWidgetViewModel.getRecommendationList(arrayListOf(productId),
                         onErrorGetRecommendation = this::onErrorGetRecommendation)
             } else {
@@ -272,11 +274,11 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
             LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
                     productDataToLinkerDataMapper(productDetailData), object : ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult) {
-                    openIntentShare(productDetailData.name, context.getString(R.string.home_recommendation), linkerShareData.url)
+                    openIntentShare(productDetailData.name, context.getString(R.string.recom_home_recommendation), linkerShareData.url)
                 }
 
                 override fun onError(linkerError: LinkerError) {
-                    openIntentShare(productDetailData.name, context.getString(R.string.home_recommendation), "https://tokopedia.com/rekomendasi/${productDetailData.id}")
+                    openIntentShare(productDetailData.name, context.getString(R.string.recom_home_recommendation), String.format(RECOMMENDATION_APP_LINK, "${productDetailData.id}"))
                 }
             }))
         }

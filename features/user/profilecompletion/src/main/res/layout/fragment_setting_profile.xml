@@ -81,9 +81,27 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_24"/>
+
+                <com.tokopedia.unifycomponents.ticker.Ticker
+                    android:id="@+id/ticker_phone_verification"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    android:layout_marginTop="@dimen/dp_8"
+                    app:closeButtonVisibility="gone"
+                    android:layout_gravity="center_vertical"
+                    app:tickerType="warning"
+                    app:tickerShapeType="full"/>
             </LinearLayout>
         </android.support.constraint.ConstraintLayout>
     </ScrollView>
+
+    <FrameLayout
+        android:id="@+id/overlay_view"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="match_parent">
+    </FrameLayout>
 
     <ProgressBar
         android:id="@+id/progressBar"
