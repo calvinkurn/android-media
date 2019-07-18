@@ -7,20 +7,20 @@ import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
 import com.tokopedia.search.result.presentation.view.typefactory.ShopListTypeFactory
 
 data class ShopViewModelKt(
-    val source: String = "",
-    val totalShop: Int = 0,
-    val searchUrl: String = "",
-    val paging: Paging = Paging(),
-    val tabName: String = "",
-    val shopItemList: List<ShopItem> = listOf(),
-    val topSellerData: List<ShopItem> = listOf(),
+        val source: String = "",
+        val totalShop: Int = 0,
+        val searchUrl: String = "",
+        val paging: Paging = Paging(),
+        val tabName: String = "",
+        val shopItemList: List<ShopItem> = listOf(),
+        val topSellerData: List<ShopItem> = listOf(),
         val topOfficialSellerData: List<ShopItem> = listOf()
 ): Parcelable {
 
     data class Paging(
-        val uriNext: String = "",
-        val uriPrevious: String = ""
-    ): Parcelable {
+            val uriNext: String = "",
+            val uriPrevious: String = ""
+    ) : Parcelable {
         constructor(parcel: Parcel) : this(parcel.readString() ?: "", parcel.readString() ?: "")
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -44,34 +44,34 @@ data class ShopViewModelKt(
     }
 
     data class ShopItem(
-        val shopId: String = "",
-        val shopName: String = "",
-        val shopDomain: String = "",
-        val shopUrl: String = "",
-        val shopApplink: String = "",
-        val shopImage: String = "",
-        val shopImage300: String = "",
-        val shopDescription: String = "",
-        val shopTagLine: String = "",
-        val shopLocation: String = "",
-        val shopTotalTransaction: String = "",
-        val shopTotalFavorite: String = "",
-        val shopGoldShop: Int = 0,
-        val shopIsOwner: Int = 0,
-        val shopRateSpeed: Int = 0,
-        val shopRateAccuracy: Int = 0,
-        val shopRateService: Int = 0,
-        val shopStatus: Int = 0,
-        val shopItemProductList: List<ShopItemProduct> = listOf(),
-        val voucher: ShopItemVoucher = ShopItemVoucher(),
-        val shopLucky: String = "",
-        val reputationImageUri: String = "",
-        val reputationScore: Int = 0,
-        val isOfficial: Boolean = false,
-        val gaKey: String = ""
-    ): Parcelable, Visitable<ShopListTypeFactory> {
+            val shopId: String = "",
+            val shopName: String = "",
+            val shopDomain: String = "",
+            val shopUrl: String = "",
+            val shopApplink: String = "",
+            val shopImage: String = "",
+            val shopImage300: String = "",
+            val shopDescription: String = "",
+            val shopTagLine: String = "",
+            val shopLocation: String = "",
+            val shopTotalTransaction: String = "",
+            val shopTotalFavorite: String = "",
+            val shopGoldShop: Int = 0,
+            val shopIsOwner: Int = 0,
+            val shopRateSpeed: Int = 0,
+            val shopRateAccuracy: Int = 0,
+            val shopRateService: Int = 0,
+            val shopStatus: Int = 0,
+            val shopItemProductList: List<ShopItemProduct> = listOf(),
+            val voucher: ShopItemVoucher = ShopItemVoucher(),
+            val shopLucky: String = "",
+            val reputationImageUri: String = "",
+            val reputationScore: Int = 0,
+            val isOfficial: Boolean = false,
+            val gaKey: String = ""
+    ) : Parcelable, Visitable<ShopListTypeFactory> {
 
-        var position : Int = 0
+        var position: Int = 0
 
         fun getPage(): Int {
             return (position - 1) / Integer.parseInt(SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS) + 1
@@ -82,13 +82,13 @@ data class ShopViewModelKt(
         }
 
         data class ShopItemProduct(
-            val id: Int = 0,
-            val name: String = "",
-            val url: String = "",
-            val applink: String = "",
-            val price: Int = 0,
-            val imageUrl: String = ""
-        ): Parcelable {
+                val id: Int = 0,
+                val name: String = "",
+                val url: String = "",
+                val applink: String = "",
+                val price: Int = 0,
+                val imageUrl: String = ""
+        ) : Parcelable {
 
             constructor(parcel: Parcel) : this(
                     parcel.readInt(),
@@ -123,14 +123,14 @@ data class ShopViewModelKt(
         }
 
         data class ShopItemVoucher(
-            val freeShipping: Boolean = false,
-            val cashback: ShopItemVoucherCashback = ShopItemVoucherCashback()
-        ): Parcelable {
+                val freeShipping: Boolean = false,
+                val cashback: ShopItemVoucherCashback = ShopItemVoucherCashback()
+        ) : Parcelable {
 
             data class ShopItemVoucherCashback(
-                val cashbackValue: Int = 0,
-                val isPercentage: Boolean = false
-            ): Parcelable {
+                    val cashbackValue: Int = 0,
+                    val isPercentage: Boolean = false
+            ) : Parcelable {
                 constructor(parcel: Parcel) : this(
                         parcel.readInt(),
                         parcel.readByte() != 0.toByte())

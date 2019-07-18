@@ -1,12 +1,13 @@
 package com.tokopedia.search.result.presentation.presenter.shop;
 
+import com.tokopedia.discovery.common.Mapper;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.network.utils.AuthUtil;
-import com.tokopedia.search.result.domain.model.SearchShopModel;
+import com.tokopedia.search.result.domain.model.SearchShopModelKt;
 import com.tokopedia.search.result.presentation.ShopListSectionContract;
-import com.tokopedia.search.result.presentation.mapper.ShopViewModelMapper;
 import com.tokopedia.search.result.presentation.model.ShopViewModel;
+import com.tokopedia.search.result.presentation.model.ShopViewModelKt;
 import com.tokopedia.search.result.presentation.presenter.abstraction.SearchSectionPresenter;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -25,12 +26,9 @@ final class ShopListPresenter
         implements ShopListSectionContract.Presenter {
     @Inject
     @Named(SearchConstant.SearchShop.SEARCH_SHOP_USE_CASE)
-    UseCase<SearchShopModel> searchShopUseCase;
+    UseCase<SearchShopModelKt> searchShopUseCase;
     @Inject
-    ShopViewModelMapper shopViewModelMapper;
-    @Inject
-    @Named(SearchConstant.SearchShop.TOGGLE_FAVORITE_SHOP_USE_CASE)
-    UseCase<Boolean> toggleFavouriteShopUseCase;
+    Mapper<SearchShopModelKt, ShopViewModelKt> shopViewModelMapper;
     @Inject
     UserSessionInterface userSession;
 
@@ -47,55 +45,7 @@ final class ShopListPresenter
 
     @Override
     public void handleFavoriteButtonClicked(ShopViewModel.ShopViewItem shopItem, int adapterPosition) {
-        if (getView().isUserHasLogin()) {
-            getView().disableFavoriteButton(adapterPosition);
 
-            getView().logDebug(this.toString(),
-                    "Toggle favorite " + shopItem.getShopId() + " " + Boolean.toString(!shopItem.isFavorited()));
-
-            RequestParams requestParams = createToggleFavoriteShopRequestParam(shopItem.getShopId());
-
-            toggleFavouriteShopUseCase.execute(
-                    requestParams,
-                    getToggleFavoriteShopSubscriber(adapterPosition, !shopItem.isFavorited())
-            );
-        } else {
-            getView().launchLoginActivity(shopItem.getShopId());
-        }
-    }
-
-    private Subscriber<Boolean> getToggleFavoriteShopSubscriber(final int adapterPosition, final boolean targetFavoritedStatus) {
-        return new Subscriber<Boolean>() {
-            @Override
-            public void onNext(Boolean isSuccess) {
-                toggleFavoriteActionSubscriberOnNext(isSuccess, adapterPosition, targetFavoritedStatus);
-            }
-
-            @Override
-            public void onCompleted() { }
-
-            @Override
-            public void onError(Throwable e) {
-                toggleFavoriteActionSubscriberOnError(e, adapterPosition);
-            }
-        };
-    }
-
-    private void toggleFavoriteActionSubscriberOnNext(boolean isSuccess, int adapterPosition, boolean targetFavoritedStatus) {
-        if (isSuccess)
-            getView().onSuccessToggleFavorite(adapterPosition, targetFavoritedStatus);
-        else
-            getView().onErrorToggleFavorite(adapterPosition);
-    }
-
-    private void toggleFavoriteActionSubscriberOnError(Throwable e, int adapterPosition) {
-        getView().onErrorToggleFavorite(e, adapterPosition);
-    }
-
-    private RequestParams createToggleFavoriteShopRequestParam(String shopId) {
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putString(SearchConstant.SearchShop.TOGGLE_FAVORITE_SHOP_ID, shopId);
-        return requestParams;
     }
 
     @Override
@@ -136,26 +86,26 @@ final class ShopListPresenter
         getDynamicFilterUseCase.unsubscribe();
     }
 
-    private Subscriber<SearchShopModel> getSearchShopSubscriber(final Map<String, Object> searchParameter) {
-        return new Subscriber<SearchShopModel>() {
+    private Subscriber<SearchShopModelKt> getSearchShopSubscriber(final Map<String, Object> searchParameter) {
+        return new Subscriber<SearchShopModelKt>() {
             @Override
-            public void onNext(SearchShopModel searchShopModel) {
-                searchShopSubscriberOnNext(searchShopModel);
+            public void onNext(SearchShopModelKt searchShopModel) {
+//                searchShopSubscriberOnNext(searchShopModel);
             }
 
             @Override
             public void onCompleted() {
-                searchShopSubscriberOnCompleted(searchParameter);
+//                searchShopSubscriberOnCompleted(searchParameter);
             }
 
             @Override
             public void onError(Throwable e) {
-                searchShopSubscriberOnError(e);
+//                searchShopSubscriberOnError(e);
             }
         };
     }
 
-    private void searchShopSubscriberOnNext(SearchShopModel searchShopModel) {
+    private void searchShopSubscriberOnNext(SearchShopModelKt searchShopModel) {
         if(searchShopModel == null) {
             getView().onSearchShopFailed();
             isSearchShopReturnedNull = true;
@@ -163,8 +113,8 @@ final class ShopListPresenter
         }
 
         isSearchShopReturnedNull = false;
-        ShopViewModel shopViewModel = shopViewModelMapper.convertToShopViewModel(searchShopModel);
-        getView().onSearchShopSuccess(shopViewModel.getShopItemList(), shopViewModel.isHasNextPage());
+        ShopViewModelKt shopViewModel = shopViewModelMapper.convert(searchShopModel);
+//        getView().onSearchShopSuccess(shopViewModel.getShopItemList(), shopViewModel.isHasNextPage());
     }
 
     private void searchShopSubscriberOnCompleted(Map<String, Object> searchParameter) {
@@ -218,6 +168,5 @@ final class ShopListPresenter
     public void detachView() {
         super.detachView();
         if(searchShopUseCase != null) searchShopUseCase.unsubscribe();
-        if(toggleFavouriteShopUseCase != null) toggleFavouriteShopUseCase.unsubscribe();
     }
 }
