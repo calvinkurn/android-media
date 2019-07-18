@@ -50,6 +50,7 @@ import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactoryImpl
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.TopChatChatMenuFactory
 import com.tokopedia.topchat.chatroom.view.customview.*
 import com.tokopedia.topchat.chatroom.view.listener.*
@@ -65,6 +66,8 @@ import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseSimpleWebViewActivity
+import java.lang.IllegalStateException
+import java.net.URLEncoder
 import javax.inject.Inject
 
 /**
@@ -74,7 +77,7 @@ import javax.inject.Inject
 class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         , TypingListener, SendButtonListener, ImagePickerListener, ChatTemplateListener,
         HeaderMenuListener, DualAnnouncementListener, SecurityInfoListener,
-        TopChatVoucherListener {
+        TopChatVoucherListener, InvoiceThumbnailListener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -428,15 +431,25 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         getViewState().clearEditText()
     }
 
+    override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
+        return TopChatTypeFactoryImpl(
+                this,
+                this,
+                this,
+                this,
+                this,
+                this,
+                this,
+                this
+        )
+    }
+
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
-        return TopChatRoomAdapter(TopChatTypeFactoryImpl(
-                this,
-                this,
-                this,
-                this,
-                this,
-                this,
-                this))
+        if (adapterTypeFactory !is TopChatTypeFactoryImpl) {
+            throw IllegalStateException("getAdapterTypeFactory() must return TopChatTypeFactoryImpl")
+        }
+        val typeFactory = adapterTypeFactory as TopChatTypeFactoryImpl
+        return TopChatRoomAdapter(typeFactory)
     }
 
     override fun addDummyMessage(visitable: Visitable<*>) {
@@ -854,5 +867,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun createChatMenuFactory(): ChatMenuFactory {
         return TopChatChatMenuFactory()
+    }
+
+    override fun onClickInvoiceThumbnail(url: String, id: String) {
+        val encodedUrl = URLEncoder.encode(url, "UTF-8")
+        onGoToWebView(encodedUrl, id)
     }
 }

@@ -1,4 +1,4 @@
-package com.tokopedia.chatbot.domain.pojo
+package com.tokopedia.chat_common.domain.pojo.invoiceattachment
 
 import com.google.gson.annotations.SerializedName
 
