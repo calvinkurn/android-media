@@ -272,24 +272,24 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
                         qty >= cartItemHolderData.getMaxQuantity()))) {
             btnQtyMin.setEnabled(false);
             btnQtyPlus.setEnabled(false);
-            btnQtyMin.setImageDrawable(ContextCompat.getDrawable(btnQtyMin.getContext(), R.drawable.bg_button_counter_minus_disabled));
-            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.getContext(), R.drawable.bg_button_counter_plus_disabled));
+            btnQtyMin.setImageDrawable(ContextCompat.getDrawable(btnQtyMin.getContext(), R.drawable.bg_button_counter_minus_checkout_disabled));
+            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.getContext(), R.drawable.bg_button_counter_plus_checkout_disabled));
         } else if (qty <= QTY_MIN || qty <= cartItemHolderData.getMinQuantity()) {
             btnQtyMin.setEnabled(false);
             btnQtyPlus.setEnabled(true);
-            btnQtyMin.setImageDrawable(ContextCompat.getDrawable(btnQtyMin.getContext(), R.drawable.bg_button_counter_minus_disabled));
-            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.getContext(), R.drawable.bg_button_counter_plus));
+            btnQtyMin.setImageDrawable(ContextCompat.getDrawable(btnQtyMin.getContext(), R.drawable.bg_button_counter_minus_checkout_disabled));
+            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.getContext(), R.drawable.bg_button_counter_plus_checkout));
         } else if (qty >= QTY_MAX || (cartItemHolderData.getMaxQuantity() != 0 &&
                 qty >= cartItemHolderData.getMaxQuantity())) {
             btnQtyPlus.setEnabled(false);
             btnQtyMin.setEnabled(true);
-            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.getContext(), R.drawable.bg_button_counter_plus_disabled));
-            btnQtyMin.setImageDrawable(ContextCompat.getDrawable(btnQtyMin.getContext(), R.drawable.bg_button_counter_minus));
+            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.getContext(), R.drawable.bg_button_counter_plus_checkout_disabled));
+            btnQtyMin.setImageDrawable(ContextCompat.getDrawable(btnQtyMin.getContext(), R.drawable.bg_button_counter_minus_checkout));
         } else {
             btnQtyPlus.setEnabled(true);
             btnQtyMin.setEnabled(true);
-            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.getContext(), R.drawable.bg_button_counter_plus));
-            btnQtyMin.setImageDrawable(ContextCompat.getDrawable(btnQtyMin.getContext(), R.drawable.bg_button_counter_minus));
+            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.getContext(), R.drawable.bg_button_counter_plus_checkout));
+            btnQtyMin.setImageDrawable(ContextCompat.getDrawable(btnQtyMin.getContext(), R.drawable.bg_button_counter_minus_checkout));
         }
     }
 

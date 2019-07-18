@@ -202,7 +202,7 @@
                     android:id="@+id/btn_qty_min"
                     android:layout_width="@dimen/dp_24"
                     android:layout_height="@dimen/dp_24"
-                    app:srcCompat="@drawable/bg_button_counter_minus" />
+                    app:srcCompat="@drawable/bg_button_counter_minus_checkout" />
 
                 <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/et_qty"
@@ -221,7 +221,7 @@
                     android:id="@+id/btn_qty_plus"
                     android:layout_width="@dimen/dp_24"
                     android:layout_height="@dimen/dp_24"
-                    app:srcCompat="@drawable/bg_button_counter_plus"
+                    app:srcCompat="@drawable/bg_button_counter_plus_checkout"
                     tools:ignore="ContentDescription" />
 
             </LinearLayout>
