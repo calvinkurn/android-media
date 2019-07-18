@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -160,6 +161,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     private static final String TAG = FeedPlusFragment.class.getSimpleName();
     private static final String ARGS_ROW_NUMBER = "row_number";
+    private static final String ARGS_SOURCE = "source_feed";
     private static final String YOUTUBE_URL = "{youtube_url}";
     private static final String FEED_TRACE = "mp_feed";
     private static final String AFTER_POST = "after_post";
@@ -210,6 +212,14 @@ public class FeedPlusFragment extends BaseDaggerFragment
         return fragment;
     }
 
+    public static Fragment newInstanceWithSource(String source) {
+        FeedPlusFragment fragment = new FeedPlusFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(ARGS_SOURCE, source);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
     @Override
     protected String getScreenName() {
         return FeedTrackingEventLabel.SCREEN_UNIFY_HOME_FEED;
@@ -242,6 +252,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void initVar() {
+        if (getArguments() != null)
+            presenter.setFeedSource(getArguments().getString(ARGS_SOURCE));
+
         FeedPlusTypeFactory typeFactory = new FeedPlusTypeFactoryImpl(this, analytics, userSession);
         adapter = new FeedPlusAdapter(typeFactory);
         adapter.setOnLoadListener(totalCount -> {

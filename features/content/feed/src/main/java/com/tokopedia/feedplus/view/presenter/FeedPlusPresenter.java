@@ -1,5 +1,7 @@
 package com.tokopedia.feedplus.view.presenter;
 
+import android.text.TextUtils;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
@@ -56,6 +58,7 @@ public class FeedPlusPresenter
     private String currentCursor = "";
     private FeedPlus.View viewListener;
     private PagingHandler pagingHandler;
+    private String feedSource = GetDynamicFeedUseCase.SOURCE_FEEDS;
 
     @Inject
     FeedPlusPresenter(UserSessionInterface userSession,
@@ -90,6 +93,11 @@ public class FeedPlusPresenter
         likeKolPostUseCase.unsubscribe();
         followKolPostGqlUseCase.unsubscribe();
         sendVoteUseCase.unsubscribe();
+    }
+
+    @Override
+    public void setFeedSource(String source) {
+        this.feedSource = source;
     }
 
     @Override
@@ -288,7 +296,7 @@ public class FeedPlusPresenter
         currentCursor = "";
 
         getDynamicFeedFirstPageUseCase.execute(
-                GetDynamicFeedFirstPageUseCase.Companion.createRequestParams(getUserId(), "", GetDynamicFeedUseCase.SOURCE_FEEDS, userSession.isLoggedIn()),
+                GetDynamicFeedFirstPageUseCase.Companion.createRequestParams(getUserId(), "", feedSource, userSession.isLoggedIn()),
                 new Subscriber<DynamicFeedFirstPageDomainModel>() {
                     @Override
                     public void onCompleted() {
@@ -371,7 +379,7 @@ public class FeedPlusPresenter
         }
 
         getDynamicFeedUseCase.execute(
-                GetDynamicFeedUseCase.Companion.createRequestParams(getUserId(), currentCursor, GetDynamicFeedUseCase.SOURCE_FEEDS),
+                GetDynamicFeedUseCase.Companion.createRequestParams(getUserId(), currentCursor, feedSource),
                 new Subscriber<DynamicFeedDomainModel>() {
                     @Override
                     public void onCompleted() {

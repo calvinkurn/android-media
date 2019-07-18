@@ -138,6 +138,8 @@ public interface FeedPlus {
 
     interface Presenter extends CustomerPresenter<View> {
 
+        void setFeedSource(String source);
+
         void fetchFirstPage();
 
         void fetchNextPage();
