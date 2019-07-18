@@ -70,7 +70,7 @@ class AttachedInvoiceViewHolder(itemView: View, private val invoiceThumbnailList
     }
 
     private fun getLabelType(statusId: Int?): Int {
-        if (statusId == null) return 1
+        if (statusId == null) return Label.GENERAL_DARK_GREY
         return when (OrderStatusCode.MAP[statusId]) {
             OrderStatusCode.COLOR_RED -> Label.GENERAL_LIGHT_RED
             OrderStatusCode.COLOR_GREEN -> Label.GENERAL_LIGHT_GREEN
