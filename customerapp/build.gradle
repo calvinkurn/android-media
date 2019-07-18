@@ -239,7 +239,7 @@ android {
         vectorDrawables.useSupportLibrary = vectorDrawable
         testInstrumentationRunner 'com.tokopedia.tkpd.MyRunner'
         resConfigs "en", "id"
-     }
+    }
 
     dexOptions {
         javaMaxHeapSize "8g"
