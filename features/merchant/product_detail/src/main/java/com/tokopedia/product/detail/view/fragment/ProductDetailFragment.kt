@@ -234,6 +234,14 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         const val REQUEST_CODE_LOGIN_THEN_BUY_EXPRESS = 569
         const val REQUEST_CODE_SHOP_INFO = 998
 
+        const val CART_MAX_COUNT = 99
+        const val CART_ALPHA_ANIMATION_FROM = 1f
+        const val CART_ALPHA_ANIMATION_TO = 0f
+        const val CART_SCALE_ANIMATION_FROM = 1f
+        const val CART_SCALE_ANIMATION_TO = 2f
+        const val CART_SCALE_ANIMATION_PIVOT = 0.5f
+        const val CART_ANIMATION_DURATION = 700L
+
         const val SAVED_NOTE = "saved_note"
         const val SAVED_QUANTITY = "saved_quantity"
         const val SAVED_VARIANT = "saved_variant"
@@ -1813,7 +1821,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             val icon = ContextCompat.getDrawable(this, cartImageView.tag as Int)
             if (icon is LayerDrawable) {
                 val badge = CountDrawable(this)
-                badge.setCount(if (cartCount > 99) {
+                badge.setCount(if (cartCount > CART_MAX_COUNT) {
                     getString(R.string.pdp_label_cart_count_max)
                 } else {
                     cartCount.toString()
@@ -1822,13 +1830,13 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 icon.setDrawableByLayerId(R.id.ic_cart_count, badge)
                 cartImageView.setImageDrawable(icon)
                 if (animate) {
-                    val alphaAnimation = AlphaAnimation(1f, 0f)
-                    val scaleAnimation = ScaleAnimation(1f, 2f, 1f, 2f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
+                    val alphaAnimation = AlphaAnimation(CART_ALPHA_ANIMATION_FROM, CART_ALPHA_ANIMATION_TO)
+                    val scaleAnimation = ScaleAnimation(CART_SCALE_ANIMATION_FROM, CART_SCALE_ANIMATION_TO, CART_SCALE_ANIMATION_FROM, CART_SCALE_ANIMATION_TO, Animation.RELATIVE_TO_SELF, CART_SCALE_ANIMATION_PIVOT, Animation.RELATIVE_TO_SELF, CART_SCALE_ANIMATION_PIVOT)
                     scaleAnimation.fillAfter = false
                     val animationSet = AnimationSet(false)
                     animationSet.addAnimation(alphaAnimation)
                     animationSet.addAnimation(scaleAnimation)
-                    animationSet.duration = 700
+                    animationSet.duration = CART_ANIMATION_DURATION
                     animationSet.fillAfter = false
                     animationSet.fillBefore = false
                     animationSet.setAnimationListener(object : Animation.AnimationListener {
