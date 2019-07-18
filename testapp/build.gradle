@@ -88,7 +88,7 @@ android {
             java.srcDir sharedTestDir
         }
         androidTest {
-            java.srcDirs += ["${project(rootProject.ext.features.logisticaddaddress).projectDir}/src/androidTest/java"]
+            java.srcDir sharedTestDir
         }
         debug.setRoot('build-types/debug')
         release.setRoot('build-types/release')
