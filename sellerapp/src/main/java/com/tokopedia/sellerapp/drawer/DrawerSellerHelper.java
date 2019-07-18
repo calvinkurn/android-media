@@ -393,14 +393,17 @@ public class DrawerSellerHelper extends DrawerHelper
                     }
                     break;
                 case TkpdState.DrawerPosition.FEATURED_PRODUCT:
-                    if (adapter instanceof SellerDrawerAdapter && ((SellerDrawerAdapter) adapter).isGoldMerchant()) {
-                        eventFeaturedProduct(AppEventTracking.EventLabel.FEATURED_PRODUCT);
-                        intent = new Intent(context, GMFeaturedProductActivity.class);
-                        context.startActivity(intent);
-                    } else {
-                        showDialogActionGoToGMSubscribe();
-                        isNeedToCloseActivity = false;
-                    }
+                    eventFeaturedProduct(AppEventTracking.EventLabel.FEATURED_PRODUCT);
+                    intent = new Intent(context, GMFeaturedProductActivity.class);
+                    context.startActivity(intent);
+//                    if (adapter instanceof SellerDrawerAdapter && ((SellerDrawerAdapter) adapter).isGoldMerchant()) {
+//                        eventFeaturedProduct(AppEventTracking.EventLabel.FEATURED_PRODUCT);
+//                        intent = new Intent(context, GMFeaturedProductActivity.class);
+//                        context.startActivity(intent);
+//                    } else {
+//                        showDialogActionGoToGMSubscribe();
+//                        isNeedToCloseActivity = false;
+//                    }
                     break;
                 case TkpdState.DrawerPosition.SELLER_INFO:
                     eventSellerInfo(AppEventTracking.Action.CLICK_HAMBURGER_ICON, AppEventTracking.EventLabel.SELLER_INFO);
@@ -504,7 +507,7 @@ public class DrawerSellerHelper extends DrawerHelper
     }
 
     private void sendGMAnalyticDialogEvent(boolean isSubscribing) {
-        if (context.getApplication() instanceof AbstractionRouter){
+        if (context.getApplication() instanceof AbstractionRouter) {
             new GMTracking().sendClickManageProductDialogEvent(isSubscribing);
         }
     }
