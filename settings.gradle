@@ -30,7 +30,3 @@ apply from: "buildconfig/appcompile/compile-sellerapp.gradle"
 //apply from: "buildconfig/appcompile/compile-sellerapp-no-op.gradle"
 apply from: "buildconfig/appcompile/compile-mitrapp.gradle"
 //apply from: "buildconfig/appcompile/compile-testapp.gradle"
-
-include ':app'
-include ':react-native-code-push'
-project(':react-native-code-push').projectDir = new File(rootProject.projectDir, './node_modules/react-native-code-push/android/app')

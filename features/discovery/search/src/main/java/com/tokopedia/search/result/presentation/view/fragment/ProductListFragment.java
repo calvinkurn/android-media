@@ -2,11 +2,11 @@ package com.tokopedia.search.result.presentation.view.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -27,6 +27,7 @@ import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.data.DataValue;
 import com.tokopedia.discovery.common.data.Filter;
 import com.tokopedia.discovery.common.data.Option;
+import com.tokopedia.discovery.common.manager.AdultManager;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
@@ -72,14 +73,11 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
-import com.tokopedia.discovery.common.manager.AdultManager;
 
 import org.json.JSONArray;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -120,8 +118,7 @@ public class ProductListFragment
     @Inject
     UserSessionInterface userSession;
 
-    private EndlessRecyclerViewScrollListener linearLayoutLoadMoreTriggerListener;
-    private EndlessRecyclerViewScrollListener gridLayoutLoadMoreTriggerListener;
+    private EndlessRecyclerViewScrollListener staggeredGridLayoutLoadMoreTriggerListener;
 
     private Config topAdsConfig;
     private ProductListAdapter adapter;
@@ -237,29 +234,29 @@ public class ProductListFragment
                 this, this,
                 this, this,
                 this, this,
-                topAdsConfig, getQueryKey());
-        adapter = new ProductListAdapter(getActivity(), this, productListTypeFactory);
-        recyclerView.setLayoutManager(getGridLayoutManager());
+                topAdsConfig);
+        adapter = new ProductListAdapter(this, productListTypeFactory);
+        recyclerView.setLayoutManager(getStaggeredGridLayoutManager());
         recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(new ProductItemDecoration(
-                getContext().getResources().getDimensionPixelSize(R.dimen.dp_16),
-                getContext().getResources().getColor(R.color.white)
-        ));
+        recyclerView.addItemDecoration(createProductItemDecoration());
         setHeaderTopAds(true);
+    }
+
+    @NonNull
+    private ProductItemDecoration createProductItemDecoration() {
+        return new ProductItemDecoration(getContext().getResources().getDimensionPixelSize(R.dimen.dp_16));
     }
 
     private void setupListener() {
         recyclerView.addOnScrollListener(getRecyclerViewBottomSheetScrollListener());
 
-        gridLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(getGridLayoutManager());
+        staggeredGridLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(getStaggeredGridLayoutManager());
 
-        linearLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(getLinearLayoutManager());
-
-        recyclerView.addOnScrollListener(gridLayoutLoadMoreTriggerListener);
+        recyclerView.addOnScrollListener(staggeredGridLayoutLoadMoreTriggerListener);
     }
 
-    private EndlessRecyclerViewScrollListener getEndlessRecyclerViewListener(LinearLayoutManager linearLayoutManager) {
-        return new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+    private EndlessRecyclerViewScrollListener getEndlessRecyclerViewListener(RecyclerView.LayoutManager recyclerViewLayoutManager) {
+        return new EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 if (isAllowLoadMore()) {
@@ -392,28 +389,6 @@ public class ProductListFragment
     }
 
     @Override
-    protected void switchLayoutType() {
-        super.switchLayoutType();
-
-        if (!getUserVisibleHint()) {
-            return;
-        }
-        recyclerView.clearOnScrollListeners();
-
-        recyclerView.addOnScrollListener(getRecyclerViewBottomSheetScrollListener());
-
-        switch (getAdapter().getCurrentLayoutType()) {
-            case GRID_1: // List
-                recyclerView.addOnScrollListener(linearLayoutLoadMoreTriggerListener);
-                break;
-            case GRID_2: // Grid 2x2
-            case GRID_3: // Grid 1x1
-                recyclerView.addOnScrollListener(gridLayoutLoadMoreTriggerListener);
-                break;
-        }
-    }
-
-    @Override
     protected GridLayoutManager.SpanSizeLookup onSpanSizeLookup() {
         return new GridLayoutManager.SpanSizeLookup() {
             @Override
@@ -489,24 +464,28 @@ public class ProductListFragment
 
     @Override
     public void onGlobalNavWidgetClicked(GlobalNavViewModel.Item item, String keyword) {
-        if (!TextUtils.isEmpty(item.getApplink())) {
-            RouteManager.route(getActivity(), item.getApplink());
-        } else {
-            RouteManager.route(getActivity(), item.getUrl());
-        }
+        redirectionStartActivity(item.getApplink(), item.getUrl());
+
         SearchTracking.trackEventClickGlobalNavWidgetItem(item.getGlobalNavItemAsObjectDataLayer(),
                 keyword, item.getName(), item.getApplink());
     }
 
     @Override
     public void onGlobalNavWidgetClickSeeAll(GlobalNavViewModel model) {
-        if (!TextUtils.isEmpty(model.getSeeAllApplink())) {
-            RouteManager.route(getActivity(), model.getSeeAllApplink());
-        } else {
-            RouteManager.route(getActivity(), model.getSeeAllUrl());
-        }
+        redirectionStartActivity(model.getSeeAllApplink(), model.getSeeAllUrl());
+
         SearchTracking.eventUserClickSeeAllGlobalNavWidget(model.getKeyword(),
                 model.getTitle(), model.getSeeAllApplink());
+    }
+
+    private void redirectionStartActivity(String applink, String url) {
+        if(redirectionListener == null) return;
+
+        if (!TextUtils.isEmpty(applink)) {
+            redirectionListener.startActivityWithApplink(applink);
+        } else {
+            redirectionListener.startActivityWithUrl(url);
+        }
     }
 
     @Override
@@ -672,18 +651,10 @@ public class ProductListFragment
 
     @Override
     public void onSuccessAddWishlist(String productId) {
-        searchTracking.sendGeneralEventWithUserId(SearchEventTracking.Event.PRODUCT_VIEW,
-                SearchEventTracking.Category.SEARCH_RESULT.toLowerCase(),
-                SearchEventTracking.Action.CLICK_WISHLIST,
-                generateWishlistClickEventLabel(true));
+        searchTracking.eventSuccessAddWishlistSearchResultProduct(getQueryKey(), productId);
         adapter.updateWishlistStatus(productId, true);
         enableWishlistButton(productId);
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist));
-    }
-
-    private String generateWishlistClickEventLabel(boolean isWishlisted) {
-        String action = isWishlisted ? "add" : "remove";
-        return action + " - " + getQueryKey() + " - " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", DEFAULT_LOCALE).format(new Date());
     }
 
     @Override
@@ -694,11 +665,7 @@ public class ProductListFragment
 
     @Override
     public void onSuccessRemoveWishlist(String productId) {
-        searchTracking.sendGeneralEventWithUserId(
-                SearchEventTracking.Event.PRODUCT_VIEW,
-                SearchEventTracking.Category.SEARCH_RESULT.toLowerCase(),
-                SearchEventTracking.Action.CLICK_WISHLIST,
-                generateWishlistClickEventLabel(false));
+        searchTracking.eventSuccessRemoveWishlistSearchResultProduct(getQueryKey(), productId);
         adapter.updateWishlistStatus(productId, false);
         enableWishlistButton(productId);
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
@@ -802,17 +769,17 @@ public class ProductListFragment
 
     @Override
     public void onChangeList() {
-        recyclerView.setLayoutManager(getLinearLayoutManager());
+        recyclerView.requestLayout();
     }
 
     @Override
     public void onChangeDoubleGrid() {
-        recyclerView.setLayoutManager(getGridLayoutManager());
+        recyclerView.requestLayout();
     }
 
     @Override
     public void onChangeSingleGrid() {
-        recyclerView.setLayoutManager(getGridLayoutManager());
+        recyclerView.requestLayout();
     }
 
     public SearchParameter getSearchParameter() {
@@ -943,8 +910,7 @@ public class ProductListFragment
 
     @Override
     public void updateScrollListener() {
-        gridLayoutLoadMoreTriggerListener.updateStateAfterGetData();
-        linearLayoutLoadMoreTriggerListener.updateStateAfterGetData();
+        staggeredGridLayoutLoadMoreTriggerListener.updateStateAfterGetData();
     }
 
     public void startShowCase() {
@@ -972,7 +938,7 @@ public class ProductListFragment
                 if (itemView != null) {
                     showCaseList.add(
                             new ShowCaseObject(
-                                    itemView.findViewById(R.id.container),
+                                    itemView.findViewById(R.id.productCardView),
                                     getString(R.string.view_similar_item),
                                     getString(R.string.press_to_see_similar),
                                     ShowCaseContentPosition.BOTTOM));
@@ -1017,7 +983,7 @@ public class ProductListFragment
         if (recyclerView.getAdapter().getItemCount() >= PRODUCT_POSITION) {
             recyclerView.stopScroll();
             recyclerView.getLayoutManager().scrollToPosition(PRODUCT_POSITION + PRODUCT_POSITION);
-            return ((GridLayoutManager) recyclerView.getLayoutManager()).findViewByPosition(PRODUCT_POSITION);
+            return recyclerView.getLayoutManager().findViewByPosition(PRODUCT_POSITION);
         }
         return null;
     }
@@ -1058,5 +1024,24 @@ public class ProductListFragment
     @Override
     public void showAdultRestriction() {
         AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_SEARCH_PAGE, getQueryKey());
+    }
+
+    @Override
+    public void sendTrackingWishlistNonLogin(String productId, boolean wishlistAction) {
+        searchTracking.sendGeneralEventWithUserId(
+                SearchEventTracking.Event.CLICK_WISHLIST,
+                SearchEventTracking.Category.SEARCH_RESULT.toLowerCase(),
+                generateWishlistClickEventActionNonLogin(wishlistAction),
+                generateWishlistClickEventLabelNonLogin(productId)
+        );
+    }
+
+    private String generateWishlistClickEventActionNonLogin(boolean isWishlisted) {
+        String action = isWishlisted ? "add" : "remove";
+        return action + " wishlist - non logged in";
+    }
+
+    private String generateWishlistClickEventLabelNonLogin(String productId) {
+        return productId + " - " + getQueryKey();
     }
 }

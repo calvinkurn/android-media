@@ -1,0 +1,48 @@
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/attach_product_chat_image_layout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/dp_16"
+    app:cardCornerRadius="@dimen/dp_8"
+    app:cardElevation="@dimen/dp_4"
+    app:cardPreventCornerOverlap="false"
+    app:cardUseCompatPadding="false">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_16">
+
+        <ImageView
+            android:id="@+id/image_view"
+            android:layout_width="@dimen/dp_48"
+            android:layout_height="@dimen/dp_48"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/dp_8"
+            tools:src="@mipmap/ic_launcher" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/image_view"
+            android:text="@string/no_post"
+            app:typographyType="heading_3"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_title"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_toRightOf="@id/image_view"
+            android:paddingRight="@dimen/dp_32"
+            android:text="@string/follow_x_fox_inspiration"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
+            tools:text="Follow fewfewg fwef we wfefewf dqfewgfwehrb yuk untuk inspirasimu!" />
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

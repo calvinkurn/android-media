@@ -227,8 +227,8 @@ class ProductInfoFragment : BaseDaggerFragment() {
     private fun onClickWishlist(){
         fab_detail.setOnClickListener {
             if (primaryProductViewModel.isLoggedIn()) {
+                RecommendationPageTracking.eventUserClickProductToWishlistForUserLogin(!it.isActivated)
                 if (it.isActivated) {
-                    RecommendationPageTracking.eventAddWishlistOnProductRecommendationLogin()
                     productDataModel.productDetailData.id.let {
                         primaryProductViewModel.removeWishList(it.toString(),
                                 onSuccessRemoveWishlist = this::onSuccessRemoveWishlist,
@@ -236,7 +236,6 @@ class ProductInfoFragment : BaseDaggerFragment() {
                     }
 
                 } else {
-                    RecommendationPageTracking.eventRemoveWishlistOnProductRecommendationLogin()
                     productDataModel.productDetailData.id.let {
                         primaryProductViewModel.addWishList(it.toString(),
                                 onSuccessAddWishlist = this::onSuccessAddWishlist,
@@ -244,7 +243,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
                     }
                 }
             } else {
-                RecommendationPageTracking.eventAddWishlistOnProductRecommendationNonLogin()
+                RecommendationPageTracking.eventUserClickProductToWishlistForNonLogin()
                 RouteManager.route(activity, ApplinkConst.LOGIN)
             }
         }
@@ -339,7 +338,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
     private fun setRatingReviewCount(ratingValue: Int, review: Int){
         if (ratingValue in 1..5) {
             rating.setImageResource(getRatingDrawable(ratingValue))
-            review_count.text = String.format(getString(R.string.review_count), review)
+            review_count.text = String.format(getString(R.string.recom_review_count), review)
         } else {
             rating.visibility = View.GONE
             review_count.visibility = View.GONE
@@ -403,7 +402,10 @@ class ProductInfoFragment : BaseDaggerFragment() {
             shopType = if(productDataModel.productDetailData.shop.isGold) "gold_merchant" else "reguler",
             quantity = productDataModel.productDetailData.minOrder,
             header = "",
-            pageName = ""
+            pageName = "",
+            minOrder = productDataModel.productDetailData.minOrder,
+            location = "",
+            badgesUrl = listOf()
     )
 
     private fun handleDiscount(){
