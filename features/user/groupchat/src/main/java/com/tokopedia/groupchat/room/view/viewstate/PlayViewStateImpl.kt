@@ -446,8 +446,11 @@ open class PlayViewStateImpl(
 
     override fun onSuccessGetInfo(it: ChannelInfoViewModel) {
         loadingView.hide()
+
         var needCueVideo = viewModel?.videoId != it.videoId
         viewModel = it
+        viewModel?.infoUrl = it.infoUrl
+
         if (it.isFreeze) {
             onChannelFrozen(it.channelId)
             listener.onToolbarEnabled(false)

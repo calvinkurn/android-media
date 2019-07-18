@@ -26,10 +26,10 @@ project.ext {
 
 
 dependencies {
+    implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
-    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.network)
@@ -37,17 +37,18 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.locationmanager)
     implementation project(rootProject.ext.libraries.permissionchecker)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.transactionanalytics)
 
-
+    implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.playServicesDependencies.base
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.playServicesDependencies.places
     implementation rootProject.ext.playServicesDependencies.location
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.chips
-
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
 }

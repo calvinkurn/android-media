@@ -18,6 +18,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ScrollView
+import android.widget.Toast
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GlobalConfig
@@ -34,6 +35,8 @@ import com.tokopedia.datepicker.range.view.activity.DatePickerActivity
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
 import com.tokopedia.design.component.Tooltip
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
+import com.tokopedia.topads.auto.view.widget.AutoAdsWidgetView
+import com.tokopedia.topads.auto.view.widget.ToasterAutoAds
 import com.tokopedia.topads.common.TopAdsMenuBottomSheets
 import com.tokopedia.topads.common.constant.TopAdsAddingOption
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
@@ -65,6 +68,7 @@ import kotlinx.android.synthetic.main.fragment_top_ads_dashboard.*
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.partial_top_ads_shop_info.*
 import kotlinx.android.synthetic.main.top_ads_dashboard_empty_layout.*
+import java.lang.StringBuilder
 
 import java.util.Calendar
 import java.util.Date
@@ -78,12 +82,16 @@ import javax.inject.Inject
 class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
     internal var isShowAutoAddPromo = false
     internal var isAutoTopUpActive = false
+    internal var isAutoAds = false
 
     val shopInfoLayout: View?
         get() = view_group_deposit
 
     val groupSummaryLabelView: LabelView?
         get() = label_view_group_summary
+
+    val autoAdsWidgetView: AutoAdsWidgetView?
+        get() = autoads_widget
 
     private val pagerAdapter: TopAdsStatisticPagerAdapter? by lazy {
         val fragmentList = listOf(
@@ -172,9 +180,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         selectedStatisticType = TopAdsStatisticsType.PRODUCT_ADS
         totalProductAd = Integer.MIN_VALUE
         val refresh = RefreshHandler(activity, swipe_refresh_layout, RefreshHandler.OnRefreshHandlerListener {
-            topAdsDashboardPresenter.clearStatisticsCache()
-            topAdsDashboardPresenter.clearTotalAdCache()
-            loadData()
+            refreshData()
         })
         initTicker()
         initShopInfoComponent()
@@ -196,6 +202,13 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(activity) { loadData() }
         snackbarRetry?.setColorActionRetry(ContextCompat.getColor(activity!!, R.color.green_400))
         setHasOptionsMenu(true)
+    }
+
+    private fun refreshData() {
+        topAdsDashboardPresenter.clearStatisticsCache()
+        topAdsDashboardPresenter.clearTotalAdCache()
+        loadData()
+        loadAutoAds()
     }
 
     private fun initTicker() {
@@ -340,15 +353,30 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
             endDate = topAdsDashboardPresenter.endDate
             loadData()
         }
+        loadAutoAds()
     }
 
-    private fun loadData() {
+    fun loadData() {
         ticker_view.clearMessage()
         swipe_refresh_layout.isRefreshing = true
+        topAdsDashboardPresenter.clearTotalAdCache()
         topAdsDashboardPresenter.getAutoTopUpStatus(GraphqlHelper.loadRawString(resources, R.raw.gql_query_get_status_auto_topup))
         topAdsDashboardPresenter.getPopulateDashboardData(GraphqlHelper.loadRawString(resources, R.raw.gql_get_deposit))
         topAdsDashboardPresenter.getShopInfo()
         topAdsDashboardPresenter.getTickerTopAds(resources)
+    }
+
+    fun loadAutoAds() {
+        autoAdsWidgetView?.fetchData()
+        autoAdsWidgetView?.setActiveListener(object : AutoAdsWidgetView.ActiveListener {
+            override fun onActive() {
+                onActiveAutoAds()
+            }
+
+            override fun onInActive() {
+                onDeactiveAutoAds()
+            }
+        })
     }
 
     protected fun loadStatisticsData() {
@@ -599,21 +627,24 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         snackbarRetry?.hideRetrySnackbar()
         swipe_refresh_layout.isRefreshing = false
         onLoadTopAdsShopDepositSuccess(dashboardPopulateResponse.dataDeposit)
-        if (isUsageExists || isAdExists) {
-            onSuccessPopulateTotalAds(dashboardPopulateResponse.totalAd)
-            loadStatisticsData()
-            topads_dashboard_empty.visibility = View.GONE
-            topads_dashboard_content.visibility = View.VISIBLE
-        } else {
-            topads_dashboard_empty.visibility = View.VISIBLE
-            topads_dashboard_content.visibility = View.GONE
+        onSuccessPopulateTotalAds(dashboardPopulateResponse.totalAd)
+        loadStatisticsData()
+        if (!isUsageExists || !isAdExists) {
             isShowAutoAddPromo = GlobalConfig.isCustomerApp()
         }
     }
 
     override fun onSuccessGetTicker(message: List<String>) {
-        ticker_view.addAllMessage(message)
-        ticker_view.visibility = View.VISIBLE
+        if(isContainString(message)) {
+            ticker_view.addAllMessage(message)
+            ticker_view.visibility = View.VISIBLE
+        }
+    }
+
+    private fun isContainString(message: List<String>): Boolean {
+        var string = StringBuffer()
+        message.forEach { string.append(it) }
+        return string.isNotBlank()
     }
 
     override fun onErrorGetTicker(e: Throwable) {}
@@ -630,6 +661,20 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
                 btnAction.setOnClickListener { gotoAutoTopup(); dismiss() }
             }.show()
         }
+    }
+
+    private fun onActiveAutoAds() {
+        isAutoAds = true
+        label_view_group_summary.visibility = View.GONE
+        label_view_keyword.visibility = View.GONE
+        button_topads_add_promo.visibility = View.GONE
+    }
+
+    private fun onDeactiveAutoAds() {
+        isAutoAds = false
+        label_view_group_summary.visibility = View.VISIBLE
+        label_view_keyword.visibility = View.VISIBLE
+        button_topads_add_promo.visibility = View.VISIBLE
     }
 
     private fun gotoAutoTopup() {
@@ -680,8 +725,8 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         checkedBottomSheetMenu.show(activity!!.supportFragmentManager, javaClass.simpleName)
     }
 
-    fun startShowCase() {
-        callback?.startShowCase()
+    fun startShowCase(isAutoAds: Boolean) {
+        callback?.startShowCase(isAutoAds)
     }
 
     private fun onCostSelected() {
@@ -762,7 +807,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
                 when (pos) {
                     0 -> {
                         scroll_view.scrollTo(0, 0)
-                        startShowCase()
+                        startShowCase(isAutoAds)
                         menus.dismiss()
                     }
                     1 -> {
@@ -779,7 +824,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
     }
 
     interface Callback {
-        fun startShowCase()
+        fun startShowCase(isAutoAds : Boolean)
     }
 
     companion object {
