@@ -67,7 +67,7 @@ class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), PromoC
             trackingPromoCheckoutUtil.checkoutClickCoupon(promoCheckoutListModel?.code ?: "")
         }
         startActivityForResult(PromoCheckoutDetailDigitalActivity.newInstance(
-                activity, promoCheckoutListModel?.code, false, promoDigitalModel, pageTracking), REQUEST_CODE_DETAIL_PROMO)
+                activity, promoCheckoutListModel?.code ?: "", false, promoDigitalModel, pageTracking), REQUEST_CODE_DETAIL_PROMO)
     }
 
     override fun onPromoCodeUse(promoCode: String) {
@@ -111,7 +111,6 @@ class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), PromoC
                 data.message.text, data.titleDescription,
                 data.cashbackWalletAmount, data.message.state.mapToStatePromoCheckout())
         intent.putExtra(EXTRA_PROMO_DATA, promoData)
-        intent.putExtra(EXTRA_INPUT_TYPE, INPUT_TYPE_PROMO_CODE)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
     }

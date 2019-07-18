@@ -89,6 +89,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         cartPassData = getArguments().getParcelable(ARG_PASS_DATA);
         saveInstanceCacheManager = new SaveInstanceCacheManager(getActivity(), savedInstanceState);
         digitalAnalytics = new DigitalAnalytics();
+        promoData = new PromoData();
     }
 
     @Override
@@ -128,6 +129,11 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     }
 
     @Override
+    public void resetPromoTicker() {
+        checkoutHolderView.resetPromoTicker();
+    }
+
+    @Override
     public void renderPromo(String title, String message) {
         checkoutHolderView.setPromoTickerActionListener(this);
         checkoutHolderView.setPromoInfo(title, message, promoData.getState());
@@ -150,7 +156,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public CheckoutDataParameter.Builder getCheckoutDataParameter() {
-        if (promoData != null && promoData.getState() == TickerCheckoutView.State.ACTIVE) checkoutDataParameterBuilder.voucherCode(promoData.getPromoCode());
+        if (promoData.getState() == TickerCheckoutView.State.ACTIVE) checkoutDataParameterBuilder.voucherCode(promoData.getPromoCode());
         return checkoutDataParameterBuilder;
     }
 
@@ -216,24 +222,28 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void onDisablePromoDiscount() {
-        presenter.onClearVoucher();
+        promoData.setPromoCode("");
     }
 
     @Override
     public void onClickDetailPromo() {
         Intent intent;
         String promoCode = promoData.getPromoCode();
-        if (promoData.getTypePromo() == 1) {
-            intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_LIST_DIGITAL);
-            intent.putExtra("EXTRA_PROMO_CODE", promoCode);
-            intent.putExtra("EXTRA_COUPON_ACTIVE", cartDigitalInfoData.getAttributes().isCouponActive());
+        if (!promoCode.isEmpty()) {
+            if (promoData.getTypePromo() == 1) {
+                intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_LIST_DIGITAL);
+                intent.putExtra("EXTRA_PROMO_CODE", promoCode);
+                intent.putExtra("EXTRA_COUPON_ACTIVE", cartDigitalInfoData.getAttributes().isCouponActive());
+            } else {
+                intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_DETAIL_DIGITAL);
+                intent.putExtra("EXTRA_IS_USE", true);
+                intent.putExtra("EXTRA_KUPON_CODE", promoCode);
+            }
+            intent.putExtra("EXTRA_PROMO_DIGITAL_MODEL", getPromoDigitalModel());
+            startActivityForResult(intent, 231);
         } else {
-            intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_DETAIL_DIGITAL);
-            intent.putExtra("EXTRA_IS_USE", true);
-            intent.putExtra("EXTRA_KUPON_CODE", promoCode);
+            showToastMessage("Tidak ada promo yang sedang dipakai");
         }
-        intent.putExtra("EXTRA_PROMO_DIGITAL_MODEL", getPromoDigitalModel());
-        startActivityForResult(intent, 231);
     }
 
 //    @Override
@@ -293,10 +303,14 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if ((requestCode == 230 || requestCode == 231) && resultCode == Activity.RESULT_OK) { //TODO: Set request code constant in promo checkout common
-            Bundle bundle = data.getExtras();
-            if (bundle != null) {
-                promoData = bundle.getParcelable(TickerCheckoutUtilKt.getEXTRA_PROMO_DATA());
-                presenter.onReceivePromoCode(promoData.getTitle(), promoData.getDescription(), promoData.getPromoCode(), promoData.getTypePromo());
+            if (data.hasExtra(TickerCheckoutUtilKt.getEXTRA_PROMO_DATA())) {
+                promoData = data.getParcelableExtra(TickerCheckoutUtilKt.getEXTRA_PROMO_DATA());
+                // Check between apply promo code or cancel promo from promo detail
+                if (promoData.getState() == TickerCheckoutView.State.EMPTY) {
+                    resetPromoTicker();
+                } else {
+                    presenter.onReceivePromoCode(promoData.getTitle(), promoData.getDescription(), promoData.getPromoCode(), promoData.getTypePromo());
+                }
             }
         } else if (requestCode == TopPayActivity.REQUEST_CODE) {
             switch (resultCode) {

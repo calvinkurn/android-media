@@ -15,6 +15,7 @@ import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
+import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.detail.di.DaggerPromoCheckoutDetailComponent
 import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailModule
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailDigitalPresenter
@@ -60,7 +61,11 @@ class PromoCheckoutDetailDigitalFragment : BasePromoCheckoutDetailFragment() {
         } else {
             trackingPromoCheckoutUtil.checkoutClickCancelPromoCoupon(codeCoupon)
         }
-        promoCheckoutDetailDigitalPresenter.cancelPromo(codeCoupon)
+        val intent = Intent()
+        val promoData = PromoData(PromoData.TYPE_COUPON, state = TickerCheckoutView.State.EMPTY)
+        intent.putExtra(EXTRA_PROMO_DATA, promoData)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
     }
 
     override fun onSuccessValidatePromoStacking(data: DataUiModel) {
@@ -70,12 +75,10 @@ class PromoCheckoutDetailDigitalFragment : BasePromoCheckoutDetailFragment() {
             trackingPromoCheckoutUtil.checkoutClickUsePromoCouponSuccess(data.codes[0])
         }
         val intent = Intent()
-        val typePromo = PromoData.TYPE_COUPON
-        val promoData = PromoData(typePromo, data.codes[0],
+        val promoData = PromoData(PromoData.TYPE_COUPON, data.codes[0],
                 data.message.text, data.titleDescription,
                 data.cashbackWalletAmount, data.message.state.mapToStatePromoCheckout())
         intent.putExtra(EXTRA_PROMO_DATA, promoData)
-        intent.putExtra(EXTRA_INPUT_TYPE, INPUT_TYPE_PROMO_CODE)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
     }

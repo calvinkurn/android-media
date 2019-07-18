@@ -11,19 +11,19 @@ import com.tokopedia.promocheckout.detail.view.fragment.PromoCheckoutDetailDigit
 class PromoCheckoutDetailDigitalActivity : BaseSimpleActivity() {
     override fun getNewFragment(): Fragment {
         return PromoCheckoutDetailDigitalFragment.createInstance(
-                intent.getStringExtra(PromoCheckoutDetailDigitalFragment.EXTRA_KUPON_CODE),
-                intent.getBooleanExtra(PromoCheckoutDetailDigitalFragment.EXTRA_IS_USE, false),
-                intent.getParcelableExtra(PromoCheckoutDetailDigitalFragment.EXTRA_PROMO_DIGITAL_MODEL),
-                intent.getIntExtra(PromoCheckoutDetailDigitalFragment.PAGE_TRACKING, 1)
+                intent?.extras?.getString(PromoCheckoutDetailDigitalFragment.EXTRA_KUPON_CODE) ?: "",
+                intent?.extras?.getBoolean(PromoCheckoutDetailDigitalFragment.EXTRA_IS_USE, false) ?: false,
+                intent?.extras?.getParcelable(PromoCheckoutDetailDigitalFragment.EXTRA_PROMO_DIGITAL_MODEL) as PromoDigitalModel,
+                intent?.extras?.getInt(PromoCheckoutDetailDigitalFragment.PAGE_TRACKING, 1) ?: 1
         )
     }
 
     companion object {
-        fun newInstance(context: Context?, codeCoupon: String?, isUse: Boolean?, promoDigitalModel: PromoDigitalModel, pageTracking: Int): Intent {
+        fun newInstance(context: Context?, codeCoupon: String, isUse: Boolean, promoDigitalModel: PromoDigitalModel, pageTracking: Int): Intent {
             val intent = Intent(context, PromoCheckoutDetailDigitalActivity::class.java)
             val bundle = Bundle()
             bundle.putString(PromoCheckoutDetailDigitalFragment.EXTRA_KUPON_CODE, codeCoupon)
-            bundle.putBoolean(PromoCheckoutDetailDigitalFragment.EXTRA_IS_USE, isUse ?: false)
+            bundle.putBoolean(PromoCheckoutDetailDigitalFragment.EXTRA_IS_USE, isUse)
             bundle.putParcelable(PromoCheckoutDetailDigitalFragment.EXTRA_PROMO_DIGITAL_MODEL, promoDigitalModel)
             bundle.putInt(PromoCheckoutDetailDigitalFragment.PAGE_TRACKING, pageTracking)
             intent.putExtras(bundle)

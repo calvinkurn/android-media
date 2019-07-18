@@ -27,6 +27,8 @@ public interface DigitalBaseContract {
 
         void hidePromoTicker();
 
+        void resetPromoTicker();
+
         void renderPromo(String title, String message);
 
         void enableVoucherDiscount(long discountAmountPlain);

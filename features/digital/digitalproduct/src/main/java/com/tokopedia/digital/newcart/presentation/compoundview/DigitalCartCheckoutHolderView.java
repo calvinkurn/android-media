@@ -80,16 +80,12 @@ public class DigitalCartCheckoutHolderView extends BaseCustomView {
         promoTickerView.setVisibility(VISIBLE);
     }
 
-//    public void setHachikoPromoAndCouponLabel() {
-//        voucherCartHachikoView.setPromoAndCouponLabel();
-//    }
-//
-//    public void setHachikoPromoLabelOnly() {
-//        voucherCartHachikoView.setPromoLabelOnly();
-//    }
-
     public void hidePromoTicker() {
         promoTickerView.setVisibility(GONE);
+    }
+
+    public void resetPromoTicker() {
+        promoTickerView.resetView();
     }
 
     public void setPromoInfo(String title, String message, TickerCheckoutView.State state) {

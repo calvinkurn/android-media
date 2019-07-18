@@ -54,19 +54,7 @@ class PromoCheckoutListDigitalPresenter(private val graphqlUseCase: GraphqlUseCa
         checkVoucherUseCase.execute(checkVoucherUseCase.createRequestParams(promoCode, promoDigitalModel), object : Subscriber<GraphqlResponse>() {
             override fun onNext(objects: GraphqlResponse) {
                 view.hideProgressLoading()
-//                val checkVoucherData = objects.getData<CheckVoucherDigital.Response>(CheckVoucherDigital.Response::class.java).response
-
-                val checkVoucherData = CheckVoucherDigital()
-                val checkVoucherDataVoucher = CheckVoucherDigitalData()
-                checkVoucherDataVoucher.success = true
-                checkVoucherDataVoucher.code = "TEST"
-                val message = Message()
-                message.text = "test description"
-                message.state = "green"
-                checkVoucherDataVoucher.message = message
-                checkVoucherDataVoucher.titleDescription = "Diskon voucher: TEST"
-                checkVoucherData.voucherData = checkVoucherDataVoucher
-
+                val checkVoucherData = objects.getData<CheckVoucherDigital.Response>(CheckVoucherDigital.Response::class.java).response
                 if (checkVoucherData.voucherData.success) {
                     view.onSuccessCheckPromoStackingCode(checkVoucherDigitalMapper.mapData(checkVoucherData.voucherData))
                 } else {
