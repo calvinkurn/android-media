@@ -309,5 +309,6 @@
     <string name="checkout_module_title_wishlist">Wishlist</string>
     <string name="checkout_module_title_recent_view">Terakhir Dilihat</string>
     <string name="checkout_module_title_recommendation">Rekomendasi</string>
-
+    <string name="product_invenage_remaining_stock">$less_than_count</string>
+    <string name="product_invenage_in_other_cart">$pita_by_user_count</string>
 </resources>

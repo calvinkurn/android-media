@@ -185,6 +185,9 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     private List<CartWishlistItemHolderData> wishLists;
     private List<CartRecentViewItemHolderData> recentViewList;
     private List<CartRecommendationItemHolderData> recommendationList;
+    private boolean hasTriedToLoadWishList;
+    private boolean hasTriedToLoadRecentViewList;
+    private boolean hasTriedToLoadRecommendation;
 
     public static CartFragment newInstance(Bundle bundle, String args) {
         if (bundle == null) {
@@ -203,8 +206,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         }
         userSession = new UserSession(getActivity());
-        cartPerformanceMonitoring = PerformanceMonitoring.start(CART_TRACE);
-        cartAllPerformanceMonitoring = PerformanceMonitoring.start(CART_ALL_TRACE);
 
         if (getActivity() != null) {
             saveInstanceCacheManager = new SaveInstanceCacheManager(getActivity(), savedInstanceState);
@@ -221,6 +222,9 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             recommendationList = saveInstanceCacheManager.get(CartRecommendationItemHolderData.class.getSimpleName(),
                     (new TypeToken<ArrayList<CartRecommendationItemHolderData>>() {
                     }).getType(), null);
+        } else {
+            cartPerformanceMonitoring = PerformanceMonitoring.start(CART_TRACE);
+            cartAllPerformanceMonitoring = PerformanceMonitoring.start(CART_ALL_TRACE);
         }
 
         dPresenter.attachView(this);
@@ -559,9 +563,15 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         if (saveInstanceCacheManager != null) {
             saveInstanceCacheManager.onSave(outState);
             saveInstanceCacheManager.put(CartListData.class.getSimpleName(), cartListData);
-            saveInstanceCacheManager.put(CartWishlistItemHolderData.class.getSimpleName(), new ArrayList<>(wishLists));
-            saveInstanceCacheManager.put(CartRecentViewItemHolderData.class.getSimpleName(), new ArrayList<>(recentViewList));
-            saveInstanceCacheManager.put(CartRecommendationItemHolderData.class.getSimpleName(), new ArrayList<>(recommendationList));
+            if (wishLists != null) {
+                saveInstanceCacheManager.put(CartWishlistItemHolderData.class.getSimpleName(), new ArrayList<>(wishLists));
+            }
+            if (recentViewList != null) {
+                saveInstanceCacheManager.put(CartRecentViewItemHolderData.class.getSimpleName(), new ArrayList<>(recentViewList));
+            }
+            if (recommendationList != null) {
+                saveInstanceCacheManager.put(CartRecommendationItemHolderData.class.getSimpleName(), new ArrayList<>(recommendationList));
+            }
         }
     }
 
@@ -940,6 +950,16 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
+    public void onCartItemShowTickerPriceDecrease(String productId) {
+        cartPageAnalytics.eventViewTickerPriceDecrease(productId);
+    }
+
+    @Override
+    public void onCartItemShowTickerStockDecreaseAndAlreadyAtcByOtherUser(String productId) {
+        cartPageAnalytics.eventViewTickerStockDecreaseAndAlreadyAtcByOtherUser(productId);
+    }
+
+    @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
         startActivityForResult(intent, requestCode);
     }
@@ -1111,7 +1131,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void stopCartPerformanceTrace() {
-        if (!isTraceCartStopped) {
+        if (cartPerformanceMonitoring != null && !isTraceCartStopped) {
             cartPerformanceMonitoring.stopTrace();
             isTraceCartStopped = true;
         }
@@ -1119,7 +1139,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void stopAllCartPerformanceTrace() {
-        if (!isTraceCartAllStopped && wishLists != null && recentViewList != null && recommendationList != null) {
+        if (cartAllPerformanceMonitoring != null && !isTraceCartAllStopped && hasTriedToLoadRecentViewList && hasTriedToLoadWishList && hasTriedToLoadRecommendation) {
             cartAllPerformanceMonitoring.stopTrace();
             isTraceCartAllStopped = true;
         }
@@ -1969,7 +1989,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         cartRecentViewHolderData.setRecentViewList(cartRecentViewItemHolderDataList);
         cartAdapter.addCartRecentViewData(cartSectionHeaderHolderData, cartRecentViewHolderData);
         this.recentViewList = cartRecentViewItemHolderDataList;
-        stopAllCartPerformanceTrace();
     }
 
     @Override
@@ -2017,7 +2036,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         cartRecentViewHolderData.setWishList(cartWishlistItemHolderDataList);
         cartAdapter.addCartWishlistData(cartSectionHeaderHolderData, cartRecentViewHolderData);
         this.wishLists = cartWishlistItemHolderDataList;
-        stopAllCartPerformanceTrace();
     }
 
     @Override
@@ -2059,7 +2077,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         hasLoadRecommendation = true;
         cartAdapter.addCartRecommendationData(cartSectionHeaderHolderData, cartRecommendationItemHolderDataList);
         this.recommendationList = cartRecommendationItemHolderDataList;
-        stopAllCartPerformanceTrace();
     }
 
     @Override
@@ -2098,5 +2115,20 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         if (stringObjectMap != null) {
             checkoutAnalyticsCourierSelection.sendEnhancedECommerceAddToCart(stringObjectMap, eventCategory, eventAction, eventLabel);
         }
+    }
+
+    @Override
+    public void setHasTriedToLoadRecentView() {
+        hasTriedToLoadRecentViewList = true;
+    }
+
+    @Override
+    public void setHasTriedToLoadWishList() {
+        hasTriedToLoadWishList = true;
+    }
+
+    @Override
+    public void setHasTriedToLoadRecommendation() {
+        hasTriedToLoadRecommendation = true;
     }
 }

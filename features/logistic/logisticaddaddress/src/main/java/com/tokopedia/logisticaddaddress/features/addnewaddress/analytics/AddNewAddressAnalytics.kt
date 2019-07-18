@@ -53,6 +53,7 @@ object AddNewAddressAnalytics {
     private const val VIEW_TOASTER_PILIH_KOTA_DAN_KODE_POS_TERLEBIH_DAHULU = "click field no ponsel"
     private const val VIEW_TOASTER_ALAMAT_TIDAK_SESUAI_DENGAN_PETA = "view toaster alamat tidak sesuai dengan peta"
 
+    @JvmStatic
     fun sendScreenName(activity: Activity, screenName: String) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }
@@ -229,7 +230,7 @@ object AddNewAddressAnalytics {
     }
 
     fun eventClickButtonSimpanNegativeSuccess() {
-        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_BUTTON_SIMPAN, NEGATIVE_SUCCESS)
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_SIMPAN, NEGATIVE_SUCCESS)
     }
 
     fun eventClickButtonSimpanNegativeNotSuccess(errorField: String) {

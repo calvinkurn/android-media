@@ -26,7 +26,7 @@
 
             <include layout="@layout/partial_shop_settings_info_status" />
 
-            <include layout="@layout/partial_shop_settings_info_membership" />
+            <include layout="@layout/partial_shop_settings_info_power_merchant" />
         </LinearLayout>
     </ScrollView>
 </FrameLayout>
