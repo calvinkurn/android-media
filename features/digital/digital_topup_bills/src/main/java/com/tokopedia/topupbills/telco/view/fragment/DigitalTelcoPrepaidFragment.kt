@@ -40,7 +40,7 @@ import com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
 import com.tokopedia.topupbills.telco.view.widget.DigitalTelcoBuyWidget
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_digital_telco_prepaid.*
-import java.util.ArrayList
+import java.util.*
 
 /**
  * Created by nabillasabbaha on 11/04/19.
@@ -55,7 +55,9 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private lateinit var layoutProgressBar: RelativeLayout
     private lateinit var productSelected: TelcoProductDataCollection
     private lateinit var selectedOperator: TelcoCustomDataCollection
+    private lateinit var selectedOperatorName: String
     private lateinit var inputNumberActionType: InputNumberActionType
+    private lateinit var selectedTelcoRecommendation: TelcoRecommendation
 
     private val favNumberList = mutableListOf<TelcoFavNumber>()
     private var operatorData: TelcoCustomComponentData =
@@ -190,19 +192,25 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 selectedOperator = this.operatorData.rechargeCustomData.customDataCollections.single {
                     telcoClientNumberWidget.getInputNumber().startsWith(it.value)
                 }
-                val operatorName = selectedOperator.operator.attributes.name
+                selectedOperatorName = selectedOperator.operator.attributes.name
                 when (inputNumberActionType) {
                     InputNumberActionType.MANUAL -> {
-                        topupAnalytics.eventInputNumberManual(selectedCategoryId, operatorName)
+                        topupAnalytics.eventInputNumberManual(selectedCategoryId, selectedOperatorName)
                     }
                     InputNumberActionType.CONTACT -> {
-                        topupAnalytics.eventInputNumberContactPicker(selectedCategoryId, operatorName)
+                        topupAnalytics.eventInputNumberContactPicker(selectedCategoryId, selectedOperatorName)
                     }
                     InputNumberActionType.FAVORITE -> {
-                        topupAnalytics.eventInputNumberFavorites(selectedCategoryId, operatorName)
+                        topupAnalytics.eventInputNumberFavorites(selectedCategoryId, selectedOperatorName)
                     }
                     InputNumberActionType.CONTACT_HOMEPAGE -> {
-                        topupAnalytics.eventClickOnContactPickerHomepage(selectedCategoryId, operatorName)
+                        topupAnalytics.eventInputNumberContactPicker(selectedCategoryId, selectedOperatorName)
+                    }
+                    InputNumberActionType.LATEST_TRANSACTION -> {
+                        if (::selectedTelcoRecommendation.isInitialized) {
+                            topupAnalytics.clickEnhanceCommerceRecentTransaction(selectedTelcoRecommendation, selectedOperatorName,
+                                    selectedTelcoRecommendation.position)
+                        }
                     }
                 }
 
@@ -217,7 +225,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             }
         } catch (exception: Exception) {
             view?.run {
-                Toaster.showError(this, getErrorMessage(activity, exception), Snackbar.LENGTH_LONG)
+                telcoClientNumberWidget.setErrorInputNumber(
+                        getString(R.string.telco_number_error_not_found))
             }
         }
     }
@@ -291,14 +300,14 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     fun renderViewPager(operatorId: String) {
         val listProductTab = mutableListOf<DigitalTabTelcoItem>()
         listProductTab.add(DigitalTabTelcoItem(DigitalTelcoProductFragment.newInstance(
-                TelcoComponentType.PRODUCT_PULSA, TelcoComponentName.PRODUCT_PULSA, operatorId, TelcoProductType.PRODUCT_GRID, selectedProductId),
-                TelcoComponentName.PRODUCT_PULSA))
+                TelcoComponentType.PRODUCT_PULSA, TelcoComponentName.PRODUCT_PULSA, operatorId, selectedOperatorName,
+                TelcoProductType.PRODUCT_GRID, selectedProductId), TelcoComponentName.PRODUCT_PULSA))
         listProductTab.add(DigitalTabTelcoItem(DigitalTelcoProductFragment.newInstance(
-                TelcoComponentType.PRODUCT_PAKET_DATA, TelcoComponentName.PRODUCT_PAKET_DATA, operatorId, TelcoProductType.PRODUCT_LIST, selectedProductId),
-                TelcoComponentName.PRODUCT_PAKET_DATA))
+                TelcoComponentType.PRODUCT_PAKET_DATA, TelcoComponentName.PRODUCT_PAKET_DATA, selectedOperatorName,
+                operatorId, TelcoProductType.PRODUCT_LIST, selectedProductId), TelcoComponentName.PRODUCT_PAKET_DATA))
         listProductTab.add(DigitalTabTelcoItem(DigitalTelcoProductFragment.newInstance(
-                TelcoComponentType.PRODUCT_ROAMING, TelcoComponentName.PRODUCT_ROAMING, operatorId, TelcoProductType.PRODUCT_LIST, selectedProductId),
-                TelcoComponentName.PRODUCT_ROAMING))
+                TelcoComponentType.PRODUCT_ROAMING, TelcoComponentName.PRODUCT_ROAMING, operatorId, selectedOperatorName,
+                TelcoProductType.PRODUCT_LIST, selectedProductId), TelcoComponentName.PRODUCT_ROAMING))
         val pagerAdapter = DigitalTelcoProductTabAdapter(listProductTab, childFragmentManager)
         viewPager.adapter = pagerAdapter
         viewPager.offscreenPageLimit = 3
@@ -316,7 +325,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             }
 
             override fun onPageSelected(pos: Int) {
-                topupAnalytics.eventClickTelcoPrepaidCategory(listProductTab.get(pos).title)
+                topupAnalytics.eventClickTelcoPrepaidCategory(listProductTab[pos].title)
             }
         })
     }
@@ -382,6 +391,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         selectedProductId = telcoRecommendation.productId.toString()
         selectedCategoryId = telcoRecommendation.categoryId
         telcoClientNumberWidget.setInputNumber(telcoRecommendation.clientNumber)
+        this.selectedTelcoRecommendation = telcoRecommendation
     }
 
     override fun setFavNumbers(data: TelcoRechargeFavNumberData) {

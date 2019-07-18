@@ -127,6 +127,7 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
     }
 
     fun navigateContact() {
+        topupAnalytics.eventClickOnContactPickerHomepage()
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             activity?.let {
                 permissionCheckerHelper.checkPermission(it,
@@ -226,10 +227,10 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
     private fun renderRecentTransactions(recentNumbers: List<TelcoRecommendation>) {
         if (recentNumbers.isNotEmpty()) {
             recentNumbersWidget.setListener(object : DigitalRecentTransactionWidget.ActionListener {
-                override fun onClickRecentNumber(telcoRecommendation: TelcoRecommendation, categoryName: String,
+                override fun onClickRecentNumber(telcoRecommendation: TelcoRecommendation, categoryId: Int,
                                                  position: Int) {
+                    telcoRecommendation.position = position
                     onClickItemRecentNumber(telcoRecommendation)
-                    topupAnalytics.clickEnhanceCommerceRecentTransaction(telcoRecommendation, categoryName, position)
                 }
 
                 override fun onTrackImpressionRecentList(digitalTrackRecentList: List<DigitalTrackRecentTransactionTelco>) {

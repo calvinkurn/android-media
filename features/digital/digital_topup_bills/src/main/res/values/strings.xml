@@ -27,4 +27,5 @@
     <string name="telco_label_showcase_client_number">Cukup masukkan nomor HP, langsung tersedia pilihan pulsa dan paket data yang sesuai</string>
     <string name="telco_title_showcase_promo">Diskon spesial buat kamu</string>
     <string name="telco_label_showcase_promo">Mau beli pulsa dan paket data lebih hemat? Pilih sendiri kode promonya!</string>
+    <string name="telco_number_error_not_found">Nomor tidak valid</string>
 </resources>
