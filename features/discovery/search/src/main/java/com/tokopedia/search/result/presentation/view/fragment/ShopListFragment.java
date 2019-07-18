@@ -121,11 +121,11 @@ public class ShopListFragment
         if (getUserVisibleHint()) {
             setupSearchNavigation();
         }
-        setSpanCount(1);
     }
 
     private void bindView(View rootView) {
         if(getContext() == null || getContext().getResources() == null) return;
+        setSpanCountToOne();
 
         adapter = new ShopListAdapter(this,
                 new ShopListTypeFactoryImpl(this, this, this));
@@ -145,6 +145,10 @@ public class ShopListFragment
         recyclerView.addOnScrollListener(gridLayoutLoadMoreTriggerListener);
 
         adapter.addLoading();
+    }
+
+    private void setSpanCountToOne() {
+        getGridLayoutManager().setSpanCount(1);
     }
 
     private void initListener() {

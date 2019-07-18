@@ -18,14 +18,12 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toTopOf="@id/textViewShopItemProductPrice"
         app:cardCornerRadius="@dimen/dp_6"
-        app:cardElevation="@dimen/dp_0"
-        app:cardPreventCornerOverlap="false"
-        app:cardUseCompatPadding="true">
+        app:cardElevation="@dimen/dp_0">
 
-        <com.tokopedia.design.image.SquareImageView
+        <ImageView
             android:id="@+id/imageViewShopItemProductImage"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="86dp"
+            android:layout_height="86dp"
             android:src="@color/shop_item_product_empty_color"/>
 
     </android.support.v7.widget.CardView>
