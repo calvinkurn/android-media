@@ -33,21 +33,23 @@
                 android:gravity="center_vertical"
                 android:orientation="vertical">
 
-                <TextView
-                    style="@style/TextSmallMediumBlack38"
+                <com.tokopedia.unifyprinciples.Typography
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/label_payment_total" />
+                    android:text="@string/label_payment_total"
+                    android:textColor="@color/text_black"
+                    app:typographyType="body_2"
+                    app:typographyWeight="bold"/>
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_total_payment"
-                    style="@style/TextMidMedium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="end"
                     android:text="-"
-                    android:textColor="@color/orange_red"
-                    android:textSize="@dimen/sp_16" />
+                    android:textColor="@color/price_label"
+                    app:typographyType="heading_4"
+                    app:typographyWeight="bold" />
 
             </LinearLayout>
 

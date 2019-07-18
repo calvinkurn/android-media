@@ -106,7 +106,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
 
         SpannableStringBuilder completeLabelShop = new SpannableStringBuilder();
         completeLabelShop.append(labelShop);
-        int start = labelShop.length() + 1;
+        int start = labelShop.length();
         completeLabelShop.append(shopName);
         completeLabelShop.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, completeLabelShop.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         System.out.println("## completeLabelShop = "+completeLabelShop+", start = "+start+", end  = "+completeLabelShop.length());

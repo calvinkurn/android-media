@@ -5,15 +5,15 @@
         <shape
             android:dither="true"
             android:shape="rectangle" >
-            <solid android:color="@color/button_checkout" />
+            <solid android:color="@color/address_green" />
 
             <corners android:radius="8dp" />
 
             <padding
-                android:bottom="@dimen/dp_10"
-                android:left="@dimen/dp_22"
-                android:right="@dimen/dp_22"
-                android:top="@dimen/dp_10" />
+                android:bottom="8dp"
+                android:left="8dp"
+                android:right="8dp"
+                android:top="8dp" />
         </shape>
     </item>
 
