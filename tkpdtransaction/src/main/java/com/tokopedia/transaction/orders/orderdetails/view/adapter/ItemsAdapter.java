@@ -638,6 +638,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 if(!hasViews){
                     customTicketView1.setVisibility(View.GONE);
                     itemView.findViewById(R.id.divider1).setVisibility(View.GONE);
+                } else {
+                    customTicketView1.setVisibility(View.VISIBLE);
+                    itemView.findViewById(R.id.divider1).setVisibility(View.VISIBLE);
                 }
 
                 if (item.isTapActionsLoaded()) {
