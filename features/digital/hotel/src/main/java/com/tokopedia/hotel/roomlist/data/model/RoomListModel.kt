@@ -1,8 +1,5 @@
 package com.tokopedia.hotel.roomlist.data.model
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.hotel.roomlist.presentation.adapter.RoomListTypeFactory
-
 /**
  * @author by jessica on 15/04/19
  */

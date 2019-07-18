@@ -182,11 +182,11 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun configAndRenderCheckInDate() {
-        openCalendarDialog()
+        openCalendarDialog(hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate)
     }
 
     private fun configAndRenderCheckOutDate() {
-        openCalendarDialog(hotelHomepageModel.checkInDate)
+        openCalendarDialog(checkIn = hotelHomepageModel.checkInDate)
     }
 
     private fun onGuestInfoClicked() {
@@ -306,8 +306,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
         })
     }
 
-    private fun openCalendarDialog(selectedDate: String? = null) {
-        val hotelCalendarDialog = HotelCalendarDialog.getInstance(selectedDate)
+    private fun openCalendarDialog(checkIn: String? = null, checkOut: String? = null) {
+        val hotelCalendarDialog = HotelCalendarDialog.getInstance(checkIn, checkOut)
         hotelCalendarDialog.listener = object : HotelCalendarDialog.OnDateClickListener{
             override fun onDateClick(dateIn: Date, dateOut: Date) {
                 onCheckInDateChanged(dateIn)

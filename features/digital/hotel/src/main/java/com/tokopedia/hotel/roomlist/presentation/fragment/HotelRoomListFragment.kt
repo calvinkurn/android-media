@@ -278,15 +278,13 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     }
 
     private fun openCalendarDialog(selectedDate: Date? = null) {
-        val hotelCalendarDialog = HotelCalendarDialog()
+        val hotelCalendarDialog = HotelCalendarDialog.getInstance(hotelRoomListPageModel.checkIn, hotelRoomListPageModel.checkOut)
         hotelCalendarDialog.listener = object : HotelCalendarDialog.OnDateClickListener{
             override fun onDateClick(dateIn: Date, dateOut: Date) {
                 onCheckInDateChanged(dateIn)
                 onCheckOutDateChanged(dateOut)
             }
-
         }
-        hotelCalendarDialog.selectedDate = selectedDate
         hotelCalendarDialog.show(fragmentManager, "test")
     }
 
