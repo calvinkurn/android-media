@@ -14,7 +14,7 @@ class ShopListItemDecoration(private val left: Int,
         outRect.left = left
         outRect.right = right
         outRect.bottom = bottom / 2
-        outRect.top = if (isTopProductItem(parent, view)) top / 2 else top
+        outRect.top = if (isTopProductItem(parent, view)) top else top / 2
     }
 
     private fun isTopProductItem(parent: RecyclerView, view: View): Boolean {

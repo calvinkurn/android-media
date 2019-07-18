@@ -75,6 +75,7 @@
             android:layout_height="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_4"
             android:layout_marginStart="@dimen/dp_4"
+            android:adjustViewBounds="true"
             app:layout_constraintTop_toTopOf="@id/textViewShopLocation"
             app:layout_constraintLeft_toRightOf="@id/textViewShopLocation"
             tools:src="@drawable/ic_badge_gold"/>
