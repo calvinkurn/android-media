@@ -62,7 +62,7 @@ class DigitalPromoListAdapter(val digitalPromoList: List<TelcoPromo>) :
 
         init {
             container.setOnClickListener {
-                listener.onClickPromoItem(telcoPromo)
+                listener.onClickPromoItem(telcoPromo, adapterPosition)
             }
 
             btnCopyPromo.setOnClickListener {
@@ -109,7 +109,7 @@ class DigitalPromoListAdapter(val digitalPromoList: List<TelcoPromo>) :
     interface ActionListener {
         fun onClickPromoCode(promoId: Int, voucherCode: String)
 
-        fun onClickPromoItem(telcoPromo: TelcoPromo)
+        fun onClickPromoItem(telcoPromo: TelcoPromo, position: Int)
     }
 
 }
