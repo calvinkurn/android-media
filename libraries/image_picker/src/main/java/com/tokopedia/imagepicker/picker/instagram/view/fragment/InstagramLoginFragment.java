@@ -118,8 +118,8 @@ public class InstagramLoginFragment extends BaseDaggerFragment{
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            if (url.contains("?code")) {
-                Uri codeUri = Uri.parse(url);
+            Uri codeUri = Uri.parse(url);
+            if (url.startsWith(InstagramConstant.CALLBACK_URL) && codeUri.getQueryParameterNames().contains("code")) {
                 String code = codeUri.getQueryParameter("code");
                 Intent intent = new Intent();
                 intent.putExtra(InstagramConstant.EXTRA_CODE_LOGIN, code);
