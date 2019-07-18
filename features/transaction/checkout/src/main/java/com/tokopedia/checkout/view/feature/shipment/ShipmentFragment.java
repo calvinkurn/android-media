@@ -1568,6 +1568,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         checkoutAnalyticsCourierSelection.eventClickCourierCourierSelectionClickUbahDurasi();
     }
 
+    private void sendAnalyticsImpressionErrorCourierNoAvailable() {
+        checkoutAnalyticsCourierSelection.eventViewCourierImpressionErrorCourierNoAvailable();
+    }
+
     @Override
     public void sendAnalyticsOnClickCheckBoxDropShipperOption() {
         checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickDropship();
@@ -2165,6 +2169,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (message.contains(getString(R.string.corner_error_stub)))
             mTrackerCorner.sendViewCornerError();
         if (getActivity() != null) {
+            sendAnalyticsImpressionErrorCourierNoAvailable();
+
             Tooltip tooltip = new Tooltip(getActivity());
             tooltip.setTitle(getActivity().getString(R.string.label_no_courier_bottomsheet_title));
             tooltip.setDesc(message);
