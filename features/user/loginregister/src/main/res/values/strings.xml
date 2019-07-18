@@ -318,4 +318,9 @@
     <string name="change_2">Ubah</string>
     <string name="loginregister_failed_login_google">Akun gagal terautentikasi (%s). Mohon coba kembali.</string>
 
+    <!-- ERROR LOGIN -->
+    <string name="error_login_user_cancel_create_password">Cancel create password</string>
+    <string name="error_login_user_cancel_activate_account">Cancel activate account</string>
+    <string name="error_login_user_cancel_login_phone">Cancel login phone</string>
+
 </resources>
