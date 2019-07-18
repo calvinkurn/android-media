@@ -164,6 +164,7 @@ object ModelMapper {
                         insuranceProductApplicationDetailsViewModel.placeHolder = applicationDetails.placeHolder
                         insuranceProductApplicationDetailsViewModel.value = applicationDetails.value
                         insuranceProductApplicationDetailsViewModel.type = applicationDetails.type
+                        insuranceProductApplicationDetailsViewModel.isError = false
                         val valueList = ArrayList<InsuranceApplicationValueViewModel>()
                         for (value: InsuranceApplicationValue in applicationDetails.valuesList) {
                             val insuranceApplicationValueViewModel = InsuranceApplicationValueViewModel()

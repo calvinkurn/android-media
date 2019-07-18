@@ -62,10 +62,8 @@ import com.tokopedia.tradein.view.viewcontrollers.TradeInHomeActivity
 import com.tokopedia.transaction.common.sharedata.AddToCartRequest
 import com.tokopedia.transaction.common.sharedata.AddToCartResult
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest
-import com.tokopedia.transactiondata.insurance.entity.request.InsuranceRecommendationRequest
-import com.tokopedia.transactiondata.insurance.entity.request.InsuranceShopCategory
-import com.tokopedia.transactiondata.insurance.entity.request.InsuranceShops
-import com.tokopedia.transactiondata.insurance.entity.request.InsuranceShopsData
+import com.tokopedia.transactiondata.insurance.entity.request.*
+import com.tokopedia.transactiondata.insurance.entity.response.AddInsuranceProductToCartGqlResponse
 import com.tokopedia.transactiondata.insurance.entity.response.InsuranceRecommendationGqlResponse
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -79,7 +77,7 @@ import javax.inject.Inject
 class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAdapterTypeFactory>(),
         NormalCheckoutContract.View, CheckoutVariantActionListener {
 
-    private var isErrorInInsurance: Boolean = false
+    //    private var isErrorInInsurance: Int = 0
     private var isInsuranceSelected: Boolean = false
     private var insuranceRecommendationViewModel = InsuranceRecommendationViewModel()
 
@@ -105,7 +103,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     var categoryId: String? = null
     lateinit var productId: String
     lateinit var productTitle: String
-    lateinit var categoryName: String
+    var categoryName: String = ""
     var notes: String? = null
     var quantity: Int = 0
     var tempQuantity = quantity
@@ -124,6 +122,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     var shopType: String? = null
     var shopName: String? = null
     private var tradeInParams: TradeInParams? = null
+
+    private val page = "pdp"
+    private val clientVersion = Build.VERSION.SDK_INT.toString()
 
     companion object {
         const val EXTRA_SHOP_ID = "shop_id"
@@ -583,9 +584,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
     private fun getInsuranceRecommendationProducts() {
 
-        var getInsuranceRecommendationUsecase = router.getInsuranceRecommendationUsecase()
+        val getInsuranceRecommendationUsecase = router.getInsuranceRecommendationUsecase()
 
-        generateInsuranceRequest();
+        generateInsuranceRequest()
 
         getInsuranceRecommendationUsecase.setRequestParams(insuranceRecommendationRequest)
         getInsuranceRecommendationUsecase.execute(object : Subscriber<GraphqlResponse>() {
@@ -631,8 +632,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
     private fun generateInsuranceRequest() {
 
-        val page = "pdp"
-        val clientVersion = Build.VERSION.SDK_INT.toString()
 
         insuranceRecommendationRequest = InsuranceRecommendationRequest()
         insuranceRecommendationRequest.page = page
@@ -644,19 +643,19 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         insuranceShopsData.shopId = java.lang.Long.parseLong(shopId)
 
         val insuranceShopsArrayList = java.util.ArrayList<InsuranceShops>()
-        var insuranceShops: InsuranceShops
+        val insuranceShops: InsuranceShops
 
-        var insurnaceShopCategory = InsuranceShopCategory()
+        val insurnaceShopCategory = InsuranceShopCategory()
 
         insurnaceShopCategory.categoryId = categoryId.toLongOrZero()
         insurnaceShopCategory.categoryName = categoryName
 
         insuranceShops = InsuranceShops()
-        insuranceShops.productId = productId.toLong() //java.lang.Long.parseLong(cartItemHolderData.getCartItemData().getOriginData().getProductId())
-        insuranceShops.productQuantity = quantity //cartItemHolderData.getCartItemData().getOriginData().getOriginalQty()
-        insuranceShops.categoryId = categoryId.toLongOrZero() //originalProduct?.productInfo?.category?.id.toLongOrZero() //java.lang.Long.parseLong(cartItemHolderData.getCartItemData().getOriginData().getCategoryId())
-        insuranceShops.productTitle = productTitle //originalProduct?.productInfo?.basic?.name.toString() //cartItemHolderData.getCartItemData().getOriginData().getProductName()
-        insuranceShops.productPrice = productPrice?.toLong()!! //originalProduct?.productInfo?.basic?.price?.toLong()!! //cartItemHolderData.getCartItemData().getOriginData().getPricePlanInt()
+        insuranceShops.productId = productId.toLong()
+        insuranceShops.productQuantity = quantity
+        insuranceShops.categoryId = categoryId.toLongOrZero()
+        insuranceShops.productTitle = productTitle
+        insuranceShops.productPrice = productPrice?.toLong()!!
         insuranceShops.shopCategory = insurnaceShopCategory
         insuranceShopsArrayList.add(insuranceShops)
 
@@ -814,17 +813,33 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                 !selectedInsuranceProduct.cartShopsList.isNullOrEmpty() &&
                 !selectedInsuranceProduct.cartShopsList[0].shopItemsList.isNullOrEmpty()) {
 
-            if (isErrorInInsurance) {
+            if (isErrorInInsurance()) {
                 Toast.makeText(context, "Please Enter Correct Application Details for insurance", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(context, "application detail valid", Toast.LENGTH_SHORT).show()
+                return
+
             }
-        } else {
-            Toast.makeText(context, "Insurance not selected", Toast.LENGTH_SHORT).show()
-            return
         }
 
-        tempQuantity = quantity
+
+        addToInsuranceCart(onFinish = { message: String?, cartId: String? ->
+            onFinishAddToCart(message)
+            selectedProductInfo?.run {
+                normalCheckoutTracking.eventClickAddToCartInVariant(
+                        originalProduct,
+                        selectedVariantId ?: "",
+                        this, quantity,
+                        shopId, shopType, shopName, cartId,
+                        trackerAttribution, trackerListName,
+                        viewModel.selectedwarehouse?.warehouseInfo?.isFulfillment ?: false)
+            }
+        }, onRetryWhenError = {
+            addToCart()
+        })
+
+        Toast.makeText(context, "application detail valid", Toast.LENGTH_SHORT).show()
+
+
+        /*tempQuantity = quantity
         isTradeIn = 0
 
         addToCart(false, onFinish = { message: String?, cartId: String? ->
@@ -840,7 +855,196 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             }
         }, onRetryWhenError = {
             addToCart()
+        })*/
+    }
+
+    private fun isErrorInInsurance(): Boolean {
+
+        for (insuranceCartShopsViewModel in selectedInsuranceProduct.cartShopsList) {
+            for (shopItem in insuranceCartShopsViewModel.shopItemsList) {
+                for (insuranceCartDigitalProduct in shopItem.digitalProductList) {
+                    for (applicationDetail in insuranceCartDigitalProduct.applicationDetails) {
+                        if (applicationDetail.isError) {
+                            return true
+                        }
+                    }
+                }
+            }
+        }
+
+        return false
+    }
+
+    private fun addToInsuranceCart(onFinish: ((message: String?, cartId: String?) -> Unit),
+                                   onRetryWhenError: (() -> Unit)) {
+        val selectedVariant = selectedVariantId
+        val selectedWarehouseId = viewModel.selectedwarehouse?.warehouseInfo?.id?.toLong() ?: 0
+        showLoadingDialog()
+        //initiate add to insurance cart
+
+        normalCheckoutTracking.eventAppsFlyerInitiateCheckout(productId,
+                selectedProductInfo?.basic?.price.toString(),
+                quantity,
+                selectedProductInfo?.basic?.name ?: "",
+                selectedProductInfo?.category?.name ?: "")
+
+        val addToInsuranceCartUseCase = router.addInsuranceProductToCart()
+
+        val addMarketPlaceToCartRequest = AddMarketPlaceToCartRequest()
+        addMarketPlaceToCartRequest.notes = notes ?: ""
+        addMarketPlaceToCartRequest.productId = if (selectedVariant != null && selectedVariant.toInt() > 0) {
+            selectedVariant.toLong()
+        } else {
+            productId.toLong()
+        }
+        addMarketPlaceToCartRequest.quantity = quantity
+        addMarketPlaceToCartRequest.shoppId = shopId?.toLong() ?: 0
+        addMarketPlaceToCartRequest.warehouseID = selectedWarehouseId
+
+        val addInsuranceProductToCartRequest = AddInsuranceProductToCartRequest()
+
+
+        addInsuranceProductToCartRequest.page = page
+        addInsuranceProductToCartRequest.clientVersion = clientVersion
+        addInsuranceProductToCartRequest.clientType = "android"
+        addInsuranceProductToCartRequest.clientLanguage = "en"
+
+        val addInsuranceProductDataList = ArrayList<AddInsuranceProductData>()
+
+        for (insuranceCartShopsViewModel in selectedInsuranceProduct.cartShopsList) {
+            val model = AddInsuranceProductData()
+            model.shopId = insuranceCartShopsViewModel.shopId
+            val addInsuranceProductItemList = ArrayList<AddInsuranceProductItems>()
+
+            for (shopItem in insuranceCartShopsViewModel.shopItemsList) {
+                val addShopItem = AddInsuranceProductItems()
+
+                addShopItem.productId = shopItem.productId
+                addShopItem.productQuantity = 1
+
+                val digitalProductList = ArrayList<AddInsuranceProduct>()
+
+                for (insuranceCartDigitalProduct in shopItem.digitalProductList) {
+
+                    val digitalProduct = AddInsuranceProduct()
+                    digitalProduct.typeId = insuranceCartDigitalProduct.typeId
+                    digitalProduct.digitalProductId = insuranceCartDigitalProduct.digitalProductId
+                    val applicationDetailList = ArrayList<AddInsuranceProductApplicationDetails>()
+
+                    for (applicationDetail in insuranceCartDigitalProduct.applicationDetails) {
+                        val addApplicationDetail = AddInsuranceProductApplicationDetails()
+                        addApplicationDetail.id = applicationDetail.id
+                        addApplicationDetail.value = applicationDetail.value
+                        applicationDetailList.add(addApplicationDetail)
+                    }
+
+                    digitalProduct.applicationDetails = applicationDetailList
+                    digitalProductList.add(digitalProduct)
+
+                }
+
+                addShopItem.digitalProductList = digitalProductList
+                addInsuranceProductItemList.add(addShopItem)
+            }
+
+            model.shopItems = addInsuranceProductItemList
+            addInsuranceProductDataList.add(model)
+        }
+
+        addInsuranceProductToCartRequest.addInsuranceData = addInsuranceProductDataList
+        addToInsuranceCartUseCase.setRequestParams(addInsuranceProductToCartRequest, addMarketPlaceToCartRequest)
+
+        addToInsuranceCartUseCase.execute(object : Subscriber<GraphqlResponse>() {
+            override fun onNext(graphqlResponse: GraphqlResponse?) {
+                hideLoadingDialog()
+
+
+                graphqlResponse?.run {
+
+                    if (graphqlResponse.getSuccessData<AddInsuranceProductToCartGqlResponse>() != null) {
+
+                        val addInsuranceResponse = graphqlResponse.getData<AddInsuranceProductToCartGqlResponse>(AddInsuranceProductToCartGqlResponse::class.java)
+
+
+                        if (addInsuranceResponse.addToCartTransactional.addCart.status.equals("ok")) {
+                            normalCheckoutTracking.eventAppsFlyerAddToCart(productId,
+                                    selectedProductInfo?.basic?.price.toString(),
+                                    quantity,
+                                    selectedProductInfo?.basic?.name ?: "",
+                                    selectedProductInfo?.category?.name ?: "")
+                            onFinish(addInsuranceResponse.addToCartTransactional.addCart.successData.message.get(0),
+                                    addInsuranceResponse.addToCartTransactional.addCart.successData.cartId.toString())
+                        } else {
+                            activity?.findViewById<View>(android.R.id.content)?.showErrorToaster(
+                                    addInsuranceResponse.addToCartTransactional.addCart.errorMessage.get(0)
+                                            ?: getString(R.string.default_request_error_unknown_short))
+                        }
+
+                    }
+                }
+
+            }
+
+            override fun onCompleted() {
+
+            }
+
+            override fun onError(e: Throwable?) {
+                hideLoadingDialog()
+                showToastError(e) {
+                    onRetryWhenError()
+                }
+            }
         })
+
+        /*router.addToCartProduct(AddToCartRequest.Builder()
+                .productId(if (selectedVariant != null && selectedVariant.toInt() > 0) {
+                    selectedVariant.toInt()
+                } else {
+                    productId.toInt()
+                })
+                .notes(notes)
+                .quantity(tempQuantity)
+                .isTradein(isTradeIn)
+                .shopId(shopId?.toInt() ?: 0)
+                .trackerAttribution(trackerAttribution)
+                .trackerListName(trackerListName)
+                .build(), true)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Subscriber<AddToCartResult>() {
+                    override fun onNext(addToCartResult: AddToCartResult?) {
+                        hideLoadingDialog()
+                        addToCartResult?.run {
+                            if (isSuccess) {
+                                //success checkout
+                                normalCheckoutTracking.eventAppsFlyerAddToCart(productId,
+                                        selectedProductInfo?.basic?.price.toString(),
+                                        quantity,
+                                        selectedProductInfo?.basic?.name ?: "",
+                                        selectedProductInfo?.category?.name ?: "")
+                                onFinish(addToCartResult.message, addToCartResult.cartId)
+                            } else {
+                                activity?.findViewById<View>(android.R.id.content)?.showErrorToaster(
+                                        addToCartResult.message
+                                                ?: getString(R.string.default_request_error_unknown_short))
+                            }
+                        }
+
+                    }
+
+                    override fun onCompleted() {
+
+                    }
+
+                    override fun onError(e: Throwable?) {
+                        hideLoadingDialog()
+                        showToastError(e) {
+                            onRetryWhenError()
+                        }
+                    }
+                })*/
     }
 
     private fun addToCart(oneClickShipment: Boolean, onFinish: ((message: String?, cartId: String?) -> Unit),
@@ -854,8 +1058,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                 quantity,
                 selectedProductInfo?.basic?.name ?: "",
                 selectedProductInfo?.category?.name ?: "")
-
-        // todo check for insuretech products to be added
 
         router.addToCartProduct(AddToCartRequest.Builder()
                 .productId(if (selectedVariant != null && selectedVariant.toInt() > 0) {
@@ -1097,7 +1299,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     override fun setErrorInInsuranceSelection(value: Boolean) {
-        this.isErrorInInsurance = value
+//        if (value) isErrorInInsurance++ else isErrorInInsurance--
+
     }
 
     override fun onInsuranceSelectedStateChanged(element: InsuranceRecommendationViewModel?, isSelected: Boolean) {

@@ -221,6 +221,7 @@ data class InsuranceProductApplicationDetailsViewModel(
         var placeHolder: String,
         var type: String,
         var isRequired: Boolean,
+        var isError: Boolean = false,
         var value: String,
         var valuesList: ArrayList<InsuranceApplicationValueViewModel> = ArrayList(),
         var validationsList: ArrayList<InsuranceApplicationValidationViewModel> = ArrayList()
@@ -248,7 +249,7 @@ data class InsuranceProductApplicationDetailsViewModel(
             parcel?.readString() ?: "",
 
             parcel?.readByte() != 0.toByte(),
-
+            parcel?.readByte() != 0.toByte(),
             parcel?.readString() ?: "",
 
             arrayListOf<InsuranceApplicationValueViewModel>().apply {
@@ -263,9 +264,8 @@ data class InsuranceProductApplicationDetailsViewModel(
         parcel.writeString(label)
         parcel.writeString(placeHolder)
         parcel.writeString(type)
-
         parcel.writeByte(if (isRequired) 1 else 0)
-
+        parcel.writeByte(if (isError) 1 else 0)
 
         parcel.writeString(value)
         parcel.writeList(valuesList)

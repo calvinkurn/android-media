@@ -397,6 +397,10 @@ import com.tokopedia.transactiondata.entity.response.addtocart.AddToCartDataResp
 import com.tokopedia.transactiondata.entity.response.cod.Data;
 import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam;
+import com.tokopedia.transactiondata.insurance.entity.request.AddInsuranceProductToCartRequest;
+import com.tokopedia.transactiondata.insurance.entity.request.AddMarketPlaceToCartRequest;
+import com.tokopedia.transactiondata.insurance.entity.response.AddInsuranceProductToCartGqlResponse;
+import com.tokopedia.transactiondata.insurance.usecase.AddInsuranceProductUsecase;
 import com.tokopedia.transactiondata.insurance.usecase.GetInsuranceRecommendationUsecase;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSession;
@@ -1763,10 +1767,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 });
     }
 
+    @NotNull
     @Override
-    public Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest, boolean isOneClickShipment) {
-
-        // TODO: 17/6/19 add new addToCartProduct method with insuretech products and gql
+    public Observable<AddToCartResult> addToCartProduct(@NotNull AddToCartRequest addToCartRequest, boolean isOneClickShipment) {
 
         com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
         requestParams.putObject(AddToCartUseCase.PARAM_ADD_TO_CART, addToCartRequest);
@@ -1779,6 +1782,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                     .createObservable(requestParams)
                     .map(this::mapAddToCartResult);
         }
+    }
+
+    @NotNull
+    @Override
+    public AddInsuranceProductUsecase addInsuranceProductToCart(/*@NotNull AddInsuranceProductToCartRequest addInsuranceProductToCartRequest,
+                                                                                      @NotNull AddMarketPlaceToCartRequest addMarketPlaceToCartRequest*/) {
+        /*com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
+        requestParams.putObject(AddInsuranceProductUsecase.PARAM_ADD_TO_INSURANCE_CART_TRANSACTIONAL, addInsuranceProductToCartRequest);
+        requestParams.putObject(AddInsuranceProductUsecase.PARAM_ADD_TO_INSURANCE_CART_MARKETPLACE, addMarketPlaceToCartRequest);*/
+        return CartComponentInjector.newInstance(this).getAddInsuranceProductUsecase();
     }
 
     @NotNull

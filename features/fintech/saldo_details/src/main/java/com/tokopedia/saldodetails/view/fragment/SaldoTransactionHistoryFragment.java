@@ -27,7 +27,7 @@ import com.tokopedia.saldodetails.di.SaldoDetailsComponent;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
 import com.tokopedia.saldodetails.presenter.SaldoHistoryPresenter;
 import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
-import com.tokopedia.saldodetails.util.SaldoDatePickerUtil;
+import com.tokopedia.date.util.SaldoDatePickerUtil;
 import com.tokopedia.saldodetails.view.ui.HeightWrappingViewPager;
 import com.tokopedia.saldodetails.view.ui.SaldoHistoryTabItem;
 import com.tokopedia.user.session.UserSession;
