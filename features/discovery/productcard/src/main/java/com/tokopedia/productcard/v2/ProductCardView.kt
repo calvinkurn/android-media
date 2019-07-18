@@ -360,8 +360,4 @@ abstract class ProductCardView: BaseCustomView {
             constraintSet.connect(startLayoutId, startSide, endLayoutId, endSide, marginPixel)
         }
     }
-
-    protected open fun isViewNotNullAndVisible(view: View?): Boolean {
-        return view != null && view.visibility == View.VISIBLE
-    }
 }
