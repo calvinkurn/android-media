@@ -1,19 +1,21 @@
-package com.tokopedia.chatbot.data.invoice
+package com.tokopedia.chat_common.data
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.chat_common.data.AttachmentType
-import com.tokopedia.chat_common.data.SendableViewModel
-import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactory
+import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
 
 /**
  * Created by Hendri on 27/03/18.
  */
 
-class AttachInvoiceSentViewModel : SendableViewModel, Visitable<ChatbotTypeFactory> {
+class AttachInvoiceSentViewModel : SendableViewModel, Visitable<BaseChatTypeFactory> {
 
     var imageUrl: String? = null
     var description: String? = null
     var totalAmount: String? = null
+    var statusId: Int? = null
+    var status: String? = null
+    var invoiceId: String? = null
+    var invoiceUrl: String? = null
 
     /**
      * Constructor for WebSocket.
@@ -31,23 +33,45 @@ class AttachInvoiceSentViewModel : SendableViewModel, Visitable<ChatbotTypeFacto
      * @param description    invoice description
      * @param totalAmount    total amount
      */
-    constructor(msgId: String,
-                fromUid: String,
-                from: String,
-                fromRole: String,
-                attachmentId: String,
-                attachmentType: String,
-                replyTime: String,
-                startTime: String,
-                message: String,
-                description: String,
-                imageUrl: String,
-                totalAmount: String,
-                isSender: Boolean) : super(msgId, fromUid, from, fromRole,
-            attachmentId, attachmentType, replyTime, startTime, false, false, isSender, message) {
+    constructor(
+            msgId: String,
+            fromUid: String,
+            from: String,
+            fromRole: String,
+            attachmentId: String,
+            attachmentType: String,
+            replyTime: String,
+            startTime: String,
+            message: String,
+            description: String,
+            imageUrl: String,
+            totalAmount: String,
+            isSender: Boolean,
+            statusId: Int,
+            status: String,
+            invoiceId: String,
+            invoiceUrl: String
+    ) : super(
+            msgId,
+            fromUid,
+            from,
+            fromRole,
+            attachmentId,
+            attachmentType,
+            replyTime,
+            startTime,
+            false,
+            false,
+            isSender,
+            message
+    ) {
         this.description = description
         this.imageUrl = imageUrl
         this.totalAmount = totalAmount
+        this.statusId = statusId
+        this.status = status
+        this.invoiceId = invoiceId
+        this.invoiceUrl = invoiceUrl
     }
 
     /**
@@ -67,24 +91,45 @@ class AttachInvoiceSentViewModel : SendableViewModel, Visitable<ChatbotTypeFacto
      * @param totalAmount    total amount
      * !! startTime is not returned from API
      */
-    constructor(msgId: String,
-                fromUid: String,
-                from: String,
-                fromRole: String,
-                attachmentId: String,
-                attachmentType: String,
-                replyTime: String,
-                message: String,
-                description: String,
-                imageUrl: String,
-                totalAmount: String,
-                isSender: Boolean,
-                isRead: Boolean) : super(msgId, fromUid, from, fromRole,
-            attachmentId, attachmentType, replyTime, "", isRead,
-            false, isSender, message) {
+    constructor(
+            msgId: String,
+            fromUid: String,
+            from: String,
+            fromRole: String,
+            attachmentId: String,
+            attachmentType: String,
+            replyTime: String,
+            message: String,
+            description: String,
+            imageUrl: String,
+            totalAmount: String,
+            isSender: Boolean,
+            isRead: Boolean,
+            statusId: Int,
+            status: String,
+            invoiceId: String,
+            invoiceUrl: String
+    ) : super(
+            msgId,
+            fromUid,
+            from,
+            fromRole,
+            attachmentId,
+            attachmentType,
+            replyTime,
+            "",
+            isRead,
+            false,
+            isSender,
+            message
+    ) {
         this.description = description
         this.imageUrl = imageUrl
         this.totalAmount = totalAmount
+        this.statusId = statusId
+        this.status = status
+        this.invoiceId = invoiceId
+        this.invoiceUrl = invoiceUrl
     }
 
     /**
@@ -114,7 +159,7 @@ class AttachInvoiceSentViewModel : SendableViewModel, Visitable<ChatbotTypeFacto
         this.totalAmount = totalAmount
     }
 
-    override fun type(typeFactory: ChatbotTypeFactory): Int {
+    override fun type(typeFactory: BaseChatTypeFactory): Int {
         return typeFactory.type(this)
     }
 
