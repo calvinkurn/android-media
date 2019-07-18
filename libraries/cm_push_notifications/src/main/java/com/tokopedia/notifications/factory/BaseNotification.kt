@@ -353,20 +353,3 @@ abstract class BaseNotification internal constructor(protected var context: Cont
     }
 
 }
-
-/*
-        intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.notificationId)
-        intent.putExtra(CMConstant.EXTRA_CAMPAIGN_ID, baseNotificationModel.campaignId)
-        intent.putExtra(CMConstant.ReceiverExtraData.ACTION_APP_LINK, baseNotificationModel.appLink)*/
-
-/*
-* internal fun createMainPendingIntent(baseNotificationModel: BaseNotificationModel, requestCode: Int): PendingIntent {
-        var intent = getBaseBroadcastIntent(context, baseNotificationModel)
-        intent.action = CMConstant.ReceiverAction.ACTION_NOTIFICATION_CLICK/*
-        intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.notificationId)
-        intent.putExtra(CMConstant.EXTRA_CAMPAIGN_ID, baseNotificationModel.campaignId)
-        intent.putExtra(CMConstant.ReceiverExtraData.ACTION_APP_LINK, baseNotificationModel.appLink)*/
-        intent.putExtras(getBundle(baseNotificationModel))
-        intent = getCouponCode(baseNotificationModel, intent)
-        return getPendingIntent(context, intent, requestCode)
-    }*/
