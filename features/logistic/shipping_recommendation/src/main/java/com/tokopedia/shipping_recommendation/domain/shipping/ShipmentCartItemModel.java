@@ -90,6 +90,8 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
     private boolean hasPromoList;
     private VoucherOrdersItemUiModel voucherOrdersItemUiModel;
     private VoucherLogisticItemUiModel voucherLogisticItemUiModel;
+    private String promoCodes;
+    private String promoDetails;
 
     public ShipmentCartItemModel() {
     }
@@ -146,6 +148,8 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         hasPromoList = in.readByte() != 0;
         voucherOrdersItemUiModel = in.readParcelable(VoucherOrdersItemUiModel.class.getClassLoader());
         voucherLogisticItemUiModel = in.readParcelable(VoucherLogisticItemUiModel.class.getClassLoader());
+        promoCodes = in.readString();
+        promoDetails = in.readString();
     }
 
     @Override
@@ -201,6 +205,8 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeByte((byte) (hasPromoList ? 1 : 0));
         dest.writeParcelable(voucherOrdersItemUiModel, flags);
         dest.writeParcelable(voucherLogisticItemUiModel, flags);
+        dest.writeString(promoCodes);
+        dest.writeString(promoDetails);
     }
 
     @Override
@@ -272,6 +278,8 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         newShipmentCartItemModel.setHasPromoList(shipmentCartItemModel.getHasPromoList());
         newShipmentCartItemModel.setVoucherOrdersItemUiModel(shipmentCartItemModel.getVoucherOrdersItemUiModel());
         newShipmentCartItemModel.setVoucherLogisticItemUiModel(shipmentCartItemModel.getVoucherLogisticItemUiModel());
+        newShipmentCartItemModel.setPromoCodes(shipmentCartItemModel.getPromoCodes());
+        newShipmentCartItemModel.setPromoDetails(shipmentCartItemModel.getPromoDetails());
         return newShipmentCartItemModel;
     }
 
@@ -671,6 +679,22 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
 
     public void setSaveStateFlag(boolean saveStateFlag) {
         this.saveStateFlag = saveStateFlag;
+    }
+
+    public String getPromoCodes() {
+        return promoCodes;
+    }
+
+    public void setPromoCodes(String promoCodes) {
+        this.promoCodes = promoCodes;
+    }
+
+    public String getPromoDetails() {
+        return promoDetails;
+    }
+
+    public void setPromoDetails(String promoDetails) {
+        this.promoDetails = promoDetails;
     }
 
     @Override

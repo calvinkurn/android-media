@@ -11,8 +11,8 @@ data class TrackingDetail(
         val productId: Int = 0,
 
         @field:SerializedName("promo_codes_tracking")
-        val promoCodesTracking: String = "THIS_IS_PROMO_CODES",
+        val promoCodesTracking: String = "",
 
         @field:SerializedName("promo_details_tracking")
-        val promoDetailsTracking: String = "THIS_IS_PROMO_DETAILS"
+        val promoDetailsTracking: String = ""
 )

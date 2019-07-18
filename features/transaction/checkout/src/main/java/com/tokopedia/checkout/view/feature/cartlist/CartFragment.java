@@ -1545,6 +1545,16 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                     }
                 }
 
+                for (CartItemData cartItemData : cartAdapter.getAllCartItemData()) {
+                    if (promoStackingData != null && promoStackingData.getTrackingDetails().size() > 0) {
+                        for (TrackingDetail trackingDetail : promoStackingData.getTrackingDetails()) {
+                            if (String.valueOf(trackingDetail.getProductId()).equalsIgnoreCase(cartItemData.getOriginData().getProductId())) {
+                                cartItemData.getOriginData().setPromoCodes(trackingDetail.getPromoCodesTracking());
+                                cartItemData.getOriginData().setPromoDetails(trackingDetail.getPromoDetailsTracking());
+                            }
+                        }
+                    }
+                }
 
                 if (promoStackingData != null) {
                     cartAdapter.updateItemPromoStackVoucher(promoStackingData);

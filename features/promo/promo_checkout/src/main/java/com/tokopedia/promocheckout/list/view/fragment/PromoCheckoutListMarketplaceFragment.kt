@@ -107,9 +107,15 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
         }
         val intent = Intent()
         val typePromo = if (data.isCoupon == PromoStackingData.VALUE_COUPON) PromoStackingData.TYPE_COUPON else PromoStackingData.TYPE_VOUCHER
-        val promoStackingData = PromoStackingData(typePromo, data.codes[0],
-                data.message.text, data.titleDescription, "",
-                data.cashbackWalletAmount, data.message.state.mapToStatePromoStackingCheckout())
+        val promoStackingData = PromoStackingData(
+                typePromo = typePromo,
+                promoCode = data.codes[0],
+                description = data.message.text,
+                title = data.titleDescription,
+                counterLabel = "",
+                amount = data.cashbackWalletAmount,
+                state = data.message.state.mapToStatePromoStackingCheckout(),
+                trackingDetails = data.trackingDetail)
         intent.putExtra(EXTRA_PROMO_DATA, promoStackingData)
         intent.putExtra(EXTRA_INPUT_TYPE, INPUT_TYPE_PROMO_CODE)
         activity?.setResult(Activity.RESULT_OK, intent)

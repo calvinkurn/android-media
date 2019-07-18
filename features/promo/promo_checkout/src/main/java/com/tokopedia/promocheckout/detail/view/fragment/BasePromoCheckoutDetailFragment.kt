@@ -216,10 +216,16 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
         val intent = Intent()
         val variant = "global"
         val typePromo = if (data.isCoupon == PromoStackingData.VALUE_COUPON) PromoStackingData.TYPE_COUPON else PromoStackingData.TYPE_VOUCHER
-        val promoStackingData = PromoStackingData(typePromo, data.codes[0],
-                data.message.text, data.titleDescription, "",
-                data.cashbackWalletAmount, data.message.state.mapToStatePromoStackingCheckout(),
-                variant.mapToVariantPromoStackingCheckout())
+        val promoStackingData = PromoStackingData(
+                typePromo = typePromo,
+                promoCode = data.codes[0],
+                description = data.message.text,
+                title = data.titleDescription,
+                counterLabel = "",
+                amount = data.cashbackWalletAmount,
+                state = data.message.state.mapToStatePromoStackingCheckout(),
+                variant = variant.mapToVariantPromoStackingCheckout(),
+                trackingDetails = data.trackingDetail)
         intent.putExtra(EXTRA_PROMO_DATA, promoStackingData)
         intent.putExtra(EXTRA_INPUT_TYPE, INPUT_TYPE_COUPON)
         activity?.setResult(Activity.RESULT_OK, intent)
