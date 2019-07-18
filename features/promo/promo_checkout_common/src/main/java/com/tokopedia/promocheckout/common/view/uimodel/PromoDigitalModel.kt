@@ -16,6 +16,7 @@ data class PromoDigitalModel(
 			parcel.readLong())
 
 	override fun writeToParcel(parcel: Parcel, flags: Int) {
+		parcel.writeInt(categoryId)
 		parcel.writeInt(productId)
 		parcel.writeString(clientNumber)
 		parcel.writeLong(price)
