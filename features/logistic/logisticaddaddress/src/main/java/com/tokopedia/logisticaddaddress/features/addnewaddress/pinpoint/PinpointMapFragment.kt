@@ -54,12 +54,12 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         AutocompleteBottomSheetFragment.ActionListener, HasComponent<AddNewAddressComponent> {
 
     private var googleMap: GoogleMap? = null
-    private var currentLat: Double? = 0.0
-    private var currentLong: Double? = 0.0
+    private var currentLat: Double = 0.0
+    private var currentLong: Double = 0.0
+    private var isShowingAutocomplete: Boolean = true
     private var bottomSheetBehavior: BottomSheetBehavior<CoordinatorLayout>? = null
     val handler = Handler()
     private var unnamedRoad: String = "Unnamed Road"
-    private var isShowingAutocomplete: Boolean? = null
     private var isRequestingLocation: Boolean? = null
     private var isGetDistrict = false
     private val FINISH_FLAG = 1212
@@ -104,9 +104,9 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         fun newInstance(extra: Bundle): PinpointMapFragment {
             return PinpointMapFragment().apply {
                 arguments = Bundle().apply {
-                    putDouble(AddressConstants.EXTRA_LAT, extra.getDouble(AddressConstants.EXTRA_LAT))
-                    putDouble(AddressConstants.EXTRA_LONG, extra.getDouble(AddressConstants.EXTRA_LONG))
-                    putBoolean(AddressConstants.EXTRA_SHOW_AUTOCOMPLETE, extra.getBoolean(AddressConstants.EXTRA_SHOW_AUTOCOMPLETE))
+                    putDouble(AddressConstants.EXTRA_LAT, extra.getDouble(AddressConstants.EXTRA_LAT, MONAS_LAT))
+                    putDouble(AddressConstants.EXTRA_LONG, extra.getDouble(AddressConstants.EXTRA_LONG, MONAS_LONG))
+                    putBoolean(AddressConstants.EXTRA_SHOW_AUTOCOMPLETE, extra.getBoolean(AddressConstants.EXTRA_SHOW_AUTOCOMPLETE, true))
                     putBoolean(AddressConstants.EXTRA_REQUEST_LOCATION, extra.getBoolean(AddressConstants.EXTRA_REQUEST_LOCATION))
                     putParcelable(AddressConstants.KERO_TOKEN, extra.getParcelable(AddressConstants.KERO_TOKEN))
                     putBoolean(AddressConstants.EXTRA_IS_POLYGON, extra.getBoolean(AddressConstants.EXTRA_IS_POLYGON))
@@ -123,19 +123,19 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (arguments != null) {
-            token = arguments?.getParcelable(AddressConstants.KERO_TOKEN)
-            currentLat = arguments?.getDouble(AddressConstants.EXTRA_LAT)
-            currentLong = arguments?.getDouble(AddressConstants.EXTRA_LONG)
-            isShowingAutocomplete = arguments?.getBoolean(AddressConstants.EXTRA_SHOW_AUTOCOMPLETE)
-            isRequestingLocation = arguments?.getBoolean(AddressConstants.EXTRA_REQUEST_LOCATION)
-            isPolygon = arguments?.getBoolean(AddressConstants.EXTRA_IS_POLYGON)
-            districtId = arguments?.getInt(AddressConstants.EXTRA_DISTRICT_ID)
-            isMismatchSolved = arguments?.getBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED)
-            isMismatch = arguments?.getBoolean(AddressConstants.EXTRA_IS_MISMATCH)
-            saveAddressDataModel = arguments?.getParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL)
+        arguments?.let {
+            currentLat = it.getDouble(AddressConstants.EXTRA_LAT)
+            currentLong = it.getDouble(AddressConstants.EXTRA_LONG)
+            isShowingAutocomplete = it.getBoolean(AddressConstants.EXTRA_SHOW_AUTOCOMPLETE)
+            token = it.getParcelable(AddressConstants.KERO_TOKEN)
+            isRequestingLocation = it.getBoolean(AddressConstants.EXTRA_REQUEST_LOCATION)
+            isPolygon = it.getBoolean(AddressConstants.EXTRA_IS_POLYGON)
+            districtId = it.getInt(AddressConstants.EXTRA_DISTRICT_ID)
+            isMismatchSolved = it.getBoolean(AddressConstants.EXTRA_IS_MISMATCH_SOLVED)
+            isMismatch = it.getBoolean(AddressConstants.EXTRA_IS_MISMATCH)
+            saveAddressDataModel = it.getParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL)
             zipCodes = saveAddressDataModel?.zipCodes?.toMutableList()
-            isChangesRequested = arguments?.getBoolean(AddressConstants.EXTRA_IS_CHANGES_REQUESTED)
+            isChangesRequested = it.getBoolean(AddressConstants.EXTRA_IS_CHANGES_REQUESTED)
         }
     }
 
@@ -174,7 +174,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         }
 
         ic_search_btn?.setOnClickListener {
-            currentLat?.let { it1 -> currentLong?.let { it2 -> showAutocompleteGeocodeBottomSheet(it1, it2, "") } }
+            showAutocompleteGeocodeBottomSheet(currentLat, currentLong, "")
         }
 
         et_detail_address?.run  {
@@ -269,7 +269,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     }
 
     override fun showAutoComplete(lat: Double, long: Double) {
-        if (isShowingAutocomplete == true) {
+        if (isShowingAutocomplete) {
             handler.postDelayed({
                 showAutocompleteGeocodeBottomSheet(lat, long, "")
             }, 500)
@@ -365,14 +365,12 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     }
 
     override fun onSuccessAutofill(autofillDataUiModel: AutofillDataUiModel) {
-        isShowingAutocomplete?.let {
-            if (it) {
-                handler.postDelayed({
-                    updateAfterOnSuccessAutofill(autofillDataUiModel)
-                }, 2000)
-            } else {
+        if (isShowingAutocomplete) {
+            handler.postDelayed({
                 updateAfterOnSuccessAutofill(autofillDataUiModel)
-            }
+            }, 2000)
+        } else {
+            updateAfterOnSuccessAutofill(autofillDataUiModel)
         }
     }
 
@@ -409,7 +407,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             invalid_desc?.text = saveAddressDataModel.formattedAddress
 
             invalid_ic_search_btn?.setOnClickListener {
-                currentLat?.let { it1 -> currentLong?.let { it2 -> showAutocompleteGeocodeBottomSheet(it1, it2, "") } }
+                showAutocompleteGeocodeBottomSheet(currentLat, currentLong, "")
             }
             AddNewAddressAnalytics.eventViewErrorAlamatTidakValid()
 
@@ -457,7 +455,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     }
 
     private fun showAutoCompleteBottomSheet(searchStr: String) {
-        currentLat?.let { it1 -> currentLong?.let { it2 -> showAutocompleteGeocodeBottomSheet(it1, it2, searchStr) } }
+        showAutocompleteGeocodeBottomSheet(currentLat, currentLong, searchStr)
     }
 
     private fun doLoadAddEdit() {

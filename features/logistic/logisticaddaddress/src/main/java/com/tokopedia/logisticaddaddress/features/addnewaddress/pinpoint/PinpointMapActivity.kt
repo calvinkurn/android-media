@@ -52,12 +52,8 @@ class PinpointMapActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): PinpointMapFragment? {
         var bundle = Bundle()
-        if (intent.extras != null) {
-            bundle = intent.extras
-        } else {
-            bundle.putDouble(EXTRA_LAT, MONAS_LAT)
-            bundle.putDouble(EXTRA_LONG, MONAS_LONG)
-            bundle.putBoolean(EXTRA_SHOW_AUTOCOMPLETE, true)
+        intent.extras?.let {
+            bundle = it
         }
         return PinpointMapFragment.newInstance(bundle)
     }
