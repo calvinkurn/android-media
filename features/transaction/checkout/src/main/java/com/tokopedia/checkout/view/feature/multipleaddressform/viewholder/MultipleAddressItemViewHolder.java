@@ -60,9 +60,9 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
     private ImageView btnQtyMin;
     private ImageView btnQtyPlus;
     private EditText etQty;
-    private TextView tvErrorQtyValidation;
-    private TextView tvErrorNoteValidation;
-    private TextView tvNoteCharCounter;
+    private Typography tvErrorQtyValidation;
+    private Typography tvErrorNoteValidation;
+    private Typography tvNoteCharCounter;
 
     private QuantityTextWatcher.QuantityTextwatcherListener quantityTextwatcherListener;
     private NoteTextWatcher.NoteTextwatcherListener noteTextwatcherListener;

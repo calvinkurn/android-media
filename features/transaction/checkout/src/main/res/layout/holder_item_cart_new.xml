@@ -90,7 +90,7 @@
                         android:layout_below="@id/tv_product_name"
                         android:layout_marginTop="4dp" />
 
-                    <com.tokopedia.design.component.TextViewCompat
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_price_changes"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -103,9 +103,9 @@
                         android:layout_marginTop="@dimen/dp_4"
                         android:textColor="@color/price_changes_color_text"
                         android:background="@drawable/bg_price_changes"
-                        android:textSize="@dimen/sp_10"
-                        android:textStyle="bold"
                         android:layout_below="@id/product_properties"
+                        app:typographyType="body_3"
+                        app:typographyWeight="bold"
                         android:visibility="gone"
                         tools:visibility="visible"/>
 

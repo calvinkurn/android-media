@@ -56,7 +56,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dp_4"
                     android:layout_marginRight="@dimen/dp_4"
-                    android:textSize="@dimen/sp_12"
                     tools:text="Loaa Store df"
                     android:textColor="@color/text_black"
                     app:typographyType="body_2"
