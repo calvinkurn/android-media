@@ -330,8 +330,8 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
         Observable<Boolean> allField = nominalMapper.map(isValidNominal -> isValidNominal && isBankSelected());
 
-        allField.subscribe(PropertiesEventsWatcher.enabledFrom(withdrawButton));
-        allField.subscribe(aBoolean -> canProceed((TextView) withdrawButton, aBoolean));
+        allField.subscribe(PropertiesEventsWatcher.enabledFrom(withdrawButton), Throwable::printStackTrace);
+        allField.subscribe(aBoolean -> canProceed((TextView) withdrawButton, aBoolean), Throwable::printStackTrace);
 
         snackBarError = ToasterError.make(getActivity().findViewById(android.R.id.content),
                 "", BaseToaster.LENGTH_LONG)
