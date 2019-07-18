@@ -1,15 +1,12 @@
 package com.tokopedia.search.result.presentation.presenter.shop;
 
+import com.tokopedia.discovery.common.Mapper;
 import com.tokopedia.discovery.common.data.DynamicFilterModel;
-import com.tokopedia.search.result.domain.model.SearchShopModel;
 import com.tokopedia.search.result.domain.model.SearchShopModelKt;
 import com.tokopedia.search.result.domain.usecase.TestErrorUseCase;
 import com.tokopedia.search.result.domain.usecase.TestUseCase;
 import com.tokopedia.search.result.presentation.ShopListSectionContract;
-import com.tokopedia.search.result.presentation.mapper.ShopViewModelMapper;
 import com.tokopedia.search.result.presentation.model.ShopViewModel;
-import com.tokopedia.search.result.presentation.model.ShopViewModelKt;
-import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -18,7 +15,6 @@ import org.junit.Test;
 import java.util.HashMap;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -28,13 +24,14 @@ public class ShopListPresenterTest {
 
     private static abstract class MockSearchShopUseCase extends UseCase<SearchShopModelKt> { }
     private static abstract class MockGetDynamicFilterUseCase extends UseCase<DynamicFilterModel> { }
+    private static abstract class MockShopViewModelMapper implements Mapper<SearchShopModelKt, ShopViewModel> { }
 
     private ShopListSectionContract.View shopListView = mock(ShopListSectionContract.View.class);
     private UseCase<DynamicFilterModel> dynamicFilterModelUseCase = mock(MockGetDynamicFilterUseCase.class);
     private UserSessionInterface userSession = mock(UserSessionInterface.class);
     private SearchShopModelKt searchShopModel = new SearchShopModelKt();
-    private ShopViewModelKt shopViewModel = new ShopViewModelKt();
-    private ShopViewModelMapper testShopViewModelMapper = mock(ShopViewModelMapper.class);
+    private ShopViewModel shopViewModel = new ShopViewModel();
+    private Mapper<SearchShopModelKt, ShopViewModel> testShopViewModelMapper = mock(MockShopViewModelMapper.class);
 
     private ShopListPresenter shopListPresenter = new ShopListPresenter();
 
@@ -50,7 +47,7 @@ public class ShopListPresenterTest {
     public void loadShopSuccessWithData_RenderViewOnSuccess() {
         UseCase<SearchShopModelKt> testSuccessSearchShopUseCase = new TestUseCase<>(searchShopModel);
         shopListPresenterInjectDependencies(testSuccessSearchShopUseCase);
-        when(testShopViewModelMapper.convertToShopViewModel(searchShopModel)).thenReturn(shopViewModel);
+        when(testShopViewModelMapper.convert(searchShopModel)).thenReturn(shopViewModel);
 
         shopListPresenter.loadShop(new HashMap<>());
 

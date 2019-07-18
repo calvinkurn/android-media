@@ -5,15 +5,15 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.tokopedia.search.R
-import com.tokopedia.search.result.presentation.model.ShopViewModelKt
+import com.tokopedia.search.result.presentation.model.ShopViewModel
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.shop.ShopProductItemViewHolder
 import com.tokopedia.search.result.presentation.view.listener.ShopListener
 
 class ShopProductItemAdapter(
-    private val context: Context,
-    shopProductItemList: List<ShopViewModelKt.ShopItem.ShopItemProduct>,
-    private val shopProductItemCount: Int,
-    private val shopListener: ShopListener
+        private val context: Context,
+        shopProductItemList: List<ShopViewModel.ShopItem.ShopItemProduct>,
+        private val shopProductItemCount: Int,
+        private val shopListener: ShopListener
 ) : RecyclerView.Adapter<ShopProductItemViewHolder>() {
 
     private val mutableShopProductItemList = shopProductItemList.toMutableList()
@@ -35,7 +35,7 @@ class ShopProductItemAdapter(
         var shopProductItemListSize = mutableShopProductItemList.size
 
         while(shopProductItemListSize < shopProductItemCount) {
-            mutableShopProductItemList.add(ShopViewModelKt.ShopItem.ShopItemProduct())
+            mutableShopProductItemList.add(ShopViewModel.ShopItem.ShopItemProduct())
             shopProductItemListSize++
         }
     }

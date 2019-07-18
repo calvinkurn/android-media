@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.search.R
-import com.tokopedia.search.result.presentation.model.ShopViewModelKt
+import com.tokopedia.search.result.presentation.model.ShopViewModel
 import com.tokopedia.search.result.presentation.view.listener.ShopListener
 import kotlinx.android.synthetic.main.search_result_shop_item_product_card.view.*
 
@@ -21,14 +21,14 @@ class ShopProductItemViewHolder(
 
     private val context = itemView.context
 
-    fun bind(shopItemProductView: ShopViewModelKt.ShopItem.ShopItemProduct?) {
+    fun bind(shopItemProductView: ShopViewModel.ShopItem.ShopItemProduct?) {
         if(shopItemProductView == null) return
 
         initShopItemProductImage(shopItemProductView)
         initShopItemProductPrice(shopItemProductView)
     }
 
-    private fun initShopItemProductImage(shopItemProductView: ShopViewModelKt.ShopItem.ShopItemProduct) {
+    private fun initShopItemProductImage(shopItemProductView: ShopViewModel.ShopItem.ShopItemProduct) {
         if(shopItemProductView.imageUrl == "") return
 
         itemView.imageViewShopItemProductImage?.let { imageViewShopItemProductImage ->
@@ -40,7 +40,7 @@ class ShopProductItemViewHolder(
         }
     }
 
-    private fun initShopItemProductPrice(shopItemProductView: ShopViewModelKt.ShopItem.ShopItemProduct) {
+    private fun initShopItemProductPrice(shopItemProductView: ShopViewModel.ShopItem.ShopItemProduct) {
         val isShopItemProductPriceVisible = getIsShopItemProductPriceVisible(shopItemProductView)
 
         itemView.textViewShopItemProductPrice.visibility = if (isShopItemProductPriceVisible) View.VISIBLE else View.GONE
@@ -54,7 +54,7 @@ class ShopProductItemViewHolder(
         }
     }
 
-    private fun getIsShopItemProductPriceVisible(shopItemProductView: ShopViewModelKt.ShopItem.ShopItemProduct): Boolean {
+    private fun getIsShopItemProductPriceVisible(shopItemProductView: ShopViewModel.ShopItem.ShopItemProduct): Boolean {
         return shopItemProductView.price > 0
     }
 }

@@ -7,7 +7,6 @@ import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.search.result.domain.model.SearchShopModelKt;
 import com.tokopedia.search.result.presentation.ShopListSectionContract;
 import com.tokopedia.search.result.presentation.model.ShopViewModel;
-import com.tokopedia.search.result.presentation.model.ShopViewModelKt;
 import com.tokopedia.search.result.presentation.presenter.abstraction.SearchSectionPresenter;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -28,7 +27,7 @@ final class ShopListPresenter
     @Named(SearchConstant.SearchShop.SEARCH_SHOP_USE_CASE)
     UseCase<SearchShopModelKt> searchShopUseCase;
     @Inject
-    Mapper<SearchShopModelKt, ShopViewModelKt> shopViewModelMapper;
+    Mapper<SearchShopModelKt, ShopViewModel> shopViewModelMapper;
     @Inject
     UserSessionInterface userSession;
 
@@ -41,11 +40,6 @@ final class ShopListPresenter
                 .build();
 
         shopListPresenterComponent.inject(this);
-    }
-
-    @Override
-    public void handleFavoriteButtonClicked(ShopViewModel.ShopViewItem shopItem, int adapterPosition) {
-
     }
 
     @Override
@@ -90,17 +84,17 @@ final class ShopListPresenter
         return new Subscriber<SearchShopModelKt>() {
             @Override
             public void onNext(SearchShopModelKt searchShopModel) {
-//                searchShopSubscriberOnNext(searchShopModel);
+                searchShopSubscriberOnNext(searchShopModel);
             }
 
             @Override
             public void onCompleted() {
-//                searchShopSubscriberOnCompleted(searchParameter);
+                searchShopSubscriberOnCompleted(searchParameter);
             }
 
             @Override
             public void onError(Throwable e) {
-//                searchShopSubscriberOnError(e);
+                searchShopSubscriberOnError(e);
             }
         };
     }
@@ -113,8 +107,8 @@ final class ShopListPresenter
         }
 
         isSearchShopReturnedNull = false;
-        ShopViewModelKt shopViewModel = shopViewModelMapper.convert(searchShopModel);
-//        getView().onSearchShopSuccess(shopViewModel.getShopItemList(), shopViewModel.isHasNextPage());
+        ShopViewModel shopViewModel = shopViewModelMapper.convert(searchShopModel);
+        getView().onSearchShopSuccess(shopViewModel.getShopItemList(), shopViewModel.getHasNextPage());
     }
 
     private void searchShopSubscriberOnCompleted(Map<String, Object> searchParameter) {

@@ -1,7 +1,5 @@
 package com.tokopedia.search.result.presentation.view.fragment;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,10 +11,8 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
-import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
@@ -26,7 +22,6 @@ import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.SearchSectionContract;
 import com.tokopedia.search.result.presentation.ShopListSectionContract;
 import com.tokopedia.search.result.presentation.model.ShopViewModel;
-import com.tokopedia.search.result.presentation.model.ShopViewModelKt;
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionGeneralAdapter;
 import com.tokopedia.search.result.presentation.view.adapter.ShopListAdapter;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ShopListItemDecoration;
@@ -218,7 +213,7 @@ public class ShopListFragment
     }
 
     @Override
-    public void onSearchShopSuccess(List<ShopViewModel.ShopViewItem> shopItemList, boolean isHasNextPage) {
+    public void onSearchShopSuccess(List<ShopViewModel.ShopItem> shopItemList, boolean isHasNextPage) {
         if(adapter == null) return;
 
         if (shopItemList.isEmpty()) {
@@ -278,7 +273,7 @@ public class ShopListFragment
                 AuthUtil.md5(getRegistrationId());
     }
 
-    private void handleSearchResult(List<ShopViewModel.ShopViewItem> shopViewItemList, boolean isHasNextPage, int startRow) {
+    private void handleSearchResult(List<ShopViewModel.ShopItem> shopViewItemList, boolean isHasNextPage, int startRow) {
         isListEmpty = false;
 
         enrichPositionData(shopViewItemList, startRow);
@@ -293,9 +288,9 @@ public class ShopListFragment
         }
     }
 
-    private void enrichPositionData(List<ShopViewModel.ShopViewItem> shopViewItemList, int startRow) {
+    private void enrichPositionData(List<ShopViewModel.ShopItem> shopViewItemList, int startRow) {
         int position = startRow;
-        for (ShopViewModel.ShopViewItem shopItem : shopViewItemList) {
+        for (ShopViewModel.ShopItem shopItem : shopViewItemList) {
             position++;
             shopItem.setPosition(position);
         }
@@ -336,18 +331,7 @@ public class ShopListFragment
     }
 
     @Override
-    public void onItemClicked(ShopViewModel.ShopViewItem shopItem, int adapterPosition) {
-        if(getActivity() == null) return;
-
-        Intent intent = ((DiscoveryRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shopItem.getShopId());
-        lastSelectedItemPosition = adapterPosition;
-        SearchTracking.eventSearchResultShopItemClick(getActivity(), getSearchParameter().getSearchQuery(), shopItem.getShopName(),
-                shopItem.getPage(), shopItem.getPosition());
-        startActivityForResult(intent, REQUEST_CODE_GOTO_SHOP_DETAIL);
-    }
-
-    @Override
-    public void onItemClicked(ShopViewModelKt.ShopItem shopItem) {
+    public void onItemClicked(@NonNull ShopViewModel.ShopItem shopItem) {
         if(redirectionListener == null) return;
 
         SearchTracking.eventSearchResultShopItemClick(getActivity(), getSearchParameter().getSearchQuery(), shopItem.getShopName(),
@@ -357,18 +341,10 @@ public class ShopListFragment
     }
 
     @Override
-    public void onProductItemClicked(String applink) {
+    public void onProductItemClicked(@NonNull String applink) {
         if(redirectionListener == null) return;
 
         redirectionListener.startActivityWithApplink(applink);
-    }
-
-    @Override
-    public void onFavoriteButtonClicked(ShopViewModel.ShopViewItem shopItem,
-                                        int adapterPosition) {
-        SearchTracking.eventSearchResultFavoriteShopClick(getActivity(), getSearchParameter().getSearchQuery(), shopItem.getShopName(),
-                shopItem.getPage(), shopItem.getPosition());
-        presenter.handleFavoriteButtonClicked(shopItem, adapterPosition);
     }
 
     @Override
@@ -420,14 +396,7 @@ public class ShopListFragment
     protected boolean isSortEnabled() {
         return false;
     }
-
-    @Override
-    public boolean isUserHasLogin() {
-        if(userSession == null) return false;
-
-        return userSession.isLoggedIn();
-    }
-
+    
     @Override
     public String getUserId() {
         if(userSession == null) return "0";
@@ -435,68 +404,10 @@ public class ShopListFragment
         return userSession.getUserId();
     }
 
-    @Override
-    public void disableFavoriteButton(int adapterPosition) {
-        if(adapter == null) return;
-
-        adapter.setFavoriteButtonEnabled(adapterPosition, false);
-    }
-
-    @Override
-    public void enableFavoriteButton(int adapterPosition) {
-        if(adapter == null) return;
-
-        adapter.setFavoriteButtonEnabled(adapterPosition, true);
-    }
-
     private String getQueryKey() {
         if(getSearchParameter() == null) return "";
 
         return getSearchParameter().getSearchQuery();
-    }
-
-    @Override
-    public void onErrorToggleFavorite(Throwable e, int adapterPosition) {
-        if(getContext() == null) return;
-
-        enableFavoriteButton(adapterPosition);
-        NetworkErrorHelper.showSnackbar(getActivity(), ErrorHandler.getErrorMessage(getContext(), e));
-    }
-
-    @Override
-    public void onErrorToggleFavorite(int adapterPosition) {
-        if(getContext() == null) return;
-
-        enableFavoriteButton(adapterPosition);
-        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.default_request_error_unknown));
-    }
-
-    @Override
-    public void onSuccessToggleFavorite(int adapterPosition, boolean targetFavoritedStatus) {
-        adapter.updateFavoritedStatus(targetFavoritedStatus, adapterPosition);
-        enableFavoriteButton(adapterPosition);
-        if (targetFavoritedStatus) {
-            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.message_success_people_fav));
-        } else {
-            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.message_success_people_unfav));
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (data != null && requestCode == REQUEST_CODE_GOTO_SHOP_DETAIL && resultCode == Activity.RESULT_OK) {
-            boolean isFavorited = data.getBooleanExtra(SHOP_STATUS_FAVOURITE, false);
-            if (lastSelectedItemPosition != -1) {
-                updateFavoriteStatusFromShopDetailPage(lastSelectedItemPosition, isFavorited);
-            }
-        }
-    }
-
-    private void updateFavoriteStatusFromShopDetailPage(int position, boolean isFavorited) {
-        if (adapter != null && adapter.isShopItem(position)) {
-            adapter.updateFavoritedStatus(isFavorited, position);
-        }
     }
 
     @Override
@@ -582,21 +493,5 @@ public class ShopListFragment
     @Override
     protected String getScreenName() {
         return getScreenNameId();
-    }
-
-    @Override
-    public void launchLoginActivity(String shopId) {
-        Bundle extras = new Bundle();
-        extras.putString("shop_id", shopId);
-
-        if (getActivity() == null) return;
-
-        DiscoveryRouter router = (DiscoveryRouter) getActivity().getApplicationContext();
-
-        if (router != null) {
-            Intent intent = router.getLoginIntent(getActivity());
-            intent.putExtras(extras);
-            startActivityForResult(intent, REQUEST_CODE_LOGIN);
-        }
     }
 }

@@ -3,7 +3,7 @@ package com.tokopedia.search.result.presentation.mapper
 import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope
 import com.tokopedia.search.result.domain.model.SearchShopModelKt
-import com.tokopedia.search.result.presentation.model.ShopViewModelKt
+import com.tokopedia.search.result.presentation.model.ShopViewModel
 
 import dagger.Module
 import dagger.Provides
@@ -14,7 +14,7 @@ class ShopViewModelMapperModule {
 
     @SearchScope
     @Provides
-    internal fun provideShopViewModelMapper(): Mapper<SearchShopModelKt, ShopViewModelKt> {
-        return ShopViewModelMapperKt()
+    internal fun provideShopViewModelMapper(): Mapper<SearchShopModelKt, ShopViewModel> {
+        return ShopViewModelMapper()
     }
 }

@@ -12,7 +12,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.gm.resource.GMConstant
 import com.tokopedia.search.R
-import com.tokopedia.search.result.presentation.model.ShopViewModelKt
+import com.tokopedia.search.result.presentation.model.ShopViewModel
 import com.tokopedia.search.result.presentation.view.adapter.ShopProductItemAdapter
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ShopProductItemDecoration
 import com.tokopedia.search.result.presentation.view.listener.ShopListener
@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.search_result_shop_card.view.*
 class ShopItemViewHolder(
     itemView: View,
     private val shopListener: ShopListener
-) : AbstractViewHolder<ShopViewModelKt.ShopItem>(itemView) {
+) : AbstractViewHolder<ShopViewModel.ShopItem>(itemView) {
 
     companion object {
         @JvmField
@@ -35,7 +35,7 @@ class ShopItemViewHolder(
 
     private val context = itemView.context
 
-    override fun bind(shopViewItem: ShopViewModelKt.ShopItem?) {
+    override fun bind(shopViewItem: ShopViewModel.ShopItem?) {
         if(shopViewItem == null) return
 
         initCardViewShopCard(shopViewItem)
@@ -50,19 +50,19 @@ class ShopItemViewHolder(
         finishBindShopItem()
     }
 
-    private fun initCardViewShopCard(shopViewItem: ShopViewModelKt.ShopItem) {
+    private fun initCardViewShopCard(shopViewItem: ShopViewModel.ShopItem) {
         itemView.cardViewShopCard?.setOnClickListener {
             shopListener.onItemClicked(shopViewItem)
         }
     }
 
-    private fun initImageShopAvatar(shopViewItem: ShopViewModelKt.ShopItem) {
+    private fun initImageShopAvatar(shopViewItem: ShopViewModel.ShopItem) {
         itemView.imageViewShopAvatar?.let {
             ImageHandler.loadImageCircle2(context, itemView.imageViewShopAvatar, shopViewItem.shopImage)
         }
     }
 
-    private fun initImageShopBadge(shopViewItem: ShopViewModelKt.ShopItem) {
+    private fun initImageShopBadge(shopViewItem: ShopViewModel.ShopItem) {
         itemView.imageViewShopBadge?.let { imageViewShopBadge ->
             when {
                 shopViewItem.isOfficial -> imageViewShopBadge.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.search_ic_official_store))
@@ -72,29 +72,29 @@ class ShopItemViewHolder(
         }
     }
 
-    private fun initShopName(shopViewItem: ShopViewModelKt.ShopItem) {
+    private fun initShopName(shopViewItem: ShopViewModel.ShopItem) {
         itemView.textViewShopName?.text = MethodChecker.fromHtml(shopViewItem.shopName)
     }
 
-    private fun initShopLocation(shopViewItem: ShopViewModelKt.ShopItem) {
+    private fun initShopLocation(shopViewItem: ShopViewModel.ShopItem) {
         itemView.textViewShopLocation?.text = getShopLocation(shopViewItem)
     }
 
-    private fun getShopLocation(shopViewItem: ShopViewModelKt.ShopItem): Spanned {
+    private fun getShopLocation(shopViewItem: ShopViewModel.ShopItem): Spanned {
         return MethodChecker.fromHtml(shopViewItem.shopLocation + " |")
     }
 
-    private fun initImageShopReputation(shopViewItem: ShopViewModelKt.ShopItem) {
+    private fun initImageShopReputation(shopViewItem: ShopViewModel.ShopItem) {
         itemView.imageViewShopReputation?.let { imageViewShopReputation ->
             ImageHandler.LoadImage(imageViewShopReputation, shopViewItem.reputationImageUri)
         }
     }
 
-    private fun initTextShopCredibilityInfo(shopViewItem: ShopViewModelKt.ShopItem) {
+    private fun initTextShopCredibilityInfo(shopViewItem: ShopViewModel.ShopItem) {
         itemView.textViewShopCredibilityInfo?.text = getShopCredibilityInfo(shopViewItem)
     }
 
-    private fun getShopCredibilityInfo(shopViewItem: ShopViewModelKt.ShopItem): String {
+    private fun getShopCredibilityInfo(shopViewItem: ShopViewModel.ShopItem): String {
         return when {
             shopViewItem.shopTotalTransaction != "" -> {
                 context.getString(R.string.shop_total_transaction, shopViewItem.shopTotalTransaction)
@@ -108,7 +108,7 @@ class ShopItemViewHolder(
         }
     }
 
-    private fun initProductPreview(shopViewItem: ShopViewModelKt.ShopItem) {
+    private fun initProductPreview(shopViewItem: ShopViewModel.ShopItem) {
         if (shopViewItem.shopItemProductList.isNotEmpty()) {
             showShopProductItemPreview(shopViewItem)
         } else {
@@ -116,13 +116,13 @@ class ShopItemViewHolder(
         }
     }
 
-    private fun showShopProductItemPreview(shopViewItem: ShopViewModelKt.ShopItem) {
+    private fun showShopProductItemPreview(shopViewItem: ShopViewModel.ShopItem) {
         itemView.recyclerViewShopProductItem?.let { recyclerViewShopProductItem ->
             initShopProductItemRecyclerView(recyclerViewShopProductItem, shopViewItem)
         }
     }
 
-    private fun initShopProductItemRecyclerView(recyclerViewShopProductItem: RecyclerView, shopViewItem: ShopViewModelKt.ShopItem) {
+    private fun initShopProductItemRecyclerView(recyclerViewShopProductItem: RecyclerView, shopViewItem: ShopViewModel.ShopItem) {
         recyclerViewShopProductItem.visibility = View.VISIBLE
 
         recyclerViewShopProductItem.adapter = ShopProductItemAdapter(

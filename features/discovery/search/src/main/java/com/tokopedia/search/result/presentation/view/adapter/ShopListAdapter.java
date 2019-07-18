@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.presentation.view.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,14 +32,14 @@ public class ShopListAdapter extends SearchSectionGeneralAdapter {
     }
 
     @Override
-    public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public AbstractViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         View view = LayoutInflater.from(context).inflate(viewType, parent, false);
         return typeFactory.createViewHolder(view, viewType);
     }
 
     @Override
-    public void onBindViewHolder(AbstractViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull AbstractViewHolder holder, int position) {
         holder.bind(list.get(position));
     }
 
@@ -52,7 +53,7 @@ public class ShopListAdapter extends SearchSectionGeneralAdapter {
         return list.size();
     }
 
-    public void appendItems(List<ShopViewModel.ShopViewItem> list) {
+    public void appendItems(List<ShopViewModel.ShopItem> list) {
         int newItemsFirstPosition = getItemCount();
 
         this.list.addAll(list);
@@ -76,24 +77,6 @@ public class ShopListAdapter extends SearchSectionGeneralAdapter {
             notifyItemRemoved(loadingModelPosition);
             notifyItemRangeChanged(loadingModelPosition, 1);
         }
-    }
-
-    public void setFavoriteButtonEnabled(int adapterPosition, boolean isEnabled) {
-        if (list.get(adapterPosition) instanceof ShopViewModel.ShopViewItem) {
-            ((ShopViewModel.ShopViewItem) list.get(adapterPosition)).setFavoriteButtonEnabled(isEnabled);
-            notifyItemChanged(adapterPosition);
-        }
-    }
-
-    public void updateFavoritedStatus(boolean targetFavoritedStatus, int adapterPosition) {
-        if (list.get(adapterPosition) instanceof ShopViewModel.ShopViewItem) {
-            ((ShopViewModel.ShopViewItem) list.get(adapterPosition)).setFavorited(targetFavoritedStatus);
-            notifyItemChanged(adapterPosition);
-        }
-    }
-
-    public boolean isShopItem(int position) {
-        return position < list.size() && list.get(position) instanceof ShopViewModel.ShopViewItem;
     }
 
     @Override

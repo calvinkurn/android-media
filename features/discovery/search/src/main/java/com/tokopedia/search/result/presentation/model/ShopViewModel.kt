@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
 import com.tokopedia.search.result.presentation.view.typefactory.ShopListTypeFactory
 
-data class ShopViewModelKt(
+data class ShopViewModel(
         val source: String = "",
         val totalShop: Int = 0,
         val searchUrl: String = "",
@@ -14,8 +14,11 @@ data class ShopViewModelKt(
         val tabName: String = "",
         val shopItemList: List<ShopItem> = listOf(),
         val topSellerData: List<ShopItem> = listOf(),
-        val topOfficialSellerData: List<ShopItem> = listOf()
+        val topOfficialSellerData: List<ShopItem> = listOf(),
+        val query: String = ""
 ): Parcelable {
+
+    val hasNextPage = paging.uriNext != ""
 
     data class Paging(
             val uriNext: String = "",
@@ -274,12 +277,12 @@ data class ShopViewModelKt(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<ShopViewModelKt> {
-        override fun createFromParcel(parcel: Parcel): ShopViewModelKt {
-            return ShopViewModelKt(parcel)
+    companion object CREATOR : Parcelable.Creator<ShopViewModel> {
+        override fun createFromParcel(parcel: Parcel): ShopViewModel {
+            return ShopViewModel(parcel)
         }
 
-        override fun newArray(size: Int): Array<ShopViewModelKt?> {
+        override fun newArray(size: Int): Array<ShopViewModel?> {
             return arrayOfNulls(size)
         }
     }
