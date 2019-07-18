@@ -23,13 +23,15 @@ class AllContactsListCursorAdapter(context: Context, c: Cursor, autoRequery: Boo
     }
 
     override fun newView(context: Context, cursor: Cursor, parent: ViewGroup): View {
-        return mLayoutInflater.inflate(R.layout.all_contacts_item_layout, parent, false)
+        var view = mLayoutInflater.inflate(R.layout.all_contacts_item_layout, parent, false)
+        view.tag = ViewHolder(view)
+        return view
     }
 
     override fun bindView(view: View, context: Context, cursor: Cursor?) {
-        var name = ""
-        var phoneNum = ""
-        var imageUri = ""
+        var name: String? = ""
+        var phoneNum: String? = ""
+        var imageUri: String? = ""
         if (cursor != null && cursor.count > 0) {
             phoneNum = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
             name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
@@ -37,13 +39,23 @@ class AllContactsListCursorAdapter(context: Context, c: Cursor, autoRequery: Boo
                 imageUri = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI))
             }
         }
-        val nameTxtv = view.findViewById<TextView>(R.id.user_name)
-        nameTxtv.text = name
-        val numberTxtv = view.findViewById<TextView>(R.id.user_num)
-        numberTxtv.text = phoneNum
-        val usrImgV = view.findViewById<ImageView>(R.id.user_image)
+        var viewHolder = view.tag as ViewHolder
+        viewHolder.nameTxtv.text = name ?: ""
+        viewHolder.numberTxTv.text = phoneNum ?: ""
         if (!TextUtils.isEmpty(imageUri)) {
-            usrImgV.setImageURI(Uri.parse(imageUri))
+            viewHolder.usrIv.setImageURI(Uri.parse(imageUri))
+        }
+    }
+
+    class ViewHolder{
+        var nameTxtv: TextView
+        var numberTxTv: TextView
+        var usrIv: ImageView
+
+        constructor(view:View){
+            this.nameTxtv = view.findViewById(R.id.user_name)
+            this.numberTxTv = view.findViewById(R.id.user_num)
+            this.usrIv = view.findViewById(R.id.user_image)
         }
     }
 }

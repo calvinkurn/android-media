@@ -7,6 +7,7 @@ import android.content.Context
 import android.text.TextUtils
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.ovop2p.Constants
+import com.tokopedia.ovop2p.R
 
 import com.tokopedia.ovop2p.model.OvoP2pTransferConfirmBase
 import com.tokopedia.ovop2p.util.OvoP2pUtil
@@ -35,7 +36,7 @@ class OvoP2pTrxnConfirmVM(application: Application) : AndroidViewModel(applicati
             }
 
             override fun onError(e: Throwable) {
-                txnConfirmMutableLiveData.value = TransferConfErrorSnkBar(Constants.Messages.GENERAL_ERROR)
+                txnConfirmMutableLiveData.value = TransferConfErrorSnkBar(getApplication<Application>().resources.getString(R.string.general_error))
             }
 
             override fun onNext(graphqlResponse: GraphqlResponse) {
@@ -48,14 +49,14 @@ class OvoP2pTrxnConfirmVM(application: Application) : AndroidViewModel(applicati
                             }
                         } else {
                             if (!TextUtils.isEmpty(confObj.pinUrl)) {
-                                txnConfirmMutableLiveData.value = OpenPinChlngWebView(confObj.pinUrl)
+                                txnConfirmMutableLiveData.value = confObj.pinUrl?.let { OpenPinChlngWebView(it) }
                             } else {
-                                txnConfirmMutableLiveData.value = GoToThankYouPage(confObj.transferId)
+                                txnConfirmMutableLiveData.value = confObj.transferId?.let { GoToThankYouPage(it) }
                             }
                         }
                     }
                 } ?: run {
-                    txnConfirmMutableLiveData.value = TransferConfErrorSnkBar(Constants.Messages.GENERAL_ERROR)
+                    txnConfirmMutableLiveData.value = TransferConfErrorSnkBar(getApplication<Application>().resources.getString(R.string.general_error))
                 }
             }
         }

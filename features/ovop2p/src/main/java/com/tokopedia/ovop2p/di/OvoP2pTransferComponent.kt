@@ -12,9 +12,9 @@ import dagger.Component
 interface OvoP2pTransferComponent {
     fun inject(ovoP2PForm: OvoP2PForm)
     fun inject(transferError: TransferError)
-    fun inject(txnDetails: TxnDetails)
+    fun inject(transactionDetails: TransactionDetails)
     fun inject(txnSucsOvoUser: TxnSucsOvoUser)
-    fun inject(txnSucsNonOvoUsr: TxnSucsNonOvoUsr)
+    fun inject(transactionSucsNonOvoUsr: TransactionSucsNonOvoUsr)
     fun inject(allContacts: AllContacts)
     fun inject(baseSessionWebViewFragment: BaseSessionWebViewFragment)
 }

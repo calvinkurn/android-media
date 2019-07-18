@@ -2,23 +2,23 @@ package com.tokopedia.ovop2p.model
 
 import com.google.gson.annotations.SerializedName
 
-class OvoP2pTransferConfirm {
+data class OvoP2pTransferConfirm(
 
-    @SerializedName("status")
-    lateinit var status: String
+        @SerializedName("status")
+        var status: String? = "",
 
-    @SerializedName("transfer_id")
-    lateinit var transferId: String
+        @SerializedName("transfer_id")
+        var transferId: String? = "",
 
-    @SerializedName("transaction_id")
-    lateinit var transactionId: String
+        @SerializedName("transaction_id")
+        var transactionId: String? = "",
 
-    @SerializedName("pin_url")
-    lateinit var pinUrl: String
+        @SerializedName("pin_url")
+        var pinUrl: String? = "",
 
-    @SerializedName("receiver_link")
-    var rcvrLink: Boolean = false
-    
-    @SerializedName("errors")
-    var errors: List<Map<String, String>>? = null
-}
+        @SerializedName("receiver_link")
+        var rcvrLink: Boolean = false,
+
+        @SerializedName("errors")
+        var errors: List<Map<String, String>>?
+)

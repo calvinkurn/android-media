@@ -1,6 +1,5 @@
 package com.tokopedia.ovop2p.view.activity
 
-import android.app.ProgressDialog
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -17,7 +16,7 @@ import com.tokopedia.ovop2p.Constants
 import com.tokopedia.ovop2p.R
 import com.tokopedia.ovop2p.di.DaggerOvoP2pTransferComponent
 import com.tokopedia.ovop2p.di.OvoP2pTransferComponent
-import com.tokopedia.ovop2p.view.fragment.TxnSucsNonOvoUsr
+import com.tokopedia.ovop2p.view.fragment.TransactionSucsNonOvoUsr
 import com.tokopedia.ovop2p.view.fragment.TxnSucsOvoUser
 import com.tokopedia.ovop2p.view.interfaces.ActivityListener
 import com.tokopedia.ovop2p.view.interfaces.LoaderUiListener
@@ -51,7 +50,7 @@ class OVOP2PThankyouActivity : BaseSimpleActivity(), LoaderUiListener, ActivityL
         fragBundle.putString(Constants.Keys.RECIEVER_NAME, PersistentCacheManager.instance.get(Constants.Keys.RECIEVER_NAME, String::class.java))
         fragBundle.putString(Constants.Keys.RECIEVER_PHONE, PersistentCacheManager.instance.get(Constants.Keys.RECIEVER_PHONE, String::class.java))
         if (nonOvoUser) {
-            return TxnSucsNonOvoUsr.newInstance(fragBundle)
+            return TransactionSucsNonOvoUsr.newInstance(fragBundle)
         } else {
             if (!TextUtils.isEmpty(transferId)) {
                 fragBundle.putString(Constants.Keys.TRANSFER_ID, transferId)

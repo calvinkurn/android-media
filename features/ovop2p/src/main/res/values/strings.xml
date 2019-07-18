@@ -25,7 +25,7 @@
     <string name="ovop2p_psn">Pesan</string>
     <string name="ovop2p_terkas">Terima kasih</string>
     <string name="ovop2p_no_ref">No. Referensi</string>
-    <string name="ovop2p_msg_non_ovo">Undangan berhasil dikirim ke {{num_plchldr}}.Terima kasih telah menggunakan OVO.</string>
+    <string name="ovop2p_msg_non_ovo">Undangan berhasil dikirim ke %s.Terima kasih telah menggunakan OVO.</string>
     <string name="ovop2p_kirlag">KIRIM LAGI</string>
     <string name="ovop2p_kemke">KEMBALI KE TOKOPEDIA</string>
     <string name="ovop2p_lihdet">LIHAT DETAIL</string>
@@ -33,4 +33,8 @@
     <string name="ovop2p_tidber">Tidak Berhasil</string>
     <string name="ovop2p_coblag">COBA LAGI</string>
     <string name="ovop2p_jgnkhw">Jangan khawatir, Anda masih bisa mengulangi proses transfer OVO dengan mengklik tombol di bawah ini.</string>
+    <string name="minimal_trnsfr">Minimal transfer Rp10.000</string>
+    <string name="amt_more_thn_bal">Saldo Anda Tidak cukup</string>
+    <string name="non_ovo_usr">Nomor ponsel penerima tidak terdaftar sebagai pengguna OVO.</string>
+    <string name="general_error">Ada yang salah. Silakan coba lagi.</string>
 </resources>

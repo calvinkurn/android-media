@@ -55,6 +55,13 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var view = inflater.inflate(R.layout.transaction_success_page, container, false)
+        initViews(view)
+        createAndSubscribeToThankYouVM()
+        getTransferid()
+        return view
+    }
+
+    private fun initViews(view: View) {
         date = view.findViewById(R.id.date)
         trnsfrAmt = view.findViewById(R.id.trnsfr_amt)
         trnsfrAmt.setOnClickListener(this)
@@ -70,18 +77,14 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
         backToApp.setOnClickListener(this)
         infoIcon = view.findViewById(R.id.info_icon)
         infoIcon.setOnClickListener(this)
-        createAndSubscribeToThankYouVM()
-        getTransferid()
-        return view
     }
 
     private fun setRcvrUserData() {
         rcvrName.text = arguments?.getString(Constants.Keys.RECIEVER_NAME) ?: ""
         var name = arguments?.getString(Constants.Keys.RECIEVER_PHONE)
-        if(!TextUtils.isEmpty(name)){
+        if (!TextUtils.isEmpty(name)) {
             name = Constants.Prefixes.OVO + name
-        }
-        else{
+        } else {
             name = ""
         }
         rcvrNum.text = name
@@ -113,12 +116,12 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
         }
     }
 
-    private fun getThankYouObsvr(loaderUiListener: LoaderUiListener) : Observer<ThankYouPageState>{
+    private fun getThankYouObsvr(loaderUiListener: LoaderUiListener): Observer<ThankYouPageState> {
         return Observer {
             it?.let { pageState ->
                 loaderUiListener.hideProgressDialog()
                 when (pageState) {
-                    is ThankYouErrPage ->{
+                    is ThankYouErrPage -> {
                         gotoErrorPage(pageState.errMsg)
                     }
                     is ThankYouErrSnkBar -> {
@@ -168,11 +171,11 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
                 R.id.see_dtl -> {
                     //go to see detail fragment
                     var bundle = Bundle()
-                    bundle.putSerializable(Constants.Keys.THANKYOU_ARGS, thankYouDataCntnr)
+                    bundle.putParcelable(Constants.Keys.THANKYOU_ARGS, thankYouDataCntnr)
                     bundle.putString(Constants.Keys.RECIEVER_NAME, rcvrName.text.toString())
                     bundle.putSerializable(Constants.Keys.RECIEVER_PHONE, rcvrNum.text.toString())
-                    (activity as ActivityListener).addReplaceFragment(TxnDetails.newInstance(bundle), false,
-                            TxnDetails.TAG)
+                    (activity as ActivityListener).addReplaceFragment(TransactionDetails.newInstance(bundle), false,
+                            TransactionDetails.TAG)
                     context?.let {
                         AnalyticsUtil.sendEvent(it, AnalyticsUtil.EventName.CLICK_OVO,
                                 AnalyticsUtil.EventCategory.OVO_SUMRY_TRNSFR_SUCS, "", AnalyticsUtil.EventAction.CLK_SEE_DTL)

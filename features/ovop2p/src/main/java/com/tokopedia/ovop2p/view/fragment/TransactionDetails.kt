@@ -12,7 +12,7 @@ import com.tokopedia.ovop2p.R
 import com.tokopedia.ovop2p.di.OvoP2pTransferComponent
 import com.tokopedia.ovop2p.model.OvoP2pTransferThankyouBase
 
-class TxnDetails : BaseDaggerFragment(){
+class TransactionDetails : BaseDaggerFragment(){
     private lateinit var sucsMsg: TextView
     private lateinit var date: TextView
     private lateinit var senderName: TextView
@@ -68,10 +68,10 @@ class TxnDetails : BaseDaggerFragment(){
 
     companion object{
         var TAG: String = "TXN_DTL_FRAG"
-        fun newInstance() : TxnDetails{
-            return TxnDetails()
+        fun newInstance() : TransactionDetails{
+            return TransactionDetails()
         }
-        fun newInstance(bundle: Bundle): TxnDetails {
+        fun newInstance(bundle: Bundle): TransactionDetails {
             val fragmentTxnDetails = newInstance()
             fragmentTxnDetails.setArguments(bundle)
             return fragmentTxnDetails

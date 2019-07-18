@@ -7,6 +7,7 @@ import android.content.Context
 
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.ovop2p.Constants
+import com.tokopedia.ovop2p.R
 import com.tokopedia.ovop2p.model.OvoP2pTransferRequestBase
 import com.tokopedia.ovop2p.util.OvoP2pUtil
 import com.tokopedia.ovop2p.view.viewStates.*
@@ -31,7 +32,7 @@ class OvoP2pTransferRequestViewModel(application: Application) : AndroidViewMode
             }
 
             override fun onError(e: Throwable) {
-                transferReqBaseMutableLiveData.value = TransferReqErrorSnkBar(Constants.Messages.GENERAL_ERROR)
+                transferReqBaseMutableLiveData.value = TransferReqErrorSnkBar(getApplication<Application>().resources.getString(R.string.general_error))
             }
 
             override fun onNext(graphqlResponse: GraphqlResponse) {
@@ -40,18 +41,18 @@ class OvoP2pTransferRequestViewModel(application: Application) : AndroidViewMode
                     reqObj.errors?.let { errList ->
                         if (errList.isNotEmpty()) {
                             errList[0][Constants.Keys.MESSAGE]?.let { errMsg ->
-                                if (errMsg.contentEquals(Constants.Messages.NON_OVO_USER)) {
+                                if (errMsg.contentEquals(getApplication<Application>().resources.getString(R.string.non_ovo_usr))) {
                                     transferReqBaseMutableLiveData.value = TransferReqNonOvo()
                                 } else {
                                     transferReqBaseMutableLiveData.value = TransferReqErrorPage(errMsg)
                                 }
                             }
                         } else {
-                            transferReqBaseMutableLiveData.value = TransferReqData(reqObj.dstAccName)
+                            transferReqBaseMutableLiveData.value = reqObj.dstAccName?.let { TransferReqData(it) }
                         }
                     }
                 } ?: run {
-                    transferReqBaseMutableLiveData.value = TransferReqErrorSnkBar(Constants.Messages.GENERAL_ERROR)
+                    transferReqBaseMutableLiveData.value = TransferReqErrorSnkBar(getApplication<Application>().resources.getString(R.string.general_error))
                 }
             }
         }

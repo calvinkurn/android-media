@@ -6,6 +6,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.content.Context
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.ovop2p.Constants
+import com.tokopedia.ovop2p.R
 
 import com.tokopedia.ovop2p.model.WalletDataBase
 import com.tokopedia.ovop2p.util.OvoP2pUtil
@@ -35,7 +36,7 @@ class GetWalletBalanceViewModel(application: Application) : AndroidViewModel(app
             }
 
             override fun onError(e: Throwable) {
-                walletLiveData.value = WalletError(Constants.Messages.GENERAL_ERROR)
+                walletLiveData.value = WalletError(getApplication<Application>().resources.getString(R.string.general_error))
             }
 
             override fun onNext(graphqlResponse: GraphqlResponse) {
@@ -52,7 +53,7 @@ class GetWalletBalanceViewModel(application: Application) : AndroidViewModel(app
                         walletLiveData.value = WalletData(cashBal, sndrAmt)
                     }
                 } ?: run {
-                    walletLiveData.value = WalletError(Constants.Messages.GENERAL_ERROR)
+                    walletLiveData.value = WalletError(getApplication<Application>().resources.getString(R.string.general_error))
                 }
             }
         })

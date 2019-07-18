@@ -37,20 +37,6 @@ class Constants {
         val FRAGMENT_ALL_CONTACTS = "All Contacts Fragment"
     }
 
-    object PlaceHolders{
-        val PHONE_NO_PLCHLDR = "{{num_plchldr}}"
-        val TRNSFER_ID_PLCHLDR = "{transfer_id}"
-    }
-
-    object Messages{
-        val NONOVO_USR_SUCS = "Undangan berhasil dikirim ke {{num_plchldr}}.\n" +
-                "Terima kasih telah menggunakan OVO."
-        val MINIMAL_TRNSFR = "Minimal transfer Rp10.000"
-        val AMT_MORE_THN_BAL = "Saldo Anda Tidak cukup"
-        val NON_OVO_USER = "Nomor ponsel penerima tidak terdaftar sebagai pengguna OVO."
-        val GENERAL_ERROR = "Ada yang salah. Silakan coba lagi."
-    }
-
     object Prefixes{
         val OVO = "Ovo - "
         val SALDO = "Saldo "

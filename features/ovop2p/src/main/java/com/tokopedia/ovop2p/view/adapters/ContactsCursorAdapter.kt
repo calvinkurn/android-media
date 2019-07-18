@@ -19,31 +19,37 @@ class ContactsCursorAdapter(context: Context, cursor: Cursor, private val mParti
     private var contactsDataSetFunction: (String, String) -> Unit = contactsSelectionCall
 
     override fun newView(context: Context, cursor: Cursor, parent: ViewGroup): View {
-        return mLayoutInflater.inflate(R.layout.search_suggestion_item_layout, parent, false)
+        var view = mLayoutInflater.inflate(R.layout.search_suggestion_item_layout, parent, false)
+        view.tag = ViewHolder(view)
+        return view
     }
 
     override fun bindView(view: View, context: Context, cursor: Cursor?) {
-        var name = ""
-        var phoneNum = ""
+        var name: String? = ""
+        var phoneNum: String? = ""
         var prettyPhnNo = ""
-        var imageUri = ""
         if (cursor != null && cursor.count > 0) {
             phoneNum = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
             phoneNum = OvoP2pUtil.extractNumbersFromString(phoneNum)
-            prettyPhnNo = phoneNum.replaceFirst(mPartialMatch.toRegex(), "<font color='#06b3ba'>$mPartialMatch</font>")+" - "
+            prettyPhnNo = phoneNum.replaceFirst(mPartialMatch.toRegex(), "<font color='#06b3ba'>$mPartialMatch</font>") + " - "
             name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
-            if(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI)) != null) {
-                imageUri = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI))
-            }
         }
+        var viewHolder = view.tag as ViewHolder
+        viewHolder.nameTxTv.text = name ?: ""
 
-        val nameTv = view.findViewById<TextView>(R.id.tv_name)
-        nameTv.text = name
-
-        val phoneNo = view.findViewById<TextView>(R.id.tv_phone)
-        phoneNo.text = MethodChecker.fromHtml(prettyPhnNo)
+        viewHolder.numberTxTv.text = MethodChecker.fromHtml(prettyPhnNo)
         view.setOnClickListener { view ->
-            contactsDataSetFunction(name, phoneNum)
+            name?.let { phoneNum?.let { it1 -> contactsDataSetFunction(it, it1) } }
+        }
+    }
+
+    class ViewHolder {
+        var nameTxTv: TextView
+        var numberTxTv: TextView
+
+        constructor(view: View) {
+            this.nameTxTv = view.findViewById(R.id.tv_name)
+            this.numberTxTv = view.findViewById(R.id.tv_phone)
         }
     }
 }

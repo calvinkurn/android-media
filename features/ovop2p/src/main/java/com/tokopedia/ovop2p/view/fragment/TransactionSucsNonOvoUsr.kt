@@ -13,7 +13,7 @@ import com.tokopedia.ovop2p.di.OvoP2pTransferComponent
 import com.tokopedia.ovop2p.util.AnalyticsUtil
 import com.tokopedia.ovop2p.view.activity.OvoP2PFormActivity
 
-class TxnSucsNonOvoUsr: BaseDaggerFragment(), View.OnClickListener {
+class TransactionSucsNonOvoUsr: BaseDaggerFragment(), View.OnClickListener {
 
     private lateinit var txtvSucs: TextView
     private lateinit var tryAgn: TextView
@@ -68,15 +68,15 @@ class TxnSucsNonOvoUsr: BaseDaggerFragment(), View.OnClickListener {
     }
 
     private fun createSucsMsg(){
-        sucsMsg.text = Constants.Messages.NONOVO_USR_SUCS.replace(Constants.PlaceHolders.PHONE_NO_PLCHLDR, phnNo)
+        sucsMsg.text = resources.getString(R.string.ovop2p_msg_non_ovo, phnNo)
     }
 
     companion object{
-        fun newInstance(): TxnSucsNonOvoUsr {
-            return TxnSucsNonOvoUsr()
+        fun newInstance(): TransactionSucsNonOvoUsr {
+            return TransactionSucsNonOvoUsr()
         }
 
-        fun newInstance(bundle: Bundle): TxnSucsNonOvoUsr {
+        fun newInstance(bundle: Bundle): TransactionSucsNonOvoUsr {
             val fragmentSucsNonOvo = newInstance()
             fragmentSucsNonOvo.setArguments(bundle)
             return fragmentSucsNonOvo

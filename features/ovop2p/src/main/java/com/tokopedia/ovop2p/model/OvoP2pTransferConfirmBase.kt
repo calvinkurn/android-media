@@ -2,7 +2,6 @@ package com.tokopedia.ovop2p.model
 
 import com.google.gson.annotations.SerializedName
 
-class OvoP2pTransferConfirmBase {
-    @SerializedName("goalP2PConfirm")
-    var ovoP2pTransferConfirm: OvoP2pTransferConfirm? = null
-}
+data class OvoP2pTransferConfirmBase(
+        @SerializedName("goalP2PConfirm")
+        var ovoP2pTransferConfirm: OvoP2pTransferConfirm?)

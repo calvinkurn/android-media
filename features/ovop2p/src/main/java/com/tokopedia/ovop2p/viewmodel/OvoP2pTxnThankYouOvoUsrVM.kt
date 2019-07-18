@@ -6,6 +6,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.content.Context
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.ovop2p.Constants
+import com.tokopedia.ovop2p.R
 
 import com.tokopedia.ovop2p.model.OvoP2pTransferThankyouBase
 import com.tokopedia.ovop2p.util.OvoP2pUtil
@@ -37,7 +38,7 @@ class OvoP2pTxnThankYouOvoUsrVM(application: Application) : AndroidViewModel(app
             }
 
             override fun onError(e: Throwable?) {
-                transferThankyouLiveData.value = ThankYouErrSnkBar(Constants.Messages.GENERAL_ERROR)
+                transferThankyouLiveData.value = ThankYouErrSnkBar(getApplication<Application>().resources.getString(R.string.general_error))
             }
 
             override fun onNext(graphqlResponse: GraphqlResponse?) {
@@ -57,7 +58,7 @@ class OvoP2pTxnThankYouOvoUsrVM(application: Application) : AndroidViewModel(app
                         transferThankyouLiveData.value = ThankYouSucs(ovoP2pTransferConfirmBase)
                     }
                 } ?: run {
-                    transferThankyouLiveData.value = ThankYouErrSnkBar(Constants.Messages.GENERAL_ERROR)
+                    transferThankyouLiveData.value = ThankYouErrSnkBar(getApplication<Application>().resources.getString(R.string.general_error))
                 }
             }
         }
