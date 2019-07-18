@@ -417,6 +417,10 @@ open class PlayViewStateImpl(
     override fun onSuccessGetInfo(it: ChannelInfoViewModel, childFragmentManager: FragmentManager) {
         loadingView.hide()
 
+        var needCueVideo = viewModel?.videoId != it.videoId
+        viewModel = it
+        viewModel?.infoUrl = it.infoUrl
+
         if (it.isFreeze) {
             onChannelFrozen(it.channelId)
             listener.onToolbarEnabled(false)
@@ -425,7 +429,7 @@ open class PlayViewStateImpl(
 
         setToolbarData(it.title, it.bannerUrl, it.totalView, it.blurredBannerUrl)
         setSponsorData(it.adsId, it.adsImageUrl, it.adsName)
-        initVideoFragment(childFragmentManager, it.videoId, it.isVideoLive)
+        initVideoFragment(childFragmentManager, it.videoId, it.isVideoLive, needCueVideo)
         setBottomView()
         showLoginButton(!userSession.isLoggedIn)
         it.settingGroupChat?.maxChar?.let {
@@ -436,8 +440,6 @@ open class PlayViewStateImpl(
         setPinnedMessage(it)
         onBackgroundUpdated(it.backgroundViewModel)
 
-        viewModel = it
-        viewModel?.infoUrl = it.infoUrl
         autoAddSprintSale()
     }
 
@@ -518,11 +520,12 @@ open class PlayViewStateImpl(
 
     override fun onVideoUpdated(it: VideoViewModel, childFragmentManager: FragmentManager) {
         viewModel?.let { viewModel ->
+            var needCueVideo = viewModel?.videoId != it.videoId
             viewModel.videoId = it.videoId
             viewModel.adsId?.let {
                 setSponsorData(it, viewModel.adsImageUrl, viewModel.adsName)
             }
-            initVideoFragment(childFragmentManager, it.videoId, it.videoLive)
+            initVideoFragment(childFragmentManager, it.videoId, it.videoLive, needCueVideo)
         }
     }
 
@@ -844,7 +847,7 @@ open class PlayViewStateImpl(
         }
     }
 
-    fun initVideoFragment(fragmentManager: FragmentManager, videoId: String, isVideoLive: Boolean) {
+    fun initVideoFragment(fragmentManager: FragmentManager, videoId: String, isVideoLive: Boolean, needCueVideo: Boolean) {
         videoContainer.hide()
         liveIndicator.hide()
         hideVideoToggle.hide()
@@ -859,7 +862,7 @@ open class PlayViewStateImpl(
                 setChatListHasSpaceOnTop(false)
                 liveIndicator.showWithCondition(isVideoLive)
                 youTubePlayer?.let {
-                    if (videoId != viewModel?.videoId) {
+                    if (needCueVideo) {
                         it.cueVideo(videoId)
                     }
                     autoPlayVideo()

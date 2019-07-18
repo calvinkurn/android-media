@@ -1,8 +1,5 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.addedit
 
-import android.os.Bundle
-import android.view.Window
-import android.view.WindowManager
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.logisticaddaddress.R
 
@@ -10,14 +7,6 @@ import com.tokopedia.logisticaddaddress.R
  * Created by fwidjaja on 2019-05-22.
  */
 class AddEditAddressActivity: BaseSimpleActivity() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        requestWindowFeature(Window.FEATURE_NO_TITLE)
-        this.window.setFlags(
-                WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN)
-        super.onCreate(savedInstanceState)
-    }
 
     override fun getLayoutRes(): Int = R.layout.activity_add_edit_new_address
 
