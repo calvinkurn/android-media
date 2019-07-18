@@ -4,7 +4,7 @@ import com.tokopedia.discovery.common.Mapper;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.network.utils.AuthUtil;
-import com.tokopedia.search.result.domain.model.SearchShopModelKt;
+import com.tokopedia.search.result.domain.model.SearchShopModel;
 import com.tokopedia.search.result.presentation.ShopListSectionContract;
 import com.tokopedia.search.result.presentation.model.ShopViewModel;
 import com.tokopedia.search.result.presentation.presenter.abstraction.SearchSectionPresenter;
@@ -25,9 +25,9 @@ final class ShopListPresenter
         implements ShopListSectionContract.Presenter {
     @Inject
     @Named(SearchConstant.SearchShop.SEARCH_SHOP_USE_CASE)
-    UseCase<SearchShopModelKt> searchShopUseCase;
+    UseCase<SearchShopModel> searchShopUseCase;
     @Inject
-    Mapper<SearchShopModelKt, ShopViewModel> shopViewModelMapper;
+    Mapper<SearchShopModel, ShopViewModel> shopViewModelMapper;
     @Inject
     UserSessionInterface userSession;
 
@@ -80,10 +80,10 @@ final class ShopListPresenter
         getDynamicFilterUseCase.unsubscribe();
     }
 
-    private Subscriber<SearchShopModelKt> getSearchShopSubscriber(final Map<String, Object> searchParameter) {
-        return new Subscriber<SearchShopModelKt>() {
+    private Subscriber<SearchShopModel> getSearchShopSubscriber(final Map<String, Object> searchParameter) {
+        return new Subscriber<SearchShopModel>() {
             @Override
-            public void onNext(SearchShopModelKt searchShopModel) {
+            public void onNext(SearchShopModel searchShopModel) {
                 searchShopSubscriberOnNext(searchShopModel);
             }
 
@@ -99,7 +99,7 @@ final class ShopListPresenter
         };
     }
 
-    private void searchShopSubscriberOnNext(SearchShopModelKt searchShopModel) {
+    private void searchShopSubscriberOnNext(SearchShopModel searchShopModel) {
         if(searchShopModel == null) {
             getView().onSearchShopFailed();
             isSearchShopReturnedNull = true;

@@ -3,7 +3,7 @@ package com.tokopedia.search.result.domain.model
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class SearchShopModelKt(
+data class SearchShopModel(
         @SerializedName("aceSearchShop")
         @Expose
         val aceSearchShop: AceSearchShop = AceSearchShop()

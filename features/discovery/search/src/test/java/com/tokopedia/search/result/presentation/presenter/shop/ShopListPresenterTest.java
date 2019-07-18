@@ -2,7 +2,7 @@ package com.tokopedia.search.result.presentation.presenter.shop;
 
 import com.tokopedia.discovery.common.Mapper;
 import com.tokopedia.discovery.common.data.DynamicFilterModel;
-import com.tokopedia.search.result.domain.model.SearchShopModelKt;
+import com.tokopedia.search.result.domain.model.SearchShopModel;
 import com.tokopedia.search.result.domain.usecase.TestErrorUseCase;
 import com.tokopedia.search.result.domain.usecase.TestUseCase;
 import com.tokopedia.search.result.presentation.ShopListSectionContract;
@@ -22,20 +22,20 @@ import static org.mockito.Mockito.when;
 
 public class ShopListPresenterTest {
 
-    private static abstract class MockSearchShopUseCase extends UseCase<SearchShopModelKt> { }
+    private static abstract class MockSearchShopUseCase extends UseCase<SearchShopModel> { }
     private static abstract class MockGetDynamicFilterUseCase extends UseCase<DynamicFilterModel> { }
-    private static abstract class MockShopViewModelMapper implements Mapper<SearchShopModelKt, ShopViewModel> { }
+    private static abstract class MockShopViewModelMapper implements Mapper<SearchShopModel, ShopViewModel> { }
 
     private ShopListSectionContract.View shopListView = mock(ShopListSectionContract.View.class);
     private UseCase<DynamicFilterModel> dynamicFilterModelUseCase = mock(MockGetDynamicFilterUseCase.class);
     private UserSessionInterface userSession = mock(UserSessionInterface.class);
-    private SearchShopModelKt searchShopModel = new SearchShopModelKt();
+    private SearchShopModel searchShopModel = new SearchShopModel();
     private ShopViewModel shopViewModel = new ShopViewModel();
-    private Mapper<SearchShopModelKt, ShopViewModel> testShopViewModelMapper = mock(MockShopViewModelMapper.class);
+    private Mapper<SearchShopModel, ShopViewModel> testShopViewModelMapper = mock(MockShopViewModelMapper.class);
 
     private ShopListPresenter shopListPresenter = new ShopListPresenter();
 
-    private void shopListPresenterInjectDependencies(UseCase<SearchShopModelKt> searchShopUseCase) {
+    private void shopListPresenterInjectDependencies(UseCase<SearchShopModel> searchShopUseCase) {
         shopListPresenter.attachView(shopListView);
         shopListPresenter.searchShopUseCase = searchShopUseCase;
         shopListPresenter.getDynamicFilterUseCase = dynamicFilterModelUseCase;
@@ -45,7 +45,7 @@ public class ShopListPresenterTest {
 
     @Test
     public void loadShopSuccessWithData_RenderViewOnSuccess() {
-        UseCase<SearchShopModelKt> testSuccessSearchShopUseCase = new TestUseCase<>(searchShopModel);
+        UseCase<SearchShopModel> testSuccessSearchShopUseCase = new TestUseCase<>(searchShopModel);
         shopListPresenterInjectDependencies(testSuccessSearchShopUseCase);
         when(testShopViewModelMapper.convert(searchShopModel)).thenReturn(shopViewModel);
 
@@ -58,7 +58,7 @@ public class ShopListPresenterTest {
 
     @Test
     public void loadShopSuccessWithNull_RenderViewOnFailed() {
-        UseCase<SearchShopModelKt> testNullSearchShopUseCase = new TestUseCase<>(null);
+        UseCase<SearchShopModel> testNullSearchShopUseCase = new TestUseCase<>(null);
         shopListPresenterInjectDependencies(testNullSearchShopUseCase);
 
         shopListPresenter.loadShop(new HashMap<>());
@@ -71,7 +71,7 @@ public class ShopListPresenterTest {
     @Test
     public void loadShopError_RenderViewOnFailed() {
         Exception error = new Exception("Mock exception, should be handled in Subscriber onError");
-        UseCase<SearchShopModelKt> testErrorSearchShopUseCase = new TestErrorUseCase<>(error);
+        UseCase<SearchShopModel> testErrorSearchShopUseCase = new TestErrorUseCase<>(error);
         shopListPresenterInjectDependencies(testErrorSearchShopUseCase);
 
         shopListPresenter.loadShop(new HashMap<>());
@@ -83,7 +83,7 @@ public class ShopListPresenterTest {
 
     @Test
     public void loadShopErrorWithNulls_RenderViewOnFailed() {
-        UseCase<SearchShopModelKt> testNullErrorSearchShopUseCase = new TestErrorUseCase<>(null);
+        UseCase<SearchShopModel> testNullErrorSearchShopUseCase = new TestErrorUseCase<>(null);
         shopListPresenterInjectDependencies(testNullErrorSearchShopUseCase);
 
         shopListPresenter.loadShop(new HashMap<>());
@@ -102,7 +102,7 @@ public class ShopListPresenterTest {
 
     @Test
     public void detachView_AfterInjectUseCase_ShouldUnsubscribeAllUseCases() {
-        UseCase<SearchShopModelKt> searchShopUseCase = mock(MockSearchShopUseCase.class);
+        UseCase<SearchShopModel> searchShopUseCase = mock(MockSearchShopUseCase.class);
         shopListPresenterInjectDependencies(searchShopUseCase);
 
         shopListPresenter.detachView();

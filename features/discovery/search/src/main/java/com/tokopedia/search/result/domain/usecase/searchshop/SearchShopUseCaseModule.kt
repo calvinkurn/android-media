@@ -10,7 +10,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.search.R
 import com.tokopedia.search.result.data.mapper.searchshop.SearchShopMapperModule
-import com.tokopedia.search.result.domain.model.SearchShopModelKt
+import com.tokopedia.search.result.domain.model.SearchShopModel
 import com.tokopedia.usecase.UseCase
 import dagger.Module
 import dagger.Provides
@@ -26,11 +26,11 @@ class SearchShopUseCaseModule {
     @Named(SearchConstant.SearchShop.SEARCH_SHOP_USE_CASE)
     internal fun provideSearchShopModel(
             @ApplicationContext context: Context,
-            searchShopModelMapper: Func1<GraphqlResponse, SearchShopModelKt>
-    ): UseCase<SearchShopModelKt> {
+            searchShopModelMapper: Func1<GraphqlResponse, SearchShopModel>
+    ): UseCase<SearchShopModel> {
         val graphqlRequest = GraphqlRequest(
                 GraphqlHelper.loadRawString(context.resources, R.raw.gql_search_shop),
-                SearchShopModelKt::class.java
+                SearchShopModel::class.java
         )
 
         return SearchShopGqlUseCase(graphqlRequest, GraphqlUseCase(), searchShopModelMapper)
