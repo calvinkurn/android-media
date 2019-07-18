@@ -18,6 +18,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.reactNative)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.features.navigationCommon)
+    implementation project(rootProject.ext.features.nps)
 
     implementation rootProject.ext.miscDependencies.reactNative
 

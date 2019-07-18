@@ -1,15 +1,18 @@
 package com.tokopedia.officialstore.fragment;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.tokopedia.navigation_common.listener.AllNotificationListener;
+import com.tokopedia.nps.presentation.view.dialog.AdvancedAppRatingDialog;
 import com.tokopedia.officialstore.R;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
@@ -39,7 +42,15 @@ public class ReactNativeOfficialStoreFragment extends ReactNativeFragment
         ReactUtils.startTracing(MP_OFFICIAL_STORE); // start trace when view created
         super.onCreateView(inflater, container, savedInstanceState);
         if (getActivity() != null) // set background color of react root view
-            reactRootView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
+            reactRootView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.red_50));
+
+        AdvancedAppRatingDialog.show(getActivity(), new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                Toast lala = Toast.makeText(getContext(), "Testing", Toast.LENGTH_LONG);
+                lala.show();
+            }
+        });
         return reactRootView;
     }
 
