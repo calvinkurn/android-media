@@ -1,18 +1,11 @@
 package com.tokopedia.productcard.v2
 
 import android.content.Context
-import android.graphics.drawable.GradientDrawable
-import android.os.Build
-import android.support.constraint.ConstraintSet
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.productcard.R
-import com.tokopedia.productcard.utils.doIfVisible
-import com.tokopedia.productcard.utils.isNotNullAndVisible
-import com.tokopedia.productcard.utils.isNullOrNotVisible
-import com.tokopedia.unifycomponents.Label
 
 /**
  * ProductCardView with Small Grid layout.
