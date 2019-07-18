@@ -67,7 +67,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="@dimen/dp_8"
-                    android:background="@drawable/bg_search"
+                    android:background="@drawable/pdp_bg_search"
                     android:layout_toStartOf="@+id/btn_wishlist"
                     android:layout_toLeftOf="@+id/btn_wishlist"
                     android:orientation="horizontal"
