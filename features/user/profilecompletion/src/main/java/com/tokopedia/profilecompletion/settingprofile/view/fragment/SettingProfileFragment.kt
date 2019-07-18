@@ -5,6 +5,7 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.view.LayoutInflater
@@ -239,17 +240,40 @@ class SettingProfileFragment : BaseDaggerFragment() {
             if (imageUrlOrPathList != null && imageUrlOrPathList.size > 0) {
                 val savedLocalImageUrl = imageUrlOrPathList[0]
                 val file = File(savedLocalImageUrl)
-                if (file.exists()) {
+
+                if (!file.exists()) {
+                    onErrorGetProfilePhoto(MessageErrorException(getString(R.string.failed_to_get_picture)))
+                } else if (!imageIsValid(file)) {
+                    onErrorGetProfilePhoto(MessageErrorException(getString(R.string.error_oversize_avatar_image)))
+                } else {
                     showLoading(true)
                     profileInfoViewModel.uploadProfilePicture(savedLocalImageUrl)
-                } else {
-                    onErrorGetProfilePhoto(MessageErrorException(getString(R.string.failed_to_get_picture)))
                 }
+
             } else {
                 onErrorGetProfilePhoto(MessageErrorException(getString(R.string.failed_to_get_picture)))
             }
         } else {
             onErrorGetProfilePhoto(MessageErrorException(getString(R.string.failed_to_get_picture)))
+        }
+    }
+
+    private fun imageIsValid(file: File): Boolean {
+        val MAX_FILE_SIZE: Long = 2048
+        val DEFAULT_ONE_MEGABYTE: Long = 1024
+
+        val options = BitmapFactory.Options()
+        options.inJustDecodeBounds = true
+        BitmapFactory.decodeFile(file.absolutePath, options)
+        val imageHeight = options.outHeight
+        val imageWidth = options.outWidth
+
+        val fileSize = Integer.parseInt((file.length() / DEFAULT_ONE_MEGABYTE).toString())
+
+        return if (fileSize >= MAX_FILE_SIZE) {
+            false
+        } else {
+            true
         }
     }
 
@@ -359,6 +383,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
                         startActivityForResult(intent, REQUEST_CODE_ADD_PHONE)
                     }
             )
+            tickerPhoneVerification.visibility = View.GONE
         } else {
             phone.showFilled(
                     getString(R.string.subtitle_phone_setting_profile),
