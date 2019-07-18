@@ -86,19 +86,7 @@
             android:textIsSelectable="true"
             android:textSize="@dimen/sp_14"
             android:maxLines="5"
-            tools:text="Gukguk meong meongaksjdkajshdkajhsdkajhsdkajhsdaksdjhaksjhkahsdk
-fskjdfas
-dsfklasjd
-sdfjlkas
-sdlkfja
-
-sdkfjalkjdf
-asdlkfjlaks
-sdflkjlasdfj
-asdflkjasdflk
-asdfjaslkdfj
-sadflkjaslfjaskldfj
-sadflsdkfjlasj"/>
+            tools:text="Gukguk meong meongaksjdkajshdkajhsdkajhsdkajhsdaksdjhaksjhkahsdk"/>
 
     </RelativeLayout>
 
