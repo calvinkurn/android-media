@@ -242,47 +242,26 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         val contentList: MutableList<BasePostViewModel> = mapPostContent(feed.content.cardpost, template)
         val trackingPostModel = mapPostTracking(feed)
 
-        if (shouldAddCardPost(feed, contentList)) {
-            val postTag = feed.content.cardpost.body.postTag.firstOrNull() ?: PostTag()
-            posts.add(
-                    DynamicPostViewModel(
-                            feed.id,
-                            feed.content.cardpost.title,
-                            feed.content.cardpost.header,
-                            postTag,
-                            feed.content.cardpost.footer,
-                            feed.content.cardpost.body.caption,
-                            contentList,
-                            template,
-                            trackingPostModel,
-                            mapTrackingData(feed.content.cardpost.tracking),
-                            feedType
-                    )
-            )
-        }
-    }
-
-    private fun shouldAddCardPost(feed: Feed, contentList: MutableList<BasePostViewModel>): Boolean {
-        val isGridNotEmpty =
-                if (contentList.firstOrNull() is GridPostViewModel)
-                    (contentList.firstOrNull() as GridPostViewModel).itemList.size > 0
-                else
-                    true
-
-        return feed.content.cardpost.header.avatarTitle.isNotEmpty() &&
-                feed.content.cardpost.body.media.isNotEmpty() &&
-                contentList.size > 0 &&
-                isGridNotEmpty
+        val postTag = feed.content.cardpost.body.postTag.firstOrNull() ?: PostTag()
+        posts.add(
+                DynamicPostViewModel(
+                        feed.id,
+                        feed.content.cardpost.title,
+                        feed.content.cardpost.header,
+                        postTag,
+                        feed.content.cardpost.footer,
+                        feed.content.cardpost.body.caption,
+                        contentList,
+                        template,
+                        trackingPostModel,
+                        mapTrackingData(feed.content.cardpost.tracking),
+                        feedType
+                )
+        )
     }
 
     private fun mapPostContent(cardPost: Cardpost, template: Template): MutableList<BasePostViewModel> {
         val list: MutableList<BasePostViewModel> = ArrayList()
-//        if (cardPost.body.media.isNotEmpty()) {
-//            cardPost.body.media = getDataMultimedia(cardPost.body.media, count)
-//            if (count < 6) {
-//                count++
-//            }
-//        }
         for (media in cardPost.body.media) {
             when (media.type) {
                 CONTENT_IMAGE -> list.add(mapPostImage(media))
