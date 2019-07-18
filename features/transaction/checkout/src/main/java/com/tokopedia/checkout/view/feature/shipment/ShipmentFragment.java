@@ -48,6 +48,7 @@ import com.tokopedia.checkout.view.feature.bottomsheetcod.CodBottomSheetFragment
 import com.tokopedia.checkout.view.feature.bottomsheetpromostacking.ClashBottomSheetFragment;
 import com.tokopedia.checkout.view.feature.bottomsheetpromostacking.TotalBenefitBottomSheetFragment;
 import com.tokopedia.checkout.view.feature.cartlist.CartItemDecoration;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.multipleaddressform.MultipleAddressFormActivity;
 import com.tokopedia.checkout.view.feature.shipment.adapter.ShipmentAdapter;
 import com.tokopedia.checkout.view.feature.shipment.converter.RatesDataConverter;
@@ -91,6 +92,7 @@ import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiMod
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.MessageUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel;
+import com.tokopedia.promocheckout.common.view.uimodel.TrackingDetail;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
@@ -2669,7 +2671,22 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     }
                 }
             }
+
+            if (promoData.getData().getTrackingDetail().size() > 0) {
+                for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+                    for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+                        for (TrackingDetail trackingDetail : promoData.getData().getTrackingDetail()) {
+                            if (trackingDetail.getProductId() == cartItemModel.getProductId()) {
+                                cartItemModel.setPromoCodes(trackingDetail.getPromoCodesTracking());
+                                cartItemModel.setPromoDetails(trackingDetail.getPromoDetailsTracking());
+                            }
+                        }
+                    }
+                }
+            }
+
         }
+
         shipmentAdapter.notifyDataSetChanged();
         shipmentAdapter.checkHasSelectAllCourier(false);
     }
