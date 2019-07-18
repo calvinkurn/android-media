@@ -135,7 +135,7 @@ class ShopItemViewHolder(
     }
 
     private fun createRecyclerViewShopProductItemLayoutManager(): RecyclerView.LayoutManager {
-        return GridLayoutManager(context, SHOP_PRODUCT_ITEM_COUNT, GridLayoutManager.HORIZONTAL, false)
+        return GridLayoutManager(context, SHOP_PRODUCT_ITEM_COUNT, GridLayoutManager.VERTICAL, false)
     }
 
     private fun createRecyclerViewShopProductItemDecoration(): RecyclerView.ItemDecoration {

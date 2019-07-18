@@ -121,6 +121,7 @@ public class ShopListFragment
         if (getUserVisibleHint()) {
             setupSearchNavigation();
         }
+        setSpanCount(1);
     }
 
     private void bindView(View rootView) {
@@ -133,10 +134,10 @@ public class ShopListFragment
         recyclerView.setLayoutManager(getGridLayoutManager());
         recyclerView.addItemDecoration(
                 new ShopListItemDecoration(
-                        getContext().getResources().getDimensionPixelSize(R.dimen.dp_2),
-                        getContext().getResources().getDimensionPixelSize(R.dimen.dp_2),
-                        -(getContext().getResources().getDimensionPixelSize(R.dimen.dp_1)),
-                        0
+                        getContext().getResources().getDimensionPixelSize(R.dimen.dp_16),
+                        getContext().getResources().getDimensionPixelSize(R.dimen.dp_16),
+                        getContext().getResources().getDimensionPixelSize(R.dimen.dp_16),
+                        getContext().getResources().getDimensionPixelSize(R.dimen.dp_16)
                 )
         );
 
@@ -412,22 +413,7 @@ public class ShopListFragment
 
     @Override
     protected void switchLayoutType() {
-        super.switchLayoutType();
 
-        if (!getUserVisibleHint() || getAdapter() == null) {
-            return;
-        }
-        recyclerView.clearOnScrollListeners();
-
-        switch (getAdapter().getCurrentLayoutType()) {
-            case GRID_1: // List
-                recyclerView.addOnScrollListener(linearLayoutLoadMoreTriggerListener);
-                break;
-            case GRID_2: // Grid 2x2
-            case GRID_3: // Grid 1x1
-                recyclerView.addOnScrollListener(gridLayoutLoadMoreTriggerListener);
-                break;
-        }
     }
 
     @Override
