@@ -672,6 +672,12 @@ public class ImageHandler {
     }
 
     public static void loadGif(ImageView imageView, int gifDrawable, int placeholder) {
+        if(placeholder < 0) {
+            Glide.with(imageView.getContext()).load(gifDrawable)
+                    .asGif()
+                    .into(imageView);
+            return;
+        }
         Drawable drawable = AppCompatResources.getDrawable(imageView.getContext(), placeholder);
         Glide.with(imageView.getContext()).load(gifDrawable)
                 .asGif()
@@ -680,6 +686,10 @@ public class ImageHandler {
     }
 
     public static void loadGifFromUrl(ImageView imageView, String url, int placeholder) {
+        if(placeholder < 0) {
+            loadImageWithoutPlaceholder(imageView, url);
+            return;
+        }
         Drawable drawable = AppCompatResources.getDrawable(imageView.getContext(), placeholder);
         Glide.with(imageView.getContext()).load(url)
                 .asGif()
@@ -688,6 +698,10 @@ public class ImageHandler {
     }
 
     public static void loadImage(Context context, ImageView imageview, String url, int placeholder) {
+        if(placeholder < 0) {
+            loadImageWithoutPlaceholder(imageview, url);
+            return;
+        }
         Drawable drawable = AppCompatResources.getDrawable(imageview.getContext(), placeholder);
         Glide.with(context)
                 .load(url)
@@ -700,6 +714,10 @@ public class ImageHandler {
     }
 
     public static void loadImage(Context context, ImageView imageview, String url, int placeholder, int error_image) {
+        if(placeholder < 0) {
+            loadImageWithoutPlaceholder(imageview, url);
+            return;
+        }
         Drawable drawable = AppCompatResources.getDrawable(imageview.getContext(), placeholder);
         Drawable errorDrawable = AppCompatResources.getDrawable(imageview.getContext(), error_image);
         Glide.with(context)

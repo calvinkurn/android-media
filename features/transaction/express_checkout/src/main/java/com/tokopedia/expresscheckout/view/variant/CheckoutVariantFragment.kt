@@ -44,7 +44,7 @@ import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewMod
 import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_SELECTED
 import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_SELECTED
 import com.tokopedia.imagepreview.ImagePreviewActivity
-import com.tokopedia.logisticcommon.LogisticCommonConstant
+import com.tokopedia.logisticdata.data.constant.LogisticCommonConstant
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
@@ -928,6 +928,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                                            selectedServiceId: Int,
                                            serviceData: ServiceData,
                                            flagNeedToSetPinpoint: Boolean,
+                                           isDurationClick: Boolean,
                                            isClearPromo: Boolean) {
         if (shippingCourierViewModels != null) {
             val summaryViewModel = fragmentViewModel.getSummaryViewModel()

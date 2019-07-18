@@ -8,14 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
-import com.tokopedia.contactus.R2;
+import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
 
-import butterknife.BindView;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class BottomSheetListFragment extends InboxBottomSheetFragment {
-    @BindView(R2.id.rv_filter)
+
     VerticalRecyclerView rvBottomSheet;
 
     private RecyclerView.Adapter mAdapter;
@@ -32,6 +31,7 @@ public class BottomSheetListFragment extends InboxBottomSheetFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        rvBottomSheet = rootView.findViewById(R.id.rv_filter);
         rvBottomSheet.setAdapter(mAdapter);
         return rootView;
     }

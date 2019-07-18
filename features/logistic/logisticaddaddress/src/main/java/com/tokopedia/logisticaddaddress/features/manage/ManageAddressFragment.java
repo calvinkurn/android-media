@@ -33,6 +33,8 @@ import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressFragment;
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity;
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 
 import java.util.List;
 
@@ -40,6 +42,7 @@ import javax.inject.Inject;
 
 import static com.tokopedia.logisticaddaddress.AddressConstants.REQUEST_CODE_PARAM_CREATE;
 import static com.tokopedia.logisticaddaddress.AddressConstants.REQUEST_CODE_PARAM_EDIT;
+import static com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_ADD_NEW_ADDRESS_KEY;
 
 /**
  * Created by Fajar Ulin Nuha on 13/11/18.
@@ -198,26 +201,24 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
     public void openFormAddressView(AddressModel data) {
         Token token = mPresenter.getToken();
         if (data == null) {
-            /*startActivityForResult(
+            if (isAddNewAddressEnabled()) {
+                startActivityForResult(PinpointMapActivity.newInstance(getActivity(),
+                        AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
+                        false, 0, false, false, null,
+                        false), REQUEST_CODE_PARAM_CREATE);
+
+            } else {
+                startActivityForResult(
                     AddAddressActivity.createInstanceAddAddressFromManageAddressWhenDefaultAddressIsEmpty(
                             getActivity(), token
-                    ), REQUEST_CODE_PARAM_CREATE);*/
-
-            startActivityForResult(PinpointMapActivity.Companion.newInstance(getActivity(),
-                    AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, token,
-                    false, 0, false, null,
-                    false), REQUEST_CODE_PARAM_CREATE);
+                    ), REQUEST_CODE_PARAM_CREATE);
+            }
 
         } else {
-            /*startActivityForResult(
-                    AddAddressActivity.createInstanceEditAddressFromManageAddress(
-                            getActivity(), data, token
-                    ), REQUEST_CODE_PARAM_EDIT);*/
-
-            startActivityForResult(PinpointMapActivity.Companion.newInstance(getActivity(),
-                    AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, token,
-                    false, 0, false, null,
-                    false), REQUEST_CODE_PARAM_EDIT);
+            startActivityForResult(
+                AddAddressActivity.createInstanceEditAddressFromManageAddress(
+                        getActivity(), data, token
+                ), REQUEST_CODE_PARAM_EDIT);
         }
     }
 
@@ -268,6 +269,11 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
     @Override
     public void stopPerformanceMonitoring() {
         performanceMonitoring.stopTrace();
+    }
+
+    public boolean isAddNewAddressEnabled() {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
+        return remoteConfig.getBoolean(ENABLE_ADD_NEW_ADDRESS_KEY, false);
     }
 
 }

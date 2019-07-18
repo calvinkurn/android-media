@@ -74,7 +74,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
     ShippingDurationAdapter shippingDurationAdapter;
     @Inject
     CheckoutAnalyticsCourierSelection mPromoTracker;
-    private String mCornerId = "";
+    private boolean mIsCorner = false;
 
     public static ShippingDurationBottomsheet newInstance(ShipmentDetailData shipmentDetailData,
                                                           int selectedServiceId,
@@ -152,7 +152,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
             int selectedServiceId = getArguments().getInt(ARGUMENT_SELECTED_SERVICE_ID);
             int codHistory = getArguments().getInt(ARGUMENT_COD_HISTORY);
             if (recipientAddressModel != null) {
-                mCornerId = recipientAddressModel.isCornerAddress() ? recipientAddressModel.getId() : "";
+                mIsCorner = recipientAddressModel.isCornerAddress();
             }
             isDisableCourierPromo = getArguments().getBoolean(ARGUMENT_DISABLE_PROMO_COURIER);
             setupRecyclerView(mCartPosition);
@@ -160,9 +160,9 @@ public class ShippingDurationBottomsheet extends BottomSheets
             ShippingParam shippingParam = getArguments().getParcelable(ARGUMENT_SHIPPING_PARAM);
             List<ShopShipment> shopShipments = getArguments().getParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST);
             if (shipmentDetailData != null) {
-                presenter.loadCourierRecommendation(shipmentDetailData, selectedServiceId, shopShipments, codHistory, mCornerId);
+                presenter.loadCourierRecommendation(shipmentDetailData, selectedServiceId, shopShipments, codHistory, mIsCorner);
             } else if (shippingParam != null) {
-                presenter.loadCourierRecommendation(shippingParam, selectedServiceId, shopShipments, codHistory, mCornerId);
+                presenter.loadCourierRecommendation(shippingParam, selectedServiceId, shopShipments, codHistory, mIsCorner);
             }
         }
     }
@@ -220,7 +220,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
                             int selectedServiceId = getArguments().getInt(ARGUMENT_SELECTED_SERVICE_ID);
                             int codHistory = getArguments().getInt(ARGUMENT_COD_HISTORY);
                             if (shipmentDetailData != null) {
-                                presenter.loadCourierRecommendation(shipmentDetailData, selectedServiceId, shopShipments, codHistory, mCornerId);
+                                presenter.loadCourierRecommendation(shipmentDetailData, selectedServiceId, shopShipments, codHistory, mIsCorner);
                             }
                         }
                     }
@@ -230,7 +230,6 @@ public class ShippingDurationBottomsheet extends BottomSheets
 
     @Override
     public void showData(List<ShippingDurationViewModel> shippingDurationViewModelList, LogisticPromoViewModel promoViewModel) {
-        shippingDurationAdapter.setHasCourierPromo(checkHasCourierPromo(shippingDurationViewModelList));
         shippingDurationAdapter.setShippingDurationViewModels(shippingDurationViewModelList, promoViewModel);
         shippingDurationAdapter.initiateShowcase();
         updateHeight();
@@ -281,7 +280,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
 
     @Override
     public void onShippingDurationChoosen(List<ShippingCourierViewModel> shippingCourierViewModels,
-                                          int cartPosition, ServiceData serviceData, boolean hasCourierPromo) {
+                                          int cartPosition, ServiceData serviceData) {
         boolean flagNeedToSetPinpoint = false;
         int selectedServiceId = 0;
         if (isToogleYearEndPromotionOn()) {
@@ -308,13 +307,12 @@ public class ShippingDurationBottomsheet extends BottomSheets
             shippingDurationBottomsheetListener.onShippingDurationChoosen(
                     shippingCourierViewModels, presenter.getCourierItemData(shippingCourierViewModels),
                     presenter.getRecipientAddressModel(), cartPosition, selectedServiceId, serviceData,
-                    flagNeedToSetPinpoint, true);
-        }
-
-        try {
-            dismiss();
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
+                    flagNeedToSetPinpoint, true, true);
+            try {
+                dismiss();
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            }
         }
     }
 

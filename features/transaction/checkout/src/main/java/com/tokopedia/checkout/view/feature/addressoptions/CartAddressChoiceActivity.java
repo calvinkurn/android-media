@@ -10,14 +10,21 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.data.mapper.AddressModelMapper;
 import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutActivity;
+import com.tokopedia.checkout.view.feature.cornerlist.CornerListFragment;
 import com.tokopedia.logisticaddaddress.AddressConstants;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity;
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity;
-import com.tokopedia.logisticcommon.LogisticCommonConstant;
+import com.tokopedia.logisticdata.data.constant.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.address.Token;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
+
+import static com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_ADD_NEW_ADDRESS_KEY;
 
 /**
  * @author Irfan Khoirul on 05/02/18
@@ -25,7 +32,7 @@ import java.util.ArrayList;
  * Fajar U N
  */
 public class CartAddressChoiceActivity extends BaseCheckoutActivity
-        implements ShipmentAddressListFragment.ICartAddressChoiceActivityListener {
+        implements ShipmentAddressListFragment.ICartAddressChoiceActivityListener, CornerListFragment.ActionListener {
 
     public static final int REQUEST_CODE = 981;
 
@@ -41,6 +48,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     public static final String EXTRA_MULTIPLE_ADDRESS_DATA_LIST = "EXTRA_MULTIPLE_ADDRESS_DATA_LIST";
     public static final String EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX = "EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX";
     public static final String EXTRA_SELECTED_ADDRESS_DATA = "EXTRA_SELECTED_ADDRESS_DATA";
+    private static final String TAG_CORNER_FRAGMENT = "TAG_CORNER_FRAGMENT";
 
     public static final int TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS = 1;
     public static final int TYPE_REQUEST_MULTIPLE_ADDRESS_ADD_SHIPMENT = 3;
@@ -116,6 +124,13 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     }
 
     @Override
+    public void onAttachFragment(Fragment fragment) {
+        if (fragment instanceof CornerListFragment) {
+            ((CornerListFragment) fragment).setCornerListener(this);
+        }
+    }
+
+    @Override
     protected void initInjector() {
 
     }
@@ -132,26 +147,23 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     }
 
     @Override
-    public void setTitle(CharSequence title) {
-        super.setTitle(title);
-        updateTitle(getString(R.string.checkout_module_title_shipping_dest_multiple_address));
-    }
-
-    @Override
     protected void initView() {
+        updateTitle(getString(R.string.checkout_module_title_shipping_dest_multiple_address));
         Intent intent;
         switch (typeRequest) {
             case TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS:
-                /*intent = AddAddressActivity
-                        .createInstanceAddAddressFromCheckoutSingleAddressFormWhenDefaultAddressIsEmpty(
-                                this, token);
-                startActivityForResult(intent,
-                        LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);*/
-
-                startActivityForResult(PinpointMapActivity.Companion.newInstance(this,
-                        AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, token,
-                        false, 0, false, null,
-                        false), LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT);
+                if (isAddNewAddressEnabled()) {
+                    startActivityForResult(PinpointMapActivity.newInstance(this,
+                            AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
+                            false, 0, false, false, null,
+                            false), LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT);
+                } else {
+                    intent = AddAddressActivity
+                            .createInstanceAddAddressFromCheckoutSingleAddressFormWhenDefaultAddressIsEmpty(
+                                    this, token);
+                    startActivityForResult(intent,
+                            LogisticCommonConstant.REQUEST_CODE_PARAM_CREATE);
+                }
 
                 break;
             case TYPE_REQUEST_EDIT_ADDRESS_FOR_TRADE_IN:
@@ -162,8 +174,6 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
                 );
                 startActivityForResult(intent,
                         LogisticCommonConstant.REQUEST_CODE_PARAM_EDIT);
-                /*intent = new Intent(this, PinpointMapActivity.class);
-                startActivity(intent);*/
                 break;
             default:
         }
@@ -243,6 +253,23 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     }
 
     @Override
+    public void requestCornerList() {
+        updateTitle(getString(R.string.button_choose_corner));
+        getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_up, R.anim.stay_still)
+                .replace(R.id.parent_view, CornerListFragment.newInstance(), TAG_CORNER_FRAGMENT)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void onCornerChosen(@NotNull RecipientAddressModel corner) {
+        updateTitle(getString(R.string.checkout_module_title_shipping_dest_multiple_address));
+        getSupportFragmentManager().popBackStack();
+        ((ShipmentAddressListFragment) getFragment()).onChooseCorner(corner);
+    }
+
+    @Override
     protected Fragment getNewFragment() {
         RecipientAddressModel currentAddress = getIntent().getParcelableExtra(EXTRA_CURRENT_ADDRESS);
         switch (typeRequest) {
@@ -261,8 +288,14 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
         if (getCurrentFragment() instanceof ShipmentAddressListFragment) {
             ((ShipmentAddressListFragment) getCurrentFragment())
                     .checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickArrowBackFromGantiAlamat();
-            super.onBackPressed();
+        } else if (getCurrentFragment() instanceof CornerListFragment) {
+            updateTitle(getString(R.string.checkout_module_title_shipping_dest_multiple_address));
         }
+        super.onBackPressed();
     }
 
+    public boolean isAddNewAddressEnabled() {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
+        return remoteConfig.getBoolean(ENABLE_ADD_NEW_ADDRESS_KEY, false);
+    }
 }

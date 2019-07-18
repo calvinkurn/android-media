@@ -18,7 +18,6 @@ import android.widget.TextView;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.contactus.R;
-import com.tokopedia.contactus.R2;
 import com.tokopedia.contactus.common.analytics.ContactUsTracking;
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking;
 import com.tokopedia.contactus.inboxticket2.data.model.Tickets;
@@ -28,9 +27,11 @@ import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract;
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText;
 import com.tokopedia.contactus.inboxticket2.view.fragment.ImageViewerFragment;
+import com.tokopedia.contactus.inboxticket2.view.fragment.ServicePrioritiesBottomSheet;
 import com.tokopedia.contactus.inboxticket2.view.utils.Utils;
 import com.tokopedia.contactus.orderquery.data.ImageUpload;
 import com.tokopedia.contactus.orderquery.view.adapter.ImageUploadAdapter;
+import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
@@ -40,76 +41,58 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-
-import butterknife.BindView;
-import butterknife.OnClick;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class InboxDetailActivity extends InboxBaseActivity
-        implements InboxDetailContract.InboxDetailView, ImageUploadAdapter.OnSelectImageClick {
+        implements InboxDetailContract.InboxDetailView, ImageUploadAdapter.OnSelectImageClick, ServicePrioritiesBottomSheet.CloseServicePrioritiesBottomSheet, View.OnClickListener {
 
 
-    @BindView(R2.id.tv_ticket_title)
-    TextView tvTicketTitle;
-    @BindView(R2.id.tv_id_num)
-    TextView tvIdNum;
-    @BindView(R2.id.rv_message_list)
-    RecyclerView rvMessageList;
-    @BindView(R2.id.rv_selected_images)
-    RecyclerView rvSelectedImages;
-    @BindView(R2.id.divider_rv)
-    View dividerRv;
-    @BindView(R2.id.iv_upload_img)
-    ImageView ivUploadImg;
-    @BindView(R2.id.iv_send_button)
-    ImageView ivSendButton;
-    @BindView(R2.id.tv_view_transaction)
-    TextView viewTransaction;
-    @BindView(R2.id.ed_message)
-    EditText edMessage;
-    @BindView(R2.id.send_progress)
-    View sendProgress;
-    @BindView(R2.id.view_help_rate)
-    View viewHelpRate;
-    @BindView(R2.id.text_toolbar)
-    View textToolbar;
-    @BindView(R2.id.view_link_bottom)
-    View viewLinkBottom;
-    @BindView(R2.id.custom_search)
-    CustomEditText editText;
-    @BindView(R2.id.inbox_search_view)
-    View searchView;
-    @BindView(R2.id.iv_previous_up)
-    View ivPrevious;
-    @BindView(R2.id.iv_next_down)
-    View ivNext;
-    @BindView(R2.id.tv_count_total)
-    TextView totalRes;
-    @BindView(R2.id.tv_count_current)
-    TextView currentRes;
-    @BindView(R2.id.tv_priority_label)
-    TextView tvPriorityLabel;
-
-
+    private TextView tvTicketTitle;
+    private TextView tvIdNum;
+    private RecyclerView rvMessageList;
+    private RecyclerView rvSelectedImages;
+    private View dividerRv;
+    private ImageView ivUploadImg;
+    private ImageView ivSendButton;
+    private TextView viewTransaction;
+    private EditText edMessage;
+    private View sendProgress;
+    private View viewHelpRate;
+    private View textToolbar;
+    private View viewLinkBottom;
+    private CustomEditText editText;
+    private View searchView;
+    private View ivPrevious;
+    private View ivNext;
+    private TextView totalRes;
+    private TextView currentRes;
+    private TextView tvPriorityLabel;
+    private ImageView btnInactive1,btnInactive2,btnInactive3,btnInactive4,btnInactive5;
+    private TextView txtHyper;
+    private View noTicketFound;
+    private TextView tvNoTicket;
+    private TextView tvOkButton;
     private ImageUploadAdapter imageUploadAdapter;
     private InboxDetailAdapter detailAdapter;
     private LinearLayoutManager layoutManager;
-
     private String rateCommentID;
-
     private boolean isCustomReason;
-
     public static final String PARAM_TICKET_ID = "ticket_id";
+    public static final String PARAM_TICKET_T_ID = "id";
     public static final String IS_OFFICIAL_STORE = "is_official_store";
+    private CloseableBottomSheetDialog servicePrioritiesBottomSheet;
 
     @DeepLink(ApplinkConst.TICKET_DETAIL)
     public static TaskStackBuilder getCallingIntent(Context context, Bundle bundle) {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         Intent parentIntent = new Intent(context, InboxListActivity.class);
-        String ticketId = bundle.getString(PARAM_TICKET_ID, "");
+        String ticketId = bundle.getString(PARAM_TICKET_T_ID);
+        if(ticketId==null){
+            ticketId = bundle.getString(PARAM_TICKET_ID, "");
+        }
         taskStackBuilder.addNextIntent(parentIntent);
         taskStackBuilder.addNextIntent(getIntent(context, ticketId));
         return taskStackBuilder;
@@ -182,7 +165,9 @@ public class InboxDetailActivity extends InboxBaseActivity
             tvPriorityLabel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //opn tooltip
+                    servicePrioritiesBottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
+                    servicePrioritiesBottomSheet.setCustomContentView( new ServicePrioritiesBottomSheet(InboxDetailActivity.this,InboxDetailActivity.this),"", false);
+                    servicePrioritiesBottomSheet.show();
                 }
             });
         }
@@ -234,8 +219,52 @@ public class InboxDetailActivity extends InboxBaseActivity
     @Override
     void initView() {
         layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        findingViewsId();
         rvMessageList.setLayoutManager(layoutManager);
         editText.setListener(((InboxDetailContract.InboxDetailPresenter) mPresenter).getSearchListener());
+        settingClickListner();
+    }
+
+    private void findingViewsId() {
+        tvTicketTitle = findViewById(R.id.tv_ticket_title);
+        tvIdNum = findViewById(R.id.tv_id_num);
+        rvMessageList = findViewById(R.id.rv_message_list);
+        rvSelectedImages = findViewById(R.id.rv_selected_images);
+        ivUploadImg = findViewById(R.id.iv_upload_img);
+        ivSendButton = findViewById(R.id.iv_send_button);
+        viewTransaction = findViewById(R.id.tv_view_transaction);
+        edMessage = findViewById(R.id.ed_message);
+        sendProgress = findViewById(R.id.send_progress);
+        viewHelpRate = findViewById(R.id.view_help_rate);
+        textToolbar = findViewById(R.id.text_toolbar);
+        viewLinkBottom = findViewById(R.id.view_link_bottom);
+        editText = findViewById(R.id.custom_search);
+        searchView = findViewById(R.id.inbox_search_view);
+        ivPrevious = findViewById(R.id.iv_previous_up);
+        ivNext = findViewById(R.id.iv_next_down);
+        totalRes = findViewById(R.id.tv_count_total);
+        currentRes = findViewById(R.id.tv_count_current);
+        tvPriorityLabel = findViewById(R.id.tv_priority_label);
+        btnInactive1 = findViewById(R.id.btn_inactive_1);
+        btnInactive2 = findViewById(R.id.btn_inactive_2);
+        btnInactive3 = findViewById(R.id.btn_inactive_3);
+        btnInactive4 = findViewById(R.id.btn_inactive_4);
+        btnInactive5 = findViewById(R.id.btn_inactive_5);
+        txtHyper = findViewById(R.id.txt_hyper);
+    }
+
+    private void settingClickListner() {
+        btnInactive1.setOnClickListener(this);
+        btnInactive2.setOnClickListener(this);
+        btnInactive3.setOnClickListener(this);
+        btnInactive4.setOnClickListener(this);
+        btnInactive5.setOnClickListener(this);
+        ivUploadImg.setOnClickListener(this);
+        ivSendButton.setOnClickListener(this);
+        viewTransaction.setOnClickListener(this);
+        ivNext.setOnClickListener(this);
+        ivPrevious.setOnClickListener(this);
+        txtHyper.setOnClickListener(this);
     }
 
     @Override
@@ -260,6 +289,9 @@ public class InboxDetailActivity extends InboxBaseActivity
         rvSelectedImages.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         rvSelectedImages.setAdapter(imageUploadAdapter);
         edMessage.addTextChangedListener(((InboxDetailContract.InboxDetailPresenter) mPresenter).watcher());
+        noTicketFound = findViewById(R.id.no_ticket_found);
+        tvNoTicket = findViewById(R.id.tv_no_ticket);
+        tvOkButton = findViewById(R.id.tv_ok_button);
     }
 
 
@@ -296,7 +328,6 @@ public class InboxDetailActivity extends InboxBaseActivity
 
     }
 
-    @OnClick(R2.id.iv_upload_img)
     void onClickUpload() {
         if (rvSelectedImages.getVisibility() != View.VISIBLE)
             showImagePickerDialog();
@@ -311,7 +342,6 @@ public class InboxDetailActivity extends InboxBaseActivity
                 "");
     }
 
-    @OnClick({R2.id.btn_inactive_1,R2.id.btn_inactive_2,R2.id.btn_inactive_3,R2.id.btn_inactive_4,R2.id.btn_inactive_5,})
     void onEmojiClick(View v) {
             if(v.getId() == R.id.btn_inactive_1) {
                 ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClickEmoji(1);
@@ -333,8 +363,18 @@ public class InboxDetailActivity extends InboxBaseActivity
         return rateCommentID;
     }
 
+    @Override
+    public void showNoTicketView(List<String> messageError) {
+        noTicketFound.setVisibility(View.VISIBLE);
+        tvNoTicket.setText(messageError.get(0));
+        tvOkButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+    }
 
-    @OnClick(R2.id.iv_send_button)
     void sendMessage() {
         ((InboxDetailContract.InboxDetailPresenter) mPresenter).sendMessage();
         edMessage.setHint(R.string.type_here);
@@ -344,9 +384,6 @@ public class InboxDetailActivity extends InboxBaseActivity
                 "");
     }
 
-    @OnClick({
-            R2.id.txt_hyper,
-            R2.id.tv_view_transaction})
     void onClickListener(View v) {
         int id = v.getId();
         if (id == R.id.txt_hyper) {
@@ -364,8 +401,7 @@ public class InboxDetailActivity extends InboxBaseActivity
         }
     }
 
-    @OnClick({R2.id.iv_next_down,
-            R2.id.iv_previous_up})
+
     void onClickNextPrev(View v) {
         int id = v.getId();
         int index;
@@ -589,5 +625,26 @@ public class InboxDetailActivity extends InboxBaseActivity
             super.onBackPressed();
         }
 
+    }
+
+    @Override
+    public void onClick(View view) {
+        int id = view.getId();
+        if(id==R.id.iv_upload_img){
+            onClickUpload();
+        }else if(id==R.id.btn_inactive_1||id==R.id.btn_inactive_2||id==R.id.btn_inactive_3||id==R.id.btn_inactive_4||id==R.id.btn_inactive_5){
+            onEmojiClick(view);
+        }else if(id==R.id.iv_send_button){
+            sendMessage();
+        }else if(id==R.id.txt_hyper||id==R.id.tv_view_transaction){
+            onClickListener(view);
+        }else if(id==R.id.iv_next_down||id==R.id.iv_previous_up){
+            onClickNextPrev(view);
+        }
+    }
+
+    @Override
+    public void onClickClose() {
+        servicePrioritiesBottomSheet.dismiss();
     }
 }

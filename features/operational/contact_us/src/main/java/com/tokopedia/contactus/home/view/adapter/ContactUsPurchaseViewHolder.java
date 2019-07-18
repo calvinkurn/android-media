@@ -7,7 +7,6 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.contactus.R;
-import com.tokopedia.contactus.R2;
 import com.tokopedia.contactus.common.analytics.ContactUsTracking;
 import com.tokopedia.contactus.common.data.BuyerPurchaseList;
 import com.tokopedia.contactus.orderquery.view.OrderQueryTicketActivity;
@@ -16,37 +15,22 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 class ContactUsPurchaseViewHolder extends RecyclerView.ViewHolder {
 
-    @BindView(R2.id.txt_order_id)
-    TextView txtOrderId;
 
-    @BindView(R2.id.txt_order_date)
-    TextView txtOrderDate;
-
-    @BindView(R2.id.img_product)
-    ImageView imgProduct;
-
-    @BindView(R2.id.txt_product_name)
-    TextView txtProductName;
-
-    @BindView(R2.id.txt_more_item)
-    TextView txtMoreItem;
-
-    @BindView(R2.id.txt_invalid_msg)
-    TextView txtInvalidMsg;
-
-    @BindView(R2.id.txt_total_price)
-    TextView txtTotalPrice;
+    private TextView txtOrderId;
+    private TextView txtOrderDate;
+    private ImageView imgProduct;
+    private TextView txtProductName;
+    private TextView txtMoreItem;
+    private TextView txtInvalidMsg;
+    private TextView txtTotalPrice;
 
     private BuyerPurchaseList buyerPurchaseList;
 
     ContactUsPurchaseViewHolder(View view, String type) {
         super(view);
-        ButterKnife.bind(this, view);
+        findingViewsId(view);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -54,6 +38,16 @@ class ContactUsPurchaseViewHolder extends RecyclerView.ViewHolder {
                 view.getContext().startActivity(OrderQueryTicketActivity.getOrderQueryTicketIntent(view.getContext(), buyerPurchaseList));
             }
         });
+    }
+
+    private void findingViewsId(View view) {
+        txtOrderId  = view.findViewById(R.id.txt_order_id);
+        txtOrderDate  = view.findViewById(R.id.txt_order_date);
+        imgProduct  = view.findViewById(R.id.img_product);
+        txtProductName  = view.findViewById(R.id.txt_product_name);
+        txtMoreItem  = view.findViewById(R.id.txt_more_item);
+        txtInvalidMsg  = view.findViewById(R.id.txt_invalid_msg);
+        txtTotalPrice  = view.findViewById(R.id.txt_total_price);
     }
 
     void bind(BuyerPurchaseList buyerPurchaseList) {

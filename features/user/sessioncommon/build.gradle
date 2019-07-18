@@ -23,6 +23,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.graphql)
 
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
@@ -32,4 +33,11 @@ dependencies {
         exclude group: 'com.squareup.okio'
         exclude group: 'com.android.support'
     }
+
+    //Test
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.kotlinMockito
+    testImplementation rootProject.ext.testDependencies.spekApi
+    testImplementation rootProject.ext.testDependencies.platformEngine
+    testImplementation rootProject.ext.testDependencies.junitPlatformRunner
 }

@@ -49,7 +49,7 @@ OnboardingFragment : BaseDaggerFragment(),
 
         fun createInstance(title: String = "",
                            description: String = "",
-                           lottieAsset: String = "",
+                           lottieAsset: Int = 0,
                            bgColor: Int = 0,
                            position: Int = 0,
                            ttlKey: String = "",
@@ -58,7 +58,7 @@ OnboardingFragment : BaseDaggerFragment(),
             val args = Bundle()
             args.putCharSequence(ARG_TITLE, title)
             args.putCharSequence(ARG_DESC, description)
-            args.putString(ARG_LOTTIE, lottieAsset)
+            args.putInt(ARG_LOTTIE, lottieAsset)
             args.putInt(ARG_BG_COLOR, bgColor)
             args.putInt(ARG_POSITION, position)
             args.putString(ARG_TTLKEY, ttlKey)
@@ -70,7 +70,7 @@ OnboardingFragment : BaseDaggerFragment(),
 
     var title: String = ""
     var description: String = ""
-    var lottieAsset: String = ""
+    var lottieAsset: Int = 0
     var bgColor: Int = 0
     var position: Int = 0
     var isAnimationPlayed = false
@@ -96,9 +96,12 @@ OnboardingFragment : BaseDaggerFragment(),
         super.onCreate(savedInstanceState)
         title = getParamString(ARG_TITLE, arguments, savedInstanceState, "")
         description = getParamString(ARG_DESC, arguments, savedInstanceState, "")
-        lottieAsset = getParamString(ARG_LOTTIE, arguments, savedInstanceState, "")
+        lottieAsset = getParamInt(ARG_LOTTIE, arguments, savedInstanceState, 0)
         bgColor = getParamInt(ARG_BG_COLOR, arguments, savedInstanceState, 0)
         position = getParamInt(ARG_POSITION, arguments, savedInstanceState, 0)
+        descKey = getParamString(ARG_DESCKEY, arguments, savedInstanceState, "")
+        ttlKey = getParamString(ARG_TTLKEY, arguments, savedInstanceState, "")
+
     }
 
     override fun initInjector() {
@@ -134,8 +137,8 @@ OnboardingFragment : BaseDaggerFragment(),
     private fun setAnimation(defaultView: View) {
         try {
             lottieAnimationView = defaultView.findViewById(R.id.animation_view)
-            if (lottieAsset.isNotBlank()) {
-                lottieAnimationView.setAnimation(lottieAsset, LottieAnimationView.CacheStrategy.Strong)
+            if (lottieAsset != 0) {
+                lottieAnimationView.setAnimation(lottieAsset)
             } else if (!GlobalConfig.DEBUG) {
                 Crashlytics.log("Lottie Asset Is Blank")
             }
