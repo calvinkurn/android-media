@@ -149,7 +149,7 @@ abstract class ProductCardView: BaseCustomView {
      * Realign the view components based on their visibility.
      * Make sure all the view components are configured before calling this method.
      */
-    protected open fun realignLayout() {
+    open fun realignLayout() {
         setProductNameMarginTop()
         setPriceMarginTop()
         setLocationMarginLeft()
