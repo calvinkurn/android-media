@@ -96,4 +96,8 @@ class PlayWelcomeHelper(
             function.invoke()
         }
     }
+
+    fun hideBottomSheet() {
+        welcomeInfoDialog?.dismiss()
+    }
 }

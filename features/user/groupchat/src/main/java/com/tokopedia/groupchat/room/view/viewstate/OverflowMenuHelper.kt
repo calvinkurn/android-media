@@ -213,4 +213,10 @@ class OverflowMenuHelper(
     fun setQualityVideo(videoQuality: Int) {
         this.videoVerticalQuality = videoQuality
     }
+
+    fun hideBottomSheet() {
+        if(::overflowMenuDialog.isInitialized){
+            overflowMenuDialog?.dismiss()
+        }
+    }
 }

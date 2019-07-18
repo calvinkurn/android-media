@@ -193,6 +193,6 @@ class VideoVerticalHelper (
     }
 
     fun isVideoShown(): Boolean {
-        return playerView.isShown
+        return playerView.isShown && videoStreamViewModel?.isActive
     }
 }

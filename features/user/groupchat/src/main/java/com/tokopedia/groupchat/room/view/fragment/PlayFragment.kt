@@ -534,7 +534,11 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun onVideoStreamUpdated(it: VideoStreamViewModel) {
-        viewState.onVideoVerticalUpdated(it)
+        if(isInPipMode() == true) {
+            activity?.finish()
+        } else {
+            viewState.onVideoVerticalUpdated(it)
+        }
     }
 
     override fun handleEvent(it: EventGroupChatViewModel) {
@@ -676,7 +680,6 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     override fun onPause() {
         super.onPause()
         timeStampAfterPause = System.currentTimeMillis()
-        presenter.destroyWebSocket()
         notifReceiver?.let { tempNotifReceiver ->
             context?.let {
                 LocalBroadcastManager.getInstance(it).unregisterReceiver(tempNotifReceiver)
@@ -684,10 +687,11 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         }
         timeStampAfterPause = System.currentTimeMillis()
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            activity?.isInPictureInPictureMode.let {
-                snackBarWebSocket?.dismiss()
-            }
+        if(isInPipMode() == true) {
+            snackBarWebSocket?.dismiss()
+            dismissDialog()
+        } else {
+            presenter.destroyWebSocket()
         }
     }
 
@@ -824,11 +828,24 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         return ""
     }
 
-    fun dismissExitDialog() {
+    fun dismissDialog() {
         exitDialog?.dismiss()
+        viewState.dismissAllBottomSheet()
     }
 
     override fun hasVideoVertical(): Boolean {
         return viewState?.verticalVideoShown()
+    }
+
+    fun isChannelActive(): Boolean {
+        return viewState?.isChannelActive()
+    }
+
+    private fun isInPipMode(): Boolean? {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            activity?.isInPictureInPictureMode
+        } else {
+            false
+        }
     }
 }

@@ -64,4 +64,6 @@ interface PlayViewState {
     fun onVideoVerticalUpdated(it: VideoStreamViewModel)
     fun onErrorVideoVertical()
     fun verticalVideoShown(): Boolean
+    fun dismissAllBottomSheet()
+    fun isChannelActive(): Boolean
 }

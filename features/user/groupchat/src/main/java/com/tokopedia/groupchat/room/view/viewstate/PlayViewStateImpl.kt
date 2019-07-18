@@ -535,6 +535,7 @@ open class PlayViewStateImpl(
     }
 
     override fun onChannelFrozen(channelId: String) {
+        viewModel?.isFreeze = true
         viewModel?.let { viewModel ->
             var channelName = viewModel.title
             if (channelId == viewModel.channelId) {
@@ -737,6 +738,14 @@ open class PlayViewStateImpl(
         if (::overlayDialog.isInitialized && overlayDialog.isShowing) overlayDialog.dismiss()
     }
 
+    private fun closePinnedMessageDialog() {
+        if (::pinnedMessageDialog.isInitialized && pinnedMessageDialog.isShowing) pinnedMessageDialog.dismiss()
+    }
+
+    private fun closeWebViewDialog() {
+        if (::webviewDialog.isInitialized) webviewDialog.dismiss()
+    }
+
     override fun setToolbarData(title: String?, bannerUrl: String?, totalView: String?, blurredBannerUrl: String?) {
 
         toolbar.setBackgroundResource(R.color.transparent)
@@ -798,13 +807,6 @@ open class PlayViewStateImpl(
     }
 
     override fun onVideoVerticalUpdated(it: VideoStreamViewModel) {
-//
-//        var it = VideoStreamViewModel(
-//                true,
-//                false,
-//                "https://scontent-sin6-1.cdninstagram.com/vp/6a699996e4c39439008d67726849596d/5D24E316/t50.12441-16/53744866_293174538021780_5033871342265528633_n.mp4?_nc_ht=scontent-sin6-1.cdninstagram.com",
-//                "https://scontent-sin6-1.cdninstagram.com/vp/1c1f2774060e5a7403bc2eefae6e36cf/5D25AFC6/t50.12441-16/59409583_1671393593006903_5676993366659842316_n.mp4?_nc_ht=scontent-sin6-1.cdninstagram.com"
-//        )
         videoVerticalHelper.setData(it)
         if(it.isActive && it.androidStreamSD.isNotBlank()) {
             videoVerticalHelper.playVideo(VideoVerticalHelper.VIDEO_480)
@@ -1159,6 +1161,14 @@ open class PlayViewStateImpl(
         }
     }
 
+    override fun dismissAllBottomSheet() {
+        overflowMenuHelper.hideBottomSheet()
+        welcomeHelper.hideBottomSheet()
+        closeOverlayDialog()
+        closePinnedMessageDialog()
+        closeWebViewDialog()
+    }
+
     private fun showPinnedMessage(viewModel: ChannelInfoViewModel) {
         if (!::pinnedMessageDialog.isInitialized) {
             pinnedMessageDialog = CloseableBottomSheetDialog.createInstanceRounded(view.context)
@@ -1232,6 +1242,13 @@ open class PlayViewStateImpl(
             chatRecyclerView.setFadingEdgeLength(fadingEdgeLength)
             chatRecyclerView.invalidate()
         }
+    }
+
+    override fun isChannelActive(): Boolean {
+        viewModel?.isFreeze?.let {
+            return !it
+        }
+        return false
     }
 
     private fun toggleHorizontalVideo(): (Boolean) -> Unit {

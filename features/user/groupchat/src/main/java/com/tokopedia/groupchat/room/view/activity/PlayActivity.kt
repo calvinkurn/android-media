@@ -29,7 +29,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -153,7 +152,6 @@ open class PlayActivity : BaseSimpleActivity(), PlayActivityContract.View {
 
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
-        checkFragmentisPlayFragment()?.dismissExitDialog()
         minimize()
     }
 
@@ -163,7 +161,7 @@ open class PlayActivity : BaseSimpleActivity(), PlayActivityContract.View {
             windowManager.defaultDisplay.getMetrics(displayMetrics)
 
             checkFragmentisPlayFragment()?.let {
-                if(it.hasVideoVertical()) {
+                if(it.hasVideoVertical() && it.isChannelActive()) {
                     mPictureInPictureParamsBuilder?.let {
                         it.setAspectRatio(Rational(9, 16))
                         enterPictureInPictureMode(it.build())
