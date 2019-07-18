@@ -6,6 +6,7 @@
     android:id="@+id/carouselImageMain"
     android:padding="@dimen/dp_10">
 
+    <!--Don't convert these image to Vector: Strictly Prohibited-->
     <ImageView
         android:id="@+id/iv_appIcon"
         android:layout_width="20dp"
@@ -42,7 +43,7 @@
             android:scaleType="fitXY"
             android:src="@drawable/bg_button_white" />
 
-
+        <!--Don't convert these image to Vector: Strictly Prohibited-->
         <ImageView
             android:id="@+id/ivArrowRight"
             android:layout_width="@dimen/dp_30"
@@ -56,6 +57,7 @@
             android:padding="8dp"
             android:src="@drawable/cm_ic_arrow" />
 
+        <!--Don't convert these image to Vector: Strictly Prohibited-->
         <ImageView
             android:id="@+id/ivArrowLeft"
             android:layout_width="@dimen/dp_30"
@@ -87,19 +89,3 @@
 
 
 </RelativeLayout>
-
-
-    <!--
-
-            <TextView
-                android:id="@+id/tvDesc"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="10"
-                android:paddingTop="2dp"
-                android:paddingBottom="5dp"
-                android:text=""
-                android:textColor="@color/black"
-                android:textSize="12sp"
-                android:visibility="gone" />-->

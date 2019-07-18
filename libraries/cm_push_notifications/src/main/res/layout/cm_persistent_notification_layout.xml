@@ -138,6 +138,7 @@
             android:textSize="@dimen/sp_10" />
     </LinearLayout>
 
+    <!--Don't convert these image to Vector: Strictly Prohibited-->
     <ImageView
         android:id="@+id/image_icon5"
         android:layout_width="@dimen/dp_36"
