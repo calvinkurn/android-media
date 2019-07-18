@@ -32,6 +32,7 @@ import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.navigation.analytics.InboxGtmTracker;
 import com.tokopedia.tkpd.home.adapter.OnWishlistActionButtonClicked;
 import com.tokopedia.tkpd.home.wishlist.adapter.WishlistAdapter;
 import com.tokopedia.tkpd.home.wishlist.adapter.factory.WishlistAdapterFactory;
@@ -54,6 +55,7 @@ import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.transaction.common.sharedata.AddToCartResult;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsAddToCart;
 
@@ -93,6 +95,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     private ProgressBar progressBar;
     private SearchView searchEditText;
     private EndlessRecyclerViewScrollListener scrollListener;
+    private TrackingQueue trackingQueue;
 
     GridLayoutManager layoutManager;
 
@@ -114,6 +117,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         wishList.fetchSavedsInstance(savedInstanceState);
         wishList.initDataInstance(getActivity());
         isDeleteDialogShown = false;
+        trackingQueue = new TrackingQueue(getContext());
     }
 
     @Override
@@ -621,4 +625,10 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         return objects;
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        wishlistAnalytics.sendEmptyWishlistProductImpression(trackingQueue);
+        trackingQueue.sendAll();
+    }
 }

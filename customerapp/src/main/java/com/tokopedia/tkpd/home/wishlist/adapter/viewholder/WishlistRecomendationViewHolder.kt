@@ -10,6 +10,7 @@ import com.tokopedia.recommendation_widget_common.presentation.RecommendationCar
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.tkpd.R
 import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistRecomendationViewModel
+import com.tokopedia.tkpd.home.wishlist.analytics.WishlistAnalytics
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.Category
 import com.tokopedia.topads.sdk.domain.model.Product
@@ -17,7 +18,7 @@ import com.tokopedia.topads.sdk.domain.model.Product
 /**
  * Author errysuprayogi on 03,July,2019
  */
-class WishlistRecomendationViewHolder(itemView: View) : AbstractViewHolder<WishlistRecomendationViewModel>(itemView), RecommendationCardView.TrackingListener {
+class WishlistRecomendationViewHolder(itemView: View, val wishlistAnalytics: WishlistAnalytics) : AbstractViewHolder<WishlistRecomendationViewModel>(itemView), RecommendationCardView.TrackingListener {
 
     private val recommendationCardView: RecommendationCardView? = itemView.findViewById(com.tokopedia.navigation.R.id.productCardView)
     private val context: Context? = itemView.context
@@ -31,33 +32,19 @@ class WishlistRecomendationViewHolder(itemView: View) : AbstractViewHolder<Wishl
     }
 
     override fun onImpressionTopAds(item: RecommendationItem) {
-        val product = Product()
-        product.id = item.productId.toString()
-        product.name = item.name
-        product.priceFormat = item.price
-        product.category = Category(item.departmentId)
-        TopAdsGtmTracker.getInstance().addInboxProductViewImpressions(product, adapterPosition, item.recommendationType)
+        wishlistAnalytics.eventEmptyWishlistProductImpressions(item, item.position)
     }
 
     override fun onImpressionOrganic(item: RecommendationItem) {
-        InboxGtmTracker.getInstance().addInboxProductViewImpressions(item, adapterPosition)
+        wishlistAnalytics.eventEmptyWishlistProductImpressions(item, item.position)
     }
 
     override fun onClickTopAds(item: RecommendationItem) {
-        val product = Product()
-        product.id = item.productId.toString()
-        product.name = item.name
-        product.priceFormat = item.price
-        product.category = Category(item.departmentId)
-        context?.run {
-            TopAdsGtmTracker.getInstance().eventInboxProductClick(context, product, adapterPosition, item.recommendationType)
-        }
+        wishlistAnalytics.eventEmptyWishlistProductClick(item, item.position)
     }
 
     override fun onClickOrganic(item: RecommendationItem) {
-        context?.run {
-            InboxGtmTracker.getInstance().eventInboxProductClick(context, item, adapterPosition)
-        }
+        wishlistAnalytics.eventEmptyWishlistProductClick(item, item.position)
     }
 
     companion object {

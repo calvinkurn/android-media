@@ -46,7 +46,7 @@ class WishlistAdapterFactory(val buttonActionClick: OnWishlistActionButtonClicke
             WishlistEmptyViewHolder.LAYOUT -> WishlistEmptyViewHolder(view, buttonActionClick)
             WishlistEmptySearchViewHolder.LAYOUT -> WishlistEmptySearchViewHolder(view, buttonActionClick)
             WishlistTopAdsListViewHolder.LAYOUT -> WishlistTopAdsListViewHolder(view)
-            WishlistRecomendationViewHolder.LAYOUT -> WishlistRecomendationViewHolder(view)
+            WishlistRecomendationViewHolder.LAYOUT -> WishlistRecomendationViewHolder(view, wishlistAnalytics)
             WishlistRecomTitleViewHolder.LAYOUT -> WishlistRecomTitleViewHolder(view)
             else -> super.createViewHolder(view, viewType)
         }
