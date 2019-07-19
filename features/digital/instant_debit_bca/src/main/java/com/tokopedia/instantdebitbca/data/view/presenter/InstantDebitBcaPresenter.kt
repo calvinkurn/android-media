@@ -104,8 +104,8 @@ constructor(val getAccessTokenBcaUseCase: GetAccessTokenBcaUseCase,
                         }))
     }
 
-    override fun onDestroy() {
-        detachView()
+    override fun detachView() {
+        super.detachView()
         if (compositeSubscription.hasSubscriptions()) compositeSubscription.unsubscribe()
     }
 }

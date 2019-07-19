@@ -97,7 +97,6 @@ open class InstantDebitBcaFragment @Inject constructor(): BaseDaggerFragment(), 
     }
 
     protected fun convertObjToJsonString(obj: Any): String {
-        val jsonObj = JSONObject()
         val gsonObj = Gson()
         val data = gsonObj.toJson(obj)
         data.replace("\"", "\\\"")
@@ -139,7 +138,7 @@ open class InstantDebitBcaFragment @Inject constructor(): BaseDaggerFragment(), 
 
     override fun onDestroy() {
         super.onDestroy()
-        presenter.onDestroy()
+        presenter.detachView()
     }
 
     override fun onAttachActivity(context: Context) {

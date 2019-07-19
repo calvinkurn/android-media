@@ -25,7 +25,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.network)
 
 
-    implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.bcaxcoWidget
     implementation rootProject.ext.playServicesDependencies.safetyNet
     implementation rootProject.ext.miscDependencies.dagger

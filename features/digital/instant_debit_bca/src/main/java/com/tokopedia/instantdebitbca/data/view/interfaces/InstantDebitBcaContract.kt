@@ -23,7 +23,5 @@ interface InstantDebitBcaContract {
 
         fun notifyDebitRegisterBca(debitData: String, deviceId: String)
         fun notifyDebitRegisterEditLimit(debitData: String, deviceId: String)
-
-        fun onDestroy()
     }
 }
