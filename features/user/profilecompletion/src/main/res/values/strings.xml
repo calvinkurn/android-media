@@ -96,5 +96,7 @@
     <string name="error_oversize_avatar_image">Ukuran gambar maksimal 2Mb</string>
 
 
-
+    <!-- ADD BOD -->
+    <string name="title_add_bod">Tambah Tanggal Lahir</string>
+    <string name="page_description">Kamu hanya dapat mengatur tanggal lahirmu satu kali. Pastikan tanggal lahir sudah benar</string>
 </resources>

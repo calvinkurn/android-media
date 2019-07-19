@@ -1,0 +1,7 @@
+mutation add_bod($bod: String!) {
+  userProfileCompletionUpdate(birthdate: $bod) {
+    isSuccess
+    birthDateMessage
+    completionScore
+  }
+}

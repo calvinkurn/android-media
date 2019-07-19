@@ -22,4 +22,5 @@
     <string name="path_image_picker">/image-picker</string>
     <string name="path_webview" translatable="false">/webview</string>
     <string name="path_setting_profile_phone_verification" translatable="false">/setting-profile-phone-verification</string>
+    <string name="path_add_bod">/add-bod</string>
 </resources>

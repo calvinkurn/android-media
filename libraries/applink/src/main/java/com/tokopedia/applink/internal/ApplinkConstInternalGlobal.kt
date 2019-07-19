@@ -89,6 +89,11 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val ADD_PHONE = "$INTERNAL_GLOBAL/add-phone"
 
+    // AddBodActivity
+    // tokopedia-android-internal://global/add-bod
+    @JvmField
+    val ADD_BOD = "$INTERNAL_GLOBAL/add-bod"
+
     // VerificationActivity
     // tokopedia-android-internal://global/cotp
     @JvmField

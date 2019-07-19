@@ -5,7 +5,6 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.view.LayoutInflater
@@ -14,6 +13,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.abstraction.common.utils.view.PhoneNumberUtils
 import com.tokopedia.applink.RouteManager
@@ -294,16 +294,16 @@ class SettingProfileFragment : BaseDaggerFragment() {
             )
         } else {
             bod.showFilled(
-                    getString(R.string.subtitle_bod_setting_profile),
-                    DateFormatUtils.formatDate(
-                            DateFormatUtils.FORMAT_YYYY_MM_DD,
-                            DateFormatUtils.FORMAT_DD_MMMM_YYYY,
-                            profileCompletionData.birthDay),
-                    false,
-                    true,
-                    View.OnClickListener {
-                        //TODO add action on listener
-                    }
+                getString(R.string.subtitle_bod_setting_profile),
+                DateFormatUtils.formatDate(
+                    DateFormatUtils.FORMAT_YYYY_MM_DD,
+                    DateFormatUtils.FORMAT_DD_MMMM_YYYY,
+                    profileCompletionData.birthDay),
+                false,
+                true,
+                View.OnClickListener {
+                    RouteManager.route(context, ApplinkConstInternalGlobal.ADD_BOD)
+                }
             )
         }
 
@@ -418,6 +418,8 @@ class SettingProfileFragment : BaseDaggerFragment() {
     private fun onErrorGetProfileInfo(throwable: Throwable) {
         dismissLoading()
         view?.run {
+            val error = ErrorHandlerSession.getErrorMessage(throwable, context, true)
+            NetworkErrorHelper.showEmptyState(context, this, error, null)
             Toaster.showError(
                     this,
                     ErrorHandlerSession.getErrorMessage(throwable, context, true),

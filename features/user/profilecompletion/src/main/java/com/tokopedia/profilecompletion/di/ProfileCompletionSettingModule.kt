@@ -22,13 +22,6 @@ class ProfileCompletionSettingModule {
 
     @ProfileCompletionSettingScope
     @Provides
-    fun provideGraphqlUseCase(graphqlRepository: GraphqlRepository)
-        : GraphqlUseCase<UserProfileInfoData> = GraphqlUseCase<UserProfileInfoData>(graphqlRepository).apply {
-            setTypeClass(UserProfileInfoData::class.java)
-        }
-
-    @ProfileCompletionSettingScope
-    @Provides
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
     @Provides

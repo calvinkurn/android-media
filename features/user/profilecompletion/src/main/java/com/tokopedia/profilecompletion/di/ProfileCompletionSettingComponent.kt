@@ -1,6 +1,7 @@
 package com.tokopedia.profilecompletion.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.profilecompletion.addbod.view.fragment.AddBodFragment
 import com.tokopedia.profilecompletion.addemail.view.fragment.AddEmailFragment
 import com.tokopedia.profilecompletion.addphone.view.fragment.AddPhoneFragment
 import com.tokopedia.profilecompletion.changegender.view.ChangeGenderFragment
@@ -19,6 +20,7 @@ interface ProfileCompletionSettingComponent {
     fun inject(fragment: ChangeGenderFragment)
     fun inject(fragment: AddEmailFragment)
     fun inject(fragment: AddPhoneFragment)
+    fun inject(fragment: AddBodFragment)
     fun inject(fragment: SettingProfileFragment)
 
 }

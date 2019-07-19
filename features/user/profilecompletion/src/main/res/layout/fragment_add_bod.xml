@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <LinearLayout
+            android:id="@+id/mainView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_24"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingLeft="@dimen/dp_16"
+            android:orientation="vertical">
+
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="@color/color_subtitle_setting_profile"
+                android:text="@string/page_description"/>
+
+        <EditText
+                android:id="@+id/chooseDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableRight="@drawable/down"
+                android:drawableEnd="@drawable/down"
+                android:hint="@string/hint_bod_setting_profile"
+                android:clickable="true"
+                android:focusable="false"/>
+
+        <TextView
+                android:id="@+id/btnSave"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_marginTop="46dp"
+                android:background="@drawable/bg_button_green"
+                android:gravity="center"
+                android:text="@string/button_save"
+                android:textAllCaps="false"
+                android:textColor="@color/white"/>
+    </LinearLayout>
+
+    <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone" />
+</RelativeLayout>
