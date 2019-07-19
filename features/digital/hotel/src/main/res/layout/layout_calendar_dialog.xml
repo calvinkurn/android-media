@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:background="@null"
-        android:src="@drawable/ic_close" />
+        app:srcCompat="@drawable/ic_close" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -39,8 +39,7 @@
             android:hint="Pilih Tanggal   "
             android:textSize="16sp"
             android:textStyle="bold"
-            app:backgroundTint="@color/bg_unify_tint_color"
-            />
+            app:backgroundTint="@color/bg_unify_tint_color" />
 
         <TextView
             android:id="@+id/text_checkout"

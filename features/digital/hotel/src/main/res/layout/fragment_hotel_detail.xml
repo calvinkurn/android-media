@@ -39,7 +39,7 @@
                         android:layout_height="@dimen/dp_160"
                         android:layout_marginBottom="@dimen/dp_2"
                         android:scaleType="centerCrop"
-                        android:src="@color/grey_no_image" />
+                        app:srcCompat="@color/grey_no_image" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -52,7 +52,7 @@
                             android:layout_height="@dimen/dp_76"
                             android:layout_weight="1"
                             android:scaleType="centerCrop"
-                            android:src="@color/grey_no_image" />
+                            app:srcCompat="@color/grey_no_image" />
 
                         <android.support.v7.widget.AppCompatImageView
                             android:id="@+id/iv_second_photo_preview"
@@ -62,7 +62,7 @@
                             android:layout_marginRight="@dimen/dp_2"
                             android:layout_weight="1"
                             android:scaleType="centerCrop"
-                            android:src="@color/grey_no_image" />
+                            app:srcCompat="@color/grey_no_image" />
 
                         <RelativeLayout
                             android:layout_width="0dp"
@@ -74,7 +74,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/dp_76"
                                 android:scaleType="centerCrop"
-                                android:src="@color/grey_no_image" />
+                                app:srcCompat="@color/grey_no_image" />
 
                             <android.support.v7.widget.AppCompatImageView
                                 android:id="@+id/iv_third_photo_preview_black_layer"

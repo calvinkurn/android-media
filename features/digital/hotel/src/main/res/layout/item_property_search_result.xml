@@ -256,8 +256,9 @@
             <android.support.v7.widget.AppCompatImageView
                 android:layout_width="@dimen/dp_16"
                 android:layout_height="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_4"
                 android:layout_marginRight="@dimen/dp_4"
-                android:src="@drawable/ic_hotel" />
+                app:srcCompat="@drawable/ic_hotel" />
 
             <com.tokopedia.design.component.TextViewCompat
                 android:layout_width="wrap_content"

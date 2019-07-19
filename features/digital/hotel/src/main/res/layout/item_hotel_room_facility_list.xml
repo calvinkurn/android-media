@@ -6,25 +6,24 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:paddingBottom="@dimen/dp_2"
-    >
+    android:paddingBottom="@dimen/dp_2">
 
     <ImageView
         android:id="@+id/facility_icon"
         android:layout_width="@dimen/dp_16"
         android:layout_height="@dimen/dp_16"
-        android:src="@drawable/ic_facility_add"
         android:layout_gravity="center_vertical"
+        android:layout_marginEnd="@dimen/dp_4"
         android:layout_marginRight="@dimen/dp_4"
-        />
-    
+        app:srcCompat="@drawable/ic_facility_add" />
+
     <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/facility_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:lines="1"
+        android:layout_gravity="center_vertical"
         android:ellipsize="end"
-        tools:text="Sarapan Gratis"
+        android:lines="1"
         app:fontSize="micro"
-        android:layout_gravity="center_vertical"/>
+        tools:text="Sarapan Gratis" />
 </LinearLayout>
