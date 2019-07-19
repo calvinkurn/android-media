@@ -671,7 +671,7 @@ public class DealsAnalytics {
             productmap.put(NAME, DEALS_HOME_PAGE);
             productmap.put(ID, String.valueOf(items.get(index).getId()));
             productmap.put(CREATIVE, items.get(index).getBrand().getTitle());
-            productmap.put(CATEGORY, items.get(index).getDisplayName());
+            productmap.put(CATEGORY, DEALS);
             productmap.put(POSITION, String.valueOf(index));
             productmap.put(BRAND, items.get(index).getBrand().getTitle());
             productmap.put(VARIANT, "none");
