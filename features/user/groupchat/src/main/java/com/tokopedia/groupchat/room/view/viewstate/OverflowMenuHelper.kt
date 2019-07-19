@@ -39,9 +39,6 @@ class OverflowMenuHelper(
     private var menuAdapter = OverflowMenuAdapter()
     private lateinit var menuDialog: View
 
-
-
-
     fun showOverflowMenuBottomSheet() {
         if (!::overflowMenuDialog.isInitialized) {
             overflowMenuDialog = CloseableBottomSheetDialog.createInstanceRounded(context)

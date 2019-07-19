@@ -822,6 +822,7 @@ open class PlayViewStateImpl(
             videoVerticalHelper.stopVideo()
             setChatListHasSpaceOnTop().invoke(VideoVerticalHelper.VERTICAL_WITHOUT_VIDEO)
             sponsorHelper.assignVideoVertical(false)
+            overflowMenuHelper.setQualityVideo(0)
         }
     }
 
