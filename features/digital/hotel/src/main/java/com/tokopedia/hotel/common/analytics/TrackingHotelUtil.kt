@@ -115,7 +115,8 @@ class TrackingHotelUtil {
             val map = java.util.HashMap<String, Any>()
             map["name"] = product.name
             map["id"] = product.id
-            map["price"] = product.roomPrice.firstOrNull() ?: 0
+            map["price"] = if (product.roomPrice.isNotEmpty())
+                product.roomPrice.first().priceAmount.toLong().toString() else "0"
             map["position"] = index
 
             list.add(map)

@@ -329,7 +329,7 @@ class HotelDetailFragment : HotelBaseFragment() {
         } else {
             tv_hotel_rating_number.visibility = View.GONE
             tv_hotel_rating_count.visibility = View.GONE
-            tv_hotel_detail_all_promo.visibility = View.GONE
+            tv_hotel_detail_all_reviews.visibility = View.GONE
             tv_hotel_rating_detail.text = getString(R.string.hotel_detail_no_rating_review)
         }
     }
@@ -346,7 +346,7 @@ class HotelDetailFragment : HotelBaseFragment() {
             rv_best_review.isNestedScrollingEnabled = false
             rv_best_review.adapter = detailReviewAdapter
 
-            tv_hotel_detail_all_promo.setOnClickListener {
+            tv_hotel_detail_all_reviews.setOnClickListener {
                 trackingHotelUtil.hotelClickHotelReviews(hotelId, roomPriceAmount)
                 startActivityForResult(HotelReviewActivity.getCallingIntent(context!!, hotelHomepageModel.locId), RESULT_REVIEW)
             }

@@ -27,6 +27,7 @@ import kotlinx.android.synthetic.main.layout_calendar_dialog.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 import java.text.SimpleDateFormat
 import java.util.ArrayList
@@ -176,9 +177,11 @@ class HotelCalendarDialog : RoundedBottomSheetDialogFragment(), HasComponent<Hot
                     date_out.requestFocus()
                     if (listener != null) listener!!.onDateClick(checkIn!!, checkOut!!)
 
-                    GlobalScope.launch {
-                        delay(300)
-                        dismissAllowingStateLoss()
+                    runBlocking {
+                        launch {
+                            delay(300)
+                            dismissAllowingStateLoss()
+                        }
                     }
                 }
             }
