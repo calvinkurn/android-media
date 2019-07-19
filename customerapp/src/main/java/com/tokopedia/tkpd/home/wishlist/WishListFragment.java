@@ -33,7 +33,6 @@ import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.navigation.analytics.InboxGtmTracker;
 import com.tokopedia.tkpd.home.adapter.OnWishlistActionButtonClicked;
 import com.tokopedia.tkpd.home.wishlist.adapter.WishlistAdapter;
 import com.tokopedia.tkpd.home.wishlist.adapter.factory.WishlistAdapterFactory;
@@ -57,7 +56,6 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
-import com.tokopedia.transaction.common.sharedata.AddToCartResult;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsAddToCart;
 
 import java.util.ArrayList;
