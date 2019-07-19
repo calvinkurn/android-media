@@ -56,6 +56,8 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     protected SessionHandler sessionHandler;
     protected View decorView;
 
+    protected RemoteConfig remoteConfig;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,7 +81,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     }
 
     private void fetchRemoteConfig() {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
+        remoteConfig = new FirebaseRemoteConfigImpl(this);
         remoteConfig.fetch(getRemoteConfigListener());
     }
 
