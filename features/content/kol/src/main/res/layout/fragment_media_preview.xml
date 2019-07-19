@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -9,13 +9,18 @@
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/overlay_toolbar"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/dp_8"
         android:paddingBottom="@dimen/dp_8"
         android:minHeight="?android:attr/actionBarSize"
         android:background="@color/black"
-        android:alpha="0.75">
+        android:alpha="0.75"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/action_back"
@@ -113,14 +118,52 @@
 
     </android.support.constraint.ConstraintLayout>
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:background="@drawable/bg_kol_round_stroke_white"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_12"
+        android:paddingStart="@dimen/dp_12"
+        android:paddingEnd="@dimen/dp_12"
+        android:paddingRight="@dimen/dp_12"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_8"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/overlay_toolbar"
+        tools:text="1 dari 2"/>
+
+    <com.tokopedia.abstraction.base.view.widget.TouchViewPager
+        android:id="@+id/media_pager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/overlay_toolbar"
+        app:layout_constraintBottom_toTopOf="@+id/overlay_tags"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <android.support.constraint.ConstraintLayout
         android:id="@+id/overlay_tags"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:padding="@dimen/dp_16"
         android:background="@color/black"
-        android:alpha="0.75">
+        android:alpha="0.75"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
         
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/tag_picture"
@@ -202,8 +245,9 @@
             android:textAllCaps="false"
             android:layout_marginTop="@dimen/dp_8"
             android:layout_marginBottom="@dimen/dp_28"
-            android:text="@string/label_see_all"
+            tools:text="@string/label_see_all"
             android:visibility="gone"
+            tools:visibility="visible"
             app:buttonVariant="filled"
             app:buttonType="main"
             app:btnSize="small"
@@ -334,4 +378,4 @@
 
     </android.support.constraint.ConstraintLayout>
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

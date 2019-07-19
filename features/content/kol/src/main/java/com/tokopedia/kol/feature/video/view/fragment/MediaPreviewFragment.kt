@@ -7,6 +7,7 @@ import android.graphics.PorterDuff
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
+import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,12 +15,17 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.design.component.UnifyButton
 import com.tokopedia.design.utils.CurrencyFormatHelper
 import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.MediaItem
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter
+import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.image.ImagePostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
 import com.tokopedia.kol.R
 import com.tokopedia.kol.common.di.KolComponent
 import com.tokopedia.kol.common.util.TimeConverter
 import com.tokopedia.kol.feature.post.view.viewmodel.PostDetailFooterModel
+import com.tokopedia.kol.feature.postdetail.view.adapter.MediaPagerAdapter
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel
 import com.tokopedia.kol.feature.video.view.viewmodel.FeedMediaPreviewViewModel
 import com.tokopedia.kotlin.extensions.view.*
@@ -31,7 +37,7 @@ import javax.inject.Inject
 class MediaPreviewFragment: BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    lateinit var mediaPreviewViewModel: FeedMediaPreviewViewModel
+    private lateinit var mediaPreviewViewModel: FeedMediaPreviewViewModel
 
     override fun getScreenName(): String? = null
 
@@ -78,8 +84,41 @@ class MediaPreviewFragment: BaseDaggerFragment() {
         dynamicPost?.let {
             bindToolbar(it)
             bindTags(it)
+            bindMedia(it.contentList.mapNotNull { media -> convertToMediaItem(media) })
         }
         bindFooter(data.footerModel, dynamicPost?.template?.cardpost?.footer)
+    }
+
+    private fun bindMedia(mediaItems: List<MediaItem>) {
+        val items = mutableListOf<MediaItem>()
+        items.add(MediaItem(thumbnail = "https://pmdvod.nationalgeographic.com/NG_Video/205/467/1239312451613_1527008973501_1239317059527_mp4_video_1024x576_1632000_primary_audio_eng_3.mp4", type = "video"))
+        items.add(MediaItem(thumbnail = "https://pmdvod.nationalgeographic.com/NG_Video_DEV/986/87/deadliest-eagles-vs.mp4", type = "video"))
+        items.add(MediaItem(thumbnail = "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/8/16/19829070/19829070_19948cbd-bd22-4edb-a553-d226f08e659a_960_1280.jpeg", type = "image"))
+        items.add(MediaItem(thumbnail = "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/8/16/19829070/19829070_19948cbd-bd22-4edb-a553-d226f08e659a_960_1280.jpeg", type = "image"))
+        items.add(MediaItem(thumbnail = "https://pmdvod.nationalgeographic.com/NG_Video/821/547/0705687ANG_0.mp4", type = "video"))
+        val adapter = MediaPagerAdapter(items, childFragmentManager)
+        media_pager.adapter = adapter
+        media_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            var lastPosition = 0
+            override fun onPageScrollStateChanged(p0: Int) {}
+
+            override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {}
+
+            override fun onPageSelected(position: Int) {
+                adapter.getRegisteredFragment(lastPosition)?.userVisibleHint = false
+                adapter.getRegisteredFragment(position)?.userVisibleHint = true
+                lastPosition = position
+            }
+
+        })
+    }
+
+    private fun convertToMediaItem(media: BasePostViewModel): MediaItem?{
+        return when (media) {
+            is ImagePostViewModel -> MediaItem(thumbnail = media.image, type = "image")
+            is VideoViewModel -> MediaItem(thumbnail = media.url, type = "video")
+            else -> null
+        }
     }
 
     private fun bindTags(dynamicPostViewModel: DynamicPostViewModel) {

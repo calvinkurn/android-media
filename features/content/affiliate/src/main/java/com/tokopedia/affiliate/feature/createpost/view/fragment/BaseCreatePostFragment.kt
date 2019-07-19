@@ -314,7 +314,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         if (feedContentForm.media.media.isNotEmpty() && viewModel.fileImageList.isEmpty()) {
             viewModel.urlImageList.clear()
             viewModel.urlImageList.addAll(feedContentForm.media.media.map { MediaModel(it.mediaUrl, it.type) })
-            media_attachment.bind(viewModel.urlImageList.map { MediaItem(it.path, it.type) })
+            media_attachment.bind(viewModel.urlImageList.map { MediaItem(thumbnail = it.path, type = it.type) })
         }
 
         if (feedContentForm.relatedItems.isNotEmpty()) {
