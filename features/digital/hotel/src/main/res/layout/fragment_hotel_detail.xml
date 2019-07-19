@@ -304,20 +304,29 @@
                                 android:layout_height="@dimen/dp_100"
                                 android:scaleType="centerCrop" />
 
-                            <com.tokopedia.design.component.ButtonCompat
-                                android:id="@+id/btn_hotel_detail_show"
+                            <LinearLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentEnd="true"
                                 android:layout_alignParentRight="true"
                                 android:layout_alignParentBottom="true"
-                                android:layout_margin="@dimen/dp_8"
-                                android:paddingLeft="@dimen/dp_16"
-                                android:paddingRight="@dimen/dp_16"
-                                android:text="@string/hotel_show_map_text"
-                                android:textStyle="bold"
-                                app:buttonCompatSize="small"
-                                app:buttonCompatType="ghost" />
+                                android:orientation="vertical">
+
+                                <com.tokopedia.design.component.ButtonCompat
+                                    android:id="@+id/btn_hotel_detail_show"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="@dimen/dp_8"
+                                    android:layout_marginRight="@dimen/dp_8"
+                                    android:layout_marginBottom="@dimen/dp_8"
+                                    android:paddingLeft="@dimen/dp_16"
+                                    android:paddingRight="@dimen/dp_16"
+                                    android:text="@string/hotel_show_map_text"
+                                    android:textStyle="bold"
+                                    app:buttonCompatSize="small"
+                                    app:buttonCompatType="ghost" />
+
+                            </LinearLayout>
 
                         </RelativeLayout>
 
