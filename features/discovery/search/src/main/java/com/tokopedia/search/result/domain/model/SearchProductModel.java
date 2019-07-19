@@ -344,7 +344,7 @@ public class SearchProductModel {
         @SerializedName("id")
         @Expose
         private String id;
-        @SerializedName("whid")
+        @SerializedName("warehouse_id_default")
         @Expose
         private String warehouseId = "";
         @SerializedName("name")
