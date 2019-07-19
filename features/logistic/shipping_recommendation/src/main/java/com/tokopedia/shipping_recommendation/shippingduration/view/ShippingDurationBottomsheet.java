@@ -238,7 +238,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
             sendAnalyticCourierPromo(shippingDurationViewModelList);
         }
         if (promoViewModel != null) {
-            sendAnalyticViewPromoLogisticTicker(promoViewModel.getPromoCode());
+            mPromoTracker.eventViewPromoLogisticTicker(promoViewModel.getPromoCode());
         }
     }
 
@@ -260,10 +260,6 @@ public class ShippingDurationBottomsheet extends BottomSheets
                     shippingDurationViewModel.getServiceData().getServiceName()
             );
         }
-    }
-
-    private void sendAnalyticViewPromoLogisticTicker(String promoCode) {
-        mPromoTracker.eventViewPromoLogisticTicker(promoCode);
     }
 
     @Override
