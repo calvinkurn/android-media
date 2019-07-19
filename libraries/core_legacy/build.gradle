@@ -47,6 +47,7 @@ dependencies {
         transitive = true
     }
 
+    implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.userSession)
     implementation rootProject.ext.playServicesDependencies.plus

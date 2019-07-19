@@ -4,14 +4,13 @@ import android.support.annotation.NonNull
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_UPLOAD
+import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_INVOICE_SEND
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT
-import com.tokopedia.chat_common.data.FallbackAttachmentViewModel
-import com.tokopedia.chat_common.data.ImageUploadViewModel
-import com.tokopedia.chat_common.data.MessageViewModel
-import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.imageupload.ImageUploadAttributes
+import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceSentPojo
 import com.tokopedia.chat_common.domain.pojo.productattachment.ProductAttachmentAttributes
 import javax.inject.Inject
 
@@ -48,10 +47,10 @@ open class WebsocketMessageMapper @Inject constructor() {
         return when (pojo.attachment!!.type) {
             TYPE_PRODUCT_ATTACHMENT -> convertToProductAttachment(pojo, jsonAttributes)
             TYPE_IMAGE_UPLOAD -> convertToImageUpload(pojo, jsonAttributes)
+            TYPE_INVOICE_SEND -> convertToInvoiceSent(pojo, jsonAttributes)
             else -> convertToFallBackModel(pojo)
         }
     }
-
 
     private fun convertToImageUpload(@NonNull pojo: ChatSocketPojo, jsonAttribute: JsonObject):
             ImageUploadViewModel {
@@ -73,7 +72,6 @@ open class WebsocketMessageMapper @Inject constructor() {
                 pojo.message.censoredReply
         )
     }
-
 
     private fun convertToProductAttachment(@NonNull pojo: ChatSocketPojo, jsonAttribute:
     JsonObject): ProductAttachmentViewModel {
@@ -106,6 +104,32 @@ open class WebsocketMessageMapper @Inject constructor() {
                 pojoAttribute.productProfile.priceBefore,
                 pojoAttribute.productProfile.shopId
         )
+    }
+
+    private fun convertToInvoiceSent(pojo: ChatSocketPojo, jsonAttribute: JsonObject):
+            AttachInvoiceSentViewModel {
+        val invoiceSentPojo = GsonBuilder().create().fromJson(jsonAttribute,
+                InvoiceSentPojo::class.java)
+        return AttachInvoiceSentViewModel(
+                pojo.msgId.toString(),
+                pojo.fromUid,
+                pojo.from,
+                pojo.fromRole,
+                pojo.attachment!!.id,
+                pojo.attachment!!.type,
+                pojo.message.timeStampUnixNano,
+                pojo.startTime,
+                invoiceSentPojo.invoiceLink.attributes.title,
+                invoiceSentPojo.invoiceLink.attributes.description,
+                invoiceSentPojo.invoiceLink.attributes.imageUrl,
+                invoiceSentPojo.invoiceLink.attributes.totalAmount,
+                !pojo.isOpposite,
+                invoiceSentPojo.invoiceLink.attributes.statusId,
+                invoiceSentPojo.invoiceLink.attributes.status,
+                invoiceSentPojo.invoiceLink.attributes.code,
+                invoiceSentPojo.invoiceLink.attributes.hrefUrl
+        )
+
     }
 
     private fun canShowFooterProductAttachment(isOpposite: Boolean, role: String): Boolean {

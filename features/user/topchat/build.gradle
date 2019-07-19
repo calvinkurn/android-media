@@ -51,6 +51,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.webview)
 
+    implementation project(rootProject.ext.features.atc_common)
     implementation project(rootProject.ext.features.broadcastMessageCommon)
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.attachproduct)
@@ -92,6 +93,7 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
+    implementation rootProject.ext.unifyDependencies.components
 }
 
 apply from: '../../../publish_local.gradle'
