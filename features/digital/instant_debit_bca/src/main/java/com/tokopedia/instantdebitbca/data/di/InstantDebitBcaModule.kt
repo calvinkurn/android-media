@@ -17,7 +17,7 @@ class InstantDebitBcaModule {
 
     @InstantDebitBcaScope
     @Provides
-    internal fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
+    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
 }
