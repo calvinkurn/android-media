@@ -491,6 +491,28 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         checkForShipmentForm();
     }
 
+    public void addCartRecommendationData(CartSectionHeaderHolderData cartSectionHeaderHolderData,
+                                          List<CartRecommendationItemHolderData> cartRecommendationItemHolderDataList) {
+        int recommendationIndex = 0;
+        for (Object item : cartDataList) {
+            if (item instanceof CartEmptyHolderData ||
+                    item instanceof CartShopHolderData ||
+                    item instanceof CartRecentViewHolderData ||
+                    item instanceof CartWishlistHolderData ||
+                    item instanceof CartRecommendationItemHolderData ||
+                    item instanceof InsuranceCartShops) {
+                recommendationIndex = cartDataList.indexOf(item);
+            }
+        }
+
+        if (cartSectionHeaderHolderData != null) {
+            cartDataList.add(++recommendationIndex, cartSectionHeaderHolderData);
+        }
+
+        cartDataList.addAll(++recommendationIndex, cartRecommendationItemHolderDataList);
+        notifyDataSetChanged();
+    }
+
     public void addInsuranceDataList(InsuranceCartShops insuranceCartShops, boolean isRecommendation) {
         allInsuranceProductsList.clear();
         allInsuranceProductsList.add(insuranceCartShops);
@@ -503,7 +525,20 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             insuranceCartList.add(insuranceCartShops);
         }
 
-        cartDataList.add(insuranceCartShops);
+        int insuranceIndex = 0;
+
+        for (Object item : cartDataList) {
+            if (item instanceof CartEmptyHolderData ||
+                    item instanceof CartShopHolderData) {
+                insuranceIndex = cartDataList.indexOf(item);
+            }
+        }
+
+        if (insuranceCartShops != null) {
+            cartDataList.add(++insuranceIndex, insuranceCartShops);
+        }
+
+//        cartDataList.add(insuranceCartShops);
         notifyDataSetChanged();
         // TODO: 19/6/19 check if need to call checkForShipmentForm()
     }
@@ -579,7 +614,8 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         int recentViewIndex = 0;
         for (Object item : cartDataList) {
             if (item instanceof CartEmptyHolderData ||
-                    item instanceof CartShopHolderData) {
+                    item instanceof CartShopHolderData ||
+                    item instanceof InsuranceCartShops) {
                 recentViewIndex = cartDataList.indexOf(item);
             }
         }
@@ -601,28 +637,6 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
         cartDataList.add(++wishlistIndex, cartSectionHeaderHolderData);
         cartDataList.add(++wishlistIndex, cartWishlistHolderData);
-        notifyDataSetChanged();
-    }
-
-    public void addCartRecommendationData(CartSectionHeaderHolderData cartSectionHeaderHolderData,
-                                          List<CartRecommendationItemHolderData> cartRecommendationItemHolderDataList) {
-        int recommendationIndex = 0;
-        for (Object item : cartDataList) {
-            if (item instanceof CartEmptyHolderData ||
-                    item instanceof CartShopHolderData ||
-                    item instanceof CartRecentViewHolderData ||
-                    item instanceof CartWishlistHolderData ||
-                    item instanceof CartRecommendationItemHolderData ||
-                    item instanceof InsuranceCartShops) {
-                recommendationIndex = cartDataList.indexOf(item);
-            }
-        }
-
-        if (cartSectionHeaderHolderData != null) {
-            cartDataList.add(++recommendationIndex, cartSectionHeaderHolderData);
-        }
-
-        cartDataList.addAll(++recommendationIndex, cartRecommendationItemHolderDataList);
         notifyDataSetChanged();
     }
 

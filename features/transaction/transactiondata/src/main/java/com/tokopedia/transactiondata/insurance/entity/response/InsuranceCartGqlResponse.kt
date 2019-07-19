@@ -127,7 +127,9 @@ data class InsuranceProductApplicationDetails(
         var valuesList: ArrayList<InsuranceApplicationValue>,
 
         @SerializedName("validations")
-        var validationsList: ArrayList<InsuranceApplicationValidation>
+        var validationsList: ArrayList<InsuranceApplicationValidation>,
+
+        var isError: Boolean = false
 )
 
 data class InsuranceApplicationValue(

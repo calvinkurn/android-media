@@ -1417,8 +1417,9 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void updateCashback(double cashback) {
-        cartRecyclerView.getHandler().post(() -> cartAdapter.updateShipmentSellerCashback(cashback));
-
+        if (cartRecyclerView != null && cartRecyclerView.getHandler() != null) {
+            cartRecyclerView.getHandler().post(() -> cartAdapter.updateShipmentSellerCashback(cashback));
+        }
     }
 
     @Override

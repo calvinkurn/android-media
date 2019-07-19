@@ -428,14 +428,12 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
         val sdfo2 = SimpleDateFormat("yyyy-MM-dd")
         val minDate = sdfo2.parse(minValue)
 
-        if (incomingValue.compareTo(minDate) > 0) {
+        if (incomingValue.compareTo(minDate) >= 0) {
             System.out.println("incomingValue is after minDate")
             return true
-        } else if (incomingValue.compareTo(minDate) < 0) {
+        } else {
             System.out.println("incomingValue is before minDate")
             return false
-        } else {
-            return true
         }
     }
 
@@ -449,10 +447,8 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
         if (incomingValue.compareTo(minDate) > 0) {
             System.out.println("incomingValue is after minDate")
             return false
-        } else if (incomingValue.compareTo(minDate) < 0) {
-            System.out.println("incomingValue is before minDate")
-            return true
         } else {
+            System.out.println("incomingValue is before minDate")
             return true
         }
     }

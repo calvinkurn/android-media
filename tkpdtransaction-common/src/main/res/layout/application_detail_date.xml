@@ -42,6 +42,6 @@
         android:textSize="@dimen/sp_12"
         android:textStyle="normal"
         android:visibility="invisible"
-        tools:visibility="visible"/>
+        tools:visibility="visible" />
 
 </LinearLayout>
