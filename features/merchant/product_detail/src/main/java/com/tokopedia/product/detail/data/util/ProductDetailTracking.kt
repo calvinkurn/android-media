@@ -4,6 +4,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import com.google.android.gms.tagmanager.DataLayer
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.data.model.product.Category
@@ -213,13 +214,13 @@ class ProductDetailTracking() {
         // send it here
         TrackApp.getInstance().gtm.pushClickEECommerce(Bundle().apply {
             putBundle("items", Bundle().apply {
-                putString(PROMO_NAME, product.name)
-                putString(ID, product.productId.toString())
-                putDouble(PRICE, removeCurrencyPrice(product.price).toDouble())
-                putString(BRAND, DEFAULT_VALUE)
-                putString(VARIANT, DEFAULT_VALUE)
-                putString(CATEGORY, product.categoryBreadcrumbs.toLowerCase())
-                putLong(PROMO_POSITION, (position + 1).toLong())
+                putString(FirebaseAnalytics.Param.ITEM_NAME, product.name)
+                putString(FirebaseAnalytics.Param.ITEM_ID, product.productId.toString())
+                putDouble(FirebaseAnalytics.Param.PRICE, removeCurrencyPrice(product.price).toDouble())
+                putString(FirebaseAnalytics.Param.ITEM_BRAND, DEFAULT_VALUE)
+                putString(FirebaseAnalytics.Param.ITEM_VARIANT, DEFAULT_VALUE)
+                putString(FirebaseAnalytics.Param.ITEM_CATEGORY, product.categoryBreadcrumbs.toLowerCase())
+                putLong(FirebaseAnalytics.Param.INDEX, (position + 1).toLong())
             })
             putString(LIST, listValue)
             putString(KEY_CATEGORY, ProductTrackingConstant.Category.PDP)

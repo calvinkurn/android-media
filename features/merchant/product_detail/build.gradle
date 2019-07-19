@@ -54,6 +54,7 @@ dependencies {
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.features.discoveryCommon)
+    implementation 'com.google.android.gms:play-services-tagmanager:11.0.4'
 
 
     implementation rootProject.ext.miscDependencies.dagger
