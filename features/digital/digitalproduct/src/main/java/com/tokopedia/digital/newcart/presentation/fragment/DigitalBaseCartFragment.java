@@ -306,10 +306,19 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
             if (data.hasExtra(TickerCheckoutUtilKt.getEXTRA_PROMO_DATA())) {
                 promoData = data.getParcelableExtra(TickerCheckoutUtilKt.getEXTRA_PROMO_DATA());
                 // Check between apply promo code or cancel promo from promo detail
-                if (promoData.getState() == TickerCheckoutView.State.EMPTY) {
-                    resetPromoTicker();
-                } else {
-                    presenter.onReceivePromoCode(promoData.getTitle(), promoData.getDescription(), promoData.getPromoCode(), promoData.getTypePromo());
+                switch (promoData.getState()) {
+                    case EMPTY: {
+                        promoData.setPromoCode("");
+                        resetPromoTicker();
+                    }
+                    case FAILED: {
+                        promoData.setPromoCode("");
+                        presenter.onReceivePromoCode(promoData.getTitle(), promoData.getDescription(), promoData.getPromoCode(), promoData.getTypePromo());
+                    }
+                    case ACTIVE: {
+                        presenter.onReceivePromoCode(promoData.getTitle(), promoData.getDescription(), promoData.getPromoCode(), promoData.getTypePromo());
+                    }
+                    default: { }
                 }
             }
         } else if (requestCode == TopPayActivity.REQUEST_CODE) {
