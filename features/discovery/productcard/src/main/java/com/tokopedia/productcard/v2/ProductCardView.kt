@@ -16,9 +16,10 @@ import android.widget.LinearLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.base.BaseCustomView
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.R
-import com.tokopedia.topads.sdk.domain.model.ImpressHolder
-import com.tokopedia.topads.sdk.view.ImpressedImageView
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
@@ -52,7 +53,7 @@ abstract class ProductCardView: BaseCustomView {
      */
     protected var cardViewProductCard: CardView? = null
     protected var constraintLayoutProductCard: ConstraintLayout? = null
-    protected var imageProduct: ImpressedImageView? = null
+    protected var imageProduct: ImageView? = null
     protected var buttonWishlist: ImageView? = null
     protected var labelPromo: Label? = null
     protected var textViewShopName: Typography? = null
@@ -168,8 +169,8 @@ abstract class ProductCardView: BaseCustomView {
         }
     }
 
-    open fun setImageProductViewHintListener(holder: ImpressHolder, viewHintListener: () -> Unit) {
-        imageProduct?.setViewHintListener(holder, viewHintListener)
+    open fun setImageProductViewHintListener(holder: ImpressHolder, viewHintListener: ViewHintListener) {
+        imageProduct?.addOnImpressionListener(holder, viewHintListener)
     }
 
     open fun setButtonWishlistVisible(isVisible: Boolean) {

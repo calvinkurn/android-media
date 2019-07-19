@@ -13,6 +13,7 @@ import com.tokopedia.home.R
 import com.tokopedia.home.beranda.domain.gql.feed.Badge
 import com.tokopedia.home.beranda.presentation.presenter.HomeFeedContract
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedViewModel
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productcard.v2.ProductCardViewSmallGrid
 import com.tokopedia.unifycomponents.Toaster
@@ -61,9 +62,11 @@ class HomeFeedViewHolder(itemView: View, private val homeFeedView: HomeFeedContr
             setReviewCount(element.countReview)
             mapBadges(element.badges)
             setShopLocationText(element.location)
-            setImageProductViewHintListener(element){
-                homeFeedView.onProductImpression(element, adapterPosition)
-            }
+            setImageProductViewHintListener(element, object: ViewHintListener {
+                override fun onViewHint() {
+                    homeFeedView.onProductImpression(element, adapterPosition)
+                }
+            })
             realignLayout()
             setButtonWishlistOnClickListener {
                 homeFeedView.onWishlistClick(element, adapterPosition, !it.isActivated){ isSuccess, throwable ->

@@ -17,7 +17,7 @@
         android:paddingBottom="@dimen/dp_8"
         tools:layout_height="match_parent">
 
-        <com.tokopedia.topads.sdk.view.ImpressedImageView
+        <ImageView
             android:id="@+id/imageProduct"
             android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
@@ -25,7 +25,6 @@
             android:gravity="center"
             android:scaleType="centerCrop"
             android:visibility="gone"
-            app:corner_radius="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
