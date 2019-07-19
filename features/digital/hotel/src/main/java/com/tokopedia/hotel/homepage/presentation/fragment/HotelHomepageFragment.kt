@@ -96,9 +96,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
                         hidePromoContainer()
                     }
                 }
-                is Fail -> {
-                    showErrorState(it.throwable)
-                }
+                is Fail -> { }
             }
         })
     }
