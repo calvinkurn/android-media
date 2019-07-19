@@ -131,7 +131,7 @@ class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), PromoC
     }
 
     override fun onClickItemLastSeen(promoCheckoutLastSeenModel: PromoCheckoutLastSeenModel) {
-        promoCheckoutListDigitalPresenter.checkPromoStackingCode(promoCheckoutLastSeenModel.promoCode, promoDigitalModel)
+        textInputCoupon.setText(promoCheckoutLastSeenModel.promoCode)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
