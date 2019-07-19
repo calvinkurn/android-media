@@ -1,5 +1,4 @@
 mutation PropertyAddToCart($data: PropertyAddtoCartArgs!) {
-    status
     propertyAddToCart(input: $data) {
         cartID
     }
